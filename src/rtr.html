@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v25.6.6-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-06-06 18:57:40, took 00:16:40, with 50 workers, on 3881 cases, 1 failed, 0 traces, 10 retries<br/>
+tested: 2025-06-06 20:04:20, took 00:23:52, with 50 workers, on 3888 cases, 11 failed, 1 traces, 79 retries<br/>
 jvm: ./rtr.bin, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -350,9 +350,9 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckoi03.tst">conn-pckoi03.tst</a></td><td>success</td><td>pckoip over pckoip</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckoi04.tst">conn-pckoi04.tst</a></td><td>success</td><td>pckoip over loopback</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckot01.tst">conn-pckot01.tst</a></td><td>success</td><td>ppp with packet over tcp</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-pckot02.tst">conn-pckot02.tst</a></td><td>success</td><td>ppp with packet over tls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-pckot02.tst">conn-pckot02.tst</a></td><td>#6-run-r2 tping 100 60 2.2.2.0 vrf v1</td><td>ppp with packet over tls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckot03.tst">conn-pckot03.tst</a></td><td>success</td><td>ppp with packet over txt</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-pckot04.tst">conn-pckot04.tst</a></td><td>success</td><td>ppp with packet over txtls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-pckot04.tst">conn-pckot04.tst</a></td><td>#6-run-r2 tping 100 60 2.2.2.0 vrf v1</td><td>ppp with packet over txtls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou01.tst">conn-pckou01.tst</a></td><td>success</td><td>ppp with packet over udp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou02.tst">conn-pckou02.tst</a></td><td>success</td><td>ethernet with packet over udp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou03.tst">conn-pckou03.tst</a></td><td>success</td><td>hdlc tunneling with packet over udp</td></tr>
@@ -369,7 +369,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou14.tst">conn-pckou14.tst</a></td><td>success</td><td>ethernet over packet over udp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou15.tst">conn-pckou15.tst</a></td><td>success</td><td>interworking with ethernet over packet over udp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou16.tst">conn-pckou16.tst</a></td><td>success</td><td>interworking with packet over dtls</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-pckou17.tst">conn-pckou17.tst</a></td><td>success</td><td>ppp with packet over dtls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-pckou17.tst">conn-pckou17.tst</a></td><td>#6-run-r2 tping 100 60 2.2.2.0 vrf v1</td><td>ppp with packet over dtls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pckou18.tst">conn-pckou18.tst</a></td><td>success</td><td>packet over udp over asymmetric ports</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pim01.tst">conn-pim01.tst</a></td><td>success</td><td>pim over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-pim02.tst">conn-pim02.tst</a></td><td>success</td><td>pim over ipv6</td></tr>
@@ -435,7 +435,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-tdmou07.tst">conn-tdmou07.tst</a></td><td>success</td><td>isdn with tdmoudp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-tdmou08.tst">conn-tdmou08.tst</a></td><td>success</td><td>sep with tdmoudp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-telnet.tst">conn-telnet.tst</a></td><td>success</td><td>ppp over telnet</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-tls.tst">conn-tls.tst</a></td><td>success</td><td>ppp over tls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-tls.tst">conn-tls.tst</a></td><td>#6-run-r2 tping 100 40 2.2.2.0 vrf v1</td><td>ppp over tls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-tmux01.tst">conn-tmux01.tst</a></td><td>success</td><td>tmux over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-tmux02.tst">conn-tmux02.tst</a></td><td>success</td><td>tmux over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-tmux03.tst">conn-tmux03.tst</a></td><td>success</td><td>tmux over tmux</td></tr>
@@ -604,7 +604,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl91.tst">crypt-acl91.tst</a></td><td>success</td><td>ipv4 in esp over ipv6 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl92.tst">crypt-acl92.tst</a></td><td>success</td><td>ipcomp over ipv6 filtered</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-acl93.tst">crypt-acl93.tst</a></td><td>success</td><td>swipe over ipv6 filtered</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-dtls.tst">crypt-dtls.tst</a></td><td>success</td><td>dtls test</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-dtls.tst">crypt-dtls.tst</a></td><td>#6-run-r2 tping 100 5 2.2.2.2 vrf v1</td><td>dtls test</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-esp01.tst">crypt-esp01.tst</a></td><td>success</td><td>ipv4 in esp over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-esp02.tst">crypt-esp02.tst</a></td><td>success</td><td>ipv4 in esp over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-esp03.tst">crypt-esp03.tst</a></td><td>success</td><td>ipv6 in esp over ipv4</td></tr>
@@ -1050,6 +1050,13 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-swipe38.tst">crypt-swipe38.tst</a></td><td>success</td><td>swipe with aes256pcbc</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-tls01.tst">crypt-tls01.tst</a></td><td>#6-run-r2 tping 100 5 2.2.2.2 vrf v1</td><td>tls with everything</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-tls02.tst">crypt-tls02.tst</a></td><td>success</td><td>tls version 1.0</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-tls03.tst">crypt-tls03.tst</a></td><td>success</td><td>tls version 1.1</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-tls04.tst">crypt-tls04.tst</a></td><td>success</td><td>tls version 1.2</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-tls05.tst">crypt-tls05.tst</a></td><td>#6-run-r2 tping 100 5 2.2.2.2 vrf v1</td><td>tls version 1.3</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-tls06.tst">crypt-tls06.tst</a></td><td>success</td><td>tls with dsa</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-tls07.tst">crypt-tls07.tst</a></td><td>success</td><td>tls with rsa</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-tls08.tst">crypt-tls08.tst</a></td><td>#6-run-r2 tping 100 5 2.2.2.2 vrf v1</td><td>tls with ecdsa</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-tls09.tst">crypt-tls09.tst</a></td><td>#6-run-r2 tping 100 5 2.2.2.2 vrf v1</td><td>tls with mldsa</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-wireguard01.tst">crypt-wireguard01.tst</a></td><td>success</td><td>wireguard over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-wireguard02.tst">crypt-wireguard02.tst</a></td><td>success</td><td>wireguard over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-wireguard03.tst">crypt-wireguard03.tst</a></td><td>success</td><td>wireguard over wireguard</td></tr>
@@ -3530,7 +3537,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp11.tst">rout-lsrp11.tst</a></td><td>success</td><td>lsrp with bfd</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp12.tst">rout-lsrp12.tst</a></td><td>success</td><td>lsrp authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp13.tst">rout-lsrp13.tst</a></td><td>success</td><td>lsrp ssh encryption</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp14.tst">rout-lsrp14.tst</a></td><td>success</td><td>lsrp tls encryption</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp14.tst">rout-lsrp14.tst</a></td><td>#6-run-r1 tping 100 40 2.2.2.2 vrf v1</td><td>lsrp tls encryption</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp15.tst">rout-lsrp15.tst</a></td><td>success</td><td>lsrp peer template</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp16.tst">rout-lsrp16.tst</a></td><td>success</td><td>lsrp with sr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp17.tst">rout-lsrp17.tst</a></td><td>success</td><td>lsrp prefix withdraw</td></tr>
@@ -3703,7 +3710,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp19.tst">rout-pvrp19.tst</a></td><td>success</td><td>pvrp with bfd</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp20.tst">rout-pvrp20.tst</a></td><td>success</td><td>pvrp authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp21.tst">rout-pvrp21.tst</a></td><td>success</td><td>pvrp ssh encryption</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp22.tst">rout-pvrp22.tst</a></td><td>success</td><td>pvrp tls encryption</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp22.tst">rout-pvrp22.tst</a></td><td>#6-run-r1 tping 100 40 2.2.2.2 vrf v1</td><td>pvrp tls encryption</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp23.tst">rout-pvrp23.tst</a></td><td>success</td><td>pvrp peer template</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp24.tst">rout-pvrp24.tst</a></td><td>success</td><td>pvrp with labels</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp25.tst">rout-pvrp25.tst</a></td><td>success</td><td>pvrp prefix withdraw</td></tr>

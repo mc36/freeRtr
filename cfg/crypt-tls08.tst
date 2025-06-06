@@ -15,7 +15,7 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
  exit
-crypto ecdsakey ecdsa generate 192
+crypto ecdsakey ecdsa generate 256
 crypto certificate ecdsa generate ecdsa ecdsa
 server telnet tel
  security ecdsakey ecdsa

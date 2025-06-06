@@ -334,9 +334,9 @@ qc pass: pckoip over ipv6
 qc pass: pckoip over pckoip
 qc pass: pckoip over loopback
 qc pass: ppp with packet over tcp
-qc pass: ppp with packet over tls
+failed: ppp with packet over tls
 qc pass: ppp with packet over txt
-qc pass: ppp with packet over txtls
+failed: ppp with packet over txtls
 qc pass: ppp with packet over udp
 qc pass: ethernet with packet over udp
 qc pass: hdlc tunneling with packet over udp
@@ -353,7 +353,7 @@ qc pass: ppp over packet over udp
 qc pass: ethernet over packet over udp
 qc pass: interworking with ethernet over packet over udp
 qc pass: interworking with packet over dtls
-qc pass: ppp with packet over dtls
+failed: ppp with packet over dtls
 qc pass: packet over udp over asymmetric ports
 qc pass: pim over ipv4
 qc pass: pim over ipv6
@@ -419,7 +419,7 @@ qc pass: atmdxi with tdmoudp
 qc pass: isdn with tdmoudp
 qc pass: sep with tdmoudp
 qc pass: ppp over telnet
-qc pass: ppp over tls
+failed: ppp over tls
 qc pass: tmux over ipv4
 qc pass: tmux over ipv6
 qc pass: tmux over tmux
@@ -588,7 +588,7 @@ qc pass: icmptunnel over ipv6 filtered
 qc pass: ipv4 in esp over ipv6 filtered
 qc pass: ipcomp over ipv6 filtered
 qc pass: swipe over ipv6 filtered
-qc pass: dtls test
+failed: dtls test
 qc pass: ipv4 in esp over ipv4
 qc pass: ipv4 in esp over ipv6
 qc pass: ipv6 in esp over ipv4
@@ -1034,6 +1034,13 @@ qc pass: swipe with aes192pcbc
 qc pass: swipe with aes256pcbc
 failed: tls with everything
 qc pass: tls version 1.0
+qc pass: tls version 1.1
+qc pass: tls version 1.2
+failed: tls version 1.3
+qc pass: tls with dsa
+qc pass: tls with rsa
+failed: tls with ecdsa
+failed: tls with mldsa
 qc pass: wireguard over ipv4
 qc pass: wireguard over ipv6
 qc pass: wireguard over wireguard
@@ -3514,7 +3521,7 @@ qc pass: lsrp default route
 qc pass: lsrp with bfd
 qc pass: lsrp authentication
 qc pass: lsrp ssh encryption
-qc pass: lsrp tls encryption
+failed: lsrp tls encryption
 qc pass: lsrp peer template
 qc pass: lsrp with sr
 qc pass: lsrp prefix withdraw
@@ -3687,7 +3694,7 @@ qc pass: pvrp default route
 qc pass: pvrp with bfd
 qc pass: pvrp authentication
 qc pass: pvrp ssh encryption
-qc pass: pvrp tls encryption
+failed: pvrp tls encryption
 qc pass: pvrp peer template
 qc pass: pvrp with labels
 qc pass: pvrp prefix withdraw

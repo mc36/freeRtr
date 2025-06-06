@@ -16,7 +16,7 @@ int eth1
  ipv6 addr 1234::1 ffff::
  exit
 crypto rsakey rsa generate 2048
-crypto certificate dsa generate dsa dsa
+crypto certificate rsa generate rsa rsa
 server telnet tel
  security rsakey rsa
  security rsacert rsa

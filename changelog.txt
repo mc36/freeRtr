@@ -16968,3 +16968,25 @@ qc pass: ssh with mldsa
 no qc pass: tls test
 failed: tls with everything
 qc pass: tls version 1.0
+---------------------------------- 2025-06-06 19:40:28 25.6.6
+no qc pass: pvrp tls encryption
+no qc pass: lsrp tls encryption
+no qc pass: dtls test
+no qc pass: ppp over tls
+no qc pass: ppp with packet over dtls
+no qc pass: ppp with packet over txtls
+no qc pass: ppp with packet over tls
+failed: ppp with packet over tls
+failed: ppp with packet over txtls
+failed: ppp with packet over dtls
+failed: ppp over tls
+failed: dtls test
+qc pass: tls version 1.1
+qc pass: tls version 1.2
+failed: tls version 1.3
+qc pass: tls with dsa
+qc pass: tls with rsa
+failed: tls with ecdsa
+failed: tls with mldsa
+failed: lsrp tls encryption
+failed: pvrp tls encryption

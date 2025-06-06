@@ -207,7 +207,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if ((a.cnst) || (a.tag != encAsn1.tagBitString)) {
             return true;
         }
-        pub = cryKeyECpoint.fromBytesCert(curve, a.buf, 1);
+        pub = cryKeyECpoint.fromBytesCert(curve, a.buf, 0);
         if (pub == null) {
             return true;
         }
@@ -228,8 +228,8 @@ public class cryKeyECDSA extends cryKeyGeneric {
         p2.clear();
         byte[] buf = pub.toBytesCert();
         p2.putByte(0, 0);
-        p2.putCopy(buf, 0, 1, buf.length);
-        p2.putSkip(buf.length + 1);
+        p2.putCopy(buf, 0, 0, buf.length);
+        p2.putSkip(buf.length);
         p2.merge2beg();
         encAsn1.writeBitString(p1, p2);
         encAsn1.writeSequence(pck, p1);
