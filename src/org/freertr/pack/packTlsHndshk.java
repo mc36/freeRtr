@@ -1773,13 +1773,13 @@ public class packTlsHndshk {
                     paramSgn = keydsa;
                     paramCrt = certdsa;
                     break;
-/*
+                /*
                 case 3:
                     paramSgn = keyecdsa;
                     paramCrt = certecdsa;
                     break;
-*/
-                    default:
+                 */
+                default:
                     return;
             }
             switch (alg >>> 8) {
@@ -1843,10 +1843,14 @@ public class packTlsHndshk {
                     paramHash = bits.byteConcat(cryHashGeneric.compute(new cryHashMd5(), raw),
                             cryHashGeneric.compute(new cryHashSha1(), raw));
                     paramHsh = new cryHashMd5();
+                    paramCrt = certrsa;
+                    paramSgn = keyrsa;
                     break;
                 case 0x200:
                     paramHash = cryHashGeneric.compute(new cryHashSha1(), raw);
                     paramHsh = new cryHashSha1();
+                    paramCrt = certdsa;
+                    paramSgn = keydsa;
                     break;
                 default:
                     return;
@@ -1854,6 +1858,7 @@ public class packTlsHndshk {
             return;
         }
         getSignerHash(signHsh);
+        paramHash = raw;
     }
 
     private void servKexSign() {

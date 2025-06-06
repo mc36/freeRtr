@@ -376,133 +376,133 @@ public class secTls implements Runnable {
         if (ph.servHelloParse()) {
             return null;
         }
-        if (ph.minVer >= 0x304) {
-            if (ph.clntHelloFillEc()) {
+        if (ph.minVer < 0x304) {
+            p.packRecv();
+            if (ph.headerParse()) {
                 return null;
             }
-            ph.retriedCH = true;
-            ph.clntHelloFill();
-            ph.clntHelloCreate();
+            if (ph.certLstParse()) {
+                return null;
+            }
+            if (ph.servKexNeeded()) {
+                p.packRecv();
+                if (ph.headerParse()) {
+                    return null;
+                }
+                if (ph.servKexParse()) {
+                    return null;
+                }
+            }
+            p.packRecv();
+            if (ph.headerParse()) {
+                return null;
+            }
+            if (ph.servDoneParse()) {
+                return null;
+            }
+            ph.clntKexFill();
+            ph.clntKexCreate();
             ph.headerCreate();
             p.packSend();
-            p.verCurr = -1;
-            p.packRecv();
-            if (!ph.chgCipherParse()) {
-                p.packRecv();
-            }
-            if (ph.headerParse()) {
+            if (ph.calcKeysDh(true)) {
                 return null;
             }
-            if (ph.servHelloParse()) {
-                return null;
-            }
-            if (!ph.chgCipherParse()) {
-                p.packRecv();
-            }
-            if (ph.calcKeysEc(true)) {
-                return null;
-            }
-            if (ph.calcKeysHs(true)) {
-                return null;
-            }
-            if (p.apackRecv()) {
-                return null;
-            }
-            if (ph.headerParse()) {
-                return null;
-            }
-            if (ph.encrExtParse()) {
-                return null;
-            }
-            if (p.apackRecv()) {
-                return null;
-            }
-            if (ph.headerParse()) {
-                return null;
-            }
-            if (ph.certDatParse()) {
-                return null;
-            }
-            ph.certVrfFill();
-            if (p.apackRecv()) {
-                return null;
-            }
-            if (ph.headerParse()) {
-                return null;
-            }
-            if (ph.certVrfParse()) {
-                return null;
-            }
+            ph.chgCipherCreate();
+            p.packSend();
             ph.finishedFill(true);
-            if (p.apackRecv()) {
+            ph.finishedCreate();
+            ph.headerCreate();
+            p.encryptEna();
+            p.packSend();
+            p.encryptDis();
+            p.packRecv();
+            if (ph.chgCipherParse()) {
                 return null;
             }
+            p.encryptEna();
+            ph.finishedFill(false);
+            p.packRecv();
             if (ph.headerParse()) {
                 return null;
             }
             if (ph.finishedParse()) {
                 return null;
             }
-            ph.calcKeysAp();
-            ph.finishedFill(false);
-            ph.finishedCreate();
-            ph.headerCreate();
-            p.apackSend();
-            ph.applyKeys(true, true);
-            p.verCurr = ph.minVer;
             return verifyCerts(p, ph);
         }
+        if (ph.clntHelloFillEc()) {
+            return null;
+        }
+        ph.retriedCH = true;
+        ph.clntHelloFill();
+        ph.clntHelloCreate();
+        ph.headerCreate();
+        p.packSend();
+        p.verCurr = -1;
         p.packRecv();
-        if (ph.headerParse()) {
-            return null;
-        }
-        if (ph.certLstParse()) {
-            return null;
-        }
-        if (ph.servKexNeeded()) {
+        if (!ph.chgCipherParse()) {
             p.packRecv();
-            if (ph.headerParse()) {
-                return null;
-            }
-            if (ph.servKexParse()) {
-                return null;
-            }
         }
-        p.packRecv();
         if (ph.headerParse()) {
             return null;
         }
-        if (ph.servDoneParse()) {
+        if (ph.servHelloParse()) {
             return null;
         }
-        ph.clntKexFill();
-        ph.clntKexCreate();
-        ph.headerCreate();
-        p.packSend();
-        if (ph.calcKeysDh(true)) {
+        if (!ph.chgCipherParse()) {
+            p.packRecv();
+        }
+        if (ph.calcKeysEc(true)) {
             return null;
         }
-        ph.chgCipherCreate();
-        p.packSend();
+        if (ph.calcKeysHs(true)) {
+            return null;
+        }
+        if (p.apackRecv()) {
+            return null;
+        }
+        if (ph.headerParse()) {
+            return null;
+        }
+        if (ph.encrExtParse()) {
+            return null;
+        }
+        if (p.apackRecv()) {
+            return null;
+        }
+        if (ph.headerParse()) {
+            return null;
+        }
+        if (ph.certDatParse()) {
+            return null;
+        }
+        ph.certVrfFill();
+        if (p.apackRecv()) {
+            return null;
+        }
+        if (ph.headerParse()) {
+            return null;
+        }
+        if (ph.certVrfParse()) {
+            return null;
+        }
         ph.finishedFill(true);
-        ph.finishedCreate();
-        ph.headerCreate();
-        p.encryptEna();
-        p.packSend();
-        p.encryptDis();
-        p.packRecv();
-        if (ph.chgCipherParse()) {
+        if (p.apackRecv()) {
             return null;
         }
-        p.encryptEna();
-        ph.finishedFill(false);
-        p.packRecv();
         if (ph.headerParse()) {
             return null;
         }
         if (ph.finishedParse()) {
             return null;
         }
+        ph.calcKeysAp();
+        ph.finishedFill(false);
+        ph.finishedCreate();
+        ph.headerCreate();
+        p.apackSend();
+        ph.applyKeys(true, true);
+        p.verCurr = ph.minVer;
         return verifyCerts(p, ph);
     }
 
@@ -543,83 +543,85 @@ public class secTls implements Runnable {
                 return null;
             }
         }
-        if (ph.maxVer >= 0x304) {
-            if (ph.servHelloRetrying()) {
-                ph.retriedCH = true;
-                if (ph.servHelloFill()) {
-                    return null;
-                }
-                ph.servHelloFillRetry();
-                ph.servHelloCreate();
-                ph.headerCreate();
-                p.packSend();
-                p.verCurr = -1;
-                p.packRecv();
-                if (!ph.chgCipherParse()) {
-                    p.packRecv();
-                }
-                if (ph.headerParse()) {
-                    return null;
-                }
-                if (ph.clntHelloParse()) {
-                    return null;
-                }
-            }
-            if (ph.servHelloFillEc()) {
-                return null;
-            }
-            if (ph.calcKeysEc(false)) {
-                return null;
-            }
+        if (ph.maxVer < 0x304) {
             if (ph.servHelloFill()) {
                 return null;
             }
             ph.servHelloCreate();
             ph.headerCreate();
             p.packSend();
-            if (!ph.chgCipherParse()) {
-                p.packRecv();
-            }
-            if (ph.calcKeysHs(false)) {
-                return null;
-            }
-            ph.encrExtFill();
-            ph.encrExtCreate();
-            ph.headerCreate();
-            p.apackSend();
             ph.certDatFill();
-            ph.certDatCreate();
+            ph.certLstCreate();
             ph.headerCreate();
-            p.apackSend();
-            ph.certVrfFill();
-            ph.certVrfCreate();
-            ph.headerCreate();
-            p.apackSend();
-            ph.finishedFill(true);
-            ph.finishedCreate();
-            ph.headerCreate();
-            p.apackSend();
-            ph.calcKeysAp();
-            if (!ph.retriedCH) {
-                p.encryptDis();
-                p.packRecv();
-                if (ph.chgCipherParse()) {
-                    return null;
-                }
+            p.packSend();
+            if (ph.servKexNeeded()) {
+                ph.servKexFill();
+                ph.servKexCreate();
+                ph.headerCreate();
+                p.packSend();
             }
-            ph.finishedFill(false);
-            if (p.apackRecv()) {
+            ph.servDoneCreate();
+            ph.headerCreate();
+            p.packSend();
+            p.packRecv();
+            if (ph.headerParse()) {
                 return null;
             }
+            if (ph.clntKexParse()) {
+                return null;
+            }
+            if (ph.calcKeysDh(false)) {
+                return null;
+            }
+            p.packRecv();
+            if (ph.chgCipherParse()) {
+                return null;
+            }
+            p.encryptEna();
+            ph.finishedFill(true);
+            p.packRecv();
             if (ph.headerParse()) {
                 return null;
             }
             if (ph.finishedParse()) {
                 return null;
             }
-            ph.applyKeys(false, true);
-            p.verCurr = ph.minVer;
+            p.encryptDis();
+            ph.chgCipherCreate();
+            p.packSend();
+            ph.finishedFill(false);
+            ph.finishedCreate();
+            ph.headerCreate();
+            p.encryptEna();
+            p.packSend();
             return p;
+        }
+        if (ph.servHelloRetrying()) {
+            ph.retriedCH = true;
+            if (ph.servHelloFill()) {
+                return null;
+            }
+            ph.servHelloFillRetry();
+            ph.servHelloCreate();
+            ph.headerCreate();
+            p.packSend();
+            p.verCurr = -1;
+            p.packRecv();
+            if (!ph.chgCipherParse()) {
+                p.packRecv();
+            }
+            if (ph.headerParse()) {
+                return null;
+            }
+            if (ph.clntHelloParse()) {
+                return null;
+            }
+        }
+        if (ph.servHelloFillEc()) {
+            return null;
+        }
+        if (ph.calcKeysEc(false)) {
+            return null;
         }
         if (ph.servHelloFill()) {
             return null;
@@ -627,50 +629,48 @@ public class secTls implements Runnable {
         ph.servHelloCreate();
         ph.headerCreate();
         p.packSend();
+        if (!ph.chgCipherParse()) {
+            p.packRecv();
+        }
+        if (ph.calcKeysHs(false)) {
+            return null;
+        }
+        ph.encrExtFill();
+        ph.encrExtCreate();
+        ph.headerCreate();
+        p.apackSend();
         ph.certDatFill();
-        ph.certLstCreate();
+        ph.certDatCreate();
         ph.headerCreate();
-        p.packSend();
-        if (ph.servKexNeeded()) {
-            ph.servKexFill();
-            ph.servKexCreate();
-            ph.headerCreate();
-            p.packSend();
-        }
-        ph.servDoneCreate();
+        p.apackSend();
+        ph.certVrfFill();
+        ph.certVrfCreate();
         ph.headerCreate();
-        p.packSend();
-        p.packRecv();
-        if (ph.headerParse()) {
-            return null;
-        }
-        if (ph.clntKexParse()) {
-            return null;
-        }
-        if (ph.calcKeysDh(false)) {
-            return null;
-        }
-        p.packRecv();
-        if (ph.chgCipherParse()) {
-            return null;
-        }
-        p.encryptEna();
+        p.apackSend();
         ph.finishedFill(true);
-        p.packRecv();
+        ph.finishedCreate();
+        ph.headerCreate();
+        p.apackSend();
+        ph.calcKeysAp();
+        if (!ph.retriedCH) {
+            p.encryptDis();
+            p.packRecv();
+            if (ph.chgCipherParse()) {
+                return null;
+            }
+        }
+        ph.finishedFill(false);
+        if (p.apackRecv()) {
+            return null;
+        }
         if (ph.headerParse()) {
             return null;
         }
         if (ph.finishedParse()) {
             return null;
         }
-        p.encryptDis();
-        ph.chgCipherCreate();
-        p.packSend();
-        ph.finishedFill(false);
-        ph.finishedCreate();
-        ph.headerCreate();
-        p.encryptEna();
-        p.packSend();
+        ph.applyKeys(false, true);
+        p.verCurr = ph.minVer;
         return p;
     }
 
