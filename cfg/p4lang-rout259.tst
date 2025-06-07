@@ -68,7 +68,7 @@ aaa userlist usr
  username u password p
  username h password p
  exit
-crypto rsakey rsa generate 2048
+crypto rsakey rsa generate 1024
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
 crypto mldsakey mldsa generate 44

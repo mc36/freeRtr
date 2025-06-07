@@ -3,7 +3,7 @@ description lsrp ssh encryption
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
-crypto rsakey rsa generate 2048
+crypto rsakey rsa generate 1024
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
 crypto mldsakey mldsa generate 44
@@ -43,7 +43,7 @@ int eth1
 addrouter r2
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
-crypto rsakey rsa generate 2048
+crypto rsakey rsa generate 1024
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
 crypto mldsakey mldsa generate 44

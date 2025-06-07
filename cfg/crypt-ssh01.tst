@@ -19,9 +19,9 @@ aaa userlist usr
  username c password c
  username c privilege 14
  exit
-crypto rsakey rsa generate 2048
+crypto rsakey rsa generate 1024
 crypto dsakey dsa generate 1024
-crypto ecdsakey ecdsa generate 192
+crypto ecdsakey ecdsa generate 256
 crypto mldsakey mldsa generate 44
 server telnet ssh
  security rsakey rsa

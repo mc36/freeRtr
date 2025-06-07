@@ -3,7 +3,7 @@ description ppp with packet over tls
 addrouter r1
 int ser1 ser - $1a$ $1b$
 !
-crypto rsakey rsa generate 2048
+crypto rsakey rsa generate 1024
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
 crypto mldsakey mldsa generate 44

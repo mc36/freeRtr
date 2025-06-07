@@ -15,7 +15,7 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
  exit
-crypto rsakey rsa generate 2048
+crypto rsakey rsa generate 1024
 crypto dsakey dsa generate 1024
 crypto ecdsakey ecdsa generate 256
 crypto mldsakey mldsa generate 44

@@ -17013,3 +17013,6 @@ qc pass: tls with ecdsa
 qc pass: tls with mldsa
 qc pass: lsrp tls encryption
 qc pass: pvrp tls encryption
+---------------------------------- 2025-06-07 10:31:14 25.6.7
+no qc pass: ssh with ecdsa
+failed: ssh with ecdsa
