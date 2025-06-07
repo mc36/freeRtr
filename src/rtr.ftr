@@ -1039,7 +1039,7 @@ qc pass: tls version 1.2
 qc pass: tls version 1.3
 qc pass: tls with dsa
 qc pass: tls with rsa
-failed: tls with ecdsa
+qc pass: tls with ecdsa
 qc pass: tls with mldsa
 qc pass: wireguard over ipv4
 qc pass: wireguard over ipv6
