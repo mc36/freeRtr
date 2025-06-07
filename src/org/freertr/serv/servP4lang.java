@@ -775,7 +775,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
             ifc.ethtyp.hwHstry = new history();
             ifc.ethtyp.hwCntr = new counter();
             expIfc.put(ntry);
-            setup2apiPack(ntry);
+            ntry.setup2apiPack();
             return false;
         }
         if (!s.equals(cmds.negated)) {
@@ -1367,54 +1367,6 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
             ifcc.sendPack(pck.copyBytes(true, true));
         }
         return false;
-    }
-
-    /**
-     * setup for api packet usage
-     *
-     * @param prnt parent to check against
-     */
-    protected void setup2apiPack(servP4langIfc prnt) {
-        if (prnt == null) {
-            return;
-        }
-        if (prnt.ifc == null) {
-            return;
-        }
-        boolean ned = false;
-        if (prnt.speed != null) {
-            ned = prnt.spdNum == -2;
-        }
-        prnt.apiPack = ned;
-        prnt.setup2apiPack(ned);
-        for (int i = expIfc.size() - 1; i >= 0; i--) {
-            servP4langIfc ntry = expIfc.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if (ntry.ifc == null) {
-                continue;
-            }
-            if (ntry.ifc.parent == prnt.ifc) {
-                ntry.setup2apiPack(ned);
-                continue;
-            }
-            if (ntry.ifc.cloned == prnt.ifc) {
-                ntry.setup2apiPack(ned);
-                continue;
-            }
-            if (ntry.ifc.parent == null) {
-                continue;
-            }
-            if (ntry.ifc.parent.parent == prnt.ifc) {
-                ntry.setup2apiPack(ned);
-                continue;
-            }
-            if (ntry.ifc.parent.cloned == prnt.ifc) {
-                ntry.setup2apiPack(ned);
-                continue;
-            }
-        }
     }
 
     /**

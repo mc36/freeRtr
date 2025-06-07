@@ -17016,3 +17016,6 @@ qc pass: pvrp tls encryption
 ---------------------------------- 2025-06-07 10:31:14 25.6.7
 no qc pass: ssh with ecdsa
 failed: ssh with ecdsa
+---------------------------------- 2025-06-07 11:32:57 25.6.7
+no failed: ssh with ecdsa
+qc pass: ssh with ecdsa

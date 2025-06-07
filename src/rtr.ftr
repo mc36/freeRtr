@@ -992,7 +992,7 @@ qc pass: skip with aes256pcbc
 qc pass: ssh with everything
 qc pass: ssh with dsa
 qc pass: ssh with rsa
-failed: ssh with ecdsa
+qc pass: ssh with ecdsa
 qc pass: ssh with mldsa
 qc pass: swipe over ipv4
 qc pass: swipe over ipv6

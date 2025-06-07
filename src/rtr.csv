@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.6.7-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-06-07 10:49:05, took 00:17:50, with 50 workers, on 3888 cases, 1 failed, 0 traces, 10 retries
+-;-;-;2025-06-07 11:49:06, took 00:16:08, with 50 workers, on 3888 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -996,7 +996,7 @@ http://sources.freertr.org/cfg/crypt-skip38.tst;crypt-skip38.tst;success;skip wi
 http://sources.freertr.org/cfg/crypt-ssh01.tst;crypt-ssh01.tst;success;ssh with everything
 http://sources.freertr.org/cfg/crypt-ssh02.tst;crypt-ssh02.tst;success;ssh with dsa
 http://sources.freertr.org/cfg/crypt-ssh03.tst;crypt-ssh03.tst;success;ssh with rsa
-http://sources.freertr.org/cfg/crypt-ssh04.tst;crypt-ssh04.tst;#6-run-r2 tping 100 5 2.2.2.2 vrf v1;ssh with ecdsa
+http://sources.freertr.org/cfg/crypt-ssh04.tst;crypt-ssh04.tst;success;ssh with ecdsa
 http://sources.freertr.org/cfg/crypt-ssh05.tst;crypt-ssh05.tst;success;ssh with mldsa
 http://sources.freertr.org/cfg/crypt-swipe01.tst;crypt-swipe01.tst;success;swipe over ipv4
 http://sources.freertr.org/cfg/crypt-swipe02.tst;crypt-swipe02.tst;success;swipe over ipv6

@@ -645,17 +645,38 @@ public class servP4langIfc implements ifcDn, Comparable<servP4langIfc> {
     }
 
     /**
-     * setup the api packet change
-     *
-     * @param ned needed or not
+     * setup for api packet usage
      */
-    public void setup2apiPack(boolean ned) {
+    protected void setup2apiPack() {
+        if (ifc == null) {
+            return;
+        }
+        boolean ned = false;
+        if (speed != null) {
+            ned = spdNum == -2;
+        }
+        servP4langIfc ntry = lower.findIfc(ifc.cloned);
+        if (ntry != null) {
+            ned |= ntry.apiPack;
+        }
+        ntry = lower.findIfc(ifc.parent);
+        if (ntry != null) {
+            ned |= ntry.apiPack;
+            servP4langIfc res = lower.findIfc(ntry.ifc.cloned);
+            if (res != null) {
+                ned |= res.apiPack;
+            }
+            res = lower.findIfc(ntry.ifc.parent);
+            if (res != null) {
+                ned |= res.apiPack;
+            }
+        }
+        apiPack = ned;
         if (ned) {
             ifc.ethtyp.sendClear = this;
         } else {
             ifc.ethtyp.sendClear = null;
         }
-        apiPack = ned;
     }
 
     public void sendPack(packHolder pck) {

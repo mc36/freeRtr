@@ -283,7 +283,7 @@ public class servP4langConn implements Runnable {
         int nxt = lower.ifcRngBeg;
         for (int i = 0; i < lower.expIfc.size(); i++) {
             servP4langIfc ntry = lower.expIfc.get(i);
-            lower.setup2apiPack(ntry);
+            ntry.setup2apiPack();
             if (ntry.reinit != null) {
                 cmds cmd = new cmds("exp", ntry.reinit);
                 int prt = servP4langUtil.toNum(lower.frontnam, cmd.word(), -1);
@@ -2118,7 +2118,7 @@ public class servP4langConn implements Runnable {
         if (cfgAll.ifaces.find(ifc.ifc) == null) {
             return true;
         }
-        lower.setup2apiPack(ifc);
+        ifc.setup2apiPack();
         int i = -1;
         if (ifc.ifc.ethtyp.monSes != null) {
             servP4langIfc res = lower.findIfc(ifc.ifc.ethtyp.monSes);
