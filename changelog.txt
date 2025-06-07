@@ -17019,3 +17019,6 @@ failed: ssh with ecdsa
 ---------------------------------- 2025-06-07 11:32:57 25.6.7
 no failed: ssh with ecdsa
 qc pass: ssh with ecdsa
+---------------------------------- 2025-06-07 19:20:27 25.6.7
+no qc pass: tls with ecdsa
+failed: tls with ecdsa

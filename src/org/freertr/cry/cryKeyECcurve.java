@@ -25,6 +25,11 @@ public class cryKeyECcurve {
     public final int tls;
 
     /**
+     * sgn
+     */
+    public final int sgn;
+
+    /**
      * prime
      */
     public final BigInteger p;
@@ -55,7 +60,7 @@ public class cryKeyECcurve {
      * @param mna name
      * @param mo oid
      * @param mt tls id
-     * @param mt sgn id
+     * @param ms sgn id
      * @param mp prime
      * @param ma a
      * @param mb b
@@ -67,6 +72,7 @@ public class cryKeyECcurve {
         nam = mna;
         oid = mo;
         tls = mt;
+        sgn = ms;
         p = mp;
         a = ma;
         b = mb;
@@ -541,7 +547,7 @@ public class cryKeyECcurve {
         new BigInteger("1D1C64F068CF45FFA2A63A81B7C13F6B8847A3E77EF14FE3DB7FCAFE0CBD10E8E826E03436D646AAEF87B2E247D4AF1E", 16),
         new BigInteger("8ABE1D7520F9C2A45CB1EB8E95CFD55262B70B29FEEC5864E19C054FF99129280E4646217791811142820341263C5315", 16),
         new BigInteger("8CB91E82A3386D280F5D6F7E50E641DF152F7109ED5456B31F166E6CAC0425A7CF3AB6AF6B7FC3103B883202E9046565", 16)),
-        new cryKeyECcurve("brainpool384t1", new int[]{1, 3, 36, 3, 3, 2, 8, 1, 1, 12}, 32, 0x081C,
+        new cryKeyECcurve("brainpool384t1", new int[]{1, 3, 36, 3, 3, 2, 8, 1, 1, 12}, 32, -1,
         new BigInteger("8CB91E82A3386D280F5D6F7E50E641DF152F7109ED5456B412B1DA197FB71123ACD3A729901D1A71874700133107EC53", 16),
         new BigInteger("8CB91E82A3386D280F5D6F7E50E641DF152F7109ED5456B412B1DA197FB71123ACD3A729901D1A71874700133107EC50", 16),
         new BigInteger("7F519EADA7BDA81BD826DBA647910F8C4B9346ED8CCDC64E4B1ABD11756DCE1D2074AA263B88805CED70355A33B471EE", 16),
@@ -569,7 +575,7 @@ public class cryKeyECcurve {
         new BigInteger("120FC05D3C67A99DE161D2F4092622FECA701BE4F50F4758714E8A87BBF2A658EF8C21E7C5EFE965361F6C2999C0C247B0DBD70CE6B7", 16),
         new BigInteger("20D0AF8903A96F8D5FA2C255745D3C451B302C9346D9B7E485E7BCE41F6B591F3E8F6ADDCBB0BC4C2F947A7DE1A89B625D6A598B3760", 16),
         new BigInteger("000340340340340340340340340340340340340340340340340340340323C313FAB50589703B5EC68D3587FEC60D161CC149C1AD4A91", 16)),
-        new cryKeyECcurve("brainpool512r1", new int[]{1, 3, 36, 3, 3, 2, 8, 1, 1, 13}, 28, -1,
+        new cryKeyECcurve("brainpool512r1", new int[]{1, 3, 36, 3, 3, 2, 8, 1, 1, 13}, 28, 0x081C,
         new BigInteger("AADD9DB8DBE9C48B3FD4E6AE33C9FC07CB308DB3B3C9D20ED6639CCA703308717D4D9B009BC66842AECDA12AE6A380E62881FF2F2D82C68528AA6056583A48F3", 16),
         new BigInteger("7830A3318B603B89E2327145AC234CC594CBDD8D3DF91610A83441CAEA9863BC2DED5D5AA8253AA10A2EF1C98B9AC8B57F1117A72BF2C7B9E7C1AC4D77FC94CA", 16),
         new BigInteger("3DF91610A83441CAEA9863BC2DED5D5AA8253AA10A2EF1C98B9AC8B57F1117A72BF2C7B9E7C1AC4D77FC94CADC083E67984050B75EBAE5DD2809BD638016F723", 16),
@@ -622,6 +628,9 @@ public class cryKeyECcurve {
             if (curves[i].tls > 0) {
                 q--;
             }
+            if (curves[i].sgn > 0) {
+                q--;
+            }
             if (q >= o) {
                 continue;
             }
@@ -644,6 +653,21 @@ public class cryKeyECcurve {
     public static cryKeyECcurve getByTls(int id) {
         for (int i = curves.length - 1; i >= 0; i--) {
             if (id == curves[i].tls) {
+                return curves[i];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * get by sgn
+     *
+     * @param id id to find
+     * @return curve
+     */
+    public static cryKeyECcurve getBySgn(int id) {
+        for (int i = curves.length - 1; i >= 0; i--) {
+            if (id == curves[i].sgn) {
                 return curves[i];
             }
         }

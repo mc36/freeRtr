@@ -782,7 +782,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     public int keyMakeVal() {
-        return -1;
+        return 0x904 + (DilithiumCTilde >>> 4) - 2;
     }
 
     public boolean keyVerify() {

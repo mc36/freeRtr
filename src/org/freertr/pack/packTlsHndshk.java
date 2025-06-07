@@ -1008,7 +1008,7 @@ public class packTlsHndshk {
                 break;
         }
         if (debugger.secTlsTraf) {
-            logger.debug("kex chosen " + ecDiffHell.algName());
+            logger.debug("kex chosen " + o + " - " + ecDiffHell.algName());
         }
     }
 
@@ -1185,6 +1185,14 @@ public class packTlsHndshk {
             List<Integer> lst = new ArrayList<Integer>();
             for (int i = 0; i < 8; i++) {
                 int o = 0x900 | i; // mldsa
+                selectSignature(o, true);
+                if (paramSgn == null) {
+                    continue;
+                }
+                lst.add(o);
+            }
+            for (int i = 0; i < 8; i++) {
+                int o = 0x818 | i; // ecdsa
                 selectSignature(o, true);
                 if (paramSgn == null) {
                     continue;
@@ -1739,7 +1747,7 @@ public class packTlsHndshk {
             return true;
         }
         if (debugger.secTlsTraf) {
-            logger.debug("cert chosen " + paramSgn.algName());
+            logger.debug("cert chosen " + signHsh + " " + paramSgn.algName());
         }
         certUsed = new cryCertificate();
         if (certUsed.asn1ReadBuf(certificates.get(0))) {
@@ -1767,7 +1775,7 @@ public class packTlsHndshk {
             return true;
         }
         if (debugger.secTlsTraf) {
-            logger.debug("cert chosen " + paramSgn.algName());
+            logger.debug("cert chosen " + signHsh + " " + paramSgn.algName());
         }
         signDat = paramSgn.tlsSigning(signHsh, paramHsh, paramHash);
         pckTyp = typeCertVrf;
@@ -1892,6 +1900,36 @@ public class packTlsHndshk {
                     paramSgn = keyrsa;
                 }
                 paramCrt = certrsa;
+                paramHsh = new cryHashSha2512();
+                break;
+            case 0x81a:
+                if (cln) {
+                    paramSgn = new cryKeyECDSA();
+                    paramSgn.keyMakeTls(26);
+                } else {
+                    paramSgn = keyecdsa;
+                }
+                paramCrt = certecdsa;
+                paramHsh = new cryHashSha2256();
+                break;
+            case 0x81b:
+                if (cln) {
+                    paramSgn = new cryKeyECDSA();
+                    paramSgn.keyMakeTls(27);
+                } else {
+                    paramSgn = keyecdsa;
+                }
+                paramCrt = certecdsa;
+                paramHsh = new cryHashSha2384();
+                break;
+            case 0x81c:
+                if (cln) {
+                    paramSgn = new cryKeyECDSA();
+                    paramSgn.keyMakeTls(28);
+                } else {
+                    paramSgn = keyecdsa;
+                }
+                paramCrt = certecdsa;
                 paramHsh = new cryHashSha2512();
                 break;
             case 0x904:

@@ -253,7 +253,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         if (curve == null) {
             return -1;
         }
-        return curve.tls;
+        return curve.sgn;
     }
 
     private boolean keyMake() {
