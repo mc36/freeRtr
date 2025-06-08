@@ -99,7 +99,6 @@ todo: tester to have chatscript support
 todo: tester to have dynamips support with the proper image and magic
 todo: tester to have followtracker knob
 todo: tester to have support chatscript and have followtracker knob
-todo: tester to have support for dynamips and vm.zip stuff
 todo: tester to have support for the hw-cfg stuff
 todo: dhcp relay support
 todo: tcp selective ack
@@ -156,10 +155,4 @@ todo: reorder this file yearly
 todo: tabbable do ping and the rest of the exec commands
 todo: tabbable everything
 todo: more tldring to the this sh1t in every december and normally to the sources too
-todo: document the vm
-todo: .vm <--> vm20
-todo: .vm <--> .class converter, debugger, disassembler, emulator, etc
-todo: .vm <--> .pyc converter, debugger, disassembler, emulator, etc
-todo: more clean transpilers for the vm
-todo: more clean converters for the vm
 todo: banyan vines appletalk and firends protocols in sw
