@@ -1088,7 +1088,7 @@ public class packTlsHndshk {
                             continue;
                         }
                         int p = paramSgn.keyMakeVal();
-                        ////////if ((p>0)&&(o!=p))continue;
+                        //if ((p>0)&&(o!=p))continue;
                         signHsh = o;
                         break;
                     }
