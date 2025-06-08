@@ -17028,3 +17028,6 @@ qc pass: tls with ecdsa
 ---------------------------------- 2025-06-08 15:16:45 25.6.8
 no qc pass: dhcp with excluded address
 failed: dhcp with excluded address
+---------------------------------- 2025-06-08 16:11:50 25.6.8
+no failed: dhcp with excluded address
+qc pass: dhcp with excluded address
