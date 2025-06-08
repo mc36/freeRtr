@@ -11,8 +11,6 @@
 #include <net/bpf.h>
 #include <sys/ioctl.h>
 
-#include "utils.h"
-
 
 
 char *ifaceName;
