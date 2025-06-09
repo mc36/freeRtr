@@ -124,7 +124,7 @@ int main(int argc, char **argv) {
         switch (curr[0]) {
         case 'V':
         case 'v':
-            err("raw interface driver v1.0\n");
+            err("bsd interface driver v1.0\n");
             break;
         case '?':
         case 'h':
