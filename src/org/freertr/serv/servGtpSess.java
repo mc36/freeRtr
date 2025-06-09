@@ -55,6 +55,11 @@ public class servGtpSess implements ifcDn, Comparable<servGtpSess> {
     public cfgIfc ifc;
 
     /**
+     * ppp mode in use
+     */
+    public boolean ppp;
+
+    /**
      * counter
      */
     public counter cntr = new counter();
@@ -133,6 +138,7 @@ public class servGtpSess implements ifcDn, Comparable<servGtpSess> {
     public void doStartup() {
         upper = new ifcNull();
         ifc = lower.lower.clnIfc.cloneStart(this);
+        ppp = ifc.ppp != null;
         seqDat = 1;
     }
 

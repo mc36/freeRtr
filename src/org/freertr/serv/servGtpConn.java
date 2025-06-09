@@ -148,9 +148,10 @@ public class servGtpConn implements Comparable<servGtpConn> {
      */
     public void sesData(servGtpSess ses, packHolder pck) {
         if (connD == null) {
+            cntr.drop(pck, counter.reasons.notUp);
             return;
         }
-        if (ses.ifc.ppp != null) {
+        if (ses.ppp) {
             pck.getSkip(2);
         }
         packGtp gtp = new packGtp();
@@ -218,7 +219,7 @@ public class servGtpConn implements Comparable<servGtpConn> {
                 cntr.drop(pck, counter.reasons.noIface);
                 return;
             }
-            if (ses.ifc.ppp != null) {
+            if (ses.ppp) {
                 pck.msbPutW(0, ifcPpp.preamble);
                 pck.putSkip(2);
                 pck.merge2beg();
