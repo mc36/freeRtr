@@ -35,12 +35,6 @@ void err(char*buf) {
 
 #define packHead 16
 
-void doHeadCopy() {
-    char buf[256];
-    int i = read(dumpPipe[2], buf, sizeof(buf));
-    write(playPipe[1], buf, i);
-    printf("tcpreplay is %i, tcpdump is %i, header is %i, record is %i\n", playChld, dumpChld, i, packHead);
-}
 
 void doRawLoop() {
     unsigned char bufD[16384];
@@ -188,31 +182,29 @@ help :
     strcpy(ifaceName, argv[1]);
     printf("opening interface %s.\n", ifaceName);
 
-    pipe(&playPipe[0]);
-    pipe(&playPipe[2]);
+    if (pipe(&playPipe[0]) == -1) err("error creating pipe");
+    if (pipe(&playPipe[2]) == -1) err("error creating pipe");
     playChld = fork();
     if (playChld == 0) {
-        close(playPipe[2]);
-        close(playPipe[1]);
-        dup2(playPipe[0], 0);
-        dup2(playPipe[3], 1);
+        dup2(playPipe[0], STDIN_FILENO);
+        dup2(playPipe[3], STDOUT_FILENO);
         if (execlp("tcpreplay", "tcpreplay", "-q", "-t", "-i", ifaceName, "/dev/stdin", (char*) NULL) == -1) err("error executing process");
         return 0;
     }
-
     pipe(&dumpPipe[0]);
     pipe(&dumpPipe[2]);
     dumpChld = fork();
     if (dumpChld == 0) {
-        close(dumpPipe[2]);
-        close(dumpPipe[1]);
-        dup2(dumpPipe[0], 0);
-        dup2(dumpPipe[3], 1);
+        dup2(dumpPipe[0], STDIN_FILENO);
+        dup2(dumpPipe[3], STDOUT_FILENO);
         if (execlp("tcpdump", "tcpdump", "--immediate-mode", "-O", "-U", "-Q", "in", "-i", ifaceName, "-w", "/dev/stdout", (char*) NULL) == -1) err("error executing process");
         return 0;
     }
+    char buf[1024];
+    int i = read(dumpPipe[2], buf, sizeof(buf));
+    write(playPipe[1], buf, i);
+    printf("tcpreplay is %i, tcpdump is %i, header is %i, record is %i\n", playChld, dumpChld, i, packHead);
 
-    doHeadCopy();
 
     if (pthread_create(&threadRaw, NULL, (void*) & doRawLoop, NULL)) err("error creating raw thread");
     if (pthread_create(&threadUdp, NULL, (void*) & doUdpLoop, NULL)) err("error creating udp thread");
