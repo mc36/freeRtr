@@ -3,9 +3,8 @@ sh /init.sys
 sh /init.dev
 ###rootfs###
 cd /rtr
-cp /proc/net/dev hwdet.eth
 grep "rx:" /proc/tty/driver/serial | sed "s/^/\/dev\/ttyS/" > hwdet.ser
-ip link show > hwdet.mac
+ip link show > hwdet.eth
 if [ ! -f /rtr/hwdet-all.sh ] ; then
   /rtr/rtr.bin test hwdet binary tuntap 10.255.255.1/24 10.255.255.254 tcpvrf 23 host 23 path /rtr/ iface map line raw inline
   fi

@@ -25,7 +25,7 @@ public class userHwred {
 
     private String hwdn = "hwdet-all.sh";
 
-    private String macs = "hwdet.mac";
+    private String macs = "hwdet.eth";
 
     /**
      * do the work
@@ -42,6 +42,10 @@ public class userHwred {
             s = s.toLowerCase();
             if (s.equals("path")) {
                 path = cmd.word();
+                continue;
+            }
+            if (s.equals("eth")) {
+                macs = cmd.word();
                 continue;
             }
         }
@@ -85,7 +89,9 @@ public class userHwred {
             }
             old.add(ntry);
         }
-        tabGen<userHwifc> rep = new tabGen<userHwifc>();
+        tabGen<userHwifc> rep1 = new tabGen<userHwifc>();
+        tabGen<userHwifc> rep2 = new tabGen<userHwifc>();
+        tabGen<userHwifc> rep3 = new tabGen<userHwifc>();
         for (int i = 0; i < cur.size(); i++) {
             userHwifc ntry = cur.get(i);
             userHwifc prev = findMac(old, ntry);
@@ -95,20 +101,30 @@ public class userHwred {
             if (ntry.name.equals(prev.name)) {
                 continue;
             }
-            userHwifc res = new userHwifc();
-            res.name = " " + prev.name + " ";
-            res.mac = " " + ntry.name + " ";
-            rep.add(res);
+            userHwifc res1 = new userHwifc();
+            userHwifc res2 = new userHwifc();
+            userHwifc res3 = new userHwifc();
+            res1.name = " " + prev.name + " ";
+            res1.mac = " " + ntry.name + " ";
+            rep1.add(res1);
+            res2.name = res1.name;
+            res2.mac = " placeholder-" + i + "-interface ";
+            rep2.add(res2);
+            res3.name = res2.mac;
+            res3.mac = res1.mac;
+            rep3.add(res3);
         }
-        cmd.error("detected=" + cur.size() + " needed=" + old.size() + " changed=" + rep.size());
-        if (rep.size() < 1) {
+        cmd.error("detected=" + cur.size() + " needed=" + old.size() + " changed=" + rep1.size());
+        if (rep1.size() < 1) {
             return;
         }
-        for (int i = 0; i < rep.size(); i++) {
-            cmd.error("" + rep.get(i));
+        for (int i = 0; i < rep1.size(); i++) {
+            cmd.error(rep1.get(i) + " - " + rep2.get(i) + " - " + rep3.get(i));
         }
-        replaceText(hwd, rep);
-        replaceText(hwc, rep);
+        replaceText(hwd, rep2);
+        replaceText(hwc, rep2);
+        replaceText(hwd, rep3);
+        replaceText(hwc, rep3);
         if (bits.buf2txt(true, hwc, path + pref + cfgInit.hwCfgEnd)) {
             cmd.error("error saving hw config");
             return;

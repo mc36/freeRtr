@@ -1,7 +1,6 @@
 package org.freertr.user;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.freertr.cfg.cfgInit;
 import org.freertr.tab.tabGen;
@@ -82,13 +81,9 @@ public class userHwdet {
 
     private String path = "./";
 
-    private String lstEth = "hwdet.eth";
-
     private String lstSer = "hwdet.ser";
 
-    private String lstMac = "hwdet.mac";
-
-    private tabGen<userHwifc> macLst = new tabGen<userHwifc>();
+    private String lstEth = "hwdet.eth";
 
     private String exclIfc = "";
 
@@ -301,16 +296,7 @@ public class userHwdet {
         }
     }
 
-    private void createIface(String nam) {
-        userHwifc ntry = new userHwifc();
-        ntry.name = nam.trim();
-        ntry = macLst.find(ntry);
-        String adr;
-        if (ntry == null) {
-            adr = "-";
-        } else {
-            adr = ntry.mac;
-        }
+    private void createIface(String nam, String adr) {
         ifcNum += 1;
         int p1 = nextPort + 1;
         int p2 = nextPort + 2;
@@ -353,7 +339,7 @@ public class userHwdet {
             if (s.length() < 1) {
                 continue;
             }
-            createIface(s);
+            createIface(s, "-");
         }
     }
 
@@ -381,12 +367,12 @@ public class userHwdet {
         config.add("int eth" + crsNum + " eth - 127.0.0.1 " + p2 + " 127.0.0.1 " + p1);
     }
 
-    private void detectMacs(String fn) {
-        addComment("macs");
+    private void detectIfaces(String fn) {
         List<String> res = bits.txt2buf(fn);
         if (res == null) {
             return;
         }
+        tabGen<userHwifc> macLst = new tabGen<userHwifc>();
         for (int i = 0; i < res.size(); i++) {
             userHwifc ntry = userHwifc.fromRaw(res, i);
             if (ntry == null) {
@@ -394,40 +380,21 @@ public class userHwdet {
             }
             macLst.add(ntry);
         }
+        addComment("macs");
         for (int i = 0; i < macLst.size(); i++) {
             starter.add("# " + macLst.get(i) + " #");
         }
-    }
-
-    private void detectIfaces(String fn) {
         addComment("interfaces");
         if (justIfc.length() > 0) {
             createIfaces(justIfc);
             return;
         }
-        final String unneeded = "/lo/dummy0/";
-        List<String> res = bits.txt2buf(fn);
-        if (res == null) {
-            return;
-        }
-        Collections.sort(res);
-        for (int cnt = 0; cnt < res.size(); cnt++) {
-            String s = res.get(cnt);
-            int i = s.indexOf(":");
-            if (i < 0) {
+        for (int i = 0; i < macLst.size(); i++) {
+            userHwifc ntry = macLst.get(i);
+            if (exclIfc.indexOf("/" + ntry.name + "/") >= 0) {
                 continue;
             }
-            s = s.substring(0, i).trim();
-            if (s.length() < 1) {
-                continue;
-            }
-            if (unneeded.indexOf("/" + s.toLowerCase() + "/") >= 0) {
-                continue;
-            }
-            if (exclIfc.indexOf("/" + s + "/") >= 0) {
-                continue;
-            }
-            createIface(s);
+            createIface(ntry.name, ntry.mac);
         }
         createIfaces(inclIfc);
     }
@@ -442,7 +409,6 @@ public class userHwdet {
         if (res == null) {
             return;
         }
-        Collections.sort(res);
         for (int cnt = 0; cnt < res.size(); cnt++) {
             String s = res.get(cnt);
             int i = s.indexOf(":");
@@ -520,16 +486,12 @@ public class userHwdet {
                 path = cmd.word();
                 continue;
             }
-            if (s.equals("eth")) {
-                lstEth = cmd.word();
-                continue;
-            }
             if (s.equals("ser")) {
                 lstSer = cmd.word();
                 continue;
             }
-            if (s.equals("mac")) {
-                lstMac = cmd.word();
+            if (s.equals("eth")) {
+                lstEth = cmd.word();
                 continue;
             }
             if (s.equals("tuntap")) {
@@ -615,8 +577,8 @@ public class userHwdet {
         starter.add(scrBeg);
         starter.add("");
         starter.add("cd " + path);
-        starter.add("ip link show > " + lstMac);
-        starter.add(rtr + " test hwred path " + path);
+        starter.add("ip link show > " + lstEth);
+        starter.add(rtr + " test hwred path " + path + " eth " + lstEth);
         starter.add("if [ $? -eq 22 ] ; then");
         starter.add("  sync");
         starter.add("  reboot -f");
@@ -631,7 +593,6 @@ public class userHwdet {
         starter.add("#modprobe -r kvm_intel");
         starter.add("#modprobe kvm_intel nested=1");
         starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
-        detectMacs(path + lstMac);
         detectIfaces(path + lstEth);
         detectCrosses(cross);
         detectTuntap(tuntap);
@@ -652,7 +613,7 @@ public class userHwdet {
         starter.add("exit 0");
         bits.buf2txt(true, config, path + "rtr-" + cfgInit.hwCfgEnd);
         bits.buf2txt(true, starter, path + prefix + "all.sh");
-        cmd.error("iface=" + ifcNum + " macs=" + macLst.size() + " line=" + linNum + " cross=" + crsNum % 100 + " tuntap=" + tapNum % 100 + " mem=" + mem);
+        cmd.error("iface=" + ifcNum + " line=" + linNum + " cross=" + crsNum % 100 + " tuntap=" + tapNum % 100 + " mem=" + mem);
     }
 
 }
