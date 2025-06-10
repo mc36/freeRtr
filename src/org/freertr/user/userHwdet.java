@@ -389,11 +389,11 @@ public class userHwdet {
             }
             macLst.add(ntry);
         }
-        addComment("macs");
+        addComment("interfaces");
         for (int i = 0; i < macLst.size(); i++) {
             starter.add("# " + macLst.get(i) + " #");
         }
-        addComment("interfaces");
+        starter.add("");
         if (justIfc.length() > 0) {
             createIfaces(justIfc);
             return;
