@@ -381,25 +381,26 @@ public class userHwdet {
         if (res == null) {
             return;
         }
-        tabGen<userHwifc> macLst = new tabGen<userHwifc>();
+        tabGen<userHwifc> lst = new tabGen<userHwifc>();
         for (int i = 0; i < res.size(); i++) {
             userHwifc ntry = userHwifc.fromRaw(res, i);
             if (ntry == null) {
                 continue;
             }
-            macLst.add(ntry);
-        }
-        addComment("interfaces");
-        for (int i = 0; i < macLst.size(); i++) {
-            starter.add("# " + macLst.get(i) + " #");
+            lst.add(ntry);
         }
         starter.add("");
+        starter.add("### macs ###");
+        for (int i = 0; i < lst.size(); i++) {
+            starter.add("# " + lst.get(i) + " #");
+        }
+        addComment("interfaces");
         if (justIfc.length() > 0) {
             createIfaces(justIfc);
             return;
         }
-        for (int i = 0; i < macLst.size(); i++) {
-            userHwifc ntry = macLst.get(i);
+        for (int i = 0; i < lst.size(); i++) {
+            userHwifc ntry = lst.get(i);
             if (exclIfc.indexOf("/" + ntry.name + "/") >= 0) {
                 continue;
             }

@@ -72,7 +72,7 @@ public class userHwred {
             }
             cur.add(ntry);
         }
-        int o = hwd.indexOf("### interfaces ###");
+        int o = hwd.indexOf("### macs ###");
         if (o < 0) {
             cmd.error("error splitting " + hwdn);
             return;
