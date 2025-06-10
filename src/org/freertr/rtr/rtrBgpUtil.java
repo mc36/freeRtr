@@ -2883,6 +2883,9 @@ public class rtrBgpUtil {
             len = src.msbGetW(2);
             src.getSkip(4); // length
         }
+        if (len > packHolder.maxHead) {
+            len = packHolder.maxHead;
+        }
         byte[] buf = new byte[len];
         src.getCopy(buf, 0, 0, len);
         src.getSkip(len);
