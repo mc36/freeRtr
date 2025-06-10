@@ -328,7 +328,6 @@ public class userHwdet {
         int p1 = nextPort + 1;
         int p2 = nextPort + 2;
         nextPort += 10;
-        nam = "/dev/ttyS" + nam;
         String cmd;
         switch (lineType) {
             case socat:
@@ -450,23 +449,11 @@ public class userHwdet {
             if (i < 0) {
                 continue;
             }
-            String a = s.substring(0, i).trim();
-            if (a.length() > 2) {
+            s = s.substring(0, i).trim();
+            if (exclSer.indexOf("/" + s + "/") >= 0) {
                 continue;
             }
-            if (exclSer.indexOf("/" + a + "/") >= 0) {
-                continue;
-            }
-            s = s.substring(i + 1, s.length()).trim();
-            i = s.indexOf(" ");
-            if (i < 0) {
-                continue;
-            }
-            s = s.substring(0, i).trim().toLowerCase();
-            if (s.indexOf("unknown") > 0) {
-                continue;
-            }
-            createLine(a);
+            createLine(s);
         }
         createLines(inclSer);
     }
