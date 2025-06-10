@@ -108,9 +108,8 @@ cp ../../src/rtr.jar $TRG/
 cp ../../src/rtr.ver $TRG/
 cp ../../binTmp/*.bin $TRG/
 cp ../../binTmp/*.so $TRG/
-cp /proc/net/dev $TRG/hwdet.eth
 cp /proc/tty/driver/serial $TRG/hwdet.ser
-ip link show > $TRG/hwdet.mac
+ip link show > $TRG/hwdet.eth
 ip route show > $TRG/hwdet.rou
 java -jar $TRG/rtr.jar test hwdet tuntap 10.255.255.1/24 10.255.255.254 path $TRG/ iface raw line raw inline mem 1024m
 chmod 755 $TRG/*.sh
