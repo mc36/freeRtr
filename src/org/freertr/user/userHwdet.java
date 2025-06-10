@@ -579,7 +579,7 @@ public class userHwdet {
         starter.add("cd " + path);
         starter.add("ip link show > " + lstEth);
         starter.add(rtr + " test hwred path " + path + " eth " + lstEth);
-        starter.add("if [ $? -eq 22 ] ; then");
+        starter.add("if [ $? -eq 20 ] ; then");
         starter.add("  sync");
         starter.add("  reboot -f");
         starter.add("fi");
