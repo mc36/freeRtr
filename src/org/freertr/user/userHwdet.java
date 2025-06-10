@@ -47,7 +47,11 @@ public class userHwdet {
         /**
          * xsk
          */
-        xsk
+        xsk,
+        /**
+         * cmp
+         */
+        cmp
     }
 
     /**
@@ -151,6 +155,9 @@ public class userHwdet {
         if (s.equals("xsk")) {
             return ifcTyp.xsk;
         }
+        if (s.equals("cmp")) {
+            return ifcTyp.cmp;
+        }
         if (s.equals("urng")) {
             return ifcTyp.urng;
         }
@@ -250,6 +257,8 @@ public class userHwdet {
                 return path + "mapInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             case xsk:
                 return path + "xskInt.bin " + nam + " skb " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
+            case cmp:
+                return path + "cmpInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             case urng:
                 return path + "urngInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             default:
