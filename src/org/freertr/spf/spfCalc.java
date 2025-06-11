@@ -1563,6 +1563,16 @@ public class spfCalc<Ta extends addrType> {
                 recBX = convertFlt(cmd.word());
                 recEY = convertFlt(cmd.word());
                 recEX = convertFlt(cmd.word());
+                if (recBX > recEX) {
+                    float tmp = recBX;
+                    recBX = recEX;
+                    recEX = tmp;
+                }
+                if (recBY > recEY) {
+                    float tmp = recBY;
+                    recBY = recEY;
+                    recEY = tmp;
+                }
                 bound = true;
                 continue;
             }
