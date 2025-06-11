@@ -108,7 +108,7 @@ cp ../../src/rtr.jar $TRG/
 cp ../../src/rtr.ver $TRG/
 cp ../../binTmp/*.bin $TRG/
 cp ../../binTmp/*.so $TRG/
-cp /proc/tty/driver/serial $TRG/hwdet.ser
+grep "rx:" /proc/tty/driver/serial | sed "s/^/\/dev\/ttyS/" > $TRG/hwdet.ser
 ip link show > $TRG/hwdet.eth
 ip route show > $TRG/hwdet.rou
 java -jar $TRG/rtr.jar test hwdet tuntap 10.255.255.1/24 10.255.255.254 path $TRG/ iface raw line raw inline mem 1024m
