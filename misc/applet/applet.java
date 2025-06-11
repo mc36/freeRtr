@@ -1,4 +1,6 @@
+package org.freertr;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import org.freertr.cfg.cfgInit;
@@ -29,8 +31,8 @@ public class applet extends java.applet.Applet {
         img = cfgInit.doApplet(getParameter("config"));
         img3 = pipeWindow.createImage(img);
         new appletDoer(this);
-        setBackground(pipeWindow.getBckgrd());
-        addKeyListener(pipeWindow.getKeyLstnr(img.pipe));
+        setBackground(Color.BLACK);
+        addKeyListener(new pipeWindowKey(img.pipe));
     }
 
     public void stop() {
@@ -58,7 +60,7 @@ class appletDoer implements Runnable {
 
     public void run() {
         for (;;) {
-            boolean b = lower.img.doRound(true);
+            boolean b = lower.img.scr.doRound(true);
             lower.img.doImage();
             lower.repaint();
             if (b) {
