@@ -17031,3 +17031,10 @@ failed: dhcp with excluded address
 ---------------------------------- 2025-06-08 16:11:50 25.6.8
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2025-06-11 18:54:14 25.6.11
+no todo: dns like foo.example.com in ipsexkey 3WTXgUvpn1RlCXnm80gGY2LZ/ErUUEZtZ33IDi8yfhM= <!-- test vectors where
+no todo: private key as c7be71a45cbf87785f639dc4fd1c82637c21b5e02488939976ece32b9268d0b7 <!---- rfc8032
+no todo: eddsa value for ipsexkey cannot be that bad <!----------------------------------------- rfc9373
+no todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
+no todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
+no todo: tcp redundancy through the redundancy link as table export and file sending before the switchover...
