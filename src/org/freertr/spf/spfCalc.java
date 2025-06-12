@@ -1628,7 +1628,7 @@ public class spfCalc<Ta extends addrType> {
                     y -= sclSY;
                     p = new String[]{"" + (int) x, "" + (int) y};
                 }
-                res.add("\"" + ntry + "\" [pin=true pos=\"" + p[0] + "," + p[1] + "\"]");
+                res.add("\"" + nam + "\" [pin=true pos=\"" + p[0] + "," + p[1] + "\"]");
             }
             for (int i = 0; i < ntry.conn.size(); i++) {
                 spfConn<Ta> cur = ntry.conn.get(i);
