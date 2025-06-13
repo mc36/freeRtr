@@ -152,9 +152,6 @@ todo: test if bier in a ring concept with a knob like int sdn1.111 mpls bier rep
 todo: important protocols to be able to continue from the start at least on local, later within the vdc
 todo: menu remote asdf
 todo: onehit to all the menus
-todo: tcp redundancy through the redundancy link as table export and file sending before the switchover...
-todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
-todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
 todo: server transproxy but with some protocols rewritten, the choice of the user for sure... security xxx auto-applyed to the current server... much like forwarder but with some more funs....
 todo: ctrl+l/r to try to redetect the screen resolution
@@ -181,9 +178,6 @@ todo: a terminal junos-mode knob that defaults to set-del etc as a new class
 todo: nrpe to send out emails from error.log
 todo: nrpe to have followtracker support
 todo: clntportscan to have udp knob then portscan to have the knob finally
-todo: eddsa value for ipsexkey cannot be that bad <!----------------------------------------- rfc9373
-todo: private key as c7be71a45cbf87785f639dc4fd1c82637c21b5e02488939976ece32b9268d0b7 <!---- rfc8032
-todo: dns like foo.example.com in ipsexkey 3WTXgUvpn1RlCXnm80gGY2LZ/ErUUEZtZ33IDi8yfhM= <!-- test vectors where
 todo: server smtp / tag messages by subject
 todo: server smtp / collect-failures
 todo: server smtp / check reverse of the sender and put the info to received field...
