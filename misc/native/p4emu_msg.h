@@ -2109,9 +2109,9 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         port2vrf_res->mcscEncrBlkLen = atoi(arg[4]);
         port2vrf_res->mcscHashBlkLen = atoi(arg[5]);
         port2vrf_res->mcscEncrTagLen = atoi(arg[6]);
-        port2vrf_res->mcscNeedMacs = port2vrf_res->mcscNeedAead = atoi(arg[7]);
-        port2vrf_res->mcscNeedMacs &= 1;
-        port2vrf_res->mcscNeedAead &= 2;
+        i = atoi(arg[7]);
+        port2vrf_res->mcscNeedMacs = i & 1;
+        port2vrf_res->mcscNeedAead = (i >> 1) & 1;
         port2vrf_res->mcscEncrAlg = getEncrAlg(arg[8]);
         if (port2vrf_res->mcscEncrAlg == NULL) {
             port2vrf_res->mcscEthtyp = 0;
