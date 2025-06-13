@@ -742,9 +742,8 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
         }
         peer = id.peerAddr.copyBytes();
         nonceR = pck.msbGetW(8);
-        if (pck.msbGetW(10) == nonceL) {
-            lastHeard = bits.getTime();
-        } else {
+        lastHeard = bits.getTime();
+        if (pck.msbGetW(10) != nonceL) {
             sendLie();
             ready = false;
         }
