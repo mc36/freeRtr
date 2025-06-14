@@ -23,7 +23,6 @@ import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
-import org.freertr.ip.ipFwdTab;
 import org.freertr.ip.ipRtr;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
@@ -2206,16 +2205,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         other.doAdvertise();
         lspf.doAdvertise();
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doAdvertise(newlyVpnU, newlyVpnM, newlyVpnF, newlyMvpn);
+            vrfs.get(i).doer.doAdvertise(newlyVpnU, newlyVpnM, newlyVpnF, newlyMvpn, newlyMdt);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doAdvertise(newlyVpoU, newlyVpoM, newlyVpoF, newlyMvpo);
+            ovrfs.get(i).doer.doAdvertise(newlyVpoU, newlyVpoM, newlyVpoF, newlyMvpo, newlyMdt);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            clrs.get(i).doer.doAdvertise(newlyUni, newlyMlt, newlyFlw, newlyMvpn);
+            clrs.get(i).doer.doAdvertise(newlyUni, newlyMlt, newlyFlw, newlyMvpn, newlyMdt);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doAdvertise(newlyOuni, newlyOmlt, newlyOflw, newlyMvpo);
+            oclrs.get(i).doer.doAdvertise(newlyOuni, newlyOmlt, newlyOflw, newlyMvpo, newlyMdt);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doAdvertise();
@@ -3157,6 +3156,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "1 2   afi-vrf                     select vrf to advertise");
         l.add(null, "2 3     <name:vrf>                name of routing table");
         l.add(null, "3 .       enable                  enable processing");
+        l.add(null, "3 4       mdt                     mdt advertisement");
+        l.add(null, "4 5         <name:ifc>            select source to advertise");
+        l.add(null, "5 .           <addr>              select group to advertise");
         l.add(null, "3 4       mvpn                    mvpn advertisement");
         l.add(null, "4 .         <name:ifc>            select source to advertise");
         l.add(null, "3 4       srv6                    srv6 advertisement");
@@ -3183,6 +3185,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, "1 2   afi-ovrf                    select other vrf to advertise");
         l.add(null, "2 3     <name:vrf>                name of routing table");
         l.add(null, "3 .       enable                  enable processing");
+        l.add(null, "3 4       mdt                     mdt advertisement");
+        l.add(null, "4 5         <name:ifc>            select source to advertise");
+        l.add(null, "5 .           <addr>              select group to advertise");
         l.add(null, "3 4       mvpn                    mvpn advertisement");
         l.add(null, "4 .         <name:ifc>            select source to advertise");
         l.add(null, "3 4       srv6                    srv6 advertisement");
