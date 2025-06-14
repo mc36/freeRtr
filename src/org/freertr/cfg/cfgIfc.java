@@ -124,6 +124,7 @@ import org.freertr.prt.prtInlsp;
 import org.freertr.prt.prtIpIp;
 import org.freertr.prt.prtIpcomp;
 import org.freertr.prt.prtIpenc;
+import org.freertr.prt.prtMgre;
 import org.freertr.prt.prtMinenc;
 import org.freertr.prt.prtMplsIp;
 import org.freertr.prt.prtNos;
@@ -647,6 +648,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      * gre tunnel handler
      */
     public prtGre tunGRE;
+
+    /**
+     * mgre tunnel handler
+     */
+    public prtMgre tunMgre;
 
     /**
      * udpgre tunnel handler
@@ -1182,6 +1188,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
          * gre tunnel interface
          */
         gre,
+        /**
+         * mgre tunnel interface
+         */
+        mgre,
         /**
          * udpgre tunnel interface
          */
@@ -2307,6 +2317,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         switch (tunMode) {
             case gre:
                 return "gre";
+            case mgre:
+                return "mgre";
             case udpgre:
                 return "udpgre";
             case amt:
@@ -2429,6 +2441,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public static tunnelType string2tunnelMode(String s) {
         if (s.equals("gre")) {
             return tunnelType.gre;
+        }
+        if (s.equals("mgre")) {
+            return tunnelType.mgre;
         }
         if (s.equals("udpgre")) {
             return tunnelType.udpgre;
@@ -3874,6 +3889,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             tunGRE.closeDn();
             tunGRE = null;
         }
+        if (tunMgre != null) {
+            tunMgre.closeDn();
+            tunMgre = null;
+        }
         if (tunUdpGre != null) {
             tunUdpGre.workStop();
             tunUdpGre = null;
@@ -4157,6 +4176,20 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunGRE.tunnelSum = tunSum;
                 tunGRE.tunnelSeq = tunSeq;
                 lower = tunGRE;
+                break;
+            case mgre:
+                tunMgre = new prtMgre();
+                tunMgre.fwdCor = tunVrf.getFwd(tunTrg);
+                tunMgre.fwdIfc = tunSrc.getFwdIfc(tunTrg);
+                tunMgre.target = tunTrg.copyBytes();
+                tunMgre.setTargets(tunFQDN);
+                tunFQDN = tunMgre.getTargets();
+                tunMgre.setUpper(ethtyp);
+                tunMgre.sendingDFN = tunDFN;
+                tunMgre.sendingTOS = tunTOS;
+                tunMgre.sendingFLW = tunFLW;
+                tunMgre.sendingTTL = tunTTL;
+                lower = tunMgre;
                 break;
             case udpgre:
                 tunUdpGre = new clntUdpGre();
@@ -6767,6 +6800,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, "3 .       <name:vrf>                name of vrf where encapsulated packets");
         l.add(null, "2 3     mode                        set encapsulation method");
         l.add(null, "3 .       gre                       generic route encapsulation protocol");
+        l.add(null, "3 .       mgre                      multicast generic route encapsulation");
         l.add(null, "3 .       udpgre                    generic route encapsulation in udp");
         l.add(null, "3 .       amt                       automatic multicast tunneling protocol");
         l.add(null, "3 .       icmp                      internet control message protocol");
