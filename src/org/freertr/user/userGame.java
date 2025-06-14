@@ -697,6 +697,103 @@ public class userGame {
     }
 
     /**
+     * tower of hanoi
+     */
+    public void doHanoi() {
+        List<List<Integer>> towerC = new ArrayList<List<Integer>>();
+        int towerX[] = new int[3];
+        int curX = 0;
+        int selX = -1;
+        console.putCls();
+        int towerS = towerX.length + 2;
+        for (int i = 0; i < towerX.length; i++) {
+            towerX[i] = (i + 1) * (console.sizX / towerS);
+            towerC.add(new ArrayList<Integer>());
+        }
+        List<Integer> tw = towerC.get(0);
+        for (int i = 10; i > 0; i--) {
+            tw.add(Integer.valueOf(i));
+        }
+        for (;;) {
+            console.putCls();
+            for (int i = 0; i < towerX.length; i++) {
+                tw = towerC.get(i);
+                for (int o = 0; o < tw.size(); o++) {
+                    int p = tw.get(o);
+                    int r = console.sizY - o - 1;
+                    for (int q = 0; q <= p; q++) {
+                        console.putInt(towerX[i] - q, r, false, userScreen.colBrGreen, 'X');
+                        console.putInt(towerX[i] + q, r, false, userScreen.colBrGreen, 'X');
+                    }
+                }
+            }
+            for (int i = 0; i < towerX.length; i++) {
+                int p = userScreen.colWhite;
+                if (selX == i) {
+                    p = userScreen.colBrCyan;
+                }
+                if (curX == i) {
+                    p = userScreen.colBrYellow;
+                }
+                for (int o = 0; o < console.sizY; o++) {
+                    console.putInt(towerX[i], o, false, p, '|');
+                }
+            }
+            console.putCur(towerX[curX], 0);
+            console.refresh();
+            int i = userScreen.getKey(console.pipe);
+            switch (i) {
+                case -1: // end
+                    return;
+                case 0x800e: // left
+                    curX--;
+                    break;
+                case 0x800f: // right
+                    curX++;
+                    break;
+                case 0x8004: // enter
+                    if (selX < 0) {
+                        selX = curX;
+                        break;
+                    }
+                    if (selX == curX) {
+                        selX = -1;
+                        break;
+                    }
+                    List<Integer> src = towerC.get(selX);
+                    if (src.size() < 1) {
+                        selX = -1;
+                        break;
+                    }
+                    List<Integer> trg = towerC.get(curX);
+                    int val = src.get(src.size() - 1);
+                    boolean ok = trg.size() < 1;
+                    if (!ok) {
+                        ok = trg.get(trg.size() - 1) > val;
+                    }
+                    if (!ok) {
+                        selX = -1;
+                        break;
+                    }
+                    trg.add(val);
+                    src.remove(src.size() - 1);
+                    selX = -1;
+                    break;
+                case 0x0271: // ctrl+q
+                    return;
+                case 0x0278: // ctrl+x
+                    return;
+            }
+            if (curX < 0) {
+                curX = 0;
+            }
+            if (curX >= towerX.length) {
+                curX = towerX.length - 1;
+            }
+        }
+    }
+
+    /**
      * do one command
      *
      * @param cmd parameters
@@ -729,10 +826,9 @@ public class userGame {
             return;
         }
         if (a.equals("hanoi")) {
-            userGameHanoi t = new userGameHanoi(console);
-            t.doStart();
-            t.doGame();
-            t.doFinish();
+            doHanoi();
+            console.putCls();
+            console.refresh();
             return;
         }
         if (a.equals("clear")) {
@@ -847,6 +943,724 @@ public class userGame {
         god[4] = userScreen.colBrBlue;
         god[5] = userScreen.colBrRed;
         colorDrawer(god, lst);
+    }
+
+}
+
+class userGameGomoku {
+
+    private int[][] store;
+
+    private int curX;
+
+    private int curY;
+
+    private userScreen scr;
+
+    private final static int sizeX = 30;
+
+    private final static int sizeY = 20;
+
+    /**
+     * create game
+     *
+     * @param screen screen to use
+     */
+    public userGameGomoku(userScreen screen) {
+        scr = screen;
+    }
+
+    /**
+     * start screen
+     */
+    public void doStart() {
+        scr.putCls();
+        store = new int[sizeX][sizeY];
+        curX = sizeX / 2;
+        curY = sizeY / 2;
+    }
+
+    /**
+     * print table
+     */
+    public void doPrint() {
+        scr.putCls();
+        for (int i = 0; i < sizeY; i++) {
+            for (int o = 0; o < sizeX; o++) {
+                String s;
+                int p;
+                switch (store[o][i]) {
+                    case 1:
+                        s = "X";
+                        p = userScreen.colGreen;
+                        break;
+                    case 2:
+                        s = "O";
+                        p = userScreen.colRed;
+                        break;
+                    default:
+                        s = ".";
+                        p = userScreen.colWhite;
+                        break;
+                }
+                scr.putStr(o * 2, i, userScreen.colBlack, p, false, s);
+            }
+        }
+        scr.putCur(curX * 2, curY);
+        scr.refresh();
+    }
+
+    /**
+     * play game
+     */
+    public void doGame() {
+        for (;;) {
+            doPrint();
+            int i = userScreen.getKey(scr.pipe);
+            switch (i) {
+                case -1: // end
+                    return;
+                case 0x800c: // up
+                    curY--;
+                    break;
+                case 0x800d: // down
+                    curY++;
+                    break;
+                case 0x800e: // left
+                    curX--;
+                    break;
+                case 0x800f: // right
+                    curX++;
+                    break;
+                case 0x8004: // enter
+                    if (store[curX][curY] != 0) {
+                        break;
+                    }
+                    store[curX][curY] = 1;
+                    int[] ps = evalMove(2);
+                    curX = ps[0];
+                    curY = ps[1];
+                    store[curX][curY] = 2;
+                    break;
+                case 0x0271: // ctrl+q
+                    return;
+                case 0x0278: // ctrl+x
+                    return;
+            }
+            if (curX < 0) {
+                curX = 0;
+            }
+            if (curY < 0) {
+                curY = 0;
+            }
+            if (curX >= sizeX) {
+                curX = sizeX - 1;
+            }
+            if (curY >= sizeY) {
+                curY = sizeY - 1;
+            }
+        }
+    }
+
+    /**
+     * finish screen
+     */
+    public void doFinish() {
+        scr.putCls();
+        scr.refresh();
+    }
+
+    private int get(int x, int y) {
+        try {
+            return store[x][y];
+        } catch (Exception e) {
+            return 99;
+        }
+    }
+
+    private int evalDir(int x, int y, int dx, int dy, int ai) {
+        int free = 0;
+        int mine = 0;
+        boolean own = true;
+        for (int i = 1; i < 6; i++) {
+            int o = get(x + (i * dx), y + (i * dy));
+            if (own && (o == ai)) {
+                mine++;
+                continue;
+            }
+            if (o == 0) {
+                own = false;
+                free++;
+                continue;
+            }
+            break;
+        }
+        own = true;
+        for (int i = 1; i < 6; i++) {
+            int o = get(x - (i * dx), y - (i * dy));
+            if (own && (o == ai)) {
+                mine++;
+                continue;
+            }
+            if (o == 0) {
+                own = false;
+                free++;
+                continue;
+            }
+            break;
+        }
+        if (mine + free < 5) {
+            return 0;
+        }
+        if (mine > 5) {
+            mine = 5;
+        }
+        return mine;
+    }
+
+    private int evalScore(int x, int y, int ai) {
+        final int[] scoreOwn = {0, 2, 4, 6, 100, 1000};
+        final int[] scoreOtr = {0, 1, 3, 7, 51, 500};
+        int pl = 3 - ai;
+        if (store[x][y] != 0) {
+            return 0;
+        }
+        return +scoreOwn[evalDir(x, y, 0, 1, ai)]
+                + scoreOwn[evalDir(x, y, 1, 0, ai)]
+                + scoreOwn[evalDir(x, y, 1, 1, ai)]
+                + scoreOwn[evalDir(x, y, 1, -1, ai)]
+                + scoreOtr[evalDir(x, y, 0, 1, pl)]
+                + scoreOtr[evalDir(x, y, 1, 0, pl)]
+                + scoreOtr[evalDir(x, y, 1, 1, pl)]
+                + scoreOtr[evalDir(x, y, 1, -1, pl)];
+    }
+
+    private int[] evalMove(int ai) {
+        int score = 0;
+        int[] pos = new int[2];
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                int temp = evalScore(x, y, ai);
+                if (temp < score) {
+                    continue;
+                }
+                if (temp == score) {
+                    if (bits.randomB() < 128) {
+                        continue;
+                    }
+                }
+                score = temp;
+                pos[0] = x;
+                pos[1] = y;
+            }
+        }
+        return pos;
+    }
+
+}
+
+class userGameMines {
+
+    private boolean[][] bomb;
+
+    private boolean[][] mark;
+
+    private boolean[][] show;
+
+    private int curX;
+
+    private int curY;
+
+    private userScreen scr;
+
+    private final static int sizeX = 60;
+
+    private final static int sizeY = 20;
+
+    /**
+     * create game
+     *
+     * @param screen screen to use
+     */
+    public userGameMines(userScreen screen) {
+        scr = screen;
+    }
+
+    /**
+     * start screen
+     */
+    public void doStart() {
+        scr.putCls();
+        bomb = new boolean[sizeY][sizeX];
+        mark = new boolean[sizeY][sizeX];
+        show = new boolean[sizeY][sizeX];
+        for (int i = 0; i < (sizeX * sizeY / 10); i++) {
+            bomb[bits.random(0, sizeY)][bits.random(0, sizeX)] = true;
+        }
+        curX = sizeX / 2;
+        curY = sizeY / 2;
+    }
+
+    /**
+     * print table
+     */
+    public void doPrint() {
+        scr.putCls();
+        for (int i = 0; i < sizeX; i++) {
+            for (int o = 0; o < sizeY; o++) {
+                String s;
+                int p;
+                if (show[o][i]) {
+                    s = "" + bombs(o, i);
+                    p = userScreen.colGreen;
+                } else {
+                    s = ".";
+                    p = userScreen.colWhite;
+                }
+                if (mark[o][i]) {
+                    s = "*";
+                    p = userScreen.colRed;
+                }
+                scr.putStr(i, o, userScreen.colBlack, p, false, s);
+            }
+        }
+        scr.putCur(curX, curY);
+        scr.refresh();
+    }
+
+    /**
+     * play game
+     */
+    public void doGame() {
+        for (;;) {
+            doPrint();
+            int i = userScreen.getKey(scr.pipe);
+            switch (i) {
+                case -1: // end
+                    return;
+                case 0x800c: // up
+                    curY--;
+                    break;
+                case 0x800d: // down
+                    curY++;
+                    break;
+                case 0x800e: // left
+                    curX--;
+                    break;
+                case 0x800f: // right
+                    curX++;
+                    break;
+                case 0x8004: // enter
+                    if (bomb[curY][curX]) {
+                        return;
+                    }
+                    shows(curY, curX);
+                    break;
+                case 0x0020: // space
+                    mark[curY][curX] = !mark[curY][curX];
+                    break;
+                case 0x0271: // ctrl+q
+                    return;
+                case 0x0278: // ctrl+x
+                    return;
+            }
+            if (curX < 0) {
+                curX = 0;
+            }
+            if (curY < 0) {
+                curY = 0;
+            }
+            if (curX >= sizeX) {
+                curX = sizeX - 1;
+            }
+            if (curY >= sizeY) {
+                curY = sizeY - 1;
+            }
+        }
+    }
+
+    /**
+     * finish screen
+     */
+    public void doFinish() {
+        scr.putCls();
+        scr.refresh();
+    }
+
+    private boolean get(int y, int x) {
+        try {
+            return bomb[y][x];
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private int bombs(int y, int x) {
+        if (get(y, x)) {
+            return -1;
+        }
+        int res = 0;
+        if (get(y - 1, x - 1)) {
+            res++;
+        }
+        if (get(y, x - 1)) {
+            res++;
+        }
+        if (get(y + 1, x - 1)) {
+            res++;
+        }
+        if (get(y - 1, x)) {
+            res++;
+        }
+        if (get(y + 1, x)) {
+            res++;
+        }
+        if (get(y - 1, x + 1)) {
+            res++;
+        }
+        if (get(y, x + 1)) {
+            res++;
+        }
+        if (get(y + 1, x + 1)) {
+            res++;
+        }
+        return res;
+    }
+
+    private void shows(int y, int x) {
+        try {
+            if (show[y][x]) {
+                return;
+            }
+        } catch (Exception e) {
+            return;
+        }
+        show[y][x] = true;
+        if (bombs(y, x) != 0) {
+            return;
+        }
+        shows(y - 1, x - 1);
+        shows(y, x - 1);
+        shows(y + 1, x - 1);
+        shows(y - 1, x);
+        shows(y + 1, x);
+        shows(y - 1, x + 1);
+        shows(y, x + 1);
+        shows(y + 1, x + 1);
+    }
+
+}
+
+class userGameTetris implements Runnable {
+
+    private userScreen scr;
+
+    private List<userGameTetrisThing> things;
+
+    private int[][] tab;
+
+    private int curX;
+
+    private int curY;
+
+    private int lines;
+
+    private userGameTetrisThing thg;
+
+    private userGameTetrisThing nxt;
+
+    private boolean need2run;
+
+    private final static int sizeX = 10;
+
+    private final static int sizeY = 20;
+
+    /**
+     * create game
+     *
+     * @param screen screen to use
+     */
+    public userGameTetris(userScreen screen) {
+        scr = screen;
+        things = new ArrayList<userGameTetrisThing>();
+        String[] lst = new String[3];
+        lst[0] = " X";
+        lst[1] = "XX";
+        lst[2] = "X ";
+        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrBlue));
+        lst[0] = "X ";
+        lst[1] = "XX";
+        lst[2] = " X";
+        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrGreen));
+        lst[0] = "X ";
+        lst[1] = "XX";
+        lst[2] = "X ";
+        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrCyan));
+        lst[0] = "X ";
+        lst[1] = "X ";
+        lst[2] = "XX";
+        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrYellow));
+        lst[0] = " X";
+        lst[1] = " X";
+        lst[2] = "XX";
+        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrWhite));
+        lst = new String[4];
+        lst[0] = "X";
+        lst[1] = "X";
+        lst[2] = "X";
+        lst[3] = "X";
+        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrMagenta));
+        lst = new String[2];
+        lst[0] = "XX";
+        lst[1] = "XX";
+        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrRed));
+    }
+
+    /**
+     * start screen
+     */
+    public void doStart() {
+        need2run = true;
+        scr.putCls();
+        tab = new int[sizeY][];
+        thg = things.get(bits.random(0, things.size())).copyBytes();
+        nxt = things.get(bits.random(0, things.size())).copyBytes();
+        curY = 0;
+        curX = sizeX / 2;
+        for (int o = 0; o < sizeY; o++) {
+            tab[o] = new int[sizeX];
+            for (int i = 0; i < sizeX; i++) {
+                tab[o][i] = userScreen.colBlack;
+            }
+        }
+        lines = 0;
+        new Thread(this).start();
+    }
+
+    /**
+     * print table
+     */
+    public synchronized void doPrint() {
+        scr.putCls();
+        for (int o = 0; o < sizeY; o++) {
+            scr.putStr(19, o + 1, userScreen.colBlack, userScreen.colWhite, false, "|");
+            scr.putStr(20 + (sizeX * 2), o + 1, userScreen.colBlack, userScreen.colWhite, false, "|");
+            for (int i = 0; i < sizeX; i++) {
+                if (tab[o][i] == userScreen.colBlack) {
+                    continue;
+                }
+                scr.putStr((i * 2) + 20, o + 1, tab[o][i], tab[o][i], false, "XX");
+            }
+        }
+        nxt.doPrint(2, 2, scr);
+        scr.putStr(2, 10, userScreen.colBlack, userScreen.colWhite, false, "lines=" + lines);
+        thg.doPrint((curX * 2) + 20, curY + 1, scr);
+        scr.putCur(0, 0);
+        scr.refresh();
+    }
+
+    /**
+     * finish screen
+     */
+    public void doFinish() {
+        need2run = false;
+        scr.putCls();
+        scr.refresh();
+    }
+
+    /**
+     * play game
+     */
+    public void doGame() {
+        for (;;) {
+            doPrint();
+            int i = userScreen.getKey(scr.pipe);
+            if (!need2run) {
+                return;
+            }
+            switch (i) {
+                case -1: // end
+                    return;
+                case 0x800c: // up
+                    userGameTetrisThing o = thg.copyBytes();
+                    thg = thg.doRotate();
+                    if (thg.isSpace(tab, curX, curY)) {
+                        break;
+                    }
+                    thg = o;
+                    break;
+                case 0x800d: // down
+                    curY++;
+                    if (thg.isSpace(tab, curX, curY)) {
+                        break;
+                    }
+                    curY--;
+                    break;
+                case 0x800e: // left
+                    curX--;
+                    if (thg.isSpace(tab, curX, curY)) {
+                        break;
+                    }
+                    curX++;
+                    break;
+                case 0x800f: // right
+                    curX++;
+                    if (thg.isSpace(tab, curX, curY)) {
+                        break;
+                    }
+                    curX--;
+                    break;
+                case 0x0271: // ctrl+q
+                    return;
+                case 0x0278: // ctrl+x
+                    return;
+            }
+        }
+    }
+
+    private void doLines() {
+        for (int o = sizeY - 1; o >= 0; o--) {
+            int p = 0;
+            for (int i = 0; i < sizeX; i++) {
+                if (tab[o][i] == userScreen.colBlack) {
+                    continue;
+                }
+                p++;
+            }
+            if (p < sizeX) {
+                continue;
+            }
+            for (int i = o; i > 0; i--) {
+                tab[i] = tab[i - 1];
+            }
+            tab[0] = new int[sizeX];
+            for (int i = 0; i < sizeX; i++) {
+                tab[0][i] = userScreen.colBlack;
+            }
+            lines++;
+            o++;
+        }
+    }
+
+    public void run() {
+        for (;;) {
+            doPrint();
+            bits.sleep(1000);
+            if (!need2run) {
+                return;
+            }
+            curY++;
+            if (thg.isSpace(tab, curX, curY)) {
+                continue;
+            }
+            curY--;
+            thg.putThing(tab, curX, curY);
+            doLines();
+            thg = nxt;
+            nxt = things.get(bits.random(0, things.size())).copyBytes();
+            curY = 0;
+            curX = sizeX / 2;
+            if (!thg.isSpace(tab, curX, curY)) {
+                need2run = false;
+                return;
+            }
+        }
+    }
+
+}
+
+class userGameTetrisThing {
+
+    private byte[][] tab;
+
+    private int sizeX;
+
+    private int sizeY;
+
+    public userGameTetrisThing(int sx, int sy) {
+        sizeX = sx;
+        sizeY = sy;
+        tab = new byte[sizeY][];
+        for (int o = 0; o < sizeY; o++) {
+            tab[o] = new byte[sizeX];
+            for (int i = 0; i < sizeX; i++) {
+                tab[o][i] = userScreen.colBlack;
+            }
+        }
+    }
+
+    public static userGameTetrisThing fromString(String[] lst, int col) {
+        userGameTetrisThing t = new userGameTetrisThing(lst[0].length(), lst.length);
+        for (int o = 0; o < t.sizeY; o++) {
+            String a = lst[o];
+            for (int i = 0; i < t.sizeX; i++) {
+                t.tab[o][i] = a.substring(i, i + 1).equals("X") ? (byte) col : userScreen.colBlack;
+            }
+        }
+        return t;
+    }
+
+    public userGameTetrisThing copyBytes() {
+        userGameTetrisThing t = new userGameTetrisThing(sizeX, sizeY);
+        for (int o = 0; o < sizeY; o++) {
+            bits.byteCopy(tab[o], 0, t.tab[o], 0, sizeX);
+        }
+        return t;
+    }
+
+    public userGameTetrisThing doRotate() {
+        userGameTetrisThing t = new userGameTetrisThing(sizeY, sizeX);
+        for (int o = 0; o < sizeY; o++) {
+            for (int i = 0; i < sizeX; i++) {
+                t.tab[i][o] = tab[o][sizeX - i - 1];
+            }
+        }
+        return t;
+    }
+
+    public void doPrint(int x, int y, userScreen scr) {
+        for (int o = 0; o < sizeY; o++) {
+            for (int i = 0; i < sizeX; i++) {
+                if (tab[o][i] == userScreen.colBlack) {
+                    continue;
+                }
+                scr.putStr((i * 2) + x, o + y, tab[o][i], tab[o][i], false, "XX");
+            }
+        }
+    }
+
+    public boolean isSpace(int[][] t, int x, int y) {
+        if (x < 0) {
+            return false;
+        }
+        if (x > (t[0].length - sizeX)) {
+            return false;
+        }
+        if ((y + sizeY) > t.length) {
+            return false;
+        }
+        for (int o = 0; o < sizeY; o++) {
+            for (int i = 0; i < sizeX; i++) {
+                if (tab[o][i] == userScreen.colBlack) {
+                    continue;
+                }
+                if (t[o + y][i + x] != userScreen.colBlack) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void putThing(int[][] t, int x, int y) {
+        for (int o = 0; o < sizeY; o++) {
+            for (int i = 0; i < sizeX; i++) {
+                if (tab[o][i] == userScreen.colBlack) {
+                    continue;
+                }
+                t[o + y][i + x] = tab[o][i];
+            }
+        }
     }
 
 }

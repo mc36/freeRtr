@@ -2451,6 +2451,8 @@ public class userExec {
         hl.add(null, "2 .      commander                    file manager");
         hl.add(null, "2 3,.    browser                      web browser");
         hl.add(null, "3 .        <url>                      target url");
+        hl.add(null, "2 3      mailer                       email reader");
+        hl.add(null, "3 .        <dir>                      mail directory");
         cfgAll.aliasHelps(cfgAlias.aliasType.flsh, 2, hl);
         hl.add(null, "1 2,.  write                          save configuration");
         hl.add(null, "2 3      file                         to disk file");

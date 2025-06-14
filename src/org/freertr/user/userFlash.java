@@ -208,6 +208,11 @@ public class userFlash {
             f.doWork();
             return null;
         }
+        if (a.equals("mailer")) {
+            userMailer f = new userMailer(new userScreen(pip), cmd.getRemaining());
+            f.doWork();
+            return null;
+        }
         if (a.equals("receive")) {
             a = cmd.word();
             cmd.error(cmds.doneFail(doReceive(pip, encUrl.parseOne(cmd.getRemaining()), new File(a))));
@@ -1454,6 +1459,28 @@ public class userFlash {
             c.cleanUp();
             return;
         }
+    }
+
+}
+
+class userFlashNtry implements Comparable<userFlashNtry> {
+
+    /**
+     * file entry
+     */
+    protected final File f;
+
+    /**
+     * create instance
+     *
+     * @param fl file
+     */
+    protected userFlashNtry(File fl) {
+        f = fl;
+    }
+
+    public int compareTo(userFlashNtry o) {
+        return f.getName().compareTo(o.f.getName());
     }
 
 }
