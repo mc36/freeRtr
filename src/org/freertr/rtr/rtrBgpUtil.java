@@ -787,7 +787,7 @@ public class rtrBgpUtil {
     /**
      * bier
      */
-    public final static int attrBier = 44;
+    public final static int attrBier = 41;
 
     /**
      * attribute set
@@ -2640,9 +2640,9 @@ public class rtrBgpUtil {
                     ntry.best.bierIdx = bits.msbGetW(tlv.valDat, 1); // bfr id
                     break;
                 case 2: // mpls
-                    ntry.best.bierBeg = bits.msbGetD(tlv.valDat, 0) >>> 8; // base
-                    ntry.best.bierSiz = tlv.valDat[3] & 0xff; // range
-                    ntry.best.bierHdr = (tlv.valDat[4] >>> 4) & 0xf; // bsl
+                    ntry.best.bierBeg = bits.msbGetD(tlv.valDat, 0) & 0xfffff; // base
+                    ntry.best.bierSiz = tlv.valDat[0] & 0xff; // range
+                    ntry.best.bierHdr = (tlv.valDat[1] >>> 4) & 0xf; // bsl
                     break;
             }
         }
@@ -3923,11 +3923,10 @@ public class rtrBgpUtil {
         bits.msbPutW(tlv.valDat, 1, ntry.best.bierIdx); // bfr id
         tlv.putBytes(hlp, 1, 4, tlv.valDat);
         if (ntry.best.bierSiz != 0) {
-            tlv = getBierTlv();
-            bits.msbPutD(tlv.valDat, 0, ntry.best.bierBeg << 8); // base
-            tlv.valDat[3] = (byte) ntry.best.bierSiz; // range
-            tlv.valDat[4] = (byte) (ntry.best.bierHdr << 4); // bsl
-            tlv.putBytes(hlp, 2, 8, tlv.valDat);
+            bits.msbPutD(tlv.valDat, 0, ntry.best.bierBeg); // base + bsl
+            tlv.valDat[1] |= (byte) (ntry.best.bierHdr << 4); // bsl
+            tlv.valDat[0] = (byte) ntry.best.bierSiz; // range
+            tlv.putBytes(hlp, 2, 4, tlv.valDat);
         }
         placeAttrib(spkr, flagOptional | flagTransitive, attrBier, trg, hlp);
     }
