@@ -17038,3 +17038,6 @@ no todo: eddsa value for ipsexkey cannot be that bad <!-------------------------
 no todo: p4lang interpreter like interface xxxx / p4lang asdf.p4 / needs: encHdr over packHolder, tabMatchActionTable, and usrP4intPtr with per line hitcounter
 no todo: then pvrp, lsrp, bgp, msdp, later isis and ospf eigrp and rip redundancy with table export and finally mpls redundancy through the same way...
 no todo: tcp redundancy through the redundancy link as table export and file sending before the switchover...
+---------------------------------- 2025-06-14 10:42:05 25.6.14
+no todo: flash xxxxxx from the misc/mailer shitload like the http server classes knob
+no todo: flash mailer <server-smtp> that is a loadable module
