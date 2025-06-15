@@ -3139,57 +3139,6 @@ public class servP4langConn implements Runnable {
             } catch (Exception e) {
             }
             try {
-                prtMgre ntry = (prtMgre) ifc.ifc.lower;
-                addrIP adr = ntry.getAddrRem();
-                if (adr == null) {
-                    return;
-                }
-                addrIP src = ntry.getAddrLoc();
-                if (src == null) {
-                    return;
-                }
-                addrIP grp = ntry.getAddrLoc();
-                if (grp == null) {
-                    return;
-                }
-                ipFwd ofwd = ntry.getFwd();
-                if (ofwd == null) {
-                    return;
-                }
-                servP4langVrf ovrf = lower.findVrf(ofwd);
-                if (ovrf == null) {
-                    return;
-                }
-                servP4langNei hop = lower.findHop(ofwd, adr);
-                if (hop == null) {
-                    return;
-                }
-                if (hop.mac == null) {
-                    return;
-                }
-                String act;
-                if (nei.mac == null) {
-                    act = "add";
-                } else {
-                    act = "mod";
-                    if ((hop.mac.compareTo(nei.mac) == 0) && (nei.sentIfc == hop.sentIfc) && (nei.viaH == hop)) {
-                        return;
-                    }
-                }
-                nei.viaH = hop;
-                nei.mac = hop.mac.copyBytes();
-                nei.sentIfc = hop.sentIfc;
-                String afi;
-                if (adr.isIPv4()) {
-                    afi = "4";
-                } else {
-                    afi = "6";
-                }
-                lower.sendLine("mgre" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + grp + " " + adr + " " + grp.conv2multiMac().toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr());
-                return;
-            } catch (Exception e) {
-            }
-            try {
                 prtTmux ntry = (prtTmux) ifc.ifc.lower;
                 addrIP adr = ntry.getAddrRem();
                 if (adr == null) {
@@ -3551,6 +3500,55 @@ public class servP4langConn implements Runnable {
                 return;
             }
             switch (ifc.ifc.tunMode) {
+                case mgre:
+                    prtMgre ntry = (prtMgre) ifc.ifc.lower;
+                    addrIP adr = ntry.getAddrRem();
+                    if (adr == null) {
+                        return;
+                    }
+                    addrIP src = ntry.getAddrLoc();
+                    if (src == null) {
+                        return;
+                    }
+                    addrIP grp = ntry.getAddrGrp();
+                    if (grp == null) {
+                        return;
+                    }
+                    ipFwd ofwd = ntry.getFwd();
+                    if (ofwd == null) {
+                        return;
+                    }
+                    servP4langVrf ovrf = lower.findVrf(ofwd);
+                    if (ovrf == null) {
+                        return;
+                    }
+                    servP4langNei hop = lower.findHop(ofwd, adr);
+                    if (hop == null) {
+                        return;
+                    }
+                    if (hop.mac == null) {
+                        return;
+                    }
+                    String act;
+                    if (nei.mac == null) {
+                        act = "add";
+                    } else {
+                        act = "mod";
+                        if ((hop.mac.compareTo(nei.mac) == 0) && (nei.sentIfc == hop.sentIfc) && (nei.viaH == hop)) {
+                            return;
+                        }
+                    }
+                    nei.viaH = hop;
+                    nei.mac = hop.mac.copyBytes();
+                    nei.sentIfc = hop.sentIfc;
+                    String afi;
+                    if (adr.isIPv4()) {
+                        afi = "4";
+                    } else {
+                        afi = "6";
+                    }
+                    lower.sendLine("mgre" + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + grp + " " + adr + " " + grp.conv2multiMac().toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr());
+                    return;
                 case gre:
                     prt = "gre";
                     break;
