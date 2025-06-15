@@ -259,4 +259,43 @@ public class prtMgre implements ipPrt, ifcDn {
         return fwdIfc.bandwidth;
     }
 
+    /**
+     * get remote address
+     *
+     * @return peer address, null if no session
+     */
+    public addrIP getAddrRem() {
+        if (targets.length < 1) {
+            return null;
+        }
+        return targets[0];
+    }
+
+    /**
+     * get group address
+     *
+     * @return peer address, null if no session
+     */
+    public addrIP getAddrGrp() {
+        return target;
+    }
+
+    /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public addrIP getAddrLoc() {
+        return fwdIfc.addr;
+    }
+
+    /**
+     * get local address
+     *
+     * @return peer address, null if no session
+     */
+    public ipFwd getFwd() {
+        return fwdCor;
+    }
+
 }

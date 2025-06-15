@@ -1719,6 +1719,65 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "mgre4") == 0) {
+        tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
+        tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
+        neigh_ntry.port = atoi(arg[4]);
+        inet_pton(AF_INET, arg[5], buf2);
+        neigh_ntry.sip1 = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[6], buf2);
+        tun4_ntry.trgAddr = neigh_ntry.dip1 = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[7], buf2);
+        tun4_ntry.srcAddr = get32msb(buf2, 0);
+        vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[9]);
+        vrf2rib_res = vrf2rib_init4;
+        str2mac(&neigh_ntry.macs[0], arg[8]);
+        str2mac(&neigh_ntry.macs[6], arg[10]);
+        neigh_ntry.command = 3;
+        tun4_ntry.srcPort = 0;
+        tun4_ntry.trgPort = 0;
+        tun4_ntry.prot = IP_PROTOCOL_GRE;
+        tun4_ntry.command = 1;
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "mgre6") == 0) {
+        tun6_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
+        tun6_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
+        neigh_ntry.port = atoi(arg[4]);
+        inet_pton(AF_INET6, arg[5], buf2);
+        neigh_ntry.sip1 = get32msb(buf2, 0);
+        neigh_ntry.sip2 = get32msb(buf2, 4);
+        neigh_ntry.sip3 = get32msb(buf2, 8);
+        neigh_ntry.sip4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[6], buf2);
+        tun6_ntry.trgAddr1 = neigh_ntry.dip1 = get32msb(buf2, 0);
+        tun6_ntry.trgAddr2 = neigh_ntry.dip2 = get32msb(buf2, 4);
+        tun6_ntry.trgAddr3 = neigh_ntry.dip3 = get32msb(buf2, 8);
+        tun6_ntry.trgAddr4 = neigh_ntry.dip4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[7], buf2);
+        tun6_ntry.srcAddr1 = get32msb(buf2, 0);
+        tun6_ntry.srcAddr2 = get32msb(buf2, 4);
+        tun6_ntry.srcAddr3 = get32msb(buf2, 8);
+        tun6_ntry.srcAddr4 = get32msb(buf2, 12);
+        vrf2rib_ntry.vrf = neigh_ntry.vrf = atoi(arg[9]);
+        vrf2rib_res = vrf2rib_init6;
+        str2mac(&neigh_ntry.macs[0], arg[8]);
+        str2mac(&neigh_ntry.macs[6], arg[10]);
+        neigh_ntry.command = 4;
+        tun6_ntry.srcPort = 0;
+        tun6_ntry.trgPort = 0;
+        tun6_ntry.prot = IP_PROTOCOL_GRE;
+        tun6_ntry.command = 1;
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "ipip4") == 0) {
         tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
@@ -3125,7 +3184,7 @@ void doNegotiate(char*name) {
     if (commandTx == NULL) err("failed to open file");
     fprintf(commandTx, "platform p4emu/%s\r\n", name);
     fprintf(commandTx, "capabilities %s%s\r\n",
-            "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap ipsectap vxlan etherip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mpolka polka pwhe",
+            "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap ipsectap vxlan etherip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mpolka polka pwhe mgre",
 #ifdef HAVE_NOCRYPTO
             ""
 #else

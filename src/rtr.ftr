@@ -3578,6 +3578,7 @@ qc pass: multicast vpn routing with bier
 qc pass: multicast vpn between pim and bier
 qc pass: multicast othervpn routing with bier
 qc pass: multicast othervpn between pim and bier
+qc pass: multicast routing with mgre
 qc pass: olsr on one subnet
 qc pass: olsr in chain
 qc pass: olsr ingress route filtering with prefixlist
