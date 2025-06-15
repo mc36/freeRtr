@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.6.15-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-06-15 11:33:42, took 00:12:37, with 50 workers, on 815 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2025-06-15 12:09:57, took 00:12:50, with 50 workers, on 834 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -132,6 +132,16 @@ http://sources.freertr.org/cfg/p4lang-acl127.tst;p4lang-acl127.tst;success;p4lan
 http://sources.freertr.org/cfg/p4lang-acl128.tst;p4lang-acl128.tst;success;p4lang: pwhe interface loose verify source
 http://sources.freertr.org/cfg/p4lang-acl129.tst;p4lang-acl129.tst;success;p4lang: ingress qinq pwhe access list
 http://sources.freertr.org/cfg/p4lang-acl130.tst;p4lang-acl130.tst;success;p4lang: egress qinq pwhe access list
+http://sources.freertr.org/cfg/p4lang-acl131.tst;p4lang-acl131.tst;success;p4lang: ingress mgre access list
+http://sources.freertr.org/cfg/p4lang-acl132.tst;p4lang-acl132.tst;success;p4lang: egress mgre access list
+http://sources.freertr.org/cfg/p4lang-acl133.tst;p4lang-acl133.tst;success;p4lang: ingress vlan mgre access list
+http://sources.freertr.org/cfg/p4lang-acl134.tst;p4lang-acl134.tst;success;p4lang: egress vlan mgre access list
+http://sources.freertr.org/cfg/p4lang-acl135.tst;p4lang-acl135.tst;success;p4lang: mgre interface inspection with ingress drop
+http://sources.freertr.org/cfg/p4lang-acl136.tst;p4lang-acl136.tst;success;p4lang: mgre interface inspection with egress drop
+http://sources.freertr.org/cfg/p4lang-acl137.tst;p4lang-acl137.tst;success;p4lang: mgre interface verify source
+http://sources.freertr.org/cfg/p4lang-acl138.tst;p4lang-acl138.tst;success;p4lang: mgre interface loose verify source
+http://sources.freertr.org/cfg/p4lang-acl139.tst;p4lang-acl139.tst;success;p4lang: ingress qinq mgre access list
+http://sources.freertr.org/cfg/p4lang-acl140.tst;p4lang-acl140.tst;success;p4lang: egress qinq mgre access list
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;success;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;success;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;success;p4lang: macsec with aes128cbc
@@ -332,6 +342,9 @@ http://sources.freertr.org/cfg/p4lang-crypt197.tst;p4lang-crypt197.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt198.tst;p4lang-crypt198.tst;success;p4lang: ipsec with aes128ofb
 http://sources.freertr.org/cfg/p4lang-crypt199.tst;p4lang-crypt199.tst;success;p4lang: ipsec with aes192ofb
 http://sources.freertr.org/cfg/p4lang-crypt200.tst;p4lang-crypt200.tst;success;p4lang: ipsec with aes256ofb
+http://sources.freertr.org/cfg/p4lang-crypt201.tst;p4lang-crypt201.tst;success;p4lang: macsec over mgre
+http://sources.freertr.org/cfg/p4lang-crypt202.tst;p4lang-crypt202.tst;success;p4lang: sgt over mgre
+http://sources.freertr.org/cfg/p4lang-crypt203.tst;p4lang-crypt203.tst;success;p4lang: mgre with packout
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core
@@ -817,3 +830,9 @@ http://sources.freertr.org/cfg/p4lang-rout482.tst;p4lang-rout482.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout483.tst;p4lang-rout483.tst;success;p4lang: l2vpn over mgre mpls
 http://sources.freertr.org/cfg/p4lang-rout484.tst;p4lang-rout484.tst;success;p4lang: l3vpn over mgre mpls
 http://sources.freertr.org/cfg/p4lang-rout485.tst;p4lang-rout485.tst;success;p4lang: mgre local connect
+http://sources.freertr.org/cfg/p4lang-rout486.tst;p4lang-rout486.tst;success;p4lang: mgre multicast routing
+http://sources.freertr.org/cfg/p4lang-rout487.tst;p4lang-rout487.tst;success;p4lang: mgre routing over qinq
+http://sources.freertr.org/cfg/p4lang-rout488.tst;p4lang-rout488.tst;success;p4lang: mgre routing over bundle qinq
+http://sources.freertr.org/cfg/p4lang-rout489.tst;p4lang-rout489.tst;success;p4lang: mgre routing over hairpin qinq
+http://sources.freertr.org/cfg/p4lang-rout490.tst;p4lang-rout490.tst;success;p4lang: mgre routing over qinq bridge
+http://sources.freertr.org/cfg/p4lang-rout491.tst;p4lang-rout491.tst;success;p4lang: mgre mpls over qinq

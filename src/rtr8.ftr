@@ -128,6 +128,16 @@ qc pass: p4lang: pwhe interface verify source
 qc pass: p4lang: pwhe interface loose verify source
 qc pass: p4lang: ingress qinq pwhe access list
 qc pass: p4lang: egress qinq pwhe access list
+qc pass: p4lang: ingress mgre access list
+qc pass: p4lang: egress mgre access list
+qc pass: p4lang: ingress vlan mgre access list
+qc pass: p4lang: egress vlan mgre access list
+qc pass: p4lang: mgre interface inspection with ingress drop
+qc pass: p4lang: mgre interface inspection with egress drop
+qc pass: p4lang: mgre interface verify source
+qc pass: p4lang: mgre interface loose verify source
+qc pass: p4lang: ingress qinq mgre access list
+qc pass: p4lang: egress qinq mgre access list
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc
@@ -328,6 +338,9 @@ qc pass: p4lang: macsec with aes256ofb
 qc pass: p4lang: ipsec with aes128ofb
 qc pass: p4lang: ipsec with aes192ofb
 qc pass: p4lang: ipsec with aes256ofb
+qc pass: p4lang: macsec over mgre
+qc pass: p4lang: sgt over mgre
+qc pass: p4lang: mgre with packout
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core
@@ -813,6 +826,12 @@ qc pass: p4lang: mgre mpls push
 qc pass: p4lang: l2vpn over mgre mpls
 qc pass: p4lang: l3vpn over mgre mpls
 qc pass: p4lang: mgre local connect
+qc pass: p4lang: mgre multicast routing
+qc pass: p4lang: mgre routing over qinq
+qc pass: p4lang: mgre routing over bundle qinq
+qc pass: p4lang: mgre routing over hairpin qinq
+qc pass: p4lang: mgre routing over qinq bridge
+qc pass: p4lang: mgre mpls over qinq
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
