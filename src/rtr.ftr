@@ -1731,6 +1731,8 @@ qc pass: p4lang: mgre interface inspection with ingress drop
 qc pass: p4lang: mgre interface inspection with egress drop
 qc pass: p4lang: mgre interface verify source
 qc pass: p4lang: mgre interface loose verify source
+qc pass: p4lang: ingress qinq mgre access list
+qc pass: p4lang: egress qinq mgre access list
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc
@@ -1931,6 +1933,9 @@ qc pass: p4lang: macsec with aes256ofb
 qc pass: p4lang: ipsec with aes128ofb
 qc pass: p4lang: ipsec with aes192ofb
 qc pass: p4lang: ipsec with aes256ofb
+qc pass: p4lang: macsec over mgre
+qc pass: p4lang: sgt over mgre
+qc pass: p4lang: mgre with packout
 qc pass: p4lang: routing
 qc pass: p4lang: bridging
 qc pass: p4lang: mpls core

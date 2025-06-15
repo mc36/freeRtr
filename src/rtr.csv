@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.6.15-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-06-15 11:56:35, took 00:17:17, with 50 workers, on 3934 cases, 0 failed, 0 traces, 7 retries
+-;-;-;2025-06-15 12:34:09, took 00:16:45, with 50 workers, on 3939 cases, 0 failed, 0 traces, 5 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1735,6 +1735,8 @@ http://sources.freertr.org/cfg/p4lang-acl135.tst;p4lang-acl135.tst;success;p4lan
 http://sources.freertr.org/cfg/p4lang-acl136.tst;p4lang-acl136.tst;success;p4lang: mgre interface inspection with egress drop
 http://sources.freertr.org/cfg/p4lang-acl137.tst;p4lang-acl137.tst;success;p4lang: mgre interface verify source
 http://sources.freertr.org/cfg/p4lang-acl138.tst;p4lang-acl138.tst;success;p4lang: mgre interface loose verify source
+http://sources.freertr.org/cfg/p4lang-acl139.tst;p4lang-acl139.tst;success;p4lang: ingress qinq mgre access list
+http://sources.freertr.org/cfg/p4lang-acl140.tst;p4lang-acl140.tst;success;p4lang: egress qinq mgre access list
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;success;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;success;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;success;p4lang: macsec with aes128cbc
@@ -1935,6 +1937,9 @@ http://sources.freertr.org/cfg/p4lang-crypt197.tst;p4lang-crypt197.tst;success;p
 http://sources.freertr.org/cfg/p4lang-crypt198.tst;p4lang-crypt198.tst;success;p4lang: ipsec with aes128ofb
 http://sources.freertr.org/cfg/p4lang-crypt199.tst;p4lang-crypt199.tst;success;p4lang: ipsec with aes192ofb
 http://sources.freertr.org/cfg/p4lang-crypt200.tst;p4lang-crypt200.tst;success;p4lang: ipsec with aes256ofb
+http://sources.freertr.org/cfg/p4lang-crypt201.tst;p4lang-crypt201.tst;success;p4lang: macsec over mgre
+http://sources.freertr.org/cfg/p4lang-crypt202.tst;p4lang-crypt202.tst;success;p4lang: sgt over mgre
+http://sources.freertr.org/cfg/p4lang-crypt203.tst;p4lang-crypt203.tst;success;p4lang: mgre with packout
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core

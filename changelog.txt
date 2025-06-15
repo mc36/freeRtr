@@ -17092,3 +17092,9 @@ qc pass: p4lang: mgre routing over bundle qinq
 qc pass: p4lang: mgre routing over hairpin qinq
 qc pass: p4lang: mgre routing over qinq bridge
 qc pass: p4lang: mgre mpls over qinq
+---------------------------------- 2025-06-15 12:17:24 25.6.15
+qc pass: p4lang: ingress qinq mgre access list
+qc pass: p4lang: egress qinq mgre access list
+qc pass: p4lang: macsec over mgre
+qc pass: p4lang: sgt over mgre
+qc pass: p4lang: mgre with packout
