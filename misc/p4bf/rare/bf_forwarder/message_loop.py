@@ -965,6 +965,36 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "mgre4":
+            self.writeMgre4rules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                splt[4],
+                splt[5],
+                splt[6],
+                splt[7],
+                int(splt[8]),
+                splt[9],
+            )
+            continue
+
+        if cmds[0] == "mgre6":
+            self.writeMgre6rules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                splt[4],
+                splt[5],
+                splt[6],
+                splt[7],
+                int(splt[8]),
+                splt[9],
+            )
+            continue
+
         if cmds[0] == "tmux4":
             self.writeTmux4rules(
                 mode,

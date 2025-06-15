@@ -35,6 +35,8 @@ class RareApi(BfRtRare):
     from .flowspec6 import writeFlowspec6Rules
     from .gre4 import writeGre4rules
     from .gre6 import writeGre6rules
+    from .mgre4 import writeMgre4rules
+    from .mgre6 import writeMgre6rules
     from .tmux4 import writeTmux4rules
     from .tmux6 import writeTmux6rules
     from .hairpin import writeHairpinRules
