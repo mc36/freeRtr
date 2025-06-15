@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.6.15-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-06-15 10:16:31, took 00:14:25, with 50 workers, on 788 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2025-06-15 10:59:52, took 00:16:43, with 50 workers, on 800 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -790,3 +790,15 @@ http://sources.freertr.org/cfg/p4lang-rout455.tst;p4lang-rout455.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout456.tst;p4lang-rout456.tst;success;p4lang: mgre routing over ipv6
 http://sources.freertr.org/cfg/p4lang-rout457.tst;p4lang-rout457.tst;success;p4lang: mgre routing over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout458.tst;p4lang-rout458.tst;success;p4lang: mgre routing over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout459.tst;p4lang-rout459.tst;success;p4lang: mgre routing over vlan
+http://sources.freertr.org/cfg/p4lang-rout460.tst;p4lang-rout460.tst;success;p4lang: mgre routing over bundle
+http://sources.freertr.org/cfg/p4lang-rout461.tst;p4lang-rout461.tst;success;p4lang: mgre routing over bundle vlan
+http://sources.freertr.org/cfg/p4lang-rout462.tst;p4lang-rout462.tst;success;p4lang: mgre routing over hairpin
+http://sources.freertr.org/cfg/p4lang-rout463.tst;p4lang-rout463.tst;success;p4lang: mgre routing over hairpin vlan
+http://sources.freertr.org/cfg/p4lang-rout464.tst;p4lang-rout464.tst;success;p4lang: mgre routing over bridge
+http://sources.freertr.org/cfg/p4lang-rout465.tst;p4lang-rout465.tst;success;p4lang: mgre routing over vlan bridge
+http://sources.freertr.org/cfg/p4lang-rout466.tst;p4lang-rout466.tst;success;p4lang: mgre mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout467.tst;p4lang-rout467.tst;success;p4lang: mgre mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-rout468.tst;p4lang-rout468.tst;success;p4lang: mgre mpls over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout469.tst;p4lang-rout469.tst;success;p4lang: mgre mpls over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout470.tst;p4lang-rout470.tst;success;p4lang: mgre mpls over vlan
