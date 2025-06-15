@@ -17098,3 +17098,5 @@ qc pass: p4lang: egress qinq mgre access list
 qc pass: p4lang: macsec over mgre
 qc pass: p4lang: sgt over mgre
 qc pass: p4lang: mgre with packout
+---------------------------------- 2025-06-15 14:15:02 25.6.15
+qc pass: interop1: mgre

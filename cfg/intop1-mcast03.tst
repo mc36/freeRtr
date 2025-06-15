@@ -34,6 +34,8 @@ int eth1
  mpls ldp6
  ipv4 pim ena
  ipv6 pim ena
+ ipv4 multi static 232.2.2.2 2.2.2.1
+ ipv6 multi static ff06::1 4321::1
  exit
 int tun1
  tunnel vrf v1

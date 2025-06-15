@@ -1158,6 +1158,7 @@ qc pass: interop1: ldp over point2point ethernet
 qc pass: interop1: ethernet over mpls cw
 qc pass: interop1: igmp3/mld2
 qc pass: interop1: pim
+qc pass: interop1: mgre
 qc pass: interop1: modem with alaw
 qc pass: interop1: modem with ulaw
 qc pass: interop1: point2point ospf

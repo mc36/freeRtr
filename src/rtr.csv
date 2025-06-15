@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.6.15-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-06-15 13:54:03, took 00:16:59, with 50 workers, on 3939 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2025-06-15 14:31:20, took 00:16:18, with 50 workers, on 3940 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1162,6 +1162,7 @@ http://sources.freertr.org/cfg/intop1-ldp06.tst;intop1-ldp06.tst;success;interop
 http://sources.freertr.org/cfg/intop1-ldp07.tst;intop1-ldp07.tst;success;interop1: ethernet over mpls cw
 http://sources.freertr.org/cfg/intop1-mcast01.tst;intop1-mcast01.tst;success;interop1: igmp3/mld2
 http://sources.freertr.org/cfg/intop1-mcast02.tst;intop1-mcast02.tst;success;interop1: pim
+http://sources.freertr.org/cfg/intop1-mcast03.tst;intop1-mcast03.tst;success;interop1: mgre
 http://sources.freertr.org/cfg/intop1-modem01.tst;intop1-modem01.tst;success;interop1: modem with alaw
 http://sources.freertr.org/cfg/intop1-modem02.tst;intop1-modem02.tst;success;interop1: modem with ulaw
 http://sources.freertr.org/cfg/intop1-ospf01.tst;intop1-ospf01.tst;success;interop1: point2point ospf
