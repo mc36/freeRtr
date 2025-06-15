@@ -34,15 +34,14 @@ int eth1
  mpls ldp6
  ipv4 pim ena
  ipv6 pim ena
- ipv4 multi static 232.2.2.2 2.2.2.1
- ipv6 multi static ff06::1 4321::1
+ ipv4 multi static 232.1.1.1 2.2.2.1
  exit
 int tun1
  tunnel vrf v1
  tunnel mode mgre
  tunnel source lo0
  tunnel domain 2.2.2.2
- tunnel destination 232.2.2.2
+ tunnel destination 232.1.1.1
  vrf for v2
  ipv4 addr 3.3.3.1 255.255.255.0
  ipv6 addr 3333::1 ffff::
@@ -67,10 +66,10 @@ router bgp4 1
  neigh 2.2.2.2 send-comm both
  afi-vrf v2 ena
  afi-vrf v2 red conn
- afi-vrf v2 mdt lo0 232.2.2.2
+ afi-vrf v2 mdt lo0 232.1.1.1
  afi-ovrf v2 ena
  afi-ovrf v2 red conn
- afi-ovrf v2 mdt lo0 232.2.2.2
+ afi-ovrf v2 mdt lo0 232.1.1.1
  exit
 !
 
@@ -79,6 +78,8 @@ int eth1 eth 0000.0000.2222 $per1$
 !
 ip routing
 ipv6 unicast-routing
+ip multicast-routing distributed
+ipv6 multicast-routing
 ip pim ssm default
 mpls ldp explicit-null
 vrf definition v2
@@ -86,9 +87,9 @@ vrf definition v2
  route-target export 1:2
  route-target import 1:2
  address-family ipv4
-  mdt default 232.2.2.2
+  mdt default 232.1.1.1
  address-family ipv6
-  mdt default 232.2.2.2
+  mdt default 232.1.1.1
  exit
 ip multicast-routing vrf v2 distributed
 ipv6 multicast-routing vrf v2
@@ -150,5 +151,5 @@ r1 tping 100 60 4321::2 vrf v1 sou lo0
 r1 tping 100 60 9.9.2.2 vrf v2 sou lo2
 r1 tping 100 60 9992::2 vrf v2 sou lo2
 
-r2 tping 100 60 232.2.2.2 vrf v2 sou lo2
-r2 tping 100 60 ff06::1 vrf v2 sou lo2
+r1 tping 100 60 232.2.2.2 vrf v2 sou lo2
+r1 tping 100 60 ff06::1 vrf v2 sou lo2
