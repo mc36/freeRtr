@@ -17056,3 +17056,18 @@ qc pass: p4lang: mgre routing over hairpin
 qc pass: p4lang: mgre routing over hairpin vlan
 qc pass: p4lang: mgre routing over bridge
 qc pass: p4lang: mgre routing over vlan bridge
+---------------------------------- 2025-06-15 11:02:52 25.6.15
+qc pass: p4lang: mgre mpls over ipv4
+qc pass: p4lang: mgre mpls over ipv6
+qc pass: p4lang: mgre mpls over ipv4 loopback
+qc pass: p4lang: mgre mpls over ipv6 loopback
+qc pass: p4lang: mgre mpls over vlan
+qc pass: p4lang: mgre mpls over bundle
+qc pass: p4lang: mgre mpls over bundle vlan
+qc pass: p4lang: mgre mpls over hairpin
+qc pass: p4lang: mgre mpls over hairpin vlan
+qc pass: p4lang: mgre mpls over bridge
+qc pass: p4lang: mgre mpls over vlan bridge
+qc pass: p4lang: bridging over mgre
+qc pass: p4lang: bridging over mgre vlan
+qc pass: p4lang: mldp core over mgre
