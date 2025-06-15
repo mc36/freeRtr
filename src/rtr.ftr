@@ -2377,6 +2377,7 @@ qc pass: p4lang: l3vpn over ipip mpls
 qc pass: p4lang: sdwan over ipv4 with ipip
 qc pass: p4lang: sdwan over ipv6 with ipip
 qc pass: p4lang: amt multicast routing
+qc pass: p4lang: mgre routing over ipv4
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
