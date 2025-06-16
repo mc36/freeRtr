@@ -1814,10 +1814,7 @@ ipv4_tx:
             port2vrf_ntry.port = neigh_res->aclport;
             port2vrf_res = hasht_find(&port2vrf_table, &port2vrf_ntry);
             if (port2vrf_res == NULL) doDropper;
-            acls_ntry.dir = 2;
-            acls_ntry.port = neigh_res->aclport;
-            acls_res = hasht_find(&acls4_table, &acls_ntry);
-            if (acls_res != NULL) {
+            if (!table_nonexist(&port2vrf_res->outacl4)) {
                 if (frag != 0) doPunting;
                 insp4_ntry.prot = acl4_ntry.protV;
                 insp4_ntry.trgAddr = acl4_ntry.srcAddr;
@@ -1826,7 +1823,7 @@ ipv4_tx:
                 insp4_ntry.srcPort = acl4_ntry.trgPortV;
                 insp4_res = hasht_find(&port2vrf_res->insp4, &insp4_ntry);
                 if (insp4_res == NULL) {
-                    tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+                    tmp = apply_acl(&port2vrf_res->outacl4, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
                     if (tmp == 2) doCpuing;
                     if (tmp != 0) doPunting;
                 } else {
@@ -2090,10 +2087,7 @@ ipv6_tx:
             port2vrf_ntry.port = neigh_res->aclport;
             port2vrf_res = hasht_find(&port2vrf_table, &port2vrf_ntry);
             if (port2vrf_res == NULL) doDropper;
-            acls_ntry.dir = 2;
-            acls_ntry.port = neigh_res->aclport;
-            acls_res = hasht_find(&acls6_table, &acls_ntry);
-            if (acls_res != NULL) {
+            if (!table_nonexist(&port2vrf_res->outacl6)) {
                 if (frag != 0) doPunting;
                 insp6_ntry.prot = acl6_ntry.protV;
                 insp6_ntry.trgAddr1 = acl6_ntry.srcAddr1;
@@ -2108,7 +2102,7 @@ ipv6_tx:
                 insp6_ntry.srcPort = acl6_ntry.trgPortV;
                 insp6_res = hasht_find(&port2vrf_res->insp6, &insp6_ntry);
                 if (insp6_res == NULL) {
-                    tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+                    tmp = apply_acl(&port2vrf_res->outacl6, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
                     if (tmp == 2) doCpuing;
                     if (tmp != 0) doPunting;
                 } else {
