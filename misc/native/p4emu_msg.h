@@ -2941,6 +2941,13 @@ void doStatRound_polka6(void* buffer, int fixed) {
     fprintf(commandTx, "mpolka_cnt %i %i %li %li\r\n", fixed, ntry->index, ntry->pack, ntry->byte);
 }
 
+void doStatRound_acl(char *buf2, int port, struct table_head *acl) {
+    for (int i=0; i<acl->size; i++) {
+        struct aclH_entry *ntry2 = table_get(acl, i);
+        fprintf(commandTx, "%s %i %i %li %li\r\n", (char*)&buf2[0], port, ntry2->pri, ntry2->pack, ntry2->byte);
+    }
+}
+
 void doStatRound_vrf(void* buffer, int fixed) {
     struct vrf2rib_entry *res = buffer;
     fprintf(commandTx, "vrf%i_cnt %i %li %li\r\n", fixed, res->vrf, res->pack, res->byte);
@@ -2950,48 +2957,20 @@ void doStatRound_vrf(void* buffer, int fixed) {
         hasht_walk(&res->tun, &doStatRound_tun4, res->vrf);
         hasht_walk(&res->mcst, &doStatRound_mcst4, res->vrf);
         table_walk(&res->plk, &doStatRound_polka4, res->vrf);
+        doStatRound_acl("natacl4_cnt", res->vrf, &res->natC);
+        doStatRound_acl("pbracl4_cnt", res->vrf, &res->pbr);
+        doStatRound_acl("coppacl4_cnt", res->vrf, &res->copp);
+        doStatRound_acl("flowspec4_cnt", res->vrf, &res->flws);
     } else {
         tree_walk(&res->rou, &doStatRound_rou6, res->vrf);
         hasht_walk(&res->natT, &doStatRound_nat6, res->vrf);
         hasht_walk(&res->tun, &doStatRound_tun6, res->vrf);
         hasht_walk(&res->mcst, &doStatRound_mcst6, res->vrf);
         table_walk(&res->plk, &doStatRound_polka6, res->vrf);
-    }
-}
-
-void doStatRound_acl(struct acls_entry *ntry1, int ver) {
-    unsigned char buf2[1024];
-    switch (ntry1->dir) {
-    case 1:
-        snprintf((char*)&buf2[0], 128, "inacl%i_cnt %i", ver, ntry1->port);
-        break;
-    case 2:
-        snprintf((char*)&buf2[0], 128, "outacl%i_cnt %i", ver, ntry1->port);
-        break;
-    case 3:
-        snprintf((char*)&buf2[0], 128, "natacl%i_cnt %i", ver, ntry1->port);
-        break;
-    case 4:
-        snprintf((char*)&buf2[0], 128, "coppacl%i_cnt %i", ver, ntry1->port);
-        break;
-    case 5:
-        snprintf((char*)&buf2[0], 128, "pbracl%i_cnt %i", ver, ntry1->port);
-        break;
-    case 6:
-        snprintf((char*)&buf2[0], 128, "inqos%i_cnt %i", ver, ntry1->port);
-        break;
-    case 7:
-        snprintf((char*)&buf2[0], 128, "outqos%i_cnt %i", ver, ntry1->port);
-        break;
-    case 8:
-        snprintf((char*)&buf2[0], 128, "flowspec%i_cnt %i", ver, ntry1->port);
-        break;
-    default:
-        return;
-    }
-    for (int i=0; i<ntry1->aces.size; i++) {
-        struct aclH_entry *ntry2 = table_get(&ntry1->aces, i);
-        fprintf(commandTx, "%s %i %li %li\r\n", (char*)&buf2[0], ntry2->pri, ntry2->pack, ntry2->byte);
+        doStatRound_acl("natacl6_cnt", res->vrf, &res->natC);
+        doStatRound_acl("pbracl6_cnt", res->vrf, &res->pbr);
+        doStatRound_acl("coppacl6_cnt", res->vrf, &res->copp);
+        doStatRound_acl("flowspec6_cnt", res->vrf, &res->flws);
     }
 }
 
@@ -3041,13 +3020,23 @@ void doStatRound_vlan(void* buffer, int fixed) {
     fprintf(commandTx, "counter %i %li %li %li %li 0 0\r\n", intry->id, intry->pack, intry->byte, ontry->pack, ontry->byte);
 }
 
-#ifndef HAVE_NOCRYPTO
-void doStatRound_macsec(void* buffer, int fixed) {
+void doStatRound_port(void* buffer, int fixed) {
     struct port2vrf_entry *ntry = buffer;
+    hasht_walk(&ntry->insp4, &doStatRound_insp4, ntry->port);
+    hasht_walk(&ntry->insp6, &doStatRound_insp6, ntry->port);
+    doStatRound_acl("inacl4_cnt", ntry->port, &ntry->inacl4);
+    doStatRound_acl("inacl6_cnt", ntry->port, &ntry->inacl6);
+    doStatRound_acl("outacl4_cnt", ntry->port, &ntry->outacl4);
+    doStatRound_acl("outacl6_cnt", ntry->port, &ntry->outacl6);
+    doStatRound_acl("inqos4_cnt", ntry->port, &ntry->inqos4);
+    doStatRound_acl("inqos6_cnt", ntry->port, &ntry->inqos6);
+    doStatRound_acl("outqos4_cnt", ntry->port, &ntry->outqos4);
+    doStatRound_acl("outqos6_cnt", ntry->port, &ntry->outqos6);
+#ifndef HAVE_NOCRYPTO
     if (ntry->mcscEthtyp == 0) return;
     fprintf(commandTx, "macsec_cnt %i %li %li %li %li %li %li\r\n", ntry->port, ntry->mcscPackRx, ntry->mcscByteRx, ntry->mcscPackTx, ntry->mcscByteTx, (ntry->mcscPackRx - ntry->mcscPackOk), (ntry->mcscByteRx - ntry->mcscByteOk));
-}
 #endif
+}
 
 void doStatRound_bundle(void* buffer, int fixed) {
     struct bundle_entry *ntry = buffer;
@@ -3076,18 +3065,6 @@ void doStatRound_bridge(void* buffer, int fixed) {
     put32msb(buf2, 2, ntry->mac2);
     mac2str(buf2, buf);
     fprintf(commandTx, "bridge_cnt %i %s %li %li %li %li\r\n", ntry->id, (char*)&buf[0], ntry->packRx, ntry->byteRx, ntry->packTx, ntry->byteTx);
-}
-
-void doStatRound_acl4(void* buffer, int fixed) {
-    struct acls_entry *ntry1 = buffer;;
-    doStatRound_acl(ntry1, 4);
-    if (ntry1->dir < 3) hasht_walk(ntry1->insp, &doStatRound_insp4, ntry1->port);
-}
-
-void doStatRound_acl6(void* buffer, int fixed) {
-    struct acls_entry *ntry1 = buffer;
-    doStatRound_acl(ntry1, 6);
-    if (ntry1->dir < 3) hasht_walk(ntry1->insp, &doStatRound_insp6, ntry1->port);
 }
 
 void doStatRound_mpls(void* buffer, int fixed) {
@@ -3151,11 +3128,6 @@ void doConsoleCommand_bridge(void* buffer, int fixed) {
     put32msb(buf2, 2, ntry->mac2);
     mac2str(buf2, buf);
     printf("%10i %s %10i %10i\n", ntry->id, (char*)&buf[0], ntry->port, ntry->nexthop);
-}
-
-void doConsoleCommand_acl(void* buffer, int fixed) {
-    struct acls_entry *ntry = buffer;
-    printf("%10i %3i %i   %10i\n", ntry->port, ntry->dir, fixed, ntry->aces.size);
 }
 
 void doConsoleCommand_mpls(void* buffer, int fixed) {
@@ -3257,11 +3229,7 @@ void doStatLoop() {
         hasht_walk(&bridge_table, &doStatRound_bridge, 0);
         hasht_walk(&vrf2rib4_table, &doStatRound_vrf, 4);
         hasht_walk(&vrf2rib6_table, &doStatRound_vrf, 6);
-#ifndef HAVE_NOCRYPTO
-        hasht_walk(&port2vrf_table, &doStatRound_macsec, 0);
-#endif
-        hasht_walk(&acls4_table, &doStatRound_acl4, 0);
-        hasht_walk(&acls6_table, &doStatRound_acl6, 0);
+        hasht_walk(&port2vrf_table, &doStatRound_port, 0);
 #ifdef HAVE_DEBUG
         for (int i=0; i < sizeof(dropStat)/sizeof(int); i++) {
             if (dropStat[i] == 0) continue;
@@ -3302,7 +3270,6 @@ void doMainLoop() {
             printf("4 - display ipv4 table\n");
             printf("6 - display ipv6 table\n");
             printf("n - display nexthop table\n");
-            printf("a - display acl table\n");
             printf("q - display qos table\n");
             printf("v - display vlan table\n");
             break;
@@ -3322,12 +3289,6 @@ void doMainLoop() {
         case 'M':
             printf("     label ip        vrf cmd       swap    nexthop\n");
             hasht_walk(&mpls_table, &doConsoleCommand_mpls, 0);
-            break;
-        case 'a':
-        case 'A':
-            printf("  vrf/port dir ver       aces\n");
-            hasht_walk(&acls4_table, &doConsoleCommand_acl, 4);
-            hasht_walk(&acls6_table, &doConsoleCommand_acl, 6);
             break;
         case 'p':
         case 'P':

@@ -352,18 +352,6 @@ struct hasht_head vlanout_table;
 
 
 
-struct acls_entry {
-    int dir; // 1=inacl, 2=outacl, 3=nat, 4=copp, 5=pbr, 6=inqos, 7=outqos, 8=flwspc
-    int port;
-    struct table_head aces;
-    struct hasht_head *insp;
-};
-
-struct hasht_head acls4_table;
-
-struct hasht_head acls6_table;
-
-
 struct acl4_entry {
     int pri;
     int act;
@@ -496,28 +484,6 @@ int apply_acl(struct table_head *tab, void *ntry, int matcher(void *, void *),in
     return res->act;
 }
 
-struct acls_entry* acls_init(struct hasht_head *tab, struct acls_entry *ntry, int reclen1, int reclen2, int acer, int insper) {
-    if (ntry->dir < 3) {
-        ntry->dir = 3 - ntry->dir;
-        struct acls_entry *oth = hasht_find(tab, ntry);
-        ntry->dir = 3 - ntry->dir;
-        if (oth != NULL) {
-            ntry->insp = oth->insp;
-        } else {
-            ntry->insp = malloc(sizeof(struct hasht_head));
-            if (ntry->insp == NULL) err("error allocating memory");
-            hasht_init(ntry->insp, reclen2, insper);
-        }
-    }
-    struct acls_entry *res = hasht_find(tab, ntry);
-    if (res == NULL) {
-        res = hasht_add(tab, ntry);
-    }
-    struct table_head *tab3 = &res->aces;
-    if (tab3->reclen != reclen1) table_init(tab3, reclen1, acer);
-    return res;
-}
-
 void acl4init(struct table_head *tab) {
     if (!table_nonexist(tab)) return;
     table_init(tab, sizeof(struct acl4_entry), 1);
@@ -527,10 +493,6 @@ void acl6init(struct table_head *tab) {
     if (!table_nonexist(tab)) return;
     table_init(tab, sizeof(struct acl6_entry), 1);
 }
-
-
-#define acls_init4 acls_init(&acls4_table, &acls_ntry, sizeof(struct acl4_entry), sizeof(struct insp4_entry), 1, 5);
-#define acls_init6 acls_init(&acls6_table, &acls_ntry, sizeof(struct acl6_entry), sizeof(struct insp6_entry), 1, 11);
 
 
 
@@ -774,8 +736,6 @@ int initTables() {
     hasht_init(&vlanin_table, sizeof(struct vlanin_entry), 2);
     hasht_init(&vlanout_table, sizeof(struct vlanout_entry), 1);
     hasht_init(&bridge_table, sizeof(struct bridge_entry), 3);
-    hasht_init(&acls4_table, sizeof(struct acls_entry), 2);
-    hasht_init(&acls6_table, sizeof(struct acls_entry), 2);
     hasht_init(&bundle_table, sizeof(struct bundle_entry), 1);
     hasht_init(&pppoe_table, sizeof(struct pppoe_entry), 2);
     hasht_init(&policer_table, sizeof(struct policer_entry), 3);
