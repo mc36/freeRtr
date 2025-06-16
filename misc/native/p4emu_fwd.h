@@ -1771,12 +1771,9 @@ ipv4_nated:
         bufD[bufP + 8] = ttl;
         update_chksum(bufP + 10, -1);
         ttl |= port2vrf_res->pttl4;
-        acls_ntry.dir = 5;
-        acls_ntry.port = vrf2rib_ntry.vrf;
-        acls_res = hasht_find(&acls4_table, &acls_ntry);
-        if (acls_res == NULL) goto ipv4_pbred;
+        if (table_nonexist(&vrf2rib_res->pbr)) goto ipv4_pbred;
         if (frag != 0) doPunting;
-        aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+        aceh_res = search_ace(&vrf2rib_res->pbr, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
         if (aceh_res == NULL) goto ipv4_pbred;
         if (aceh_res->act != 0) goto ipv4_pbred;
         switch (aceh_res->cmd) {
@@ -2050,12 +2047,9 @@ ipv6_nated:
         if (ttl <= 1) doPunting;
         bufD[bufP + 7] = ttl;
         ttl |= port2vrf_res->pttl6;
-        acls_ntry.dir = 5;
-        acls_ntry.port = vrf2rib_ntry.vrf;
-        acls_res = hasht_find(&acls6_table, &acls_ntry);
-        if (acls_res == NULL) goto ipv6_pbred;
+        if (table_nonexist(&vrf2rib_res->pbr)) goto ipv6_pbred;
         if (frag != 0) doPunting;
-        aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+        aceh_res = search_ace(&vrf2rib_res->pbr, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
         if (aceh_res == NULL) goto ipv6_pbred;
         if (aceh_res->act != 0) goto ipv6_pbred;
         switch (aceh_res->cmd) {

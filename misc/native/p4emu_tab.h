@@ -186,6 +186,7 @@ struct vrf2rib_entry {
     struct table_head plk;
     struct table_head copp;
     struct table_head flws;
+    struct table_head pbr;
 };
 
 
