@@ -181,6 +181,16 @@ struct port2vrf_entry* port2vrf_init(struct port2vrf_entry *ntry) {
 void port2vrf_deinit(struct port2vrf_entry *ntry) {
     struct port2vrf_entry *res = hasht_find(&port2vrf_table, ntry);
     if (res == NULL) return;
+    hasht_deinit(&res->insp4);
+    hasht_deinit(&res->insp6);
+    table_deinit(&res->inacl4);
+    table_deinit(&res->inacl6);
+    table_deinit(&res->outacl4);
+    table_deinit(&res->outacl6);
+    table_deinit(&res->inqos4);
+    table_deinit(&res->inqos6);
+    table_deinit(&res->outqos4);
+    table_deinit(&res->outqos6);
     hasht_del(&port2vrf_table, ntry);
 }
 
