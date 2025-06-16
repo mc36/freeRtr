@@ -1245,21 +1245,21 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "inacl4") == 0) {
-        acls_ntry.dir = 1;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init4;
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        acl4init(&port2vrf_res->inacl4);
         readAcl4(&acl4_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
-        else table_add(&acls_res->aces, &acl4_ntry);
+        if (del == 0) table_del(&port2vrf_res->inacl4, &acl4_ntry);
+        else table_add(&port2vrf_res->inacl4, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inacl6") == 0) {
-        acls_ntry.dir = 1;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init6;
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        acl6init(&port2vrf_res->inacl6);
         readAcl6(&acl6_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
-        else table_add(&acls_res->aces, &acl6_ntry);
+        if (del == 0) table_del(&port2vrf_res->inacl6, &acl6_ntry);
+        else table_add(&port2vrf_res->inacl6, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "outacl4") == 0) {

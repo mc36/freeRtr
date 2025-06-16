@@ -1692,10 +1692,7 @@ ipv4_rx:
                 if (neigh_res->aclport != prt) doPunting;
             }
         }
-        acls_ntry.dir = 1;
-        acls_ntry.port = prt;
-        acls_res = hasht_find(&acls4_table, &acls_ntry);
-        if (acls_res != NULL) {
+        if (!table_nonexist(&port2vrf_res->inacl4)) {
             if (frag != 0) doPunting;
             insp4_ntry.prot = acl4_ntry.protV;
             insp4_ntry.srcAddr = acl4_ntry.srcAddr;
@@ -1704,7 +1701,7 @@ ipv4_rx:
             insp4_ntry.trgPort = acl4_ntry.trgPortV;
             insp4_res = hasht_find(&port2vrf_res->insp4, &insp4_ntry);
             if (insp4_res == NULL) {
-                tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+                tmp = apply_acl(&port2vrf_res->inacl4, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
                 if (tmp == 2) doCpuing;
                 if (tmp != 0) doPunting;
             } else {
@@ -1946,10 +1943,7 @@ ipv6_rx:
                 if (neigh_res->aclport != prt) doPunting;
             }
         }
-        acls_ntry.dir = 1;
-        acls_ntry.port = prt;
-        acls_res = hasht_find(&acls6_table, &acls_ntry);
-        if (acls_res != NULL) {
+        if (!table_nonexist(&port2vrf_res->inacl6)) {
             if (frag != 0) doPunting;
             insp6_ntry.prot = acl6_ntry.protV;
             insp6_ntry.srcAddr1 = acl6_ntry.srcAddr1;
@@ -1964,7 +1958,7 @@ ipv6_rx:
             insp6_ntry.trgPort = acl6_ntry.trgPortV;
             insp6_res = hasht_find(&port2vrf_res->insp6, &insp6_ntry);
             if (insp6_res == NULL) {
-                tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+                tmp = apply_acl(&port2vrf_res->inacl6, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
                 if (tmp == 2) doCpuing;
                 if (tmp != 0) doPunting;
             } else {
