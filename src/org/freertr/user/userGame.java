@@ -9,6 +9,7 @@ import org.freertr.pipe.pipeSetting;
 import org.freertr.serv.servQuote;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.logger;
 
 /**
  * screen games
@@ -1543,28 +1544,32 @@ class userGameTetris implements Runnable {
     }
 
     public void run() {
-        for (;;) {
-            doPrint();
-            bits.sleep(1000);
-            if (!need2run) {
-                return;
+        try {
+            for (;;) {
+                doPrint();
+                bits.sleep(1000);
+                if (!need2run) {
+                    return;
+                }
+                curY++;
+                if (thg.isSpace(tab, curX, curY)) {
+                    continue;
+                }
+                curY--;
+                thg.putThing(tab, curX, curY);
+                doLines();
+                thg = nxt;
+                nxt = things.get(bits.random(0, things.size())).copyBytes();
+                curY = 0;
+                curX = sizeX / 2;
+                if (!thg.isSpace(tab, curX, curY)) {
+                    break;
+                }
             }
-            curY++;
-            if (thg.isSpace(tab, curX, curY)) {
-                continue;
-            }
-            curY--;
-            thg.putThing(tab, curX, curY);
-            doLines();
-            thg = nxt;
-            nxt = things.get(bits.random(0, things.size())).copyBytes();
-            curY = 0;
-            curX = sizeX / 2;
-            if (!thg.isSpace(tab, curX, curY)) {
-                need2run = false;
-                return;
-            }
+        } catch (Exception e) {
+            logger.traceback(e);
         }
+        need2run = false;
     }
 
 }
