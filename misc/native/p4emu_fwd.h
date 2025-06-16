@@ -1709,11 +1709,9 @@ ipv4_rx:
                 insp4_res->byteRx += bufS;
             }
         }
-        acls_ntry.dir = 6;
-        acls_res = hasht_find(&acls4_table, &acls_ntry);
-        if (acls_res == NULL) goto ipv4_qosed;
+        if (table_nonexist(&port2vrf_res->inqos4)) goto ipv4_qosed;
         if (frag != 0) doPunting;
-        aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+        aceh_res = search_ace(&port2vrf_res->inqos4, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
         if (aceh_res == NULL) goto ipv4_qosed;
         if (aceh_res->act != 0) goto ipv4_qosed;
         policer_ntry.vrf = 0;
@@ -1963,11 +1961,9 @@ ipv6_rx:
                 insp6_res->byteRx += bufS;
             }
         }
-        acls_ntry.dir = 6;
-        acls_res = hasht_find(&acls6_table, &acls_ntry);
-        if (acls_res == NULL) goto ipv6_qosed;
+        if (table_nonexist(&port2vrf_res->inqos6)) goto ipv6_qosed;
         if (frag != 0) doPunting;
-        aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+        aceh_res = search_ace(&port2vrf_res->inqos6, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
         if (aceh_res == NULL) goto ipv6_qosed;
         if (aceh_res->act != 0) goto ipv6_qosed;
         policer_ntry.vrf = 0;

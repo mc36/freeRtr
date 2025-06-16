@@ -1281,23 +1281,23 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "inqos4") == 0) {
-        acls_ntry.dir = 6;
-        acls_ntry.port = atoi(arg[2]);
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        acl4init(&port2vrf_res->inqos4);
         acl4_ntry.nexthop = atoi(arg[3]);
-        acls_res = acls_init4;
         readAcl4(&acl4_ntry, &arg[2]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
-        else table_add(&acls_res->aces, &acl4_ntry);
+        if (del == 0) table_del(&port2vrf_res->inqos4, &acl4_ntry);
+        else table_add(&port2vrf_res->inqos4, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inqos6") == 0) {
-        acls_ntry.dir = 6;
-        acls_ntry.port = atoi(arg[2]);
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        acl6init(&port2vrf_res->inqos6);
         acl6_ntry.nexthop = atoi(arg[3]);
-        acls_res = acls_init6;
         readAcl6(&acl6_ntry, &arg[2]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
-        else table_add(&acls_res->aces, &acl6_ntry);
+        if (del == 0) table_del(&port2vrf_res->inqos6, &acl6_ntry);
+        else table_add(&port2vrf_res->inqos6, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "outqos4") == 0) {
