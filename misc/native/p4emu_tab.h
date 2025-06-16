@@ -185,6 +185,7 @@ struct vrf2rib_entry {
     struct hasht_head mcst;
     struct table_head plk;
     struct table_head copp;
+    struct table_head flws;
 };
 
 
