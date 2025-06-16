@@ -131,6 +131,8 @@ struct port2vrf_entry {
     struct table_head outacl6;
     struct table_head inqos4;
     struct table_head inqos6;
+    struct table_head outqos4;
+    struct table_head outqos6;
 #ifndef HAVE_NOCRYPTO
     int mcscEthtyp;
     int mcscCrTxKeyLen;

@@ -239,9 +239,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     memset(&vlanout_ntry, 0, sizeof(vlanout_ntry));
     struct bridge_entry bridge_ntry;
     memset(&bridge_ntry, 0, sizeof(bridge_ntry));
-    struct acls_entry acls_ntry;
-    memset(&acls_ntry, 0, sizeof(acls_ntry));
-    struct acls_entry *acls_res;
     struct acl4_entry acl4_ntry;
     memset(&acl4_ntry, 0, sizeof(acl4_ntry));
     struct acl6_entry acl6_ntry;
@@ -1301,23 +1298,23 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "outqos4") == 0) {
-        acls_ntry.dir = 7;
-        acls_ntry.port = atoi(arg[2]);
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        acl4init(&port2vrf_res->outqos4);
         acl4_ntry.nexthop = atoi(arg[3]);
-        acls_res = acls_init4;
         readAcl4(&acl4_ntry, &arg[2]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
-        else table_add(&acls_res->aces, &acl4_ntry);
+        if (del == 0) table_del(&port2vrf_res->outqos4, &acl4_ntry);
+        else table_add(&port2vrf_res->outqos4, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "outqos6") == 0) {
-        acls_ntry.dir = 7;
-        acls_ntry.port = atoi(arg[2]);
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        acl6init(&port2vrf_res->outqos6);
         acl6_ntry.nexthop = atoi(arg[3]);
-        acls_res = acls_init6;
         readAcl6(&acl6_ntry, &arg[2]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
-        else table_add(&acls_res->aces, &acl6_ntry);
+        if (del == 0) table_del(&port2vrf_res->outqos6, &acl6_ntry);
+        else table_add(&port2vrf_res->outqos6, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "natcfg4") == 0) {

@@ -1831,11 +1831,9 @@ ipv4_tx:
             }
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
-            acls_ntry.dir = 7;
-            acls_res = hasht_find(&acls4_table, &acls_ntry);
-            if (acls_res == NULL) goto neigh_tx;
+            if (table_nonexist(&port2vrf_res->outqos4)) goto neigh_tx;
             if (frag != 0) doPunting;
-            aceh_res = search_ace(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
+            aceh_res = search_ace(&port2vrf_res->outqos4, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
             if (aceh_res == NULL) goto neigh_tx;
             if (aceh_res->act != 0) goto neigh_tx;
             policer_ntry.vrf = 0;
@@ -2108,11 +2106,9 @@ ipv6_tx:
             }
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
-            acls_ntry.dir = 7;
-            acls_res = hasht_find(&acls6_table, &acls_ntry);
-            if (acls_res == NULL) goto neigh_tx;
+            if (table_nonexist(&port2vrf_res->outqos6)) goto neigh_tx;
             if (frag != 0) doPunting;
-            aceh_res = search_ace(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
+            aceh_res = search_ace(&port2vrf_res->outqos6, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
             if (aceh_res == NULL) goto neigh_tx;
             if (aceh_res->act != 0) goto neigh_tx;
             policer_ntry.vrf = 0;
