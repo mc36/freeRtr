@@ -1339,21 +1339,21 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "copp4") == 0) {
-        acls_ntry.dir = 4;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init4;
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init4;
+        acl4init(&vrf2rib_res->copp);
         readAcl4(&acl4_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
-        else table_add(&acls_res->aces, &acl4_ntry);
+        if (del == 0) table_del(&vrf2rib_res->copp, &acl4_ntry);
+        else table_add(&vrf2rib_res->copp, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "copp6") == 0) {
-        acls_ntry.dir = 4;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init6;
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init6;
+        acl6init(&vrf2rib_res->copp);
         readAcl6(&acl6_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
-        else table_add(&acls_res->aces, &acl6_ntry);
+        if (del == 0) table_del(&vrf2rib_res->copp, &acl6_ntry);
+        else table_add(&vrf2rib_res->copp, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nattrns4") == 0) {

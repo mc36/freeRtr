@@ -18,6 +18,9 @@ struct hasht_head {
 
 #define table_get(tab, idx)   (void*) ((tab)->buffer + ((idx) * (tab)->reclen))
 
+#define table_nonexist(tab)   ((tab)->buffer == NULL)
+
+
 
 void table_init(struct table_head *tab, int reclen, int cmplen) {
     tab->reclen = reclen;

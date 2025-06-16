@@ -1889,13 +1889,9 @@ ipv4_tx:
                 if (mroute4_res->local != 0) doCpuing;
                 return;
             }
-            acls_ntry.dir = 4;
-            acls_ntry.port = vrf2rib_ntry.vrf;
-            acls_res = hasht_find(&acls4_table, &acls_ntry);
-            if (acls_res != NULL) {
-                if (frag != 0) doPunting;
-                if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doDropper;
-            }
+            if (table_nonexist(&vrf2rib_res->copp)) doCpuing;
+            if (frag != 0) doPunting;
+            if (apply_acl(&vrf2rib_res->copp, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doDropper;
             doCpuing;
             doRouted(route4_res, IP_PROTOCOL_IPV4);
         }
@@ -2196,13 +2192,9 @@ ipv6_tx:
                 if (mroute6_res->local != 0) doCpuing;
                 return;
             }
-            acls_ntry.dir = 4;
-            acls_ntry.port = vrf2rib_ntry.vrf;
-            acls_res = hasht_find(&acls6_table, &acls_ntry);
-            if (acls_res != NULL) {
-                if (frag != 0) doPunting;
-                if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doDropper;
-            }
+            if (table_nonexist(&vrf2rib_res->copp)) doCpuing;
+            if (frag != 0) doPunting;
+            if (apply_acl(&vrf2rib_res->copp, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doDropper;
             doCpuing;
             doRouted(route6_res, IP_PROTOCOL_IPV6);
         }

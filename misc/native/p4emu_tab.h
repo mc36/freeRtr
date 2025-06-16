@@ -184,6 +184,7 @@ struct vrf2rib_entry {
     struct hasht_head tun;
     struct hasht_head mcst;
     struct table_head plk;
+    struct table_head copp;
 };
 
 
@@ -503,6 +504,17 @@ struct acls_entry* acls_init(struct hasht_head *tab, struct acls_entry *ntry, in
     if (tab3->reclen != reclen1) table_init(tab3, reclen1, acer);
     return res;
 }
+
+void acl4init(struct table_head *tab) {
+    if (!table_nonexist(tab)) return;
+    table_init(tab, sizeof(struct acl4_entry), 1);
+}
+
+void acl6init(struct table_head *tab) {
+    if (!table_nonexist(tab)) return;
+    table_init(tab, sizeof(struct acl6_entry), 1);
+}
+
 
 #define acls_init4 acls_init(&acls4_table, &acls_ntry, sizeof(struct acl4_entry), sizeof(struct insp4_entry), 1, 5);
 #define acls_init6 acls_init(&acls6_table, &acls_ntry, sizeof(struct acl6_entry), sizeof(struct insp6_entry), 1, 11);
