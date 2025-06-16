@@ -1275,7 +1275,6 @@ void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
     struct neigh_entry neigh_ntry;
     struct vlanin_entry vlanin_ntry;
     struct bridge_entry bridge_ntry;
-    struct acls_entry acls_ntry;
     struct acl4_entry acl4_ntry;
     struct acl6_entry acl6_ntry;
     struct insp4_entry insp4_ntry;
@@ -1299,7 +1298,6 @@ void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
     struct neigh_entry *neigh_res;
     struct vlanin_entry *vlanin_res;
     struct bridge_entry *bridge_res;
-    struct acls_entry *acls_res;
     struct aclH_entry *aceh_res;
     struct insp4_entry *insp4_res;
     struct insp6_entry *insp6_res;
@@ -1433,12 +1431,9 @@ ethtyp_rx:
             ctx->hash ^= acl4_ntry.srcAddr ^ acl4_ntry.trgAddr;
             extract_layer4(acl4_ntry);
             update_tcpMss(acl4_ntry, port2vrf_res->tcpmss4);
-            acls_ntry.dir = 1;
-            acls_ntry.port = prt;
-            acls_res = hasht_find(&acls4_table, &acls_ntry);
-            if (acls_res == NULL) break;
+            if (table_nonexist(&port2vrf_res->inacl4)) break;
             if (frag != 0) doPunting;
-            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doPunting;
+            if (apply_acl(&port2vrf_res->inacl4, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) != 0) doPunting;
             break;
         case ETHERTYPE_IPV6: // ipv6
             ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff; // len
@@ -1470,12 +1465,9 @@ ethtyp_rx:
             ctx->hash ^= acl6_ntry.srcAddr1 ^ acl6_ntry.trgAddr1 ^ acl6_ntry.srcAddr2 ^ acl6_ntry.trgAddr2 ^ acl6_ntry.srcAddr3 ^ acl6_ntry.trgAddr3 ^ acl6_ntry.srcAddr4 ^ acl6_ntry.trgAddr4;
             extract_layer4(acl6_ntry);
             update_tcpMss(acl6_ntry, port2vrf_res->tcpmss6);
-            acls_ntry.dir = 1;
-            acls_ntry.port = prt;
-            acls_res = hasht_find(&acls6_table, &acls_ntry);
-            if (acls_res == NULL) break;
+            if (table_nonexist(&port2vrf_res->inacl6)) break;
             if (frag != 0) doPunting;
-            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doPunting;
+            if (apply_acl(&port2vrf_res->inacl6, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) != 0) doPunting;
             break;
         case ETHERTYPE_ROUTEDMAC:
             goto etyped_rx;
