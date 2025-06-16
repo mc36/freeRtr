@@ -167,14 +167,6 @@ vrf definition dn42
 vrf definition freenet
  exit
 !
-vrf definition niif
- rd 65535:8512
- rt4import 65535:8512
- rt4export 65535:8512
- rt6import 65535:8512
- rt6export 65535:8512
- exit
-!
 vrf definition rtbh
  rd 65535:666
  rt4import 65535:666
@@ -593,8 +585,6 @@ router bgp4 65535 vrf v1
  afi-vrf dn42 redistribute static
  afi-vrf dn42 ecmp
  !
- afi-vrf niif enable
- !
  afi-vrf rtbh enable
  afi-vrf rtbh redistribute blackhole4 1
  !
@@ -681,8 +671,6 @@ router bgp6 65535 vrf v1
  afi-vrf dn42 redistribute static
  afi-vrf dn42 ecmp
  !
- afi-vrf niif enable
- !
  afi-vrf rtbh enable
  afi-vrf rtbh redistribute blackhole6 1
  !
@@ -736,19 +724,6 @@ proxy-profile p4
 proxy-profile p5
  vrf v5
  exit
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
 !
 !
 !
