@@ -123,6 +123,8 @@ struct port2vrf_entry {
     int monPackets;
     int sgtSet;
     int sgtTag;
+    struct hasht_head insp4;
+    struct hasht_head insp6;
 #ifndef HAVE_NOCRYPTO
     int mcscEthtyp;
     int mcscCrTxKeyLen;

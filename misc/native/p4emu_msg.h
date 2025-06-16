@@ -1441,9 +1441,9 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "inspect4") == 0) {
-        acls_ntry.dir = 1;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init4;
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        if (hasht_nonexist(&port2vrf_res->insp4)) hasht_init(&port2vrf_res->insp4, sizeof(struct insp4_entry), 5);
         insp4_ntry.prot = atoi(arg[3]);
         inet_pton(AF_INET, arg[4], buf2);
         insp4_ntry.srcAddr = get32msb(buf2, 0);
@@ -1451,14 +1451,14 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         inet_pton(AF_INET, arg[6], buf2);
         insp4_ntry.trgAddr = get32msb(buf2, 0);
         insp4_ntry.trgPort = atoi(arg[7]);
-        if (del == 0) hasht_del(acls_res->insp, &insp4_ntry);
-        else hasht_add(acls_res->insp, &insp4_ntry);
+        if (del == 0) hasht_del(&port2vrf_res->insp4, &insp4_ntry);
+        else hasht_add(&port2vrf_res->insp4, &insp4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inspect6") == 0) {
-        acls_ntry.dir = 1;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init6;
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        if (hasht_nonexist(&port2vrf_res->insp6)) hasht_init(&port2vrf_res->insp6, sizeof(struct insp4_entry), 11);
         insp6_ntry.prot = atoi(arg[3]);
         inet_pton(AF_INET6, arg[4], buf2);
         insp6_ntry.srcAddr1 = get32msb(buf2, 0);
@@ -1472,8 +1472,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         insp6_ntry.trgAddr3 = get32msb(buf2, 8);
         insp6_ntry.trgAddr4 = get32msb(buf2, 12);
         insp6_ntry.trgPort = atoi(arg[7]);
-        if (del == 0) hasht_del(acls_res->insp, &insp6_ntry);
-        else hasht_add(acls_res->insp, &insp6_ntry);
+        if (del == 0) hasht_del(&port2vrf_res->insp6, &insp6_ntry);
+        else hasht_add(&port2vrf_res->insp6, &insp6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inqos") == 0) {

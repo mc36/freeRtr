@@ -1702,7 +1702,7 @@ ipv4_rx:
             insp4_ntry.trgAddr = acl4_ntry.trgAddr;
             insp4_ntry.srcPort = acl4_ntry.srcPortV;
             insp4_ntry.trgPort = acl4_ntry.trgPortV;
-            insp4_res = hasht_find(acls_res->insp, &insp4_ntry);
+            insp4_res = hasht_find(&port2vrf_res->insp4, &insp4_ntry);
             if (insp4_res == NULL) {
                 tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
                 if (tmp == 2) doCpuing;
@@ -1814,6 +1814,9 @@ ipv4_pbred:
             neigh_res = hasht_find(&neigh_table, &neigh_ntry);
             if (neigh_res == NULL) doDropper;
 ipv4_tx:
+            port2vrf_ntry.port = neigh_res->aclport;
+            port2vrf_res = hasht_find(&port2vrf_table, &port2vrf_ntry);
+            if (port2vrf_res == NULL) doDropper;
             acls_ntry.dir = 2;
             acls_ntry.port = neigh_res->aclport;
             acls_res = hasht_find(&acls4_table, &acls_ntry);
@@ -1824,7 +1827,7 @@ ipv4_tx:
                 insp4_ntry.srcAddr = acl4_ntry.trgAddr;
                 insp4_ntry.trgPort = acl4_ntry.srcPortV;
                 insp4_ntry.srcPort = acl4_ntry.trgPortV;
-                insp4_res = hasht_find(acls_res->insp, &insp4_ntry);
+                insp4_res = hasht_find(&port2vrf_res->insp4, &insp4_ntry);
                 if (insp4_res == NULL) {
                     tmp = apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff);
                     if (tmp == 2) doCpuing;
@@ -1959,7 +1962,7 @@ ipv6_rx:
             insp6_ntry.trgAddr4 = acl6_ntry.trgAddr4;
             insp6_ntry.srcPort = acl6_ntry.srcPortV;
             insp6_ntry.trgPort = acl6_ntry.trgPortV;
-            insp6_res = hasht_find(acls_res->insp, &insp6_ntry);
+            insp6_res = hasht_find(&port2vrf_res->insp6, &insp6_ntry);
             if (insp6_res == NULL) {
                 tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
                 if (tmp == 2) doCpuing;
@@ -2090,6 +2093,9 @@ ipv6_pbred:
             neigh_res = hasht_find(&neigh_table, &neigh_ntry);
             if (neigh_res == NULL) doDropper;
 ipv6_tx:
+            port2vrf_ntry.port = neigh_res->aclport;
+            port2vrf_res = hasht_find(&port2vrf_table, &port2vrf_ntry);
+            if (port2vrf_res == NULL) doDropper;
             acls_ntry.dir = 2;
             acls_ntry.port = neigh_res->aclport;
             acls_res = hasht_find(&acls6_table, &acls_ntry);
@@ -2106,7 +2112,7 @@ ipv6_tx:
                 insp6_ntry.srcAddr4 = acl6_ntry.trgAddr4;
                 insp6_ntry.trgPort = acl6_ntry.srcPortV;
                 insp6_ntry.srcPort = acl6_ntry.trgPortV;
-                insp6_res = hasht_find(acls_res->insp, &insp6_ntry);
+                insp6_res = hasht_find(&port2vrf_res->insp6, &insp6_ntry);
                 if (insp6_res == NULL) {
                     tmp = apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff);
                     if (tmp == 2) doCpuing;

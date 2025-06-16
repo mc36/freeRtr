@@ -131,6 +131,9 @@ void hasht_deinit(struct hasht_head *tab) {
 }
 
 
+#define hasht_nonexist(tab) table_nonexist(&((tab)->dat))
+
+
 void* hasht_add(struct hasht_head *tab, void *ntry) {
     return table_add(&tab->dat, ntry);
 }
@@ -162,6 +165,9 @@ void hasht_init(struct hasht_head *tab, int reclen, int cmplen) {
 void hasht_deinit(struct hasht_head *tab) {
     for (int i=0; i<256; i++) table_deinit(&tab->dat[i]);
 }
+
+
+#define hasht_nonexist(tab) table_nonexist(&((tab)->dat[0]))
 
 
 struct table_head* hash_bucket(struct hasht_head *tab, void *ntry) {
