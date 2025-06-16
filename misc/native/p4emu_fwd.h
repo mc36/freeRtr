@@ -1740,19 +1740,16 @@ ipv4_qosed:
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv4_flwed:
-        acls_ntry.dir = 3;
-        acls_ntry.port = vrf2rib_ntry.vrf;
-        acls_res = hasht_find(&acls4_table, &acls_ntry);
-        if (acls_res == NULL) goto ipv4_nated;
+        if (table_nonexist(&vrf2rib_res->natC)) goto ipv4_nated;
         if (frag != 0) goto ipv4_nated;
         nat4_ntry.prot = acl4_ntry.protV;
         nat4_ntry.oSrcAddr = acl4_ntry.srcAddr;
         nat4_ntry.oTrgAddr = acl4_ntry.trgAddr;
         nat4_ntry.oSrcPort = acl4_ntry.srcPortV;
         nat4_ntry.oTrgPort = acl4_ntry.trgPortV;
-        nat4_res = hasht_find(&vrf2rib_res->nat, &nat4_ntry);
+        nat4_res = hasht_find(&vrf2rib_res->natT, &nat4_ntry);
         if (nat4_res == NULL) {
-            if (apply_acl(&acls_res->aces, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doCpuing;
+            if (apply_acl(&vrf2rib_res->natC, &acl4_ntry, &acl4_matcher, bufS - bufP + preBuff) == 0) doCpuing;
             goto ipv4_nated;
         }
         nat4_res->pack++;
@@ -2000,10 +1997,7 @@ ipv6_qosed:
         if (policer_res->avail < 1) doDropper;
         policer_res->avail -= bufS - bufP + preBuff;
 ipv6_flwed:
-        acls_ntry.dir = 3;
-        acls_ntry.port = vrf2rib_ntry.vrf;
-        acls_res = hasht_find(&acls6_table, &acls_ntry);
-        if (acls_res == NULL) goto ipv6_nated;
+        if (table_nonexist(&vrf2rib_res->natC)) goto ipv6_nated;
         if (frag != 0) goto ipv6_nated;
         nat6_ntry.prot = acl6_ntry.protV;
         nat6_ntry.oSrcAddr1 = acl6_ntry.srcAddr1;
@@ -2016,9 +2010,9 @@ ipv6_flwed:
         nat6_ntry.oTrgAddr4 = acl6_ntry.trgAddr4;
         nat6_ntry.oSrcPort = acl6_ntry.srcPortV;
         nat6_ntry.oTrgPort = acl6_ntry.trgPortV;
-        nat6_res = hasht_find(&vrf2rib_res->nat, &nat6_ntry);
+        nat6_res = hasht_find(&vrf2rib_res->natT, &nat6_ntry);
         if (nat6_res == NULL) {
-            if (apply_acl(&acls_res->aces, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doCpuing;
+            if (apply_acl(&vrf2rib_res->natC, &acl6_ntry, &acl6_matcher, bufS - bufP + preBuff) == 0) doCpuing;
             goto ipv6_nated;
         }
         nat6_res->pack++;

@@ -1321,21 +1321,21 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "natcfg4") == 0) {
-        acls_ntry.dir = 3;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init4;
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init4;
+        acl4init(&vrf2rib_res->natC);
         readAcl4(&acl4_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl4_ntry);
-        else table_add(&acls_res->aces, &acl4_ntry);
+        if (del == 0) table_del(&vrf2rib_res->natC, &acl4_ntry);
+        else table_add(&vrf2rib_res->natC, &acl4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "natcfg6") == 0) {
-        acls_ntry.dir = 3;
-        acls_ntry.port = atoi(arg[2]);
-        acls_res = acls_init6;
+        vrf2rib_ntry.vrf = atoi(arg[2]);
+        vrf2rib_res = vrf2rib_init6;
+        acl6init(&vrf2rib_res->natC);
         readAcl6(&acl6_ntry, &arg[1]);
-        if (del == 0) table_del(&acls_res->aces, &acl6_ntry);
-        else table_add(&acls_res->aces, &acl6_ntry);
+        if (del == 0) table_del(&vrf2rib_res->natC, &acl6_ntry);
+        else table_add(&vrf2rib_res->natC, &acl6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "copp4") == 0) {
@@ -1382,8 +1382,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.oTrgPort, -1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nSrcPort, +1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nTrgPort, +1);
-        if (del == 0) hasht_del(&vrf2rib_res->nat, &nat4_ntry);
-        else hasht_add(&vrf2rib_res->nat, &nat4_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->natT, &nat4_ntry);
+        else hasht_add(&vrf2rib_res->natT, &nat4_ntry);
         return 0;
     }
     if (strcmp(arg[0], "nattrns6") == 0) {
@@ -1436,8 +1436,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.oTrgPort, -1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nSrcPort, +1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nTrgPort, +1);
-        if (del == 0) hasht_del(&vrf2rib_res->nat, &nat6_ntry);
-        else hasht_add(&vrf2rib_res->nat, &nat6_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->natT, &nat6_ntry);
+        else hasht_add(&vrf2rib_res->natT, &nat6_ntry);
         return 0;
     }
     if (strcmp(arg[0], "inspect4") == 0) {
@@ -2949,13 +2949,13 @@ void doStatRound_vrf(void* buffer, int fixed) {
     fprintf(commandTx, "vrf%i_cnt %i %li %li\r\n", fixed, res->vrf, res->pack, res->byte);
     if (fixed == 4) {
         tree_walk(&res->rou, &doStatRound_rou4, res->vrf);
-        hasht_walk(&res->nat, &doStatRound_nat4, res->vrf);
+        hasht_walk(&res->natT, &doStatRound_nat4, res->vrf);
         hasht_walk(&res->tun, &doStatRound_tun4, res->vrf);
         hasht_walk(&res->mcst, &doStatRound_mcst4, res->vrf);
         table_walk(&res->plk, &doStatRound_polka4, res->vrf);
     } else {
         tree_walk(&res->rou, &doStatRound_rou6, res->vrf);
-        hasht_walk(&res->nat, &doStatRound_nat6, res->vrf);
+        hasht_walk(&res->natT, &doStatRound_nat6, res->vrf);
         hasht_walk(&res->tun, &doStatRound_tun6, res->vrf);
         hasht_walk(&res->mcst, &doStatRound_mcst6, res->vrf);
         table_walk(&res->plk, &doStatRound_polka6, res->vrf);

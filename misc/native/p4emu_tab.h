@@ -180,13 +180,14 @@ struct vrf2rib_entry {
     long pack;
     long byte;
     struct tree_head rou;
-    struct hasht_head nat;
+    struct hasht_head natT;
     struct hasht_head tun;
     struct hasht_head mcst;
     struct table_head plk;
     struct table_head copp;
     struct table_head flws;
     struct table_head pbr;
+    struct table_head natC;
 };
 
 
@@ -199,7 +200,7 @@ struct vrf2rib_entry* vrf2rib_init(struct hasht_head *tab, struct vrf2rib_entry 
     struct vrf2rib_entry* res = hasht_find(tab, ntry);
     if (res != NULL) return res;
     tree_init(&ntry->rou, reclen1);
-    hasht_init(&ntry->nat, reclen2, natter);
+    hasht_init(&ntry->natT, reclen2, natter);
     hasht_init(&ntry->tun, reclen3, tunner);
     hasht_init(&ntry->mcst, reclen4, mcaster);
     table_init(&ntry->plk, sizeof(struct polkaIdx_entry), 1);
