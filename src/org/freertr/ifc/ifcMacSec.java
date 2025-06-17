@@ -418,6 +418,11 @@ public class ifcMacSec {
         switch (replyOld) {
             case 1:
                 peerDisc = bits.msbGetD(replyVal, 0);
+                if (myDisc == peerDisc) {
+                    myDisc = 1 + bits.randomD();
+                    peerDisc = 0;
+                    return null;
+                }
                 pck.putByte(2, 2); // init
                 pck.msbPutD(size, myDisc);
                 pck.putSkip(size + 4);
@@ -426,6 +431,11 @@ public class ifcMacSec {
                 return pck;
             case 2:
                 peerDisc = bits.msbGetD(replyVal, 0);
+                if (myDisc == peerDisc) {
+                    myDisc = 1 + bits.randomD();
+                    peerDisc = 0;
+                    return null;
+                }
                 break;
             case 3:
             case 4:
