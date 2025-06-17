@@ -477,7 +477,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         l.add(null, false, 5, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 4, new int[]{5}, "dead-time", "time before neighbor down");
         l.add(null, false, 5, new int[]{-1}, "<num>", "time in ms");
-        secInfoUtl.getHelp(l, 4, "ipinfo            check peers");
+        secInfoUtl.getHelp(l, 4, "ipinfo", "check peers");
         l.add(null, false, 4, new int[]{5}, "dynamic-metric", "dynamic peer metric");
         l.add(null, false, 5, new int[]{-1}, "forbid", "forbid peer measurement");
         l.add(null, false, 5, new int[]{6}, "mode", "measurement mode");

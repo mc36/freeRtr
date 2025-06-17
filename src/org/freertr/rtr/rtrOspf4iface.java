@@ -871,7 +871,7 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
         l.add(null, false, 6, new int[]{-1}, "<num>", "index");
         l.add(null, false, 5, new int[]{6}, "subdomain", "set subdomain");
         l.add(null, false, 6, new int[]{-1}, "<num>", "index");
-        secInfoUtl.getHelp(l, 4, "ipinfo            check peers");
+        secInfoUtl.getHelp(l, 4, "ipinfo", "check peers");
         l.add(null, false, 4, new int[]{5}, "dynamic-metric", "dynamic peer metric");
         l.add(null, false, 5, new int[]{6}, "mode", "dynamic peer metric");
         l.add(null, false, 6, new int[]{-1}, "disabled", "forbid echo requests");

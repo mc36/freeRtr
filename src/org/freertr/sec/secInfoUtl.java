@@ -659,65 +659,66 @@ public class secInfoUtl {
      * @param lst help text to update
      * @param tab base level
      * @param beg beginning
+     * @param beg ending
      */
-    public final static void getHelp(userHelping lst, int tab, String beg) {
-        if (!beg.endsWith("-")) {
-            lst.add(null, (tab + 0) + " " + (tab + 1) + "  " + beg);
+    public final static void getHelp(userHelping lst, int tab, String beg, String end) {
+        if (end != null) {
+            lst.add(null, false, tab, new int[]{tab + 1}, beg, end);
             beg = "";
         }
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "router4                      lookup addresses");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "router4", "lookup addresses");
         cfgRtr.getRouterList(lst, tab, "");
-        lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "router6                      lookup addresses");
+        lst.add(null, false, tab + 3, new int[]{-1}, "<num:rtr>", "process id");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "router6", "lookup addresses");
         cfgRtr.getRouterList(lst, tab, "");
-        lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "valid4                       validate prefixes");
+        lst.add(null, false, tab + 3, new int[]{-1}, "<num:rtr>", "process id");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "valid4", "validate prefixes");
         cfgRtr.getRouterList(lst, tab, "");
-        lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "valid6                       validate prefixes");
+        lst.add(null, false, tab + 3, new int[]{-1}, "<num:rtr>", "process id");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "valid6", "validate prefixes");
         cfgRtr.getRouterList(lst, tab, "");
-        lst.add(null, (tab + 3) + " .         <num:rtr>       process id");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "vrf                          vrf to use");
-        lst.add(null, (tab + 2) + " .    <name:vrf>                 name of table");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "script                       script to execute");
-        lst.add(null, (tab + 2) + " .    <name:scr>                 script name");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "style                        colorize prefix details");
-        lst.add(null, (tab + 2) + " .    <str>                      string to send");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "format                       format prefix details");
-        lst.add(null, (tab + 2) + " .    normal                     select normal mode");
-        lst.add(null, (tab + 2) + " .    table                      select table mode");
-        lst.add(null, (tab + 2) + " .    fancy                      select fancy mode");
-        lst.add(null, (tab + 2) + " .    csv                        select csv mode");
-        lst.add(null, (tab + 2) + " .    raw                        select raw mode");
-        lst.add(null, (tab + 2) + " .    html                       select html mode");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "tracker                      check tracker");
-        lst.add(null, (tab + 2) + " .  <name:trk>           tracker name");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "rate                         access rate");
-        lst.add(null, (tab + 2) + " " + (tab + 3) + "    <num>                new sessions per interval");
-        lst.add(null, (tab + 3) + " .      <num>              interval");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "startup                      initial downtime");
-        lst.add(null, (tab + 2) + " .    <num>                time");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "class                        check access list");
-        lst.add(null, (tab + 2) + " .    <name:acl>           access list name");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "prefix                       check prefix list");
-        lst.add(null, (tab + 2) + " .    <name:pl>            prefix list name");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "map                          check route map");
-        lst.add(null, (tab + 2) + " .    <name:rm>            route map name");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "policy                       check route policy");
-        lst.add(null, (tab + 2) + " .    <name:rpl>           route policy name");
-        lst.add(null, (tab + 1) + " " + (tab + 2) + "  " + beg + "pmtud                    test pmtud before accepting");
-        lst.add(null, (tab + 2) + " " + (tab + 3) + "  <num>                      min mtu");
-        lst.add(null, (tab + 3) + " " + (tab + 4) + "    <num>                    max mtu");
-        lst.add(null, (tab + 4) + " .    <num>                    timeout per round");
-        lst.add(null, (tab + 1) + " .  " + beg + "details                      print prefix details");
-        lst.add(null, (tab + 1) + " .  " + beg + "single                       print prefix summary");
-        lst.add(null, (tab + 1) + " .  " + beg + "client                       print client summary");
-        lst.add(null, (tab + 1) + " .  " + beg + "separate                     separate summary sections");
-        lst.add(null, (tab + 1) + " .  " + beg + "hacked                       hackerize prefix details");
-        lst.add(null, (tab + 1) + " .  " + beg + "plain                        plain prefix details");
-        lst.add(null, (tab + 1) + " .  " + beg + "justip                       just address headline");
-        lst.add(null, (tab + 1) + " .  " + beg + "resolve                      resolve addresses");
-        lst.add(null, (tab + 1) + " .  " + beg + "others                       allow any addresses");
+        lst.add(null, false, tab + 3, new int[]{-1}, "<num:rtr>", "process id");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "vrf", "vrf to use");
+        lst.add(null, false, tab + 2, new int[]{-1}, "<name:vrf>", "name of table");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "script", "script to execute");
+        lst.add(null, false, tab + 2, new int[]{-1}, "<name:scr>", "script name");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "style", "colorize prefix details");
+        lst.add(null, false, tab + 2, new int[]{-1}, "<str>", "string to send");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "format", "format prefix details");
+        lst.add(null, false, tab + 2, new int[]{-1}, "normal", "select normal mode");
+        lst.add(null, false, tab + 2, new int[]{-1}, "table", "select table mode");
+        lst.add(null, false, tab + 2, new int[]{-1}, "fancy", "select fancy mode");
+        lst.add(null, false, tab + 2, new int[]{-1}, "csv", "select csv mode");
+        lst.add(null, false, tab + 2, new int[]{-1}, "raw", "select raw mode");
+        lst.add(null, false, tab + 2, new int[]{-1}, "html", "select html mode");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "tracker", "check tracker");
+        lst.add(null, false, tab + 2, new int[]{-1}, "<name:trk>", "tracker name");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "rate", "access rate");
+        lst.add(null, false, tab + 2, new int[]{tab + 3}, "<num>", "new sessions per interval");
+        lst.add(null, false, tab + 3, new int[]{-1}, "<num>", "interval");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "startup", "initial downtime");
+        lst.add(null, false, tab + 2, new int[]{-1}, "<num>", "time");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "class", "check access list");
+        lst.add(null, false, tab + 2, new int[]{-1}, "<name:acl>", "access list name");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "prefix", "check prefix list");
+        lst.add(null, false, tab + 2, new int[]{-1}, "<name:pl>", "prefix list name");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "map", "check route map");
+        lst.add(null, false, tab + 2, new int[]{-1}, "<name:rm>", "route map name");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "policy", "check route policy");
+        lst.add(null, false, tab + 2, new int[]{-1}, "<name:rpl>", "route policy name");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "pmtud", "test pmtud before accepting");
+        lst.add(null, false, tab + 2, new int[]{tab + 3}, "<num>", "min mtu");
+        lst.add(null, false, tab + 3, new int[]{tab + 4}, beg + "<num>", "max mtu");
+        lst.add(null, false, tab + 4, new int[]{-1}, "<num>", "timeout per round");
+        lst.add(null, false, tab + 1, new int[]{-1}, beg + "details", "print prefix details");
+        lst.add(null, false, tab + 1, new int[]{-1}, beg + "single", "print prefix summary");
+        lst.add(null, false, tab + 1, new int[]{-1}, beg + "client", "print client summary");
+        lst.add(null, false, tab + 1, new int[]{-1}, beg + "separate", "separate summary sections");
+        lst.add(null, false, tab + 1, new int[]{-1}, beg + "hacked", "hackerize prefix details");
+        lst.add(null, false, tab + 1, new int[]{-1}, beg + "plain", "plain prefix details");
+        lst.add(null, false, tab + 1, new int[]{-1}, beg + "justip", "just address headline");
+        lst.add(null, false, tab + 1, new int[]{-1}, beg + "resolve", "resolve addresses");
+        lst.add(null, false, tab + 1, new int[]{-1}, beg + "others", "allow any addresses");
     }
 
     /**

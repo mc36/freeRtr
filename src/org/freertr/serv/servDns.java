@@ -163,7 +163,7 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, false, 1, new int[]{2}, "recursion", "recursive parameters");
         l.add(null, false, 2, new int[]{-1}, "enable", "allow recursion");
         l.add(null, false, 2, new int[]{-1}, "disable", "forbid recursion");
-        secInfoUtl.getHelp(l, 1, "access-");
+        secInfoUtl.getHelp(l, 1, "access-", null);
         l.add(null, false, 2, new int[]{3}, "6to4prefix", "setup 6to4 prefix");
         l.add(null, false, 3, new int[]{-1}, "<addr>", "address to prepend");
         l.add(null, false, 2, new int[]{-1}, "6to4nothing", "clear 6to4 prefix");

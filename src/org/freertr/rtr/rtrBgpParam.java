@@ -1906,7 +1906,7 @@ public abstract class rtrBgpParam {
         l.add(null, false, 3, new int[]{-1}, "label-pop", "advertise pop label");
         l.add(null, false, 3, new int[]{-1}, "lookup-database", "lookup rib before accepting");
         l.add(null, false, 3, new int[]{-1}, "lookup-reverse", "lookup dns before accepting");
-        secInfoUtl.getHelp(l, 3, "ipinfo      check peers");
+        secInfoUtl.getHelp(l, 3, "ipinfo", "check peers");
         l.add(null, false, 3, new int[]{-1}, "segrout", "send segment routing attribute");
         l.add(null, false, 3, new int[]{-1}, "bier", "send bier attribute");
         l.add(null, false, 3, new int[]{-1}, "wide-aspath", "send wide aspath attribute");

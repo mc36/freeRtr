@@ -1455,7 +1455,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     if (strcmp(arg[0], "inspect6") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        if (hasht_nonexist(&port2vrf_res->insp6)) hasht_init(&port2vrf_res->insp6, sizeof(struct insp4_entry), 11);
+        if (hasht_nonexist(&port2vrf_res->insp6)) hasht_init(&port2vrf_res->insp6, sizeof(struct insp6_entry), 11);
         insp6_ntry.prot = atoi(arg[3]);
         inet_pton(AF_INET6, arg[4], buf2);
         insp6_ntry.srcAddr1 = get32msb(buf2, 0);
@@ -3010,7 +3010,7 @@ void doStatRound_neigh(void* buffer, int fixed) {
 }
 
 void doStatRound_vlan(void* buffer, int fixed) {
-    struct vlanout_entry *ontry = buffer;;
+    struct vlanout_entry *ontry = buffer;
     struct vlanin_entry ival;
     if (ontry->port2 != 0) ival.port = ontry->port2;
     else ival.port = ontry->port;

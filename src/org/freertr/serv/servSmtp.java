@@ -307,7 +307,7 @@ public class servSmtp extends servGeneric implements prtServS {
         l.add(null, false, 1, new int[]{-1}, "dsn", "allow delivery notification");
         l.add(null, false, 1, new int[]{2}, "recursion", "recursive parameters");
         l.add(null, false, 2, new int[]{-1}, "enable", "allow recursion");
-        secInfoUtl.getHelp(l, 1, "access-");
+        secInfoUtl.getHelp(l, 1, "access-", null);
         l.add(null, false, 2, new int[]{3}, "authentication", "set authentication");
         l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authentication list");
         l.add(null, false, 1, new int[]{2}, "bcc", "set bcc user");

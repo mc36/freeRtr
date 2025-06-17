@@ -2049,50 +2049,50 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
      * @param e ending
      */
     public static void getRouterList(userHelping l, int p, String e) {
-        l.add(null, (p + 2) + " " + (p + 3) + "     bgp4                  border gateway protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     bgp6                  border gateway protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     ospf4                 open shortest path first" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     ospf6                 open shortest path first" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     isis4                 intermediate system intermediate system" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     isis6                 intermediate system intermediate system" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     rift4                 routing in fat trees" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     rift6                 routing in fat trees" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     pvrp4                 path vector routing protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     pvrp6                 path vector routing protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     lsrp4                 link state routing protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     lsrp6                 link state routing protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     eigrp4                enhanced interior gateway routing protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     eigrp6                enhanced interior gateway routing protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     rip4                  routing information protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     rip6                  routing information protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     babel4                babel routing protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     babel6                babel routing protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     blackhole4            blackhole collector" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     blackhole6            blackhole collector" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     olsr4                 optimized link state routing protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     olsr6                 optimized link state routing protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     msdp4                 multicast source discovery protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     msdp6                 multicast source discovery protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     rpki4                 resource public key infra protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     rpki6                 resource public key infra protocol" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     flowspec4             flowspec to flowspec rewriter" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     flowspec6             flowspec to flowspec rewriter" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     ghosthunt4            ghost/zombie route hunter" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     ghosthunt6            ghost/zombie route hunter" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     uni2multi4            unicast to multicast converter" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     uni2multi6            unicast to multicast converter" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     uni2flow4             unicast to flowspec converter" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     uni2flow6             unicast to flowspec converter" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     logger4               route logger" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     logger6               route logger" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     download4             route download" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     download6             route download" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     deaggr4               deaggregate creator" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     deaggr6               deaggregate creator" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     aggreg4               auto aggregate creator" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     aggreg6               auto aggregate creator" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     mobile4               mobile route creator" + e);
-        l.add(null, (p + 2) + " " + (p + 3) + "     mobile6               mobile route creator" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "bgp4", "border gateway protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "bgp6", "border gateway protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "ospf4", "open shortest path first" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "ospf6", "open shortest path first" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "isis4", "intermediate system intermediate system" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "isis6", "intermediate system intermediate system" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "rift4", "routing in fat trees" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "rift6", "routing in fat trees" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "pvrp4", "path vector routing protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "pvrp6", "path vector routing protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "lsrp4", "link state routing protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "lsrp6", "link state routing protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "eigrp4", "enhanced interior gateway routing protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "eigrp6", "enhanced interior gateway routing protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "rip4", "routing information protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "rip6", "routing information protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "babel4", "babel routing protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "babel6", "babel routing protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "blackhole4", "blackhole collector" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "blackhole6", "blackhole collector" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "olsr4", "optimized link state routing protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "olsr6", "optimized link state routing protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "msdp4", "multicast source discovery protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "msdp6", "multicast source discovery protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "rpki4", "resource public key infra protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "rpki6", "resource public key infra protocol" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "flowspec4", "flowspec to flowspec rewriter" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "flowspec6", "flowspec to flowspec rewriter" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "ghosthunt4", "ghost/zombie route hunter" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "ghosthunt6", "ghost/zombie route hunter" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "uni2multi4", "unicast to multicast converter" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "uni2multi6", "unicast to multicast converter" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "uni2flow4", "unicast to flowspec converter" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "uni2flow6", "unicast to flowspec converter" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "logger4", "route logger" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "logger6", "route logger" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "download4", "route download" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "download6", "route download" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "deaggr4", "deaggregate creator" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "deaggr6", "deaggregate creator" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "aggreg4", "auto aggregate creator" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "aggreg6", "auto aggregate creator" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "mobile4", "mobile route creator" + e);
+        l.add(null, false, p + 2, new int[]{p + 3}, "mobile6", "mobile route creator" + e);
     }
 
     /**
@@ -2177,13 +2177,13 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1 2   description             specify description");
-        l.add(null, "2 2,.   <str>                 description");
-        l.add(null, "1 2   vrf                     specify vrf to use");
-        l.add(null, "2 .     <name:vrf>            name of table");
-        l.add(null, "1 2   automesh                specify auto mesh te tunnels");
-        l.add(null, "2 .     <name:pl>             name of prefix list");
-        l.add(null, "1 .   " + cmds.upgradeCli + "             embed vrf name to router knob");
+        l.add(null, false, 1, new int[]{2}, "description", "specify description");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "description");
+        l.add(null, false, 1, new int[]{2}, "vrf", "specify vrf to use");
+        l.add(null, false, 2, new int[]{-1}, "<name:vrf>", "name of table");
+        l.add(null, false, 1, new int[]{2}, "automesh", "specify auto mesh te tunnels");
+        l.add(null, false, 2, new int[]{-1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, 1, new int[]{-1}, cmds.upgradeCli, "embed vrf name to router knob");
         getRedistHelp(l, 0);
         ipRtr rtr = getRouter();
         if (rtr != null) {

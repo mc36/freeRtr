@@ -236,7 +236,7 @@ public class rtrMsdp extends ipRtr {
         l.add(null, false, 5, new int[]{6}, "<num>", "hold time in ms");
         l.add(null, false, 6, new int[]{7}, "<num>", "refresh time in ms");
         l.add(null, false, 7, new int[]{-1}, "<num>", "flush time in ms");
-        secInfoUtl.getHelp(l, 3, "ipinfo            check peers");
+        secInfoUtl.getHelp(l, 3, "ipinfo", "check peers");
         l.add(null, false, 3, new int[]{-1}, "shutdown", "connection disabled for this peer");
         l.add(null, false, 3, new int[]{-1}, "bfd", "enable bfd triggered down");
     }

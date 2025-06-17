@@ -391,7 +391,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, false, 4, new int[]{4, -1}, "script", "allow script commands");
         l.add(null, false, 4, new int[]{4, -1}, "config", "allow config commands");
         l.add(null, false, 4, new int[]{4, -1}, "ipinfo", "allow ip info commands");
-        secInfoUtl.getHelp(l, 3, "ipinfo            allow ipinfo api");
+        secInfoUtl.getHelp(l, 3, "ipinfo", "allow ipinfo api");
         l.add(null, false, 3, new int[]{4}, "search-script", "allow scripts defined in configuration");
         l.add(null, false, 4, new int[]{-1}, "<str>", "prefix");
         l.add(null, false, 3, new int[]{-1}, "imagemap", "allow image map processing");
@@ -413,7 +413,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, false, 4, new int[]{-1}, "<name:aaa>", "authentication list");
         l.add(null, false, 3, new int[]{4}, "style", "set page style tags");
         l.add(null, false, 4, new int[]{4, -1}, "<text>", "text to send");
-        secInfoUtl.getHelp(l, 2, "access-");
+        secInfoUtl.getHelp(l, 2, "access-", null);
     }
 
     /**

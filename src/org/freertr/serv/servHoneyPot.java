@@ -135,7 +135,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
         l.add(null, false, 1, new int[]{-1}, "tiny-http", "pretend http server");
         l.add(null, false, 1, new int[]{-1}, "closed", "pretend closed port");
         l.add(null, false, 1, new int[]{-1}, "blackhole", "blackhole immediately");
-        secInfoUtl.getHelp(l, 1, "info            report parameters");
+        secInfoUtl.getHelp(l, 1, "info", "report parameters");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

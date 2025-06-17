@@ -551,7 +551,7 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
         l.add(null, false, 4, new int[]{5}, "label-out", "filter label in egress updates");
         l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
-        secInfoUtl.getHelp(l, 4, "ipinfo            check peers");
+        secInfoUtl.getHelp(l, 4, "ipinfo", "check peers");
         l.add(null, false, 4, new int[]{5}, "dynamic-metric", "dynamic peer metric");
         l.add(null, false, 5, new int[]{-1}, "forbid", "forbid peer measurement");
         l.add(null, false, 5, new int[]{6}, "mode", "measurement mode");

@@ -280,7 +280,7 @@ public class rtrEigrpIface implements Comparable<rtrEigrpIface>, ipPrt {
         l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
         l.add(null, false, 4, new int[]{5}, "prefix-list-out", "filter prefixes in egress updates");
         l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
-        secInfoUtl.getHelp(l, 4, "ipinfo            check peers");
+        secInfoUtl.getHelp(l, 4, "ipinfo", "check peers");
     }
 
     /**
