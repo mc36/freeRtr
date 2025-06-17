@@ -3041,7 +3041,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             neis.add("" + ntry.peerAddr);
         }
         l.add(null, false, 1, new int[]{2}, "address-family", "specify address families");
-        rtrBgpParam.getAfiList(l, "2 2,.", "to use", true);
+        rtrBgpParam.getAfiList(l, 2, new int[]{2, -1}, "to use", true);
         l.add(null, false, 1, new int[]{2}, "local-as", "specify local as number");
         l.add(null, false, 2, new int[]{-1}, "<num>", "autonomous system number");
         l.add(null, false, 1, new int[]{-1}, "default-originate", "advertise default route");

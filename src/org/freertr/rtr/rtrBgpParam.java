@@ -1221,44 +1221,44 @@ public abstract class rtrBgpParam {
      * @param end ending
      * @param all all, none
      */
-    public static void getAfiList(userHelping hl, String beg, String end, boolean all) {
+    public static void getAfiList(userHelping hl, int lev, int[] nxt, String end, boolean all) {
         if (all) {
-            hl.add(null, beg + "  all           all address family to " + end);
-            hl.add(null, beg + "  none          no address family to " + end);
+            hl.add(null, false, lev, nxt, "all", "all address family to " + end);
+            hl.add(null, false, lev, nxt, "none", "no address family to " + end);
         }
-        hl.add(null, beg + "  unicast       address family to " + end);
-        hl.add(null, beg + "  labeled       address family to " + end);
-        hl.add(null, beg + "  ctp           address family to " + end);
-        hl.add(null, beg + "  car           address family to " + end);
-        hl.add(null, beg + "  olab          address family to " + end);
-        hl.add(null, beg + "  octp          address family to " + end);
-        hl.add(null, beg + "  ocar          address family to " + end);
-        hl.add(null, beg + "  ouni          address family to " + end);
-        hl.add(null, beg + "  omlt          address family to " + end);
-        hl.add(null, beg + "  oflw          address family to " + end);
-        hl.add(null, beg + "  osrt          address family to " + end);
-        hl.add(null, beg + "  multicast     address family to " + end);
-        hl.add(null, beg + "  flowspec      address family to " + end);
-        hl.add(null, beg + "  vpnuni        address family to " + end);
-        hl.add(null, beg + "  vpnmlt        address family to " + end);
-        hl.add(null, beg + "  vpnflw        address family to " + end);
-        hl.add(null, beg + "  ovpnuni       address family to " + end);
-        hl.add(null, beg + "  ovpnmlt       address family to " + end);
-        hl.add(null, beg + "  ovpnflw       address family to " + end);
-        hl.add(null, beg + "  vpls          address family to " + end);
-        hl.add(null, beg + "  mspw          address family to " + end);
-        hl.add(null, beg + "  evpn          address family to " + end);
-        hl.add(null, beg + "  mdt           address family to " + end);
-        hl.add(null, beg + "  nsh           address family to " + end);
-        hl.add(null, beg + "  rpd           address family to " + end);
-        hl.add(null, beg + "  spf           address family to " + end);
-        hl.add(null, beg + "  rtfilter      address family to " + end);
-        hl.add(null, beg + "  srte          address family to " + end);
-        hl.add(null, beg + "  linkstate     address family to " + end);
-        hl.add(null, beg + "  mvpn          address family to " + end);
-        hl.add(null, beg + "  omvpn         address family to " + end);
-        hl.add(null, beg + "  mtree         address family to " + end);
-        hl.add(null, beg + "  omtree        address family to " + end);
+        hl.add(null, false, lev, nxt, "unicast", "address family to " + end);
+        hl.add(null, false, lev, nxt, "labeled", "address family to " + end);
+        hl.add(null, false, lev, nxt, "ctp", "address family to " + end);
+        hl.add(null, false, lev, nxt, "car", "address family to " + end);
+        hl.add(null, false, lev, nxt, "olab", "address family to " + end);
+        hl.add(null, false, lev, nxt, "octp", "address family to " + end);
+        hl.add(null, false, lev, nxt, "ocar", "address family to " + end);
+        hl.add(null, false, lev, nxt, "ouni", "address family to " + end);
+        hl.add(null, false, lev, nxt, "omlt", "address family to " + end);
+        hl.add(null, false, lev, nxt, "oflw", "address family to " + end);
+        hl.add(null, false, lev, nxt, "osrt", "address family to " + end);
+        hl.add(null, false, lev, nxt, "multicast", "address family to " + end);
+        hl.add(null, false, lev, nxt, "flowspec", "address family to " + end);
+        hl.add(null, false, lev, nxt, "vpnuni", "address family to " + end);
+        hl.add(null, false, lev, nxt, "vpnmlt", "address family to " + end);
+        hl.add(null, false, lev, nxt, "vpnflw", "address family to " + end);
+        hl.add(null, false, lev, nxt, "ovpnuni", "address family to " + end);
+        hl.add(null, false, lev, nxt, "ovpnmlt", "address family to " + end);
+        hl.add(null, false, lev, nxt, "ovpnflw", "address family to " + end);
+        hl.add(null, false, lev, nxt, "vpls", "address family to " + end);
+        hl.add(null, false, lev, nxt, "mspw", "address family to " + end);
+        hl.add(null, false, lev, nxt, "evpn", "address family to " + end);
+        hl.add(null, false, lev, nxt, "mdt", "address family to " + end);
+        hl.add(null, false, lev, nxt, "nsh", "address family to " + end);
+        hl.add(null, false, lev, nxt, "rpd", "address family to " + end);
+        hl.add(null, false, lev, nxt, "spf", "address family to " + end);
+        hl.add(null, false, lev, nxt, "rtfilter", "address family to " + end);
+        hl.add(null, false, lev, nxt, "srte", "address family to " + end);
+        hl.add(null, false, lev, nxt, "linkstate", "address family to " + end);
+        hl.add(null, false, lev, nxt, "mvpn", "address family to " + end);
+        hl.add(null, false, lev, nxt, "omvpn", "address family to " + end);
+        hl.add(null, false, lev, nxt, "mtree", "address family to " + end);
+        hl.add(null, false, lev, nxt, "omtree", "address family to " + end);
     }
 
     /**
@@ -1792,7 +1792,7 @@ public abstract class rtrBgpParam {
         l.add(null, false, 3, new int[]{4}, "update-source", "connection source for this peer");
         l.add(null, false, 4, new int[]{-1}, "<name:ifc>", "name of interface");
         l.add(null, false, 3, new int[]{4}, "address-family", "specify address families");
-        getAfiList(l, "4  4,.", "use", true);
+        getAfiList(l, 4, new int[]{4, -1}, "use", true);
         l.add(null, false, 3, new int[]{4}, "monitor", "bgp monitor protocol for this peer");
         l.add(null, false, 4, new int[]{-1}, "<str>", "name of bmp");
         l.add(null, false, 3, new int[]{4}, "other-address", "address of peer in the other afi");
@@ -1871,9 +1871,9 @@ public abstract class rtrBgpParam {
         l.add(null, false, 4, new int[]{-1}, "transmit", "transmit direction");
         l.add(null, false, 4, new int[]{-1}, "both", "both directions");
         l.add(null, false, 3, new int[]{4}, "additional-path-rx", "additional path receive mode");
-        getAfiList(l, "4  4,.", "use", true);
+        getAfiList(l, 4, new int[]{4, -1}, "use", true);
         l.add(null, false, 3, new int[]{4}, "additional-path-tx", "additional path transmit mode");
-        getAfiList(l, "4  4,.", "use", true);
+        getAfiList(l, 4, new int[]{4, -1}, "use", true);
         l.add(null, false, 3, new int[]{-1}, "route-reflector-client", "reflect routes to this client");
         l.add(null, false, 3, new int[]{-1}, "confederation-peer", "confederation peer");
         l.add(null, false, 3, new int[]{-1}, "default-originate", "send default route to peer");
@@ -1937,15 +1937,15 @@ public abstract class rtrBgpParam {
         l.add(null, false, 3, new int[]{4, -1}, "bfd-trigger", "enable bfd triggered down");
         l.add(null, false, 4, new int[]{-1}, "strict", "enable strict bfd triggered down");
         l.add(null, false, 3, new int[]{4}, "multiple-labels", "advertise multiple labels capability");
-        getAfiList(l, "4  4,.", "use", true);
+        getAfiList(l, 4, new int[]{4, -1}, "use", true);
         l.add(null, false, 3, new int[]{4}, "graceful-restart", "advertise graceful restart capability");
-        getAfiList(l, "4  4,.", "use", true);
+        getAfiList(l, 4, new int[]{4, -1}, "use", true);
         l.add(null, false, 3, new int[]{4}, "longlived-graceful", "advertise long lived graceful restart capability");
-        getAfiList(l, "4  4,.", "use", true);
+        getAfiList(l, 4, new int[]{4, -1}, "use", true);
         l.add(null, false, 3, new int[]{4}, "extended-nexthop-current", "advertise extended nexthop capability");
-        getAfiList(l, "4  4,.", "use", true);
+        getAfiList(l, 4, new int[]{4, -1}, "use", true);
         l.add(null, false, 3, new int[]{4}, "extended-nexthop-other", "advertise extended nexthop capability");
-        getAfiList(l, "4  4,.", "use", true);
+        getAfiList(l, 4, new int[]{4, -1}, "use", true);
         l.add(null, false, 3, new int[]{4, -1}, "hostname", "advertise hostname capability");
         l.add(null, false, 4, new int[]{-1}, "domain", "advertise domain too");
         l.add(null, false, 3, new int[]{-1}, "software", "advertise software version capability");
