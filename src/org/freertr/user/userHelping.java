@@ -81,13 +81,12 @@ public class userHelping {
      * @param l help text
      */
     protected static void getCfgGen(userHelping l) {
-        ///l.add(null, "1 .    " + cmds.finish + "               go back to previous mode");
         l.add(null, false, 1, new int[]{-1}, cmds.finish, "go back to previous mode");
         l.add(null, false, 1, new int[]{2, -1}, "end", "close this config session");
         l.add(null, false, 2, new int[]{2, -1}, "<cmd>", "parameters");
         l.add(null, false, 1, new int[]{2}, "do", "execute one exec command");
         l.add(null, false, 2, new int[]{2, -1}, "<cmd>", "exec command");
-        l.add(null, "1 1  " + cmds.negated + "                negate a command");
+        l.add(null, false, 1, new int[]{1}, cmds.negated, "negate a command");
     }
 
     /**
