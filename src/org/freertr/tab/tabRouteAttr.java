@@ -1536,40 +1536,40 @@ public class tabRouteAttr<T extends addrType> {
      * @param lv level to add
      */
     public static void ignoreHelp(userHelping hl, int lv) {
-        hl.add(null, lv + " " + lv + ",.    bier         ignore bier");
-        hl.add(null, lv + " " + lv + ",.    attrset      ignore attribute set");
-        hl.add(null, lv + " " + lv + ",.    cluster      ignore cluster list");
-        hl.add(null, lv + " " + lv + ",.    nexthop      ignore nexthop");
-        hl.add(null, lv + " " + lv + ",.    origin       ignore origin");
-        hl.add(null, lv + " " + lv + ",.    metric       ignore metric");
-        hl.add(null, lv + " " + lv + ",.    locpref      ignore local preference");
-        hl.add(null, lv + " " + lv + ",.    distance     ignore distance");
-        hl.add(null, lv + " " + lv + ",.    tag          ignore tag");
-        hl.add(null, lv + " " + lv + ",.    validity     ignore validity");
-        hl.add(null, lv + " " + lv + ",.    aspath       ignore as path");
-        hl.add(null, lv + " " + lv + ",.    asconf       ignore confed path");
-        hl.add(null, lv + " " + lv + ",.    stdcomm      ignore standard community");
-        hl.add(null, lv + " " + lv + ",.    extcomm      ignore extended community");
-        hl.add(null, lv + " " + lv + ",.    lrgcomm      ignore large community");
-        hl.add(null, lv + " " + lv + ",.    unknown      ignore unknown attribute");
-        hl.add(null, lv + " " + lv + ",.    sortcomm     sort communities");
-        hl.add(null, lv + " " + lv + ",.    lnksta       ignore link state");
-        hl.add(null, lv + " " + lv + ",.    aigp         ignore accumulated igp");
-        hl.add(null, lv + " " + lv + ",.    bandwidth    ignore bandwidth");
-        hl.add(null, lv + " " + lv + ",.    label        ignore labels");
-        hl.add(null, lv + " " + lv + ",.    aggregate    ignore aggregator");
-        hl.add(null, lv + " " + lv + ",.    connector    ignore connector");
-        hl.add(null, lv + " " + lv + ",.    pedisting    ignore pe distinguisher");
-        hl.add(null, lv + " " + lv + ",.    pathlimit    ignore aspath limit");
-        hl.add(null, lv + " " + lv + ",.    nshchain     ignore nsh service chain");
-        hl.add(null, lv + " " + lv + ",.    domainpath   ignore domain path");
-        hl.add(null, lv + " " + lv + ",.    bfddiscr     ignore bfd discriminator");
-        hl.add(null, lv + " " + lv + ",.    orignted     ignore originator");
-        hl.add(null, lv + " " + lv + ",.    pmsi         ignore pmsi");
-        hl.add(null, lv + " " + lv + ",.    segrout      ignore segment routing");
-        hl.add(null, lv + " " + lv + ",.    tunnel       ignore tunnel");
-        hl.add(null, lv + " " + lv + ",.    entropy      ignore entropy");
-        hl.add(null, lv + " " + lv + ",.    empty        ignore empty lists");
+        hl.add(null, false, lv, new int[]{lv, -1}, "bier", "ignore bier");
+        hl.add(null, false, lv, new int[]{lv, -1}, "attrset", "ignore attribute set");
+        hl.add(null, false, lv, new int[]{lv, -1}, "cluster", "ignore cluster list");
+        hl.add(null, false, lv, new int[]{lv, -1}, "nexthop", "ignore nexthop");
+        hl.add(null, false, lv, new int[]{lv, -1}, "origin", "ignore origin");
+        hl.add(null, false, lv, new int[]{lv, -1}, "metric", "ignore metric");
+        hl.add(null, false, lv, new int[]{lv, -1}, "locpref", "ignore local preference");
+        hl.add(null, false, lv, new int[]{lv, -1}, "distance", "ignore distance");
+        hl.add(null, false, lv, new int[]{lv, -1}, "tag", "ignore tag");
+        hl.add(null, false, lv, new int[]{lv, -1}, "validity", "ignore validity");
+        hl.add(null, false, lv, new int[]{lv, -1}, "aspath", "ignore as path");
+        hl.add(null, false, lv, new int[]{lv, -1}, "asconf", "ignore confed path");
+        hl.add(null, false, lv, new int[]{lv, -1}, "stdcomm", "ignore standard community");
+        hl.add(null, false, lv, new int[]{lv, -1}, "extcomm", "ignore extended community");
+        hl.add(null, false, lv, new int[]{lv, -1}, "lrgcomm", "ignore large community");
+        hl.add(null, false, lv, new int[]{lv, -1}, "unknown", "ignore unknown attribute");
+        hl.add(null, false, lv, new int[]{lv, -1}, "sortcomm", "sort communities");
+        hl.add(null, false, lv, new int[]{lv, -1}, "lnksta", "ignore link state");
+        hl.add(null, false, lv, new int[]{lv, -1}, "aigp", "ignore accumulated igp");
+        hl.add(null, false, lv, new int[]{lv, -1}, "bandwidth", "ignore bandwidth");
+        hl.add(null, false, lv, new int[]{lv, -1}, "label", "ignore labels");
+        hl.add(null, false, lv, new int[]{lv, -1}, "aggregate", "ignore aggregator");
+        hl.add(null, false, lv, new int[]{lv, -1}, "connector", "ignore connector");
+        hl.add(null, false, lv, new int[]{lv, -1}, "pedisting", "ignore pe distinguisher");
+        hl.add(null, false, lv, new int[]{lv, -1}, "pathlimit", "ignore aspath limit");
+        hl.add(null, false, lv, new int[]{lv, -1}, "nshchain", "ignore nsh service chain");
+        hl.add(null, false, lv, new int[]{lv, -1}, "domainpath", "ignore domain path");
+        hl.add(null, false, lv, new int[]{lv, -1}, "bfddiscr", "ignore bfd discriminator");
+        hl.add(null, false, lv, new int[]{lv, -1}, "orignted", "ignore originator");
+        hl.add(null, false, lv, new int[]{lv, -1}, "pmsi", "ignore pmsi");
+        hl.add(null, false, lv, new int[]{lv, -1}, "segrout", "ignore segment routing");
+        hl.add(null, false, lv, new int[]{lv, -1}, "tunnel", "ignore tunnel");
+        hl.add(null, false, lv, new int[]{lv, -1}, "entropy", "ignore entropy");
+        hl.add(null, false, lv, new int[]{lv, -1}, "empty", "ignore empty lists");
     }
 
     /**
