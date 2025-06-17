@@ -121,7 +121,7 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         l.add(null, false, 2, new int[]{3}, "recursive", "match old next hop");
         l.add(null, false, 3, new int[]{-1}, "<addr>", "address");
         l.add(null, false, 2, new int[]{3}, "protocol", "match source protocol");
-        cfgRtr.getRouterList(l, "3 .", "");
+        cfgRtr.getRouterList(l, 3, new int[]{-1}, "");
         cfgRtr.getRouterList(l, 1, "");
         l.add(null, false, 4, new int[]{-1}, "<num:rtr>", "process id");
         l.add(null, false, 2, new int[]{3}, "aspath", "match as path");

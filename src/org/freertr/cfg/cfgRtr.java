@@ -2100,14 +2100,15 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
      *
      * @param l list to update
      * @param p number start
+     * @param p next numbers
      * @param e ending
      */
-    public static void getRouterList(userHelping l, String p, String e) {
-        l.add(null, p + "   connected             connected routes" + e);
-        l.add(null, p + "   static                static routes" + e);
-        l.add(null, p + "   defgw                 routes through default gateway" + e);
-        l.add(null, p + "   local                 local interface addresses" + e);
-        l.add(null, p + "   remote                remote interface addresses" + e);
+    public static void getRouterList(userHelping l, int p, int[] n, String e) {
+        l.add(null, false, p, n, "connected", "connected routes" + e);
+        l.add(null, false, p, n, "static", "static routes" + e);
+        l.add(null, false, p, n, "defgw", "routes through default gateway" + e);
+        l.add(null, false, p, n, "local", "local interface addresses" + e);
+        l.add(null, false, p, n, "remote", "remote interface addresses" + e);
     }
 
     /**
@@ -2117,63 +2118,63 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
      * @param p number start
      */
     public static void getRedistHelp(userHelping l, int p) {
-        l.add(null, (p + 1) + " .  ecmp                    enable ecmp export to rib");
-        l.add(null, (p + 1) + " " + (p + 2) + "   redistribute            redistribute prefixes from other protocols");
-        getRouterList(l, (p + 2) + " " + (p + 4) + ",.", "");
+        l.add(null, false, p + 1, new int[]{-1}, "ecmp", "enable ecmp export to rib");
+        l.add(null, false, p + 1, new int[]{p + 2}, "redistribute", "redistribute prefixes from other protocols");
+        getRouterList(l, p + 2, new int[]{p + 4, -1}, "");
         getRouterList(l, p, " routes");
-        l.add(null, (p + 3) + " " + (p + 4) + ",.     <num:rtr>               process id");
-        l.add(null, (p + 4) + " " + (p + 4) + ",.       ecmp              process ecmp alternatives also");
-        l.add(null, (p + 4) + " " + (p + 5) + "         route-map         process prefixes on importing");
-        l.add(null, (p + 5) + " " + (p + 4) + ",.         <name:rm>       name of route map");
-        l.add(null, (p + 4) + " " + (p + 5) + "         route-policy      process prefixes on importing");
-        l.add(null, (p + 5) + " " + (p + 4) + ",.         <name:rpl>      name of route policy");
-        l.add(null, (p + 4) + " " + (p + 5) + "         prefix-list       filter prefixes on importing");
-        l.add(null, (p + 5) + " " + (p + 4) + ",.         <name:pl>       name of prefix list");
-        l.add(null, (p + 4) + " " + (p + 5) + "         metric            set metric");
-        l.add(null, (p + 5) + " " + (p + 4) + ",.         <num>           value");
-        l.add(null, (p + 4) + " " + (p + 5) + "         limit             limit number of routes to import");
-        l.add(null, (p + 5) + " " + (p + 4) + ",.         <num>           value");
-        l.add(null, (p + 4) + " " + (p + 5) + "         tag               set tag");
-        l.add(null, (p + 5) + " " + (p + 4) + ",.         <num>           value");
-        l.add(null, (p + 1) + " " + (p + 2) + "   advertise               advertise one prefix of mine");
-        l.add(null, (p + 1) + " " + (p + 2) + "   readvertise             readvertise one prefix from anywhere");
-        l.add(null, (p + 2) + " " + (p + 3) + ",.   <pref>                prefix");
-        l.add(null, (p + 3) + " " + (p + 3) + ",.     ecmp                process ecmp alternatives also");
-        l.add(null, (p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rm>         name of route map");
-        l.add(null, (p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rpl>        name of route policy");
-        l.add(null, (p + 3) + " " + (p + 4) + "       metric              set metric");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <num>             value");
-        l.add(null, (p + 3) + " " + (p + 4) + "       tag                 set tag");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <num>             value");
-        l.add(null, (p + 1) + " " + (p + 2) + "   justadvert              advertise interface");
-        l.add(null, (p + 2) + " " + (p + 3) + ",.   <name:ifc>            name of interface");
-        l.add(null, (p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rm>         name of route map");
-        l.add(null, (p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rpl>        name of route policy");
-        l.add(null, (p + 3) + " " + (p + 4) + "       metric              set metric");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <num>             value");
-        l.add(null, (p + 3) + " " + (p + 4) + "       tag                 set tag");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <num>             value");
-        l.add(null, (p + 1) + " " + (p + 2) + "   aggregate               aggregate more prefixes");
-        l.add(null, (p + 2) + " " + (p + 3) + ",.   <pref>                prefix");
-        l.add(null, (p + 3) + " " + (p + 4) + "       route-map           set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rm>         name of route map");
-        l.add(null, (p + 3) + " " + (p + 4) + "       route-policy        set properties of advertisement");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:rpl>        name of route policy");
-        l.add(null, (p + 3) + " " + (p + 4) + "       prefix-list         filter prefixes for aggregation");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <name:pl>         name of prefix list");
-        l.add(null, (p + 3) + " " + (p + 4) + "       metric              set metric");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <num>             value");
-        l.add(null, (p + 3) + " " + (p + 4) + "       tag                 set tag");
-        l.add(null, (p + 4) + " " + (p + 3) + ",.       <num>             value");
-        l.add(null, (p + 3) + " " + (p + 3) + ",.     as-set              generate as path information");
-        l.add(null, (p + 3) + " " + (p + 3) + ",.     summary-only        filter more specific prefixes");
-        l.add(null, (p + 1) + " " + (p + 2) + ",. autosummary             eliminate consecutive or subnetted prefixes");
-        l.add(null, (p + 2) + " " + (p + 3) + "     prefix-list           filter prefixes for aggregation");
-        l.add(null, (p + 3) + " " + (p + 2) + ",.     <name:pl>           name of prefix list");
+        l.add(null, false, p + 3, new int[]{p + 4, -1}, "<num:rtr>", "process id");
+        l.add(null, false, p + 4, new int[]{p + 4, -1}, "ecmp", "process ecmp alternatives also");
+        l.add(null, false, p + 4, new int[]{p + 5}, "route-map", "process prefixes on importing");
+        l.add(null, false, p + 5, new int[]{p + 4, -1}, "<name:rm>", "name of route map");
+        l.add(null, false, p + 4, new int[]{p + 5}, "route-policy", "process prefixes on importing");
+        l.add(null, false, p + 5, new int[]{p + 4, -1}, "<name:rpl>", "name of route policy");
+        l.add(null, false, p + 4, new int[]{p + 5}, "prefix-list", "filter prefixes on importing");
+        l.add(null, false, p + 5, new int[]{p + 4, -1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, p + 4, new int[]{p + 5}, "metric", "set metric");
+        l.add(null, false, p + 5, new int[]{p + 4, -1}, "<num>", "value");
+        l.add(null, false, p + 4, new int[]{p + 5}, "limit", "limit number of routes to import");
+        l.add(null, false, p + 5, new int[]{p + 4, -1}, "<num>", "value");
+        l.add(null, false, p + 4, new int[]{p + 5}, "tag", "set tag");
+        l.add(null, false, p + 5, new int[]{p + 4, -1}, "<num>", "value");
+        l.add(null, false, p + 1, new int[]{p + 2}, "advertise", "advertise one prefix of mine");
+        l.add(null, false, p + 1, new int[]{p + 2}, "readvertise", "readvertise one prefix from anywhere");
+        l.add(null, false, p + 2, new int[]{p + 3, -1}, "<pref>", "prefix");
+        l.add(null, false, p + 3, new int[]{p + 3, -1}, "ecmp", "process ecmp alternatives also");
+        l.add(null, false, p + 3, new int[]{p + 4}, "route-map", "set properties of advertisement");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<name:rm>", "name of route map");
+        l.add(null, false, p + 3, new int[]{p + 4}, "route-policy", "set properties of advertisement");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<name:rpl>", "name of route policy");
+        l.add(null, false, p + 3, new int[]{p + 4}, "metric", "set metric");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<num>", "value");
+        l.add(null, false, p + 3, new int[]{p + 4}, "tag", "set tag");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<num>", "value");
+        l.add(null, false, p + 1, new int[]{p + 2}, "justadvert", "advertise interface");
+        l.add(null, false, p + 2, new int[]{p + 3, -1}, "<name:ifc>", "name of interface");
+        l.add(null, false, p + 3, new int[]{p + 4}, "route-map", "set properties of advertisement");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<name:rm>", "name of route map");
+        l.add(null, false, p + 3, new int[]{p + 4}, "route-policy", "set properties of advertisement");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<name:rpl>", "name of route policy");
+        l.add(null, false, p + 3, new int[]{p + 4}, "metric", "set metric");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<num>", "value");
+        l.add(null, false, p + 3, new int[]{p + 4}, "tag", "set tag");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<num>", "value");
+        l.add(null, false, p + 1, new int[]{p + 2}, "aggregate", "aggregate more prefixes");
+        l.add(null, false, p + 2, new int[]{p + 3, -1}, "<pref>", "prefix");
+        l.add(null, false, p + 3, new int[]{p + 4}, "route-map", "set properties of advertisement");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<name:rm>", "name of route map");
+        l.add(null, false, p + 3, new int[]{p + 4}, "route-policy", "set properties of advertisement");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<name:rpl>", "name of route policy");
+        l.add(null, false, p + 3, new int[]{p + 4}, "prefix-list", "filter prefixes for aggregation");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, p + 3, new int[]{p + 4}, "metric", "set metric");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<num>", "value");
+        l.add(null, false, p + 3, new int[]{p + 4}, "tag", "set tag");
+        l.add(null, false, p + 4, new int[]{p + 3, -1}, "<num>", "value");
+        l.add(null, false, p + 3, new int[]{p + 3, -1}, "as-set", "generate as path information");
+        l.add(null, false, p + 3, new int[]{p + 3, -1}, "summary-only", "filter more specific prefixes");
+        l.add(null, false, p + 1, new int[]{p + 2, -1}, "autosummary", "eliminate consecutive or subnetted prefixes");
+        l.add(null, false, p + 2, new int[]{p + 3}, "prefix-list", "filter prefixes for aggregation");
+        l.add(null, false, p + 3, new int[]{p + 2, -1}, "<name:pl>", "name of prefix list");
     }
 
     public void getHelp(userHelping l) {

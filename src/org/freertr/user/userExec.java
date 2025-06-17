@@ -356,7 +356,7 @@ public class userExec {
         hl.add(null, false, 5, new int[]{-1}, "<addr>", "address of original next hop");
         hl.add(null, false, 3, new int[]{4}, "just-protocol", "unicast routing table by source");
         hl.add(null, false, 4, new int[]{5}, "<name:vrf>", "name of routing table");
-        cfgRtr.getRouterList(hl, "5 .", " to filter");
+        cfgRtr.getRouterList(hl, 5, new int[]{-1}, " to filter");
         cfgRtr.getRouterList(hl, 3, " to filter");
         hl.add(null, false, 6, new int[]{-1}, "<num:rtr>", "process id");
         hl.add(null, false, 3, new int[]{4}, "ecmp", "unicast routing table ecmp");

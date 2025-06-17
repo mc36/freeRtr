@@ -148,18 +148,6 @@ public class userHelping {
      * add one menu line
      *
      * @param loc local list
-     * @param s string to add
-     */
-    public void add(List<String> loc, String s) {
-        userHelpingData d = new userHelpingData();
-        d.set(s);
-        lines.add(d);
-    }
-
-    /**
-     * add one menu line
-     *
-     * @param loc local list
      * @param exp experimental command
      * @param cur current level
      * @param nxt next level, -1=end, -2=hidden
@@ -1404,47 +1392,6 @@ class userHelpingData {
     protected boolean variable;
 
     protected boolean complete;
-
-    public void set(String s) {
-        boolean hidden = false;
-        s = s.trim();
-        if (s.startsWith(".")) {
-            hidden = true;
-            s = s.substring(1, s.length());
-        }
-        int i = s.indexOf(" ");
-        level = bits.str2num(s.substring(0, i).trim());
-        s = s.substring(i, s.length()).trim();
-        i = s.indexOf(" ");
-        String a = s.substring(0, i).trim() + ",";
-        s = s.substring(i, s.length()).trim();
-        for (; a.length() > 0;) {
-            i = a.indexOf(",");
-            String b = a.substring(0, i).trim();
-            a = a.substring(i + 1, a.length()).trim();
-            if (b.equals(".")) {
-                after.add(-1);
-            } else {
-                after.add(bits.str2num(b));
-            }
-        }
-        i = s.indexOf(" ");
-        description = s.substring(i + 1, s.length()).trim();
-        command = s.substring(0, i).trim().toLowerCase();
-        if (command.equals("?")) {
-            command = "";
-        }
-        variable = (command.indexOf("<") == 0) || (command.indexOf("[") == 0);
-        if (hidden) {
-            description = "!!!EXPERiMENTAL!!! " + description;
-            if (!cfgAll.buggy) {
-                level = 666;
-            }
-            if (cfgAll.evalVdcPrivs()) {
-                level = 666;
-            }
-        }
-    }
 
     public userHelpingData copyBytes() {
         userHelpingData n = new userHelpingData();
