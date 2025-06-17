@@ -529,29 +529,24 @@ public class cfgAlias implements Comparable<cfgAlias>, cfgGeneric {
         p = maxOfParams(p, param3rd, cmd3rd);
         p = maxOfParams(p, param4th, cmd4th);
         p = maxOfParams(p, param5th, cmd5th);
-        String s = ".";
+        int[] nxt = new int[]{-1};
         switch (p) {
             case always:
-                s = "" + (lev + 1);
+                nxt = new int[]{lev + 1};
                 break;
             case allow:
-                s = (lev + 1) + ",.";
-                break;
-            case never:
-                s = ".";
+                nxt = new int[]{lev + 1, -1};
                 break;
         }
         String a = description;
         if (a == null) {
             a = "execute " + command;
         }
-        a = lev + " " + s + " " + name + " " + a;
-        l.add(null, a);
+        l.add(null, false, lev, nxt, name, a);
         if (p == paraMode.never) {
             return;
         }
-        s = "" + (lev + 1);
-        l.add(null, s + " " + s + ",. <text>   parameter");
+        l.add(null, false, lev + 1, new int[]{lev + 1, -1}, "<text>", "parameter");
     }
 
     private static paraMode maxOfParams(paraMode a, paraMode b, String c) {
