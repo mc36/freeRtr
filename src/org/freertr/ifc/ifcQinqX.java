@@ -75,8 +75,8 @@ public class ifcQinqX extends ifcVlan {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add(null, "2 3     ethertype                   ethertype to use");
-        l.add(null, "3 .       <num>                     value in hex");
+        l.add(null, false, 2, new int[]{3}, "ethertype", "ethertype to use");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "value in hex");
     }
 
     /**

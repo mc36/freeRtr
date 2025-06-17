@@ -366,42 +366,42 @@ public class ifcBridge implements ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add(null, "1 2,.   description                 description of this bridge");
-        l.add(null, "2 2,.     [text]                    text describing this bridge");
-        l.add(null, "1 2     rd                          specify route distinguisher");
-        l.add(null, "2 .       <rd>                      rd in ASnum:IDnum format");
-        l.add(null, "1 2     rt-import                   specify route target import");
-        l.add(null, "2 .       <rt>                      rt in ASnum:IDnum format");
-        l.add(null, "1 2     rt-export                   specify route target export");
-        l.add(null, "2 .       <rt>                      rt in ASnum:IDnum format");
-        l.add(null, "1 2     rt-both                     specify route target");
-        l.add(null, "2 .       <rt>                      rt in ASnum:IDnum format");
-        l.add(null, "1 .     mac-learn                   enable mac address learning");
-        l.add(null, "1 2,.   inspect                     enable session inspection");
-        l.add(null, "2 2,.     mac                       enable mac logging");
-        l.add(null, "2 2,.     before                    log on session start");
-        l.add(null, "2 2,.     after                     log on session stop");
-        l.add(null, "1 .     mac-move                    enable mac move logging");
-        l.add(null, "1 2     mac-limit                   limit number of addesses");
-        l.add(null, "2 .       <num>                     maximum");
-        l.add(null, "1 .     private-bridge              disable peer communication");
-        l.add(null, "1 .     block-unicast               block unknown destination unicast");
-        l.add(null, "1 .     block-multicast             block unwanted destination multicast");
-        l.add(null, "1 .     padup-small                 pad up small packets");
-        l.add(null, "1 2     mac-age                     set mac aging time");
-        l.add(null, "2 .       <num>                     time in ms");
-        l.add(null, "1 2     stp-mode                    set spantree mode");
-        l.add(null, "2 .       ieee                      ieee");
-        l.add(null, "2 .       none                      pass through");
-        l.add(null, "2 .       drop                      drop");
-        l.add(null, "1 2     stp-time                    set spantree timers");
-        l.add(null, "2 3       <num>                     hello in ms");
-        l.add(null, "3 4         <num>                   maxage in ms");
-        l.add(null, "4 .           <num>                 forward delay in ms");
-        l.add(null, "1 2     stp-priority                set spantree priority");
-        l.add(null, "2 .       <num>                     priority in 1024 increments");
-        l.add(null, "1 2     mac-address                 set mac address");
-        l.add(null, "2 .       <addr>                    mac address");
+        l.add(null, false, 1, new int[]{2, -1}, "description", "description of this bridge");
+        l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this bridge");
+        l.add(null, false, 1, new int[]{2}, "rd", "specify route distinguisher");
+        l.add(null, false, 2, new int[]{-1}, "<rd>", "rd in ASnum:IDnum format");
+        l.add(null, false, 1, new int[]{2}, "rt-import", "specify route target import");
+        l.add(null, false, 2, new int[]{-1}, "<rt>", "rt in ASnum:IDnum format");
+        l.add(null, false, 1, new int[]{2}, "rt-export", "specify route target export");
+        l.add(null, false, 2, new int[]{-1}, "<rt>", "rt in ASnum:IDnum format");
+        l.add(null, false, 1, new int[]{2}, "rt-both", "specify route target");
+        l.add(null, false, 2, new int[]{-1}, "<rt>", "rt in ASnum:IDnum format");
+        l.add(null, false, 1, new int[]{-1}, "mac-learn", "enable mac address learning");
+        l.add(null, false, 1, new int[]{2, -1}, "inspect", "enable session inspection");
+        l.add(null, false, 2, new int[]{2, -1}, "mac", "enable mac logging");
+        l.add(null, false, 2, new int[]{2, -1}, "before", "log on session start");
+        l.add(null, false, 2, new int[]{2, -1}, "after", "log on session stop");
+        l.add(null, false, 1, new int[]{-1}, "mac-move", "enable mac move logging");
+        l.add(null, false, 1, new int[]{2}, "mac-limit", "limit number of addesses");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "maximum");
+        l.add(null, false, 1, new int[]{-1}, "private-bridge", "disable peer communication");
+        l.add(null, false, 1, new int[]{-1}, "block-unicast", "block unknown destination unicast");
+        l.add(null, false, 1, new int[]{-1}, "block-multicast", "block unwanted destination multicast");
+        l.add(null, false, 1, new int[]{-1}, "padup-small", "pad up small packets");
+        l.add(null, false, 1, new int[]{2}, "mac-age", "set mac aging time");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "time in ms");
+        l.add(null, false, 1, new int[]{2}, "stp-mode", "set spantree mode");
+        l.add(null, false, 2, new int[]{-1}, "ieee", "ieee");
+        l.add(null, false, 2, new int[]{-1}, "none", "pass through");
+        l.add(null, false, 2, new int[]{-1}, "drop", "drop");
+        l.add(null, false, 1, new int[]{2}, "stp-time", "set spantree timers");
+        l.add(null, false, 2, new int[]{3}, "<num>", "hello in ms");
+        l.add(null, false, 3, new int[]{4}, "<num>", "maxage in ms");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "forward delay in ms");
+        l.add(null, false, 1, new int[]{2}, "stp-priority", "set spantree priority");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "priority in 1024 increments");
+        l.add(null, false, 1, new int[]{2}, "mac-address", "set mac address");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "mac address");
     }
 
     /**

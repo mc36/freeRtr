@@ -81,23 +81,23 @@ public class cfgXconn implements Comparable<cfgXconn>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1 3,. description                   specify description");
-        l.add(null, "3 3,.   <str>                       text");
-        l.add(null, "1 2  rename                         rename this xconnect");
-        l.add(null, "2 .    <str>                        set new name");
-        l.add(null, "1 2  mtu                            specify vc mtu");
-        l.add(null, "2 .    <num>                        mtu");
-        l.add(null, "1 2  type                           type of pseudowire");
-        l.add(null, "2 .    ethernet                     ethernet mode");
-        l.add(null, "2 .    ip                           ip mode");
-        l.add(null, "2 .    vlan                         vlan mode");
-        l.add(null, "2 .    hdlc                         hdlc mode");
-        l.add(null, "2 .    ppp                          ppp mode");
-        l.add(null, "2 .    fr-dlci                      fr dlci mode");
-        l.add(null, "2 .    atm-aal5                     atm aal5 mode");
-        l.add(null, "1 2  side1                          specify first side of connection");
+        l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
+        l.add(null, false, 1, new int[]{2}, "rename", "rename this xconnect");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
+        l.add(null, false, 1, new int[]{2}, "mtu", "specify vc mtu");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "mtu");
+        l.add(null, false, 1, new int[]{2}, "type", "type of pseudowire");
+        l.add(null, false, 2, new int[]{-1}, "ethernet", "ethernet mode");
+        l.add(null, false, 2, new int[]{-1}, "ip", "ip mode");
+        l.add(null, false, 2, new int[]{-1}, "vlan", "vlan mode");
+        l.add(null, false, 2, new int[]{-1}, "hdlc", "hdlc mode");
+        l.add(null, false, 2, new int[]{-1}, "ppp", "ppp mode");
+        l.add(null, false, 2, new int[]{-1}, "fr-dlci", "fr dlci mode");
+        l.add(null, false, 2, new int[]{-1}, "atm-aal5", "atm aal5 mode");
+        l.add(null, false, 1, new int[]{2}, "side1", "specify first side of connection");
         cfgXconnSide.getHelp(l, 2);
-        l.add(null, "1 2  side2                          specify seconds side of connection");
+        l.add(null, false, 1, new int[]{2}, "side2", "specify seconds side of connection");
         cfgXconnSide.getHelp(l, 2);
     }
 

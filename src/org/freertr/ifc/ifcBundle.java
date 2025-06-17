@@ -301,34 +301,34 @@ public class ifcBundle implements Runnable, ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add(null, "1 2,.   description                 description of this bundle");
-        l.add(null, "2 2,.     [text]                    text describing this bundle");
-        l.add(null, "1 .    ethernet                     specify type of bundle");
-        l.add(null, "1 .    replicate                    specify replicator mode");
-        l.add(null, "1 .    logging                      enable logging");
-        l.add(null, "1 2    backup                       specify backup mode");
-        l.add(null, "2 .      <num>                      timeout in ms");
-        l.add(null, "1 2    sequence                     specify sequence mode");
-        l.add(null, "2 .      <num>                      window in packets");
-        l.add(null, "1 2    dejitter                     specify dejitter timer");
-        l.add(null, "2 .      <num>                      dejitter in ms");
-        l.add(null, "1 2    reporter                     specify reporter timer");
-        l.add(null, "2 .      <num>                      reports in ms");
-        l.add(null, "1 2    dynamic                      specify quota dynamically");
-        l.add(null, "2 .      <num>                      reports to average");
-        l.add(null, "1 2    peering                      specify peering interface");
-        l.add(null, "2 3      <name:ifc>                 name of interface");
-        l.add(null, "3 .        <num>                    local priority");
-        l.add(null, "1 2    loadbalance                  specify load balance method");
-        l.add(null, "2 .      layer2                     xor source and destination mac");
-        l.add(null, "2 .      layer3                     xor source and destination ip");
-        l.add(null, "2 .      layer4                     xor source and destination port");
-        l.add(null, "2 .      addr                       xor addresses");
-        l.add(null, "2 .      all                        xor everything");
-        l.add(null, "2 .      random                     randomize");
-        l.add(null, "2 .      none                       nothing");
-        l.add(null, "2 .      round                      round robin");
-        l.add(null, "2 .      share                      share by bandwidth");
+        l.add(null, false, 1, new int[]{2, -1}, "description", "description of this bundle");
+        l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this bundle");
+        l.add(null, false, 1, new int[]{-1}, "ethernet", "specify type of bundle");
+        l.add(null, false, 1, new int[]{-1}, "replicate", "specify replicator mode");
+        l.add(null, false, 1, new int[]{-1}, "logging", "enable logging");
+        l.add(null, false, 1, new int[]{2}, "backup", "specify backup mode");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");
+        l.add(null, false, 1, new int[]{2}, "sequence", "specify sequence mode");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "window in packets");
+        l.add(null, false, 1, new int[]{2}, "dejitter", "specify dejitter timer");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "dejitter in ms");
+        l.add(null, false, 1, new int[]{2}, "reporter", "specify reporter timer");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "reports in ms");
+        l.add(null, false, 1, new int[]{2}, "dynamic", "specify quota dynamically");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "reports to average");
+        l.add(null, false, 1, new int[]{2}, "peering", "specify peering interface");
+        l.add(null, false, 2, new int[]{3}, "<name:ifc>", "name of interface");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "local priority");
+        l.add(null, false, 1, new int[]{2}, "loadbalance", "specify load balance method");
+        l.add(null, false, 2, new int[]{-1}, "layer2", "xor source and destination mac");
+        l.add(null, false, 2, new int[]{-1}, "layer3", "xor source and destination ip");
+        l.add(null, false, 2, new int[]{-1}, "layer4", "xor source and destination port");
+        l.add(null, false, 2, new int[]{-1}, "addr", "xor addresses");
+        l.add(null, false, 2, new int[]{-1}, "all", "xor everything");
+        l.add(null, false, 2, new int[]{-1}, "random", "randomize");
+        l.add(null, false, 2, new int[]{-1}, "none", "nothing");
+        l.add(null, false, 2, new int[]{-1}, "round", "round robin");
+        l.add(null, false, 2, new int[]{-1}, "share", "share by bandwidth");
     }
 
     /**

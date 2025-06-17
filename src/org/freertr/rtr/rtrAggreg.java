@@ -177,15 +177,15 @@ public class rtrAggreg extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add(null, "1 2   distance                    specify default distance");
-        l.add(null, "2 .     <num>                     distance");
-        l.add(null, "1 2   nexthop                     specify default nexthop");
-        l.add(null, "2 .     <addr>                    nexthop");
-        l.add(null, "1 2   netmask                     specify netmask to use");
-        l.add(null, "2 .     <num>                     mask bits");
-        l.add(null, "1 2   afi                         set address family");
-        l.add(null, "2 .     unicast                   select unicast");
-        l.add(null, "2 .     multicast                 select multicast");
+        l.add(null, false, 1, new int[]{2}, "distance", "specify default distance");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "distance");
+        l.add(null, false, 1, new int[]{2}, "nexthop", "specify default nexthop");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "nexthop");
+        l.add(null, false, 1, new int[]{2}, "netmask", "specify netmask to use");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "mask bits");
+        l.add(null, false, 1, new int[]{2}, "afi", "set address family");
+        l.add(null, false, 2, new int[]{-1}, "unicast", "select unicast");
+        l.add(null, false, 2, new int[]{-1}, "multicast", "select multicast");
     }
 
     /**

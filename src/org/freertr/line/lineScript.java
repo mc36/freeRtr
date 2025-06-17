@@ -103,38 +103,38 @@ public class lineScript {
      * @param l where to write
      */
     public void getHelp(userHelping l) {
-        l.add(null, "1 2   sequence            set sequence number");
-        l.add(null, "2 1     <num>             sequence number");
-        l.add(null, "1 2   description         specify description");
-        l.add(null, "2 2,.   <str>             description");
-        l.add(null, "1 2   tcl                 execute tcl commands");
-        l.add(null, "2 2,.   <text>            tcl command");
-        l.add(null, "1 2   sleep               wait some time");
-        l.add(null, "2 .     <num>             ms to wait");
-        l.add(null, "1 .   success             exit with success");
-        l.add(null, "1 .   failure             exit with failure");
-        l.add(null, "1 .   disconnect          disconnect session");
-        l.add(null, "1 2   onerror             go to sequence on error");
-        l.add(null, "2 .     <num>             ms to wait");
-        l.add(null, "1 2   goto                go to sequence");
-        l.add(null, "2 .     <num>             ms to wait");
-        l.add(null, "1 2   send                send text to line");
-        l.add(null, "2 2,.   <text>            text to send");
-        l.add(null, "1 2   password            send text to line");
-        l.add(null, "2 2,.   <text>            text to send");
-        l.add(null, "1 2   recv                wait for text to arrive");
-        l.add(null, "2 3     <time>            timeout in ms");
-        l.add(null, "3 3,.     <text>          regexp to wait");
-        l.add(null, "1 2   binsend             send binary to line");
-        l.add(null, "2 2,.   <text>            ascii code");
-        l.add(null, "1 2   binrecv             wait for binary to arrive");
-        l.add(null, "2 3     <time>            timeout in ms");
-        l.add(null, "3 3,.     <text>          regexp to wait");
-        l.add(null, "1 2,. reindex            reindex time map");
-        l.add(null, "2 3,.   [num]            initial number to start with");
-        l.add(null, "3 .       [num]          increment number");
-        l.add(null, "1 2   rename             rename this chat map");
-        l.add(null, "2 .     <str>            set new name");
+        l.add(null, false, 1, new int[]{2}, "sequence", "set sequence number");
+        l.add(null, false, 2, new int[]{1}, "<num>", "sequence number");
+        l.add(null, false, 1, new int[]{2}, "description", "specify description");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "description");
+        l.add(null, false, 1, new int[]{2}, "tcl", "execute tcl commands");
+        l.add(null, false, 2, new int[]{2, -1}, "<text>", "tcl command");
+        l.add(null, false, 1, new int[]{2}, "sleep", "wait some time");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "ms to wait");
+        l.add(null, false, 1, new int[]{-1}, "success", "exit with success");
+        l.add(null, false, 1, new int[]{-1}, "failure", "exit with failure");
+        l.add(null, false, 1, new int[]{-1}, "disconnect", "disconnect session");
+        l.add(null, false, 1, new int[]{2}, "onerror", "go to sequence on error");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "ms to wait");
+        l.add(null, false, 1, new int[]{2}, "goto", "go to sequence");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "ms to wait");
+        l.add(null, false, 1, new int[]{2}, "send", "send text to line");
+        l.add(null, false, 2, new int[]{2, -1}, "<text>", "text to send");
+        l.add(null, false, 1, new int[]{2}, "password", "send text to line");
+        l.add(null, false, 2, new int[]{2, -1}, "<text>", "text to send");
+        l.add(null, false, 1, new int[]{2}, "recv", "wait for text to arrive");
+        l.add(null, false, 2, new int[]{3}, "<time>", "timeout in ms");
+        l.add(null, false, 3, new int[]{3, -1}, "<text>", "regexp to wait");
+        l.add(null, false, 1, new int[]{2}, "binsend", "send binary to line");
+        l.add(null, false, 2, new int[]{2, -1}, "<text>", "ascii code");
+        l.add(null, false, 1, new int[]{2}, "binrecv", "wait for binary to arrive");
+        l.add(null, false, 2, new int[]{3}, "<time>", "timeout in ms");
+        l.add(null, false, 3, new int[]{3, -1}, "<text>", "regexp to wait");
+        l.add(null, false, 1, new int[]{2, -1}, "reindex", "reindex time map");
+        l.add(null, false, 2, new int[]{3, -1}, "[num]", "initial number to start with");
+        l.add(null, false, 3, new int[]{-1}, "[num]", "increment number");
+        l.add(null, false, 1, new int[]{2}, "rename", "rename this chat map");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
     }
 
     /**

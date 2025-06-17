@@ -221,12 +221,12 @@ public class ifcSep implements ifcUp, ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add(null, "2 3     keepalive                   keepalive timer");
-        l.add(null, "3 .       <num>                     time in ms");
-        l.add(null, "2 3     mode                        interface mode");
-        l.add(null, "3 .       peer                      peering mode");
-        l.add(null, "3 .       server                    server mode");
-        l.add(null, "3 .       client                    client mode");
+        l.add(null, false, 2, new int[]{3}, "keepalive", "keepalive timer");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "time in ms");
+        l.add(null, false, 2, new int[]{3}, "mode", "interface mode");
+        l.add(null, false, 3, new int[]{-1}, "peer", "peering mode");
+        l.add(null, false, 3, new int[]{-1}, "server", "server mode");
+        l.add(null, false, 3, new int[]{-1}, "client", "client mode");
     }
 
     /**

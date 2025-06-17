@@ -142,13 +142,13 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add(null, "1  .      negate                     negate operation on remote routes");
-        l.add(null, "1  2      distance                   specify default distance");
-        l.add(null, "2  .        <num>                    distance");
-        l.add(null, "1  2      penalty                    specify time between runs");
-        l.add(null, "2  .        <num>                    milliseconds before aging");
-        l.add(null, "1  2      whitelist                  specify whitelist");
-        l.add(null, "2  .        <name:pl>                name of prefix list");
+        l.add(null, false, 1, new int[]{-1}, "negate", "negate operation on remote routes");
+        l.add(null, false, 1, new int[]{2}, "distance", "specify default distance");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "distance");
+        l.add(null, false, 1, new int[]{2}, "penalty", "specify time between runs");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds before aging");
+        l.add(null, false, 1, new int[]{2}, "whitelist", "specify whitelist");
+        l.add(null, false, 2, new int[]{-1}, "<name:pl>", "name of prefix list");
     }
 
     /**

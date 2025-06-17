@@ -158,8 +158,8 @@ public class ifcHdlc implements ifcUp, ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelping l) {
-        l.add(null, "2 3     keepalive                   keepalive timer");
-        l.add(null, "3 .       <num>                     time in ms");
+        l.add(null, false, 2, new int[]{3}, "keepalive", "keepalive timer");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "time in ms");
     }
 
     /**

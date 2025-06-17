@@ -125,34 +125,34 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
 
     private void getHelp(userHelping l, int s, String n) {
         l.add(null, "1 2     side" + s + "                       configure side " + n);
-        l.add(null, "2 3       type                      type of process");
-        l.add(null, "3 .         socat                   use socat");
-        l.add(null, "3 .         pcap                    use pcapint");
-        l.add(null, "3 .         raw                     use rawint");
-        l.add(null, "3 .         map                     use mapint");
-        l.add(null, "3 .         xsk                     use xskint");
-        l.add(null, "3 .         urng                    use urngint");
-        l.add(null, "2 3       local                     name of local interface");
-        l.add(null, "3 .         <str>                   name");
-        l.add(null, "2 3       connect                   name of connected interface");
-        l.add(null, "3 .         <str>                   name");
-        l.add(null, "2 .       log-actions               log actions");
-        l.add(null, "2 .       log-console               log console activity");
-        l.add(null, "2 3       log-collect               collect console activity");
-        l.add(null, "3 .         <num>                   lines to store");
-        l.add(null, "2 3       time                      specify time between runs");
-        l.add(null, "3 .         <num>                   milliseconds between runs");
-        l.add(null, "2 3       delay                     specify initial delay");
-        l.add(null, "3 .         <num>                   milliseconds before start");
-        l.add(null, "2 3       random-time               specify random time between runs");
-        l.add(null, "3 .         <num>                   milliseconds between runs");
-        l.add(null, "2 3       random-delay              specify random initial delay");
-        l.add(null, "3 .         <num>                   milliseconds before start");
+        l.add(null, false, 2, new int[]{3}, "type", "type of process");
+        l.add(null, false, 3, new int[]{-1}, "socat", "use socat");
+        l.add(null, false, 3, new int[]{-1}, "pcap", "use pcapint");
+        l.add(null, false, 3, new int[]{-1}, "raw", "use rawint");
+        l.add(null, false, 3, new int[]{-1}, "map", "use mapint");
+        l.add(null, false, 3, new int[]{-1}, "xsk", "use xskint");
+        l.add(null, false, 3, new int[]{-1}, "urng", "use urngint");
+        l.add(null, false, 2, new int[]{3}, "local", "name of local interface");
+        l.add(null, false, 3, new int[]{-1}, "<str>", "name");
+        l.add(null, false, 2, new int[]{3}, "connect", "name of connected interface");
+        l.add(null, false, 3, new int[]{-1}, "<str>", "name");
+        l.add(null, false, 2, new int[]{-1}, "log-actions", "log actions");
+        l.add(null, false, 2, new int[]{-1}, "log-console", "log console activity");
+        l.add(null, false, 2, new int[]{3}, "log-collect", "collect console activity");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "lines to store");
+        l.add(null, false, 2, new int[]{3}, "time", "specify time between runs");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "milliseconds between runs");
+        l.add(null, false, 2, new int[]{3}, "delay", "specify initial delay");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "milliseconds before start");
+        l.add(null, false, 2, new int[]{3}, "random-time", "specify random time between runs");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "milliseconds between runs");
+        l.add(null, false, 2, new int[]{3}, "random-delay", "specify random initial delay");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "milliseconds before start");
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1 2,.   description                 description of this bridge");
-        l.add(null, "2 2,.     [text]                    text describing this bridge");
+        l.add(null, false, 1, new int[]{2, -1}, "description", "description of this bridge");
+        l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this bridge");
         getHelp(l, 1, "one");
         getHelp(l, 2, "two");
     }
