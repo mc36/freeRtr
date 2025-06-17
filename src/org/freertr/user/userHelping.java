@@ -81,7 +81,8 @@ public class userHelping {
      * @param l help text
      */
     protected static void getCfgGen(userHelping l) {
-        l.add(null, "1 .    " + cmds.finish + "               go back to previous mode");
+        ///l.add(null, "1 .    " + cmds.finish + "               go back to previous mode");
+        l.add(null, false, 1, new int[]{-1}, cmds.finish, "go back to previous mode");
         l.add(null, false, 1, new int[]{2, -1}, "end", "close this config session");
         l.add(null, false, 2, new int[]{2, -1}, "<cmd>", "parameters");
         l.add(null, false, 1, new int[]{2}, "do", "execute one exec command");
@@ -148,6 +149,18 @@ public class userHelping {
      * add one menu line
      *
      * @param loc local list
+     * @param s string to add
+     */
+    public void add(List<String> loc, String s) {
+        userHelpingData d = new userHelpingData();
+        d.set(s);
+        lines.add(d);
+    }
+
+    /**
+     * add one menu line
+     *
+     * @param loc local list
      * @param exp experimental command
      * @param cur current level
      * @param nxt next level, -1=end, -2=hidden
@@ -173,18 +186,6 @@ public class userHelping {
             }
         }
         lines.add(d);
-    }
-
-    /**
-     * add one menu line
-     *
-     * @param loc local list
-     * @param s string to add
-     */
-    public void add(List<String> loc, String s) {
-        userHelpingData d = new userHelpingData();
-        d.set(s);
-        lines.add(d);
         if (!expand) {
             return;
         }
@@ -193,7 +194,7 @@ public class userHelping {
             return;
         }
         String a = d.command.substring(i + 1, d.command.length());
-        s = d.command.substring(0, i);
+        String s = d.command.substring(0, i);
         if (d.variable) {
             a = a.substring(0, a.length() - 1);
             i = d.command.length();
