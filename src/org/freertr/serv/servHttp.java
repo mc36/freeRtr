@@ -317,14 +317,14 @@ public class servHttp extends servGeneric implements prtServS {
         return ntry.doConfig(negated, a, cmd);
     }
 
-    private final static void getSubconnHelp(String b, userHelping l) {
-        l.add(null, b + "     strip-path               strip path");
-        l.add(null, b + "     strip-name               strip filename");
-        l.add(null, b + "     strip-ext                strip extension");
-        l.add(null, b + "     strip-param              strip parameters");
-        l.add(null, b + "     keep-cred                keep credentinals");
-        l.add(null, b + "     keep-host                keep hostname");
-        l.add(null, b + "     keep-path                append path");
+    private final static void getSubconnHelp(int b, userHelping l) {
+        l.add(null, false, b, new int[]{b, -1}, "strip-path", "strip path");
+        l.add(null, false, b, new int[]{b, -1}, "strip-name", "strip filename");
+        l.add(null, false, b, new int[]{b, -1}, "strip-ext", "strip extension");
+        l.add(null, false, b, new int[]{b, -1}, "strip-param", "strip parameters");
+        l.add(null, false, b, new int[]{b, -1}, "keep-cred", "keep credentinals");
+        l.add(null, false, b, new int[]{b, -1}, "keep-host", "keep hostname");
+        l.add(null, false, b, new int[]{b, -1}, "keep-path", "append path");
     }
 
     /**
@@ -345,7 +345,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, false, 1, new int[]{2}, "def-path", "set host default path");
         l.add(null, false, 2, new int[]{-1}, "<str>", "path on the disk");
         l.add(null, false, 1, new int[]{2}, "def-subconn", "set host default subconnect");
-        getSubconnHelp("2 2,. ", l);
+        getSubconnHelp(2, l);
         l.add(null, false, 1, new int[]{2}, "error", "set error message");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "error message");
         l.add(null, false, 1, new int[]{2}, "host", "define one virtual server");
@@ -367,7 +367,7 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, false, 3, new int[]{4}, "translate", "translate the url");
         l.add(null, false, 4, new int[]{4, -1}, "<num:trn>", "translation rule to use");
         l.add(null, false, 3, new int[]{4}, "subconn", "reconnect only to the url");
-        getSubconnHelp("4 4,. ", l);
+        getSubconnHelp(4, l);
         l.add(null, false, 3, new int[]{4}, "stream", "stream from server");
         l.add(null, false, 4, new int[]{5}, "<str>", "content type");
         l.add(null, false, 5, new int[]{6}, "<name:prx>", "proxy profile");

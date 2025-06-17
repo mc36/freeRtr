@@ -1166,7 +1166,7 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         l.add(null, false, 1, new int[]{2}, "rename", "rename this server");
         l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
         l.add(null, false, 1, new int[]{2}, "description", "specify description");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "description");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "description");
         l.add(null, false, 1, new int[]{2}, "vrf", "set vrf to use");
         l.add(null, false, 2, new int[]{-1}, "<name:vrf>", "name of vrf");
         l.add(null, false, 1, new int[]{2}, "port", "set port to listen on");
@@ -1184,13 +1184,13 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         l.add(null, false, 2, new int[]{-1}, "<num>", "number of process");
         l.add(null, false, 1, new int[]{-1}, "access-log", "log dropped attemps");
         l.add(null, false, 1, new int[]{2}, "protocol", "set lower protocols to use");
-        l.add(null, false, 2, new int[]{2,-1}, "ipv4", "use ip4 network");
-        l.add(null, false, 2, new int[]{2,-1}, "ipv6", "use ip6 network");
-        l.add(null, false, 2, new int[]{2,-1}, "tcp", "use tcp transport");
-        l.add(null, false, 2, new int[]{2,-1}, "udp", "use udp transport");
-        l.add(null, false, 2, new int[]{2,-1}, "ludp", "use ludp transport");
-        l.add(null, false, 2, new int[]{2,-1}, "dccp", "use dccp transport");
-        l.add(null, false, 2, new int[]{2,-1}, "sctp", "use sctp transport");
+        l.add(null, false, 2, new int[]{2, -1}, "ipv4", "use ip4 network");
+        l.add(null, false, 2, new int[]{2, -1}, "ipv6", "use ip6 network");
+        l.add(null, false, 2, new int[]{2, -1}, "tcp", "use tcp transport");
+        l.add(null, false, 2, new int[]{2, -1}, "udp", "use udp transport");
+        l.add(null, false, 2, new int[]{2, -1}, "ludp", "use ludp transport");
+        l.add(null, false, 2, new int[]{2, -1}, "dccp", "use dccp transport");
+        l.add(null, false, 2, new int[]{2, -1}, "sctp", "use sctp transport");
         l.add(null, false, 1, new int[]{2}, "interface", "interface to bind to");
         l.add(null, false, 2, new int[]{-1}, "<name:ifc>", "name of interface");
         l.add(null, false, 1, new int[]{2}, "security", "set security parameters");
@@ -1217,7 +1217,7 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         l.add(null, false, 3, new int[]{-1}, "<name:crt>", "name of certificate");
         l.add(null, false, 2, new int[]{3}, "mldsacert", "set mldsa certificate");
         l.add(null, false, 3, new int[]{-1}, "<name:crt>", "name of certificate");
-        l.add(null, "1 .   " + cmds.upgradeCli + "             embed vrf name to router knob");
+        l.add(null, false, 1, new int[]{-1}, cmds.upgradeCli, "embed vrf name to router knob");
         srvHelp(l);
     }
 

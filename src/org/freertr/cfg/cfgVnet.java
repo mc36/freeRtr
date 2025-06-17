@@ -123,14 +123,14 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
         number = bits.str2num(nam);
     }
 
-    private void getHelp(userHelping l, int s, String n) {
-        l.add(null, "1 2     side" + s + "                       configure side " + n);
+    private void getHelpSide(userHelping l) {
         l.add(null, false, 2, new int[]{3}, "type", "type of process");
         l.add(null, false, 3, new int[]{-1}, "socat", "use socat");
         l.add(null, false, 3, new int[]{-1}, "pcap", "use pcapint");
         l.add(null, false, 3, new int[]{-1}, "raw", "use rawint");
         l.add(null, false, 3, new int[]{-1}, "map", "use mapint");
         l.add(null, false, 3, new int[]{-1}, "xsk", "use xskint");
+        l.add(null, false, 3, new int[]{-1}, "cmp", "use cmpint");
         l.add(null, false, 3, new int[]{-1}, "urng", "use urngint");
         l.add(null, false, 2, new int[]{3}, "local", "name of local interface");
         l.add(null, false, 3, new int[]{-1}, "<str>", "name");
@@ -153,8 +153,10 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
     public void getHelp(userHelping l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this bridge");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this bridge");
-        getHelp(l, 1, "one");
-        getHelp(l, 2, "two");
+        l.add(null, false, 1, new int[]{2}, "side1", "configure first side");
+        getHelpSide(l);
+        l.add(null, false, 1, new int[]{2}, "side2", "configure second side");
+        getHelpSide(l);
     }
 
     public List<String> getShRun(int filter) {
