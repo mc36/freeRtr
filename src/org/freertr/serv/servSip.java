@@ -142,12 +142,12 @@ public class servSip extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2    mypeer                  discard this dial peer on outgoing calls");
-        l.add(null, "2 .      <num>                 dial peer number");
-        l.add(null, "1 2    translate-out-calling   translate outgoing calling string");
-        l.add(null, "2 .      <name:trn>            rule name");
-        l.add(null, "1 2    translate-out-called    translate outgoing called string");
-        l.add(null, "2 .      <name:trn>            rule name");
+        l.add(null, false, 1, new int[]{2}, "mypeer", "discard this dial peer on outgoing calls");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "dial peer number");
+        l.add(null, false, 1, new int[]{2}, "translate-out-calling", "translate outgoing calling string");
+        l.add(null, false, 2, new int[]{-1}, "<name:trn>", "rule name");
+        l.add(null, false, 1, new int[]{2}, "translate-out-called", "translate outgoing called string");
+        l.add(null, false, 2, new int[]{-1}, "<name:trn>", "rule name");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

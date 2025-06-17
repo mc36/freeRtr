@@ -187,18 +187,18 @@ public class servSocks extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 .  logging                      set logging");
-        l.add(null, "1 2  timeout                      set timeout on connection");
-        l.add(null, "2 .    <num>                      timeout in ms");
-        l.add(null, "1 2  buffer                       set buffer size on connection");
-        l.add(null, "2 .    <num>                      buffer in bytes");
-        l.add(null, "1 2  target                       set session target");
-        l.add(null, "2 3    proxy                      set proxy to use");
-        l.add(null, "3 .      <name:prx>               name of proxy");
-        l.add(null, "2 3    vrf                        set source vrf");
-        l.add(null, "3 .      <name:vrf>               name of vrf");
-        l.add(null, "2 3    interface                  set source interface");
-        l.add(null, "3 .      <name:ifc>               name of interface");
+        l.add(null, false, 1, new int[]{-1}, "logging", "set logging");
+        l.add(null, false, 1, new int[]{2}, "timeout", "set timeout on connection");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");
+        l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
+        l.add(null, false, 1, new int[]{2}, "target", "set session target");
+        l.add(null, false, 2, new int[]{3}, "proxy", "set proxy to use");
+        l.add(null, false, 3, new int[]{-1}, "<name:prx>", "name of proxy");
+        l.add(null, false, 2, new int[]{3}, "vrf", "set source vrf");
+        l.add(null, false, 3, new int[]{-1}, "<name:vrf>", "name of vrf");
+        l.add(null, false, 2, new int[]{3}, "interface", "set source interface");
+        l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of interface");
     }
 
     public String srvName() {

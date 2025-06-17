@@ -180,21 +180,21 @@ public class servTacacs extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  authentication               set user list to use");
-        l.add(null, "2 .    <name:aaa>                 name of list");
-        l.add(null, "1 2  authorization                set user list to use");
-        l.add(null, "2 .    <name:aaa>                 name of list");
-        l.add(null, "1 2  secret                       set shared secret");
-        l.add(null, "2 .    <str>                      secret");
-        l.add(null, "1 2  username                     set username message");
-        l.add(null, "2 .    <text>                     message");
-        l.add(null, "1 2  password                     set password message");
-        l.add(null, "2 .    <text>                     message");
-        l.add(null, "1 2  success                      set success message");
-        l.add(null, "2 .    <text>                     message");
-        l.add(null, "1 2  failure                      set failure message");
-        l.add(null, "2 .    <text>                     message");
-        l.add(null, "1 .  logging                      set logging of actions");
+        l.add(null, false, 1, new int[]{2}, "authentication", "set user list to use");
+        l.add(null, false, 2, new int[]{-1}, "<name:aaa>", "name of list");
+        l.add(null, false, 1, new int[]{2}, "authorization", "set user list to use");
+        l.add(null, false, 2, new int[]{-1}, "<name:aaa>", "name of list");
+        l.add(null, false, 1, new int[]{2}, "secret", "set shared secret");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "secret");
+        l.add(null, false, 1, new int[]{2}, "username", "set username message");
+        l.add(null, false, 2, new int[]{-1}, "<text>", "message");
+        l.add(null, false, 1, new int[]{2}, "password", "set password message");
+        l.add(null, false, 2, new int[]{-1}, "<text>", "message");
+        l.add(null, false, 1, new int[]{2}, "success", "set success message");
+        l.add(null, false, 2, new int[]{-1}, "<text>", "message");
+        l.add(null, false, 1, new int[]{2}, "failure", "set failure message");
+        l.add(null, false, 2, new int[]{-1}, "<text>", "message");
+        l.add(null, false, 1, new int[]{-1}, "logging", "set logging of actions");
     }
 
     public String srvName() {

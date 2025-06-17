@@ -102,8 +102,8 @@ public class servTwamp extends servGeneric implements prtServP {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  timeout                      timeout of client");
-        l.add(null, "2 .    <num>                      milliseconds");
+        l.add(null, false, 1, new int[]{2}, "timeout", "timeout of client");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds");
     }
 
     public String srvName() {

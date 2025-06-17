@@ -17105,3 +17105,8 @@ no qc pass: ppp with packet over txtls
 no qc pass: ppp with packet over txt
 failed: ppp with packet over txt
 failed: ppp with packet over txtls
+---------------------------------- 2025-06-17 10:40:17 25.6.17
+no failed: ppp with packet over txtls
+no failed: ppp with packet over txt
+qc pass: ppp with packet over txt
+qc pass: ppp with packet over txtls

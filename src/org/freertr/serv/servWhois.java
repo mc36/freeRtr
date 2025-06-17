@@ -143,14 +143,14 @@ public class servWhois extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  local                        select local definition");
-        l.add(null, "2 3    <num>                      as number range");
-        l.add(null, "3 .      <str>                    name of asn");
-        l.add(null, "1 2  remote                       select remote resolver");
-        l.add(null, "2 3    <num>                      as number range");
-        l.add(null, "3 4      <name:prx>               proxy profile to use");
-        l.add(null, "4 5,.      <str>                  remote server name");
-        l.add(null, "5 .          [str]                server option");
+        l.add(null, false, 1, new int[]{2}, "local", "select local definition");
+        l.add(null, false, 2, new int[]{3}, "<num>", "as number range");
+        l.add(null, false, 3, new int[]{-1}, "<str>", "name of asn");
+        l.add(null, false, 1, new int[]{2}, "remote", "select remote resolver");
+        l.add(null, false, 2, new int[]{3}, "<num>", "as number range");
+        l.add(null, false, 3, new int[]{4}, "<name:prx>", "proxy profile to use");
+        l.add(null, false, 4, new int[]{5,-1}, "<str>", "remote server name");
+        l.add(null, false, 5, new int[]{-1}, "[str]", "server option");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

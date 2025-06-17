@@ -96,9 +96,9 @@ public class servTftp extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  path                         set root folder");
-        l.add(null, "2 .    <path>                     name of root folder");
-        l.add(null, "1 .  readonly                     set write protection");
+        l.add(null, false, 1, new int[]{2}, "path", "set root folder");
+        l.add(null, false, 2, new int[]{-1}, "<path>", "name of root folder");
+        l.add(null, false, 1, new int[]{-1}, "readonly", "set write protection");
     }
 
     public String srvName() {

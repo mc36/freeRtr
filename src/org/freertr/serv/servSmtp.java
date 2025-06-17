@@ -304,36 +304,36 @@ public class servSmtp extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 .  dsn                          allow delivery notification");
-        l.add(null, "1 2  recursion                    recursive parameters");
-        l.add(null, "2 .    enable                     allow recursion");
+        l.add(null, false, 1, new int[]{-1}, "dsn", "allow delivery notification");
+        l.add(null, false, 1, new int[]{2}, "recursion", "recursive parameters");
+        l.add(null, false, 2, new int[]{-1}, "enable", "allow recursion");
         secInfoUtl.getHelp(l, 1, "access-");
-        l.add(null, "2 3    authentication             set authentication");
-        l.add(null, "3 .      <name:aaa>               name of authentication list");
-        l.add(null, "1 2  bcc                          set bcc user");
-        l.add(null, "2 .    <user>                     name of user");
-        l.add(null, "1 2  local                        set local email address");
-        l.add(null, "2 3    <user>                     name of local user");
-        l.add(null, "3 4,.    <addr>                   local email address");
-        l.add(null, "4 .        <user>                 name of bcc user");
-        l.add(null, "1 2  forward                      set forward email address");
-        l.add(null, "2 3    <user>                     remote email address");
-        l.add(null, "3 4,.    <addr>                   local email address");
-        l.add(null, "4 .        <user>                 name of bcc user");
-        l.add(null, "1 2  clist                        set config list email address");
-        l.add(null, "2 3    <addr>                     local email address");
-        l.add(null, "3 3,.    <addr>                   remote email address");
-        l.add(null, "1 2  elist                        set external list email address");
-        l.add(null, "2 3    <addr>                     local email address");
-        l.add(null, "3 .      <path>                   file name to read");
-        l.add(null, "1 2  path                         set root folder");
-        l.add(null, "2 .    <path>                     name of root folder");
-        l.add(null, "1 2  rbl-server                   set rbl server");
-        l.add(null, "2 .    <path>                     name of server");
-        l.add(null, "1 2  rbl-threshold                set rbl threshold");
-        l.add(null, "2 .    <num>                      number of servers");
-        l.add(null, "1 2  rbl-timeout                  set rbl timeout");
-        l.add(null, "2 .    <num>                      number of servers");
+        l.add(null, false, 2, new int[]{3}, "authentication", "set authentication");
+        l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authentication list");
+        l.add(null, false, 1, new int[]{2}, "bcc", "set bcc user");
+        l.add(null, false, 2, new int[]{-1}, "<user>", "name of user");
+        l.add(null, false, 1, new int[]{2}, "local", "set local email address");
+        l.add(null, false, 2, new int[]{3}, "<user>", "name of local user");
+        l.add(null, false, 3, new int[]{4, -1}, "<addr>", "local email address");
+        l.add(null, false, 4, new int[]{-1}, "<user>", "name of bcc user");
+        l.add(null, false, 1, new int[]{2}, "forward", "set forward email address");
+        l.add(null, false, 2, new int[]{3}, "<user>", "remote email address");
+        l.add(null, false, 3, new int[]{4, -1}, "<addr>", "local email address");
+        l.add(null, false, 4, new int[]{-1}, "<user>", "name of bcc user");
+        l.add(null, false, 1, new int[]{2}, "clist", "set config list email address");
+        l.add(null, false, 2, new int[]{3}, "<addr>", "local email address");
+        l.add(null, false, 3, new int[]{3, -1}, "<addr>", "remote email address");
+        l.add(null, false, 1, new int[]{2}, "elist", "set external list email address");
+        l.add(null, false, 2, new int[]{3}, "<addr>", "local email address");
+        l.add(null, false, 3, new int[]{-1}, "<path>", "file name to read");
+        l.add(null, false, 1, new int[]{2}, "path", "set root folder");
+        l.add(null, false, 2, new int[]{-1}, "<path>", "name of root folder");
+        l.add(null, false, 1, new int[]{2}, "rbl-server", "set rbl server");
+        l.add(null, false, 2, new int[]{-1}, "<path>", "name of server");
+        l.add(null, false, 1, new int[]{2}, "rbl-threshold", "set rbl threshold");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "number of servers");
+        l.add(null, false, 1, new int[]{2}, "rbl-timeout", "set rbl timeout");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "number of servers");
     }
 
     public String srvName() {

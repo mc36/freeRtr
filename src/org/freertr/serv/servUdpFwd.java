@@ -197,19 +197,19 @@ public class servUdpFwd extends servGeneric implements prtServP {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 .  logging                      set logging");
-        l.add(null, "1 2  source                       set session source");
-        l.add(null, "2 3    interface                  set source interface");
-        l.add(null, "3 .      <name:ifc>               name of interface");
-        l.add(null, "2 3    port                       set target port");
-        l.add(null, "3 .      <num>                    remote port");
-        l.add(null, "1 2  target                       set session target");
-        l.add(null, "2 3    vrf                        set source vrf");
-        l.add(null, "3 .      <name:vrf>               name of vrf");
-        l.add(null, "2 3    address                    set target address");
-        l.add(null, "3 .      <addr>                   remote address");
-        l.add(null, "2 3    port                       set target port");
-        l.add(null, "3 .      <num>                    remote port");
+        l.add(null, false, 1, new int[]{-1}, "logging", "set logging");
+        l.add(null, false, 1, new int[]{2}, "source", "set session source");
+        l.add(null, false, 2, new int[]{3}, "interface", "set source interface");
+        l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, 2, new int[]{3}, "port", "set target port");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "remote port");
+        l.add(null, false, 1, new int[]{2}, "target", "set session target");
+        l.add(null, false, 2, new int[]{3}, "vrf", "set source vrf");
+        l.add(null, false, 3, new int[]{-1}, "<name:vrf>", "name of vrf");
+        l.add(null, false, 2, new int[]{3}, "address", "set target address");
+        l.add(null, false, 3, new int[]{-1}, "<addr>", "remote address");
+        l.add(null, false, 2, new int[]{3}, "port", "set target port");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "remote port");
     }
 
     public String srvName() {

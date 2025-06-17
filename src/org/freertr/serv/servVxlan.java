@@ -180,11 +180,11 @@ public class servVxlan extends servGeneric implements prtServP {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  bridge                       set interface to clone");
-        l.add(null, "2 .    <num>                      number of bridge");
-        l.add(null, "1 2  instance                     set instance id");
-        l.add(null, "2 .    <num>                      instance id");
-        l.add(null, "1 .  physical-interface           adding as physical to bridge");
+        l.add(null, false, 1, new int[]{2}, "bridge", "set interface to clone");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "number of bridge");
+        l.add(null, false, 1, new int[]{2}, "instance", "set instance id");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "instance id");
+        l.add(null, false, 1, new int[]{-1}, "physical-interface", "adding as physical to bridge");
     }
 
     public String srvName() {

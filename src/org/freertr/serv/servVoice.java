@@ -138,13 +138,13 @@ public class servVoice extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  codec                          set codec to use");
-        l.add(null, "2 .    alaw                         g711 a law");
-        l.add(null, "2 .    ulaw                         g711 u law");
-        l.add(null, "1 2  voice-script                   set tcl script to run on incoming call");
-        l.add(null, "2 .    <file>                       file name");
-        l.add(null, "1 2  message-script                 set tcl script to run on incoming message");
-        l.add(null, "2 .    <file>                       file name");
+        l.add(null, false, 1, new int[]{2}, "codec", "set codec to use");
+        l.add(null, false, 2, new int[]{-1}, "alaw", "g711 a law");
+        l.add(null, false, 2, new int[]{-1}, "ulaw", "g711 u law");
+        l.add(null, false, 1, new int[]{2}, "voice-script", "set tcl script to run on incoming call");
+        l.add(null, false, 2, new int[]{-1}, "<file>", "file name");
+        l.add(null, false, 1, new int[]{2}, "message-script", "set tcl script to run on incoming message");
+        l.add(null, false, 2, new int[]{-1}, "<file>", "file name");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

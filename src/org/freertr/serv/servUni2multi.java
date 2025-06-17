@@ -216,23 +216,23 @@ public class servUni2multi extends servGeneric implements prtServP {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  timeout                      timeout of client");
-        l.add(null, "2 .    <num>                      milliseconds");
-        l.add(null, "1 2  source                       specify translated source");
-        l.add(null, "2 3    interface                  interface to use");
-        l.add(null, "3 .      <name:ifc>               name of interface");
-        l.add(null, "2 3    port                       port number");
-        l.add(null, "3 .      <num>                    number");
-        l.add(null, "1 2  target                       specify translated target");
-        l.add(null, "2 3    port                       port number");
-        l.add(null, "3 .      <num>                    number");
-        l.add(null, "2 3    ipv4                       ipv4 range");
-        l.add(null, "3 .      <addr>                   prefix");
-        l.add(null, "2 3    ipv6                       ipv6 range");
-        l.add(null, "3 .      <addr>                   prefix");
-        l.add(null, "1 .  logging                      log translations");
-        l.add(null, "1 2  script                       script to invoke");
-        l.add(null, "2 .    <name:scr>                 name of script");
+        l.add(null, false, 1, new int[]{2}, "timeout", "timeout of client");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds");
+        l.add(null, false, 1, new int[]{2}, "source", "specify translated source");
+        l.add(null, false, 2, new int[]{3}, "interface", "interface to use");
+        l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, 2, new int[]{3}, "port", "port number");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "number");
+        l.add(null, false, 1, new int[]{2}, "target", "specify translated target");
+        l.add(null, false, 2, new int[]{3}, "port", "port number");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "number");
+        l.add(null, false, 2, new int[]{3}, "ipv4", "ipv4 range");
+        l.add(null, false, 3, new int[]{-1}, "<addr>", "prefix");
+        l.add(null, false, 2, new int[]{3}, "ipv6", "ipv6 range");
+        l.add(null, false, 3, new int[]{-1}, "<addr>", "prefix");
+        l.add(null, false, 1, new int[]{-1}, "logging", "log translations");
+        l.add(null, false, 1, new int[]{2}, "script", "script to invoke");
+        l.add(null, false, 2, new int[]{-1}, "<name:scr>", "name of script");
     }
 
     public String srvName() {

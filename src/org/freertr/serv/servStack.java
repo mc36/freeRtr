@@ -276,24 +276,24 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  buffer                    set buffer size on connection");
-        l.add(null, "2 .    <num>                   buffer in bytes");
-        l.add(null, "1 2  dataplanes                set number of forwarders");
-        l.add(null, "2 .    <num>                   limit");
-        l.add(null, "1 2  discovery                 specify discovery parameters");
-        l.add(null, "2 3    <num>                   keepalive in ms");
-        l.add(null, "3 .      <num>                 timeout in ms");
-        l.add(null, "1 2  forwarder                 specify forwarder parameters");
-        l.add(null, "2 3    <num>                   keepalive in ms");
-        l.add(null, "3 4      p4lang                use p4lang dataplane");
-        l.add(cfgAll.dmnP4lang.listServers(), "4 .        <name:loc>           name of server");
-        l.add(null, "3 4      openflow              use openflow dataplane");
-        l.add(cfgAll.dmnOpenflow.listServers(), "4 .        <name:loc>           name of server");
-        l.add(null, "3 4      remote                address of remote");
-        l.add(null, "4 .        <adr>               address");
-        l.add(null, "3 4      backplane             interface to use");
-        l.add(null, "4 5        <name:ifc>          name of interface");
-        l.add(null, "5 .          <num>             metric of port");
+        l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
+        l.add(null, false, 1, new int[]{2}, "dataplanes", "set number of forwarders");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "limit");
+        l.add(null, false, 1, new int[]{2}, "discovery", "specify discovery parameters");
+        l.add(null, false, 2, new int[]{3}, "<num>", "keepalive in ms");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "timeout in ms");
+        l.add(null, false, 1, new int[]{2}, "forwarder", "specify forwarder parameters");
+        l.add(null, false, 2, new int[]{3}, "<num>", "keepalive in ms");
+        l.add(null, false, 3, new int[]{4}, "p4lang", "use p4lang dataplane");
+        l.add(cfgAll.dmnP4lang.listServers(), false, 4, new int[]{-1}, "<name:loc>", "name of server");
+        l.add(null, false, 3, new int[]{4}, "openflow", "use openflow dataplane");
+        l.add(cfgAll.dmnOpenflow.listServers(), false, 4, new int[]{-1}, "<name:loc>", "name of server");
+        l.add(null, false, 3, new int[]{4}, "remote", "address of remote");
+        l.add(null, false, 4, new int[]{-1}, "<adr>", "address");
+        l.add(null, false, 3, new int[]{4}, "backplane", "interface to use");
+        l.add(null, false, 4, new int[]{5}, "<name:ifc>", "name of interface");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "metric of port");
     }
 
     public String srvName() {
