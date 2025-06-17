@@ -60,14 +60,14 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1 3,. description                   specify description");
-        l.add(null, "3 3,.   <str>                       text");
-        l.add(null, "1 2   rename                        rename this menu");
-        l.add(null, "2 .     <str>                       set new name");
-        l.add(null, "1 2   entry                         add an entry");
-        l.add(null, "2 3     <str>                       group name");
-        l.add(null, "3 4       <str>                     entry name");
-        l.add(null, "4 4,.       <str>                   command to execute");
+        l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
+        l.add(null, false, 1, new int[]{2}, "rename", "rename this menu");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
+        l.add(null, false, 1, new int[]{2}, "entry", "add an entry");
+        l.add(null, false, 2, new int[]{3}, "<str>", "group name");
+        l.add(null, false, 3, new int[]{4}, "<str>", "entry name");
+        l.add(null, false, 4, new int[]{4, -1}, "<str>", "command to execute");
     }
 
     public List<String> getShRun(int filter) {

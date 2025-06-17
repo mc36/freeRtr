@@ -31,12 +31,12 @@ public class authList extends authGeneric {
     private tabListing<tabAuthlstN, addrIP> methods = new tabListing<tabAuthlstN, addrIP>();
 
     public void getHelp(userHelping l) {
-        l.add(null, "1 2  sequence            select sequence number");
-        l.add(null, "2 3    <num>             number of entry");
-        l.add(null, "3 .      <name:aaa>      name of authenticator");
-        l.add(null, "1 2,. reindex            reindex prefix list");
-        l.add(null, "2 3,.   [num]            initial number to start with");
-        l.add(null, "3 .       [num]          increment number");
+        l.add(null, false, 1, new int[]{2}, "sequence", "select sequence number");
+        l.add(null, false, 2, new int[]{3}, "<num>", "number of entry");
+        l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authenticator");
+        l.add(null, false, 1, new int[]{2, -1}, "reindex", "reindex prefix list");
+        l.add(null, false, 2, new int[]{3, -1}, "[num]", "initial number to start with");
+        l.add(null, false, 3, new int[]{-1}, "[num]", "increment number");
     }
 
     public List<String> getShRun(String beg, int filter) {

@@ -156,23 +156,23 @@ public class cfgIpsec implements Comparable<cfgIpsec>, cfgGeneric {
 
     public void getHelp(userHelping l) {
         trans.getHelp(l);
-        l.add(null, "1 3,. description        specify description");
-        l.add(null, "3 3,.   <str>            text");
-        l.add(null, "1 2   rename             rename this ipsec");
-        l.add(null, "2 .     <str>            set new name");
-        l.add(null, "1 2  key                 set preshared key");
-        l.add(null, "2 .    <text>            key");
-        l.add(null, "1 2  protected           set protected protocol");
-        l.add(null, "2 .    ipv4              ipv4");
-        l.add(null, "2 .    ipv6              ipv6");
-        l.add(null, "1 2  role                set role in session");
-        l.add(null, "2 .    initiator         initiate the session");
-        l.add(null, "2 .    responder         respond to the initiator");
-        l.add(null, "2 .    static            static tunnel");
-        l.add(null, "1 2  isakmp              set isakmp version to use");
-        l.add(null, "2 .    <num>             version");
-        l.add(null, "1 2  replay              set replay window size");
-        l.add(null, "2 .    <num>             size in packets");
+        l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
+        l.add(null, false, 1, new int[]{2}, "rename", "rename this ipsec");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
+        l.add(null, false, 1, new int[]{2}, "key", "set preshared key");
+        l.add(null, false, 2, new int[]{-1}, "<text>", "key");
+        l.add(null, false, 1, new int[]{2}, "protected", "set protected protocol");
+        l.add(null, false, 2, new int[]{-1}, "ipv4", "ipv4");
+        l.add(null, false, 2, new int[]{-1}, "ipv6", "ipv6");
+        l.add(null, false, 1, new int[]{2}, "role", "set role in session");
+        l.add(null, false, 2, new int[]{-1}, "initiator", "initiate the session");
+        l.add(null, false, 2, new int[]{-1}, "responder", "respond to the initiator");
+        l.add(null, false, 2, new int[]{-1}, "static", "static tunnel");
+        l.add(null, false, 1, new int[]{2}, "isakmp", "set isakmp version to use");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "version");
+        l.add(null, false, 1, new int[]{2}, "replay", "set replay window size");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "size in packets");
     }
 
     public void doCfgStr(cmds cmd) {

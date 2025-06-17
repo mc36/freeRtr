@@ -116,18 +116,18 @@ public class cfgEvntmgr implements Comparable<cfgEvntmgr>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1  2   sequence              sequence number of an entry");
-        l.add(null, "2  1     <num>               sequence number");
-        l.add(null, "1  3,. description           specify description");
-        l.add(null, "3  3,.   <str>               text");
-        l.add(null, "1  3,. event                 specify log event to match");
-        l.add(null, "3  3,.   <str>               text");
-        l.add(null, "1  3,. tcl                   specify tcl command to execute");
-        l.add(null, "3  3,.   <str>               text");
-        l.add(null, "1  .   suppress              suppress the log");
-        l.add(null, "1  2,. reindex               reindex event manager");
-        l.add(null, "2  3,.   [num]               initial number to start with");
-        l.add(null, "3  .       [num]             increment number");
+        l.add(null, false, 1, new int[]{2}, "sequence", "sequence number of an entry");
+        l.add(null, false, 2, new int[]{1}, "<num>", "sequence number");
+        l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
+        l.add(null, false, 1, new int[]{3, -1}, "event", "specify log event to match");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
+        l.add(null, false, 1, new int[]{3, -1}, "tcl", "specify tcl command to execute");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
+        l.add(null, false, 1, new int[]{-1}, "suppress", "suppress the log");
+        l.add(null, false, 1, new int[]{2, -1}, "reindex", "reindex event manager");
+        l.add(null, false, 2, new int[]{3, -1}, "[num]", "initial number to start with");
+        l.add(null, false, 3, new int[]{-1}, "[num]", "increment number");
     }
 
     public void doCfgStr(cmds cmd) {

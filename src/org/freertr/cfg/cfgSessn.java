@@ -79,32 +79,32 @@ public class cfgSessn implements Comparable<cfgSessn>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1 2  rename                       rename this session");
-        l.add(null, "2 .    <str>                      set new name");
-        l.add(null, "1 2  description                  specify description");
-        l.add(null, "2 2,.  <str>                      description");
-        l.add(null, "1 2  timeout                      set timeout");
-        l.add(null, "2 .    <num>                      timeout in ms");
-        l.add(null, "1 2  sessions                     set session limit");
-        l.add(null, "2 .    <num>                      number of sessions");
-        l.add(null, "1 2  rate                         specify translation rate");
-        l.add(null, "2 .    <nam:pm>                   name of policy map");
-        l.add(null, "1 .  mac                          with mac addresses");
-        l.add(null, "1 .  before                       log on session start");
-        l.add(null, "1 .  after                        log on session stop");
-        l.add(null, "1 .  dropped                      log on session drop");
-        l.add(null, "1 .  drop-rx                      drop sessions ingress");
-        l.add(null, "1 .  drop-tx                      drop sessions egress");
-        l.add(null, "1 .  drop-frg                     drop fragmented packets");
-        l.add(null, "1 .  allow-routing                allow control multicast traffic");
-        l.add(null, "1 .  allow-sending                allow self originated traffic");
-        l.add(null, "1 .  allow-linklocal              allow link local traffic");
-        l.add(null, "1 .  allow-multicast              allow multicast traffic");
-        l.add(null, "1 .  allow-broadcast              allow broadcast traffic");
-        l.add(null, "1 2  allow-list                   allow specific traffic");
-        l.add(null, "2 .    <name:acl>                 name of access list");
-        l.add(null, "1 2  allow-url                    allow specific traffic");
-        l.add(null, "2 .    <num>                      translation rule");
+        l.add(null, false, 1, new int[]{2}, "rename", "rename this session");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
+        l.add(null, false, 1, new int[]{2}, "description", "specify description");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "description");
+        l.add(null, false, 1, new int[]{2}, "timeout", "set timeout");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");
+        l.add(null, false, 1, new int[]{2}, "sessions", "set session limit");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "number of sessions");
+        l.add(null, false, 1, new int[]{2}, "rate", "specify translation rate");
+        l.add(null, false, 2, new int[]{-1}, "<nam:pm>", "name of policy map");
+        l.add(null, false, 1, new int[]{-1}, "mac", "with mac addresses");
+        l.add(null, false, 1, new int[]{-1}, "before", "log on session start");
+        l.add(null, false, 1, new int[]{-1}, "after", "log on session stop");
+        l.add(null, false, 1, new int[]{-1}, "dropped", "log on session drop");
+        l.add(null, false, 1, new int[]{-1}, "drop-rx", "drop sessions ingress");
+        l.add(null, false, 1, new int[]{-1}, "drop-tx", "drop sessions egress");
+        l.add(null, false, 1, new int[]{-1}, "drop-frg", "drop fragmented packets");
+        l.add(null, false, 1, new int[]{-1}, "allow-routing", "allow control multicast traffic");
+        l.add(null, false, 1, new int[]{-1}, "allow-sending", "allow self originated traffic");
+        l.add(null, false, 1, new int[]{-1}, "allow-linklocal", "allow link local traffic");
+        l.add(null, false, 1, new int[]{-1}, "allow-multicast", "allow multicast traffic");
+        l.add(null, false, 1, new int[]{-1}, "allow-broadcast", "allow broadcast traffic");
+        l.add(null, false, 1, new int[]{2}, "allow-list", "allow specific traffic");
+        l.add(null, false, 2, new int[]{-1}, "<name:acl>", "name of access list");
+        l.add(null, false, 1, new int[]{2}, "allow-url", "allow specific traffic");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "translation rule");
     }
 
     public String getPrompt() {

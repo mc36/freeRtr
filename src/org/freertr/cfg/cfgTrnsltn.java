@@ -150,29 +150,29 @@ public class cfgTrnsltn implements Comparable<cfgTrnsltn>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1 3,. description          specify description");
-        l.add(null, "3 3,.   <str>              text");
-        l.add(null, "1 2    remove              remove string");
-        l.add(null, "2 2,.    <str>             regular expression");
-        l.add(null, "1 2    track               consider tracker");
-        l.add(null, "2 .      <name:trk>        name of tracker");
-        l.add(null, "1 2    time                consider time");
-        l.add(null, "2 .      <name:tm>         name of time map");
-        l.add(null, "1 2    match               match string");
-        l.add(null, "2 2,.    <str>             regular expression");
-        l.add(null, "1 2    forbid              forbid string");
-        l.add(null, "2 2,.    <str>             regular expression");
-        l.add(null, "1 2    replace             replace string");
-        l.add(null, "2 3      <str>             regular expression");
-        l.add(null, "3 .        <str>           new string");
-        l.add(null, "1 2    text                place text");
-        l.add(null, "2 2,.    <str>             text");
-        l.add(null, "1 2    variable            place variable from match");
-        l.add(null, "2 2,.    <str>             variable name");
-        l.add(null, "1 2    character           place character");
-        l.add(null, "2 2,.    <str>             variable name");
-        l.add(null, "1 .    log                 log translations");
-        l.add(null, "1 .    last                stop after translation");
+        l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
+        l.add(null, false, 1, new int[]{2}, "remove", "remove string");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "regular expression");
+        l.add(null, false, 1, new int[]{2}, "track", "consider tracker");
+        l.add(null, false, 2, new int[]{-1}, "<name:trk>", "name of tracker");
+        l.add(null, false, 1, new int[]{2}, "time", "consider time");
+        l.add(null, false, 2, new int[]{-1}, "<name:tm>", "name of time map");
+        l.add(null, false, 1, new int[]{2}, "match", "match string");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "regular expression");
+        l.add(null, false, 1, new int[]{2}, "forbid", "forbid string");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "regular expression");
+        l.add(null, false, 1, new int[]{2}, "replace", "replace string");
+        l.add(null, false, 2, new int[]{3}, "<str>", "regular expression");
+        l.add(null, false, 3, new int[]{-1}, "<str>", "new string");
+        l.add(null, false, 1, new int[]{2}, "text", "place text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
+        l.add(null, false, 1, new int[]{2}, "variable", "place variable from match");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "variable name");
+        l.add(null, false, 1, new int[]{2}, "character", "place character");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "variable name");
+        l.add(null, false, 1, new int[]{-1}, "log", "log translations");
+        l.add(null, false, 1, new int[]{-1}, "last", "stop after translation");
     }
 
     public void doCfgStr(cmds cmd) {

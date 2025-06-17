@@ -210,41 +210,41 @@ public class cfgPrcss implements Comparable<cfgPrcss>, Runnable, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1  2,.    description                description of this process");
-        l.add(null, "2  2,.      [text]                   text describing this process");
-        l.add(null, "1  .      respawn                    restart on termination");
-        l.add(null, "1  .      children                   kill children on termination");
-        l.add(null, "1  2      rename                     rename this process");
-        l.add(null, "2  .        <str>                    set new name of process");
-        l.add(null, "1  2      exec                       set external binary to use");
-        l.add(null, "2  2,.      <str>                    name of image");
-        l.add(null, "1  2      program                    set external binary to use");
-        l.add(null, "2  .        <str>                    name of image");
-        l.add(null, "1  2      parameter                  set parameters to use on the binary");
-        l.add(null, "2  2,.      <str>                    name of image");
-        l.add(null, "1  2      final                      set final long parameter");
-        l.add(null, "2  2,.      <str>                    parameter");
-        l.add(null, "1  2      user                       set user to use");
-        l.add(null, "2  .        <str>                    user value");
-        l.add(null, "1  2      pinning                    set pinning mask");
-        l.add(null, "2  .        <str>                    cpu mask in hex");
-        l.add(null, "1  2      time                       specify time between runs");
-        l.add(null, "2  .        <num>                    milliseconds between runs");
-        l.add(null, "1  2      delay                      specify initial delay");
-        l.add(null, "2  .        <num>                    milliseconds before start");
-        l.add(null, "1  2      random-time                specify random time between runs");
-        l.add(null, "2  .        <num>                    milliseconds between runs");
-        l.add(null, "1  2      random-delay               specify random initial delay");
-        l.add(null, "2  .        <num>                    milliseconds before start");
-        l.add(null, "1  2      range                      specify time range");
-        l.add(null, "2  .        <name:tm>                name of time map");
-        l.add(null, "1  .      log-actions                log actions");
-        l.add(null, "1  .      log-console                log console activity");
-        l.add(null, "1  2      log-collect                collect console activity");
-        l.add(null, "2  .        <num>                    lines to store");
-        l.add(null, "1  .      stop                       stop working");
-        l.add(null, "1  .      start                      start working");
-        l.add(null, "1  .      runnow                     run one round now");
+        l.add(null, false, 1, new int[]{2, -1}, "description", "description of this process");
+        l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this process");
+        l.add(null, false, 1, new int[]{-1}, "respawn", "restart on termination");
+        l.add(null, false, 1, new int[]{-1}, "children", "kill children on termination");
+        l.add(null, false, 1, new int[]{2}, "rename", "rename this process");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "set new name of process");
+        l.add(null, false, 1, new int[]{2}, "exec", "set external binary to use");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "name of image");
+        l.add(null, false, 1, new int[]{2}, "program", "set external binary to use");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "name of image");
+        l.add(null, false, 1, new int[]{2}, "parameter", "set parameters to use on the binary");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "name of image");
+        l.add(null, false, 1, new int[]{2}, "final", "set final long parameter");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "parameter");
+        l.add(null, false, 1, new int[]{2}, "user", "set user to use");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "user value");
+        l.add(null, false, 1, new int[]{2}, "pinning", "set pinning mask");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "cpu mask in hex");
+        l.add(null, false, 1, new int[]{2}, "time", "specify time between runs");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds between runs");
+        l.add(null, false, 1, new int[]{2}, "delay", "specify initial delay");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds before start");
+        l.add(null, false, 1, new int[]{2}, "random-time", "specify random time between runs");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds between runs");
+        l.add(null, false, 1, new int[]{2}, "random-delay", "specify random initial delay");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds before start");
+        l.add(null, false, 1, new int[]{2}, "range", "specify time range");
+        l.add(null, false, 2, new int[]{-1}, "<name:tm>", "name of time map");
+        l.add(null, false, 1, new int[]{-1}, "log-actions", "log actions");
+        l.add(null, false, 1, new int[]{-1}, "log-console", "log console activity");
+        l.add(null, false, 1, new int[]{2}, "log-collect", "collect console activity");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "lines to store");
+        l.add(null, false, 1, new int[]{-1}, "stop", "stop working");
+        l.add(null, false, 1, new int[]{-1}, "start", "start working");
+        l.add(null, false, 1, new int[]{-1}, "runnow", "run one round now");
     }
 
     public List<String> getShRun(int filter) {

@@ -119,16 +119,16 @@ public class cfgLin implements Comparable<cfgLin>, cfgGeneric {
 
     public void getHelp(userHelping l) {
         line.getHelp(l);
-        l.add(null, "1 .  log-monitor                    set as monitoring line");
-        l.add(null, "1 .  dedicated                      set as dedicated line");
-        l.add(null, "1 .  disabled                       set as disabled line");
-        l.add(null, "1 2  script                         set scripts to use");
-        l.add(null, "2 3    init                         script to run on before activation");
-        l.add(null, "3 .      <name:scr>                 name of script");
-        l.add(null, "2 3    activate                     script to run on after activation");
-        l.add(null, "3 .      <name:scr>                 name of script");
-        l.add(null, "2 3    hangup                       script to run on after session");
-        l.add(null, "3 .      <name:scr>                 name of script");
+        l.add(null, false, 1, new int[]{-1}, "log-monitor", "set as monitoring line");
+        l.add(null, false, 1, new int[]{-1}, "dedicated", "set as dedicated line");
+        l.add(null, false, 1, new int[]{-1}, "disabled", "set as disabled line");
+        l.add(null, false, 1, new int[]{2}, "script", "set scripts to use");
+        l.add(null, false, 2, new int[]{3}, "init", "script to run on before activation");
+        l.add(null, false, 3, new int[]{-1}, "<name:scr>", "name of script");
+        l.add(null, false, 2, new int[]{3}, "activate", "script to run on after activation");
+        l.add(null, false, 3, new int[]{-1}, "<name:scr>", "name of script");
+        l.add(null, false, 2, new int[]{3}, "hangup", "script to run on after session");
+        l.add(null, false, 3, new int[]{-1}, "<name:scr>", "name of script");
     }
 
     public synchronized void doCfgStr(cmds cmd) {

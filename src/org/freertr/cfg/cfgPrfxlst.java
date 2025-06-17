@@ -71,27 +71,27 @@ public class cfgPrfxlst implements Comparable<cfgPrfxlst>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1 2   sequence              sequence number of an entry");
-        l.add(null, "2 1     <num>               sequence number");
-        l.add(null, "1 3,. description           specify description");
-        l.add(null, "3 3,.   <str>               text");
-        l.add(null, "1 2   rename                rename this prefix list");
-        l.add(null, "2 .     <str>               set new name");
-        l.add(null, "1 3   evaluate              evaluate another list");
-        l.add(null, "3 4     permit              specify list to allow");
-        l.add(null, "3 4     deny                specify list to forbid");
-        l.add(null, "4 .       <name:pl>         name of list");
-        l.add(null, "1 3   permit                specify networks to allow");
-        l.add(null, "1 3   deny                  specify networks to forbid");
-        l.add(null, "3 4,.   <net/mask>          network in perfix/mask format");
-        l.add(null, "4 5       ge                minimum prefix length to be matched");
-        l.add(null, "5 4,.       <num>           minimum prefix length");
-        l.add(null, "4 5       le                maximum prefix length to be matched");
-        l.add(null, "5 4,.       <num>           maximum prefix length");
-        l.add(null, "4 4,.     log               set logging on match");
-        l.add(null, "1 2,. reindex               reindex prefix list");
-        l.add(null, "2 3,.   [num]               initial number to start with");
-        l.add(null, "3 .       [num]             increment number");
+        l.add(null, false, 1, new int[]{2}, "sequence", "sequence number of an entry");
+        l.add(null, false, 2, new int[]{1}, "<num>", "sequence number");
+        l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
+        l.add(null, false, 1, new int[]{2}, "rename", "rename this prefix list");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
+        l.add(null, false, 1, new int[]{3}, "evaluate", "evaluate another list");
+        l.add(null, false, 3, new int[]{4}, "permit", "specify list to allow");
+        l.add(null, false, 3, new int[]{4}, "deny", "specify list to forbid");
+        l.add(null, false, 4, new int[]{-1}, "<name:pl>", "name of list");
+        l.add(null, false, 1, new int[]{3}, "permit", "specify networks to allow");
+        l.add(null, false, 1, new int[]{3}, "deny", "specify networks to forbid");
+        l.add(null, false, 3, new int[]{4, -1}, "<net/mask>", "network in perfix/mask format");
+        l.add(null, false, 4, new int[]{5}, "ge", "minimum prefix length to be matched");
+        l.add(null, false, 5, new int[]{4, -1}, "<num>", "minimum prefix length");
+        l.add(null, false, 4, new int[]{5}, "le", "maximum prefix length to be matched");
+        l.add(null, false, 5, new int[]{4, -1}, "<num>", "maximum prefix length");
+        l.add(null, false, 4, new int[]{4, -1}, "log", "set logging on match");
+        l.add(null, false, 1, new int[]{2, -1}, "reindex", "reindex prefix list");
+        l.add(null, false, 2, new int[]{3, -1}, "[num]", "initial number to start with");
+        l.add(null, false, 3, new int[]{-1}, "[num]", "increment number");
     }
 
     public synchronized void doCfgStr(cmds cmd) {

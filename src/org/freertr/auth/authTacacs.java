@@ -67,16 +67,16 @@ public class authTacacs extends authGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1 2  server              specify server");
-        l.add(null, "2 .    <str>             name of server");
-        l.add(null, "1 2  secret              specify secret");
-        l.add(null, "2 .    <text>            shared secret");
-        l.add(null, "1 2  port                set port number");
-        l.add(null, "2 .    <num>             port number");
-        l.add(null, "1 2  privilege           set default privilege");
-        l.add(null, "2 .    <num>             privilege of terminal");
-        l.add(null, "1 2  proxy               set proxy to use");
-        l.add(null, "2 .    <name:prx>        proxy profile");
+        l.add(null, false, 1, new int[]{2}, "server", "specify server");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "name of server");
+        l.add(null, false, 1, new int[]{2}, "secret", "specify secret");
+        l.add(null, false, 2, new int[]{-1}, "<text>", "shared secret");
+        l.add(null, false, 1, new int[]{2}, "port", "set port number");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "port number");
+        l.add(null, false, 1, new int[]{2}, "privilege", "set default privilege");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "privilege of terminal");
+        l.add(null, false, 1, new int[]{2}, "proxy", "set proxy to use");
+        l.add(null, false, 2, new int[]{-1}, "<name:prx>", "proxy profile");
     }
 
     public boolean fromString(cmds cmd) {

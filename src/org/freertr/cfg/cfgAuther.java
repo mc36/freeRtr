@@ -217,14 +217,14 @@ public class cfgAuther implements Comparable<cfgAuther>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1 2    rename              rename this authenticator");
-        l.add(null, "2 .      <str>             set new name");
-        l.add(null, "1 2    description         specify description");
-        l.add(null, "2 2,.    <str>             description");
-        l.add(null, "1 .    log-failure         log failure");
-        l.add(null, "1 .    log-success         log success");
-        l.add(null, "1 .    log-error           log error");
-        l.add(null, "1 .    log-password        log password");
+        l.add(null, false, 1, new int[]{2}, "rename", "rename this authenticator");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
+        l.add(null, false, 1, new int[]{2}, "description", "specify description");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "description");
+        l.add(null, false, 1, new int[]{-1}, "log-failure", "log failure");
+        l.add(null, false, 1, new int[]{-1}, "log-success", "log success");
+        l.add(null, false, 1, new int[]{-1}, "log-error", "log error");
+        l.add(null, false, 1, new int[]{-1}, "log-password", "log password");
         authGeneric aut = getAuther();
         if (aut != null) {
             aut.getHelp(l);

@@ -271,47 +271,47 @@ public class authLocal extends authGeneric {
      * @param l help
      */
     public void getHelp(userHelping l) {
-        l.add(null, "1 2  allowed             allow one command");
-        l.add(null, "2 2,.  <text>            command");
-        l.add(null, "1 2  forbidden           forbid one command");
-        l.add(null, "2 2,.  <text>            command");
-        l.add(null, "1 2  username            create or update user");
+        l.add(null, false, 1, new int[]{2}, "allowed", "allow one command");
+        l.add(null, false, 2, new int[]{2, -1}, "<text>", "command");
+        l.add(null, false, 1, new int[]{2}, "forbidden", "forbid one command");
+        l.add(null, false, 2, new int[]{2, -1}, "<text>", "command");
+        l.add(null, false, 1, new int[]{2}, "username", "create or update user");
         List<String> lst = new ArrayList<String>();
         for (int i = 0; i < users.size(); i++) {
             lst.add(users.get(i).username);
         }
-        l.add(lst, "2 3,.  <name:loc>        name of user, * for any");
-        l.add(null, "3 4      password        set password of user");
-        l.add(null, "4 4,.      [text]        password of user");
-        l.add(null, "3 4      pubkey          set ssh key of user");
-        l.add(null, "4 4,.      [text]        public key of user");
-        l.add(null, "3 4      secret          set secret of user");
-        l.add(null, "4 4,.      [text]        secret of user");
-        l.add(null, "3 4      otpseed         set seed of user");
-        l.add(null, "4 4,.      [text]        seed of user");
-        l.add(null, "3 4      otppass         set seed of user");
-        l.add(null, "4 5        <num>         length of tokencode");
-        l.add(null, "5 5,.        [text]      seed of user");
-        l.add(null, "3 4      autocommand     set automatic command");
-        l.add(null, "4 4,.      [text]        autocommand of user");
-        l.add(null, "3 4      countdown       set counter");
-        l.add(null, "4 .        <num>         login counter");
-        l.add(null, "3 .      anypass         any password will be accepted");
-        l.add(null, "3 .      anykey          any pubkey will be accepted");
-        l.add(null, "3 .      anything        refused auth will be accepted");
-        l.add(null, "3 .      autohangup      disconnect user after autocommand");
-        l.add(null, "3 4      ipv4addr        specify ipv4 address");
-        l.add(null, "4 .        <addr>        address");
-        l.add(null, "3 4      ipv4route       specify ipv4 route");
-        l.add(null, "4 4,.      [text]        route");
-        l.add(null, "3 4      ipv6addr        specify ipv6 address");
-        l.add(null, "4 .        <addr>        address");
-        l.add(null, "3 4      ipv6ifid        specify ipv6 interface id");
-        l.add(null, "4 .        <addr>        address");
-        l.add(null, "3 4      ipv6route       specify ipv6 route");
-        l.add(null, "4 4,.      [text]        route");
-        l.add(null, "3 4      privilege       set privilege level of user");
-        l.add(null, "4 .        <priv>        privilege of user");
+        l.add(lst, false, 2, new int[]{3, -1}, "<name:loc>", "name of user, * for any");
+        l.add(null, false, 3, new int[]{4}, "password", "set password of user");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "password of user");
+        l.add(null, false, 3, new int[]{4}, "pubkey", "set ssh key of user");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "public key of user");
+        l.add(null, false, 3, new int[]{4}, "secret", "set secret of user");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "secret of user");
+        l.add(null, false, 3, new int[]{4}, "otpseed", "set seed of user");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "seed of user");
+        l.add(null, false, 3, new int[]{4}, "otppass", "set seed of user");
+        l.add(null, false, 4, new int[]{5}, "<num>", "length of tokencode");
+        l.add(null, false, 5, new int[]{5, -1}, "[text]", "seed of user");
+        l.add(null, false, 3, new int[]{4}, "autocommand", "set automatic command");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "autocommand of user");
+        l.add(null, false, 3, new int[]{4}, "countdown", "set counter");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "login counter");
+        l.add(null, false, 3, new int[]{-1}, "anypass", "any password will be accepted");
+        l.add(null, false, 3, new int[]{-1}, "anykey", "any pubkey will be accepted");
+        l.add(null, false, 3, new int[]{-1}, "anything", "refused auth will be accepted");
+        l.add(null, false, 3, new int[]{-1}, "autohangup", "disconnect user after autocommand");
+        l.add(null, false, 3, new int[]{4}, "ipv4addr", "specify ipv4 address");
+        l.add(null, false, 4, new int[]{-1}, "<addr>", "address");
+        l.add(null, false, 3, new int[]{4}, "ipv4route", "specify ipv4 route");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "route");
+        l.add(null, false, 3, new int[]{4}, "ipv6addr", "specify ipv6 address");
+        l.add(null, false, 4, new int[]{-1}, "<addr>", "address");
+        l.add(null, false, 3, new int[]{4}, "ipv6ifid", "specify ipv6 interface id");
+        l.add(null, false, 4, new int[]{-1}, "<addr>", "address");
+        l.add(null, false, 3, new int[]{4}, "ipv6route", "specify ipv6 route");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "route");
+        l.add(null, false, 3, new int[]{4}, "privilege", "set privilege level of user");
+        l.add(null, false, 4, new int[]{-1}, "<priv>", "privilege of user");
     }
 
     /**

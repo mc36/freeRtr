@@ -159,31 +159,31 @@ public class cfgSched implements Comparable<cfgSched>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1  2,.    description                description of this scheduler");
-        l.add(null, "2  2,.      [text]                   text describing this scheduler");
-        l.add(null, "1  2      rename                     rename this scheduler");
-        l.add(null, "2  .        <str>                    set new name");
-        l.add(null, "1  .      respawn                    restart on termination");
-        l.add(null, "1  2      command                    specify command to run");
-        l.add(null, "2  2,.      <cmd>                    exec command to run");
-        l.add(null, "1  2      time                       specify time between runs");
-        l.add(null, "2  .        <num>                    milliseconds between runs");
-        l.add(null, "1  2      delay                      specify initial delay");
-        l.add(null, "2  .        <num>                    milliseconds before start");
-        l.add(null, "1  2      random-time                specify random time between runs");
-        l.add(null, "2  .        <num>                    milliseconds between runs");
-        l.add(null, "1  2      random-delay               specify random initial delay");
-        l.add(null, "2  .        <num>                    milliseconds before start");
-        l.add(null, "1  2      range                      specify time range");
-        l.add(null, "2  .        <name:tm>                name of time map");
-        l.add(null, "1  .      log-actions                log actions");
-        l.add(null, "1  .      log-console                log console activity");
-        l.add(null, "1  2      log-collect                collect console activity");
-        l.add(null, "2  .        <num>                    lines to store");
-        l.add(null, "1  .      stop                       stop working");
-        l.add(null, "1  .      start                      start working");
-        l.add(null, "1  .      runnow                     run one round now");
-        l.add(null, "1  .      hidden                     hide command");
+        l.add(null, false, 1, new int[]{2, -1}, "description", "description of this scheduler");
+        l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this scheduler");
+        l.add(null, false, 1, new int[]{2}, "rename", "rename this scheduler");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
+        l.add(null, false, 1, new int[]{-1}, "respawn", "restart on termination");
+        l.add(null, false, 1, new int[]{2}, "command", "specify command to run");
+        l.add(null, false, 2, new int[]{2, -1}, "<cmd>", "exec command to run");
+        l.add(null, false, 1, new int[]{2}, "time", "specify time between runs");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds between runs");
+        l.add(null, false, 1, new int[]{2}, "delay", "specify initial delay");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds before start");
+        l.add(null, false, 1, new int[]{2}, "random-time", "specify random time between runs");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds between runs");
+        l.add(null, false, 1, new int[]{2}, "random-delay", "specify random initial delay");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds before start");
+        l.add(null, false, 1, new int[]{2}, "range", "specify time range");
+        l.add(null, false, 2, new int[]{-1}, "<name:tm>", "name of time map");
+        l.add(null, false, 1, new int[]{-1}, "log-actions", "log actions");
+        l.add(null, false, 1, new int[]{-1}, "log-console", "log console activity");
+        l.add(null, false, 1, new int[]{2}, "log-collect", "collect console activity");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "lines to store");
+        l.add(null, false, 1, new int[]{-1}, "stop", "stop working");
+        l.add(null, false, 1, new int[]{-1}, "start", "start working");
+        l.add(null, false, 1, new int[]{-1}, "runnow", "run one round now");
+        l.add(null, false, 1, new int[]{-1}, "hidden", "hide command");
     }
 
     public List<String> getShRun(int filter) {

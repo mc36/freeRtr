@@ -68,30 +68,30 @@ public class cfgTlmtry implements Comparable<cfgTlmtry>, cfgGeneric {
     }
 
     public void getHelp(userHelping l) {
-        l.add(null, "1  2,.    description              specify description");
-        l.add(null, "2  2,.      <str>                  text");
-        l.add(null, "1  2      rename                   rename this exporter");
-        l.add(null, "2  .        <str>                  set new name");
-        l.add(null, "1  2      target                   specify target address");
-        l.add(null, "2  2,.      <str>                  name");
-        l.add(null, "1  2      port                     specify target port");
-        l.add(null, "2  .        <num>                  lines to skip");
-        l.add(null, "1  2      sensor                   specify sensor to export");
-        l.add(null, "2  .        <name:sns>             name of sensor");
-        l.add(null, "1  2      interval                 specify time between runs");
-        l.add(null, "2  .        <num>                  milliseconds between runs");
-        l.add(null, "1  2      delay                    specify initial delay");
-        l.add(null, "2  .        <num>                  milliseconds before start");
-        l.add(null, "1  2      random-interval          specify random time between runs");
-        l.add(null, "2  .        <num>                  milliseconds between runs");
-        l.add(null, "1  2      random-delay             specify random initial delay");
-        l.add(null, "2  .        <num>                  milliseconds before start");
-        l.add(null, "1  2      range                    specify time range");
-        l.add(null, "2  .        <name:tm>              name of time map");
-        l.add(null, "1  2      proxy                    specify proxy profile to use");
-        l.add(null, "2  .        <name:prx>             name of profile");
-        l.add(null, "1  .      start                    start exporting");
-        l.add(null, "1  .      stop                     stop exporting");
+        l.add(null, false, 1, new int[]{2, -1}, "description", "specify description");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
+        l.add(null, false, 1, new int[]{2}, "rename", "rename this exporter");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
+        l.add(null, false, 1, new int[]{2}, "target", "specify target address");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "name");
+        l.add(null, false, 1, new int[]{2}, "port", "specify target port");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "lines to skip");
+        l.add(null, false, 1, new int[]{2}, "sensor", "specify sensor to export");
+        l.add(null, false, 2, new int[]{-1}, "<name:sns>", "name of sensor");
+        l.add(null, false, 1, new int[]{2}, "interval", "specify time between runs");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds between runs");
+        l.add(null, false, 1, new int[]{2}, "delay", "specify initial delay");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds before start");
+        l.add(null, false, 1, new int[]{2}, "random-interval", "specify random time between runs");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds between runs");
+        l.add(null, false, 1, new int[]{2}, "random-delay", "specify random initial delay");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds before start");
+        l.add(null, false, 1, new int[]{2}, "range", "specify time range");
+        l.add(null, false, 2, new int[]{-1}, "<name:tm>", "name of time map");
+        l.add(null, false, 1, new int[]{2}, "proxy", "specify proxy profile to use");
+        l.add(null, false, 2, new int[]{-1}, "<name:prx>", "name of profile");
+        l.add(null, false, 1, new int[]{-1}, "start", "start exporting");
+        l.add(null, false, 1, new int[]{-1}, "stop", "stop exporting");
     }
 
     public List<String> getShRun(int filter) {
