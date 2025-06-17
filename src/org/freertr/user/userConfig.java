@@ -159,7 +159,9 @@ public class userConfig {
             l.add(null, false, 1, new int[]{-1}, "editor", "edit the current section");
         }
         if (needShow) {
-            userHelping.getCfgHelp(l);
+            l.add(null, false, 1, new int[]{2}, "show", "running system information");
+            userExec.getHelpShow(l, true);
+            userExec.getHelpPipes(l, 110, true);
         }
         if (needGen) {
             userHelping.getCfgGen(l);

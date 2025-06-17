@@ -90,17 +90,6 @@ public class userHelping {
     }
 
     /**
-     * get generic config help
-     *
-     * @param l help text
-     */
-    protected static void getCfgHelp(userHelping l) {
-        l.add(null, false, 1, new int[]{2}, "show", "running system information");
-        userExec.getHelpShow(l, true);
-        userExec.getHelpPipes(l, 110, true);
-    }
-
-    /**
      * collect lines starts with
      *
      * @param l list to read
