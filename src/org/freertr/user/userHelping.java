@@ -148,6 +148,37 @@ public class userHelping {
      * add one menu line
      *
      * @param loc local list
+     * @param exp experimental command
+     * @param cur current level
+     * @param nxt next level, -1=end, -2=hidden
+     * @param cmd command word
+     * @param dsc description
+     */
+    public void add(List<String> loc, boolean exp, int cur, int[] nxt, String cmd, String dsc) {
+        userHelpingData d = new userHelpingData();
+        d.level = cur;
+        d.command = cmd;
+        d.description = dsc;
+        for (int i = 0; i < nxt.length; i++) {
+            d.after.add(nxt[i]);
+        }
+        d.variable = (cmd.indexOf("<") == 0) || (cmd.indexOf("[") == 0);
+        if (exp) {
+            d.description = "!!!EXPERiMENTAL!!! " + dsc;
+            if (!cfgAll.buggy) {
+                d.level = 666;
+            }
+            if (cfgAll.evalVdcPrivs()) {
+                d.level = 666;
+            }
+        }
+        lines.add(d);
+    }
+
+    /**
+     * add one menu line
+     *
+     * @param loc local list
      * @param s string to add
      */
     public void add(List<String> loc, String s) {
@@ -671,26 +702,6 @@ public class userHelping {
      */
     public void addOther(userHelping src) {
         lines.addAll(src.lines);
-    }
-
-    /**
-     * delete one menu line
-     *
-     * @param s string to remove
-     */
-    public void del(String s) {
-        userHelpingData d = new userHelpingData();
-        d.set(s);
-        for (int i = lines.size() - 1; i >= 0; i--) {
-            userHelpingData r = lines.get(i);
-            if (r.level != d.level) {
-                continue;
-            }
-            if (!r.command.equals(d.command)) {
-                continue;
-            }
-            r.level = 666;
-        }
     }
 
     /**
