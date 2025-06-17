@@ -181,19 +181,19 @@ public class servLoadBalancer extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 .  logging                      set logging");
-        l.add(null, "1 2  timeout                      set timeout on connection");
-        l.add(null, "2 .    <num>                      timeout in ms");
-        l.add(null, "1 2  buffer                       set buffer size on connection");
-        l.add(null, "2 .    <num>                      buffer in bytes");
-        l.add(null, "1 2  proxy                        set proxy to use");
-        l.add(null, "2 .    <name:prx>                 name of proxy");
-        l.add(null, "1 2  source                       set source interface");
-        l.add(null, "2 .    <name:ifc>                 name of interface");
-        l.add(null, "1 2  server                       name of server");
-        l.add(null, "2 3    <num>                      number of server");
-        l.add(null, "3 4      <addr>                   address of server");
-        l.add(null, "4 .        <port>                 port on server");
+        l.add(null, false, 1, new int[]{-1}, "logging", "set logging");
+        l.add(null, false, 1, new int[]{2}, "timeout", "set timeout on connection");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");
+        l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
+        l.add(null, false, 1, new int[]{2}, "proxy", "set proxy to use");
+        l.add(null, false, 2, new int[]{-1}, "<name:prx>", "name of proxy");
+        l.add(null, false, 1, new int[]{2}, "source", "set source interface");
+        l.add(null, false, 2, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, 1, new int[]{2}, "server", "name of server");
+        l.add(null, false, 2, new int[]{3}, "<num>", "number of server");
+        l.add(null, false, 3, new int[]{4}, "<addr>", "address of server");
+        l.add(null, false, 4, new int[]{-1}, "<port>", "port on server");
     }
 
     public String srvName() {

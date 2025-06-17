@@ -81,8 +81,8 @@ public class servEchoS extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2        delay          reply delay");
-        l.add(null, "2 .          <num>        time in ms");
+        l.add(null, false, 1, new int[]{2}, "delay", "reply delay");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "time in ms");
     }
 
     public String srvName() {

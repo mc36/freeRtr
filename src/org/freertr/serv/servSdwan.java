@@ -165,13 +165,13 @@ public class servSdwan extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 .  natted                       use natted addresses");
-        l.add(null, "1 2  hubs                         list of hubs");
-        l.add(null, "2 2,.  <str>                      name of hub");
-        l.add(null, "1 2  pool4                        ipv4 pool to use");
-        l.add(null, "2 .    <name:pl4>                 name of pool");
-        l.add(null, "1 2  pool6                        ipv6 pool to use");
-        l.add(null, "2 .    <name:pl6>                 name of pool");
+        l.add(null, false, 1, new int[]{-1}, "natted", "use natted addresses");
+        l.add(null, false, 1, new int[]{2}, "hubs", "list of hubs");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "name of hub");
+        l.add(null, false, 1, new int[]{2}, "pool4", "ipv4 pool to use");
+        l.add(null, false, 2, new int[]{-1}, "<name:pl4>", "name of pool");
+        l.add(null, false, 1, new int[]{2}, "pool6", "ipv6 pool to use");
+        l.add(null, false, 2, new int[]{-1}, "<name:pl6>", "name of pool");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

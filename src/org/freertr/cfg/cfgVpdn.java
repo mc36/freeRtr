@@ -763,7 +763,7 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "pckoudp", "select packet over udp");
         l.add(null, false, 2, new int[]{-1}, "pckodtls", "select packet over dtls");
         l.add(null, false, 2, new int[]{-1}, "pckotcp", "select packet over tcp");
-        l.add(null, false, 2, new int[]{-1}, "pckOtxt", "select packet over txt");
+        l.add(null, false, 2, new int[]{-1}, "pckotxt", "select packet over txt");
         l.add(null, false, 2, new int[]{-1}, "pweompls", "select pwe over mpls");
         l.add(null, false, 2, new int[]{-1}, "erspan", "select erspan");
         l.add(null, false, 2, new int[]{-1}, "dlsw", "select dlsw");

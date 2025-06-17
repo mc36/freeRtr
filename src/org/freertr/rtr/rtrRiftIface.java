@@ -317,25 +317,25 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
      * @param l list to update
      */
     public static void routerGetHelp(userHelping l) {
-        l.add(null, "4 .         enable                      enable protocol processing");
-        l.add(null, "4 .         bfd                         enable bfd triggered down");
-        l.add(null, "4 .         passive                     do not form neighborship");
-        l.add(null, "4 .         suppress-prefix             do not advertise interface");
-        l.add(null, "4 .         unsuppress-prefix           do advertise interface");
-        l.add(null, "4 .         verify-source               check source address of updates");
-        l.add(null, "4 5         metric                      metric of the interface");
-        l.add(null, "5 .           <num>                     metric");
-        l.add(null, "4 5         hello-time                  time between hellos");
-        l.add(null, "5 .           <num>                     time in ms");
-        l.add(null, "4 5         dead-time                   time before neighbor down");
-        l.add(null, "5 .           <num>                     time in ms");
+        l.add(null, false, 4, new int[]{-1}, "enable", "enable protocol processing");
+        l.add(null, false, 4, new int[]{-1}, "bfd", "enable bfd triggered down");
+        l.add(null, false, 4, new int[]{-1}, "passive", "do not form neighborship");
+        l.add(null, false, 4, new int[]{-1}, "suppress-prefix", "do not advertise interface");
+        l.add(null, false, 4, new int[]{-1}, "unsuppress-prefix", "do advertise interface");
+        l.add(null, false, 4, new int[]{-1}, "verify-source", "check source address of updates");
+        l.add(null, false, 4, new int[]{5}, "metric", "metric of the interface");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "metric");
+        l.add(null, false, 4, new int[]{5}, "hello-time", "time between hellos");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "time in ms");
+        l.add(null, false, 4, new int[]{5}, "dead-time", "time before neighbor down");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "time in ms");
         secInfoUtl.getHelp(l, 4, "ipinfo            check peers");
-        l.add(null, "4 5         dynamic-metric            dynamic peer metric");
-        l.add(null, "5 6           mode                    dynamic peer metric");
-        l.add(null, "6 .             disabled              forbid echo requests");
-        l.add(null, "6 .             icmpecho              icmp echo requests");
-        l.add(null, "6 .             udpecho               udp echo requests");
-        l.add(null, "6 .             twamp                 twamp echo requests");
+        l.add(null, false, 4, new int[]{5}, "dynamic-metric", "dynamic peer metric");
+        l.add(null, false, 5, new int[]{6}, "mode", "dynamic peer metric");
+        l.add(null, false, 6, new int[]{-1}, "disabled", "forbid echo requests");
+        l.add(null, false, 6, new int[]{-1}, "icmpecho", "icmp echo requests");
+        l.add(null, false, 6, new int[]{-1}, "udpecho", "udp echo requests");
+        l.add(null, false, 6, new int[]{-1}, "twamp", "twamp echo requests");
         tabAverage.getHelp(l);
     }
 

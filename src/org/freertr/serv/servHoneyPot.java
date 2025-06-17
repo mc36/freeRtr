@@ -132,9 +132,9 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 .  tiny-http                     pretend http server");
-        l.add(null, "1 .  closed                        pretend closed port");
-        l.add(null, "1 .  blackhole                     blackhole immediately");
+        l.add(null, false, 1, new int[]{-1}, "tiny-http", "pretend http server");
+        l.add(null, false, 1, new int[]{-1}, "closed", "pretend closed port");
+        l.add(null, false, 1, new int[]{-1}, "blackhole", "blackhole immediately");
         secInfoUtl.getHelp(l, 1, "info            report parameters");
     }
 

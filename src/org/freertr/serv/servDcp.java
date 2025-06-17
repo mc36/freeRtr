@@ -102,7 +102,7 @@ public class servDcp extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 .  logging                   log user communication");
+        l.add(null, false, 1, new int[]{-1}, "logging", "log user communication");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

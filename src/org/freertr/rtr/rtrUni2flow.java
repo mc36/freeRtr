@@ -170,15 +170,15 @@ public class rtrUni2flow extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add(null, "1 2   distance                    specify default distance");
-        l.add(null, "2 .     <num>                     distance");
-        l.add(null, "1 2   direction                   specify direction of rule");
-        l.add(null, "2 .     source                    match source address");
-        l.add(null, "2 .     target                    match target address");
-        l.add(null, "1 2   as                          specify target as");
-        l.add(null, "2 .     <num>                     as");
-        l.add(null, "1 2   rate                        specify target rate");
-        l.add(null, "2 .     <num>                     bytes/sec");
+        l.add(null, false, 1, new int[]{2}, "distance", "specify default distance");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "distance");
+        l.add(null, false, 1, new int[]{2}, "direction", "specify direction of rule");
+        l.add(null, false, 2, new int[]{-1}, "source", "match source address");
+        l.add(null, false, 2, new int[]{-1}, "target", "match target address");
+        l.add(null, false, 1, new int[]{2}, "as", "specify target as");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "as");
+        l.add(null, false, 1, new int[]{2}, "rate", "specify target rate");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "bytes/sec");
     }
 
     /**

@@ -181,15 +181,15 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  cpuport                   specify port to for packetin");
-        l.add(null, "2 .    <name:ifc>              interface name");
-        l.add(null, "1 2  dataport                  specify port to for packetout");
-        l.add(null, "2 3    <name:ifc>              interface name");
-        l.add(null, "3 .      <num>                 interface number");
-        l.add(null, "1 2  controller                specify controller to connect");
-        l.add(null, "2 3    <name:prx>              proxy to use");
-        l.add(null, "3 4      <addr>                peer address");
-        l.add(null, "4 .        <num>               peer port");
+        l.add(null, false, 1, new int[]{2}, "cpuport", "specify port to for packetin");
+        l.add(null, false, 2, new int[]{-1}, "<name:ifc>", "interface name");
+        l.add(null, false, 1, new int[]{2}, "dataport", "specify port to for packetout");
+        l.add(null, false, 2, new int[]{3}, "<name:ifc>", "interface name");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "interface number");
+        l.add(null, false, 1, new int[]{2}, "controller", "specify controller to connect");
+        l.add(null, false, 2, new int[]{3}, "<name:prx>", "proxy to use");
+        l.add(null, false, 3, new int[]{4}, "<addr>", "peer address");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "peer port");
     }
 
     public String srvName() {

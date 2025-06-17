@@ -577,21 +577,21 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add(null, "1 2   router-id                   specify router id");
-        l.add(null, "2 .     <addr>                    router id");
-        l.add(null, "1 .   labels                      specify label mode");
-        l.add(null, "1 .   stub                        stub router");
-        l.add(null, "1 .   suppress-prefix             do not advertise interfaces");
-        l.add(null, "1 2   segrout                     segment routing parameters");
-        l.add(null, "2 3     <num>                     maximum index");
-        l.add(null, "3 4,.     <num>                   this node index");
-        l.add(null, "4 5         base                  specify base");
-        l.add(null, "5 4,.         <num>               label base");
-        l.add(null, "1 2   bier                        bier parameters");
-        l.add(null, "2 3     <num>                     bitstring length");
-        l.add(null, "3 4       <num>                   maximum index");
-        l.add(null, "4 5,.       <num>                 node index");
-        l.add(null, "5 .           <num>               node subdomain");
+        l.add(null, false, 1, new int[]{2}, "router-id", "specify router id");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
+        l.add(null, false, 1, new int[]{-1}, "labels", "specify label mode");
+        l.add(null, false, 1, new int[]{-1}, "stub", "stub router");
+        l.add(null, false, 1, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
+        l.add(null, false, 1, new int[]{2}, "segrout", "segment routing parameters");
+        l.add(null, false, 2, new int[]{3}, "<num>", "maximum index");
+        l.add(null, false, 3, new int[]{4, -1}, "<num>", "this node index");
+        l.add(null, false, 4, new int[]{5}, "base", "specify base");
+        l.add(null, false, 5, new int[]{4, -1}, "<num>", "label base");
+        l.add(null, false, 1, new int[]{2}, "bier", "bier parameters");
+        l.add(null, false, 2, new int[]{3}, "<num>", "bitstring length");
+        l.add(null, false, 3, new int[]{4}, "<num>", "maximum index");
+        l.add(null, false, 4, new int[]{5, -1}, "<num>", "node index");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "node subdomain");
     }
 
     /**

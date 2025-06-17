@@ -335,8 +335,8 @@ qc pass: pckoip over pckoip
 qc pass: pckoip over loopback
 qc pass: ppp with packet over tcp
 qc pass: ppp with packet over tls
-qc pass: ppp with packet over txt
-qc pass: ppp with packet over txtls
+failed: ppp with packet over txt
+failed: ppp with packet over txtls
 qc pass: ppp with packet over udp
 qc pass: ethernet with packet over udp
 qc pass: hdlc tunneling with packet over udp

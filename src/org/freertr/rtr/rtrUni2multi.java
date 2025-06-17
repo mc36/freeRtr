@@ -126,8 +126,8 @@ public class rtrUni2multi extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add(null, "1 2   distance                    specify default distance");
-        l.add(null, "2 .     <num>                     distance");
+        l.add(null, false, 1, new int[]{2}, "distance", "specify default distance");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "distance");
     }
 
     /**

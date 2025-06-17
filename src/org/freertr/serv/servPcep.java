@@ -135,10 +135,10 @@ public class servPcep extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1  .  logging                   log user communication");
-        l.add(null, "1  .  explicit                  respond with explicit labels");
-        l.add(null, "1  2  export-vrf                specify vrf to export");
-        l.add(null, "2  .    <name:vrf>              vrf name");
+        l.add(null, false, 1, new int[]{-1}, "logging", "log user communication");
+        l.add(null, false, 1, new int[]{-1}, "explicit", "respond with explicit labels");
+        l.add(null, false, 1, new int[]{2}, "export-vrf", "specify vrf to export");
+        l.add(null, false, 2, new int[]{-1}, "<name:vrf>", "vrf name");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

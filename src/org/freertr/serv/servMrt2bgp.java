@@ -100,12 +100,12 @@ public class servMrt2bgp extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  local-as                     set local asn");
-        l.add(null, "2 .    <num>                      as number");
-        l.add(null, "1 2  router-id                    set router id");
-        l.add(null, "2 .    <addr>                     router id");
-        l.add(null, "1 2  mrt-file                     set data to serve");
-        l.add(null, "2 .    <nam>                      file name");
+        l.add(null, false, 1, new int[]{2}, "local-as", "set local asn");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "as number");
+        l.add(null, false, 1, new int[]{2}, "router-id", "set router id");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
+        l.add(null, false, 1, new int[]{2}, "mrt-file", "set data to serve");
+        l.add(null, false, 2, new int[]{-1}, "<nam>", "file name");
     }
 
     public String srvName() {

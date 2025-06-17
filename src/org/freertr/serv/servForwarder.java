@@ -300,39 +300,39 @@ public class servForwarder extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 .  logging                      set logging");
-        l.add(null, "1 2  timeout                      set timeout on connection");
-        l.add(null, "2 .    <num>                      timeout in ms");
-        l.add(null, "1 2  buffer                       set buffer size on connection");
-        l.add(null, "2 .    <num>                      buffer in bytes");
-        l.add(null, "1 2  target                       set session target");
-        l.add(null, "2 3    proxy                      set proxy to use");
-        l.add(null, "3 .      <name:prx>               name of proxy");
-        l.add(null, "2 3    vrf                        set source vrf");
-        l.add(null, "3 .      <name:vrf>               name of vrf");
-        l.add(null, "2 3    interface                  set source interface");
-        l.add(null, "3 .      <name:ifc>               name of interface");
-        l.add(null, "2 3    pubkey                     set target public key");
-        l.add(null, "3 3,.    <str>                    public key");
-        l.add(null, "2 3    address                    set target address");
-        l.add(null, "3 .      <addr>                   remote address");
-        l.add(null, "2 3    port                       set target port");
-        l.add(null, "3 .      <num>                    remote port");
-        l.add(null, "2 3    protocol                   set lower protocol to use");
-        l.add(null, "3 .      tcp                      use tcp transport");
-        l.add(null, "3 .      udp                      use udp transport");
-        l.add(null, "3 .      ludp                     use ludp transport");
-        l.add(null, "3 .      dccp                     use dccp transport");
-        l.add(null, "3 .      sctp                     use sctp transport");
-        l.add(null, "2 3    security                   set security protocol");
-        l.add(null, "3 .      ssh                      use secure shell");
-        l.add(null, "3 .      tls                      use transport layer security");
-        l.add(null, "3 .      dtls                     use datagram transport layer security");
-        l.add(null, "3 .      telnet                   use telnet protocol");
-        l.add(null, "2 3    username                   set username");
-        l.add(null, "3 .      <text>                   username");
-        l.add(null, "2 3    password                   set password");
-        l.add(null, "3 .      <text>                   username");
+        l.add(null, false, 1, new int[]{-1}, "logging", "set logging");
+        l.add(null, false, 1, new int[]{2}, "timeout", "set timeout on connection");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");
+        l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
+        l.add(null, false, 1, new int[]{2}, "target", "set session target");
+        l.add(null, false, 2, new int[]{3}, "proxy", "set proxy to use");
+        l.add(null, false, 3, new int[]{-1}, "<name:prx>", "name of proxy");
+        l.add(null, false, 2, new int[]{3}, "vrf", "set source vrf");
+        l.add(null, false, 3, new int[]{-1}, "<name:vrf>", "name of vrf");
+        l.add(null, false, 2, new int[]{3}, "interface", "set source interface");
+        l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, 2, new int[]{3}, "pubkey", "set target public key");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "public key");
+        l.add(null, false, 2, new int[]{3}, "address", "set target address");
+        l.add(null, false, 3, new int[]{-1}, "<addr>", "remote address");
+        l.add(null, false, 2, new int[]{3}, "port", "set target port");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "remote port");
+        l.add(null, false, 2, new int[]{3}, "protocol", "set lower protocol to use");
+        l.add(null, false, 3, new int[]{-1}, "tcp", "use tcp transport");
+        l.add(null, false, 3, new int[]{-1}, "udp", "use udp transport");
+        l.add(null, false, 3, new int[]{-1}, "ludp", "use ludp transport");
+        l.add(null, false, 3, new int[]{-1}, "dccp", "use dccp transport");
+        l.add(null, false, 3, new int[]{-1}, "sctp", "use sctp transport");
+        l.add(null, false, 2, new int[]{3}, "security", "set security protocol");
+        l.add(null, false, 3, new int[]{-1}, "ssh", "use secure shell");
+        l.add(null, false, 3, new int[]{-1}, "tls", "use transport layer security");
+        l.add(null, false, 3, new int[]{-1}, "dtls", "use datagram transport layer security");
+        l.add(null, false, 3, new int[]{-1}, "telnet", "use telnet protocol");
+        l.add(null, false, 2, new int[]{3}, "username", "set username");
+        l.add(null, false, 3, new int[]{-1}, "<text>", "username");
+        l.add(null, false, 2, new int[]{3}, "password", "set password");
+        l.add(null, false, 3, new int[]{-1}, "<text>", "username");
     }
 
     public String srvName() {

@@ -88,12 +88,12 @@ public class servIscsi extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  target                       configure one disk");
-        l.add(null, "2 3    <str>                      name of disk");
-        l.add(null, "3 4      file                     select file to use");
-        l.add(null, "4 4,.      <str>                  name of file");
-        l.add(null, "3 4      block                    set block size");
-        l.add(null, "4 .        <num>                  bytes in block");
+        l.add(null, false, 1, new int[]{2}, "target", "configure one disk");
+        l.add(null, false, 2, new int[]{3}, "<str>", "name of disk");
+        l.add(null, false, 3, new int[]{4}, "file", "select file to use");
+        l.add(null, false, 4, new int[]{4, -1}, "<str>", "name of file");
+        l.add(null, false, 3, new int[]{4}, "block", "set block size");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "bytes in block");
     }
 
     public String srvName() {

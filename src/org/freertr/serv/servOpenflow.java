@@ -253,13 +253,13 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  version                   openflow version");
-        l.add(null, "2 .    <num>                   version number");
-        l.add(null, "1 2  export-vrf                specify vrf to export");
-        l.add(null, "2 .    <name:vrf>              vrf name");
-        l.add(null, "1 2  export-port               specify port to export");
-        l.add(null, "2 3    <name:ifc>              interface name");
-        l.add(null, "3 .      <num>                 openflow port number");
+        l.add(null, false, 1, new int[]{2}, "version", "openflow version");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "version number");
+        l.add(null, false, 1, new int[]{2}, "export-vrf", "specify vrf to export");
+        l.add(null, false, 2, new int[]{-1}, "<name:vrf>", "vrf name");
+        l.add(null, false, 1, new int[]{2}, "export-port", "specify port to export");
+        l.add(null, false, 2, new int[]{3}, "<name:ifc>", "interface name");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "openflow port number");
     }
 
     public String srvName() {

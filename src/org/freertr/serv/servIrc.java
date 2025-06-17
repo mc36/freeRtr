@@ -158,13 +158,13 @@ public class servIrc extends servGeneric implements prtServS {
      * @param l help
      */
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  file                         set log file");
-        l.add(null, "2 .    <file>                     log file");
-        l.add(null, "1 2  rotate                       log file rotation");
-        l.add(null, "2 3    <num>                      maximum file size");
-        l.add(null, "3 4,.    <str>                    name of second file");
-        l.add(null, "4 .        <num>                  ms between backup");
-        l.add(null, "1 .  local                        set local logging");
+        l.add(null, false, 1, new int[]{2}, "file", "set log file");
+        l.add(null, false, 2, new int[]{-1}, "<file>", "log file");
+        l.add(null, false, 1, new int[]{2}, "rotate", "log file rotation");
+        l.add(null, false, 2, new int[]{3}, "<num>", "maximum file size");
+        l.add(null, false, 3, new int[]{4, -1}, "<str>", "name of second file");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "ms between backup");
+        l.add(null, false, 1, new int[]{-1}, "local", "set local logging");
     }
 
     /**

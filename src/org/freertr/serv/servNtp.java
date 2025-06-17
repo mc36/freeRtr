@@ -95,12 +95,12 @@ public class servNtp extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  adjust                       set adjustment time");
-        l.add(null, "2 .    <num>                      adjustment in millis");
-        l.add(null, "1 2  stratum                      set stratum number");
-        l.add(null, "2 .    <num>                      stratum value");
-        l.add(null, "1 2  reference                    set reference value");
-        l.add(null, "2 .    <addr>                     reference address");
+        l.add(null, false, 1, new int[]{2}, "adjust", "set adjustment time");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "adjustment in millis");
+        l.add(null, false, 1, new int[]{2}, "stratum", "set stratum number");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "stratum value");
+        l.add(null, false, 1, new int[]{2}, "reference", "set reference value");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "reference address");
     }
 
     public String srvName() {

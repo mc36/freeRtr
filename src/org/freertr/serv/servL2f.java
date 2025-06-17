@@ -190,13 +190,13 @@ public class servL2f extends servGeneric implements prtServP {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  timer                        set timers");
-        l.add(null, "2 3    <num>                      hello ticks");
-        l.add(null, "3 .      <num>                    retry ticks");
-        l.add(null, "1 2  clone                        set interface to clone");
-        l.add(null, "2 .    <name:ifc>                 name of interface");
-        l.add(null, "1 2  password                     set password");
-        l.add(null, "2 .    <str>                      password");
+        l.add(null, false, 1, new int[]{2}, "timer", "set timers");
+        l.add(null, false, 2, new int[]{3}, "<num>", "hello ticks");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "retry ticks");
+        l.add(null, false, 1, new int[]{2}, "clone", "set interface to clone");
+        l.add(null, false, 2, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, 1, new int[]{2}, "password", "set password");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "password");
     }
 
     public String srvName() {

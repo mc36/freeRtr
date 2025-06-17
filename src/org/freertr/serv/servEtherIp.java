@@ -140,11 +140,11 @@ public class servEtherIp extends servGeneric implements ipPrt {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  bridge                       set interface to clone");
-        l.add(null, "2 .    <num>                      number of bridge");
-        l.add(null, "1 2  timeout                      timeout of client");
-        l.add(null, "2 .    <num>                      milliseconds");
-        l.add(null, "1 .  physical-interface           adding as physical to bridge");
+        l.add(null, false, 1, new int[]{2}, "bridge", "set interface to clone");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "number of bridge");
+        l.add(null, false, 1, new int[]{2}, "timeout", "timeout of client");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds");
+        l.add(null, false, 1, new int[]{-1}, "physical-interface", "adding as physical to bridge");
     }
 
     public String srvName() {

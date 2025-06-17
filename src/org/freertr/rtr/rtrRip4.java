@@ -465,7 +465,7 @@ public class rtrRip4 extends ipRtr implements prtServP {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add(null, "1 .   suppress-prefix             do not advertise interfaces");
+        l.add(null, false, 1, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
     }
 
     /**

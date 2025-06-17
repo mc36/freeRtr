@@ -915,34 +915,34 @@ public class rtrRift extends ipRtr implements Runnable {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add(null, "1 2   router-id                   specify node id");
-        l.add(null, "2 .     <addr>                    router id");
-        l.add(null, "1 2   distance                    specify distance");
-        l.add(null, "2 .     <num>                     distance");
-        l.add(null, "1 2   level                       specify level");
-        l.add(null, "2 .     <num>                     level");
-        l.add(null, "1 2   lifetime                    specify tie lifetime");
-        l.add(null, "2 .     <num>                     ms");
-        l.add(null, "1 .   suppress-prefix             do not advertise interfaces");
-        l.add(null, "1 .   default-originate           advertise default route");
-        l.add(null, "1 .   spf-bidir                   spf bidir check");
-        l.add(null, "1 2,. spf-topolog                 spf topology logging");
-        l.add(null, "2 2,.   noappear                  exclude node (dis)appearance");
-        l.add(null, "2 2,.   noconnect                 exclude link (dis)connection");
-        l.add(null, "2 2,.   noforward                 exclude forward (un)willingness");
-        l.add(null, "2 2,.   noreachable               exclude node (un)reachable");
-        l.add(null, "2 2,.   nometric                  exclude link metric change");
-        l.add(null, "2 2,.   noprefix                  exclude prefix change");
-        l.add(null, "1 .   spf-hops                    spf hops disallow");
-        l.add(null, "1 .   spf-ecmp                    spf ecmp allow");
-        l.add(null, "1 2   spf-log                     spf log size");
-        l.add(null, "2 .     <num>                     number of entries");
-        l.add(null, "1 2   route-map                   process prefixes");
-        l.add(null, "2 .     <name:rm>                 name of route map");
-        l.add(null, "1 2   route-policy                process prefixes");
-        l.add(null, "2 .     <name:rpl>                name of route policy");
-        l.add(null, "1 2   prefix-list                 filter prefixes");
-        l.add(null, "2 .     <name:pl>                 name of prefix list");
+        l.add(null, false, 1, new int[]{2}, "router-id", "specify node id");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
+        l.add(null, false, 1, new int[]{2}, "distance", "specify distance");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "distance");
+        l.add(null, false, 1, new int[]{2}, "level", "specify level");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "level");
+        l.add(null, false, 1, new int[]{2}, "lifetime", "specify tie lifetime");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "ms");
+        l.add(null, false, 1, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
+        l.add(null, false, 1, new int[]{-1}, "default-originate", "advertise default route");
+        l.add(null, false, 1, new int[]{-1}, "spf-bidir", "spf bidir check");
+        l.add(null, false, 1, new int[]{2, -1}, "spf-topolog", "spf topology logging");
+        l.add(null, false, 2, new int[]{2, -1}, "noappear", "exclude node (dis)appearance");
+        l.add(null, false, 2, new int[]{2, -1}, "noconnect", "exclude link (dis)connection");
+        l.add(null, false, 2, new int[]{2, -1}, "noforward", "exclude forward (un)willingness");
+        l.add(null, false, 2, new int[]{2, -1}, "noreachable", "exclude node (un)reachable");
+        l.add(null, false, 2, new int[]{2, -1}, "nometric", "exclude link metric change");
+        l.add(null, false, 2, new int[]{2, -1}, "noprefix", "exclude prefix change");
+        l.add(null, false, 1, new int[]{-1}, "spf-hops", "spf hops disallow");
+        l.add(null, false, 1, new int[]{-1}, "spf-ecmp", "spf ecmp allow");
+        l.add(null, false, 1, new int[]{2}, "spf-log", "spf log size");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "number of entries");
+        l.add(null, false, 1, new int[]{2}, "route-map", "process prefixes");
+        l.add(null, false, 2, new int[]{-1}, "<name:rm>", "name of route map");
+        l.add(null, false, 1, new int[]{2}, "route-policy", "process prefixes");
+        l.add(null, false, 2, new int[]{-1}, "<name:rpl>", "name of route policy");
+        l.add(null, false, 1, new int[]{2}, "prefix-list", "filter prefixes");
+        l.add(null, false, 2, new int[]{-1}, "<name:pl>", "name of prefix list");
     }
 
     /**

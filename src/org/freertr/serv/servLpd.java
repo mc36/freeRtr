@@ -129,11 +129,11 @@ public class servLpd extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  path                         set spool folder");
-        l.add(null, "2 .    <path>                     name of spool folder");
-        l.add(null, "1 2  script                       set printer script");
-        l.add(null, "2 .    <path>                     name of printer script");
-        l.add(null, "1 .  keep                         keep print files");
+        l.add(null, false, 1, new int[]{2}, "path", "set spool folder");
+        l.add(null, false, 2, new int[]{-1}, "<path>", "name of spool folder");
+        l.add(null, false, 1, new int[]{2}, "script", "set printer script");
+        l.add(null, false, 2, new int[]{-1}, "<path>", "name of printer script");
+        l.add(null, false, 1, new int[]{-1}, "keep", "keep print files");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

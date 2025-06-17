@@ -17100,3 +17100,8 @@ qc pass: p4lang: sgt over mgre
 qc pass: p4lang: mgre with packout
 ---------------------------------- 2025-06-15 14:15:02 25.6.15
 qc pass: interop1: mgre
+---------------------------------- 2025-06-17 09:58:31 25.6.17
+no qc pass: ppp with packet over txtls
+no qc pass: ppp with packet over txt
+failed: ppp with packet over txt
+failed: ppp with packet over txtls

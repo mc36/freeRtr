@@ -281,22 +281,22 @@ public class rtrDownload extends ipRtr {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add(null, "1  2      url                        specify url to download");
-        l.add(null, "2  2,.      <str>                    url to download");
-        l.add(null, "1  .      respawn                    restart on termination");
-        l.add(null, "1  2      time                       specify time between runs");
-        l.add(null, "2  .        <num>                    milliseconds between runs");
-        l.add(null, "1  2      delay                      specify initial delay");
-        l.add(null, "2  .        <num>                    milliseconds between start");
-        l.add(null, "1  2      random-time                specify random time between runs");
-        l.add(null, "2  .        <num>                    milliseconds between runs");
-        l.add(null, "1  2      random-delay               specify random initial delay");
-        l.add(null, "2  .        <num>                    milliseconds before start");
-        l.add(null, "1  2      range                      specify time range");
-        l.add(null, "2  .        <name:tm>                name of time map");
-        l.add(null, "1  .      log                        log actions");
-        l.add(null, "1  .      runnow                     run one round now");
-        l.add(null, "1  .      hidden                     hide command");
+        l.add(null, false, 1, new int[]{2}, "url", "specify url to download");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "url to download");
+        l.add(null, false, 1, new int[]{-1}, "respawn", "restart on termination");
+        l.add(null, false, 1, new int[]{2}, "time", "specify time between runs");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds between runs");
+        l.add(null, false, 1, new int[]{2}, "delay", "specify initial delay");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds between start");
+        l.add(null, false, 1, new int[]{2}, "random-time", "specify random time between runs");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds between runs");
+        l.add(null, false, 1, new int[]{2}, "random-delay", "specify random initial delay");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds before start");
+        l.add(null, false, 1, new int[]{2}, "range", "specify time range");
+        l.add(null, false, 2, new int[]{-1}, "<name:tm>", "name of time map");
+        l.add(null, false, 1, new int[]{-1}, "log", "log actions");
+        l.add(null, false, 1, new int[]{-1}, "runnow", "run one round now");
+        l.add(null, false, 1, new int[]{-1}, "hidden", "hide command");
     }
 
     /**

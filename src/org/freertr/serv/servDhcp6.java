@@ -365,35 +365,35 @@ public class servDhcp6 extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  bind-file              save bindings");
-        l.add(null, "2 2,.  <str>                file name");
-        l.add(null, "1 2  gateway                gateway address to delegate");
-        l.add(null, "2 .    <addr>               address of gateway");
-        l.add(null, "1 2  dns-server             address(es) of name server(s) to delegate");
-        l.add(null, "2 3,.  <addr>               dns#1 server address");
-        l.add(null, "3 .      <addr>             dns#2 server address");
-        l.add(null, "1 2  boot-url               url to boot file");
-        l.add(null, "2 .    <str>                url");
-        l.add(null, "1 2  domain-name            domain name to delegate");
-        l.add(null, "2 .    <str>                domain name");
-        l.add(null, "1 2  lease                  lease time to delegate");
-        l.add(null, "2 .    <num>                lease time in ms");
-        l.add(null, "1 2  renew                  renew time to delegate");
-        l.add(null, "2 .    <num>                renew time in ms");
-        l.add(null, "1 2  remember               remember time on release");
-        l.add(null, "2 .    <num>                remember time in ms");
-        l.add(null, "1 2  netmask                network to delegate");
-        l.add(null, "2 .    <mask>               netmask to delegate");
-        l.add(null, "1 2  preference             server preference value");
-        l.add(null, "2 .    <num>                preference value");
-        l.add(null, "1 2  static                 address pool to use");
-        l.add(null, "2 3    <addr>               mac address of client");
-        l.add(null, "3 .      <addr>             ip address of client");
-        l.add(null, "1 2  forbidden              address pool to use");
-        l.add(null, "2 .    <addr>               mac address of client");
-        l.add(null, "1 2  option                 specify custom option");
-        l.add(null, "2 3,.  <num>                type of option");
-        l.add(null, "3 3,.    <num>              data byte");
+        l.add(null, false, 1, new int[]{2}, "bind-file", "save bindings");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "file name");
+        l.add(null, false, 1, new int[]{2}, "gateway", "gateway address to delegate");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "address of gateway");
+        l.add(null, false, 1, new int[]{2}, "dns-server", "address(es) of name server(s) to delegate");
+        l.add(null, false, 2, new int[]{3, -1}, "<addr>", "dns#1 server address");
+        l.add(null, false, 3, new int[]{-1}, "<addr>", "dns#2 server address");
+        l.add(null, false, 1, new int[]{2}, "boot-url", "url to boot file");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "url");
+        l.add(null, false, 1, new int[]{2}, "domain-name", "domain name to delegate");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "domain name");
+        l.add(null, false, 1, new int[]{2}, "lease", "lease time to delegate");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "lease time in ms");
+        l.add(null, false, 1, new int[]{2}, "renew", "renew time to delegate");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "renew time in ms");
+        l.add(null, false, 1, new int[]{2}, "remember", "remember time on release");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "remember time in ms");
+        l.add(null, false, 1, new int[]{2}, "netmask", "network to delegate");
+        l.add(null, false, 2, new int[]{-1}, "<mask>", "netmask to delegate");
+        l.add(null, false, 1, new int[]{2}, "preference", "server preference value");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "preference value");
+        l.add(null, false, 1, new int[]{2}, "static", "address pool to use");
+        l.add(null, false, 2, new int[]{3}, "<addr>", "mac address of client");
+        l.add(null, false, 3, new int[]{-1}, "<addr>", "ip address of client");
+        l.add(null, false, 1, new int[]{2}, "forbidden", "address pool to use");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "mac address of client");
+        l.add(null, false, 1, new int[]{2}, "option", "specify custom option");
+        l.add(null, false, 2, new int[]{3, -1}, "<num>", "type of option");
+        l.add(null, false, 3, new int[]{3, -1}, "<num>", "data byte");
     }
 
     public String srvName() {

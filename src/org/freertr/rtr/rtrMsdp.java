@@ -222,23 +222,23 @@ public class rtrMsdp extends ipRtr {
             rtrMsdpNeigh ntry = neighs.get(i);
             neis.add("" + ntry.peer);
         }
-        l.add(null, "1 2   neighbor                    specify neighbor parameters");
-        l.add(neis, "2 3     <addr:loc>                address of peer");
-        l.add(null, "3 .       enable                  enable this peer");
-        l.add(null, "3 4       description             describe this neighbor");
-        l.add(null, "4 4,.       <text>                description of neighbor");
-        l.add(null, "3 4       password                set session password");
-        l.add(null, "4 .         <text>                tcp password");
-        l.add(null, "3 4       update-source           connection source for this peer");
-        l.add(null, "4 .         <name:ifc>            name of interface");
-        l.add(null, "3 4       timer                   neighbor keepalive times");
-        l.add(null, "4 5         <num>                 keepalive in ms");
-        l.add(null, "5 6           <num>               hold time in ms");
-        l.add(null, "6 7             <num>             refresh time in ms");
-        l.add(null, "7 .               <num>           flush time in ms");
+        l.add(null, false, 1, new int[]{2}, "neighbor", "specify neighbor parameters");
+        l.add(neis, false, 2, new int[]{3}, "<addr:loc>", "address of peer");
+        l.add(null, false, 3, new int[]{-1}, "enable", "enable this peer");
+        l.add(null, false, 3, new int[]{4}, "description", "describe this neighbor");
+        l.add(null, false, 4, new int[]{4, -1}, "<text>", "description of neighbor");
+        l.add(null, false, 3, new int[]{4}, "password", "set session password");
+        l.add(null, false, 4, new int[]{-1}, "<text>", "tcp password");
+        l.add(null, false, 3, new int[]{4}, "update-source", "connection source for this peer");
+        l.add(null, false, 4, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, 3, new int[]{4}, "timer", "neighbor keepalive times");
+        l.add(null, false, 4, new int[]{5}, "<num>", "keepalive in ms");
+        l.add(null, false, 5, new int[]{6}, "<num>", "hold time in ms");
+        l.add(null, false, 6, new int[]{7}, "<num>", "refresh time in ms");
+        l.add(null, false, 7, new int[]{-1}, "<num>", "flush time in ms");
         secInfoUtl.getHelp(l, 3, "ipinfo            check peers");
-        l.add(null, "3 .       shutdown                connection disabled for this peer");
-        l.add(null, "3 .       bfd                     enable bfd triggered down");
+        l.add(null, false, 3, new int[]{-1}, "shutdown", "connection disabled for this peer");
+        l.add(null, false, 3, new int[]{-1}, "bfd", "enable bfd triggered down");
     }
 
     /**

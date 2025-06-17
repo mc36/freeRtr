@@ -379,24 +379,24 @@ public class rtrEigrp extends ipRtr implements Runnable {
      * @param l list
      */
     public void routerGetHelp(userHelping l) {
-        l.add(null, "1 2   router-id                   specify router id");
-        l.add(null, "2 .     <addr>                    router id");
-        l.add(null, "1 .   suppress-prefix             do not advertise interfaces");
-        l.add(null, "1 2   kvals                       specify k values");
-        l.add(null, "2 3     <num>                     k1");
-        l.add(null, "3 4       <num>                   k2");
-        l.add(null, "4 5         <num>                 k3");
-        l.add(null, "5 6           <num>               k4");
-        l.add(null, "6 .             <num>             k5");
-        l.add(null, "1 2   stub                        specify stub");
-        l.add(null, "2 2,.   conn                      connected");
-        l.add(null, "2 2,.   stat                      static");
-        l.add(null, "2 2,.   sum                       summary");
-        l.add(null, "2 2,.   red                       redistribute");
-        l.add(null, "2 2,.   leak                      leak map");
-        l.add(null, "2 2,.   rx                        receive only");
-        l.add(null, "1 2   as                          specify as number");
-        l.add(null, "2 .     <num>                     as");
+        l.add(null, false, 1, new int[]{2}, "router-id", "specify router id");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
+        l.add(null, false, 1, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
+        l.add(null, false, 1, new int[]{2}, "kvals", "specify k values");
+        l.add(null, false, 2, new int[]{3}, "<num>", "k1");
+        l.add(null, false, 3, new int[]{4}, "<num>", "k2");
+        l.add(null, false, 4, new int[]{5}, "<num>", "k3");
+        l.add(null, false, 5, new int[]{6}, "<num>", "k4");
+        l.add(null, false, 6, new int[]{-1}, "<num>", "k5");
+        l.add(null, false, 1, new int[]{2}, "stub", "specify stub");
+        l.add(null, false, 2, new int[]{2, -1}, "conn", "connected");
+        l.add(null, false, 2, new int[]{2, -1}, "stat", "static");
+        l.add(null, false, 2, new int[]{2, -1}, "sum", "summary");
+        l.add(null, false, 2, new int[]{2, -1}, "red", "redistribute");
+        l.add(null, false, 2, new int[]{2, -1}, "leak", "leak map");
+        l.add(null, false, 2, new int[]{2, -1}, "rx", "receive only");
+        l.add(null, false, 1, new int[]{2}, "as", "specify as number");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "as");
     }
 
     /**

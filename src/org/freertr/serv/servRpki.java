@@ -255,22 +255,22 @@ public class servRpki extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelping l) {
-        l.add(null, "1 2  prefix                       setup a prefix");
-        l.add(null, "2 3    <net/mask>                 network in perfix/mask format");
-        l.add(null, "3 4      <num>                    maximum prefix length");
-        l.add(null, "4 4,.      <num>                  as number");
-        l.add(null, "1 2  provider                     setup providers");
-        l.add(null, "2 3    <num>                      customer asn");
-        l.add(null, "3 3,.    <num>                    as number");
-        l.add(null, "1 2  pubkey                       setup pubkey");
-        l.add(null, "2 3    <num>                      customer asn");
-        l.add(null, "3 4      <str>                    subject key identifier");
-        l.add(null, "4 .        <str>                  public key");
-        l.add(null, "1 2  json                         setup a json file");
-        l.add(null, "2 .     <str>                     name of file to use");
-        l.add(null, "1 2   rpki                        setup resource public key infrastructure");
+        l.add(null, false, 1, new int[]{2}, "prefix", "setup a prefix");
+        l.add(null, false, 2, new int[]{3}, "<net/mask>", "network in perfix/mask format");
+        l.add(null, false, 3, new int[]{4}, "<num>", "maximum prefix length");
+        l.add(null, false, 4, new int[]{4, -1}, "<num>", "as number");
+        l.add(null, false, 1, new int[]{2}, "provider", "setup providers");
+        l.add(null, false, 2, new int[]{3}, "<num>", "customer asn");
+        l.add(null, false, 3, new int[]{3, -1}, "<num>", "as number");
+        l.add(null, false, 1, new int[]{2}, "pubkey", "setup pubkey");
+        l.add(null, false, 2, new int[]{3}, "<num>", "customer asn");
+        l.add(null, false, 3, new int[]{4}, "<str>", "subject key identifier");
+        l.add(null, false, 4, new int[]{-1}, "<str>", "public key");
+        l.add(null, false, 1, new int[]{2}, "json", "setup a json file");
+        l.add(null, false, 2, new int[]{-1}, "<str>", "name of file to use");
+        l.add(null, false, 1, new int[]{2}, "rpki", "setup resource public key infrastructure");
         cfgRtr.getRouterList(l, 0, "");
-        l.add(null, "3 .         <num>                 process number");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "process number");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
