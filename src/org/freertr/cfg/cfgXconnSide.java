@@ -226,35 +226,35 @@ public class cfgXconnSide {
      * @param p initial position
      */
     public static void getHelp(userHelping l, int p) {
-        l.add(null, (p + 0) + " " + (p + 1) + "     <name:vrf>                  vrf to use");
-        l.add(null, (p + 1) + " " + (p + 2) + "       <name:ifc>                source interface to use");
-        l.add(null, (p + 2) + " " + (p + 3) + "         pckoudp                 pckoudp encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         pptp                    pptp encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         greppp                  ppp over gre encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         ax25                    ax25 encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         l2f                     l2f encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         l2tp2                   l2tp v2 encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         l2tp3                   l2tp v3 encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         pweompls                pwe over mpls encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         erspan                  erspan encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         dlsw                    dlsw encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         etherip                 etherip encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         sreth                   sreth encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         gretap                  gretap encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         uti                     uti encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         nvgre                   nvgre encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         vxlan                   vxlan encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         geneve                  geneve encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         llcudp                  llcudp encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         tzsp                    tzsp encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         capwap                  capwap encapsulation");
-        l.add(null, (p + 2) + " " + (p + 3) + "         lwapp                   lwapp encapsulation");
-        l.add(null, (p + 3) + " " + (p + 4) + "           <addr>                address of target");
-        l.add(null, (p + 4) + " " + (p + 5) + ",.           <num>               vc id");
-        l.add(null, (p + 5) + " " + (p + 5) + ",.             control-word      use control word");
-        l.add(null, (p + 5) + " " + (p + 5) + ",.             inbound           inbound direction");
-        l.add(null, (p + 5) + " " + (p + 5) + ",.             outbound          outbound direction");
-        l.add(null, (p + 5) + " " + (p + 5) + ",.             vlan              use vlan pw type");
+        l.add(null, false, p, new int[]{p + 1}, "<name:vrf>", "vrf to use");
+        l.add(null, false, p + 1, new int[]{p + 2}, "<name:ifc>", "source interface to use");
+        l.add(null, false, p + 2, new int[]{p + 3}, "pckoudp", "pckoudp encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "pptp", "pptp encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "greppp", "ppp over gre encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "ax25", "ax25 encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "l2f", "l2f encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "l2tp2", "l2tp v2 encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "l2tp3", "l2tp v3 encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "pweompls", "pwe over mpls encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "erspan", "erspan encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "dlsw", "dlsw encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "etherip", "etherip encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "sreth", "sreth encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "gretap", "gretap encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "uti", "uti encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "nvgre", "nvgre encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "vxlan", "vxlan encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "geneve", "geneve encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "llcudp", "llcudp encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "tzsp", "tzsp encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "capwap", "capwap encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "lwapp", "lwapp encapsulation");
+        l.add(null, false, p + 3, new int[]{p + 4}, "<addr>", "address of target");
+        l.add(null, false, p + 4, new int[]{p + 5, -1}, "<num>", "vc id");
+        l.add(null, false, p + 5, new int[]{p + 5, -1}, "control-word", "use control word");
+        l.add(null, false, p + 5, new int[]{p + 5, -1}, "inbound", "inbound direction");
+        l.add(null, false, p + 5, new int[]{p + 5, -1}, "outbound", "outbound direction");
+        l.add(null, false, p + 5, new int[]{p + 5, -1}, "vlan", "use vlan pw type");
     }
 
     /**

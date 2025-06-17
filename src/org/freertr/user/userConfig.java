@@ -913,7 +913,7 @@ public class userConfig {
         k.add(null, false, 4, new int[]{5}, "interface", "bind an interface");
         k.add(null, false, 5, new int[]{4, -1}, "<name:ifc>", "interface to bind to");
         l.add(null, false, 1, new int[]{2}, "server", "create new or update existing server process");
-        servGenList.srvHelp(l, 2, " to configure", k);
+        servGenList.srvHelp(l, 2, "to configure", k);
     }
 
     private byte[] cmdGetRem() {

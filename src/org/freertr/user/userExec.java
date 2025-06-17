@@ -1575,7 +1575,7 @@ public class userExec {
         hl.add(null, false, 5, new int[]{5, -1}, "all", "do not hide defaults");
         hl.add(null, false, 5, new int[]{5, -1}, "hide", "hide passwords");
         hl.add(null, false, 3, new int[]{4}, "server", "specified server process");
-        servGenList.srvHelp(hl, 4, " to show", null);
+        servGenList.srvHelp(hl, 4, "to show", null);
         hl.add(null, false, 3, new int[]{4}, "router", "specified router process");
         cfgRtr.getRouterList(hl, 2, " to show");
         hl.add(null, false, 5, new int[]{6, -1}, "<num:rtr>", "process id");
