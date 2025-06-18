@@ -218,36 +218,38 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
      *
      * @param pck packet
      */
-    public synchronized void sendPack(packHolder pck) {
+    public void sendPack(packHolder pck) {
         pck.merge2beg();
         if (conn == null) {
             return;
         }
-        int i = pck.dataSize() % cphrSiz;
-        i = cphrSiz - i;
-        pck.putFill(0, i, i - 1); // padding
-        pck.putSkip(i);
-        pck.merge2end();
-        byte[] buf = new byte[cphrSiz];
-        for (i = 0; i < buf.length; i++) {
-            buf[i] = (byte) bits.randomB();
+        synchronized (cphrTx) {
+            int i = pck.dataSize() % cphrSiz;
+            i = cphrSiz - i;
+            pck.putFill(0, i, i - 1); // padding
+            pck.putSkip(i);
+            pck.merge2end();
+            byte[] buf = new byte[cphrSiz];
+            for (i = 0; i < buf.length; i++) {
+                buf[i] = (byte) bits.randomB();
+            }
+            cphrTx.init(cphrKey, buf, true);
+            pck.encrData(cphrTx, 0, pck.dataSize());
+            pck.putCopy(buf, 0, 0, buf.length);
+            pck.putSkip(buf.length);
+            pck.merge2beg();
+            pck.msbPutD(0, seqTx);
+            pck.msbPutD(4, endptTx);
+            pck.putSkip(8);
+            pck.merge2beg();
+            seqTx++;
+            hashTx.init();
+            pck.hashData(hashTx, 0, pck.dataSize());
+            byte[] hsh = hashTx.finish();
+            pck.putCopy(hsh, 0, 0, hsh.length);
+            pck.putSkip(hsh.length);
+            pck.merge2end();
         }
-        cphrTx.init(cphrKey, buf, true);
-        pck.encrData(cphrTx, 0, pck.dataSize());
-        pck.putCopy(buf, 0, 0, buf.length);
-        pck.putSkip(buf.length);
-        pck.merge2beg();
-        pck.msbPutD(0, seqTx);
-        pck.msbPutD(4, endptTx);
-        pck.putSkip(8);
-        pck.merge2beg();
-        seqTx++;
-        hashTx.init();
-        pck.hashData(hashTx, 0, pck.dataSize());
-        byte[] hsh = hashTx.finish();
-        pck.putCopy(hsh, 0, 0, hsh.length);
-        pck.putSkip(hsh.length);
-        pck.merge2end();
         cntr.tx(pck);
         pck.putDefaults();
         conn.send2net(pck);

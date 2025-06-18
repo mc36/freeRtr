@@ -453,7 +453,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
      *
      * @param pck packet
      */
-    public synchronized void sendPack(packHolder pck) {
+    public void sendPack(packHolder pck) {
         pck.merge2beg();
         if (conn == null) {
             return;
@@ -465,27 +465,29 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         if (ifcEther.stripEtherType(pck)) {
             return;
         }
-        int i = pck.dataSize() % 16;
-        i = 16 - i;
-        pck.putFill(0, i, 0); // padding
-        pck.putSkip(i);
-        pck.merge2end();
-        byte[] tmp = new byte[12];
-        bits.lsbPutQ(tmp, 4, seqTx);
-        cryEncrChacha20poly1305 en = new cryEncrChacha20poly1305();
-        en.init(keyTx, tmp, true);
-        i = pck.encrData(en, 0, pck.dataSize());
-        if (i < 0) {
-            return;
+        synchronized (keyTx) {
+            int i = pck.dataSize() % 16;
+            i = 16 - i;
+            pck.putFill(0, i, 0); // padding
+            pck.putSkip(i);
+            pck.merge2end();
+            byte[] tmp = new byte[12];
+            bits.lsbPutQ(tmp, 4, seqTx);
+            cryEncrChacha20poly1305 en = new cryEncrChacha20poly1305();
+            en.init(keyTx, tmp, true);
+            i = pck.encrData(en, 0, pck.dataSize());
+            if (i < 0) {
+                return;
+            }
+            pck.setDataSize(i);
+            pck.lsbPutD(0, 4); // data
+            pck.msbPutD(4, idxTx);
+            pck.lsbPutQ(8, seqTx);
+            pck.putSkip(16);
+            pck.merge2beg();
+            seqTx++;
         }
-        pck.setDataSize(i);
-        pck.lsbPutD(0, 4); // data
-        pck.msbPutD(4, idxTx);
-        pck.lsbPutQ(8, seqTx);
-        pck.putSkip(16);
-        pck.merge2beg();
         conn.send2net(pck);
-        seqTx++;
     }
 
     /**

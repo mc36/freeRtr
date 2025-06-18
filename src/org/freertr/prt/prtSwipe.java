@@ -242,7 +242,7 @@ public class prtSwipe implements ipPrt, ifcDn {
      *
      * @param pck packet
      */
-    public synchronized void sendPack(packHolder pck) {
+    public void sendPack(packHolder pck) {
         pck.merge2beg();
         if (sendingIfc == null) {
             return;
@@ -250,33 +250,35 @@ public class prtSwipe implements ipPrt, ifcDn {
         if (ifcEther.stripEtherType(pck)) {
             return;
         }
-        int i = pck.dataSize() % cphrSiz;
-        if (i > 0) {
-            i = cphrSiz - i;
-            pck.putFill(0, i, 0); // padding
-            pck.putSkip(i);
-            pck.merge2end();
+        synchronized (cphrTx) {
+            int i = pck.dataSize() % cphrSiz;
+            if (i > 0) {
+                i = cphrSiz - i;
+                pck.putFill(0, i, 0); // padding
+                pck.putSkip(i);
+                pck.merge2end();
+            }
+            hashTx.init();
+            pck.hashData(hashTx, 0, pck.dataSize());
+            byte[] hsh = hashTx.finish();
+            byte[] buf = new byte[cphrSiz];
+            for (i = 0; i < buf.length; i++) {
+                buf[i] = (byte) bits.randomB();
+            }
+            cphrTx.init(cphrKey, buf, true);
+            pck.encrData(cphrTx, 0, pck.dataSize());
+            pck.putCopy(buf, 0, 0, buf.length);
+            pck.putSkip(buf.length);
+            pck.merge2beg();
+            pck.putCopy(hsh, 0, 0, hsh.length);
+            pck.putSkip(hsh.length);
+            pck.merge2beg();
+            seqTx++;
+            pck.msbPutD(0, magic); // header
+            pck.msbPutD(4, seqTx); // sequence
+            pck.putSkip(size);
+            pck.merge2beg();
         }
-        hashTx.init();
-        pck.hashData(hashTx, 0, pck.dataSize());
-        byte[] hsh = hashTx.finish();
-        byte[] buf = new byte[cphrSiz];
-        for (i = 0; i < buf.length; i++) {
-            buf[i] = (byte) bits.randomB();
-        }
-        cphrTx.init(cphrKey, buf, true);
-        pck.encrData(cphrTx, 0, pck.dataSize());
-        pck.putCopy(buf, 0, 0, buf.length);
-        pck.putSkip(buf.length);
-        pck.merge2beg();
-        pck.putCopy(hsh, 0, 0, hsh.length);
-        pck.putSkip(hsh.length);
-        pck.merge2beg();
-        seqTx++;
-        pck.msbPutD(0, magic); // header
-        pck.msbPutD(4, seqTx); // sequence
-        pck.putSkip(size);
-        pck.merge2beg();
         cntr.tx(pck);
         pck.putDefaults();
         if (sendingTTL >= 0) {

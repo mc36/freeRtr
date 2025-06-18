@@ -606,7 +606,7 @@ public class ifcLapb implements ifcUp, ifcDn {
         pck.merge2beg();
     }
 
-    public synchronized void recvPack(packHolder pck) {
+    public void recvPack(packHolder pck) {
         cntr.rx(pck);
         if (pck.dataSize() < 2) {
             cntr.drop(pck, counter.reasons.tooSmall);
@@ -738,7 +738,7 @@ public class ifcLapb implements ifcUp, ifcDn {
         }
     }
 
-    public synchronized void sendPack(packHolder orig) {
+    public void sendPack(packHolder orig) {
         cntr.tx(orig);
         if (lastState != state.states.up) {
             cntr.drop(orig, counter.reasons.notUp);

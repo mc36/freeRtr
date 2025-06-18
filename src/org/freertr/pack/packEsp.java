@@ -326,71 +326,73 @@ public class packEsp implements ipPrt {
      *
      * @param pck packet to send
      */
-    public synchronized void sendPacket(packHolder pck) {
+    public void sendPacket(packHolder pck) {
         cntr.tx(pck);
         if (cipher == null) {
             cntr.drop(pck, counter.reasons.notUp);
             return;
         }
         pck.merge2beg();
-        int p = pck.msbGetW(0);
-        p = prtTmux.ethtyp2proto(p);
-        if (p < 0) {
-            cntr.drop(pck, counter.reasons.badProto);
-            return;
-        }
-        pck.getSkip(2);
-        seqTx++;
-        int o = pck.dataSize() + 2;
-        if (hasher == null) {
-            o = 4 - (o & 3);
-        } else {
-            o = encrSize - (o % encrSize);
-        }
-        for (int i = 0; i < o; i++) {
-            pck.putByte(i, i + 1);
-        }
-        pck.putSkip(o);
-        pck.putByte(0, o);
-        pck.putByte(1, p);
-        pck.putSkip(2);
-        pck.merge2end();
-        if (hasher == null) {
-            byte[] buf = new byte[12];
-            bits.byteCopy(keyHash, 0, buf, 0, 4);
-            for (int i = 4; i < buf.length; i++) {
-                buf[i] = (byte) bits.randomB();
+        synchronized (cipher) {
+            int p = pck.msbGetW(0);
+            p = prtTmux.ethtyp2proto(p);
+            if (p < 0) {
+                cntr.drop(pck, counter.reasons.badProto);
+                return;
             }
-            cipher.init(keyEncr, buf, true);
-            pck.msbPutD(0, spi);
-            pck.msbPutD(4, seqTx);
-            pck.putSkip(size);
-            pck.authHead(cipher, 0, size);
-            pck.putCopy(buf, 4, 0, buf.length - 4);
-            pck.putSkip(buf.length - 4);
-            o = pck.encrData(cipher, 0, pck.dataSize());
-            pck.setDataSize(o);
-            pck.merge2beg();
-        } else {
-            byte[] buf = new byte[encrSize];
-            for (int i = 0; i < buf.length; i++) {
-                buf[i] = (byte) bits.randomB();
+            pck.getSkip(2);
+            seqTx++;
+            int o = pck.dataSize() + 2;
+            if (hasher == null) {
+                o = 4 - (o & 3);
+            } else {
+                o = encrSize - (o % encrSize);
             }
-            cipher.init(keyEncr, buf, true);
-            pck.encrData(cipher, 0, pck.dataSize());
-            pck.putCopy(buf, 0, 0, buf.length);
-            pck.putSkip(buf.length);
-            pck.merge2beg();
-            pck.msbPutD(0, spi);
-            pck.msbPutD(4, seqTx);
-            pck.putSkip(size);
-            pck.merge2beg();
-            hasher.init();
-            pck.hashData(hasher, 0, pck.dataSize());
-            buf = hasher.finish();
-            pck.putCopy(buf, 0, 0, hashSize);
-            pck.putSkip(hashSize);
+            for (int i = 0; i < o; i++) {
+                pck.putByte(i, i + 1);
+            }
+            pck.putSkip(o);
+            pck.putByte(0, o);
+            pck.putByte(1, p);
+            pck.putSkip(2);
             pck.merge2end();
+            if (hasher == null) {
+                byte[] buf = new byte[12];
+                bits.byteCopy(keyHash, 0, buf, 0, 4);
+                for (int i = 4; i < buf.length; i++) {
+                    buf[i] = (byte) bits.randomB();
+                }
+                cipher.init(keyEncr, buf, true);
+                pck.msbPutD(0, spi);
+                pck.msbPutD(4, seqTx);
+                pck.putSkip(size);
+                pck.authHead(cipher, 0, size);
+                pck.putCopy(buf, 4, 0, buf.length - 4);
+                pck.putSkip(buf.length - 4);
+                o = pck.encrData(cipher, 0, pck.dataSize());
+                pck.setDataSize(o);
+                pck.merge2beg();
+            } else {
+                byte[] buf = new byte[encrSize];
+                for (int i = 0; i < buf.length; i++) {
+                    buf[i] = (byte) bits.randomB();
+                }
+                cipher.init(keyEncr, buf, true);
+                pck.encrData(cipher, 0, pck.dataSize());
+                pck.putCopy(buf, 0, 0, buf.length);
+                pck.putSkip(buf.length);
+                pck.merge2beg();
+                pck.msbPutD(0, spi);
+                pck.msbPutD(4, seqTx);
+                pck.putSkip(size);
+                pck.merge2beg();
+                hasher.init();
+                pck.hashData(hasher, 0, pck.dataSize());
+                buf = hasher.finish();
+                pck.putCopy(buf, 0, 0, hashSize);
+                pck.putSkip(hashSize);
+                pck.merge2end();
+            }
         }
         pck.IPsrc.setAddr(fwdIface.addr);
         pck.IPtrg.setAddr(peerAddr);

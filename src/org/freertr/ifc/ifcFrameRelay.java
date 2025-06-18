@@ -523,7 +523,7 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
         upper.recvPack(fragReasm);
     }
 
-    public synchronized void sendPack(packHolder pck) {
+    public void sendPack(packHolder pck) {
         cntr.tx(pck);
         if ((fragLen < 1) || (pck.dataSize() < fragLen)) {
             putDLCI(pck, dlciNum);

@@ -194,7 +194,7 @@ public class ifcAtmSar implements ifcUp, ifcDn {
         lower.sendPack(pck);
     }
 
-    public synchronized void sendPack(packHolder pck) {
+    public void sendPack(packHolder pck) {
         pck.putByte(0, 0xaa);
         pck.putByte(1, 0xaa);
         pck.putByte(2, 0x03);

@@ -239,47 +239,49 @@ public class prtInlsp implements ipPrt, ifcDn {
      *
      * @param pck packet
      */
-    public synchronized void sendPack(packHolder pck) {
+    public void sendPack(packHolder pck) {
         pck.merge2beg();
         if (sendingIfc == null) {
             return;
         }
-        int i = pck.msbGetW(0); // ethertype
-        pck.getSkip(2);
-        int len = pck.dataSize();
-        int o = prtTmux.ethtyp2proto(i);
-        if (o < 0) {
-            return;
+        synchronized (cphrTx) {
+            int i = pck.msbGetW(0); // ethertype
+            pck.getSkip(2);
+            int len = pck.dataSize();
+            int o = prtTmux.ethtyp2proto(i);
+            if (o < 0) {
+                return;
+            }
+            i = pck.dataSize() % cphrSiz;
+            if (i > 0) {
+                i = cphrSiz - i;
+                pck.putFill(0, i, 0); // padding
+                pck.putSkip(i);
+                pck.merge2end();
+            }
+            hashTx.init();
+            pck.hashData(hashTx, 0, pck.dataSize());
+            byte[] hsh = hashTx.finish();
+            byte[] buf = new byte[cphrSiz];
+            for (i = 0; i < buf.length; i++) {
+                buf[i] = (byte) bits.randomB();
+            }
+            cphrTx.init(cphrKey, buf, true);
+            pck.encrData(cphrTx, 0, pck.dataSize());
+            pck.putCopy(buf, 0, 0, buf.length);
+            pck.putSkip(buf.length);
+            pck.merge2beg();
+            pck.putCopy(hsh, 0, 0, hsh.length);
+            pck.putSkip(hsh.length);
+            pck.merge2beg();
+            pck.putByte(0, o); // protocol
+            pck.putByte(1, 0); // version
+            pck.msbPutW(2, len); // length
+            pck.msbPutW(4, said); // sa id
+            pck.msbPutW(6, 0); // reserved
+            pck.putSkip(size);
+            pck.merge2beg();
         }
-        i = pck.dataSize() % cphrSiz;
-        if (i > 0) {
-            i = cphrSiz - i;
-            pck.putFill(0, i, 0); // padding
-            pck.putSkip(i);
-            pck.merge2end();
-        }
-        hashTx.init();
-        pck.hashData(hashTx, 0, pck.dataSize());
-        byte[] hsh = hashTx.finish();
-        byte[] buf = new byte[cphrSiz];
-        for (i = 0; i < buf.length; i++) {
-            buf[i] = (byte) bits.randomB();
-        }
-        cphrTx.init(cphrKey, buf, true);
-        pck.encrData(cphrTx, 0, pck.dataSize());
-        pck.putCopy(buf, 0, 0, buf.length);
-        pck.putSkip(buf.length);
-        pck.merge2beg();
-        pck.putCopy(hsh, 0, 0, hsh.length);
-        pck.putSkip(hsh.length);
-        pck.merge2beg();
-        pck.putByte(0, o); // protocol
-        pck.putByte(1, 0); // version
-        pck.msbPutW(2, len); // length
-        pck.msbPutW(4, said); // sa id
-        pck.msbPutW(6, 0); // reserved
-        pck.putSkip(size);
-        pck.merge2beg();
         cntr.tx(pck);
         pck.putDefaults();
         if (sendingTTL >= 0) {
