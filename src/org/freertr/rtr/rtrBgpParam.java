@@ -1217,7 +1217,8 @@ public abstract class rtrBgpParam {
      * get list of address families
      *
      * @param hl helping
-     * @param beg beginning
+     * @param lev level
+     * @param nxt next
      * @param end ending
      * @param all all, none
      */

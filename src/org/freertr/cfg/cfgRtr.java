@@ -2100,7 +2100,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
      *
      * @param l list to update
      * @param p number start
-     * @param p next numbers
+     * @param n next numbers
      * @param e ending
      */
     public static void getRouterList(userHelping l, int p, int[] n, String e) {

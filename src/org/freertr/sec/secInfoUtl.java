@@ -659,7 +659,7 @@ public class secInfoUtl {
      * @param lst help text to update
      * @param tab base level
      * @param beg beginning
-     * @param beg ending
+     * @param end ending
      */
     public final static void getHelp(userHelping lst, int tab, String beg, String end) {
         if (end != null) {
