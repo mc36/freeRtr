@@ -776,7 +776,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         }
     }
 
-    private synchronized void sendKeep() {
+    private void sendKeep() {
         packHolder pck = new packHolder(true, true);
         synchronized (cphrTx) {
             byte[] tmp = new byte[12];
