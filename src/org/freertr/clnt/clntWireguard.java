@@ -170,6 +170,10 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     private cryKeyCurve25519 dh1;
 
+    private cryEncrChacha20poly1305 cphrTx;
+
+    private cryEncrChacha20poly1305 cphrRx;
+
     private byte[] dh2;
 
     private byte[] dhr;
@@ -398,6 +402,8 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
     private synchronized void clearState() {
         keyRx = null;
         keyTx = null;
+        cphrRx = new cryEncrChacha20poly1305();
+        cphrTx = new cryEncrChacha20poly1305();
         if (conn != null) {
             conn.setClosing();
         }
@@ -465,7 +471,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         if (ifcEther.stripEtherType(pck)) {
             return;
         }
-        synchronized (keyTx) {
+        synchronized (cphrTx) {
             int i = pck.dataSize() % 16;
             i = 16 - i;
             pck.putFill(0, i, 0); // padding
@@ -473,9 +479,8 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
             pck.merge2end();
             byte[] tmp = new byte[12];
             bits.lsbPutQ(tmp, 4, seqTx);
-            cryEncrChacha20poly1305 en = new cryEncrChacha20poly1305();
-            en.init(keyTx, tmp, true);
-            i = pck.encrData(en, 0, pck.dataSize());
+            cphrTx.init(keyTx, tmp, true);
+            i = pck.encrData(cphrTx, 0, pck.dataSize());
             if (i < 0) {
                 return;
             }
@@ -552,9 +557,8 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
                         return false;
                     }
                 }
-                cryEncrChacha20poly1305 en = new cryEncrChacha20poly1305();
-                en.init(keyRx, tmp1, false);
-                typ = pck.encrData(en, 0, pck.dataSize());
+                cphrRx.init(keyRx, tmp1, false);
+                typ = pck.encrData(cphrRx, 0, pck.dataSize());
                 if (typ < 0) {
                     cntr.drop(pck, counter.reasons.badSum);
                     logger.info("got invalid data from " + target);
@@ -774,22 +778,23 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     private synchronized void sendKeep() {
         packHolder pck = new packHolder(true, true);
-        byte[] tmp = new byte[12];
-        bits.lsbPutQ(tmp, 4, seqTx);
-        cryEncrChacha20poly1305 en = new cryEncrChacha20poly1305();
-        en.init(keyTx, tmp, true);
-        int i = pck.encrData(en, 0, pck.dataSize());
-        if (i < 0) {
-            return;
+        synchronized (cphrTx) {
+            byte[] tmp = new byte[12];
+            bits.lsbPutQ(tmp, 4, seqTx);
+            cphrTx.init(keyTx, tmp, true);
+            int i = pck.encrData(cphrTx, 0, pck.dataSize());
+            if (i < 0) {
+                return;
+            }
+            pck.setDataSize(i);
+            pck.lsbPutD(0, 4); // data
+            pck.msbPutD(4, idxTx);
+            pck.lsbPutQ(8, seqTx);
+            pck.putSkip(16);
+            pck.merge2beg();
+            seqTx++;
         }
-        pck.setDataSize(i);
-        pck.lsbPutD(0, 4); // data
-        pck.msbPutD(4, idxTx);
-        pck.lsbPutQ(8, seqTx);
-        pck.putSkip(16);
-        pck.merge2beg();
         conn.send2net(pck);
-        seqTx++;
         if (debugger.clntWireguardTraf) {
             logger.debug("tx keepalive");
         }
