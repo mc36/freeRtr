@@ -149,7 +149,7 @@ public class userHelping {
         d.command = cmd;
         d.description = dsc;
         for (int i = 0; i < nxt.length; i++) {
-            d.after.add(nxt[i]);
+            d.add(nxt[i]);
         }
         d.variable = (cmd.indexOf("<") == 0) || (cmd.indexOf("[") == 0);
         if (exp) {
@@ -740,8 +740,7 @@ public class userHelping {
             collectDirection(d, 0, false, 1, -maxVal, maxVal, 1);
             return d;
         }
-        userHelpingList curNxt = lines.get(lin).after;
-        int curLvl = lines.get(lin).level;
+        userHelpingData curNxt = lines.get(lin);
         for (int i = 0; i < curNxt.num(); i++) {
             int req = curNxt.val(i);
             if (req < 0) {
@@ -752,8 +751,8 @@ public class userHelping {
                 collectDirection(d, lin, false, 1, 0, maxVal, req);
                 continue;
             }
-            if (req > curLvl) {
-                collectDirection(d, lin, true, 1, curLvl + 1, maxVal, req);
+            if (req > curNxt.level) {
+                collectDirection(d, lin, true, 1, curNxt.level + 1, maxVal, req);
                 continue;
             }
             collectDirection(d, lin, false, -1, req, maxVal, req);
@@ -1045,8 +1044,8 @@ public class userHelping {
             fnd++;
             int q = 0;
             boolean b = false;
-            for (int i = 0; i < ntry.after.num(); i++) {
-                int p = ntry.after.val(i);
+            for (int i = 0; i < ntry.num(); i++) {
+                int p = ntry.val(i);
                 if (p < 0) {
                     b = true;
                     continue;
@@ -1091,8 +1090,8 @@ public class userHelping {
             fnd++;
             List<Integer> nxt = new ArrayList<Integer>();
             boolean b = false;
-            for (int i = 0; i < ntry.after.num(); i++) {
-                int p = ntry.after.val(i);
+            for (int i = 0; i < ntry.num(); i++) {
+                int p = ntry.val(i);
                 if (p < 0) {
                     b = true;
                     continue;
@@ -1289,19 +1288,6 @@ public class userHelping {
     }
 
     /**
-     * dump out the menu lines
-     *
-     * @return string showing menu lines
-     */
-    public String dump() {
-        String s = "";
-        for (int i = 0; i < lines.size(); i++) {
-            s += i + ":" + lines.get(i).dump() + "\n";
-        }
-        return s;
-    }
-
-    /**
      * add possibility to lines
      *
      * @param lvl source level to add
@@ -1310,10 +1296,7 @@ public class userHelping {
     public void possible(int lvl, int nxt) {
         for (int i = 0; i < lines.size(); i++) {
             userHelpingData lns = lines.get(i);
-            if (lns.after.find(lvl) < 0) {
-                continue;
-            }
-            lns.after.add(nxt);
+            lns.possible(lvl, nxt);
         }
     }
 
@@ -1321,11 +1304,11 @@ public class userHelping {
 
 class userHelpingList {
 
-    public List<Integer> data = new ArrayList<Integer>(); // values
+    private List<Integer> data = new ArrayList<Integer>(); // values
 
-    public int level; // which level we are on
+    protected int level; // which level we are on
 
-    public String str; // repaired line
+    protected String str; // repaired line
 
     public int num() {
         return data.size();
@@ -1339,53 +1322,28 @@ class userHelpingList {
         data.add(i);
     }
 
-    public void addMore(userHelpingList d) {
-        data.addAll(d.data);
-    }
-
-    public int find(int lvl) {
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i) == lvl) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public userHelpingList copyBytes() {
-        userHelpingList n = new userHelpingList();
-        n.data.addAll(data);
-        return n;
-    }
-
-    public String dump() {
-        String s = level + "|";
-        for (int i = 0; i < data.size(); i++) {
-            s += " " + data.get(i);
-        }
-        return s;
-    }
-
 }
 
 class userHelpingData {
 
-    protected int level;
+    private List<Integer> data = new ArrayList<Integer>(); // values
 
-    protected userHelpingList after = new userHelpingList();
+    protected int level; // which level we are on
 
-    protected String command = "";
+    protected String command; // the command
 
-    protected String description = "";
+    protected String description; // the description
 
-    protected boolean variable;
+    protected boolean variable; // variable or fixed
 
-    protected boolean complete;
+    protected boolean complete; // complete variable
 
     public userHelpingData copyBytes() {
         userHelpingData n = new userHelpingData();
         n.level = level;
-        n.after = after.copyBytes();
+        for (int i = 0; i < data.size(); i++) {
+            n.data.add(data.get(i));
+        }
         n.command = command;
         n.description = description;
         n.complete = complete;
@@ -1393,8 +1351,26 @@ class userHelpingData {
         return n;
     }
 
-    public String dump() {
-        return variable + " lev=" + level + " aft=" + after.dump() + " cmd=" + command + " desc=" + description;
+    public int num() {
+        return data.size();
+    }
+
+    public int val(int i) {
+        return data.get(i);
+    }
+
+    public void add(int i) {
+        data.add(i);
+    }
+
+    public void possible(int lvl, int nxt) {
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i) != lvl) {
+                continue;
+            }
+            data.add(nxt);
+            return;
+        }
     }
 
 }
