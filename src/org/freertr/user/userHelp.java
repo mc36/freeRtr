@@ -144,11 +144,7 @@ public class userHelp {
      * @param dsc description
      */
     public void add(List<String> loc, boolean exp, int cur, int[] nxt, String cmd, String dsc) {
-        userHelpData d = new userHelpData();
-        d.level = cur;
-        d.command = cmd;
-        d.description = dsc;
-        d.add(nxt);
+        userHelpData d = new userHelpData(cur, nxt, cmd, dsc);
         d.variable = (cmd.indexOf("<") == 0) || (cmd.indexOf("[") == 0);
         if (exp) {
             d.description = "!!!EXPERiMENTAL!!! " + dsc;
@@ -1056,13 +1052,11 @@ public class userHelp {
             if ((!b) && (q > 0)) {
                 continue;
             }
-            userHelpData res = new userHelpData();
-            String a = hlp + ", " + ntry.description;
-            res.description = a.substring(2, a.length());
-            a = beg + " " + ntry.command;
-            res.command = a.substring(1, a.length());
-            res.level = 1;
-            dat.lines.add(res);
+            String d = hlp + ", " + ntry.description;
+            d = d.substring(2, d.length());
+            String c = beg + " " + ntry.command;
+            c = c.substring(1, c.length());
+            dat.lines.add(new userHelpData(1, new int[]{}, c, d));
         }
         return fnd;
     }
@@ -1323,7 +1317,7 @@ class userHelpList {
 
 class userHelpData {
 
-    private int[] data = new int[0]; // values
+    private int[] data; // values
 
     protected int level; // which level we are on
 
@@ -1335,15 +1329,19 @@ class userHelpData {
 
     protected boolean complete; // complete variable
 
+    public userHelpData(int l, int[] n, String c, String d) {
+        level = l;
+        data = n;
+        command = c;
+        description = d;
+    }
+
     public userHelpData copyBytes() {
-        userHelpData n = new userHelpData();
-        n.level = level;
-        n.data = new int[data.length];
+        int[] res = new int[data.length];
         for (int i = 0; i < data.length; i++) {
-            n.data[i] = data[i];
+            res[i] = data[i];
         }
-        n.command = command;
-        n.description = description;
+        userHelpData n = new userHelpData(level, res, command, description);
         n.complete = complete;
         n.variable = variable;
         return n;
@@ -1355,10 +1353,6 @@ class userHelpData {
 
     public int val(int i) {
         return data[i];
-    }
-
-    public void add(int[] nxt) {
-        data = nxt;
     }
 
     public void possible(int lvl, int nxt) {
