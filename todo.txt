@@ -165,7 +165,6 @@ tcp selective ack
 ilnp (rfc6740)
 lisp4, lisp6
 l2vpn for isis
-hip (rfc4423)
 more upgrade-cli knobs
 more renamers
 more tabbables
