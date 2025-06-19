@@ -17112,3 +17112,8 @@ qc pass: ppp with packet over txt
 qc pass: ppp with packet over txtls
 ---------------------------------- 2025-06-19 09:10:40 25.6.19
 no todo: hip (rfc4423)
+---------------------------------- 2025-06-19 09:44:29 25.6.19
+qc pass: hip over ipv4
+qc pass: hip over ipv6
+qc pass: hip over hip
+qc pass: hip over loopback

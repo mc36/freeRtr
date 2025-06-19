@@ -202,6 +202,10 @@ qc pass: serial hairpin
 qc pass: bundle hairpin
 qc pass: bridge hairpin
 qc pass: hdlc
+qc pass: hip over ipv4
+qc pass: hip over ipv6
+qc pass: hip over hip
+qc pass: hip over loopback
 qc pass: hsrp over ethernet
 qc pass: icmptunnel over ipv4
 qc pass: icmptunnel over ipv6

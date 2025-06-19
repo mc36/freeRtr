@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.6.19-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-06-19 09:25:00, took 00:14:20, with 50 workers, on 3940 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2025-06-19 09:57:54, took 00:13:24, with 50 workers, on 3944 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -206,6 +206,10 @@ http://sources.freertr.org/cfg/conn-hairpin02.tst;conn-hairpin02.tst;success;ser
 http://sources.freertr.org/cfg/conn-hairpin03.tst;conn-hairpin03.tst;success;bundle hairpin
 http://sources.freertr.org/cfg/conn-hairpin04.tst;conn-hairpin04.tst;success;bridge hairpin
 http://sources.freertr.org/cfg/conn-hdlc.tst;conn-hdlc.tst;success;hdlc
+http://sources.freertr.org/cfg/conn-hip01.tst;conn-hip01.tst;success;hip over ipv4
+http://sources.freertr.org/cfg/conn-hip02.tst;conn-hip02.tst;success;hip over ipv6
+http://sources.freertr.org/cfg/conn-hip03.tst;conn-hip03.tst;success;hip over hip
+http://sources.freertr.org/cfg/conn-hip04.tst;conn-hip04.tst;success;hip over loopback
 http://sources.freertr.org/cfg/conn-hsrp.tst;conn-hsrp.tst;success;hsrp over ethernet
 http://sources.freertr.org/cfg/conn-icmp01.tst;conn-icmp01.tst;success;icmptunnel over ipv4
 http://sources.freertr.org/cfg/conn-icmp02.tst;conn-icmp02.tst;success;icmptunnel over ipv6
