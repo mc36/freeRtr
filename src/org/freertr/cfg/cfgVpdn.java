@@ -49,7 +49,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.state;
@@ -738,7 +738,7 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "protocol", "specify protocol to use");
         l.add(null, false, 2, new int[]{-1}, "l2f", "select l2f");
         l.add(null, false, 2, new int[]{-1}, "l2tp2", "select l2tp v2");

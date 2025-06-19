@@ -14,7 +14,7 @@ import org.freertr.sec.secInfoCfg;
 import org.freertr.sec.secInfoUtl;
 import org.freertr.tab.tabAverage;
 import org.freertr.tab.tabGen;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -811,7 +811,7 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
      *
      * @param l list to update
      */
-    public static void routerGetHelp(userHelping l) {
+    public static void routerGetHelp(userHelp l) {
         l.add(null, false, 4, new int[]{-1}, "enable", "enable protocol processing");
         l.add(null, false, 4, new int[]{5}, "area", "specify area number");
         l.add(null, false, 5, new int[]{6, -1}, "<num>", "area number");

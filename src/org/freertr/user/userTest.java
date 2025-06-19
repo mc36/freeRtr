@@ -144,7 +144,7 @@ public class userTest {
     /**
      * reader to use
      */
-    public userReader rdr;
+    public userRead rdr;
 
     /**
      * do the work

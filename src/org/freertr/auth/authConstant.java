@@ -5,7 +5,7 @@ import java.util.List;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryKeyGeneric;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
 
@@ -67,7 +67,7 @@ public class authConstant extends authGeneric {
         return new ArrayList<String>();
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
     }
 
     public String getCfgName() {

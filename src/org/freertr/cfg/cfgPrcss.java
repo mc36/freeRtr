@@ -9,7 +9,7 @@ import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logBuf;
@@ -209,7 +209,7 @@ public class cfgPrcss implements Comparable<cfgPrcss>, Runnable, cfgGeneric {
         new Thread(this).start();
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this process");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this process");
         l.add(null, false, 1, new int[]{-1}, "respawn", "restart on termination");

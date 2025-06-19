@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
-import org.freertr.user.userReader;
+import org.freertr.user.userRead;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -437,9 +437,9 @@ public class secTelnet {
                                 break;
                             }
                             i = (lst.get(0) << 8) | lst.get(1);
-                            userReader.setTermWdt(userS, i);
+                            userRead.setTermWdt(userS, i);
                             i = (lst.get(2) << 8) | lst.get(3);
-                            userReader.setTermLen(userS, i);
+                            userRead.setTermLen(userS, i);
                             break;
                     }
                     continue;

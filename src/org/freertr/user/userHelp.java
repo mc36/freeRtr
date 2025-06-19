@@ -55,12 +55,12 @@ import org.freertr.util.version;
  *
  * @author matecsaba
  */
-public class userHelping {
+public class userHelp {
 
     /**
      * create instance
      */
-    public userHelping() {
+    public userHelp() {
     }
 
     private final static int maxVal = 0x100000;
@@ -68,7 +68,7 @@ public class userHelping {
     /**
      * lines of data
      */
-    public List<userHelpingData> lines = new ArrayList<userHelpingData>();
+    protected List<userHelpData> lines = new ArrayList<userHelpData>();
 
     /**
      * need to expand lists
@@ -80,7 +80,7 @@ public class userHelping {
      *
      * @param l help text
      */
-    protected static void getCfgGen(userHelping l) {
+    protected static void getCfgGen(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, cmds.finish, "go back to previous mode");
         l.add(null, false, 1, new int[]{2, -1}, "end", "close this config session");
         l.add(null, false, 2, new int[]{2, -1}, "<cmd>", "parameters");
@@ -123,7 +123,7 @@ public class userHelping {
      * @param i sequence to get
      * @return value of line
      */
-    public userHelpingData get(int i) {
+    public userHelpData get(int i) {
         if (i < 0) {
             return null;
         }
@@ -144,13 +144,11 @@ public class userHelping {
      * @param dsc description
      */
     public void add(List<String> loc, boolean exp, int cur, int[] nxt, String cmd, String dsc) {
-        userHelpingData d = new userHelpingData();
+        userHelpData d = new userHelpData();
         d.level = cur;
         d.command = cmd;
         d.description = dsc;
-        for (int i = 0; i < nxt.length; i++) {
-            d.add(nxt[i]);
-        }
+        d.add(nxt);
         d.variable = (cmd.indexOf("<") == 0) || (cmd.indexOf("[") == 0);
         if (exp) {
             d.description = "!!!EXPERiMENTAL!!! " + dsc;
@@ -186,7 +184,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -198,7 +196,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -210,7 +208,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -222,7 +220,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -234,7 +232,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -246,7 +244,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -258,7 +256,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -270,7 +268,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -282,7 +280,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -294,7 +292,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -306,7 +304,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -318,7 +316,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -330,7 +328,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -342,7 +340,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -354,7 +352,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -366,7 +364,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -378,7 +376,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -390,7 +388,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -402,7 +400,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -414,7 +412,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -426,7 +424,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -438,7 +436,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -450,7 +448,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -462,7 +460,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -474,7 +472,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -486,7 +484,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -498,7 +496,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -510,7 +508,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -522,7 +520,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -534,7 +532,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -546,7 +544,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -558,7 +556,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -570,7 +568,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -582,7 +580,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -594,7 +592,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -606,7 +604,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -618,7 +616,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -630,7 +628,7 @@ public class userHelping {
                 if (ntry == null) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = ntry.name;
                 lines.add(res);
             }
@@ -652,7 +650,7 @@ public class userHelping {
                 if (o == p) {
                     continue;
                 }
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = "" + p;
                 lines.add(res);
                 o = p;
@@ -664,7 +662,7 @@ public class userHelping {
                 return;
             }
             for (i = 0; i < loc.size(); i++) {
-                userHelpingData res = d.copyBytes();
+                userHelpData res = d.copyBytes();
                 res.command = loc.get(i);
                 lines.add(res);
             }
@@ -677,7 +675,7 @@ public class userHelping {
      *
      * @param src source
      */
-    public void addOther(userHelping src) {
+    public void addOther(userHelp src) {
         lines.addAll(src.lines);
     }
 
@@ -692,7 +690,7 @@ public class userHelping {
      * @param levMax maximum level to scan
      * @param levReq required level to collect
      */
-    private void collectDirection(userHelpingList d, int lin, boolean skip, int dir, int levMin, int levMax, int levReq) {
+    private void collectDirection(userHelpList d, int lin, boolean skip, int dir, int levMin, int levMax, int levReq) {
         if (skip) {
             int cur = lines.get(lin).level;
             for (;; lin += dir) {
@@ -734,13 +732,13 @@ public class userHelping {
      * @param lin line number to process
      * @return list of possible next lines
      */
-    private userHelpingList nextWords(int lin) {
-        userHelpingList d = new userHelpingList();
+    private userHelpList nextWords(int lin) {
+        userHelpList d = new userHelpList();
         if (lin < 0) {
             collectDirection(d, 0, false, 1, -maxVal, maxVal, 1);
             return d;
         }
-        userHelpingData curNxt = lines.get(lin);
+        userHelpData curNxt = lines.get(lin);
         for (int i = 0; i < curNxt.num(); i++) {
             int req = curNxt.val(i);
             if (req < 0) {
@@ -771,16 +769,16 @@ public class userHelping {
      * error code of the following: -2 more best matches, have to type more
      * chars -3 string does not match to any of lines -4 generic error
      */
-    private userHelpingList matchStr(userHelpingList lns, String s, boolean ncm) {
+    private userHelpList matchStr(userHelpList lns, String s, boolean ncm) {
         byte[] b1 = s.trim().toLowerCase().getBytes();
-        userHelpingList d = new userHelpingList();
+        userHelpList d = new userHelpList();
         for (int o = 0; o < lns.num(); o++) {
             int i = lns.val(o);
             if (i < 0) {
                 d.add(0);
                 continue;
             }
-            userHelpingData dat = lines.get(i);
+            userHelpData dat = lines.get(i);
             if (ncm && dat.complete) {
                 d.add(-2);
                 continue;
@@ -839,7 +837,7 @@ public class userHelping {
      * @param s string to match
      * @return string
      */
-    private String matchLong(userHelpingList lns, String s) {
+    private String matchLong(userHelpList lns, String s) {
         s = s.trim().toLowerCase();
         String m = null;
         for (int o = 0; o < lns.num(); o++) {
@@ -847,7 +845,7 @@ public class userHelping {
             if (i < 0) {
                 continue;
             }
-            userHelpingData dat = lines.get(i);
+            userHelpData dat = lines.get(i);
             if (dat.variable) {
                 continue;
             }
@@ -884,13 +882,13 @@ public class userHelping {
      * @return line numbers over wich i get to the command level set to a last
      * one, or error from matchStr
      */
-    private userHelpingList whereAm(String s, boolean ext) {
+    private userHelpList whereAm(String s, boolean ext) {
         s = s.trim();
-        userHelpingList res = new userHelpingList();
+        userHelpList res = new userHelpList();
         res.level = -1;
         String b = "";
         for (; s.length() > 0;) {
-            userHelpingList lns = nextWords(res.level);
+            userHelpList lns = nextWords(res.level);
             int i = s.indexOf(" ");
             String a;
             if (i < 0) {
@@ -900,7 +898,7 @@ public class userHelping {
                 a = s.substring(0, i).trim();
                 s = s.substring(i, s.length()).trim();
             }
-            userHelpingList sel = matchStr(lns, a, !ext);
+            userHelpList sel = matchStr(lns, a, !ext);
             if (sel.level < 0) {
                 res.level = sel.level;
                 if (s.length() > 0) {
@@ -948,7 +946,7 @@ public class userHelping {
         if (a == null) {
             return "";
         }
-        userHelpingList d = whereAm(a, false);
+        userHelpList d = whereAm(a, false);
         if (d.level < 0) {
             return "";
         }
@@ -962,7 +960,7 @@ public class userHelping {
      * @return guessed line, variables preserved, null if no guess
      */
     public String guessLine(String a) {
-        userHelpingList d = whereAm(a, true);
+        userHelpList d = whereAm(a, true);
         return d.str;
     }
 
@@ -973,7 +971,7 @@ public class userHelping {
      * @return false if valid command, true if an invalid command
      */
     public boolean endOfCmd(String s) {
-        userHelpingList d = whereAm(s, false);
+        userHelpList d = whereAm(s, false);
         if (d.level < 0) {
             return true;
         }
@@ -995,7 +993,7 @@ public class userHelping {
     private List<String> formatHelp(int lin) {
         final String begin = "  ";
         final String enter = "<cr>";
-        userHelpingList d = nextWords(lin);
+        userHelpList d = nextWords(lin);
         List<String> s = new ArrayList<String>();
         int max = -1;
         for (int i = 0; i < d.num(); i++) {
@@ -1015,7 +1013,7 @@ public class userHelping {
                 s.add(begin + enter);
                 continue;
             }
-            userHelpingData cur = lines.get(o);
+            userHelpData cur = lines.get(o);
             s.add(begin + bits.padEnd(cur.command, max, " ") + " - " + cur.description);
         }
         return s;
@@ -1031,10 +1029,10 @@ public class userHelping {
      * @param lev current level
      * @return found entries
      */
-    protected int formatUsage(userHelping dat, String beg, String hlp, int lin, int lev) {
+    protected int formatUsage(userHelp dat, String beg, String hlp, int lin, int lev) {
         int fnd = 0;
         for (int o = lin; o < lines.size(); o++) {
-            userHelpingData ntry = lines.get(o);
+            userHelpData ntry = lines.get(o);
             if ((fnd > 0) && (ntry.level < lev)) {
                 break;
             }
@@ -1058,7 +1056,7 @@ public class userHelping {
             if ((!b) && (q > 0)) {
                 continue;
             }
-            userHelpingData res = new userHelpingData();
+            userHelpData res = new userHelpData();
             String a = hlp + ", " + ntry.description;
             res.description = a.substring(2, a.length());
             a = beg + " " + ntry.command;
@@ -1080,7 +1078,7 @@ public class userHelping {
     protected void formatYang(List<String> dat, String id, int lin, int lev) {
         int fnd = 0;
         for (int o = lin; o < lines.size(); o++) {
-            userHelpingData ntry = lines.get(o);
+            userHelpData ntry = lines.get(o);
             if ((fnd > 0) && (ntry.level < lev)) {
                 break;
             }
@@ -1161,7 +1159,7 @@ public class userHelping {
      * @return array of strings that user should read
      */
     public List<String> getHelp(String s, boolean oneLine) {
-        userHelpingList d = whereAm(s, true);
+        userHelpList d = whereAm(s, true);
         String cmd = "";
         for (int i = 0; i < d.num(); i++) {
             cmd += " " + lines.get(d.val(i)).command;
@@ -1194,7 +1192,7 @@ public class userHelping {
             if (s.lastIndexOf(" ") >= s.length() - 1) {
                 return formatHelp(d.level);
             }
-            userHelpingData r = lines.get(d.level);
+            userHelpData r = lines.get(d.level);
             if (!r.variable) {
                 return getBarkBack("type " + r.command + " to " + r.description);
             }
@@ -1228,7 +1226,7 @@ public class userHelping {
      * @return usage text
      */
     public List<String> getUsage() {
-        userHelping d = new userHelping();
+        userHelp d = new userHelp();
         formatUsage(d, "", "", 0, 1);
         return d.formatHelp(-1);
     }
@@ -1276,7 +1274,7 @@ public class userHelping {
             l[i] = "";
         }
         for (int o = 0; o < lines.size(); o++) {
-            userHelpingData ntry = lines.get(o);
+            userHelpData ntry = lines.get(o);
             l[ntry.level] = "" + ntry.command;
             String a = "";
             for (int i = 0; i <= ntry.level; i++) {
@@ -1295,14 +1293,13 @@ public class userHelping {
      */
     public void possible(int lvl, int nxt) {
         for (int i = 0; i < lines.size(); i++) {
-            userHelpingData lns = lines.get(i);
-            lns.possible(lvl, nxt);
+            lines.get(i).possible(lvl, nxt);
         }
     }
 
 }
 
-class userHelpingList {
+class userHelpList {
 
     private List<Integer> data = new ArrayList<Integer>(); // values
 
@@ -1324,9 +1321,9 @@ class userHelpingList {
 
 }
 
-class userHelpingData {
+class userHelpData {
 
-    private List<Integer> data = new ArrayList<Integer>(); // values
+    private int[] data = new int[0]; // values
 
     protected int level; // which level we are on
 
@@ -1338,11 +1335,12 @@ class userHelpingData {
 
     protected boolean complete; // complete variable
 
-    public userHelpingData copyBytes() {
-        userHelpingData n = new userHelpingData();
+    public userHelpData copyBytes() {
+        userHelpData n = new userHelpData();
         n.level = level;
-        for (int i = 0; i < data.size(); i++) {
-            n.data.add(data.get(i));
+        n.data = new int[data.length];
+        for (int i = 0; i < data.length; i++) {
+            n.data[i] = data[i];
         }
         n.command = command;
         n.description = description;
@@ -1352,23 +1350,28 @@ class userHelpingData {
     }
 
     public int num() {
-        return data.size();
+        return data.length;
     }
 
     public int val(int i) {
-        return data.get(i);
+        return data[i];
     }
 
-    public void add(int i) {
-        data.add(i);
+    public void add(int[] nxt) {
+        data = nxt;
     }
 
     public void possible(int lvl, int nxt) {
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i) != lvl) {
+        for (int o = 0; o < data.length; o++) {
+            if (data[o] != lvl) {
                 continue;
             }
-            data.add(nxt);
+            int[] res = new int[data.length + 1];
+            for (int i = 0; i < data.length; i++) {
+                res[i] = data[i];
+            }
+            res[data.length] = nxt;
+            data = res;
             return;
         }
     }

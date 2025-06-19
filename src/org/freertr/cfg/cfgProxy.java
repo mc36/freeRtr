@@ -8,7 +8,7 @@ import org.freertr.enc.encBase64;
 import org.freertr.serv.servGeneric;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -77,7 +77,7 @@ public class cfgProxy implements Comparable<cfgProxy>, cfgGeneric {
         proxy = new clntProxy(nam);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "rename", "rename this proxy");

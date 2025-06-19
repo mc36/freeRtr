@@ -21,17 +21,17 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 
 /**
- * reading one line from the user
+ * read one line from the user
  *
  * @author matecsaba
  */
-public class userReader implements Comparator<String> {
+public class userRead implements Comparator<String> {
 
     private pipeSide pipe; // pipe to use
 
     private String prompt; // current prompt
 
-    private userHelping help; // help context
+    private userHelp help; // help context
 
     private String[] histD; // history data
 
@@ -258,7 +258,7 @@ public class userReader implements Comparator<String> {
      * @param pip pipeline to use as input
      * @param parent line to use
      */
-    public userReader(pipeSide pip, userLine parent) {
+    public userRead(pipeSide pip, userLine parent) {
         pipe = pip;
         clip = "";
         filterS = "";
@@ -351,7 +351,7 @@ public class userReader implements Comparator<String> {
      * @param hlp helper instance
      * @param prmt promtp to show
      */
-    public void setContext(userHelping hlp, String prmt) {
+    public void setContext(userHelp hlp, String prmt) {
         help = hlp;
         prompt = prmt;
     }

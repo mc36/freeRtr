@@ -17,7 +17,7 @@ public class userChat implements Runnable {
 
     private final pipeSide pipe;
 
-    private final userReader read;
+    private final userRead read;
 
     private boolean need2run;
 
@@ -27,7 +27,7 @@ public class userChat implements Runnable {
      * @param con pipeline to use
      * @param rdr reader to use
      */
-    public userChat(pipeSide con, userReader rdr) {
+    public userChat(pipeSide con, userRead rdr) {
         pipe = con;
         read = rdr;
     }
@@ -40,7 +40,7 @@ public class userChat implements Runnable {
         need2run = true;
         new Thread(this).start();
         for (;;) {
-            userHelping hl = new userHelping();
+            userHelp hl = new userHelp();
             hl.add(null, false, 1, new int[]{1, -1}, "<text>", "chat line");
             read.setContext(hl, "you:");
             String a = read.readLine("/exit");

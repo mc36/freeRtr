@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -149,7 +149,7 @@ public class cfgTrnsltn implements Comparable<cfgTrnsltn>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "remove", "remove string");

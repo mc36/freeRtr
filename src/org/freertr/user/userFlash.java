@@ -61,7 +61,7 @@ public class userFlash {
     /**
      * reader of user
      */
-    public userReader rdr;
+    public userRead rdr;
 
     /**
      * get ascii art from a file

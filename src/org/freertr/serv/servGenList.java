@@ -5,7 +5,7 @@ import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgGeneric;
 import org.freertr.tab.tabGen;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 
 /**
  * list of generic server
@@ -185,11 +185,11 @@ public class servGenList<T extends servGeneric> {
      * @param e ending
      * @param o other
      */
-    public static void srvHelp(userHelping l, int p, String e, userHelping o) {
+    public static void srvHelp(userHelp l, int p, String e, userHelp o) {
         int[] n;
         if (o == null) {
             n = new int[]{-1};
-            o = new userHelping();
+            o = new userHelp();
         } else {
             n = new int[]{p + 2, -1};
         }
@@ -272,7 +272,7 @@ public class servGenList<T extends servGeneric> {
         srvHelp(l, p, n, e, o, "tacacs", cfgAll.dmnTacacs.listServers());
     }
 
-    private static void srvHelp(userHelping l, int p, int[] n, String e, userHelping o, String k, List<String> s) {
+    private static void srvHelp(userHelp l, int p, int[] n, String e, userHelp o, String k, List<String> s) {
         l.add(null, false, p, new int[]{p + 1}, k, k + " server " + e);
         l.add(s, false, p + 1, n, "<name:loc>", "name of server");
         l.addOther(o);

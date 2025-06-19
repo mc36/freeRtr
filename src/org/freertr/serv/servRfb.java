@@ -10,7 +10,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFonts;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -73,7 +73,7 @@ public class servRfb extends servGeneric implements prtServS {
         return lin.doCfgStr(cmd);
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         lin.getHelp(l);
     }
 

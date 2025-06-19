@@ -11,8 +11,8 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
-import org.freertr.user.userReader;
+import org.freertr.user.userHelp;
+import org.freertr.user.userRead;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logBuf;
@@ -158,7 +158,7 @@ public class cfgSched implements Comparable<cfgSched>, cfgGeneric {
         return "scheduler " + name;
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this scheduler");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this scheduler");
         l.add(null, false, 1, new int[]{2}, "rename", "rename this scheduler");
@@ -397,7 +397,7 @@ public class cfgSched implements Comparable<cfgSched>, cfgGeneric {
         loc = pipe.getSide();
         new Thread(new cfgSchedRead(this)).start();
         pipeSide pip = pipe.getSide();
-        userReader rdr = new userReader(pip, null);
+        userRead rdr = new userRead(pip, null);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;

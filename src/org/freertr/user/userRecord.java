@@ -50,7 +50,7 @@ public class userRecord implements Runnable {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userReader rdr = new userReader(pip, null);
+        userRead rdr = new userRead(pip, null);
         pip.settingsCopy(orig.pipe);
         pip.setTime(0);
         exe = new userExec(pip, rdr);

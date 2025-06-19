@@ -35,7 +35,7 @@ import org.freertr.sec.secServer;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -332,7 +332,7 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
      *
      * @param l list of commands
      */
-    public abstract void srvHelp(userHelping l);
+    public abstract void srvHelp(userHelp l);
 
     /**
      * get name of server
@@ -1162,7 +1162,7 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
      *
      * @param l help text
      */
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "rename", "rename this server");
         l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
         l.add(null, false, 1, new int[]{2}, "description", "specify description");

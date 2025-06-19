@@ -7,8 +7,8 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
-import org.freertr.user.userReader;
+import org.freertr.user.userHelp;
+import org.freertr.user.userRead;
 import org.freertr.user.userScreen;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -59,7 +59,7 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "rename", "rename this menu");
@@ -166,7 +166,7 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
      * @param rdr reader
      * @param prv privileged
      */
-    public void doMenu(pipeSide pipe, userReader rdr, boolean prv) {
+    public void doMenu(pipeSide pipe, userRead rdr, boolean prv) {
         cfgMenuTdoer d = new cfgMenuTdoer(this, new userScreen(pipe), rdr, prv);
         d.doWork();
     }
@@ -217,7 +217,7 @@ class cfgMenuTdoer {
 
     private final userScreen console;
 
-    private final userReader reader;
+    private final userRead reader;
 
     private final boolean privileged;
 
@@ -231,7 +231,7 @@ class cfgMenuTdoer {
 
     private int max;
 
-    public cfgMenuTdoer(cfgMenuT prn, userScreen pip, userReader rdr, boolean prv) {
+    public cfgMenuTdoer(cfgMenuT prn, userScreen pip, userRead rdr, boolean prv) {
         lower = prn;
         console = pip;
         reader = rdr;

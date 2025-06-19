@@ -25,7 +25,7 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRpkiAspa;
 import org.freertr.tab.tabRpkiKey;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -309,7 +309,7 @@ public class rtrRpki extends ipRtr implements Runnable {
     public void routerOthersChanged() {
     }
 
-    public void routerGetHelp(userHelping l) {
+    public void routerGetHelp(userHelp l) {
         List<String> neis = new ArrayList<String>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);

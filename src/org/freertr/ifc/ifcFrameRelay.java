@@ -6,7 +6,7 @@ import java.util.TimerTask;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrType;
 import org.freertr.pack.packHolder;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -254,7 +254,7 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
      *
      * @param l storage
      */
-    public static void getHelp(userHelping l) {
+    public static void getHelp(userHelp l) {
         l.add(null, false, 2, new int[]{3}, "keepalive", "keepalive timer");
         l.add(null, false, 3, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 2, new int[]{3}, "mode", "my line mode");

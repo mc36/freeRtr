@@ -19,7 +19,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabListing;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logFil;
@@ -388,7 +388,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "bulk-down", "down peers on speaker loss");
         l.add(null, false, 1, new int[]{2}, "rate-down", "down peers on inactivity");
         l.add(null, false, 2, new int[]{3}, "<num>", "ms between checks");

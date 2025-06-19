@@ -108,7 +108,7 @@ public class userNetconf {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userReader rdr = new userReader(pip, null);
+        userRead rdr = new userRead(pip, null);
         pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
         pip.settingsPut(pipeSetting.height, 0);
         userConfig cfg = new userConfig(pip, rdr);
@@ -119,7 +119,7 @@ public class userNetconf {
             if (a.equals("!")) {
                 break;
             }
-            userHelping hlp = cfg.getHelping(false, true, true);
+            userHelp hlp = cfg.getHelping(false, true, true);
             rdr.setContext(hlp, "");
             String b = hlp.repairLine(a);
             if (b.length() < 1) {
@@ -129,10 +129,10 @@ public class userNetconf {
             cfg.executeCommand(b);
         }
         pos++;
-        userHelping ned = cfg.getHelping(false, false, false);
+        userHelp ned = cfg.getHelping(false, false, false);
         for (; pos < end; pos++) {
             String a = lst.get(pos);
-            userHelping hlp = cfg.getHelping(false, true, true);
+            userHelp hlp = cfg.getHelping(false, true, true);
             rdr.setContext(hlp, "");
             String b = hlp.repairLine(a);
             if (b.length() < 1) {
@@ -258,7 +258,7 @@ public class userNetconf {
                 pipeSide pip = pl.getSide();
                 pip.lineTx = pipeSide.modTyp.modeCRLF;
                 pip.lineRx = pipeSide.modTyp.modeCRorLF;
-                userReader rdr = new userReader(pip, null);
+                userRead rdr = new userRead(pip, null);
                 pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
                 pip.settingsPut(pipeSetting.height, 0);
                 pip.setTime(60000);

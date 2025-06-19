@@ -5,7 +5,7 @@ import java.util.List;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabSession;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
 
 /**
@@ -78,7 +78,7 @@ public class cfgSessn implements Comparable<cfgSessn>, cfgGeneric {
         return name;
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "rename", "rename this session");
         l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
         l.add(null, false, 1, new int[]{2}, "description", "specify description");

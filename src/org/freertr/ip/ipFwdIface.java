@@ -41,7 +41,7 @@ import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.tab.tabSession;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -560,7 +560,7 @@ public class ipFwdIface extends tabRouteIface {
      *
      * @param l storage
      */
-    public static void getHelp(userHelping l) {
+    public static void getHelp(userHelp l) {
         l.add(null, false, 2, new int[]{-1}, "enable", "link local address routing");
         l.add(null, false, 2, new int[]{3}, "address", "set the ip address of an interface");
         l.add(null, false, 3, new int[]{4}, "dynamic", "dynamic address");

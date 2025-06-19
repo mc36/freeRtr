@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrPool;
 import org.freertr.addr.addrType;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
 
 /**
@@ -62,7 +62,7 @@ public class cfgPool<T extends addrType> implements Comparable<cfgPool<T>>, cfgG
         return name;
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
     }
 
     public String getPrompt() {

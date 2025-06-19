@@ -6,8 +6,8 @@ import org.freertr.auth.authLocal;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
-import org.freertr.user.userReader;
+import org.freertr.user.userHelp;
+import org.freertr.user.userRead;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -304,7 +304,7 @@ public class cfgAlias implements Comparable<cfgAlias>, cfgGeneric {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
     }
 
     public String getPrompt() {
@@ -501,7 +501,7 @@ public class cfgAlias implements Comparable<cfgAlias>, cfgGeneric {
                 stickyPar = "";
                 return;
             }
-            userReader rdr = new userReader(cmd.pipe, null);
+            userRead rdr = new userRead(cmd.pipe, null);
             userExec exe = new userExec(cmd.pipe, rdr);
             exe.privileged = true;
             doCommands(exe, cmd);
@@ -524,7 +524,7 @@ public class cfgAlias implements Comparable<cfgAlias>, cfgGeneric {
      * @param l help text to append
      * @param lev starting level
      */
-    public void getLines(userHelping l, int lev) {
+    public void getLines(userHelp l, int lev) {
         paraMode p = maxOfParams(parameter, param2nd, cmd2nd);
         p = maxOfParams(p, param3rd, cmd3rd);
         p = maxOfParams(p, param4th, cmd4th);

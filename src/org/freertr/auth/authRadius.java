@@ -9,7 +9,7 @@ import org.freertr.clnt.clntRadius;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryKeyGeneric;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -66,7 +66,7 @@ public class authRadius extends authGeneric {
         return l;
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "server", "specify server");
         l.add(null, false, 2, new int[]{-1}, "<str>", "name of server");
         l.add(null, false, 1, new int[]{2}, "secret", "specify secret");

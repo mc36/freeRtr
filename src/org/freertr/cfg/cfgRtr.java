@@ -40,7 +40,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIntUpdater;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -2048,7 +2048,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
      * @param p number start
      * @param e ending
      */
-    public static void getRouterList(userHelping l, int p, String e) {
+    public static void getRouterList(userHelp l, int p, String e) {
         l.add(null, false, p + 2, new int[]{p + 3}, "bgp4", "border gateway protocol" + e);
         l.add(null, false, p + 2, new int[]{p + 3}, "bgp6", "border gateway protocol" + e);
         l.add(null, false, p + 2, new int[]{p + 3}, "ospf4", "open shortest path first" + e);
@@ -2103,7 +2103,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
      * @param n next numbers
      * @param e ending
      */
-    public static void getRouterList(userHelping l, int p, int[] n, String e) {
+    public static void getRouterList(userHelp l, int p, int[] n, String e) {
         l.add(null, false, p, n, "connected", "connected routes" + e);
         l.add(null, false, p, n, "static", "static routes" + e);
         l.add(null, false, p, n, "defgw", "routes through default gateway" + e);
@@ -2117,7 +2117,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
      * @param l list to update
      * @param p number start
      */
-    public static void getRedistHelp(userHelping l, int p) {
+    public static void getRedistHelp(userHelp l, int p) {
         l.add(null, false, p + 1, new int[]{-1}, "ecmp", "enable ecmp export to rib");
         l.add(null, false, p + 1, new int[]{p + 2}, "redistribute", "redistribute prefixes from other protocols");
         getRouterList(l, p + 2, new int[]{p + 4, -1}, "");
@@ -2177,7 +2177,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         l.add(null, false, p + 3, new int[]{p + 2, -1}, "<name:pl>", "name of prefix list");
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "description", "specify description");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "description");
         l.add(null, false, 1, new int[]{2}, "vrf", "specify vrf to use");

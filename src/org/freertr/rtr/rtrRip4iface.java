@@ -19,7 +19,7 @@ import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -454,7 +454,7 @@ public class rtrRip4iface implements Comparable<rtrRip4iface> {
      *
      * @param l list to update
      */
-    public static void routerGetHelp(userHelping l) {
+    public static void routerGetHelp(userHelp l) {
         l.add(null, false, 4, new int[]{-1}, "enable", "enable/disable rip updates");
         l.add(null, false, 4, new int[]{-1}, "allow-rx", "suppress processing routing updates");
         l.add(null, false, 4, new int[]{-1}, "allow-tx", "suppress sending routing updates");

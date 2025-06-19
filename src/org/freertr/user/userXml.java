@@ -70,7 +70,7 @@ public class userXml {
                     pipeSide pip = pl.getSide();
                     pip.lineTx = pipeSide.modTyp.modeCRLF;
                     pip.lineRx = pipeSide.modTyp.modeCRorLF;
-                    userReader rdr = new userReader(pip, null);
+                    userRead rdr = new userRead(pip, null);
                     pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
                     pip.settingsPut(pipeSetting.height, 0);
                     userExec exe = new userExec(pip, rdr);
@@ -99,7 +99,7 @@ public class userXml {
                 pipeSide pip = pl.getSide();
                 pip.lineTx = pipeSide.modTyp.modeCRLF;
                 pip.lineRx = pipeSide.modTyp.modeCRorLF;
-                userReader rdr = new userReader(pip, null);
+                userRead rdr = new userRead(pip, null);
                 pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
                 pip.settingsPut(pipeSetting.height, 0);
                 userConfig cfg = new userConfig(pip, rdr);
@@ -112,7 +112,7 @@ public class userXml {
                     if (s.length() < 1) {
                         continue;
                     }
-                    userHelping hlp = cfg.getHelping(false, true, true);
+                    userHelp hlp = cfg.getHelping(false, true, true);
                     rdr.setContext(hlp, "");
                     String b = hlp.repairLine(s);
                     if (b.length() < 1) {

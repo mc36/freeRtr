@@ -8,7 +8,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -71,7 +71,7 @@ public class servBstun extends servGeneric implements prtServS {
         return lin.doCfgStr(cmd);
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         lin.getHelp(l);
         l.add(null, false, 1, new int[]{2}, "group", "set group number");
         l.add(null, false, 2, new int[]{-1}, "<num>", "group number");

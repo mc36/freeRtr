@@ -6,7 +6,7 @@ import org.freertr.auth.authLocal;
 import org.freertr.sec.secTransform;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -154,7 +154,7 @@ public class cfgIpsec implements Comparable<cfgIpsec>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         trans.getHelp(l);
         l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");

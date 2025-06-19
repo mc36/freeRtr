@@ -9,7 +9,7 @@ import org.freertr.tab.tabListingEntry;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.user.userEditor;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userScreen;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -177,7 +177,7 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "sequence", "sequence number of an entry");
         l.add(null, false, 2, new int[]{1, -1}, "<num>", "sequence number");
         l.add(null, false, 1, new int[]{2, -1}, "reindex", "reindex route map");

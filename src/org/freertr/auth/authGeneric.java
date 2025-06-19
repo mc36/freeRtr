@@ -9,7 +9,7 @@ import org.freertr.tab.tabListing;
 import org.freertr.tab.tabListingEntry;
 import org.freertr.tab.tabPrfxlstN;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -177,7 +177,7 @@ public abstract class authGeneric implements Comparable<authGeneric> {
      *
      * @param l where to store
      */
-    public abstract void getHelp(userHelping l);
+    public abstract void getHelp(userHelp l);
 
     /**
      * get config text

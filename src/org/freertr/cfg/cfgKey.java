@@ -6,7 +6,7 @@ import org.freertr.auth.authLocal;
 import org.freertr.cry.cryKeyGeneric;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
 
 /**
@@ -59,7 +59,7 @@ public class cfgKey<T extends cryKeyGeneric> implements Comparable<cfgKey<T>>, c
         return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
     }
 
     public String getPrompt() {

@@ -15,7 +15,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFlash;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -113,7 +113,7 @@ public class servPlan9 extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "user", "set user name");
         l.add(null, false, 2, new int[]{-1}, "<str>", "name of user");
         l.add(null, false, 1, new int[]{2}, "path", "set root folder");

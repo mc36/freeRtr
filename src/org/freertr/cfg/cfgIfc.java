@@ -164,7 +164,7 @@ import org.freertr.tab.tabRouteIface;
 import org.freertr.tab.tabSession;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -6617,7 +6617,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this interface");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this interface");
         l.add(null, false, 1, new int[]{-1}, "log-link-change", "log link state changes");

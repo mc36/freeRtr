@@ -23,7 +23,7 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.differ;
@@ -496,7 +496,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      *
      * @param l list
      */
-    public void routerGetHelp(userHelping l) {
+    public void routerGetHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "logging", "log events");
         l.add(null, false, 1, new int[]{-1}, "start", "start running");
         l.add(null, false, 1, new int[]{-1}, "stop", "stop running");

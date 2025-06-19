@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
 import org.freertr.util.cmds;
 
@@ -54,7 +54,7 @@ public class cfgCons implements cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         line.getHelp(l);
     }
 

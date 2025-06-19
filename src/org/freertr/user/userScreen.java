@@ -631,8 +631,8 @@ public class userScreen {
         if (res == null) {
             return true;
         }
-        userReader.setTermWdt(pip, res[0]);
-        userReader.setTermLen(pip, res[1]);
+        userRead.setTermWdt(pip, res[0]);
+        userRead.setTermLen(pip, res[1]);
         return false;
     }
 

@@ -26,7 +26,7 @@ import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.tab.tabSession;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -365,7 +365,7 @@ public class ifcBridge implements ifcDn {
      *
      * @param l storage
      */
-    public static void getHelp(userHelping l) {
+    public static void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this bridge");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this bridge");
         l.add(null, false, 1, new int[]{2}, "rd", "specify route distinguisher");

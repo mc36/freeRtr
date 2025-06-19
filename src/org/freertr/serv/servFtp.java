@@ -18,7 +18,7 @@ import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFlash;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -168,7 +168,7 @@ public class servFtp extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "authentication", "set authentication");
         l.add(null, false, 2, new int[]{-1}, "<name:aaa>", "name of authentication list");
         l.add(null, false, 1, new int[]{2}, "path", "set root folder");

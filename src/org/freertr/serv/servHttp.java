@@ -14,7 +14,7 @@ import org.freertr.sec.secInfoUtl;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -317,7 +317,7 @@ public class servHttp extends servGeneric implements prtServS {
         return ntry.doConfig(negated, a, cmd);
     }
 
-    private final static void getSubconnHelp(int b, userHelping l) {
+    private final static void getSubconnHelp(int b, userHelp l) {
         l.add(null, false, b, new int[]{b, -1}, "strip-path", "strip path");
         l.add(null, false, b, new int[]{b, -1}, "strip-name", "strip filename");
         l.add(null, false, b, new int[]{b, -1}, "strip-ext", "strip extension");
@@ -332,7 +332,7 @@ public class servHttp extends servGeneric implements prtServS {
      *
      * @param l list
      */
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "single-request", "one request per connection");
         l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");

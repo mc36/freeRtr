@@ -8,7 +8,7 @@ import org.freertr.tab.tabIntMatcher;
 import org.freertr.tab.tabListingEntry;
 import org.freertr.tab.tabTime;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -144,7 +144,7 @@ public class cfgTime implements Comparable<cfgTime>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "sequence", "sequence number of an entry");
         l.add(null, false, 2, new int[]{1, -1}, "<num>", "sequence number");
         l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");

@@ -16,7 +16,7 @@ import org.freertr.ip.ipFwdIface;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabAverage;
 import org.freertr.tab.tabGen;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -857,7 +857,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
      *
      * @param l list to update
      */
-    public static void routerGetHelp(userHelping l) {
+    public static void routerGetHelp(userHelp l) {
         l.add(null, false, 4, new int[]{-1}, "enable", "enable protocol processing");
         l.add(null, false, 4, new int[]{-1}, "other-enable", "enable other protocol processing");
         l.add(null, false, 4, new int[]{5}, "circuit", "set circuit type");

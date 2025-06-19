@@ -14,7 +14,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabNatCfgN;
 import org.freertr.tab.tabNatTraN;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -210,7 +210,7 @@ public class servUni2uni extends servGeneric implements prtServP {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "timeout", "timeout of client");
         l.add(null, false, 2, new int[]{-1}, "<num>", "milliseconds");
         l.add(null, false, 1, new int[]{2}, "source", "specify translated source");

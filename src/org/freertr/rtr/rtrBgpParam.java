@@ -22,7 +22,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -1222,7 +1222,7 @@ public abstract class rtrBgpParam {
      * @param end ending
      * @param all all, none
      */
-    public static void getAfiList(userHelping hl, int lev, int[] nxt, String end, boolean all) {
+    public static void getAfiList(userHelp hl, int lev, int[] nxt, String end, boolean all) {
         if (all) {
             hl.add(null, false, lev, nxt, "all", "all address family to " + end);
             hl.add(null, false, lev, nxt, "none", "no address family to " + end);
@@ -1776,7 +1776,7 @@ public abstract class rtrBgpParam {
      *
      * @param l list to append
      */
-    public static void getParamHelp(userHelping l) {
+    public static void getParamHelp(userHelp l) {
         l.add(null, false, 3, new int[]{4}, "remote-as", "remote as number");
         l.add(null, false, 4, new int[]{5, -1}, "any", "any autonomous system number");
         l.add(null, false, 4, new int[]{5, -1}, "<num>", "autonomous system number");

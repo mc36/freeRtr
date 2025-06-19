@@ -83,7 +83,7 @@ public class userExec {
     /**
      * reader of user
      */
-    protected final userReader reader;
+    protected final userRead reader;
 
     /**
      * currently processed string
@@ -151,7 +151,7 @@ public class userExec {
      * @param pip pipeline to use as input
      * @param rdr reader to use as input
      */
-    public userExec(pipeSide pip, userReader rdr) {
+    public userExec(pipeSide pip, userRead rdr) {
         pipe = pip;
         reader = rdr;
     }
@@ -191,14 +191,14 @@ public class userExec {
         last = o.last;
     }
 
-    private static void getSecretHelp(userHelping hl, int beg) {
+    private static void getSecretHelp(userHelp hl, int beg) {
         for (int i = 0; i < version.secrets.length; i++) {
             String a = version.secrets[i][0];
             hl.add(null, false, beg, new int[]{-1}, a, "sh0w m30www s0m30www " + enc7bit.toHackedStr(a));
         }
     }
 
-    private void getHelpClearIpX(userHelping hl) {
+    private void getHelpClearIpX(userHelp hl) {
         hl.add(null, false, 3, new int[]{4}, "savemrt", "dump routing table");
         hl.add(null, false, 4, new int[]{5}, "<name:vrf>", "vrf name");
         hl.add(null, false, 5, new int[]{-1}, "<name>", "name of file");
@@ -315,7 +315,7 @@ public class userExec {
         hl.add(null, false, 5, new int[]{-1}, "start", "start processing");
     }
 
-    private static void getHelpShowIpX(userHelping hl) {
+    private static void getHelpShowIpX(userHelp hl) {
         hl.add(null, false, 3, new int[]{4, -1}, "interface", "interface information");
         hl.add(null, false, 4, new int[]{-1}, "[name:ifc]", "name of interface");
         hl.add(null, false, 3, new int[]{4, -1}, "vrf", "vrf information");
@@ -1127,7 +1127,7 @@ public class userExec {
      * @param beg beginning
      * @param privi allow privileges
      */
-    public static void getHelpPipes(userHelping hl, int beg, boolean privi) {
+    public static void getHelpPipes(userHelp hl, int beg, boolean privi) {
         hl.possible(-1, beg);
         hl.add(null, false, beg, new int[]{beg + 1}, "|", "output modifier");
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "include", "only lines that match");
@@ -1272,7 +1272,7 @@ public class userExec {
      * @param hl help to append
      * @param privi allow privileges
      */
-    public static void getHelpShow(userHelping hl, boolean privi) {
+    public static void getHelpShow(userHelp hl, boolean privi) {
         hl.add(null, false, 2, new int[]{3}, "aaa", "aaa information");
         hl.add(null, false, 3, new int[]{-1}, "<name:aaa>", "aaa list");
         hl.add(null, false, 2, new int[]{3}, "macsec", "macsec information");
@@ -1814,7 +1814,7 @@ public class userExec {
         cfgAll.aliasHelps(cfgAlias.aliasType.show, 2, hl);
     }
 
-    private void getHelpFlood(userHelping hl) {
+    private void getHelpFlood(userHelp hl) {
         hl.add(null, true, 5, new int[]{6}, "tcp", "select tcp");
         hl.add(null, true, 5, new int[]{6}, "udp", "select udp");
         hl.add(null, true, 5, new int[]{6}, "ludp", "select ludp");
@@ -1829,7 +1829,7 @@ public class userExec {
         hl.add(null, true, 12, new int[]{-1}, "<name:pm>", "policy map");
     }
 
-    private void getHelpTelnet(userHelping hl) {
+    private void getHelpTelnet(userHelp hl) {
         hl.add(null, false, 2, new int[]{3, 4, -1}, "<host>", "name of host");
         hl.add(null, false, 3, new int[]{4, -1}, "[port]", "port on host");
         hl.add(null, false, 4, new int[]{4, -1}, "tcp", "transmission control protocol");
@@ -1868,8 +1868,8 @@ public class userExec {
      *
      * @return helping instance
      */
-    public userHelping getHelping() {
-        userHelping hl = new userHelping();
+    public userHelp getHelping() {
+        userHelp hl = new userHelp();
         hl.expand = needExpand;
         hl.add(null, false, 1, new int[]{2}, "show", "running system information");
         getHelpShow(hl, privileged);
@@ -2363,7 +2363,7 @@ public class userExec {
         hl.add(null, false, 2, new int[]{-1}, "rollback", "configure within auto-revert session");
         hl.add(null, false, 2, new int[]{-1}, "revert", "revert to startup configuration");
         hl.add(null, true, 2, new int[]{-1}, "reapply", "try to reapply current configuration");
-        userHelping hlp = new userHelping();
+        userHelp hlp = new userHelp();
         hlp.add(null, false, 1, new int[]{2}, "flash", "file system utility");
         hlp.add(null, false, 2, new int[]{3}, "count", "count directory usage");
         hlp.add(null, false, 3, new int[]{-1}, "<file>", "pathname");
@@ -3373,7 +3373,7 @@ public class userExec {
             if (a.equals("editor")) {
                 List<String> c1 = cfgAll.getShRun(1);
                 if (cmd.size() > 0) {
-                    c1 = userFilter.getSection(c1, userReader.filter2reg(cmd.getRemaining()));
+                    c1 = userFilter.getSection(c1, userRead.filter2reg(cmd.getRemaining()));
                 }
                 List<String> c2 = new ArrayList<String>();
                 c2.addAll(c1);
@@ -3392,7 +3392,7 @@ public class userExec {
             if (a.equals("viewer")) {
                 List<String> c1 = cfgAll.getShRun(1);
                 if (cmd.size() > 0) {
-                    c1 = userFilter.getSection(c1, userReader.filter2reg(cmd.getRemaining()));
+                    c1 = userFilter.getSection(c1, userRead.filter2reg(cmd.getRemaining()));
                 }
                 userEditor v = new userEditor(new userScreen(pipe), c1, "running config", false);
                 v.doView();
@@ -3703,10 +3703,10 @@ public class userExec {
      * @param cmd command to execute
      * @param negated true if unset
      */
-    public static void doSetUnset(pipeSide pipe, userReader reader, cmds cmd, boolean negated) {
+    public static void doSetUnset(pipeSide pipe, userRead reader, cmds cmd, boolean negated) {
         userConfig cfg = new userConfig(pipe, reader);
         reader.setFilter(null);
-        userHelping hlp;
+        userHelp hlp;
         String s = "";
         String a = "";
         boolean last;
@@ -5212,7 +5212,7 @@ public class userExec {
             return;
         }
         if (a.equals("width")) {
-            userReader.setTermWdt(pipe, bits.str2num(cmd.word()));
+            userRead.setTermWdt(pipe, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("timestamps")) {
@@ -5286,7 +5286,7 @@ public class userExec {
             return;
         }
         if (a.equals("length")) {
-            userReader.setTermLen(pipe, bits.str2num(cmd.word()));
+            userRead.setTermLen(pipe, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("escape")) {
@@ -5294,7 +5294,7 @@ public class userExec {
             return;
         }
         if (a.equals("riblines")) {
-            userReader.setRibLin(pipe, bits.str2num(cmd.word()));
+            userRead.setRibLin(pipe, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("deactivate")) {
@@ -5320,7 +5320,7 @@ public class userExec {
             return;
         }
         if (a.equals("width")) {
-            userReader.setTermWdt(pipe, 80);
+            userRead.setTermWdt(pipe, 80);
             return;
         }
         if (a.equals("timestamps")) {
@@ -5364,11 +5364,11 @@ public class userExec {
             return;
         }
         if (a.equals("length")) {
-            userReader.setTermLen(pipe, 25);
+            userRead.setTermLen(pipe, 25);
             return;
         }
         if (a.equals("riblines")) {
-            userReader.setRibLin(pipe, 8192);
+            userRead.setRibLin(pipe, 8192);
             return;
         }
         if (a.equals("ansimode")) {
@@ -5452,9 +5452,9 @@ public class userExec {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userReader rdr = new userReader(pip, null);
-        userReader.setTermWdt(pip, pipe.settingsGet(pipeSetting.width, 80));
-        userReader.setTermLen(pip, 0);
+        userRead rdr = new userRead(pip, null);
+        userRead.setTermWdt(pip, pipe.settingsGet(pipeSetting.width, 80));
+        userRead.setTermLen(pip, 0);
         pip.settingsPut(pipeSetting.tabMod, pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
         pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));
         if (col) {

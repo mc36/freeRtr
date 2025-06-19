@@ -8,7 +8,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logFil;
@@ -182,7 +182,7 @@ public class servSyslog extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "file", "set log file");
         l.add(null, false, 2, new int[]{-1}, "<file>", "log file");
         l.add(null, false, 1, new int[]{2}, "rotate", "log file rotation");

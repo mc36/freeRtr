@@ -8,7 +8,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.clnt.clntWhois;
 import org.freertr.ip.ipFwd;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 
 /**
@@ -1535,7 +1535,7 @@ public class tabRouteAttr<T extends addrType> {
      * @param hl help to append
      * @param lv level to add
      */
-    public static void ignoreHelp(userHelping hl, int lv) {
+    public static void ignoreHelp(userHelp hl, int lv) {
         hl.add(null, false, lv, new int[]{lv, -1}, "bier", "ignore bier");
         hl.add(null, false, lv, new int[]{lv, -1}, "attrset", "ignore attribute set");
         hl.add(null, false, lv, new int[]{lv, -1}, "cluster", "ignore cluster list");

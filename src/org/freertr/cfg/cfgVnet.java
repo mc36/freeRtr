@@ -12,7 +12,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFlash;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userHwdet;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -123,7 +123,7 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
         number = bits.str2num(nam);
     }
 
-    private void getHelpSide(userHelping l) {
+    private void getHelpSide(userHelp l) {
         l.add(null, false, 2, new int[]{3}, "type", "type of process");
         l.add(null, false, 3, new int[]{-1}, "socat", "use socat");
         l.add(null, false, 3, new int[]{-1}, "pcap", "use pcapint");
@@ -150,7 +150,7 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "<num>", "milliseconds before start");
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this bridge");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this bridge");
         l.add(null, false, 1, new int[]{2}, "side1", "configure first side");

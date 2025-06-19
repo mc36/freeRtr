@@ -16,7 +16,7 @@ import org.freertr.snd.sndScript;
 import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userScript;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -137,7 +137,7 @@ public class servVoice extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "codec", "set codec to use");
         l.add(null, false, 2, new int[]{-1}, "alaw", "g711 a law");
         l.add(null, false, 2, new int[]{-1}, "ulaw", "g711 u law");

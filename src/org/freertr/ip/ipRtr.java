@@ -12,7 +12,7 @@ import org.freertr.tab.tabPrfxlstN;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteUtil;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
 
 /**
@@ -303,7 +303,7 @@ public abstract class ipRtr implements Comparable<ipRtr> {
      *
      * @param l text to update
      */
-    public abstract void routerGetHelp(userHelping l);
+    public abstract void routerGetHelp(userHelp l);
 
     /**
      * get configuration

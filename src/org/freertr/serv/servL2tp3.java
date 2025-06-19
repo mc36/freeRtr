@@ -16,7 +16,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -190,7 +190,7 @@ public class servL2tp3 extends servGeneric implements ipPrt {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "timer", "set timers");
         l.add(null, false, 2, new int[]{3}, "<num>", "hello ticks");
         l.add(null, false, 3, new int[]{-1}, "<num>", "retry ticks");

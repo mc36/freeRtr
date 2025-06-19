@@ -13,7 +13,7 @@ import org.freertr.pack.packReplicator;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabWindow;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -300,7 +300,7 @@ public class ifcBundle implements Runnable, ifcDn {
      *
      * @param l storage
      */
-    public static void getHelp(userHelping l) {
+    public static void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this bundle");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this bundle");
         l.add(null, false, 1, new int[]{-1}, "ethernet", "specify type of bundle");

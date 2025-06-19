@@ -105,7 +105,7 @@ import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
 import org.freertr.user.userReload;
 import org.freertr.user.userUpgrade;
@@ -2004,7 +2004,7 @@ public class cfgAll {
      * @param hlp help text to append
      */
     public static void aliasHelps(cfgAlias.aliasType typ, int lev,
-            userHelping hlp) {
+            userHelp hlp) {
         for (int i = 0; i < aliases.size(); i++) {
             cfgAlias ntry = aliases.get(i);
             if (ntry == null) {

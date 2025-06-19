@@ -5,7 +5,7 @@ import java.util.List;
 import org.freertr.ifc.ifcHairpin;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -111,7 +111,7 @@ public class cfgHrpn implements Comparable<cfgHrpn>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         ifcHairpin.getHelp(l);
     }
 

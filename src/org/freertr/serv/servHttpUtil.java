@@ -31,8 +31,8 @@ import org.freertr.user.userConfig;
 import org.freertr.user.userExec;
 import org.freertr.user.userFlash;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
-import org.freertr.user.userReader;
+import org.freertr.user.userHelp;
+import org.freertr.user.userRead;
 import org.freertr.user.userScript;
 import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
@@ -1265,7 +1265,7 @@ public class servHttpUtil {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, null);
+            userRead rdr = new userRead(pip, null);
             pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
             pip.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(pip, rdr);
@@ -1342,7 +1342,7 @@ public class servHttpUtil {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, null);
+            userRead rdr = new userRead(pip, null);
             pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
             pip.settingsPut(pipeSetting.height, 0);
             userConfig cfg = new userConfig(pip, rdr);
@@ -1352,7 +1352,7 @@ public class servHttpUtil {
                 if (s.length() < 1) {
                     break;
                 }
-                userHelping hlp = cfg.getHelping(false, true, true);
+                userHelp hlp = cfg.getHelping(false, true, true);
                 rdr.setContext(hlp, "");
                 String b = hlp.repairLine(s);
                 if (b.length() < 1) {
