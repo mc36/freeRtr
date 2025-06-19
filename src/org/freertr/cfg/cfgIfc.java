@@ -119,6 +119,7 @@ import org.freertr.pack.packPtp;
 import org.freertr.prt.prt6to4;
 import org.freertr.prt.prtAplusP;
 import org.freertr.prt.prtGre;
+import org.freertr.prt.prtHip;
 import org.freertr.prt.prtIcmptun;
 import org.freertr.prt.prtInlsp;
 import org.freertr.prt.prtIpIp;
@@ -710,6 +711,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public prtTmux tunTmux;
 
     /**
+     * hip tunnel handler
+     */
+    public prtHip tunHip;
+
+    /**
      * ipip tunnel handler
      */
     public prtIpIp tunIPIP;
@@ -1236,6 +1242,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
          * tmux tunnel interface
          */
         tmux,
+        /**
+         * hip tunnel interface
+         */
+        hip,
         /**
          * ipip tunnel interface
          */
@@ -2341,6 +2351,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 return "ipenc";
             case tmux:
                 return "tmux";
+            case hip:
+                return "hip";
             case ipip:
                 return "ipip";
             case Sto4:
@@ -2477,6 +2489,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (s.equals("tmux")) {
             return tunnelType.tmux;
+        }
+        if (s.equals("hip")) {
+            return tunnelType.hip;
         }
         if (s.equals("ipip")) {
             return tunnelType.ipip;
@@ -3937,6 +3952,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             tunTmux.closeDn();
             tunTmux = null;
         }
+        if (tunHip != null) {
+            tunHip.closeDn();
+            tunHip = null;
+        }
         if (tunMplsip != null) {
             tunMplsip.closeDn();
             tunMplsip = null;
@@ -4320,6 +4339,16 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunTmux.sendingFLW = tunFLW;
                 tunTmux.sendingTTL = tunTTL;
                 lower = tunTmux;
+                break;
+            case hip:
+                tunHip = new prtHip(fwd);
+                tunHip.setEndpoints(ifc, tunTrg);
+                tunHip.setUpper(ethtyp);
+                tunHip.sendingTOS = tunTOS;
+                tunHip.sendingDFN = tunDFN;
+                tunHip.sendingFLW = tunFLW;
+                tunHip.sendingTTL = tunTTL;
+                lower = tunHip;
                 break;
             case mplsip:
                 tunMplsip = new prtMplsIp(fwd);
@@ -6812,6 +6841,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "ipcomp", "ip compression");
         l.add(null, false, 3, new int[]{-1}, "ipenc", "ip encapsulation protocol");
         l.add(null, false, 3, new int[]{-1}, "tmux", "transport multiplexing protocol");
+        l.add(null, false, 3, new int[]{-1}, "hip", "host identity protocol");
         l.add(null, false, 3, new int[]{-1}, "6to4", "ipv6 to ipv4 protocol translator");
         l.add(null, false, 3, new int[]{-1}, "aplusp", "address plus port protocol translator");
         l.add(null, false, 3, new int[]{-1}, "srv6", "segment routing v6 protocol translator");

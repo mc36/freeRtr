@@ -40,6 +40,11 @@ public class prtTmux implements ipPrt, ifcDn {
     public final static int proto = 18;
 
     /**
+     * header size
+     */
+    public final static int size = 4;
+
+    /**
      * sending ttl value, -1 means maps out
      */
     public int sendingTTL = 255;
@@ -269,7 +274,7 @@ public class prtTmux implements ipPrt, ifcDn {
             return;
         }
         int i = pck.msbGetW(0); // length
-        if (i < 4) {
+        if (i < size) {
             logger.info("got bad size from " + remote);
             cntr.drop(pck, counter.reasons.badSiz);
             return;
@@ -286,7 +291,7 @@ public class prtTmux implements ipPrt, ifcDn {
             return;
         }
         pck.setDataSize(i);
-        pck.getSkip(4);
+        pck.getSkip(size);
         i = proto2ethtyp(o);
         if (i < 0) {
             logger.info("got bad protocol from " + remote);
@@ -335,11 +340,11 @@ public class prtTmux implements ipPrt, ifcDn {
             cntr.drop(pck, counter.reasons.badProto);
             return;
         }
-        i = pck.dataSize() + 4;
+        i = pck.dataSize() + size;
         pck.msbPutW(0, i); // length
         pck.putByte(2, o); // protocol
         pck.putByte(3, chksum(i, o)); // checksum
-        pck.putSkip(4);
+        pck.putSkip(size);
         pck.merge2beg();
         pck.putDefaults();
         if (sendingTTL >= 0) {
@@ -370,7 +375,7 @@ public class prtTmux implements ipPrt, ifcDn {
      * @return mtu size
      */
     public int getMTUsize() {
-        return sendingIfc.mtu - 4;
+        return sendingIfc.mtu - size;
     }
 
     /**
