@@ -1681,7 +1681,7 @@ class userGameChess {
 
     private userScreen scr;
 
-    private int[] tab = new int[]{
+    private byte[] tab = new byte[]{
         // 0x10=black, 0x20=white, 1=pawn, 2=knight, 3=bishop, 4=rook, 5=queen, 6=king
         0x14, 0x12, 0x13, 0x15, 0x16, 0x13, 0x12, 0x14,
         0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
@@ -2019,14 +2019,6 @@ class userGameChess {
         tab[(fy * 8) + fx] = 0;
     }
 
-    private void doMirror() {
-        int[] res = new int[tab.length];
-        for (int i = 0; i < res.length; i++) {
-            res[res.length - 1 - i] = tab[i];
-        }
-        tab = res;
-    }
-
     private void doPrint() {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
@@ -2062,6 +2054,22 @@ class userGameChess {
             switch (i) {
                 case -1: // end
                     return;
+                case 0x8008: // home
+                    curX--;
+                    curY--;
+                    break;
+                case 0x8009: // end
+                    curX--;
+                    curY++;
+                    break;
+                case 0x800a: // pgup
+                    curX++;
+                    curY--;
+                    break;
+                case 0x800b: // pgdn
+                    curX++;
+                    curY++;
+                    break;
                 case 0x800c: // up
                     curY--;
                     break;
@@ -2117,27 +2125,25 @@ class userGameChess {
             selX = -1;
             selY = -1;
             doMove(0x10);
-            int[] old = tab;
+            byte[] old = tab;
+            tab = new byte[old.length];
             int q = Integer.MIN_VALUE;
-            int r = -1;
-            for (int o = 0; o < mov.size(); o++) {
-                tab = new int[old.length];
-                for (i = 0; i < tab.length; i++) {
-                    tab[i] = old[i];
-                }
-                doMov(mov.get(o));
-                int p = doEval(0x10) - doEval(0x20);
-                if (p < q) {
+            int p = -1;
+            for (i = 0; i < mov.size(); i++) {
+                bits.byteCopy(old, 0, tab, 0, tab.length);
+                doMov(mov.get(i));
+                int o = doEval(0x10) - doEval(0x20);
+                if (o < q) {
                     continue;
                 }
-                q = p;
-                r = o;
+                q = o;
+                p = i;
             }
             tab = old;
-            if (r < 0) {
+            if (p < 0) {
                 break;
             }
-            doMov(mov.get(r));
+            doMov(mov.get(p));
         }
     }
 
