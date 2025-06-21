@@ -1803,7 +1803,7 @@ class userGameChess {
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,}};
 
-    private final static int[] thingVal = {0, 100, 320, 330, 500, 900, 0, 0};
+    private final static int[] thingVal = {0, 100, 320, 330, 500, 900, 2000, 0};
 
     /**
      * create game
@@ -2128,22 +2128,38 @@ class userGameChess {
             byte[] old = tab;
             tab = new byte[old.length];
             int q = Integer.MIN_VALUE;
-            int p = -1;
-            for (i = 0; i < mov.size(); i++) {
+            int r = -1;
+            List<Integer> mov1 = mov;
+            for (i = 0; i < mov1.size(); i++) {
                 bits.byteCopy(old, 0, tab, 0, tab.length);
-                doMov(mov.get(i));
-                int o = doEval(0x10) - doEval(0x20);
-                if (o < q) {
-                    continue;
+                doMov(mov1.get(i));
+                doMove(0x20);
+                List<Integer> mov2 = mov;
+                for (int o = 0; o < mov2.size(); o++) {
+                    bits.byteCopy(old, 0, tab, 0, tab.length);
+                    doMov(mov1.get(i));
+                    doMov(mov2.get(o));
+                    doMove(0x10);
+                    for (int p = 0; p < mov.size(); p++) {
+                        bits.byteCopy(old, 0, tab, 0, tab.length);
+                        doMov(mov1.get(i));
+                        doMov(mov2.get(o));
+                        doMov(mov.get(p));
+                        int t = doEval(0x10) - doEval(0x20);
+                        if (t < q) {
+                            continue;
+                        }
+                        q = t;
+                        r = i;
+                        break;
+                    }
                 }
-                q = o;
-                p = i;
             }
             tab = old;
-            if (p < 0) {
+            if (r < 0) {
                 break;
             }
-            doMov(mov.get(p));
+            doMov(mov1.get(r));
         }
     }
 
