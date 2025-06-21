@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v25.6.14-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-06-14 13:58:56, took 00:36:21, with 10 workers, on 784 cases, 0 failed, 0 traces, 1 retries
+-;-;-;freeRouter v25.6.20-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-06-21 00:40:15, took 00:34:41, with 10 workers, on 834 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar, xdp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;not applicable;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;not applicable;p4lang: ingress access list
@@ -132,6 +132,16 @@ http://sources.freertr.org/cfg/p4lang-acl127.tst;p4lang-acl127.tst;success;p4lan
 http://sources.freertr.org/cfg/p4lang-acl128.tst;p4lang-acl128.tst;success;p4lang: pwhe interface loose verify source
 http://sources.freertr.org/cfg/p4lang-acl129.tst;p4lang-acl129.tst;not applicable;p4lang: ingress qinq pwhe access list
 http://sources.freertr.org/cfg/p4lang-acl130.tst;p4lang-acl130.tst;not applicable;p4lang: egress qinq pwhe access list
+http://sources.freertr.org/cfg/p4lang-acl131.tst;p4lang-acl131.tst;not applicable;p4lang: ingress mgre access list
+http://sources.freertr.org/cfg/p4lang-acl132.tst;p4lang-acl132.tst;not applicable;p4lang: egress mgre access list
+http://sources.freertr.org/cfg/p4lang-acl133.tst;p4lang-acl133.tst;not applicable;p4lang: ingress vlan mgre access list
+http://sources.freertr.org/cfg/p4lang-acl134.tst;p4lang-acl134.tst;not applicable;p4lang: egress vlan mgre access list
+http://sources.freertr.org/cfg/p4lang-acl135.tst;p4lang-acl135.tst;not applicable;p4lang: mgre interface inspection with ingress drop
+http://sources.freertr.org/cfg/p4lang-acl136.tst;p4lang-acl136.tst;not applicable;p4lang: mgre interface inspection with egress drop
+http://sources.freertr.org/cfg/p4lang-acl137.tst;p4lang-acl137.tst;not applicable;p4lang: mgre interface verify source
+http://sources.freertr.org/cfg/p4lang-acl138.tst;p4lang-acl138.tst;not applicable;p4lang: mgre interface loose verify source
+http://sources.freertr.org/cfg/p4lang-acl139.tst;p4lang-acl139.tst;not applicable;p4lang: ingress qinq mgre access list
+http://sources.freertr.org/cfg/p4lang-acl140.tst;p4lang-acl140.tst;not applicable;p4lang: egress qinq mgre access list
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;not applicable;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;not applicable;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;not applicable;p4lang: macsec with aes128cbc
@@ -332,6 +342,9 @@ http://sources.freertr.org/cfg/p4lang-crypt197.tst;p4lang-crypt197.tst;not appli
 http://sources.freertr.org/cfg/p4lang-crypt198.tst;p4lang-crypt198.tst;not applicable;p4lang: ipsec with aes128ofb
 http://sources.freertr.org/cfg/p4lang-crypt199.tst;p4lang-crypt199.tst;not applicable;p4lang: ipsec with aes192ofb
 http://sources.freertr.org/cfg/p4lang-crypt200.tst;p4lang-crypt200.tst;not applicable;p4lang: ipsec with aes256ofb
+http://sources.freertr.org/cfg/p4lang-crypt201.tst;p4lang-crypt201.tst;not applicable;p4lang: macsec over mgre
+http://sources.freertr.org/cfg/p4lang-crypt202.tst;p4lang-crypt202.tst;not applicable;p4lang: sgt over mgre
+http://sources.freertr.org/cfg/p4lang-crypt203.tst;p4lang-crypt203.tst;not applicable;p4lang: mgre with packout
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core
@@ -786,3 +799,40 @@ http://sources.freertr.org/cfg/p4lang-rout451.tst;p4lang-rout451.tst;not applica
 http://sources.freertr.org/cfg/p4lang-rout452.tst;p4lang-rout452.tst;not applicable;p4lang: sdwan over ipv4 with ipip
 http://sources.freertr.org/cfg/p4lang-rout453.tst;p4lang-rout453.tst;not applicable;p4lang: sdwan over ipv6 with ipip
 http://sources.freertr.org/cfg/p4lang-rout454.tst;p4lang-rout454.tst;not applicable;p4lang: amt multicast routing
+http://sources.freertr.org/cfg/p4lang-rout455.tst;p4lang-rout455.tst;not applicable;p4lang: mgre routing over ipv4
+http://sources.freertr.org/cfg/p4lang-rout456.tst;p4lang-rout456.tst;not applicable;p4lang: mgre routing over ipv6
+http://sources.freertr.org/cfg/p4lang-rout457.tst;p4lang-rout457.tst;not applicable;p4lang: mgre routing over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout458.tst;p4lang-rout458.tst;not applicable;p4lang: mgre routing over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout459.tst;p4lang-rout459.tst;not applicable;p4lang: mgre routing over vlan
+http://sources.freertr.org/cfg/p4lang-rout460.tst;p4lang-rout460.tst;not applicable;p4lang: mgre routing over bundle
+http://sources.freertr.org/cfg/p4lang-rout461.tst;p4lang-rout461.tst;not applicable;p4lang: mgre routing over bundle vlan
+http://sources.freertr.org/cfg/p4lang-rout462.tst;p4lang-rout462.tst;not applicable;p4lang: mgre routing over hairpin
+http://sources.freertr.org/cfg/p4lang-rout463.tst;p4lang-rout463.tst;not applicable;p4lang: mgre routing over hairpin vlan
+http://sources.freertr.org/cfg/p4lang-rout464.tst;p4lang-rout464.tst;not applicable;p4lang: mgre routing over bridge
+http://sources.freertr.org/cfg/p4lang-rout465.tst;p4lang-rout465.tst;not applicable;p4lang: mgre routing over vlan bridge
+http://sources.freertr.org/cfg/p4lang-rout466.tst;p4lang-rout466.tst;not applicable;p4lang: mgre mpls over ipv4
+http://sources.freertr.org/cfg/p4lang-rout467.tst;p4lang-rout467.tst;not applicable;p4lang: mgre mpls over ipv6
+http://sources.freertr.org/cfg/p4lang-rout468.tst;p4lang-rout468.tst;not applicable;p4lang: mgre mpls over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout469.tst;p4lang-rout469.tst;not applicable;p4lang: mgre mpls over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout470.tst;p4lang-rout470.tst;not applicable;p4lang: mgre mpls over vlan
+http://sources.freertr.org/cfg/p4lang-rout471.tst;p4lang-rout471.tst;not applicable;p4lang: mgre mpls over bundle
+http://sources.freertr.org/cfg/p4lang-rout472.tst;p4lang-rout472.tst;not applicable;p4lang: mgre mpls over bundle vlan
+http://sources.freertr.org/cfg/p4lang-rout473.tst;p4lang-rout473.tst;not applicable;p4lang: mgre mpls over hairpin
+http://sources.freertr.org/cfg/p4lang-rout474.tst;p4lang-rout474.tst;not applicable;p4lang: mgre mpls over hairpin vlan
+http://sources.freertr.org/cfg/p4lang-rout475.tst;p4lang-rout475.tst;not applicable;p4lang: mgre mpls over bridge
+http://sources.freertr.org/cfg/p4lang-rout476.tst;p4lang-rout476.tst;not applicable;p4lang: mgre mpls over vlan bridge
+http://sources.freertr.org/cfg/p4lang-rout477.tst;p4lang-rout477.tst;not applicable;p4lang: bridging over mgre
+http://sources.freertr.org/cfg/p4lang-rout478.tst;p4lang-rout478.tst;not applicable;p4lang: bridging over mgre vlan
+http://sources.freertr.org/cfg/p4lang-rout479.tst;p4lang-rout479.tst;not applicable;p4lang: mldp core over mgre
+http://sources.freertr.org/cfg/p4lang-rout480.tst;p4lang-rout480.tst;not applicable;p4lang: bier core over mgre
+http://sources.freertr.org/cfg/p4lang-rout481.tst;p4lang-rout481.tst;not applicable;p4lang: mgre mpls pop
+http://sources.freertr.org/cfg/p4lang-rout482.tst;p4lang-rout482.tst;not applicable;p4lang: mgre mpls push
+http://sources.freertr.org/cfg/p4lang-rout483.tst;p4lang-rout483.tst;not applicable;p4lang: l2vpn over mgre mpls
+http://sources.freertr.org/cfg/p4lang-rout484.tst;p4lang-rout484.tst;not applicable;p4lang: l3vpn over mgre mpls
+http://sources.freertr.org/cfg/p4lang-rout485.tst;p4lang-rout485.tst;not applicable;p4lang: mgre local connect
+http://sources.freertr.org/cfg/p4lang-rout486.tst;p4lang-rout486.tst;not applicable;p4lang: mgre multicast routing
+http://sources.freertr.org/cfg/p4lang-rout487.tst;p4lang-rout487.tst;not applicable;p4lang: mgre routing over qinq
+http://sources.freertr.org/cfg/p4lang-rout488.tst;p4lang-rout488.tst;not applicable;p4lang: mgre routing over bundle qinq
+http://sources.freertr.org/cfg/p4lang-rout489.tst;p4lang-rout489.tst;not applicable;p4lang: mgre routing over hairpin qinq
+http://sources.freertr.org/cfg/p4lang-rout490.tst;p4lang-rout490.tst;not applicable;p4lang: mgre routing over qinq bridge
+http://sources.freertr.org/cfg/p4lang-rout491.tst;p4lang-rout491.tst;not applicable;p4lang: mgre mpls over qinq
