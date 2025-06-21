@@ -17117,3 +17117,6 @@ qc pass: hip over ipv4
 qc pass: hip over ipv6
 qc pass: hip over hip
 qc pass: hip over loopback
+---------------------------------- 2025-06-21 13:32:36 25.6.21
+no qc pass: wireguard over ipv4
+failed: wireguard over ipv4
