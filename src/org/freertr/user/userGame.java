@@ -1697,37 +1697,37 @@ class userGameChess {
 
     private final static String[][] thingScr = {
         {// empty
-            "    ",
-            "    ",
-            "    ",},
+            "      ",
+            "      ",
+            "      ",},
         {// pawn
-            " XX ",
-            " XX ",
-            "/XX\\",},
+            "  XX  ",
+            "  XX  ",
+            " /XX\\ ",},
         {// knight
-            "/XX ",
-            " XX ",
-            "/XX\\",},
+            " /XX  ",
+            "  XX  ",
+            " /XX\\ ",},
         {// bishop
-            "/XX\\",
-            " XX ",
-            "/XX\\",},
+            " /XX\\ ",
+            "  XX  ",
+            " /XX\\ ",},
         {// rook
-            "|XX|",
-            " XX ",
-            "/XX\\",},
+            " |XX| ",
+            "  XX  ",
+            " /XX\\ ",},
         {// queen
-            "\\**/",
-            " XX ",
-            "/XX\\",},
+            " \\**/ ",
+            "  XX  ",
+            " /XX\\ ",},
         {// king
-            "\\++/",
-            " XX ",
-            "/XX\\",},
+            " \\++/ ",
+            "  XX  ",
+            " /XX\\ ",},
         {// empty
-            "    ",
-            "    ",
-            "    ",}};
+            "      ",
+            "      ",
+            "      ",}};
 
     private final static int[][] thingPos = {
         { //empty
@@ -1831,8 +1831,8 @@ class userGameChess {
                 return;
         }
         String[] cur = thingScr[v & 7];
-        x = x * 6;
-        y = y * 3;
+        x = (scr.sizX / 2) - 24 + (x * 6);
+        y = (scr.sizY / 2) - 12 + (y * 3);
         for (int i = 0; i < 3; i++) {
             scr.putStr(x, y + i, b, f, false, cur[i]);
         }
