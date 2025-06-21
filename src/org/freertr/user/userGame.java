@@ -819,6 +819,13 @@ public class userGame {
             t.doFinish();
             return;
         }
+        if (a.equals("chess")) {
+            userGameChess t = new userGameChess(console);
+            t.doStart();
+            t.doGame();
+            t.doFinish();
+            return;
+        }
         if (a.equals("minesweep")) {
             userGameMines t = new userGameMines(console);
             t.doStart();
@@ -1666,6 +1673,480 @@ class userGameTetrisThing {
                 t[o + y][i + x] = tab[o][i];
             }
         }
+    }
+
+}
+
+class userGameChess {
+
+    private userScreen scr;
+
+    private int[] tab = new int[]{
+        // 0x10=black, 0x20=white, 1=pawn, 2=knight, 3=bishop, 4=rook, 5=queen, 6=king
+        0x14, 0x12, 0x13, 0x15, 0x16, 0x13, 0x12, 0x14,
+        0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x21, 0x21, 0x21, 0x21, 0x21, 0x21, 0x21, 0x21,
+        0x24, 0x22, 0x23, 0x25, 0x26, 0x23, 0x22, 0x24
+    };
+
+    private List<Integer> mov; // moves, bytes are fx fy tx ty
+
+    private final static String[][] thingScr = {
+        {// empty
+            "    ",
+            "    ",
+            "    ",},
+        {// pawn
+            " XX ",
+            " XX ",
+            "/XX\\",},
+        {// knight
+            "/XX ",
+            " XX ",
+            "/XX\\",},
+        {// bishop
+            "/XX\\",
+            " XX ",
+            "/XX\\",},
+        {// rook
+            "|XX|",
+            " XX ",
+            "/XX\\",},
+        {// queen
+            "\\**/",
+            " XX ",
+            "/XX\\",},
+        {// king
+            "\\++/",
+            " XX ",
+            "/XX\\",},
+        {// empty
+            "    ",
+            "    ",
+            "    ",}};
+
+    private final static int[][] thingPos = {
+        { //empty
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,},
+        {//pawn
+            0, 0, 0, 0, 0, 0, 0, 0,
+            50, 50, 50, 50, 50, 50, 50, 50,
+            10, 10, 20, 30, 30, 20, 10, 10,
+            5, 5, 10, 25, 25, 10, 5, 5,
+            0, 0, 0, 20, 20, 0, 0, 0,
+            5, -5, -10, 0, 0, -10, -5, 5,
+            5, 10, 10, -20, -20, 10, 10, 5,
+            0, 0, 0, 0, 0, 0, 0, 0
+        }, {//knight
+            -50, -40, -30, -30, -30, -30, -40, -50,
+            -40, -20, 0, 0, 0, 0, -20, -40,
+            -30, 0, 10, 15, 15, 10, 0, -30,
+            -30, 5, 15, 20, 20, 15, 5, -30,
+            -30, 0, 15, 20, 20, 15, 0, -30,
+            -30, 5, 10, 15, 15, 10, 5, -30,
+            -40, -20, 0, 5, 5, 0, -20, -40,
+            -50, -40, -30, -30, -30, -30, -40, -50
+        }, {//bishop
+            -20, -10, -10, -10, -10, -10, -10, -20,
+            -10, 0, 0, 0, 0, 0, 0, -10,
+            -10, 0, 5, 10, 10, 5, 0, -10,
+            -10, 5, 5, 10, 10, 5, 5, -10,
+            -10, 0, 10, 10, 10, 10, 0, -10,
+            -10, 10, 10, 10, 10, 10, 10, -10,
+            -10, 5, 0, 0, 0, 0, 5, -10,
+            -20, -10, -10, -10, -10, -10, -10, -20
+        }, {//rook
+            0, 0, 0, 0, 0, 0, 0, 0,
+            5, 10, 10, 10, 10, 10, 10, 5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            0, 0, 0, 5, 5, 0, 0, 0
+        }, {//queen
+            -20, -10, -10, -5, -5, -10, -10, -20,
+            -10, 0, 0, 0, 0, 0, 0, -10,
+            -10, 0, 5, 5, 5, 5, 0, -10,
+            -5, 0, 5, 5, 5, 5, 0, -5,
+            0, 0, 5, 5, 5, 5, 0, -5,
+            -10, 5, 5, 5, 5, 5, 0, -10,
+            -10, 0, 5, 0, 0, 0, 0, -10,
+            -20, -10, -10, -5, -5, -10, -10, -20
+        }, {//king
+            -50, -40, -30, -20, -20, -30, -40, -50,
+            -30, -20, -10, 0, 0, -10, -20, -30,
+            -30, -10, 20, 30, 30, 20, -10, -30,
+            -30, -10, 30, 40, 40, 30, -10, -30,
+            -30, -10, 30, 40, 40, 30, -10, -30,
+            -30, -10, 20, 30, 30, 20, -10, -30,
+            -30, -30, 0, 0, 0, 0, -30, -30,
+            -50, -30, -30, -30, -30, -30, -30, -50
+        }, { //empty
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,}};
+
+    private final static int[] thingVal = {0, 100, 320, 330, 500, 900, 0, 0};
+
+    /**
+     * create game
+     *
+     * @param screen screen to use
+     */
+    public userGameChess(userScreen screen) {
+        scr = screen;
+    }
+
+    private void doPrint(int x, int y, int b) {
+        int v = tab[(y * 8) + x];
+        int f;
+        switch (v >>> 4) {
+            case 0: // empty
+                f = userScreen.colBlack;
+                break;
+            case 1: // black
+                f = userScreen.colBrRed;
+                break;
+            case 2: // white
+                f = userScreen.colBrGreen;
+                break;
+            default:
+                return;
+        }
+        String[] cur = thingScr[v & 7];
+        x = x * 6;
+        y = y * 3;
+        for (int i = 0; i < 3; i++) {
+            scr.putStr(x, y + i, b, f, false, cur[i]);
+        }
+    }
+
+    private int doEval(int col) {
+        int p = 0;
+        for (int i = 0; i < tab.length; i++) {
+            if ((tab[i] & 0xf0) != col) {
+                continue;
+            }
+            int o = tab[i] & 7;
+            p += thingPos[o][i];
+            p += thingVal[o];
+        }
+        return p;
+    }
+
+    private int addMove(int fx, int fy, int tx, int ty, boolean hit) {
+        if (tx < 0) {
+            return -1;
+        }
+        if (ty < 0) {
+            return -1;
+        }
+        if (tx >= 8) {
+            return -1;
+        }
+        if (ty >= 8) {
+            return -1;
+        }
+        int v = tab[(ty * 8) + tx];
+        if ((v & 0xf0) == (tab[(fy * 8) + fx] & 0xf0)) {
+            return v;
+        }
+        if (hit && (v == 0)) {
+            return v;
+        }
+        mov.add((fy << 24) | (fx << 16) | (ty << 8) | tx);
+        return v;
+    }
+
+    private void doMove(int x, int y, int c) {
+        int v = tab[(y * 8) + x];
+        if ((v & 0xf0) != c) {
+            return;
+        }
+        int p;
+        switch (v & 7) {
+            case 1: // pawn
+                if (c == 0x10) {
+                    p = +1;
+                } else {
+                    p = -1;
+                }
+                addMove(x, y, x, y + p, false);
+                addMove(x, y, x - 1, y + p, true);
+                addMove(x, y, x + 1, y + p, true);
+                break;
+            case 2: // knight
+                addMove(x, y, x - 2, y - 1, false);
+                addMove(x, y, x + 2, y - 1, false);
+                addMove(x, y, x - 2, y + 1, false);
+                addMove(x, y, x + 2, y + 1, false);
+                addMove(x, y, x - 1, y - 2, false);
+                addMove(x, y, x + 1, y - 2, false);
+                addMove(x, y, x - 1, y + 2, false);
+                addMove(x, y, x + 1, y + 2, false);
+                break;
+            case 3: // bishop
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x + i, y + i, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x - i, y + i, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x + i, y - i, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x - i, y - i, false) > 0) {
+                        break;
+                    }
+                }
+                break;
+            case 4: // rook
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x + i, y, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x - i, y, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x, y + i, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x, y - i, false) > 0) {
+                        break;
+                    }
+                }
+                break;
+            case 5: // queen
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x + i, y + i, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x - i, y + i, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x + i, y - i, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x - i, y - i, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x + i, y, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x - i, y, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x, y + i, false) > 0) {
+                        break;
+                    }
+                }
+                for (int i = 1; i < 8; i++) {
+                    if (addMove(x, y, x, y - i, false) > 0) {
+                        break;
+                    }
+                }
+                break;
+            case 6: // king
+                addMove(x, y, x - 1, y - 1, false);
+                addMove(x, y, x, y - 1, false);
+                addMove(x, y, x + 1, y - 1, false);
+                addMove(x, y, x - 1, y, false);
+                addMove(x, y, x + 1, y, false);
+                addMove(x, y, x - 1, y + 1, false);
+                addMove(x, y, x, y + 1, false);
+                addMove(x, y, x + 1, y + 1, false);
+                break;
+        }
+    }
+
+    private void doMove(int c) {
+        mov = new ArrayList<Integer>();
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                doMove(x, y, c);
+            }
+        }
+    }
+
+    private void doMov(int m) {
+        int fy = (m >> 24) & 7;
+        int fx = (m >> 16) & 7;
+        int ty = (m >> 8) & 7;
+        int tx = m & 7;
+        tab[(ty * 8) + tx] = tab[(fy * 8) + fx];
+        tab[(fy * 8) + fx] = 0;
+    }
+
+    private void doMirror() {
+        int[] res = new int[tab.length];
+        for (int i = 0; i < res.length; i++) {
+            res[res.length - 1 - i] = tab[i];
+        }
+        tab = res;
+    }
+
+    private void doPrint() {
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                doPrint(x, y, (((x + y) & 1) == 0) ? userScreen.colBrBlack : userScreen.colBlack);
+            }
+        }
+    }
+
+    /**
+     * start screen
+     */
+    public void doStart() {
+        scr.putCls();
+    }
+
+    /**
+     * play game
+     */
+    public void doGame() {
+        int curX = 4;
+        int curY = 6;
+        int selX = -1;
+        int selY = -1;
+        for (;;) {
+            doPrint();
+            doPrint(curX, curY, userScreen.colBlue);
+            if (selX >= 0) {
+                doPrint(selX, selY, userScreen.colGreen);
+            }
+            scr.refresh();
+            int i = userScreen.getKey(scr.pipe);
+            boolean moved = false;
+            switch (i) {
+                case -1: // end
+                    return;
+                case 0x800c: // up
+                    curY--;
+                    break;
+                case 0x800d: // down
+                    curY++;
+                    break;
+                case 0x800e: // left
+                    curX--;
+                    break;
+                case 0x800f: // right
+                    curX++;
+                    break;
+                case 0x8004: // enter
+                    if (selX >= 0) {
+                        moved = true;
+                        break;
+                    }
+                    selX = curX;
+                    selY = curY;
+                    break;
+                case 0x8005: // escape
+                    selX = -1;
+                    selY = -1;
+                    break;
+                case 0x0271: // ctrl+q
+                    return;
+                case 0x0278: // ctrl+x
+                    return;
+            }
+            if (curX < 0) {
+                curX = 0;
+            }
+            if (curY < 0) {
+                curY = 0;
+            }
+            if (curX > 7) {
+                curX = 7;
+            }
+            if (curY > 7) {
+                curY = 7;
+            }
+            if (!moved) {
+                continue;
+            }
+            doMove(0x20);
+            i = (selY << 24) | (selX << 16) | (curY << 8) | curX;
+            if (mov.indexOf(i) < 0) {
+                selX = -1;
+                selY = -1;
+                continue;
+            }
+            doMov(i);
+            selX = -1;
+            selY = -1;
+            doMove(0x10);
+            int[] old = tab;
+            int q = Integer.MIN_VALUE;
+            int r = -1;
+            for (int o = 0; o < mov.size(); o++) {
+                tab = new int[old.length];
+                for (i = 0; i < tab.length; i++) {
+                    tab[i] = old[i];
+                }
+                doMov(mov.get(o));
+                int p = doEval(0x10) - doEval(0x20);
+                if (p < q) {
+                    continue;
+                }
+                q = p;
+                r = o;
+            }
+            tab = old;
+            if (r < 0) {
+                break;
+            }
+            doMov(mov.get(r));
+        }
+    }
+
+    /**
+     * finish screen
+     */
+    public void doFinish() {
+        scr.putCls();
+        scr.refresh();
     }
 
 }

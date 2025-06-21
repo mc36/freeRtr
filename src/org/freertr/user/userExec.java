@@ -2132,6 +2132,7 @@ public class userExec {
         hl.add(null, false, 2, new int[]{-1}, "clear", "clear screen");
         hl.add(null, false, 2, new int[]{-1}, "gomoku", "play game");
         hl.add(null, false, 2, new int[]{-1}, "tetris", "play game");
+        hl.add(null, false, 2, new int[]{-1}, "chess", "play game");
         hl.add(null, false, 2, new int[]{-1}, "hanoi", "play game");
         hl.add(null, false, 2, new int[]{-1}, "minesweep", "play game");
         hl.add(null, false, 2, new int[]{-1}, "clock", "view demo");
