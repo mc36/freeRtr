@@ -243,6 +243,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
      * @return metric
      */
     public int getMetric() {
+        if (iface.ldpSync) {
+            if (lower.fwdCore.ldpNeighFind(iface.iface, peer, false) == null) {
+                return 0xffffff;
+            }
+        }
         int met = iface.metric;
         if (iface.acceptMetric && (gotMetric > 0) && (met > gotMetric)) {
             met = gotMetric;

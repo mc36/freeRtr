@@ -384,6 +384,11 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparable<rtrIsisNei
      * @return metric
      */
     public int getMetric() {
+        if (iface.ldpSync) {
+            if (lower.fwdCore.ldpNeighFind(iface.iface, ifcAddr, false) == null) {
+                return 0xffffff;
+            }
+        }
         int met = iface.metric;
         if (iface.dynamicMetric < 1) {
             return met;

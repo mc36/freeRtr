@@ -73,6 +73,11 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
     public int dynamicMetric;
 
     /**
+     * ldp metric syncrhonization
+     */
+    public boolean ldpSync = false;
+
+    /**
      * default metric
      */
     public int metric = 10;
@@ -80,12 +85,12 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
     /**
      * bfd enabled
      */
-    public boolean bfdTrigger;
+    public boolean bfdTrigger = false;
 
     /**
      * passive interface
      */
-    public boolean passiveInt;
+    public boolean passiveInt = false;
 
     /**
      * suppress interface address
@@ -247,6 +252,11 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
         if (!ready) {
             return metric;
         }
+        if (ldpSync) {
+            if (lower.fwdCore.ldpNeighFind(iface, peer, false) == null) {
+                return 0xffffff;
+            }
+        }
         int met = metric;
         if (dynamicMetric < 1) {
             return met;
@@ -308,6 +318,7 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
         }
         cmds.cfgLine(l, dynamicMetric < 1, cmds.tabulator, beg + "dynamic-metric mode", a);
         l.add(cmds.tabulator + beg + "dynamic-metric time " + echoTimer);
+        cmds.cfgLine(l, !ldpSync, cmds.tabulator, beg + "ldp-sync", "");
         echoParam.getConfig(l, beg);
     }
 
@@ -330,6 +341,7 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
         l.add(null, false, 4, new int[]{5}, "dead-time", "time before neighbor down");
         l.add(null, false, 5, new int[]{-1}, "<num>", "time in ms");
         secInfoUtl.getHelp(l, 4, "ipinfo", "check peers");
+        l.add(null, false, 4, new int[]{-1}, "ldp-sync", "synchronize metric to ldp");
         l.add(null, false, 4, new int[]{5}, "dynamic-metric", "dynamic peer metric");
         l.add(null, false, 5, new int[]{6}, "mode", "dynamic peer metric");
         l.add(null, false, 6, new int[]{-1}, "disabled", "forbid echo requests");
@@ -348,6 +360,11 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
     public void routerDoConfig(String a, cmds cmd) {
         if (a.equals("ipinfo")) {
             ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, false);
+            return;
+        }
+        if (a.equals("ldp-sync")) {
+            ldpSync = true;
+            lower.notif.wakeup();
             return;
         }
         if (a.equals("dynamic-metric")) {
@@ -427,6 +444,11 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
     public void routerUnConfig(String a, cmds cmd) {
         if (a.equals("ipinfo")) {
             ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, true);
+            return;
+        }
+        if (a.equals("ldp-sync")) {
+            ldpSync = false;
+            lower.notif.wakeup();
             return;
         }
         if (a.equals("dynamic-metric")) {

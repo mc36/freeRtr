@@ -133,6 +133,11 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
     public boolean dynamicForbid = false;
 
     /**
+     * ldp metric syncrhonization
+     */
+    public boolean ldpSync = false;
+
+    /**
      * suppress interface address
      */
     public boolean suppressAddr = false;
@@ -395,6 +400,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
         secInfoUtl.getConfig(l, ipInfoCfg, cmds.tabulator + beg + "ipinfo ");
+        cmds.cfgLine(l, !ldpSync, cmds.tabulator, beg + "ldp-sync", "");
         cmds.cfgLine(l, !dynamicForbid, cmds.tabulator, beg + "dynamic-metric forbid", "");
         switch (dynamicMetric) {
             case 0:
@@ -478,6 +484,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         l.add(null, false, 4, new int[]{5}, "dead-time", "time before neighbor down");
         l.add(null, false, 5, new int[]{-1}, "<num>", "time in ms");
         secInfoUtl.getHelp(l, 4, "ipinfo", "check peers");
+        l.add(null, false, 4, new int[]{-1}, "ldp-sync", "synchronize metric to ldp");
         l.add(null, false, 4, new int[]{5}, "dynamic-metric", "dynamic peer metric");
         l.add(null, false, 5, new int[]{-1}, "forbid", "forbid peer measurement");
         l.add(null, false, 5, new int[]{6}, "mode", "measurement mode");
@@ -613,6 +620,12 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("accept-metric")) {
             acceptMetric = true;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("ldp-sync")) {
+            ldpSync = true;
             lower.todo.set(0);
             lower.notif.wakeup();
             return;
@@ -791,6 +804,12 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("unsuppress-prefix")) {
             unsuppressAddr = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("ldp-sync")) {
+            ldpSync = false;
             lower.todo.set(0);
             lower.notif.wakeup();
             return;

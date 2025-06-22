@@ -121,6 +121,11 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
     public boolean dynamicForbid = false;
 
     /**
+     * ldp metric syncrhonization
+     */
+    public boolean ldpSync = false;
+
+    /**
      * advertise default route
      */
     public boolean defOrigin = false;
@@ -445,6 +450,7 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
         secInfoUtl.getConfig(l, ipInfoCfg, cmds.tabulator + beg + "ipinfo ");
+        cmds.cfgLine(l, !ldpSync, cmds.tabulator, beg + "ldp-sync", "");
         cmds.cfgLine(l, !dynamicForbid, cmds.tabulator, beg + "dynamic-metric forbid", "");
         switch (dynamicMetric) {
             case 0:
@@ -552,6 +558,7 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         l.add(null, false, 4, new int[]{5}, "label-out", "filter label in egress updates");
         l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
         secInfoUtl.getHelp(l, 4, "ipinfo", "check peers");
+        l.add(null, false, 4, new int[]{-1}, "ldp-sync", "synchronize metric to ldp");
         l.add(null, false, 4, new int[]{5}, "dynamic-metric", "dynamic peer metric");
         l.add(null, false, 5, new int[]{-1}, "forbid", "forbid peer measurement");
         l.add(null, false, 5, new int[]{6}, "mode", "measurement mode");
@@ -677,6 +684,11 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         }
         if (a.equals("accept-metric")) {
             acceptMetric = true;
+            return;
+        }
+        if (a.equals("ldp-sync")) {
+            ldpSync = true;
+            lower.notif.wakeup();
             return;
         }
         if (a.equals("dynamic-metric")) {
@@ -922,6 +934,11 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         }
         if (a.equals("unsuppress-prefix")) {
             unsuppressAddr = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("ldp-sync")) {
+            ldpSync = false;
             lower.notif.wakeup();
             return;
         }

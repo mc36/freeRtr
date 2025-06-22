@@ -732,6 +732,13 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparable<rtrOspf4n
      * @return metric
      */
     public int getMetric() {
+        if (iface.ldpSync) {
+            addrIP adr = new addrIP();
+            adr.fromIPv4addr(peer);
+            if (lower.fwdCore.ldpNeighFind(iface.iface, adr, false) == null) {
+                return 0xffff;
+            }
+        }
         if (area.maxMetric) {
             return 0xffff;
         }

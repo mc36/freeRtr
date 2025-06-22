@@ -264,6 +264,11 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
     public int dynamicMetric;
 
     /**
+     * ldp metric syncrhonization
+     */
+    public boolean ldpSync;
+
+    /**
      * neighbors
      */
     protected tabGen<rtrIsisNeigh> neighs;
@@ -444,6 +449,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         }
         cmds.cfgLine(l, dynamicMetric < 1, cmds.tabulator, beg + "dynamic-metric mode", a);
         l.add(cmds.tabulator + beg + "dynamic-metric time " + echoTimer);
+        cmds.cfgLine(l, !ldpSync, cmds.tabulator, beg + "ldp-sync", "");
         echoParam.getConfig(l, beg);
     }
 
@@ -660,6 +666,11 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, false);
             return;
         }
+        if (a.equals("ldp-sync")) {
+            ldpSync = true;
+            lower.genLsps(3);
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             if (a.equals("mode")) {
@@ -839,6 +850,11 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, true);
             return;
         }
+        if (a.equals("ldp-sync")) {
+            ldpSync = false;
+            lower.genLsps(3);
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             if (a.equals("mode")) {
@@ -921,6 +937,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         l.add(null, false, 5, new int[]{6}, "other-subdomain", "set other subdomain");
         l.add(null, false, 6, new int[]{-1}, "<num>", "index");
         secInfoUtl.getHelp(l, 4, "ipinfo", "check peers");
+        l.add(null, false, 4, new int[]{-1}, "ldp-sync", "synchronize metric to ldp");
         l.add(null, false, 4, new int[]{5}, "dynamic-metric", "dynamic peer metric");
         l.add(null, false, 5, new int[]{6}, "mode", "dynamic peer metric");
         l.add(null, false, 6, new int[]{-1}, "disabled", "forbid echo requests");
