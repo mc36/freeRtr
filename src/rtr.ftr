@@ -3563,6 +3563,8 @@ qc pass: isis with mpolka
 qc pass: isis flexalgo
 qc pass: integrated isis flexalgo
 qc pass: isis with pmtud
+qc pass: isis ldp sync
+qc pass: integrated isis ldp sync
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -3613,6 +3615,7 @@ qc pass: lsrp dynamic twamp metric
 qc pass: lsrp with mpolka
 qc pass: lsrp flexalgo
 qc pass: lsrp with pmtud
+qc pass: lsrp ldp sync
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
@@ -3723,6 +3726,7 @@ qc pass: ospf dynamic twamp cost
 qc pass: ospf with mpolka
 qc pass: ospf flexalgo
 qc pass: ospf with pmtud
+qc pass: ospf ldp sync
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
@@ -3784,6 +3788,7 @@ qc pass: pvrp with selective bier
 qc pass: pvrp with polka
 qc pass: pvrp auto summarization
 qc pass: pvrp with pmtud
+qc pass: pvrp ldp sync
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip
@@ -3860,6 +3865,7 @@ qc pass: rift dynamic icmp metric
 qc pass: rift dynamic udp metric
 qc pass: rift dynamic twamp metric
 qc pass: rift with pmtud
+qc pass: rift ldp sync
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist

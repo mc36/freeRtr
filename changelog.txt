@@ -17123,3 +17123,10 @@ failed: wireguard over ipv4
 ---------------------------------- 2025-06-21 14:30:14 25.6.21
 no failed: wireguard over ipv4
 qc pass: wireguard over ipv4
+---------------------------------- 2025-06-22 07:12:04 25.6.22
+qc pass: isis ldp sync
+qc pass: integrated isis ldp sync
+qc pass: lsrp ldp sync
+qc pass: ospf ldp sync
+qc pass: pvrp ldp sync
+qc pass: rift ldp sync
