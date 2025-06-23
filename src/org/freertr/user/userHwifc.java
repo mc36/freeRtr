@@ -1,6 +1,9 @@
 package org.freertr.user;
 
 import java.util.List;
+import org.freertr.addr.addrMac;
+import org.freertr.util.bits;
+import org.freertr.util.cmds;
 
 /**
  * one interface
@@ -41,37 +44,59 @@ public class userHwifc implements Comparable<userHwifc> {
      * @return null on error, entry on success
      */
     public static userHwifc fromRaw(List<String> rd, int ln) {
-        String a = rd.get(ln).trim();
-        int i = a.indexOf(" mtu ");
-        if (i < 0) {
+        String a = rd.get(ln);
+        if (a.length() < 1) {
             return null;
         }
-        i = a.indexOf(": ");
-        if (i < 0) {
-            return null;
-        }
-        if (i > 4) {
-            return null;
-        }
-        a = a.substring(i + 2, a.length());
-        i = a.indexOf(": ");
-        if (i < 0) {
+        if (a.startsWith(" ")) {
             return null;
         }
         userHwifc ntry = new userHwifc();
-        ntry.name = a.substring(0, i).trim();
-        a = rd.get(ln + 1).trim();
-        if (!a.startsWith("link/ether")) {
-            return null;
+        addrMac adr = new addrMac();
+        cmds cmd = new cmds("ifc", a.trim());
+        a = cmd.word();
+        if (a.endsWith(":")) {
+            a = a.substring(0, a.length() - 1);
         }
-        ntry.mac = a.substring(11, 28).trim();
-        a = ntry.name;
-        i = a.indexOf("@");
+        if (a.equals("" + bits.str2num(a))) {
+            a = cmd.word();
+        }
+        if (a.endsWith(":")) {
+            a = a.substring(0, a.length() - 1);
+        }
+        int i = a.indexOf("@");
         if (i >= 0) {
             a = a.substring(0, i).trim();
         }
         ntry.name = a;
-        return ntry;
+        for (;;) {
+            a = cmd.word();
+            if (a.length() == 17) {
+                if (adr.fromString(a)) {
+                    continue;
+                }
+                if (adr.isFilled(0)) {
+                    continue;
+                }
+                if (adr.isBroadcast()) {
+                    continue;
+                }
+                ntry.mac = a.toLowerCase();
+                return ntry;
+            }
+            if (a.length() > 0) {
+                continue;
+            }
+            ln++;
+            if (ln >= rd.size()) {
+                return null;
+            }
+            a = rd.get(ln);
+            if (!a.startsWith(" ")) {
+                return null;
+            }
+            cmd = new cmds("ifc", a.trim());
+        }
     }
 
     /**
