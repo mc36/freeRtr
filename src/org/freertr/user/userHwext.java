@@ -198,6 +198,7 @@ public class userHwext {
             if (a.length() < 1) {
                 a = "-";
             }
+            cmd.word();
             if (dpt == dpTyp.p4udp) {
                 hwc.remove(i + 1);
             } else {
@@ -210,9 +211,7 @@ public class userHwext {
             ifp.add(0, s);
             ifl.add(0, pnm[0]);
             mac.add(0, a);
-            cmd.word();
-            a = cmd.word();
-            prt.add(bits.str2num(a));
+            prt.add(0, bits.str2num(cmd.word()));
         }
         orig.error("found " + ifp.size() + " interfaces");
         if ((dpt != dpTyp.p4sw) && (ifp.size() < 1)) {
