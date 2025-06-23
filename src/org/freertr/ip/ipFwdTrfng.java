@@ -285,7 +285,7 @@ public class ipFwdTrfng implements Comparable<ipFwdTrfng> {
      * @return true if p2mp lsp
      */
     public boolean isP2MP() {
-        return (subId != 0) || (!subAdr.isFilled(0));
+        return (subId != 0) || (!subAdr.isEmpty());
     }
 
 }

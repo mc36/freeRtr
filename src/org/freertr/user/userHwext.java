@@ -273,14 +273,13 @@ public class userHwext {
                 return;
         }
         hwc.add("tcp2vrf 2323 " + dpv + " 23 127.0.0.1");
-        o = 0;
         for (i = 0; i < ifr.size(); i++) {
-            swc.add(o + 0, "interface " + ifr.get(i));
+            o = swc.indexOf("interface " + ifr.get(i));
+            if (o < 0) {
+                continue;
+            }
             swc.add(o + 1, cmds.tabulator + "macaddr " + mac.get(i));
-            swc.add(o + 2, cmds.tabulator + cmds.finish);
-            o += 3;
         }
-        swc.add(o, cmds.comment);
         swc.add(cmds.comment);
         swc.add("vrf definition " + dpv);
         swc.add(cmds.tabulator + cmds.finish);

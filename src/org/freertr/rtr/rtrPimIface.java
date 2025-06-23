@@ -205,7 +205,7 @@ public class rtrPimIface implements ipPrt {
                 int tim = pckPim.valHoldTime * 1000;
                 for (int o = 0; o < pckPim.groups.size(); o++) {
                     packPimGrp grp = pckPim.groups.get(o);
-                    if (!grp.group.wildcard.isFilled(0)) {
+                    if (!grp.group.wildcard.isEmpty()) {
                         continue;
                     }
                     int lab = 0;
@@ -223,7 +223,7 @@ public class rtrPimIface implements ipPrt {
                     }
                     for (int i = 0; i < grp.joins.size(); i++) {
                         addrPrefix<addrIP> src = grp.joins.get(i);
-                        if (!src.wildcard.isFilled(0)) {
+                        if (!src.wildcard.isEmpty()) {
                             continue;
                         }
                         if (bierTunnel > 0) {
@@ -234,7 +234,7 @@ public class rtrPimIface implements ipPrt {
                     }
                     for (int i = 0; i < grp.prunes.size(); i++) {
                         addrPrefix<addrIP> src = grp.prunes.get(i);
-                        if (!src.wildcard.isFilled(0)) {
+                        if (!src.wildcard.isEmpty()) {
                             continue;
                         }
                         if (bierTunnel > 0) {

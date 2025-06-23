@@ -597,7 +597,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparable<rtrIsisNei
             iface.cntr.drop(pck, counter.reasons.badProto);
             return;
         }
-        if (ifcAddr.isFilled(0)) {
+        if (ifcAddr.isEmpty()) {
             peerAdjState = statDown;
             logger.info("got no address from l" + level.level + " " + ethAddr);
             iface.cntr.drop(pck, counter.reasons.badAddr);
@@ -614,7 +614,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparable<rtrIsisNei
                 iface.cntr.drop(pck, counter.reasons.badProto);
                 return;
             }
-            if (ofcAddr.isFilled(0)) {
+            if (ofcAddr.isEmpty()) {
                 peerAdjState = statDown;
                 logger.info("got no other address from l" + level.level + " " + ethAddr);
                 iface.cntr.drop(pck, counter.reasons.badAddr);

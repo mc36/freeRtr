@@ -1400,7 +1400,7 @@ public class rtrBgpUtil {
                 } else {
                     adr = ntry.prefix.broadcast.toIPv6();
                 }
-                if (ntry.prefix.broadcast.isFilled(0)) {
+                if (ntry.prefix.broadcast.isEmpty()) {
                     adr = new addrEmpty();
                 }
                 trg[pos] = (byte) adr.maxBits();
@@ -2736,12 +2736,12 @@ public class rtrBgpUtil {
             }
             if (!v6nh) {
                 addrIPv4 adr4 = adr.toIPv4();
-                if (adr4.isFilled(0)) {
+                if (adr4.isEmpty()) {
                     continue;
                 }
             } else {
                 addrIPv6 adr6 = adr.toIPv6();
-                if (adr6.isFilled(0)) {
+                if (adr6.isEmpty()) {
                     continue;
                 }
                 if (adr6.isLinkLocal()) {

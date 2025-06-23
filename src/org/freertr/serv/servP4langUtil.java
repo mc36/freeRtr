@@ -515,12 +515,12 @@ public class servP4langUtil {
      */
     protected final static String ace2str(int seq, boolean ipv4, tabAceslstN<addrIP> ace, boolean check, boolean negate) {
         if (check) {
-            if (!ace.srcMask.isFilled(0)) {
+            if (!ace.srcMask.isEmpty()) {
                 if (ace.srcMask.isIPv4() != ipv4) {
                     return null;
                 }
             }
-            if (!ace.trgMask.isFilled(0)) {
+            if (!ace.trgMask.isEmpty()) {
                 if (ace.trgMask.isIPv4() != ipv4) {
                     return null;
                 }

@@ -179,7 +179,7 @@ public class rtrBgpFlow {
     }
 
     private static void encodeAddrMtch(packHolder pck, int typ, boolean ipv6, addrIP addr, addrIP mask) {
-        if (mask.isFilled(0) && addr.isFilled(0)) {
+        if (mask.isEmpty() && addr.isEmpty()) {
             return;
         }
         pck.putByte(0, typ);

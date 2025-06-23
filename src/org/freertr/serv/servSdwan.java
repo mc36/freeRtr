@@ -444,13 +444,13 @@ class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
         sendLn("hello");
         sendLn("yourid " + idNum);
         if (needAdr4 && (lower.pool4 != null)) {
-            if (innerAdr4.isFilled(0)) {
+            if (innerAdr4.isEmpty()) {
                 innerAdr4 = lower.pool4.addrAlloc();
                 addrRel4 = innerAdr4 != null;
             }
         }
         if (needAdr6 && (lower.pool6 != null)) {
-            if (innerAdr6.isFilled(0)) {
+            if (innerAdr6.isEmpty()) {
                 innerAdr6 = lower.pool6.addrAlloc();
                 addrRel6 = innerAdr6 != null;
             }

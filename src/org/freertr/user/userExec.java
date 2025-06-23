@@ -4356,7 +4356,7 @@ public class userExec {
             byte[] buf = new byte[1];
             buf[0] = 13;
             pipe.blockingPut(buf, 0, buf.length);
-            if (numb.isFilled(0)) {
+            if (numb.isEmpty()) {
                 break;
             }
             strt.setAdd(strt, incr);

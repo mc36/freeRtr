@@ -500,7 +500,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     private boolean usableAddr(addrIP addr) {
         if (addr.isIPv4()) {
             addrIPv4 adr = addr.toIPv4();
-            if (adr.isFilled(0)) {
+            if (adr.isEmpty()) {
                 return false;
             }
             if (!adr.isUnicast()) {
@@ -508,7 +508,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             }
         } else {
             addrIPv6 adr = addr.toIPv6();
-            if (adr.isFilled(0)) {
+            if (adr.isEmpty()) {
                 return false;
             }
             if (!adr.isUnicast()) {
