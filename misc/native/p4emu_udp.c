@@ -96,6 +96,7 @@ int main(int argc, char **argv) {
         peers[i].sin_port = htons(atoi(argv[(i*2)+7]));
         if ((sockets[i] = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
         if (bind(sockets[i], (struct sockaddr *) &addrLoc, sizeof(addrLoc)) < 0) err("failed to bind socket");
+        if (connect(sockets[i], (struct sockaddr *) &peers[i], sizeof(addrLoc)) < 0) err("failed to connect socket");
         ifaceId[i] = i;
     }
     if (initTables() != 0) err("error initializing tables");

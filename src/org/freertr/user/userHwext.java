@@ -23,7 +23,7 @@ public class userHwext {
     }
 
     private enum dpTyp {
-        opnflw, p4emu, p4map, p4raw, p4xsk, p4urng, p4xdp, p4dpdk, p4sw
+        opnflw, p4emu, p4map, p4raw, p4xsk, p4udp, p4urng, p4xdp, p4dpdk, p4sw
     }
 
     private String pref = "./rtr-";
@@ -70,6 +70,10 @@ public class userHwext {
                 }
                 if (s.equals("p4xsk")) {
                     dpt = dpTyp.p4xsk;
+                    continue;
+                }
+                if (s.equals("p4udp")) {
+                    dpt = dpTyp.p4udp;
                     continue;
                 }
                 if (s.equals("p4urng")) {
@@ -144,6 +148,7 @@ public class userHwext {
         List<String> ifp = new ArrayList<String>();
         List<String> ifl = new ArrayList<String>();
         List<String> mac = new ArrayList<String>();
+        List<Integer> prt = new ArrayList<Integer>();
         for (i = hwc.size() - 1; i >= 0; i--) {
             cmd = new cmds("ln", hwc.get(i));
             String a = cmd.word();
@@ -193,14 +198,21 @@ public class userHwext {
             if (a.length() < 1) {
                 a = "-";
             }
-            hwc.remove(i);
-            hwc.remove(i);
+            if (dpt == dpTyp.p4udp) {
+                hwc.remove(i + 1);
+            } else {
+                hwc.remove(i);
+                hwc.remove(i);
+            }
             if (tap) {
                 s = "veth1b";
             }
             ifp.add(0, s);
             ifl.add(0, pnm[0]);
             mac.add(0, a);
+            cmd.word();
+            a = cmd.word();
+            prt.add(bits.str2num(a));
         }
         orig.error("found " + ifp.size() + " interfaces");
         if ((dpt != dpTyp.p4sw) && (ifp.size() < 1)) {
@@ -251,6 +263,7 @@ public class userHwext {
             case p4emu:
             case p4map:
             case p4raw:
+            case p4udp:
             case p4xsk:
             case p4urng:
             case p4xdp:
@@ -278,10 +291,12 @@ public class userHwext {
         swc.add(cmds.tabulator + "vrf " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
-        userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth1a", "veth1b");
-        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth1a", 1500, "00:00:11:11:22:22");
-        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth1b", 8192, null);
-        userHwdet.routeIface(hwd, "veth1a");
+        if (dpt != dpTyp.p4udp) {
+            userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth1a", "veth1b");
+            userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth1a", 1500, "00:00:11:11:22:22");
+            userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth1b", 8192, null);
+            userHwdet.routeIface(hwd, "veth1a");
+        }
         String res = "";
         switch (dpt) {
             case opnflw:
@@ -306,6 +321,7 @@ public class userHwext {
             case p4emu:
             case p4map:
             case p4raw:
+            case p4udp:
             case p4xsk:
             case p4urng:
             case p4xdp:
@@ -387,6 +403,14 @@ public class userHwext {
                         }
                         hwc.add("proc p4emu " + path + "p4raw.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
                         hwc.add("proc cpuport " + path + "rawInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
+                        break;
+                    case p4udp:
+                        a = "";
+                        for (i = 0; i < ifp.size(); i++) {
+                            o = prt.get(i);
+                            a += " " + o + " " + (o + 1);
+                        }
+                        hwc.add("proc p4emu " + path + "p4udp.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + " 127.0.0.1 127.0.0.1" + a + " 19998 19999");
                         break;
                     case p4xsk:
                         ifn = "veth0a";
