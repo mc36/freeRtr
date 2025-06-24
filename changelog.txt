@@ -17133,3 +17133,6 @@ qc pass: rift ldp sync
 ---------------------------------- 2025-06-24 04:51:22 25.6.24
 no qc pass: wireguard over ipv6
 failed: wireguard over ipv6
+---------------------------------- 2025-06-24 05:27:10 25.6.24
+no failed: wireguard over ipv6
+qc pass: wireguard over ipv6
