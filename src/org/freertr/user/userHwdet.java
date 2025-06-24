@@ -212,7 +212,7 @@ public class userHwdet {
                 } else {
                     mac = " hw ether " + mac;
                 }
-                lst.add("ifconfig " + nam + " multicast promisc mtu " + mtu + mac + " up");
+                lst.add("ifconfig " + nam + " mtu " + mtu + mac + " up");
                 return;
             case socat:
                 if (mac == null) {
@@ -609,7 +609,7 @@ public class userHwdet {
         starter.add("  reboot -f");
         starter.add("fi");
         if (ifaceType == ifcTyp.cmp) {
-            starter.add("ifconfig lo 127.0.0.1 mtu 65535 up");
+            starter.add("ifconfig lo0 127.0.0.1 mtu 65535 up");
         } else {
             starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
             starter.add("echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6");
