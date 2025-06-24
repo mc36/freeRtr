@@ -205,34 +205,45 @@ public class userHwdet {
      * @param mac mac value
      */
     public static void setupIface(List<String> lst, String pth, ifcTyp typ, String nam, int mtu, String mac) {
-        if (typ != ifcTyp.socat) {
-            if (mac == null) {
-                mac = "";
-            } else {
-                mac = " " + mac;
-            }
-            lst.add(pth + "seth.bin " + nam + " " + mtu + mac);
-            return;
+        switch (typ) {
+            case cmp:
+                if (mac == null) {
+                    mac = "";
+                } else {
+                    mac = " hw ether " + mac;
+                }
+                lst.add("ifconfig " + nam + " multicast promisc mtu " + mtu + mac + " up");
+                return;
+            case socat:
+                if (mac == null) {
+                    mac = "";
+                } else {
+                    mac = " address " + mac;
+                }
+                lst.add("ip link set " + nam + " up multicast on promisc on mtu " + mtu + mac);
+                lst.add("ethtool -K " + nam + " rx off");
+                lst.add("ethtool -K " + nam + " tx off");
+                lst.add("ethtool -K " + nam + " sg off");
+                lst.add("ethtool -K " + nam + " tso off");
+                lst.add("ethtool -K " + nam + " ufo off");
+                lst.add("ethtool -K " + nam + " gso off");
+                lst.add("ethtool -K " + nam + " gro off");
+                lst.add("ethtool -K " + nam + " lro off");
+                lst.add("ethtool -K " + nam + " rxvlan off");
+                lst.add("ethtool -K " + nam + " txvlan off");
+                lst.add("ethtool -K " + nam + " ntuple off");
+                lst.add("ethtool -K " + nam + " rxhash off");
+                lst.add("ethtool " + "--set-eee " + nam + " eee off");
+                return;
+            default:
+                if (mac == null) {
+                    mac = "";
+                } else {
+                    mac = " " + mac;
+                }
+                lst.add(pth + "seth.bin " + nam + " " + mtu + mac);
+                return;
         }
-        if (mac == null) {
-            mac = "";
-        } else {
-            mac = " address " + mac;
-        }
-        lst.add("ip link set " + nam + " up multicast on promisc on mtu " + mtu + mac);
-        lst.add("ethtool -K " + nam + " rx off");
-        lst.add("ethtool -K " + nam + " tx off");
-        lst.add("ethtool -K " + nam + " sg off");
-        lst.add("ethtool -K " + nam + " tso off");
-        lst.add("ethtool -K " + nam + " ufo off");
-        lst.add("ethtool -K " + nam + " gso off");
-        lst.add("ethtool -K " + nam + " gro off");
-        lst.add("ethtool -K " + nam + " lro off");
-        lst.add("ethtool -K " + nam + " rxvlan off");
-        lst.add("ethtool -K " + nam + " txvlan off");
-        lst.add("ethtool -K " + nam + " ntuple off");
-        lst.add("ethtool -K " + nam + " rxhash off");
-        lst.add("ethtool " + "--set-eee " + nam + " eee off");
     }
 
     /**
@@ -587,22 +598,30 @@ public class userHwdet {
         starter.add(scrBeg);
         starter.add("");
         starter.add("cd " + path);
-        starter.add("ip link show > " + lstEth);
+        if (ifaceType == ifcTyp.cmp) {
+            starter.add("ifconfig -a > " + lstEth);
+        } else {
+            starter.add("ip link show > " + lstEth);
+        }
         starter.add(rtr + " test hwred path " + path + " eth " + lstEth);
         starter.add("if [ $? -eq 20 ] ; then");
         starter.add("  sync");
         starter.add("  reboot -f");
         starter.add("fi");
-        starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
-        starter.add("echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6");
-        starter.add("echo 0 > /proc/sys/net/ipv6/conf/lo/disable_ipv6");
-        starter.add("ip link set lo up mtu 65535");
-        starter.add("ip addr add 127.0.0.1/8 dev lo");
-        starter.add("ip addr add ::1/128 dev lo");
-        starter.add("ulimit -c unlimited");
-        starter.add("#modprobe -r kvm_intel");
-        starter.add("#modprobe kvm_intel nested=1");
-        starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
+        if (ifaceType == ifcTyp.cmp) {
+            starter.add("ifconfig lo 127.0.0.1 mtu 65535 up");
+        } else {
+            starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
+            starter.add("echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6");
+            starter.add("echo 0 > /proc/sys/net/ipv6/conf/lo/disable_ipv6");
+            starter.add("ip link set lo up mtu 65535");
+            starter.add("ip addr add 127.0.0.1/8 dev lo");
+            starter.add("ip addr add ::1/128 dev lo");
+            starter.add("ulimit -c unlimited");
+            starter.add("#modprobe -r kvm_intel");
+            starter.add("#modprobe kvm_intel nested=1");
+            starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
+        }
         detectIfaces(path + lstEth);
         detectCrosses(cross);
         detectTuntap(tuntap);

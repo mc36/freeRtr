@@ -17130,3 +17130,6 @@ qc pass: lsrp ldp sync
 qc pass: ospf ldp sync
 qc pass: pvrp ldp sync
 qc pass: rift ldp sync
+---------------------------------- 2025-06-24 04:51:22 25.6.24
+no qc pass: wireguard over ipv6
+failed: wireguard over ipv6
