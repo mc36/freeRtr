@@ -44,7 +44,7 @@ public class userHwifc implements Comparable<userHwifc> {
      * @return null on error, entry on success
      */
     public static userHwifc fromRaw(List<String> rd, int ln) {
-        String a = rd.get(ln);
+        String a = rd.get(ln).replaceAll("\t", " ");
         if (a.length() < 1) {
             return null;
         }
@@ -91,7 +91,7 @@ public class userHwifc implements Comparable<userHwifc> {
             if (ln >= rd.size()) {
                 return null;
             }
-            a = rd.get(ln);
+            a = rd.get(ln).replaceAll("\t", " ");
             if (!a.startsWith(" ")) {
                 return null;
             }
