@@ -6,8 +6,8 @@ mkdir %dwn%
 del-alw %tmp%
 
 binary-down http://cdn.netbsd.org/pub/NetBSD/images/%vers1%.%vers2%/NetBSD-%vers1%.%vers2%-%nbsd1%.iso %dwn%/nbsd-%nbsd2%.iso
-binary-down http://cdn.netbsd.org/pub/pkgsrc/pkgsrc-2025Q1/pkgsrc.tar.xz %dwn%/nbsd-pkgsrc.txz
+binary-down http://cdn.netbsd.org/pub/pkgsrc/pkgsrc-2025Q1/pkgsrc.tar.xz %dwn%/nbsd-pkgsrc.tgz
 exec touch %dwn%/nbsd-%nbsd2%.iso
-exec touch %dwn%/nbsd-pkgsrc.txz
+exec touch %dwn%/nbsd-pkgsrc.tgz
 
 #binary-down http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/
