@@ -139,6 +139,10 @@ public class userImage {
         return s;
     }
 
+    private String getDistinfoName(userImagePkg pkg) {
+        return downDir + "/" + pkg.cat.arch + "-" + pkg.name + ".dst";
+    }
+
     private String getPackageName(userImagePkg pkg) {
         return downDir + "/" + arch + "-" + pkg.name + ".deb";
     }
@@ -346,7 +350,7 @@ public class userImage {
         if (o > 0) {
             b = b.substring(0, o);
         }
-        pkg.size = bits.str2num(b) >>> 10;
+        pkg.size = bits.str2num(b);
         o = a.lastIndexOf(".");
         if (o > 0) {
             a = a.substring(0, o);
@@ -392,26 +396,18 @@ public class userImage {
         return true;
     }
 
-    /**
-     * download one image
-     *
-     * @param pkg package to download
-     * @return true on error, false on success
-     */
     private boolean downOneDist(userImagePkg pkg) {
         if (pkg.done) {
             return false;
         }
-        String name = downDir + "/" + pkg.cat.arch + "-" + pkg.name + ".dst";
-        return downloadFile(pkg.cat.url + pkg.file, name, pkg.size);
+        String name = getDistinfoName(pkg);
+        if (downloadFile(pkg.cat.url + pkg.file, name, -1)) {
+            return true;
+        }
+        new File(name).setLastModified(bits.getTime());
+        return false;
     }
 
-    /**
-     * download one image
-     *
-     * @param pkg package to download
-     * @return true on error, false on success
-     */
     private boolean downOneFile(userImagePkg pkg) {
         if (pkg.done) {
             return false;
@@ -449,28 +445,14 @@ public class userImage {
         return instOneFile(true, name);
     }
 
-    private boolean instXtraFiles() {
-        cmds cmd = new cmds("pkg", xtra);
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            if (instOneFile(false, downDir + "/" + arch + "-" + a)) {
-                return true;
-            }
+    private boolean instOneDist(userImagePkg pkg, String trg) {
+        String name = getDistinfoName(pkg);
+        if (pkg.done) {
+            pip.linePut("skipping " + name);
+            return false;
         }
-        return false;
-    }
-
-    private boolean instAllFiles() {
-        for (int i = 0; i < selected.size(); i++) {
-            userImagePkg pkg = selected.get(i);
-            if (instOneFile(pkg)) {
-                return true;
-            }
-        }
-        return false;
+        pkg.done = true;
+        return execCmd("tar -x -f " + name + " --keep-directory-symlink -C " + trg) != 0;
     }
 
     private boolean doIncludeAll(cmds c) {
@@ -744,6 +726,15 @@ public class userImage {
                 }
                 continue;
             }
+            if (a.equals("distinfo-inst")) {
+                for (i = 0; i < selected.size(); i++) {
+                    userImagePkg pkg = selected.get(i);
+                    if (instOneDist(pkg, s)) {
+                        return true;
+                    }
+                }
+                continue;
+            }
             if (a.equals("select-one")) {
                 selectOnePackage(0, s, s);
                 continue;
@@ -825,14 +816,24 @@ public class userImage {
                 continue;
             }
             if (a.equals("package-inst")) {
-                if (instAllFiles()) {
-                    return true;
+                for (i = 0; i < selected.size(); i++) {
+                    userImagePkg pkg = selected.get(i);
+                    if (instOneFile(pkg)) {
+                        return true;
+                    }
                 }
                 continue;
             }
             if (a.equals("package-xtra")) {
-                if (instXtraFiles()) {
-                    return true;
+                cmd = new cmds("pkg", xtra);
+                for (;;) {
+                    a = cmd.word();
+                    if (a.length() < 1) {
+                        break;
+                    }
+                    if (instOneFile(false, downDir + "/" + arch + "-" + a)) {
+                        return true;
+                    }
                 }
                 continue;
             }

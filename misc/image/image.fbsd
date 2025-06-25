@@ -32,11 +32,18 @@ del-alw %tmp%/tmp
 mkdir %tmp%/tmp
 catalog-sum
 
+select-one libpcap
 select-one tcpdump
 select-one tcpreplay
 
 select-lst
 select-sum
 distinfo-down
+distinfo-inst %tmp%/tmp/
+exec mv %tmp%/tmp/usr/local/sbin/* %tmp%/sbin/
+exec mv %tmp%/tmp/usr/local/bin/* %tmp%/bin/
+exec mv %tmp%/tmp/usr/local/lib/* %tmp%/lib/
+#del-alw %tmp%/tmp
+#mkdir %tmp%/tmp
 
 exec xorriso -as mkisofs -o %img%.fbsd -r -J -l -b boot/cdboot -no-emul-boot %tmp%/
