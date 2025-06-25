@@ -40,6 +40,7 @@ select-lst
 select-sum
 distinfo-down
 distinfo-inst %tmp%/tmp/
+exec mv %tmp%/tmp/sbin/* %tmp%/sbin/
 exec mv %tmp%/tmp/bin/* %tmp%/bin/
 exec mv %tmp%/tmp/lib/* %tmp%/lib/
 #del-alw %tmp%/tmp
