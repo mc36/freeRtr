@@ -1,0 +1,30 @@
+download 3
+reget-time 24
+vers 14 3
+
+mkdir %dwn%
+del-alw %tmp%
+mkdir %tmp%
+
+binary-down http://download.freebsd.org/releases/ISO-IMAGES/%vers1%.%vers2%/FreeBSD-%vers1%.%vers2%-RELEASE-%fbsd1%-bootonly.iso %dwn%/fbsd-%fbsd2%.iso
+binary-down http://download.freebsd.org/ports/ports/ports.tar.xz %dwn%/fbsd-ports.txz
+exec touch %dwn%/fbsd-%fbsd2%.iso
+exec touch %dwn%/fbsd-ports.txz
+
+exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin %tmp%/
+
+exec cp ../misc/image/boot.fbsd %tmp%/boot/loader.conf
+mkdir %tmp%/etc
+exec cp ../misc/image/init.fbsd %tmp%/etc/rc
+mkdir %tmp%/compat
+mkdir %tmp%/compat/linux
+
+mkdir %tmp%/mnt
+mkdir %tmp%/proc
+mkdir %tmp%/run
+mkdir %tmp%/sys
+mkdir %tmp%/tmp
+mkdir %tmp%/usr
+mkdir %tmp%/var
+
+#binary-down https://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/All/

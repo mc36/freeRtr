@@ -1,7 +1,7 @@
 arch armhf
 unam armv7l
 qemu armhf
-fbsd arm armv7
+fbsd arm-armv7 armv7
 nbsd evbarm-earmv7hf earmv7hf
 ctrg arm
 cabi gnueabihf

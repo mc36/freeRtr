@@ -4,10 +4,27 @@ vers 10 1
 
 mkdir %dwn%
 del-alw %tmp%
+mkdir %tmp%
 
-binary-down http://cdn.netbsd.org/pub/NetBSD/images/%vers1%.%vers2%/NetBSD-%vers1%.%vers2%-%nbsd1%.iso %dwn%/nbsd-%nbsd2%.iso
-binary-down http://cdn.netbsd.org/pub/pkgsrc/pkgsrc-2025Q1/pkgsrc.tar.xz %dwn%/nbsd-pkgsrc.tgz
+binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/installation/cdrom/boot.iso %dwn%/nbsd-%nbsd2%.iso
+binary-down http://cdn.netbsd.org/pub/pkgsrc/pkgsrc-2025Q1/pkgsrc.tar.xz %dwn%/nbsd-pkgsrc.txz
 exec touch %dwn%/nbsd-%nbsd2%.iso
-exec touch %dwn%/nbsd-pkgsrc.tgz
+exec touch %dwn%/nbsd-pkgsrc.txz
+
+exec guestfish -a %dwn%/nbsd-%nbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin /netbsd %tmp%/
+
+exec cp ../misc/image/boot.nbsd %tmp%/boot.conf
+mkdir %tmp%/etc
+exec cp ../misc/image/init.nbsd %tmp%/etc/rc
+mkdir %tmp%/emul
+mkdir %tmp%/emul/linux
+
+mkdir %tmp%/mnt
+mkdir %tmp%/proc
+mkdir %tmp%/run
+mkdir %tmp%/sys
+mkdir %tmp%/tmp
+mkdir %tmp%/usr
+mkdir %tmp%/var
 
 #binary-down http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/
