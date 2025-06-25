@@ -27,9 +27,16 @@ mkdir %tmp%/usr
 mkdir %tmp%/var
 mkdir %tmp%/tmp
 exec tar xf %dwn%/nbsd-pkgsrc.txz -C %tmp%/tmp/
-distinfo-read %tmp%/tmp/ txz http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/
+distinfo-read %tmp%/tmp/ tgz nbsd-%nbsd2% http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/
 del-alw %tmp%/tmp
 mkdir %tmp%/tmp
 catalog-sum
+
+select-one tcpdump
+select-one tcpreplay
+
+select-lst
+select-sum
+distinfo-down
 
 exec xorriso -as mkisofs -o %img%.nbsd -r -J -l -b bootxx_cd9660 -no-emul-boot %tmp%/

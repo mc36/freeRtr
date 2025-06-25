@@ -27,9 +27,16 @@ mkdir %tmp%/usr
 mkdir %tmp%/var
 mkdir %tmp%/tmp
 exec tar xf %dwn%/fbsd-ports.txz -C %tmp%/tmp/
-distinfo-read %tmp%/tmp/ pkg https://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/All/
+distinfo-read %tmp%/tmp/ pkg fbsd-%fbsd2% https://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/All/
 del-alw %tmp%/tmp
 mkdir %tmp%/tmp
 catalog-sum
+
+select-one tcpdump
+select-one tcpreplay
+
+select-lst
+select-sum
+distinfo-down
 
 exec xorriso -as mkisofs -o %img%.fbsd -r -J -l -b boot/cdboot -no-emul-boot %tmp%/
