@@ -1,7 +1,6 @@
 arch m68k
 unam m68k
 qemu m68k
-nbsd mac68k
 ctrg m68k
 comp gcc
 carc big-endian

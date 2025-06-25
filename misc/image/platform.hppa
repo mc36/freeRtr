@@ -1,7 +1,6 @@
 arch hppa
 unam parisc
 qemu hppa
-nbsd hppa
 ctrg hppa
 comp gcc
 carc big-endian

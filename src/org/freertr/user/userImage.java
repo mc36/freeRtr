@@ -45,9 +45,13 @@ public class userImage {
 
     private String qemu = "x86_64";
     
-    private String fbsd = "amd64";
+    private String fbsd1 = "";
 
-    private String nbsd = "amd64";
+    private String fbsd2 = "";
+
+    private String nbsd1 = "";
+    
+    private String nbsd2 = "";
 
     private String arch = "amd64";
 
@@ -443,8 +447,10 @@ public class userImage {
             s = s.replaceAll("%img%", imgName);
             s = s.replaceAll("%mirr%", miro);
             s = s.replaceAll("%qemu%", qemu);
-            s = s.replaceAll("%fbsd%", fbsd);
-            s = s.replaceAll("%nbsd%", nbsd);
+            s = s.replaceAll("%fbsd1%", fbsd1);
+            s = s.replaceAll("%fbsd2%", fbsd2);
+            s = s.replaceAll("%nbsd1%", nbsd1);
+            s = s.replaceAll("%nbsd2%", nbsd2);
             s = s.replaceAll("%arch%", arch);
             s = s.replaceAll("%boot%", boot);
             s = s.replaceAll("%kern%", kern);
@@ -507,11 +513,13 @@ public class userImage {
                 continue;
             }
             if (a.equals("fbsd")) {
-                fbsd = s;
+                fbsd1 = cmd.word();
+                fbsd2 = cmd.word();
                 continue;
             }
             if (a.equals("nbsd")) {
-                nbsd = s;
+                nbsd1 = cmd.word();
+                nbsd2 = cmd.word();
                 continue;
             }
             if (a.equals("arch")) {
