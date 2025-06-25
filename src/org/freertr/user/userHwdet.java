@@ -79,6 +79,8 @@ public class userHwdet {
 
     private boolean inlineLoop = false;
 
+    private boolean busyWait = false;
+
     private ifcTyp ifaceType = ifcTyp.socat;
 
     private ifcTyp lineType = ifcTyp.socat;
@@ -107,7 +109,7 @@ public class userHwdet {
         starter.add("echo starting " + s + ".");
     }
 
-    private void makeLoop(String fn, List<String> pre, List<String> lop) {
+    private void makeLoop(String fn, List<String> pre, List<String> lop, boolean fin) {
         List<String> txt = new ArrayList<String>();
         txt.add(scrBeg);
         txt.add("");
@@ -121,12 +123,20 @@ public class userHwdet {
         txt.add("  sleep 1");
         txt.add("  done");
         bits.buf2txt(true, txt, path + prefix + fn);
-        starter.add("start-stop-daemon -S -b -x " + path + prefix + fn);
+        if (!busyWait) {
+            starter.add("start-stop-daemon -S -b -x " + path + prefix + fn);
+            return;
+        }
+        if (!fin) {
+            starter.add(path + prefix + fn + " > /dev/null &");
+            return;
+        }
+        starter.add(path + prefix + fn + " > /dev/null");
     }
 
     private void makeLoop(String fn, List<String> pre, String cmd) {
         if (!inlineLoop) {
-            makeLoop(fn, pre, bits.str2lst(cmd));
+            makeLoop(fn, pre, bits.str2lst(cmd), false);
             return;
         }
         starter.addAll(pre);
@@ -477,6 +487,17 @@ public class userHwdet {
         config.add("tcp2vrf " + tcp);
     }
 
+    private void doReboot(List<String> lst, int cod) {
+        lst.add("if [ $? -eq " + cod + " ] ; then");
+        lst.add("  sync");
+        if (ifaceType == ifcTyp.cmp) {
+            lst.add("  reboot");
+        } else {
+            lst.add("  reboot -f");
+        }
+        lst.add("fi");
+    }
+
     /**
      * do the work
      *
@@ -489,6 +510,7 @@ public class userHwdet {
         String tuntap = "";
         String tcpvrf = "";
         String hwId = "xxx";
+        String java = "";
         for (;;) {
             String s = cmd.word();
             if (s.length() < 1) {
@@ -505,6 +527,14 @@ public class userHwdet {
             }
             if (s.equals("path")) {
                 path = cmd.word();
+                continue;
+            }
+            if (s.equals("java")) {
+                java = cmd.word();
+                continue;
+            }
+            if (s.equals("nojava")) {
+                java = "";
                 continue;
             }
             if (s.equals("ser")) {
@@ -542,6 +572,14 @@ public class userHwdet {
             }
             if (s.equals("external")) {
                 inlineLoop = false;
+                continue;
+            }
+            if (s.equals("busywait")) {
+                busyWait = true;
+                continue;
+            }
+            if (s.equals("daemons")) {
+                busyWait = false;
                 continue;
             }
             if (s.equals("binary")) {
@@ -590,7 +628,7 @@ public class userHwdet {
         if (binMain) {
             rtr = path + "rtr.bin";
         } else {
-            rtr = "java -Xmx" + mem + " -jar " + cfgInit.getFileName();
+            rtr = java + "java -Xmx" + mem + " -jar " + cfgInit.getFileName();
         }
         starter = new ArrayList<String>();
         config = new ArrayList<String>();
@@ -604,10 +642,7 @@ public class userHwdet {
             starter.add("ip link show > " + lstEth);
         }
         starter.add(rtr + " test hwred path " + path + " eth " + lstEth);
-        starter.add("if [ $? -eq 20 ] ; then");
-        starter.add("  sync");
-        starter.add("  reboot -f");
-        starter.add("fi");
+        doReboot(starter, 20);
         if (ifaceType == ifcTyp.cmp) {
             starter.add("ifconfig lo0 127.0.0.1 mtu 65535 up");
         } else {
@@ -633,12 +668,9 @@ public class userHwdet {
         lop.add("cd " + path);
         lop.add("stty raw < /dev/tty");
         lop.add(rtr + " router " + path + "rtr-");
-        lop.add("if [ $? -eq 4 ] ; then");
-        lop.add("  sync");
-        lop.add("  reboot -f");
-        lop.add("fi");
+        doReboot(lop, 4);
         lop.add("stty cooked < /dev/tty");
-        makeLoop("main.sh", bits.str2lst(""), lop);
+        makeLoop("main.sh", bits.str2lst(""), lop, true);
         starter.add("exit 0");
         bits.buf2txt(true, config, path + "rtr-" + cfgInit.hwCfgEnd);
         bits.buf2txt(true, starter, path + prefix + "all.sh");
