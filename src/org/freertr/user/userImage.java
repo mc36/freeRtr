@@ -44,13 +44,17 @@ public class userImage {
     private String miro = "http://deb.debian.org/debian/";
 
     private String qemu = "x86_64";
-    
+
+    private String vers1 = "";
+
+    private String vers2 = "";
+
     private String fbsd1 = "";
 
     private String fbsd2 = "";
 
     private String nbsd1 = "";
-    
+
     private String nbsd2 = "";
 
     private String arch = "amd64";
@@ -447,6 +451,8 @@ public class userImage {
             s = s.replaceAll("%img%", imgName);
             s = s.replaceAll("%mirr%", miro);
             s = s.replaceAll("%qemu%", qemu);
+            s = s.replaceAll("%vers1%", vers1);
+            s = s.replaceAll("%vers2%", vers2);
             s = s.replaceAll("%fbsd1%", fbsd1);
             s = s.replaceAll("%fbsd2%", fbsd2);
             s = s.replaceAll("%nbsd1%", nbsd1);
@@ -510,6 +516,11 @@ public class userImage {
             }
             if (a.equals("qemu")) {
                 qemu = s;
+                continue;
+            }
+            if (a.equals("vers")) {
+                vers1 = cmd.word();
+                vers2 = cmd.word();
                 continue;
             }
             if (a.equals("fbsd")) {
@@ -741,6 +752,14 @@ public class userImage {
                 if (instXtraFiles()) {
                     return true;
                 }
+                continue;
+            }
+            if (a.equals("binary-down")) {
+                downloadFile(cmd.word(), cmd.word(), -1);
+                continue;
+            }
+            if (a.equals("mkdir")) {
+                userFlash.mkdir(s);
                 continue;
             }
             if (a.equals("del-ifdn")) {
