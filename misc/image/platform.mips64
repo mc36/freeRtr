@@ -1,6 +1,7 @@
 arch mips64el
 unam mips64
 qemu mips64el
+nbsd mips64el
 ctrg mips64el
 cabi gnuabi64
 kern mips64r2el
