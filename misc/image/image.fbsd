@@ -28,3 +28,6 @@ mkdir %tmp%/usr
 mkdir %tmp%/var
 
 #binary-down https://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/All/
+
+#exec /sbin/makefs -t cd9660 -o rockridge -o "bootimage=i386;%tmp%/boot/cdboot" %img%.fbsd %tmp%/
+exec xorriso -as mkisofs -o %img%.fbsd -r -l -b boot/cdboot -no-emul-boot %tmp%/

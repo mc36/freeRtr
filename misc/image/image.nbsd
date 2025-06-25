@@ -11,9 +11,9 @@ binary-down http://cdn.netbsd.org/pub/pkgsrc/pkgsrc-2025Q1/pkgsrc.tar.xz %dwn%/n
 exec touch %dwn%/nbsd-%nbsd2%.iso
 exec touch %dwn%/nbsd-pkgsrc.txz
 
-exec guestfish -a %dwn%/nbsd-%nbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin /netbsd %tmp%/
+exec guestfish -a %dwn%/nbsd-%nbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin /stand /netbsd /usr/mdec/bootxx_cd9660 %tmp%/
 
-exec cp ../misc/image/boot.nbsd %tmp%/boot.conf
+exec cp ../misc/image/boot.nbsd %tmp%/boot.cfg
 mkdir %tmp%/etc
 exec cp ../misc/image/init.nbsd %tmp%/etc/rc
 mkdir %tmp%/emul
@@ -28,3 +28,7 @@ mkdir %tmp%/usr
 mkdir %tmp%/var
 
 #binary-down http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/
+
+#exec /sbin/makefs -t cd9660 -o rockridge -o "bootimage=i386;%tmp%/bootxx_cd9660" %img%.nbsd %tmp%/
+exec xorriso -as mkisofs -o %img%.nbsd -r -l -b bootxx_cd9660 -no-emul-boot %tmp%/
+
