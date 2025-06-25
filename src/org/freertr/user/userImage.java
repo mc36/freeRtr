@@ -303,6 +303,54 @@ public class userImage {
         return false;
     }
 
+    private void distInfoRead(userImageCat cat, String pat, String nam) {
+        File[] fl = userFlash.dirList(pat);
+        List<String> lst = null;
+        for (int i = 0; i < fl.length; i++) {
+            String a = fl[i].getName();
+            if (fl[i].isDirectory()) {
+                distInfoRead(cat, pat + a + "/", a);
+                continue;
+            }
+            if (!a.equals("distinfo")) {
+                continue;
+            }
+            lst = bits.txt2buf(pat + a);
+        }
+        if (lst == null) {
+            return;
+        }
+        for (int i = 0; i < lst.size(); i++) {
+            String a = lst.get(i);
+            if (!a.toLowerCase().startsWith("size (")) {
+                continue;
+            }
+            int o = a.lastIndexOf(") = ");
+            if (o < 0) {
+                continue;
+            }
+            String b = a.substring(o + 4, a.length());
+            a = a.substring(6, o);
+            userImagePkg pkg = new userImagePkg(nam);
+            pkg.cat = cat;
+            o = b.indexOf(" ");
+            if (o > 0) {
+                b = b.substring(0, o);
+            }
+            pkg.size = bits.str2num(b) >>> 10;
+            o = a.lastIndexOf(".");
+            if (o > 0) {
+                a = a.substring(0, o);
+            }
+            o = a.lastIndexOf(".");
+            if (o > 0) {
+                a = a.substring(0, o);
+            }
+            pkg.file = a + "." + cat.arch;
+            allPkgs.put(pkg);
+        }
+    }
+
     private boolean selectOnePackage(int level, String nam, String by) {
         nam = nam.trim();
         if (nam.length() < 1) {
@@ -663,6 +711,16 @@ public class userImage {
                     cmd.error("renaming legacy " + a);
                     userFlash.rename(a, a + ".bak", true, true);
                 }
+                continue;
+            }
+            if (a.equals("distinfo-read")) {
+                userImageCat cat = new userImageCat("distinfo");
+                a = cmd.word();
+                cat.arch = cmd.word();
+                cat.url = cmd.word();
+                distInfoRead(cat, a, "");
+                cat.arch = arch;
+                catalogs.add(cat);
                 continue;
             }
             if (a.equals("select-one")) {

@@ -23,12 +23,13 @@ mkdir %tmp%/mnt
 mkdir %tmp%/proc
 mkdir %tmp%/run
 mkdir %tmp%/sys
-mkdir %tmp%/tmp
 mkdir %tmp%/usr
 mkdir %tmp%/var
+mkdir %tmp%/tmp
+exec tar xf %dwn%/nbsd-pkgsrc.txz -C %tmp%/tmp/
+distinfo-read %tmp%/tmp/ txz http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/
+del-alw %tmp%/tmp
+mkdir %tmp%/tmp
+catalog-sum
 
-#binary-down http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/
-
-#exec /sbin/makefs -t cd9660 -o rockridge -o "bootimage=i386;%tmp%/bootxx_cd9660" %img%.nbsd %tmp%/
-exec xorriso -as mkisofs -o %img%.nbsd -r -l -b bootxx_cd9660 -no-emul-boot %tmp%/
-
+exec xorriso -as mkisofs -o %img%.nbsd -r -J -l -b bootxx_cd9660 -no-emul-boot %tmp%/

@@ -23,11 +23,13 @@ mkdir %tmp%/mnt
 mkdir %tmp%/proc
 mkdir %tmp%/run
 mkdir %tmp%/sys
-mkdir %tmp%/tmp
 mkdir %tmp%/usr
 mkdir %tmp%/var
+mkdir %tmp%/tmp
+exec tar xf %dwn%/fbsd-ports.txz -C %tmp%/tmp/
+distinfo-read %tmp%/tmp/ pkg https://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/All/
+del-alw %tmp%/tmp
+mkdir %tmp%/tmp
+catalog-sum
 
-#binary-down https://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/All/
-
-#exec /sbin/makefs -t cd9660 -o rockridge -o "bootimage=i386;%tmp%/boot/cdboot" %img%.fbsd %tmp%/
-exec xorriso -as mkisofs -o %img%.fbsd -r -l -b boot/cdboot -no-emul-boot %tmp%/
+exec xorriso -as mkisofs -o %img%.fbsd -r -J -l -b boot/cdboot -no-emul-boot %tmp%/
