@@ -212,7 +212,7 @@ public class userHwdet {
                 } else {
                     mac = " hw ether " + mac;
                 }
-                lst.add("ifconfig " + nam + " promisc mtu " + mtu + mac + " up");
+                lst.add("ifconfig " + nam + " mtu " + mtu + mac + " up");
                 return;
             case socat:
                 if (mac == null) {
