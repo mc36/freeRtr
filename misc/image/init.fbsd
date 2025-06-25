@@ -1,0 +1,19 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+mount -t tmpfs tmpfs /tmp
+mount -t linprocfs procfs /proc
+mount -t linsysfs sysfs /sys
+mount -t tmpfs -o union tmpfs /rtr
+kldload linux
+kldload linux64
+
+cd /rtr/
+ifconfig -a > /rtr/hwdet.eth
+echo "/dev/ttyu0: " > /rtr/hwdet.ser
+
+/java/bin/java -jar /rtr/rtr.jar test hwdet path /rtr/ iface cmp line raw busywait java /java/bin/
+chmod 755 /rtr/*.sh
+/rtr/hwdet-all.sh
+
