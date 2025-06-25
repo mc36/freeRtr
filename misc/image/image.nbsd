@@ -7,7 +7,7 @@ del-alw %tmp%
 mkdir %tmp%
 
 binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/installation/cdrom/boot.iso %dwn%/nbsd-%nbsd2%.iso
-binary-down http://cdn.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.xz %dwn%/nbsd-pkgsrc.txz
+binary-down http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/pkg_summary.bz2 %dwn%/nbsd-pkgsrc.txz
 exec touch %dwn%/nbsd-%nbsd2%.iso
 exec touch %dwn%/nbsd-pkgsrc.txz
 
@@ -33,8 +33,11 @@ mkdir %tmp%/tmp
 catalog-sum
 
 select-one libpcap
+select-one libdnet
+select-one libpfctl
 select-one tcpdump
 select-one tcpreplay
+select-one autogen
 
 select-lst
 select-sum
@@ -43,7 +46,17 @@ distinfo-inst %tmp%/tmp/
 exec mv %tmp%/tmp/sbin/* %tmp%/sbin/
 exec mv %tmp%/tmp/bin/* %tmp%/bin/
 exec mv %tmp%/tmp/lib/* %tmp%/lib/
-#del-alw %tmp%/tmp
-#mkdir %tmp%/tmp
+exec cpio --quiet -H newc -i -D %tmp%/tmp/ < %img%.cpio
+find-clear
+find-file %tmp%/tmp/usr/lib/ .*-linux-gnu.*
+find-result
+del-alw %tmp%/tmp/usr/lib/%find%/systemd
+exec mv %tmp%/tmp/usr/lib/%find% %tmp%/emul/linux/lib
+exec ln -s ./lib %tmp%/emul/linux/lib32
+exec ln -s ./lib %tmp%/emul/linux/lib64
+exec mv %tmp%/tmp/java %tmp%/
+exec mv %tmp%/tmp/rtr %tmp%/
+del-alw %tmp%/tmp
+mkdir %tmp%/tmp
 
 exec xorriso -as mkisofs -o %img%.nbsd -r -J -l -b bootxx_cd9660 -no-emul-boot %tmp%/

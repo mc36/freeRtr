@@ -7,11 +7,11 @@ del-alw %tmp%
 mkdir %tmp%
 
 binary-down http://download.freebsd.org/releases/ISO-IMAGES/%vers1%.%vers2%/FreeBSD-%vers1%.%vers2%-RELEASE-%fbsd1%-bootonly.iso %dwn%/fbsd-%fbsd2%.iso
-binary-down http://download.freebsd.org/ports/ports/ports.tar.xz %dwn%/fbsd-ports.txz
+binary-down http://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/data.pkg %dwn%/fbsd-ports.txz
 exec touch %dwn%/fbsd-%fbsd2%.iso
 exec touch %dwn%/fbsd-ports.txz
 
-exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin %tmp%/
+exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin %tmp%/ : glob copy-out "/usr/lib/libdl.*" %tmp%/lib/
 
 exec cp ../misc/image/boot.fbsd %tmp%/boot/loader.conf
 mkdir %tmp%/etc
@@ -33,8 +33,11 @@ mkdir %tmp%/tmp
 catalog-sum
 
 select-one libpcap
+select-one libdnet
+select-one libpfctl
 select-one tcpdump
 select-one tcpreplay
+select-one autogen
 
 select-lst
 select-sum
@@ -43,7 +46,17 @@ distinfo-inst %tmp%/tmp/
 exec mv %tmp%/tmp/usr/local/sbin/* %tmp%/sbin/
 exec mv %tmp%/tmp/usr/local/bin/* %tmp%/bin/
 exec mv %tmp%/tmp/usr/local/lib/* %tmp%/lib/
-#del-alw %tmp%/tmp
-#mkdir %tmp%/tmp
+exec cpio --quiet -H newc -i -D %tmp%/tmp/ < %img%.cpio
+find-clear
+find-file %tmp%/tmp/usr/lib/ .*-linux-gnu.*
+find-result
+del-alw %tmp%/tmp/usr/lib/%find%/systemd
+exec mv %tmp%/tmp/usr/lib/%find% %tmp%/compat/linux/lib
+exec ln -s ./lib %tmp%/compat/linux/lib32
+exec ln -s ./lib %tmp%/compat/linux/lib64
+exec mv %tmp%/tmp/java %tmp%/
+exec mv %tmp%/tmp/rtr %tmp%/
+del-alw %tmp%/tmp
+mkdir %tmp%/tmp
 
 exec xorriso -as mkisofs -o %img%.fbsd -r -J -l -b boot/cdboot -no-emul-boot %tmp%/
