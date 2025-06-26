@@ -193,6 +193,7 @@ public class userImage {
         }
         userFlash.rename(fil, fil + ".bak", true, true);
         userFlash.rename(fil + ".tmp", fil, true, true);
+        new File(fil).setLastModified(bits.getTime());
         return false;
     }
 
@@ -416,10 +417,9 @@ public class userImage {
             return false;
         }
         String name = getDistinfoName(pkg);
-        if (downloadFile(pkg.cat.url + pkg.file, name, -1)) {
+        if (downloadFile(pkg.cat.url + pkg.file, name, pkg.size)) {
             return true;
         }
-        new File(name).setLastModified(bits.getTime());
         return false;
     }
 
