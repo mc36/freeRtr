@@ -365,6 +365,15 @@ public class userImage {
                 continue;
             }
             pkg.file = a;
+            i = j.findValue("version");
+            if (i < 0) {
+                continue;
+            }
+            a = j.getValue(i + 1);
+            if (a == null) {
+                continue;
+            }
+            pkg.vers = a;
             i = j.findValue("pkgsize");
             if (i < 0) {
                 continue;
