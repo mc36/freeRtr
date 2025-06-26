@@ -7,9 +7,9 @@ del-alw %tmp%
 mkdir %tmp%
 
 binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/installation/cdrom/boot.iso %dwn%/nbsd-%nbsd2%.iso
-binary-down http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/pkg_summary.bz2 %dwn%/nbsd-pkgsrc.txz
+binary-down http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/pkg_summary.bz2 %dwn%/nbsd-pkgsrc
 exec touch %dwn%/nbsd-%nbsd2%.iso
-exec touch %dwn%/nbsd-pkgsrc.txz
+exec touch %dwn%/nbsd-pkgsrc
 
 exec guestfish -a %dwn%/nbsd-%nbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin /stand /netbsd /usr/mdec/bootxx_cd9660 %tmp%/
 
@@ -26,10 +26,8 @@ mkdir %tmp%/sys
 mkdir %tmp%/usr
 mkdir %tmp%/var
 mkdir %tmp%/tmp
-exec tar xf %dwn%/nbsd-pkgsrc.txz -C %tmp%/tmp/
-distinfo-read %tmp%/tmp/ tgz nbsd-%nbsd2% http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/
-del-alw %tmp%/tmp
-mkdir %tmp%/tmp
+exec bunzip2 -k -d -c %dwn%/nbsd-pkgsrc > %tmp%/tmp/data
+distinfo-pkgsrc %tmp%/tmp/data nbsd-%nbsd2% http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/
 catalog-sum
 
 select-one libpcap
@@ -59,4 +57,4 @@ exec mv %tmp%/tmp/rtr %tmp%/
 del-alw %tmp%/tmp
 mkdir %tmp%/tmp
 
-exec xorriso -as mkisofs -o %img%.nbsd -r -J -l -b bootxx_cd9660 -no-emul-boot %tmp%/
+exec xorriso -as mkisofs -o %img%.nbsd -r -J -l -b bootxx_cd9660 -no-emul-boot -c isolinux.cat %tmp%/

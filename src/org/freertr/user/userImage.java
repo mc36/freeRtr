@@ -6,6 +6,7 @@ import java.util.List;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashSha2256;
 import org.freertr.cry.cryUtils;
+import org.freertr.enc.encJson;
 import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
@@ -307,60 +308,74 @@ public class userImage {
         return false;
     }
 
-    private void distInfoRead(userImageCat cat, String pat, String nam) {
-        File[] fl = userFlash.dirList(pat);
-        List<String> lst = null;
-        for (int i = 0; i < fl.length; i++) {
-            String a = fl[i].getName();
-            if (fl[i].isDirectory()) {
-                distInfoRead(cat, pat + a + "/", a);
+    private void distInfoPkgsrc(userImageCat cat, List<String> lst) {
+        userImagePkg pkg = new userImagePkg("");
+        for (int o = 0; o < lst.size(); o++) {
+            String a = lst.get(o).trim();
+            int i = a.indexOf("=");
+            if (i < 1) {
                 continue;
             }
-            if (!a.equals("distinfo")) {
+            String b = a.substring(i + 1, a.length()).trim();
+            a = a.substring(0, i).trim().toLowerCase();
+            if (a.equals("pkgpath")) {
+                pkg.cat = cat;
+                allPkgs.put(pkg);
+                i = b.lastIndexOf("/");
+                if (i > 0) {
+                    b = b.substring(i + 1, b.length());
+                }
+                pkg = new userImagePkg(b);
                 continue;
             }
-            lst = bits.txt2buf(pat + a);
-            break;
-        }
-        if (lst == null) {
-            return;
-        }
-        int o = -1;
-        for (int i = 0; i < lst.size(); i++) {
-            String a = lst.get(i);
-            if (!a.toLowerCase().startsWith("size (")) {
+            if (a.equals("file_name")) {
+                pkg.file = b;
                 continue;
             }
-            o = i;
-            break;
+            if (a.equals("file_size")) {
+                pkg.size = bits.str2num(b);
+                continue;
+            }
         }
-        if (o < 0) {
-            return;
+    }
+
+    private void distInfoPorts(userImageCat cat, List<String> lst) {
+        encJson j = new encJson();
+        for (int o = 0; o < lst.size(); o++) {
+            j.clear();
+            if (j.fromString(lst.get(o))) {
+                continue;
+            }
+            int i = j.findValue("name");
+            if (i < 0) {
+                continue;
+            }
+            String a = j.getValue(i + 1);
+            if (a == null) {
+                continue;
+            }
+            userImagePkg pkg = new userImagePkg(a);
+            i = j.findValue("repopath");
+            if (i < 0) {
+                continue;
+            }
+            a = j.getValue(i + 1);
+            if (a == null) {
+                continue;
+            }
+            pkg.file = a;
+            i = j.findValue("pkgsize");
+            if (i < 0) {
+                continue;
+            }
+            a = j.getValue(i + 1);
+            if (a == null) {
+                continue;
+            }
+            pkg.size = bits.str2num(a);
+            pkg.cat = cat;
+            allPkgs.put(pkg);
         }
-        String a = lst.get(o);
-        o = a.lastIndexOf(") = ");
-        if (o < 0) {
-            return;
-        }
-        String b = a.substring(o + 4, a.length());
-        a = a.substring(6, o);
-        userImagePkg pkg = new userImagePkg(nam);
-        pkg.cat = cat;
-        o = b.indexOf(" ");
-        if (o > 0) {
-            b = b.substring(0, o);
-        }
-        pkg.size = bits.str2num(b);
-        o = a.lastIndexOf(".");
-        if (o > 0) {
-            a = a.substring(0, o);
-        }
-        o = a.lastIndexOf(".");
-        if (o > 0) {
-            a = a.substring(0, o);
-        }
-        pkg.file = a + "." + cat.arch;
-        allPkgs.put(pkg);
     }
 
     private boolean selectOnePackage(int level, String nam, String by) {
@@ -707,11 +722,17 @@ public class userImage {
                 }
                 continue;
             }
-            if (a.equals("distinfo-read")) {
+            if (a.equals("distinfo-ports")) {
                 userImageCat cat = new userImageCat("distinfo");
-                a = cmd.word();
+                distInfoPorts(cat, bits.txt2buf(cmd.word()));
                 cat.arch = cmd.word();
-                distInfoRead(cat, a, "");
+                cat.url = cmd.word();
+                catalogs.add(cat);
+                continue;
+            }
+            if (a.equals("distinfo-pkgsrc")) {
+                userImageCat cat = new userImageCat("distinfo");
+                distInfoPkgsrc(cat, bits.txt2buf(cmd.word()));
                 cat.arch = cmd.word();
                 cat.url = cmd.word();
                 catalogs.add(cat);
