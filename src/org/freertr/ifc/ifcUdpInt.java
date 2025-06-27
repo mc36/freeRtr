@@ -94,11 +94,15 @@ public class ifcUdpInt extends ifcThread {
             sck = new DatagramSocket(null);
             sck.setReuseAddress(true);
             sck.bind(lsad);
-            sck.setReceiveBufferSize(512 * 1024);
-            sck.setSendBufferSize(512 * 1024);
             sck.connect(rsad);
         } catch (Exception e) {
             logger.exception(e);
+        }
+        try {
+            sck.setReceiveBufferSize(512 * 1024);
+            sck.setSendBufferSize(512 * 1024);
+        } catch (Exception e) {
+            logger.traceback(e);
         }
         etherEnc = !notEther;
         if (!notEther) {
