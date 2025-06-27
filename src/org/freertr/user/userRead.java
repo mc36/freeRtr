@@ -1827,13 +1827,14 @@ public class userRead implements Comparator<String> {
     }
 
     private void setNfilter(String a) {
-        int i = a.lastIndexOf(" | ");
+        int i = a.indexOf(" | ");
         if (i > 0) {
             filterN = a.substring(i + 3, a.length()).trim();
             a = a.substring(0, i);
         } else {
             filterN = "";
         }
+        filterS = "";
         filterM = mode.raw;
         i = a.indexOf(" ");
         if (i >= 0) {

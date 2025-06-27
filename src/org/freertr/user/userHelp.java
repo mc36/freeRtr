@@ -742,6 +742,7 @@ public class userHelp {
                 continue;
             }
             if (req > 100) {
+                collectDirection(d, lin, false, -1, 0, maxVal, req);
                 collectDirection(d, lin, false, 1, 0, maxVal, req);
                 continue;
             }
