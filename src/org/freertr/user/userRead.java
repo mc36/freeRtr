@@ -53,7 +53,7 @@ public class userRead implements Comparator<String> {
 
     private mode filterM; // filter mode
 
-    private mode filterF; // filter final mode
+    private String filterN; // next filters
 
     private String filterO; // original command
 
@@ -474,38 +474,6 @@ public class userRead implements Comparator<String> {
         return getColText(o1).compareTo(getColText(o2));
     }
 
-    private List<String> doCount(List<String> lst) {
-        int wrd = 0;
-        int chr = 0;
-        for (int i = 0; i < lst.size(); i++) {
-            String a = lst.get(i).trim();
-            for (;;) {
-                String s = a.replaceAll("  ", " ");
-                if (s.equals(a)) {
-                    break;
-                }
-                a = s;
-            }
-            int o = a.length();
-            a = a.replaceAll(" ", "");
-            int p = a.length();
-            wrd += o - p;
-            if (p > 0) {
-                wrd++;
-            }
-            chr += o;
-        }
-        final userFormat.tableMode tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
-        if (tabMod == userFormat.tableMode.normal) {
-            return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
-        }
-        userFormat res = new userFormat("|", "category|value");
-        res.add("lines|" + lst.size());
-        res.add("words|" + wrd);
-        res.add("chars|" + chr);
-        return res.formatAll(tabMod);
-    }
-
     private cmds doSummary(userFormat.tableMode tabMod, String a) {
         switch (tabMod) {
             case raw:
@@ -521,60 +489,6 @@ public class userRead implements Comparator<String> {
                 break;
         }
         return new cmds("row", a);
-    }
-
-    private List<String> doSummary(List<String> lst) {
-        List<Long> sum = new ArrayList<Long>();
-        List<Long> min = new ArrayList<Long>();
-        List<Long> max = new ArrayList<Long>();
-        final userFormat.tableMode tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
-        for (int i = 0; i < lst.size(); i++) {
-            cmds cmd = doSummary(tabMod, lst.get(i));
-            for (int p = 0;; p++) {
-                String a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                if (p >= sum.size()) {
-                    sum.add((long) 0);
-                    min.add(Long.MAX_VALUE);
-                    max.add(Long.MIN_VALUE);
-                }
-                long v = bits.str2long(a);
-                if (!a.equals("" + v)) {
-                    continue;
-                }
-                sum.set(p, sum.get(p) + v);
-                if (v < min.get(p)) {
-                    min.set(p, v);
-                }
-                if (v > max.get(p)) {
-                    max.set(p, v);
-                }
-            }
-        }
-        userFormat res = new userFormat("|", "col|name|summary|average|minimum|maximum");
-        long div = lst.size() - 1;
-        if (div < 1) {
-            div = 1;
-        }
-        cmds cmd = doSummary(tabMod, lst.get(columnL));
-        for (int i = 0; i < sum.size(); i++) {
-            long val = sum.get(i);
-            res.add(i + "|" + cmd.word() + "|" + val + "|" + (val / div) + "|" + min.get(i) + "|" + max.get(i));
-        }
-        return res.formatAll(tabMod);
-    }
-
-    private List<String> doSecond(List<String> lst) {
-        switch (filterF) {
-            case count:
-                return doCount(lst);
-            case summary:
-                return doSummary(lst);
-            default:
-                return lst;
-        }
     }
 
     private void doPadCol(List<String> lst) {
@@ -713,16 +627,14 @@ public class userRead implements Comparator<String> {
         }
         switch (filterM) {
             case include:
-                lst = doInclude(lst);
-                return doSecond(lst);
+                return doInclude(lst);
             case hinclude:
                 String a = lst.remove(columnL);
                 lst = doInclude(lst);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case exclude:
-                lst = doExclude(lst);
-                return doSecond(lst);
+                return doExclude(lst);
             case sort:
                 findColumn(lst);
                 if (columnB < 0) {
@@ -731,7 +643,7 @@ public class userRead implements Comparator<String> {
                 a = lst.remove(columnL);
                 Collections.sort(lst, this);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case revsort:
                 findColumn(lst);
                 if (columnB < 0) {
@@ -741,7 +653,7 @@ public class userRead implements Comparator<String> {
                 Collections.sort(lst, this);
                 Collections.reverse(lst);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case repsort:
                 findColumn(lst);
                 if (columnB < 0) {
@@ -752,7 +664,7 @@ public class userRead implements Comparator<String> {
                 Collections.sort(lst, this);
                 Collections.reverse(lst);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case padsort:
                 findColumn(lst);
                 if (columnB < 0) {
@@ -762,24 +674,22 @@ public class userRead implements Comparator<String> {
                 a = lst.remove(columnL);
                 Collections.sort(lst, this);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case hide:
                 findColumn(lst);
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
-                lst = doHide(lst);
-                return doSecond(lst);
+                return doHide(lst);
             case uniq:
                 findColumn(lst);
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
-                lst = doUniq(lst);
-                return doSecond(lst);
+                return doUniq(lst);
             case pastebin:
                 if (cfgAll.pasteBin == null) {
-                    return doSecond(lst);
+                    return lst;
                 }
                 encUrl url = new encUrl();
                 a = cfgAll.hostName + "#" + filterO + "\r\n" + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + "\r\n";
@@ -790,7 +700,7 @@ public class userRead implements Comparator<String> {
                 url.fromString(a);
                 clntHttp http = new clntHttp(null, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
                 if (http.doConnect(url)) {
-                    return doSecond(lst);
+                    return lst;
                 }
                 http.sendLine("GET " + url.toURL(true, true, true, true) + " HTTP/1.1");
                 http.sendLine("User-Agent: " + cfgInit.versionAgent);
@@ -802,47 +712,111 @@ public class userRead implements Comparator<String> {
                 pipeConnect.connect(http.pipe, rdr.getPipe(), true);
                 rdr.waitFor();
                 lst.addAll(rdr.getResult());
-                return doSecond(lst);
+                return lst;
             case redirect:
                 bits.buf2txt(true, lst, filterS);
-                return doSecond(lst);
+                return lst;
             case first:
                 int num = bits.str2num(filterS);
                 doFirst(lst, num);
-                return doSecond(lst);
+                return lst;
             case last:
                 num = bits.str2num(filterS);
                 doLast(lst, num);
-                return doSecond(lst);
+                return lst;
             case hlast:
                 num = bits.str2num(filterS);
                 a = lst.remove(columnL);
                 doLast(lst, num);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case begin:
                 num = bits.lstFnd(lst, filterS);
                 doBegin(lst, num);
-                return doSecond(lst);
+                return lst;
             case hbegin:
                 num = bits.lstFnd(lst, filterS);
                 a = lst.remove(columnL);
                 doBegin(lst, num);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case end:
                 num = bits.lstFnd(lst, filterS);
                 doEnd(lst, num);
-                return doSecond(lst);
+                return lst;
             case count:
-                lst = doCount(lst);
-                return doSecond(lst);
+                int wrd = 0;
+                int chr = 0;
+                for (int i = 0; i < lst.size(); i++) {
+                    a = lst.get(i).trim();
+                    for (;;) {
+                        String s = a.replaceAll("  ", " ");
+                        if (s.equals(a)) {
+                            break;
+                        }
+                        a = s;
+                    }
+                    int o = a.length();
+                    a = a.replaceAll(" ", "");
+                    int p = a.length();
+                    wrd += o - p;
+                    if (p > 0) {
+                        wrd++;
+                    }
+                    chr += o;
+                }
+                userFormat.tableMode tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
+                if (tabMod == userFormat.tableMode.normal) {
+                    return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
+                }
+                userFormat res = new userFormat("|", "category|value");
+                res.add("lines|" + lst.size());
+                res.add("words|" + wrd);
+                res.add("chars|" + chr);
+                return res.formatAll(tabMod);
             case summary:
-                lst = doSummary(lst);
-                return doSecond(lst);
+                List<Long> sum = new ArrayList<Long>();
+                List<Long> min = new ArrayList<Long>();
+                List<Long> max = new ArrayList<Long>();
+                tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
+                for (int i = 0; i < lst.size(); i++) {
+                    cmds cmd = doSummary(tabMod, lst.get(i));
+                    for (int p = 0;; p++) {
+                        a = cmd.word();
+                        if (a.length() < 1) {
+                            break;
+                        }
+                        if (p >= sum.size()) {
+                            sum.add((long) 0);
+                            min.add(Long.MAX_VALUE);
+                            max.add(Long.MIN_VALUE);
+                        }
+                        long v = bits.str2long(a);
+                        if (!a.equals("" + v)) {
+                            continue;
+                        }
+                        sum.set(p, sum.get(p) + v);
+                        if (v < min.get(p)) {
+                            min.set(p, v);
+                        }
+                        if (v > max.get(p)) {
+                            max.set(p, v);
+                        }
+                    }
+                }
+                res = new userFormat("|", "col|name|summary|average|minimum|maximum");
+                long div = lst.size() - 1;
+                if (div < 1) {
+                    div = 1;
+                }
+                cmds cmd = doSummary(tabMod, lst.get(columnL));
+                for (int i = 0; i < sum.size(); i++) {
+                    long val = sum.get(i);
+                    res.add(i + "|" + cmd.word() + "|" + val + "|" + (val / div) + "|" + min.get(i) + "|" + max.get(i));
+                }
+                return res.formatAll(tabMod);
             case headers:
-                lst = userFilter.getSecList(userFilter.text2section(lst), null, null);
-                return doSecond(lst);
+                return userFilter.getSecList(userFilter.text2section(lst), null, null);
             case viewer:
                 userEditor edtr = new userEditor(new userScreen(pipe), lst, "result", false);
                 edtr.doView();
@@ -850,17 +824,13 @@ public class userRead implements Comparator<String> {
             case xml:
                 encXml xml = new encXml();
                 userFilter.section2xml(xml, "/config", userFilter.text2section(lst));
-                lst = xml.toXMLlst();
-                return doSecond(lst);
+                return xml.toXMLlst();
             case linenum:
-                lst = bits.lst2lin(lst, true);
-                return doSecond(lst);
+                return bits.lst2lin(lst, true);
             case hacked:
-                lst = enc7bit.toHackedLst(lst);
-                return doSecond(lst);
+                return enc7bit.toHackedLst(lst);
             case section:
-                lst = userFilter.getSection(lst, filterS);
-                return doSecond(lst);
+                return userFilter.getSection(lst, filterS);
             case level:
                 List<userFilter> sec = userFilter.text2section(lst);
                 lst = new ArrayList<String>();
@@ -868,7 +838,7 @@ public class userRead implements Comparator<String> {
                     userFilter ntry = sec.get(i);
                     lst.add(ntry.section + "|" + ntry.command + "|");
                 }
-                return doSecond(lst);
+                return lst;
             case csv:
                 sec = userFilter.text2section(lst);
                 lst = new ArrayList<String>();
@@ -876,7 +846,7 @@ public class userRead implements Comparator<String> {
                     userFilter ntry = sec.get(i);
                     lst.add(ntry.section + ";" + ntry.command);
                 }
-                return doSecond(lst);
+                return lst;
             case html:
                 sec = userFilter.text2section(lst);
                 lst = new ArrayList<String>();
@@ -884,7 +854,7 @@ public class userRead implements Comparator<String> {
                     userFilter ntry = sec.get(i);
                     lst.add("<tr><td>" + ntry.section + "</td><td>" + ntry.command + "</td></tr>");
                 }
-                return doSecond(lst);
+                return lst;
             case setdel:
                 sec = userFilter.text2section(lst);
                 lst = new ArrayList<String>();
@@ -905,7 +875,7 @@ public class userRead implements Comparator<String> {
                     }
                     lst.add(s + " " + (ntry.section + " " + a).trim());
                 }
-                return doSecond(lst);
+                return lst;
             case ccode:
                 sec = userFilter.text2section(lst);
                 lst = new ArrayList<String>();
@@ -928,14 +898,18 @@ public class userRead implements Comparator<String> {
                     }
                     lst.add(ntry.command);
                 }
-                return doSecond(lst);
+                return lst;
             default:
-                return doSecond(lst);
+                return lst;
         }
     }
 
     private boolean doPutArr(List<String> lst, userFormat.colorMode color) {
         lst = doFilterList(lst);
+        for (; filterN.length() > 0;) {
+            setNfilter(filterN);
+            lst = doFilterList(lst);
+        }
         if (lst == null) {
             pipe.linePut("");
             return true;
@@ -1831,7 +1805,7 @@ public class userRead implements Comparator<String> {
         }
         filterS = "";
         filterM = mode.raw;
-        filterF = mode.raw;
+        filterN = "";
         if (cmd == null) {
             return null;
         }
@@ -1845,16 +1819,17 @@ public class userRead implements Comparator<String> {
         cmd = new cmds("exec", a.substring(0, i - 1).trim());
         cmd.pipe = pip;
         a = a.substring(i + 1, a.length()).trim();
-        i = a.lastIndexOf(" | ");
+        setNfilter(a);
+        return cmd;
+    }
+
+    private void setNfilter(String a) {
+        int i = a.lastIndexOf(" | ");
         if (i > 0) {
-            String s = a.substring(i + 3, a.length()).trim();
+            filterN = a.substring(i + 3, a.length()).trim();
             a = a.substring(0, i);
-            if (s.equals("count")) {
-                filterF = mode.count;
-            }
-            if (s.equals("summary")) {
-                filterF = mode.summary;
-            }
+        } else {
+            filterN = "";
         }
         i = a.indexOf(" ");
         if (i >= 0) {
@@ -1863,160 +1838,159 @@ public class userRead implements Comparator<String> {
         }
         if (a.equals("pastebin")) {
             filterM = mode.pastebin;
-            return cmd;
+            return;
         }
         if (a.equals("headers")) {
             filterM = mode.headers;
-            return cmd;
+            return;
         }
         if (a.equals("count")) {
             filterM = mode.count;
-            return cmd;
+            return;
         }
         if (a.equals("summary")) {
             filterM = mode.summary;
-            return cmd;
+            return;
         }
         if (a.equals("viewer")) {
             filterM = mode.viewer;
-            return cmd;
+            return;
         }
         if (a.equals("csv")) {
             filterM = mode.csv;
-            return cmd;
+            return;
         }
         if (a.equals("html")) {
             filterM = mode.html;
-            return cmd;
+            return;
         }
         if (a.equals("xml")) {
             filterM = mode.xml;
-            return cmd;
+            return;
         }
         if (a.equals("setdel")) {
             filterM = mode.setdel;
-            return cmd;
+            return;
         }
         if (a.equals("ccode")) {
             filterM = mode.ccode;
-            return cmd;
+            return;
         }
         if (a.equals("level")) {
             filterM = mode.level;
-            return cmd;
+            return;
         }
         if (a.equals("linenumbers")) {
             filterM = mode.linenum;
-            return cmd;
+            return;
         }
         if (a.equals("hacked")) {
             filterM = mode.hacked;
-            return cmd;
+            return;
         }
         if (a.equals("include")) {
             filterS = filter2reg(filterS);
             filterM = mode.include;
-            return cmd;
+            return;
         }
         if (a.equals("hinclude")) {
             filterS = filter2reg(filterS);
             filterM = mode.hinclude;
-            return cmd;
+            return;
         }
         if (a.equals("exclude")) {
             filterS = filter2reg(filterS);
             filterM = mode.exclude;
-            return cmd;
+            return;
         }
         if (a.equals("begin")) {
             filterS = filter2reg(filterS);
             filterM = mode.begin;
-            return cmd;
+            return;
         }
         if (a.equals("hbegin")) {
             filterS = filter2reg(filterS);
             filterM = mode.hbegin;
-            return cmd;
+            return;
         }
         if (a.equals("end")) {
             filterS = filter2reg(filterS);
             filterM = mode.end;
-            return cmd;
+            return;
         }
         if (a.equals("redirect")) {
             filterM = mode.redirect;
-            return cmd;
+            return;
         }
         if (a.equals("sort")) {
             filterM = mode.sort;
-            return cmd;
+            return;
         }
         if (a.equals("padsort")) {
             filterM = mode.padsort;
-            return cmd;
+            return;
         }
         if (a.equals("revsort")) {
             filterM = mode.revsort;
-            return cmd;
+            return;
         }
         if (a.equals("repsort")) {
             filterM = mode.repsort;
-            return cmd;
+            return;
         }
         if (a.equals("uniq")) {
             filterM = mode.uniq;
-            return cmd;
+            return;
         }
         if (a.equals("hide")) {
             filterM = mode.hide;
-            return cmd;
+            return;
         }
         if (a.equals("section")) {
             filterS = filter2reg(filterS);
             filterM = mode.section;
-            return cmd;
+            return;
         }
         if (a.equals("first")) {
             filterM = mode.first;
-            return cmd;
+            return;
         }
         if (a.equals("last")) {
             filterM = mode.last;
-            return cmd;
+            return;
         }
         if (a.equals("hlast")) {
             filterM = mode.hlast;
-            return cmd;
+            return;
         }
         if (a.equals("reginc")) {
             filterM = mode.include;
-            return cmd;
+            return;
         }
         if (a.equals("hreginc")) {
             filterM = mode.hinclude;
-            return cmd;
+            return;
         }
         if (a.equals("regexc")) {
             filterM = mode.exclude;
-            return cmd;
+            return;
         }
         if (a.equals("regbeg")) {
             filterM = mode.begin;
-            return cmd;
+            return;
         }
         if (a.equals("hregbeg")) {
             filterM = mode.hbegin;
-            return cmd;
+            return;
         }
         if (a.equals("regend")) {
             filterM = mode.end;
-            return cmd;
+            return;
         }
         if (a.equals("regsec")) {
             filterM = mode.section;
-            return cmd;
+            return;
         }
-        return cmd;
     }
 
 }
