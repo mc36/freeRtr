@@ -92,7 +92,14 @@ public class ifcUdpInt extends ifcThread {
             rsad = new InetSocketAddress(radr, rprt);
             lsad = new InetSocketAddress(ladr, lprt);
             sck = new DatagramSocket(null);
+        } catch (Exception e) {
+            logger.exception(e);
+        }
+        try {
             sck.setReuseAddress(true);
+        } catch (Exception e) {
+        }
+        try {
             sck.bind(lsad);
             sck.connect(rsad);
         } catch (Exception e) {
@@ -100,9 +107,11 @@ public class ifcUdpInt extends ifcThread {
         }
         try {
             sck.setReceiveBufferSize(512 * 1024);
+        } catch (Exception e) {
+        }
+        try {
             sck.setSendBufferSize(512 * 1024);
         } catch (Exception e) {
-            logger.traceback(e);
         }
         etherEnc = !notEther;
         if (!notEther) {

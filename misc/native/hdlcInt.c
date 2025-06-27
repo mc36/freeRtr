@@ -262,6 +262,9 @@ help :
     printf("binded to local port %s %i.\n", inet_ntoa(addrLoc.sin_addr), portLoc);
     if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
     printf("will send to %s %i.\n", inet_ntoa(addrRem.sin_addr), portRem);
+    int sockOpt = 524288;
+    setsockopt(commSock, SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt));
+    setsockopt(commSock, SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt));
 
     memset(accmTty, 0, 256);
     accmTty[PPP_FLAG] = 1;

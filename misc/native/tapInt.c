@@ -179,8 +179,8 @@ help :
     if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
     printf("will send to %s %i.\n", inet_ntoa(addrRem.sin_addr), portRem);
     int sockOpt = 524288;
-    if (setsockopt(commSock, SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt)) < 0) err("failed to set socket rxbuf");
-    if (setsockopt(commSock, SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt)) < 0) err("failed to set socket txbuf");
+    setsockopt(commSock, SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt));
+    setsockopt(commSock, SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt));
 
     ifaceName = malloc(strlen(argv[1]) + 1);
     if (ifaceName == NULL) err("error allocating memory");
