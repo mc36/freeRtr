@@ -200,7 +200,11 @@ help :
 
     if ((commSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
     if (bind(commSock, (struct sockaddr *) &addrLoc, sizeof (addrLoc)) < 0) err("failed to bind socket");
+    if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
     printf("lower binded to local port %s %i, will send to %s %i.\n", inet_ntoa(addrLoc.sin_addr), portLoc, inet_ntoa(addrRem.sin_addr), portRem);
+    int sockOpt = 524288;
+    setsockopt(commSock, SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt));
+    setsockopt(commSock, SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt));
 
     vlanNum = ((argc - 3) / 3);
     if (vlanNum > vlanMax) vlanNum = vlanMax;
@@ -221,8 +225,8 @@ help :
         vlanRem[i].sin_port = htons(portRem);
         if ((vlanSck[i] = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
         if (bind(vlanSck[i], (struct sockaddr *) &vlanLoc[i], sizeof (addrLoc)) < 0) err("failed to bind socket");
+        if (connect(vlanSck[i], (struct sockaddr *) &vlanRem[i], sizeof (addrRem)) < 0) err("failed to connect socket");
         printf("binded to local port %s %i, will send to %s %i.\n", inet_ntoa(vlanLoc[i].sin_addr), portLoc, inet_ntoa(vlanRem[i].sin_addr), portRem);
-        int sockOpt = 524288;
         setsockopt(vlanSck[i], SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt));
         setsockopt(vlanSck[i], SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt));
     }

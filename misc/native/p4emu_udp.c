@@ -97,6 +97,9 @@ int main(int argc, char **argv) {
         if ((sockets[i] = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
         if (bind(sockets[i], (struct sockaddr *) &addrLoc, sizeof(addrLoc)) < 0) err("failed to bind socket");
         if (connect(sockets[i], (struct sockaddr *) &peers[i], sizeof(addrLoc)) < 0) err("failed to connect socket");
+        int sockOpt = 524288;
+        setsockopt(sockets[i], SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt));
+        setsockopt(sockets[i], SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt));
         ifaceId[i] = i;
     }
     if (initTables() != 0) err("error initializing tables");
