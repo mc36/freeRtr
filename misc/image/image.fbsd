@@ -9,12 +9,11 @@ mkdir %tmp%
 binary-down http://download.freebsd.org/releases/ISO-IMAGES/%vers1%.%vers2%/FreeBSD-%vers1%.%vers2%-RELEASE-%fbsd1%-bootonly.iso %dwn%/fbsd-%fbsd2%.iso
 binary-down http://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/packagesite.pkg %dwn%/fbsd-%fbsd2%.prts
 
-exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin /usr %tmp%/
+exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /etc /lib /libexec /sbin /usr %tmp%/
 exec mv %tmp%/usr/lib/libdl.* %tmp%/lib/
 del-alw %tmp%/usr
 
 exec cp ../misc/image/boot.fbsd %tmp%/boot/loader.conf
-mkdir %tmp%/etc
 exec cp ../misc/image/init.fbsd %tmp%/etc/rc
 mkdir %tmp%/compat
 mkdir %tmp%/compat/linux
