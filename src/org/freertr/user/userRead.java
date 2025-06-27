@@ -1841,78 +1841,77 @@ public class userRead implements Comparator<String> {
         if (i < 0) {
             return cmd;
         }
-        pipeSide pipe = cmd.pipe;
+        pipeSide pip = cmd.pipe;
         cmd = new cmds("exec", a.substring(0, i - 1).trim());
-        cmd.pipe = pipe;
+        cmd.pipe = pip;
         a = a.substring(i + 1, a.length()).trim();
-        i = a.indexOf(" ");
-        if (i < 0) {
-            if (a.equals("pastebin")) {
-                filterM = mode.pastebin;
-                return cmd;
-            }
-            if (a.equals("headers")) {
-                filterM = mode.headers;
-                return cmd;
-            }
-            if (a.equals("count")) {
-                filterM = mode.count;
-                return cmd;
-            }
-            if (a.equals("summary")) {
-                filterM = mode.summary;
-                return cmd;
-            }
-            if (a.equals("viewer")) {
-                filterM = mode.viewer;
-                return cmd;
-            }
-            if (a.equals("csv")) {
-                filterM = mode.csv;
-                return cmd;
-            }
-            if (a.equals("html")) {
-                filterM = mode.html;
-                return cmd;
-            }
-            if (a.equals("xml")) {
-                filterM = mode.xml;
-                return cmd;
-            }
-            if (a.equals("setdel")) {
-                filterM = mode.setdel;
-                return cmd;
-            }
-            if (a.equals("ccode")) {
-                filterM = mode.ccode;
-                return cmd;
-            }
-            if (a.equals("level")) {
-                filterM = mode.level;
-                return cmd;
-            }
-            if (a.equals("linenumbers")) {
-                filterM = mode.linenum;
-                return cmd;
-            }
-            if (a.equals("hacked")) {
-                filterM = mode.hacked;
-                return cmd;
-            }
-            return cmd;
-        }
-        filterS = a.substring(i, a.length()).trim();
-        a = a.substring(0, i).trim();
-        i = filterS.lastIndexOf(" | ");
+        i = a.lastIndexOf(" | ");
         if (i > 0) {
-            String s = filterS.substring(i + 3, filterS.length()).trim();
-            filterS = filterS.substring(0, i);
+            String s = a.substring(i + 3, a.length()).trim();
+            a = a.substring(0, i);
             if (s.equals("count")) {
                 filterF = mode.count;
             }
             if (s.equals("summary")) {
                 filterF = mode.summary;
             }
+        }
+        i = a.indexOf(" ");
+        if (i >= 0) {
+            filterS = a.substring(i, a.length()).trim();
+            a = a.substring(0, i).trim();
+        }
+        if (a.equals("pastebin")) {
+            filterM = mode.pastebin;
+            return cmd;
+        }
+        if (a.equals("headers")) {
+            filterM = mode.headers;
+            return cmd;
+        }
+        if (a.equals("count")) {
+            filterM = mode.count;
+            return cmd;
+        }
+        if (a.equals("summary")) {
+            filterM = mode.summary;
+            return cmd;
+        }
+        if (a.equals("viewer")) {
+            filterM = mode.viewer;
+            return cmd;
+        }
+        if (a.equals("csv")) {
+            filterM = mode.csv;
+            return cmd;
+        }
+        if (a.equals("html")) {
+            filterM = mode.html;
+            return cmd;
+        }
+        if (a.equals("xml")) {
+            filterM = mode.xml;
+            return cmd;
+        }
+        if (a.equals("setdel")) {
+            filterM = mode.setdel;
+            return cmd;
+        }
+        if (a.equals("ccode")) {
+            filterM = mode.ccode;
+            return cmd;
+        }
+        if (a.equals("level")) {
+            filterM = mode.level;
+            return cmd;
+        }
+        if (a.equals("linenumbers")) {
+            filterM = mode.linenum;
+            return cmd;
+        }
+        if (a.equals("hacked")) {
+            filterM = mode.hacked;
+            return cmd;
         }
         if (a.equals("include")) {
             filterS = filter2reg(filterS);
