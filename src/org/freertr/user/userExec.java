@@ -1158,8 +1158,6 @@ public class userExec {
         getHelpPipes(hl, beg + 3, rnd + 1);
         hl.add(null, false, beg + 1, new int[]{beg + 3, -1}, "ccode", "level hierarchy in brackets");
         getHelpPipes(hl, beg + 3, rnd + 1);
-        hl.add(null, false, beg + 1, new int[]{beg + 3, -1}, "summary", "just the summary of columns");
-        getHelpPipes(hl, beg + 3, rnd + 1);
         hl.add(null, false, beg + 1, new int[]{beg + 3, -1}, "linenumbers", "prepend lines with numbers");
         getHelpPipes(hl, beg + 3, rnd + 1);
         hl.add(null, false, beg + 1, new int[]{beg + 3, -1}, "hacked", "hacker writing");
@@ -1168,7 +1166,7 @@ public class userExec {
         getHelpPipes(hl, beg + 3, rnd + 1);
         hl.add(null, false, beg + 1, new int[]{beg + 3, -1}, "count", "count entities");
         getHelpPipes(hl, beg + 3, rnd + 1);
-        hl.add(null, false, beg + 1, new int[]{beg + 3, -1}, "summary", "summary entities");
+        hl.add(null, false, beg + 1, new int[]{beg + 3, -1}, "summary", "summary of columns");
         getHelpPipes(hl, beg + 3, rnd + 1);
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "include", "only lines that match");
         hl.add(null, false, beg + 2, new int[]{beg + 3, -1}, "<text>", "filter text");

@@ -625,6 +625,9 @@ public class userRead implements Comparator<String> {
         if (lst == null) {
             return null;
         }
+        if (lst.size() < 1) {
+            return null;
+        }
         switch (filterM) {
             case include:
                 return doInclude(lst);
@@ -1831,6 +1834,7 @@ public class userRead implements Comparator<String> {
         } else {
             filterN = "";
         }
+        filterM = mode.raw;
         i = a.indexOf(" ");
         if (i >= 0) {
             filterS = a.substring(i, a.length()).trim();
