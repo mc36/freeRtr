@@ -9,7 +9,11 @@ mkdir %tmp%
 binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/installation/cdrom/boot.iso %dwn%/nbsd-%nbsd2%.iso
 binary-down http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/pkg_summary.bz2 %dwn%/nbsd-%nbsd2%.pkgs
 
-exec guestfish -a %dwn%/nbsd-%nbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin /stand /netbsd /usr/mdec/bootxx_cd9660 %tmp%/
+exec guestfish -a %dwn%/nbsd-%nbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin /stand /netbsd /usr %tmp%/
+exec mv %tmp%/usr/mdec/bootxx_cd9660 %tmp%/
+exec mv %tmp%/usr/lib/libintl.* %tmp%/lib/
+exec mv %tmp%/usr/lib/librt.* %tmp%/lib/
+del-alw %tmp%/usr
 
 exec cp ../misc/image/boot.nbsd %tmp%/boot.cfg
 mkdir %tmp%/etc
@@ -24,6 +28,8 @@ mkdir %tmp%/sys
 mkdir %tmp%/usr
 mkdir %tmp%/var
 mkdir %tmp%/tmp
+exec ln -s ../lib %tmp%/usr/lib
+exec ln -s ../libexec %tmp%/usr/libexec
 exec bunzip2 -k -d -c %dwn%/nbsd-%nbsd2%.pkgs > %tmp%/tmp/data
 distinfo-pkgsrc %tmp%/tmp/data nbsd-%nbsd2% http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/
 catalog-sum

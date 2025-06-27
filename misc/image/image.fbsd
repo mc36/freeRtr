@@ -9,7 +9,9 @@ mkdir %tmp%
 binary-down http://download.freebsd.org/releases/ISO-IMAGES/%vers1%.%vers2%/FreeBSD-%vers1%.%vers2%-RELEASE-%fbsd1%-bootonly.iso %dwn%/fbsd-%fbsd2%.iso
 binary-down http://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/packagesite.pkg %dwn%/fbsd-%fbsd2%.prts
 
-exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin %tmp%/ : glob copy-out "/usr/lib/libdl.*" %tmp%/lib/
+exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /lib /libexec /sbin /usr %tmp%/
+exec mv %tmp%/usr/lib/libdl.* %tmp%/lib/
+del-alw %tmp%/usr
 
 exec cp ../misc/image/boot.fbsd %tmp%/boot/loader.conf
 mkdir %tmp%/etc
@@ -24,6 +26,8 @@ mkdir %tmp%/sys
 mkdir %tmp%/usr
 mkdir %tmp%/var
 mkdir %tmp%/tmp
+exec ln -s ../lib %tmp%/usr/lib
+exec ln -s ../libexec %tmp%/usr/libexec
 exec tar xf %dwn%/fbsd-%fbsd2%.prts -C %tmp%/tmp/
 distinfo-ports %tmp%/tmp/packagesite.yaml fbsd-%fbsd2% http://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/
 catalog-sum
