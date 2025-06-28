@@ -11,6 +11,8 @@ binary-down http://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/packagesite.pk
 
 exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /etc /lib /libexec /sbin /usr %tmp%/
 exec mv %tmp%/usr/lib/libdl.* %tmp%/lib/
+exec mv %tmp%/usr/lib/libpcap.* %tmp%/lib/
+exec mv %tmp%/usr/sbin/tcpdump %tmp%/sbin/
 del-alw %tmp%/usr
 
 exec cp ../misc/image/boot.fbsd %tmp%/boot/loader.conf
@@ -26,16 +28,15 @@ mkdir %tmp%/usr
 mkdir %tmp%/var
 mkdir %tmp%/tmp
 mkdir %tmp%/var/tcpdump
+mkdir %tmp%/var/chroot/tcpdump
 exec ln -s ../lib %tmp%/usr/lib
 exec ln -s ../libexec %tmp%/usr/libexec
 exec tar xf %dwn%/fbsd-%fbsd2%.prts -C %tmp%/tmp/
 distinfo-ports %tmp%/tmp/packagesite.yaml fbsd-%fbsd2% http://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/
 catalog-sum
 
-select-one libpcap
 select-one libdnet
 select-one libpfctl
-select-one tcpdump
 select-one tcpreplay
 select-one autogen
 
