@@ -910,7 +910,7 @@ public class userRead implements Comparator<String> {
     private boolean doPutArr(List<String> lst, userFormat.colorMode color) {
         lst = doFilterList(lst);
         for (; filterN.length() > 0;) {
-            setNfilter(filterN);
+            setNfilter();
             lst = doFilterList(lst);
         }
         if (lst == null) {
@@ -1814,24 +1814,26 @@ public class userRead implements Comparator<String> {
         }
         String a = cmd.getRemaining();
         filterO = cmd.getOriginal();
-        int i = a.indexOf("|");
+        int i = a.indexOf(" | ");
         if (i < 0) {
             return cmd;
         }
         pipeSide pip = cmd.pipe;
-        cmd = new cmds("exec", a.substring(0, i - 1).trim());
+        cmd = new cmds("exec", a.substring(0, i).trim());
         cmd.pipe = pip;
-        a = a.substring(i + 1, a.length()).trim();
-        setNfilter(a);
+        filterN = a.substring(i + 3, a.length()).trim();
+        setNfilter();
         return cmd;
     }
 
-    private void setNfilter(String a) {
-        int i = a.indexOf(" | ");
+    private void setNfilter() {
+        int i = filterN.indexOf(" | ");
+        String a;
         if (i > 0) {
-            filterN = a.substring(i + 3, a.length()).trim();
-            a = a.substring(0, i);
+            a = filterN.substring(0, i);
+            filterN = filterN.substring(i + 3, filterN.length()).trim();
         } else {
+            a = filterN;
             filterN = "";
         }
         filterS = "";
