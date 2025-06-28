@@ -27,6 +27,7 @@ mkdir %tmp%/sys
 mkdir %tmp%/usr
 mkdir %tmp%/var
 mkdir %tmp%/tmp
+mkdir %tmp%/var/tcpdump
 exec ln -s ../lib %tmp%/usr/lib
 exec ln -s ../libexec %tmp%/usr/libexec
 exec bunzip2 -k -d -c %dwn%/nbsd-%nbsd2%.pkgs > %tmp%/tmp/data
