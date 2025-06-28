@@ -151,6 +151,9 @@ public class clntSlaac implements Runnable, ipPrt {
         }
         locMask.fromString("ffff:ffff:ffff:ffff::");
         addrIPv6 ll = ipifc.getLinkLocalAddr().toIPv6();
+        if (cfger.addr6.isEmpty()) {
+            cfger.addr6changed(ll, locMask, null);
+        }
         lower.protoAdd(this, iface, null);
         packHolder pck = new packHolder(true, true);
         for (;;) {
