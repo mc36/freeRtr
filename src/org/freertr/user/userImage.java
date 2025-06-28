@@ -476,7 +476,7 @@ public class userImage {
             return false;
         }
         pkg.done = true;
-        return execCmd("tar -x -f " + name + " --keep-directory-symlink -C " + trg) != 0;
+        return execCmd("tar -x -f " + name + " " + "--keep-directory-symlink -C " + trg) != 0;
     }
 
     private boolean doIncludeAll(cmds c) {
