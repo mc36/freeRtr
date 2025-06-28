@@ -1193,8 +1193,8 @@ public class userExec {
         if (!privi) {
             return;
         }
-        hl.add(null, false, beg + 1, new int[]{beg + 19}, "redirect", "redirect output to file");
-        hl.add(null, false, beg + 19, new int[]{-1}, "<file>", "name of file");
+        hl.add(null, false, beg + 1, new int[]{beg + 9}, "redirect", "redirect output to file");
+        hl.add(null, false, beg + 9, new int[]{-1}, "<file>", "name of file");
     }
 
     /**
