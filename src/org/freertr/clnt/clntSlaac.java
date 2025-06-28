@@ -151,7 +151,6 @@ public class clntSlaac implements Runnable, ipPrt {
         }
         locMask.fromString("ffff:ffff:ffff:ffff::");
         addrIPv6 ll = ipifc.getLinkLocalAddr().toIPv6();
-        cfger.addr6changed(ll, locMask, null);
         lower.protoAdd(this, iface, null);
         packHolder pck = new packHolder(true, true);
         for (;;) {
@@ -168,7 +167,7 @@ public class clntSlaac implements Runnable, ipPrt {
                 logger.debug("sending solicit");
             }
             pck.clear();
-            ((ipIcmp6) lower.icmpCore).createRouterSol(mac, pck, cfger.addr6);
+            ((ipIcmp6) lower.icmpCore).createRouterSol(mac, pck, ll);
             iface.lower.sendProto(pck, pck.IPtrg);
             notif.sleep(10000);
         }
