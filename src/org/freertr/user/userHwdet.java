@@ -224,8 +224,8 @@ public class userHwdet {
     public static void setupIface(List<String> lst, String pth, ifcTyp typ, String nam, int mtu, String mac) {
         switch (typ) {
             case cmp1:
+                lst.add("ndp -i " + nam + " disabled -auto_linklocal");
                 lst.add("ifconfig " + nam + " mtu " + mtu + " up");
-                lst.add("ndp " + nam + " disabled -auto_linklocal");
                 return;
             case cmp2:
                 if (mac == null) {
@@ -233,8 +233,8 @@ public class userHwdet {
                 } else {
                     mac = " hw ether " + mac;
                 }
+                lst.add("ndp -i " + nam + " disabled -auto_linklocal");
                 lst.add("ifconfig " + nam + " promisc mtu " + mtu + mac + " up");
-                lst.add("ndp " + nam + " disabled -auto_linklocal");
                 return;
             case socat:
                 if (mac == null) {
