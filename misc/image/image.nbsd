@@ -30,6 +30,7 @@ mkdir %tmp%/usr
 mkdir %tmp%/var
 mkdir %tmp%/tmp
 mkdir %tmp%/var/tcpdump
+mkdir %tmp%/var/chroot
 mkdir %tmp%/var/chroot/tcpdump
 exec ln -s ../lib %tmp%/usr/lib
 exec ln -s ../libexec %tmp%/usr/libexec
