@@ -240,6 +240,7 @@ public class clntSlaac implements Runnable, ipPrt {
             return;
         }
         if (pck.ICMPtc != ipIcmp6.icmpRtrAdv) {
+            ((ipIcmp6) lower.icmpCore).recvPack(rxIfc, pck);
             return;
         }
         pck.getSkip(ipIcmp6.size);
