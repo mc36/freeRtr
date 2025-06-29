@@ -225,6 +225,7 @@ public class userHwdet {
         switch (typ) {
             case cmp1:
                 lst.add("ifconfig " + nam + " mtu " + mtu + " up");
+                lst.add("ndp " + nam + " disabled -auto_linklocal");
                 return;
             case cmp2:
                 if (mac == null) {
@@ -233,6 +234,7 @@ public class userHwdet {
                     mac = " hw ether " + mac;
                 }
                 lst.add("ifconfig " + nam + " promisc mtu " + mtu + mac + " up");
+                lst.add("ndp " + nam + " disabled -auto_linklocal");
                 return;
             case socat:
                 if (mac == null) {

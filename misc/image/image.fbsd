@@ -13,6 +13,7 @@ exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /e
 exec mv %tmp%/usr/lib/libdl.* %tmp%/lib/
 exec mv %tmp%/usr/lib/libpcap.* %tmp%/lib/
 exec mv %tmp%/usr/sbin/tcpdump %tmp%/sbin/
+exec mv %tmp%/usr/sbin/ndp %tmp%/sbin/
 del-alw %tmp%/usr
 
 exec cp ../misc/image/boot.fbsd %tmp%/boot/loader.conf

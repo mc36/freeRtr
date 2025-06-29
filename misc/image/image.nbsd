@@ -15,6 +15,7 @@ exec mv %tmp%/usr/lib/libintl.* %tmp%/lib/
 exec mv %tmp%/usr/lib/librt.* %tmp%/lib/
 exec mv %tmp%/usr/lib/libpcap.* %tmp%/lib/
 exec mv %tmp%/usr/sbin/tcpdump %tmp%/sbin/
+exec mv %tmp%/usr/sbin/ndp %tmp%/sbin/
 del-alw %tmp%/usr
 
 exec cp ../misc/image/boot.nbsd %tmp%/boot.cfg
