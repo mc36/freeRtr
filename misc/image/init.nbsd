@@ -7,6 +7,7 @@ mount -t procfs procfs /proc
 mount -t kernfs kernfs /sys
 mount -t tmpfs -o union tmpfs /rtr
 modload compat_linux
+sysctl -w net.inet6.ip6.auto_linklocal=0
 
 cd /rtr/
 ifconfig -a > /rtr/hwdet.eth
