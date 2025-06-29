@@ -1,5 +1,5 @@
 download 3
-reget-time 720
+reget-time 168
 vers 14 3
 
 mkdir %dwn%
