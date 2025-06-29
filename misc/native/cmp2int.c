@@ -221,6 +221,9 @@ help :
     write(playFifo, buf, i);
     printf("tcpreplay is %i, tcpdump is %i, header is %i, record is %i\n", playChld, dumpChld, i, packHead);
 
+    setgid(1);
+    setuid(1);
+    printf("serving others\n");
 
     if (pthread_create(&threadRaw, NULL, (void*) & doRawLoop, NULL)) err("error creating raw thread");
     if (pthread_create(&threadUdp, NULL, (void*) & doUdpLoop, NULL)) err("error creating udp thread");

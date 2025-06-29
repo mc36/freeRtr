@@ -49,9 +49,13 @@ public class userHwdet {
          */
         xsk,
         /**
-         * cmp
+         * cmp1
          */
-        cmp
+        cmp1,
+        /**
+         * cmp2
+         */
+        cmp2,
     }
 
     /**
@@ -165,8 +169,11 @@ public class userHwdet {
         if (s.equals("xsk")) {
             return ifcTyp.xsk;
         }
-        if (s.equals("cmp")) {
-            return ifcTyp.cmp;
+        if (s.equals("cmp1")) {
+            return ifcTyp.cmp1;
+        }
+        if (s.equals("cmp2")) {
+            return ifcTyp.cmp2;
         }
         if (s.equals("urng")) {
             return ifcTyp.urng;
@@ -216,7 +223,10 @@ public class userHwdet {
      */
     public static void setupIface(List<String> lst, String pth, ifcTyp typ, String nam, int mtu, String mac) {
         switch (typ) {
-            case cmp:
+            case cmp1:
+                lst.add("ifconfig " + nam + " mtu " + mtu + " up");
+                return;
+            case cmp2:
                 if (mac == null) {
                     mac = "";
                 } else {
@@ -278,8 +288,10 @@ public class userHwdet {
                 return path + "mapInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             case xsk:
                 return path + "xskInt.bin " + nam + " skb " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
-            case cmp:
-                return path + "cmpInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
+            case cmp1:
+                return path + "cmp1int.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
+            case cmp2:
+                return path + "cmp2int.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             case urng:
                 return path + "urngInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             default:
@@ -490,10 +502,14 @@ public class userHwdet {
     private void doReboot(List<String> lst, int cod) {
         lst.add("if [ $? -eq " + cod + " ] ; then");
         lst.add("  sync");
-        if (ifaceType == ifcTyp.cmp) {
-            lst.add("  reboot");
-        } else {
-            lst.add("  reboot -f");
+        switch (ifaceType) {
+            case cmp1:
+            case cmp2:
+                lst.add("  reboot");
+                break;
+            default:
+                lst.add("  reboot -f");
+                break;
         }
         lst.add("fi");
     }
@@ -636,26 +652,34 @@ public class userHwdet {
         starter.add(scrBeg);
         starter.add("");
         starter.add("cd " + path);
-        if (ifaceType == ifcTyp.cmp) {
-            starter.add("ifconfig -a > " + lstEth);
-        } else {
-            starter.add("ip link show > " + lstEth);
+        switch (ifaceType) {
+            case cmp1:
+            case cmp2:
+                starter.add("ifconfig -a > " + lstEth);
+                break;
+            default:
+                starter.add("ip link show > " + lstEth);
+                break;
         }
         starter.add(rtr + " test hwred path " + path + " eth " + lstEth);
         doReboot(starter, 20);
-        if (ifaceType == ifcTyp.cmp) {
-            starter.add("ifconfig lo0 127.0.0.1 mtu 65535 up");
-        } else {
-            starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
-            starter.add("echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6");
-            starter.add("echo 0 > /proc/sys/net/ipv6/conf/lo/disable_ipv6");
-            starter.add("ip link set lo up mtu 65535");
-            starter.add("ip addr add 127.0.0.1/8 dev lo");
-            starter.add("ip addr add ::1/128 dev lo");
-            starter.add("ulimit -c unlimited");
-            starter.add("#modprobe -r kvm_intel");
-            starter.add("#modprobe kvm_intel nested=1");
-            starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
+        switch (ifaceType) {
+            case cmp1:
+            case cmp2:
+                starter.add("ifconfig lo0 127.0.0.1 mtu 65535 up");
+                break;
+            default:
+                starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
+                starter.add("echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6");
+                starter.add("echo 0 > /proc/sys/net/ipv6/conf/lo/disable_ipv6");
+                starter.add("ip link set lo up mtu 65535");
+                starter.add("ip addr add 127.0.0.1/8 dev lo");
+                starter.add("ip addr add ::1/128 dev lo");
+                starter.add("ulimit -c unlimited");
+                starter.add("#modprobe -r kvm_intel");
+                starter.add("#modprobe kvm_intel nested=1");
+                starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
+                break;
         }
         detectIfaces(path + lstEth);
         detectCrosses(cross);

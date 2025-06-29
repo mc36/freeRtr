@@ -38,6 +38,7 @@ distinfo-pkgsrc %tmp%/tmp/data nbsd-%nbsd2% http://cdn.netbsd.org/pub/pkgsrc/pac
 catalog-sum
 
 select-one libdnet
+select-one libpfctl
 select-one tcpreplay
 select-one autogen
 
