@@ -512,6 +512,9 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         if (i < 0) {
             i = 0;
         }
+        if (i >= timeout) {
+            i = 0;
+        }
         return i;
     }
 
