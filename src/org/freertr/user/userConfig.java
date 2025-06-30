@@ -2099,6 +2099,8 @@ public class userConfig {
         l.add(null, false, 4, new int[]{5}, "sequence", "sequence number");
         l.add(null, false, 5, new int[]{6}, "<num>", "number");
         l.add(null, false, 6, new int[]{-1}, "log-translations", "turn on logging");
+        l.add(null, false, 6, new int[]{7}, "filter", "specify filter acl");
+        l.add(null, false, 7, new int[]{-1}, "<name:acl>", "access list name");
         l.add(null, false, 6, new int[]{7}, "timeout", "specify timeout");
         l.add(null, false, 7, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 6, new int[]{7}, "sessions", "specify translation limit");
