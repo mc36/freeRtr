@@ -507,12 +507,12 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         return name + "|" + force2string(force) + "|" + mode2string(mode) + "|" + target + "|" + (getStatus() ? "up" : "down") + "|" + totalChng + "|" + getRtt() + "|" + bits.timePast(finalTime);
     }
 
-    private int getRtt() {
+    private long getRtt() {
         long i = (stopTime - startTime);
         if (i < 0) {
             i = 0;
         }
-        return (int) i;
+        return i;
     }
 
     /**
