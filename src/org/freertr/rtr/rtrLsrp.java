@@ -565,12 +565,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return log of spf
      */
     public userFormat showSpfTopo(cmds cmd) {
-        if (cmd.size() < 1) {
-            return lastSpf.listTopology();
-        }
-        addrIPv4 ned = new addrIPv4();
-        ned.fromString(cmd.word());
-        return lastSpf.listTopology(ned);
+        return lastSpf.listTopology(new addrIPv4(), cmd);
     }
 
     /**
@@ -617,12 +612,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        if (cmd.size() < 1) {
-            return spf.listTopology();
-        }
-        ned = new addrIPv4();
-        ned.fromString(cmd.word());
-        return spf.listTopology(ned);
+        return spf.listTopology(new addrIPv4(), cmd);
     }
 
     /**

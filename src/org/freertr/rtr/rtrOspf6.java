@@ -1094,12 +1094,7 @@ public class rtrOspf6 extends ipRtr {
         if (ara == null) {
             return null;
         }
-        if (cmd.size() < 1) {
-            return ara.lastSpf.listTopology();
-        }
-        rtrOspf6areaSpf ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
-        ned.fromString(cmd.word());
-        return ara.lastSpf.listTopology(ned);
+        return ara.lastSpf.listTopology(new rtrOspf6areaSpf(new addrIPv4(), 0), cmd);
     }
 
     /**
@@ -1170,12 +1165,7 @@ public class rtrOspf6 extends ipRtr {
         rtrOspf6areaSpf ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        if (cmd.size() < 1) {
-            return spf.listTopology();
-        }
-        ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
-        ned.fromString(cmd.word());
-        return spf.listTopology(ned);
+        return spf.listTopology(new rtrOspf6areaSpf(new addrIPv4(), 0), cmd);
     }
 
     /**

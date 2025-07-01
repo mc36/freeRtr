@@ -682,14 +682,15 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * get backplane show
      *
      * @param fwd forwarder
+     * @param cmd masks
      * @return show
      */
-    public userFormat getShowTopo(int fwd) {
+    public userFormat getShowTopo(int fwd, cmds cmd) {
         if ((fwd < 0) || (fwd >= fwds.size())) {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        return cur.spf.listTopology();
+        return cur.spf.listTopology(new addrIP(), cmd);
     }
 
     /**

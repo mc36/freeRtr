@@ -1234,10 +1234,80 @@ public class spfCalc<Ta extends addrType> {
     /**
      * list topology
      *
-     * @param adr address of node
+     * @param adr fresh address
+     * @param cmd masks to use
      * @return list of topology
      */
-    public userFormat listTopology(Ta adr) {
+    public userFormat listTopology(Ta adr, cmds cmd) {
+        String dns = null;
+        String nod = null;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("dns")) {
+                dns = cmd.word();
+                continue;
+            }
+            nod = a;
+        }
+        if (nod == null) {
+            userFormat res = new userFormat("|", "node|category|value|addition");
+            for (int i = 0; i < nodes.size(); i++) {
+                spfNode<Ta> ntry = nodes.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                String nam = node2name(ntry, dns);
+                res.add(nam + "|reach|" + ntry.visited + "|" + ntry.conn.size());
+                res.add(nam + "|segrou|" + ntry.srIdx);
+                res.add(nam + "|bieri|" + ntry.brIdx);
+                res.add(nam + "|bierd|" + ntry.brSub);
+                for (int o = 0; o < ntry.algo.size(); o++) {
+                    res.add(nam + "|flexalgo|" + ntry.algo.get(o));
+                }
+                for (int o = 0; o < ntry.conn.size(); o++) {
+                    spfConn<Ta> con = ntry.conn.get(o);
+                    if (con == null) {
+                        continue;
+                    }
+                    res.add(nam + "|neigh|" + node2name(con.target, dns) + "|" + con.metric);
+                }
+                for (int o = 0; o < ntry.prfFix.size(); o++) {
+                    tabRouteEntry<addrIP> rou = ntry.prfFix.get(o);
+                    if (rou == null) {
+                        continue;
+                    }
+                    res.add(nam + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
+                }
+                for (int o = 0; o < ntry.prfAdd.size(); o++) {
+                    tabRouteEntry<addrIP> rou = ntry.prfAdd.get(o);
+                    if (rou == null) {
+                        continue;
+                    }
+                    res.add(nam + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
+                }
+                for (int o = 0; o < ntry.othFix.size(); o++) {
+                    tabRouteEntry<addrIP> rou = ntry.othFix.get(o);
+                    if (rou == null) {
+                        continue;
+                    }
+                    res.add(nam + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
+                }
+                for (int o = 0; o < ntry.othAdd.size(); o++) {
+                    tabRouteEntry<addrIP> rou = ntry.othAdd.get(o);
+                    if (rou == null) {
+                        continue;
+                    }
+                    res.add(nam + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
+                }
+            }
+            return res;
+        }
+        if (adr.fromString(nod)) {
+            return null;
+        }
         userFormat res = new userFormat("|", "category|value|addition");
         spfNode<Ta> ntry = new spfNode<Ta>(adr);
         ntry = nodes.find(ntry);
@@ -1321,64 +1391,6 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
             res.add("addprefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
-        }
-        return res;
-    }
-
-    /**
-     * list topology
-     *
-     * @return list of topology
-     */
-    public userFormat listTopology() {
-        userFormat res = new userFormat("|", "node|category|value|addition");
-        for (int i = 0; i < nodes.size(); i++) {
-            spfNode<Ta> ntry = nodes.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            res.add(ntry + "|reach|" + ntry.visited + "|" + ntry.conn.size());
-            res.add(ntry + "|segrou|" + ntry.srIdx);
-            res.add(ntry + "|bieri|" + ntry.brIdx);
-            res.add(ntry + "|bierd|" + ntry.brSub);
-            for (int o = 0; o < ntry.algo.size(); o++) {
-                res.add(ntry + "|flexalgo|" + ntry.algo.get(o));
-            }
-            for (int o = 0; o < ntry.conn.size(); o++) {
-                spfConn<Ta> con = ntry.conn.get(o);
-                if (con == null) {
-                    continue;
-                }
-                res.add(ntry + "|neigh|" + con.target + "|" + con.metric);
-            }
-            for (int o = 0; o < ntry.prfFix.size(); o++) {
-                tabRouteEntry<addrIP> rou = ntry.prfFix.get(o);
-                if (rou == null) {
-                    continue;
-                }
-                res.add(ntry + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
-            }
-            for (int o = 0; o < ntry.prfAdd.size(); o++) {
-                tabRouteEntry<addrIP> rou = ntry.prfAdd.get(o);
-                if (rou == null) {
-                    continue;
-                }
-                res.add(ntry + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
-            }
-            for (int o = 0; o < ntry.othFix.size(); o++) {
-                tabRouteEntry<addrIP> rou = ntry.othFix.get(o);
-                if (rou == null) {
-                    continue;
-                }
-                res.add(ntry + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
-            }
-            for (int o = 0; o < ntry.othAdd.size(); o++) {
-                tabRouteEntry<addrIP> rou = ntry.othAdd.get(o);
-                if (rou == null) {
-                    continue;
-                }
-                res.add(ntry + "|prefix|" + addrPrefix.ip2str(rou.prefix) + "|" + rou.best.metric);
-            }
         }
         return res;
     }

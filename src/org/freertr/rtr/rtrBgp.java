@@ -5157,12 +5157,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return log of spf
      */
     public userFormat getSpfTopo(cmds cmd) {
-        if (cmd.size() < 1) {
-            return lspf.lastSpf.listTopology();
-        }
-        addrIPv4 ned = new addrIPv4();
-        ned.fromString(cmd.word());
-        return lspf.lastSpf.listTopology(ned);
+        return lspf.lastSpf.listTopology(new addrIPv4(), cmd);
     }
 
     /**
@@ -5209,12 +5204,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        if (cmd.size() < 1) {
-            return spf.listTopology();
-        }
-        ned = new addrIPv4();
-        ned.fromString(cmd.word());
-        return spf.listTopology(ned);
+        return spf.listTopology(new addrIPv4(), cmd);
     }
 
     /**

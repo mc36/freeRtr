@@ -2234,12 +2234,7 @@ public class rtrIsis extends ipRtr {
      */
     public userFormat showSpfTopo(int level, cmds cmd) {
         rtrIsisLevel lev = getLevel(level);
-        if (cmd.size() < 1) {
-            return lev.lastSpf.listTopology();
-        }
-        rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
-        ned.fromString(cmd.word());
-        return lev.lastSpf.listTopology(ned);
+        return lev.lastSpf.listTopology(new rtrIsisLevelSpf(new addrIsis(), 0), cmd);
     }
 
     /**
@@ -2294,12 +2289,7 @@ public class rtrIsis extends ipRtr {
         rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        if (cmd.size() < 1) {
-            return spf.listTopology();
-        }
-        ned = new rtrIsisLevelSpf(new addrIsis(), 0);
-        ned.fromString(cmd.word());
-        return spf.listTopology(ned);
+        return spf.listTopology(new rtrIsisLevelSpf(new addrIsis(), 0), cmd);
     }
 
     /**

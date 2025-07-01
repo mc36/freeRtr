@@ -1451,7 +1451,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("topology")) {
-                rdr.putStrTab(srv.getShowTopo(bits.str2num(cmd.word())));
+                rdr.putStrTab(srv.getShowTopo(bits.str2num(cmd.word()), cmd));
                 return null;
             }
             if (a.equals("tree")) {
