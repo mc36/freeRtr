@@ -22,6 +22,7 @@ import org.freertr.rtr.rtrBfdClnt;
 import org.freertr.rtr.rtrBfdIface;
 import org.freertr.rtr.rtrBfdNeigh;
 import org.freertr.rtr.rtrHsrpIface;
+import org.freertr.rtr.rtrLdpNeigh;
 import org.freertr.rtr.rtrNshIface;
 import org.freertr.rtr.rtrPimIface;
 import org.freertr.rtr.rtrPtpIface;
@@ -477,6 +478,16 @@ public class ipFwdIface extends tabRouteIface {
      * static mpls bindings
      */
     public final tabGen<ipFwdIfaceBind> mplStat = new tabGen<ipFwdIfaceBind>();
+
+    /**
+     * static mpls peer
+     */
+    public addrIP mplPeer;
+
+    /**
+     * static mpls hop
+     */
+    public addrIP mplHop;
 
     /**
      * create new instance
@@ -2526,24 +2537,44 @@ public class ipFwdIface extends tabRouteIface {
     /**
      * get static label
      *
+     * @param lower forwarder
      * @param pfx prefix
      * @param hop next hop
      * @return fake route entry, null if not found
      */
-    public tabRouteEntry<addrIP> labelsFind(addrPrefix<addrIP> pfx, addrIP hop) {
+    public tabRouteEntry<addrIP> labelsFind(ipFwd lower, addrPrefix<addrIP> pfx, addrIP hop) {
         ipFwdIfaceBind bnd = new ipFwdIfaceBind();
         bnd.pfx = pfx;
         bnd.hop = hop;
         bnd = mplStat.find(bnd);
-        if (bnd == null) {
+        if (bnd != null) {
+            tabRouteEntry<addrIP> res = new tabRouteEntry<addrIP>();
+            res.best.iface = this;
+            res.best.nextHop = hop;
+            if (bnd.lab >= 0) {
+                res.best.labelRem = tabLabel.int2labels(bnd.lab);
+            }
+            return res;
+        }
+        if (mplPeer == null) {
             return null;
         }
-        tabRouteEntry<addrIP> res = new tabRouteEntry<addrIP>();
+        rtrLdpNeigh nei = lower.ldpNeighFind(null, mplPeer, false);
+        if (nei == null) {
+            return null;
+        }
+        tabRouteEntry<addrIP> res = nei.prefLearn.find(pfx);
+        if (res == null) {
+            return null;
+        }
+        List<Integer> lab = res.best.labelRem;
+        if (lab == null) {
+            return null;
+        }
+        res = new tabRouteEntry<addrIP>();
         res.best.iface = this;
         res.best.nextHop = hop;
-        if (bnd.lab >= 0) {
-            res.best.labelRem = tabLabel.int2labels(bnd.lab);
-        }
+        res.best.labelRem = lab;
         return res;
     }
 
@@ -2551,12 +2582,16 @@ public class ipFwdIface extends tabRouteIface {
      * get config
      *
      * @param l list to append
-     * @param beg beginning
+     * @param beg1 beginning
+     * @param beg2 beginning
      */
-    public void labelsCfg(List<String> l, String beg) {
+    public void labelsCfg(List<String> l, String beg1, String beg2) {
         for (int i = 0; i < mplStat.size(); i++) {
             ipFwdIfaceBind ntry = mplStat.get(i);
-            l.add(beg + " " + addrPrefix.ip2str(ntry.pfx) + " " + ntry.hop + " " + ntry.lab);
+            l.add(beg1 + " " + addrPrefix.ip2str(ntry.pfx) + " " + ntry.hop + " " + ntry.lab);
+        }
+        if (mplPeer != null) {
+            l.add(beg2 + " " + mplPeer + " " + mplHop);
         }
     }
 

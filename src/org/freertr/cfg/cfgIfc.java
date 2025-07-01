@@ -5580,6 +5580,34 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     }
 
     /**
+     * setup static peer usage
+     *
+     * @param ver ip version
+     * @param per peer address, null to remove
+     * @param hop nexthop address to fake
+     */
+    public synchronized void setup2statPeer(int ver, String per, String hop) {
+        ipFwdIface ifc;
+        if (ver == 4) {
+            ifc = fwdIf4;
+        } else {
+            ifc = fwdIf6;
+        }
+        if (ifc == null) {
+            return;
+        }
+        if (per == null) {
+            ifc.mplPeer = null;
+            ifc.mplHop = null;
+            return;
+        }
+        ifc.mplPeer = new addrIP();
+        ifc.mplPeer.fromString(per);
+        ifc.mplHop = new addrIP();
+        ifc.mplHop.fromString(hop);
+    }
+
+    /**
      * setup static label binding
      *
      * @param net prefix
@@ -6479,11 +6507,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (fwdIf4 != null) {
             fwdIf4.ldpasCfg(l, cmds.tabulator + "mpls ldppassword", filter);
-            fwdIf4.labelsCfg(l, cmds.tabulator + "mpls static-label");
+            fwdIf4.labelsCfg(l, cmds.tabulator + "mpls static-label", " mpls use4peer");
         }
         if (fwdIf6 != null) {
             fwdIf6.ldpasCfg(l, cmds.tabulator + "mpls ldppassword", filter);
-            fwdIf6.labelsCfg(l, cmds.tabulator + "mpls static-label");
+            fwdIf6.labelsCfg(l, cmds.tabulator + "mpls static-label", " mpls use6peer");
         }
         if (rtrBabel4hnd != null) {
             s = "router babel4 " + rtrBabel4hnd.number + " ";
@@ -7078,6 +7106,12 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "<name:pl>", "name of prefix list");
         l.add(null, false, 2, new int[]{3}, "label6out", "set label filter");
         l.add(null, false, 3, new int[]{-1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, 2, new int[]{3}, "use4peer", "label mapping from ldp");
+        l.add(null, false, 3, new int[]{4}, "<addr>", "ldp peer to use");
+        l.add(null, false, 4, new int[]{-1}, "<addr>", "nexthop to fake");
+        l.add(null, false, 2, new int[]{3}, "use6peer", "label mapping from ldp");
+        l.add(null, false, 3, new int[]{4}, "<addr>", "ldp peer to use");
+        l.add(null, false, 4, new int[]{-1}, "<addr>", "nexthop to fake");
         l.add(null, false, 2, new int[]{3}, "static-label", "static label mapping");
         l.add(null, false, 3, new int[]{4}, "<addr>", "prefix to bind");
         l.add(null, false, 4, new int[]{5}, "<addr>", "nexthop to bind");
@@ -10032,6 +10066,16 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             setup2statLabel(s, a, bits.str2num(cmd.word()), true);
             return;
         }
+        if (s.equals("use4peer")) {
+            s = cmd.word();
+            setup2statPeer(4, s, cmd.word());
+            return;
+        }
+        if (s.equals("use6peer")) {
+            s = cmd.word();
+            setup2statPeer(6, s, cmd.word());
+            return;
+        }
         if (s.equals("ldppassword")) {
             s = cmd.word();
             addeLdppwd(s, cmd.word(), true);
@@ -10154,6 +10198,14 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (s.equals("static-label")) {
             s = cmd.word();
             setup2statLabel(s, cmd.word(), 0, false);
+            return;
+        }
+        if (s.equals("use4peer")) {
+            setup2statPeer(4, null, null);
+            return;
+        }
+        if (s.equals("use6peer")) {
+            setup2statPeer(6, null, null);
             return;
         }
         if (s.equals("ldppassword")) {

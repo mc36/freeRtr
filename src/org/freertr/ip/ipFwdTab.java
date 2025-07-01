@@ -1433,7 +1433,7 @@ public class ipFwdTab {
         if (ntry.rouTab != null) {
             return;
         }
-        tabRouteEntry<addrIP> stLb = ((ipFwdIface) ntry.iface).labelsFind(prefix.prefix, ntry.nextHop);
+        tabRouteEntry<addrIP> stLb = ((ipFwdIface) ntry.iface).labelsFind(lower, prefix.prefix, ntry.nextHop);
         if (stLb != null) {
             tabRouteAttr<addrIP> stBn = stLb.sameFwder(ntry);
             if (stBn != null) {
