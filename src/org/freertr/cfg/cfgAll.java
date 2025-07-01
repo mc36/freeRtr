@@ -3678,6 +3678,23 @@ public class cfgAll {
     }
 
     /**
+     * build list of checks
+     *
+     * @return text to display
+     */
+    public static userFormat getShCheck() {
+        userFormat l = new userFormat("|", "name|state|asked|reply|times|last|times|last", "4|2pass|2fail");
+        for (int i = 0; i < cfgAll.checks.size(); i++) {
+            cfgCheck ntry = cfgAll.checks.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            l.add(ntry.getShSum());
+        }
+        return l;
+    }
+
+    /**
      * build list of mtrackers
      *
      * @return text to display

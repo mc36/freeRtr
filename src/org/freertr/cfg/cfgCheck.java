@@ -208,12 +208,12 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
         l.add(null, false, 1, new int[]{2}, "rename", "rename this check");
         l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
         l.add(null, false, 1, new int[]{2}, "resolve", "resolve the regexp group a to hostname");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text to resolv");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text to resolv");
         l.add(null, false, 1, new int[]{2}, "replace", "replace from one string to another");
         l.add(null, false, 2, new int[]{3}, "<str>", "source string");
-        l.add(null, false, 3, new int[]{3,-1}, "<str>", "target string");
-        l.add(null, false, 1, new int[]{2,-1}, "train", "train command to current result");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "target string");
+        l.add(null, false, 1, new int[]{2, -1}, "train", "train command to current result");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{-1}, "alternate", "alternate reported state on diff change");
         l.add(null, false, 1, new int[]{2}, "severity", "severity level");
         l.add(null, false, 2, new int[]{-1}, "critical", "critical");
@@ -223,26 +223,26 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
         l.add(null, false, 1, new int[]{2}, "template", "template arameters");
         l.add(null, false, 2, new int[]{-1}, "<name:chk>", "name of check");
         l.add(null, false, 1, new int[]{2}, "command", "specify command to execute");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "command");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "command");
         l.add(null, false, 1, new int[]{2}, "description", "specify description");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "description");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "description");
         l.add(null, false, 1, new int[]{2}, "error-text", "specify error text");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{-1}, "error-states", "remove state of messages");
         l.add(null, false, 1, new int[]{-1}, "error-commands", "include commands in states");
         l.add(null, false, 1, new int[]{-1}, "error-hostname", "include local hostname in states");
         l.add(null, false, 1, new int[]{2}, "require-regexp", "require one regexp line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "ignore-regexp", "ignore one regexp line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "ignorall-regexp", "ignore all regexp line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "require-text", "require one text line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "ignore-text", "ignore one text line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "ignorall-text", "ignore all text line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
     }
 
     public List<String> getShRun(int filter) {
@@ -632,8 +632,17 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
      *
      * @return true if up, false if down
      */
-    public boolean doCheckBinary() {
+    public boolean getStatus() {
         return doCheckText().size() < 1;
+    }
+
+    /**
+     * get summary line
+     *
+     * @return string
+     */
+    public String getShSum() {
+        return name + "|" + (getStatus() ? "up" : "down") + "|" + (okNum + errNum) + "|" + time + "|" + okNum + "|" + bits.timePast(okTim) + "|" + errNum + "|" + bits.timePast(errTim);
     }
 
     /**

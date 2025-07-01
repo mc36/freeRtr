@@ -707,7 +707,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
                     haveResult(false);
                     return;
                 }
-                haveResult(check.doCheckBinary());
+                haveResult(check.getStatus());
                 return;
             case nrpe:
                 if (target == null) {

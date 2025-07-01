@@ -1232,12 +1232,7 @@ public class userShow {
         if (a.equals("check")) {
             a = cmd.word();
             if (a.length() < 1) {
-                userFormat l = new userFormat("|", "name|state|asked|reply|times|last|times|last", "4|2pass|2fail");
-                for (int i = 0; i < cfgAll.checks.size(); i++) {
-                    cfgCheck ntry = cfgAll.checks.get(i);
-                    l.add(ntry.name + "|" + ntry.doCheckBinary() + "|" + (ntry.okNum + ntry.errNum) + "|" + ntry.time + "|" + ntry.okNum + "|" + bits.timePast(ntry.okTim) + "|" + ntry.errNum + "|" + bits.timePast(ntry.errTim));
-                }
-                rdr.putStrTab(l);
+                rdr.putStrTab(cfgAll.getShCheck());
                 return null;
             }
             cfgCheck srv = cfgAll.checkFind(a, false);
