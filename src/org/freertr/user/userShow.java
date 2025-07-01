@@ -1455,7 +1455,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("tree")) {
-                rdr.putStrArr(srv.getShowTree(bits.str2num(cmd.word())));
+                rdr.putStrArr(srv.getShowTree(bits.str2num(cmd.word()), cmd));
                 return null;
             }
             if (a.equals("graph")) {
@@ -2421,7 +2421,7 @@ public class userShow {
                     return null;
                 }
                 if (a.equals("tree")) {
-                    rdr.putStrArr(r.ospf4.showSpfTree(bits.str2num(cmd.word())));
+                    rdr.putStrArr(r.ospf4.showSpfTree(bits.str2num(cmd.word()), cmd));
                     return null;
                 }
                 if (a.equals("othertree")) {
@@ -2788,7 +2788,7 @@ public class userShow {
                     return null;
                 }
                 if (a.equals("tree")) {
-                    rdr.putStrArr(r.ospf6.showSpfTree(bits.str2num(cmd.word())));
+                    rdr.putStrArr(r.ospf6.showSpfTree(bits.str2num(cmd.word()), cmd));
                     return null;
                 }
                 if (a.equals("othertree")) {
@@ -3345,7 +3345,7 @@ public class userShow {
             return;
         }
         if (a.equals("tree")) {
-            rdr.putStrArr(r.lsrp.showSpfTree());
+            rdr.putStrArr(r.lsrp.showSpfTree(cmd));
             return;
         }
         if (a.equals("othertree")) {
@@ -3429,7 +3429,7 @@ public class userShow {
             return;
         }
         if (a.equals("tree")) {
-            rdr.putStrArr(r.rift.showSpfTree(cmd.word()));
+            rdr.putStrArr(r.rift.showSpfTree(cmd.word(), cmd));
             return;
         }
         if (a.equals("othertree")) {
@@ -3576,7 +3576,7 @@ public class userShow {
             return;
         }
         if (a.equals("tree")) {
-            rdr.putStrArr(r.isis.showSpfTree(bits.str2num(cmd.word())));
+            rdr.putStrArr(r.isis.showSpfTree(bits.str2num(cmd.word()), cmd));
             return;
         }
         if (a.equals("othertree")) {
@@ -4396,7 +4396,7 @@ public class userShow {
                 return;
             }
             if (a.equals("tree")) {
-                rdr.putStrArr(r.bgp.getSpfTree());
+                rdr.putStrArr(r.bgp.getSpfTree(cmd));
                 return;
             }
             if (a.equals("othertree")) {

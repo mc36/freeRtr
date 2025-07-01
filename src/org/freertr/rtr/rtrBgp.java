@@ -5177,10 +5177,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * show tree
      *
+     * @param cmd entry to find
      * @return tree of spf
      */
-    public List<String> getSpfTree() {
-        return lspf.lastSpf.listTree();
+    public List<String> getSpfTree(cmds cmd) {
+        return lspf.lastSpf.listTree(cmd);
     }
 
     /**
@@ -5194,7 +5195,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        return spf.listTree();
+        return spf.listTree(cmd);
     }
 
     /**

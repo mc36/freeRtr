@@ -1121,15 +1121,16 @@ public class rtrOspf6 extends ipRtr {
      * show tree
      *
      * @param area area number
+     * @param cmd entry to find
      * @return tree of spf
      */
-    public List<String> showSpfTree(int area) {
+    public List<String> showSpfTree(int area, cmds cmd) {
         rtrOspf6area ara = new rtrOspf6area(this, area);
         ara = areas.find(ara);
         if (ara == null) {
             return new ArrayList<String>();
         }
-        return ara.lastSpf.listTree();
+        return ara.lastSpf.listTree(cmd);
     }
 
     /**
@@ -1149,7 +1150,7 @@ public class rtrOspf6 extends ipRtr {
         rtrOspf6areaSpf ned = new rtrOspf6areaSpf(new addrIPv4(), 0);
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        return spf.listTree();
+        return spf.listTree(cmd);
     }
 
     /**

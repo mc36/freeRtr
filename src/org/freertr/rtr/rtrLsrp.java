@@ -585,10 +585,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * show tree
      *
+     * @param cmd entry to find
      * @return tree of spf
      */
-    public List<String> showSpfTree() {
-        return lastSpf.listTree();
+    public List<String> showSpfTree(cmds cmd) {
+        return lastSpf.listTree(cmd);
     }
 
     /**
@@ -602,7 +603,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        return spf.listTree();
+        return spf.listTree(cmd);
     }
 
     /**

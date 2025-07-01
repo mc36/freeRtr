@@ -2257,11 +2257,12 @@ public class rtrIsis extends ipRtr {
      * show tree
      *
      * @param level level number
+     * @param cmd entry to find
      * @return tree of spf
      */
-    public List<String> showSpfTree(int level) {
+    public List<String> showSpfTree(int level, cmds cmd) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.lastSpf.listTree();
+        return lev.lastSpf.listTree(cmd);
     }
 
     /**
@@ -2277,7 +2278,7 @@ public class rtrIsis extends ipRtr {
         rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        return spf.listTree();
+        return spf.listTree(cmd);
     }
 
     /**

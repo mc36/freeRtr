@@ -1425,18 +1425,30 @@ public class spfCalc<Ta extends addrType> {
     /**
      * list tree
      *
+     * @param cmd masks to use
      * @return list
      */
-    public List<String> listTree() {
+    public List<String> listTree(cmds cmd) {
+        String dns = null;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("dns")) {
+                dns = cmd.word();
+                continue;
+            }
+        }
         List<String> res = new ArrayList<String>();
         if (spfRoot == null) {
             return res;
         }
-        listTree(res, spfRoot, "");
+        listTree(res, dns, spfRoot, "");
         return res;
     }
 
-    private void listTree(List<String> res, spfNode<Ta> ntry, String pref) {
+    private void listTree(List<String> res, String dns, spfNode<Ta> ntry, String pref) {
         List<spfConn<Ta>> down = new ArrayList<spfConn<Ta>>();
         for (int i = 0; i < ntry.conn.size(); i++) {
             spfConn<Ta> cur = ntry.conn.get(i);
@@ -1448,11 +1460,11 @@ public class spfCalc<Ta extends addrType> {
             }
             down.add(cur);
         }
-        res.add(pref + "`--" + ntry);
+        res.add(pref + "`--" + node2name(ntry, dns));
         for (int i = 0; i < down.size(); i++) {
             spfConn<Ta> cur = down.get(i);
             String a = (i + 1) == down.size() ? "   " : "  |";
-            listTree(res, cur.target, pref + a);
+            listTree(res, dns, cur.target, pref + a);
         }
     }
 

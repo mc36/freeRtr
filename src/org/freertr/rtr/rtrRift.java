@@ -427,10 +427,11 @@ public class rtrRift extends ipRtr implements Runnable {
      * show tree
      *
      * @param dir direction
+     * @param cmd entry to find
      * @return tree of spf
      */
-    public List<String> showSpfTree(String dir) {
-        return getSpf(dir).listTree();
+    public List<String> showSpfTree(String dir, cmds cmd) {
+        return getSpf(dir).listTree(cmd);
     }
 
     /**
@@ -443,7 +444,7 @@ public class rtrRift extends ipRtr implements Runnable {
         spfCalc<rtrRiftTieSpf> spf = getSpf(cmd.word()).copyBytes();
         rtrRiftTieSpf ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
         spf.doWork(null, ned, null);
-        return spf.listTree();
+        return spf.listTree(cmd);
     }
 
     /**
