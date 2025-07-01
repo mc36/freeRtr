@@ -17160,3 +17160,6 @@ failed: wireguard over wireguard
 ---------------------------------- 2025-06-30 06:18:34 25.6.30
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
+---------------------------------- 2025-06-30 21:24:43 25.6.30
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
