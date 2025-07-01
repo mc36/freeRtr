@@ -642,7 +642,7 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
      * @return string
      */
     public String getShSum() {
-        return name + "|" + (getStatus() ? "up" : "down") + "|" + (okNum + errNum) + "|" + time + "|" + okNum + "|" + bits.timePast(okTim) + "|" + errNum + "|" + bits.timePast(errTim);
+        return name + "|" + cmds.upDown(getStatus()) + "|" + (okNum + errNum) + "|" + time + "|" + okNum + "|" + bits.timePast(okTim) + "|" + errNum + "|" + bits.timePast(errTim);
     }
 
     /**

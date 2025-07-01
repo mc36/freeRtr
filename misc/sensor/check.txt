@@ -7,8 +7,8 @@ prepend check_
 name 0 name=
 skip 2
 column 1 name state
-column 1 replace false 0
-column 1 replace true 1
+column 1 replace down 0
+column 1 replace up 1
 column 2 name asked
 column 3 name time
 column 4 name passed

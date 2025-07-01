@@ -504,7 +504,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
      * @return string
      */
     public String getShSum() {
-        return name + "|" + force2string(force) + "|" + mode2string(mode) + "|" + target + "|" + (getStatus() ? "up" : "down") + "|" + totalChng + "|" + getRtt() + "|" + bits.timePast(finalTime);
+        return name + "|" + force2string(force) + "|" + mode2string(mode) + "|" + target + "|" + cmds.upDown(getStatus()) + "|" + totalChng + "|" + getRtt() + "|" + bits.timePast(finalTime);
     }
 
     private long getRtt() {

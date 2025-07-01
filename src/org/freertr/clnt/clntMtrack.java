@@ -18,6 +18,7 @@ import org.freertr.prt.prtUdp;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
+import org.freertr.util.cmds;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
 
@@ -353,7 +354,7 @@ public class clntMtrack implements Runnable, prtServS {
                 chngTim = tim;
             }
             if (logging && chg) {
-                logger.info("tracker " + ntry.adr + " " + ntry.getState());
+                logger.info("tracker " + ntry.adr + " " + cmds.upDown(ntry.rxing));
             }
             if (!ntry.rxing) {
                 continue;
@@ -628,15 +629,7 @@ class clntMtrackPeer implements Comparable<clntMtrackPeer> {
     }
 
     public String getPeerLine() {
-        return adr + "|" + getState() + "|" + chngCnt + "|" + bits.timePast(chngTim) + "|" + bits.time2str(cfgAll.timeZoneName, chngTim + cfgAll.timeServerOffset, 3) + "|" + reports + "|" + bits.timePast(lastRx);
-    }
-
-    public String getState() {
-        if (rxing) {
-            return "up";
-        } else {
-            return "down";
-        }
+        return adr + "|" + cmds.upDown(rxing) + "|" + chngCnt + "|" + bits.timePast(chngTim) + "|" + bits.time2str(cfgAll.timeZoneName, chngTim + cfgAll.timeServerOffset, 3) + "|" + reports + "|" + bits.timePast(lastRx);
     }
 
     public int compareTo(clntMtrackPeer o) {

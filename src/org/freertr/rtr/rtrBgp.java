@@ -4350,7 +4350,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 l = new userFormat("|", "neighbor|as|domain");
                 break;
             case 13:
-                l = new userFormat("|", "neighbor|as|ready|learn|sent|uptime");
+                l = new userFormat("|", "neighbor|as|state|learn|sent|uptime");
                 break;
             case 14:
                 l = new userFormat("|", "neighbor|as|rx|tx");
@@ -4359,13 +4359,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 l = new userFormat("|", "neighbor|as|software");
                 break;
             case 17:
-                l = new userFormat("|", "neighbor|as|ready|learn|sent|uptim|descr");
+                l = new userFormat("|", "neighbor|as|state|learn|sent|uptim|descr");
                 break;
             case 18:
                 l = new userFormat("|", "neighbor|as|updates|bytes|ago");
                 break;
             case 19:
-                l = new userFormat("|", "neighbor|as|ready|learn|sent|uptim|asname|asinfo");
+                l = new userFormat("|", "neighbor|as|state|learn|sent|uptim|asname|asinfo");
                 break;
             case 20:
                 l = new userFormat("|", "neighbor|as|rx|tx|rx|tx|rx|tx", "2|2reach|2unrea|2ago");

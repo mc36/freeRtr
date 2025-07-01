@@ -2212,13 +2212,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @return peer readiness string
      */
     public String getReadiness() {
-        if (conn.ready2adv) {
-            return "yes";
-        }
         if (shutdown) {
             return "admin";
         }
-        return "no";
+        return cmds.upDown(conn.ready2adv);
     }
 
     /**

@@ -188,7 +188,7 @@ public class servBmp2mrtStat implements Comparable<servBmp2mrtStat> {
     }
 
     public String toString() {
-        return from + "|" + peer + "|" + asn + "|" + clntWhois.asn2name(asn, true) + "|" + state + "|" + change + "|" + bits.timePast(since) + "|" + bits.time2str(cfgAll.timeZoneName, since + cfgAll.timeServerOffset, 3);
+        return from + "|" + peer + "|" + asn + "|" + clntWhois.asn2name(asn, true) + "|" + cmds.upDown(state) + "|" + change + "|" + bits.timePast(since) + "|" + bits.time2str(cfgAll.timeZoneName, since + cfgAll.timeServerOffset, 3);
     }
 
     /**

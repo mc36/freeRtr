@@ -56,6 +56,20 @@ public class cmds {
     }
 
     /**
+     * get result text
+     *
+     * @param b status
+     * @return text
+     */
+    public static String upDown(boolean b) {
+        if (b) {
+            return "up";
+        } else {
+            return "down";
+        }
+    }
+
+    /**
      * pipe side to use
      */
     public pipeSide pipe;
