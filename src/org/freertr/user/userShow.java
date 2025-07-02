@@ -4789,7 +4789,7 @@ public class userShow {
             List<String> dump2 = ntry2.fullDump("", r.bgp.fwdCore).formatAll(userFormat.tableMode.normal);
             int dif = ntry1.differs(tabRoute.addType.alters, ntry2);
             differ df = new differ();
-            df.calc(dump1, dump2);
+            df.calc1by1(dump1, dump2);
             List<String> res = df.getText(cmd.pipe.settingsGet(pipeSetting.width, 80), 0);
             res.add(0, "difference=" + dif);
             rdr.putStrArr(res);

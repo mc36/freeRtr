@@ -145,6 +145,8 @@ public class userExec {
 
     }
 
+    private String compareBase;
+
     /**
      * constructs new reader for a pipeline
      *
@@ -1198,7 +1200,7 @@ public class userExec {
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "column name");
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "revsort", "reversed sort lines by");
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "column name");
-        hl.add(null, false, beg + 1, new int[]{beg + 2}, "repsort", "reverseed sort padded lines by");
+        hl.add(null, false, beg + 1, new int[]{beg + 2}, "repsort", "reversed sort padded lines by");
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "column name");
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "padsort", "sort padded lines by");
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "column name");
@@ -1843,14 +1845,13 @@ public class userExec {
         userHelp hl = new userHelp();
         hl.expand = needExpand;
         hl.add(null, false, 1, new int[]{2}, "show", "running system information");
+        hl.add(null, false, 1, new int[]{2}, "compare1", "running system difference information");
+        hl.add(null, false, 1, new int[]{2}, "compare2", "running system difference information");
         getHelpShow(hl, privileged);
         getHelpPipes(hl, 110, privileged);
         hl.add(null, false, 1, new int[]{2}, "watch", "running system periodic information");
-        getHelpShow(hl, privileged);
         hl.add(null, false, 1, new int[]{2}, "view", "running system information");
-        getHelpShow(hl, privileged);
         hl.add(null, false, 1, new int[]{2}, "display", "running system periodic information");
-        getHelpShow(hl, privileged);
         hl.add(null, false, 1, new int[]{2}, "differs", "running system difference information");
         getHelpShow(hl, privileged);
         hl.add(null, false, 1, new int[]{-1}, "logout", "close this exec session");
@@ -3102,6 +3103,14 @@ public class userExec {
         }
         if (a.equals("differs")) {
             doDiffers();
+            return cmdRes.command;
+        }
+        if (a.equals("compare2")) {
+            doCompare();
+            return cmdRes.command;
+        }
+        if (a.equals("compare1")) {
+            compareBase = cmd.getRemaining();
             return cmdRes.command;
         }
         if (a.equals("display")) {
@@ -5500,6 +5509,14 @@ public class userExec {
         reader.keyFlush();
     }
 
+    private void doCompare() {
+        List<String> r2 = new packText(getShPipe(false)).recvAll();
+        cmd = new cmds("cmp", compareBase);
+        List<String> r1 = new packText(getShPipe(false)).recvAll();
+        List<String> lst = differ.calcAny(r1, r2, compareBase, cmd.getRemaining());
+        reader.putStrArr(lst);
+    }
+
     private void doDiffers() {
         List<String> r1 = new packText(getShPipe(false)).recvAll();
         reader.keyFlush();
@@ -5508,7 +5525,7 @@ public class userExec {
         for (;;) {
             List<String> r2 = new packText(getShPipe(false)).recvAll();
             differ df = new differ();
-            df.calc(r1, r2);
+            df.calc1by1(r1, r2);
             lst.clear();
             lst.addAll(df.getText(pipe.settingsGet(pipeSetting.width, 80), edtr.getOfs()));
             if (edtr.doTimed(1000, true)) {

@@ -26,7 +26,7 @@ public class differ {
      * @param t1 text1
      * @param t2 text2
      */
-    public void calc(List<String> t1, List<String> t2) {
+    public void calc1by1(List<String> t1, List<String> t2) {
         int p1 = 0;
         int p2 = 0;
         r1 = new ArrayList<differLin>();
@@ -54,6 +54,39 @@ public class differ {
             r1.add(new differLin(l1));
             r2.add(new differLin(l2));
         }
+    }
+
+    /**
+     * calculate diff
+     *
+     * @param t1 text1
+     * @param t2 text2
+     * @param n1 name1
+     * @param n2 name2
+     * @return result
+     */
+    public static List<String> calcAny(List<String> t1, List<String> t2, String n1, String n2) {
+        List<String> bth = new ArrayList<String>();
+        for (int i = t1.size() - 1; i >= 0; i--) {
+            String a = t1.get(i);
+            int o = t2.indexOf(a);
+            if (o < 0) {
+                continue;
+            }
+            bth.add(a);
+            t1.remove(i);
+            t2.remove(o);
+        }
+        List<String> res = new ArrayList<String>();
+        res.add("only in " + n1);
+        res.addAll(t1);
+        res.add("");
+        res.add("only in " + n2);
+        res.addAll(t2);
+        res.add("");
+        res.add("in both");
+        res.addAll(bth);
+        return res;
     }
 
     /**

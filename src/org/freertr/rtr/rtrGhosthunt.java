@@ -924,7 +924,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         List<String> dump1 = ntry1.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
         List<String> dump2 = ntry2.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
         differ df = new differ();
-        df.calc(dump1, dump2);
+        df.calc1by1(dump1, dump2);
         List<String> res = df.getText(wid, 0);
         res.add(0, "difference=" + ntry1.differs(tabRoute.addType.notyet, ntry2));
         return res;
@@ -947,7 +947,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         List<String> dump1 = ntry.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
         List<String> dump2 = lastAttr.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
         differ df = new differ();
-        df.calc(dump1, dump2);
+        df.calc1by1(dump1, dump2);
         List<String> res = df.getText(wid, 0);
         res.add(0, "difference=" + ntry.differs(tabRoute.addType.notyet, lastAttr));
         return res;
