@@ -25,6 +25,7 @@ import org.freertr.clnt.clntMplsBier;
 import org.freertr.clnt.clntMplsExp;
 import org.freertr.clnt.clntMplsLdpP2mp;
 import org.freertr.clnt.clntMplsLdpP2p;
+import org.freertr.clnt.clntMplsLdpTe;
 import org.freertr.clnt.clntMplsPwe;
 import org.freertr.clnt.clntMplsSr;
 import org.freertr.clnt.clntMplsTeP2mp;
@@ -816,6 +817,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public clntMplsLdpP2p tunLdpP2p;
 
     /**
+     * mpls ldp te tunnel handler
+     */
+    public clntMplsLdpTe tunLdpTe;
+
+    /**
      * p2mp mpls ldp tunnel handler
      */
     public clntMplsLdpP2mp tunLdpP2mp;
@@ -1330,6 +1336,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
          * p2p ldp tunnel interface
          */
         ldpP2p,
+        /**
+         * ldp te tunnel interface
+         */
+        ldpTe,
         /**
          * p2mp ldp tunnel interface
          */
@@ -2402,6 +2412,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 return "bier";
             case ldpP2p:
                 return "p2pldp";
+            case ldpTe:
+                return "teldp";
             case ldpP2mp:
                 return "p2mpldp";
             case ldpMp2mp:
@@ -2562,6 +2574,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (s.equals("p2pldp")) {
             return tunnelType.ldpP2p;
+        }
+        if (s.equals("teldp")) {
+            return tunnelType.ldpTe;
         }
         if (s.equals("p2mpldp")) {
             return tunnelType.ldpP2mp;
@@ -4075,6 +4090,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             tunLdpP2p.workStop();
             tunLdpP2p = null;
         }
+        if (tunLdpTe != null) {
+            tunLdpTe.workStop();
+            tunLdpTe = null;
+        }
         if (tunLdpP2mp != null) {
             tunLdpP2mp.workStop();
             tunLdpP2mp = null;
@@ -4821,6 +4840,21 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunLdpP2p.workStart();
                 lower = tunLdpP2p;
                 break;
+            case ldpTe:
+                tunLdpTe = new clntMplsLdpTe();
+                tunLdpTe.vrf = tunVrf;
+                tunLdpTe.trgId = tunKey;
+                tunLdpTe.target = tunTrg.copyBytes();
+                tunLdpTe.srcIfc = tunSrc;
+                tunLdpTe.setTargets(tunFQDN);
+                tunFQDN = tunLdpTe.getTargets();
+                tunLdpTe.expr = tunTOS;
+                tunLdpTe.entr = tunFLW;
+                tunLdpTe.ttl = tunTTL;
+                tunLdpTe.setUpper(ethtyp);
+                tunLdpTe.workStart();
+                lower = tunLdpTe;
+                break;
             case ldpP2mp:
                 tunLdpP2mp = new clntMplsLdpP2mp();
                 tunLdpP2mp.vrf = tunVrf;
@@ -5540,6 +5574,20 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     }
 
     /**
+     * get ldp interface
+     *
+     * @param adr address to check
+     * @return ldp interface, null if unconfigured
+     */
+    public rtrLdpIface getLdpIface(addrIP adr) {
+        if (adr.isIPv4()) {
+            return mplsLdp4;
+        } else {
+            return mplsLdp6;
+        }
+    }
+
+    /**
      * setup targeted ldp session
      *
      * @param trg peer address
@@ -5552,11 +5600,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         clnt.vrf = vrfFor;
         clnt.srcIfc = this;
-        if (clnt.target.isIPv4()) {
-            clnt.ldpIfc = mplsLdp4;
-        } else {
-            clnt.ldpIfc = mplsLdp6;
-        }
+        clnt.ldpIfc = getLdpIface(clnt.target);
         if (mplsTarget.add(clnt) != null) {
             return;
         }
@@ -6918,6 +6962,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "p2mpte", "point to multipoint mpls te tunnel");
         l.add(null, false, 3, new int[]{-1}, "bier", "mpls bier tunnel");
         l.add(null, false, 3, new int[]{-1}, "p2pldp", "point to point mpls ldp tunnel");
+        l.add(null, false, 3, new int[]{-1}, "teldp", "mpls ldp te tunnel");
         l.add(null, false, 3, new int[]{-1}, "p2mpldp", "point to multipoint mpls ldp tunnel");
         l.add(null, false, 3, new int[]{-1}, "mp2mpldp", "multipoint to multipoint mpls ldp tunnel");
         l.add(null, false, 2, new int[]{3}, "source", "source of encapsulated packets");
