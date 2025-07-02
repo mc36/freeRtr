@@ -1524,6 +1524,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls redirection",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls ldp4",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls ldp6",
+        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label4peer",
+        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label6peer",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label4pop",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label6pop",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label4in",
@@ -7096,6 +7098,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 4, new int[]{-1}, "<num>", "value");
         l.add(null, false, 3, new int[]{4}, "ttl", "ttl value");
         l.add(null, false, 4, new int[]{-1}, "<num>", "value");
+        l.add(null, false, 2, new int[]{3}, "label4peer", "set dynamic peer filter");
+        l.add(null, false, 3, new int[]{-1}, "<name:acl>", "name of access list");
+        l.add(null, false, 2, new int[]{3}, "label6peer", "set dynamis peer filter");
+        l.add(null, false, 3, new int[]{-1}, "<name:acl>", "name of access list");
         l.add(null, false, 2, new int[]{-1}, "label4pop", "advertise php");
         l.add(null, false, 2, new int[]{-1}, "label6pop", "advertise php");
         l.add(null, false, 2, new int[]{3}, "label4in", "set label filter");

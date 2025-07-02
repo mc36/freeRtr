@@ -253,7 +253,7 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
             return metric;
         }
         if (ldpSync) {
-            if (lower.fwdCore.ldpNeighFind(iface, peer, false) == null) {
+            if (lower.fwdCore.ldpNeighFind(peer, false) == null) {
                 return 0xffffff;
             }
         }

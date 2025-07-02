@@ -731,7 +731,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparable<rtrOspf6n
         if (iface.ldpSync) {
             addrIP adr = new addrIP();
             adr.fromIPv6addr(peer);
-            if (lower.fwdCore.ldpNeighFind(iface.iface, adr, false) == null) {
+            if (lower.fwdCore.ldpNeighFind(adr, false) == null) {
                 return 0xffff;
             }
         }

@@ -726,12 +726,11 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     /**
      * find one ldp neighbor
      *
-     * @param iface receiving interface
      * @param addr peer address
      * @param create create if not yet
      * @return found neighbor, null if nothing
      */
-    public rtrLdpNeigh ldpNeighFind(ipFwdIface iface, addrIP addr, boolean create) {
+    public rtrLdpNeigh ldpNeighFind(addrIP addr, boolean create) {
         rtrLdpNeigh ntry = new rtrLdpNeigh(addr);
         if (!create) {
             return ldpNeighs.find(ntry);

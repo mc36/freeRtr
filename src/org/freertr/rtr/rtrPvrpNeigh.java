@@ -277,7 +277,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
      */
     public int getMetric() {
         if (iface.ldpSync) {
-            if (lower.fwdCore.ldpNeighFind(iface.iface, peer, false) == null) {
+            if (lower.fwdCore.ldpNeighFind(peer, false) == null) {
                 return 0xffffff;
             }
         }

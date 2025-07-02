@@ -375,7 +375,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
                 return;
             }
             neighT.keepWorking();
-            neighL = fwdCor.ldpNeighFind(null, fwdTrg, false);
+            neighL = fwdCor.ldpNeighFind(fwdTrg, false);
             if (neighL != null) {
                 break;
             }
@@ -418,7 +418,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
                 return;
             }
             neighT.keepWorking();
-            neighL = fwdCor.ldpNeighFind(null, fwdTrg, false);
+            neighL = fwdCor.ldpNeighFind(fwdTrg, false);
             if (neighL == null) {
                 return;
             }
@@ -447,7 +447,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
                 break;
             }
             neighT.keepWorking();
-            neighL = fwdCor.ldpNeighFind(null, fwdTrg, false);
+            neighL = fwdCor.ldpNeighFind(fwdTrg, false);
             if (neighL == null) {
                 break;
             }

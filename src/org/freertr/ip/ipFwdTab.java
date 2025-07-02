@@ -1443,7 +1443,7 @@ public class ipFwdTab {
                 return;
             }
         }
-        rtrLdpNeigh nei = lower.ldpNeighFind(null, ntry.nextHop, false);
+        rtrLdpNeigh nei = lower.ldpNeighFind(ntry.nextHop, false);
         if (nei == null) {
             if (ntry.oldHop == null) {
                 return;

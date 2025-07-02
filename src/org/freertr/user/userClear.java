@@ -1296,7 +1296,7 @@ public class userClear {
             cmd.error("bad address");
             return;
         }
-        rtrLdpNeigh nei = fwd.ldpNeighFind(null, adr, false);
+        rtrLdpNeigh nei = fwd.ldpNeighFind(adr, false);
         if (nei == null) {
             cmd.error("no such neighbor");
             return;

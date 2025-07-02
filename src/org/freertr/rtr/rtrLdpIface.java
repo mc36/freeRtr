@@ -2,6 +2,7 @@ package org.freertr.rtr;
 
 import java.util.List;
 import org.freertr.addr.addrIP;
+import org.freertr.cfg.cfgAceslst;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgPrfxlst;
@@ -13,6 +14,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServP;
 import org.freertr.prt.prtTcp;
 import org.freertr.prt.prtUdp;
+import org.freertr.tab.tabAceslstN;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabPrfxlstN;
 import org.freertr.tab.tabRouteEntry;
@@ -81,6 +83,11 @@ public class rtrLdpIface implements prtServP {
     public tabListing<tabPrfxlstN, addrIP> filterOut;
 
     /**
+     * listen filter
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> filterPeer;
+
+    /**
      * advertise label pop
      */
     public boolean labelPop;
@@ -146,6 +153,7 @@ public class rtrLdpIface implements prtServP {
         if (ldp == null) {
             return;
         }
+        cmds.cfgLine(l, ldp.filterPeer == null, cmds.tabulator, "mpls label" + ver + "peer", "" + ldp.filterPeer);
         cmds.cfgLine(l, ldp.filterIn == null, cmds.tabulator, "mpls label" + ver + "in", "" + ldp.filterIn);
         cmds.cfgLine(l, ldp.filterOut == null, cmds.tabulator, "mpls label" + ver + "out", "" + ldp.filterOut);
         cmds.cfgLine(l, !ldp.labelPop, cmds.tabulator, "mpls label" + ver + "pop", "");
@@ -171,6 +179,15 @@ public class rtrLdpIface implements prtServP {
         beg = beg.substring(6, beg.length());
         if (beg.equals("pop")) {
             ldp.labelPop = true;
+            return;
+        }
+        if (beg.equals("peer")) {
+            cfgAceslst res = cfgAll.aclsFind(cmd.word(), false);
+            if (res == null) {
+                cmd.error("no such access list");
+                return;
+            }
+            ldp.filterPeer = res.aceslst;
             return;
         }
         if (beg.equals("in")) {
@@ -238,6 +255,10 @@ public class rtrLdpIface implements prtServP {
         beg = beg.substring(6, beg.length());
         if (beg.equals("pop")) {
             ldp.labelPop = false;
+            return;
+        }
+        if (beg.equals("peer")) {
+            ldp.filterPeer = null;
             return;
         }
         if (beg.equals("in")) {
@@ -379,7 +400,7 @@ public class rtrLdpIface implements prtServP {
         if (stat == state.states.up) {
             return false;
         }
-        rtrLdpNeigh ntry = ip.ldpNeighFind(src, id.peerAddr, false);
+        rtrLdpNeigh ntry = ip.ldpNeighFind(id.peerAddr, false);
         if (ntry == null) {
             return false;
         }
@@ -395,16 +416,18 @@ public class rtrLdpIface implements prtServP {
      * @return false if success, true if error
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        id.setClosing();
         packLdp pk = new packLdp();
         pk.pack = pck;
         if (pk.parseLDPheader()) {
+            id.setClosing();
             return false;
         }
         if (pk.parseMSGheader()) {
+            id.setClosing();
             return false;
         }
         if (pk.getHelloParam()) {
+            id.setClosing();
             return false;
         }
         pk.transAddr = id.peerAddr.copyBytes();
@@ -412,18 +435,38 @@ public class rtrLdpIface implements prtServP {
         if (debugger.rtrLdpEvnt) {
             logger.debug("rx hello " + id);
         }
-        tabRouteEntry<addrIP> route = ip.connedR.route(id.peerAddr);
-        if (route == null) {
-            logger.warn("got from out of subnet peer " + id);
-            return false;
+        boolean trg = false;
+        if (ip.connedR.route(id.peerAddr) == null) {
+            if (filterPeer == null) {
+                logger.warn("got from out of subnet peer " + id);
+                id.setClosing();
+                return false;
+            }
+            if (!filterPeer.matches(conn)) {
+                logger.warn("got from unwanted peer " + id);
+                id.setClosing();
+                return false;
+            }
+            if (debugger.rtrLdpEvnt) {
+                logger.debug("tx hello " + conn.peerAddr);
+            }
+            packLdp pr = new packLdp();
+            pr.lsrID = ifc.addr.toIPv4();
+            pr.transAddr = ifc.addr.copyBytes();
+            pr.msgTyp = packLdp.msgThello;
+            pr.holdTime = trgtHelloHldtm / 1000;
+            pr.targeted = true;
+            pr.putHelloParam();
+            pr.putTransAddr();
+            pr.createLDPheader();
+            id.send2net(pr.pack);
+            trg = true;
         }
-        rtrLdpNeigh ntry = ip.ldpNeighFind(src, id.peerAddr, true);
-        if (ntry == null) {
-            return false;
-        }
-        ntry.helloIfc = true;
-        ntry.helloTrg = false;
-        if (ntry.ifc != null) {
+        id.setClosing();
+        rtrLdpNeigh ntry = ip.ldpNeighFind(id.peerAddr, true);
+        ntry.helloIfc = !trg;
+        ntry.helloTrg = trg;
+        if (ntry.udp != null) {
             return false;
         }
         ntry.ifc = src;

@@ -96,7 +96,7 @@ public class rtrLdpTrgtd implements Runnable, Comparable<rtrLdpTrgtd> {
         if (conn != null) {
             conn.setClose();
         }
-        rtrLdpNeigh ntry = ip.ldpNeighFind(null, peer, false);
+        rtrLdpNeigh ntry = ip.ldpNeighFind(peer, false);
         if (ntry == null) {
             return;
         }
@@ -171,12 +171,9 @@ public class rtrLdpTrgtd implements Runnable, Comparable<rtrLdpTrgtd> {
                 if (debugger.rtrLdpEvnt) {
                     logger.debug("rx hello " + peer);
                 }
-                rtrLdpNeigh ntry = ip.ldpNeighFind(null, peer, true);
-                if (ntry == null) {
-                    continue;
-                }
+                rtrLdpNeigh ntry = ip.ldpNeighFind(peer, true);
                 ntry.helloTrg = true;
-                if (ntry.ifc != null) {
+                if (ntry.udp != null) {
                     continue;
                 }
                 ntry.ifc = ifc;

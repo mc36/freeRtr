@@ -2559,7 +2559,7 @@ public class ipFwdIface extends tabRouteIface {
         if (mplPeer == null) {
             return null;
         }
-        rtrLdpNeigh nei = lower.ldpNeighFind(null, mplPeer, false);
+        rtrLdpNeigh nei = lower.ldpNeighFind(mplPeer, false);
         if (nei == null) {
             return null;
         }

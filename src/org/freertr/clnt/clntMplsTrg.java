@@ -103,7 +103,7 @@ public class clntMplsTrg implements Runnable, Comparable<clntMplsTrg> {
                 return;
             }
             neighT.keepWorking();
-            neighL = fwdCor.ldpNeighFind(null, target, false);
+            neighL = fwdCor.ldpNeighFind(target, false);
             if (neighL != null) {
                 break;
             }
@@ -118,7 +118,7 @@ public class clntMplsTrg implements Runnable, Comparable<clntMplsTrg> {
                 return;
             }
             neighT.keepWorking();
-            neighL = fwdCor.ldpNeighFind(null, target, false);
+            neighL = fwdCor.ldpNeighFind(target, false);
             if (neighL == null) {
                 return;
             }
