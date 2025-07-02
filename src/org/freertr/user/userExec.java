@@ -5512,10 +5512,11 @@ public class userExec {
     }
 
     private void doCompare() {
+        String curr = cmd.getRemaining();
         List<String> r2 = new packText(getShPipe(false)).recvAll();
         cmd = new cmds("cmp", compareBase);
         List<String> r1 = new packText(getShPipe(false)).recvAll();
-        List<String> lst = differ.calcAny(r1, r2, compareBase, cmd.getRemaining());
+        List<String> lst = differ.calcAny(r1, r2, compareBase, curr);
         reader.putStrArr(lst);
     }
 

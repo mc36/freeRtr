@@ -17175,3 +17175,6 @@ qc pass: wireguard over wireguard
 ---------------------------------- 2025-07-01 18:21:49 25.7.1
 qc pass: labels from peer
 qc pass: labels from peer with ldp
+---------------------------------- 2025-07-02 10:29:53 25.7.2
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard
