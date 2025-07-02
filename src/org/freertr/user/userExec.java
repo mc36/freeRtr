@@ -1224,6 +1224,8 @@ public class userExec {
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "filter text");
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "regsec", "only sections that match regular expression");
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "filter text");
+        hl.add(null, false, beg + 1, new int[]{beg + 2}, "remove", "remove word from text");
+        hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "filter text");
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "first", "only first some lines");
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<num>", "number of lines");
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "last", "only last some lines");

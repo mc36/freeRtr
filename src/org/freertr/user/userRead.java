@@ -101,6 +101,10 @@ public class userRead implements Comparator<String> {
          */
         exclude,
         /**
+         * remove
+         */
+        remove,
+        /**
          * section names
          */
         headers,
@@ -604,6 +608,16 @@ public class userRead implements Comparator<String> {
         return res;
     }
 
+    private List<String> doRemove(List<String> lst) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < lst.size(); i++) {
+            String s = lst.get(i);
+            s = s.replaceAll(filterS, "");
+            res.add(s);
+        }
+        return res;
+    }
+
     private List<String> doExclude(List<String> lst) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < lst.size(); i++) {
@@ -638,6 +652,8 @@ public class userRead implements Comparator<String> {
                 return lst;
             case exclude:
                 return doExclude(lst);
+            case remove:
+                return doRemove(lst);
             case sort:
                 findColumn(lst);
                 if (columnB < 0) {
@@ -936,7 +952,9 @@ public class userRead implements Comparator<String> {
                     userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colHeader, userScreen.colBrYellow));
                     pipe.linePut(a);
                     userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite));
-                    color = userFormat.colorMode.normal;
+                    if (i >= columnL) {
+                        color = userFormat.colorMode.normal;
+                    }
                     break;
                 case rainbow:
                     int d = pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite);
@@ -1012,7 +1030,11 @@ public class userRead implements Comparator<String> {
             return true;
         }
         columnL = lst.headerIdx();
-        return doPutArr(lst.formatAll(pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)), pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
+        userFormat.tableMode mod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
+        if (mod == userFormat.tableMode.fancy) {
+            columnL++;
+        }
+        return doPutArr(lst.formatAll(mod), pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
     }
 
     /**
@@ -1908,6 +1930,10 @@ public class userRead implements Comparator<String> {
         if (a.equals("exclude")) {
             filterS = filter2reg(filterS);
             filterM = mode.exclude;
+            return;
+        }
+        if (a.equals("remove")) {
+            filterM = mode.remove;
             return;
         }
         if (a.equals("begin")) {
