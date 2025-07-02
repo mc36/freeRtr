@@ -15,6 +15,7 @@ import org.freertr.prt.prtTcp;
 import org.freertr.prt.prtUdp;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabPrfxlstN;
+import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -411,15 +412,21 @@ public class rtrLdpIface implements prtServP {
         if (debugger.rtrLdpEvnt) {
             logger.debug("rx hello " + id);
         }
+        tabRouteEntry<addrIP> route = ip.connedR.route(id.peerAddr);
+        if (route == null) {
+            logger.warn("got from out of subnet peer " + id);
+            return false;
+        }
         rtrLdpNeigh ntry = ip.ldpNeighFind(src, id.peerAddr, true);
         if (ntry == null) {
             return false;
         }
         ntry.helloIfc = true;
         ntry.helloTrg = false;
-        if (ntry.udp != null) {
+        if (ntry.ifc != null) {
             return false;
         }
+        ntry.ifc = src;
         ntry.udp = udp;
         ntry.tcp = tcp;
         ntry.trans = pk.transAddr;

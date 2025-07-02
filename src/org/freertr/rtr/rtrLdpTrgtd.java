@@ -176,7 +176,7 @@ public class rtrLdpTrgtd implements Runnable, Comparable<rtrLdpTrgtd> {
                     continue;
                 }
                 ntry.helloTrg = true;
-                if (ntry.udp != null) {
+                if (ntry.ifc != null) {
                     continue;
                 }
                 ntry.ifc = ifc;
