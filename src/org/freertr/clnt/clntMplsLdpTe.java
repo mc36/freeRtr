@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
-import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgVrf;
@@ -18,12 +17,14 @@ import org.freertr.pack.packHolder;
 import org.freertr.rtr.rtrLdpIface;
 import org.freertr.rtr.rtrLdpNeigh;
 import org.freertr.rtr.rtrLdpTrgtd;
+import org.freertr.tab.tabLabel;
 import org.freertr.tab.tabRouteEntry;
-import org.freertr.util.bits;
+import org.freertr.tab.tabRouteIface;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
+import org.freertr.util.notifier;
 import org.freertr.util.state;
 
 /**
@@ -84,13 +85,23 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
      */
     public counter cntr = new counter();
 
-    private boolean working = true;
-
     private addrIP[] targets = new addrIP[0];
+
+    private ipFwd nextVrf;
+
+    private addrIP nextHop = new addrIP();
+
+    private tabRouteIface nextIfc;
 
     private int[] labels = null;
 
-    private ipFwd firstCor;
+    private boolean working = true;
+
+    private notifier notif = new notifier();
+
+    public String toString() {
+        return "teldp to " + target;
+    }
 
     /**
      * set targets
@@ -144,11 +155,9 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
         for (int i = 0; i < ts.length; i++) {
             ts[i] = trg.get(i).copyBytes();
         }
+        labels = null;
         targets = ts;
-    }
-
-    public String toString() {
-        return "p2pldp to " + target;
+        notif.wakeup();
     }
 
     /**
@@ -238,8 +247,8 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
      * @param pck packet
      */
     public void sendPack(packHolder pck) {
-        pck.merge2beg();
-        if (labels == null) {
+        int[] labs = labels;
+        if (labs == null) {
             return;
         }
         pck.getSkip(2);
@@ -253,11 +262,28 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
         if (ttl >= 0) {
             pck.MPLSttl = ttl;
         }
-        for (int i = labels.length - 1; i >= 0; i--) {
-            pck.MPLSlabel = labels[i];
+        for (int i = labs.length - 1; i >= 0; i--) {
+            pck.MPLSlabel = labs[i];
             ipMpls.createMPLSheader(pck);
         }
-        firstCor.mplsTxPack(targets[0], pck, false);
+        nextVrf.mplsTxPack(nextHop, pck, false);
+    }
+
+    /**
+     * get resulting route
+     *
+     * @param src source to use
+     * @return route, null if no suitable
+     */
+    public tabRouteEntry<addrIP> getResultRoute(tabRouteEntry<addrIP> src) {
+        int[] labs = labels;
+        if (labs == null) {
+            return null;
+        }
+        src.best.nextHop = nextHop.copyBytes();
+        src.best.iface = nextIfc;
+        src.best.labelRem = tabLabel.int2labels(labs[0]);
+        return src;
     }
 
     /**
@@ -287,13 +313,11 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
                 break;
             }
             try {
-                clearState();
                 workDoer();
             } catch (Exception e) {
                 logger.traceback(e);
             }
-            clearState();
-            bits.sleep(1000);
+            notif.sleep(5000);
         }
     }
 
@@ -321,59 +345,55 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
             }
             neighT.keepWorking();
         }
-        List<Integer> labs;
-        for (;;) {
-            if (!working) {
+        nextVrf = vrf.getFwd(targets[0]);
+        tabRouteEntry<addrIP> rou = nextVrf.actualU.route(targets[0]);
+        if (rou == null) {
+            if (debugger.clntMplsLdpTraf) {
+                logger.debug("no route for " + targets[0]);
+            }
+            clearState();
+            return;
+        }
+        if (rou.best.labelRem == null) {
+            if (debugger.clntMplsLdpTraf) {
+                logger.debug("no label for " + targets[0]);
+            }
+            clearState();
+            return;
+        }
+        nextHop = rou.best.nextHop.copyBytes();
+        nextIfc = rou.best.iface;
+        int labs[] = new int[targets.length];
+        labs[0] = rou.best.labelRem.get(0);
+        for (int i = 0; i < (targets.length - 1); i++) {
+            ipFwd fwdCor = vrf.getFwd(targets[i]);
+            rtrLdpNeigh neighL = fwdCor.ldpNeighFind(targets[i], false);
+            if (neighL == null) {
+                if (debugger.clntMplsLdpTraf) {
+                    logger.debug("no neighbor for " + targets[i]);
+                }
+                clearState();
                 return;
             }
-            labs = new ArrayList<Integer>();
-            for (int i = 0; i < (targets.length - 1); i++) {
-                ipFwd fwdCor = vrf.getFwd(targets[i]);
-                ipFwdIface fwdIfc = srcIfc.getFwdIfc(targets[i]);
-                rtrLdpIface ldpIfc = srcIfc.getLdpIface(targets[i]);
-                rtrLdpTrgtd neighT = fwdCor.ldpTargetFind(fwdIfc, ldpIfc, targets[i], false);
-                if (neighT == null) {
-                    if (debugger.clntMplsLdpTraf) {
-                        logger.debug("no targeted for " + targets[i]);
-                    }
-                    clearState();
-                    return;
+            rou = neighL.prefLearn.route(targets[i + 1]);
+            if (rou == null) {
+                if (debugger.clntMplsLdpTraf) {
+                    logger.debug("no prefix for " + targets[i + 1]);
                 }
-                neighT.keepWorking();
-                rtrLdpNeigh neighL = fwdCor.ldpNeighFind(targets[i], false);
-                if (neighL == null) {
-                    if (debugger.clntMplsLdpTraf) {
-                        logger.debug("no neighbor for " + targets[i]);
-                    }
-                    clearState();
-                    return;
-                }
-                tabRouteEntry<addrIP> res = neighL.prefLearn.find(new addrPrefix<addrIP>(targets[i + 1], addrIP.size * 8));
-                if (res == null) {
-                    if (debugger.clntMplsLdpTraf) {
-                        logger.debug("no prefix for " + targets[i + 1]);
-                    }
-                    clearState();
-                    return;
-                }
-                if (res.best.labelRem == null) {
-                    if (debugger.clntMplsLdpTraf) {
-                        logger.debug("no label for " + targets[i + 1]);
-                    }
-                    clearState();
-                    return;
-                }
-                labs.add(res.best.labelRem.get(0));
+                clearState();
+                return;
             }
-            firstCor = vrf.getFwd(targets[0]);
-            int[] res = new int[labs.size()];
-            for (int i = 0; i < res.length; i++) {
-                res[i] = labs.get(i);
+            if (rou.best.labelRem == null) {
+                if (debugger.clntMplsLdpTraf) {
+                    logger.debug("no label for " + targets[i + 1]);
+                }
+                clearState();
+                return;
             }
-            labels = res;
-            upper.setState(state.states.up);
-            bits.sleep(1000);
+            labs[i + 1] = rou.best.labelRem.get(0);
         }
+        labels = labs;
+        upper.setState(state.states.up);
     }
 
 }
