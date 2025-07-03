@@ -17184,3 +17184,6 @@ qc pass: wireguard over wireguard
 ---------------------------------- 2025-07-02 22:37:43 25.7.2
 no qc pass: labels from peer with ldp
 qc pass: ldp te
+---------------------------------- 2025-07-03 15:06:21 25.7.3
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
