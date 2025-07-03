@@ -303,7 +303,7 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
     }
 
     private void workDoer() {
-        if (debugger.clntPweTraf) {
+        if (debugger.clntMplsLdpTraf) {
             logger.debug("starting targeted sessions");
         }
         for (int i = 0; i < targets.length - 1; i++) {
@@ -333,7 +333,7 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
                 rtrLdpIface ldpIfc = srcIfc.getLdpIface(targets[i]);
                 rtrLdpTrgtd neighT = fwdCor.ldpTargetFind(fwdIfc, ldpIfc, targets[i], false);
                 if (neighT == null) {
-                    if (debugger.clntPweTraf) {
+                    if (debugger.clntMplsLdpTraf) {
                         logger.debug("no targeted for " + targets[i]);
                     }
                     clearState();
@@ -342,7 +342,7 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
                 neighT.keepWorking();
                 rtrLdpNeigh neighL = fwdCor.ldpNeighFind(targets[i], false);
                 if (neighL == null) {
-                    if (debugger.clntPweTraf) {
+                    if (debugger.clntMplsLdpTraf) {
                         logger.debug("no neighbor for " + targets[i]);
                     }
                     clearState();
@@ -350,14 +350,14 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
                 }
                 tabRouteEntry<addrIP> res = neighL.prefLearn.find(new addrPrefix<addrIP>(targets[i + 1], addrIP.size * 8));
                 if (res == null) {
-                    if (debugger.clntPweTraf) {
+                    if (debugger.clntMplsLdpTraf) {
                         logger.debug("no prefix for " + targets[i + 1]);
                     }
                     clearState();
                     return;
                 }
                 if (res.best.labelRem == null) {
-                    if (debugger.clntPweTraf) {
+                    if (debugger.clntMplsLdpTraf) {
                         logger.debug("no label for " + targets[i + 1]);
                     }
                     clearState();
