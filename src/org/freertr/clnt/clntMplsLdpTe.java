@@ -90,6 +90,8 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
 
     private int[] labels = null;
 
+    private ipFwd firstCor;
+
     /**
      * set targets
      *
@@ -149,40 +151,113 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
         return "p2pldp to " + target;
     }
 
+    /**
+     * get hw address
+     *
+     * @return hw address
+     */
     public addrType getHwAddr() {
         return new addrEmpty();
     }
 
+    /**
+     * set filter
+     *
+     * @param promisc promiscous mode
+     */
     public void setFilter(boolean promisc) {
     }
 
+    /**
+     * get state
+     *
+     * @return state
+     */
     public state.states getState() {
-        return state.states.up;
+        if (labels == null) {
+            return state.states.down;
+        } else {
+            return state.states.up;
+        }
     }
 
+    /**
+     * close interface
+     */
     public void closeDn() {
         clearState();
     }
 
+    /**
+     * flap interface
+     */
     public void flapped() {
         clearState();
     }
 
+    /**
+     * set upper layer
+     *
+     * @param server upper layer
+     */
     public void setUpper(ifcUp server) {
         upper = server;
         upper.setParent(this);
     }
 
+    /**
+     * get counter
+     *
+     * @return counter
+     */
     public counter getCounter() {
         return cntr;
     }
 
+    /**
+     * get mtu size
+     *
+     * @return mtu size
+     */
     public int getMTUsize() {
         return 1500;
     }
 
+    /**
+     * get bandwidth
+     *
+     * @return bandwidth
+     */
     public long getBandwidth() {
         return 8000000;
+    }
+
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
+    public void sendPack(packHolder pck) {
+        pck.merge2beg();
+        if (labels == null) {
+            return;
+        }
+        pck.getSkip(2);
+        cntr.tx(pck);
+        if (expr >= 0) {
+            pck.MPLSexp = expr;
+        }
+        if (entr > 0) {
+            pck.MPLSrnd = entr;
+        }
+        if (ttl >= 0) {
+            pck.MPLSttl = ttl;
+        }
+        for (int i = labels.length - 1; i >= 0; i--) {
+            pck.MPLSlabel = labels[i];
+            ipMpls.createMPLSheader(pck);
+        }
+        firstCor.mplsTxPack(targets[0], pck, false);
     }
 
     /**
@@ -222,6 +297,11 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
         }
     }
 
+    private void clearState() {
+        labels = null;
+        upper.setState(state.states.down);
+    }
+
     private void workDoer() {
         if (debugger.clntPweTraf) {
             logger.debug("starting targeted sessions");
@@ -239,6 +319,7 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
                 neighT.udp = vrf.getUdp(targets[i]);
                 neighT.workStart();
             }
+            neighT.keepWorking();
         }
         List<Integer> labs;
         for (;;) {
@@ -252,60 +333,47 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
                 rtrLdpIface ldpIfc = srcIfc.getLdpIface(targets[i]);
                 rtrLdpTrgtd neighT = fwdCor.ldpTargetFind(fwdIfc, ldpIfc, targets[i], false);
                 if (neighT == null) {
+                    if (debugger.clntPweTraf) {
+                        logger.debug("no targeted for " + targets[i]);
+                    }
+                    clearState();
                     return;
                 }
                 neighT.keepWorking();
                 rtrLdpNeigh neighL = fwdCor.ldpNeighFind(targets[i], false);
                 if (neighL == null) {
-                    continue;
+                    if (debugger.clntPweTraf) {
+                        logger.debug("no neighbor for " + targets[i]);
+                    }
+                    clearState();
+                    return;
                 }
                 tabRouteEntry<addrIP> res = neighL.prefLearn.find(new addrPrefix<addrIP>(targets[i + 1], addrIP.size * 8));
                 if (res == null) {
-                    continue;
+                    if (debugger.clntPweTraf) {
+                        logger.debug("no prefix for " + targets[i + 1]);
+                    }
+                    clearState();
+                    return;
                 }
                 if (res.best.labelRem == null) {
-                    continue;
+                    if (debugger.clntPweTraf) {
+                        logger.debug("no label for " + targets[i + 1]);
+                    }
+                    clearState();
+                    return;
                 }
                 labs.add(res.best.labelRem.get(0));
             }
-            if (labs.size() >= (targets.length - 1)) {
-                int[] res = new int[labs.size()];
-                for (int i = 0; i < res.length; i++) {
-                    res[i] = labs.get(i);
-                }
-                labels = res;
-            } else {
-                labels = null;
+            firstCor = vrf.getFwd(targets[0]);
+            int[] res = new int[labs.size()];
+            for (int i = 0; i < res.length; i++) {
+                res[i] = labs.get(i);
             }
+            labels = res;
+            upper.setState(state.states.up);
             bits.sleep(1000);
         }
-    }
-
-    private void clearState() {
-        labels = null;
-    }
-
-    public void sendPack(packHolder pck) {
-        pck.merge2beg();
-        if (labels == null) {
-            return;
-        }
-        pck.getSkip(2);
-        cntr.tx(pck);
-        if (expr >= 0) {
-            pck.MPLSexp = expr;
-        }
-        if (entr > 0) {
-            pck.MPLSrnd = entr;
-        }
-        if (ttl >= 0) {
-            pck.MPLSttl = ttl;
-        }
-        for (int i = labels.length - 1; i >= 0; i--) {
-            pck.MPLSlabel = labels[i];
-            ipMpls.createMPLSheader(pck);
-        }
-        vrf.getFwd(targets[0]).mplsTxPack(targets[0], pck, false);
     }
 
 }

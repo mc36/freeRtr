@@ -124,7 +124,6 @@ public class clntMplsTrg implements Runnable, Comparable<clntMplsTrg> {
             }
             bits.sleep(1000);
         }
-
     }
 
 }
