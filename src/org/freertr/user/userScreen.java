@@ -1376,7 +1376,7 @@ public class userScreen {
                 cur = 0;
             }
             putWindow(bg, win, bx, by, sx, sy);
-            for (i = 0; i < sy - 1; i++) {
+            for (i = 0; i < (sy - 1); i++) {
                 String a;
                 if ((cur + i) < msg.size()) {
                     a = msg.get(cur + i);

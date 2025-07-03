@@ -100,7 +100,7 @@ public class userTemplate {
         }
         List<String> t4 = new ArrayList<String>();
         List<String> t5 = new ArrayList<String>();
-        for (int i = 1; i < rs.length - 1; i++) {
+        for (int i = 1; i < (rs.length - 1); i++) {
             String a = res + "r" + i + "-";
             List<String> t3 = getCfg(t2, rs[i - 1], rs[i], rs[i + 1]);
             bits.buf2txt(true, t3, a + cfgInit.hwCfgEnd);

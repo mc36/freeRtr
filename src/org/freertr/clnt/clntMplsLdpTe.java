@@ -127,7 +127,7 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
             return null;
         }
         String s = "";
-        for (int i = 0; i < targets.length - 1; i++) {
+        for (int i = 0; i < (targets.length - 1); i++) {
             s += " " + targets[i];
         }
         return s.trim();
@@ -306,7 +306,7 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
         if (debugger.clntMplsLdpTraf) {
             logger.debug("starting targeted sessions");
         }
-        for (int i = 0; i < targets.length - 1; i++) {
+        for (int i = 0; i < (targets.length - 1); i++) {
             ipFwd fwdCor = vrf.getFwd(targets[i]);
             ipFwdIface fwdIfc = srcIfc.getFwdIfc(targets[i]);
             rtrLdpIface ldpIfc = srcIfc.getLdpIface(targets[i]);
@@ -327,7 +327,7 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
                 return;
             }
             labs = new ArrayList<Integer>();
-            for (int i = 0; i < targets.length - 1; i++) {
+            for (int i = 0; i < (targets.length - 1); i++) {
                 ipFwd fwdCor = vrf.getFwd(targets[i]);
                 ipFwdIface fwdIfc = srcIfc.getFwdIfc(targets[i]);
                 rtrLdpIface ldpIfc = srcIfc.getLdpIface(targets[i]);

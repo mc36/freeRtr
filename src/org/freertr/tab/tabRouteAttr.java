@@ -1444,7 +1444,7 @@ public class tabRouteAttr<T extends addrType> {
         if (pathSeq == null) {
             return false;
         }
-        for (int i = 0; i < pathSeq.size() - 1; i++) {
+        for (int i = 0; i < (pathSeq.size() - 1); i++) {
             if (match.matches(pathSeq.get(i))) {
                 return true;
             }
