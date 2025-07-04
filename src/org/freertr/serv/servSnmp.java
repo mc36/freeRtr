@@ -118,7 +118,7 @@ public class servSnmp extends servGeneric implements prtServS {
         pip.setTime(10000);
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         pip.lineTx = pipeSide.modTyp.modeCRLF;
-        userFilter fltr = userFilter.findFilter(new userFilter(cmd, oid, null), cfgInit.snmpMibs);
+        userFilter fltr = userFilter.findFilter(new userFilter(cmd, oid, null), cfgAll.snmpMibs);
         if (fltr == null) {
             return null;
         }

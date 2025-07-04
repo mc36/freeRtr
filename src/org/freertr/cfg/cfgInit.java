@@ -162,11 +162,6 @@ public class cfgInit implements Runnable {
     public static history memoryHistory;
 
     /**
-     * loaded snmp mibs
-     */
-    public final static tabGen<userFilter> snmpMibs = new tabGen<userFilter>();
-
-    /**
      * list of physical interfaces
      */
     public final static tabGen<cfgVdcIfc> ifaceLst = new tabGen<cfgVdcIfc>();
@@ -742,6 +737,7 @@ public class cfgInit implements Runnable {
             return;
         }
         List<userFilter> hdefs = new ArrayList<userFilter>();
+        List<userFilter> mibs = new ArrayList<userFilter>();
         for (int cnt = 0; cnt < read.size(); cnt++) {
             String s = doTrimmer(read.get(cnt));
             if (s.length() < 1) {
@@ -1094,7 +1090,7 @@ public class cfgInit implements Runnable {
                     a = cmd.word();
                     userFilter sn = new userFilter(a, cmd.getRemaining(), new ArrayList<String>());
                     sn.listing.addAll(txt.subList(bg + 1, p));
-                    snmpMibs.put(sn);
+                    mibs.add(sn);
                     if (debugger.cfgInitHw) {
                         logger.debug("snmp " + sn);
                     }
@@ -1103,17 +1099,22 @@ public class cfgInit implements Runnable {
             }
             logger.info((cnt + 1) + ":" + cmd.getOriginal());
         }
-        if (hdefs.size() < 1) {
-            return;
+        cfgAll.custDefs = add2filter(cfgAll.custDefs, hdefs);
+        cfgAll.snmpMibs = add2filter(cfgAll.snmpMibs, hdefs);
+    }
+
+    private static userFilter[] add2filter(userFilter[] trg, List<userFilter> src) {
+        if (src.size() < 1) {
+            return trg;
         }
-        for (int i = 0; i < cfgAll.defaultC.length; i++) {
-            hdefs.add(cfgAll.defaultC[i]);
+        for (int i = 0; i < trg.length; i++) {
+            src.add(trg[i]);
         }
-        userFilter[] res = new userFilter[hdefs.size()];
+        userFilter[] res = new userFilter[src.size()];
         for (int i = 0; i < res.length; i++) {
-            res[i] = hdefs.get(i);
+            res[i] = src.get(i);
         }
-        cfgAll.defaultC = res;
+        return res;
     }
 
     /**

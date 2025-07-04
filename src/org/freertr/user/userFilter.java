@@ -300,24 +300,6 @@ public class userFilter implements Comparable<userFilter> {
      * @param lst filter to find
      * @return filter found
      */
-    public static userFilter findFilter(userFilter txt, tabGen<userFilter> lst) {
-        ///////////////
-        for (int i = 0; i < lst.size(); i++) {
-            userFilter ntry = lst.get(i);
-            if (ntry.matches(txt)) {
-                return ntry;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * find filter
-     *
-     * @param txt text to find
-     * @param lst filter to find
-     * @return filter found
-     */
     public static userFilter findFilter(userFilter txt, userFilter[] lst) {
         for (int i = 0; i < lst.length; i++) {
             userFilter ntry = lst[i];
