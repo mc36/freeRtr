@@ -25,88 +25,12 @@ import org.freertr.pipe.pipeWindow;
 import org.freertr.prt.prtLocTcp;
 import org.freertr.prt.prtRedun;
 import org.freertr.prt.prtWatch;
-import org.freertr.serv.servAmt;
-import org.freertr.serv.servBmp2mrt;
-import org.freertr.serv.servBstun;
-import org.freertr.serv.servCharGen;
-import org.freertr.serv.servDaytime;
-import org.freertr.serv.servDcp;
-import org.freertr.serv.servDhcp4;
-import org.freertr.serv.servDhcp6;
-import org.freertr.serv.servDiscard;
-import org.freertr.serv.servDns;
-import org.freertr.serv.servEchoP;
-import org.freertr.serv.servEchoS;
-import org.freertr.serv.servEtherIp;
-import org.freertr.serv.servForwarder;
-import org.freertr.serv.servFtp;
-import org.freertr.serv.servGeneric;
-import org.freertr.serv.servGeneve;
-import org.freertr.serv.servGopher;
-import org.freertr.serv.servGre;
-import org.freertr.serv.servGtp;
-import org.freertr.serv.servHoneyPot;
-import org.freertr.serv.servHttp;
-import org.freertr.serv.servImap4;
-import org.freertr.serv.servIrc;
-import org.freertr.serv.servIscsi;
-import org.freertr.serv.servL2f;
-import org.freertr.serv.servL2tp2;
-import org.freertr.serv.servL2tp3;
-import org.freertr.serv.servLoadBalancer;
-import org.freertr.serv.servLpd;
-import org.freertr.serv.servModem;
-import org.freertr.serv.servMplsIp;
-import org.freertr.serv.servMplsOam;
-import org.freertr.serv.servMplsUdp;
-import org.freertr.serv.servMultiplexer;
-import org.freertr.serv.servNetflow;
-import org.freertr.serv.servNrpe;
-import org.freertr.serv.servNtp;
 import org.freertr.serv.servOpenflow;
-import org.freertr.serv.servPktmux;
 import org.freertr.serv.servP4lang;
-import org.freertr.serv.servPcep;
-import org.freertr.serv.servPckOdtls;
-import org.freertr.serv.servPckOtcp;
-import org.freertr.serv.servPckOtxt;
-import org.freertr.serv.servPckOudp;
-import org.freertr.serv.servPop3;
-import org.freertr.serv.servPptp;
-import org.freertr.serv.servPrometheus;
-import org.freertr.serv.servQuote;
-import org.freertr.serv.servRadius;
-import org.freertr.serv.servRfb;
-import org.freertr.serv.servRpki;
-import org.freertr.serv.servSdwan;
-import org.freertr.serv.servSip;
-import org.freertr.serv.servSmtp;
-import org.freertr.serv.servSnmp;
-import org.freertr.serv.servSocks;
-import org.freertr.serv.servStreamingMdt;
-import org.freertr.serv.servStun;
-import org.freertr.serv.servSyslog;
-import org.freertr.serv.servTacacs;
-import org.freertr.serv.servTelnet;
-import org.freertr.serv.servTftp;
-import org.freertr.serv.servTime;
-import org.freertr.serv.servTwamp;
-import org.freertr.serv.servUdpFwd;
-import org.freertr.serv.servUdptn;
-import org.freertr.serv.servUni2multi;
-import org.freertr.serv.servUpnpFwd;
-import org.freertr.serv.servUpnpHub;
-import org.freertr.serv.servVoice;
-import org.freertr.serv.servVxlan;
 import org.freertr.enc.encUrl;
 import org.freertr.ip.ipRtr;
 import org.freertr.pipe.pipeShell;
-import org.freertr.serv.servMrt2bgp;
-import org.freertr.serv.servPlan9;
 import org.freertr.serv.servStack;
-import org.freertr.serv.servUni2uni;
-import org.freertr.serv.servWhois;
-import org.freertr.serv.servXotPad;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteIface;
@@ -300,10 +224,10 @@ public class cfgInit implements Runnable {
     private final static String[] needFull = {
         "vnet .*",};
 
-    private final static String[] needIface = {
-        "interface .*!" + cmds.tabulator + "vrf forwarding .*",
-        "interface .*!" + cmds.tabulator + "ipv4 address .*",
-        "interface .*!" + cmds.tabulator + "ipv6 address .*"
+    private final static userFilter[] needIface = {
+        new userFilter("interface .*", cmds.tabulator + "vrf forwarding .*", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv4 address .*", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv6 address .*", null)
     };
 
     private final static String[] jvmMagic = {
@@ -791,7 +715,6 @@ public class cfgInit implements Runnable {
         ifaceNames.add(null, false, 1, new int[]{-1}, "serial", "ifc");
         ifaceNames.add(null, false, 1, new int[]{-1}, "cellular", "ifc");
         ifaceNames.add(null, false, 1, new int[]{-1}, "wireless", "ifc");
-        cfgAll.defaultF = createFilter(cfgAll.defaultL);
     }
 
     private static String doTrimmer(String s) {
@@ -818,6 +741,7 @@ public class cfgInit implements Runnable {
         if (read == null) {
             return;
         }
+        List<userFilter> hdefs = new ArrayList<userFilter>();
         for (int cnt = 0; cnt < read.size(); cnt++) {
             String s = doTrimmer(read.get(cnt));
             if (s.length() < 1) {
@@ -903,7 +827,7 @@ public class cfgInit implements Runnable {
             if (s.equals("def")) {
                 s = cmd.getRemaining();
                 defs.add(s);
-                cfgAll.defaultF.add(new userFilter("", s, null));
+                hdefs.add(new userFilter("", s, null));
                 continue;
             }
             if (s.equals("cfg")) {
@@ -915,7 +839,7 @@ public class cfgInit implements Runnable {
                 s = cmd.getRemaining();
                 cfgs.add(s);
                 defs.add(s);
-                cfgAll.defaultF.add(new userFilter("", s, null));
+                hdefs.add(new userFilter("", s, null));
                 continue;
             }
             if (s.equals("port")) {
@@ -1179,6 +1103,17 @@ public class cfgInit implements Runnable {
             }
             logger.info((cnt + 1) + ":" + cmd.getOriginal());
         }
+        if (hdefs.size() < 1) {
+            return;
+        }
+        for (int i = 0; i < cfgAll.defaultC.length; i++) {
+            hdefs.add(cfgAll.defaultC[i]);
+        }
+        userFilter[] res = new userFilter[hdefs.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = hdefs.get(i);
+        }
+        cfgAll.defaultC = res;
     }
 
     /**
@@ -1272,8 +1207,8 @@ public class cfgInit implements Runnable {
             sw = new ArrayList<String>();
         }
         List<String> sdefs = new ArrayList<String>();
-        for (int i = 0; i < cfgAll.defaultF.size(); i++) {
-            userFilter ntry = cfgAll.defaultF.get(i);
+        for (int i = 0; i < cfgAll.defaultF.length; i++) {
+            userFilter ntry = cfgAll.defaultF[i];
             if (ntry.section.length() > 0) {
                 continue;
             }
@@ -1287,7 +1222,7 @@ public class cfgInit implements Runnable {
         for (int i = 0; i < needFull.length; i++) {
             inis.addAll(userFilter.section2text(userFilter.getSection(secs, needFull[i], true, false, false), true));
         }
-        List<String> ints = userFilter.section2text(userFilter.filter2text(secs, createFilter(needIface)), true);
+        List<String> ints = userFilter.section2text(userFilter.filter2text(secs, needIface), true);
         List<String> hcfgs = new ArrayList<String>();
         List<String> hdefs = new ArrayList<String>();
         List<String> inhs = new ArrayList<String>();
@@ -1430,39 +1365,6 @@ public class cfgInit implements Runnable {
         stateLast = res;
         bits.buf2txt(true, res, myStateFile());
         prtRedun.doState();
-    }
-
-    private final static tabGen<userFilter> createFilter(String[] lst) {
-        tabGen<userFilter> res = new tabGen<userFilter>();
-        for (int o = 0; o < lst.length; o++) {
-            String s = lst[o];
-            int i = s.indexOf("!");
-            String c = s.substring(i + 1, s.length());
-            s = s.substring(0, i);
-            userFilter ntry = new userFilter(s, c, null);
-            res.add(ntry);
-        }
-        return res;
-    }
-
-    private final static void addFilters(tabGen<userFilter> trg, tabGen<userFilter> src) {
-        for (int i = 0; i < src.size(); i++) {
-            userFilter ntry = src.get(i);
-            trg.add(ntry);
-        }
-    }
-
-    private final static tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1) {
-        tabGen<userFilter> r = createFilter(lst);
-        addFilters(r, s1);
-        return r;
-    }
-
-    private final static tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1, tabGen<userFilter> s2) {
-        tabGen<userFilter> r = createFilter(lst);
-        addFilters(r, s1);
-        addFilters(r, s2);
-        return r;
     }
 
     /**

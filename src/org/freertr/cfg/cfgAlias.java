@@ -356,7 +356,7 @@ public class cfgAlias implements Comparable<cfgAlias>, cfgGeneric {
         if ((filter & 1) == 0) {
             return l;
         }
-        l = userFilter.filterText(l, cfgAll.defaultF);
+        l = userFilter.filterText(l, cfgAll.defaultC);
         return userFilter.filterText(l, defaultF);
     }
 

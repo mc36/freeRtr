@@ -355,27 +355,6 @@ public class userFilter implements Comparable<userFilter> {
      * @param flt filter to use
      * @return filtered text
      */
-    public static List<String> filterText(List<String> txt, tabGen<userFilter> flt) {
-        ///////////
-        List<String> res = new ArrayList<String>();
-        List<userFilter> src = text2section(txt);
-        for (int i = 0; i < src.size(); i++) {
-            userFilter l = src.get(i);
-            if (findFilter(l, flt) != null) {
-                continue;
-            }
-            res.add(l.command);
-        }
-        return res;
-    }
-
-    /**
-     * filter text
-     *
-     * @param txt text to filter
-     * @param flt filter to use
-     * @return filtered text
-     */
     public static List<String> filterText(List<String> txt, userFilter[] flt) {
         List<String> res = new ArrayList<String>();
         List<userFilter> src = text2section(txt);
@@ -396,7 +375,7 @@ public class userFilter implements Comparable<userFilter> {
      * @param flt filter to use
      * @return filtered text
      */
-    public static List<userFilter> filter2text(List<userFilter> src, tabGen<userFilter> flt) {
+    public static List<userFilter> filter2text(List<userFilter> src, userFilter[] flt) {
         List<userFilter> res = new ArrayList<userFilter>();
         for (int i = 0; i < src.size(); i++) {
             userFilter l = src.get(i);
