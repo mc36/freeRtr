@@ -32,17 +32,12 @@ public class servCharGen extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server chargen .*!" + cmds.tabulator + "port " + port,
-        "server chargen .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server chargen .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server chargen .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

@@ -49,17 +49,13 @@ public class servNrpe extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server nrpe .*!" + cmds.tabulator + "port " + packNrpe.portNum,
-        "server nrpe .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server nrpe .*!" + cmds.tabulator + "truncate 12288",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server nrpe .*", cmds.tabulator + "port " + packNrpe.portNum, null),
+        new userFilter("server nrpe .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server nrpe .*", cmds.tabulator + "truncate 12288", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

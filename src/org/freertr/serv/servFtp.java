@@ -70,19 +70,14 @@ public class servFtp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server ftp .*!" + cmds.tabulator + "port " + portNum,
-        "server ftp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server ftp .*!" + cmds.tabulator + "readonly",
-        "server ftp .*!" + cmds.tabulator + "passiveonly"
+    public final static userFilter[] defaultF = {
+        new userFilter("server ftp .*", cmds.tabulator + "port " + portNum, null),
+        new userFilter("server ftp .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server ftp .*", cmds.tabulator + "readonly", null),
+        new userFilter("server ftp .*", cmds.tabulator + "passiveonly", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

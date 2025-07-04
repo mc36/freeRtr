@@ -42,17 +42,12 @@ public class servSnmp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server snmp .*!" + cmds.tabulator + "port " + packSnmp.port,
-        "server snmp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server snmp .*", cmds.tabulator + "port " + packSnmp.port, null),
+        new userFilter("server snmp .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

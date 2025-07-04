@@ -50,17 +50,12 @@ public class servStun extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server stun .*!" + cmds.tabulator + "port " + packStun.port,
-        "server stun .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server stun .*", cmds.tabulator + "port " + packStun.port, null),
+        new userFilter("server stun .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

@@ -36,18 +36,13 @@ public class servIscsi extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server iscsi .*!" + cmds.tabulator + "port " + packIscsi.port,
-        "server iscsi .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server iscsi .*!" + cmds.tabulator + "target .* block 512"
+    public final static userFilter[] defaultF = {
+        new userFilter("server iscsi .*", cmds.tabulator + "port " + packIscsi.port, null),
+        new userFilter("server iscsi .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server iscsi .*", cmds.tabulator + "target .* block 512", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

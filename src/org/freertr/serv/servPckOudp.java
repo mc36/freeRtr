@@ -85,18 +85,13 @@ public class servPckOudp extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server pckoudp .*!" + cmds.tabulator + "port " + port,
-        "server pckoudp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server pckoudp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface"
+    public final static userFilter[] defaultF = {
+        new userFilter("server pckoudp .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server pckoudp .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server pckoudp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

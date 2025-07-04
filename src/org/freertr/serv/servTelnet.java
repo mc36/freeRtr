@@ -44,18 +44,13 @@ public class servTelnet extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server telnet .*!" + cmds.tabulator + "port " + port,
-        "server telnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "second-port",
-        "server telnet .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server telnet .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server telnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "second-port", null),
+        new userFilter("server telnet .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -69,8 +64,8 @@ public class servTelnet extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {
+        lin.getShRun(beg, l, filter);
         cmds.cfgLine(l, secondPort < 0, beg, "second-port", "" + secondPort);
-        lin.getShRun(beg, l);
     }
 
     public boolean srvCfgStr(cmds cmd) {

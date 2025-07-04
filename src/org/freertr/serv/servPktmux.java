@@ -67,17 +67,12 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server pktmux .*!" + cmds.tabulator + "port " + port,
-        "server pktmux .*!" + cmds.tabulator + "protocol " + proto2string(protoAll)
+    public final static userFilter[] defaultF = {
+        new userFilter("server pktmux .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server pktmux .*", cmds.tabulator + "protocol " + proto2string(protoAll), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

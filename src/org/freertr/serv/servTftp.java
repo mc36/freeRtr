@@ -44,18 +44,13 @@ public class servTftp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server tftp .*!" + cmds.tabulator + "port " + packTftp.port,
-        "server tftp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server tftp .*!" + cmds.tabulator + "readonly"
+    public final static userFilter[] defaultF = {
+        new userFilter("server tftp .*", cmds.tabulator + "port " + packTftp.port, null),
+        new userFilter("server tftp .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server tftp .*", cmds.tabulator + "readonly", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

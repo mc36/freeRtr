@@ -99,28 +99,24 @@ public class servHttp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server http .*!" + cmds.tabulator + "port " + clearPort,
-        "server http .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "proxy",
-        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error",
-        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "single-request",
-        "server http .*!" + cmds.tabulator + "def-path " + defHostPat,
-        "server http .*!" + cmds.tabulator + "def-subconn",
-        "server http .*!" + cmds.tabulator + "buffer 65536",
-        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "second-port",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {
+        new userFilter("server http .*", cmds.tabulator + "port " + clearPort, null),
+        new userFilter("server http .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "proxy", null),
+        new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "error", null),
+        new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "single-request", null),
+        new userFilter("server http .*", cmds.tabulator + "def-path " + defHostPat, null),
+        new userFilter("server http .*", cmds.tabulator + "def-subconn", null),
+        new userFilter("server http .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "second-port", null)
+    };
 
     /**
      * get defaults filter
      *
      * @return filter
      */
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

@@ -312,34 +312,29 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server p4lang .*!" + cmds.tabulator + "port " + port,
-        "server p4lang .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server p4lang .*!" + cmds.tabulator + "buffer 65536",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "api-stat",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "export-names",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "export-srv6",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "export-copp4 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "export-copp6 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-list4 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-list6 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-map4 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-map6 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-policy4 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-policy6 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-compress4 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-compress6 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "export-socket",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "interconnect",
-        "server p4lang .*!" + cmds.tabulator + "export-interval 1000"
+    public final static userFilter[] defaultF = {
+        new userFilter("server p4lang .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server p4lang .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server p4lang .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "api-stat", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "export-names", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "export-srv6", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "export-copp4 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "export-copp6 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-list4 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-list6 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-map4 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-map6 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-policy4 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-policy6 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-compress4 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-compress6 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "export-socket", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "interconnect", null),
+        new userFilter("server p4lang .*", cmds.tabulator + "export-interval 1000", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

@@ -38,19 +38,6 @@ public class servSip extends servGeneric implements prtServS {
     private tabGen<servSipDoer> users = new tabGen<servSipDoer>();
 
     /**
-     * defaults text
-     */
-    public final static String[] defaultL = {
-        "server sip .*!" + cmds.tabulator + "port " + packSip.port,
-        "server sip .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server sip .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mypeer",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    /**
      * my peer
      */
     public String myPeer;
@@ -65,7 +52,16 @@ public class servSip extends servGeneric implements prtServS {
      */
     public List<cfgTrnsltn> trnsOutDst = new ArrayList<cfgTrnsltn>();
 
-    public tabGen<userFilter> srvDefFlt() {
+    /**
+     * defaults text
+     */
+    public final static userFilter[] defaultF = {
+        new userFilter("server sip .*", cmds.tabulator + "port " + packSip.port, null),
+        new userFilter("server sip .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server sip .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mypeer", null)
+    };
+
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

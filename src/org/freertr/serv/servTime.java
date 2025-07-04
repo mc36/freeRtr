@@ -34,17 +34,12 @@ public class servTime extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server time .*!" + cmds.tabulator + "port " + port,
-        "server time .*!" + cmds.tabulator + "protocol " + proto2string(protoAll)
+    public final static userFilter[] defaultF = {
+        new userFilter("server time .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server time .*", cmds.tabulator + "protocol " + proto2string(protoAll), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

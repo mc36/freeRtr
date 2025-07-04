@@ -74,22 +74,18 @@ public class servSocks extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server socks .*!" + cmds.tabulator + "port " + port,
-        "server socks .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server socks .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target proxy",
-        "server socks .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target vrf",
-        "server socks .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target interface",
-        "server socks .*!" + cmds.tabulator + "timeout 60000",
-        "server socks .*!" + cmds.tabulator + "buffer 65536",
-        "server socks .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server socks .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server socks .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server socks .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target proxy", null),
+        new userFilter("server socks .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target vrf", null),
+        new userFilter("server socks .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target interface", null),
+        new userFilter("server socks .*", cmds.tabulator + "timeout 60000", null),
+        new userFilter("server socks .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server socks .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

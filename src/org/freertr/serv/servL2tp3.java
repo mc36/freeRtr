@@ -98,20 +98,15 @@ public class servL2tp3 extends servGeneric implements ipPrt {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server l2tp3 .*!" + cmds.tabulator + "port " + packL2tp3.prot,
-        "server l2tp3 .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server l2tp3 .*!" + cmds.tabulator + "timer 5 8",
-        "server l2tp3 .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface",
-        "server l2tp3 .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "password"
+    public final static userFilter[] defaultF = {
+        new userFilter("server l2tp3 .*", cmds.tabulator + "port " + packL2tp3.prot, null),
+        new userFilter("server l2tp3 .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server l2tp3 .*", cmds.tabulator + "timer 5 8", null),
+        new userFilter("server l2tp3 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface", null),
+        new userFilter("server l2tp3 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "password", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

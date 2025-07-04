@@ -35,17 +35,12 @@ public class servUdptn extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server udptn .*!" + cmds.tabulator + "port " + port,
-        "server udptn .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server udptn .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server udptn .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -57,7 +52,7 @@ public class servUdptn extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {
-        lin.getShRun(beg, l);
+        lin.getShRun(beg, l, filter);
     }
 
     public boolean srvCfgStr(cmds cmd) {

@@ -40,21 +40,6 @@ public class servRpki extends servGeneric implements prtServS {
     }
 
     /**
-     * defaults text
-     */
-    public final static String[] defaultL = {
-        "server rpki .*!" + cmds.tabulator + "port " + rtrRpkiSpeak.portNum,
-        "server rpki .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server rpki .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "json",
-        "server rpki .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rpki"
-    };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    /**
      * configured ipv4 prefixes
      */
     public final tabGen<tabRpkiRoa> cfged4 = new tabGen<tabRpkiRoa>();
@@ -99,7 +84,17 @@ public class servRpki extends servGeneric implements prtServS {
      */
     protected tabGen<servRpkiConn> neighs = new tabGen<servRpkiConn>();
 
-    public tabGen<userFilter> srvDefFlt() {
+    /**
+     * defaults text
+     */
+    public final static userFilter[] defaultF = {
+        new userFilter("server rpki .*", cmds.tabulator + "port " + rtrRpkiSpeak.portNum, null),
+        new userFilter("server rpki .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server rpki .*", cmds.tabulator + cmds.negated + cmds.tabulator + "json", null),
+        new userFilter("server rpki .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rpki", null)
+    };
+
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

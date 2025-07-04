@@ -54,19 +54,15 @@ public class servVoice extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server voice .*!" + cmds.tabulator + "port " + packSip.port,
-        "server voice .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server voice .*!" + cmds.tabulator + "codec alaw",
-        "server voice .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "voice-script",
-        "server voice .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "message-script",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server voice .*", cmds.tabulator + "port " + packSip.port, null),
+        new userFilter("server voice .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server voice .*", cmds.tabulator + "codec alaw", null),
+        new userFilter("server voice .*", cmds.tabulator + cmds.negated + cmds.tabulator + "voice-script", null),
+        new userFilter("server voice .*", cmds.tabulator + cmds.negated + cmds.tabulator + "message-script", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

@@ -66,21 +66,16 @@ public class servRadius extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server radius .*!" + cmds.tabulator + "port " + packRadius.port,
-        "server radius .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server radius .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "secret",
-        "server radius .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",
-        "server radius .*!" + cmds.tabulator + "success successful",
-        "server radius .*!" + cmds.tabulator + "failure failed"
+    public final static userFilter[] defaultF = {
+        new userFilter("server radius .*", cmds.tabulator + "port " + packRadius.port, null),
+        new userFilter("server radius .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server radius .*", cmds.tabulator + cmds.negated + cmds.tabulator + "secret", null),
+        new userFilter("server radius .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null),
+        new userFilter("server radius .*", cmds.tabulator + "success successful", null),
+        new userFilter("server radius .*", cmds.tabulator + "failure failed", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

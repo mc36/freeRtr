@@ -65,17 +65,13 @@ public class servPrometheus extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server prometheus .*!" + cmds.tabulator + "port " + port,
-        "server prometheus .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server prometheus .*!" + cmds.tabulator + "all-metrics metrics",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server prometheus .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server prometheus .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server prometheus .*", cmds.tabulator + "all-metrics metrics", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

@@ -271,27 +271,27 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
     /**
      * defaults text
      */
-    public final static String[] srvdefsL = {
+    public final static userFilter[] srvdefsL = {
         // generic server
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security protocol",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security authentication",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security rsakey",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security dsakey",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security ecdsakey",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security mldsakey",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security rsacert",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security dsacert",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security ecdsacert",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security mldsacert",
-        "server .*!" + cmds.tabulator + "access-total 0",
-        "server .*!" + cmds.tabulator + "access-peer 0",
-        "server .*!" + cmds.tabulator + "access-subnet 0",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "access-blackhole4",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "access-blackhole6",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "access-log",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "interface",
-        "server .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vrf"
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "security protocol", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "security authentication", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "security rsakey", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "security dsakey", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "security ecdsakey", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "security mldsakey", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "security rsacert", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "security dsacert", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "security ecdsacert", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "security mldsacert", null),
+        new userFilter("server .*", cmds.tabulator + "access-total 0", null),
+        new userFilter("server .*", cmds.tabulator + "access-peer 0", null),
+        new userFilter("server .*", cmds.tabulator + "access-subnet 0", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "access-blackhole4", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "access-blackhole6", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "access-log", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "interface", null),
+        new userFilter("server .*", cmds.tabulator + cmds.negated + cmds.tabulator + "vrf", null)
     };
 
     /**
@@ -317,7 +317,7 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
      *
      * @return default filter
      */
-    public abstract tabGen<userFilter> srvDefFlt();
+    public abstract userFilter[] srvDefFlt();
 
     /**
      * parse commands
@@ -1321,6 +1321,7 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         if ((filter & 1) == 0) {
             return l;
         }
+        l = userFilter.filterText(l, srvdefsL);
         return userFilter.filterText(l, srvDefFlt());
     }
 

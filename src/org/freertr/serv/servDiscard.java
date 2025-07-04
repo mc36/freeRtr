@@ -32,17 +32,12 @@ public class servDiscard extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server discard .*!" + cmds.tabulator + "port " + port,
-        "server discard .*!" + cmds.tabulator + "protocol " + proto2string(protoAll)
+    public final static userFilter[] defaultF = {
+        new userFilter("server discard .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server discard .*", cmds.tabulator + "protocol " + proto2string(protoAll), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

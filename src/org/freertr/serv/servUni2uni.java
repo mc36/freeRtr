@@ -82,22 +82,17 @@ public class servUni2uni extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server uni2uni .*!" + cmds.tabulator + "port " + portNum,
-        "server uni2uni .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server uni2uni .*!" + cmds.tabulator + "source port -1",
-        "server uni2uni .*!" + cmds.tabulator + "target port 1234",
-        "server uni2uni .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",
-        "server uni2uni .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "script",
-        "server uni2uni .*!" + cmds.tabulator + "timeout 60000"
+    public final static userFilter[] defaultF = {
+        new userFilter("server uni2uni .*", cmds.tabulator + "port " + portNum, null),
+        new userFilter("server uni2uni .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server uni2uni .*", cmds.tabulator + "source port -1", null),
+        new userFilter("server uni2uni .*", cmds.tabulator + "target port 1234", null),
+        new userFilter("server uni2uni .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null),
+        new userFilter("server uni2uni .*", cmds.tabulator + cmds.negated + cmds.tabulator + "script", null),
+        new userFilter("server uni2uni .*", cmds.tabulator + "timeout 60000", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

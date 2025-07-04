@@ -35,18 +35,13 @@ public class servUpnpFwd extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server upnpfwd .*!" + cmds.tabulator + "port " + packUpnpFwd.portNum,
-        "server upnpfwd .*!" + cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp),
-        "server upnpfwd .*!" + cmds.tabulator + "target null"
+    public final static userFilter[] defaultF = {
+        new userFilter("server upnpfwd .*", cmds.tabulator + "port " + packUpnpFwd.portNum, null),
+        new userFilter("server upnpfwd .*", cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp), null),
+        new userFilter("server upnpfwd .*", cmds.tabulator + "target null", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

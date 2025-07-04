@@ -43,22 +43,6 @@ public class servSyslog extends servGeneric implements prtServS {
     protected logFil log2file;
 
     /**
-     * defaults text
-     */
-    public final static String[] defaultL = {
-        "server syslog .*!" + cmds.tabulator + "port " + port,
-        "server syslog .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server syslog .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "local",
-        "server syslog .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "file",
-        "server syslog .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rotate"
-    };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    /**
      * facilities
      */
     public final static String[] facilities = {
@@ -98,7 +82,18 @@ public class servSyslog extends servGeneric implements prtServS {
         return -1;
     }
 
-    public tabGen<userFilter> srvDefFlt() {
+    /**
+     * defaults text
+     */
+    public final static userFilter[] defaultF = {
+        new userFilter("server syslog .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server syslog .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server syslog .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local", null),
+        new userFilter("server syslog .*", cmds.tabulator + cmds.negated + cmds.tabulator + "file", null),
+        new userFilter("server syslog .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rotate", null)
+    };
+
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

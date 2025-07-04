@@ -70,18 +70,13 @@ public class servAmt extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server amt .*!" + cmds.tabulator + "port " + clntAmt.portNum,
-        "server amt .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server amt .*!" + cmds.tabulator + "timeout 120000"
+    public final static userFilter[] defaultF = {
+        new userFilter("server amt .*", cmds.tabulator + "port " + clntAmt.portNum, null),
+        new userFilter("server amt .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server amt .*", cmds.tabulator + "timeout 120000", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

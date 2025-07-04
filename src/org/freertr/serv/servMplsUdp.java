@@ -80,18 +80,13 @@ public class servMplsUdp extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server mplsudp .*!" + cmds.tabulator + "port " + portNum,
-        "server mplsudp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server mplsudp .*!" + cmds.tabulator + "timeout 60000"
+    public final static userFilter[] defaultF = {
+        new userFilter("server mplsudp .*", cmds.tabulator + "port " + portNum, null),
+        new userFilter("server mplsudp .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server mplsudp .*", cmds.tabulator + "timeout 60000", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

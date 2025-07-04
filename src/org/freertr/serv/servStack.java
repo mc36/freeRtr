@@ -128,20 +128,15 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server stack .*!" + cmds.tabulator + "port " + port,
-        "server stack .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server stack .*!" + cmds.tabulator + "buffer 65536",
-        "server stack .*!" + cmds.tabulator + "dataplanes 1",
-        "server stack .*!" + cmds.tabulator + "discovery 1000 5000"
+    public final static userFilter[] defaultF = {
+        new userFilter("server stack .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server stack .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server stack .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server stack .*", cmds.tabulator + "dataplanes 1", null),
+        new userFilter("server stack .*", cmds.tabulator + "discovery 1000 5000", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

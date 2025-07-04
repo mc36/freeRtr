@@ -86,19 +86,14 @@ public class servL2f extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server l2f .*!" + cmds.tabulator + "port " + packL2f.port,
-        "server l2f .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server l2f .*!" + cmds.tabulator + "timer 5 8",
-        "server l2f .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "password"
+    public final static userFilter[] defaultF = {
+        new userFilter("server l2f .*", cmds.tabulator + "port " + packL2f.port, null),
+        new userFilter("server l2f .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server l2f .*", cmds.tabulator + "timer 5 8", null),
+        new userFilter("server l2f .*", cmds.tabulator + cmds.negated + cmds.tabulator + "password", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

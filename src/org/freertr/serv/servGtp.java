@@ -70,17 +70,12 @@ public class servGtp extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server gtp .*!" + cmds.tabulator + "port " + packGtp.portCtrl,
-        "server gtp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server gtp .*", cmds.tabulator + "port " + packGtp.portCtrl, null),
+        new userFilter("server gtp .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

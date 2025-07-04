@@ -58,25 +58,20 @@ public class servIrc extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server irc .*!" + cmds.tabulator + "port " + port,
-        "server irc .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server irc .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "local",
-        "server irc .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "file",
-        "server irc .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rotate"
+    public final static userFilter[] defaultF = {
+        new userFilter("server irc .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server irc .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server irc .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local", null),
+        new userFilter("server irc .*", cmds.tabulator + cmds.negated + cmds.tabulator + "file", null),
+        new userFilter("server irc .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rotate", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     /**
      * get defaults filter
      *
      * @return filter
      */
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

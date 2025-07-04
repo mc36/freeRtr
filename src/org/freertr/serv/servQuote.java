@@ -37,17 +37,12 @@ public class servQuote extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server quote .*!" + cmds.tabulator + "port " + port,
-        "server quote .*!" + cmds.tabulator + "protocol " + proto2string(protoAll)
+    public final static userFilter[] defaultF = {
+        new userFilter("server quote .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server quote .*", cmds.tabulator + "protocol " + proto2string(protoAll), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

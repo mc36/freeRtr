@@ -67,19 +67,15 @@ public class servMultiplexer extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server multiplexer .*!" + cmds.tabulator + "port " + port,
-        "server multiplexer .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server multiplexer .*!" + cmds.tabulator + "timeout 60000",
-        "server multiplexer .*!" + cmds.tabulator + "buffer 65536",
-        "server multiplexer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server multiplexer .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server multiplexer .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server multiplexer .*", cmds.tabulator + "timeout 60000", null),
+        new userFilter("server multiplexer .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server multiplexer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

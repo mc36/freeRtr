@@ -43,18 +43,13 @@ public class servTwamp extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server twamp .*!" + cmds.tabulator + "port " + packTwamp.port,
-        "server twamp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server twamp .*!" + cmds.tabulator + "timeout 10000"
+    public final static userFilter[] defaultF = {
+        new userFilter("server twamp .*", cmds.tabulator + "port " + packTwamp.port, null),
+        new userFilter("server twamp .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server twamp .*", cmds.tabulator + "timeout 10000", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

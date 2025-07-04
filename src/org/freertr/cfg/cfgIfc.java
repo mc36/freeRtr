@@ -6674,7 +6674,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(cmds.tabulator + b + " enable");
         List<String> r = new ArrayList<String>();
         s.srvShRun(cmds.tabulator, r, filter);
-        tabGen<userFilter> fl = s.srvDefFlt();
+        userFilter[] fl = s.srvDefFlt();
         for (int i = 0; i < r.size(); i++) {
             String a = r.get(i);
             userFilter fv = new userFilter(fn, a, null);

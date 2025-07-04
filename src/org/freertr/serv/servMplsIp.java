@@ -77,18 +77,13 @@ public class servMplsIp extends servGeneric implements ipPrt {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server mplsip .*!" + cmds.tabulator + "port " + prtMplsIp.prot,
-        "server mplsip .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server mplsip .*!" + cmds.tabulator + "timeout 60000"
+    public final static userFilter[] defaultF = {
+        new userFilter("server mplsip .*", cmds.tabulator + "port " + prtMplsIp.prot, null),
+        new userFilter("server mplsip .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server mplsip .*", cmds.tabulator + "timeout 60000", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

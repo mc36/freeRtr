@@ -75,19 +75,15 @@ public class servUdpFwd extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server udpfwd .*!" + cmds.tabulator + "port " + port,
-        "server udpfwd .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server udpfwd .*!" + cmds.tabulator + "source port 0",
-        "server udpfwd .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "source interface",
-        "server udpfwd .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server udpfwd .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server udpfwd .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server udpfwd .*", cmds.tabulator + "source port 0", null),
+        new userFilter("server udpfwd .*", cmds.tabulator + cmds.negated + cmds.tabulator + "source interface", null),
+        new userFilter("server udpfwd .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

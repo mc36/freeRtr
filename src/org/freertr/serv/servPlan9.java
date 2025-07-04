@@ -37,19 +37,14 @@ public class servPlan9 extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server plan9 .*!" + cmds.tabulator + "port " + packPlan9.port,
-        "server plan9 .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server plan9 .*!" + cmds.tabulator + "user nobody",
-        "server plan9 .*!" + cmds.tabulator + "readonly"
+    public final static userFilter[] defaultF = {
+        new userFilter("server plan9 .*", cmds.tabulator + "port " + packPlan9.port, null),
+        new userFilter("server plan9 .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server plan9 .*", cmds.tabulator + "user nobody", null),
+        new userFilter("server plan9 .*", cmds.tabulator + "readonly", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

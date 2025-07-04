@@ -69,20 +69,16 @@ public class servSdwan extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server sdwan .*!" + cmds.tabulator + "port " + port,
-        "server sdwan .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server sdwan .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "pool4",
-        "server sdwan .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "pool6",
-        "server sdwan .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "hubs",
-        "server sdwan .*!" + cmds.tabulator + "natted",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server sdwan .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server sdwan .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server sdwan .*", cmds.tabulator + cmds.negated + cmds.tabulator + "pool4", null),
+        new userFilter("server sdwan .*", cmds.tabulator + cmds.negated + cmds.tabulator + "pool6", null),
+        new userFilter("server sdwan .*", cmds.tabulator + cmds.negated + cmds.tabulator + "hubs", null),
+        new userFilter("server sdwan .*", cmds.tabulator + "natted", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

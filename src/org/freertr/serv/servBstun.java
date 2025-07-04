@@ -1,5 +1,6 @@
 package org.freertr.serv;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.line.lineBstun;
 import org.freertr.pipe.pipeLine;
@@ -10,6 +11,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
+import org.freertr.user.userRead;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -36,17 +38,12 @@ public class servBstun extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server bstun .*!" + cmds.tabulator + "port " + lineBstun.port,
-        "server bstun .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server bstun .*", cmds.tabulator + "port " + lineBstun.port, null),
+        new userFilter("server bstun .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -57,7 +54,7 @@ public class servBstun extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {
-        lin.getShRun(beg, l);
+        lin.getShRun(beg, l, filter);
         l.add(beg + "group " + grpNum);
     }
 

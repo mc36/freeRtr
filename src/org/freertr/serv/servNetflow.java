@@ -36,40 +36,35 @@ public class servNetflow extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server netflow .*!" + cmds.tabulator + "port " + packNetflow.port,
-        "server netflow .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "timeout",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sessions",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rate",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mac",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "before",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "after",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dropped",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-routing",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-sending",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-linklocal",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-multicast",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-broadcast",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-list",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-url",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-rx",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-tx",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-frg",
-        "server netflow .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "member"
+    public final static userFilter[] defaultF = {
+        new userFilter("server netflow .*", cmds.tabulator + "port " + packNetflow.port, null),
+        new userFilter("server netflow .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "timeout", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "sessions", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rate", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mac", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "before", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "after", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "dropped", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-routing", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-sending", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-linklocal", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-multicast", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-broadcast", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-list", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-url", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "drop-rx", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "drop-tx", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "drop-frg", null),
+        new userFilter("server netflow .*", cmds.tabulator + cmds.negated + cmds.tabulator + "member", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     /**
      * get defaults filter
      *
      * @return filter
      */
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

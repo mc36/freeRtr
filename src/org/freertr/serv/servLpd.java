@@ -53,19 +53,14 @@ public class servLpd extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server lpd .*!" + cmds.tabulator + "port " + port,
-        "server lpd .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server lpd .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "script",
-        "server lpd .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "keep"
+    public final static userFilter[] defaultF = {
+        new userFilter("server lpd .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server lpd .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server lpd .*", cmds.tabulator + cmds.negated + cmds.tabulator + "script", null),
+        new userFilter("server lpd .*", cmds.tabulator + cmds.negated + cmds.tabulator + "keep", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

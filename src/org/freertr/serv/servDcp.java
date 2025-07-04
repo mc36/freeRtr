@@ -45,18 +45,13 @@ public class servDcp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server dcp .*!" + cmds.tabulator + "port " + port,
-        "server dcp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server dcp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging"
+    public final static userFilter[] defaultF = {
+        new userFilter("server dcp .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server dcp .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server dcp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

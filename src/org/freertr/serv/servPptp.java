@@ -80,17 +80,12 @@ public class servPptp extends servGeneric implements ipPrt, prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server pptp .*!" + cmds.tabulator + "port " + packPptp.port,
-        "server pptp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server pptp .*", cmds.tabulator + "port " + packPptp.port, null),
+        new userFilter("server pptp .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

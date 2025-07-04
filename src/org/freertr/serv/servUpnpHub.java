@@ -29,17 +29,12 @@ public class servUpnpHub extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server upnphub .*!" + cmds.tabulator + "port " + packUpnpFwd.portNum,
-        "server upnphub .*!" + cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp)
+    public final static userFilter[] defaultF = {
+        new userFilter("server upnphub .*", cmds.tabulator + "port " + packUpnpFwd.portNum, null),
+        new userFilter("server upnphub .*", cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

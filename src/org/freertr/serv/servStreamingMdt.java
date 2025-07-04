@@ -174,18 +174,6 @@ public class servStreamingMdt extends servGeneric implements prtServS {
     public final static String nmDat = "content";
 
     /**
-     * defaults text
-     */
-    public final static String[] defaultL = {
-        "server streamingmdt .*!" + cmds.tabulator + "port " + port,
-        "server streamingmdt .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    /**
      * convert type to string
      *
      * @param i type
@@ -258,7 +246,15 @@ public class servStreamingMdt extends servGeneric implements prtServS {
      */
     protected tabGen<servTelemetryConn> conns = new tabGen<servTelemetryConn>();
 
-    public tabGen<userFilter> srvDefFlt() {
+    /**
+     * defaults text
+     */
+    public final static userFilter[] defaultF = {
+        new userFilter("server streamingmdt .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server streamingmdt .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
+    };
+
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

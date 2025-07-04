@@ -48,19 +48,14 @@ public class servNtp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server ntp .*!" + cmds.tabulator + "port " + packNtp.port,
-        "server ntp .*!" + cmds.tabulator + "protocol " + proto2string(protoAll),
-        "server ntp .*!" + cmds.tabulator + "stratum 2",
-        "server ntp .*!" + cmds.tabulator + "adjust 0"
+    public final static userFilter[] defaultF = {
+        new userFilter("server ntp .*", cmds.tabulator + "port " + packNtp.port, null),
+        new userFilter("server ntp .*", cmds.tabulator + "protocol " + proto2string(protoAll), null),
+        new userFilter("server ntp .*", cmds.tabulator + "stratum 2", null),
+        new userFilter("server ntp .*", cmds.tabulator + "adjust 0", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

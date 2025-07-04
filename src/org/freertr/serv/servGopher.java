@@ -53,18 +53,13 @@ public class servGopher extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server gopher .*!" + cmds.tabulator + "port " + portNum,
-        "server gopher .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server gopher .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dirlist"
+    public final static userFilter[] defaultF = {
+        new userFilter("server gopher .*", cmds.tabulator + "port " + portNum, null),
+        new userFilter("server gopher .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server gopher .*", cmds.tabulator + cmds.negated + cmds.tabulator + "dirlist", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

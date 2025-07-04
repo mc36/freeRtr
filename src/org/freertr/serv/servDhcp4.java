@@ -124,22 +124,18 @@ public class servDhcp4 extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server dhcp4 .*!" + cmds.tabulator + "port " + packDhcp4.portSnum,
-        "server dhcp4 .*!" + cmds.tabulator + "protocol " + proto2string(protoIp4 + protoUdp),
-        "server dhcp4 .*!" + cmds.tabulator + "boot-server ",
-        "server dhcp4 .*!" + cmds.tabulator + "boot-file ",
-        "server dhcp4 .*!" + cmds.tabulator + "lease 43200000",
-        "server dhcp4 .*!" + cmds.tabulator + "renew 21600000",
-        "server dhcp4 .*!" + cmds.tabulator + "remember 0",
-        "server dhcp4 .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bind-file",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server dhcp4 .*", cmds.tabulator + "port " + packDhcp4.portSnum, null),
+        new userFilter("server dhcp4 .*", cmds.tabulator + "protocol " + proto2string(protoIp4 + protoUdp), null),
+        new userFilter("server dhcp4 .*", cmds.tabulator + "boot-server ", null),
+        new userFilter("server dhcp4 .*", cmds.tabulator + "boot-file ", null),
+        new userFilter("server dhcp4 .*", cmds.tabulator + "lease 43200000", null),
+        new userFilter("server dhcp4 .*", cmds.tabulator + "renew 21600000", null),
+        new userFilter("server dhcp4 .*", cmds.tabulator + "remember 0", null),
+        new userFilter("server dhcp4 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bind-file", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

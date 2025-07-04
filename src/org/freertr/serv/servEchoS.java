@@ -38,18 +38,13 @@ public class servEchoS extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server echo .*!" + cmds.tabulator + "port " + port,
-        "server echo .*!" + cmds.tabulator + "protocol " + proto2string(protoAll),
-        "server echo .*!" + cmds.tabulator + "delay 0"
+    public final static userFilter[] defaultF = {
+        new userFilter("server echo .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server echo .*", cmds.tabulator + "protocol " + proto2string(protoAll), null),
+        new userFilter("server echo .*", cmds.tabulator + "delay 0", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

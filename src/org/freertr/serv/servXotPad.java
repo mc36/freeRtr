@@ -34,17 +34,13 @@ public class servXotPad extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server xotpad .*!" + cmds.tabulator + "port " + packXotPad.port,
-        "server xotpad .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server xotpad .*", cmds.tabulator + "port " + packXotPad.port, null),
+        new userFilter("server xotpad .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -54,7 +50,7 @@ public class servXotPad extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
-        lin.getShRun(beg, lst);
+        lin.getShRun(beg, lst, filter);
     }
 
     public boolean srvCfgStr(cmds cmd) {

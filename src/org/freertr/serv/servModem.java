@@ -53,18 +53,14 @@ public class servModem extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server modem .*!" + cmds.tabulator + "port " + packSip.port,
-        "server modem .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server modem .*!" + cmds.tabulator + "codec alaw",
-        "server modem .*!" + cmds.tabulator + "mode answer",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server modem .*", cmds.tabulator + "port " + packSip.port, null),
+        new userFilter("server modem .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server modem .*", cmds.tabulator + "codec alaw", null),
+        new userFilter("server modem .*", cmds.tabulator + "mode answer", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -89,6 +85,7 @@ public class servModem extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
+        lin.getShRun(beg, lst, filter);
         String a;
         if (aLaw) {
             a = "alaw";
@@ -102,7 +99,6 @@ public class servModem extends servGeneric implements prtServS {
             a = "originate";
         }
         lst.add(beg + "mode " + a);
-        lin.getShRun(beg, lst);
     }
 
     public boolean srvCfgStr(cmds cmd) {

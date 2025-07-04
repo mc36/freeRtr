@@ -84,18 +84,13 @@ public class servVxlan extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server vxlan .*!" + cmds.tabulator + "port " + packVxlan.port,
-        "server vxlan .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server vxlan .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface"
+    public final static userFilter[] defaultF = {
+        new userFilter("server vxlan .*", cmds.tabulator + "port " + packVxlan.port, null),
+        new userFilter("server vxlan .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server vxlan .*", cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

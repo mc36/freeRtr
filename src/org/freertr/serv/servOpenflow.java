@@ -128,18 +128,13 @@ public class servOpenflow extends servGeneric implements prtServS, servGenFwdr {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server openflow .*!" + cmds.tabulator + "port " + packOpenflow.port,
-        "server openflow .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server openflow .*!" + cmds.tabulator + "version 4"
+    public final static userFilter[] defaultF = {
+        new userFilter("server openflow .*", cmds.tabulator + "port " + packOpenflow.port, null),
+        new userFilter("server openflow .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server openflow .*", cmds.tabulator + "version 4", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 

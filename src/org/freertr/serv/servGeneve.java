@@ -89,18 +89,13 @@ public class servGeneve extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server geneve .*!" + cmds.tabulator + "port " + packGeneve.port,
-        "server geneve .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server geneve .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface"
+    public final static userFilter[] defaultF = {
+        new userFilter("server geneve .*", cmds.tabulator + "port " + packGeneve.port, null),
+        new userFilter("server geneve .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server geneve .*", cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
