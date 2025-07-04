@@ -1909,9 +1909,23 @@ public class userShow {
                 cmd.error("no such mtracker");
                 return null;
             }
-            rdr.putStrTab(trck.worker.getShStat());
-            rdr.putStrTab(trck.worker.getShPeer());
-            rdr.putStrTab(trck.worker.getShMatrix());
+            a = cmd.word();
+            if (a.equals("status")) {
+                rdr.putStrTab(trck.worker.getShStat());
+                return null;
+            }
+            if (a.equals("peer")) {
+                rdr.putStrTab(trck.worker.getShPeer());
+                return null;
+            }
+            if (a.equals("reach")) {
+                rdr.putStrTab(trck.worker.getShMatrixReach());
+                return null;
+            }
+            if (a.equals("time")) {
+                rdr.putStrTab(trck.worker.getShMatrixTime());
+                return null;
+            }
             return null;
         }
         if (a.equals("interfaces")) {

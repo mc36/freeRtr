@@ -341,7 +341,9 @@ public class clntMtrack implements Runnable, prtServS {
         packHolder pckB = new packHolder(true, true);
         packMtrack pck = new packMtrack();
         pck.typ = packMtrack.typReport;
-        long tim = bits.getTime() - (interval * timeout);
+        long tim = bits.getTime();
+        pck.tim = (int) tim;
+        tim -= (interval * timeout);
         addrIP my = ifc.addr;
         clntMtrackPeer.computeRxing(pers, my);
         for (int i = 0; i < pers.size(); i++) {
@@ -360,15 +362,17 @@ public class clntMtrack implements Runnable, prtServS {
                 continue;
             }
             pck.adrs.add(ntry.adr);
+            pck.rtts.add(ntry.rtt);
             if (pck.adrs.size() < packMtrack.maxAddrs) {
                 continue;
             }
             pck.createPacket(pckB);
             for (int o = 0; o < pipes.size(); o++) {
                 pckB.pipeSend(pipes.get(o), 0, pckB.dataSize(), 2);
-                bits.sleep(packTim);
             }
+            bits.sleep(packTim);
             pck.adrs.clear();
+            pck.tim = (int) bits.getTime();
         }
         pck.typ = packMtrack.typLreport;
         pck.createPacket(pckB);
@@ -481,7 +485,7 @@ public class clntMtrack implements Runnable, prtServS {
      * @return status strings
      */
     public userFormat getShPeer() {
-        userFormat l = new userFormat("|", "number|address|state|changes|ago|at|reports|last");
+        userFormat l = new userFormat("|", "number|address|state|bidir|changes|ago|at|rtt|reports|last");
         for (int i = 0; i < pers.size(); i++) {
             l.add(i + "|" + pers.get(i).getPeerLine());
         }
@@ -493,14 +497,69 @@ public class clntMtrack implements Runnable, prtServS {
      *
      * @return matrix
      */
-    public userFormat getShMatrix() {
+    public userFormat getShMatrixReach() {
         String s = "\\|";
         for (int i = 0; i < pers.size(); i++) {
             s += i + "|";
         }
         userFormat l = new userFormat("|", s);
+        for (int o = 0; o < pers.size(); o++) {
+            clntMtrackPeer ntry = pers.get(o);
+            s = o + "|";
+            for (int i = 0; i < pers.size(); i++) {
+                if (o == i) {
+                    s += "\\|";
+                    continue;
+                }
+                clntMtrackRprt r = new clntMtrackRprt(pers.get(i).adr);
+                r = ntry.rprt.find(r);
+                if (r == null) {
+                    s += "?|";
+                    continue;
+                }
+                if (r.rxing) {
+                    s += "+|";
+                } else {
+                    s += "-|";
+                }
+            }
+            l.add(s);
+        }
+        return l;
+    }
+
+    /**
+     * get matrix
+     *
+     * @return matrix
+     */
+    public userFormat getShMatrixTime() {
+        String s = "-1|";
         for (int i = 0; i < pers.size(); i++) {
-            l.add(clntMtrackPeer.getMatrixLine(pers, i));
+            s += i + "|";
+        }
+        userFormat l = new userFormat("|", s);
+        for (int o = 0; o < pers.size(); o++) {
+            clntMtrackPeer ntry = pers.get(o);
+            s = o + "|";
+            for (int i = 0; i < pers.size(); i++) {
+                if (o == i) {
+                    s += "-1|";
+                    continue;
+                }
+                clntMtrackRprt r = new clntMtrackRprt(pers.get(i).adr);
+                r = ntry.rprt.find(r);
+                if (r == null) {
+                    s += "0|";
+                    continue;
+                }
+                if (r.rxing) {
+                    s += r.rtt + "|";
+                } else {
+                    s += "0|";
+                }
+            }
+            l.add(s);
         }
         return l;
     }
@@ -594,6 +653,8 @@ class clntMtrackRprt implements Comparable<clntMtrackRprt> {
 
     public long lastRx;
 
+    public int rtt;
+
     public boolean rxing;
 
     public clntMtrackRprt(addrIP peer) {
@@ -612,6 +673,8 @@ class clntMtrackPeer implements Comparable<clntMtrackPeer> {
 
     public long lastRx;
 
+    public int rtt;
+
     public boolean rxing;
 
     public boolean bidir;
@@ -629,34 +692,11 @@ class clntMtrackPeer implements Comparable<clntMtrackPeer> {
     }
 
     public String getPeerLine() {
-        return adr + "|" + cmds.upDown(rxing) + "|" + chngCnt + "|" + bits.timePast(chngTim) + "|" + bits.time2str(cfgAll.timeZoneName, chngTim + cfgAll.timeServerOffset, 3) + "|" + reports + "|" + bits.timePast(lastRx);
+        return adr + "|" + cmds.upDown(rxing) + "|" + cmds.upDown(bidir) + "|" + chngCnt + "|" + bits.timePast(chngTim) + "|" + bits.time2str(cfgAll.timeZoneName, chngTim + cfgAll.timeServerOffset, 3) + "|" + rtt + "|" + reports + "|" + bits.timePast(lastRx);
     }
 
     public int compareTo(clntMtrackPeer o) {
         return adr.compareTo(o.adr);
-    }
-
-    public static String getMatrixLine(tabGen<clntMtrackPeer> pers, int ln) {
-        clntMtrackPeer ntry = pers.get(ln);
-        String s = ln + "|";
-        for (int o = 0; o < pers.size(); o++) {
-            if (ln == o) {
-                s += "\\|";
-                continue;
-            }
-            clntMtrackRprt r = new clntMtrackRprt(pers.get(o).adr);
-            r = ntry.rprt.find(r);
-            if (r == null) {
-                s += "?|";
-                continue;
-            }
-            if (r.rxing) {
-                s += "+|";
-            } else {
-                s += "-|";
-            }
-        }
-        return s;
     }
 
     public static void computeRxing(tabGen<clntMtrackPeer> pers, addrIP my) {
@@ -685,6 +725,9 @@ class clntMtrackPeer implements Comparable<clntMtrackPeer> {
             clntMtrackRprt r = rprt.get(i);
             r.rxing = r.lastRx > tim;
         }
+        if (!rxing) {
+            rtt = 0;
+        }
         clntMtrackRprt ntry = new clntMtrackRprt(my);
         ntry = rprt.find(ntry);
         if (ntry == null) {
@@ -705,6 +748,13 @@ class clntMtrackPeer implements Comparable<clntMtrackPeer> {
 
     public void gotReport(packMtrack pck) {
         lastRx = bits.getTime();
+        rtt = (int) lastRx - pck.tim;
+        if (rtt < 0) {
+            rtt = -rtt;
+        }
+        if (rtt > 255) {
+            rtt = 255;
+        }
         reports++;
         for (int i = 0; i < pck.adrs.size(); i++) {
             clntMtrackRprt r = new clntMtrackRprt(pck.adrs.get(i));
@@ -712,6 +762,7 @@ class clntMtrackPeer implements Comparable<clntMtrackPeer> {
             if (r == null) {
                 return;
             }
+            r.rtt = pck.rtts.get(i);
             r.lastRx = lastRx;
         }
     }

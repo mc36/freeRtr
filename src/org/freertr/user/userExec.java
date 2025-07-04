@@ -1405,7 +1405,11 @@ public class userExec {
         hl.add(null, false, 2, new int[]{3, -1}, "tracker", "tracker status");
         hl.add(null, false, 3, new int[]{-1}, "[name:trk]", "name of tracker");
         hl.add(null, false, 2, new int[]{3, -1}, "mtracker", "mtracker status");
-        hl.add(null, false, 3, new int[]{-1}, "[name:mtr]", "name of mtracker");
+        hl.add(null, false, 3, new int[]{4}, "[name:mtr]", "name of mtracker");
+        hl.add(null, false, 4, new int[]{-1}, "status", "status information");
+        hl.add(null, false, 4, new int[]{-1}, "peer", "peer information");
+        hl.add(null, false, 4, new int[]{-1}, "reach", "reachability matrix");
+        hl.add(null, false, 4, new int[]{-1}, "time", "rtt time matrix");
         hl.add(null, false, 2, new int[]{3}, "lldp", "link layer discovery protocol");
         hl.add(null, false, 3, new int[]{-1}, "interface", "summary list of interfaces");
         hl.add(null, false, 3, new int[]{-1}, "neighbor", "summary list of neighbors");
