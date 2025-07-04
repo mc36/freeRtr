@@ -791,8 +791,6 @@ public class cfgInit implements Runnable {
         ifaceNames.add(null, false, 1, new int[]{-1}, "serial", "ifc");
         ifaceNames.add(null, false, 1, new int[]{-1}, "cellular", "ifc");
         ifaceNames.add(null, false, 1, new int[]{-1}, "wireless", "ifc");
-        cfgIfc.notemplF = createFilter(cfgIfc.notemplL);
-        cfgIfc.nocloneF = createFilter(cfgIfc.nocloneL);
         cfgAll.defaultF = createFilter(cfgAll.defaultL);
     }
 

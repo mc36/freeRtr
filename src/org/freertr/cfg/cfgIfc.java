@@ -2028,40 +2028,30 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     /**
      * template text
      */
-    public final static String[] notemplL = {
-        "interface .*!" + cmds.tabulator + "description.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description.*",
-        "interface .*!" + cmds.tabulator + "vrf forwarding.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vrf forwarding.*",
-        "interface .*!" + cmds.tabulator + "ipv[46] address.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] address.*",
-        "interface .*!" + cmds.tabulator + "ipx network.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipx network.*",
-        "interface .*!" + cmds.tabulator + "autostate.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "autostate.*",
-        "interface .*!" + cmds.tabulator + "shutdown.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "shutdown.*"
+    public final static userFilter[] notemplF = {
+        new userFilter("interface .*", cmds.tabulator + "description.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description.*", null),
+        new userFilter("interface .*", cmds.tabulator + "vrf forwarding.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "vrf forwarding.*", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] address.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] address.*", null),
+        new userFilter("interface .*", cmds.tabulator + "ipx network.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipx network.*", null),
+        new userFilter("interface .*", cmds.tabulator + "autostate.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "autostate.*", null),
+        new userFilter("interface .*", cmds.tabulator + "shutdown.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "shutdown.*", null)
     };
-
-    /**
-     * template filter
-     */
-    public static tabGen<userFilter> notemplF;
 
     /**
      * clone text
      */
-    public final static String[] nocloneL = {
-        "interface .*!" + cmds.tabulator + "autostate.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "autostate.*",
-        "interface .*!" + cmds.tabulator + "shutdown.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "shutdown.*"
+    public final static userFilter[] nocloneF = {
+        new userFilter("interface .*", cmds.tabulator + "autostate.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "autostate.*", null),
+        new userFilter("interface .*", cmds.tabulator + "shutdown.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "shutdown.*", null)
     };
-
-    /**
-     * clone filter
-     */
-    public static tabGen<userFilter> nocloneF;
 
     /**
      * convert interface name to type
