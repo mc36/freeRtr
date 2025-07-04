@@ -130,25 +130,20 @@ public class cfgSched implements Comparable<cfgSched>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "scheduler .*!" + cmds.tabulator + "respawn",
-        "scheduler .*!" + cmds.tabulator + "time 0",
-        "scheduler .*!" + cmds.tabulator + "delay 0",
-        "scheduler .*!" + cmds.tabulator + "random-time 0",
-        "scheduler .*!" + cmds.tabulator + "random-delay 0",
-        "scheduler .*!" + cmds.tabulator + "command exit",
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "hidden",
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions",
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-console",
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect",
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range"
+    public final static userFilter[] defaultF = {
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("scheduler .*", cmds.tabulator + "respawn", null),
+        new userFilter("scheduler .*", cmds.tabulator + "time 0", null),
+        new userFilter("scheduler .*", cmds.tabulator + "delay 0", null),
+        new userFilter("scheduler .*", cmds.tabulator + "random-time 0", null),
+        new userFilter("scheduler .*", cmds.tabulator + "random-delay 0", null),
+        new userFilter("scheduler .*", cmds.tabulator + "command exit", null),
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "hidden", null),
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions", null),
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-console", null),
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect", null),
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "range", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgSched o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());

@@ -37,12 +37,7 @@ public class cfgChat implements Comparable<cfgChat>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {};
 
     /**
      * create new profile

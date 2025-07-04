@@ -136,28 +136,23 @@ public class cfgPrcss implements Comparable<cfgPrcss>, Runnable, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "process definition .*!" + cmds.tabulator + "respawn",
-        "process definition .*!" + cmds.tabulator + "children",
-        "process definition .*!" + cmds.tabulator + "pinning null",
-        "process definition .*!" + cmds.tabulator + "user null",
-        "process definition .*!" + cmds.tabulator + "exec null",
-        "process definition .*!" + cmds.tabulator + "final null",
-        "process definition .*!" + cmds.tabulator + "time 1000",
-        "process definition .*!" + cmds.tabulator + "delay 1000",
-        "process definition .*!" + cmds.tabulator + "random-time 0",
-        "process definition .*!" + cmds.tabulator + "random-delay 0",
-        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions",
-        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-console",
-        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect",
-        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range"
+    public final static userFilter[] defaultF = {
+        new userFilter("process definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("process definition .*", cmds.tabulator + "respawn", null),
+        new userFilter("process definition .*", cmds.tabulator + "children", null),
+        new userFilter("process definition .*", cmds.tabulator + "pinning null", null),
+        new userFilter("process definition .*", cmds.tabulator + "user null", null),
+        new userFilter("process definition .*", cmds.tabulator + "exec null", null),
+        new userFilter("process definition .*", cmds.tabulator + "final null", null),
+        new userFilter("process definition .*", cmds.tabulator + "time 1000", null),
+        new userFilter("process definition .*", cmds.tabulator + "delay 1000", null),
+        new userFilter("process definition .*", cmds.tabulator + "random-time 0", null),
+        new userFilter("process definition .*", cmds.tabulator + "random-delay 0", null),
+        new userFilter("process definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions", null),
+        new userFilter("process definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-console", null),
+        new userFilter("process definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect", null),
+        new userFilter("process definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "range", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgPrcss o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());

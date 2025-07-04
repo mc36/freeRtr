@@ -80,26 +80,21 @@ public class cfgIpsec implements Comparable<cfgIpsec>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "group",
-        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "cipher",
-        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "hash",
-        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "prf",
-        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "seconds",
-        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "random",
-        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bytes",
-        "crypto ipsec .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "key",
-        "crypto ipsec .*!" + cmds.tabulator + "role static",
-        "crypto ipsec .*!" + cmds.tabulator + "protected ipv4",
-        "crypto ipsec .*!" + cmds.tabulator + "isakmp 1",
-        "crypto ipsec .*!" + cmds.tabulator + "replay 1024"
+    public final static userFilter[] defaultF = {
+        new userFilter("crypto ipsec .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + cmds.negated + cmds.tabulator + "group", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + cmds.negated + cmds.tabulator + "cipher", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + cmds.negated + cmds.tabulator + "hash", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + cmds.negated + cmds.tabulator + "prf", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + cmds.negated + cmds.tabulator + "seconds", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + cmds.negated + cmds.tabulator + "random", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bytes", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + cmds.negated + cmds.tabulator + "key", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + "role static", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + "protected ipv4", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + "isakmp 1", null),
+        new userFilter("crypto ipsec .*", cmds.tabulator + "replay 1024", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgIpsec o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());

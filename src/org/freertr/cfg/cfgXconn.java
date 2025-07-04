@@ -59,18 +59,13 @@ public class cfgXconn implements Comparable<cfgXconn>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "xconnect .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "xconnect .*!" + cmds.tabulator + "mtu 1500",
-        "xconnect .*!" + cmds.tabulator + "type ethernet",
-        "xconnect .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1",
-        "xconnect .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2"
+    public final static userFilter[] defaultF = {
+        new userFilter("xconnect .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("xconnect .*", cmds.tabulator + "mtu 1500", null),
+        new userFilter("xconnect .*", cmds.tabulator + "type ethernet", null),
+        new userFilter("xconnect .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side1", null),
+        new userFilter("xconnect .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side2", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgXconn o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());

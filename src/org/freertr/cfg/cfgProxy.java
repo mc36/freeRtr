@@ -37,27 +37,22 @@ public class cfgProxy implements Comparable<cfgProxy>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "proxy-profile .*!" + cmds.tabulator + "protocol local",
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "security",
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "pubkey",
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "username",
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "password",
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "recursive",
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vrf",
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "tos",
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ttl",
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "source",
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target",
-        "proxy-profile .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "port",
-        "proxy-profile .*!" + cmds.tabulator + "prefer none"
+    public final static userFilter[] defaultF = {
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + "protocol local", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "security", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "pubkey", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "username", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "password", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "recursive", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "vrf", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tos", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ttl", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "source", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + cmds.negated + cmds.tabulator + "port", null),
+        new userFilter("proxy-profile .*", cmds.tabulator + "prefer none", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgProxy o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());

@@ -47,12 +47,7 @@ public class cfgObjprt implements Comparable<cfgObjprt>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {};
 
     public int compareTo(cfgObjprt o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());

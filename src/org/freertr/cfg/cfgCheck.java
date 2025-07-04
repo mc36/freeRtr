@@ -161,21 +161,17 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "command",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "template",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-text",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "alternate",
-        "check .*!" + cmds.tabulator + "severity critical",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-states",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-commands",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-hostname",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "command", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "template", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "error-text", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "alternate", null),
+        new userFilter("check .*", cmds.tabulator + "severity critical", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "error-states", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "error-commands", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "error-hostname", null)
+    };
 
     /**
      * create new check

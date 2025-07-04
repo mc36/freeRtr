@@ -49,16 +49,11 @@ public class cfgEvntmgr implements Comparable<cfgEvntmgr>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "event-manager .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "event-manager .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "suppress",
-        "event-manager .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "event"
+    public final static userFilter[] defaultF = {
+        new userFilter("event-manager .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("event-manager .*", cmds.tabulator + cmds.negated + cmds.tabulator + "suppress", null),
+        new userFilter("event-manager .*", cmds.tabulator + cmds.negated + cmds.tabulator + "event", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     /**
      * create new event manager

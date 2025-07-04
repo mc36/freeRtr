@@ -18,15 +18,10 @@ public class cfgMenuK implements Comparable<cfgMenuK>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "menu key .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "menu key .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ignore-case"
+    public final static userFilter[] defaultL = {
+        new userFilter("menu key .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("menu key .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ignore-case", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     /**
      * name of menu
@@ -90,7 +85,7 @@ public class cfgMenuK implements Comparable<cfgMenuK>, cfgGeneric {
         if ((filter & 1) == 0) {
             return l;
         }
-        return userFilter.filterText(l, defaultF);
+        return userFilter.filterText(l, defaultL);
     }
 
     public void doCfgStr(cmds cmd) {

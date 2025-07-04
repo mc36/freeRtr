@@ -131,24 +131,19 @@ public class cfgScrpt implements Comparable<cfgScrpt>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "script .*!" + cmds.tabulator + "respawn",
-        "script .*!" + cmds.tabulator + "time 0",
-        "script .*!" + cmds.tabulator + "delay 0",
-        "script .*!" + cmds.tabulator + "random-time 0",
-        "script .*!" + cmds.tabulator + "random-delay 0",
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "hidden",
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions",
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-console",
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect",
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range"
+    public final static userFilter[] defaultF = {
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("script .*", cmds.tabulator + "respawn", null),
+        new userFilter("script .*", cmds.tabulator + "time 0", null),
+        new userFilter("script .*", cmds.tabulator + "delay 0", null),
+        new userFilter("script .*", cmds.tabulator + "random-time 0", null),
+        new userFilter("script .*", cmds.tabulator + "random-delay 0", null),
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "hidden", null),
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions", null),
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-console", null),
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect", null),
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "range", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgScrpt o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());

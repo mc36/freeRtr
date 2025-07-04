@@ -289,12 +289,7 @@ public class cfgAlias implements Comparable<cfgAlias>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {};
 
     public int compareTo(cfgAlias o) {
         int i = type.compareTo(o.type);

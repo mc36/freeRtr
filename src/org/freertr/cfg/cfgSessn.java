@@ -33,32 +33,27 @@ public class cfgSessn implements Comparable<cfgSessn>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "timeout",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sessions",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rate",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mac",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "before",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "after",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dropped",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-routing",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-sending",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-linklocal",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-multicast",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-broadcast",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-list",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-url",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-rx",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-tx",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "drop-frg",
-        "session .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "member"
+    public final static userFilter[] defaultF = {
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "timeout", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "sessions", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rate", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mac", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "before", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "after", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "dropped", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-routing", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-sending", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-linklocal", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-multicast", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-broadcast", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-list", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-url", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "drop-rx", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "drop-tx", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "drop-frg", null),
+        new userFilter("session .*", cmds.tabulator + cmds.negated + cmds.tabulator + "member", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgSessn o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());

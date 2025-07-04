@@ -29,30 +29,25 @@ public class cfgBrdg implements Comparable<cfgBrdg>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "bridge .*!" + cmds.tabulator + "rd 0:0",
-        "bridge .*!" + cmds.tabulator + "rt-import 0:0",
-        "bridge .*!" + cmds.tabulator + "rt-export 0:0",
-        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mac-learn",
-        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mac-move",
-        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "inspect",
-        "bridge .*!" + cmds.tabulator + "stp-mode none",
-        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mac-address",
-        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "private-bridge",
-        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "block-unicast",
-        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "block-multicast",
-        "bridge .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "padup-small",
-        "bridge .*!" + cmds.tabulator + "mac-age 600000",
-        "bridge .*!" + cmds.tabulator + "mac-limit 0",
-        "bridge .*!" + cmds.tabulator + "stp-priority 32768",
-        "bridge .*!" + cmds.tabulator + "stp-time 2000 20000 15000"
+    public final static userFilter[] defaultF = {
+        new userFilter("bridge .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("bridge .*", cmds.tabulator + "rd 0:0", null),
+        new userFilter("bridge .*", cmds.tabulator + "rt-import 0:0", null),
+        new userFilter("bridge .*", cmds.tabulator + "rt-export 0:0", null),
+        new userFilter("bridge .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mac-learn", null),
+        new userFilter("bridge .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mac-move", null),
+        new userFilter("bridge .*", cmds.tabulator + cmds.negated + cmds.tabulator + "inspect", null),
+        new userFilter("bridge .*", cmds.tabulator + "stp-mode none", null),
+        new userFilter("bridge .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mac-address", null),
+        new userFilter("bridge .*", cmds.tabulator + cmds.negated + cmds.tabulator + "private-bridge", null),
+        new userFilter("bridge .*", cmds.tabulator + cmds.negated + cmds.tabulator + "block-unicast", null),
+        new userFilter("bridge .*", cmds.tabulator + cmds.negated + cmds.tabulator + "block-multicast", null),
+        new userFilter("bridge .*", cmds.tabulator + cmds.negated + cmds.tabulator + "padup-small", null),
+        new userFilter("bridge .*", cmds.tabulator + "mac-age 600000", null),
+        new userFilter("bridge .*", cmds.tabulator + "mac-limit 0", null),
+        new userFilter("bridge .*", cmds.tabulator + "stp-priority 32768", null),
+        new userFilter("bridge .*", cmds.tabulator + "stp-time 2000 20000 15000", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgBrdg o) {
         if (number < o.number) {

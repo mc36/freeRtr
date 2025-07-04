@@ -46,24 +46,20 @@ public class cfgMtrack implements Comparable<cfgMtrack>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "mtracker .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "mtracker .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vrf",
-        "mtracker .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "source",
-        "mtracker .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "group",
-        "mtracker .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",
-        "mtracker .*!" + cmds.tabulator + "interval 30000",
-        "mtracker .*!" + cmds.tabulator + "timeout 10",
-        "mtracker .*!" + cmds.tabulator + "packet 10",
-        "mtracker .*!" + cmds.tabulator + "port " + packMtrack.port,
-        "mtracker .*!" + cmds.tabulator + "tos 0",
-        "mtracker .*!" + cmds.tabulator + "ttl 255",
-        "mtracker .*!" + cmds.tabulator + "flow 0",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {
+        new userFilter("mtracker .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("mtracker .*", cmds.tabulator + cmds.negated + cmds.tabulator + "vrf", null),
+        new userFilter("mtracker .*", cmds.tabulator + cmds.negated + cmds.tabulator + "source", null),
+        new userFilter("mtracker .*", cmds.tabulator + cmds.negated + cmds.tabulator + "group", null),
+        new userFilter("mtracker .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null),
+        new userFilter("mtracker .*", cmds.tabulator + "interval 30000", null),
+        new userFilter("mtracker .*", cmds.tabulator + "timeout 10", null),
+        new userFilter("mtracker .*", cmds.tabulator + "packet 10", null),
+        new userFilter("mtracker .*", cmds.tabulator + "port " + packMtrack.port, null),
+        new userFilter("mtracker .*", cmds.tabulator + "tos 0", null),
+        new userFilter("mtracker .*", cmds.tabulator + "ttl 255", null),
+        new userFilter("mtracker .*", cmds.tabulator + "flow 0", null)
+    };
 
     public int compareTo(cfgMtrack o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());

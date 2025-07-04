@@ -35,19 +35,15 @@ public class cfgTlmtry implements Comparable<cfgTlmtry>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "telemetry .*!" + cmds.tabulator + "port " + servStreamingMdt.port,
-        "telemetry .*!" + cmds.tabulator + "interval 5000",
-        "telemetry .*!" + cmds.tabulator + "delay 0",
-        "telemetry .*!" + cmds.tabulator + "random-interval 0",
-        "telemetry .*!" + cmds.tabulator + "random-delay 0",
-        "telemetry .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range",
-        "telemetry .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {
+        new userFilter("telemetry .*", cmds.tabulator + "port " + servStreamingMdt.port, null),
+        new userFilter("telemetry .*", cmds.tabulator + "interval 5000", null),
+        new userFilter("telemetry .*", cmds.tabulator + "delay 0", null),
+        new userFilter("telemetry .*", cmds.tabulator + "random-interval 0", null),
+        new userFilter("telemetry .*", cmds.tabulator + "random-delay 0", null),
+        new userFilter("telemetry .*", cmds.tabulator + cmds.negated + cmds.tabulator + "range", null),
+        new userFilter("telemetry .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null)
+    };
 
     /**
      * create new telemetry export

@@ -48,12 +48,7 @@ public class cfgPrfxlst implements Comparable<cfgPrfxlst>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {};
 
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();

@@ -23,13 +23,9 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "menu tui .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultL = {
+        new userFilter("menu tui .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null)
+    };
 
     /**
      * name of menu
@@ -86,7 +82,7 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
         if ((filter & 1) == 0) {
             return l;
         }
-        return userFilter.filterText(l, defaultF);
+        return userFilter.filterText(l, defaultL);
     }
 
     public void doCfgStr(cmds cmd) {
