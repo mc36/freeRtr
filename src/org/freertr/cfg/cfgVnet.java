@@ -8,7 +8,6 @@ import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
-import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFlash;
@@ -361,7 +360,7 @@ class cfgVnetSide implements Runnable {
                 cmd.error("invalid interface name");
                 return;
             }
-            a = pnm[0];
+            a = pnm[0] + pnm[1] + pnm[2];
             locTyp = cfgIfc.string2type(a);
             if (locTyp == null) {
                 cmd.error("bad name");

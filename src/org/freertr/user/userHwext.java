@@ -147,6 +147,7 @@ public class userHwext {
         hwd.add("### dataplane ###");
         List<String> ifp = new ArrayList<String>();
         List<String> ifl = new ArrayList<String>();
+        List<String> ifr = new ArrayList<String>();
         List<String> mac = new ArrayList<String>();
         List<Integer> prt = new ArrayList<Integer>();
         for (i = hwc.size() - 1; i >= 0; i--) {
@@ -209,7 +210,8 @@ public class userHwext {
                 s = "veth1b";
             }
             ifp.add(0, s);
-            ifl.add(0, pnm[0]);
+            ifl.add(0, pnm[0] + pnm[1] + pnm[2]);
+            ifr.add(0, "sdn" + pnm[1] + pnm[2]);
             mac.add(0, a);
             prt.add(0, bits.str2num(cmd.word()));
         }
@@ -217,10 +219,6 @@ public class userHwext {
         if ((dpt != dpTyp.p4sw) && (ifp.size() < 1)) {
             orig.error("no interfaces found");
             return;
-        }
-        List<String> ifr = new ArrayList<String>();
-        for (i = 0; i < ifl.size(); i++) {
-            ifr.add("sdn" + (i + 1));
         }
         for (i = 0; i < ifl.size(); i++) {
             orig.error("ifc " + i + ": " + ifr.get(i) + " " + ifl.get(i) + " " + ifp.get(i) + " " + mac.get(i));

@@ -2699,14 +2699,16 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (p >= s.length()) {
             return null;
         }
-        String b = s.substring(0, p).trim();
-        s = s.substring(p, s.length()).trim();
-        b = cfgInit.ifaceNames.repairLine(b).trim();
-        if (b.length() < 1) {
+        String[] res = new String[5];
+        res[0] = cfgInit.ifaceNames.repairLine(s.substring(0, p)).trim();
+        s = s.substring(p, s.length());
+        if (res[0].length() < 1) {
             return null;
         }
         p = s.indexOf("/");
-        if (p >= 0) {
+        if (p < 0) {
+            res[1] = "";
+        } else {
             String q = s.substring(0, p);
             int i = bits.str2num(q);
             if (i < 0) {
@@ -2716,7 +2718,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 return null;
             }
             s = s.substring(p + 1, s.length());
-            b += i + "/";
+            res[1] = i + "/";
         }
         p = s.indexOf(".");
         if (p < 0) {
@@ -2727,19 +2729,21 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             if (!s.equals("" + p)) {
                 return null;
             }
-            b += p;
-            return new String[]{b, "", ""};
+            res[2] = "" + p;
+            res[3] = "";
+            res[4] = "";
+            return res;
         }
-        String q = s.substring(0, p);
+        String a = s.substring(0, p);
         s = s.substring(p + 1, s.length());
-        p = bits.str2num(q);
+        p = bits.str2num(a);
         if (p < 0) {
             return null;
         }
-        if (!q.equals("" + p)) {
+        if (!a.equals("" + p)) {
             return null;
         }
-        b += p;
+        res[2] = "" + p;
         p = s.indexOf(".");
         if (p < 0) {
             p = bits.str2num(s);
@@ -2749,16 +2753,17 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             if (!s.equals("" + p)) {
                 return null;
             }
-            s = "." + p;
-            return new String[]{b, s, ""};
+            res[3] = "." + p;
+            res[4] = "";
+            return res;
         }
-        q = s.substring(0, p);
+        a = s.substring(0, p);
         s = s.substring(p + 1, s.length());
-        int i = bits.str2num(q);
+        int i = bits.str2num(a);
         if (i < 1) {
             return null;
         }
-        if (!q.equals("" + i)) {
+        if (!a.equals("" + i)) {
             return null;
         }
         p = bits.str2num(s);
@@ -2768,9 +2773,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (!s.equals("" + p)) {
             return null;
         }
-        q = "." + i;
-        s = "." + p;
-        return new String[]{b, q, s};
+        res[3] = "." + i;
+        res[4] = "." + p;
+        return res;
     }
 
     public String toString() {

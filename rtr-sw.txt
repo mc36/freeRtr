@@ -396,11 +396,6 @@ interface loopback0
  no shutdown
  exit
 !
-interface loopback195530
- no shutdown
- no log-link-change
- exit
-!
 interface loopback42
  description dn42.net
  vrf forwarding dn42
@@ -420,6 +415,7 @@ interface loopback65535
  exit
 !
 interface bundle1
+ description uplink
  no shutdown
  no log-link-change
  exit
@@ -980,7 +976,6 @@ server telnet tel vrf v1 interface loopback0
  access-subnet 16
  access-blackhole4 1
  access-blackhole6 1
- second-port 22
  exec timestamp
  exec bells
  exec colorize header
@@ -990,6 +985,7 @@ server telnet tel vrf v1 interface loopback0
  login stars
  login logging
  login last global
+ second-port 22
  exit
 !
 server udptn ut vrf v1 interface loopback0

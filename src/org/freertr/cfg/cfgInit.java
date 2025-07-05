@@ -918,7 +918,7 @@ public class cfgInit implements Runnable {
                     if (pnm == null) {
                         continue;
                     }
-                    prc.side1.locNam = pnm[0];
+                    prc.side1.locNam = pnm[0] + pnm[1] + pnm[2];
                 }
                 s = cmd.word().trim();
                 if (s.length() > 0) {
@@ -934,7 +934,7 @@ public class cfgInit implements Runnable {
                 if (pnm == null) {
                     continue;
                 }
-                if (pnm[1].length() > 0) {
+                if (pnm[3].length() > 0) {
                     continue;
                 }
                 s = cmd.word().toLowerCase();

@@ -2183,7 +2183,7 @@ public class cfgAll {
         if (thrd != null) {
             thrd.startLoop(wrkr);
         }
-        cfgIfc ntry = new cfgIfc(pnm[0]);
+        cfgIfc ntry = new cfgIfc(pnm[0] + pnm[1] + pnm[2]);
         ntry.type = typ;
         ntry.thread = thrd;
         ifaces.add(ntry);
@@ -2202,7 +2202,7 @@ public class cfgAll {
         if (pnm == null) {
             return true;
         }
-        nam = pnm[0] + pnm[1] + pnm[2];
+        nam = pnm[0] + pnm[1] + pnm[2] + pnm[3] + pnm[4];
         cfgIfc ntry = new cfgIfc(nam);
         if (checks) {
             ntry = ifaces.find(ntry);
@@ -2274,7 +2274,7 @@ public class cfgAll {
         if (pnm == null) {
             return null;
         }
-        nam = pnm[0] + pnm[1] + pnm[2];
+        nam = pnm[0] + pnm[1] + pnm[2] + pnm[3] + pnm[4];
         cfgIfc ntry = new cfgIfc(nam);
         if (create < 1) {
             return ifaces.find(ntry);
@@ -2287,23 +2287,23 @@ public class cfgAll {
                 return null;
             }
         }
-        if (pnm[2].length() > 0) {
-            old = ifaces.find(new cfgIfc(pnm[0] + pnm[1]));
+        if (pnm[4].length() > 0) {
+            old = ifaces.find(new cfgIfc(pnm[0] + pnm[1] + pnm[2] + pnm[3]));
             if (old == null) {
                 ifaces.del(ntry);
                 return null;
             }
-            ntry.vlanNum = bits.str2num(pnm[2].substring(1, pnm[2].length()));
+            ntry.vlanNum = bits.str2num(pnm[4].substring(1, pnm[4].length()));
             ntry.initSubiface(old);
             return ntry;
         }
-        if (pnm[1].length() > 0) {
-            old = ifaces.find(new cfgIfc(pnm[0]));
+        if (pnm[3].length() > 0) {
+            old = ifaces.find(new cfgIfc(pnm[0] + pnm[1] + pnm[2]));
             if (old == null) {
                 ifaces.del(ntry);
                 return null;
             }
-            ntry.vlanNum = bits.str2num(pnm[1].substring(1, pnm[1].length()));
+            ntry.vlanNum = bits.str2num(pnm[3].substring(1, pnm[3].length()));
             ntry.initSubiface(old);
             return ntry;
         }
