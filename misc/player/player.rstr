@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo -u mc36 vlc -vvv -I dummy --mtu 1280 --sout "#transcode{vcodec=none,scodec=none,acodec=s16l,channels=2,samplerate=44100}:rtp{dst=232.2.3.2,port=1234,ttl=255}" "rtp://$1@:10000/" "vlc://quit"

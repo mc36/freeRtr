@@ -119,7 +119,7 @@ public class player implements Runnable {
             staticPlayer.doInit();
             new Thread(staticPlayer).start();
         }
-        int i = staticPlayer.doRequest(par, buf);
+        int i = staticPlayer.doRequest(par, peer, buf);
         if (i == -2) {
             return "txt";
         }
@@ -274,6 +274,20 @@ public class player implements Runnable {
         currLyrc.add("multicast receiver");
         String[] cmd = new String[1];
         cmd[0] = path + ".rcvr";
+        replaceCurrProc(cmd);
+    }
+
+    private synchronized void startPlayRestream(String clnt) {
+        if (clnt.indexOf(":") >= 0) {
+            clnt = "[" + clnt + "]";
+        }
+        currSong = 0;
+        currTime = new Date().getTime();
+        currLyrc = new playerLyric();
+        currLyrc.add("multicast restreamer");
+        String[] cmd = new String[2];
+        cmd[0] = path + ".rstr";
+        cmd[1] = clnt;
         replaceCurrProc(cmd);
     }
 
@@ -646,7 +660,7 @@ public class player implements Runnable {
      * @return -1 on html result
      * @throws Exception on error
      */
-    public int doRequest(String[] par, ByteArrayOutputStream buf) throws Exception {
+    public int doRequest(String[] par, String peer, ByteArrayOutputStream buf) throws Exception {
         if (!ready) {
             putStart(buf, 5);
             buf.write("player initializes!".getBytes());
@@ -975,6 +989,8 @@ public class player implements Runnable {
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=headend\">!multicast streamer!</a><br/>";
             buf.write(a.getBytes());
+            a = "<a href=\"" + urlR + "?cmd=restream\">!multicast restreamer!</a><br/>";
+            buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=dlna\">!dlna receiver!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=roc\">!roc receiver!</a><br/>";
@@ -1063,6 +1079,14 @@ public class player implements Runnable {
             String a = "<br/>starting multicast receiver.<br/>";
             buf.write(a.getBytes());
             startPlayRcvr();
+            return -1;
+        }
+        if (cmd.equals("restream")) {
+            putStart(buf, 5);
+            putMenu(buf);
+            String a = "<br/>starting multicast restreamer from " + peer + ".<br/>";
+            buf.write(a.getBytes());
+            startPlayRestream(peer);
             return -1;
         }
         if (cmd.equals("download")) {
