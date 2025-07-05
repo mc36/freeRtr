@@ -186,6 +186,16 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      */
     public final String name;
 
+    private final int cmpOrd1;
+
+    private final int cmpOrd2;
+
+    private final int cmpOrd3;
+
+    private final int cmpOrd4;
+
+    private final int cmpOrd5;
+
     /**
      * description of this interface
      */
@@ -2287,29 +2297,37 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     }
 
     public int compareTo(cfgIfc o) {
-        String s1 = name.toLowerCase();
-        String s2 = o.name.toLowerCase();
-        boolean l1 = s1.startsWith("template");
-        boolean l2 = s2.startsWith("template");
-        if (l1 != l2) {
-            return l1 ? -1 : +1;
+        if (cmpOrd1 < o.cmpOrd1) {
+            return -1;
         }
-        l1 = s1.startsWith("loopback");
-        l2 = s2.startsWith("loopback");
-        if (l1 != l2) {
-            return l1 ? -1 : +1;
+        if (cmpOrd1 > o.cmpOrd1) {
+            return +1;
         }
-        l1 = s1.startsWith("access");
-        l2 = s2.startsWith("access");
-        if (l1 != l2) {
-            return l1 ? +1 : -1;
+        if (cmpOrd2 < o.cmpOrd2) {
+            return -1;
         }
-        l1 = s1.startsWith("tunnel");
-        l2 = s2.startsWith("tunnel");
-        if (l1 != l2) {
-            return l1 ? +1 : -1;
+        if (cmpOrd2 > o.cmpOrd2) {
+            return +1;
         }
-        return s1.compareTo(s2);
+        if (cmpOrd3 < o.cmpOrd3) {
+            return -1;
+        }
+        if (cmpOrd3 > o.cmpOrd3) {
+            return +1;
+        }
+        if (cmpOrd4 < o.cmpOrd4) {
+            return -1;
+        }
+        if (cmpOrd4 > o.cmpOrd4) {
+            return +1;
+        }
+        if (cmpOrd5 < o.cmpOrd5) {
+            return -1;
+        }
+        if (cmpOrd5 > o.cmpOrd5) {
+            return +1;
+        }
+        return 0;
     }
 
     /**
@@ -2785,10 +2803,40 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     /**
      * create new interface
      *
-     * @param nam name of interface
+     * @param pnm dissected name of interface
      */
-    public cfgIfc(String nam) {
-        name = nam.trim();
+    public cfgIfc(String[] pnm) {
+        name = pnm[0] + pnm[1] + pnm[2] + pnm[3] + pnm[4];
+        int i = 5;
+        if (name.startsWith("template")) {
+            i = 1;
+        }
+        if (name.startsWith("loopback")) {
+            i = 2;
+        }
+        if (name.startsWith("tunnel")) {
+            i = 8;
+        }
+        if (name.startsWith("access")) {
+            i = 9;
+        }
+        cmpOrd1 = (i << 24) | (name.charAt(0) << 8) | name.charAt(1);
+        if (pnm[1].length() < 1) {
+            cmpOrd2 = -1;
+        } else {
+            cmpOrd2 = bits.str2num(pnm[1].substring(0, pnm[1].length() - 1));
+        }
+        cmpOrd3 = bits.str2num(pnm[2]);
+        if (pnm[3].length() < 1) {
+            cmpOrd4 = -1;
+        } else {
+            cmpOrd4 = bits.str2num(pnm[3].substring(1, pnm[3].length()));
+        }
+        if (pnm[4].length() < 1) {
+            cmpOrd5 = -1;
+        } else {
+            cmpOrd5 = bits.str2num(pnm[4].substring(1, pnm[4].length()));
+        }
         ethtyp = new ifcEthTyp(name, this);
         lower = new ifcNull();
         lower.setUpper(ethtyp);
