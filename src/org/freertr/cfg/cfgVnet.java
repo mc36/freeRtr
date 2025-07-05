@@ -356,7 +356,12 @@ class cfgVnetSide implements Runnable {
             return;
         }
         if (a.equals("local")) {
-            a = cfgIfc.dissectName(cmd.word())[0];
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            a = pnm[0];
             locTyp = cfgIfc.string2type(a);
             if (locTyp == null) {
                 cmd.error("bad name");

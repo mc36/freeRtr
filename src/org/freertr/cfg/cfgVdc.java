@@ -624,7 +624,12 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("interface")) {
-            cfgVdcIfc res = new cfgVdcIfc(cfgIfc.dissectName(cmd.word())[0], "");
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            cfgVdcIfc res = new cfgVdcIfc(pnm[0], "");
             res = cfgInit.ifaceLst.find(res);
             if (res == null) {
                 cmd.error("no such interface");
@@ -635,7 +640,12 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("local")) {
-            a = cfgIfc.dissectName(cmd.word())[0];
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            a = pnm[0];
             tabRouteIface.ifaceType typ = cfgIfc.string2type(a);
             if (typ == null) {
                 cmd.error("bad name");
@@ -673,7 +683,12 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("connect")) {
-            a = cfgIfc.dissectName(cmd.word())[0];
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            a = pnm[0];
             if (cfgIfc.string2type(a) == null) {
                 cmd.error("bad name");
                 return;
@@ -853,15 +868,30 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("interface")) {
-            ifaces.del(new cfgVdcIfc(cfgIfc.dissectName(cmd.word())[0], ""));
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            ifaces.del(new cfgVdcIfc(pnm[0], ""));
             return;
         }
         if (a.equals("local")) {
-            locals.del(new cfgVdcIfc(cfgIfc.dissectName(cmd.word())[0], ""));
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            locals.del(new cfgVdcIfc(pnm[0], ""));
             return;
         }
         if (a.equals("connect")) {
-            delConn(cfgIfc.dissectName(cmd.word())[0]);
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            delConn(pnm[0]);
             return;
         }
         if (a.equals("pci")) {

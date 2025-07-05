@@ -2176,14 +2176,14 @@ public class cfgAll {
      * @return descriptor, null on error
      */
     public static cfgIfc ifcAdd(String nam, tabRouteIface.ifaceType typ, ifcThread thrd, int wrkr) {
-        nam = cfgIfc.dissectName(nam)[0];
-        if (nam.length() < 1) {
+        String pnm[] = cfgIfc.dissectName(nam);
+        if (pnm == null) {
             return null;
         }
         if (thrd != null) {
             thrd.startLoop(wrkr);
         }
-        cfgIfc ntry = new cfgIfc(nam);
+        cfgIfc ntry = new cfgIfc(pnm[0]);
         ntry.type = typ;
         ntry.thread = thrd;
         ifaces.add(ntry);
@@ -2199,10 +2199,10 @@ public class cfgAll {
      */
     public static boolean ifcDel(String nam, boolean checks) {
         String pnm[] = cfgIfc.dissectName(nam);
-        nam = pnm[0] + pnm[1] + pnm[2];
-        if (nam.length() < 1) {
+        if (pnm == null) {
             return true;
         }
+        nam = pnm[0] + pnm[1] + pnm[2];
         cfgIfc ntry = new cfgIfc(nam);
         if (checks) {
             ntry = ifaces.find(ntry);
@@ -2271,7 +2271,7 @@ public class cfgAll {
      */
     public static cfgIfc ifcFind(String nam, int create) {
         String pnm[] = cfgIfc.dissectName(nam);
-        if (pnm[0].length() < 1) {
+        if (pnm == null) {
             return null;
         }
         nam = pnm[0] + pnm[1] + pnm[2];

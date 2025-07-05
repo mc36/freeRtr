@@ -914,11 +914,11 @@ public class cfgInit implements Runnable {
                 prc.side2.ifcTyp = prc.side1.ifcTyp;
                 s = cmd.word().trim();
                 if (s.length() > 0) {
-                    s = cfgIfc.dissectName(s)[0];
-                    if (s.length() < 1) {
+                    String pnm[] = cfgIfc.dissectName(s);
+                    if (pnm == null) {
                         continue;
                     }
-                    prc.side1.locNam = s;
+                    prc.side1.locNam = pnm[0];
                 }
                 s = cmd.word().trim();
                 if (s.length() > 0) {
@@ -931,7 +931,7 @@ public class cfgInit implements Runnable {
                 String old = cmd.getRemaining();
                 String nam = cmd.word();
                 String pnm[] = cfgIfc.dissectName(nam);
-                if (pnm[0].length() < 1) {
+                if (pnm == null) {
                     continue;
                 }
                 if (pnm[1].length() > 0) {

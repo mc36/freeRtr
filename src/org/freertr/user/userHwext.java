@@ -182,7 +182,7 @@ public class userHwext {
             }
             a = cmd.word();
             String pnm[] = cfgIfc.dissectName(a);
-            if (pnm[0].length() < 1) {
+            if (pnm == null) {
                 continue;
             }
             for (;;) {
