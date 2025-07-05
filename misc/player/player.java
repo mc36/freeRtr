@@ -278,13 +278,13 @@ public class player implements Runnable {
     }
 
     private synchronized void startPlayRestream(String clnt) {
-        if (clnt.indexOf(":") >= 0) {
-            clnt = "[" + clnt + "]";
-        }
         currSong = 0;
         currTime = new Date().getTime();
         currLyrc = new playerLyric();
-        currLyrc.add("multicast restreamer");
+        currLyrc.add("multicast restreamer from " + clnt);
+        if (clnt.indexOf(":") >= 0) {
+            clnt = "[" + clnt + "]";
+        }
         String[] cmd = new String[2];
         cmd[0] = path + ".rstr";
         cmd[1] = clnt;
