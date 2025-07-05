@@ -1926,6 +1926,10 @@ public class userShow {
                 rdr.putStrTab(trck.worker.getShMatrixTime());
                 return null;
             }
+            if (a.equals("list")) {
+                rdr.putStrTab(trck.worker.getShList());
+                return null;
+            }
             return null;
         }
         if (a.equals("interfaces")) {
