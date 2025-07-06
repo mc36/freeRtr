@@ -63,3 +63,5 @@ del-alw %tmp%/tmp
 mkdir %tmp%/tmp
 
 exec xorriso -as mkisofs -o %img%-fbsd.iso -r -J -l -b boot/cdboot -no-emul-boot -c isolinux.cat %tmp%/
+
+del-alw %tmp%

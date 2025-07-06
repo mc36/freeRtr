@@ -65,3 +65,5 @@ del-alw %tmp%/tmp
 mkdir %tmp%/tmp
 
 exec xorriso -as mkisofs -o %img%-nbsd.iso -r -J -l -b bootxx_cd9660 -no-emul-boot -c isolinux.cat %tmp%/
+
+del-alw %tmp%
