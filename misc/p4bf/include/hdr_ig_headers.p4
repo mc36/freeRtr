@@ -65,6 +65,18 @@ struct headers {
     ethernet_t eth9;
 #endif
 #endif
+#ifdef HAVE_MPLS
+    mpls_t mpls89;
+    mpls_t mpls88;
+    mpls_t mpls87;
+    mpls_t mpls86;
+    mpls_t mpls85;
+    mpls_t mpls84;
+    mpls_t mpls83;
+    mpls_t mpls82;
+    mpls_t mpls81;
+    mpls_t mpls80;
+#endif
 #ifdef HAVE_POLKA
     polka_t polka;
 #endif
