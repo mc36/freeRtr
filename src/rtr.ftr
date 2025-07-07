@@ -2434,6 +2434,8 @@ qc pass: p4lang: mgre routing over bundle qinq
 qc pass: p4lang: mgre routing over hairpin qinq
 qc pass: p4lang: mgre routing over qinq bridge
 qc pass: p4lang: mgre mpls over qinq
+qc pass: p4lang: ldp te over mpls tail+head
+qc pass: p4lang: ldp te over mpls mid
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
