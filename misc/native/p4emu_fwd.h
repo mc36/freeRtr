@@ -867,6 +867,62 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         put16msb(bufD, bufP, ethtyp);
         memcpy(&bufH[0], &neigh_res->mac2, 12);
         break;
+    case 24: // labels
+        bufP += 2;
+        if (neigh_res->tid >= 1) {
+            ethtyp = ETHERTYPE_MPLS_UCAST;
+            bufP -= 4;
+            tmp = 0x1ff | (neigh_res->dprt << 12);
+            put32msb(bufD, bufP, tmp);
+        }
+        if (neigh_res->tid >= 2) {
+            bufP -= 4;
+            tmp = 0xff | (neigh_res->sprt << 12);
+            put32msb(bufD, bufP, tmp);
+        }
+        if (neigh_res->tid >= 3) {
+            bufP -= 4;
+            tmp = 0xff | (neigh_res->sip1 << 12);
+            put32msb(bufD, bufP, tmp);
+        }
+        if (neigh_res->tid >= 4) {
+            bufP -= 4;
+            tmp = 0xff | (neigh_res->sip2 << 12);
+            put32msb(bufD, bufP, tmp);
+        }
+        if (neigh_res->tid >= 5) {
+            bufP -= 4;
+            tmp = 0xff | (neigh_res->sip3 << 12);
+            put32msb(bufD, bufP, tmp);
+        }
+        if (neigh_res->tid >= 6) {
+            bufP -= 4;
+            tmp = 0xff | (neigh_res->sip4 << 12);
+            put32msb(bufD, bufP, tmp);
+        }
+        if (neigh_res->tid >= 7) {
+            bufP -= 4;
+            tmp = 0xff | (neigh_res->dip1 << 12);
+            put32msb(bufD, bufP, tmp);
+        }
+        if (neigh_res->tid >= 8) {
+            bufP -= 4;
+            tmp = 0xff | (neigh_res->dip2 << 12);
+            put32msb(bufD, bufP, tmp);
+        }
+        if (neigh_res->tid >= 9) {
+            bufP -= 4;
+            tmp = 0xff | (neigh_res->dip3 << 12);
+            put32msb(bufD, bufP, tmp);
+        }
+        if (neigh_res->tid >= 10) {
+            bufP -= 4;
+            tmp = 0xff | (neigh_res->dip4 << 12);
+            put32msb(bufD, bufP, tmp);
+        }
+        bufP -= 2;
+        put16msb(bufD, bufP, ethtyp);
+        break;
     default:
         doDropper;
     }

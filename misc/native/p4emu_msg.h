@@ -1017,6 +1017,38 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         else hasht_add(&neigh_table, &neigh_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "labsnei4") == 0) {
+        route4_ntry.nexthop = atoi(arg[2]);
+        inet_pton(AF_INET, arg[3], buf2);
+        vrf2rib_ntry.vrf = atoi(arg[5]);
+        vrf2rib_res = vrf2rib_init4;
+        route4_ntry.addr[0] = get32msb(buf2, 0);
+        route4_ntry.mask = 32;
+        route4_ntry.command = 1;
+        neigh_ntry.id = route4_ntry.nexthop;
+        neigh_ntry.vrf = vrf2rib_ntry.vrf;
+        neigh_ntry.port = atoi(arg[7]);
+        neigh_ntry.aclport = atoi(arg[8]);
+        neigh_ntry.command = 24;
+        str2mac(&neigh_ntry.macs[0], arg[4]);
+        str2mac(&neigh_ntry.macs[6], arg[6]);
+        neigh_ntry.tid = atoi(arg[9]);
+        neigh_ntry.dprt = atoi(arg[10]);
+        neigh_ntry.sprt = atoi(arg[11]);
+        neigh_ntry.sip1 = atoi(arg[12]);
+        neigh_ntry.sip2 = atoi(arg[13]);
+        neigh_ntry.sip3 = atoi(arg[14]);
+        neigh_ntry.sip4 = atoi(arg[15]);
+        neigh_ntry.dip1 = atoi(arg[16]);
+        neigh_ntry.dip2 = atoi(arg[17]);
+        neigh_ntry.dip3 = atoi(arg[18]);
+        neigh_ntry.dip4 = atoi(arg[19]);
+        if (del == 0) tree_del(&vrf2rib_res->rou, &route4_ntry);
+        else tree_add(&vrf2rib_res->rou, &route4_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "myaddr6") == 0) {
         inet_pton(AF_INET6, arg[2], buf2);
         vrf2rib_ntry.vrf = atoi(arg[5]);
@@ -1190,6 +1222,41 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.mac2[6], arg[10]);
         neigh_ntry.sprt = atoi(arg[11]);
         neigh_ntry.dprt = atoi(arg[12]);
+        if (del == 0) tree_del(&vrf2rib_res->rou, &route6_ntry);
+        else tree_add(&vrf2rib_res->rou, &route6_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "labsnei6") == 0) {
+        route6_ntry.nexthop = atoi(arg[2]);
+        inet_pton(AF_INET6, arg[3], buf2);
+        vrf2rib_ntry.vrf = atoi(arg[5]);
+        vrf2rib_res = vrf2rib_init6;
+        route6_ntry.addr[0] = get32msb(buf2, 0);
+        route6_ntry.addr[1] = get32msb(buf2, 4);
+        route6_ntry.addr[2] = get32msb(buf2, 8);
+        route6_ntry.addr[3] = get32msb(buf2, 12);
+        route6_ntry.mask = 128;
+        route6_ntry.command = 1;
+        neigh_ntry.id = route6_ntry.nexthop;
+        neigh_ntry.vrf = vrf2rib_ntry.vrf;
+        neigh_ntry.port = atoi(arg[7]);
+        neigh_ntry.aclport = atoi(arg[8]);
+        neigh_ntry.command = 24;
+        str2mac(&neigh_ntry.macs[0], arg[4]);
+        str2mac(&neigh_ntry.macs[6], arg[6]);
+        neigh_ntry.tid = atoi(arg[9]);
+        neigh_ntry.dprt = atoi(arg[10]);
+        neigh_ntry.sprt = atoi(arg[11]);
+        neigh_ntry.sip1 = atoi(arg[12]);
+        neigh_ntry.sip2 = atoi(arg[13]);
+        neigh_ntry.sip3 = atoi(arg[14]);
+        neigh_ntry.sip4 = atoi(arg[15]);
+        neigh_ntry.dip1 = atoi(arg[16]);
+        neigh_ntry.dip2 = atoi(arg[17]);
+        neigh_ntry.dip3 = atoi(arg[18]);
+        neigh_ntry.dip4 = atoi(arg[19]);
         if (del == 0) tree_del(&vrf2rib_res->rou, &route6_ntry);
         else tree_add(&vrf2rib_res->rou, &route6_ntry);
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);

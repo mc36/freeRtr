@@ -54,7 +54,7 @@ struct routes_res {
 };
 
 struct neigh_res {
-    __u32 cmd; // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6, 7=l3tp4, 8=l3tp6, 9=gtp4, 10=gtp6, 11=pwhe
+    __u32 cmd; // 1=rawip, 2=pppoe, 3=gre4, 4=gre6, 5=l2tp4, 6=l2tp6, 7=l3tp4, 8=l3tp6, 9=gtp4, 10=gtp6, 11=pwhe, 12=labels
     __u8 macs[12];
     __u8 mac2[12];
     __u32 port;
