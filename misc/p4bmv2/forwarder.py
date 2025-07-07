@@ -4454,11 +4454,6 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeNeighborRules4(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
 
-        if cmds[0] == "labsnei4":
-            writeLabsNhRules(mode,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            writeNeighborRules4(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
-            continue
-
         if cmds[0] == "portvrf":
             writeVrfRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
@@ -4692,9 +4687,8 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeNeighborRules6(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
 
-        if cmds[0] == "labsnei6":
-            writeLabsNhRules(mode,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
-            writeNeighborRules6(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
+        if cmds[0] == "labsnei":
+            writeLabsNhRules(mode,p4info_helper,sw1,int(splt[1]),splt[2],splt[4],int(splt[5]),int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]))
             continue
 
         if cmds[0] == "mlocal4":

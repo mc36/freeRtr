@@ -250,33 +250,6 @@ def run(self):
             )
             continue
 
-        if cmds[0] == "labsnei4":
-            self.writeLabsNhRules(
-                mode,
-                int(splt[1]),
-                splt[3],
-                splt[5],
-                int(splt[6]),
-                int(splt[7]),
-                int(splt[8]),
-                int(splt[9]),
-                int(splt[10]),
-                int(splt[11]),
-                int(splt[12]),
-                int(splt[13]),
-                int(splt[14]),
-                int(splt[15]),
-                int(splt[16]),
-                int(splt[17]),
-                int(splt[18]),
-            )
-            self.writeNeighborRules4(
-                mode,
-                splt[2],
-                int(splt[1]),
-                int(splt[4]),
-            )
-            continue
 
         if cmds[0] == "hairpin":
             self.writeHairpinRules(
@@ -584,12 +557,13 @@ def run(self):
             )
             continue
 
-        if cmds[0] == "labsnei6":
+        if cmds[0] == "labsnei":
             self.writeLabsNhRules(
                 mode,
                 int(splt[1]),
-                splt[3],
-                splt[5],
+                splt[2],
+                splt[4],
+                int(splt[5]),
                 int(splt[6]),
                 int(splt[7]),
                 int(splt[8]),
@@ -602,13 +576,6 @@ def run(self):
                 int(splt[15]),
                 int(splt[16]),
                 int(splt[17]),
-                int(splt[18]),
-            )
-            self.writeNeighborRules6(
-                mode,
-                splt[2],
-                int(splt[1]),
-                int(splt[4]),
             )
             continue
 

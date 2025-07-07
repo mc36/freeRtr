@@ -53,24 +53,12 @@ int lo1
  ipv4 addr 2.2.2.201 255.255.255.255
  ipv6 addr 4321::201 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-router lsrp4 1
- vrf v1
- router 4.4.4.1
- justadvert lo0
- exit
-router lsrp6 1
- vrf v1
- router 6.6.6.1
- justadvert lo0
- exit
 int sdn1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
  mpls enable
- router lsrp4 1 ena
- router lsrp6 1 ena
  mpls ldp4
  mpls ldp6
  exit
@@ -80,8 +68,6 @@ int sdn2
  ipv6 addr 1234:2::1 ffff:ffff::
  ipv6 ena
  mpls enable
- router lsrp4 1 ena
- router lsrp6 1 ena
  mpls ldp4
  mpls ldp6
  exit
@@ -91,8 +77,6 @@ int sdn3
  ipv6 addr 1234:3::1 ffff:ffff::
  ipv6 ena
  mpls enable
- router lsrp4 1 ena
- router lsrp6 1 ena
  mpls ldp4
  mpls ldp6
  exit
@@ -102,8 +86,6 @@ int sdn4
  ipv6 addr 1234:4::1 ffff:ffff::
  ipv6 ena
  mpls enable
- router lsrp4 1 ena
- router lsrp6 1 ena
  mpls ldp4
  mpls ldp6
  exit
@@ -196,6 +178,14 @@ server p4lang p4
  export-port tun42 dynamic
  vrf v9
  exit
+ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.2.2
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.3.2
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.4.2
+ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::2
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::2
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 ipv4 route v1 2.2.2.203 255.255.255.255 1.1.11.2
 ipv4 route v1 2.2.2.204 255.255.255.255 1.1.12.2
 ipv4 route v1 2.2.2.205 255.255.255.255 1.1.13.2
@@ -245,25 +235,11 @@ int lo1
  ipv4 addr 2.2.2.203 255.255.255.255
  ipv6 addr 4321::203 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-router lsrp4 1
- vrf v1
- router 4.4.4.3
- justadvert lo0
- justadvert eth1
- exit
-router lsrp6 1
- vrf v1
- router 6.6.6.3
- justadvert lo0
- justadvert eth1
- exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234:1::2 ffff:ffff::
  mpls enable
- router lsrp4 1 ena
- router lsrp6 1 ena
  mpls ldp4
  mpls ldp6
  exit
@@ -285,6 +261,20 @@ int tun12
  vrf for v1
  ipv6 addr 1234:11::2 ffff:ffff::
  exit
+ipv4 route v1 1.1.2.0 255.255.255.0 1.1.1.1
+ipv4 route v1 1.1.3.0 255.255.255.0 1.1.1.1
+ipv4 route v1 1.1.4.0 255.255.255.0 1.1.1.1
+ipv6 route v1 1234:2:: ffff:ffff:: 1234:1::1
+ipv6 route v1 1234:3:: ffff:ffff:: 1234:1::1
+ipv6 route v1 1234:4:: ffff:ffff:: 1234:1::1
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.1
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.1.1
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.1.1
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.1.1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
 ipv4 route v1 2.2.2.201 255.255.255.255 1.1.11.1
 ipv4 route v1 2.2.2.204 255.255.255.255 1.1.11.1
 ipv4 route v1 2.2.2.205 255.255.255.255 1.1.11.1
@@ -324,25 +314,11 @@ int lo1
  ipv4 addr 2.2.2.204 255.255.255.255
  ipv6 addr 4321::204 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-router lsrp4 1
- vrf v1
- router 4.4.4.4
- justadvert lo0
- justadvert eth1
- exit
-router lsrp6 1
- vrf v1
- router 6.6.6.4
- justadvert lo0
- justadvert eth1
- exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1234:2::2 ffff:ffff::
  mpls enable
- router lsrp4 1 ena
- router lsrp6 1 ena
  mpls ldp4
  mpls ldp6
  exit
@@ -364,6 +340,20 @@ int tun12
  vrf for v1
  ipv6 addr 1234:12::2 ffff:ffff::
  exit
+ipv4 route v1 1.1.1.0 255.255.255.0 1.1.2.1
+ipv4 route v1 1.1.3.0 255.255.255.0 1.1.2.1
+ipv4 route v1 1.1.4.0 255.255.255.0 1.1.2.1
+ipv6 route v1 1234:1:: ffff:ffff:: 1234:2::1
+ipv6 route v1 1234:3:: ffff:ffff:: 1234:2::1
+ipv6 route v1 1234:4:: ffff:ffff:: 1234:2::1
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.2.1
+ipv4 route v1 2.2.2.103 255.255.255.255 1.1.2.1
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.2.1
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.2.1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
+ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
 ipv4 route v1 2.2.2.201 255.255.255.255 1.1.12.1
 ipv4 route v1 2.2.2.203 255.255.255.255 1.1.12.1
 ipv4 route v1 2.2.2.205 255.255.255.255 1.1.12.1
@@ -403,25 +393,11 @@ int lo1
  ipv4 addr 2.2.2.205 255.255.255.255
  ipv6 addr 4321::205 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-router lsrp4 1
- vrf v1
- router 4.4.4.5
- justadvert lo0
- justadvert eth1
- exit
-router lsrp6 1
- vrf v1
- router 6.6.6.5
- justadvert lo0
- justadvert eth1
- exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.3.2 255.255.255.0
  ipv6 addr 1234:3::2 ffff:ffff::
  mpls enable
- router lsrp4 1 ena
- router lsrp6 1 ena
  mpls ldp4
  mpls ldp6
  exit
@@ -443,6 +419,20 @@ int tun12
  vrf for v1
  ipv6 addr 1234:13::2 ffff:ffff::
  exit
+ipv4 route v1 1.1.1.0 255.255.255.0 1.1.3.1
+ipv4 route v1 1.1.2.0 255.255.255.0 1.1.3.1
+ipv4 route v1 1.1.4.0 255.255.255.0 1.1.3.1
+ipv6 route v1 1234:1:: ffff:ffff:: 1234:3::1
+ipv6 route v1 1234:2:: ffff:ffff:: 1234:3::1
+ipv6 route v1 1234:4:: ffff:ffff:: 1234:3::1
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.3.1
+ipv4 route v1 2.2.2.103 255.255.255.255 1.1.3.1
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.3.1
+ipv4 route v1 2.2.2.106 255.255.255.255 1.1.3.1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
+ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
+ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
 ipv4 route v1 2.2.2.201 255.255.255.255 1.1.13.1
 ipv4 route v1 2.2.2.203 255.255.255.255 1.1.13.1
 ipv4 route v1 2.2.2.204 255.255.255.255 1.1.13.1
@@ -482,25 +472,11 @@ int lo1
  ipv4 addr 2.2.2.206 255.255.255.255
  ipv6 addr 4321::206 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-router lsrp4 1
- vrf v1
- router 4.4.4.6
- justadvert lo0
- justadvert eth1
- exit
-router lsrp6 1
- vrf v1
- router 6.6.6.6
- justadvert lo0
- justadvert eth1
- exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.4.2 255.255.255.0
  ipv6 addr 1234:4::2 ffff:ffff::
  mpls enable
- router lsrp4 1 ena
- router lsrp6 1 ena
  mpls ldp4
  mpls ldp6
  exit
@@ -522,6 +498,20 @@ int tun12
  vrf for v1
  ipv6 addr 1234:14::2 ffff:ffff::
  exit
+ipv4 route v1 1.1.1.0 255.255.255.0 1.1.4.1
+ipv4 route v1 1.1.2.0 255.255.255.0 1.1.4.1
+ipv4 route v1 1.1.3.0 255.255.255.0 1.1.4.1
+ipv6 route v1 1234:1:: ffff:ffff:: 1234:4::1
+ipv6 route v1 1234:2:: ffff:ffff:: 1234:4::1
+ipv6 route v1 1234:3:: ffff:ffff:: 1234:4::1
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.4.1
+ipv4 route v1 2.2.2.103 255.255.255.255 1.1.4.1
+ipv4 route v1 2.2.2.104 255.255.255.255 1.1.4.1
+ipv4 route v1 2.2.2.105 255.255.255.255 1.1.4.1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
+ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
+ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
+ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 ipv4 route v1 2.2.2.201 255.255.255.255 1.1.14.1
 ipv4 route v1 2.2.2.203 255.255.255.255 1.1.14.1
 ipv4 route v1 2.2.2.204 255.255.255.255 1.1.14.1
