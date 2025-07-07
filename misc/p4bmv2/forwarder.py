@@ -3358,6 +3358,48 @@ def writePwheNhRules(delete, p4info_helper, ingress_sw, nexthop, dst_mac_addr, s
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 
+def writeLabsNhRules(delete, p4info_helper, ingress_sw, nexthop, dst_mac_addr, src_mac_addr, port, aclport, labs, lab0, lab1, lab2, lab3, lab4, lab5, lab6, lab7, lab8, lab9):
+    params={
+        "dst_mac_addr": dst_mac_addr,
+        "src_mac_addr": src_mac_addr,
+        "egress_port": port,
+        "acl_port": aclport,
+    }
+    if labs >= 1:
+        params["lab0"]=lab0
+    if labs >= 2:
+        params["lab1"]=lab1
+    if labs >= 3:
+        params["lab2"]=lab2
+    if labs >= 4:
+        params["lab3"]=lab3
+    if labs >= 5:
+        params["lab4"]=lab4
+    if labs >= 6:
+        params["lab5"]=lab5
+    if labs >= 7:
+        params["lab6"]=lab6
+    if labs >= 8:
+        params["lab7"]=lab7
+    if labs >= 9:
+        params["lab8"]=lab8
+    if labs >= 10:
+        params["lab9"]=lab9
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="eg_ctl.eg_ctl_nexthop.tbl_nexthop",
+        match_fields={
+            "eg_md.nexthop_id": nexthop,
+        },
+        action_name="eg_ctl.eg_ctl_nexthop.act_ipv4_labs"+str(labs-1),
+        action_params=params)
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
 def writeNeighborRules4(delete, p4info_helper, ingress_sw, dst_ip_addr, port, vrf):
     table_entry1 = p4info_helper.buildTableEntry(
         table_name="ig_ctl.ig_ctl_ipv4.tbl_ipv4_fib_host",
@@ -4412,6 +4454,11 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
             writeNeighborRules4(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
 
+        if cmds[0] == "labsnei4":
+            writeLabsNhRules(mode,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
+            writeNeighborRules4(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
+            continue
+
         if cmds[0] == "portvrf":
             writeVrfRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
@@ -4642,6 +4689,11 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "pwhenei6":
             writePwheNhRules(mode,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]),int(splt[7]),splt[8],splt[9],int(splt[10]),int(splt[11]))
+            writeNeighborRules6(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
+            continue
+
+        if cmds[0] == "labsnei6":
+            writeLabsNhRules(mode,p4info_helper,sw1,int(splt[1]),splt[3],splt[5],int(splt[6]),int(splt[7]),int(splt[8]),int(splt[9]),int(splt[10]),int(splt[11]),int(splt[12]),int(splt[13]),int(splt[14]),int(splt[15]),int(splt[16]),int(splt[17]),int(splt[18]))
             writeNeighborRules6(mode,p4info_helper,sw1,splt[2],int(splt[1]),int(splt[4]))
             continue
 

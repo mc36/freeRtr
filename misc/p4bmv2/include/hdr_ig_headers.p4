@@ -37,6 +37,16 @@ struct headers {
     mpls_t		mpls90;
     mpls_t		mpls91;
     ethernet_t		eth9;
+    mpls_t		mpls89;
+    mpls_t		mpls88;
+    mpls_t		mpls87;
+    mpls_t		mpls86;
+    mpls_t		mpls85;
+    mpls_t		mpls84;
+    mpls_t		mpls83;
+    mpls_t		mpls82;
+    mpls_t		mpls81;
+    mpls_t		mpls80;
     l2tp_t		l2tp2;
     amt_t		amt2;
     gtp_t		gtp2;
