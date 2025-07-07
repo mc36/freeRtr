@@ -287,6 +287,15 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
     }
 
     /**
+     * get resulting labels
+     *
+     * @return labels, null if no suitable
+     */
+    public int[] getLabels() {
+        return labels;
+    }
+
+    /**
      * start connection
      */
     public void workStart() {

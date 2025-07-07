@@ -561,66 +561,27 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
-    if (strcmp(arg[0], "labsnei4") == 0) {
-        inet_pton(AF_INET, arg[3], buf2);
-        rou4.vrf = atoi(arg[5]);
-        memcpy(rou4.addr, buf2, sizeof(rou4.addr));
-        rou4.bits = routes_bits + (sizeof(rou4.addr) * 8);
-        rour.cmd = 1;
+    if (strcmp(arg[0], "labsnei") == 0) {
         i = rour.nexthop = atoi(arg[2]);
-        str2mac(&neir.macs[0], arg[4]);
-        str2mac(&neir.macs[6], arg[6]);
-        neir.port = atoi(arg[7]);
-        neir.aclport = atoi(arg[8]);
-        neir.sess = atoi(arg[9]);
-        neir.trgPort = atoi(arg[10]);
-        neir.srcPort = atoi(arg[11]);
-        *((int*)&neir.srcAddr[0]) = atoi(arg[12]);
-        *((int*)&neir.srcAddr[4]) = atoi(arg[13]);
-        *((int*)&neir.srcAddr[8]) = atoi(arg[14]);
-        *((int*)&neir.srcAddr[12]) = atoi(arg[15]);
-        *((int*)&neir.trgAddr[0]) = atoi(arg[16]);
-        *((int*)&neir.trgAddr[4]) = atoi(arg[17]);
-        *((int*)&neir.trgAddr[8]) = atoi(arg[18]);
-        *((int*)&neir.trgAddr[12]) = atoi(arg[19]);
+        str2mac(&neir.macs[0], arg[3]);
+        str2mac(&neir.macs[6], arg[5]);
+        neir.port = atoi(arg[6]);
+        neir.aclport = atoi(arg[7]);
+        neir.sess = atoi(arg[8]);
+        neir.trgPort = atoi(arg[9]);
+        neir.srcPort = atoi(arg[10]);
+        *((int*)&neir.srcAddr[0]) = atoi(arg[11]);
+        *((int*)&neir.srcAddr[4]) = atoi(arg[12]);
+        *((int*)&neir.srcAddr[8]) = atoi(arg[13]);
+        *((int*)&neir.srcAddr[12]) = atoi(arg[14]);
+        *((int*)&neir.trgAddr[0]) = atoi(arg[15]);
+        *((int*)&neir.trgAddr[4]) = atoi(arg[16]);
+        *((int*)&neir.trgAddr[8]) = atoi(arg[17]);
+        *((int*)&neir.trgAddr[12]) = atoi(arg[18]);
         neir.cmd = 12;
         if (del == 0) {
-            if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &i) != 0) warn("error removing entry");
         } else {
-            if (bpf_map_update_elem(route4_fd, &rou4, &rour, BPF_ANY) != 0) warn("error setting entry");
-            if (bpf_map_update_elem(neighs_fd, &i, &neir, BPF_ANY) != 0) warn("error setting entry");
-        }
-        return 0;
-    }
-    if (strcmp(arg[0], "labsnei6") == 0) {
-        inet_pton(AF_INET6, arg[3], buf2);
-        rou6.vrf = atoi(arg[5]);
-        memcpy(rou6.addr, buf2, sizeof(rou6.addr));
-        rou6.bits = routes_bits + (sizeof(rou6.addr) * 8);
-        rour.cmd = 1;
-        i = rour.nexthop = atoi(arg[2]);
-        str2mac(&neir.macs[0], arg[4]);
-        str2mac(&neir.macs[6], arg[6]);
-        neir.port = atoi(arg[7]);
-        neir.aclport = atoi(arg[8]);
-        neir.sess = atoi(arg[9]);
-        neir.trgPort = atoi(arg[10]);
-        neir.srcPort = atoi(arg[11]);
-        *((int*)&neir.srcAddr[0]) = atoi(arg[12]);
-        *((int*)&neir.srcAddr[4]) = atoi(arg[13]);
-        *((int*)&neir.srcAddr[8]) = atoi(arg[14]);
-        *((int*)&neir.srcAddr[12]) = atoi(arg[15]);
-        *((int*)&neir.trgAddr[0]) = atoi(arg[16]);
-        *((int*)&neir.trgAddr[4]) = atoi(arg[17]);
-        *((int*)&neir.trgAddr[8]) = atoi(arg[18]);
-        *((int*)&neir.trgAddr[12]) = atoi(arg[19]);
-        neir.cmd = 12;
-        if (del == 0) {
-            if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");
-            if (bpf_map_delete_elem(neighs_fd, &i) != 0) warn("error removing entry");
-        } else {
-            if (bpf_map_update_elem(route6_fd, &rou6, &rour, BPF_ANY) != 0) warn("error setting entry");
             if (bpf_map_update_elem(neighs_fd, &i, &neir, BPF_ANY) != 0) warn("error setting entry");
         }
         return 0;
