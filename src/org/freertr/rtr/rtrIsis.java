@@ -16,8 +16,10 @@ import org.freertr.cfg.cfgRoump;
 import org.freertr.cfg.cfgRouplc;
 import org.freertr.cfg.cfgRtr;
 import org.freertr.cfg.cfgVrf;
+import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashHmac;
 import org.freertr.cry.cryHashMd5;
+import org.freertr.cry.cryHashSha1;
 import org.freertr.enc.enc7bit;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ip.ipCor4;
@@ -378,24 +380,22 @@ public class rtrIsis extends ipRtr {
      * @param typ message type
      * @param ofs offset of tlv
      * @param mod mode
+     * @param id key id
      * @param pwd password
      * @return bytes in header
      */
-    protected byte[] calcAuthData(packHolder pck, int typ, int ofs, int mod, String pwd) {
-        ofs += 3;
+    protected byte[] calcAuthData(packHolder pck, int typ, int ofs, int mod, int id, String pwd) {
+        if (pwd == null) {
+            return null;
+        }
         switch (mod) {
             case 1:
-                if (pwd == null) {
-                    return null;
-                }
                 byte[] buf = (" " + pwd).getBytes();
                 buf[0] = 1;
                 return buf;
             case 2:
-                if (pwd == null) {
-                    return null;
-                }
-                cryHashHmac h = new cryHashHmac(new cryHashMd5(), pwd.getBytes());
+                ofs += 3;
+                cryHashGeneric h = new cryHashHmac(new cryHashMd5(), pwd.getBytes());
                 h.init();
                 int hshSiz = h.getHashSize();
                 h.update(rtrIsis.protDist);
@@ -414,9 +414,49 @@ public class rtrIsis extends ipRtr {
                     pck.hashData(h, ofs + hshSiz, pck.dataSize() - ofs - hshSiz);
                 }
                 return bits.byteConcat(new byte[]{54}, h.finish());
+            case 3:
+                return calcAuthData(new cryHashSha1(), pck, typ, ofs, id, pwd);
             default:
                 return null;
         }
+    }
+
+    private byte[] calcAuthData(cryHashGeneric h, packHolder pck, int typ, int ofs, int id, String pwd) {
+        ofs += 5;
+        byte[] ko = pwd.getBytes();
+        h.init();
+        int hshSiz = h.getHashSize();
+        if (ko.length > hshSiz) {
+            h.update(ko);
+            ko = h.finish();
+        }
+        ko = bits.byteConcat(ko, new byte[hshSiz - ko.length]);
+        h = new cryHashHmac(h, ko);
+        h.init();
+        h.update(rtrIsis.protDist);
+        h.update(rtrIsisNeigh.msgTyp2headSiz(typ));
+        h.update(1);
+        h.update(0);
+        h.update(typ);
+        h.update(1);
+        h.update(0);
+        h.update(getMaxAreaAddr());
+        pck = pck.copyBytes(true, true);
+        pck.merge2beg();
+        pck.hashData(h, 0, ofs);
+        for (int i = 0; i < hshSiz; i += 4) {
+            h.update(0x87);
+            h.update(0x8F);
+            h.update(0xE1);
+            h.update(0xF3);
+        }
+        if ((ofs + hshSiz) < pck.dataSize()) {
+            pck.hashData(h, ofs + hshSiz, pck.dataSize() - ofs - hshSiz);
+        }
+        ko = new byte[3];
+        ko[0] = 3;
+        bits.msbPutW(ko, 1, id);
+        return bits.byteConcat(ko, h.finish());
     }
 
     /**
@@ -1259,6 +1299,7 @@ public class rtrIsis extends ipRtr {
         l.add(null, false, 3, new int[]{-1}, "null", "use nothing");
         l.add(null, false, 3, new int[]{-1}, "clear", "use cleartext");
         l.add(null, false, 3, new int[]{-1}, "md5", "use md5");
+        l.add(null, false, 3, new int[]{-1}, "sha1", "use sha1");
         l.add(null, false, 2, new int[]{3}, "authen-id", "id for authentication");
         l.add(null, false, 3, new int[]{-1}, "<num>", "key id");
         l.add(null, false, 2, new int[]{3}, "lsp-refresh", "lsp refresh time");
@@ -1630,6 +1671,9 @@ public class rtrIsis extends ipRtr {
             case 2:
                 a = "md5";
                 break;
+            case 3:
+                a = "sha1";
+                break;
             default:
                 a = "unknown=" + lev.authenMode;
                 break;
@@ -1770,6 +1814,11 @@ public class rtrIsis extends ipRtr {
             }
             if (s.equals("md5")) {
                 lev.authenMode = 2;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("sha1")) {
+                lev.authenMode = 3;
                 lev.schedWork(3);
                 return false;
             }

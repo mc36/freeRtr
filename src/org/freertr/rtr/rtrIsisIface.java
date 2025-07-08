@@ -177,7 +177,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
     public String authentication;
 
     /**
-     * authentication mode: 1=cleartext, 2=md5
+     * authentication mode: 1=cleartext, 2=md5, 3=sha1
      */
     public int authenMode;
 
@@ -379,6 +379,9 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
                 break;
             case 2:
                 a = "md5";
+                break;
+            case 3:
+                a = "sha1";
                 break;
             default:
                 a = "unknown=" + authenMode;
@@ -586,6 +589,10 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             }
             if (a.equals("md5")) {
                 authenMode = 2;
+                return;
+            }
+            if (a.equals("sha1")) {
+                authenMode = 3;
                 return;
             }
             return;
@@ -922,6 +929,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         l.add(null, false, 5, new int[]{-1}, "null", "use nothing");
         l.add(null, false, 5, new int[]{-1}, "clear", "use cleartext");
         l.add(null, false, 5, new int[]{-1}, "md5", "use md5");
+        l.add(null, false, 5, new int[]{-1}, "sha1", "use sha1");
         l.add(null, false, 4, new int[]{5}, "authen-id", "id for authentication");
         l.add(null, false, 5, new int[]{-1}, "<num>", "key id");
         l.add(null, false, 4, new int[]{5}, "traffeng", "traffic engineering parameters");
@@ -1082,7 +1090,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
      * @return bytes in header
      */
     protected byte[] getAuthData(packHolder pck, int typ, int ofs) {
-        return lower.calcAuthData(pck, typ, ofs, authenMode, authentication);
+        return lower.calcAuthData(pck, typ, ofs, authenMode, authenKey, authentication);
     }
 
     /**

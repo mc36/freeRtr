@@ -148,7 +148,7 @@ public class rtrIsisLevel implements Runnable {
     public String lspPassword;
 
     /**
-     * authentication mode: 1=cleartext, 2=md5
+     * authentication mode: 1=cleartext, 2=md5, 3=sha1
      */
     public int authenMode;
 
@@ -520,7 +520,7 @@ public class rtrIsisLevel implements Runnable {
      * @return binary data, null if disabled
      */
     protected byte[] getAuthen(packHolder pck, int typ, int ofs) {
-        return lower.calcAuthData(pck, typ, ofs, authenMode, lspPassword);
+        return lower.calcAuthData(pck, typ, ofs, authenMode, authenKey, lspPassword);
     }
 
     private void advertiseTlv(packHolder pck, encTlv tlv) {
