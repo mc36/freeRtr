@@ -1149,6 +1149,14 @@ qc pass: interop1: integrated isis
 qc pass: interop1: isis md5 authentication
 qc pass: interop1: isis lsp md5 authentication
 qc pass: interop1: integrated isis multi-topology
+qc pass: interop1: isis sha1 authentication
+qc pass: interop1: isis lsp sha1 authentication
+qc pass: interop1: isis sha256 authentication
+qc pass: interop1: isis lsp sha256 authentication
+qc pass: interop1: isis sha384 authentication
+qc pass: interop1: isis lsp sha384 authentication
+qc pass: interop1: isis sha512 authentication
+qc pass: interop1: isis lsp sha512 authentication
 qc pass: interop1: l2tp2 client
 qc pass: interop1: l2tp2 server
 qc pass: interop1: l2tp3 server
@@ -1248,6 +1256,10 @@ qc pass: interop2: isis bidir te
 qc pass: interop2: isis md5 authentication
 qc pass: interop2: isis lsp md5 authentication
 qc pass: interop2: integrated isis multi-topology
+qc pass: interop2: isis sha1 authentication
+qc pass: interop2: isis lsp sha1 authentication
+qc pass: interop2: isis sha256 authentication
+qc pass: interop2: isis lsp sha256 authentication
 qc pass: interop2: ldp lsp
 qc pass: interop2: ethernet over mpls
 qc pass: interop2: ldp p2mp lsp
@@ -3569,6 +3581,16 @@ qc pass: integrated isis flexalgo
 qc pass: isis with pmtud
 qc pass: isis ldp sync
 qc pass: integrated isis ldp sync
+qc pass: isis sha1 authentication
+qc pass: isis lsp sha1 authentication
+qc pass: isis sha224 authentication
+qc pass: isis lsp sha224 authentication
+qc pass: isis sha256 authentication
+qc pass: isis lsp sha256 authentication
+qc pass: isis sha384 authentication
+qc pass: isis lsp sha384 authentication
+qc pass: isis sha512 authentication
+qc pass: isis lsp sha512 authentication
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain

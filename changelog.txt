@@ -17202,3 +17202,26 @@ qc pass: p4lang: ldp te over mpls mid
 qc pass: unnamed
 ---------------------------------- 2025-07-07 21:18:32 25.7.7
 no qc pass: unnamed
+---------------------------------- 2025-07-08 08:09:59 25.7.8
+qc pass: interop1: isis sha1 authentication
+qc pass: interop1: isis lsp sha1 authentication
+qc pass: interop1: isis sha256 authentication
+qc pass: interop1: isis lsp sha256 authentication
+qc pass: interop1: isis sha384 authentication
+qc pass: interop1: isis lsp sha384 authentication
+qc pass: interop1: isis sha512 authentication
+qc pass: interop1: isis lsp sha512 authentication
+qc pass: interop2: isis sha1 authentication
+qc pass: interop2: isis lsp sha1 authentication
+qc pass: interop2: isis sha256 authentication
+qc pass: interop2: isis lsp sha256 authentication
+qc pass: isis sha1 authentication
+qc pass: isis lsp sha1 authentication
+qc pass: isis sha224 authentication
+qc pass: isis lsp sha224 authentication
+qc pass: isis sha256 authentication
+qc pass: isis lsp sha256 authentication
+qc pass: isis sha384 authentication
+qc pass: isis lsp sha384 authentication
+qc pass: isis sha512 authentication
+qc pass: isis lsp sha512 authentication

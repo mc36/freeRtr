@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.7.8-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-07-08 07:52:05, took 00:13:52, with 50 workers, on 3954 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2025-07-08 08:23:19, took 00:13:20, with 50 workers, on 3976 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1153,6 +1153,14 @@ http://sources.freertr.org/cfg/intop1-isis14.tst;intop1-isis14.tst;success;inter
 http://sources.freertr.org/cfg/intop1-isis15.tst;intop1-isis15.tst;success;interop1: isis md5 authentication
 http://sources.freertr.org/cfg/intop1-isis16.tst;intop1-isis16.tst;success;interop1: isis lsp md5 authentication
 http://sources.freertr.org/cfg/intop1-isis17.tst;intop1-isis17.tst;success;interop1: integrated isis multi-topology
+http://sources.freertr.org/cfg/intop1-isis18.tst;intop1-isis18.tst;success;interop1: isis sha1 authentication
+http://sources.freertr.org/cfg/intop1-isis19.tst;intop1-isis19.tst;success;interop1: isis lsp sha1 authentication
+http://sources.freertr.org/cfg/intop1-isis20.tst;intop1-isis20.tst;success;interop1: isis sha256 authentication
+http://sources.freertr.org/cfg/intop1-isis21.tst;intop1-isis21.tst;success;interop1: isis lsp sha256 authentication
+http://sources.freertr.org/cfg/intop1-isis22.tst;intop1-isis22.tst;success;interop1: isis sha384 authentication
+http://sources.freertr.org/cfg/intop1-isis23.tst;intop1-isis23.tst;success;interop1: isis lsp sha384 authentication
+http://sources.freertr.org/cfg/intop1-isis24.tst;intop1-isis24.tst;success;interop1: isis sha512 authentication
+http://sources.freertr.org/cfg/intop1-isis25.tst;intop1-isis25.tst;success;interop1: isis lsp sha512 authentication
 http://sources.freertr.org/cfg/intop1-l2tp01.tst;intop1-l2tp01.tst;success;interop1: l2tp2 client
 http://sources.freertr.org/cfg/intop1-l2tp02.tst;intop1-l2tp02.tst;success;interop1: l2tp2 server
 http://sources.freertr.org/cfg/intop1-l2tp03.tst;intop1-l2tp03.tst;success;interop1: l2tp3 server
@@ -1252,6 +1260,10 @@ http://sources.freertr.org/cfg/intop2-isis15.tst;intop2-isis15.tst;success;inter
 http://sources.freertr.org/cfg/intop2-isis16.tst;intop2-isis16.tst;success;interop2: isis md5 authentication
 http://sources.freertr.org/cfg/intop2-isis17.tst;intop2-isis17.tst;success;interop2: isis lsp md5 authentication
 http://sources.freertr.org/cfg/intop2-isis18.tst;intop2-isis18.tst;success;interop2: integrated isis multi-topology
+http://sources.freertr.org/cfg/intop2-isis19.tst;intop2-isis19.tst;success;interop2: isis sha1 authentication
+http://sources.freertr.org/cfg/intop2-isis20.tst;intop2-isis20.tst;success;interop2: isis lsp sha1 authentication
+http://sources.freertr.org/cfg/intop2-isis21.tst;intop2-isis21.tst;success;interop2: isis sha256 authentication
+http://sources.freertr.org/cfg/intop2-isis22.tst;intop2-isis22.tst;success;interop2: isis lsp sha256 authentication
 http://sources.freertr.org/cfg/intop2-ldp01.tst;intop2-ldp01.tst;success;interop2: ldp lsp
 http://sources.freertr.org/cfg/intop2-ldp02.tst;intop2-ldp02.tst;success;interop2: ethernet over mpls
 http://sources.freertr.org/cfg/intop2-ldp03.tst;intop2-ldp03.tst;success;interop2: ldp p2mp lsp
@@ -3573,6 +3585,16 @@ http://sources.freertr.org/cfg/rout-isis110.tst;rout-isis110.tst;success;integra
 http://sources.freertr.org/cfg/rout-isis111.tst;rout-isis111.tst;success;isis with pmtud
 http://sources.freertr.org/cfg/rout-isis112.tst;rout-isis112.tst;success;isis ldp sync
 http://sources.freertr.org/cfg/rout-isis113.tst;rout-isis113.tst;success;integrated isis ldp sync
+http://sources.freertr.org/cfg/rout-isis114.tst;rout-isis114.tst;success;isis sha1 authentication
+http://sources.freertr.org/cfg/rout-isis115.tst;rout-isis115.tst;success;isis lsp sha1 authentication
+http://sources.freertr.org/cfg/rout-isis116.tst;rout-isis116.tst;success;isis sha224 authentication
+http://sources.freertr.org/cfg/rout-isis117.tst;rout-isis117.tst;success;isis lsp sha224 authentication
+http://sources.freertr.org/cfg/rout-isis118.tst;rout-isis118.tst;success;isis sha256 authentication
+http://sources.freertr.org/cfg/rout-isis119.tst;rout-isis119.tst;success;isis lsp sha256 authentication
+http://sources.freertr.org/cfg/rout-isis120.tst;rout-isis120.tst;success;isis sha384 authentication
+http://sources.freertr.org/cfg/rout-isis121.tst;rout-isis121.tst;success;isis lsp sha384 authentication
+http://sources.freertr.org/cfg/rout-isis122.tst;rout-isis122.tst;success;isis sha512 authentication
+http://sources.freertr.org/cfg/rout-isis123.tst;rout-isis123.tst;success;isis lsp sha512 authentication
 http://sources.freertr.org/cfg/rout-lsrp01.tst;rout-lsrp01.tst;success;lsrp point2point connection
 http://sources.freertr.org/cfg/rout-lsrp02.tst;rout-lsrp02.tst;success;lsrp point2multipoint connection
 http://sources.freertr.org/cfg/rout-lsrp03.tst;rout-lsrp03.tst;success;lsrp point2point chain

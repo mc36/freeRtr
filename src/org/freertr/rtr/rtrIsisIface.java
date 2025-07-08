@@ -177,7 +177,8 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
     public String authentication;
 
     /**
-     * authentication mode: 1=cleartext, 2=md5, 3=sha1, 4=sha224, 5=sha256, 6=sha384, 7=sha512
+     * authentication mode: 1=cleartext, 2=md5, 3=sha1, 4=sha224, 5=sha256,
+     * 6=sha384, 7=sha512
      */
     public int authenMode;
 
