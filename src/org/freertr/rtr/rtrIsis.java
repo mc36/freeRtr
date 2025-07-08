@@ -20,6 +20,10 @@ import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashHmac;
 import org.freertr.cry.cryHashMd5;
 import org.freertr.cry.cryHashSha1;
+import org.freertr.cry.cryHashSha2224;
+import org.freertr.cry.cryHashSha2256;
+import org.freertr.cry.cryHashSha2384;
+import org.freertr.cry.cryHashSha2512;
 import org.freertr.enc.enc7bit;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ip.ipCor4;
@@ -416,6 +420,14 @@ public class rtrIsis extends ipRtr {
                 return bits.byteConcat(new byte[]{54}, h.finish());
             case 3:
                 return calcAuthData(new cryHashSha1(), pck, typ, ofs, id, pwd);
+            case 4:
+                return calcAuthData(new cryHashSha2224(), pck, typ, ofs, id, pwd);
+            case 5:
+                return calcAuthData(new cryHashSha2256(), pck, typ, ofs, id, pwd);
+            case 6:
+                return calcAuthData(new cryHashSha2384(), pck, typ, ofs, id, pwd);
+            case 7:
+                return calcAuthData(new cryHashSha2512(), pck, typ, ofs, id, pwd);
             default:
                 return null;
         }
@@ -1300,6 +1312,10 @@ public class rtrIsis extends ipRtr {
         l.add(null, false, 3, new int[]{-1}, "clear", "use cleartext");
         l.add(null, false, 3, new int[]{-1}, "md5", "use md5");
         l.add(null, false, 3, new int[]{-1}, "sha1", "use sha1");
+        l.add(null, false, 3, new int[]{-1}, "sha224", "use sha224");
+        l.add(null, false, 3, new int[]{-1}, "sha256", "use sha256");
+        l.add(null, false, 3, new int[]{-1}, "sha384", "use sha384");
+        l.add(null, false, 3, new int[]{-1}, "sha512", "use sha512");
         l.add(null, false, 2, new int[]{3}, "authen-id", "id for authentication");
         l.add(null, false, 3, new int[]{-1}, "<num>", "key id");
         l.add(null, false, 2, new int[]{3}, "lsp-refresh", "lsp refresh time");
@@ -1674,6 +1690,18 @@ public class rtrIsis extends ipRtr {
             case 3:
                 a = "sha1";
                 break;
+            case 4:
+                a = "sha224";
+                break;
+            case 5:
+                a = "sha256";
+                break;
+            case 6:
+                a = "sha384";
+                break;
+            case 7:
+                a = "sha512";
+                break;
             default:
                 a = "unknown=" + lev.authenMode;
                 break;
@@ -1819,6 +1847,26 @@ public class rtrIsis extends ipRtr {
             }
             if (s.equals("sha1")) {
                 lev.authenMode = 3;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("sha224")) {
+                lev.authenMode = 4;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("sha256")) {
+                lev.authenMode = 5;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("sha384")) {
+                lev.authenMode = 6;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("sha512")) {
+                lev.authenMode = 7;
                 lev.schedWork(3);
                 return false;
             }

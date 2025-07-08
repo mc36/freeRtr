@@ -177,7 +177,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
     public String authentication;
 
     /**
-     * authentication mode: 1=cleartext, 2=md5, 3=sha1
+     * authentication mode: 1=cleartext, 2=md5, 3=sha1, 4=sha224, 5=sha256, 6=sha384, 7=sha512
      */
     public int authenMode;
 
@@ -382,6 +382,18 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
                 break;
             case 3:
                 a = "sha1";
+                break;
+            case 4:
+                a = "sha224";
+                break;
+            case 5:
+                a = "sha256";
+                break;
+            case 6:
+                a = "sha384";
+                break;
+            case 7:
+                a = "sha512";
                 break;
             default:
                 a = "unknown=" + authenMode;
@@ -593,6 +605,22 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             }
             if (a.equals("sha1")) {
                 authenMode = 3;
+                return;
+            }
+            if (a.equals("sha224")) {
+                authenMode = 4;
+                return;
+            }
+            if (a.equals("sha256")) {
+                authenMode = 5;
+                return;
+            }
+            if (a.equals("sha384")) {
+                authenMode = 6;
+                return;
+            }
+            if (a.equals("sha512")) {
+                authenMode = 7;
                 return;
             }
             return;
@@ -930,6 +958,10 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         l.add(null, false, 5, new int[]{-1}, "clear", "use cleartext");
         l.add(null, false, 5, new int[]{-1}, "md5", "use md5");
         l.add(null, false, 5, new int[]{-1}, "sha1", "use sha1");
+        l.add(null, false, 5, new int[]{-1}, "sha224", "use sha224");
+        l.add(null, false, 5, new int[]{-1}, "sha256", "use sha256");
+        l.add(null, false, 5, new int[]{-1}, "sha384", "use sha384");
+        l.add(null, false, 5, new int[]{-1}, "sha512", "use sha512");
         l.add(null, false, 4, new int[]{5}, "authen-id", "id for authentication");
         l.add(null, false, 5, new int[]{-1}, "<num>", "key id");
         l.add(null, false, 4, new int[]{5}, "traffeng", "traffic engineering parameters");
