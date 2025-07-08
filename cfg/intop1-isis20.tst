@@ -22,6 +22,7 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  router isis4 1 ena
  router isis4 1 password tester
+ router isis4 1 authen-id 1
  router isis4 1 authen-type sha256
  exit
 int eth2
@@ -29,6 +30,7 @@ int eth2
  ipv6 addr fe80::1 ffff::
  router isis6 1 ena
  router isis6 1 password tester
+ router isis6 1 authen-id 1
  router isis6 1 authen-type sha256
  exit
 int lo0
@@ -56,7 +58,7 @@ router isis
   redistribute connected
  exit
 key chain kc
- key 0
+ key 1
   key-string tester
   cryptographic-algorithm hmac-sha-256
  exit

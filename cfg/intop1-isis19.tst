@@ -11,6 +11,7 @@ router isis4 1
  vrf v1
  net 48.4444.0000.1111.00
  both lsp-pass tester
+ both authen-id 1
  both authen-type sha1
  red conn
  exit
@@ -18,6 +19,7 @@ router isis6 1
  vrf v1
  net 48.6666.0000.1111.00
  both lsp-pass tester
+ both authen-id 1
  both authen-type sha1
  red conn
  exit
@@ -49,7 +51,7 @@ interface loopback0
  ipv6 addr 4321::2/128
  exit
 key chain kc1
- key 0
+ key 1
   key-string tester
   cryptographic-algorithm hmac-sha-1
 router isis
