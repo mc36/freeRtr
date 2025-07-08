@@ -6,7 +6,14 @@ import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.auth.authLocal;
+import org.freertr.cry.cryHashGeneric;
+import org.freertr.cry.cryHashHmac;
 import org.freertr.cry.cryHashMd5;
+import org.freertr.cry.cryHashSha1;
+import org.freertr.cry.cryHashSha2224;
+import org.freertr.cry.cryHashSha2256;
+import org.freertr.cry.cryHashSha2384;
+import org.freertr.cry.cryHashSha2512;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipPrt;
 import org.freertr.pack.packHolder;
@@ -194,7 +201,8 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
     public String authentication;
 
     /**
-     * authentication mode: 1=cleartext, 2=md5
+     * authentication mode: 1=cleartext, 2=md5, 3=sha1, 4=sha224, 5=sha256,
+     * 6=sha384, 7=sha512
      */
     public int authenMode;
 
@@ -355,6 +363,21 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
                 break;
             case 2:
                 a = "md5";
+                break;
+            case 3:
+                a = "sha1";
+                break;
+            case 4:
+                a = "sha224";
+                break;
+            case 5:
+                a = "sha256";
+                break;
+            case 6:
+                a = "sha384";
+                break;
+            case 7:
+                a = "sha512";
                 break;
             default:
                 a = "unknown=" + authenMode;
@@ -576,6 +599,26 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
             }
             if (a.equals("md5")) {
                 authenMode = 2;
+                return;
+            }
+            if (a.equals("sha1")) {
+                authenMode = 3;
+                return;
+            }
+            if (a.equals("sha224")) {
+                authenMode = 4;
+                return;
+            }
+            if (a.equals("sha256")) {
+                authenMode = 5;
+                return;
+            }
+            if (a.equals("sha384")) {
+                authenMode = 6;
+                return;
+            }
+            if (a.equals("sha512")) {
+                authenMode = 7;
                 return;
             }
             return;
@@ -865,6 +908,11 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
         l.add(null, false, 5, new int[]{-1}, "null", "use nothing");
         l.add(null, false, 5, new int[]{-1}, "clear", "use cleartext");
         l.add(null, false, 5, new int[]{-1}, "md5", "use md5");
+        l.add(null, false, 5, new int[]{-1}, "sha1", "use sha1");
+        l.add(null, false, 5, new int[]{-1}, "sha224", "use sha224");
+        l.add(null, false, 5, new int[]{-1}, "sha256", "use sha256");
+        l.add(null, false, 5, new int[]{-1}, "sha384", "use sha384");
+        l.add(null, false, 5, new int[]{-1}, "sha512", "use sha512");
         l.add(null, false, 4, new int[]{5}, "authen-id", "id for authentication");
         l.add(null, false, 5, new int[]{-1}, "<num>", "key id");
         l.add(null, false, 4, new int[]{5}, "traffeng", "traffic engineering parameters");
@@ -1092,13 +1140,13 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
         byte[] buf = new byte[2 + len];
         bits.byteFill(buf, 0, buf.length, 0);
         buf[0] = (byte) instance;
+        if (authentication == null) {
+            return buf;
+        }
         switch (authenMode) {
             case 0: // null
                 return buf;
             case 1: // text
-                if (authentication == null) {
-                    return buf;
-                }
                 buf[1] = 1;
                 byte[] pwd = authentication.getBytes();
                 int i = pwd.length;
@@ -1108,22 +1156,54 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
                 bits.byteCopy(pwd, 0, buf, 2, i);
                 return buf;
             case 2: // md5
-                if (authentication == null) {
-                    return buf;
-                }
-                buf[1] = 2;
-                buf[4] = (byte) authenKey;
-                buf[5] = 16; // length
-                bits.msbPutD(buf, 6, (int) bits.getTime());
-                if (!rx) {
-                    return buf;
-                }
-                byte[] buf2 = new byte[buf.length - 4];
-                bits.byteCopy(buf, 0, buf2, 0, buf2.length);
-                return buf2;
+                return getAuthData1(buf, 16, rx);
+            case 3: // sha1
+                return getAuthData1(buf, 20, rx);
+            case 4: // sha224
+                return getAuthData1(buf, 28, rx);
+            case 5: // sha256
+                return getAuthData1(buf, 32, rx);
+            case 6: // sha384
+                return getAuthData1(buf, 48, rx);
+            case 7: // sha512
+                return getAuthData1(buf, 64, rx);
             default:
                 return buf;
         }
+    }
+
+    private byte[] getAuthData1(byte[] buf, int len, boolean rx) {
+        buf[1] = 2;
+        buf[4] = (byte) authenKey;
+        buf[5] = (byte) len;
+        bits.msbPutD(buf, 6, (int) bits.getTime());
+        if (!rx) {
+            return buf;
+        }
+        byte[] buf2 = new byte[buf.length - 4];
+        bits.byteCopy(buf, 0, buf2, 0, buf2.length);
+        return buf2;
+    }
+
+    private byte[] getAuthData2(cryHashGeneric h, packHolder pck) {
+        h.init();
+        int hshSiz = h.getHashSize();
+        byte[] buf = authentication.getBytes();
+        if (buf.length > hshSiz) {
+            h.update(buf);
+            buf = h.finish();
+        }
+        buf = bits.byteConcat(buf, new byte[hshSiz - buf.length]);
+        h = new cryHashHmac(h, buf);
+        h.init();
+        pck.hashData(h, 0, pck.dataSize());
+        for (int i = 0; i < hshSiz; i += 4) {
+            h.update(0x87);
+            h.update(0x8F);
+            h.update(0xE1);
+            h.update(0xF3);
+        }
+        return h.finish();
     }
 
     /**
@@ -1133,21 +1213,33 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
      * @return bytes in header
      */
     protected byte[] getAuthData2(packHolder pck) {
-        if (authenMode != 2) {
-            return new byte[0];
-        }
         if (authentication == null) {
             return new byte[0];
         }
-        cryHashMd5 h = new cryHashMd5();
-        h.init();
-        pck.hashData(h, 0, pck.dataSize());
-        byte[] buf = authentication.getBytes();
-        h.update(buf);
-        for (int i = buf.length; i < 16; i++) {
-            h.update(0);
+        switch (authenMode) {
+            case 2:
+                cryHashGeneric h = new cryHashMd5();
+                h.init();
+                pck.hashData(h, 0, pck.dataSize());
+                byte[] buf = authentication.getBytes();
+                h.update(buf);
+                for (int i = buf.length; i < 16; i++) {
+                    h.update(0);
+                }
+                return h.finish();
+            case 3:
+                return getAuthData2(new cryHashSha1(), pck);
+            case 4:
+                return getAuthData2(new cryHashSha2224(), pck);
+            case 5:
+                return getAuthData2(new cryHashSha2256(), pck);
+            case 6:
+                return getAuthData2(new cryHashSha2384(), pck);
+            case 7:
+                return getAuthData2(new cryHashSha2512(), pck);
+            default:
+                return new byte[0];
         }
-        return h.finish();
     }
 
     /**
