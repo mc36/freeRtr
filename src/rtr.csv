@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.7.8-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-07-08 10:30:20, took 00:13:25, with 50 workers, on 3976 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2025-07-08 11:36:17, took 00:14:01, with 50 workers, on 3986 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1191,6 +1191,10 @@ http://sources.freertr.org/cfg/intop1-ospf11.tst;intop1-ospf11.tst;success;inter
 http://sources.freertr.org/cfg/intop1-ospf12.tst;intop1-ospf12.tst;success;interop1: ospf php sr
 http://sources.freertr.org/cfg/intop1-ospf13.tst;intop1-ospf13.tst;success;interop1: ospf te with pcep
 http://sources.freertr.org/cfg/intop1-ospf14.tst;intop1-ospf14.tst;success;interop1: ospf md5 authentication
+http://sources.freertr.org/cfg/intop1-ospf15.tst;intop1-ospf15.tst;success;interop1: ospf sha1 authentication
+http://sources.freertr.org/cfg/intop1-ospf16.tst;intop1-ospf16.tst;success;interop1: ospf sha256 authentication
+http://sources.freertr.org/cfg/intop1-ospf17.tst;intop1-ospf17.tst;success;interop1: ospf sha384 authentication
+http://sources.freertr.org/cfg/intop1-ospf18.tst;intop1-ospf18.tst;success;interop1: ospf sha512 authentication
 http://sources.freertr.org/cfg/intop1-pppoe01.tst;intop1-pppoe01.tst;success;interop1: pppoe client
 http://sources.freertr.org/cfg/intop1-pppoe02.tst;intop1-pppoe02.tst;success;interop1: pppoe server
 http://sources.freertr.org/cfg/intop1-pppoe03.tst;intop1-pppoe03.tst;success;interop1: pppoe with pap
@@ -1287,6 +1291,8 @@ http://sources.freertr.org/cfg/intop2-ospf12.tst;intop2-ospf12.tst;success;inter
 http://sources.freertr.org/cfg/intop2-ospf13.tst;intop2-ospf13.tst;success;interop2: ospf te with pcep
 http://sources.freertr.org/cfg/intop2-ospf14.tst;intop2-ospf14.tst;success;interop2: ospf bidir te
 http://sources.freertr.org/cfg/intop2-ospf15.tst;intop2-ospf15.tst;success;interop2: ospf md5 authentication
+http://sources.freertr.org/cfg/intop2-ospf16.tst;intop2-ospf16.tst;success;interop2: ospf sha1 authentication
+http://sources.freertr.org/cfg/intop2-ospf17.tst;intop2-ospf17.tst;success;interop2: ospf sha256 authentication
 http://sources.freertr.org/cfg/intop2-pppoe01.tst;intop2-pppoe01.tst;success;interop2: pppoe with pap
 http://sources.freertr.org/cfg/intop2-pppoe02.tst;intop2-pppoe02.tst;success;interop2: pppoe with chap
 http://sources.freertr.org/cfg/intop2-rip01.tst;intop2-rip01.tst;success;interop2: rip
@@ -3757,6 +3763,10 @@ http://sources.freertr.org/cfg/rout-ospf58.tst;rout-ospf58.tst;success;ospf with
 http://sources.freertr.org/cfg/rout-ospf59.tst;rout-ospf59.tst;success;ospf flexalgo
 http://sources.freertr.org/cfg/rout-ospf60.tst;rout-ospf60.tst;success;ospf with pmtud
 http://sources.freertr.org/cfg/rout-ospf61.tst;rout-ospf61.tst;success;ospf ldp sync
+http://sources.freertr.org/cfg/rout-ospf62.tst;rout-ospf62.tst;success;ospf sha1 authentication
+http://sources.freertr.org/cfg/rout-ospf63.tst;rout-ospf63.tst;success;ospf sha256 authentication
+http://sources.freertr.org/cfg/rout-ospf64.tst;rout-ospf64.tst;success;ospf sha384 authentication
+http://sources.freertr.org/cfg/rout-ospf65.tst;rout-ospf65.tst;success;ospf sha512 authentication
 http://sources.freertr.org/cfg/rout-pbr01.tst;rout-pbr01.tst;success;policy routing with nexthop
 http://sources.freertr.org/cfg/rout-pbr02.tst;rout-pbr02.tst;success;policy routing with interface and nexthop between vrfs
 http://sources.freertr.org/cfg/rout-pbr03.tst;rout-pbr03.tst;success;policy routing with interface and nexthop

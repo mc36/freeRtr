@@ -1187,6 +1187,10 @@ qc pass: interop1: ospf sr
 qc pass: interop1: ospf php sr
 qc pass: interop1: ospf te with pcep
 qc pass: interop1: ospf md5 authentication
+qc pass: interop1: ospf sha1 authentication
+qc pass: interop1: ospf sha256 authentication
+qc pass: interop1: ospf sha384 authentication
+qc pass: interop1: ospf sha512 authentication
 qc pass: interop1: pppoe client
 qc pass: interop1: pppoe server
 qc pass: interop1: pppoe with pap
@@ -1283,6 +1287,8 @@ qc pass: interop2: ospf php sr
 qc pass: interop2: ospf te with pcep
 qc pass: interop2: ospf bidir te
 qc pass: interop2: ospf md5 authentication
+qc pass: interop2: ospf sha1 authentication
+qc pass: interop2: ospf sha256 authentication
 qc pass: interop2: pppoe with pap
 qc pass: interop2: pppoe with chap
 qc pass: interop2: rip
@@ -3753,6 +3759,10 @@ qc pass: ospf with mpolka
 qc pass: ospf flexalgo
 qc pass: ospf with pmtud
 qc pass: ospf ldp sync
+qc pass: ospf sha1 authentication
+qc pass: ospf sha256 authentication
+qc pass: ospf sha384 authentication
+qc pass: ospf sha512 authentication
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
