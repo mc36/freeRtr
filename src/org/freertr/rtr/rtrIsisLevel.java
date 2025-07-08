@@ -6,8 +6,6 @@ import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIsis;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
-import org.freertr.cry.cryHashHmac;
-import org.freertr.cry.cryHashMd5;
 import org.freertr.enc.encBase64;
 import org.freertr.ip.ipCor4;
 import org.freertr.pack.packHolder;
@@ -153,6 +151,11 @@ public class rtrIsisLevel implements Runnable {
      * authentication mode: 1=cleartext, 2=md5
      */
     public int authenMode;
+
+    /**
+     * authentication id
+     */
+    public int authenKey;
 
     /**
      * max lsp size
@@ -517,41 +520,7 @@ public class rtrIsisLevel implements Runnable {
      * @return binary data, null if disabled
      */
     protected byte[] getAuthen(packHolder pck, int typ, int ofs) {
-        ofs += 3;
-        switch (authenMode) {
-            case 1:
-                if (lspPassword == null) {
-                    return null;
-                }
-                byte[] buf = (" " + lspPassword).getBytes();
-                buf[0] = 1;
-                return buf;
-            case 2:
-                if (lspPassword == null) {
-                    return null;
-                }
-                cryHashHmac h = new cryHashHmac(new cryHashMd5(), lspPassword.getBytes());
-                h.init();
-                int hshSiz = h.getHashSize();
-                h.update(rtrIsis.protDist);
-                h.update(rtrIsisNeigh.msgTyp2headSiz(typ));
-                h.update(1);
-                h.update(0);
-                h.update(typ);
-                h.update(1);
-                h.update(0);
-                h.update(lower.getMaxAreaAddr());
-                pck = pck.copyBytes(true, true);
-                pck.merge2beg();
-                pck.hashData(h, 0, ofs);
-                h.update(new byte[hshSiz]);
-                if ((ofs + hshSiz) < pck.dataSize()) {
-                    pck.hashData(h, ofs + hshSiz, pck.dataSize() - ofs - hshSiz);
-                }
-                return bits.byteConcat(new byte[]{54}, h.finish());
-            default:
-                return null;
-        }
+        return lower.calcAuthData(pck, typ, ofs, authenMode, lspPassword);
     }
 
     private void advertiseTlv(packHolder pck, encTlv tlv) {

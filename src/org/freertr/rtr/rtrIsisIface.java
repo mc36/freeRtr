@@ -6,8 +6,6 @@ import java.util.TimerTask;
 import org.freertr.addr.addrIsis;
 import org.freertr.addr.addrMac;
 import org.freertr.auth.authLocal;
-import org.freertr.cry.cryHashHmac;
-import org.freertr.cry.cryHashMd5;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ifc.ifcNull;
@@ -182,6 +180,11 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
      * authentication mode: 1=cleartext, 2=md5
      */
     public int authenMode;
+
+    /**
+     * authentication id
+     */
+    public int authenKey;
 
     /**
      * traffic eng suppression
@@ -382,6 +385,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
                 break;
         }
         l.add(cmds.tabulator + beg + "authen-type " + a);
+        l.add(cmds.tabulator + beg + "authen-id " + authenKey);
         l.add(cmds.tabulator + beg + "metric " + metric);
         l.add(cmds.tabulator + beg + "priority " + disPriority);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
@@ -563,6 +567,10 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         }
         if (a.equals("password")) {
             authentication = authLocal.passwdDecode(cmd.word());
+            return;
+        }
+        if (a.equals("authen-id")) {
+            authenKey = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("authen-type")) {
@@ -782,6 +790,10 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             authentication = null;
             return;
         }
+        if (a.equals("authen-id")) {
+            authenKey = 0;
+            return;
+        }
         if (a.equals("authen-type")) {
             authenMode = 1;
             return;
@@ -910,6 +922,8 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         l.add(null, false, 5, new int[]{-1}, "null", "use nothing");
         l.add(null, false, 5, new int[]{-1}, "clear", "use cleartext");
         l.add(null, false, 5, new int[]{-1}, "md5", "use md5");
+        l.add(null, false, 4, new int[]{5}, "authen-id", "id for authentication");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "key id");
         l.add(null, false, 4, new int[]{5}, "traffeng", "traffic engineering parameters");
         l.add(null, false, 5, new int[]{-1}, "suppress", "do not advertise interface");
         l.add(null, false, 5, new int[]{6}, "metric", "set metric");
@@ -1068,41 +1082,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
      * @return bytes in header
      */
     protected byte[] getAuthData(packHolder pck, int typ, int ofs) {
-        ofs += 3;
-        switch (authenMode) {
-            case 1:
-                if (authentication == null) {
-                    return null;
-                }
-                byte[] buf = (" " + authentication).getBytes();
-                buf[0] = 1;
-                return buf;
-            case 2:
-                if (authentication == null) {
-                    return null;
-                }
-                cryHashHmac h = new cryHashHmac(new cryHashMd5(), authentication.getBytes());
-                h.init();
-                int hshSiz = h.getHashSize();
-                h.update(rtrIsis.protDist);
-                h.update(rtrIsisNeigh.msgTyp2headSiz(typ));
-                h.update(1);
-                h.update(0);
-                h.update(typ);
-                h.update(1);
-                h.update(0);
-                h.update(lower.getMaxAreaAddr());
-                pck = pck.copyBytes(true, true);
-                pck.merge2beg();
-                pck.hashData(h, 0, ofs);
-                h.update(new byte[hshSiz]);
-                if ((ofs + hshSiz) < pck.dataSize()) {
-                    pck.hashData(h, ofs + hshSiz, pck.dataSize() - ofs - hshSiz);
-                }
-                return bits.byteConcat(new byte[]{54}, h.finish());
-            default:
-                return null;
-        }
+        return lower.calcAuthData(pck, typ, ofs, authenMode, authentication);
     }
 
     /**

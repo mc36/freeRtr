@@ -1915,6 +1915,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* send-csnp", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* password", null),
         new userFilter("interface .*", cmds.tabulator + "router isis[46] .* authen-type clear", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* authen-id 0", null),
         new userFilter("interface .*", cmds.tabulator + "router isis[46] .* metric 10", null),
         new userFilter("interface .*", cmds.tabulator + "router isis[46] .* priority 64", null),
         new userFilter("interface .*", cmds.tabulator + "router isis[46] .* hello-time 10000", null),

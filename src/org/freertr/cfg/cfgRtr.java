@@ -324,6 +324,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router isis[46] .*", cmds.tabulator + "level[12] lsp-mtu 1024", null),
         new userFilter("router isis[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "level[12] lsp-password", null),
         new userFilter("router isis[46] .*", cmds.tabulator + "level[12] authen-type clear", null),
+        new userFilter("router isis[46] .*", cmds.tabulator + "level[12] authen-id 0", null),
         new userFilter("router isis[46] .*", cmds.tabulator + "level[12] lsp-refresh 400000", null),
         new userFilter("router isis[46] .*", cmds.tabulator + "level[12] lsp-lifetime 1200000", null),
         new userFilter("router isis[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "level[12] prefix-list-from", null),

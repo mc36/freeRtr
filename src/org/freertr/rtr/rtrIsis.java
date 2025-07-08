@@ -16,6 +16,8 @@ import org.freertr.cfg.cfgRoump;
 import org.freertr.cfg.cfgRouplc;
 import org.freertr.cfg.cfgRtr;
 import org.freertr.cfg.cfgVrf;
+import org.freertr.cry.cryHashHmac;
+import org.freertr.cry.cryHashMd5;
 import org.freertr.enc.enc7bit;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ip.ipCor4;
@@ -366,6 +368,54 @@ public class rtrIsis extends ipRtr {
             return 0;
         } else {
             return 2;
+        }
+    }
+
+    /**
+     * get authentication data
+     *
+     * @param pck packet
+     * @param typ message type
+     * @param ofs offset of tlv
+     * @param mod mode
+     * @param pwd password
+     * @return bytes in header
+     */
+    protected byte[] calcAuthData(packHolder pck, int typ, int ofs, int mod, String pwd) {
+        ofs += 3;
+        switch (mod) {
+            case 1:
+                if (pwd == null) {
+                    return null;
+                }
+                byte[] buf = (" " + pwd).getBytes();
+                buf[0] = 1;
+                return buf;
+            case 2:
+                if (pwd == null) {
+                    return null;
+                }
+                cryHashHmac h = new cryHashHmac(new cryHashMd5(), pwd.getBytes());
+                h.init();
+                int hshSiz = h.getHashSize();
+                h.update(rtrIsis.protDist);
+                h.update(rtrIsisNeigh.msgTyp2headSiz(typ));
+                h.update(1);
+                h.update(0);
+                h.update(typ);
+                h.update(1);
+                h.update(0);
+                h.update(getMaxAreaAddr());
+                pck = pck.copyBytes(true, true);
+                pck.merge2beg();
+                pck.hashData(h, 0, ofs);
+                h.update(new byte[hshSiz]);
+                if ((ofs + hshSiz) < pck.dataSize()) {
+                    pck.hashData(h, ofs + hshSiz, pck.dataSize() - ofs - hshSiz);
+                }
+                return bits.byteConcat(new byte[]{54}, h.finish());
+            default:
+                return null;
         }
     }
 
@@ -1209,6 +1259,8 @@ public class rtrIsis extends ipRtr {
         l.add(null, false, 3, new int[]{-1}, "null", "use nothing");
         l.add(null, false, 3, new int[]{-1}, "clear", "use cleartext");
         l.add(null, false, 3, new int[]{-1}, "md5", "use md5");
+        l.add(null, false, 2, new int[]{3}, "authen-id", "id for authentication");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "key id");
         l.add(null, false, 2, new int[]{3}, "lsp-refresh", "lsp refresh time");
         l.add(null, false, 3, new int[]{-1}, "<num>", "age in ms");
         l.add(null, false, 2, new int[]{3}, "lsp-lifetime", "lsp life time");
@@ -1583,6 +1635,7 @@ public class rtrIsis extends ipRtr {
                 break;
         }
         l.add(beg + s + "authen-type " + a);
+        l.add(beg + s + "authen-id " + lev.authenKey);
         l.add(beg + s + "lsp-refresh " + lev.lspRefresh);
         l.add(beg + s + "lsp-lifetime " + lev.lspLifetime);
         cmds.cfgLine(l, lev.prflstFrom == null, beg, s + "prefix-list-from", "" + lev.prflstFrom);
@@ -1685,6 +1738,14 @@ public class rtrIsis extends ipRtr {
                 lev.lspPassword = null;
             } else {
                 lev.lspPassword = authLocal.passwdDecode(cmd.word());
+            }
+            lev.schedWork(3);
+            return false;
+        }
+        if (s.equals("authen-id")) {
+            lev.authenKey = bits.str2num(cmd.word());
+            if (negated) {
+                lev.authenKey = 0;
             }
             lev.schedWork(3);
             return false;
