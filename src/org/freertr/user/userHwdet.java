@@ -413,7 +413,7 @@ public class userHwdet {
         if (res == null) {
             return;
         }
-        tabGen<userHwifc> lst = new tabGen<userHwifc>();
+        List<userHwifc> lst = new ArrayList<userHwifc>();
         for (int i = 0; i < res.size(); i++) {
             userHwifc ntry = userHwifc.fromRaw(res, i);
             if (ntry == null) {
