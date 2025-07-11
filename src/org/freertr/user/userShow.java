@@ -1141,20 +1141,62 @@ public class userShow {
             return null;
         }
         if (a.equals("dhcp4")) {
-            servDhcp4 srv = cfgAll.srvrFind(new servDhcp4(), cfgAll.dmnDhcp4, cmd.word());
+            String profileName = cmd.word();
+            servDhcp4 srv = cfgAll.srvrFind(new servDhcp4(), cfgAll.dmnDhcp4, profileName);
             if (srv == null) {
                 cmd.error("no such server");
                 return null;
             }
+            
+            String nextCmd = cmd.word();
+            if (nextCmd.equals("relay")) {
+                String subCmd = cmd.word();
+                if (subCmd.equals("statistics")) {
+                    // Display comprehensive relay statistics
+                    rdr.putStrArr(srv.getRelayStatisticsDisplay());
+                    return null;
+                }
+                cmd.badCmd();
+                return null;
+            }
+            
+            // If no additional parameters, show default dhcp4 info
+            if (nextCmd.length() > 0) {
+                cmd.badCmd();
+                return null;
+            }
+            
+            // Default dhcp4 show command
             rdr.putStrTab(srv.getShow());
             return null;
         }
         if (a.equals("dhcp6")) {
-            servDhcp6 srv = cfgAll.srvrFind(new servDhcp6(), cfgAll.dmnDhcp6, cmd.word());
+            String profileName = cmd.word();
+            servDhcp6 srv = cfgAll.srvrFind(new servDhcp6(), cfgAll.dmnDhcp6, profileName);
             if (srv == null) {
                 cmd.error("no such server");
                 return null;
             }
+            
+            String nextCmd = cmd.word();
+            if (nextCmd.equals("relay")) {
+                String subCmd = cmd.word();
+                if (subCmd.equals("statistics")) {
+                    // Display comprehensive relay statistics
+                    rdr.putStrArr(srv.getRelayStatisticsDisplay());
+                    return null;
+                }
+                cmd.badCmd();
+                return null;
+            }
+            
+            // If no additional parameters, show default dhcp6 info
+            if (nextCmd.length() > 0) {
+                cmd.badCmd();
+                return null;
+            }
+            
+            // Default dhcp6 show command
             rdr.putStrTab(srv.getShow());
             return null;
         }
