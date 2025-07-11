@@ -95,6 +95,14 @@ qc pass: interop1: integrated isis
 qc pass: interop1: isis md5 authentication
 qc pass: interop1: isis lsp md5 authentication
 qc pass: interop1: integrated isis multi-topology
+qc pass: interop1: isis sha1 authentication
+qc pass: interop1: isis lsp sha1 authentication
+qc pass: interop1: isis sha256 authentication
+qc pass: interop1: isis lsp sha256 authentication
+qc pass: interop1: isis sha384 authentication
+qc pass: interop1: isis lsp sha384 authentication
+qc pass: interop1: isis sha512 authentication
+qc pass: interop1: isis lsp sha512 authentication
 qc pass: interop1: l2tp2 client
 qc pass: interop1: l2tp2 server
 qc pass: interop1: l2tp3 server
@@ -125,6 +133,10 @@ qc pass: interop1: ospf sr
 qc pass: interop1: ospf php sr
 qc pass: interop1: ospf te with pcep
 qc pass: interop1: ospf md5 authentication
+qc pass: interop1: ospf sha1 authentication
+qc pass: interop1: ospf sha256 authentication
+qc pass: interop1: ospf sha384 authentication
+qc pass: interop1: ospf sha512 authentication
 qc pass: interop1: pppoe client
 qc pass: interop1: pppoe server
 qc pass: interop1: pppoe with pap

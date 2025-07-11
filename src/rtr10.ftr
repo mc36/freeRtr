@@ -52,6 +52,10 @@ qc pass: interop2: isis bidir te
 qc pass: interop2: isis md5 authentication
 qc pass: interop2: isis lsp md5 authentication
 qc pass: interop2: integrated isis multi-topology
+qc pass: interop2: isis sha1 authentication
+qc pass: interop2: isis lsp sha1 authentication
+qc pass: interop2: isis sha256 authentication
+qc pass: interop2: isis lsp sha256 authentication
 qc pass: interop2: ldp lsp
 qc pass: interop2: ethernet over mpls
 qc pass: interop2: ldp p2mp lsp
@@ -75,6 +79,8 @@ qc pass: interop2: ospf php sr
 qc pass: interop2: ospf te with pcep
 qc pass: interop2: ospf bidir te
 qc pass: interop2: ospf md5 authentication
+qc pass: interop2: ospf sha1 authentication
+qc pass: interop2: ospf sha256 authentication
 qc pass: interop2: pppoe with pap
 qc pass: interop2: pppoe with chap
 qc pass: interop2: rip
