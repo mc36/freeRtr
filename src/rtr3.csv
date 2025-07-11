@@ -1,5 +1,5 @@
 url;file;udp;dpdk;xdp;bmv2;tofino;test
--;-;-;-;-;-;-;freeRouter v25.7.7-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v25.7.11-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;not ok;ok;ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;not ok;ok;ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;not ok;ok;ok;p4lang: egress access list
@@ -518,7 +518,7 @@ http://sources.freertr.org/cfg/p4lang-rout172.tst;p4lang-rout172.tst;ok;ok;not o
 http://sources.freertr.org/cfg/p4lang-rout173.tst;p4lang-rout173.tst;ok;ok;not ok;ok;not ok;p4lang: amt server over ipv6 loopback
 http://sources.freertr.org/cfg/p4lang-rout174.tst;p4lang-rout174.tst;ok;ok;ok;ok;ok;p4lang: autoroute to sr te over mpls
 http://sources.freertr.org/cfg/p4lang-rout175.tst;p4lang-rout175.tst;ok;ok;ok;ok;ok;p4lang: autoroute to p2p te over mpls
-http://sources.freertr.org/cfg/p4lang-rout176.tst;p4lang-rout176.tst;ok;ok;not ok;ok;ok;p4lang: policy routing to sr te over mpls
+http://sources.freertr.org/cfg/p4lang-rout176.tst;p4lang-rout176.tst;ok;ok;not ok;ok;not ok;p4lang: policy routing to sr te over mpls
 http://sources.freertr.org/cfg/p4lang-rout177.tst;p4lang-rout177.tst;ok;ok;not ok;ok;ok;p4lang: policy routing to p2p te over mpls
 http://sources.freertr.org/cfg/p4lang-rout178.tst;p4lang-rout178.tst;ok;ok;ok;ok;ok;p4lang: nsh
 http://sources.freertr.org/cfg/p4lang-rout179.tst;p4lang-rout179.tst;ok;ok;ok;ok;ok;p4lang: vlan nsh
@@ -747,7 +747,7 @@ http://sources.freertr.org/cfg/p4lang-rout401.tst;p4lang-rout401.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout402.tst;p4lang-rout402.tst;ok;ok;ok;ok;ok;p4lang: routed qinq evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout403.tst;p4lang-rout403.tst;ok;ok;ok;ok;ok;p4lang: vpls/ldp over backplane
 http://sources.freertr.org/cfg/p4lang-rout404.tst;p4lang-rout404.tst;ok;ok;ok;ok;ok;p4lang: evpn/cmac over backplane
-http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;ok;ok;ok;ok;ok;p4lang: routed vpls/ldp over backplane
+http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;ok;ok;ok;not ok;ok;p4lang: routed vpls/ldp over backplane
 http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;ok;ok;ok;ok;ok;p4lang: routed evpn/cmac over backplane
 http://sources.freertr.org/cfg/p4lang-rout407.tst;p4lang-rout407.tst;ok;ok;not ok;ok;ok;p4lang: vpn mldp egress edge
 http://sources.freertr.org/cfg/p4lang-rout408.tst;p4lang-rout408.tst;ok;ok;not ok;ok;ok;p4lang: vpn mldp ingress edge
@@ -834,3 +834,5 @@ http://sources.freertr.org/cfg/p4lang-rout488.tst;p4lang-rout488.tst;ok;ok;not o
 http://sources.freertr.org/cfg/p4lang-rout489.tst;p4lang-rout489.tst;ok;ok;not ok;ok;not ok;p4lang: mgre routing over hairpin qinq
 http://sources.freertr.org/cfg/p4lang-rout490.tst;p4lang-rout490.tst;ok;ok;not ok;ok;not ok;p4lang: mgre routing over qinq bridge
 http://sources.freertr.org/cfg/p4lang-rout491.tst;p4lang-rout491.tst;ok;ok;not ok;ok;not ok;p4lang: mgre mpls over qinq
+http://sources.freertr.org/cfg/p4lang-rout492.tst;p4lang-rout492.tst;ok;ok;ok;ok;ok;p4lang: ldp te over mpls tail+head
+http://sources.freertr.org/cfg/p4lang-rout493.tst;p4lang-rout493.tst;ok;ok;ok;ok;ok;p4lang: ldp te over mpls mid

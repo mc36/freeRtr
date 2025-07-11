@@ -429,6 +429,11 @@ public class tabRouteAttr<T extends addrType> {
     public byte[] bfdDiscr;
 
     /**
+     * next hop capability
+     */
+    public byte[] hopCapa;
+
+    /**
      * bandwidth
      */
     public int bandwidth;
@@ -790,6 +795,12 @@ public class tabRouteAttr<T extends addrType> {
             bits.byteCopy(bfdDiscr, 0, atr.bfdDiscr, 0, bfdDiscr.length);
         } else {
             atr.bfdDiscr = null;
+        }
+        if (hopCapa != null) {
+            atr.hopCapa = new byte[hopCapa.length];
+            bits.byteCopy(hopCapa, 0, atr.hopCapa, 0, hopCapa.length);
+        } else {
+            atr.hopCapa = null;
         }
         if (tunelVal != null) {
             atr.tunelVal = new byte[tunelVal.length];
@@ -1178,6 +1189,19 @@ public class tabRouteAttr<T extends addrType> {
         } else if (other.bfdDiscr != null) {
             return 123;
         }
+        if (hopCapa != null) {
+            if (other.hopCapa == null) {
+                return 129;
+            }
+            if (hopCapa.length != other.hopCapa.length) {
+                return 130;
+            }
+            if (bits.byteComp(hopCapa, 0, other.hopCapa, 0, hopCapa.length) != 0) {
+                return 131;
+            }
+        } else if (other.hopCapa != null) {
+            return 132;
+        }
         if (tunelVal != null) {
             if (other.tunelVal == null) {
                 return 65;
@@ -1564,6 +1588,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, false, lv, new int[]{lv, -1}, "nshchain", "ignore nsh service chain");
         hl.add(null, false, lv, new int[]{lv, -1}, "domainpath", "ignore domain path");
         hl.add(null, false, lv, new int[]{lv, -1}, "bfddiscr", "ignore bfd discriminator");
+        hl.add(null, false, lv, new int[]{lv, -1}, "hopcapa", "ignore next hop capability");
         hl.add(null, false, lv, new int[]{lv, -1}, "orignted", "ignore originator");
         hl.add(null, false, lv, new int[]{lv, -1}, "pmsi", "ignore pmsi");
         hl.add(null, false, lv, new int[]{lv, -1}, "segrout", "ignore segment routing");
@@ -1681,6 +1706,9 @@ public class tabRouteAttr<T extends addrType> {
         if (a.equals("domainpath")) {
             return 0x200000000L;
         }
+        if (a.equals("hopcapa")) {
+            return 0x400000000L;
+        }
         return 0;
     }
 
@@ -1796,6 +1824,9 @@ public class tabRouteAttr<T extends addrType> {
         }
         if ((i & 0x200000000L) != 0) {
             a += " domainpath";
+        }
+        if ((i & 0x400000000L) != 0) {
+            a += " hopcapa";
         }
         return a.substring(1, a.length());
     }
@@ -1954,6 +1985,9 @@ public class tabRouteAttr<T extends addrType> {
         if ((ign & 0x200000000L) != 0) {
             ntry.domainPath = null;
         }
+        if ((ign & 0x400000000L) != 0) {
+            ntry.hopCapa = null;
+        }
     }
 
     /**
@@ -2002,6 +2036,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "nsh chain value|" + bits.byteDump(nshChain, 0, -1));
         lst.add(beg + "domain path value|" + bits.byteDump(domainPath, 0, -1));
         lst.add(beg + "bfd discr value|" + bits.byteDump(bfdDiscr, 0, -1));
+        lst.add(beg + "hop capability value|" + bits.byteDump(hopCapa, 0, -1));
         lst.add(beg + "tunnel type|" + tunelTyp);
         lst.add(beg + "tunnel value|" + bits.byteDump(tunelVal, 0, -1));
         lst.add(beg + "link state|" + bits.byteDump(linkStat, 0, -1));

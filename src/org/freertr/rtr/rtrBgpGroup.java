@@ -634,6 +634,9 @@ public class rtrBgpGroup extends rtrBgpParam {
 
     private void nextHopSelf(int afi, tabRouteAttr<addrIP> ntry, tabRouteEntry<addrIP> route) {
         boolean done = false;
+        if (!nxtHopCapa) {
+            ntry.hopCapa = null;
+        }
         if (nxtHopMltlb && (ntry.nextHop != null)) {
             ipFwd tab = getForwarder(afi, ntry);
             tabRouteEntry<addrIP> org = tab.labeldR.route(ntry.nextHop);

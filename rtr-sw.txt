@@ -569,6 +569,7 @@ router bgp4 65535 vrf v1
  template r segrout
  template r bier
  template r leak-role attrib
+ template r next-hop-capability
  template r send-community all
  !
  neighbor 100.100.3.254 template r
@@ -655,6 +656,7 @@ router bgp6 65535 vrf v1
  template r segrout
  template r bier
  template r leak-role attrib
+ template r next-hop-capability
  template r send-community all
  !
  neighbor 2001:db8:1101::254 template r
