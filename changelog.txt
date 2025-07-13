@@ -17251,3 +17251,6 @@ failed: dhcp with interface server
 qc pass: dhcp relay
 qc pass: dhcp relay multihop/chaining
 qc pass: dhcp relay multihop/chaining max hop count 1
+---------------------------------- 2025-07-13 22:05:28 25.7.13
+no failed: dhcp with interface server
+qc pass: dhcp with interface server

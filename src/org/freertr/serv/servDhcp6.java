@@ -1,7 +1,6 @@
 package org.freertr.serv;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
@@ -1067,6 +1066,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             ntry.mac = mac.copyBytes();
             ntry.reqd = bits.getTime();
 
+            if (forbidden.find(ntry) != null) {
+                return null;
+            }
+
             // Generate IP address using MAC and gateway
             if (gateway != null) {
                 ntry.ip = addrIPv6.genPublic(mac, gateway);
@@ -1074,23 +1077,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     logger.info("dhcp6 gotpack: created new binding with ip " + ntry.ip + " for mac " + mac);
                 }
             } else {
-                // Use a default address if gateway is not configured
-                ntry.ip = new addrIPv6();
-                try {
-                    // Use MAC address to create a unique IPv6 address
-                    String macStr = mac.toString().replace(":", "");
-                    String lastFour = macStr.substring(Math.max(0, macStr.length() - 4));
-                    String addr = "2001:db8::" + lastFour;
-                    ntry.ip.fromString(addr);
-                    if (debugger.servDhcp6traf) {
-                        logger.info("dhcp6 gotpack: created new binding with default ip " + ntry.ip + " for mac " + mac);
-                    }
-                } catch (Exception e) {
-                    if (debugger.servDhcp6traf) {
-                        logger.error("dhcp6 gotpack: failed to create default ip address: " + e.getMessage());
-                    }
-                    ntry.ip = null;
+                if (debugger.servDhcp6traf) {
+                    logger.error("dhcp6 gotpack: refused to create default ip address for mac " + mac);
                 }
+                return null;
             }
 
             // Always add to bindings list if we have an IP
@@ -1119,7 +1109,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
 
         // Set IP address in reply
-        if (ntry != null && ntry.ip != null) {
+        if (ntry.ip != null) {
             rep.ipaddr = ntry.ip.copyBytes();
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 gotpack: assigned ip " + ntry.ip + " to mac " + mac);
@@ -3426,11 +3416,14 @@ class servDhcp6worker implements Runnable {
 
         pckd = parent.gotPack(pckd);
 
-        if (debugger.servDhcp6traf) {
-            if (pckd == null) {
+        if (pckd == null) {
+            if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 server: gotPack returned null, no response");
-                return;
             }
+            return;
+        }
+
+        if (debugger.servDhcp6traf) {
             logger.debug("tx " + pckd);
         }
 
