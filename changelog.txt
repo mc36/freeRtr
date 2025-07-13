@@ -17242,3 +17242,12 @@ failed: wireguard over wireguard
 ---------------------------------- 2025-07-13 09:46:48 25.7.13
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
+---------------------------------- 2025-07-13 21:22:07 25.7.13
+no todo: dhcp relay support
+no qc pass: dhcp with interface server
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
+failed: dhcp with interface server
+qc pass: dhcp relay
+qc pass: dhcp relay multihop/chaining
+qc pass: dhcp relay multihop/chaining max hop count 1

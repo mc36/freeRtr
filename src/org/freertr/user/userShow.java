@@ -1147,7 +1147,7 @@ public class userShow {
                 cmd.error("no such server");
                 return null;
             }
-            
+
             String nextCmd = cmd.word();
             if (nextCmd.equals("relay")) {
                 String subCmd = cmd.word();
@@ -1159,13 +1159,13 @@ public class userShow {
                 cmd.badCmd();
                 return null;
             }
-            
+
             // If no additional parameters, show default dhcp4 info
             if (nextCmd.length() > 0) {
                 cmd.badCmd();
                 return null;
             }
-            
+
             // Default dhcp4 show command
             rdr.putStrTab(srv.getShow());
             return null;
@@ -1177,7 +1177,7 @@ public class userShow {
                 cmd.error("no such server");
                 return null;
             }
-            
+
             String nextCmd = cmd.word();
             if (nextCmd.equals("relay")) {
                 String subCmd = cmd.word();
@@ -1189,13 +1189,13 @@ public class userShow {
                 cmd.badCmd();
                 return null;
             }
-            
+
             // If no additional parameters, show default dhcp6 info
             if (nextCmd.length() > 0) {
                 cmd.badCmd();
                 return null;
             }
-            
+
             // Default dhcp6 show command
             rdr.putStrTab(srv.getShow());
             return null;

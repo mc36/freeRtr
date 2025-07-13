@@ -182,37 +182,19 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server dhcp6 .*!" + cmds.tabulator + "port " + packDhcp6.portSnum,
-        "server dhcp6 .*!" + cmds.tabulator + "protocol " + proto2string(protoIp6 + protoUdp),
-        "server dhcp6 .*!" + cmds.tabulator + "mode server",
-        "server dhcp6 .*!" + cmds.tabulator + "boot-url ",
-        "server dhcp6 .*!" + cmds.tabulator + "preference 0",
-        "server dhcp6 .*!" + cmds.tabulator + "lease 43200000",
-        "server dhcp6 .*!" + cmds.tabulator + "renew 21600000",
-        "server dhcp6 .*!" + cmds.tabulator + "remember 0",
-        "server dhcp6 .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dynamic-address",
-        "server dhcp6 .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bind-file",
-        "server dhcp6 .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "use-interface-id",
-        "server dhcp6 .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "subscriber-id",
-        "server dhcp6 .*!" + cmds.tabulator + "max-hop-count 10"
-    };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
     public final static userFilter[] defaultF = {
         new userFilter("server dhcp6 .*", cmds.tabulator + "port " + packDhcp6.portSnum, null),
         new userFilter("server dhcp6 .*", cmds.tabulator + "protocol " + proto2string(protoIp6 + protoUdp), null),
+        new userFilter("server dhcp6 .*", cmds.tabulator + "mode server", null),
         new userFilter("server dhcp6 .*", cmds.tabulator + "boot-url ", null),
         new userFilter("server dhcp6 .*", cmds.tabulator + "preference 0", null),
         new userFilter("server dhcp6 .*", cmds.tabulator + "lease 43200000", null),
         new userFilter("server dhcp6 .*", cmds.tabulator + "renew 21600000", null),
         new userFilter("server dhcp6 .*", cmds.tabulator + "remember 0", null),
-        new userFilter("server dhcp6 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bind-file", null)
+        new userFilter("server dhcp6 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bind-file", null),
+        new userFilter("server dhcp6 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "use-interface-id", null),
+        new userFilter("server dhcp6 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "subscriber-id", null),
+        new userFilter("server dhcp6 .*", cmds.tabulator + "max-hop-count 10", null)
     };
 
     public userFilter[] srvDefFlt() {
@@ -236,7 +218,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
     public void srvShRun(String beg, List<String> l, int filter) {
         l.add(beg + "mode " + mode.toString());
-        
+
         if (mode == dhcpMode.server) {
             if (gateway == null) {
                 l.add(beg + "no gateway");
@@ -449,19 +431,19 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         if (a.equals("static")) {
             addrMac mac = new addrMac();
             addrIPv6 ip = new addrIPv6();
-            
+
             String macStr = cmd.word();
             if (mac.fromString(macStr)) {
                 cmd.error("bad mac address: " + macStr);
                 return false;
             }
-            
+
             String ipStr = cmd.word();
             if (ip.fromString(ipStr)) {
                 cmd.error("bad ipv6 address: " + ipStr);
                 return false;
             }
-            
+
             // check if there's already a binding for this MAC
             boolean existingFound = false;
             synchronized (bindings) {
@@ -471,7 +453,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                         existing.ip = ip.copyBytes();
                         existing.confed = true;
                         existing.reqd = bits.getTime();
-                        
+
                         if (debugger.servDhcp6traf) {
                             logger.info("dhcp6 static: updated existing binding for mac " + mac + " with ip " + ip);
                         }
@@ -479,7 +461,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                         break;
                     }
                 }
-                
+
                 // If no existing binding found, create a new static one
                 if (!existingFound) {
                     servDhcp6bind ntry = new servDhcp6bind();
@@ -487,15 +469,15 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     ntry.ip = ip.copyBytes();
                     ntry.confed = true;
                     ntry.reqd = bits.getTime();
-                    
+
                     bindings.add(ntry);
-                    
+
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 static: created new static binding for mac " + mac + " with ip " + ip);
                     }
                 }
             }
-            
+
             return false;
         }
         if (a.equals("option")) {
@@ -613,7 +595,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 cmd.error("bad mac address: " + macStr);
                 return false;
             }
-            
+
             findBinding(mac, 2, null);
             return false;
         }
@@ -626,7 +608,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "mode", "operation mode server (default) or relay");
         l.add(null, false, 2, new int[]{-1}, "server", "server mode");
         l.add(null, false, 2, new int[]{-1}, "relay", "relay mode");
@@ -637,7 +619,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         l.add(null, false, 2, new int[]{-1}, "<num>", "hop count limit");
         l.add(null, false, 1, new int[]{2}, "helper-addresses", "upstream DHCP6 server for relay");
         l.add(null, false, 2, new int[]{-1}, "<addr>", "server address");
-    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "bind-file", "save bindings");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "file name");
         l.add(null, false, 1, new int[]{2}, "gateway", "gateway address to delegate");
@@ -689,7 +670,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return initServerMode();
         }
     }
-    
+
     private boolean initRelayMode() {
         // Validation: Check upstream servers
         if (upstreamServers.isEmpty()) {
@@ -698,42 +679,42 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
             return true;
         }
-        
+
         // Debug logging
         logRelayConfiguration();
-        
+
         // Implementation
         return startRelayListening();
     }
-    
+
     private boolean initServerMode() {
         // Server mode validation
         if (srvIface == null) {
             return true;
         }
-        
+
         // Start server mode
         restartTimer(false);
         return genStrmStart(this, new pipeLine(32768, true), 0);
     }
-    
+
     private void logRelayConfiguration() {
         if (!debugger.servDhcp6traf) {
             return;
         }
-        
+
         // Log upstream servers
         for (int i = 0; i < upstreamServers.size(); i++) {
             logger.info("dhcp6 relay: upstream server " + i + ": " + upstreamServers.get(i));
         }
-        
+
         // Log relay interfaces status
-        logger.info("dhcp6 relay: current relay interfaces: " + relayInterfaces.size() + 
-                   ", relayIface: " + (relayIface != null ? relayIface.name : "null"));
-        
+        logger.info("dhcp6 relay: current relay interfaces: " + relayInterfaces.size()
+                + ", relayIface: " + (relayIface != null ? relayIface.name : "null"));
+
         logger.info("dhcp6 relay: starting in relay mode");
     }
-    
+
     private boolean startRelayListening() {
         // Use the first available interface if relayIface is not set yet
         cfgIfc useIface = relayIface;
@@ -743,14 +724,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 logger.info("dhcp6 relay: using first relay interface: " + useIface.name);
             }
         }
-        
+
         if (useIface == null) {
             if (debugger.servDhcp6traf) {
                 logger.warn("dhcp6 relay: no relay interface available yet, deferring initialization");
             }
             return false; // Don't fail, just defer
         }
-        
+
         // Setup VRF
         relayVrf = useIface.vrfFor;
         if (relayVrf == null) {
@@ -761,14 +742,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
         srvVrf = relayVrf;
         srvIface = null;
-        
+
         // Start UDP listening on interfaces
         return startUdpListening(useIface);
     }
-    
+
     private boolean startUdpListening(cfgIfc useIface) {
         boolean allStarted = true;
-        
+
         if (relayInterfaces.isEmpty()) {
             // Single interface mode - use relayIface
             boolean result = srvVrf.udp6.packetListen(this, useIface.fwdIf6, srvPort(), null, 0, srvName(), -1, null, -1, -1);
@@ -791,7 +772,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
             }
         }
-        
+
         return !allStarted; // return true on failure
     }
 
@@ -831,12 +812,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         if (forbidden.find(ntry) != null) {
             return null;
         }
-        
+
         // Debug log for MAC address
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 findbinding: looking for binding with mac " + mac);
         }
-        
+
         synchronized (bindings) {
             // Check for static bindings by MAC address
             for (servDhcp6bind existing : bindings) {
@@ -844,28 +825,28 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 findbinding: found static binding for mac " + mac + " with ip " + existing.ip);
                     }
-                    
+
                     // Update timestamp but preserve the static configuration
                     if (create == 1) {
                         existing.reqd = bits.getTime();
                     }
-                    
+
                     return existing;
                 }
             }
-            
+
             // Check for dynamic bindings by MAC address
             for (servDhcp6bind existing : bindings) {
                 if (existing.mac.compareTo(mac) == 0) {
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 findbinding: found dynamic binding for mac " + mac + " with ip " + existing.ip);
                     }
-                    
+
                     // Update timestamp
                     if (create == 1) {
                         existing.reqd = bits.getTime();
                     }
-                    
+
                     // Handle release/decline
                     if ((create == 3) && (!existing.confed)) {
                         create--;
@@ -887,7 +868,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     return existing;
                 }
             }
-            
+
             // create new if requested
             if (create != 1) {
                 if (debugger.servDhcp6traf) {
@@ -895,18 +876,18 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
                 return null;
             }
-            
+
             // Check if dynamic address allocation is disabled
             if (!dynamicAddress) {
                 // If we're creating a static binding (hint is provided and will be marked as confed later),
                 // we should allow it even when dynamic address allocation is disabled
                 boolean isCreatingStaticBinding = (hint != null && create == 1);
-                
+
                 if (!isCreatingStaticBinding) {
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 findbinding: dynamic address allocation is disabled, checking if " + mac + " has static binding");
                     }
-                    
+
                     // Look for static bindings again
                     for (servDhcp6bind existing : bindings) {
                         if (existing.mac.compareTo(mac) == 0 && existing.confed) {
@@ -916,7 +897,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                             return existing;
                         }
                     }
-                    
+
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 findbinding: no static binding found for mac " + mac + ", not creating dynamic binding");
                     }
@@ -927,13 +908,13 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                 }
             }
-            
+
             // Create new binding
             ntry = new servDhcp6bind();
             ntry.mac = mac.copyBytes();
             ntry.ip = hint;
             ntry.reqd = bits.getTime();
-            
+
             // Generate IPv6 address if not provided
             if (ntry.ip == null && gateway != null) {
                 ntry.ip = addrIPv6.genPublic(mac, gateway);
@@ -941,7 +922,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     logger.info("dhcp6 findbinding: generated new ip " + ntry.ip + " for mac " + mac);
                 }
             }
-            
+
             bindings.add(ntry);
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 findbinding: created new binding for mac " + mac + " with ip " + ntry.ip);
@@ -986,7 +967,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         rep.iaid = req.iaid;
         rep.iat1 = renew / 1000;
         rep.iat2 = lease / 1000;
-        
+
         // If client requested no IA options (iamod = 0), ensure we don't add any
         if (req.iamod == 0) {
             if (debugger.servDhcp6traf) {
@@ -1038,7 +1019,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
                 return null;
         }
-        
+
         // Skip IP address assignment if client didn't request any IA options
         if (req.iamod == 0) {
             // Client requests configuration only (no IA options)
@@ -1048,7 +1029,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
             return rep;
         }
-        
+
         // Only respond if server supports the requested IA type
         if (req.iamod == 3) {
             // Client requests IA_PD (prefix delegation) but server doesn't support it
@@ -1059,7 +1040,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
             return rep;
         }
-        
+
         addrMac mac = packDhcp6.decodeDUID(req.clntId);
         if (mac == null) {
             rep.status = 1;
@@ -1080,12 +1061,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (debugger.servDhcp6traf) {
                 logger.error("dhcp6 gotpack: findbinding returned null for mac " + mac);
             }
-            
+
             // Create a new binding directly
             ntry = new servDhcp6bind();
             ntry.mac = mac.copyBytes();
             ntry.reqd = bits.getTime();
-            
+
             // Generate IP address using MAC and gateway
             if (gateway != null) {
                 ntry.ip = addrIPv6.genPublic(mac, gateway);
@@ -1111,7 +1092,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     ntry.ip = null;
                 }
             }
-            
+
             // Always add to bindings list if we have an IP
             if (ntry.ip != null) {
                 synchronized (bindings) {
@@ -1124,7 +1105,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         } else {
             // Update request time
             ntry.reqd = bits.getTime();
-            
+
             // Generate IP address if not already set
             if (ntry.ip == null && gateway != null) {
                 if (debugger.servDhcp6traf) {
@@ -1136,7 +1117,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
             }
         }
-        
+
         // Set IP address in reply
         if (ntry != null && ntry.ip != null) {
             rep.ipaddr = ntry.ip.copyBytes();
@@ -1148,7 +1129,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 logger.error("dhcp6 gotpack: failed to assign ip address to mac " + mac);
             }
         }
-        
+
         // Ensure binding is in the list
         boolean foundInList = false;
         synchronized (bindings) {
@@ -1158,7 +1139,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     break;
                 }
             }
-            
+
             if (!foundInList && ntry != null && ntry.ip != null) {
                 bindings.add(ntry);
                 if (debugger.servDhcp6traf) {
@@ -1166,7 +1147,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
             }
         }
-        
+
         // Send packet
         sendPack(rep, ntry);
         return rep;
@@ -1182,10 +1163,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 server: processing relay-forward packet");
         }
-        
+
         // For now, create a simple advertise response instead of a complex relay-reply
         // This is a simplified approach that should work with the existing createPacket method
-        
         packDhcp6 advertise = new packDhcp6();
         advertise.msgTyp = packDhcp6.typAdvertise; // Send normal Advertise for now
         advertise.msgId = relayReq.msgId;
@@ -1196,7 +1176,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
         advertise.domainName = domNam;
         advertise.bootUrl = bootUrl;
-        
+
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 server: created advertise response for relay-forward (simplified)");
         }
@@ -1204,17 +1184,15 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     }
 
     /**
-     * Create RFC 3315 compliant relay-reply packet
-     */
-    /**
-     * Create nested relay-reply structure that mirrors the Relay-Forward nesting
+     * Create nested relay-reply structure that mirrors the Relay-Forward
+     * nesting
      */
     public packHolder createRelayReply(packHolder relayForwardPck) {
         try {
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 createRelayReply: creating nested rfc 3315 compliant relay-reply");
             }
-            
+
             // Check packet size
             if (relayForwardPck.dataSize() < 34) {
                 if (debugger.servDhcp6traf) {
@@ -1222,15 +1200,15 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
                 return null;
             }
-            
+
             // Extract message type and hop count
             int msgType = relayForwardPck.getByte(0) & 0xff;
             int hopCount = relayForwardPck.getByte(1) & 0xff;
-            
+
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 createRelayReply: msgType=" + msgType + ", hopCount=" + hopCount);
             }
-            
+
             // Verify this is a Relay-Forward message
             if (msgType != packDhcp6.typReReq) {
                 if (debugger.servDhcp6traf) {
@@ -1238,10 +1216,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
                 return null;
             }
-            
+
             // Use the new recursive method to create nested reply
             return createNestedRelayReply(relayForwardPck);
-            
+
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
                 logger.error("dhcp6 createRelayReply: exception: " + e.getMessage());
@@ -1249,7 +1227,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return null;
         }
     }
-    
+
     /**
      * Recursively create nested relay-reply structure
      */
@@ -1258,11 +1236,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 createNestedRelayReply: processing relay forward packet");
             }
-            
+
             // Extract header information
             int msgType = relayForwardPck.getByte(0) & 0xff;
             int hopCount = relayForwardPck.getByte(1) & 0xff;
-            
+
             // Verify this is a Relay-Forward message
             if (msgType != packDhcp6.typReReq) {
                 if (debugger.servDhcp6traf) {
@@ -1270,31 +1248,31 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
                 return null;
             }
-            
+
             // Copy link-address (16 bytes)
             byte[] linkAddr = new byte[16];
             relayForwardPck.getCopy(linkAddr, 0, 2, 16);
-            
-            // Copy peer-address (16 bytes)  
+
+            // Copy peer-address (16 bytes)
             byte[] peerAddr = new byte[16];
             relayForwardPck.getCopy(peerAddr, 0, 18, 16);
-            
+
             // Find and extract the relay message option and other options
             int offset = 34;
             packHolder relayMessageContent = null;
             List<packHolder> otherOptions = new ArrayList<>();
-            
+
             while (offset + 4 <= relayForwardPck.dataSize()) {
-                int optType = ((relayForwardPck.getByte(offset) & 0xff) << 8) | 
-                             (relayForwardPck.getByte(offset + 1) & 0xff);
-                int optLen = ((relayForwardPck.getByte(offset + 2) & 0xff) << 8) | 
-                            (relayForwardPck.getByte(offset + 3) & 0xff);
-                
+                int optType = ((relayForwardPck.getByte(offset) & 0xff) << 8)
+                        | (relayForwardPck.getByte(offset + 1) & 0xff);
+                int optLen = ((relayForwardPck.getByte(offset + 2) & 0xff) << 8)
+                        | (relayForwardPck.getByte(offset + 3) & 0xff);
+
                 if (optType == D6O_RELAY_MSG) { // Relay Message Option
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 createNestedRelayReply: found relay message option, length=" + optLen);
                     }
-                    
+
                     // Extract the relay message content
                     relayMessageContent = new packHolder(true, true);
                     for (int i = 0; i < optLen; i++) {
@@ -1302,19 +1280,19 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                     relayMessageContent.putSkip(optLen);
                     relayMessageContent.merge2beg();
-                    
+
                 } else {
                     // Copy other options (like Interface-Id)
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 createNestedRelayReply: found option type " + optType + ", length=" + optLen);
                     }
-                    
+
                     packHolder optionData = new packHolder(true, true);
                     optionData.putByte(0, (optType >>> 8) & 0xff);
                     optionData.putByte(1, optType & 0xff);
                     optionData.putByte(2, (optLen >>> 8) & 0xff);
                     optionData.putByte(3, optLen & 0xff);
-                    
+
                     for (int i = 0; i < optLen; i++) {
                         optionData.putByte(4 + i, relayForwardPck.getByte(offset + 4 + i));
                     }
@@ -1322,28 +1300,28 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     optionData.merge2beg();
                     otherOptions.add(optionData);
                 }
-                
+
                 offset += 4 + optLen;
             }
-            
+
             if (relayMessageContent == null) {
                 if (debugger.servDhcp6traf) {
                     logger.error("dhcp6 createNestedRelayReply: relay message option not found");
                 }
                 return null;
             }
-            
+
             // Determine what to put in this relay reply
             packHolder responseContent;
-            
+
             // Check if the relay message content is another Relay-Forward
-            if (relayMessageContent.dataSize() > 0 && 
-                relayMessageContent.getByte(0) == packDhcp6.typReReq) {
-                
+            if (relayMessageContent.dataSize() > 0
+                    && relayMessageContent.getByte(0) == packDhcp6.typReReq) {
+
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 createNestedRelayReply: found nested relay-forward, processing recursively");
                 }
-                
+
                 // Recursively process the nested Relay-Forward
                 responseContent = createNestedRelayReply(relayMessageContent);
                 if (responseContent == null) {
@@ -1352,13 +1330,13 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                     return null;
                 }
-                
+
             } else {
                 // This is the innermost level - create server response
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 createNestedRelayReply: found client message, creating server response");
                 }
-                
+
                 responseContent = createServerResponse(relayMessageContent);
                 if (responseContent == null) {
                     if (debugger.servDhcp6traf) {
@@ -1367,25 +1345,25 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     return null;
                 }
             }
-            
+
             // Create the relay-reply packet
             packHolder relayReply = new packHolder(true, true);
-            
+
             // Message type (1 byte) = 13 (RELAY-REPL)
             relayReply.putByte(0, packDhcp6.typReRep);
-            
+
             // Copy hop count from Relay-Forward
             relayReply.putByte(1, hopCount);
-            
+
             // Copy link-address (16 bytes)
             relayReply.putCopy(linkAddr, 0, 2, 16);
-            
+
             // Copy peer-address (16 bytes)
             relayReply.putCopy(peerAddr, 0, 18, 16);
-            
+
             // Skip to end of header
             relayReply.putSkip(34);
-            
+
             // Add all other options first (like Interface-Id)
             for (packHolder option : otherOptions) {
                 byte[] optionBytes = new byte[option.dataSize()];
@@ -1393,28 +1371,28 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayReply.putCopy(optionBytes, 0, 0, optionBytes.length);
                 relayReply.putSkip(optionBytes.length);
             }
-            
+
             // Add Relay Message option containing the response content
             relayReply.putByte(0, (D6O_RELAY_MSG >>> 8) & 0xff);      // Option type high byte
             relayReply.putByte(1, D6O_RELAY_MSG & 0xff);              // Option type low byte
             relayReply.putByte(2, (responseContent.dataSize() >>> 8) & 0xff); // Length high byte
             relayReply.putByte(3, responseContent.dataSize() & 0xff);         // Length low byte
-            
+
             // Copy response content into option
             byte[] responseData = new byte[responseContent.dataSize()];
             responseContent.getCopy(responseData, 0, 0, responseContent.dataSize());
             relayReply.putCopy(responseData, 0, 4, responseContent.dataSize());
             relayReply.putSkip(4 + responseContent.dataSize());
-            
+
             // Finalize packet
             relayReply.merge2beg();
-            
+
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 createNestedRelayReply: created relay-reply packet, size=" + relayReply.dataSize() + ", hopCount=" + hopCount);
             }
-            
+
             return relayReply;
-            
+
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
                 logger.error("dhcp6 createNestedRelayReply: exception: " + e.getMessage());
@@ -1422,33 +1400,33 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return null;
         }
     }
-    
+
     /**
      * Extract original client message from Relay Message Option
      */
     private packHolder extractRelayMessageFromForward(packHolder relayForwardPck, int startOffset) {
         try {
             int offset = startOffset;
-            
+
             // Search for Relay Message Option (Type 9)
             while (offset + 4 <= relayForwardPck.dataSize()) {
-                int optType = ((relayForwardPck.getByte(offset) & 0xff) << 8) | 
-                             (relayForwardPck.getByte(offset + 1) & 0xff);
-                int optLen = ((relayForwardPck.getByte(offset + 2) & 0xff) << 8) | 
-                            (relayForwardPck.getByte(offset + 3) & 0xff);
-                
+                int optType = ((relayForwardPck.getByte(offset) & 0xff) << 8)
+                        | (relayForwardPck.getByte(offset + 1) & 0xff);
+                int optLen = ((relayForwardPck.getByte(offset + 2) & 0xff) << 8)
+                        | (relayForwardPck.getByte(offset + 3) & 0xff);
+
                 if (optType == 9) { // Relay Message Option
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 extractRelayMessageFromForward: found relay message option, length=" + optLen);
                     }
-                    
+
                     packHolder originalMsg = new packHolder(true, true);
                     for (int i = 0; i < optLen; i++) {
                         originalMsg.putByte(i, relayForwardPck.getByte(offset + 4 + i));
                     }
                     originalMsg.putSkip(optLen);
                     originalMsg.merge2beg();
-                    
+
                     // Check if this is another Relay-Forward message, and if so, extract its content recursively
                     if (originalMsg.dataSize() > 0 && originalMsg.getByte(0) == packDhcp6.typReReq) {
                         if (debugger.servDhcp6traf) {
@@ -1460,18 +1438,18 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                             return nestedMsg;
                         }
                     }
-                    
+
                     return originalMsg;
                 }
-                
+
                 offset += 4 + optLen;
             }
-            
+
             if (debugger.servDhcp6traf) {
                 logger.error("dhcp6 extractRelayMessageFromForward: relay message option not found");
             }
             return null;
-            
+
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
                 logger.error("dhcp6 extractRelayMessageFromForward: exception: " + e.getMessage());
@@ -1479,9 +1457,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return null;
         }
     }
-    
+
     /**
-     * Create server response from original client message with proper IA_NA and IP address assignment
+     * Create server response from original client message with proper IA_NA and
+     * IP address assignment
      */
     private packHolder createServerResponse(packHolder originalMessage) {
         try {
@@ -1491,16 +1470,16 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
                 return null;
             }
-            
+
             int clientMsgType = originalMessage.getByte(0) & 0xff;
-            int transactionId = ((originalMessage.getByte(1) & 0xff) << 16) |
-                               ((originalMessage.getByte(2) & 0xff) << 8) |
-                               (originalMessage.getByte(3) & 0xff);
-            
+            int transactionId = ((originalMessage.getByte(1) & 0xff) << 16)
+                    | ((originalMessage.getByte(2) & 0xff) << 8)
+                    | (originalMessage.getByte(3) & 0xff);
+
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 createServerResponse: client msgType=" + clientMsgType + ", transId=" + transactionId);
             }
-            
+
             // Special handling for Relay-Forward messages that weren't properly extracted
             if (clientMsgType == packDhcp6.typReReq) {  // Relay-Forward (12)
                 if (debugger.servDhcp6traf) {
@@ -1518,54 +1497,54 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     return null;
                 }
             }
-            
+
             // Extract Client Identifier and IA from original message if present
             int clientIAID = extractIAID(originalMessage);
             byte[] clientDUID = extractClientDUID(originalMessage);
             int requestedIAType = extractRequestedIAType(originalMessage);
-            
+
             // Client requested no IA options
             if (requestedIAType == 0) {
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 createServerResponse: client requested configuration only (no IA options)");
                 }
-                
+
                 // Create response without IA options
                 packHolder configOnlyResponse = new packHolder(true, true);
                 configOnlyResponse.putByte(0, (clientMsgType == packDhcp6.typSolicit) ? packDhcp6.typAdvertise : packDhcp6.typReply);
                 configOnlyResponse.putByte(1, (transactionId >> 16) & 0xff);
                 configOnlyResponse.putByte(2, (transactionId >> 8) & 0xff);
                 configOnlyResponse.putByte(3, transactionId & 0xff);
-                
+
                 int pos = 4;
-                
+
                 // Add Server Identifier (Option 2)
                 byte[] serverDUID = packDhcp6.encodeDUID(srvIface.ethtyp.getHwAddr());
                 if (serverDUID != null) {
                     configOnlyResponse.putByte(pos++, 0); // Option Type high
                     configOnlyResponse.putByte(pos++, 2); // Option Type low (2 = Server ID)
                     configOnlyResponse.putByte(pos++, 0); // Length high
-                    configOnlyResponse.putByte(pos++, (byte)serverDUID.length); // Length low
+                    configOnlyResponse.putByte(pos++, (byte) serverDUID.length); // Length low
                     for (int i = 0; i < serverDUID.length; i++) {
                         configOnlyResponse.putByte(pos++, serverDUID[i]);
                     }
                 }
-                
+
                 // Add Client Identifier (Option 1)
                 if (clientDUID != null) {
                     configOnlyResponse.putByte(pos++, 0); // Option Type high
                     configOnlyResponse.putByte(pos++, 1); // Option Type low (1 = Client ID)
                     configOnlyResponse.putByte(pos++, 0); // Length high
-                    configOnlyResponse.putByte(pos++, (byte)clientDUID.length); // Length low
+                    configOnlyResponse.putByte(pos++, (byte) clientDUID.length); // Length low
                     for (int i = 0; i < clientDUID.length; i++) {
                         configOnlyResponse.putByte(pos++, clientDUID[i]);
                     }
                 }
-                
+
                 configOnlyResponse.setDataSize(pos);
                 return configOnlyResponse;
             }
-            
+
             // Handle different IA option requests
             if (requestedIAType == 0) {
                 // Client requested configuration only (no IA options)
@@ -1584,7 +1563,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 errorResponse.putByte(1, (transactionId >> 16) & 0xff);
                 errorResponse.putByte(2, (transactionId >> 8) & 0xff);
                 errorResponse.putByte(3, transactionId & 0xff);
-                
+
                 // Add Server Identifier (Option 2)
                 byte[] serverDUID = packDhcp6.encodeDUID(srvIface.ethtyp.getHwAddr());
                 if (serverDUID != null) {
@@ -1592,33 +1571,33 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     errorResponse.putByte(pos++, 0); // Option Type high
                     errorResponse.putByte(pos++, 2); // Option Type low (2 = Server ID)
                     errorResponse.putByte(pos++, 0); // Length high
-                    errorResponse.putByte(pos++, (byte)serverDUID.length); // Length low
+                    errorResponse.putByte(pos++, (byte) serverDUID.length); // Length low
                     for (int i = 0; i < serverDUID.length; i++) {
                         errorResponse.putByte(pos++, serverDUID[i]);
                     }
                 }
-                
+
                 // Add Client Identifier (Option 1)
                 if (clientDUID != null) {
                     int pos = errorResponse.dataSize();
                     errorResponse.putByte(pos++, 0); // Option Type high
                     errorResponse.putByte(pos++, 1); // Option Type low (1 = Client ID)
                     errorResponse.putByte(pos++, 0); // Length high
-                    errorResponse.putByte(pos++, (byte)clientDUID.length); // Length low
+                    errorResponse.putByte(pos++, (byte) clientDUID.length); // Length low
                     for (int i = 0; i < clientDUID.length; i++) {
                         errorResponse.putByte(pos++, clientDUID[i]);
                     }
                 }
-                
+
                 // Add Status Code option (Type 13) with NoAddrsAvail (2)
                 int pos = errorResponse.dataSize();
                 errorResponse.putByte(pos++, 0);   // Option Type high
                 errorResponse.putByte(pos++, 13);  // Option Type low (13 = Status Code)
-                errorResponse.putByte(pos++, 0);   // Option Length high  
+                errorResponse.putByte(pos++, 0);   // Option Length high
                 errorResponse.putByte(pos++, 2);   // Option Length low (2 bytes)
                 errorResponse.putByte(pos++, 0);   // Status Code high
                 errorResponse.putByte(pos++, 2);   // Status Code low (2 = NoAddrsAvail)
-                
+
                 return errorResponse;
             } else if (requestedIAType == 28) {
                 // Client requested both IA_NA and IA_PD (RFC 7550)
@@ -1629,11 +1608,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 // The server should specify the unavailability of IA_PD resources with status codes
                 requestedIAType = 3; // Treat as IA_NA request
             }
-            
+
             // Create appropriate server response
             packHolder response = new packHolder(true, true);
             int responseType;
-            
+
             if (clientMsgType == packDhcp6.typSolicit) {
                 // Respond with Advertise containing proper IA_NA with IP address
                 responseType = packDhcp6.typAdvertise;
@@ -1652,43 +1631,43 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
                 return null;
             }
-            
+
             // Build response packet
             response.putByte(0, responseType);
             response.putByte(1, (transactionId >> 16) & 0xff);
             response.putByte(2, (transactionId >> 8) & 0xff);
             response.putByte(3, transactionId & 0xff);
-                
+
             int currentPos = 4;
-            
+
             // Add IA_NA (Identity Association for Non-temporary Address) - Option Type 3
             response.putByte(currentPos++, 0);  // Option Type high
             response.putByte(currentPos++, 3);  // Option Type low (3 = IA_NA)
             response.putByte(currentPos++, 0);  // Option Length high
             response.putByte(currentPos++, 40); // Option Length low (40 bytes: 12 header + 28 IA Address)
-            
+
             // IA_NA header (12 bytes)
             response.putByte(currentPos++, (clientIAID >> 24) & 0xff); // IAID
             response.putByte(currentPos++, (clientIAID >> 16) & 0xff);
             response.putByte(currentPos++, (clientIAID >> 8) & 0xff);
             response.putByte(currentPos++, clientIAID & 0xff);
-            
+
             response.putByte(currentPos++, 0); // T1 (4 bytes) - 0 means server chooses
             response.putByte(currentPos++, 0);
             response.putByte(currentPos++, 0);
             response.putByte(currentPos++, 0);
-            
-            response.putByte(currentPos++, 0); // T2 (4 bytes) - 0 means server chooses  
+
+            response.putByte(currentPos++, 0); // T2 (4 bytes) - 0 means server chooses
             response.putByte(currentPos++, 0);
             response.putByte(currentPos++, 0);
             response.putByte(currentPos++, 0);
-            
+
             // IA Address Option (Type 5) - 28 bytes
             response.putByte(currentPos++, 0);  // Option Type high
             response.putByte(currentPos++, 5);  // Option Type low (5 = IA Address)
             response.putByte(currentPos++, 0);  // Option Length high
             response.putByte(currentPos++, 24); // Option Length low (24 bytes)
-            
+
             // IPv6 Address (16 bytes) - Generate from pool or use configured range
             // Create a MAC address from the client DUID
             addrMac clientMac = new addrMac();
@@ -1708,7 +1687,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                 }
             }
-            
+
             // If MAC extraction failed, create a random MAC
             String macStr = clientMac.toString();
             if (macStr.equals("00:00:00:00:00:00") || macStr.equals("")) {
@@ -1717,7 +1696,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     logger.info("dhcp6 createServerResponse: using default mac " + clientMac);
                 }
             }
-            
+
             // First check if there's a static binding before generating IP
             addrIPv6 assignedAddr = null;
             servDhcp6bind staticBinding = null;
@@ -1733,7 +1712,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                 }
             }
-            
+
             // Generate IP only if no static binding found and dynamic address allocation is enabled
             if (assignedAddr == null) {
                 if (!dynamicAddress) {
@@ -1742,48 +1721,48 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                     return null;
                 }
-                
+
                 assignedAddr = generateIPv6Address(clientMac);
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 createServerResponse: generated new ip " + assignedAddr + " for mac " + clientMac);
                 }
             }
-            
+
             byte[] ipv6Bytes = assignedAddr.getBytes();
             for (int i = 0; i < 16; i++) {
                 response.putByte(currentPos++, ipv6Bytes[i] & 0xff);
             }
-            
+
             // Preferred lifetime (4 bytes) - 27000 seconds
             response.putByte(currentPos++, 0);
             response.putByte(currentPos++, 0);
             response.putByte(currentPos++, 0x69);
             response.putByte(currentPos++, 0x78);
-            
+
             // Valid lifetime (4 bytes) - 43200 seconds
             response.putByte(currentPos++, 0);
             response.putByte(currentPos++, 0);
             response.putByte(currentPos++, 0xa8);
             response.putByte(currentPos++, 0xc0);
-            
+
             // Add Server Identifier Option (Type 2)
             response.putByte(currentPos++, 0);  // Option Type high
             response.putByte(currentPos++, 2);  // Option Type low (2 = Server Identifier)
             response.putByte(currentPos++, 0);  // Option Length high
             response.putByte(currentPos++, 14); // Option Length low (14 bytes DUID)
-            
+
             // DUID-LLT format (Type 1)
             response.putByte(currentPos++, 0);   // DUID Type high
             response.putByte(currentPos++, 1);   // DUID Type low (1 = DUID-LLT)
             response.putByte(currentPos++, 0);   // Hardware Type high
             response.putByte(currentPos++, 1);   // Hardware Type low (1 = Ethernet)
-            
+
             // Time (4 bytes) - using current time approximation
             response.putByte(currentPos++, 0x60); // Time bytes
             response.putByte(currentPos++, 0x00);
             response.putByte(currentPos++, 0x00);
             response.putByte(currentPos++, 0x00);
-            
+
             // Link-layer address (6 bytes MAC)
             response.putByte(currentPos++, 0x00);
             response.putByte(currentPos++, 0x11);
@@ -1791,23 +1770,23 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             response.putByte(currentPos++, 0x33);
             response.putByte(currentPos++, 0x44);
             response.putByte(currentPos++, 0x55);
-            
+
             // Add DNS Server Option (Type 23) if configured
             if (dns1 != null) {
                 response.putByte(currentPos++, 0);  // Option Type high
                 response.putByte(currentPos++, 23); // Option Type low (23 = DNS recursive name server)
                 response.putByte(currentPos++, 0);  // Option Length high
                 response.putByte(currentPos++, 16); // Option Length low (16 bytes for 1 IPv6 address)
-                
+
                 byte[] dns1Bytes = dns1.getBytes();
                 for (int i = 0; i < 16; i++) {
                     response.putByte(currentPos++, dns1Bytes[i] & 0xff);
                 }
             }
-            
+
             response.putSkip(currentPos);
             response.merge2beg();
-            
+
             // Create or update binding for this client
             if (clientMac != null) {
                 // If we found a static binding earlier, update its timestamp
@@ -1826,7 +1805,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                         ntry.mac = clientMac.copyBytes();
                         ntry.ip = assignedAddr.copyBytes();
                         ntry.reqd = bits.getTime();
-                        
+
                         synchronized (bindings) {
                             bindings.add(ntry);
                             if (debugger.servDhcp6traf) {
@@ -1842,13 +1821,13 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                 }
             }
-            
+
             String responseTypeName = (responseType == packDhcp6.typAdvertise) ? "Advertise" : "Reply";
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 createServerResponse: created " + responseTypeName + " with ia_na, size=" + response.dataSize() + ", assigned ip=" + assignedAddr);
             }
             return response;
-            
+
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
                 logger.error("dhcp6 createServerResponse: exception: " + e.getMessage());
@@ -1856,10 +1835,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return null;
         }
     }
-    
+
     /**
-     * Extract requested IA option type from the message (0=none, 3=IA_NA, 25=IA_PD, 28=both)
-     * Returns a combined value when both IA_NA and IA_PD are found (RFC 7550)
+     * Extract requested IA option type from the message (0=none, 3=IA_NA,
+     * 25=IA_PD, 28=both) Returns a combined value when both IA_NA and IA_PD are
+     * found (RFC 7550)
      */
     private int extractRequestedIAType(packHolder message) {
         if (message == null || message.dataSize() < 4) {
@@ -1868,7 +1848,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
             return 0; // No IA options requested
         }
-        
+
         // Special handling for Relay-Forward messages
         int msgType = message.getByte(0) & 0xff;
         if (msgType == packDhcp6.typReReq) { // Relay-Forward (12)
@@ -1881,29 +1861,29 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 return extractRequestedIAType(extractedMsg); // Recursive call
             }
         }
-        
+
         boolean foundIA_NA = false;
         boolean foundIA_PD = false;
-        
+
         int offset = 4; // Skip message header
         while (offset + 4 <= message.dataSize()) {
             int optionType = ((message.getByte(offset) & 0xff) << 8) | (message.getByte(offset + 1) & 0xff);
             int optionLength = ((message.getByte(offset + 2) & 0xff) << 8) | (message.getByte(offset + 3) & 0xff);
-            
+
             if (optionType == 3) { // IA_NA
                 foundIA_NA = true;
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 extractRequestedIAType: found IA_NA option");
                 }
-            } else if (optionType == 25) { // IA_PD  
+            } else if (optionType == 25) { // IA_PD
                 foundIA_PD = true;
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 extractRequestedIAType: found IA_PD option");
                 }
             }
-            
+
             offset += 4 + optionLength;
-            
+
             // If both types found, we can return immediately
             if (foundIA_NA && foundIA_PD) {
                 if (debugger.servDhcp6traf) {
@@ -1912,14 +1892,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 return 28; // Special value for both IA types
             }
         }
-        
+
         // Return based on what was found
         if (foundIA_NA) {
             return 3;  // IA_NA only
         } else if (foundIA_PD) {
             return 25; // IA_PD only
         }
-        
+
         // No IA options found
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 extractRequestedIAType: no IA options found, client requesting configuration only");
@@ -1935,23 +1915,23 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // Search for IA_NA option (Type 3) in the message
             int offset = 4; // Skip message header
             while (offset + 4 <= message.dataSize()) {
-                int optType = ((message.getByte(offset) & 0xff) << 8) | 
-                             (message.getByte(offset + 1) & 0xff);
-                int optLen = ((message.getByte(offset + 2) & 0xff) << 8) | 
-                            (message.getByte(offset + 3) & 0xff);
-                
+                int optType = ((message.getByte(offset) & 0xff) << 8)
+                        | (message.getByte(offset + 1) & 0xff);
+                int optLen = ((message.getByte(offset + 2) & 0xff) << 8)
+                        | (message.getByte(offset + 3) & 0xff);
+
                 if (optType == 3 && optLen >= 12) { // IA_NA option
                     // Extract IAID (first 4 bytes of IA_NA data)
-                    int iaid = ((message.getByte(offset + 4) & 0xff) << 24) |
-                              ((message.getByte(offset + 5) & 0xff) << 16) |
-                              ((message.getByte(offset + 6) & 0xff) << 8) |
-                              (message.getByte(offset + 7) & 0xff);
+                    int iaid = ((message.getByte(offset + 4) & 0xff) << 24)
+                            | ((message.getByte(offset + 5) & 0xff) << 16)
+                            | ((message.getByte(offset + 6) & 0xff) << 8)
+                            | (message.getByte(offset + 7) & 0xff);
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 extractIAID: found iaid=" + iaid);
                     }
                     return iaid;
                 }
-                
+
                 offset += 4 + optLen;
             }
         } catch (Exception e) {
@@ -1959,14 +1939,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 logger.error("dhcp6 extractIAID: exception: " + e.getMessage());
             }
         }
-        
+
         // Default IAID if not found
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 extractIAID: using default iaid=0x12345678");
         }
         return 0x12345678;
     }
-    
+
     /**
      * Extract Client DUID from client message
      */
@@ -1979,36 +1959,36 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
                 return getDefaultDUID();
             }
-            
+
             // Search for Client Identifier option (Type 1) in the message
             int offset = 4; // Skip message header
             while (offset + 4 <= message.dataSize()) {
-                int optType = ((message.getByte(offset) & 0xff) << 8) | 
-                             (message.getByte(offset + 1) & 0xff);
-                int optLen = ((message.getByte(offset + 2) & 0xff) << 8) | 
-                            (message.getByte(offset + 3) & 0xff);
-                
+                int optType = ((message.getByte(offset) & 0xff) << 8)
+                        | (message.getByte(offset + 1) & 0xff);
+                int optLen = ((message.getByte(offset + 2) & 0xff) << 8)
+                        | (message.getByte(offset + 3) & 0xff);
+
                 // Validate option length is within bounds
                 if (optLen < 0 || offset + 4 + optLen > message.dataSize()) {
                     if (debugger.servDhcp6traf) {
-                        logger.warn("dhcp6 extractClientDUID: invalid option length: " + optLen + 
-                                    ", message size: " + message.dataSize() + 
-                                    ", offset: " + offset);
+                        logger.warn("dhcp6 extractClientDUID: invalid option length: " + optLen
+                                + ", message size: " + message.dataSize()
+                                + ", offset: " + offset);
                     }
                     break;
                 }
-                
+
                 if (optType == 1) { // Client Identifier option
                     byte[] duid = new byte[optLen];
                     for (int i = 0; i < optLen; i++) {
-                        duid[i] = (byte)(message.getByte(offset + 4 + i) & 0xff);
+                        duid[i] = (byte) (message.getByte(offset + 4 + i) & 0xff);
                     }
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 extractClientDUID: found client duid, length=" + optLen);
                     }
                     return duid;
                 }
-                
+
                 offset += 4 + optLen;
             }
         } catch (Exception e) {
@@ -2016,10 +1996,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 logger.error("dhcp6 extractClientDUID: exception: " + e.getMessage());
             }
         }
-        
+
         return getDefaultDUID();
     }
-    
+
     /**
      * Return a default DUID when extraction fails
      */
@@ -2030,7 +2010,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
         return new byte[]{0x00, 0x01, 0x00, 0x01, 0x60, 0x00, 0x00, 0x00, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55};
     }
-    
+
     /**
      * Generate IPv6 address from configured pool
      */
@@ -2039,7 +2019,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 generateIPv6Address: generating address for mac " + mac);
             }
-            
+
             // Use configured gateway range if available
             if (gateway != null) {
                 // Use addrIPv6.genPublic to generate a MAC-based address
@@ -2049,7 +2029,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
                 return result;
             }
-            
+
             // Fallback: Use a default range based on 2001:db8:: prefix with MAC-based suffix
             addrIPv6 result = new addrIPv6();
             // Create a unique address based on MAC
@@ -2061,7 +2041,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 logger.info("dhcp6 generateIPv6Address: generated fallback " + result + " for mac " + mac);
             }
             return result;
-            
+
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
                 logger.error("dhcp6 generateIPv6Address: exception: " + e.getMessage());
@@ -2097,11 +2077,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 doPurging: starting purge process, bindings count: " + bindings.size());
         }
-        
+
         synchronized (bindings) {
             long cur = bits.getTime();
             int purgedCount = 0;
-            
+
             for (int i = bindings.size() - 1; i >= 0; i--) {
                 servDhcp6bind ntry = bindings.get(i);
                 if (ntry == null) {
@@ -2110,29 +2090,29 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                     continue;
                 }
-                
+
                 if (ntry.confed) {
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 doPurging: skipping confirmed binding for mac " + ntry.mac);
                     }
                     continue;
                 }
-                
+
                 long age = cur - ntry.reqd;
                 if (age < lease) {
                     if (debugger.servDhcp6traf) {
-                        logger.info("dhcp6 doPurging: binding for mac " + ntry.mac + " still valid, age: " + bits.timePast(ntry.reqd) + ", lease: " + (lease/1000) + "s");
+                        logger.info("dhcp6 doPurging: binding for mac " + ntry.mac + " still valid, age: " + bits.timePast(ntry.reqd) + ", lease: " + (lease / 1000) + "s");
                     }
                     continue;
                 }
-                
+
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 doPurging: removing expired binding for mac " + ntry.mac + ", ip: " + ntry.ip + ", age: " + bits.timePast(ntry.reqd));
                 }
                 bindings.remove(i);
                 purgedCount++;
             }
-            
+
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 doPurging: purge complete, removed " + purgedCount + " bindings, remaining: " + bindings.size());
             }
@@ -2167,12 +2147,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
      */
     public userFormat getShow() {
         userFormat res = new userFormat("|", "mac|ip|last");
-        
+
         // Debug log for bindings
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 getShow: bindings count: " + bindings.size());
         }
-        
+
         // Add each binding to the result
         for (int i = 0; i < bindings.size(); i++) {
             servDhcp6bind ntry = bindings.get(i);
@@ -2182,7 +2162,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
             res.add(entry);
         }
-        
+
         return res;
     }
 
@@ -2214,7 +2194,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
             return false;
         }
-        
+
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 datagramRecv: calling relayPacket");
         }
@@ -2227,7 +2207,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 relayPacket: processing packet from " + id.peerAddr + ", size=" + pck.dataSize());
         }
-        
+
         try {
             // For relay purposes, we only need basic packet validation and message type
             if (pck.dataSize() < 4) {
@@ -2238,18 +2218,18 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.packetsDropped++;
                 return false;
             }
-            
+
             int msgType = pck.getByte(0) & 0xff;
             int msgId = pck.msbGetD(0) & 0xffffff;
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 relayPacket: received packet - msgType=" + msgType + ", msgId=0x" + Integer.toHexString(msgId));
             }
-            
+
             // Create a simple DHCP6 object with just the message type
             packDhcp6 dhcp = new packDhcp6();
             dhcp.msgTyp = msgType;
             dhcp.msgId = msgId;
-            
+
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 relayPacket: processing as msgType=" + dhcp.msgTyp);
             }
@@ -2266,13 +2246,13 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 case packDhcp6.typInfo:
                 case packDhcp6.typReReq:
                     return relayClientToServer(dhcp, pck, id);
-                    
+
                 case packDhcp6.typAdvertise:
                 case packDhcp6.typReply:
                 case packDhcp6.typReconfig:
                 case packDhcp6.typReRep:
                     return relayServerToClient(dhcp, pck, id);
-                    
+
                 default:
                     if (debugger.servDhcp6traf) {
                         logger.error("dhcp6 relayPacket: unknown message type: " + dhcp.msgTyp);
@@ -2300,7 +2280,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 relayClientToServer: processing client packet, msgType=" + dhcp.msgTyp + ", upstreamServers=" + upstreamServers.size());
         }
-        
+
         // Check hop count for relay-forward messages
         if (dhcp.msgTyp == packDhcp6.typReReq) {
             // Extract hop count from relay message
@@ -2316,7 +2296,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             relayStats.hopCountTotal += hopCount + 1;
             relayStats.relayForwardPackets++;
         }
-        
+
         // Forward to all upstream servers
         if (upstreamServers.isEmpty()) {
             if (debugger.servDhcp6traf) {
@@ -2325,7 +2305,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             relayStats.packetsDropped++;
             return false;
         }
-        
+
         // Determine source interface - use the interface the packet came from
         cfgIfc sourceIface = findInterfaceByConnection(id);
         if (sourceIface == null) {
@@ -2338,7 +2318,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 logger.info("dhcp6 relayClientToServer: using source interface: " + sourceIface.name);
             }
         }
-        
+
         int forwardedCount = 0;
         for (addrIP serverAddr : upstreamServers) {
             if (debugger.servDhcp6traf) {
@@ -2355,19 +2335,19 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.packetsForwarded++;
             }
         }
-        
+
         // If no servers were successfully contacted, count as dropped
         if (forwardedCount == 0) {
             relayStats.packetsDropped++;
             return false;
         }
-        
+
         return true;
     }
 
     private boolean relayServerToClient(packDhcp6 dhcp, packHolder pck, prtGenConn id) {
         relayStats.packetsServerToClient++;
-        
+
         // Only process relay-reply messages
         if (dhcp.msgTyp != packDhcp6.typReRep) {
             if (debugger.servDhcp6traf) {
@@ -2376,7 +2356,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             relayStats.packetsDropped++;
             return false;
         }
-        
+
         // Extract link address to determine source interface
         cfgIfc sourceIface = null;
         addrIPv6 linkAddr = extractLinkAddress(pck);
@@ -2392,7 +2372,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
             }
         }
-        
+
         // Use interface-specific forwarding if available
         if (sourceIface != null) {
             return forwardToClientFromInterface(pck, dhcp, sourceIface);
@@ -2415,11 +2395,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.routingErrors++;
                 return false;
             }
-            
+
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 forwardToServer: created relay packet, size=" + relayPck.dataSize());
             }
-            
+
             // Send to server
             prtGenConn conn = srvVrf.udp6.packetConnect(this, srvIface.fwdIf6, packDhcp6.portSnum, serverAddr, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
             if (conn == null) {
@@ -2429,14 +2409,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.routingErrors++;
                 return false;
             }
-            
+
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 forwardToServer: sending packet to server " + serverAddr + ", size=" + relayPck.dataSize());
             }
             conn.send2net(relayPck);
             conn.setClosing();
             return true;
-            
+
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
                 logger.error("dhcp6 relay forward error: " + e.getMessage());
@@ -2455,19 +2435,19 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.packetsDropped++;
                 return false;
             }
-            
+
             int extractedMsgType = clientPck.getByte(0) & 0xff;
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 forwardToClient: extracted client packet, size=" + clientPck.dataSize());
                 logger.info("dhcp6 forwardToClient: client packet type=" + extractedMsgType);
             }
-            
+
             // Check if the extracted message is another relay-reply (nested relay)
             if (extractedMsgType == packDhcp6.typReRep) {
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 forwardToClient: extracted message is a relay-reply, forwarding to next relay agent");
                 }
-                
+
                 // This is a nested relay-reply - forward it to the peer address from the OUTER relay-reply
                 // The peer address in the outer relay-reply is the address of the next relay agent
                 addrIPv6 peerAddr = extractPeerAddress(pck); // Peer address from OUTER relay-reply
@@ -2479,11 +2459,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     relayStats.packetsDropped++;
                     return false;
                 }
-                
+
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 forwardToClient: forwarding nested relay-reply to next relay agent at " + peerAddr);
                 }
-                
+
                 // Send the nested relay-reply to the peer (which should be the next relay agent)
                 addrIP peerAddrIP = new addrIP();
                 peerAddrIP.fromIPv6addr(peerAddr);
@@ -2496,22 +2476,22 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     relayStats.packetsDropped++;
                     return false;
                 }
-                
+
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 forwardToClient: sending nested relay-reply to next relay agent " + peerAddrIP + ", size=" + clientPck.dataSize());
                 }
-                
+
                 conn.send2net(clientPck); // Send the nested relay-reply
                 conn.setClosing();
                 relayStats.packetsForwarded++;
-                
+
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 forwardToClient: successfully forwarded nested relay-reply to next relay agent");
                 }
-                
+
                 return true;
             }
-            
+
             // Extract peer address and send to client
             addrIPv6 peerAddr = extractPeerAddress(pck);
             if (peerAddr == null) {
@@ -2519,7 +2499,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.packetsDropped++;
                 return false;
             }
-            
+
             // Send to client
             addrIP peerAddrIP = new addrIP();
             peerAddrIP.fromIPv6addr(peerAddr);
@@ -2529,11 +2509,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.packetsDropped++;
                 return false;
             }
-            
+
             conn.send2net(clientPck);
             conn.setClosing();
             relayStats.packetsForwarded++;
-            
+
             return true;
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
@@ -2549,7 +2529,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         try {
             // Create new packet for relay-forward message
             packHolder relayPck = new packHolder(true, true);
-            
+
             // DHCP6 Relay-Forward Message Format (RFC 3315):
             // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
             // +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -2570,10 +2550,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // .                                                               .
             // .            options (variable number and length)   ....        .
             // +---------------------------------------------------------------+
-            
             // Message type (1 byte) = 12 (RELAY-FORW)
             relayPck.putByte(0, packDhcp6.typReReq);
-            
+
             // Determine the hop count
             int hopCount = 0;
             if (dhcp.msgTyp == packDhcp6.typReReq) {
@@ -2592,7 +2571,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
             // Set the incremented hop count
             relayPck.putByte(1, hopCount);
-            
+
             // Link address (16 bytes) - address of link on which client is located
             if (relayIface != null && relayIface.addr6 != null) {
                 byte[] linkAddrBytes = new byte[16];
@@ -2604,7 +2583,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     relayPck.putByte(2 + i, 0);
                 }
             }
-            
+
             // Peer address (16 bytes) - address of client or previous relay
             if (id.peerAddr != null) {
                 addrIPv6 peerAddr = id.peerAddr.toIPv6();
@@ -2617,9 +2596,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     relayPck.putByte(18 + i, 0);
                 }
             }
-            
+
             relayPck.putSkip(34); // Header is 34 bytes
-            
+
             // Add interface-id option if enabled
             if (useInterfaceId && relayIface != null) {
                 String ifName = relayIface.name;
@@ -2632,7 +2611,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayPck.putSkip(4 + ifNameBytes.length);
                 relayStats.interfaceIdAdded++;
             }
-            
+
             // Add subscriber-id option if configured
             if (subscriberId != null && !subscriberId.isEmpty()) {
                 byte[] subIdBytes = subscriberId.getBytes();
@@ -2644,7 +2623,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayPck.putSkip(4 + subIdBytes.length);
                 relayStats.subscriberIdAdded++;
             }
-            
+
             // Add relay message option containing original packet
             relayPck.putByte(0, (D6O_RELAY_MSG >>> 8) & 0xff);      // Option type high byte
             relayPck.putByte(1, D6O_RELAY_MSG & 0xff);              // Option type low byte
@@ -2655,10 +2634,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             relayPck.putCopy(originalData, 0, 4, originalPck.dataSize());
             relayPck.putSkip(4 + originalPck.dataSize());
             relayStats.relayMessageAdded++;
-            
+
             relayPck.merge2beg();
             return relayPck;
-            
+
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
                 logger.debug("dhcp6 createRelayForward error: " + e.getMessage());
@@ -2675,14 +2654,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (pck.dataSize() < 34) {
                 return null;
             }
-            
+
             int pos = 34; // Start after header
-            
+
             // Parse options to find relay message option (type 9)
             while (pos + 4 <= pck.dataSize()) {
                 int optType = (pck.getByte(pos) << 8) | pck.getByte(pos + 1);
                 int optLen = (pck.getByte(pos + 2) << 8) | pck.getByte(pos + 3);
-                
+
                 if (optType == D6O_RELAY_MSG) {
                     // Found relay message option, extract the original message
                     if (pos + 4 + optLen <= pck.dataSize()) {
@@ -2696,10 +2675,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                     break;
                 }
-                
+
                 pos += 4 + optLen; // Move to next option
             }
-            
+
             return null;
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
@@ -2716,13 +2695,13 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (pck.dataSize() < 34) {
                 return null;
             }
-            
+
             addrIPv6 peerAddr = new addrIPv6();
             byte[] peerAddrBytes = new byte[16];
             pck.getCopy(peerAddrBytes, 0, 18, 16); // Peer address starts at offset 18
             peerAddr.fromBuf(peerAddrBytes, 0);
             return peerAddr;
-            
+
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
                 logger.debug("dhcp6 extractPeerAddress error: " + e.getMessage());
@@ -2738,9 +2717,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (pck.dataSize() < 2) {
                 return 0;
             }
-            
+
             return pck.getByte(1) & 0xff; // Hop count is at offset 1
-            
+
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
                 logger.debug("dhcp6 extractHopCount error: " + e.getMessage());
@@ -2757,18 +2736,18 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (pck.dataSize() < 18) {
                 return null;
             }
-            
+
             byte[] linkAddrBytes = new byte[16];
             pck.getCopy(linkAddrBytes, 0, 2, 16);
-            
+
             addrIPv6 linkAddr = new addrIPv6();
             linkAddr.fromBuf(linkAddrBytes, 0);
-            
+
             // Check if it's not all zeros
             if (linkAddr.isLinkLocal() || !linkAddr.isEmpty()) {
                 return linkAddr;
             }
-            
+
             return null;
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
@@ -2800,16 +2779,16 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
     /**
      * get relay statistics display for show command
-     * 
+     *
      * @return list of statistics lines
      */
     public List<String> getRelayStatisticsDisplay() {
         List<String> result = new ArrayList<String>();
-        
+
         result.add("DHCP6 Relay Statistics for " + srvName);
         result.add("=====================================");
         result.add("");
-        
+
         // Packet flow statistics
         result.add("Packet Flow Statistics:");
         result.add("  Client->Server: " + relayStats.packetsClientToServer);
@@ -2818,14 +2797,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         result.add("  Dropped: " + relayStats.packetsDropped);
         result.add("  Invalid: " + relayStats.packetsInvalid);
         result.add("");
-        
+
         // Multi-hop statistics
         result.add("Multi-hop Statistics:");
         result.add("  Multi-hop Packets: " + relayStats.relayForwardPackets);
         result.add("  Max Hop Count Exceeded: " + relayStats.maxHopCountExceeded);
         result.add("  Average Hop Count: " + String.format("%.2f", relayStats.getAverageHopCount()));
         result.add("");
-        
+
         // Agent options statistics (IPv6 specific)
         result.add("DHCPv6 Options Statistics:");
         result.add("  Interface-ID Options Added: " + relayStats.interfaceIdAdded);
@@ -2833,14 +2812,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         result.add("  Relay Message Options Added: " + relayStats.relayMessageAdded);
         result.add("  Total Options Added: " + (relayStats.interfaceIdAdded + relayStats.subscriberIdAdded + relayStats.relayMessageAdded));
         result.add("");
-        
+
         // Sub-option statistics (IPv6 specific)
         result.add("Sub-option Statistics:");
         result.add("  Interface-ID Added: " + relayStats.interfaceIdAdded);
         result.add("  Subscriber-ID Added: " + relayStats.subscriberIdAdded);
         result.add("  Relay Message Added: " + relayStats.relayMessageAdded);
         result.add("");
-        
+
         // Performance metrics
         result.add("Performance Metrics:");
         if (relayStats.packetProcessingCount > 0) {
@@ -2849,7 +2828,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             result.add("  Average Processing Time: " + (relayStats.getAverageProcessingTime() * 1000) + " μs");
             result.add("  Maximum Processing Time: " + (relayStats.maxProcessingTime * 1000) + " μs");
             result.add("  Minimum Processing Time: " + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime * 1000) + " μs");
-            
+
             // Calculate packets per second (rough estimate)
             long uptimeSeconds = (bits.getTime() - statsResetTime) / 1000;
             if (uptimeSeconds > 0) {
@@ -2867,7 +2846,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             result.add("  Packets Per Second: 0 pps");
         }
         result.add("");
-        
+
         // Error statistics
         result.add("Error Statistics:");
         result.add("  Invalid GIADDR Errors: 0");  // IPv6 doesn't have GIADDR
@@ -2875,15 +2854,15 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         result.add("  Option Parsing Errors: " + relayStats.optionParsingErrors);
         result.add("  Buffer Overflow Errors: " + relayStats.bufferOverflowErrors);
         result.add("");
-        
+
         // Summary with percentages
         long totalPackets = relayStats.packetsClientToServer + relayStats.packetsServerToClient;
         result.add("Summary:");
         if (totalPackets > 0) {
-            result.add("  Client to Server: " + relayStats.packetsClientToServer + " (" + 
-                     String.format("%.1f%%", (relayStats.packetsClientToServer * 100.0) / totalPackets) + ")");
-            result.add("  Server to Client: " + relayStats.packetsServerToClient + " (" + 
-                     String.format("%.1f%%", (relayStats.packetsServerToClient * 100.0) / totalPackets) + ")");
+            result.add("  Client to Server: " + relayStats.packetsClientToServer + " ("
+                    + String.format("%.1f%%", (relayStats.packetsClientToServer * 100.0) / totalPackets) + ")");
+            result.add("  Server to Client: " + relayStats.packetsServerToClient + " ("
+                    + String.format("%.1f%%", (relayStats.packetsServerToClient * 100.0) / totalPackets) + ")");
             result.add("  Success Rate: " + String.format("%.1f%%", (relayStats.packetsForwarded * 100.0) / totalPackets));
             result.add("  Drop Rate: " + String.format("%.1f%%", (relayStats.packetsDropped * 100.0) / totalPackets));
         } else {
@@ -2893,10 +2872,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             result.add("  Drop Rate: 0.0%");
         }
         result.add("");
-        
+
         // Statistics reset time
         result.add("Statistics Reset: " + bits.time2str(cfgAll.timeZoneName, statsResetTime, 3));
-        
+
         return result;
     }
 
@@ -2915,7 +2894,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         if (iface == null) {
             return;
         }
-        
+
         // Check if already in list
         for (cfgIfc existing : relayInterfaces) {
             if (existing.name.equals(iface.name)) {
@@ -2925,12 +2904,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 return;
             }
         }
-        
+
         relayInterfaces.add(iface);
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 relay:  added interface " + iface.name + " to relay list. total interfaces: " + relayInterfaces.size());
         }
-        
+
         // If we're in relay mode and have upstream servers, reinitialize to bind to all interfaces
         if (mode == dhcpMode.relay && !upstreamServers.isEmpty()) {
             if (srvIface == null) {
@@ -2954,7 +2933,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         if (iface == null) {
             return;
         }
-        
+
         boolean removed = relayInterfaces.removeIf(existing -> existing.name.equals(iface.name));
         if (removed) {
             if (debugger.servDhcp6traf) {
@@ -2984,11 +2963,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.routingErrors++;
                 return false;
             }
-            
+
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 forwardToServerFromInterface: created relay packet, size=" + relayPck.dataSize());
             }
-            
+
             // Send to server using the correct source interface
             prtGenConn conn = sourceIface.vrfFor.udp6.packetConnect(this, sourceIface.fwdIf6, packDhcp6.portSnum, serverAddr, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
             if (conn == null) {
@@ -2998,14 +2977,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.routingErrors++;
                 return false;
             }
-            
+
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 forwardToServerFromInterface: sending packet to server " + serverAddr + " from interface " + sourceIface.name + ", size=" + relayPck.dataSize());
             }
             conn.send2net(relayPck);
             conn.setClosing();
             return true;
-            
+
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
                 logger.error("dhcp6 relay forward from interface error: " + e.getMessage());
@@ -3027,19 +3006,19 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.packetsDropped++;
                 return false;
             }
-            
+
             int extractedMsgType = clientPck.getByte(0) & 0xff;
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 forwardToClientFromInterface: extracted client packet, size=" + clientPck.dataSize());
                 logger.info("dhcp6 forwardToClientFromInterface: client packet type=" + extractedMsgType);
             }
-            
+
             // Check if the extracted message is another relay-reply (nested relay)
             if (extractedMsgType == packDhcp6.typReRep) {
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 forwardToClientFromInterface: extracted message is a relay-reply, forwarding to next relay agent");
                 }
-                
+
                 // This is a nested relay-reply - forward it to the peer address from the OUTER relay-reply
                 // The peer address in the outer relay-reply is the address of the next relay agent (R1)
                 addrIPv6 peerAddr = extractPeerAddress(pck); // Peer address from OUTER relay-reply
@@ -3051,11 +3030,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     relayStats.packetsDropped++;
                     return false;
                 }
-                
+
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 forwardToClientFromInterface: forwarding nested relay-reply to next relay agent at " + peerAddr);
                 }
-                
+
                 // Send the nested relay-reply to the peer (which should be the next relay agent)
                 addrIP peerAddrIP = new addrIP();
                 peerAddrIP.fromIPv6addr(peerAddr);
@@ -3068,22 +3047,22 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     relayStats.packetsDropped++;
                     return false;
                 }
-                
+
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 forwardToClientFromInterface: sending nested relay-reply to next relay agent " + peerAddrIP + ", size=" + clientPck.dataSize());
                 }
-                
+
                 conn.send2net(clientPck); // Send the nested relay-reply
                 conn.setClosing();
                 relayStats.packetsForwarded++;
-                
+
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 forwardToClientFromInterface: successfully forwarded nested relay-reply to next relay agent");
                 }
-                
+
                 return true;
             }
-            
+
             // Extract peer address and send to client
             addrIPv6 peerAddr = extractPeerAddress(pck);
             if (peerAddr == null) {
@@ -3091,7 +3070,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.packetsDropped++;
                 return false;
             }
-            
+
             // Send to client using the correct source interface
             addrIP peerAddrIP = new addrIP();
             peerAddrIP.fromIPv6addr(peerAddr);
@@ -3104,14 +3083,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayStats.packetsDropped++;
                 return false;
             }
-            
+
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 forwardToClientFromInterface: sending response to client " + peerAddrIP + " from interface " + sourceIface.name);
             }
             conn.send2net(clientPck);
             conn.setClosing();
             relayStats.packetsForwarded++;
-            
+
             return true;
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
@@ -3130,10 +3109,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         try {
             // Create new packet for relay-forward message
             packHolder relayPck = new packHolder(true, true);
-            
+
             // Message type (1 byte) = 12 (RELAY-FORW)
             relayPck.putByte(0, packDhcp6.typReReq);
-            
+
             // Determine the hop count
             int hopCount = 0;
             if (dhcp.msgTyp == packDhcp6.typReReq) {
@@ -3152,7 +3131,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
             // Set the incremented hop count
             relayPck.putByte(1, hopCount);
-            
+
             // Link address (16 bytes) - address of link on which client is located
             if (sourceIface != null && sourceIface.addr6 != null) {
                 byte[] linkAddrBytes = new byte[16];
@@ -3164,7 +3143,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     relayPck.putByte(2 + i, 0);
                 }
             }
-            
+
             // Peer address (16 bytes) - address of client or previous relay
             if (id.peerAddr != null) {
                 addrIPv6 peerAddr = id.peerAddr.toIPv6();
@@ -3177,9 +3156,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     relayPck.putByte(18 + i, 0);
                 }
             }
-            
+
             relayPck.putSkip(34); // Header is 34 bytes
-            
+
             // Add interface-id option if enabled
             if (useInterfaceId && sourceIface != null) {
                 String ifName = sourceIface.name;
@@ -3192,7 +3171,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayPck.putSkip(4 + ifNameBytes.length);
                 relayStats.interfaceIdAdded++;
             }
-            
+
             // Add subscriber-id option if configured
             if (subscriberId != null && !subscriberId.isEmpty()) {
                 byte[] subIdBytes = subscriberId.getBytes();
@@ -3204,7 +3183,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 relayPck.putSkip(4 + subIdBytes.length);
                 relayStats.subscriberIdAdded++;
             }
-            
+
             // Add relay message option containing original packet
             relayPck.putByte(0, (D6O_RELAY_MSG >>> 8) & 0xff);      // Option type high byte
             relayPck.putByte(1, D6O_RELAY_MSG & 0xff);              // Option type low byte
@@ -3215,10 +3194,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             relayPck.putCopy(originalData, 0, 4, originalPck.dataSize());
             relayPck.putSkip(4 + originalPck.dataSize());
             relayStats.relayMessageAdded++;
-            
+
             relayPck.merge2beg();
             return relayPck;
-            
+
         } catch (Exception e) {
             if (debugger.servDhcp6traf) {
                 logger.debug("dhcp6 createRelayForwardFromInterface error: " + e.getMessage());
@@ -3235,7 +3214,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         if (linkAddr == null) {
             return null;
         }
-        
+
         addrIP targetAddr = new addrIP();
         targetAddr.fromIPv6addr(linkAddr);
 
@@ -3244,7 +3223,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (iface == null) {
                 continue;
             }
-            
+
             // Check IPv6 address field
             if (iface.addr6 != null) {
                 if (linkAddr.compareTo(iface.addr6) == 0) {
@@ -3254,7 +3233,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     return iface;
                 }
             }
-            
+
             // Check forwarding interface address
             if (iface.fwdIf6 != null && iface.fwdIf6.addr != null) {
                 if (targetAddr.compareTo(iface.fwdIf6.addr) == 0) {
@@ -3273,13 +3252,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     }
 
     /**
-     * Find interface by connection - determines which interface a packet came from
+     * Find interface by connection - determines which interface a packet came
+     * from
      */
     private cfgIfc findInterfaceByConnection(prtGenConn conn) {
         if (conn == null || conn.iface == null) {
             return null;
         }
-        
+
         // Search through relay interfaces to find matching forwarding interface
         for (cfgIfc iface : relayInterfaces) {
             if (iface.fwdIf6 != null && iface.fwdIf6 == conn.iface) {
@@ -3289,7 +3269,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 return iface;
             }
         }
-        
+
         if (debugger.servDhcp6traf) {
             logger.debug("dhcp6 findInterfaceByConnection: no matching interface found for connection");
         }
@@ -3387,7 +3367,7 @@ class servDhcp6worker implements Runnable {
             }
             return;
         }
-        
+
         // Check packet size first
         if (pck.dataSize() < 4) {
             if (debugger.servDhcp6traf) {
@@ -3395,13 +3375,13 @@ class servDhcp6worker implements Runnable {
             }
             return;
         }
-        
+
         // Manual message type extraction for debugging
         int msgType = pck.getByte(0) & 0xff;
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 server: received packet, msgType=" + msgType + ", size=" + pck.dataSize());
         }
-        
+
         // Special handling for Relay-Forward packets (RFC 3315 compliant)
         if (msgType == packDhcp6.typReReq) {
             if (debugger.servDhcp6traf) {
@@ -3411,14 +3391,14 @@ class servDhcp6worker implements Runnable {
             if (relayReply != null) {
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 server: sending rfc 3315 compliant relay-reply");
-                    logger.info("dhcp6 server: relay-reply size=" + relayReply.dataSize() + 
-                               ", message type=" + (relayReply.getByte(0) & 0xff) + 
-                               ", hop count=" + (relayReply.getByte(1) & 0xff));
-                    
+                    logger.info("dhcp6 server: relay-reply size=" + relayReply.dataSize()
+                            + ", message type=" + (relayReply.getByte(0) & 0xff)
+                            + ", hop count=" + (relayReply.getByte(1) & 0xff));
+
                     logger.info("dhcp6 server: connection info - peer=" + conn.peerAddr);
                 }
                 conn.send2net(relayReply);
-                
+
                 // Verify send operation
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 server: relay-reply sent to network");
@@ -3430,7 +3410,7 @@ class servDhcp6worker implements Runnable {
             }
             return;
         }
-        
+
         // Normal DHCP6 packet processing
         packDhcp6 pckd = new packDhcp6();
         if (pckd.parsePacket(pck)) {
@@ -3443,10 +3423,9 @@ class servDhcp6worker implements Runnable {
             logger.debug("rx " + pckd);
             logger.info("dhcp6 server: calling gotPack for msgType=" + pckd.msgTyp);
         }
-        
-        
+
         pckd = parent.gotPack(pckd);
-        
+
         if (debugger.servDhcp6traf) {
             if (pckd == null) {
                 logger.info("dhcp6 server: gotPack returned null, no response");
@@ -3454,7 +3433,7 @@ class servDhcp6worker implements Runnable {
             }
             logger.debug("tx " + pckd);
         }
-        
+
         // Extract MAC address from client DUID for logging
         addrMac clientMac = packDhcp6.decodeDUID(pckd.clntId);
 
@@ -3464,10 +3443,10 @@ class servDhcp6worker implements Runnable {
             }
             logger.info("dhcp6 server: sending response, msgType=" + pckd.msgTyp);
         }
-    
+
         pckd.createPacket(pck, parent.options);
         conn.send2net(pck);
-        
+
     }
 
     public void run() {
@@ -3514,7 +3493,7 @@ class servDhcp6RelayStats {
     public long interfaceIdAdded = 0;
     public long subscriberIdAdded = 0;
     public long relayMessageAdded = 0;
-    
+
     /**
      * reset all statistics
      */

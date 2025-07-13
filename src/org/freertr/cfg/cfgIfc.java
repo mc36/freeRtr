@@ -1585,93 +1585,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls rsvp4", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls rsvp6", null),
         // ip
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] address",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] reassembly",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] fragmentation",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pmtud-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pmtud-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] redirection",
-        "interface .*!" + cmds.tabulator + "ipv[46] unreachables",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] unreach-source",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] propagate-ttl-always",
-        "interface .*!" + cmds.tabulator + "ipv[46] propagate-ttl-allow",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] resend-packet",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] dapp-disable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] flowspec-disable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] verify-source",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] srh enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] nsh enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] dlep",
-        "interface .*!" + cmds.tabulator + "ipv[46] gateway-connected",
-        "interface .*!" + cmds.tabulator + "ipv[46] gateway-local",
-        "interface .*!" + cmds.tabulator + "ipv[46] gateway-remote",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] gateway-process",
-        "interface .*!" + cmds.tabulator + "ipv[46] gateway-distance 0 0 0 0",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] gateway-labeled",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] gateway-prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] gateway-map",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] gateway-policy",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] access-group-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] access-group-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] access-group-common-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] access-group-common-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] bfd",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] autoroute",
-        "interface .*!" + cmds.tabulator + "ipv[46] host-learn",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] host-remote",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] host-watch",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] host-rate",
-        "interface .*!" + cmds.tabulator + "ipv[46] host-reach 360000",
-        "interface .*!" + cmds.tabulator + "ipv[46] host-retry 180000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] proxy-remote",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] proxy-local",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] proxy-filter",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] tcp-mss-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] tcp-mss-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] hsrp address",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] netflow-rx",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] netflow-tx",
-        "interface .*!" + cmds.tabulator + "ipv[46] hsrp group 0",
-        "interface .*!" + cmds.tabulator + "ipv[46] hsrp password \\$v10\\$Y2lzY28=",
-        "interface .*!" + cmds.tabulator + "ipv4 hsrp mac-address 0000.0c9f.f000",
-        "interface .*!" + cmds.tabulator + "ipv6 hsrp mac-address 0005.73a0.0000",
-        "interface .*!" + cmds.tabulator + "ipv[46] hsrp version 2",
-        "interface .*!" + cmds.tabulator + "ipv[46] hsrp timer 3000 10000",
-        "interface .*!" + cmds.tabulator + "ipv[46] hsrp priority 100",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] hsrp preempt",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] hsrp bfd",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] hsrp tracker",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] vrrp address",
-        "interface .*!" + cmds.tabulator + "ipv[46] vrrp group 0",
-        "interface .*!" + cmds.tabulator + "ipv4 vrrp mac-address 0000.5e00.0100",
-        "interface .*!" + cmds.tabulator + "ipv6 vrrp mac-address 0000.5e00.0200",
-        "interface .*!" + cmds.tabulator + "ipv[46] vrrp version 3",
-        "interface .*!" + cmds.tabulator + "ipv[46] vrrp timer 1000 3000",
-        "interface .*!" + cmds.tabulator + "ipv[46] vrrp priority 100",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] vrrp tracker",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] vrrp bfd",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pool",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] inspect",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] ptp enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] ptp receive",
-        "interface .*!" + cmds.tabulator + "ipv4 dhcp-client broadcast",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 dhcp-client prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] dhcp-client early",
-        "interface .*!" + cmds.tabulator + "ipv[46] dhcp-client renew-min 60000",
-        "interface .*!" + cmds.tabulator + "ipv[46] dhcp-client renew-max 43200000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] dhcp-client enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 prefix-suppress",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 slaac-client enable",
-        "interface .*!" + cmds.tabulator + "ipv4 dhcp-client fill-ciaddr",
-        "interface .*!" + cmds.tabulator + "ipv6 dhcp-client address",
-        "interface .*!" + cmds.tabulator + "ipv6 slaac-client renew-min 60000",
-        "interface .*!" + cmds.tabulator + "ipv6 slaac-client renew-max 43200000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 prefix-dns",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 prefix-domain",
-        "interface .*!" + cmds.tabulator + "ipv6 prefix-interval 120000",
-        "interface .*!" + cmds.tabulator + "ipv6 prefix-validity 604800000",
-
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] address", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] enable", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] reassembly", null),
@@ -7415,10 +7328,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 4, new int[]{-1}, "<num>", "number of bridge group");
         l.add(null, false, 3, new int[]{4}, "xconnect", "cross connect vlan");
         cfgXconnSide.getHelp(l, 4);
-        l.add(null, false, 1, new int[]{2}, "dhcp4server", "serve ipv4 dhcp requests");
-        l.add(null, false, 2, new int[]{-1}, "enable", "enable processing");
         l.add(null, false, 1, new int[]{2}, "dhcp-relay", "relay ipv4 dhcp requests");
         l.add(null, false, 2, new int[]{-1}, "<name:srv>", "name of dhcp4 relay profile");
+        l.add(null, false, 1, new int[]{2}, "dhcp4server", "serve ipv4 dhcp requests");
+        l.add(null, false, 2, new int[]{-1}, "enable", "enable processing");
         l.add(null, false, 2, new int[]{3}, "pool", "address pool to use");
         l.add(null, false, 3, new int[]{4}, "<addr>", "first address to delegate");
         l.add(null, false, 4, new int[]{-1}, "<addr>", "last address to delegate");
@@ -9375,7 +9288,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 cmd.error("no dhcp6 relay service configured");
                 return;
             }
-            String addrStr = cmd.word();            
+            String addrStr = cmd.word();
             // Forward this to the relay service configuration
             cmds helperCmd = new cmds("helper-addresses", addrStr);
             if (dhcp6r.srvCfgStr(helperCmd)) {
@@ -9520,7 +9433,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 return;
             }
             String addrStr = cmd.word();
-            
+
             // Forward this to the relay service configuration (with "no" prefix)
             cmds helperCmd = new cmds("no helper-addresses", addrStr);
             if (dhcp6r.srvCfgStr(helperCmd)) {

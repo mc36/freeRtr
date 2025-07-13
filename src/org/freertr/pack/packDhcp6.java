@@ -505,7 +505,7 @@ public class packDhcp6 {
         pck.merge2beg();
         byte[] buf = pck.getCopy();
         pck.getSkip(buf.length);
-        
+
         if (requestBothIA) {
             // RFC 7550: Add both IA_NA and IA_PD options
             // Add IA_NA (option 3)
@@ -514,8 +514,8 @@ public class packDhcp6 {
             bits.msbPutD(tlv.valDat, 8, iat2); // ia t2
             bits.byteCopy(buf, 0, tlv.valDat, 12, buf.length);
             tlv.putBytes(pck, 3, buf.length + 12, tlv.valDat);
-            
-            // Add IA_PD (option 25)  
+
+            // Add IA_PD (option 25)
             bits.msbPutD(tlv.valDat, 0, iaid + 1); // ia id (different from IA_NA)
             bits.msbPutD(tlv.valDat, 4, iat1); // ia t1
             bits.msbPutD(tlv.valDat, 8, iat2); // ia t2
@@ -543,7 +543,7 @@ public class packDhcp6 {
                     tlv.putBytes(pck, 25, buf.length + 12, tlv.valDat);
                     break;
             }
-                } else {
+        } else {
             // iamod = 0: RFC-compliant packet without any IA options
             // Only requesting configuration information (DNS, domain, etc.)
         }
