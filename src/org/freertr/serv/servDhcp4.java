@@ -438,6 +438,10 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
         // Update statistics
         relayStats.packetsClientToServer++;
+        relayStats.totalPacketsProcessed++;
+        
+        // Track hop count statistics BEFORE incrementing
+        relayStats.hopCountTotal += dhcp.bootpHops;
         
         // Check max hop count to prevent loops
         if (dhcp.bootpHops >= maxHopCount) {
@@ -446,18 +450,17 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
             relayStats.maxHopCountExceeded++;
             relayStats.packetsDropped++;
-            relayStats.updateProcessingTime((System.nanoTime() - startTime) / 1000);
+            relayStats.updateErrorProcessingTime((System.nanoTime() - startTime) / 1000);
             return false; // Drop packet - don't process further
         }
 
         // Increment hop count
         dhcp.bootpHops++;
         
-        // Track multi-hop statistics
+        // Track multi-hop statistics (after incrementing)
         if (dhcp.bootpHops > 1) {
             relayStats.multiHopPackets++;
         }
-        relayStats.hopCountTotal += dhcp.bootpHops;
 
         // Set GIADDR to our interface IP if not already set by another relay
         if (dhcp.bootpGiaddr.isEmpty()) {
@@ -490,16 +493,28 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         dhcp.createHeader(newPck, options);
 
         // Forward to all helper addresses
+        int forwardedCount = 0;
         synchronized (helperAddresses) {
             for (int i = 0; i < helperAddresses.size(); i++) {
                 addrIP target = helperAddresses.get(i);
-                forwardToServer(newPck, target, id);
-                relayStats.packetsForwarded++;
+                if (forwardToServer(newPck, target, id)) {
+                    forwardedCount++;
+                    relayStats.packetsForwardedToServers++;
+                } else {
+                    relayStats.forwardingErrors++;
+                }
             }
         }
 
         if (debugger.servDhcp4traf) {
-            logger.debug("dhcp relay forwarded client request to " + helperAddresses.size() + " servers");
+            logger.debug("dhcp relay forwarded client request to " + forwardedCount + "/" + helperAddresses.size() + " servers");
+        }
+
+        // Count as forwarded if at least one server received it
+        if (forwardedCount > 0) {
+            relayStats.packetsForwarded++;
+        } else {
+            relayStats.packetsDropped++;
         }
 
         relayStats.updateProcessingTime((System.nanoTime() - startTime) / 1000);
@@ -515,6 +530,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
         // Update statistics
         relayStats.packetsServerToClient++;
+        relayStats.totalPacketsProcessed++;
 
         // Check if this reply has giaddr
         if (dhcp.bootpGiaddr.isEmpty()) {
@@ -523,7 +539,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
             relayStats.packetsDropped++;
             relayStats.invalidGiaddrErrors++;
-            relayStats.updateProcessingTime((System.nanoTime() - startTime) / 1000);
+            relayStats.updateErrorProcessingTime((System.nanoTime() - startTime) / 1000);
             return false; // Ignore packet
         }
 
@@ -536,7 +552,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
             relayStats.routingErrors++;
             relayStats.packetsDropped++;
-            relayStats.updateProcessingTime((System.nanoTime() - startTime) / 1000);
+            relayStats.updateErrorProcessingTime((System.nanoTime() - startTime) / 1000);
             return false; // Cannot route
         }
 
@@ -553,8 +569,12 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             // Create new packet for multi-hop forwarding
             packHolder newPck = new packHolder(true, true);
             dhcp.createHeader(newPck, null);
-            forwardToRelay(newPck, dhcp.bootpGiaddr);
-            relayStats.packetsForwarded++;
+            if (forwardToRelay(newPck, dhcp.bootpGiaddr)) {
+                relayStats.packetsForwarded++;
+            } else {
+                relayStats.packetsDropped++;
+                relayStats.forwardingErrors++;
+            }
         } else {
             // Final hop: Forward to client and clear giaddr
             if (debugger.servDhcp4traf) {
@@ -590,8 +610,12 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             dhcp.createHeader(newPck, clientOptions);
 
             // Forward to client
-            forwardToClient(newPck, dhcp, clientInterface);
-            relayStats.packetsForwarded++;
+            if (forwardToClient(newPck, dhcp, clientInterface)) {
+                relayStats.packetsForwarded++;
+            } else {
+                relayStats.packetsDropped++;
+                relayStats.forwardingErrors++;
+            }
         }
 
         if (debugger.servDhcp4traf) {
@@ -602,15 +626,15 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         return false; // Packet processed successfully
     }
 
-    private void forwardToServer(packHolder pck, addrIP serverAddr, prtGenConn incomingConn) {
+    private boolean forwardToServer(packHolder pck, addrIP serverAddr, prtGenConn incomingConn) {
         try {
             cfgVrf vrf = relayVrf != null ? relayVrf : srvVrf;
             if (vrf == null) {
-                return;
+                return false;
             }
             prtUdp udp = vrf.getUdp(serverAddr);
             if (udp == null) {
-                return;
+                return false;
             }
             
             // Use the interface where the relay is configured,
@@ -632,19 +656,22 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             if (conn != null) {
                 conn.send2net(pck);
                 conn.setClosing();
+                return true;
             }
+            return false;
         } catch (Exception e) {
             if (debugger.servDhcp4traf) {
                 logger.debug("dhcp relay forward to server error: " + e.getMessage());
             }
+            return false;
         }
     }
 
-    private void forwardToClient(packHolder pck, packDhcp4 dhcp, ipFwdIface clientInterface) {
+    private boolean forwardToClient(packHolder pck, packDhcp4 dhcp, ipFwdIface clientInterface) {
         try {
             cfgVrf vrf = relayVrf != null ? relayVrf : srvVrf;
             if (vrf == null) {
-                return;
+                return false;
             }
             
             // Determine client address - RFC 2131 compliant
@@ -660,7 +687,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
             prtUdp udp = vrf.getUdp(clientAddr);
             if (udp == null) {
-                return;
+                return false;
             }
             
             // Use provided client interface
@@ -676,11 +703,14 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             if (conn != null) {
                 conn.send2net(pck);
                 conn.setClosing();
+                return true;
             }
+            return false;
         } catch (Exception e) {
             if (debugger.servDhcp4traf) {
                 logger.debug("dhcp relay forward to client error: " + e.getMessage());
             }
+            return false;
         }
     }
 
@@ -953,6 +983,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             if (debugger.servDhcp4traf) {
                 logger.debug("dhcp4 relay error parsing options: " + e.getMessage());
             }
+            relayStats.optionParsingErrors++;
             return null;
         }
     }
@@ -1089,11 +1120,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     /**
      * Forward packet to another relay (multi-hop)
      */
-    private void forwardToRelay(packHolder pck, addrIPv4 relayAddr) {
+    private boolean forwardToRelay(packHolder pck, addrIPv4 relayAddr) {
         try {
             cfgVrf vrf = relayVrf != null ? relayVrf : srvVrf;
             if (vrf == null) {
-                return;
+                return false;
             }
             
             addrIP targetAddr = new addrIP();
@@ -1104,7 +1135,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 if (debugger.servDhcp4traf) {
                     logger.debug("dhcp4 relay no UDP for target " + targetAddr);
                 }
-                return;
+                return false;
             }
             
             ipFwdIface fwdIfc = null;
@@ -1121,15 +1152,18 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 if (debugger.servDhcp4traf) {
                     logger.debug("dhcp4 relay forwarded to relay " + targetAddr);
                 }
+                return true;
             } else {
                 if (debugger.servDhcp4traf) {
                     logger.debug("dhcp4 relay failed to create connection to " + targetAddr);
                 }
+                return false;
             }
         } catch (Exception e) {
             if (debugger.servDhcp4traf) {
                 logger.debug("dhcp relay forward to relay error: " + e.getMessage());
             }
+            return false;
         }
     }
 
@@ -1619,7 +1653,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         purgeTimer.schedule(task, 1000, 60000);
     }
 
-    private servDhcp4bind findBinding(addrMac mac, int create, addrIPv4 hint) {
+    protected servDhcp4bind findBinding(addrMac mac, int create, addrIPv4 hint) {
         servDhcp4bind ntry = new servDhcp4bind();
         ntry.mac = mac.copyBytes();
         if (forbidden.find(ntry) != null) {
@@ -1845,12 +1879,16 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             res.add("Max Processing Time|" + relayStats.maxProcessingTime + " μs|Maximum packet processing time");
             res.add("Min Processing Time|" + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime) + " μs|Minimum packet processing time");
         }
+        if (relayStats.errorProcessingCount > 0) {
+            res.add("Average Error Processing Time|" + relayStats.getAverageErrorProcessingTime() + " μs|Average error processing time");
+        }
         
         // Error statistics
         res.add("Invalid GIADDR Errors|" + relayStats.invalidGiaddrErrors + "|Packets with invalid or missing GIADDR");
         res.add("Routing Errors|" + relayStats.routingErrors + "|Packets that could not be routed");
         res.add("Option Parsing Errors|" + relayStats.optionParsingErrors + "|Errors parsing DHCP options");
         res.add("Buffer Overflow Errors|" + relayStats.bufferOverflowErrors + "|Buffer overflow errors");
+        res.add("Forwarding Errors|" + relayStats.forwardingErrors + "|Errors forwarding packets to servers");
         
         return res;
     }
@@ -1893,8 +1931,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     public userFormat getPerformanceStatistics() {
         userFormat res = new userFormat("|", "metric|value|unit");
         
-        if (relayStats.packetProcessingCount > 0) {
-            res.add("Total Packets Processed|" + relayStats.packetProcessingCount + "|packets");
+        long totalProcessed = relayStats.getTotalPacketsProcessed();
+        if (totalProcessed > 0) {
+            res.add("Total Packets Processed|" + totalProcessed + "|packets");
+            res.add("Successful Packets|" + relayStats.packetProcessingCount + "|packets");
+            res.add("Error Packets|" + relayStats.errorProcessingCount + "|packets");
             res.add("Total Processing Time|" + relayStats.totalProcessingTime + "|μs");
             res.add("Average Processing Time|" + relayStats.getAverageProcessingTime() + "|μs");
             res.add("Maximum Processing Time|" + relayStats.maxProcessingTime + "|μs");
@@ -1903,7 +1944,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             // Calculate packets per second (rough estimate)
             long uptimeSeconds = (bits.getTime() - statsResetTime) / 1000;
             if (uptimeSeconds > 0) {
-                long packetsPerSecond = relayStats.packetProcessingCount / uptimeSeconds;
+                long packetsPerSecond = totalProcessed / uptimeSeconds;
                 res.add("Packets Per Second|" + packetsPerSecond + "|pps");
             }
         } else {
@@ -1921,7 +1962,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     public userFormat getStatisticsSummary() {
         userFormat res = new userFormat("|", "category|packets|percentage");
         
-        long totalPackets = relayStats.packetsClientToServer + relayStats.packetsServerToClient;
+        long totalPackets = relayStats.getTotalPacketsProcessed();
         
         if (totalPackets > 0) {
             res.add("Client to Server|" + relayStats.packetsClientToServer + "|" + 
@@ -1929,9 +1970,10 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             res.add("Server to Client|" + relayStats.packetsServerToClient + "|" + 
                    String.format("%.1f%%", (relayStats.packetsServerToClient * 100.0) / totalPackets));
             res.add("Forwarded|" + relayStats.packetsForwarded + "|" + 
-                   String.format("%.1f%%", (relayStats.packetsForwarded * 100.0) / totalPackets));
+                   String.format("%.1f%%", relayStats.getSuccessRate()));
             res.add("Dropped|" + relayStats.packetsDropped + "|" + 
-                   String.format("%.1f%%", (relayStats.packetsDropped * 100.0) / totalPackets));
+                   String.format("%.1f%%", relayStats.getDropRate()));
+            res.add("Forwarded to Servers|" + relayStats.packetsForwardedToServers + "|individual server forwards");
         } else {
             res.add("No Traffic|0|No packets processed");
         }
@@ -2027,17 +2069,24 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         
         // Performance metrics
         result.add("Performance Metrics:");
-        if (relayStats.packetProcessingCount > 0) {
-            result.add("  Total Packets Processed: " + relayStats.packetProcessingCount);
+        long totalProcessed = relayStats.getTotalPacketsProcessed();
+        if (totalProcessed > 0) {
+            result.add("  Total Packets Processed: " + totalProcessed);
+            result.add("  Successful Packets: " + relayStats.packetProcessingCount);
+            result.add("  Error Packets: " + relayStats.errorProcessingCount);
             result.add("  Total Processing Time: " + relayStats.totalProcessingTime + " μs");
             result.add("  Average Processing Time: " + relayStats.getAverageProcessingTime() + " μs");
             result.add("  Maximum Processing Time: " + relayStats.maxProcessingTime + " μs");
             result.add("  Minimum Processing Time: " + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime) + " μs");
             
+            if (relayStats.errorProcessingCount > 0) {
+                result.add("  Average Error Processing Time: " + relayStats.getAverageErrorProcessingTime() + " μs");
+            }
+            
             // Calculate packets per second (rough estimate)
             long uptimeSeconds = (bits.getTime() - statsResetTime) / 1000;
             if (uptimeSeconds > 0) {
-                long packetsPerSecond = relayStats.packetProcessingCount / uptimeSeconds;
+                long packetsPerSecond = totalProcessed / uptimeSeconds;
                 result.add("  Packets Per Second: " + packetsPerSecond + " pps");
             }
         } else {
@@ -2051,18 +2100,20 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         result.add("  Routing Errors: " + relayStats.routingErrors);
         result.add("  Option Parsing Errors: " + relayStats.optionParsingErrors);
         result.add("  Buffer Overflow Errors: " + relayStats.bufferOverflowErrors);
+        result.add("  Forwarding Errors: " + relayStats.forwardingErrors);
         result.add("");
         
         // Summary with percentages
-        long totalPackets = relayStats.packetsClientToServer + relayStats.packetsServerToClient;
+        long totalPackets = relayStats.getTotalPacketsProcessed();
         result.add("Summary:");
         if (totalPackets > 0) {
             result.add("  Client to Server: " + relayStats.packetsClientToServer + " (" + 
                      String.format("%.1f%%", (relayStats.packetsClientToServer * 100.0) / totalPackets) + ")");
             result.add("  Server to Client: " + relayStats.packetsServerToClient + " (" + 
                      String.format("%.1f%%", (relayStats.packetsServerToClient * 100.0) / totalPackets) + ")");
-            result.add("  Success Rate: " + String.format("%.1f%%", (relayStats.packetsForwarded * 100.0) / totalPackets));
-            result.add("  Drop Rate: " + String.format("%.1f%%", (relayStats.packetsDropped * 100.0) / totalPackets));
+            result.add("  Success Rate: " + String.format("%.1f%%", relayStats.getSuccessRate()));
+            result.add("  Drop Rate: " + String.format("%.1f%%", relayStats.getDropRate()));
+            result.add("  Forwarded to Servers: " + relayStats.packetsForwardedToServers + " (individual server forwards)");
         } else {
             result.add("  No Traffic Statistics Available");
         }
@@ -2127,6 +2178,59 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         }
     }
 
+    /**
+     * Send DHCP packet with proper unicast/broadcast handling
+     * @param pckd DHCP packet to send
+     * @param ntry binding entry with client MAC and IP
+     * @return true if failed, false if successful
+     */
+    protected synchronized boolean sendPack(packDhcp4 pckd, servDhcp4bind ntry) {
+        addrIP adr = new addrIP();
+        int destPort = packDhcp4.portCnum; // Default: client port 68
+        
+        // RFC 2131 compliant: Check giaddr first
+        if (!pckd.bootpGiaddr.isEmpty()) {
+            // Relayed packet: Send response to relay agent (giaddr) on port 67
+            adr.fromIPv4addr(pckd.bootpGiaddr);
+            destPort = packDhcp4.portSnum; // Relay port 67
+            if (debugger.servDhcp4traf) {
+                logger.debug("dhcp server: sending to relay agent at " + pckd.bootpGiaddr + " port " + destPort);
+            }
+        } else {
+            // Direct packet: Use client IP or broadcast on port 68
+            adr.fromIPv4addr(ntry.ip);
+            srvIface.ipIf4.updateL2info(0, ntry.mac, adr);
+            if (pckd.bootpBroadcast) {
+                adr.fromIPv4addr(addrIPv4.getBroadcast());
+                srvIface.ipIf4.updateL2info(0, ntry.mac, adr);
+            }
+            destPort = packDhcp4.portCnum; // Client port 68
+        }
+        
+        if (debugger.servDhcp4traf) {
+            logger.debug("tx " + adr + ":" + destPort + " " + pckd);
+        }
+        
+        // Use the same pattern as relay functions for proper connection cleanup
+        prtUdp udp = srvVrf.getUdp(adr);
+        if (udp == null) {
+            return true;
+        }
+        
+        // Use port 0 (random) as source port for server replies to avoid conflicts
+        int sourcePort = (!pckd.bootpGiaddr.isEmpty()) ? 0 : packDhcp4.portSnum;
+        prtGenConn conn = udp.packetConnect(this, srvIface.fwdIf4, sourcePort, adr, destPort, "dhcp4-reply", -1, null, -1, -1);
+        if (conn == null) {
+            return true;
+        }
+        
+        packHolder pckh = new packHolder(true, true);
+        pckd.createHeader(pckh, options);
+        conn.send2net(pckh);
+        conn.setClosing(); // Properly close connection
+        return false;
+    }
+
 }
 
 /**
@@ -2141,6 +2245,7 @@ class servDhcp4RelayStats {
     public long packetsDropped = 0;
     public long packetsInvalid = 0;
     public long packetsForwarded = 0;
+    public long packetsForwardedToServers = 0; 
     
     // Agent Options statistics
     public long agentOptionsAdded = 0;
@@ -2153,12 +2258,15 @@ class servDhcp4RelayStats {
     public long multiHopPackets = 0;
     public long maxHopCountExceeded = 0;
     public long hopCountTotal = 0;
+    public long totalPacketsProcessed = 0;
     
     // Performance metrics (in microseconds)
     public long totalProcessingTime = 0;
     public long packetProcessingCount = 0;
     public long maxProcessingTime = 0;
     public long minProcessingTime = Long.MAX_VALUE;
+    public long errorProcessingTime = 0;
+    public long errorProcessingCount = 0;
     
     // Per sub-option statistics
     public long circuitIdAdded = 0;
@@ -2171,6 +2279,7 @@ class servDhcp4RelayStats {
     public long routingErrors = 0;
     public long optionParsingErrors = 0;
     public long bufferOverflowErrors = 0;
+    public long forwardingErrors = 0;
     
     // Relay mode statistics
     public long replaceOperations = 0;
@@ -2187,6 +2296,7 @@ class servDhcp4RelayStats {
         packetsDropped = 0;
         packetsInvalid = 0;
         packetsForwarded = 0;
+        packetsForwardedToServers = 0;
         
         agentOptionsAdded = 0;
         agentOptionsReplaced = 0;
@@ -2197,11 +2307,14 @@ class servDhcp4RelayStats {
         multiHopPackets = 0;
         maxHopCountExceeded = 0;
         hopCountTotal = 0;
+        totalPacketsProcessed = 0;
         
         totalProcessingTime = 0;
         packetProcessingCount = 0;
         maxProcessingTime = 0;
         minProcessingTime = Long.MAX_VALUE;
+        errorProcessingTime = 0;
+        errorProcessingCount = 0;
         
         circuitIdAdded = 0;
         remoteIdAdded = 0;
@@ -2212,6 +2325,7 @@ class servDhcp4RelayStats {
         routingErrors = 0;
         optionParsingErrors = 0;
         bufferOverflowErrors = 0;
+        forwardingErrors = 0;
         
         replaceOperations = 0;
         appendOperations = 0;
@@ -2220,7 +2334,7 @@ class servDhcp4RelayStats {
     }
     
     /**
-     * Update processing time statistics
+     * Update processing time statistics for successful packets
      */
     public void updateProcessingTime(long processingTime) {
         totalProcessingTime += processingTime;
@@ -2234,7 +2348,21 @@ class servDhcp4RelayStats {
     }
     
     /**
-     * Get average processing time in microseconds
+     * Update processing time statistics for error packets
+     */
+    public void updateErrorProcessingTime(long processingTime) {
+        errorProcessingTime += processingTime;
+        errorProcessingCount++;
+        if (processingTime > maxProcessingTime) {
+            maxProcessingTime = processingTime;
+        }
+        if (processingTime < minProcessingTime) {
+            minProcessingTime = processingTime;
+        }
+    }
+    
+    /**
+     * Get average processing time in microseconds (successful packets only)
      */
     public long getAverageProcessingTime() {
         if (packetProcessingCount == 0) {
@@ -2244,13 +2372,52 @@ class servDhcp4RelayStats {
     }
     
     /**
-     * Get average hop count
+     * Get average error processing time in microseconds
+     */
+    public long getAverageErrorProcessingTime() {
+        if (errorProcessingCount == 0) {
+            return 0;
+        }
+        return errorProcessingTime / errorProcessingCount;
+    }
+    
+    /**
+     * Get average hop count (FIXED: now correctly calculated)
      */
     public double getAverageHopCount() {
-        if (multiHopPackets == 0) {
+        if (totalPacketsProcessed == 0) {
             return 0.0;
         }
-        return (double) hopCountTotal / multiHopPackets;
+        return (double) hopCountTotal / totalPacketsProcessed;
+    }
+    
+    /**
+     * Get total packets processed
+     */
+    public long getTotalPacketsProcessed() {
+        return packetsClientToServer + packetsServerToClient;
+    }
+    
+    /**
+     * Get success rate percentage
+     */
+    public double getSuccessRate() {
+        long totalPackets = getTotalPacketsProcessed();
+        if (totalPackets == 0) {
+            return 0.0;
+        }
+        return (double) packetsForwarded * 100.0 / totalPackets;
+    }
+    
+    /**
+     * Get drop rate percentage
+     */
+    public double getDropRate() {
+        long totalPackets = getTotalPacketsProcessed();
+        if (totalPackets == 0) {
+            return 0.0;
+        }
+        return (double) packetsDropped * 100.0 / totalPackets;
     }
 }
 
@@ -2357,37 +2524,10 @@ class servDhcp4worker implements Runnable {
             logger.debug("tx " + pckd);
         }
         
-        // Intelligent routing based on giaddr
-        if (!pckd.bootpGiaddr.isEmpty()) {
-            // Relayed packet: use existing connection back to relay agent
-            pckd.createHeader(pck, parent.options);
-            conn.send2net(pck);
-        } else {
-            // Local packet: handle broadcast/unicast properly
-            if (pckd.bootpBroadcast) {
-                // Client requested broadcast response - create broadcast connection
-                addrIP broadcastAddr = new addrIP();
-                broadcastAddr.fromIPv4addr(addrIPv4.getBroadcast());
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp server: sending broadcast response to " + broadcastAddr);
-                }
-                
-                pipeSide pip = parent.srvVrf.udp4.streamConnect(new pipeLine(32768, true), parent.srvIface.fwdIf4, 
-                    packDhcp4.portSnum, broadcastAddr, packDhcp4.portCnum, parent.srvName(), -1, null, -1, -1);
-                if (pip != null) {
-                    pip.wait4ready(1000);
-                    pip.setTime(1000);
-                    packHolder broadcastPck = new packHolder(true, true);
-                    pckd.createHeader(broadcastPck, parent.options);
-                    broadcastPck.merge2end();
-                    broadcastPck.pipeSend(pip, 0, broadcastPck.dataSize(), 2);
-                    pip.setClose();
-                }
-            } else {
-                // Unicast response: use existing connection
-                pckd.createHeader(pck, parent.options);
-                conn.send2net(pck);
-            }
+        // Find the binding for this client and use the existing sendPack method
+        servDhcp4bind ntry = parent.findBinding(pckd.bootpChaddr, 0, pckd.bootpCiaddr);
+        if (ntry != null) {
+            parent.sendPack(pckd, ntry);
         }
     }
 
