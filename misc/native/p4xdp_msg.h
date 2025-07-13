@@ -561,6 +561,31 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "labsnei") == 0) {
+        i = rour.nexthop = atoi(arg[2]);
+        str2mac(&neir.macs[0], arg[3]);
+        str2mac(&neir.macs[6], arg[5]);
+        neir.port = atoi(arg[6]);
+        neir.aclport = atoi(arg[7]);
+        neir.sess = atoi(arg[8]);
+        neir.trgPort = atoi(arg[9]);
+        neir.srcPort = atoi(arg[10]);
+        *((int*)&neir.srcAddr[0]) = atoi(arg[11]);
+        *((int*)&neir.srcAddr[4]) = atoi(arg[12]);
+        *((int*)&neir.srcAddr[8]) = atoi(arg[13]);
+        *((int*)&neir.srcAddr[12]) = atoi(arg[14]);
+        *((int*)&neir.trgAddr[0]) = atoi(arg[15]);
+        *((int*)&neir.trgAddr[4]) = atoi(arg[16]);
+        *((int*)&neir.trgAddr[8]) = atoi(arg[17]);
+        *((int*)&neir.trgAddr[12]) = atoi(arg[18]);
+        neir.cmd = 12;
+        if (del == 0) {
+            if (bpf_map_delete_elem(neighs_fd, &i) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(neighs_fd, &i, &neir, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "myaddr4") == 0) {
         inet_pton(AF_INET, arg[2], buf2);
         rou4.vrf = atoi(arg[5]);

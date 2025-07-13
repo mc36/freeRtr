@@ -78,7 +78,7 @@ void doIfaceLoop(int * param) {
 
 
 int main(int argc, char **argv) {
-    dataPorts = (argc - 6) / 2;
+    dataPorts = (argc - 5) / 2;
     if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <laddr> <raddr> <lport1> <rport1> [lportN] [rportN]");
     if (dataPorts > maxPorts) dataPorts = maxPorts;
     struct sockaddr_in addrLoc;
@@ -96,6 +96,10 @@ int main(int argc, char **argv) {
         peers[i].sin_port = htons(atoi(argv[(i*2)+7]));
         if ((sockets[i] = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
         if (bind(sockets[i], (struct sockaddr *) &addrLoc, sizeof(addrLoc)) < 0) err("failed to bind socket");
+        if (connect(sockets[i], (struct sockaddr *) &peers[i], sizeof(addrLoc)) < 0) err("failed to connect socket");
+        int sockOpt = 524288;
+        setsockopt(sockets[i], SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt));
+        setsockopt(sockets[i], SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt));
         ifaceId[i] = i;
     }
     if (initTables() != 0) err("error initializing tables");

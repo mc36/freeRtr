@@ -16,7 +16,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -67,19 +67,15 @@ public class servMultiplexer extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server multiplexer .*!" + cmds.tabulator + "port " + port,
-        "server multiplexer .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server multiplexer .*!" + cmds.tabulator + "timeout 60000",
-        "server multiplexer .*!" + cmds.tabulator + "buffer 65536",
-        "server multiplexer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server multiplexer .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server multiplexer .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server multiplexer .*", cmds.tabulator + "timeout 60000", null),
+        new userFilter("server multiplexer .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server multiplexer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -185,7 +181,7 @@ public class servMultiplexer extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "logging", "set logging");
         l.add(null, false, 1, new int[]{2}, "timeout", "set timeout on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");

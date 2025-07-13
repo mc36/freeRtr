@@ -49,9 +49,13 @@ public class userHwdet {
          */
         xsk,
         /**
-         * cmp
+         * cmp1
          */
-        cmp
+        cmp1,
+        /**
+         * cmp2
+         */
+        cmp2,
     }
 
     /**
@@ -78,6 +82,8 @@ public class userHwdet {
     private boolean binMain = false;
 
     private boolean inlineLoop = false;
+
+    private boolean busyWait = false;
 
     private ifcTyp ifaceType = ifcTyp.socat;
 
@@ -107,7 +113,7 @@ public class userHwdet {
         starter.add("echo starting " + s + ".");
     }
 
-    private void makeLoop(String fn, List<String> pre, List<String> lop) {
+    private void makeLoop(String fn, List<String> pre, List<String> lop, boolean fin) {
         List<String> txt = new ArrayList<String>();
         txt.add(scrBeg);
         txt.add("");
@@ -121,12 +127,20 @@ public class userHwdet {
         txt.add("  sleep 1");
         txt.add("  done");
         bits.buf2txt(true, txt, path + prefix + fn);
-        starter.add("start-stop-daemon -S -b -x " + path + prefix + fn);
+        if (!busyWait) {
+            starter.add("start-stop-daemon -S -b -x " + path + prefix + fn);
+            return;
+        }
+        if (!fin) {
+            starter.add(path + prefix + fn + " > /dev/null &");
+            return;
+        }
+        starter.add(path + prefix + fn + " > /dev/null");
     }
 
     private void makeLoop(String fn, List<String> pre, String cmd) {
         if (!inlineLoop) {
-            makeLoop(fn, pre, bits.str2lst(cmd));
+            makeLoop(fn, pre, bits.str2lst(cmd), false);
             return;
         }
         starter.addAll(pre);
@@ -155,8 +169,11 @@ public class userHwdet {
         if (s.equals("xsk")) {
             return ifcTyp.xsk;
         }
-        if (s.equals("cmp")) {
-            return ifcTyp.cmp;
+        if (s.equals("cmp1")) {
+            return ifcTyp.cmp1;
+        }
+        if (s.equals("cmp2")) {
+            return ifcTyp.cmp2;
         }
         if (s.equals("urng")) {
             return ifcTyp.urng;
@@ -205,34 +222,47 @@ public class userHwdet {
      * @param mac mac value
      */
     public static void setupIface(List<String> lst, String pth, ifcTyp typ, String nam, int mtu, String mac) {
-        if (typ != ifcTyp.socat) {
-            if (mac == null) {
-                mac = "";
-            } else {
-                mac = " " + mac;
-            }
-            lst.add(pth + "seth.bin " + nam + " " + mtu + mac);
-            return;
+        switch (typ) {
+            case cmp1:
+            case cmp2:
+                if (mac == null) {
+                    mac = "";
+                } else {
+                    mac = " hw ether " + mac;
+                }
+                lst.add("ndp -i " + nam + " disabled -auto_linklocal");
+                lst.add("ifconfig " + nam + " mtu " + mtu + mac + " up");
+                return;
+            case socat:
+                if (mac == null) {
+                    mac = "";
+                } else {
+                    mac = " address " + mac;
+                }
+                lst.add("ip link set " + nam + " up multicast on promisc on mtu " + mtu + mac);
+                lst.add("ethtool -K " + nam + " rx off");
+                lst.add("ethtool -K " + nam + " tx off");
+                lst.add("ethtool -K " + nam + " sg off");
+                lst.add("ethtool -K " + nam + " tso off");
+                lst.add("ethtool -K " + nam + " ufo off");
+                lst.add("ethtool -K " + nam + " gso off");
+                lst.add("ethtool -K " + nam + " gro off");
+                lst.add("ethtool -K " + nam + " lro off");
+                lst.add("ethtool -K " + nam + " rxvlan off");
+                lst.add("ethtool -K " + nam + " txvlan off");
+                lst.add("ethtool -K " + nam + " ntuple off");
+                lst.add("ethtool -K " + nam + " rxhash off");
+                lst.add("ethtool " + "--set-eee " + nam + " eee off");
+                return;
+            default:
+                if (mac == null) {
+                    mac = "";
+                } else {
+                    mac = " " + mac;
+                }
+                lst.add(pth + "seth.bin " + nam + " " + mtu + mac);
+                return;
         }
-        if (mac == null) {
-            mac = "";
-        } else {
-            mac = " address " + mac;
-        }
-        lst.add("ip link set " + nam + " up multicast on promisc on mtu " + mtu + mac);
-        lst.add("ethtool -K " + nam + " rx off");
-        lst.add("ethtool -K " + nam + " tx off");
-        lst.add("ethtool -K " + nam + " sg off");
-        lst.add("ethtool -K " + nam + " tso off");
-        lst.add("ethtool -K " + nam + " ufo off");
-        lst.add("ethtool -K " + nam + " gso off");
-        lst.add("ethtool -K " + nam + " gro off");
-        lst.add("ethtool -K " + nam + " lro off");
-        lst.add("ethtool -K " + nam + " rxvlan off");
-        lst.add("ethtool -K " + nam + " txvlan off");
-        lst.add("ethtool -K " + nam + " ntuple off");
-        lst.add("ethtool -K " + nam + " rxhash off");
-        lst.add("ethtool " + "--set-eee " + nam + " eee off");
     }
 
     /**
@@ -257,8 +287,10 @@ public class userHwdet {
                 return path + "mapInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             case xsk:
                 return path + "xskInt.bin " + nam + " skb " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
-            case cmp:
-                return path + "cmpInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
+            case cmp1:
+                return path + "cmp1int.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
+            case cmp2:
+                return path + "cmp2int.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             case urng:
                 return path + "urngInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             default:
@@ -381,7 +413,7 @@ public class userHwdet {
         if (res == null) {
             return;
         }
-        tabGen<userHwifc> lst = new tabGen<userHwifc>();
+        List<userHwifc> lst = new ArrayList<userHwifc>();
         for (int i = 0; i < res.size(); i++) {
             userHwifc ntry = userHwifc.fromRaw(res, i);
             if (ntry == null) {
@@ -466,6 +498,21 @@ public class userHwdet {
         config.add("tcp2vrf " + tcp);
     }
 
+    private void doReboot(List<String> lst, int cod) {
+        lst.add("if [ $? -eq " + cod + " ] ; then");
+        lst.add("  sync");
+        switch (ifaceType) {
+            case cmp1:
+            case cmp2:
+                lst.add("  reboot");
+                break;
+            default:
+                lst.add("  reboot -f");
+                break;
+        }
+        lst.add("fi");
+    }
+
     /**
      * do the work
      *
@@ -478,6 +525,7 @@ public class userHwdet {
         String tuntap = "";
         String tcpvrf = "";
         String hwId = "xxx";
+        String java = "";
         for (;;) {
             String s = cmd.word();
             if (s.length() < 1) {
@@ -494,6 +542,14 @@ public class userHwdet {
             }
             if (s.equals("path")) {
                 path = cmd.word();
+                continue;
+            }
+            if (s.equals("java")) {
+                java = cmd.word();
+                continue;
+            }
+            if (s.equals("nojava")) {
+                java = "";
                 continue;
             }
             if (s.equals("ser")) {
@@ -531,6 +587,14 @@ public class userHwdet {
             }
             if (s.equals("external")) {
                 inlineLoop = false;
+                continue;
+            }
+            if (s.equals("busywait")) {
+                busyWait = true;
+                continue;
+            }
+            if (s.equals("daemons")) {
+                busyWait = false;
                 continue;
             }
             if (s.equals("binary")) {
@@ -579,7 +643,7 @@ public class userHwdet {
         if (binMain) {
             rtr = path + "rtr.bin";
         } else {
-            rtr = "java -Xmx" + mem + " -jar " + cfgInit.getFileName();
+            rtr = java + "java -Xmx" + mem + " -jar " + cfgInit.getFileName();
         }
         starter = new ArrayList<String>();
         config = new ArrayList<String>();
@@ -587,22 +651,35 @@ public class userHwdet {
         starter.add(scrBeg);
         starter.add("");
         starter.add("cd " + path);
-        starter.add("ip link show > " + lstEth);
+        switch (ifaceType) {
+            case cmp1:
+            case cmp2:
+                starter.add("ifconfig -a > " + lstEth);
+                break;
+            default:
+                starter.add("ip link show > " + lstEth);
+                break;
+        }
         starter.add(rtr + " test hwred path " + path + " eth " + lstEth);
-        starter.add("if [ $? -eq 20 ] ; then");
-        starter.add("  sync");
-        starter.add("  reboot -f");
-        starter.add("fi");
-        starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
-        starter.add("echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6");
-        starter.add("echo 0 > /proc/sys/net/ipv6/conf/lo/disable_ipv6");
-        starter.add("ip link set lo up mtu 65535");
-        starter.add("ip addr add 127.0.0.1/8 dev lo");
-        starter.add("ip addr add ::1/128 dev lo");
-        starter.add("ulimit -c unlimited");
-        starter.add("#modprobe -r kvm_intel");
-        starter.add("#modprobe kvm_intel nested=1");
-        starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
+        doReboot(starter, 20);
+        switch (ifaceType) {
+            case cmp1:
+            case cmp2:
+                starter.add("ifconfig lo0 127.0.0.1 mtu 65535 up");
+                break;
+            default:
+                starter.add("echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6");
+                starter.add("echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6");
+                starter.add("echo 0 > /proc/sys/net/ipv6/conf/lo/disable_ipv6");
+                starter.add("ip link set lo up mtu 65535");
+                starter.add("ip addr add 127.0.0.1/8 dev lo");
+                starter.add("ip addr add ::1/128 dev lo");
+                starter.add("ulimit -c unlimited");
+                starter.add("#modprobe -r kvm_intel");
+                starter.add("#modprobe kvm_intel nested=1");
+                starter.add("#echo 1 > /sys/kernel/mm/ksm/run");
+                break;
+        }
         detectIfaces(path + lstEth);
         detectCrosses(cross);
         detectTuntap(tuntap);
@@ -614,12 +691,9 @@ public class userHwdet {
         lop.add("cd " + path);
         lop.add("stty raw < /dev/tty");
         lop.add(rtr + " router " + path + "rtr-");
-        lop.add("if [ $? -eq 4 ] ; then");
-        lop.add("  sync");
-        lop.add("  reboot -f");
-        lop.add("fi");
+        doReboot(lop, 4);
         lop.add("stty cooked < /dev/tty");
-        makeLoop("main.sh", bits.str2lst(""), lop);
+        makeLoop("main.sh", bits.str2lst(""), lop, true);
         starter.add("exit 0");
         bits.buf2txt(true, config, path + "rtr-" + cfgInit.hwCfgEnd);
         bits.buf2txt(true, starter, path + prefix + "all.sh");

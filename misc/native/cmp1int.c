@@ -176,6 +176,9 @@ help :
     printf("binded to local port %s %i.\n", inet_ntoa(addrLoc.sin_addr), portLoc);
     if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
     printf("will send to %s %i.\n", inet_ntoa(addrRem.sin_addr), portRem);
+    int sockOpt = 524288;
+    setsockopt(commSock, SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt));
+    setsockopt(commSock, SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt));
 
     ifaceName = malloc(strlen(argv[1]) + 1);
     if (ifaceName == NULL) err("error allocating memory");
@@ -205,6 +208,9 @@ help :
     write(playPipe[1], buf, i);
     printf("tcpreplay is %i, tcpdump is %i, header is %i, record is %i\n", playChld, dumpChld, i, packHead);
 
+    setgid(1);
+    setuid(1);
+    printf("serving others\n");
 
     if (pthread_create(&threadRaw, NULL, (void*) & doRawLoop, NULL)) err("error creating raw thread");
     if (pthread_create(&threadUdp, NULL, (void*) & doUdpLoop, NULL)) err("error creating udp thread");

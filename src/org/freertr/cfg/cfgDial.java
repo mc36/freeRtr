@@ -13,7 +13,7 @@ import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -58,36 +58,32 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "skip-peers-in",
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "skip-peers-out",
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-peers-in",
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "allow-peers-out",
-        "dial-peer .*!" + cmds.tabulator + "codec alaw",
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vrf",
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "source",
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target",
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "username",
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "password",
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "myname",
-        "dial-peer .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log",
-        "dial-peer .*!" + cmds.tabulator + "history 100",
-        "dial-peer .*!" + cmds.tabulator + "keepalive 0",
-        "dial-peer .*!" + cmds.tabulator + "max-calls-in 1",
-        "dial-peer .*!" + cmds.tabulator + "max-calls-out 1",
-        "dial-peer .*!" + cmds.tabulator + "register 0",
-        "dial-peer .*!" + cmds.tabulator + "subscribe 0",
-        "dial-peer .*!" + cmds.tabulator + "options 0",
-        "dial-peer .*!" + cmds.tabulator + "port-local 0",
-        "dial-peer .*!" + cmds.tabulator + "port-remote " + packSip.port,
-        "dial-peer .*!" + cmds.tabulator + "protocol sip-udp",
-        "dial-peer .*!" + cmds.tabulator + "direction none",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "skip-peers-in", null),
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "skip-peers-out", null),
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-peers-in", null),
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "allow-peers-out", null),
+        new userFilter("dial-peer .*", cmds.tabulator + "codec alaw", null),
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "vrf", null),
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "source", null),
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target", null),
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "username", null),
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "password", null),
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "myname", null),
+        new userFilter("dial-peer .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log", null),
+        new userFilter("dial-peer .*", cmds.tabulator + "history 100", null),
+        new userFilter("dial-peer .*", cmds.tabulator + "keepalive 0", null),
+        new userFilter("dial-peer .*", cmds.tabulator + "max-calls-in 1", null),
+        new userFilter("dial-peer .*", cmds.tabulator + "max-calls-out 1", null),
+        new userFilter("dial-peer .*", cmds.tabulator + "register 0", null),
+        new userFilter("dial-peer .*", cmds.tabulator + "subscribe 0", null),
+        new userFilter("dial-peer .*", cmds.tabulator + "options 0", null),
+        new userFilter("dial-peer .*", cmds.tabulator + "port-local 0", null),
+        new userFilter("dial-peer .*", cmds.tabulator + "port-remote " + packSip.port, null),
+        new userFilter("dial-peer .*", cmds.tabulator + "protocol sip-udp", null),
+        new userFilter("dial-peer .*", cmds.tabulator + "direction none", null)
+    };
 
     /**
      * direction: 0=none, 1=in, 2=out, 3=both
@@ -701,7 +697,7 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "description", "specify description");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "description");
         l.add(null, false, 1, new int[]{2}, "skip-peers-in", "skip dial peers incoming");

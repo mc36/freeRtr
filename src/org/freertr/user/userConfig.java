@@ -107,7 +107,7 @@ public class userConfig {
 
     private pipeSide pipe; // pipe to use
 
-    private userReader reader; // reader of the user
+    private userRead reader; // reader of the user
 
     private cmds cmd; // currently processed string
 
@@ -129,7 +129,7 @@ public class userConfig {
      * @param pip pipeline to use as input
      * @param rdr reader to use as input
      */
-    public userConfig(pipeSide pip, userReader rdr) {
+    public userConfig(pipeSide pip, userRead rdr) {
         pipe = pip;
         reader = rdr;
         resetMode();
@@ -152,8 +152,8 @@ public class userConfig {
      * @param needGen need generic
      * @return helping instance
      */
-    public userHelping getHelping(boolean needEdit, boolean needShow, boolean needGen) {
-        userHelping l = new userHelping();
+    public userHelp getHelping(boolean needEdit, boolean needShow, boolean needGen) {
+        userHelp l = new userHelp();
         l.expand = needExpand;
         if (needEdit) {
             l.add(null, false, 1, new int[]{-1}, "editor", "edit the current section");
@@ -164,7 +164,7 @@ public class userConfig {
             userExec.getHelpPipes(l, 110, true);
         }
         if (needGen) {
-            userHelping.getCfgGen(l);
+            userHelp.getCfgGen(l);
         }
         switch (modeV) {
             case global:
@@ -355,7 +355,7 @@ public class userConfig {
         return executeCommand(s);
     }
 
-    private void getHelpGlobal(userHelping l) {
+    private void getHelpGlobal(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "hostname", "set name of system");
         l.add(null, false, 2, new int[]{-1}, "<str>", "name of system");
         l.add(null, false, 1, new int[]{-1}, "buggy", "enable dangerous things");
@@ -908,7 +908,7 @@ public class userConfig {
         l.add(null, false, 3, new int[]{-1}, "<name:mnk>", "name of menu");
         l.add(null, false, 2, new int[]{3}, "tui", "tui based");
         l.add(null, false, 3, new int[]{-1}, "<name:mnt>", "name of menu");
-        userHelping k = new userHelping();
+        userHelp k = new userHelp();
         k.expand = true;
         k.add(null, false, 4, new int[]{5}, "vrf", "bind a vrf");
         k.add(null, false, 5, new int[]{4, -1}, "<name:vrf>", "vrf to bind to");
@@ -1124,7 +1124,7 @@ public class userConfig {
                 return;
             }
             a = c.getRemaining();
-            userHelping hlp = getHelping(false, true, true);
+            userHelp hlp = getHelping(false, true, true);
             reader.setContext(hlp, "");
             String b = hlp.repairLine(a);
             if (b.length() < 1) {
@@ -2053,7 +2053,7 @@ public class userConfig {
         }
     }
 
-    private void getHelpIpX(userHelping l) {
+    private void getHelpIpX(userHelp l) {
         l.add(null, false, 2, new int[]{3}, "multicast", "configure multicast parameters");
         l.add(null, false, 3, new int[]{4}, "<name:vrf>", "name of routing table");
         l.add(null, false, 4, new int[]{5}, "join-group", "unconditionally process multicast traffic");
@@ -2099,6 +2099,8 @@ public class userConfig {
         l.add(null, false, 4, new int[]{5}, "sequence", "sequence number");
         l.add(null, false, 5, new int[]{6}, "<num>", "number");
         l.add(null, false, 6, new int[]{-1}, "log-translations", "turn on logging");
+        l.add(null, false, 6, new int[]{7}, "filter", "specify filter acl");
+        l.add(null, false, 7, new int[]{-1}, "<name:acl>", "access list name");
         l.add(null, false, 6, new int[]{7}, "timeout", "specify timeout");
         l.add(null, false, 7, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 6, new int[]{7}, "sessions", "specify translation limit");

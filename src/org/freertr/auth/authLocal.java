@@ -18,7 +18,7 @@ import org.freertr.cry.cryKeyGeneric;
 import org.freertr.serv.servPop3;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -270,7 +270,7 @@ public class authLocal extends authGeneric {
      *
      * @param l help
      */
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "allowed", "allow one command");
         l.add(null, false, 2, new int[]{2, -1}, "<text>", "command");
         l.add(null, false, 1, new int[]{2}, "forbidden", "forbid one command");

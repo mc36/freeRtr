@@ -9,8 +9,8 @@
 .bad { color: red }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v25.6.19-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-06-19 09:25:00, took 00:14:20, with 50 workers, on 3940 cases, 0 failed, 0 traces, 3 retries<br/>
+release: freeRouter v25.7.13-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2025-07-13 20:37:30, took 00:14:47, with 50 workers, on 3986 cases, 0 failed, 0 traces, 3 retries<br/>
 jvm: ./rtr.bin, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -218,6 +218,10 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-hairpin03.tst">conn-hairpin03.tst</a></td><td>success</td><td>bundle hairpin</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-hairpin04.tst">conn-hairpin04.tst</a></td><td>success</td><td>bridge hairpin</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-hdlc.tst">conn-hdlc.tst</a></td><td>success</td><td>hdlc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-hip01.tst">conn-hip01.tst</a></td><td>success</td><td>hip over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-hip02.tst">conn-hip02.tst</a></td><td>success</td><td>hip over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-hip03.tst">conn-hip03.tst</a></td><td>success</td><td>hip over hip</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-hip04.tst">conn-hip04.tst</a></td><td>success</td><td>hip over loopback</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-hsrp.tst">conn-hsrp.tst</a></td><td>success</td><td>hsrp over ethernet</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-icmp01.tst">conn-icmp01.tst</a></td><td>success</td><td>icmptunnel over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-icmp02.tst">conn-icmp02.tst</a></td><td>success</td><td>icmptunnel over ipv6</td></tr>
@@ -1161,6 +1165,14 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis15.tst">intop1-isis15.tst</a></td><td>success</td><td>interop1: isis md5 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis16.tst">intop1-isis16.tst</a></td><td>success</td><td>interop1: isis lsp md5 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis17.tst">intop1-isis17.tst</a></td><td>success</td><td>interop1: integrated isis multi-topology</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis18.tst">intop1-isis18.tst</a></td><td>success</td><td>interop1: isis sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis19.tst">intop1-isis19.tst</a></td><td>success</td><td>interop1: isis lsp sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis20.tst">intop1-isis20.tst</a></td><td>success</td><td>interop1: isis sha256 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis21.tst">intop1-isis21.tst</a></td><td>success</td><td>interop1: isis lsp sha256 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis22.tst">intop1-isis22.tst</a></td><td>success</td><td>interop1: isis sha384 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis23.tst">intop1-isis23.tst</a></td><td>success</td><td>interop1: isis lsp sha384 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis24.tst">intop1-isis24.tst</a></td><td>success</td><td>interop1: isis sha512 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis25.tst">intop1-isis25.tst</a></td><td>success</td><td>interop1: isis lsp sha512 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-l2tp01.tst">intop1-l2tp01.tst</a></td><td>success</td><td>interop1: l2tp2 client</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-l2tp02.tst">intop1-l2tp02.tst</a></td><td>success</td><td>interop1: l2tp2 server</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-l2tp03.tst">intop1-l2tp03.tst</a></td><td>success</td><td>interop1: l2tp3 server</td></tr>
@@ -1191,6 +1203,10 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf12.tst">intop1-ospf12.tst</a></td><td>success</td><td>interop1: ospf php sr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf13.tst">intop1-ospf13.tst</a></td><td>success</td><td>interop1: ospf te with pcep</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf14.tst">intop1-ospf14.tst</a></td><td>success</td><td>interop1: ospf md5 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf15.tst">intop1-ospf15.tst</a></td><td>success</td><td>interop1: ospf sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf16.tst">intop1-ospf16.tst</a></td><td>success</td><td>interop1: ospf sha256 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf17.tst">intop1-ospf17.tst</a></td><td>success</td><td>interop1: ospf sha384 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf18.tst">intop1-ospf18.tst</a></td><td>success</td><td>interop1: ospf sha512 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-pppoe01.tst">intop1-pppoe01.tst</a></td><td>success</td><td>interop1: pppoe client</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-pppoe02.tst">intop1-pppoe02.tst</a></td><td>success</td><td>interop1: pppoe server</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-pppoe03.tst">intop1-pppoe03.tst</a></td><td>success</td><td>interop1: pppoe with pap</td></tr>
@@ -1260,6 +1276,10 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-isis16.tst">intop2-isis16.tst</a></td><td>success</td><td>interop2: isis md5 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-isis17.tst">intop2-isis17.tst</a></td><td>success</td><td>interop2: isis lsp md5 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-isis18.tst">intop2-isis18.tst</a></td><td>success</td><td>interop2: integrated isis multi-topology</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop2-isis19.tst">intop2-isis19.tst</a></td><td>success</td><td>interop2: isis sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop2-isis20.tst">intop2-isis20.tst</a></td><td>success</td><td>interop2: isis lsp sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop2-isis21.tst">intop2-isis21.tst</a></td><td>success</td><td>interop2: isis sha256 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop2-isis22.tst">intop2-isis22.tst</a></td><td>success</td><td>interop2: isis lsp sha256 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-ldp01.tst">intop2-ldp01.tst</a></td><td>success</td><td>interop2: ldp lsp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-ldp02.tst">intop2-ldp02.tst</a></td><td>success</td><td>interop2: ethernet over mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-ldp03.tst">intop2-ldp03.tst</a></td><td>success</td><td>interop2: ldp p2mp lsp</td></tr>
@@ -1283,6 +1303,8 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-ospf13.tst">intop2-ospf13.tst</a></td><td>success</td><td>interop2: ospf te with pcep</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-ospf14.tst">intop2-ospf14.tst</a></td><td>success</td><td>interop2: ospf bidir te</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-ospf15.tst">intop2-ospf15.tst</a></td><td>success</td><td>interop2: ospf md5 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop2-ospf16.tst">intop2-ospf16.tst</a></td><td>success</td><td>interop2: ospf sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop2-ospf17.tst">intop2-ospf17.tst</a></td><td>success</td><td>interop2: ospf sha256 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-pppoe01.tst">intop2-pppoe01.tst</a></td><td>success</td><td>interop2: pppoe with pap</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-pppoe02.tst">intop2-pppoe02.tst</a></td><td>success</td><td>interop2: pppoe with chap</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop2-rip01.tst">intop2-rip01.tst</a></td><td>success</td><td>interop2: rip</td></tr>
@@ -1460,6 +1482,8 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-ldp28.tst">mpls-ldp28.tst</a></td><td>success</td><td>ldp over point2point ethernet</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-ldp29.tst">mpls-ldp29.tst</a></td><td>success</td><td>static labels</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-ldp30.tst">mpls-ldp30.tst</a></td><td>success</td><td>static labels with ldp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/mpls-ldp31.tst">mpls-ldp31.tst</a></td><td>success</td><td>labels from peer</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/mpls-ldp32.tst">mpls-ldp32.tst</a></td><td>success</td><td>ldp te</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-nsh01.tst">mpls-nsh01.tst</a></td><td>success</td><td>nsh over ethernet</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-nsh02.tst">mpls-nsh02.tst</a></td><td>success</td><td>nsh over ethernet vlan</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-nsh03.tst">mpls-nsh03.tst</a></td><td>success</td><td>nsh over ethernet bridge</td></tr>
@@ -2444,6 +2468,8 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout489.tst">p4lang-rout489.tst</a></td><td>success</td><td>p4lang: mgre routing over hairpin qinq</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout490.tst">p4lang-rout490.tst</a></td><td>success</td><td>p4lang: mgre routing over qinq bridge</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout491.tst">p4lang-rout491.tst</a></td><td>success</td><td>p4lang: mgre mpls over qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout492.tst">p4lang-rout492.tst</a></td><td>success</td><td>p4lang: ldp te over mpls tail+head</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout493.tst">p4lang-rout493.tst</a></td><td>success</td><td>p4lang: ldp te over mpls mid</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action01.tst">qos-action01.tst</a></td><td>success</td><td>qos ingress transmit action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action02.tst">qos-action02.tst</a></td><td>success</td><td>qos egress transmit action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action03.tst">qos-action03.tst</a></td><td>success</td><td>qos ingress drop action</td></tr>
@@ -3575,6 +3601,18 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-isis109.tst">rout-isis109.tst</a></td><td>success</td><td>isis flexalgo</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-isis110.tst">rout-isis110.tst</a></td><td>success</td><td>integrated isis flexalgo</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-isis111.tst">rout-isis111.tst</a></td><td>success</td><td>isis with pmtud</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis112.tst">rout-isis112.tst</a></td><td>success</td><td>isis ldp sync</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis113.tst">rout-isis113.tst</a></td><td>success</td><td>integrated isis ldp sync</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis114.tst">rout-isis114.tst</a></td><td>success</td><td>isis sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis115.tst">rout-isis115.tst</a></td><td>success</td><td>isis lsp sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis116.tst">rout-isis116.tst</a></td><td>success</td><td>isis sha224 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis117.tst">rout-isis117.tst</a></td><td>success</td><td>isis lsp sha224 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis118.tst">rout-isis118.tst</a></td><td>success</td><td>isis sha256 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis119.tst">rout-isis119.tst</a></td><td>success</td><td>isis lsp sha256 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis120.tst">rout-isis120.tst</a></td><td>success</td><td>isis sha384 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis121.tst">rout-isis121.tst</a></td><td>success</td><td>isis lsp sha384 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis122.tst">rout-isis122.tst</a></td><td>success</td><td>isis sha512 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-isis123.tst">rout-isis123.tst</a></td><td>success</td><td>isis lsp sha512 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp01.tst">rout-lsrp01.tst</a></td><td>success</td><td>lsrp point2point connection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp02.tst">rout-lsrp02.tst</a></td><td>success</td><td>lsrp point2multipoint connection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp03.tst">rout-lsrp03.tst</a></td><td>success</td><td>lsrp point2point chain</td></tr>
@@ -3625,6 +3663,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp48.tst">rout-lsrp48.tst</a></td><td>success</td><td>lsrp with mpolka</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp49.tst">rout-lsrp49.tst</a></td><td>success</td><td>lsrp flexalgo</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp50.tst">rout-lsrp50.tst</a></td><td>success</td><td>lsrp with pmtud</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-lsrp51.tst">rout-lsrp51.tst</a></td><td>success</td><td>lsrp ldp sync</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-mcast01.tst">rout-mcast01.tst</a></td><td>success</td><td>multicast routing with static flooding</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-mcast02.tst">rout-mcast02.tst</a></td><td>success</td><td>multicast routing with pim ssm</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-mcast03.tst">rout-mcast03.tst</a></td><td>success</td><td>multicast routing with igmp/mld</td></tr>
@@ -3735,6 +3774,11 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-ospf58.tst">rout-ospf58.tst</a></td><td>success</td><td>ospf with mpolka</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-ospf59.tst">rout-ospf59.tst</a></td><td>success</td><td>ospf flexalgo</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-ospf60.tst">rout-ospf60.tst</a></td><td>success</td><td>ospf with pmtud</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-ospf61.tst">rout-ospf61.tst</a></td><td>success</td><td>ospf ldp sync</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-ospf62.tst">rout-ospf62.tst</a></td><td>success</td><td>ospf sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-ospf63.tst">rout-ospf63.tst</a></td><td>success</td><td>ospf sha256 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-ospf64.tst">rout-ospf64.tst</a></td><td>success</td><td>ospf sha384 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-ospf65.tst">rout-ospf65.tst</a></td><td>success</td><td>ospf sha512 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pbr01.tst">rout-pbr01.tst</a></td><td>success</td><td>policy routing with nexthop</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pbr02.tst">rout-pbr02.tst</a></td><td>success</td><td>policy routing with interface and nexthop between vrfs</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pbr03.tst">rout-pbr03.tst</a></td><td>success</td><td>policy routing with interface and nexthop</td></tr>
@@ -3796,6 +3840,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp53.tst">rout-pvrp53.tst</a></td><td>success</td><td>pvrp with polka</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp54.tst">rout-pvrp54.tst</a></td><td>success</td><td>pvrp auto summarization</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp55.tst">rout-pvrp55.tst</a></td><td>success</td><td>pvrp with pmtud</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp56.tst">rout-pvrp56.tst</a></td><td>success</td><td>pvrp ldp sync</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-redist01.tst">rout-redist01.tst</a></td><td>success</td><td>redistribution with isis</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-redist02.tst">rout-redist02.tst</a></td><td>success</td><td>redistribution with ospf</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-redist03.tst">rout-redist03.tst</a></td><td>success</td><td>redistribution with rip</td></tr>
@@ -3872,6 +3917,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rift27.tst">rout-rift27.tst</a></td><td>success</td><td>rift dynamic udp metric</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rift28.tst">rout-rift28.tst</a></td><td>success</td><td>rift dynamic twamp metric</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rift29.tst">rout-rift29.tst</a></td><td>success</td><td>rift with pmtud</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-rift30.tst">rout-rift30.tst</a></td><td>success</td><td>rift ldp sync</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rip01.tst">rout-rip01.tst</a></td><td>success</td><td>rip on one subnet</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rip02.tst">rout-rip02.tst</a></td><td>success</td><td>rip in chain</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-rip03.tst">rout-rip03.tst</a></td><td>success</td><td>rip ingress route filtering with prefixlist</td></tr>

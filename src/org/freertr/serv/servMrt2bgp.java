@@ -18,7 +18,7 @@ import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -39,15 +39,10 @@ public class servMrt2bgp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server mrt2bgp .*!" + cmds.tabulator + "port " + rtrBgp.port,
-        "server mrt2bgp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server mrt2bgp .*", cmds.tabulator + "port " + rtrBgp.port, null),
+        new userFilter("server mrt2bgp .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     /**
      * local as
@@ -64,7 +59,7 @@ public class servMrt2bgp extends servGeneric implements prtServS {
      */
     public String mrtFile;
 
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -99,7 +94,7 @@ public class servMrt2bgp extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "local-as", "set local asn");
         l.add(null, false, 2, new int[]{-1}, "<num>", "as number");
         l.add(null, false, 1, new int[]{2}, "router-id", "set router id");

@@ -96,8 +96,6 @@ todo: alias with regexps to ios regexps, steal cache from *ec* and idea from **
 todo: alias to have config aliases
 todo: under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
 todo: default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
-todo: flash mailer <server-smtp> that is a loadable module
-todo: flash xxxxxx from the misc/mailer shitload like the http server classes knob
 todo: flash overlap-clear should happen once one finds a nice and easy use-case for that
 todo: rtr-hw to have tcp2linux and vrf2linux knobs
 todo: test todo knob as an editor but in the running-config
@@ -135,7 +133,6 @@ todo: tcp selective ack
 todo: ilnp (rfc6740)
 todo: lisp4, lisp6
 todo: l2vpn for isis
-todo: hip (rfc4423)
 todo: more upgrade-cli knobs
 todo: more renamers
 todo: more tabbables

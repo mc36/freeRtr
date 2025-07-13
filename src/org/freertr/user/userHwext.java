@@ -23,7 +23,7 @@ public class userHwext {
     }
 
     private enum dpTyp {
-        opnflw, p4emu, p4map, p4raw, p4xsk, p4urng, p4xdp, p4dpdk, p4sw
+        opnflw, p4emu, p4map, p4raw, p4xsk, p4udp, p4urng, p4xdp, p4dpdk, p4sw
     }
 
     private String pref = "./rtr-";
@@ -70,6 +70,10 @@ public class userHwext {
                 }
                 if (s.equals("p4xsk")) {
                     dpt = dpTyp.p4xsk;
+                    continue;
+                }
+                if (s.equals("p4udp")) {
+                    dpt = dpTyp.p4udp;
                     continue;
                 }
                 if (s.equals("p4urng")) {
@@ -143,7 +147,9 @@ public class userHwext {
         hwd.add("### dataplane ###");
         List<String> ifp = new ArrayList<String>();
         List<String> ifl = new ArrayList<String>();
+        List<String> ifr = new ArrayList<String>();
         List<String> mac = new ArrayList<String>();
+        List<Integer> prt = new ArrayList<Integer>();
         for (i = hwc.size() - 1; i >= 0; i--) {
             cmd = new cmds("ln", hwc.get(i));
             String a = cmd.word();
@@ -154,7 +160,7 @@ public class userHwext {
             a = cmd.word();
             boolean sck = a.endsWith("socat");
             boolean tap = a.endsWith("tapInt.bin");
-            if (!a.endsWith("pcapInt.bin") && !a.endsWith("rawInt.bin") && !a.endsWith("mapInt.bin") && !a.endsWith("xskInt.bin") && !a.endsWith("cmpInt.bin") && !a.endsWith("urngInt.bin") && !tap && !sck) {
+            if (!a.endsWith("pcapInt.bin") && !a.endsWith("rawInt.bin") && !a.endsWith("mapInt.bin") && !a.endsWith("xskInt.bin") && !a.endsWith("urngInt.bin") && !a.endsWith("cmp1int.bin") && !a.endsWith("cmp2int.bin") && !tap && !sck) {
                 continue;
             }
             String s = cmd.word();
@@ -177,7 +183,7 @@ public class userHwext {
             }
             a = cmd.word();
             String pnm[] = cfgIfc.dissectName(a);
-            if (pnm[0].length() < 1) {
+            if (pnm == null) {
                 continue;
             }
             for (;;) {
@@ -193,23 +199,26 @@ public class userHwext {
             if (a.length() < 1) {
                 a = "-";
             }
-            hwc.remove(i);
-            hwc.remove(i);
+            cmd.word();
+            if (dpt == dpTyp.p4udp) {
+                hwc.remove(i + 1);
+            } else {
+                hwc.remove(i);
+                hwc.remove(i);
+            }
             if (tap) {
                 s = "veth1b";
             }
             ifp.add(0, s);
-            ifl.add(0, pnm[0]);
+            ifl.add(0, pnm[0] + pnm[1] + pnm[2]);
+            ifr.add(0, "sdn" + pnm[1] + pnm[2]);
             mac.add(0, a);
+            prt.add(0, bits.str2num(cmd.word()));
         }
         orig.error("found " + ifp.size() + " interfaces");
         if ((dpt != dpTyp.p4sw) && (ifp.size() < 1)) {
             orig.error("no interfaces found");
             return;
-        }
-        List<String> ifr = new ArrayList<String>();
-        for (i = 0; i < ifl.size(); i++) {
-            ifr.add("sdn" + (i + 1));
         }
         for (i = 0; i < ifl.size(); i++) {
             orig.error("ifc " + i + ": " + ifr.get(i) + " " + ifl.get(i) + " " + ifp.get(i) + " " + mac.get(i));
@@ -251,6 +260,7 @@ public class userHwext {
             case p4emu:
             case p4map:
             case p4raw:
+            case p4udp:
             case p4xsk:
             case p4urng:
             case p4xdp:
@@ -261,14 +271,13 @@ public class userHwext {
                 return;
         }
         hwc.add("tcp2vrf 2323 " + dpv + " 23 127.0.0.1");
-        o = 0;
         for (i = 0; i < ifr.size(); i++) {
-            swc.add(o + 0, "interface " + ifr.get(i));
+            o = swc.indexOf("interface " + ifr.get(i));
+            if (o < 0) {
+                continue;
+            }
             swc.add(o + 1, cmds.tabulator + "macaddr " + mac.get(i));
-            swc.add(o + 2, cmds.tabulator + cmds.finish);
-            o += 3;
         }
-        swc.add(o, cmds.comment);
         swc.add(cmds.comment);
         swc.add("vrf definition " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
@@ -278,10 +287,12 @@ public class userHwext {
         swc.add(cmds.tabulator + "vrf " + dpv);
         swc.add(cmds.tabulator + cmds.finish);
         swc.add(cmds.comment);
-        userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth1a", "veth1b");
-        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth1a", 1500, "00:00:11:11:22:22");
-        userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth1b", 8192, null);
-        userHwdet.routeIface(hwd, "veth1a");
+        if (dpt != dpTyp.p4udp) {
+            userHwdet.setupVeth(hwd, path, userHwdet.ifcTyp.raw, "veth1a", "veth1b");
+            userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth1a", 1500, "00:00:11:11:22:22");
+            userHwdet.setupIface(hwd, path, userHwdet.ifcTyp.raw, "veth1b", 8192, null);
+            userHwdet.routeIface(hwd, "veth1a");
+        }
         String res = "";
         switch (dpt) {
             case opnflw:
@@ -306,6 +317,7 @@ public class userHwext {
             case p4emu:
             case p4map:
             case p4raw:
+            case p4udp:
             case p4xsk:
             case p4urng:
             case p4xdp:
@@ -387,6 +399,14 @@ public class userHwext {
                         }
                         hwc.add("proc p4emu " + path + "p4raw.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + a + " veth0b");
                         hwc.add("proc cpuport " + path + "rawInt.bin " + ifn + " 19998 127.0.0.1 19999 127.0.0.1");
+                        break;
+                    case p4udp:
+                        a = "";
+                        for (i = 0; i < ifp.size(); i++) {
+                            o = prt.get(i);
+                            a += " " + o + " " + (o + 1);
+                        }
+                        hwc.add("proc p4emu " + path + "p4udp.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + " 127.0.0.1 127.0.0.1" + a + " 19998 19999");
                         break;
                     case p4xsk:
                         ifn = "veth0a";

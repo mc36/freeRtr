@@ -388,7 +388,7 @@ public class packRsvp {
         pck.IPprt = proto;
         pck.IPalrt = 1;
         isIP4 = pck.IPtrg.isIPv4();
-        isP2MP = (sbgrpId != 0) || (!sbgrpOrg.isFilled(0));
+        isP2MP = (sbgrpId != 0) || (!sbgrpOrg.isEmpty());
     }
 
     private boolean findTlv(packHolder pck, int typ) {

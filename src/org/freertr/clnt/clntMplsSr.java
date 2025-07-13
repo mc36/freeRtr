@@ -240,6 +240,15 @@ public class clntMplsSr implements Runnable, ifcDn {
     }
 
     /**
+     * get resulting labels
+     *
+     * @return labels, null if no suitable
+     */
+    public int[] getLabels() {
+        return labels;
+    }
+
+    /**
      * set targets
      *
      * @param s targets

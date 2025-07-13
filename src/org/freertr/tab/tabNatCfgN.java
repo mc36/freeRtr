@@ -125,6 +125,11 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     public tabQos maxRate = null;
 
     /**
+     * filter translations
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> prefilter;
+
+    /**
      * log translations
      */
     public boolean logTrans = false;
@@ -142,7 +147,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
      * @param p protocol version
      * @param s string to convert
      * @param neg parse negated
-     * @return 0=ok, 1=error, 2=time, 3=range, 4=log, 5=limit, 6=rate
+     * @return 0=ok, 1=error, 2=time, 3=range, 4=log, 5=limit, 6=rate, 7=filter
      */
     public int fromString(int p, String s, boolean neg) {
         cmds cmd = new cmds("", s);
@@ -154,6 +159,19 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if (s.equals("timeout")) {
             timeout = bits.str2num(cmd.word());
             return 2;
+        }
+        if (s.equals("filter")) {
+            if (neg) {
+                prefilter = null;
+                return 7;
+            }
+            cfgAceslst acl = cfgAll.aclsFind(cmd.word(), false);
+            if (acl == null) {
+                cmd.error("no such acl");
+                return 7;
+            }
+            prefilter = acl.aceslst;
+            return 7;
         }
         if (s.equals("rate")) {
             if (neg) {
@@ -400,6 +418,9 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         String s = beg + "sequence " + sequence;
         l.add(s + " timeout " + timeout);
         l.add(s + " sessions " + maxSess);
+        if (prefilter != null) {
+            l.add(s + " filter " + prefilter.listName);
+        }
         if (maxRate != null) {
             l.add(s + " rate " + maxRate);
         }
@@ -452,6 +473,11 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         if ((origTrgPort >= 0) && (pck.UDPtrg != origTrgPort)) {
             return false;
         }
+        if (prefilter != null) {
+            if (!prefilter.matches(false, false, pck)) {
+                return false;
+            }
+        }
         if (origSrcList != null) {
             if (!origSrcList.matches(false, false, pck)) {
                 return false;
@@ -500,7 +526,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
     private boolean usableAddr(addrIP addr) {
         if (addr.isIPv4()) {
             addrIPv4 adr = addr.toIPv4();
-            if (adr.isFilled(0)) {
+            if (adr.isEmpty()) {
                 return false;
             }
             if (!adr.isUnicast()) {
@@ -508,7 +534,7 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
             }
         } else {
             addrIPv6 adr = addr.toIPv6();
-            if (adr.isFilled(0)) {
+            if (adr.isEmpty()) {
                 return false;
             }
             if (!adr.isUnicast()) {

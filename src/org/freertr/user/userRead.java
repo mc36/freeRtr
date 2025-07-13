@@ -21,17 +21,17 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 
 /**
- * reading one line from the user
+ * read one line from the user
  *
  * @author matecsaba
  */
-public class userReader implements Comparator<String> {
+public class userRead implements Comparator<String> {
 
     private pipeSide pipe; // pipe to use
 
     private String prompt; // current prompt
 
-    private userHelping help; // help context
+    private userHelp help; // help context
 
     private String[] histD; // history data
 
@@ -53,7 +53,7 @@ public class userReader implements Comparator<String> {
 
     private mode filterM; // filter mode
 
-    private mode filterF; // filter final mode
+    private String filterN; // next filters
 
     private String filterO; // original command
 
@@ -100,6 +100,10 @@ public class userReader implements Comparator<String> {
          * exclude
          */
         exclude,
+        /**
+         * remove
+         */
+        remove,
         /**
          * section names
          */
@@ -202,55 +206,50 @@ public class userReader implements Comparator<String> {
     /**
      * line defaults text
      */
-    public final static String[] linedefL = {
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec interface",
-        ".*!" + cmds.tabulator + "exec timeout 300000",
-        ".*!" + cmds.tabulator + "exec width 79",
-        ".*!" + cmds.tabulator + "exec height 24",
-        ".*!" + cmds.tabulator + "exec history 64",
-        ".*!" + cmds.tabulator + "exec riblines 8192",
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec timestamp",
-        ".*!" + cmds.tabulator + "exec colorize normal",
-        ".*!" + cmds.tabulator + "exec background black",
-        ".*!" + cmds.tabulator + "exec foreground white",
-        ".*!" + cmds.tabulator + "exec prompt bright-green",
-        ".*!" + cmds.tabulator + "exec header bright-yellow",
-        ".*!" + cmds.tabulator + "exec ansimode normal",
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec spacetab",
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec capslock",
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec bells",
-        ".*!" + cmds.tabulator + "exec tablemode normal",
-        ".*!" + cmds.tabulator + "exec welcome welcome",
-        ".*!" + cmds.tabulator + "exec before before:",
-        ".*!" + cmds.tabulator + "exec ready line ready",
-        ".*!" + cmds.tabulator + "exec bye see you later",
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec logging",
-        ".*!" + cmds.tabulator + "exec privilege 15",
-        ".*!" + cmds.tabulator + "exec autocommand ",
-        ".*!" + cmds.tabulator + "exec banner",
-        ".*!" + cmds.tabulator + "exec title",
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec detect",
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec expirity",
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec monitor",
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "exec autohangup",
-        ".*!" + cmds.tabulator + "login timeout 60000",
-        ".*!" + cmds.tabulator + "login retry 3",
-        ".*!" + cmds.tabulator + "login delay 3000",
-        ".*!" + cmds.tabulator + "login user username:",
-        ".*!" + cmds.tabulator + "login pass password:",
-        ".*!" + cmds.tabulator + "login fail authentication failed",
-        ".*!" + cmds.tabulator + "login activate 13",
-        ".*!" + cmds.tabulator + "login deactivate 65536",
-        ".*!" + cmds.tabulator + "login escape 3",
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "login stars",
-        ".*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "login logging",
-        ".*!" + cmds.tabulator + "login last none"
+    public final static userFilter[] linedefF = {
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec interface", null),
+        new userFilter(".*", cmds.tabulator + "exec timeout 300000", null),
+        new userFilter(".*", cmds.tabulator + "exec width 79", null),
+        new userFilter(".*", cmds.tabulator + "exec height 24", null),
+        new userFilter(".*", cmds.tabulator + "exec history 64", null),
+        new userFilter(".*", cmds.tabulator + "exec riblines 8192", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec timestamp", null),
+        new userFilter(".*", cmds.tabulator + "exec colorize normal", null),
+        new userFilter(".*", cmds.tabulator + "exec background black", null),
+        new userFilter(".*", cmds.tabulator + "exec foreground white", null),
+        new userFilter(".*", cmds.tabulator + "exec prompt bright-green", null),
+        new userFilter(".*", cmds.tabulator + "exec header bright-yellow", null),
+        new userFilter(".*", cmds.tabulator + "exec ansimode normal", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec spacetab", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec capslock", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec bells", null),
+        new userFilter(".*", cmds.tabulator + "exec tablemode normal", null),
+        new userFilter(".*", cmds.tabulator + "exec welcome welcome", null),
+        new userFilter(".*", cmds.tabulator + "exec before before:", null),
+        new userFilter(".*", cmds.tabulator + "exec ready line ready", null),
+        new userFilter(".*", cmds.tabulator + "exec bye see you later", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec logging", null),
+        new userFilter(".*", cmds.tabulator + "exec privilege 15", null),
+        new userFilter(".*", cmds.tabulator + "exec autocommand ", null),
+        new userFilter(".*", cmds.tabulator + "exec banner", null),
+        new userFilter(".*", cmds.tabulator + "exec title", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec detect", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec expirity", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec monitor", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec autohangup", null),
+        new userFilter(".*", cmds.tabulator + "login timeout 60000", null),
+        new userFilter(".*", cmds.tabulator + "login retry 3", null),
+        new userFilter(".*", cmds.tabulator + "login delay 3000", null),
+        new userFilter(".*", cmds.tabulator + "login user username:", null),
+        new userFilter(".*", cmds.tabulator + "login pass password:", null),
+        new userFilter(".*", cmds.tabulator + "login fail authentication failed", null),
+        new userFilter(".*", cmds.tabulator + "login activate 13", null),
+        new userFilter(".*", cmds.tabulator + "login deactivate 65536", null),
+        new userFilter(".*", cmds.tabulator + "login escape 3", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "login stars", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "login logging", null),
+        new userFilter(".*", cmds.tabulator + "login last none", null)
     };
-
-    /**
-     * line defaults filter
-     */
-    public static tabGen<userFilter> linedefF;
 
     /**
      * constructs new reader for a pipeline
@@ -258,7 +257,7 @@ public class userReader implements Comparator<String> {
      * @param pip pipeline to use as input
      * @param parent line to use
      */
-    public userReader(pipeSide pip, userLine parent) {
+    public userRead(pipeSide pip, userLine parent) {
         pipe = pip;
         clip = "";
         filterS = "";
@@ -351,7 +350,7 @@ public class userReader implements Comparator<String> {
      * @param hlp helper instance
      * @param prmt promtp to show
      */
-    public void setContext(userHelping hlp, String prmt) {
+    public void setContext(userHelp hlp, String prmt) {
         help = hlp;
         prompt = prmt;
     }
@@ -474,38 +473,6 @@ public class userReader implements Comparator<String> {
         return getColText(o1).compareTo(getColText(o2));
     }
 
-    private List<String> doCount(List<String> lst) {
-        int wrd = 0;
-        int chr = 0;
-        for (int i = 0; i < lst.size(); i++) {
-            String a = lst.get(i).trim();
-            for (;;) {
-                String s = a.replaceAll("  ", " ");
-                if (s.equals(a)) {
-                    break;
-                }
-                a = s;
-            }
-            int o = a.length();
-            a = a.replaceAll(" ", "");
-            int p = a.length();
-            wrd += o - p;
-            if (p > 0) {
-                wrd++;
-            }
-            chr += o;
-        }
-        final userFormat.tableMode tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
-        if (tabMod == userFormat.tableMode.normal) {
-            return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
-        }
-        userFormat res = new userFormat("|", "category|value");
-        res.add("lines|" + lst.size());
-        res.add("words|" + wrd);
-        res.add("chars|" + chr);
-        return res.formatAll(tabMod);
-    }
-
     private cmds doSummary(userFormat.tableMode tabMod, String a) {
         switch (tabMod) {
             case raw:
@@ -521,60 +488,6 @@ public class userReader implements Comparator<String> {
                 break;
         }
         return new cmds("row", a);
-    }
-
-    private List<String> doSummary(List<String> lst) {
-        List<Long> sum = new ArrayList<Long>();
-        List<Long> min = new ArrayList<Long>();
-        List<Long> max = new ArrayList<Long>();
-        final userFormat.tableMode tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
-        for (int i = 0; i < lst.size(); i++) {
-            cmds cmd = doSummary(tabMod, lst.get(i));
-            for (int p = 0;; p++) {
-                String a = cmd.word();
-                if (a.length() < 1) {
-                    break;
-                }
-                if (p >= sum.size()) {
-                    sum.add((long) 0);
-                    min.add(Long.MAX_VALUE);
-                    max.add(Long.MIN_VALUE);
-                }
-                long v = bits.str2long(a);
-                if (!a.equals("" + v)) {
-                    continue;
-                }
-                sum.set(p, sum.get(p) + v);
-                if (v < min.get(p)) {
-                    min.set(p, v);
-                }
-                if (v > max.get(p)) {
-                    max.set(p, v);
-                }
-            }
-        }
-        userFormat res = new userFormat("|", "col|name|summary|average|minimum|maximum");
-        long div = lst.size() - 1;
-        if (div < 1) {
-            div = 1;
-        }
-        cmds cmd = doSummary(tabMod, lst.get(columnL));
-        for (int i = 0; i < sum.size(); i++) {
-            long val = sum.get(i);
-            res.add(i + "|" + cmd.word() + "|" + val + "|" + (val / div) + "|" + min.get(i) + "|" + max.get(i));
-        }
-        return res.formatAll(tabMod);
-    }
-
-    private List<String> doSecond(List<String> lst) {
-        switch (filterF) {
-            case count:
-                return doCount(lst);
-            case summary:
-                return doSummary(lst);
-            default:
-                return lst;
-        }
     }
 
     private void doPadCol(List<String> lst) {
@@ -690,6 +603,16 @@ public class userReader implements Comparator<String> {
         return res;
     }
 
+    private List<String> doRemove(List<String> lst) {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < lst.size(); i++) {
+            String s = lst.get(i);
+            s = s.replaceAll(filterS, "");
+            res.add(s);
+        }
+        return res;
+    }
+
     private List<String> doExclude(List<String> lst) {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < lst.size(); i++) {
@@ -711,18 +634,21 @@ public class userReader implements Comparator<String> {
         if (lst == null) {
             return null;
         }
+        if (lst.size() < 1) {
+            return null;
+        }
         switch (filterM) {
             case include:
-                lst = doInclude(lst);
-                return doSecond(lst);
+                return doInclude(lst);
             case hinclude:
                 String a = lst.remove(columnL);
                 lst = doInclude(lst);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case exclude:
-                lst = doExclude(lst);
-                return doSecond(lst);
+                return doExclude(lst);
+            case remove:
+                return doRemove(lst);
             case sort:
                 findColumn(lst);
                 if (columnB < 0) {
@@ -731,7 +657,7 @@ public class userReader implements Comparator<String> {
                 a = lst.remove(columnL);
                 Collections.sort(lst, this);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case revsort:
                 findColumn(lst);
                 if (columnB < 0) {
@@ -741,7 +667,7 @@ public class userReader implements Comparator<String> {
                 Collections.sort(lst, this);
                 Collections.reverse(lst);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case repsort:
                 findColumn(lst);
                 if (columnB < 0) {
@@ -752,7 +678,7 @@ public class userReader implements Comparator<String> {
                 Collections.sort(lst, this);
                 Collections.reverse(lst);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case padsort:
                 findColumn(lst);
                 if (columnB < 0) {
@@ -762,24 +688,22 @@ public class userReader implements Comparator<String> {
                 a = lst.remove(columnL);
                 Collections.sort(lst, this);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case hide:
                 findColumn(lst);
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
-                lst = doHide(lst);
-                return doSecond(lst);
+                return doHide(lst);
             case uniq:
                 findColumn(lst);
                 if (columnB < 0) {
                     return bits.str2lst("no such column");
                 }
-                lst = doUniq(lst);
-                return doSecond(lst);
+                return doUniq(lst);
             case pastebin:
                 if (cfgAll.pasteBin == null) {
-                    return doSecond(lst);
+                    return lst;
                 }
                 encUrl url = new encUrl();
                 a = cfgAll.hostName + "#" + filterO + "\r\n" + bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 3) + "\r\n";
@@ -790,7 +714,7 @@ public class userReader implements Comparator<String> {
                 url.fromString(a);
                 clntHttp http = new clntHttp(null, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
                 if (http.doConnect(url)) {
-                    return doSecond(lst);
+                    return lst;
                 }
                 http.sendLine("GET " + url.toURL(true, true, true, true) + " HTTP/1.1");
                 http.sendLine("User-Agent: " + cfgInit.versionAgent);
@@ -802,47 +726,111 @@ public class userReader implements Comparator<String> {
                 pipeConnect.connect(http.pipe, rdr.getPipe(), true);
                 rdr.waitFor();
                 lst.addAll(rdr.getResult());
-                return doSecond(lst);
+                return lst;
             case redirect:
                 bits.buf2txt(true, lst, filterS);
-                return doSecond(lst);
+                return lst;
             case first:
                 int num = bits.str2num(filterS);
                 doFirst(lst, num);
-                return doSecond(lst);
+                return lst;
             case last:
                 num = bits.str2num(filterS);
                 doLast(lst, num);
-                return doSecond(lst);
+                return lst;
             case hlast:
                 num = bits.str2num(filterS);
                 a = lst.remove(columnL);
                 doLast(lst, num);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case begin:
                 num = bits.lstFnd(lst, filterS);
                 doBegin(lst, num);
-                return doSecond(lst);
+                return lst;
             case hbegin:
                 num = bits.lstFnd(lst, filterS);
                 a = lst.remove(columnL);
                 doBegin(lst, num);
                 lst.add(0, a);
-                return doSecond(lst);
+                return lst;
             case end:
                 num = bits.lstFnd(lst, filterS);
                 doEnd(lst, num);
-                return doSecond(lst);
+                return lst;
             case count:
-                lst = doCount(lst);
-                return doSecond(lst);
+                int wrd = 0;
+                int chr = 0;
+                for (int i = 0; i < lst.size(); i++) {
+                    a = lst.get(i).trim();
+                    for (;;) {
+                        String s = a.replaceAll("  ", " ");
+                        if (s.equals(a)) {
+                            break;
+                        }
+                        a = s;
+                    }
+                    int o = a.length();
+                    a = a.replaceAll(" ", "");
+                    int p = a.length();
+                    wrd += o - p;
+                    if (p > 0) {
+                        wrd++;
+                    }
+                    chr += o;
+                }
+                userFormat.tableMode tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
+                if (tabMod == userFormat.tableMode.normal) {
+                    return bits.str2lst(lst.size() + " lines, " + wrd + " words, " + chr + " characters");
+                }
+                userFormat res = new userFormat("|", "category|value");
+                res.add("lines|" + lst.size());
+                res.add("words|" + wrd);
+                res.add("chars|" + chr);
+                return res.formatAll(tabMod);
             case summary:
-                lst = doSummary(lst);
-                return doSecond(lst);
+                List<Long> sum = new ArrayList<Long>();
+                List<Long> min = new ArrayList<Long>();
+                List<Long> max = new ArrayList<Long>();
+                tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
+                for (int i = 0; i < lst.size(); i++) {
+                    cmds cmd = doSummary(tabMod, lst.get(i));
+                    for (int p = 0;; p++) {
+                        a = cmd.word();
+                        if (a.length() < 1) {
+                            break;
+                        }
+                        if (p >= sum.size()) {
+                            sum.add((long) 0);
+                            min.add(Long.MAX_VALUE);
+                            max.add(Long.MIN_VALUE);
+                        }
+                        long v = bits.str2long(a);
+                        if (!a.equals("" + v)) {
+                            continue;
+                        }
+                        sum.set(p, sum.get(p) + v);
+                        if (v < min.get(p)) {
+                            min.set(p, v);
+                        }
+                        if (v > max.get(p)) {
+                            max.set(p, v);
+                        }
+                    }
+                }
+                res = new userFormat("|", "col|name|summary|average|minimum|maximum");
+                long div = lst.size() - 1;
+                if (div < 1) {
+                    div = 1;
+                }
+                cmds cmd = doSummary(tabMod, lst.get(columnL));
+                for (int i = 0; i < sum.size(); i++) {
+                    long val = sum.get(i);
+                    res.add(i + "|" + cmd.word() + "|" + val + "|" + (val / div) + "|" + min.get(i) + "|" + max.get(i));
+                }
+                return res.formatAll(tabMod);
             case headers:
-                lst = userFilter.getSecList(userFilter.text2section(lst), null, null);
-                return doSecond(lst);
+                return userFilter.getSecList(userFilter.text2section(lst), null, null);
             case viewer:
                 userEditor edtr = new userEditor(new userScreen(pipe), lst, "result", false);
                 edtr.doView();
@@ -850,17 +838,13 @@ public class userReader implements Comparator<String> {
             case xml:
                 encXml xml = new encXml();
                 userFilter.section2xml(xml, "/config", userFilter.text2section(lst));
-                lst = xml.toXMLlst();
-                return doSecond(lst);
+                return xml.toXMLlst();
             case linenum:
-                lst = bits.lst2lin(lst, true);
-                return doSecond(lst);
+                return bits.lst2lin(lst, true);
             case hacked:
-                lst = enc7bit.toHackedLst(lst);
-                return doSecond(lst);
+                return enc7bit.toHackedLst(lst);
             case section:
-                lst = userFilter.getSection(lst, filterS);
-                return doSecond(lst);
+                return userFilter.getSection(lst, filterS);
             case level:
                 List<userFilter> sec = userFilter.text2section(lst);
                 lst = new ArrayList<String>();
@@ -868,7 +852,7 @@ public class userReader implements Comparator<String> {
                     userFilter ntry = sec.get(i);
                     lst.add(ntry.section + "|" + ntry.command + "|");
                 }
-                return doSecond(lst);
+                return lst;
             case csv:
                 sec = userFilter.text2section(lst);
                 lst = new ArrayList<String>();
@@ -876,7 +860,7 @@ public class userReader implements Comparator<String> {
                     userFilter ntry = sec.get(i);
                     lst.add(ntry.section + ";" + ntry.command);
                 }
-                return doSecond(lst);
+                return lst;
             case html:
                 sec = userFilter.text2section(lst);
                 lst = new ArrayList<String>();
@@ -884,7 +868,7 @@ public class userReader implements Comparator<String> {
                     userFilter ntry = sec.get(i);
                     lst.add("<tr><td>" + ntry.section + "</td><td>" + ntry.command + "</td></tr>");
                 }
-                return doSecond(lst);
+                return lst;
             case setdel:
                 sec = userFilter.text2section(lst);
                 lst = new ArrayList<String>();
@@ -905,7 +889,7 @@ public class userReader implements Comparator<String> {
                     }
                     lst.add(s + " " + (ntry.section + " " + a).trim());
                 }
-                return doSecond(lst);
+                return lst;
             case ccode:
                 sec = userFilter.text2section(lst);
                 lst = new ArrayList<String>();
@@ -928,14 +912,18 @@ public class userReader implements Comparator<String> {
                     }
                     lst.add(ntry.command);
                 }
-                return doSecond(lst);
+                return lst;
             default:
-                return doSecond(lst);
+                return lst;
         }
     }
 
     private boolean doPutArr(List<String> lst, userFormat.colorMode color) {
         lst = doFilterList(lst);
+        for (; filterN.length() > 0;) {
+            setNfilter();
+            lst = doFilterList(lst);
+        }
         if (lst == null) {
             pipe.linePut("");
             return true;
@@ -959,7 +947,9 @@ public class userReader implements Comparator<String> {
                     userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colHeader, userScreen.colBrYellow));
                     pipe.linePut(a);
                     userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite));
-                    color = userFormat.colorMode.normal;
+                    if (i >= columnL) {
+                        color = userFormat.colorMode.normal;
+                    }
                     break;
                 case rainbow:
                     int d = pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite);
@@ -1035,7 +1025,11 @@ public class userReader implements Comparator<String> {
             return true;
         }
         columnL = lst.headerIdx();
-        return doPutArr(lst.formatAll(pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)), pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
+        userFormat.tableMode mod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
+        if (mod == userFormat.tableMode.fancy) {
+            columnL++;
+        }
+        return doPutArr(lst.formatAll(mod), pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
     }
 
     /**
@@ -1831,193 +1825,200 @@ public class userReader implements Comparator<String> {
         }
         filterS = "";
         filterM = mode.raw;
-        filterF = mode.raw;
+        filterN = "";
         if (cmd == null) {
             return null;
         }
         String a = cmd.getRemaining();
         filterO = cmd.getOriginal();
-        int i = a.indexOf("|");
+        int i = a.indexOf(" | ");
         if (i < 0) {
             return cmd;
         }
-        pipeSide pipe = cmd.pipe;
-        cmd = new cmds("exec", a.substring(0, i - 1).trim());
-        cmd.pipe = pipe;
-        a = a.substring(i + 1, a.length()).trim();
-        i = a.indexOf(" ");
-        if (i < 0) {
-            if (a.equals("pastebin")) {
-                filterM = mode.pastebin;
-                return cmd;
-            }
-            if (a.equals("headers")) {
-                filterM = mode.headers;
-                return cmd;
-            }
-            if (a.equals("count")) {
-                filterM = mode.count;
-                return cmd;
-            }
-            if (a.equals("summary")) {
-                filterM = mode.summary;
-                return cmd;
-            }
-            if (a.equals("viewer")) {
-                filterM = mode.viewer;
-                return cmd;
-            }
-            if (a.equals("csv")) {
-                filterM = mode.csv;
-                return cmd;
-            }
-            if (a.equals("html")) {
-                filterM = mode.html;
-                return cmd;
-            }
-            if (a.equals("xml")) {
-                filterM = mode.xml;
-                return cmd;
-            }
-            if (a.equals("setdel")) {
-                filterM = mode.setdel;
-                return cmd;
-            }
-            if (a.equals("ccode")) {
-                filterM = mode.ccode;
-                return cmd;
-            }
-            if (a.equals("level")) {
-                filterM = mode.level;
-                return cmd;
-            }
-            if (a.equals("linenumbers")) {
-                filterM = mode.linenum;
-                return cmd;
-            }
-            if (a.equals("hacked")) {
-                filterM = mode.hacked;
-                return cmd;
-            }
-            return cmd;
-        }
-        filterS = a.substring(i, a.length()).trim();
-        a = a.substring(0, i).trim();
-        i = filterS.lastIndexOf(" | ");
+        pipeSide pip = cmd.pipe;
+        cmd = new cmds("exec", a.substring(0, i).trim());
+        cmd.pipe = pip;
+        filterN = a.substring(i + 3, a.length()).trim();
+        setNfilter();
+        return cmd;
+    }
+
+    private void setNfilter() {
+        int i = filterN.indexOf(" | ");
+        String a;
         if (i > 0) {
-            String s = filterS.substring(i + 3, filterS.length()).trim();
-            filterS = filterS.substring(0, i);
-            if (s.equals("count")) {
-                filterF = mode.count;
-            }
-            if (s.equals("summary")) {
-                filterF = mode.summary;
-            }
+            a = filterN.substring(0, i);
+            filterN = filterN.substring(i + 3, filterN.length()).trim();
+        } else {
+            a = filterN;
+            filterN = "";
+        }
+        filterS = "";
+        filterM = mode.raw;
+        i = a.indexOf(" ");
+        if (i >= 0) {
+            filterS = a.substring(i, a.length()).trim();
+            a = a.substring(0, i).trim();
+        }
+        if (a.equals("pastebin")) {
+            filterM = mode.pastebin;
+            return;
+        }
+        if (a.equals("headers")) {
+            filterM = mode.headers;
+            return;
+        }
+        if (a.equals("count")) {
+            filterM = mode.count;
+            return;
+        }
+        if (a.equals("summary")) {
+            filterM = mode.summary;
+            return;
+        }
+        if (a.equals("viewer")) {
+            filterM = mode.viewer;
+            return;
+        }
+        if (a.equals("csv")) {
+            filterM = mode.csv;
+            return;
+        }
+        if (a.equals("html")) {
+            filterM = mode.html;
+            return;
+        }
+        if (a.equals("xml")) {
+            filterM = mode.xml;
+            return;
+        }
+        if (a.equals("setdel")) {
+            filterM = mode.setdel;
+            return;
+        }
+        if (a.equals("ccode")) {
+            filterM = mode.ccode;
+            return;
+        }
+        if (a.equals("level")) {
+            filterM = mode.level;
+            return;
+        }
+        if (a.equals("linenumbers")) {
+            filterM = mode.linenum;
+            return;
+        }
+        if (a.equals("hacked")) {
+            filterM = mode.hacked;
+            return;
         }
         if (a.equals("include")) {
             filterS = filter2reg(filterS);
             filterM = mode.include;
-            return cmd;
+            return;
         }
         if (a.equals("hinclude")) {
             filterS = filter2reg(filterS);
             filterM = mode.hinclude;
-            return cmd;
+            return;
         }
         if (a.equals("exclude")) {
             filterS = filter2reg(filterS);
             filterM = mode.exclude;
-            return cmd;
+            return;
+        }
+        if (a.equals("remove")) {
+            filterM = mode.remove;
+            return;
         }
         if (a.equals("begin")) {
             filterS = filter2reg(filterS);
             filterM = mode.begin;
-            return cmd;
+            return;
         }
         if (a.equals("hbegin")) {
             filterS = filter2reg(filterS);
             filterM = mode.hbegin;
-            return cmd;
+            return;
         }
         if (a.equals("end")) {
             filterS = filter2reg(filterS);
             filterM = mode.end;
-            return cmd;
+            return;
         }
         if (a.equals("redirect")) {
             filterM = mode.redirect;
-            return cmd;
+            return;
         }
         if (a.equals("sort")) {
             filterM = mode.sort;
-            return cmd;
+            return;
         }
         if (a.equals("padsort")) {
             filterM = mode.padsort;
-            return cmd;
+            return;
         }
         if (a.equals("revsort")) {
             filterM = mode.revsort;
-            return cmd;
+            return;
         }
         if (a.equals("repsort")) {
             filterM = mode.repsort;
-            return cmd;
+            return;
         }
         if (a.equals("uniq")) {
             filterM = mode.uniq;
-            return cmd;
+            return;
         }
         if (a.equals("hide")) {
             filterM = mode.hide;
-            return cmd;
+            return;
         }
         if (a.equals("section")) {
             filterS = filter2reg(filterS);
             filterM = mode.section;
-            return cmd;
+            return;
         }
         if (a.equals("first")) {
             filterM = mode.first;
-            return cmd;
+            return;
         }
         if (a.equals("last")) {
             filterM = mode.last;
-            return cmd;
+            return;
         }
         if (a.equals("hlast")) {
             filterM = mode.hlast;
-            return cmd;
+            return;
         }
         if (a.equals("reginc")) {
             filterM = mode.include;
-            return cmd;
+            return;
         }
         if (a.equals("hreginc")) {
             filterM = mode.hinclude;
-            return cmd;
+            return;
         }
         if (a.equals("regexc")) {
             filterM = mode.exclude;
-            return cmd;
+            return;
         }
         if (a.equals("regbeg")) {
             filterM = mode.begin;
-            return cmd;
+            return;
         }
         if (a.equals("hregbeg")) {
             filterM = mode.hbegin;
-            return cmd;
+            return;
         }
         if (a.equals("regend")) {
             filterM = mode.end;
-            return cmd;
+            return;
         }
         if (a.equals("regsec")) {
             filterM = mode.section;
-            return cmd;
+            return;
         }
-        return cmd;
     }
 
 }

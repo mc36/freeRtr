@@ -12,8 +12,8 @@ import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
-import org.freertr.user.userReader;
+import org.freertr.user.userHelp;
+import org.freertr.user.userRead;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -156,30 +156,26 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "sensor .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "command",
-        "sensor .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "sensor .*!" + cmds.tabulator + "name 0",
-        "sensor .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "labels",
-        "sensor .*!" + cmds.tabulator + "addname -1 null",
-        "sensor .*!" + cmds.tabulator + "skip 1",
-        "sensor .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "excluded",
-        "sensor .*!" + cmds.tabulator + "column .* style gauge",
-        "sensor .*!" + cmds.tabulator + "column .* type uint64",
-        "sensor .*!" + cmds.tabulator + "column .* split null null null",
-        "sensor .*!" + cmds.tabulator + "column .* help null",
-        "sensor .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "local interval",
-        "sensor .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "local memory",
-        "sensor .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "local file",
-        "sensor .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "local backup",
-        "sensor .*!" + cmds.tabulator + "local max-byte 0",
-        "sensor .*!" + cmds.tabulator + "local max-pack 0",
-        "sensor .*!" + cmds.tabulator + "local max-time 0",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {
+        new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "command", null),
+        new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("sensor .*", cmds.tabulator + "name 0", null),
+        new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "labels", null),
+        new userFilter("sensor .*", cmds.tabulator + "addname -1 null", null),
+        new userFilter("sensor .*", cmds.tabulator + "skip 1", null),
+        new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "excluded", null),
+        new userFilter("sensor .*", cmds.tabulator + "column .* style gauge", null),
+        new userFilter("sensor .*", cmds.tabulator + "column .* type uint64", null),
+        new userFilter("sensor .*", cmds.tabulator + "column .* split null null null", null),
+        new userFilter("sensor .*", cmds.tabulator + "column .* help null", null),
+        new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local interval", null),
+        new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local memory", null),
+        new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local file", null),
+        new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local backup", null),
+        new userFilter("sensor .*", cmds.tabulator + "local max-byte 0", null),
+        new userFilter("sensor .*", cmds.tabulator + "local max-pack 0", null),
+        new userFilter("sensor .*", cmds.tabulator + "local max-time 0", null)
+    };
 
     /**
      * create new sensor
@@ -210,7 +206,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         return "sensor";
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "rename", "rename this sensor");
         l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
         l.add(null, false, 1, new int[]{2}, "description", "specify description");
@@ -592,7 +588,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userReader rdr = new userReader(pip, null);
+        userRead rdr = new userRead(pip, null);
         pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);

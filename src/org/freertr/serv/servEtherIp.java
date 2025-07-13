@@ -13,7 +13,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -80,19 +80,14 @@ public class servEtherIp extends servGeneric implements ipPrt {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server etherip .*!" + cmds.tabulator + "port " + clntEtherIp.prot,
-        "server etherip .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server etherip .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface",
-        "server etherip .*!" + cmds.tabulator + "timeout 60000"
+    public final static userFilter[] defaultF = {
+        new userFilter("server etherip .*", cmds.tabulator + "port " + clntEtherIp.prot, null),
+        new userFilter("server etherip .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server etherip .*", cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface", null),
+        new userFilter("server etherip .*", cmds.tabulator + "timeout 60000", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -139,7 +134,7 @@ public class servEtherIp extends servGeneric implements ipPrt {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "bridge", "set interface to clone");
         l.add(null, false, 2, new int[]{-1}, "<num>", "number of bridge");
         l.add(null, false, 1, new int[]{2}, "timeout", "timeout of client");

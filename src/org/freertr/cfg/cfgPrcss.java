@@ -9,7 +9,7 @@ import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logBuf;
@@ -136,28 +136,23 @@ public class cfgPrcss implements Comparable<cfgPrcss>, Runnable, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "process definition .*!" + cmds.tabulator + "respawn",
-        "process definition .*!" + cmds.tabulator + "children",
-        "process definition .*!" + cmds.tabulator + "pinning null",
-        "process definition .*!" + cmds.tabulator + "user null",
-        "process definition .*!" + cmds.tabulator + "exec null",
-        "process definition .*!" + cmds.tabulator + "final null",
-        "process definition .*!" + cmds.tabulator + "time 1000",
-        "process definition .*!" + cmds.tabulator + "delay 1000",
-        "process definition .*!" + cmds.tabulator + "random-time 0",
-        "process definition .*!" + cmds.tabulator + "random-delay 0",
-        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions",
-        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-console",
-        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect",
-        "process definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range"
+    public final static userFilter[] defaultF = {
+        new userFilter("process definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("process definition .*", cmds.tabulator + "respawn", null),
+        new userFilter("process definition .*", cmds.tabulator + "children", null),
+        new userFilter("process definition .*", cmds.tabulator + "pinning null", null),
+        new userFilter("process definition .*", cmds.tabulator + "user null", null),
+        new userFilter("process definition .*", cmds.tabulator + "exec null", null),
+        new userFilter("process definition .*", cmds.tabulator + "final null", null),
+        new userFilter("process definition .*", cmds.tabulator + "time 1000", null),
+        new userFilter("process definition .*", cmds.tabulator + "delay 1000", null),
+        new userFilter("process definition .*", cmds.tabulator + "random-time 0", null),
+        new userFilter("process definition .*", cmds.tabulator + "random-delay 0", null),
+        new userFilter("process definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions", null),
+        new userFilter("process definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-console", null),
+        new userFilter("process definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect", null),
+        new userFilter("process definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "range", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgPrcss o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
@@ -209,7 +204,7 @@ public class cfgPrcss implements Comparable<cfgPrcss>, Runnable, cfgGeneric {
         new Thread(this).start();
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this process");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this process");
         l.add(null, false, 1, new int[]{-1}, "respawn", "restart on termination");

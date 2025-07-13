@@ -8,7 +8,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logFil;
@@ -41,22 +41,6 @@ public class servSyslog extends servGeneric implements prtServS {
      * log to local file
      */
     protected logFil log2file;
-
-    /**
-     * defaults text
-     */
-    public final static String[] defaultL = {
-        "server syslog .*!" + cmds.tabulator + "port " + port,
-        "server syslog .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server syslog .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "local",
-        "server syslog .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "file",
-        "server syslog .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rotate"
-    };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     /**
      * facilities
@@ -98,7 +82,18 @@ public class servSyslog extends servGeneric implements prtServS {
         return -1;
     }
 
-    public tabGen<userFilter> srvDefFlt() {
+    /**
+     * defaults text
+     */
+    public final static userFilter[] defaultF = {
+        new userFilter("server syslog .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server syslog .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server syslog .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local", null),
+        new userFilter("server syslog .*", cmds.tabulator + cmds.negated + cmds.tabulator + "file", null),
+        new userFilter("server syslog .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rotate", null)
+    };
+
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -182,7 +177,7 @@ public class servSyslog extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "file", "set log file");
         l.add(null, false, 2, new int[]{-1}, "<file>", "log file");
         l.add(null, false, 1, new int[]{2}, "rotate", "log file rotation");

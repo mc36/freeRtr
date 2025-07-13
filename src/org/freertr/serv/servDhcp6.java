@@ -23,7 +23,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -204,6 +204,18 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     public static tabGen<userFilter> defaultF;
 
     public tabGen<userFilter> srvDefFlt() {
+    public final static userFilter[] defaultF = {
+        new userFilter("server dhcp6 .*", cmds.tabulator + "port " + packDhcp6.portSnum, null),
+        new userFilter("server dhcp6 .*", cmds.tabulator + "protocol " + proto2string(protoIp6 + protoUdp), null),
+        new userFilter("server dhcp6 .*", cmds.tabulator + "boot-url ", null),
+        new userFilter("server dhcp6 .*", cmds.tabulator + "preference 0", null),
+        new userFilter("server dhcp6 .*", cmds.tabulator + "lease 43200000", null),
+        new userFilter("server dhcp6 .*", cmds.tabulator + "renew 21600000", null),
+        new userFilter("server dhcp6 .*", cmds.tabulator + "remember 0", null),
+        new userFilter("server dhcp6 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bind-file", null)
+    };
+
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -625,6 +637,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         l.add(null, false, 2, new int[]{-1}, "<num>", "hop count limit");
         l.add(null, false, 1, new int[]{2}, "helper-addresses", "upstream DHCP6 server for relay");
         l.add(null, false, 2, new int[]{-1}, "<addr>", "server address");
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "bind-file", "save bindings");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "file name");
         l.add(null, false, 1, new int[]{2}, "gateway", "gateway address to delegate");

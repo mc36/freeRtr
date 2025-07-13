@@ -7,7 +7,7 @@ import org.freertr.cry.cryCertificate;
 import org.freertr.cry.cryKeyGeneric;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
 
 /**
@@ -40,12 +40,7 @@ public class cfgCert implements Comparable<cfgCert>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {};
 
     public int compareTo(cfgCert o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
@@ -64,7 +59,7 @@ public class cfgCert implements Comparable<cfgCert>, cfgGeneric {
         return name;
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
     }
 
     public String getPrompt() {

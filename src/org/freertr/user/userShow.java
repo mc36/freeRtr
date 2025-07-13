@@ -166,12 +166,12 @@ public class userShow {
     /**
      * reader of user
      */
-    public userReader rdr;
+    public userRead rdr;
 
     /**
      * current help context
      */
-    public userHelping hlp;
+    public userHelp hlp;
 
     /**
      * current config context
@@ -728,7 +728,7 @@ public class userShow {
                     return null;
                 }
                 List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
-                lst = userFilter.getSection(lst, userReader.section2filter(cur));
+                lst = userFilter.getSection(lst, userRead.section2filter(cur));
                 rdr.putStrArr(userFilter.getDiffs(cur, lst));
                 return null;
             }
@@ -743,7 +743,7 @@ public class userShow {
                     return null;
                 }
                 List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
-                lst = userFilter.getSection(lst, userReader.section2filter(cur));
+                lst = userFilter.getSection(lst, userRead.section2filter(cur));
                 rdr.putStrArr(userFilter.getDiffs(lst, cur));
                 return null;
             }
@@ -963,7 +963,7 @@ public class userShow {
             }
             List<String> lst = cfgAll.getShRun(1);
             if (a.length() > 0) {
-                lst = userFilter.getSection(lst, userReader.filter2reg(a + " " + cmd.getRemaining()));
+                lst = userFilter.getSection(lst, userRead.filter2reg(a + " " + cmd.getRemaining()));
             }
             rdr.putStrArr(lst);
             return null;
@@ -1274,12 +1274,7 @@ public class userShow {
         if (a.equals("check")) {
             a = cmd.word();
             if (a.length() < 1) {
-                userFormat l = new userFormat("|", "name|state|asked|reply|times|last|times|last", "4|2pass|2fail");
-                for (int i = 0; i < cfgAll.checks.size(); i++) {
-                    cfgCheck ntry = cfgAll.checks.get(i);
-                    l.add(ntry.name + "|" + ntry.doCheckBinary() + "|" + (ntry.okNum + ntry.errNum) + "|" + ntry.time + "|" + ntry.okNum + "|" + bits.timePast(ntry.okTim) + "|" + ntry.errNum + "|" + bits.timePast(ntry.errTim));
-                }
-                rdr.putStrTab(l);
+                rdr.putStrTab(cfgAll.getShCheck());
                 return null;
             }
             cfgCheck srv = cfgAll.checkFind(a, false);
@@ -1498,11 +1493,11 @@ public class userShow {
                 return null;
             }
             if (a.equals("topology")) {
-                rdr.putStrTab(srv.getShowTopo(bits.str2num(cmd.word())));
+                rdr.putStrTab(srv.getShowTopo(bits.str2num(cmd.word()), cmd));
                 return null;
             }
             if (a.equals("tree")) {
-                rdr.putStrArr(srv.getShowTree(bits.str2num(cmd.word())));
+                rdr.putStrArr(srv.getShowTree(bits.str2num(cmd.word()), cmd));
                 return null;
             }
             if (a.equals("graph")) {
@@ -1956,9 +1951,27 @@ public class userShow {
                 cmd.error("no such mtracker");
                 return null;
             }
-            rdr.putStrTab(trck.worker.getShStat());
-            rdr.putStrTab(trck.worker.getShPeer());
-            rdr.putStrTab(trck.worker.getShMatrix());
+            a = cmd.word();
+            if (a.equals("status")) {
+                rdr.putStrTab(trck.worker.getShStat());
+                return null;
+            }
+            if (a.equals("peer")) {
+                rdr.putStrTab(trck.worker.getShPeer());
+                return null;
+            }
+            if (a.equals("reach")) {
+                rdr.putStrTab(trck.worker.getShMatrixReach());
+                return null;
+            }
+            if (a.equals("time")) {
+                rdr.putStrTab(trck.worker.getShMatrixTime());
+                return null;
+            }
+            if (a.equals("list")) {
+                rdr.putStrTab(trck.worker.getShList());
+                return null;
+            }
             return null;
         }
         if (a.equals("interfaces")) {
@@ -2468,7 +2481,7 @@ public class userShow {
                     return null;
                 }
                 if (a.equals("tree")) {
-                    rdr.putStrArr(r.ospf4.showSpfTree(bits.str2num(cmd.word())));
+                    rdr.putStrArr(r.ospf4.showSpfTree(bits.str2num(cmd.word()), cmd));
                     return null;
                 }
                 if (a.equals("othertree")) {
@@ -2835,7 +2848,7 @@ public class userShow {
                     return null;
                 }
                 if (a.equals("tree")) {
-                    rdr.putStrArr(r.ospf6.showSpfTree(bits.str2num(cmd.word())));
+                    rdr.putStrArr(r.ospf6.showSpfTree(bits.str2num(cmd.word()), cmd));
                     return null;
                 }
                 if (a.equals("othertree")) {
@@ -3392,7 +3405,7 @@ public class userShow {
             return;
         }
         if (a.equals("tree")) {
-            rdr.putStrArr(r.lsrp.showSpfTree());
+            rdr.putStrArr(r.lsrp.showSpfTree(cmd));
             return;
         }
         if (a.equals("othertree")) {
@@ -3476,7 +3489,7 @@ public class userShow {
             return;
         }
         if (a.equals("tree")) {
-            rdr.putStrArr(r.rift.showSpfTree(cmd.word()));
+            rdr.putStrArr(r.rift.showSpfTree(cmd.word(), cmd));
             return;
         }
         if (a.equals("othertree")) {
@@ -3623,7 +3636,7 @@ public class userShow {
             return;
         }
         if (a.equals("tree")) {
-            rdr.putStrArr(r.isis.showSpfTree(bits.str2num(cmd.word())));
+            rdr.putStrArr(r.isis.showSpfTree(bits.str2num(cmd.word()), cmd));
             return;
         }
         if (a.equals("othertree")) {
@@ -4269,7 +4282,7 @@ public class userShow {
         }
         addrIP adr = new addrIP();
         adr.fromString(cmd.word());
-        rtrLdpNeigh nei = fwd.ldpNeighFind(null, adr, false);
+        rtrLdpNeigh nei = fwd.ldpNeighFind(adr, false);
         if (nei == null) {
             cmd.error("no such neighbor");
             return;
@@ -4443,7 +4456,7 @@ public class userShow {
                 return;
             }
             if (a.equals("tree")) {
-                rdr.putStrArr(r.bgp.getSpfTree());
+                rdr.putStrArr(r.bgp.getSpfTree(cmd));
                 return;
             }
             if (a.equals("othertree")) {
@@ -4836,7 +4849,7 @@ public class userShow {
             List<String> dump2 = ntry2.fullDump("", r.bgp.fwdCore).formatAll(userFormat.tableMode.normal);
             int dif = ntry1.differs(tabRoute.addType.alters, ntry2);
             differ df = new differ();
-            df.calc(dump1, dump2);
+            df.calc1by1(dump1, dump2);
             List<String> res = df.getText(cmd.pipe.settingsGet(pipeSetting.width, 80), 0);
             res.add(0, "difference=" + dif);
             rdr.putStrArr(res);
@@ -6063,7 +6076,7 @@ public class userShow {
                 return;
             }
             List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
-            lst = userFilter.getSection(lst, userReader.section2filter(cur));
+            lst = userFilter.getSection(lst, userRead.section2filter(cur));
             rdr.putStrArr(lst);
             return;
         }
@@ -6072,7 +6085,7 @@ public class userShow {
             return;
         }
         if (a.length() > 0) {
-            lst = userFilter.getSection(lst, userReader.filter2reg(a));
+            lst = userFilter.getSection(lst, userRead.filter2reg(a));
         }
         rdr.putStrArr(lst);
     }

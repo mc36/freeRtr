@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -31,17 +31,13 @@ public class cfgTrnsltn implements Comparable<cfgTrnsltn>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "translation-rule .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "translation-rule .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "track",
-        "translation-rule .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "time",
-        "translation-rule .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log",
-        "translation-rule .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "last",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {
+        new userFilter("translation-rule .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("translation-rule .*", cmds.tabulator + cmds.negated + cmds.tabulator + "track", null),
+        new userFilter("translation-rule .*", cmds.tabulator + cmds.negated + cmds.tabulator + "time", null),
+        new userFilter("translation-rule .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log", null),
+        new userFilter("translation-rule .*", cmds.tabulator + cmds.negated + cmds.tabulator + "last", null)
+    };
 
     /**
      * log translation
@@ -149,7 +145,7 @@ public class cfgTrnsltn implements Comparable<cfgTrnsltn>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{3, -1}, "description", "specify description");
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "remove", "remove string");

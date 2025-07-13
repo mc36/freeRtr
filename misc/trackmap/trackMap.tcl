@@ -30,6 +30,7 @@ set f [getword]
 set g [getword]
 set h [getword]
 set i [getword]
+set j [getword]
 }
 
 

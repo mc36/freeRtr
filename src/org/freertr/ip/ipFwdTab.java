@@ -1433,7 +1433,7 @@ public class ipFwdTab {
         if (ntry.rouTab != null) {
             return;
         }
-        tabRouteEntry<addrIP> stLb = ((ipFwdIface) ntry.iface).labelsFind(prefix.prefix, ntry.nextHop);
+        tabRouteEntry<addrIP> stLb = ((ipFwdIface) ntry.iface).labelsFind(lower, prefix.prefix, ntry.nextHop);
         if (stLb != null) {
             tabRouteAttr<addrIP> stBn = stLb.sameFwder(ntry);
             if (stBn != null) {
@@ -1443,7 +1443,7 @@ public class ipFwdTab {
                 return;
             }
         }
-        rtrLdpNeigh nei = lower.ldpNeighFind(null, ntry.nextHop, false);
+        rtrLdpNeigh nei = lower.ldpNeighFind(ntry.nextHop, false);
         if (nei == null) {
             if (ntry.oldHop == null) {
                 return;

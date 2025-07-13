@@ -34,7 +34,7 @@ import org.freertr.cry.cryKeyGeneric;
 import org.freertr.cry.cryKeyMLKEM;
 import org.freertr.cry.cryKeyPQhybrid;
 import org.freertr.pack.packHolder;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -1152,7 +1152,7 @@ public class secTransform {
      *
      * @param l list to append
      */
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "group", "select diffie-hellman group");
         l.add(null, false, 2, new int[]{-1}, "01", "768 bit modp");
         l.add(null, false, 2, new int[]{-1}, "02", "1024 bit modp");

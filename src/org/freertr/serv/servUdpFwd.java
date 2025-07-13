@@ -13,7 +13,7 @@ import org.freertr.prt.prtServP;
 import org.freertr.prt.prtUdp;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -75,19 +75,15 @@ public class servUdpFwd extends servGeneric implements prtServP {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server udpfwd .*!" + cmds.tabulator + "port " + port,
-        "server udpfwd .*!" + cmds.tabulator + "protocol " + proto2string(protoAllDgrm),
-        "server udpfwd .*!" + cmds.tabulator + "source port 0",
-        "server udpfwd .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "source interface",
-        "server udpfwd .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server udpfwd .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server udpfwd .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
+        new userFilter("server udpfwd .*", cmds.tabulator + "source port 0", null),
+        new userFilter("server udpfwd .*", cmds.tabulator + cmds.negated + cmds.tabulator + "source interface", null),
+        new userFilter("server udpfwd .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -196,7 +192,7 @@ public class servUdpFwd extends servGeneric implements prtServP {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "logging", "set logging");
         l.add(null, false, 1, new int[]{2}, "source", "set session source");
         l.add(null, false, 2, new int[]{3}, "interface", "set source interface");

@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
+import org.freertr.user.userRead;
 import org.freertr.util.cmds;
 
 /**
@@ -29,14 +30,9 @@ public class cfgCons implements cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "console0! exec timeout 0"
+    public final static userFilter[] defaultF = {
+        new userFilter("console0", " exec timeout 0", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public String toString() {
         return "con0";
@@ -45,7 +41,7 @@ public class cfgCons implements cfgGeneric {
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("console0");
-        line.getShRun(cmds.tabulator, l);
+        line.getShRun(cmds.tabulator, l, filter);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {
@@ -54,7 +50,7 @@ public class cfgCons implements cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         line.getHelp(l);
     }
 

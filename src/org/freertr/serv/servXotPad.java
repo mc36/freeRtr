@@ -8,7 +8,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -34,17 +34,13 @@ public class servXotPad extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server xotpad .*!" + cmds.tabulator + "port " + packXotPad.port,
-        "server xotpad .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server xotpad .*", cmds.tabulator + "port " + packXotPad.port, null),
+        new userFilter("server xotpad .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -54,14 +50,14 @@ public class servXotPad extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
-        lin.getShRun(beg, lst);
+        lin.getShRun(beg, lst, filter);
     }
 
     public boolean srvCfgStr(cmds cmd) {
         return lin.doCfgStr(cmd);
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         lin.getHelp(l);
     }
 

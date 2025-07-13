@@ -777,7 +777,7 @@ public class rtrBgpUtil {
     /**
      * next hop capabilities
      */
-    public final static int attrRtrCapa = 39;
+    public final static int attrHopCapa = 39;
 
     /**
      * prefix sid
@@ -996,6 +996,7 @@ public class rtrBgpUtil {
             case attrNshChain:
             case attrDomPath:
             case attrBfdDisc:
+            case attrHopCapa:
             case attrStdComm:
             case attrOriginator:
             case attrClustList:
@@ -1122,8 +1123,8 @@ public class rtrBgpUtil {
                 return "onlyCust";
             case attrDomPath:
                 return "domPath";
-            case attrRtrCapa:
-                return "rtrCapa";
+            case attrHopCapa:
+                return "hopCapa";
             case attrPrefSid:
                 return "prefixSid";
             case attrBier:
@@ -1400,7 +1401,7 @@ public class rtrBgpUtil {
                 } else {
                     adr = ntry.prefix.broadcast.toIPv6();
                 }
-                if (ntry.prefix.broadcast.isFilled(0)) {
+                if (ntry.prefix.broadcast.isEmpty()) {
                     adr = new addrEmpty();
                 }
                 trg[pos] = (byte) adr.maxBits();
@@ -2578,6 +2579,16 @@ public class rtrBgpUtil {
     }
 
     /**
+     * parse next hop capabilities attribute
+     *
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public static void parseHopCapa(tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.hopCapa = pck.getCopy();
+    }
+
+    /**
      * parse prefix sid attribute
      *
      * @param ntry table entry
@@ -2736,12 +2747,12 @@ public class rtrBgpUtil {
             }
             if (!v6nh) {
                 addrIPv4 adr4 = adr.toIPv4();
-                if (adr4.isFilled(0)) {
+                if (adr4.isEmpty()) {
                     continue;
                 }
             } else {
                 addrIPv6 adr6 = adr.toIPv6();
-                if (adr6.isFilled(0)) {
+                if (adr6.isEmpty()) {
                     continue;
                 }
                 if (adr6.isLinkLocal()) {
@@ -3064,6 +3075,9 @@ public class rtrBgpUtil {
             case attrBfdDisc:
                 parseBfdDiscr(ntry, pck);
                 return null;
+            case attrHopCapa:
+                parseHopCapa(ntry, pck);
+                return null;
             case attrPrefSid:
                 parsePrefSid(ntry, pck);
                 return null;
@@ -3232,6 +3246,7 @@ public class rtrBgpUtil {
         placeNshChain(spkr, pck, hlp, ntry);
         placeDomainPath(spkr, pck, hlp, ntry);
         placeBfdDiscr(spkr, pck, hlp, ntry);
+        placeHopCapa(spkr, pck, hlp, ntry);
         placeAttribSet(spkr, pck, hlp, ntry);
         if (safi == safiAttrib) {
             pck.merge2beg();
@@ -3818,7 +3833,7 @@ public class rtrBgpUtil {
     }
 
     /**
-     * place attribute set attribute
+     * place bfd discr attribute
      *
      * @param spkr where to signal
      * @param trg target packet
@@ -3832,6 +3847,24 @@ public class rtrBgpUtil {
         hlp.clear();
         hlp.putCopy(ntry.best.bfdDiscr, 0, 0, ntry.best.bfdDiscr.length);
         hlp.putSkip(ntry.best.bfdDiscr.length);
+        placeAttrib(spkr, flagOptional | flagTransitive, attrHopCapa, trg, hlp);
+    }
+
+    /**
+     * place hop capability attribute
+     *
+     * @param spkr where to signal
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public static void placeHopCapa(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.hopCapa == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.hopCapa, 0, 0, ntry.best.hopCapa.length);
+        hlp.putSkip(ntry.best.hopCapa.length);
         placeAttrib(spkr, flagOptional | flagTransitive, attrBfdDisc, trg, hlp);
     }
 

@@ -11,8 +11,8 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
-import org.freertr.user.userReader;
+import org.freertr.user.userHelp;
+import org.freertr.user.userRead;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logBuf;
@@ -130,25 +130,20 @@ public class cfgSched implements Comparable<cfgSched>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "scheduler .*!" + cmds.tabulator + "respawn",
-        "scheduler .*!" + cmds.tabulator + "time 0",
-        "scheduler .*!" + cmds.tabulator + "delay 0",
-        "scheduler .*!" + cmds.tabulator + "random-time 0",
-        "scheduler .*!" + cmds.tabulator + "random-delay 0",
-        "scheduler .*!" + cmds.tabulator + "command exit",
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "hidden",
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions",
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-console",
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect",
-        "scheduler .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range"
+    public final static userFilter[] defaultF = {
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("scheduler .*", cmds.tabulator + "respawn", null),
+        new userFilter("scheduler .*", cmds.tabulator + "time 0", null),
+        new userFilter("scheduler .*", cmds.tabulator + "delay 0", null),
+        new userFilter("scheduler .*", cmds.tabulator + "random-time 0", null),
+        new userFilter("scheduler .*", cmds.tabulator + "random-delay 0", null),
+        new userFilter("scheduler .*", cmds.tabulator + "command exit", null),
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "hidden", null),
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions", null),
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-console", null),
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect", null),
+        new userFilter("scheduler .*", cmds.tabulator + cmds.negated + cmds.tabulator + "range", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgSched o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
@@ -158,7 +153,7 @@ public class cfgSched implements Comparable<cfgSched>, cfgGeneric {
         return "scheduler " + name;
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this scheduler");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this scheduler");
         l.add(null, false, 1, new int[]{2}, "rename", "rename this scheduler");
@@ -397,7 +392,7 @@ public class cfgSched implements Comparable<cfgSched>, cfgGeneric {
         loc = pipe.getSide();
         new Thread(new cfgSchedRead(this)).start();
         pipeSide pip = pipe.getSide();
-        userReader rdr = new userReader(pip, null);
+        userRead rdr = new userRead(pip, null);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;

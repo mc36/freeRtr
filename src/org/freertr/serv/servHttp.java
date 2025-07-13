@@ -14,7 +14,7 @@ import org.freertr.sec.secInfoUtl;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -99,28 +99,24 @@ public class servHttp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server http .*!" + cmds.tabulator + "port " + clearPort,
-        "server http .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "proxy",
-        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error",
-        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "single-request",
-        "server http .*!" + cmds.tabulator + "def-path " + defHostPat,
-        "server http .*!" + cmds.tabulator + "def-subconn",
-        "server http .*!" + cmds.tabulator + "buffer 65536",
-        "server http .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "second-port",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {
+        new userFilter("server http .*", cmds.tabulator + "port " + clearPort, null),
+        new userFilter("server http .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "proxy", null),
+        new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "error", null),
+        new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "single-request", null),
+        new userFilter("server http .*", cmds.tabulator + "def-path " + defHostPat, null),
+        new userFilter("server http .*", cmds.tabulator + "def-subconn", null),
+        new userFilter("server http .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "second-port", null)
+    };
 
     /**
      * get defaults filter
      *
      * @return filter
      */
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -317,7 +313,7 @@ public class servHttp extends servGeneric implements prtServS {
         return ntry.doConfig(negated, a, cmd);
     }
 
-    private final static void getSubconnHelp(int b, userHelping l) {
+    private final static void getSubconnHelp(int b, userHelp l) {
         l.add(null, false, b, new int[]{b, -1}, "strip-path", "strip path");
         l.add(null, false, b, new int[]{b, -1}, "strip-name", "strip filename");
         l.add(null, false, b, new int[]{b, -1}, "strip-ext", "strip extension");
@@ -332,7 +328,7 @@ public class servHttp extends servGeneric implements prtServS {
      *
      * @param l list
      */
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "single-request", "one request per connection");
         l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");

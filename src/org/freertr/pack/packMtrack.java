@@ -58,9 +58,19 @@ public class packMtrack {
     public int typ;
 
     /**
+     * packet time
+     */
+    public int tim;
+
+    /**
      * addresses
      */
     public List<addrIP> adrs = new ArrayList<addrIP>();
+
+    /**
+     * rtt times
+     */
+    public List<Integer> rtts = new ArrayList<Integer>();
 
     /**
      * parse one packet
@@ -69,9 +79,12 @@ public class packMtrack {
      */
     public void parsePacket(packHolder pck) {
         typ = pck.getByte(0); // type
-        pck.getSkip(1);
+        tim = pck.msbGetD(1); // time
+        pck.getSkip(5);
         adrs.clear();
         for (;;) {
+            int i = pck.getByte(0);
+            pck.getSkip(1);
             if (pck.dataSize() < addrIP.size) {
                 return;
             }
@@ -79,6 +92,7 @@ public class packMtrack {
             pck.getAddr(a, 0); // address
             pck.getSkip(addrIP.size);
             adrs.add(a);
+            rtts.add(i);
         }
     }
 
@@ -90,8 +104,15 @@ public class packMtrack {
     public void createPacket(packHolder pck) {
         pck.clear();
         pck.putByte(0, typ); // type
-        pck.putSkip(1);
+        pck.msbPutD(1, tim); // time
+        pck.putSkip(5);
         for (int i = 0; i < adrs.size(); i++) {
+            if (tim == 0) {
+                pck.putByte(0, 0); // rtt
+            } else {
+                pck.putByte(0, rtts.get(i)); // rtt
+            }
+            pck.putSkip(1);
             pck.putAddr(0, adrs.get(i)); // address
             pck.putSkip(addrIP.size);
         }

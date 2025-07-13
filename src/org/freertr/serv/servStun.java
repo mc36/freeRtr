@@ -17,7 +17,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -50,17 +50,12 @@ public class servStun extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server stun .*!" + cmds.tabulator + "port " + packStun.port,
-        "server stun .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server stun .*", cmds.tabulator + "port " + packStun.port, null),
+        new userFilter("server stun .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -107,7 +102,7 @@ public class servStun extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "group", "set group number");
         l.add(null, false, 2, new int[]{-1}, "<num>", "group number");
         l.add(null, false, 1, new int[]{2}, "clone", "set interface to clone");

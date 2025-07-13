@@ -36,7 +36,7 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -565,12 +565,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return log of spf
      */
     public userFormat showSpfTopo(cmds cmd) {
-        if (cmd.size() < 1) {
-            return lastSpf.listTopology();
-        }
-        addrIPv4 ned = new addrIPv4();
-        ned.fromString(cmd.word());
-        return lastSpf.listTopology(ned);
+        return lastSpf.listTopology(new addrIPv4(), cmd);
     }
 
     /**
@@ -585,10 +580,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
     /**
      * show tree
      *
+     * @param cmd entry to find
      * @return tree of spf
      */
-    public List<String> showSpfTree() {
-        return lastSpf.listTree();
+    public List<String> showSpfTree(cmds cmd) {
+        return lastSpf.listTree(cmd);
     }
 
     /**
@@ -602,7 +598,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        return spf.listTree();
+        return spf.listTree(cmd);
     }
 
     /**
@@ -616,12 +612,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        if (cmd.size() < 1) {
-            return spf.listTopology();
-        }
-        ned = new addrIPv4();
-        ned.fromString(cmd.word());
-        return spf.listTopology(ned);
+        return spf.listTopology(new addrIPv4(), cmd);
     }
 
     /**
@@ -992,7 +983,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      *
      * @param l list
      */
-    public void routerGetHelp(userHelping l) {
+    public void routerGetHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "router-id", "specify router id");
         l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
         l.add(null, false, 1, new int[]{2}, "distance", "specify default distance");

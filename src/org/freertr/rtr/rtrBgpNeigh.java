@@ -2212,13 +2212,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @return peer readiness string
      */
     public String getReadiness() {
-        if (conn.ready2adv) {
-            return "yes";
-        }
         if (shutdown) {
             return "admin";
         }
-        return "no";
+        return cmds.upDown(conn.ready2adv);
     }
 
     /**
@@ -2341,7 +2338,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             return null;
         }
         sock.restartable = true;
-        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + remoteAs + " " + conn.peerHold + " " + conn.upTime + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx + " " + conn.peerMltLab + " " + conn.peerDynCap + " " + conn.peerRouterID;
+        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + bits.num2str(remoteAs) + " " + conn.peerHold + " " + conn.upTime + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx + " " + conn.peerMltLab + " " + conn.peerDynCap + " " + conn.peerRouterID;
     }
 
 }

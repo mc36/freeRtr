@@ -27,7 +27,7 @@ import org.freertr.ifc.ifcNshFwd;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcUp;
 import org.freertr.pack.packLdpPwe;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -225,7 +225,7 @@ public class cfgXconnSide {
      * @param l help to append
      * @param p initial position
      */
-    public static void getHelp(userHelping l, int p) {
+    public static void getHelp(userHelp l, int p) {
         l.add(null, false, p, new int[]{p + 1}, "<name:vrf>", "vrf to use");
         l.add(null, false, p + 1, new int[]{p + 2}, "<name:ifc>", "source interface to use");
         l.add(null, false, p + 2, new int[]{p + 3}, "pckoudp", "pckoudp encapsulation");

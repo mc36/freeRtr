@@ -163,7 +163,11 @@ help :
 
     if ((commSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
     if (bind(commSock, (struct sockaddr *) &addrLoc, sizeof (addrLoc)) < 0) err("failed to bind socket");
+    if (connect(commSock, (struct sockaddr *) &addrRem, sizeof (addrRem)) < 0) err("failed to connect socket");
     printf("lower binded to local port %s %i, will send to %s %i.\n", inet_ntoa(addrLoc.sin_addr), portLoc, inet_ntoa(addrRem.sin_addr), portRem);
+    int sockOpt = 524288;
+    setsockopt(commSock, SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt));
+    setsockopt(commSock, SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt));
 
     bunNum = ((argc - 4) / 2);
     if (bunNum > bundleMax) bunNum = bundleMax;
@@ -183,10 +187,10 @@ help :
         bunRem[i].sin_port = htons(portRem);
         if ((bunSck[i] = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
         if (bind(bunSck[i], (struct sockaddr *) &bunLoc[i], sizeof (addrLoc)) < 0) err("failed to bind socket");
+        if (connect(bunSck[i], (struct sockaddr *) &bunRem[i], sizeof (addrRem)) < 0) err("failed to connect socket");
         printf("binded to local port %s %i, will send to %s %i.\n", inet_ntoa(bunLoc[i].sin_addr), portLoc, inet_ntoa(bunRem[i].sin_addr), portRem);
-        int sockOpt = 524288;
-        if (setsockopt(bunSck[i], SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt)) < 0) err("failed to set socket rxbuf");
-        if (setsockopt(bunSck[i], SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt)) < 0) err("failed to set socket txbuf");
+        setsockopt(bunSck[i], SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt));
+        setsockopt(bunSck[i], SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt));
     }
 
     printf("serving others\n");

@@ -1,6 +1,6 @@
 package org.freertr.pipe;
 
-import org.freertr.user.userReader;
+import org.freertr.user.userRead;
 
 /**
  * display pipeline to image
@@ -52,8 +52,8 @@ public class pipeImage {
     public pipeImage(pipeSide pip, int x, int y, byte[][][] fnt, int[] plt) {
         pipe = pip;
         pipe.setReady();
-        userReader.setTermWdt(pipe, x);
-        userReader.setTermLen(pipe, y);
+        userRead.setTermWdt(pipe, x);
+        userRead.setTermLen(pipe, y);
         font = fnt;
         pal = plt;
         fntY = font[0].length;

@@ -6,8 +6,6 @@ import java.util.TimerTask;
 import org.freertr.addr.addrIsis;
 import org.freertr.addr.addrMac;
 import org.freertr.auth.authLocal;
-import org.freertr.cry.cryHashHmac;
-import org.freertr.cry.cryHashMd5;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ifc.ifcNull;
@@ -16,7 +14,7 @@ import org.freertr.ip.ipFwdIface;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabAverage;
 import org.freertr.tab.tabGen;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -179,9 +177,15 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
     public String authentication;
 
     /**
-     * authentication mode: 1=cleartext, 2=md5
+     * authentication mode: 1=cleartext, 2=md5, 3=sha1, 4=sha224, 5=sha256,
+     * 6=sha384, 7=sha512
      */
     public int authenMode;
+
+    /**
+     * authentication id
+     */
+    public int authenKey;
 
     /**
      * traffic eng suppression
@@ -262,6 +266,11 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
      * dynamic metric
      */
     public int dynamicMetric;
+
+    /**
+     * ldp metric syncrhonization
+     */
+    public boolean ldpSync;
 
     /**
      * neighbors
@@ -372,11 +381,27 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             case 2:
                 a = "md5";
                 break;
+            case 3:
+                a = "sha1";
+                break;
+            case 4:
+                a = "sha224";
+                break;
+            case 5:
+                a = "sha256";
+                break;
+            case 6:
+                a = "sha384";
+                break;
+            case 7:
+                a = "sha512";
+                break;
             default:
                 a = "unknown=" + authenMode;
                 break;
         }
         l.add(cmds.tabulator + beg + "authen-type " + a);
+        l.add(cmds.tabulator + beg + "authen-id " + authenKey);
         l.add(cmds.tabulator + beg + "metric " + metric);
         l.add(cmds.tabulator + beg + "priority " + disPriority);
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
@@ -444,6 +469,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         }
         cmds.cfgLine(l, dynamicMetric < 1, cmds.tabulator, beg + "dynamic-metric mode", a);
         l.add(cmds.tabulator + beg + "dynamic-metric time " + echoTimer);
+        cmds.cfgLine(l, !ldpSync, cmds.tabulator, beg + "ldp-sync", "");
         echoParam.getConfig(l, beg);
     }
 
@@ -559,6 +585,10 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             authentication = authLocal.passwdDecode(cmd.word());
             return;
         }
+        if (a.equals("authen-id")) {
+            authenKey = bits.str2num(cmd.word());
+            return;
+        }
         if (a.equals("authen-type")) {
             authenMode = 0;
             a = cmd.word();
@@ -572,6 +602,26 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             }
             if (a.equals("md5")) {
                 authenMode = 2;
+                return;
+            }
+            if (a.equals("sha1")) {
+                authenMode = 3;
+                return;
+            }
+            if (a.equals("sha224")) {
+                authenMode = 4;
+                return;
+            }
+            if (a.equals("sha256")) {
+                authenMode = 5;
+                return;
+            }
+            if (a.equals("sha384")) {
+                authenMode = 6;
+                return;
+            }
+            if (a.equals("sha512")) {
+                authenMode = 7;
                 return;
             }
             return;
@@ -658,6 +708,11 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         }
         if (a.equals("ipinfo")) {
             ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, false);
+            return;
+        }
+        if (a.equals("ldp-sync")) {
+            ldpSync = true;
+            lower.genLsps(3);
             return;
         }
         if (a.equals("dynamic-metric")) {
@@ -771,6 +826,10 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             authentication = null;
             return;
         }
+        if (a.equals("authen-id")) {
+            authenKey = 0;
+            return;
+        }
         if (a.equals("authen-type")) {
             authenMode = 1;
             return;
@@ -839,6 +898,11 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, true);
             return;
         }
+        if (a.equals("ldp-sync")) {
+            ldpSync = false;
+            lower.genLsps(3);
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             if (a.equals("mode")) {
@@ -857,7 +921,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
      *
      * @param l list to update
      */
-    public static void routerGetHelp(userHelping l) {
+    public static void routerGetHelp(userHelp l) {
         l.add(null, false, 4, new int[]{-1}, "enable", "enable protocol processing");
         l.add(null, false, 4, new int[]{-1}, "other-enable", "enable other protocol processing");
         l.add(null, false, 4, new int[]{5}, "circuit", "set circuit type");
@@ -894,6 +958,13 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         l.add(null, false, 5, new int[]{-1}, "null", "use nothing");
         l.add(null, false, 5, new int[]{-1}, "clear", "use cleartext");
         l.add(null, false, 5, new int[]{-1}, "md5", "use md5");
+        l.add(null, false, 5, new int[]{-1}, "sha1", "use sha1");
+        l.add(null, false, 5, new int[]{-1}, "sha224", "use sha224");
+        l.add(null, false, 5, new int[]{-1}, "sha256", "use sha256");
+        l.add(null, false, 5, new int[]{-1}, "sha384", "use sha384");
+        l.add(null, false, 5, new int[]{-1}, "sha512", "use sha512");
+        l.add(null, false, 4, new int[]{5}, "authen-id", "id for authentication");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "key id");
         l.add(null, false, 4, new int[]{5}, "traffeng", "traffic engineering parameters");
         l.add(null, false, 5, new int[]{-1}, "suppress", "do not advertise interface");
         l.add(null, false, 5, new int[]{6}, "metric", "set metric");
@@ -921,6 +992,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         l.add(null, false, 5, new int[]{6}, "other-subdomain", "set other subdomain");
         l.add(null, false, 6, new int[]{-1}, "<num>", "index");
         secInfoUtl.getHelp(l, 4, "ipinfo", "check peers");
+        l.add(null, false, 4, new int[]{-1}, "ldp-sync", "synchronize metric to ldp");
         l.add(null, false, 4, new int[]{5}, "dynamic-metric", "dynamic peer metric");
         l.add(null, false, 5, new int[]{6}, "mode", "dynamic peer metric");
         l.add(null, false, 6, new int[]{-1}, "disabled", "forbid echo requests");
@@ -1051,41 +1123,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
      * @return bytes in header
      */
     protected byte[] getAuthData(packHolder pck, int typ, int ofs) {
-        ofs += 3;
-        switch (authenMode) {
-            case 1:
-                if (authentication == null) {
-                    return null;
-                }
-                byte[] buf = (" " + authentication).getBytes();
-                buf[0] = 1;
-                return buf;
-            case 2:
-                if (authentication == null) {
-                    return null;
-                }
-                cryHashHmac h = new cryHashHmac(new cryHashMd5(), authentication.getBytes());
-                h.init();
-                int hshSiz = h.getHashSize();
-                h.update(rtrIsis.protDist);
-                h.update(rtrIsisNeigh.msgTyp2headSiz(typ));
-                h.update(1);
-                h.update(0);
-                h.update(typ);
-                h.update(1);
-                h.update(0);
-                h.update(lower.getMaxAreaAddr());
-                pck = pck.copyBytes(true, true);
-                pck.merge2beg();
-                pck.hashData(h, 0, ofs);
-                h.update(new byte[hshSiz]);
-                if ((ofs + hshSiz) < pck.dataSize()) {
-                    pck.hashData(h, ofs + hshSiz, pck.dataSize() - ofs - hshSiz);
-                }
-                return bits.byteConcat(new byte[]{54}, h.finish());
-            default:
-                return null;
-        }
+        return lower.calcAuthData(pck, typ, ofs, authenMode, authenKey, authentication);
     }
 
     /**

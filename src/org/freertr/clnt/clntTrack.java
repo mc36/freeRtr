@@ -30,7 +30,7 @@ import org.freertr.sec.secClient;
 import org.freertr.serv.servGeneric;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
-import org.freertr.user.userReader;
+import org.freertr.user.userRead;
 import org.freertr.user.userScript;
 import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
@@ -504,7 +504,18 @@ public class clntTrack implements Runnable, rtrBfdClnt {
      * @return string
      */
     public String getShSum() {
-        return name + "|" + force2string(force) + "|" + mode2string(mode) + "|" + target + "|" + (getStatus() ? "up" : "down") + "|" + totalChng + "|" + bits.timePast(finalTime);
+        return name + "|" + force2string(force) + "|" + mode2string(mode) + "|" + target + "|" + cmds.upDown(getStatus()) + "|" + totalChng + "|" + getRtt() + "|" + bits.timePast(finalTime);
+    }
+
+    private long getRtt() {
+        long i = (stopTime - startTime);
+        if (i < 0) {
+            i = 0;
+        }
+        if (i >= timeout) {
+            i = 0;
+        }
+        return i;
     }
 
     /**
@@ -522,7 +533,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         l.add("for|" + bits.timePast(finalTime));
         l.add("changes|" + totalChng);
         l.add("measures|" + (totalUp + totalDn));
-        l.add("took|" + (stopTime - startTime));
+        l.add("took|" + getRtt());
         l.add("last|" + bits.time2str(cfgAll.timeZoneName, stopTime + cfgAll.timeServerOffset, 3));
         l.add("ago|" + bits.timePast(stopTime));
         l.add("ups|" + totalUp);
@@ -696,7 +707,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
                     haveResult(false);
                     return;
                 }
-                haveResult(check.doCheckBinary());
+                haveResult(check.getStatus());
                 return;
             case nrpe:
                 if (target == null) {
@@ -933,7 +944,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         pipeLine pipe = new pipeLine(32768, false);
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
-        userReader rdr = new userReader(pip, null);
+        userRead rdr = new userRead(pip, null);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;

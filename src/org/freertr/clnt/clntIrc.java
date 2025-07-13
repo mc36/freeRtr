@@ -8,7 +8,7 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
 import org.freertr.serv.servIrc;
 import org.freertr.user.userExec;
-import org.freertr.user.userReader;
+import org.freertr.user.userRead;
 import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -161,7 +161,7 @@ public class clntIrc implements Runnable {
         c.word();
         pipeLine pipE = new pipeLine(32768, false);
         pipeSide pip = pipE.getSide();
-        userReader rdr = new userReader(pip, null);
+        userRead rdr = new userRead(pip, null);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
         pip.lineTx = pipeSide.modTyp.modeCRLF;

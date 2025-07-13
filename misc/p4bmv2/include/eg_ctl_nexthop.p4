@@ -64,6 +64,316 @@ control EgressControlNexthop(inout headers hdr,
     }
 
 
+    action act_ipv4_labs9(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, label_t lab0, label_t lab1, label_t lab2, label_t lab3, label_t lab4, label_t lab5, label_t lab6, label_t lab7, label_t lab8, label_t lab9) {
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+        hdr.mpls80.setValid();
+        hdr.mpls80.label = lab0;
+        hdr.mpls80.ttl = 255;
+        hdr.mpls80.bos = 1;
+        hdr.mpls81.setValid();
+        hdr.mpls81.label = lab1;
+        hdr.mpls81.ttl = 255;
+        hdr.mpls81.bos = 0;
+        hdr.mpls82.setValid();
+        hdr.mpls82.label = lab2;
+        hdr.mpls82.ttl = 255;
+        hdr.mpls82.bos = 0;
+        hdr.mpls83.setValid();
+        hdr.mpls83.label = lab3;
+        hdr.mpls83.ttl = 255;
+        hdr.mpls83.bos = 0;
+        hdr.mpls84.setValid();
+        hdr.mpls84.label = lab4;
+        hdr.mpls84.ttl = 255;
+        hdr.mpls84.bos = 0;
+        hdr.mpls85.setValid();
+        hdr.mpls85.label = lab5;
+        hdr.mpls85.ttl = 255;
+        hdr.mpls85.bos = 0;
+        hdr.mpls86.setValid();
+        hdr.mpls86.label = lab6;
+        hdr.mpls86.ttl = 255;
+        hdr.mpls86.bos = 0;
+        hdr.mpls87.setValid();
+        hdr.mpls87.label = lab7;
+        hdr.mpls87.ttl = 255;
+        hdr.mpls87.bos = 0;
+        hdr.mpls88.setValid();
+        hdr.mpls88.label = lab8;
+        hdr.mpls88.ttl = 255;
+        hdr.mpls88.bos = 0;
+        hdr.mpls89.setValid();
+        hdr.mpls89.label = lab9;
+        hdr.mpls89.ttl = 255;
+        hdr.mpls89.bos = 0;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
+    action act_ipv4_labs8(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, label_t lab0, label_t lab1, label_t lab2, label_t lab3, label_t lab4, label_t lab5, label_t lab6, label_t lab7, label_t lab8) {
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+        hdr.mpls80.setValid();
+        hdr.mpls80.label = lab0;
+        hdr.mpls80.ttl = 255;
+        hdr.mpls80.bos = 1;
+        hdr.mpls81.setValid();
+        hdr.mpls81.label = lab1;
+        hdr.mpls81.ttl = 255;
+        hdr.mpls81.bos = 0;
+        hdr.mpls82.setValid();
+        hdr.mpls82.label = lab2;
+        hdr.mpls82.ttl = 255;
+        hdr.mpls82.bos = 0;
+        hdr.mpls83.setValid();
+        hdr.mpls83.label = lab3;
+        hdr.mpls83.ttl = 255;
+        hdr.mpls83.bos = 0;
+        hdr.mpls84.setValid();
+        hdr.mpls84.label = lab4;
+        hdr.mpls84.ttl = 255;
+        hdr.mpls84.bos = 0;
+        hdr.mpls85.setValid();
+        hdr.mpls85.label = lab5;
+        hdr.mpls85.ttl = 255;
+        hdr.mpls85.bos = 0;
+        hdr.mpls86.setValid();
+        hdr.mpls86.label = lab6;
+        hdr.mpls86.ttl = 255;
+        hdr.mpls86.bos = 0;
+        hdr.mpls87.setValid();
+        hdr.mpls87.label = lab7;
+        hdr.mpls87.ttl = 255;
+        hdr.mpls87.bos = 0;
+        hdr.mpls88.setValid();
+        hdr.mpls88.label = lab8;
+        hdr.mpls88.ttl = 255;
+        hdr.mpls88.bos = 0;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
+    action act_ipv4_labs7(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, label_t lab0, label_t lab1, label_t lab2, label_t lab3, label_t lab4, label_t lab5, label_t lab6, label_t lab7) {
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+        hdr.mpls80.setValid();
+        hdr.mpls80.label = lab0;
+        hdr.mpls80.ttl = 255;
+        hdr.mpls80.bos = 1;
+        hdr.mpls81.setValid();
+        hdr.mpls81.label = lab1;
+        hdr.mpls81.ttl = 255;
+        hdr.mpls81.bos = 0;
+        hdr.mpls82.setValid();
+        hdr.mpls82.label = lab2;
+        hdr.mpls82.ttl = 255;
+        hdr.mpls82.bos = 0;
+        hdr.mpls83.setValid();
+        hdr.mpls83.label = lab3;
+        hdr.mpls83.ttl = 255;
+        hdr.mpls83.bos = 0;
+        hdr.mpls84.setValid();
+        hdr.mpls84.label = lab4;
+        hdr.mpls84.ttl = 255;
+        hdr.mpls84.bos = 0;
+        hdr.mpls85.setValid();
+        hdr.mpls85.label = lab5;
+        hdr.mpls85.ttl = 255;
+        hdr.mpls85.bos = 0;
+        hdr.mpls86.setValid();
+        hdr.mpls86.label = lab6;
+        hdr.mpls86.ttl = 255;
+        hdr.mpls86.bos = 0;
+        hdr.mpls87.setValid();
+        hdr.mpls87.label = lab7;
+        hdr.mpls87.ttl = 255;
+        hdr.mpls87.bos = 0;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
+    action act_ipv4_labs6(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, label_t lab0, label_t lab1, label_t lab2, label_t lab3, label_t lab4, label_t lab5, label_t lab6) {
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+        hdr.mpls80.setValid();
+        hdr.mpls80.label = lab0;
+        hdr.mpls80.ttl = 255;
+        hdr.mpls80.bos = 1;
+        hdr.mpls81.setValid();
+        hdr.mpls81.label = lab1;
+        hdr.mpls81.ttl = 255;
+        hdr.mpls81.bos = 0;
+        hdr.mpls82.setValid();
+        hdr.mpls82.label = lab2;
+        hdr.mpls82.ttl = 255;
+        hdr.mpls82.bos = 0;
+        hdr.mpls83.setValid();
+        hdr.mpls83.label = lab3;
+        hdr.mpls83.ttl = 255;
+        hdr.mpls83.bos = 0;
+        hdr.mpls84.setValid();
+        hdr.mpls84.label = lab4;
+        hdr.mpls84.ttl = 255;
+        hdr.mpls84.bos = 0;
+        hdr.mpls85.setValid();
+        hdr.mpls85.label = lab5;
+        hdr.mpls85.ttl = 255;
+        hdr.mpls85.bos = 0;
+        hdr.mpls86.setValid();
+        hdr.mpls86.label = lab6;
+        hdr.mpls86.ttl = 255;
+        hdr.mpls86.bos = 0;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
+    action act_ipv4_labs5(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, label_t lab0, label_t lab1, label_t lab2, label_t lab3, label_t lab4, label_t lab5) {
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+        hdr.mpls80.setValid();
+        hdr.mpls80.label = lab0;
+        hdr.mpls80.ttl = 255;
+        hdr.mpls80.bos = 1;
+        hdr.mpls81.setValid();
+        hdr.mpls81.label = lab1;
+        hdr.mpls81.ttl = 255;
+        hdr.mpls81.bos = 0;
+        hdr.mpls82.setValid();
+        hdr.mpls82.label = lab2;
+        hdr.mpls82.ttl = 255;
+        hdr.mpls82.bos = 0;
+        hdr.mpls83.setValid();
+        hdr.mpls83.label = lab3;
+        hdr.mpls83.ttl = 255;
+        hdr.mpls83.bos = 0;
+        hdr.mpls84.setValid();
+        hdr.mpls84.label = lab4;
+        hdr.mpls84.ttl = 255;
+        hdr.mpls84.bos = 0;
+        hdr.mpls85.setValid();
+        hdr.mpls85.label = lab5;
+        hdr.mpls85.ttl = 255;
+        hdr.mpls85.bos = 0;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
+    action act_ipv4_labs4(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, label_t lab0, label_t lab1, label_t lab2, label_t lab3, label_t lab4) {
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+        hdr.mpls80.setValid();
+        hdr.mpls80.label = lab0;
+        hdr.mpls80.ttl = 255;
+        hdr.mpls80.bos = 1;
+        hdr.mpls81.setValid();
+        hdr.mpls81.label = lab1;
+        hdr.mpls81.ttl = 255;
+        hdr.mpls81.bos = 0;
+        hdr.mpls82.setValid();
+        hdr.mpls82.label = lab2;
+        hdr.mpls82.ttl = 255;
+        hdr.mpls82.bos = 0;
+        hdr.mpls83.setValid();
+        hdr.mpls83.label = lab3;
+        hdr.mpls83.ttl = 255;
+        hdr.mpls83.bos = 0;
+        hdr.mpls84.setValid();
+        hdr.mpls84.label = lab4;
+        hdr.mpls84.ttl = 255;
+        hdr.mpls84.bos = 0;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
+    action act_ipv4_labs3(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, label_t lab0, label_t lab1, label_t lab2, label_t lab3) {
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+        hdr.mpls80.setValid();
+        hdr.mpls80.label = lab0;
+        hdr.mpls80.ttl = 255;
+        hdr.mpls80.bos = 1;
+        hdr.mpls81.setValid();
+        hdr.mpls81.label = lab1;
+        hdr.mpls81.ttl = 255;
+        hdr.mpls81.bos = 0;
+        hdr.mpls82.setValid();
+        hdr.mpls82.label = lab2;
+        hdr.mpls82.ttl = 255;
+        hdr.mpls82.bos = 0;
+        hdr.mpls83.setValid();
+        hdr.mpls83.label = lab3;
+        hdr.mpls83.ttl = 255;
+        hdr.mpls83.bos = 0;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
+    action act_ipv4_labs2(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, label_t lab0, label_t lab1, label_t lab2) {
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+        hdr.mpls80.setValid();
+        hdr.mpls80.label = lab0;
+        hdr.mpls80.ttl = 255;
+        hdr.mpls80.bos = 1;
+        hdr.mpls81.setValid();
+        hdr.mpls81.label = lab1;
+        hdr.mpls81.ttl = 255;
+        hdr.mpls81.bos = 0;
+        hdr.mpls82.setValid();
+        hdr.mpls82.label = lab2;
+        hdr.mpls82.ttl = 255;
+        hdr.mpls82.bos = 0;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
+    action act_ipv4_labs1(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, label_t lab0, label_t lab1) {
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+        hdr.mpls80.setValid();
+        hdr.mpls80.label = lab0;
+        hdr.mpls80.ttl = 255;
+        hdr.mpls80.bos = 1;
+        hdr.mpls81.setValid();
+        hdr.mpls81.label = lab1;
+        hdr.mpls81.ttl = 255;
+        hdr.mpls81.bos = 0;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
+    action act_ipv4_labs0(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, label_t lab0) {
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.ethernet.src_mac_addr = src_mac_addr;
+        hdr.ethernet.dst_mac_addr = dst_mac_addr;
+        hdr.mpls80.setValid();
+        hdr.mpls80.label = lab0;
+        hdr.mpls80.ttl = 255;
+        hdr.mpls80.bos = 1;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
 
     action act_ipv4_pppoe(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, bit<16> session) {
         /*
@@ -733,6 +1043,16 @@ eg_md.nexthop_id:
         actions = {
             act_ipv4_fib_hit;
             act_ipv4_pwhe;
+            act_ipv4_labs0;
+            act_ipv4_labs1;
+            act_ipv4_labs2;
+            act_ipv4_labs3;
+            act_ipv4_labs4;
+            act_ipv4_labs5;
+            act_ipv4_labs6;
+            act_ipv4_labs7;
+            act_ipv4_labs8;
+            act_ipv4_labs9;
             act_ipv4_pppoe;
             act_ipv4_gre4;
             act_ipv4_gre6;

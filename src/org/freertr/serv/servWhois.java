@@ -13,7 +13,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIntMatcher;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -37,24 +37,19 @@ public class servWhois extends servGeneric implements prtServS {
     public final static int port = clntWhois.port;
 
     /**
-     * defaults text
-     */
-    public final static String[] defaultL = {
-        "server whois .*!" + cmds.tabulator + "port " + port,
-        "server whois .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
-    };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    /**
      * remote servers
      */
     public tabGen<servWhoisRem> remotes = new tabGen<servWhoisRem>();
 
-    public tabGen<userFilter> srvDefFlt() {
+    /**
+     * defaults text
+     */
+    public final static userFilter[] defaultF = {
+        new userFilter("server whois .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server whois .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
+    };
+
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -142,14 +137,14 @@ public class servWhois extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "local", "select local definition");
         l.add(null, false, 2, new int[]{3}, "<num>", "as number range");
         l.add(null, false, 3, new int[]{-1}, "<str>", "name of asn");
         l.add(null, false, 1, new int[]{2}, "remote", "select remote resolver");
         l.add(null, false, 2, new int[]{3}, "<num>", "as number range");
         l.add(null, false, 3, new int[]{4}, "<name:prx>", "proxy profile to use");
-        l.add(null, false, 4, new int[]{5,-1}, "<str>", "remote server name");
+        l.add(null, false, 4, new int[]{5, -1}, "<str>", "remote server name");
         l.add(null, false, 5, new int[]{-1}, "[str]", "server option");
     }
 

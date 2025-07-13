@@ -19,7 +19,7 @@ import org.freertr.tab.tabRpkiAspa;
 import org.freertr.tab.tabRpkiKey;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -38,21 +38,6 @@ public class servRpki extends servGeneric implements prtServS {
      */
     public servRpki() {
     }
-
-    /**
-     * defaults text
-     */
-    public final static String[] defaultL = {
-        "server rpki .*!" + cmds.tabulator + "port " + rtrRpkiSpeak.portNum,
-        "server rpki .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server rpki .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "json",
-        "server rpki .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rpki"
-    };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     /**
      * configured ipv4 prefixes
@@ -99,7 +84,17 @@ public class servRpki extends servGeneric implements prtServS {
      */
     protected tabGen<servRpkiConn> neighs = new tabGen<servRpkiConn>();
 
-    public tabGen<userFilter> srvDefFlt() {
+    /**
+     * defaults text
+     */
+    public final static userFilter[] defaultF = {
+        new userFilter("server rpki .*", cmds.tabulator + "port " + rtrRpkiSpeak.portNum, null),
+        new userFilter("server rpki .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server rpki .*", cmds.tabulator + cmds.negated + cmds.tabulator + "json", null),
+        new userFilter("server rpki .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rpki", null)
+    };
+
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -254,7 +249,7 @@ public class servRpki extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "prefix", "setup a prefix");
         l.add(null, false, 2, new int[]{3}, "<net/mask>", "network in perfix/mask format");
         l.add(null, false, 3, new int[]{4}, "<num>", "maximum prefix length");

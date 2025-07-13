@@ -9,8 +9,8 @@
 .bad { color: red }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v25.6.12-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-06-13 03:28:39, took 01:16:10, with 1 workers, on 141 cases, 0 failed, 0 traces, 1 retries<br/>
+release: freeRouter v25.7.10-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2025-07-11 05:06:28, took 01:21:12, with 1 workers, on 154 cases, 0 failed, 0 traces, 1 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -111,6 +111,14 @@ jvm: java -Xmx256m -jar rtr.jar, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis15.tst">intop1-isis15.tst</a></td><td>success</td><td>interop1: isis md5 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis16.tst">intop1-isis16.tst</a></td><td>success</td><td>interop1: isis lsp md5 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis17.tst">intop1-isis17.tst</a></td><td>success</td><td>interop1: integrated isis multi-topology</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis18.tst">intop1-isis18.tst</a></td><td>success</td><td>interop1: isis sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis19.tst">intop1-isis19.tst</a></td><td>success</td><td>interop1: isis lsp sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis20.tst">intop1-isis20.tst</a></td><td>success</td><td>interop1: isis sha256 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis21.tst">intop1-isis21.tst</a></td><td>success</td><td>interop1: isis lsp sha256 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis22.tst">intop1-isis22.tst</a></td><td>success</td><td>interop1: isis sha384 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis23.tst">intop1-isis23.tst</a></td><td>success</td><td>interop1: isis lsp sha384 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis24.tst">intop1-isis24.tst</a></td><td>success</td><td>interop1: isis sha512 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis25.tst">intop1-isis25.tst</a></td><td>success</td><td>interop1: isis lsp sha512 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-l2tp01.tst">intop1-l2tp01.tst</a></td><td>success</td><td>interop1: l2tp2 client</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-l2tp02.tst">intop1-l2tp02.tst</a></td><td>success</td><td>interop1: l2tp2 server</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-l2tp03.tst">intop1-l2tp03.tst</a></td><td>success</td><td>interop1: l2tp3 server</td></tr>
@@ -124,6 +132,7 @@ jvm: java -Xmx256m -jar rtr.jar, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ldp07.tst">intop1-ldp07.tst</a></td><td>success</td><td>interop1: ethernet over mpls cw</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-mcast01.tst">intop1-mcast01.tst</a></td><td>success</td><td>interop1: igmp3/mld2</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-mcast02.tst">intop1-mcast02.tst</a></td><td>success</td><td>interop1: pim</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-mcast03.tst">intop1-mcast03.tst</a></td><td>success</td><td>interop1: mgre</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-modem01.tst">intop1-modem01.tst</a></td><td>success</td><td>interop1: modem with alaw</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-modem02.tst">intop1-modem02.tst</a></td><td>success</td><td>interop1: modem with ulaw</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf01.tst">intop1-ospf01.tst</a></td><td>success</td><td>interop1: point2point ospf</td></tr>
@@ -140,6 +149,10 @@ jvm: java -Xmx256m -jar rtr.jar, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf12.tst">intop1-ospf12.tst</a></td><td>success</td><td>interop1: ospf php sr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf13.tst">intop1-ospf13.tst</a></td><td>success</td><td>interop1: ospf te with pcep</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf14.tst">intop1-ospf14.tst</a></td><td>success</td><td>interop1: ospf md5 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf15.tst">intop1-ospf15.tst</a></td><td>success</td><td>interop1: ospf sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf16.tst">intop1-ospf16.tst</a></td><td>success</td><td>interop1: ospf sha256 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf17.tst">intop1-ospf17.tst</a></td><td>success</td><td>interop1: ospf sha384 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-ospf18.tst">intop1-ospf18.tst</a></td><td>success</td><td>interop1: ospf sha512 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-pppoe01.tst">intop1-pppoe01.tst</a></td><td>success</td><td>interop1: pppoe client</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-pppoe02.tst">intop1-pppoe02.tst</a></td><td>success</td><td>interop1: pppoe server</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-pppoe03.tst">intop1-pppoe03.tst</a></td><td>success</td><td>interop1: pppoe with pap</td></tr>

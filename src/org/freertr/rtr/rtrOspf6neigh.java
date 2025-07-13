@@ -728,6 +728,13 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparable<rtrOspf6n
      * @return metric
      */
     public int getMetric() {
+        if (iface.ldpSync) {
+            addrIP adr = new addrIP();
+            adr.fromIPv6addr(peer);
+            if (lower.fwdCore.ldpNeighFind(adr, false) == null) {
+                return 0xffff;
+            }
+        }
         if (area.maxMetric) {
             return 0xffff;
         }

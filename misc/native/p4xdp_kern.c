@@ -1186,6 +1186,66 @@ ethtyp_tx:
             put16msb(bufD, bufP, ethtyp);
             __builtin_memcpy(&macaddr[0], neir->mac2, sizeof(neir->mac2));
             break;
+        case 12: // labels
+            bufP -= sizeof(macaddr) + 44;
+            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+            bufP = sizeof(macaddr) + 44;
+            revalidatePacket(bufP + 2);
+            bufP += 2;
+            if (neir->sess >= 1) {
+                ethtyp = ETHERTYPE_MPLS_UCAST;
+                bufP -= 4;
+                tmp = 0x1ff | (neir->trgPort << 12);
+                put32msb(bufD, bufP, tmp);
+            }
+            if (neir->sess >= 2) {
+                bufP -= 4;
+                tmp = 0xff | (neir->srcPort << 12);
+                put32msb(bufD, bufP, tmp);
+            }
+            if (neir->sess >= 3) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->srcAddr[0]) << 12);
+                put32msb(bufD, bufP, tmp);
+            }
+            if (neir->sess >= 4) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->srcAddr[4]) << 12);
+                put32msb(bufD, bufP, tmp);
+            }
+            if (neir->sess >= 5) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->srcAddr[8]) << 12);
+                put32msb(bufD, bufP, tmp);
+            }
+            if (neir->sess >= 6) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->srcAddr[12]) << 12);
+                put32msb(bufD, bufP, tmp);
+            }
+            if (neir->sess >= 7) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->trgAddr[0]) << 12);
+                put32msb(bufD, bufP, tmp);
+            }
+            if (neir->sess >= 8) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->trgAddr[4]) << 12);
+                put32msb(bufD, bufP, tmp);
+            }
+            if (neir->sess >= 9) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->trgAddr[8]) << 12);
+                put32msb(bufD, bufP, tmp);
+            }
+            if (neir->sess >= 10) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->trgAddr[12]) << 12);
+                put32msb(bufD, bufP, tmp);
+            }
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            break;
         default:
             goto drop;
         }

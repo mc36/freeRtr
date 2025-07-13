@@ -1,7 +1,7 @@
 package org.freertr.util;
 
 import java.util.List;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 
 /**
  * debugging feature
@@ -1074,7 +1074,7 @@ public class debugger {
      * @param l helping to update
      * @param b starting level
      */
-    public static void getHelping(userHelping l, int b) {
+    public static void getHelping(userHelp l, int b) {
         l.add(null, false, b, new int[]{b + 1}, "line", "line specific protocols");
         l.add(null, false, b + 1, new int[]{-1}, "config", "configuration commands");
         l.add(null, false, b + 1, new int[]{-1}, "exec", "exec commands");
@@ -1327,7 +1327,7 @@ public class debugger {
      * @param v value of event
      */
     public static void setAll(boolean v) {
-        userHelping h = new userHelping();
+        userHelp h = new userHelp();
         getHelping(h, 2);
         List<String> r = h.getList();
         for (int i = 0; i < r.size(); i++) {

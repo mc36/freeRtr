@@ -12,7 +12,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabScrptN;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userScript;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -131,24 +131,19 @@ public class cfgScrpt implements Comparable<cfgScrpt>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "script .*!" + cmds.tabulator + "respawn",
-        "script .*!" + cmds.tabulator + "time 0",
-        "script .*!" + cmds.tabulator + "delay 0",
-        "script .*!" + cmds.tabulator + "random-time 0",
-        "script .*!" + cmds.tabulator + "random-delay 0",
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "hidden",
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions",
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-console",
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect",
-        "script .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range"
+    public final static userFilter[] defaultF = {
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("script .*", cmds.tabulator + "respawn", null),
+        new userFilter("script .*", cmds.tabulator + "time 0", null),
+        new userFilter("script .*", cmds.tabulator + "delay 0", null),
+        new userFilter("script .*", cmds.tabulator + "random-time 0", null),
+        new userFilter("script .*", cmds.tabulator + "random-delay 0", null),
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "hidden", null),
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions", null),
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-console", null),
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect", null),
+        new userFilter("script .*", cmds.tabulator + cmds.negated + cmds.tabulator + "range", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgScrpt o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
@@ -158,7 +153,7 @@ public class cfgScrpt implements Comparable<cfgScrpt>, cfgGeneric {
         return "script " + name;
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this script");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this script");
         l.add(null, false, 1, new int[]{2}, "rename", "rename this script");

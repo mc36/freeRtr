@@ -10,7 +10,7 @@ import org.freertr.auth.authRadius;
 import org.freertr.auth.authTacacs;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
 
 /**
@@ -75,28 +75,23 @@ public class cfgAuther implements Comparable<cfgAuther>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "aaa userlist .*!" + cmds.tabulator + "username .* autocommand ",
-        "aaa userlist .*!" + cmds.tabulator + "username .* privilege 15",
-        "aaa radius .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "secret",
-        "aaa radius .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "proxy",
-        "aaa radius .*!" + cmds.tabulator + "privilege 15",
-        "aaa radius .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "port",
-        "aaa tacacs .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "secret",
-        "aaa tacacs .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "proxy",
-        "aaa tacacs .*!" + cmds.tabulator + "privilege 15",
-        "aaa tacacs .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "port",
-        "aaa .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "aaa .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-error",
-        "aaa .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-failure",
-        "aaa .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-success",
-        "aaa .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-password"
+    public final static userFilter[] defaultF = {
+        new userFilter("aaa userlist .*", cmds.tabulator + "username .* autocommand ", null),
+        new userFilter("aaa userlist .*", cmds.tabulator + "username .* privilege 15", null),
+        new userFilter("aaa radius .*", cmds.tabulator + cmds.negated + cmds.tabulator + "secret", null),
+        new userFilter("aaa radius .*", cmds.tabulator + cmds.negated + cmds.tabulator + "proxy", null),
+        new userFilter("aaa radius .*", cmds.tabulator + "privilege 15", null),
+        new userFilter("aaa radius .*", cmds.tabulator + cmds.negated + cmds.tabulator + "port", null),
+        new userFilter("aaa tacacs .*", cmds.tabulator + cmds.negated + cmds.tabulator + "secret", null),
+        new userFilter("aaa tacacs .*", cmds.tabulator + cmds.negated + cmds.tabulator + "proxy", null),
+        new userFilter("aaa tacacs .*", cmds.tabulator + "privilege 15", null),
+        new userFilter("aaa tacacs .*", cmds.tabulator + cmds.negated + cmds.tabulator + "port", null),
+        new userFilter("aaa .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("aaa .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-error", null),
+        new userFilter("aaa .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-failure", null),
+        new userFilter("aaa .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-success", null),
+        new userFilter("aaa .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-password", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgAuther o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
@@ -216,7 +211,7 @@ public class cfgAuther implements Comparable<cfgAuther>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "rename", "rename this authenticator");
         l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
         l.add(null, false, 1, new int[]{2}, "description", "specify description");

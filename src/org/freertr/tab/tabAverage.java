@@ -2,7 +2,7 @@ package org.freertr.tab;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -434,7 +434,7 @@ public class tabAverage {
      *
      * @param l list to append
      */
-    public static void getHelp(userHelping l) {
+    public static void getHelp(userHelp l) {
         l.add(null, false, 5, new int[]{6}, "time", "measurement interval");
         l.add(null, false, 6, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 5, new int[]{6}, "size", "number of measurement");

@@ -10,7 +10,7 @@ import org.freertr.cry.cryKeyGeneric;
 import org.freertr.tab.tabAuthlstN;
 import org.freertr.tab.tabListing;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -30,7 +30,7 @@ public class authList extends authGeneric {
 
     private tabListing<tabAuthlstN, addrIP> methods = new tabListing<tabAuthlstN, addrIP>();
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "sequence", "select sequence number");
         l.add(null, false, 2, new int[]{3}, "<num>", "number of entry");
         l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authenticator");

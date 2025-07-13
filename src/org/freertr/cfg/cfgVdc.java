@@ -15,7 +15,7 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -254,44 +254,39 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "vdc definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "vdc definition .*!" + cmds.tabulator + "respawn",
-        "vdc definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "priviledged",
-        "vdc definition .*!" + cmds.tabulator + "children",
-        "vdc definition .*!" + cmds.tabulator + "priority " + defPrio,
-        "vdc definition .*!" + cmds.tabulator + "config null",
-        "vdc definition .*!" + cmds.tabulator + "image null",
-        "vdc definition .*!" + cmds.tabulator + "disk2 null",
-        "vdc definition .*!" + cmds.tabulator + "disk3 null",
-        "vdc definition .*!" + cmds.tabulator + "disk4 null",
-        "vdc definition .*!" + cmds.tabulator + "cdrom null",
-        "vdc definition .*!" + cmds.tabulator + "bios null",
-        "vdc definition .*!" + cmds.tabulator + "vga2vnc null",
-        "vdc definition .*!" + cmds.tabulator + "boot null",
-        "vdc definition .*!" + cmds.tabulator + "pinning null",
-        "vdc definition .*!" + cmds.tabulator + "uuid null",
-        "vdc definition .*!" + cmds.tabulator + "user null",
-        "vdc definition .*!" + cmds.tabulator + "mac null",
-        "vdc definition .*!" + cmds.tabulator + "cpu null",
-        "vdc definition .*!" + cmds.tabulator + "memory 512",
-        "vdc definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "password",
-        "vdc definition .*!" + cmds.tabulator + "cores 1",
-        "vdc definition .*!" + cmds.tabulator + "nic e1000",
-        "vdc definition .*!" + cmds.tabulator + "time 1000",
-        "vdc definition .*!" + cmds.tabulator + "delay 1000",
-        "vdc definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions",
-        "vdc definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-console",
-        "vdc definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect",
-        "vdc definition .*!" + cmds.tabulator + "random-time 0",
-        "vdc definition .*!" + cmds.tabulator + "random-delay 0",
-        "vdc definition .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range"
+    public final static userFilter[] defaultF = {
+        new userFilter("vdc definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "respawn", null),
+        new userFilter("vdc definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "priviledged", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "children", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "priority " + defPrio, null),
+        new userFilter("vdc definition .*", cmds.tabulator + "config null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "image null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "disk2 null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "disk3 null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "disk4 null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "cdrom null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "bios null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "vga2vnc null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "boot null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "pinning null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "uuid null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "user null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "mac null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "cpu null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "memory 512", null),
+        new userFilter("vdc definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "password", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "cores 1", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "nic e1000", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "time 1000", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "delay 1000", null),
+        new userFilter("vdc definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-actions", null),
+        new userFilter("vdc definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-console", null),
+        new userFilter("vdc definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "log-collect", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "random-time 0", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "random-delay 0", null),
+        new userFilter("vdc definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "range", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgVdc o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
@@ -384,7 +379,7 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
         ntry.peer.conns.del(ntry);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this vdc");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this vdc");
         l.add(null, false, 1, new int[]{-1}, "respawn", "restart on termination");
@@ -629,7 +624,12 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("interface")) {
-            cfgVdcIfc res = new cfgVdcIfc(cfgIfc.dissectName(cmd.word())[0], "");
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            cfgVdcIfc res = new cfgVdcIfc(pnm[0] + pnm[1] + pnm[2], "");
             res = cfgInit.ifaceLst.find(res);
             if (res == null) {
                 cmd.error("no such interface");
@@ -640,7 +640,12 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("local")) {
-            a = cfgIfc.dissectName(cmd.word())[0];
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            a = pnm[0] + pnm[1] + pnm[2];
             tabRouteIface.ifaceType typ = cfgIfc.string2type(a);
             if (typ == null) {
                 cmd.error("bad name");
@@ -678,7 +683,12 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("connect")) {
-            a = cfgIfc.dissectName(cmd.word())[0];
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            a = pnm[0] + pnm[1] + pnm[2];
             if (cfgIfc.string2type(a) == null) {
                 cmd.error("bad name");
                 return;
@@ -858,15 +868,30 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             return;
         }
         if (a.equals("interface")) {
-            ifaces.del(new cfgVdcIfc(cfgIfc.dissectName(cmd.word())[0], ""));
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            ifaces.del(new cfgVdcIfc(pnm[0] + pnm[1] + pnm[2], ""));
             return;
         }
         if (a.equals("local")) {
-            locals.del(new cfgVdcIfc(cfgIfc.dissectName(cmd.word())[0], ""));
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            locals.del(new cfgVdcIfc(pnm[0] + pnm[1] + pnm[2], ""));
             return;
         }
         if (a.equals("connect")) {
-            delConn(cfgIfc.dissectName(cmd.word())[0]);
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            delConn(pnm[0] + pnm[1] + pnm[2]);
             return;
         }
         if (a.equals("pci")) {

@@ -17,7 +17,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -69,20 +69,16 @@ public class servSdwan extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server sdwan .*!" + cmds.tabulator + "port " + port,
-        "server sdwan .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server sdwan .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "pool4",
-        "server sdwan .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "pool6",
-        "server sdwan .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "hubs",
-        "server sdwan .*!" + cmds.tabulator + "natted",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server sdwan .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server sdwan .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server sdwan .*", cmds.tabulator + cmds.negated + cmds.tabulator + "pool4", null),
+        new userFilter("server sdwan .*", cmds.tabulator + cmds.negated + cmds.tabulator + "pool6", null),
+        new userFilter("server sdwan .*", cmds.tabulator + cmds.negated + cmds.tabulator + "hubs", null),
+        new userFilter("server sdwan .*", cmds.tabulator + "natted", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -164,7 +160,7 @@ public class servSdwan extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "natted", "use natted addresses");
         l.add(null, false, 1, new int[]{2}, "hubs", "list of hubs");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "name of hub");
@@ -444,13 +440,13 @@ class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
         sendLn("hello");
         sendLn("yourid " + idNum);
         if (needAdr4 && (lower.pool4 != null)) {
-            if (innerAdr4.isFilled(0)) {
+            if (innerAdr4.isEmpty()) {
                 innerAdr4 = lower.pool4.addrAlloc();
                 addrRel4 = innerAdr4 != null;
             }
         }
         if (needAdr6 && (lower.pool6 != null)) {
-            if (innerAdr6.isFilled(0)) {
+            if (innerAdr6.isEmpty()) {
                 innerAdr6 = lower.pool6.addrAlloc();
                 addrRel6 = innerAdr6 != null;
             }

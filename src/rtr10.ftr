@@ -52,6 +52,10 @@ qc pass: interop2: isis bidir te
 qc pass: interop2: isis md5 authentication
 qc pass: interop2: isis lsp md5 authentication
 qc pass: interop2: integrated isis multi-topology
+qc pass: interop2: isis sha1 authentication
+qc pass: interop2: isis lsp sha1 authentication
+qc pass: interop2: isis sha256 authentication
+qc pass: interop2: isis lsp sha256 authentication
 qc pass: interop2: ldp lsp
 qc pass: interop2: ethernet over mpls
 qc pass: interop2: ldp p2mp lsp
@@ -75,6 +79,8 @@ qc pass: interop2: ospf php sr
 qc pass: interop2: ospf te with pcep
 qc pass: interop2: ospf bidir te
 qc pass: interop2: ospf md5 authentication
+qc pass: interop2: ospf sha1 authentication
+qc pass: interop2: ospf sha256 authentication
 qc pass: interop2: pppoe with pap
 qc pass: interop2: pppoe with chap
 qc pass: interop2: rip
@@ -135,8 +141,6 @@ todo: alias with regexps to ios regexps, steal cache from *ec* and idea from **
 todo: alias to have config aliases
 todo: under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
 todo: default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
-todo: flash mailer <server-smtp> that is a loadable module
-todo: flash xxxxxx from the misc/mailer shitload like the http server classes knob
 todo: flash overlap-clear should happen once one finds a nice and easy use-case for that
 todo: rtr-hw to have tcp2linux and vrf2linux knobs
 todo: test todo knob as an editor but in the running-config
@@ -174,7 +178,6 @@ todo: tcp selective ack
 todo: ilnp (rfc6740)
 todo: lisp4, lisp6
 todo: l2vpn for isis
-todo: hip (rfc4423)
 todo: more upgrade-cli knobs
 todo: more renamers
 todo: more tabbables

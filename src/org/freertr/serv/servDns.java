@@ -23,7 +23,7 @@ import org.freertr.sec.secInfoUtl;
 import org.freertr.sec.secInfoWrk;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -85,20 +85,15 @@ public class servDns extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server dns .*!" + cmds.tabulator + "port " + packDns.portNum,
-        "server dns .*!" + cmds.tabulator + "protocol " + proto2string(protoAll),
-        "server dns .*!" + cmds.tabulator + "recursion 6to4nothing",
-        "server dns .*!" + cmds.tabulator + "recursion disable",
-        "server dns .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging"
+    public final static userFilter[] defaultF = {
+        new userFilter("server dns .*", cmds.tabulator + "port " + packDns.portNum, null),
+        new userFilter("server dns .*", cmds.tabulator + "protocol " + proto2string(protoAll), null),
+        new userFilter("server dns .*", cmds.tabulator + "recursion 6to4nothing", null),
+        new userFilter("server dns .*", cmds.tabulator + "recursion disable", null),
+        new userFilter("server dns .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -158,7 +153,7 @@ public class servDns extends servGeneric implements prtServS {
         }
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "logging", "log queries");
         l.add(null, false, 1, new int[]{2}, "recursion", "recursive parameters");
         l.add(null, false, 2, new int[]{-1}, "enable", "allow recursion");

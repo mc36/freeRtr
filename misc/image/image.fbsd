@@ -1,0 +1,67 @@
+download 3
+reget-time 168
+vers 14 3
+
+mkdir %dwn%
+del-alw %tmp%
+mkdir %tmp%
+
+binary-down http://download.freebsd.org/releases/ISO-IMAGES/%vers1%.%vers2%/FreeBSD-%vers1%.%vers2%-RELEASE-%fbsd1%-bootonly.iso %dwn%/fbsd-%fbsd2%.iso
+binary-down http://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/packagesite.pkg %dwn%/fbsd-%fbsd2%.prts
+
+exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /etc /lib /libexec /sbin /usr %tmp%/
+exec mv %tmp%/usr/lib/libdl.* %tmp%/lib/
+exec mv %tmp%/usr/lib/libpcap.* %tmp%/lib/
+exec mv %tmp%/usr/sbin/tcpdump %tmp%/sbin/
+exec mv %tmp%/usr/sbin/ndp %tmp%/sbin/
+del-alw %tmp%/usr
+
+exec cp ../misc/image/boot.fbsd %tmp%/boot/loader.conf
+exec cp ../misc/image/init.fbsd %tmp%/etc/rc
+mkdir %tmp%/compat
+mkdir %tmp%/compat/linux
+
+mkdir %tmp%/mnt
+mkdir %tmp%/proc
+mkdir %tmp%/run
+mkdir %tmp%/sys
+mkdir %tmp%/usr
+mkdir %tmp%/var
+mkdir %tmp%/tmp
+mkdir %tmp%/var/tcpdump
+mkdir %tmp%/var/chroot
+mkdir %tmp%/var/chroot/tcpdump
+exec ln -s ../lib %tmp%/usr/lib
+exec ln -s ../libexec %tmp%/usr/libexec
+exec tar xf %dwn%/fbsd-%fbsd2%.prts -C %tmp%/tmp/
+distinfo-ports %tmp%/tmp/packagesite.yaml fbsd-%fbsd2% http://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/
+catalog-sum
+
+select-one libdnet
+select-one libpfctl
+select-one tcpreplay
+select-one autogen
+
+select-lst
+select-sum
+distinfo-down
+distinfo-inst %tmp%/tmp/
+exec mv %tmp%/tmp/usr/local/sbin/* %tmp%/sbin/
+exec mv %tmp%/tmp/usr/local/bin/* %tmp%/bin/
+exec mv %tmp%/tmp/usr/local/lib/* %tmp%/lib/
+exec cpio --quiet -H newc -i -D %tmp%/tmp/ < %img%.cpio
+find-clear
+find-file %tmp%/tmp/usr/lib/ .*-linux-gnu.*
+find-result
+del-alw %tmp%/tmp/usr/lib/%find%/systemd
+exec mv %tmp%/tmp/usr/lib/%find% %tmp%/compat/linux/lib
+exec ln -s ./lib %tmp%/compat/linux/lib32
+exec ln -s ./lib %tmp%/compat/linux/lib64
+exec mv %tmp%/tmp/java %tmp%/
+exec mv %tmp%/tmp/rtr %tmp%/
+del-alw %tmp%/tmp
+mkdir %tmp%/tmp
+
+exec xorriso -as mkisofs -o %img%-fbsd.iso -r -J -l -b boot/cdboot -no-emul-boot -c isolinux.cat %tmp%/
+
+del-alw %tmp%

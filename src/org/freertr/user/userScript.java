@@ -555,7 +555,7 @@ public class userScript {
             pipeSide pip = pipeDiscard.needAny(null);
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, null);
+            userRead rdr = new userRead(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(pip, rdr);
             exe.privileged = allowConfig;
@@ -578,7 +578,7 @@ public class userScript {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, null);
+            userRead rdr = new userRead(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(pip, rdr);
             exe.privileged = allowConfig;
@@ -609,7 +609,7 @@ public class userScript {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, null);
+            userRead rdr = new userRead(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             userConfig cfg = new userConfig(pip, rdr);
             pip.setTime(60000);
@@ -618,7 +618,7 @@ public class userScript {
                 if (a.length() < 1) {
                     break;
                 }
-                userHelping hlp = cfg.getHelping(false, true, true);
+                userHelp hlp = cfg.getHelping(false, true, true);
                 rdr.setContext(hlp, "");
                 String b = hlp.repairLine(a);
                 if (b.length() < 1) {

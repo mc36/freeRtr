@@ -19,7 +19,7 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.user.userExec;
 import org.freertr.user.userFlash;
 import org.freertr.user.userFormat;
-import org.freertr.user.userReader;
+import org.freertr.user.userRead;
 import org.freertr.user.userUpgrade;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
@@ -895,7 +895,7 @@ class prtRedunExec implements Runnable {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userReader rdr = new userReader(pip, null);
+        userRead rdr = new userRead(pip, null);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = false;

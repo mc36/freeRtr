@@ -19,7 +19,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.sec.secClient;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -110,27 +110,23 @@ public class servForwarder extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server forwarder .*!" + cmds.tabulator + "port " + port,
-        "server forwarder .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target proxy",
-        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target vrf",
-        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target interface",
-        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target security",
-        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target username",
-        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target password",
-        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target pubkey",
-        "server forwarder .*!" + cmds.tabulator + "target protocol tcp",
-        "server forwarder .*!" + cmds.tabulator + "timeout 300000",
-        "server forwarder .*!" + cmds.tabulator + "buffer 65536",
-        "server forwarder .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",};
+    public final static userFilter[] defaultF = {
+        new userFilter("server forwarder .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server forwarder .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server forwarder .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target proxy", null),
+        new userFilter("server forwarder .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target vrf", null),
+        new userFilter("server forwarder .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target interface", null),
+        new userFilter("server forwarder .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target security", null),
+        new userFilter("server forwarder .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target username", null),
+        new userFilter("server forwarder .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target password", null),
+        new userFilter("server forwarder .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target pubkey", null),
+        new userFilter("server forwarder .*", cmds.tabulator + "target protocol tcp", null),
+        new userFilter("server forwarder .*", cmds.tabulator + "timeout 300000", null),
+        new userFilter("server forwarder .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server forwarder .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
+    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -299,7 +295,7 @@ public class servForwarder extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "logging", "set logging");
         l.add(null, false, 1, new int[]{2}, "timeout", "set timeout on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");

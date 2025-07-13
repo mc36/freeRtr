@@ -25,88 +25,12 @@ import org.freertr.pipe.pipeWindow;
 import org.freertr.prt.prtLocTcp;
 import org.freertr.prt.prtRedun;
 import org.freertr.prt.prtWatch;
-import org.freertr.serv.servAmt;
-import org.freertr.serv.servBmp2mrt;
-import org.freertr.serv.servBstun;
-import org.freertr.serv.servCharGen;
-import org.freertr.serv.servDaytime;
-import org.freertr.serv.servDcp;
-import org.freertr.serv.servDhcp4;
-import org.freertr.serv.servDhcp6;
-import org.freertr.serv.servDiscard;
-import org.freertr.serv.servDns;
-import org.freertr.serv.servEchoP;
-import org.freertr.serv.servEchoS;
-import org.freertr.serv.servEtherIp;
-import org.freertr.serv.servForwarder;
-import org.freertr.serv.servFtp;
-import org.freertr.serv.servGeneric;
-import org.freertr.serv.servGeneve;
-import org.freertr.serv.servGopher;
-import org.freertr.serv.servGre;
-import org.freertr.serv.servGtp;
-import org.freertr.serv.servHoneyPot;
-import org.freertr.serv.servHttp;
-import org.freertr.serv.servImap4;
-import org.freertr.serv.servIrc;
-import org.freertr.serv.servIscsi;
-import org.freertr.serv.servL2f;
-import org.freertr.serv.servL2tp2;
-import org.freertr.serv.servL2tp3;
-import org.freertr.serv.servLoadBalancer;
-import org.freertr.serv.servLpd;
-import org.freertr.serv.servModem;
-import org.freertr.serv.servMplsIp;
-import org.freertr.serv.servMplsOam;
-import org.freertr.serv.servMplsUdp;
-import org.freertr.serv.servMultiplexer;
-import org.freertr.serv.servNetflow;
-import org.freertr.serv.servNrpe;
-import org.freertr.serv.servNtp;
 import org.freertr.serv.servOpenflow;
-import org.freertr.serv.servPktmux;
 import org.freertr.serv.servP4lang;
-import org.freertr.serv.servPcep;
-import org.freertr.serv.servPckOdtls;
-import org.freertr.serv.servPckOtcp;
-import org.freertr.serv.servPckOtxt;
-import org.freertr.serv.servPckOudp;
-import org.freertr.serv.servPop3;
-import org.freertr.serv.servPptp;
-import org.freertr.serv.servPrometheus;
-import org.freertr.serv.servQuote;
-import org.freertr.serv.servRadius;
-import org.freertr.serv.servRfb;
-import org.freertr.serv.servRpki;
-import org.freertr.serv.servSdwan;
-import org.freertr.serv.servSip;
-import org.freertr.serv.servSmtp;
-import org.freertr.serv.servSnmp;
-import org.freertr.serv.servSocks;
-import org.freertr.serv.servStreamingMdt;
-import org.freertr.serv.servStun;
-import org.freertr.serv.servSyslog;
-import org.freertr.serv.servTacacs;
-import org.freertr.serv.servTelnet;
-import org.freertr.serv.servTftp;
-import org.freertr.serv.servTime;
-import org.freertr.serv.servTwamp;
-import org.freertr.serv.servUdpFwd;
-import org.freertr.serv.servUdptn;
-import org.freertr.serv.servUni2multi;
-import org.freertr.serv.servUpnpFwd;
-import org.freertr.serv.servUpnpHub;
-import org.freertr.serv.servVoice;
-import org.freertr.serv.servVxlan;
 import org.freertr.enc.encUrl;
 import org.freertr.ip.ipRtr;
 import org.freertr.pipe.pipeShell;
-import org.freertr.serv.servMrt2bgp;
-import org.freertr.serv.servPlan9;
 import org.freertr.serv.servStack;
-import org.freertr.serv.servUni2uni;
-import org.freertr.serv.servWhois;
-import org.freertr.serv.servXotPad;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteIface;
@@ -115,10 +39,10 @@ import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFlash;
 import org.freertr.user.userFonts;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userHwdet;
 import org.freertr.user.userNetconf;
-import org.freertr.user.userReader;
+import org.freertr.user.userRead;
 import org.freertr.user.userScreen;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -238,11 +162,6 @@ public class cfgInit implements Runnable {
     public static history memoryHistory;
 
     /**
-     * loaded snmp mibs
-     */
-    public final static tabGen<userFilter> snmpMibs = new tabGen<userFilter>();
-
-    /**
      * list of physical interfaces
      */
     public final static tabGen<cfgVdcIfc> ifaceLst = new tabGen<cfgVdcIfc>();
@@ -275,7 +194,7 @@ public class cfgInit implements Runnable {
     /**
      * interface names
      */
-    public static userHelping ifaceNames = new userHelping();
+    public static userHelp ifaceNames = new userHelp();
 
     private static List<String> stateLast = new ArrayList<String>();
 
@@ -300,10 +219,10 @@ public class cfgInit implements Runnable {
     private final static String[] needFull = {
         "vnet .*",};
 
-    private final static String[] needIface = {
-        "interface .*!" + cmds.tabulator + "vrf forwarding .*",
-        "interface .*!" + cmds.tabulator + "ipv4 address .*",
-        "interface .*!" + cmds.tabulator + "ipv6 address .*"
+    private final static userFilter[] needIface = {
+        new userFilter("interface .*", cmds.tabulator + "vrf forwarding .*", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv4 address .*", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv6 address .*", null)
     };
 
     private final static String[] jvmMagic = {
@@ -696,6 +615,101 @@ public class cfgInit implements Runnable {
                 logger.error("error setting jvm:" + s + "=" + c);
             }
         }
+        types.add(new cfgInitMime("html", "text/html"));
+        types.add(new cfgInitMime("htm", "text/html"));
+        types.add(new cfgInitMime("css", "text/css"));
+        types.add(new cfgInitMime("rtf", "text/richtext"));
+        types.add(new cfgInitMime("text", "text/plain"));
+        types.add(new cfgInitMime("txt", "text/plain"));
+        types.add(new cfgInitMime("csv", "text/csv"));
+        types.add(new cfgInitMime("md", "text/markdown"));
+        types.add(new cfgInitMime("*", "text/plain"));
+        types.add(new cfgInitMime("webp", "image/webp"));
+        types.add(new cfgInitMime("gif", "image/gif"));
+        types.add(new cfgInitMime("jpeg", "image/jpeg"));
+        types.add(new cfgInitMime("jpg", "image/jpeg"));
+        types.add(new cfgInitMime("tiff", "image/tiff"));
+        types.add(new cfgInitMime("tif", "image/tiff"));
+        types.add(new cfgInitMime("bmp", "image/bmp"));
+        types.add(new cfgInitMime("png", "image/png"));
+        types.add(new cfgInitMime("svg", "image/svg+xml"));
+        types.add(new cfgInitMime("ico", "image/x-icon"));
+        types.add(new cfgInitMime("pbm", "image/x-portable-bitmap"));
+        types.add(new cfgInitMime("pgm", "image/x-portable-graymap"));
+        types.add(new cfgInitMime("pnm", "image/x-portable-anymap"));
+        types.add(new cfgInitMime("ppm", "image/x-portable-pixmap"));
+        types.add(new cfgInitMime("xbm", "image/x-xbitmap"));
+        types.add(new cfgInitMime("xpm", "image/x-xpixmap"));
+        types.add(new cfgInitMime("webm", "video/webm"));
+        types.add(new cfgInitMime("mjpeg", "video/x-motion-jpeg"));
+        types.add(new cfgInitMime("avi", "video/msvideo"));
+        types.add(new cfgInitMime("mov", "video/quicktime"));
+        types.add(new cfgInitMime("qt", "video/quicktime"));
+        types.add(new cfgInitMime("mpeg", "video/mpeg"));
+        types.add(new cfgInitMime("mpg", "video/mpeg"));
+        types.add(new cfgInitMime("mp4", "video/mp4"));
+        types.add(new cfgInitMime("mkv", "video/x-matroska"));
+        types.add(new cfgInitMime("3gp", "video/3gpp"));
+        types.add(new cfgInitMime("3g2", "video/3gpp2"));
+        types.add(new cfgInitMime("ogv", "video/ogg"));
+        types.add(new cfgInitMime("weba", "audio/weba"));
+        types.add(new cfgInitMime("aif", "audio/x-aiff"));
+        types.add(new cfgInitMime("aiff", "audio/x-aiff"));
+        types.add(new cfgInitMime("wav", "audio/wav"));
+        types.add(new cfgInitMime("midi", "audio/midi"));
+        types.add(new cfgInitMime("mid", "audio/midi"));
+        types.add(new cfgInitMime("rmi", "audio/midi"));
+        types.add(new cfgInitMime("ram", "audio/x-pn-realaudio"));
+        types.add(new cfgInitMime("rpm", "audio/x-pn-realaudio-plugin"));
+        types.add(new cfgInitMime("ra", "audio/x-realaudio"));
+        types.add(new cfgInitMime("rm", "audio/x-pn-realaudio"));
+        types.add(new cfgInitMime("mp3", "audio/mpeg"));
+        types.add(new cfgInitMime("oga", "audio/ogg"));
+        types.add(new cfgInitMime("flac", "audio/flac"));
+        types.add(new cfgInitMime("aac", "audio/aac"));
+        types.add(new cfgInitMime("bin", "application/octet-stream"));
+        types.add(new cfgInitMime("jar", "application/java-archive"));
+        types.add(new cfgInitMime("doc", "application/msword"));
+        types.add(new cfgInitMime("docx", "application/msword"));
+        types.add(new cfgInitMime("dvi", "application/x-dvi"));
+        types.add(new cfgInitMime("eps", "application/postscript"));
+        types.add(new cfgInitMime("ps", "application/postscript"));
+        types.add(new cfgInitMime("gz", "application/x-gzip"));
+        types.add(new cfgInitMime("bz2", "application/x-bzip2"));
+        types.add(new cfgInitMime("js", "application/javascript"));
+        types.add(new cfgInitMime("latex", "application/x-latex"));
+        types.add(new cfgInitMime("lzh", "application/x-lzh"));
+        types.add(new cfgInitMime("pdf", "application/pdf"));
+        types.add(new cfgInitMime("epub", "application/epub+zip"));
+        types.add(new cfgInitMime("swf", "application/x-shockwave-flash"));
+        types.add(new cfgInitMime("tar", "application/tar"));
+        types.add(new cfgInitMime("tcl", "application/x-tcl"));
+        types.add(new cfgInitMime("tex", "application/x-tex"));
+        types.add(new cfgInitMime("tgz", "application/x-gzip"));
+        types.add(new cfgInitMime("zip", "application/zip"));
+        types.add(new cfgInitMime("xml", "application/xml"));
+        types.add(new cfgInitMime("ogg", "application/ogg"));
+        types.add(new cfgInitMime("wml", "text/vnd.wap.wml"));
+        types.add(new cfgInitMime("wbmp", "image/vnd.wap.wbmp"));
+        ifaceNames.add(null, false, 1, new int[]{-1}, "loopback", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "null", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "template", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "dialer", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "sdn", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "pwether", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "virtualppp", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "access", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "bvi", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "bundle", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "tunnel", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "hairpin", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "atm", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "arcnet", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "infiniband", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "ethernet", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "serial", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "cellular", "ifc");
+        ifaceNames.add(null, false, 1, new int[]{-1}, "wireless", "ifc");
     }
 
     private static String doTrimmer(String s) {
@@ -722,6 +736,8 @@ public class cfgInit implements Runnable {
         if (read == null) {
             return;
         }
+        List<userFilter> hdefs = new ArrayList<userFilter>();
+        List<userFilter> mibs = new ArrayList<userFilter>();
         for (int cnt = 0; cnt < read.size(); cnt++) {
             String s = doTrimmer(read.get(cnt));
             if (s.length() < 1) {
@@ -807,7 +823,7 @@ public class cfgInit implements Runnable {
             if (s.equals("def")) {
                 s = cmd.getRemaining();
                 defs.add(s);
-                cfgAll.defaultF.add(new userFilter("", s, null));
+                hdefs.add(new userFilter("", s, null));
                 continue;
             }
             if (s.equals("cfg")) {
@@ -819,7 +835,7 @@ public class cfgInit implements Runnable {
                 s = cmd.getRemaining();
                 cfgs.add(s);
                 defs.add(s);
-                cfgAll.defaultF.add(new userFilter("", s, null));
+                hdefs.add(new userFilter("", s, null));
                 continue;
             }
             if (s.equals("port")) {
@@ -898,11 +914,11 @@ public class cfgInit implements Runnable {
                 prc.side2.ifcTyp = prc.side1.ifcTyp;
                 s = cmd.word().trim();
                 if (s.length() > 0) {
-                    s = cfgIfc.dissectName(s)[0];
-                    if (s.length() < 1) {
+                    String pnm[] = cfgIfc.dissectName(s);
+                    if (pnm == null) {
                         continue;
                     }
-                    prc.side1.locNam = s;
+                    prc.side1.locNam = pnm[0] + pnm[1] + pnm[2];
                 }
                 s = cmd.word().trim();
                 if (s.length() > 0) {
@@ -915,10 +931,10 @@ public class cfgInit implements Runnable {
                 String old = cmd.getRemaining();
                 String nam = cmd.word();
                 String pnm[] = cfgIfc.dissectName(nam);
-                if (pnm[0].length() < 1) {
+                if (pnm == null) {
                     continue;
                 }
-                if (pnm[1].length() > 0) {
+                if (pnm[3].length() > 0) {
                     continue;
                 }
                 s = cmd.word().toLowerCase();
@@ -1074,7 +1090,7 @@ public class cfgInit implements Runnable {
                     a = cmd.word();
                     userFilter sn = new userFilter(a, cmd.getRemaining(), new ArrayList<String>());
                     sn.listing.addAll(txt.subList(bg + 1, p));
-                    snmpMibs.put(sn);
+                    mibs.add(sn);
                     if (debugger.cfgInitHw) {
                         logger.debug("snmp " + sn);
                     }
@@ -1083,6 +1099,22 @@ public class cfgInit implements Runnable {
             }
             logger.info((cnt + 1) + ":" + cmd.getOriginal());
         }
+        cfgAll.custDefs = add2filter(cfgAll.custDefs, hdefs);
+        cfgAll.snmpMibs = add2filter(cfgAll.snmpMibs, hdefs);
+    }
+
+    private static userFilter[] add2filter(userFilter[] trg, List<userFilter> src) {
+        if (src.size() < 1) {
+            return trg;
+        }
+        for (int i = 0; i < trg.length; i++) {
+            src.add(trg[i]);
+        }
+        userFilter[] res = new userFilter[src.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = src.get(i);
+        }
+        return res;
     }
 
     /**
@@ -1103,7 +1135,7 @@ public class cfgInit implements Runnable {
         pipeLine pl = new pipeLine(65536, false);
         pipeSide psS = pl.getSide();
         pipeSide psC = pl.getSide();
-        userReader rd = new userReader(psC, null);
+        userRead rd = new userRead(psC, null);
         psC.settingsPut(pipeSetting.height, 0);
         userConfig uc = new userConfig(psC, rd);
         psS.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -1123,7 +1155,7 @@ public class cfgInit implements Runnable {
                 logger.debug("cmd " + a);
             }
             String beg = "line " + (o + 1) + ": \"" + a + "\" : ";
-            userHelping hl = uc.getHelping(false, true, true);
+            userHelp hl = uc.getHelping(false, true, true);
             rd.setContext(hl, "");
             String b = hl.repairLine(a);
             if (b.length() < 1) {
@@ -1175,228 +1207,9 @@ public class cfgInit implements Runnable {
             logger.info("no sw config found");
             sw = new ArrayList<String>();
         }
-        types.add(new cfgInitMime("html", "text/html"));
-        types.add(new cfgInitMime("htm", "text/html"));
-        types.add(new cfgInitMime("css", "text/css"));
-        types.add(new cfgInitMime("rtf", "text/richtext"));
-        types.add(new cfgInitMime("text", "text/plain"));
-        types.add(new cfgInitMime("txt", "text/plain"));
-        types.add(new cfgInitMime("csv", "text/csv"));
-        types.add(new cfgInitMime("md", "text/markdown"));
-        types.add(new cfgInitMime("*", "text/plain"));
-        types.add(new cfgInitMime("webp", "image/webp"));
-        types.add(new cfgInitMime("gif", "image/gif"));
-        types.add(new cfgInitMime("jpeg", "image/jpeg"));
-        types.add(new cfgInitMime("jpg", "image/jpeg"));
-        types.add(new cfgInitMime("tiff", "image/tiff"));
-        types.add(new cfgInitMime("tif", "image/tiff"));
-        types.add(new cfgInitMime("bmp", "image/bmp"));
-        types.add(new cfgInitMime("png", "image/png"));
-        types.add(new cfgInitMime("svg", "image/svg+xml"));
-        types.add(new cfgInitMime("ico", "image/x-icon"));
-        types.add(new cfgInitMime("pbm", "image/x-portable-bitmap"));
-        types.add(new cfgInitMime("pgm", "image/x-portable-graymap"));
-        types.add(new cfgInitMime("pnm", "image/x-portable-anymap"));
-        types.add(new cfgInitMime("ppm", "image/x-portable-pixmap"));
-        types.add(new cfgInitMime("xbm", "image/x-xbitmap"));
-        types.add(new cfgInitMime("xpm", "image/x-xpixmap"));
-        types.add(new cfgInitMime("webm", "video/webm"));
-        types.add(new cfgInitMime("mjpeg", "video/x-motion-jpeg"));
-        types.add(new cfgInitMime("avi", "video/msvideo"));
-        types.add(new cfgInitMime("mov", "video/quicktime"));
-        types.add(new cfgInitMime("qt", "video/quicktime"));
-        types.add(new cfgInitMime("mpeg", "video/mpeg"));
-        types.add(new cfgInitMime("mpg", "video/mpeg"));
-        types.add(new cfgInitMime("mp4", "video/mp4"));
-        types.add(new cfgInitMime("mkv", "video/x-matroska"));
-        types.add(new cfgInitMime("3gp", "video/3gpp"));
-        types.add(new cfgInitMime("3g2", "video/3gpp2"));
-        types.add(new cfgInitMime("ogv", "video/ogg"));
-        types.add(new cfgInitMime("weba", "audio/weba"));
-        types.add(new cfgInitMime("aif", "audio/x-aiff"));
-        types.add(new cfgInitMime("aiff", "audio/x-aiff"));
-        types.add(new cfgInitMime("wav", "audio/wav"));
-        types.add(new cfgInitMime("midi", "audio/midi"));
-        types.add(new cfgInitMime("mid", "audio/midi"));
-        types.add(new cfgInitMime("rmi", "audio/midi"));
-        types.add(new cfgInitMime("ram", "audio/x-pn-realaudio"));
-        types.add(new cfgInitMime("rpm", "audio/x-pn-realaudio-plugin"));
-        types.add(new cfgInitMime("ra", "audio/x-realaudio"));
-        types.add(new cfgInitMime("rm", "audio/x-pn-realaudio"));
-        types.add(new cfgInitMime("mp3", "audio/mpeg"));
-        types.add(new cfgInitMime("oga", "audio/ogg"));
-        types.add(new cfgInitMime("flac", "audio/flac"));
-        types.add(new cfgInitMime("aac", "audio/aac"));
-        types.add(new cfgInitMime("bin", "application/octet-stream"));
-        types.add(new cfgInitMime("jar", "application/java-archive"));
-        types.add(new cfgInitMime("doc", "application/msword"));
-        types.add(new cfgInitMime("docx", "application/msword"));
-        types.add(new cfgInitMime("dvi", "application/x-dvi"));
-        types.add(new cfgInitMime("eps", "application/postscript"));
-        types.add(new cfgInitMime("ps", "application/postscript"));
-        types.add(new cfgInitMime("gz", "application/x-gzip"));
-        types.add(new cfgInitMime("bz2", "application/x-bzip2"));
-        types.add(new cfgInitMime("js", "application/javascript"));
-        types.add(new cfgInitMime("latex", "application/x-latex"));
-        types.add(new cfgInitMime("lzh", "application/x-lzh"));
-        types.add(new cfgInitMime("pdf", "application/pdf"));
-        types.add(new cfgInitMime("epub", "application/epub+zip"));
-        types.add(new cfgInitMime("swf", "application/x-shockwave-flash"));
-        types.add(new cfgInitMime("tar", "application/tar"));
-        types.add(new cfgInitMime("tcl", "application/x-tcl"));
-        types.add(new cfgInitMime("tex", "application/x-tex"));
-        types.add(new cfgInitMime("tgz", "application/x-gzip"));
-        types.add(new cfgInitMime("zip", "application/zip"));
-        types.add(new cfgInitMime("xml", "application/xml"));
-        types.add(new cfgInitMime("ogg", "application/ogg"));
-        types.add(new cfgInitMime("wml", "text/vnd.wap.wml"));
-        types.add(new cfgInitMime("wbmp", "image/vnd.wap.wbmp"));
-        ifaceNames.add(null, false, 1, new int[]{-1}, "loopback", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "null", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "template", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "dialer", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "sdn", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "pwether", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "virtualppp", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "access", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "bvi", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "bundle", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "tunnel", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "hairpin", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "atm", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "arcnet", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "infiniband", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "ethernet", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "serial", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "cellular", "ifc");
-        ifaceNames.add(null, false, 1, new int[]{-1}, "wireless", "ifc");
-        cfgIfc.notemplF = createFilter(cfgIfc.notemplL);
-        cfgIfc.nocloneF = createFilter(cfgIfc.nocloneL);
-        userReader.linedefF = createFilter(userReader.linedefL);
-        cfgMenuK.defaultF = createFilter(cfgMenuK.defaultL);
-        cfgMenuT.defaultF = createFilter(cfgMenuT.defaultL);
-        cfgAll.defaultF = createFilter(cfgAll.defaultL);
-        cfgIpsec.defaultF = createFilter(cfgIpsec.defaultL);
-        cfgAuther.defaultF = createFilter(cfgAuther.defaultL);
-        cfgVdc.defaultF = createFilter(cfgVdc.defaultL);
-        cfgPrcss.defaultF = createFilter(cfgPrcss.defaultL);
-        cfgVrf.defaultF = createFilter(cfgVrf.defaultL);
-        cfgAlias.defaultF = createFilter(cfgAlias.defaultL);
-        cfgCert.defaultF = createFilter(cfgCert.defaultL);
-        cfgChat.defaultF = createFilter(cfgChat.defaultL);
-        cfgHrpn.defaultF = createFilter(cfgHrpn.defaultL);
-        cfgKey.defaultF = createFilter(cfgKey.defaultL);
-        cfgAceslst.defaultF = createFilter(cfgAceslst.defaultL);
-        cfgObjnet.defaultF = createFilter(cfgObjnet.defaultL);
-        cfgObjprt.defaultF = createFilter(cfgObjprt.defaultL);
-        cfgPrfxlst.defaultF = createFilter(cfgPrfxlst.defaultL);
-        cfgBndl.defaultF = createFilter(cfgBndl.defaultL);
-        cfgBrdg.defaultF = createFilter(cfgBrdg.defaultL);
-        cfgTrnsltn.defaultF = createFilter(cfgTrnsltn.defaultL);
-        cfgDial.defaultF = createFilter(cfgDial.defaultL);
-        cfgSessn.defaultF = createFilter(cfgSessn.defaultL);
-        cfgCheck.defaultF = createFilter(cfgCheck.defaultL);
-        cfgSensor.defaultF = createFilter(cfgSensor.defaultL);
-        cfgRoump.defaultF = createFilter(cfgRoump.defaultL);
-        cfgRouplc.defaultF = createFilter(cfgRouplc.defaultL);
-        cfgTime.defaultF = createFilter(cfgTime.defaultL);
-        cfgPlymp.defaultF = createFilter(cfgPlymp.defaultL);
-        cfgRtr.defaultF = createFilter(cfgRtr.defaultL);
-        cfgIfc.defaultF = createFilter(cfgIfc.defaultL);
-        cfgLin.defaultF = createFilter(cfgLin.defaultL, userReader.linedefF);
-        cfgCons.defaultF = createFilter(cfgCons.defaultL, userReader.linedefF);
-        cfgSched.defaultF = createFilter(cfgSched.defaultL);
-        cfgScrpt.defaultF = createFilter(cfgScrpt.defaultL);
-        cfgTlmtry.defaultF = createFilter(cfgTlmtry.defaultL);
-        cfgEvntmgr.defaultF = createFilter(cfgEvntmgr.defaultL);
-        cfgTrack.defaultF = createFilter(cfgTrack.defaultL);
-        cfgMtrack.defaultF = createFilter(cfgMtrack.defaultL);
-        cfgProxy.defaultF = createFilter(cfgProxy.defaultL);
-        cfgVpdn.defaultF = createFilter(cfgVpdn.defaultL);
-        cfgVnet.defaultF = createFilter(cfgVnet.defaultL);
-        cfgXconn.defaultF = createFilter(cfgXconn.defaultL);
-        tabGen<userFilter> srvdefsF = createFilter(servGeneric.srvdefsL);
-        servBstun.defaultF = createFilter(servBstun.defaultL, srvdefsF, userReader.linedefF);
-        servMrt2bgp.defaultF = createFilter(servMrt2bgp.defaultL, srvdefsF);
-        servRpki.defaultF = createFilter(servRpki.defaultL, srvdefsF);
-        servNrpe.defaultF = createFilter(servNrpe.defaultL, srvdefsF);
-        servPrometheus.defaultF = createFilter(servPrometheus.defaultL, srvdefsF);
-        servStreamingMdt.defaultF = createFilter(servStreamingMdt.defaultL, srvdefsF);
-        servCharGen.defaultF = createFilter(servCharGen.defaultL, srvdefsF);
-        servOpenflow.defaultF = createFilter(servOpenflow.defaultL, srvdefsF);
-        servPktmux.defaultF = createFilter(servPktmux.defaultL, srvdefsF);
-        servP4lang.defaultF = createFilter(servP4lang.defaultL, srvdefsF);
-        servStack.defaultF = createFilter(servStack.defaultL, srvdefsF);
-        servDaytime.defaultF = createFilter(servDaytime.defaultL, srvdefsF);
-        servDcp.defaultF = createFilter(servDcp.defaultL, srvdefsF);
-        servSdwan.defaultF = createFilter(servSdwan.defaultL, srvdefsF);
-        servPcep.defaultF = createFilter(servPcep.defaultL, srvdefsF);
-        servIrc.defaultF = createFilter(servIrc.defaultL, srvdefsF);
-        servDhcp4.defaultF = createFilter(servDhcp4.defaultL, srvdefsF);
-        servDhcp6.defaultF = createFilter(servDhcp6.defaultL, srvdefsF);
-        servDiscard.defaultF = createFilter(servDiscard.defaultL, srvdefsF);
-        servDns.defaultF = createFilter(servDns.defaultL, srvdefsF);
-        servNetflow.defaultF = createFilter(servNetflow.defaultL, srvdefsF);
-        servUdpFwd.defaultF = createFilter(servUdpFwd.defaultL, srvdefsF);
-        servUpnpFwd.defaultF = createFilter(servUpnpFwd.defaultL, srvdefsF);
-        servUpnpHub.defaultF = createFilter(servUpnpHub.defaultL, srvdefsF);
-        servEchoP.defaultF = createFilter(servEchoP.defaultL, srvdefsF);
-        servEchoS.defaultF = createFilter(servEchoS.defaultL, srvdefsF);
-        servForwarder.defaultF = createFilter(servForwarder.defaultL, srvdefsF);
-        servFtp.defaultF = createFilter(servFtp.defaultL, srvdefsF);
-        servGopher.defaultF = createFilter(servGopher.defaultL, srvdefsF);
-        servPlan9.defaultF = createFilter(servPlan9.defaultL, srvdefsF);
-        servGtp.defaultF = createFilter(servGtp.defaultL, srvdefsF);
-        servHoneyPot.defaultF = createFilter(servHoneyPot.defaultL, srvdefsF);
-        servWhois.defaultF = createFilter(servWhois.defaultL, srvdefsF);
-        servHttp.defaultF = createFilter(servHttp.defaultL, srvdefsF);
-        servIscsi.defaultF = createFilter(servIscsi.defaultL, srvdefsF);
-        servBmp2mrt.defaultF = createFilter(servBmp2mrt.defaultL, srvdefsF);
-        servVxlan.defaultF = createFilter(servVxlan.defaultL, srvdefsF);
-        servGeneve.defaultF = createFilter(servGeneve.defaultL, srvdefsF);
-        servL2f.defaultF = createFilter(servL2f.defaultL, srvdefsF);
-        servL2tp2.defaultF = createFilter(servL2tp2.defaultL, srvdefsF);
-        servL2tp3.defaultF = createFilter(servL2tp3.defaultL, srvdefsF);
-        servEtherIp.defaultF = createFilter(servEtherIp.defaultL, srvdefsF);
-        servGre.defaultF = createFilter(servGre.defaultL, srvdefsF);
-        servMplsIp.defaultF = createFilter(servMplsIp.defaultL, srvdefsF);
-        servMplsUdp.defaultF = createFilter(servMplsUdp.defaultL, srvdefsF);
-        servMplsOam.defaultF = createFilter(servMplsOam.defaultL, srvdefsF);
-        servTwamp.defaultF = createFilter(servTwamp.defaultL, srvdefsF);
-        servAmt.defaultF = createFilter(servAmt.defaultL, srvdefsF);
-        servUni2multi.defaultF = createFilter(servUni2multi.defaultL, srvdefsF);
-        servUni2uni.defaultF = createFilter(servUni2uni.defaultL, srvdefsF);
-        servLoadBalancer.defaultF = createFilter(servLoadBalancer.defaultL, srvdefsF);
-        servMultiplexer.defaultF = createFilter(servMultiplexer.defaultL, srvdefsF);
-        servLpd.defaultF = createFilter(servLpd.defaultL, srvdefsF);
-        servNtp.defaultF = createFilter(servNtp.defaultL, srvdefsF);
-        servPckOdtls.defaultF = createFilter(servPckOdtls.defaultL, srvdefsF);
-        servPckOtcp.defaultF = createFilter(servPckOtcp.defaultL, srvdefsF);
-        servPckOtxt.defaultF = createFilter(servPckOtxt.defaultL, srvdefsF);
-        servPckOudp.defaultF = createFilter(servPckOudp.defaultL, srvdefsF);
-        servPop3.defaultF = createFilter(servPop3.defaultL, srvdefsF);
-        servImap4.defaultF = createFilter(servImap4.defaultL, srvdefsF);
-        servPptp.defaultF = createFilter(servPptp.defaultL, srvdefsF);
-        servQuote.defaultF = createFilter(servQuote.defaultL, srvdefsF);
-        servRadius.defaultF = createFilter(servRadius.defaultL, srvdefsF);
-        servRfb.defaultF = createFilter(servRfb.defaultL, srvdefsF, userReader.linedefF);
-        servModem.defaultF = createFilter(servModem.defaultL, srvdefsF, userReader.linedefF);
-        servVoice.defaultF = createFilter(servVoice.defaultL, srvdefsF);
-        servSip.defaultF = createFilter(servSip.defaultL, srvdefsF);
-        servSmtp.defaultF = createFilter(servSmtp.defaultL, srvdefsF);
-        servSnmp.defaultF = createFilter(servSnmp.defaultL, srvdefsF);
-        servSocks.defaultF = createFilter(servSocks.defaultL, srvdefsF);
-        servStun.defaultF = createFilter(servStun.defaultL, srvdefsF);
-        servSyslog.defaultF = createFilter(servSyslog.defaultL, srvdefsF);
-        servTacacs.defaultF = createFilter(servTacacs.defaultL, srvdefsF);
-        servTelnet.defaultF = createFilter(servTelnet.defaultL, srvdefsF, userReader.linedefF);
-        servXotPad.defaultF = createFilter(servXotPad.defaultL, srvdefsF, userReader.linedefF);
-        servTftp.defaultF = createFilter(servTftp.defaultL, srvdefsF);
-        servTime.defaultF = createFilter(servTime.defaultL, srvdefsF);
-        servUdptn.defaultF = createFilter(servUdptn.defaultL, srvdefsF, userReader.linedefF);
         List<String> sdefs = new ArrayList<String>();
-        for (int i = 0; i < cfgAll.defaultF.size(); i++) {
-            userFilter ntry = cfgAll.defaultF.get(i);
+        for (int i = 0; i < cfgAll.defaultF.length; i++) {
+            userFilter ntry = cfgAll.defaultF[i];
             if (ntry.section.length() > 0) {
                 continue;
             }
@@ -1410,7 +1223,7 @@ public class cfgInit implements Runnable {
         for (int i = 0; i < needFull.length; i++) {
             inis.addAll(userFilter.section2text(userFilter.getSection(secs, needFull[i], true, false, false), true));
         }
-        List<String> ints = userFilter.section2text(userFilter.filter2text(secs, createFilter(needIface)), true);
+        List<String> ints = userFilter.section2text(userFilter.filter2text(secs, needIface), true);
         List<String> hcfgs = new ArrayList<String>();
         List<String> hdefs = new ArrayList<String>();
         List<String> inhs = new ArrayList<String>();
@@ -1553,40 +1366,6 @@ public class cfgInit implements Runnable {
         stateLast = res;
         bits.buf2txt(true, res, myStateFile());
         prtRedun.doState();
-    }
-
-    private final static tabGen<userFilter> createFilter(String[] lst) {
-        tabGen<userFilter> res = new tabGen<userFilter>();
-        for (int o = 0; o < lst.length; o++) {
-            String s = lst[o];
-            int i = s.indexOf("!");
-            String c = s.substring(i + 1, s.length());
-            s = s.substring(0, i);
-            userFilter ntry = new userFilter(s, c, null);
-            ntry.optimize4lookup();
-            res.add(ntry);
-        }
-        return res;
-    }
-
-    private final static void addFilters(tabGen<userFilter> trg, tabGen<userFilter> src) {
-        for (int i = 0; i < src.size(); i++) {
-            userFilter ntry = src.get(i);
-            trg.add(ntry);
-        }
-    }
-
-    private final static tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1) {
-        tabGen<userFilter> r = createFilter(lst);
-        addFilters(r, s1);
-        return r;
-    }
-
-    private final static tabGen<userFilter> createFilter(String[] lst, tabGen<userFilter> s1, tabGen<userFilter> s2) {
-        tabGen<userFilter> r = createFilter(lst);
-        addFilters(r, s1);
-        addFilters(r, s2);
-        return r;
     }
 
     /**
@@ -1751,6 +1530,7 @@ public class cfgInit implements Runnable {
             }
             return;
         }
+        setupJVM();
         if (s.startsWith("cfgexec")) {
             boolean det = false;
             for (int i = 7; i < s.length(); i++) {
@@ -1774,7 +1554,7 @@ public class cfgInit implements Runnable {
             List<String> swT = httpGet(cfgFileSw);
             doInit(null, swT, pip);
             logger.pipeStart(pip);
-            userReader rdr = new userReader(pip, null);
+            userRead rdr = new userRead(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             if (det) {
                 userScreen.updtSiz(pip);
@@ -1799,7 +1579,7 @@ public class cfgInit implements Runnable {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userReader rdr = new userReader(pip, null);
+            userRead rdr = new userRead(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(pip, rdr);
             exe.privileged = true;
@@ -1837,7 +1617,7 @@ public class cfgInit implements Runnable {
             }
             pipeSide pip = pipeConsole.create();
             logger.pipeStart(pip);
-            userReader rdr = new userReader(pip, null);
+            userRead rdr = new userRead(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             if (det) {
                 userScreen.updtSiz(pip);
@@ -1855,7 +1635,7 @@ public class cfgInit implements Runnable {
         }
         putln("java -jar " + getFileName() + " <parameters>");
         putln("parameters:");
-        userHelping hlp = new userHelping();
+        userHelp hlp = new userHelp();
         hlp.add(null, false, 1, new int[]{2}, "router", "start router background");
         hlp.add(null, false, 2, new int[]{-1}, "<cfg>", "config url");
         hlp.add(null, false, 1, new int[]{2}, "routerc", "start router with console");

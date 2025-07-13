@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.line.lineRunner;
 import org.freertr.line.lineThread;
-import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
+import org.freertr.user.userRead;
 import org.freertr.util.cmds;
 
 /**
@@ -40,19 +40,14 @@ public class cfgLin implements Comparable<cfgLin>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "line .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "script init",
-        "line .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "script activate",
-        "line .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "script hangup",
-        "line .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dedicated",
-        "line .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "disabled",
-        "line .*!" + cmds.tabulator + "log-monitor"
+    public final static userFilter[] defaultF = {
+        new userFilter("line .*", cmds.tabulator + cmds.negated + cmds.tabulator + "script init", null),
+        new userFilter("line .*", cmds.tabulator + cmds.negated + cmds.tabulator + "script activate", null),
+        new userFilter("line .*", cmds.tabulator + cmds.negated + cmds.tabulator + "script hangup", null),
+        new userFilter("line .*", cmds.tabulator + cmds.negated + cmds.tabulator + "dedicated", null),
+        new userFilter("line .*", cmds.tabulator + cmds.negated + cmds.tabulator + "disabled", null),
+        new userFilter("line .*", cmds.tabulator + "log-monitor", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgLin o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
@@ -90,7 +85,7 @@ public class cfgLin implements Comparable<cfgLin>, cfgGeneric {
     public List<String> getShRun(int filter) {
         List<String> l = new ArrayList<String>();
         l.add("line " + name);
-        line.getShRun(cmds.tabulator, l);
+        line.getShRun(cmds.tabulator, l, filter);
         if (runner.scrptInit == null) {
             l.add(cmds.tabulator + "no script init");
         } else {
@@ -117,7 +112,7 @@ public class cfgLin implements Comparable<cfgLin>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         line.getHelp(l);
         l.add(null, false, 1, new int[]{-1}, "log-monitor", "set as monitoring line");
         l.add(null, false, 1, new int[]{-1}, "dedicated", "set as dedicated line");

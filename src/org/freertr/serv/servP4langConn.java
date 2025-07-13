@@ -3499,6 +3499,7 @@ public class servP4langConn implements Runnable {
             if (ifc.ifc.tunMode == null) {
                 return;
             }
+            int[] labs = null;
             switch (ifc.ifc.tunMode) {
                 case mgre:
                     prtMgre ntry = (prtMgre) ifc.ifc.lower;
@@ -3620,6 +3621,26 @@ public class servP4langConn implements Runnable {
                     prt = "gtp";
                     par = " " + lp + " " + ifc.ifc.tunGtp.getRemPort() + " " + ifc.ifc.tunGtp.teidDat;
                     break;
+                case srMpls:
+                    if (ifc.ifc.tunSrMpls == null) {
+                        return;
+                    }
+                    labs = ifc.ifc.tunSrMpls.getLabels();
+                    if (labs == null) {
+                        return;
+                    }
+                    prt = "labsnei";
+                    break;
+                case ldpTe:
+                    if (ifc.ifc.tunLdpTe == null) {
+                        return;
+                    }
+                    labs = ifc.ifc.tunLdpTe.getLabels();
+                    if (labs == null) {
+                        return;
+                    }
+                    prt = "labsnei";
+                    break;
                 default:
                     return;
             }
@@ -3667,7 +3688,18 @@ public class servP4langConn implements Runnable {
             } else {
                 afi = "6";
             }
-            lower.sendLine(prt + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.tunTrg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + par);
+            if (labs == null) {
+                lower.sendLine(prt + afi + "_" + act + " " + nei.id + " " + ifc.id + " " + hop.sentIfc + " " + src + " " + ifc.ifc.tunTrg + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + par);
+                return;
+            }
+            par = " " + labs.length;
+            for (int i = labs.length - 1; i >= 0; i--) {
+                par += " " + labs[i];
+            }
+            for (int i = labs.length; i < 10; i++) {
+                par += " 0";
+            }
+            lower.sendLine("labsnei_" + act + " " + nei.id + " " + hop.mac.toEmuStr() + " " + ovrf.id + " " + hop.iface.getMac().toEmuStr() + " " + hop.sentIfc + " " + ifc.id + par);
             return;
         }
         if (ifc.ifc.type == tabRouteIface.ifaceType.dialer) {

@@ -23,7 +23,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteUtil;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -602,7 +602,7 @@ public class rtrBgpVrfRtr extends ipRtr {
      *
      * @param l list
      */
-    public void routerGetHelp(userHelping l) {
+    public void routerGetHelp(userHelp l) {
     }
 
     /**

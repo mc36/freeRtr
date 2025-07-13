@@ -17,7 +17,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -67,17 +67,12 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server pktmux .*!" + cmds.tabulator + "port " + port,
-        "server pktmux .*!" + cmds.tabulator + "protocol " + proto2string(protoAll)
+    public final static userFilter[] defaultF = {
+        new userFilter("server pktmux .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server pktmux .*", cmds.tabulator + "protocol " + proto2string(protoAll), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -180,7 +175,7 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "cpuport", "specify port to for packetin");
         l.add(null, false, 2, new int[]{-1}, "<name:ifc>", "interface name");
         l.add(null, false, 1, new int[]{2}, "dataport", "specify port to for packetout");

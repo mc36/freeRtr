@@ -5,7 +5,7 @@ import java.util.List;
 import org.freertr.line.lineScript;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -37,12 +37,7 @@ public class cfgChat implements Comparable<cfgChat>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {};
 
     /**
      * create new profile
@@ -55,7 +50,7 @@ public class cfgChat implements Comparable<cfgChat>, cfgGeneric {
         script.scrName = name;
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         script.getHelp(l);
     }
 

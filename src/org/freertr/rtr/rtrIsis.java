@@ -16,6 +16,14 @@ import org.freertr.cfg.cfgRoump;
 import org.freertr.cfg.cfgRouplc;
 import org.freertr.cfg.cfgRtr;
 import org.freertr.cfg.cfgVrf;
+import org.freertr.cry.cryHashGeneric;
+import org.freertr.cry.cryHashHmac;
+import org.freertr.cry.cryHashMd5;
+import org.freertr.cry.cryHashSha1;
+import org.freertr.cry.cryHashSha2224;
+import org.freertr.cry.cryHashSha2256;
+import org.freertr.cry.cryHashSha2384;
+import org.freertr.cry.cryHashSha2512;
 import org.freertr.enc.enc7bit;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ip.ipCor4;
@@ -35,7 +43,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -367,6 +375,100 @@ public class rtrIsis extends ipRtr {
         } else {
             return 2;
         }
+    }
+
+    /**
+     * get authentication data
+     *
+     * @param pck packet
+     * @param typ message type
+     * @param ofs offset of tlv
+     * @param mod mode
+     * @param id key id
+     * @param pwd password
+     * @return bytes in header
+     */
+    protected byte[] calcAuthData(packHolder pck, int typ, int ofs, int mod, int id, String pwd) {
+        if (pwd == null) {
+            return null;
+        }
+        switch (mod) {
+            case 1:
+                byte[] buf = (" " + pwd).getBytes();
+                buf[0] = 1;
+                return buf;
+            case 2:
+                ofs += 3;
+                cryHashGeneric h = new cryHashHmac(new cryHashMd5(), pwd.getBytes());
+                h.init();
+                int hshSiz = h.getHashSize();
+                h.update(rtrIsis.protDist);
+                h.update(rtrIsisNeigh.msgTyp2headSiz(typ));
+                h.update(1);
+                h.update(0);
+                h.update(typ);
+                h.update(1);
+                h.update(0);
+                h.update(getMaxAreaAddr());
+                pck = pck.copyBytes(true, true);
+                pck.merge2beg();
+                pck.hashData(h, 0, ofs);
+                h.update(new byte[hshSiz]);
+                if ((ofs + hshSiz) < pck.dataSize()) {
+                    pck.hashData(h, ofs + hshSiz, pck.dataSize() - ofs - hshSiz);
+                }
+                return bits.byteConcat(new byte[]{54}, h.finish());
+            case 3:
+                return calcAuthData(new cryHashSha1(), pck, typ, ofs, id, pwd);
+            case 4:
+                return calcAuthData(new cryHashSha2224(), pck, typ, ofs, id, pwd);
+            case 5:
+                return calcAuthData(new cryHashSha2256(), pck, typ, ofs, id, pwd);
+            case 6:
+                return calcAuthData(new cryHashSha2384(), pck, typ, ofs, id, pwd);
+            case 7:
+                return calcAuthData(new cryHashSha2512(), pck, typ, ofs, id, pwd);
+            default:
+                return null;
+        }
+    }
+
+    private byte[] calcAuthData(cryHashGeneric h, packHolder pck, int typ, int ofs, int id, String pwd) {
+        ofs += 5;
+        byte[] ko = pwd.getBytes();
+        h.init();
+        int hshSiz = h.getHashSize();
+        if (ko.length > hshSiz) {
+            h.update(ko);
+            ko = h.finish();
+        }
+        ko = bits.byteConcat(ko, new byte[hshSiz - ko.length]);
+        h = new cryHashHmac(h, ko);
+        h.init();
+        h.update(rtrIsis.protDist);
+        h.update(rtrIsisNeigh.msgTyp2headSiz(typ));
+        h.update(1);
+        h.update(0);
+        h.update(typ);
+        h.update(1);
+        h.update(0);
+        h.update(getMaxAreaAddr());
+        pck = pck.copyBytes(true, true);
+        pck.merge2beg();
+        pck.hashData(h, 0, ofs);
+        for (int i = 0; i < hshSiz; i += 4) {
+            h.update(0x87);
+            h.update(0x8F);
+            h.update(0xE1);
+            h.update(0xF3);
+        }
+        if ((ofs + hshSiz) < pck.dataSize()) {
+            pck.hashData(h, ofs + hshSiz, pck.dataSize() - ofs - hshSiz);
+        }
+        ko = new byte[3];
+        ko[0] = 3;
+        bits.msbPutW(ko, 1, id);
+        return bits.byteConcat(ko, h.finish());
     }
 
     /**
@@ -1152,7 +1254,7 @@ public class rtrIsis extends ipRtr {
      *
      * @param l list
      */
-    public void routerGetHelp(userHelping l) {
+    public void routerGetHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "net-id", "specify network entity title");
         l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
         l.add(null, false, 1, new int[]{2}, "traffeng-id", "specify traffic engineering id");
@@ -1209,6 +1311,13 @@ public class rtrIsis extends ipRtr {
         l.add(null, false, 3, new int[]{-1}, "null", "use nothing");
         l.add(null, false, 3, new int[]{-1}, "clear", "use cleartext");
         l.add(null, false, 3, new int[]{-1}, "md5", "use md5");
+        l.add(null, false, 3, new int[]{-1}, "sha1", "use sha1");
+        l.add(null, false, 3, new int[]{-1}, "sha224", "use sha224");
+        l.add(null, false, 3, new int[]{-1}, "sha256", "use sha256");
+        l.add(null, false, 3, new int[]{-1}, "sha384", "use sha384");
+        l.add(null, false, 3, new int[]{-1}, "sha512", "use sha512");
+        l.add(null, false, 2, new int[]{3}, "authen-id", "id for authentication");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "key id");
         l.add(null, false, 2, new int[]{3}, "lsp-refresh", "lsp refresh time");
         l.add(null, false, 3, new int[]{-1}, "<num>", "age in ms");
         l.add(null, false, 2, new int[]{3}, "lsp-lifetime", "lsp life time");
@@ -1578,11 +1687,27 @@ public class rtrIsis extends ipRtr {
             case 2:
                 a = "md5";
                 break;
+            case 3:
+                a = "sha1";
+                break;
+            case 4:
+                a = "sha224";
+                break;
+            case 5:
+                a = "sha256";
+                break;
+            case 6:
+                a = "sha384";
+                break;
+            case 7:
+                a = "sha512";
+                break;
             default:
                 a = "unknown=" + lev.authenMode;
                 break;
         }
         l.add(beg + s + "authen-type " + a);
+        l.add(beg + s + "authen-id " + lev.authenKey);
         l.add(beg + s + "lsp-refresh " + lev.lspRefresh);
         l.add(beg + s + "lsp-lifetime " + lev.lspLifetime);
         cmds.cfgLine(l, lev.prflstFrom == null, beg, s + "prefix-list-from", "" + lev.prflstFrom);
@@ -1689,6 +1814,14 @@ public class rtrIsis extends ipRtr {
             lev.schedWork(3);
             return false;
         }
+        if (s.equals("authen-id")) {
+            lev.authenKey = bits.str2num(cmd.word());
+            if (negated) {
+                lev.authenKey = 0;
+            }
+            lev.schedWork(3);
+            return false;
+        }
         if (s.equals("authen-type")) {
             if (negated) {
                 lev.authenMode = 1;
@@ -1709,6 +1842,31 @@ public class rtrIsis extends ipRtr {
             }
             if (s.equals("md5")) {
                 lev.authenMode = 2;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("sha1")) {
+                lev.authenMode = 3;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("sha224")) {
+                lev.authenMode = 4;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("sha256")) {
+                lev.authenMode = 5;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("sha384")) {
+                lev.authenMode = 6;
+                lev.schedWork(3);
+                return false;
+            }
+            if (s.equals("sha512")) {
+                lev.authenMode = 7;
                 lev.schedWork(3);
                 return false;
             }
@@ -2234,12 +2392,7 @@ public class rtrIsis extends ipRtr {
      */
     public userFormat showSpfTopo(int level, cmds cmd) {
         rtrIsisLevel lev = getLevel(level);
-        if (cmd.size() < 1) {
-            return lev.lastSpf.listTopology();
-        }
-        rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
-        ned.fromString(cmd.word());
-        return lev.lastSpf.listTopology(ned);
+        return lev.lastSpf.listTopology(new rtrIsisLevelSpf(new addrIsis(), 0), cmd);
     }
 
     /**
@@ -2257,11 +2410,12 @@ public class rtrIsis extends ipRtr {
      * show tree
      *
      * @param level level number
+     * @param cmd entry to find
      * @return tree of spf
      */
-    public List<String> showSpfTree(int level) {
+    public List<String> showSpfTree(int level, cmds cmd) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.lastSpf.listTree();
+        return lev.lastSpf.listTree(cmd);
     }
 
     /**
@@ -2277,7 +2431,7 @@ public class rtrIsis extends ipRtr {
         rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        return spf.listTree();
+        return spf.listTree(cmd);
     }
 
     /**
@@ -2293,12 +2447,7 @@ public class rtrIsis extends ipRtr {
         rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        if (cmd.size() < 1) {
-            return spf.listTopology();
-        }
-        ned = new rtrIsisLevelSpf(new addrIsis(), 0);
-        ned.fromString(cmd.word());
-        return spf.listTopology(ned);
+        return spf.listTopology(new rtrIsisLevelSpf(new addrIsis(), 0), cmd);
     }
 
     /**

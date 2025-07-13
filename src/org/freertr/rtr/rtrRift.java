@@ -32,7 +32,7 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -406,11 +406,7 @@ public class rtrRift extends ipRtr implements Runnable {
      */
     public userFormat showSpfTopo(cmds cmd) {
         spfCalc<rtrRiftTieSpf> doer = getSpf(cmd.word());
-        if (cmd.size() < 1) {
-            return doer.listTopology();
-        }
-        rtrRiftTieSpf ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
-        return doer.listTopology(ned);
+        return doer.listTopology(new rtrRiftTieSpf(0), cmd);
     }
 
     /**
@@ -427,10 +423,11 @@ public class rtrRift extends ipRtr implements Runnable {
      * show tree
      *
      * @param dir direction
+     * @param cmd entry to find
      * @return tree of spf
      */
-    public List<String> showSpfTree(String dir) {
-        return getSpf(dir).listTree();
+    public List<String> showSpfTree(String dir, cmds cmd) {
+        return getSpf(dir).listTree(cmd);
     }
 
     /**
@@ -443,7 +440,7 @@ public class rtrRift extends ipRtr implements Runnable {
         spfCalc<rtrRiftTieSpf> spf = getSpf(cmd.word()).copyBytes();
         rtrRiftTieSpf ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
         spf.doWork(null, ned, null);
-        return spf.listTree();
+        return spf.listTree(cmd);
     }
 
     /**
@@ -456,11 +453,7 @@ public class rtrRift extends ipRtr implements Runnable {
         spfCalc<rtrRiftTieSpf> spf = getSpf(cmd.word()).copyBytes();
         rtrRiftTieSpf ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
         spf.doWork(null, ned, null);
-        if (cmd.size() < 1) {
-            return spf.listTopology();
-        }
-        ned = new rtrRiftTieSpf(bits.str2long(cmd.word()));
-        return spf.listTopology(ned);
+        return spf.listTopology(new rtrRiftTieSpf(0), cmd);
     }
 
     /**
@@ -914,7 +907,7 @@ public class rtrRift extends ipRtr implements Runnable {
      *
      * @param l list
      */
-    public void routerGetHelp(userHelping l) {
+    public void routerGetHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "router-id", "specify node id");
         l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
         l.add(null, false, 1, new int[]{2}, "distance", "specify distance");

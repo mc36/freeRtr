@@ -5,7 +5,7 @@ import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userScript;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -102,7 +102,7 @@ public class lineScript {
      *
      * @param l where to write
      */
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "sequence", "set sequence number");
         l.add(null, false, 2, new int[]{1}, "<num>", "sequence number");
         l.add(null, false, 1, new int[]{2}, "description", "specify description");

@@ -32,7 +32,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -312,34 +312,29 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server p4lang .*!" + cmds.tabulator + "port " + port,
-        "server p4lang .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server p4lang .*!" + cmds.tabulator + "buffer 65536",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "api-stat",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "export-names",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "export-srv6",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "export-copp4 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "export-copp6 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-list4 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-list6 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-map4 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-map6 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-policy4 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-policy6 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-compress4 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "filter-compress6 .*",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "export-socket",
-        "server p4lang .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "interconnect",
-        "server p4lang .*!" + cmds.tabulator + "export-interval 1000"
+    public final static userFilter[] defaultF = {
+        new userFilter("server p4lang .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server p4lang .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server p4lang .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "api-stat", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "export-names", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "export-srv6", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "export-copp4 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "export-copp6 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-list4 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-list6 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-map4 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-map6 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-policy4 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-policy6 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-compress4 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "filter-compress6 .*", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "export-socket", null),
+        new userFilter("server p4lang .*", cmds.tabulator + cmds.negated + cmds.tabulator + "interconnect", null),
+        new userFilter("server p4lang .*", cmds.tabulator + "export-interval 1000", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -1005,7 +1000,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
         List<String> lst = servP4langUtil.toHelp(frontnam);
@@ -1908,12 +1903,6 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
                 }
                 rou.best.attribAs = ipMpls.typeU;
                 return ifc.ifc.tunLdpP2p.getResultRoute(rou);
-            case srMpls:
-                if (ifc.ifc.tunSrMpls == null) {
-                    return null;
-                }
-                rou.best.attribAs = ipMpls.typeU;
-                return ifc.ifc.tunSrMpls.getResultRoute(rou);
             case polka:
                 if (ifc.ifc.tunPolka == null) {
                     return null;

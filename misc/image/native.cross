@@ -1,6 +1,6 @@
 include ../misc/image/image.bas
 
-exec mkdir %tmp%/binImg
+mkdir %tmp%/binImg
 
 catalog-read exp xz %mirr% experimental main
 catalog-read sid xz %mirr% sid main
@@ -34,3 +34,5 @@ exec cd %tmp%/misc/native/ ; ./p.sh
 exec mv %tmp%/binImg/*.tgz ../binImg/rtr-%unam%.tgz
 
 exec /usr/bin/qemu-%qemu%-static -L %tmp%/ %tmp%/binTmp/p4bench.bin
+
+del-alw %tmp%

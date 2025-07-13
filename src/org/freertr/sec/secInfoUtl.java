@@ -28,7 +28,7 @@ import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRpkiAspa;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -661,7 +661,7 @@ public class secInfoUtl {
      * @param beg beginning
      * @param end ending
      */
-    public final static void getHelp(userHelping lst, int tab, String beg, String end) {
+    public final static void getHelp(userHelp lst, int tab, String beg, String end) {
         if (end != null) {
             lst.add(null, false, tab, new int[]{tab + 1}, beg, end);
             beg = "";

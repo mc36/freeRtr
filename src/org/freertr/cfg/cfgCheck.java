@@ -16,8 +16,8 @@ import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
-import org.freertr.user.userReader;
+import org.freertr.user.userHelp;
+import org.freertr.user.userRead;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -161,21 +161,17 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "command",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "template",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-text",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "alternate",
-        "check .*!" + cmds.tabulator + "severity critical",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-states",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-commands",
-        "check .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "error-hostname",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "command", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "template", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "error-text", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "alternate", null),
+        new userFilter("check .*", cmds.tabulator + "severity critical", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "error-states", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "error-commands", null),
+        new userFilter("check .*", cmds.tabulator + cmds.negated + cmds.tabulator + "error-hostname", null)
+    };
 
     /**
      * create new check
@@ -204,16 +200,16 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
         return "check";
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "rename", "rename this check");
         l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
         l.add(null, false, 1, new int[]{2}, "resolve", "resolve the regexp group a to hostname");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text to resolv");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text to resolv");
         l.add(null, false, 1, new int[]{2}, "replace", "replace from one string to another");
         l.add(null, false, 2, new int[]{3}, "<str>", "source string");
-        l.add(null, false, 3, new int[]{3,-1}, "<str>", "target string");
-        l.add(null, false, 1, new int[]{2,-1}, "train", "train command to current result");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "target string");
+        l.add(null, false, 1, new int[]{2, -1}, "train", "train command to current result");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{-1}, "alternate", "alternate reported state on diff change");
         l.add(null, false, 1, new int[]{2}, "severity", "severity level");
         l.add(null, false, 2, new int[]{-1}, "critical", "critical");
@@ -223,26 +219,26 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
         l.add(null, false, 1, new int[]{2}, "template", "template arameters");
         l.add(null, false, 2, new int[]{-1}, "<name:chk>", "name of check");
         l.add(null, false, 1, new int[]{2}, "command", "specify command to execute");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "command");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "command");
         l.add(null, false, 1, new int[]{2}, "description", "specify description");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "description");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "description");
         l.add(null, false, 1, new int[]{2}, "error-text", "specify error text");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{-1}, "error-states", "remove state of messages");
         l.add(null, false, 1, new int[]{-1}, "error-commands", "include commands in states");
         l.add(null, false, 1, new int[]{-1}, "error-hostname", "include local hostname in states");
         l.add(null, false, 1, new int[]{2}, "require-regexp", "require one regexp line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "ignore-regexp", "ignore one regexp line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "ignorall-regexp", "ignore all regexp line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "require-text", "require one text line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "ignore-text", "ignore one text line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "ignorall-text", "ignore all text line");
-        l.add(null, false, 2, new int[]{2,-1}, "<str>", "text");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
     }
 
     public List<String> getShRun(int filter) {
@@ -450,7 +446,7 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userReader rdr = new userReader(pip, null);
+        userRead rdr = new userRead(pip, null);
         pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
@@ -632,8 +628,17 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
      *
      * @return true if up, false if down
      */
-    public boolean doCheckBinary() {
+    public boolean getStatus() {
         return doCheckText().size() < 1;
+    }
+
+    /**
+     * get summary line
+     *
+     * @return string
+     */
+    public String getShSum() {
+        return name + "|" + cmds.upDown(getStatus()) + "|" + (okNum + errNum) + "|" + time + "|" + okNum + "|" + bits.timePast(okTim) + "|" + errNum + "|" + bits.timePast(errTim);
     }
 
     /**

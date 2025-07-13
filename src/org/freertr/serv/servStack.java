@@ -25,7 +25,7 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -128,20 +128,15 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server stack .*!" + cmds.tabulator + "port " + port,
-        "server stack .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server stack .*!" + cmds.tabulator + "buffer 65536",
-        "server stack .*!" + cmds.tabulator + "dataplanes 1",
-        "server stack .*!" + cmds.tabulator + "discovery 1000 5000"
+    public final static userFilter[] defaultF = {
+        new userFilter("server stack .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server stack .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server stack .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server stack .*", cmds.tabulator + "dataplanes 1", null),
+        new userFilter("server stack .*", cmds.tabulator + "discovery 1000 5000", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -275,7 +270,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
         l.add(null, false, 1, new int[]{2}, "dataplanes", "set number of forwarders");
@@ -682,28 +677,30 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * get backplane show
      *
      * @param fwd forwarder
+     * @param cmd masks
      * @return show
      */
-    public userFormat getShowTopo(int fwd) {
+    public userFormat getShowTopo(int fwd, cmds cmd) {
         if ((fwd < 0) || (fwd >= fwds.size())) {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        return cur.spf.listTopology();
+        return cur.spf.listTopology(new addrIP(), cmd);
     }
 
     /**
      * get backplane show
      *
      * @param fwd forwarder
+     * @param cmd masks
      * @return show
      */
-    public List<String> getShowTree(int fwd) {
+    public List<String> getShowTree(int fwd, cmds cmd) {
         if ((fwd < 0) || (fwd >= fwds.size())) {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        return cur.spf.listTree();
+        return cur.spf.listTree(cmd);
     }
 
     /**

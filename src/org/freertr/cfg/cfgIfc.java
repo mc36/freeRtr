@@ -25,6 +25,7 @@ import org.freertr.clnt.clntMplsBier;
 import org.freertr.clnt.clntMplsExp;
 import org.freertr.clnt.clntMplsLdpP2mp;
 import org.freertr.clnt.clntMplsLdpP2p;
+import org.freertr.clnt.clntMplsLdpTe;
 import org.freertr.clnt.clntMplsPwe;
 import org.freertr.clnt.clntMplsSr;
 import org.freertr.clnt.clntMplsTeP2mp;
@@ -164,7 +165,7 @@ import org.freertr.tab.tabRouteIface;
 import org.freertr.tab.tabSession;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -184,6 +185,16 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      * name of this interface
      */
     public final String name;
+
+    private final int cmpOrd1;
+
+    private final int cmpOrd2;
+
+    private final int cmpOrd3;
+
+    private final int cmpOrd4;
+
+    private final int cmpOrd5;
 
     /**
      * description of this interface
@@ -816,6 +827,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public clntMplsLdpP2p tunLdpP2p;
 
     /**
+     * mpls ldp te tunnel handler
+     */
+    public clntMplsLdpTe tunLdpTe;
+
+    /**
      * p2mp mpls ldp tunnel handler
      */
     public clntMplsLdpP2mp tunLdpP2mp;
@@ -1351,6 +1367,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
          */
         ldpP2p,
         /**
+         * ldp te tunnel interface
+         */
+        ldpTe,
+        /**
          * p2mp ldp tunnel interface
          */
         ldpP2mp,
@@ -1444,124 +1464,126 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
+    public final static userFilter[] defaultF = {
         // globals
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mtu",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "macaddr",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "template",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "follow-tracker",
-        "interface .*!" + cmds.tabulator + "padup 0 0",
-        "interface .*!" + cmds.tabulator + "autostate",
-        "interface .*!" + cmds.tabulator + "encapsulation dot1q",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bandwidth",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "lldp enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "cdp enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "cdp odr4",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "cdp odr6",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "synceth enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ptp enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ptp receive",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "lacp",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "carrier-delay",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "udld enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "radiotap enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "radiotap logging",
-        "interface .*!" + cmds.tabulator + "radiotap timeout 60000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "random",
-        "interface .*!" + cmds.tabulator + "enforce-mtu none",
-        "interface .*!" + cmds.tabulator + "enforce-mac none",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "macsec",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "disable-macsec",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "disable-sgt",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "loss-detection",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rate-limit-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "rate-limit-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sgt enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sgt optional",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sgt allow-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sgt allow-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sgt forbid-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sgt forbid-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sgt assign",
-        "interface .*!" + cmds.tabulator + "monitor-direction both",
-        "interface .*!" + cmds.tabulator + "monitor-truncate 0",
-        "interface .*!" + cmds.tabulator + "monitor-sample 0",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "monitor-filter",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "monitor-session",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "monitor-buffer",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "eapol client",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "eapol server",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-group",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter private-port",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter public-port",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter stp-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter stp-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter stp-root",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter ipv4in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter ipv4out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter ipv6in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter ipv6out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-macrewrite",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-portsecurity",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-staticaddr",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-tcp-mss ipv4in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-tcp-mss ipv4out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-tcp-mss ipv6in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-tcp-mss ipv6out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-pmtud ipv4in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-pmtud ipv4out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-pmtud ipv6in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-pmtud ipv6out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bundle-group",
-        "interface .*!" + cmds.tabulator + "bundle-priority 0",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "service-policy-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "service-policy-out",
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mtu", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "macaddr", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "template", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "follow-tracker", null),
+        new userFilter("interface .*", cmds.tabulator + "padup 0 0", null),
+        new userFilter("interface .*", cmds.tabulator + "autostate", null),
+        new userFilter("interface .*", cmds.tabulator + "encapsulation dot1q", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bandwidth", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "lldp enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "cdp enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "cdp odr4", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "cdp odr6", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "synceth enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ptp enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ptp receive", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "lacp", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "carrier-delay", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "udld enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "radiotap enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "radiotap logging", null),
+        new userFilter("interface .*", cmds.tabulator + "radiotap timeout 60000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "random", null),
+        new userFilter("interface .*", cmds.tabulator + "enforce-mtu none", null),
+        new userFilter("interface .*", cmds.tabulator + "enforce-mac none", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "macsec", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "disable-macsec", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "disable-sgt", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "loss-detection", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rate-limit-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rate-limit-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "sgt enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "sgt optional", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "sgt allow-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "sgt allow-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "sgt forbid-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "sgt forbid-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "sgt assign", null),
+        new userFilter("interface .*", cmds.tabulator + "monitor-direction both", null),
+        new userFilter("interface .*", cmds.tabulator + "monitor-truncate 0", null),
+        new userFilter("interface .*", cmds.tabulator + "monitor-sample 0", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "monitor-filter", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "monitor-session", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "monitor-buffer", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "eapol client", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "eapol server", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-group", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter private-port", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter public-port", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter stp-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter stp-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter stp-root", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter ipv4in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter ipv4out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter ipv6in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-filter ipv6out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-macrewrite", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-portsecurity", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-staticaddr", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-tcp-mss ipv4in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-tcp-mss ipv4out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-tcp-mss ipv6in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-tcp-mss ipv6out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-pmtud ipv4in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-pmtud ipv4out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-pmtud ipv6in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-pmtud ipv6out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bundle-group", null),
+        new userFilter("interface .*", cmds.tabulator + "bundle-priority 0", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "service-policy-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "service-policy-out", null),
         // forwarding
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "transproxy",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "p2poe client",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "p2poe server",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "p2poe relay",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vrf forwarding",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "nhrp ipv4",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "nhrp ipv6",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipx network",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "nsh enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "nsh xconnect",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "polka enable",
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "transproxy", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "p2poe client", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "p2poe server", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "p2poe relay", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "vrf forwarding", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "nhrp ipv4", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "nhrp ipv6", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipx network", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "nsh enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "nsh xconnect", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "polka enable", null),
         // mpls
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls access-group-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls access-group-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls access-group-common-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls access-group-common-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls inspect",
-        "interface .*!" + cmds.tabulator + "mpls ethertype unicast",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label-security",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls srv6-security",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls netflow-rx",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls netflow-tx",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls redirection",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls ldp4",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls ldp6",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label4pop",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label6pop",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label4in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label4out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label6in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label6out",
-        "interface .*!" + cmds.tabulator + "mpls label4sig discovery 5000 15000",
-        "interface .*!" + cmds.tabulator + "mpls label6sig discovery 5000 15000",
-        "interface .*!" + cmds.tabulator + "mpls label4sig session 60000 180000",
-        "interface .*!" + cmds.tabulator + "mpls label6sig session 60000 180000",
-        "interface .*!" + cmds.tabulator + "mpls label4sig target 10000 90000",
-        "interface .*!" + cmds.tabulator + "mpls label6sig target 10000 90000",
-        "interface .*!" + cmds.tabulator + "mpls label4sig tos -1",
-        "interface .*!" + cmds.tabulator + "mpls label6sig tos -1",
-        "interface .*!" + cmds.tabulator + "mpls label4sig ttl -1",
-        "interface .*!" + cmds.tabulator + "mpls label6sig ttl -1",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls rsvp4",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mpls rsvp6",
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls access-group-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls access-group-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls access-group-common-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls access-group-common-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls inspect", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls ethertype unicast", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label-security", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls srv6-security", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls netflow-rx", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls netflow-tx", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls redirection", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls ldp4", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls ldp6", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label4peer", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label6peer", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label4pop", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label6pop", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label4in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label4out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label6in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label6out", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls label4sig discovery 5000 15000", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls label6sig discovery 5000 15000", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls label4sig session 60000 180000", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls label6sig session 60000 180000", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls label4sig target 10000 90000", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls label6sig target 10000 90000", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls label4sig tos -1", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls label6sig tos -1", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls label4sig ttl -1", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls label6sig ttl -1", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls rsvp4", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls rsvp6", null),
         // ip
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] address",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] enable",
@@ -1649,428 +1671,505 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 prefix-domain",
         "interface .*!" + cmds.tabulator + "ipv6 prefix-interval 120000",
         "interface .*!" + cmds.tabulator + "ipv6 prefix-validity 604800000",
-        // multicast
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast broadcast",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast unicast",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast source-override-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast source-override-out",
-        "interface .*!" + cmds.tabulator + "ipv[46] multicast ttl-threshold 0",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pim enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pim bfd",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pim join-source",
-        "interface .*!" + cmds.tabulator + "ipv[46] pim allow-rx",
-        "interface .*!" + cmds.tabulator + "ipv[46] pim allow-tx",
-        "interface .*!" + cmds.tabulator + "ipv[46] pim bier-tunnel 0",
-        "interface .*!" + cmds.tabulator + "ipv[46] pim packet-timer 20",
-        "interface .*!" + cmds.tabulator + "ipv[46] pim priority 1",
-        "interface .*!" + cmds.tabulator + "ipv[46] pim hello-time 30000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast mldp-enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast host-enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast host-proxy",
-        "interface .*!" + cmds.tabulator + "ipv[46] multicast host-query 60000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dhcp[46]server enable",
-        // babel
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* bfd",
-        "interface .*!" + cmds.tabulator + "router babel[46] .* split-horizon",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* default-originate",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* suppress-prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* unsuppress-prefix",
-        "interface .*!" + cmds.tabulator + "router babel[46] .* verify-source",
-        "interface .*!" + cmds.tabulator + "router babel[46] .* distance 130",
-        "interface .*!" + cmds.tabulator + "router babel[46] .* metric-in 100",
-        "interface .*!" + cmds.tabulator + "router babel[46] .* metric-out 0",
-        "interface .*!" + cmds.tabulator + "router babel[46] .* packet-timer 20",
-        "interface .*!" + cmds.tabulator + "router babel[46] .* update-timer 20000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* prefix-list-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* prefix-list-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* route-map-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* route-map-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* route-policy-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* route-policy-out",
-        // olsr
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* bfd",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* split-horizon",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* lq-mode",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* default-originate",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* suppress-prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* unsuppress-prefix",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* verify-source",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* distance 140",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* willingness 7",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* metric-in 1",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* metric-out 0",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* packet-timer 20",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* hello-timer 5000",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* hello-hold 15000",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* advertise-timer 30000",
-        "interface .*!" + cmds.tabulator + "router olsr[46] .* advertise-hold 90000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* prefix-list-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* prefix-list-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* route-map-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* route-map-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* route-policy-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* route-policy-out",
-        // rip
-        "interface .*!" + cmds.tabulator + "router rip[46] .* allow-rx",
-        "interface .*!" + cmds.tabulator + "router rip[46] .* allow-tx",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* bfd",
-        "interface .*!" + cmds.tabulator + "router rip[46] .* verify-source",
-        "interface .*!" + cmds.tabulator + "router rip[46] .* poison-reverse",
-        "interface .*!" + cmds.tabulator + "router rip[46] .* split-horizon",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* default-originate",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* suppress-prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* unsuppress-prefix",
-        "interface .*!" + cmds.tabulator + "router rip[46] .* distance 120",
-        "interface .*!" + cmds.tabulator + "router rip[46] .* metric-in 0",
-        "interface .*!" + cmds.tabulator + "router rip[46] .* metric-out 1",
-        "interface .*!" + cmds.tabulator + "router rip[46] .* packet-timer 20",
-        "interface .*!" + cmds.tabulator + "router rip[46] .* update-timer 30000",
-        "interface .*!" + cmds.tabulator + "router rip[46] .* hold-time 180000",
-        "interface .*!" + cmds.tabulator + "router rip[46] .* flush-time 240000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* password",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* prefix-list-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* prefix-list-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* route-map-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* route-map-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* route-policy-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* route-policy-out",
-        // ospf
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* passive",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* network point2point",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* bfd",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* suppress-prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* unsuppress-prefix",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* verify-source",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* ttl-security -1",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* password",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* authen-type clear",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* authen-id 0",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* instance 0",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* cost 10",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* priority 0",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* hello-time 10000",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* dead-time 40000",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* retransmit-time 3000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* traffeng suppress",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* traffeng metric 10",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* traffeng bandwidth 100000000",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* traffeng affinity 0",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* traffeng srlg 0",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* segrout index",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* segrout node",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* segrout pop",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* bier index",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* bier subdomain",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* dynamic-metric mode",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* dynamic-metric time 60000",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* dynamic-metric size 5",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* dynamic-metric minimum 1",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* dynamic-metric maximum 65530",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* dynamic-metric divisor 1",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* dynamic-metric multiply 1",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* dynamic-metric ignore 0",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* dynamic-metric skip-min 0",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* dynamic-metric skip-max 0",
-        "interface .*!" + cmds.tabulator + "router ospf[46] .* dynamic-metric algo minimum",
-        // rift
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rift[46] .* passive",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rift[46] .* bfd",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rift[46] .* suppress-prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rift[46] .* unsuppress-prefix",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* verify-source",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* metric 10",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* hello-time 1000",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* dead-time 3000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router rift[46] .* dynamic-metric mode",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* dynamic-metric time 60000",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* dynamic-metric size 5",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* dynamic-metric minimum 1",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* dynamic-metric maximum 65530",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* dynamic-metric divisor 1",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* dynamic-metric multiply 1",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* dynamic-metric ignore 0",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* dynamic-metric skip-min 0",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* dynamic-metric skip-max 0",
-        "interface .*!" + cmds.tabulator + "router rift[46] .* dynamic-metric algo minimum",
-        // pvrp
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* split-horizon",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* passive",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* dump",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* accept-metric",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* dynamic-metric mode",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* dynamic-metric forbid",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* bfd",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* default-originate",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* label-pop",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* segrout",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* bier",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* stub",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* unstub",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* suppress-prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* unsuppress-prefix",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* verify-source",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* password",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* disable-password",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* encryption",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* distance 80",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* metric-in 10",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* metric-out 0",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* hello-time 5000",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* dead-time 15000",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* pmtud 0 0 0",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* sending-tos -1",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* sending-ttl -1",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* dynamic-metric time 60000",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* dynamic-metric size 5",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* dynamic-metric minimum 1",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* dynamic-metric maximum 100000",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* dynamic-metric divisor 1",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* dynamic-metric multiply 1",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* dynamic-metric ignore 0",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* dynamic-metric skip-min 0",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* dynamic-metric skip-max 0",
-        "interface .*!" + cmds.tabulator + "router pvrp[46] .* dynamic-metric algo minimum",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* label-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* label-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* prefix-list-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* prefix-list-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* route-map-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* route-map-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* route-policy-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* route-policy-out",
-        // lsrp
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* passive",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* dump",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* accept-metric",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* dynamic-metric mode",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* dynamic-metric forbid",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* bfd",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* segrout",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* bier",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* stub",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* unstub",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* suppress-prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* unsuppress-prefix",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* verify-source",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* password",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* disable-password",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* encryption",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* database-filter",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* split-horizon",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* metric 10",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* affinity 0",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* srlg 0",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* hello-time 5000",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* dead-time 15000",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* pmtud 0 0 0",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* sending-tos -1",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* sending-ttl -1",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* dynamic-metric time 60000",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* dynamic-metric size 5",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* dynamic-metric minimum 1",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* dynamic-metric maximum 100000",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* dynamic-metric divisor 1",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* dynamic-metric multiply 1",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* dynamic-metric ignore 0",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* dynamic-metric skip-min 0",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* dynamic-metric skip-max 0",
-        "interface .*!" + cmds.tabulator + "router lsrp[46] .* dynamic-metric algo minimum",
-        // eigrp
-        "interface .*!" + cmds.tabulator + "router eigrp[46] .* split-horizon",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* passive",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* bfd",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* default-originate",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* suppress-prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* unsuppress-prefix",
-        "interface .*!" + cmds.tabulator + "router eigrp[46] .* verify-source",
-        "interface .*!" + cmds.tabulator + "router eigrp[46] .* delay-in 10",
-        "interface .*!" + cmds.tabulator + "router eigrp[46] .* delay-out 0",
-        "interface .*!" + cmds.tabulator + "router eigrp[46] .* distance 90",
-        "interface .*!" + cmds.tabulator + "router eigrp[46] .* hello-time 5000",
-        "interface .*!" + cmds.tabulator + "router eigrp[46] .* dead-time 15000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* prefix-list-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* prefix-list-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* route-map-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* route-map-out",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* route-policy-in",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* route-policy-out",
-        // isis
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* passive",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* other-enable",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* raw-encapsulation",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* network point2point",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* bfd",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* suppress-address",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* suppress-prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* unsuppress-prefix",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* other-suppress-address",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* other-suppress-prefix",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* other-unsuppress-prefix",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* verify-source",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* send-csnp",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* password",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* authen-type clear",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* metric 10",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* priority 64",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* hello-time 10000",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* dead-time 30000",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* retransmit-time 3000",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* traffeng suppress",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* traffeng metric 10",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* traffeng bandwidth 100000000",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* traffeng affinity 0",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* traffeng srlg 0",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* segrout index",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* segrout other-index",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* segrout node",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* segrout pop",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* bier index",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* bier other-index",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* bier subdomain",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* bier other-subdomain",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* dynamic-metric mode",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* dynamic-metric time 60000",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* dynamic-metric size 5",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* dynamic-metric minimum 1",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* dynamic-metric maximum 16777210",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* dynamic-metric divisor 1",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* dynamic-metric multiply 1",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* dynamic-metric ignore 0",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* dynamic-metric skip-min 0",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* dynamic-metric skip-max 0",
-        "interface .*!" + cmds.tabulator + "router isis[46] .* dynamic-metric algo minimum",
-        // vlan
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vlan subif-macs",
-        // qinqx
-        "interface .*!" + cmds.tabulator + "qinqx ethertype fa52",
-        // sep
-        "interface .*!" + cmds.tabulator + "sep mode peer",
-        "interface .*!" + cmds.tabulator + "sep keepalive 5000",
-        // ppp
-        "interface .*!" + cmds.tabulator + "ppp multilink 0 none",
-        "interface .*!" + cmds.tabulator + "ppp fragment 0",
-        "interface .*!" + cmds.tabulator + "ppp frgap 0",
-        "interface .*!" + cmds.tabulator + "ppp keepalive 5000",
-        "interface .*!" + cmds.tabulator + "ppp retry 10",
-        "interface .*!" + cmds.tabulator + "ppp reqrst 5",
-        "interface .*!" + cmds.tabulator + "ppp naktry 16",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp username",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp password",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp refuseauth pap",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp refuseauth chap",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp refuseauth eap",
-        "interface .*!" + cmds.tabulator + "ppp accm 0",
-        "interface .*!" + cmds.tabulator + "ppp mru 0",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp close",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp open",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp optional",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp peer",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp local",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp dns1",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp dns2",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp reqaddr",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp close",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp open",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp optional",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp local",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp peer",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp keep",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp bcp close",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp bcp open",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp bcp optional",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp mplscp close",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp mplscp open",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp mplscp optional",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp osicp close",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp osicp open",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp osicp optional",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ipxcp close",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ipxcp open",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ipxcp optional",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ecp close",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ecp open",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ecp optional",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp nshcp close",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp nshcp open",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp nshcp optional",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp polkacp close",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp polkacp open",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp polkacp optional",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp sgtcp close",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp sgtcp open",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp sgtcp optional",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp authentication",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ppp accounting",
-        // hdlc
-        "interface .*!" + cmds.tabulator + "hdlc keepalive 5000",
-        // isdn
-        "interface .*!" + cmds.tabulator + "isdn keepalive 5000",
-        // labp
-        "interface .*!" + cmds.tabulator + "lapb keepalive 5000",
-        "interface .*!" + cmds.tabulator + "lapb modulus 8",
-        // framerelay
-        "interface .*!" + cmds.tabulator + "framerelay keepalive 5000",
-        "interface .*!" + cmds.tabulator + "framerelay lmi ansi",
-        "interface .*!" + cmds.tabulator + "framerelay fragment 0",
-        "interface .*!" + cmds.tabulator + "framerelay frgap 0",
-        // tunnel
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel sequence-datagrams",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel checksum",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel shutdown",
-        "interface .*!" + cmds.tabulator + "tunnel key 0",
-        "interface .*!" + cmds.tabulator + "tunnel flow -1",
-        "interface .*!" + cmds.tabulator + "tunnel tos -1",
-        "interface .*!" + cmds.tabulator + "tunnel dontfrag -1",
-        "interface .*!" + cmds.tabulator + "tunnel ttl 255",
-        "interface .*!" + cmds.tabulator + "tunnel priority 7 7",
-        "interface .*!" + cmds.tabulator + "tunnel affinity 0 0 0",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel association",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel protection",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel domain-name"
-    };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] address", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] reassembly", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] fragmentation", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pmtud-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pmtud-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] redirection", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] unreachables", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] unreach-source", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] propagate-ttl-always", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] propagate-ttl-allow", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] resend-packet", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] dapp-disable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] flowspec-disable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] verify-source", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] srh enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] nsh enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] dlep", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] gateway-connected", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] gateway-local", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] gateway-remote", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] gateway-process", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] gateway-distance 0 0 0 0", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] gateway-labeled", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] gateway-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] gateway-map", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] gateway-policy", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] access-group-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] access-group-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] access-group-common-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] access-group-common-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] bfd", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] autoroute", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] host-learn", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] host-remote", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] host-watch", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] host-rate", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] host-reach 360000", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] host-retry 180000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] proxy-remote", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] proxy-local", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] proxy-filter", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] tcp-mss-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] tcp-mss-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] hsrp address", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] netflow-rx", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] netflow-tx", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] hsrp group 0", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] hsrp password \\$v10\\$Y2lzY28=", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv4 hsrp mac-address 0000.0c9f.f000", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv6 hsrp mac-address 0005.73a0.0000", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] hsrp version 2", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] hsrp timer 3000 10000", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] hsrp priority 100", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] hsrp preempt", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] hsrp bfd", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] hsrp tracker", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] vrrp address", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] vrrp group 0", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv4 vrrp mac-address 0000.5e00.0100", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv6 vrrp mac-address 0000.5e00.0200", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] vrrp version 3", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] vrrp timer 1000 3000", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] vrrp priority 100", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] vrrp tracker", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] vrrp bfd", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pool", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] inspect", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] ptp enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] ptp receive", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv4 dhcp-client broadcast", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 dhcp-client prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] dhcp-client early", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] dhcp-client renew-min 60000", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] dhcp-client renew-max 43200000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] dhcp-client enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 prefix-suppress", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 slaac-client enable", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv4 dhcp-client fill-ciaddr", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv6 slaac-client renew-min 60000", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv6 slaac-client renew-max 43200000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 prefix-dns", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 prefix-domain", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv6 prefix-interval 120000", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv6 prefix-validity 604800000", null),
+        // multicast
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast broadcast", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast unicast", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast source-override-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast source-override-out", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] multicast ttl-threshold 0", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pim enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pim bfd", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] pim join-source", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] pim allow-rx", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] pim allow-tx", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] pim bier-tunnel 0", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] pim packet-timer 20", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] pim priority 1", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] pim hello-time 30000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast mldp-enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast host-enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast host-proxy", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] multicast host-query 60000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "dhcp[46]server enable", null),
+        // babel
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* bfd", null),
+        new userFilter("interface .*", cmds.tabulator + "router babel[46] .* split-horizon", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* default-originate", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + "router babel[46] .* verify-source", null),
+        new userFilter("interface .*", cmds.tabulator + "router babel[46] .* distance 130", null),
+        new userFilter("interface .*", cmds.tabulator + "router babel[46] .* metric-in 100", null),
+        new userFilter("interface .*", cmds.tabulator + "router babel[46] .* metric-out 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router babel[46] .* packet-timer 20", null),
+        new userFilter("interface .*", cmds.tabulator + "router babel[46] .* update-timer 20000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* prefix-list-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* prefix-list-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* route-map-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* route-map-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* route-policy-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* route-policy-out", null),
+        // olsr
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* bfd", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* split-horizon", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* lq-mode", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* default-originate", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* verify-source", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* distance 140", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* willingness 7", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* metric-in 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* metric-out 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* packet-timer 20", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* hello-timer 5000", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* hello-hold 15000", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* advertise-timer 30000", null),
+        new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* advertise-hold 90000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* prefix-list-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* prefix-list-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* route-map-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* route-map-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* route-policy-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* route-policy-out", null),
+        // rip
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* allow-rx", null),
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* allow-tx", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* bfd", null),
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* verify-source", null),
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* poison-reverse", null),
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* split-horizon", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* default-originate", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* distance 120", null),
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* metric-in 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* metric-out 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* packet-timer 20", null),
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* update-timer 30000", null),
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* hold-time 180000", null),
+        new userFilter("interface .*", cmds.tabulator + "router rip[46] .* flush-time 240000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* password", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* prefix-list-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* prefix-list-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* route-map-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* route-map-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* route-policy-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rip[46] .* route-policy-out", null),
+        // ospf
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* passive", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* network point2point", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* bfd", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* verify-source", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* ttl-security -1", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* password", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* authen-type clear", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* authen-id 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* instance 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* cost 10", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* priority 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* hello-time 10000", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* dead-time 40000", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* retransmit-time 3000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* traffeng suppress", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* traffeng metric 10", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* traffeng bandwidth 100000000", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* traffeng affinity 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* traffeng srlg 0", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* segrout index", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* segrout node", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* segrout pop", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* bier index", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* bier subdomain", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* dynamic-metric mode", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router ospf[46] .* ldp-sync", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* dynamic-metric time 60000", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* dynamic-metric size 5", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* dynamic-metric minimum 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* dynamic-metric maximum 65530", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* dynamic-metric divisor 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* dynamic-metric multiply 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* dynamic-metric ignore 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* dynamic-metric skip-min 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* dynamic-metric skip-max 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router ospf[46] .* dynamic-metric algo minimum", null),
+        // rift
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rift[46] .* passive", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rift[46] .* bfd", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rift[46] .* suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rift[46] .* unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* verify-source", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* metric 10", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* hello-time 1000", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dead-time 3000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rift[46] .* dynamic-metric mode", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router rift[46] .* ldp-sync", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dynamic-metric time 60000", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dynamic-metric size 5", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dynamic-metric minimum 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dynamic-metric maximum 65530", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dynamic-metric divisor 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dynamic-metric multiply 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dynamic-metric ignore 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dynamic-metric skip-min 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dynamic-metric skip-max 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dynamic-metric algo minimum", null),
+        // pvrp
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* split-horizon", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* passive", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* dump", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* accept-metric", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* ldp-sync", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* dynamic-metric mode", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* dynamic-metric forbid", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* bfd", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* default-originate", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* label-pop", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* segrout", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* bier", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* stub", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* unstub", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* verify-source", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* password", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* disable-password", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* encryption", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* distance 80", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* metric-in 10", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* metric-out 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* hello-time 5000", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* dead-time 15000", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* pmtud 0 0 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* sending-tos -1", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* sending-ttl -1", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* dynamic-metric time 60000", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* dynamic-metric size 5", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* dynamic-metric minimum 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* dynamic-metric maximum 100000", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* dynamic-metric divisor 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* dynamic-metric multiply 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* dynamic-metric ignore 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* dynamic-metric skip-min 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* dynamic-metric skip-max 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* dynamic-metric algo minimum", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* label-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* label-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* prefix-list-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* prefix-list-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* route-map-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* route-map-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* route-policy-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* route-policy-out", null),
+        // lsrp
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* passive", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* dump", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* accept-metric", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* ldp-sync", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* dynamic-metric mode", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* dynamic-metric forbid", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* bfd", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* segrout", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* bier", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* stub", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* unstub", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* verify-source", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* password", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* disable-password", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* encryption", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* database-filter", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* split-horizon", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* metric 10", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* affinity 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* srlg 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* hello-time 5000", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dead-time 15000", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* pmtud 0 0 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* sending-tos -1", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* sending-ttl -1", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric time 60000", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric size 5", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric minimum 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric maximum 100000", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric divisor 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric multiply 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric ignore 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric skip-min 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric skip-max 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric algo minimum", null),
+        // eigrp
+        new userFilter("interface .*", cmds.tabulator + "router eigrp[46] .* split-horizon", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* passive", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* bfd", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* default-originate", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + "router eigrp[46] .* verify-source", null),
+        new userFilter("interface .*", cmds.tabulator + "router eigrp[46] .* delay-in 10", null),
+        new userFilter("interface .*", cmds.tabulator + "router eigrp[46] .* delay-out 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router eigrp[46] .* distance 90", null),
+        new userFilter("interface .*", cmds.tabulator + "router eigrp[46] .* hello-time 5000", null),
+        new userFilter("interface .*", cmds.tabulator + "router eigrp[46] .* dead-time 15000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* prefix-list-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* prefix-list-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* route-map-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* route-map-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* route-policy-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* route-policy-out", null),
+        // isis
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* passive", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* other-enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* raw-encapsulation", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* network point2point", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* bfd", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* suppress-address", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* other-suppress-address", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* other-suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* other-unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* verify-source", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* send-csnp", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* password", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* authen-type clear", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* authen-id 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* metric 10", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* priority 64", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* hello-time 10000", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* dead-time 30000", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* retransmit-time 3000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* traffeng suppress", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* traffeng metric 10", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* traffeng bandwidth 100000000", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* traffeng affinity 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* traffeng srlg 0", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* segrout index", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* segrout other-index", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* segrout node", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* segrout pop", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* bier index", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* bier other-index", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* bier subdomain", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* bier other-subdomain", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* ldp-sync", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router isis[46] .* dynamic-metric mode", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* dynamic-metric time 60000", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* dynamic-metric size 5", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* dynamic-metric minimum 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* dynamic-metric maximum 16777210", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* dynamic-metric divisor 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* dynamic-metric multiply 1", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* dynamic-metric ignore 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* dynamic-metric skip-min 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* dynamic-metric skip-max 0", null),
+        new userFilter("interface .*", cmds.tabulator + "router isis[46] .* dynamic-metric algo minimum", null),
+        // vlan
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "vlan subif-macs", null),
+        // qinqx
+        new userFilter("interface .*", cmds.tabulator + "qinqx ethertype fa52", null),
+        // sep
+        new userFilter("interface .*", cmds.tabulator + "sep mode peer", null),
+        new userFilter("interface .*", cmds.tabulator + "sep keepalive 5000", null),
+        // ppp
+        new userFilter("interface .*", cmds.tabulator + "ppp multilink 0 none", null),
+        new userFilter("interface .*", cmds.tabulator + "ppp fragment 0", null),
+        new userFilter("interface .*", cmds.tabulator + "ppp frgap 0", null),
+        new userFilter("interface .*", cmds.tabulator + "ppp keepalive 5000", null),
+        new userFilter("interface .*", cmds.tabulator + "ppp retry 10", null),
+        new userFilter("interface .*", cmds.tabulator + "ppp reqrst 5", null),
+        new userFilter("interface .*", cmds.tabulator + "ppp naktry 16", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp username", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp password", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp refuseauth pap", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp refuseauth chap", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp refuseauth eap", null),
+        new userFilter("interface .*", cmds.tabulator + "ppp accm 0", null),
+        new userFilter("interface .*", cmds.tabulator + "ppp mru 0", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp close", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp open", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp optional", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp peer", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp local", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp dns1", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp dns2", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip4cp reqaddr", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp close", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp open", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp optional", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp local", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp peer", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ip6cp keep", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp bcp close", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp bcp open", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp bcp optional", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp mplscp close", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp mplscp open", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp mplscp optional", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp osicp close", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp osicp open", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp osicp optional", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ipxcp close", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ipxcp open", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ipxcp optional", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ecp close", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ecp open", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp ecp optional", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp nshcp close", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp nshcp open", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp nshcp optional", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp polkacp close", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp polkacp open", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp polkacp optional", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp sgtcp close", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp sgtcp open", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp sgtcp optional", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp authentication", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ppp accounting", null),
+        // hdlc
+        new userFilter("interface .*", cmds.tabulator + "hdlc keepalive 5000", null),
+        // isdn
+        new userFilter("interface .*", cmds.tabulator + "isdn keepalive 5000", null),
+        // labp
+        new userFilter("interface .*", cmds.tabulator + "lapb keepalive 5000", null),
+        new userFilter("interface .*", cmds.tabulator + "lapb modulus 8", null),
+        // framerelay
+        new userFilter("interface .*", cmds.tabulator + "framerelay keepalive 5000", null),
+        new userFilter("interface .*", cmds.tabulator + "framerelay lmi ansi", null),
+        new userFilter("interface .*", cmds.tabulator + "framerelay fragment 0", null),
+        new userFilter("interface .*", cmds.tabulator + "framerelay frgap 0", null),
+        // tunnel
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel sequence-datagrams", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel checksum", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel shutdown", null),
+        new userFilter("interface .*", cmds.tabulator + "tunnel key 0", null),
+        new userFilter("interface .*", cmds.tabulator + "tunnel flow -1", null),
+        new userFilter("interface .*", cmds.tabulator + "tunnel tos -1", null),
+        new userFilter("interface .*", cmds.tabulator + "tunnel dontfrag -1", null),
+        new userFilter("interface .*", cmds.tabulator + "tunnel ttl 255", null),
+        new userFilter("interface .*", cmds.tabulator + "tunnel priority 7 7", null),
+        new userFilter("interface .*", cmds.tabulator + "tunnel affinity 0 0 0", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel association", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel protection", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel domain-name", null)
+    };
 
     /**
      * template text
      */
-    public final static String[] notemplL = {
-        "interface .*!" + cmds.tabulator + "description.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description.*",
-        "interface .*!" + cmds.tabulator + "vrf forwarding.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vrf forwarding.*",
-        "interface .*!" + cmds.tabulator + "ipv[46] address.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] address.*",
-        "interface .*!" + cmds.tabulator + "ipx network.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipx network.*",
-        "interface .*!" + cmds.tabulator + "autostate.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "autostate.*",
-        "interface .*!" + cmds.tabulator + "shutdown.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "shutdown.*"
+    public final static userFilter[] notemplF = {
+        new userFilter("interface .*", cmds.tabulator + "description.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description.*", null),
+        new userFilter("interface .*", cmds.tabulator + "vrf forwarding.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "vrf forwarding.*", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv[46] address.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] address.*", null),
+        new userFilter("interface .*", cmds.tabulator + "ipx network.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipx network.*", null),
+        new userFilter("interface .*", cmds.tabulator + "autostate.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "autostate.*", null),
+        new userFilter("interface .*", cmds.tabulator + "shutdown.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "shutdown.*", null)
     };
-
-    /**
-     * template filter
-     */
-    public static tabGen<userFilter> notemplF;
 
     /**
      * clone text
      */
-    public final static String[] nocloneL = {
-        "interface .*!" + cmds.tabulator + "autostate.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "autostate.*",
-        "interface .*!" + cmds.tabulator + "shutdown.*",
-        "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "shutdown.*"
+    public final static userFilter[] nocloneF = {
+        new userFilter("interface .*", cmds.tabulator + "autostate.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "autostate.*", null),
+        new userFilter("interface .*", cmds.tabulator + "shutdown.*", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "shutdown.*", null)
     };
-
-    /**
-     * clone filter
-     */
-    public static tabGen<userFilter> nocloneF;
 
     /**
      * convert interface name to type
@@ -2306,29 +2405,37 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     }
 
     public int compareTo(cfgIfc o) {
-        String s1 = name.toLowerCase();
-        String s2 = o.name.toLowerCase();
-        boolean l1 = s1.startsWith("template");
-        boolean l2 = s2.startsWith("template");
-        if (l1 != l2) {
-            return l1 ? -1 : +1;
+        if (cmpOrd1 < o.cmpOrd1) {
+            return -1;
         }
-        l1 = s1.startsWith("loopback");
-        l2 = s2.startsWith("loopback");
-        if (l1 != l2) {
-            return l1 ? -1 : +1;
+        if (cmpOrd1 > o.cmpOrd1) {
+            return +1;
         }
-        l1 = s1.startsWith("access");
-        l2 = s2.startsWith("access");
-        if (l1 != l2) {
-            return l1 ? +1 : -1;
+        if (cmpOrd2 < o.cmpOrd2) {
+            return -1;
         }
-        l1 = s1.startsWith("tunnel");
-        l2 = s2.startsWith("tunnel");
-        if (l1 != l2) {
-            return l1 ? +1 : -1;
+        if (cmpOrd2 > o.cmpOrd2) {
+            return +1;
         }
-        return s1.compareTo(s2);
+        if (cmpOrd3 < o.cmpOrd3) {
+            return -1;
+        }
+        if (cmpOrd3 > o.cmpOrd3) {
+            return +1;
+        }
+        if (cmpOrd4 < o.cmpOrd4) {
+            return -1;
+        }
+        if (cmpOrd4 > o.cmpOrd4) {
+            return +1;
+        }
+        if (cmpOrd5 < o.cmpOrd5) {
+            return -1;
+        }
+        if (cmpOrd5 > o.cmpOrd5) {
+            return +1;
+        }
+        return 0;
     }
 
     /**
@@ -2416,6 +2523,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 return "bier";
             case ldpP2p:
                 return "p2pldp";
+            case ldpTe:
+                return "teldp";
             case ldpP2mp:
                 return "p2mpldp";
             case ldpMp2mp:
@@ -2577,6 +2686,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (s.equals("p2pldp")) {
             return tunnelType.ldpP2p;
         }
+        if (s.equals("teldp")) {
+            return tunnelType.ldpTe;
+        }
         if (s.equals("p2mpldp")) {
             return tunnelType.ldpP2mp;
         }
@@ -2693,8 +2805,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      * normalize one interface name
      *
      * @param s string to normalize
-     * @return normalized {name+(/slot)+num,("."+subif),("."+subif)}, or
-     * {"","",""} if failed
+     * @return null if failed, normalized array if successful
+     * name,(slot/),num,("."+subif),("."+subif)
      */
     public static String[] dissectName(String s) {
         s = s.toLowerCase();
@@ -2711,80 +2823,85 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             break;
         }
         if (p >= s.length()) {
-            return new String[]{"", "", ""};
+            return null;
         }
-        String b = s.substring(0, p).trim();
-        s = s.substring(p, s.length()).trim();
-        b = cfgInit.ifaceNames.repairLine(b).trim();
-        if (b.length() < 1) {
-            return new String[]{"", "", ""};
+        String[] res = new String[5];
+        res[0] = cfgInit.ifaceNames.repairLine(s.substring(0, p)).trim();
+        s = s.substring(p, s.length());
+        if (res[0].length() < 1) {
+            return null;
         }
         p = s.indexOf("/");
-        if (p >= 0) {
+        if (p < 0) {
+            res[1] = "";
+        } else {
             String q = s.substring(0, p);
             int i = bits.str2num(q);
             if (i < 0) {
-                return new String[]{"", "", ""};
+                return null;
             }
             if (!q.equals("" + i)) {
-                return new String[]{"", "", ""};
+                return null;
             }
             s = s.substring(p + 1, s.length());
-            b += i + "/";
+            res[1] = i + "/";
         }
         p = s.indexOf(".");
         if (p < 0) {
             p = bits.str2num(s);
             if (p < 0) {
-                return new String[]{"", "", ""};
+                return null;
             }
             if (!s.equals("" + p)) {
-                return new String[]{"", "", ""};
+                return null;
             }
-            b += p;
-            return new String[]{b, "", ""};
+            res[2] = "" + p;
+            res[3] = "";
+            res[4] = "";
+            return res;
         }
-        String q = s.substring(0, p);
+        String a = s.substring(0, p);
         s = s.substring(p + 1, s.length());
-        p = bits.str2num(q);
+        p = bits.str2num(a);
         if (p < 0) {
-            return new String[]{"", "", ""};
+            return null;
         }
-        if (!q.equals("" + p)) {
-            return new String[]{"", "", ""};
+        if (!a.equals("" + p)) {
+            return null;
         }
-        b += p;
+        res[2] = "" + p;
         p = s.indexOf(".");
         if (p < 0) {
             p = bits.str2num(s);
             if (p < 1) {
-                return new String[]{"", "", ""};
+                return null;
             }
             if (!s.equals("" + p)) {
-                return new String[]{"", "", ""};
+                return null;
             }
-            s = "." + p;
-            return new String[]{b, s, ""};
+            res[3] = "." + p;
+            res[4] = "";
+            return res;
         }
-        q = s.substring(0, p);
+        a = s.substring(0, p);
         s = s.substring(p + 1, s.length());
-        int i = bits.str2num(q);
+        int i = bits.str2num(a);
         if (i < 1) {
-            return new String[]{"", "", ""};
+            return null;
         }
-        if (!q.equals("" + i)) {
-            return new String[]{"", "", ""};
+        if (!a.equals("" + i)) {
+            return null;
         }
         p = bits.str2num(s);
         if (p < 1) {
-            return new String[]{"", "", ""};
+            return null;
         }
         if (!s.equals("" + p)) {
-            return new String[]{"", "", ""};
+            return null;
         }
-        q = "." + i;
-        s = "." + p;
-        return new String[]{b, q, s};
+        res[3] = "." + i;
+        res[4] = "." + p;
+        return res;
     }
 
     public String toString() {
@@ -2794,10 +2911,40 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     /**
      * create new interface
      *
-     * @param nam name of interface
+     * @param pnm dissected name of interface
      */
-    public cfgIfc(String nam) {
-        name = nam.trim();
+    public cfgIfc(String[] pnm) {
+        name = pnm[0] + pnm[1] + pnm[2] + pnm[3] + pnm[4];
+        int i = 5;
+        if (name.startsWith("template")) {
+            i = 1;
+        }
+        if (name.startsWith("loopback")) {
+            i = 2;
+        }
+        if (name.startsWith("tunnel")) {
+            i = 8;
+        }
+        if (name.startsWith("access")) {
+            i = 9;
+        }
+        cmpOrd1 = (i << 24) | (name.charAt(0) << 8) | name.charAt(1);
+        if (pnm[1].length() < 1) {
+            cmpOrd2 = -1;
+        } else {
+            cmpOrd2 = bits.str2num(pnm[1].substring(0, pnm[1].length() - 1));
+        }
+        cmpOrd3 = bits.str2num(pnm[2]);
+        if (pnm[3].length() < 1) {
+            cmpOrd4 = -1;
+        } else {
+            cmpOrd4 = bits.str2num(pnm[3].substring(1, pnm[3].length()));
+        }
+        if (pnm[4].length() < 1) {
+            cmpOrd5 = -1;
+        } else {
+            cmpOrd5 = bits.str2num(pnm[4].substring(1, pnm[4].length()));
+        }
         ethtyp = new ifcEthTyp(name, this);
         lower = new ifcNull();
         lower.setUpper(ethtyp);
@@ -4089,6 +4236,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             tunLdpP2p.workStop();
             tunLdpP2p = null;
         }
+        if (tunLdpTe != null) {
+            tunLdpTe.workStop();
+            tunLdpTe = null;
+        }
         if (tunLdpP2mp != null) {
             tunLdpP2mp.workStop();
             tunLdpP2mp = null;
@@ -4835,6 +4986,21 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunLdpP2p.workStart();
                 lower = tunLdpP2p;
                 break;
+            case ldpTe:
+                tunLdpTe = new clntMplsLdpTe();
+                tunLdpTe.vrf = tunVrf;
+                tunLdpTe.trgId = tunKey;
+                tunLdpTe.target = tunTrg.copyBytes();
+                tunLdpTe.srcIfc = tunSrc;
+                tunLdpTe.setTargets(tunFQDN);
+                tunFQDN = tunLdpTe.getTargets();
+                tunLdpTe.expr = tunTOS;
+                tunLdpTe.entr = tunFLW;
+                tunLdpTe.ttl = tunTTL;
+                tunLdpTe.setUpper(ethtyp);
+                tunLdpTe.workStart();
+                lower = tunLdpTe;
+                break;
             case ldpP2mp:
                 tunLdpP2mp = new clntMplsLdpP2mp();
                 tunLdpP2mp.vrf = tunVrf;
@@ -5554,6 +5720,20 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     }
 
     /**
+     * get ldp interface
+     *
+     * @param adr address to check
+     * @return ldp interface, null if unconfigured
+     */
+    public rtrLdpIface getLdpIface(addrIP adr) {
+        if (adr.isIPv4()) {
+            return mplsLdp4;
+        } else {
+            return mplsLdp6;
+        }
+    }
+
+    /**
      * setup targeted ldp session
      *
      * @param trg peer address
@@ -5566,11 +5746,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         clnt.vrf = vrfFor;
         clnt.srcIfc = this;
-        if (clnt.target.isIPv4()) {
-            clnt.ldpIfc = mplsLdp4;
-        } else {
-            clnt.ldpIfc = mplsLdp6;
-        }
+        clnt.ldpIfc = getLdpIface(clnt.target);
         if (mplsTarget.add(clnt) != null) {
             return;
         }
@@ -5593,6 +5769,34 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             return;
         }
         clnt.workStop();
+    }
+
+    /**
+     * setup static peer usage
+     *
+     * @param ver ip version
+     * @param per peer address, null to remove
+     * @param hop nexthop address to fake
+     */
+    public synchronized void setup2statPeer(int ver, String per, String hop) {
+        ipFwdIface ifc;
+        if (ver == 4) {
+            ifc = fwdIf4;
+        } else {
+            ifc = fwdIf6;
+        }
+        if (ifc == null) {
+            return;
+        }
+        if (per == null) {
+            ifc.mplPeer = null;
+            ifc.mplHop = null;
+            return;
+        }
+        ifc.mplPeer = new addrIP();
+        ifc.mplPeer.fromString(per);
+        ifc.mplHop = new addrIP();
+        ifc.mplHop.fromString(hop);
     }
 
     /**
@@ -6501,11 +6705,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (fwdIf4 != null) {
             fwdIf4.ldpasCfg(l, cmds.tabulator + "mpls ldppassword", filter);
-            fwdIf4.labelsCfg(l, cmds.tabulator + "mpls static-label");
+            fwdIf4.labelsCfg(l, cmds.tabulator + "mpls static-label", " mpls use4peer");
         }
         if (fwdIf6 != null) {
             fwdIf6.ldpasCfg(l, cmds.tabulator + "mpls ldppassword", filter);
-            fwdIf6.labelsCfg(l, cmds.tabulator + "mpls static-label");
+            fwdIf6.labelsCfg(l, cmds.tabulator + "mpls static-label", " mpls use6peer");
         }
         if (rtrBabel4hnd != null) {
             s = "router babel4 " + rtrBabel4hnd.number + " ";
@@ -6627,7 +6831,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(cmds.tabulator + b + " enable");
         List<String> r = new ArrayList<String>();
         s.srvShRun(cmds.tabulator, r, filter);
-        tabGen<userFilter> fl = s.srvDefFlt();
+        userFilter[] fl = s.srvDefFlt();
         for (int i = 0; i < r.size(); i++) {
             String a = r.get(i);
             userFilter fv = new userFilter(fn, a, null);
@@ -6644,7 +6848,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this interface");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this interface");
         l.add(null, false, 1, new int[]{-1}, "log-link-change", "log link state changes");
@@ -6915,6 +7119,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "p2mpte", "point to multipoint mpls te tunnel");
         l.add(null, false, 3, new int[]{-1}, "bier", "mpls bier tunnel");
         l.add(null, false, 3, new int[]{-1}, "p2pldp", "point to point mpls ldp tunnel");
+        l.add(null, false, 3, new int[]{-1}, "teldp", "mpls ldp te tunnel");
         l.add(null, false, 3, new int[]{-1}, "p2mpldp", "point to multipoint mpls ldp tunnel");
         l.add(null, false, 3, new int[]{-1}, "mp2mpldp", "multipoint to multipoint mpls ldp tunnel");
         l.add(null, false, 2, new int[]{3}, "source", "source of encapsulated packets");
@@ -7095,6 +7300,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 4, new int[]{-1}, "<num>", "value");
         l.add(null, false, 3, new int[]{4}, "ttl", "ttl value");
         l.add(null, false, 4, new int[]{-1}, "<num>", "value");
+        l.add(null, false, 2, new int[]{3}, "label4peer", "set dynamic peer filter");
+        l.add(null, false, 3, new int[]{-1}, "<name:acl>", "name of access list");
+        l.add(null, false, 2, new int[]{3}, "label6peer", "set dynamis peer filter");
+        l.add(null, false, 3, new int[]{-1}, "<name:acl>", "name of access list");
         l.add(null, false, 2, new int[]{-1}, "label4pop", "advertise php");
         l.add(null, false, 2, new int[]{-1}, "label6pop", "advertise php");
         l.add(null, false, 2, new int[]{3}, "label4in", "set label filter");
@@ -7105,6 +7314,12 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "<name:pl>", "name of prefix list");
         l.add(null, false, 2, new int[]{3}, "label6out", "set label filter");
         l.add(null, false, 3, new int[]{-1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, 2, new int[]{3}, "use4peer", "label mapping from ldp");
+        l.add(null, false, 3, new int[]{4}, "<addr>", "ldp peer to use");
+        l.add(null, false, 4, new int[]{-1}, "<addr>", "nexthop to fake");
+        l.add(null, false, 2, new int[]{3}, "use6peer", "label mapping from ldp");
+        l.add(null, false, 3, new int[]{4}, "<addr>", "ldp peer to use");
+        l.add(null, false, 4, new int[]{-1}, "<addr>", "nexthop to fake");
         l.add(null, false, 2, new int[]{3}, "static-label", "static label mapping");
         l.add(null, false, 3, new int[]{4}, "<addr>", "prefix to bind");
         l.add(null, false, 4, new int[]{5}, "<addr>", "nexthop to bind");
@@ -10137,6 +10352,16 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             setup2statLabel(s, a, bits.str2num(cmd.word()), true);
             return;
         }
+        if (s.equals("use4peer")) {
+            s = cmd.word();
+            setup2statPeer(4, s, cmd.word());
+            return;
+        }
+        if (s.equals("use6peer")) {
+            s = cmd.word();
+            setup2statPeer(6, s, cmd.word());
+            return;
+        }
         if (s.equals("ldppassword")) {
             s = cmd.word();
             addeLdppwd(s, cmd.word(), true);
@@ -10259,6 +10484,14 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (s.equals("static-label")) {
             s = cmd.word();
             setup2statLabel(s, cmd.word(), 0, false);
+            return;
+        }
+        if (s.equals("use4peer")) {
+            setup2statPeer(4, null, null);
+            return;
+        }
+        if (s.equals("use6peer")) {
+            setup2statPeer(6, null, null);
             return;
         }
         if (s.equals("ldppassword")) {

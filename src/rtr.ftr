@@ -202,6 +202,10 @@ qc pass: serial hairpin
 qc pass: bundle hairpin
 qc pass: bridge hairpin
 qc pass: hdlc
+qc pass: hip over ipv4
+qc pass: hip over ipv6
+qc pass: hip over hip
+qc pass: hip over loopback
 qc pass: hsrp over ethernet
 qc pass: icmptunnel over ipv4
 qc pass: icmptunnel over ipv6
@@ -1145,6 +1149,14 @@ qc pass: interop1: integrated isis
 qc pass: interop1: isis md5 authentication
 qc pass: interop1: isis lsp md5 authentication
 qc pass: interop1: integrated isis multi-topology
+qc pass: interop1: isis sha1 authentication
+qc pass: interop1: isis lsp sha1 authentication
+qc pass: interop1: isis sha256 authentication
+qc pass: interop1: isis lsp sha256 authentication
+qc pass: interop1: isis sha384 authentication
+qc pass: interop1: isis lsp sha384 authentication
+qc pass: interop1: isis sha512 authentication
+qc pass: interop1: isis lsp sha512 authentication
 qc pass: interop1: l2tp2 client
 qc pass: interop1: l2tp2 server
 qc pass: interop1: l2tp3 server
@@ -1175,6 +1187,10 @@ qc pass: interop1: ospf sr
 qc pass: interop1: ospf php sr
 qc pass: interop1: ospf te with pcep
 qc pass: interop1: ospf md5 authentication
+qc pass: interop1: ospf sha1 authentication
+qc pass: interop1: ospf sha256 authentication
+qc pass: interop1: ospf sha384 authentication
+qc pass: interop1: ospf sha512 authentication
 qc pass: interop1: pppoe client
 qc pass: interop1: pppoe server
 qc pass: interop1: pppoe with pap
@@ -1244,6 +1260,10 @@ qc pass: interop2: isis bidir te
 qc pass: interop2: isis md5 authentication
 qc pass: interop2: isis lsp md5 authentication
 qc pass: interop2: integrated isis multi-topology
+qc pass: interop2: isis sha1 authentication
+qc pass: interop2: isis lsp sha1 authentication
+qc pass: interop2: isis sha256 authentication
+qc pass: interop2: isis lsp sha256 authentication
 qc pass: interop2: ldp lsp
 qc pass: interop2: ethernet over mpls
 qc pass: interop2: ldp p2mp lsp
@@ -1267,6 +1287,8 @@ qc pass: interop2: ospf php sr
 qc pass: interop2: ospf te with pcep
 qc pass: interop2: ospf bidir te
 qc pass: interop2: ospf md5 authentication
+qc pass: interop2: ospf sha1 authentication
+qc pass: interop2: ospf sha256 authentication
 qc pass: interop2: pppoe with pap
 qc pass: interop2: pppoe with chap
 qc pass: interop2: rip
@@ -1444,6 +1466,8 @@ qc pass: ldp php
 qc pass: ldp over point2point ethernet
 qc pass: static labels
 qc pass: static labels with ldp
+qc pass: labels from peer
+qc pass: ldp te
 qc pass: nsh over ethernet
 qc pass: nsh over ethernet vlan
 qc pass: nsh over ethernet bridge
@@ -2428,6 +2452,8 @@ qc pass: p4lang: mgre routing over bundle qinq
 qc pass: p4lang: mgre routing over hairpin qinq
 qc pass: p4lang: mgre routing over qinq bridge
 qc pass: p4lang: mgre mpls over qinq
+qc pass: p4lang: ldp te over mpls tail+head
+qc pass: p4lang: ldp te over mpls mid
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
@@ -3559,6 +3585,18 @@ qc pass: isis with mpolka
 qc pass: isis flexalgo
 qc pass: integrated isis flexalgo
 qc pass: isis with pmtud
+qc pass: isis ldp sync
+qc pass: integrated isis ldp sync
+qc pass: isis sha1 authentication
+qc pass: isis lsp sha1 authentication
+qc pass: isis sha224 authentication
+qc pass: isis lsp sha224 authentication
+qc pass: isis sha256 authentication
+qc pass: isis lsp sha256 authentication
+qc pass: isis sha384 authentication
+qc pass: isis lsp sha384 authentication
+qc pass: isis sha512 authentication
+qc pass: isis lsp sha512 authentication
 qc pass: lsrp point2point connection
 qc pass: lsrp point2multipoint connection
 qc pass: lsrp point2point chain
@@ -3609,6 +3647,7 @@ qc pass: lsrp dynamic twamp metric
 qc pass: lsrp with mpolka
 qc pass: lsrp flexalgo
 qc pass: lsrp with pmtud
+qc pass: lsrp ldp sync
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
@@ -3719,6 +3758,11 @@ qc pass: ospf dynamic twamp cost
 qc pass: ospf with mpolka
 qc pass: ospf flexalgo
 qc pass: ospf with pmtud
+qc pass: ospf ldp sync
+qc pass: ospf sha1 authentication
+qc pass: ospf sha256 authentication
+qc pass: ospf sha384 authentication
+qc pass: ospf sha512 authentication
 qc pass: policy routing with nexthop
 qc pass: policy routing with interface and nexthop between vrfs
 qc pass: policy routing with interface and nexthop
@@ -3780,6 +3824,7 @@ qc pass: pvrp with selective bier
 qc pass: pvrp with polka
 qc pass: pvrp auto summarization
 qc pass: pvrp with pmtud
+qc pass: pvrp ldp sync
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip
@@ -3856,6 +3901,7 @@ qc pass: rift dynamic icmp metric
 qc pass: rift dynamic udp metric
 qc pass: rift dynamic twamp metric
 qc pass: rift with pmtud
+qc pass: rift ldp sync
 qc pass: rip on one subnet
 qc pass: rip in chain
 qc pass: rip ingress route filtering with prefixlist

@@ -2,7 +2,7 @@ package org.freertr.ifc;
 
 import java.util.List;
 import org.freertr.pack.packHolder;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -74,7 +74,7 @@ public class ifcQinqX extends ifcVlan {
      *
      * @param l storage
      */
-    public static void getHelp(userHelping l) {
+    public static void getHelp(userHelp l) {
         l.add(null, false, 2, new int[]{3}, "ethertype", "ethertype to use");
         l.add(null, false, 3, new int[]{-1}, "<num>", "value in hex");
     }

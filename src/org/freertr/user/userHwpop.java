@@ -223,7 +223,7 @@ public class userHwpop {
             return;
         }
         txt = cfgAll.getShRun(1);
-        txt = userFilter.getSection(txt, userReader.filter2reg(srv));
+        txt = userFilter.getSection(txt, userRead.filter2reg(srv));
         if (txt.size() < 1) {
             orig.error("no server found");
             return;

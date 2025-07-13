@@ -6,6 +6,7 @@ import java.util.List;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashSha2256;
 import org.freertr.cry.cryUtils;
+import org.freertr.enc.encJson;
 import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
@@ -44,6 +45,18 @@ public class userImage {
     private String miro = "http://deb.debian.org/debian/";
 
     private String qemu = "x86_64";
+
+    private String vers1 = "";
+
+    private String vers2 = "";
+
+    private String fbsd1 = "";
+
+    private String fbsd2 = "";
+
+    private String nbsd1 = "";
+
+    private String nbsd2 = "";
 
     private String arch = "amd64";
 
@@ -127,6 +140,10 @@ public class userImage {
         return s;
     }
 
+    private String getDistinfoName(userImagePkg pkg) {
+        return downDir + "/" + pkg.cat.arch + "-" + pkg.name + ".dst";
+    }
+
     private String getPackageName(userImagePkg pkg) {
         return downDir + "/" + arch + "-" + pkg.name + ".deb";
     }
@@ -176,6 +193,7 @@ public class userImage {
         }
         userFlash.rename(fil, fil + ".bak", true, true);
         userFlash.rename(fil + ".tmp", fil, true, true);
+        new File(fil).setLastModified(bits.getTime());
         return false;
     }
 
@@ -291,6 +309,85 @@ public class userImage {
         return false;
     }
 
+    private void distInfoPkgsrc(userImageCat cat, List<String> lst) {
+        userImagePkg pkg = new userImagePkg("");
+        for (int o = 0; o < lst.size(); o++) {
+            String a = lst.get(o).trim();
+            int i = a.indexOf("=");
+            if (i < 1) {
+                continue;
+            }
+            String b = a.substring(i + 1, a.length()).trim();
+            a = a.substring(0, i).trim().toLowerCase();
+            if (a.equals("pkgpath")) {
+                pkg.cat = cat;
+                allPkgs.put(pkg);
+                i = b.lastIndexOf("/");
+                if (i > 0) {
+                    b = b.substring(i + 1, b.length());
+                }
+                pkg = new userImagePkg(b);
+                continue;
+            }
+            if (a.equals("file_name")) {
+                pkg.file = b;
+                continue;
+            }
+            if (a.equals("file_size")) {
+                pkg.size = bits.str2num(b);
+                continue;
+            }
+        }
+    }
+
+    private void distInfoPorts(userImageCat cat, List<String> lst) {
+        encJson j = new encJson();
+        for (int o = 0; o < lst.size(); o++) {
+            j.clear();
+            if (j.fromString(lst.get(o))) {
+                continue;
+            }
+            int i = j.findValue("name");
+            if (i < 0) {
+                continue;
+            }
+            String a = j.getValue(i + 1);
+            if (a == null) {
+                continue;
+            }
+            userImagePkg pkg = new userImagePkg(a);
+            i = j.findValue("repopath");
+            if (i < 0) {
+                continue;
+            }
+            a = j.getValue(i + 1);
+            if (a == null) {
+                continue;
+            }
+            pkg.file = a;
+            i = j.findValue("version");
+            if (i < 0) {
+                continue;
+            }
+            a = j.getValue(i + 1);
+            if (a == null) {
+                continue;
+            }
+            pkg.vers = a;
+            i = j.findValue("pkgsize");
+            if (i < 0) {
+                continue;
+            }
+            a = j.getValue(i + 1);
+            if (a == null) {
+                continue;
+            }
+            pkg.size = bits.str2num(a);
+            pkg.cat = cat;
+            allPkgs.put(pkg);
+        }
+    }
+
     private boolean selectOnePackage(int level, String nam, String by) {
         nam = nam.trim();
         if (nam.length() < 1) {
@@ -324,17 +421,22 @@ public class userImage {
         return true;
     }
 
-    /**
-     * download one image
-     *
-     * @param pkg package to download
-     * @return true on error, false on success
-     */
-    private boolean downOneFile(userImagePkg pkg) {
-        String name = getPackageName(pkg);
+    private boolean downOneDist(userImagePkg pkg) {
         if (pkg.done) {
             return false;
         }
+        String name = getDistinfoName(pkg);
+        if (downloadFile(pkg.cat.url + pkg.file, name, pkg.size)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean downOneFile(userImagePkg pkg) {
+        if (pkg.done) {
+            return false;
+        }
+        String name = getPackageName(pkg);
         for (int i = 0; i < hashMode; i++) {
             if (downloadFile(pkg.cat.url + pkg.file, name, pkg.size)) {
                 return true;
@@ -346,16 +448,6 @@ public class userImage {
             userFlash.rename(name, name + ".bak", true, true);
         }
         return true;
-    }
-
-    private boolean downAllFiles() {
-        for (int i = 0; i < selected.size(); i++) {
-            userImagePkg pkg = selected.get(i);
-            if (downOneFile(pkg)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean instOneFile(boolean deb, String name) {
@@ -377,28 +469,14 @@ public class userImage {
         return instOneFile(true, name);
     }
 
-    private boolean instXtraFiles() {
-        cmds cmd = new cmds("pkg", xtra);
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            if (instOneFile(false, downDir + "/" + arch + "-" + a)) {
-                return true;
-            }
+    private boolean instOneDist(userImagePkg pkg, String trg) {
+        String name = getDistinfoName(pkg);
+        if (pkg.done) {
+            pip.linePut("skipping " + name);
+            return false;
         }
-        return false;
-    }
-
-    private boolean instAllFiles() {
-        for (int i = 0; i < selected.size(); i++) {
-            userImagePkg pkg = selected.get(i);
-            if (instOneFile(pkg)) {
-                return true;
-            }
-        }
-        return false;
+        pkg.done = true;
+        return execCmd("tar -x -f " + name + " " + "--keep-directory-symlink -C " + trg) != 0;
     }
 
     private boolean doIncludeAll(cmds c) {
@@ -439,6 +517,12 @@ public class userImage {
             s = s.replaceAll("%img%", imgName);
             s = s.replaceAll("%mirr%", miro);
             s = s.replaceAll("%qemu%", qemu);
+            s = s.replaceAll("%vers1%", vers1);
+            s = s.replaceAll("%vers2%", vers2);
+            s = s.replaceAll("%fbsd1%", fbsd1);
+            s = s.replaceAll("%fbsd2%", fbsd2);
+            s = s.replaceAll("%nbsd1%", nbsd1);
+            s = s.replaceAll("%nbsd2%", nbsd2);
             s = s.replaceAll("%arch%", arch);
             s = s.replaceAll("%boot%", boot);
             s = s.replaceAll("%kern%", kern);
@@ -498,6 +582,21 @@ public class userImage {
             }
             if (a.equals("qemu")) {
                 qemu = s;
+                continue;
+            }
+            if (a.equals("vers")) {
+                vers1 = cmd.word();
+                vers2 = cmd.word();
+                continue;
+            }
+            if (a.equals("fbsd")) {
+                fbsd1 = cmd.word();
+                fbsd2 = cmd.word();
+                continue;
+            }
+            if (a.equals("nbsd")) {
+                nbsd1 = cmd.word();
+                nbsd2 = cmd.word();
                 continue;
             }
             if (a.equals("arch")) {
@@ -632,6 +731,40 @@ public class userImage {
                 }
                 continue;
             }
+            if (a.equals("distinfo-ports")) {
+                userImageCat cat = new userImageCat("distinfo");
+                distInfoPorts(cat, bits.txt2buf(cmd.word()));
+                cat.arch = cmd.word();
+                cat.url = cmd.word();
+                catalogs.add(cat);
+                continue;
+            }
+            if (a.equals("distinfo-pkgsrc")) {
+                userImageCat cat = new userImageCat("distinfo");
+                distInfoPkgsrc(cat, bits.txt2buf(cmd.word()));
+                cat.arch = cmd.word();
+                cat.url = cmd.word();
+                catalogs.add(cat);
+                continue;
+            }
+            if (a.equals("distinfo-down")) {
+                for (i = 0; i < selected.size(); i++) {
+                    userImagePkg pkg = selected.get(i);
+                    if (downOneDist(pkg)) {
+                        return true;
+                    }
+                }
+                continue;
+            }
+            if (a.equals("distinfo-inst")) {
+                for (i = 0; i < selected.size(); i++) {
+                    userImagePkg pkg = selected.get(i);
+                    if (instOneDist(pkg, s)) {
+                        return true;
+                    }
+                }
+                continue;
+            }
             if (a.equals("select-one")) {
                 selectOnePackage(0, s, s);
                 continue;
@@ -704,21 +837,42 @@ public class userImage {
                 continue;
             }
             if (a.equals("package-down")) {
-                if (downAllFiles()) {
-                    return true;
+                for (i = 0; i < selected.size(); i++) {
+                    userImagePkg pkg = selected.get(i);
+                    if (downOneFile(pkg)) {
+                        return true;
+                    }
                 }
                 continue;
             }
             if (a.equals("package-inst")) {
-                if (instAllFiles()) {
-                    return true;
+                for (i = 0; i < selected.size(); i++) {
+                    userImagePkg pkg = selected.get(i);
+                    if (instOneFile(pkg)) {
+                        return true;
+                    }
                 }
                 continue;
             }
             if (a.equals("package-xtra")) {
-                if (instXtraFiles()) {
-                    return true;
+                cmd = new cmds("pkg", xtra);
+                for (;;) {
+                    a = cmd.word();
+                    if (a.length() < 1) {
+                        break;
+                    }
+                    if (instOneFile(false, downDir + "/" + arch + "-" + a)) {
+                        return true;
+                    }
                 }
+                continue;
+            }
+            if (a.equals("binary-down")) {
+                downloadFile(cmd.word(), cmd.word(), -1);
+                continue;
+            }
+            if (a.equals("mkdir")) {
+                userFlash.mkdir(s);
                 continue;
             }
             if (a.equals("del-ifdn")) {

@@ -6,7 +6,7 @@ import org.freertr.clnt.clntTelemetry;
 import org.freertr.serv.servStreamingMdt;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -35,19 +35,15 @@ public class cfgTlmtry implements Comparable<cfgTlmtry>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "telemetry .*!" + cmds.tabulator + "port " + servStreamingMdt.port,
-        "telemetry .*!" + cmds.tabulator + "interval 5000",
-        "telemetry .*!" + cmds.tabulator + "delay 0",
-        "telemetry .*!" + cmds.tabulator + "random-interval 0",
-        "telemetry .*!" + cmds.tabulator + "random-delay 0",
-        "telemetry .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "range",
-        "telemetry .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {
+        new userFilter("telemetry .*", cmds.tabulator + "port " + servStreamingMdt.port, null),
+        new userFilter("telemetry .*", cmds.tabulator + "interval 5000", null),
+        new userFilter("telemetry .*", cmds.tabulator + "delay 0", null),
+        new userFilter("telemetry .*", cmds.tabulator + "random-interval 0", null),
+        new userFilter("telemetry .*", cmds.tabulator + "random-delay 0", null),
+        new userFilter("telemetry .*", cmds.tabulator + cmds.negated + cmds.tabulator + "range", null),
+        new userFilter("telemetry .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null)
+    };
 
     /**
      * create new telemetry export
@@ -67,7 +63,7 @@ public class cfgTlmtry implements Comparable<cfgTlmtry>, cfgGeneric {
         return "tlmtdst";
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "specify description");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "rename", "rename this exporter");

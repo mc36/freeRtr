@@ -5,7 +5,7 @@ import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.ip.ipRtr;
 import org.freertr.tab.tabRoute;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
 
 /**
@@ -87,7 +87,7 @@ public class rtrAlgoVrf extends ipRtr {
      *
      * @param l list
      */
-    public void routerGetHelp(userHelping l) {
+    public void routerGetHelp(userHelp l) {
     }
 
     /**

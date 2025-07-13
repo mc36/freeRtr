@@ -110,7 +110,7 @@ public class userPacket {
     /**
      * reader to use
      */
-    public userReader rdr;
+    public userRead rdr;
 
     private boolean need2stop() {
         if (cmd.pipe.isClosed() != 0) {

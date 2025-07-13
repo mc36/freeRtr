@@ -33,11 +33,6 @@ public class userLine {
     }
 
     /**
-     * line defaults filter
-     */
-    public static tabGen<userFilter> linedefF;
-
-    /**
      * interface to use
      */
     public cfgIfc execIface;
@@ -398,8 +393,9 @@ public class userLine {
      *
      * @param beg beginning string
      * @param lst list to append
+     * @param filter filter defaults
      */
-    public void getShRun(String beg, List<String> lst) {
+    public void getShRun(String beg, List<String> lst, int filter) {
         if (execIface == null) {
             lst.add(beg + "no exec interface");
         } else {
@@ -474,6 +470,12 @@ public class userLine {
                 break;
         }
         lst.add(beg + "login last " + a);
+        if ((filter & 1) == 0) {
+            return;
+        }
+        List<String> res = userFilter.filterText(lst, userRead.linedefF);
+        lst.clear();
+        lst.addAll(res);
     }
 
     /**
@@ -813,7 +815,7 @@ public class userLine {
      *
      * @param l list of commands
      */
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "exec", "set executable parameters");
         l.add(null, false, 2, new int[]{3}, "interface", "set interface to use for framing");
         l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of interface");
@@ -1148,7 +1150,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         userLine.prevUserGlb = s;
         parent.prevUserLoc = s;
         pipe.setTime(parent.execTimeOut);
-        userReader rdr = new userReader(pipe, parent);
+        userRead rdr = new userRead(pipe, parent);
         pipe.settingsPut(pipeSetting.origin, remote);
         pipe.settingsPut(pipeSetting.authed, user);
         exe = new userExec(pipe, rdr);

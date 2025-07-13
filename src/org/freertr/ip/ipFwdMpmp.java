@@ -553,7 +553,7 @@ public class ipFwdMpmp implements Comparable<ipFwdMpmp> {
     }
 
     private void doDel(ipFwd fwd, addrIP adr) {
-        rtrLdpNeigh nei = fwd.ldpNeighFind(null, adr, false);
+        rtrLdpNeigh nei = fwd.ldpNeighFind(adr, false);
         delPeer(adr);
         if (nei == null) {
             return;
@@ -580,7 +580,7 @@ public class ipFwdMpmp implements Comparable<ipFwdMpmp> {
             doDel(fwd, uplnk);
             uplnk = null;
         }
-        rtrLdpNeigh nei = fwd.ldpNeighFind(null, adr, false);
+        rtrLdpNeigh nei = fwd.ldpNeighFind(adr, false);
         if (nei == null) {
             return;
         }
@@ -609,7 +609,7 @@ public class ipFwdMpmp implements Comparable<ipFwdMpmp> {
             if (ntry == null) {
                 continue;
             }
-            if (fwd.ldpNeighFind(null, ntry.addr, false) != null) {
+            if (fwd.ldpNeighFind(ntry.addr, false) != null) {
                 continue;
             }
             delPeer(ntry.addr);

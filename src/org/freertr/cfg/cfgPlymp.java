@@ -8,7 +8,7 @@ import org.freertr.tab.tabListing;
 import org.freertr.tab.tabListingEntry;
 import org.freertr.tab.tabPlcmapN;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -37,46 +37,41 @@ public class cfgPlymp implements Comparable<cfgPlymp>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "policy-map .*!" + cmds.tabulator + "sequence .* description ",
-        "policy-map .*!" + cmds.tabulator + "sequence .* no match access-group",
-        "policy-map .*!" + cmds.tabulator + "sequence .* no match frag",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match flag all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match length all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match ttl all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match ethtyp all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match sgt all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match cos all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match exp all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match tos all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match dscp all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match precedence all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match qosgroup all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* match flow all",
-        "policy-map .*!" + cmds.tabulator + "sequence .* no set vrf",
-        "policy-map .*!" + cmds.tabulator + "sequence .* set sgt leave",
-        "policy-map .*!" + cmds.tabulator + "sequence .* set cos leave",
-        "policy-map .*!" + cmds.tabulator + "sequence .* set exp leave",
-        "policy-map .*!" + cmds.tabulator + "sequence .* set tos leave",
-        "policy-map .*!" + cmds.tabulator + "sequence .* set ttl leave",
-        "policy-map .*!" + cmds.tabulator + "sequence .* set dscp leave",
-        "policy-map .*!" + cmds.tabulator + "sequence .* set precedence leave",
-        "policy-map .*!" + cmds.tabulator + "sequence .* set qosgroup leave",
-        "policy-map .*!" + cmds.tabulator + "sequence .* set flow leave",
-        "policy-map .*!" + cmds.tabulator + "sequence .* access-rate 0",
-        "policy-map .*!" + cmds.tabulator + "sequence .* exceed-rate 0",
-        "policy-map .*!" + cmds.tabulator + "sequence .* time-interval 0",
-        "policy-map .*!" + cmds.tabulator + "sequence .* queue-limit 0",
-        "policy-map .*!" + cmds.tabulator + "sequence .* no random-detect",
-        "policy-map .*!" + cmds.tabulator + "sequence .* mark-ecn 0",
-        "policy-map .*!" + cmds.tabulator + "sequence .* no service-policy",
-        "policy-map .*!" + cmds.tabulator + "sequence .* no log"
+    public final static userFilter[] defaultF = {
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* description ", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* no match access-group", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* no match frag", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match flag all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match length all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match ttl all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match ethtyp all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match sgt all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match cos all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match exp all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match tos all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match dscp all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match precedence all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match qosgroup all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* match flow all", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* no set vrf", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* set sgt leave", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* set cos leave", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* set exp leave", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* set tos leave", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* set ttl leave", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* set dscp leave", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* set precedence leave", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* set qosgroup leave", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* set flow leave", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* access-rate 0", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* exceed-rate 0", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* time-interval 0", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* queue-limit 0", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* no random-detect", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* mark-ecn 0", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* no service-policy", null),
+        new userFilter("policy-map .*", cmds.tabulator + "sequence .* no log", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     /**
      * create new policy map
@@ -121,7 +116,7 @@ public class cfgPlymp implements Comparable<cfgPlymp>, cfgGeneric {
         return name;
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "sequence", "sequence number of an entry");
         l.add(null, false, 2, new int[]{1, -1}, "<num>", "sequence number");
         l.add(null, false, 1, new int[]{2, -1}, "reindex", "reindex route map");

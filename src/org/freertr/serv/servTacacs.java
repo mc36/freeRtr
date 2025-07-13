@@ -13,7 +13,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -75,23 +75,18 @@ public class servTacacs extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server tacacs .*!" + cmds.tabulator + "port " + packTacacs.port,
-        "server tacacs .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server tacacs .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "secret",
-        "server tacacs .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",
-        "server tacacs .*!" + cmds.tabulator + "username user:",
-        "server tacacs .*!" + cmds.tabulator + "password pass:",
-        "server tacacs .*!" + cmds.tabulator + "success successful",
-        "server tacacs .*!" + cmds.tabulator + "failure failed"
+    public final static userFilter[] defaultF = {
+        new userFilter("server tacacs .*", cmds.tabulator + "port " + packTacacs.port, null),
+        new userFilter("server tacacs .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server tacacs .*", cmds.tabulator + cmds.negated + cmds.tabulator + "secret", null),
+        new userFilter("server tacacs .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null),
+        new userFilter("server tacacs .*", cmds.tabulator + "username user:", null),
+        new userFilter("server tacacs .*", cmds.tabulator + "password pass:", null),
+        new userFilter("server tacacs .*", cmds.tabulator + "success successful", null),
+        new userFilter("server tacacs .*", cmds.tabulator + "failure failed", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -179,7 +174,7 @@ public class servTacacs extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "authentication", "set user list to use");
         l.add(null, false, 2, new int[]{-1}, "<name:aaa>", "name of list");
         l.add(null, false, 1, new int[]{2}, "authorization", "set user list to use");

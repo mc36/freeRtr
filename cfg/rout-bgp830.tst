@@ -246,47 +246,47 @@ r2 tping 100 60 9994::1 vrf v4
 r1 send clear ipv4 bgp 1 peer 2.2.2.2 del evpn
 r1 send clear ipv6 bgp 1 peer 4321::2 del evpn
 
-r1 tping 100 3 2.2.2.12 vrf v1 sou lo1
-r1 tping 100 3 4321::12 vrf v1 sou lo1
+r1 tping 100 5 2.2.2.12 vrf v1 sou lo1
+r1 tping 100 5 4321::12 vrf v1 sou lo1
 
-r2 tping 100 3 2.2.2.11 vrf v1 sou lo1
-r2 tping 100 3 4321::11 vrf v1 sou lo1
+r2 tping 100 5 2.2.2.11 vrf v1 sou lo1
+r2 tping 100 5 4321::11 vrf v1 sou lo1
 
-r1 tping 0 3 9.9.2.2 vrf v2
-r2 tping 0 3 9.9.2.1 vrf v2
-r1 tping 0 3 9992::2 vrf v2
-r2 tping 0 3 9992::1 vrf v2
+r1 tping 0 5 9.9.2.2 vrf v2
+r2 tping 0 5 9.9.2.1 vrf v2
+r1 tping 0 5 9992::2 vrf v2
+r2 tping 0 5 9992::1 vrf v2
 
-r1 tping 0 3 9.9.3.2 vrf v3
-r2 tping 0 3 9.9.3.1 vrf v3
-r1 tping 0 3 9993::2 vrf v3
-r2 tping 0 3 9993::1 vrf v3
+r1 tping 0 5 9.9.3.2 vrf v3
+r2 tping 0 5 9.9.3.1 vrf v3
+r1 tping 0 5 9993::2 vrf v3
+r2 tping 0 5 9993::1 vrf v3
 
-r1 tping 0 3 9.9.4.2 vrf v4
-r2 tping 0 3 9.9.4.1 vrf v4
-r1 tping 0 3 9994::2 vrf v4
-r2 tping 0 3 9994::1 vrf v4
+r1 tping 0 5 9.9.4.2 vrf v4
+r2 tping 0 5 9.9.4.1 vrf v4
+r1 tping 0 5 9994::2 vrf v4
+r2 tping 0 5 9994::1 vrf v4
 
 r1 send clear ipv4 bgp 1 peer 2.2.2.2 add evpn
 r1 send clear ipv6 bgp 1 peer 4321::2 add evpn
 
-r1 tping 100 3 2.2.2.12 vrf v1 sou lo1
-r1 tping 100 3 4321::12 vrf v1 sou lo1
+r1 tping 100 5 2.2.2.12 vrf v1 sou lo1
+r1 tping 100 5 4321::12 vrf v1 sou lo1
 
-r2 tping 100 3 2.2.2.11 vrf v1 sou lo1
-r2 tping 100 3 4321::11 vrf v1 sou lo1
+r2 tping 100 5 2.2.2.11 vrf v1 sou lo1
+r2 tping 100 5 4321::11 vrf v1 sou lo1
 
-r1 tping 100 3 9.9.2.2 vrf v2
-r2 tping 100 3 9.9.2.1 vrf v2
-r1 tping 100 3 9992::2 vrf v2
-r2 tping 100 3 9992::1 vrf v2
+r1 tping 100 5 9.9.2.2 vrf v2
+r2 tping 100 5 9.9.2.1 vrf v2
+r1 tping 100 5 9992::2 vrf v2
+r2 tping 100 5 9992::1 vrf v2
 
-r1 tping 100 3 9.9.3.2 vrf v3
-r2 tping 100 3 9.9.3.1 vrf v3
-r1 tping 100 3 9993::2 vrf v3
-r2 tping 100 3 9993::1 vrf v3
+r1 tping 100 5 9.9.3.2 vrf v3
+r2 tping 100 5 9.9.3.1 vrf v3
+r1 tping 100 5 9993::2 vrf v3
+r2 tping 100 5 9993::1 vrf v3
 
-r1 tping 100 3 9.9.4.2 vrf v4
-r2 tping 100 3 9.9.4.1 vrf v4
-r1 tping 100 3 9994::2 vrf v4
-r2 tping 100 3 9994::1 vrf v4
+r1 tping 100 5 9.9.4.2 vrf v4
+r2 tping 100 5 9.9.4.1 vrf v4
+r1 tping 100 5 9994::2 vrf v4
+r2 tping 100 5 9994::1 vrf v4

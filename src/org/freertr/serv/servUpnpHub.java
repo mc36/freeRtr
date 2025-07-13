@@ -9,7 +9,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
 
@@ -29,17 +29,12 @@ public class servUpnpHub extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server upnphub .*!" + cmds.tabulator + "port " + packUpnpFwd.portNum,
-        "server upnphub .*!" + cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp)
+    public final static userFilter[] defaultF = {
+        new userFilter("server upnphub .*", cmds.tabulator + "port " + packUpnpFwd.portNum, null),
+        new userFilter("server upnphub .*", cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -61,7 +56,7 @@ public class servUpnpHub extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
     }
 
     public String srvName() {

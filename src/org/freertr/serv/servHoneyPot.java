@@ -16,7 +16,7 @@ import org.freertr.sec.secInfoUtl;
 import org.freertr.sec.secInfoWrk;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
 
@@ -41,18 +41,13 @@ public class servHoneyPot extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server honeypot .*!" + cmds.tabulator + "port " + port,
-        "server honeypot .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server honeypot .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "tiny-http",
-        "server honeypot .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "blackhole",
-        "server honeypot .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "closed"
+    public final static userFilter[] defaultF = {
+        new userFilter("server honeypot .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server honeypot .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server honeypot .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tiny-http", null),
+        new userFilter("server honeypot .*", cmds.tabulator + cmds.negated + cmds.tabulator + "blackhole", null),
+        new userFilter("server honeypot .*", cmds.tabulator + cmds.negated + cmds.tabulator + "closed", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     /**
      * ip information configuration
@@ -74,7 +69,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
      */
     public boolean blackhole;
 
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -131,7 +126,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
         return false;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "tiny-http", "pretend http server");
         l.add(null, false, 1, new int[]{-1}, "closed", "pretend closed port");
         l.add(null, false, 1, new int[]{-1}, "blackhole", "blackhole immediately");

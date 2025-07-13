@@ -98,13 +98,8 @@ public class userFilter implements Comparable<userFilter> {
      */
     public boolean matches(userFilter ntry) {
         if (patCmd == null) {
-            if (!ntry.section.matches(section)) {
-                return false;
-            }
-            if (!ntry.command.matches(command)) {
-                return false;
-            }
-            return true;
+            patSec = Pattern.compile(section);
+            patCmd = Pattern.compile(command);
         }
         Matcher m = patSec.matcher(ntry.section);
         if (!m.matches()) {
@@ -115,14 +110,6 @@ public class userFilter implements Comparable<userFilter> {
             return false;
         }
         return true;
-    }
-
-    /**
-     * compile the regexps for matching
-     */
-    public void optimize4lookup() {
-        patSec = Pattern.compile(section);
-        patCmd = Pattern.compile(command);
     }
 
     /**
@@ -313,9 +300,9 @@ public class userFilter implements Comparable<userFilter> {
      * @param lst filter to find
      * @return filter found
      */
-    public static userFilter findFilter(userFilter txt, tabGen<userFilter> lst) {
-        for (int i = 0; i < lst.size(); i++) {
-            userFilter ntry = lst.get(i);
+    public static userFilter findFilter(userFilter txt, userFilter[] lst) {
+        for (int i = 0; i < lst.length; i++) {
+            userFilter ntry = lst[i];
             if (ntry.matches(txt)) {
                 return ntry;
             }
@@ -350,7 +337,7 @@ public class userFilter implements Comparable<userFilter> {
      * @param flt filter to use
      * @return filtered text
      */
-    public static List<String> filterText(List<String> txt, tabGen<userFilter> flt) {
+    public static List<String> filterText(List<String> txt, userFilter[] flt) {
         List<String> res = new ArrayList<String>();
         List<userFilter> src = text2section(txt);
         for (int i = 0; i < src.size(); i++) {
@@ -370,7 +357,7 @@ public class userFilter implements Comparable<userFilter> {
      * @param flt filter to use
      * @return filtered text
      */
-    public static List<userFilter> filter2text(List<userFilter> src, tabGen<userFilter> flt) {
+    public static List<userFilter> filter2text(List<userFilter> src, userFilter[] flt) {
         List<userFilter> res = new ArrayList<userFilter>();
         for (int i = 0; i < src.size(); i++) {
             userFilter l = src.get(i);

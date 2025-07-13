@@ -13,7 +13,7 @@ import org.freertr.sec.secInfoCfg;
 import org.freertr.sec.secInfoUtl;
 import org.freertr.tab.tabAverage;
 import org.freertr.tab.tabGen;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -176,6 +176,11 @@ public class rtrOspf6iface implements Comparable<rtrOspf6iface>, ipPrt {
      * dynamic metric
      */
     public int dynamicMetric;
+
+    /**
+     * ldp metric syncrhonization
+     */
+    public boolean ldpSync = false;
 
     /**
      * dr address
@@ -367,6 +372,7 @@ public class rtrOspf6iface implements Comparable<rtrOspf6iface>, ipPrt {
         }
         cmds.cfgLine(l, dynamicMetric < 1, cmds.tabulator, beg + "dynamic-metric mode", a);
         l.add(cmds.tabulator + beg + "dynamic-metric time " + echoTimer);
+        cmds.cfgLine(l, !ldpSync, cmds.tabulator, beg + "ldp-sync", "");
         echoParam.getConfig(l, beg);
         for (int i = 0; i < neighs.size(); i++) {
             rtrOspf6neigh ntry = neighs.get(i);
@@ -583,6 +589,11 @@ public class rtrOspf6iface implements Comparable<rtrOspf6iface>, ipPrt {
             ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, false);
             return;
         }
+        if (a.equals("ldp-sync")) {
+            ldpSync = true;
+            schedWork(3);
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             if (a.equals("mode")) {
@@ -721,6 +732,11 @@ public class rtrOspf6iface implements Comparable<rtrOspf6iface>, ipPrt {
             ipInfoCfg = secInfoUtl.doCfgStr(ipInfoCfg, cmd, true);
             return;
         }
+        if (a.equals("ldp-sync")) {
+            ldpSync = false;
+            schedWork(3);
+            return;
+        }
         if (a.equals("dynamic-metric")) {
             a = cmd.word();
             if (a.equals("mode")) {
@@ -739,7 +755,7 @@ public class rtrOspf6iface implements Comparable<rtrOspf6iface>, ipPrt {
      *
      * @param l list to update
      */
-    public static void routerGetHelp(userHelping l) {
+    public static void routerGetHelp(userHelp l) {
         l.add(null, false, 4, new int[]{-1}, "enable", "enable protocol processing");
         l.add(null, false, 4, new int[]{5}, "area", "specify area number");
         l.add(null, false, 5, new int[]{6, -1}, "<num>", "area number");
@@ -792,6 +808,7 @@ public class rtrOspf6iface implements Comparable<rtrOspf6iface>, ipPrt {
         l.add(null, false, 5, new int[]{6}, "subdomain", "set subdomain");
         l.add(null, false, 6, new int[]{-1}, "<num>", "index");
         secInfoUtl.getHelp(l, 4, "ipinfo", "check peers");
+        l.add(null, false, 4, new int[]{-1}, "ldp-sync", "synchronize metric to ldp");
         l.add(null, false, 4, new int[]{5}, "dynamic-metric", "dynamic peer metric");
         l.add(null, false, 5, new int[]{6}, "mode", "dynamic peer metric");
         l.add(null, false, 6, new int[]{-1}, "disabled", "forbid echo requests");

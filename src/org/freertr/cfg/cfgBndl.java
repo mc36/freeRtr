@@ -5,7 +5,7 @@ import java.util.List;
 import org.freertr.ifc.ifcBundle;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -29,24 +29,19 @@ public class cfgBndl implements Comparable<cfgBndl>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "bundle .*!" + cmds.tabulator + "ethernet",
-        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "backup",
-        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "logging",
-        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "loadbalance",
-        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "replicate",
-        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "reporter",
-        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dynamic",
-        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "sequence",
-        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dejitter",
-        "bundle .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "peering"
+    public final static userFilter[] defaultF = {
+        new userFilter("bundle .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("bundle .*", cmds.tabulator + "ethernet", null),
+        new userFilter("bundle .*", cmds.tabulator + cmds.negated + cmds.tabulator + "backup", null),
+        new userFilter("bundle .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null),
+        new userFilter("bundle .*", cmds.tabulator + cmds.negated + cmds.tabulator + "loadbalance", null),
+        new userFilter("bundle .*", cmds.tabulator + cmds.negated + cmds.tabulator + "replicate", null),
+        new userFilter("bundle .*", cmds.tabulator + cmds.negated + cmds.tabulator + "reporter", null),
+        new userFilter("bundle .*", cmds.tabulator + cmds.negated + cmds.tabulator + "dynamic", null),
+        new userFilter("bundle .*", cmds.tabulator + cmds.negated + cmds.tabulator + "sequence", null),
+        new userFilter("bundle .*", cmds.tabulator + cmds.negated + cmds.tabulator + "dejitter", null),
+        new userFilter("bundle .*", cmds.tabulator + cmds.negated + cmds.tabulator + "peering", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     public int compareTo(cfgBndl o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
@@ -103,7 +98,7 @@ public class cfgBndl implements Comparable<cfgBndl>, cfgGeneric {
      *
      * @param l help text
      */
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         ifcBundle.getHelp(l);
     }
 

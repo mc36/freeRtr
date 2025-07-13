@@ -10,7 +10,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFonts;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -41,17 +41,12 @@ public class servRfb extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server rfb .*!" + cmds.tabulator + "port " + port,
-        "server rfb .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm)
+    public final static userFilter[] defaultF = {
+        new userFilter("server rfb .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server rfb .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -66,14 +61,14 @@ public class servRfb extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
-        lin.getShRun(beg, lst);
+        lin.getShRun(beg, lst, filter);
     }
 
     public boolean srvCfgStr(cmds cmd) {
         return lin.doCfgStr(cmd);
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         lin.getHelp(l);
     }
 

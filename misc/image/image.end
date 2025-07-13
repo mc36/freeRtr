@@ -18,18 +18,18 @@ exec mv %tmp%/usr/lib/modules/%find%/kernel/net/packet %tmp%/tmp/
 exec mv %tmp%/usr/lib/modules/%find%/kernel/net/core %tmp%/tmp/
 exec mv %tmp%/usr/lib/modules/%find%/kernel/net/*.ko* %tmp%/tmp/
 del-alw %tmp%/usr/lib/modules/%find%/kernel/net
-exec mkdir %tmp%/usr/lib/modules/%find%/kernel/net
+mkdir %tmp%/usr/lib/modules/%find%/kernel/net
 exec mv %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/net
 
 exec mv %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/*.ko* %tmp%/tmp/
 del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
-exec mkdir %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
+mkdir %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
 exec mv %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/
 
 exec mv %tmp%/usr/lib/modules/%find%/kernel/fs/ext4 %tmp%/tmp/
 exec mv %tmp%/usr/lib/modules/%find%/kernel/fs/fat %tmp%/tmp/
 del-alw %tmp%/usr/lib/modules/%find%/kernel/fs
-exec mkdir %tmp%/usr/lib/modules/%find%/kernel/fs
+mkdir %tmp%/usr/lib/modules/%find%/kernel/fs
 exec mv %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/fs/
 
 exec chmod 755 %tmp%/init*

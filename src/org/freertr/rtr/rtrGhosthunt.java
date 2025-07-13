@@ -23,7 +23,7 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.differ;
@@ -496,7 +496,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      *
      * @param l list
      */
-    public void routerGetHelp(userHelping l) {
+    public void routerGetHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "logging", "log events");
         l.add(null, false, 1, new int[]{-1}, "start", "start running");
         l.add(null, false, 1, new int[]{-1}, "stop", "stop running");
@@ -924,7 +924,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         List<String> dump1 = ntry1.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
         List<String> dump2 = ntry2.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
         differ df = new differ();
-        df.calc(dump1, dump2);
+        df.calc1by1(dump1, dump2);
         List<String> res = df.getText(wid, 0);
         res.add(0, "difference=" + ntry1.differs(tabRoute.addType.notyet, ntry2));
         return res;
@@ -947,7 +947,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         List<String> dump1 = ntry.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
         List<String> dump2 = lastAttr.fullDump("", fwdCore).formatAll(userFormat.tableMode.normal);
         differ df = new differ();
-        df.calc(dump1, dump2);
+        df.calc1by1(dump1, dump2);
         List<String> res = df.getText(wid, 0);
         res.add(0, "difference=" + ntry.differs(tabRoute.addType.notyet, lastAttr));
         return res;

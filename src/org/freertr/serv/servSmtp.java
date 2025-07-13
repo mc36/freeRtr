@@ -26,7 +26,7 @@ import org.freertr.sec.secInfoWrk;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -120,23 +120,18 @@ public class servSmtp extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server smtp .*!" + cmds.tabulator + "port " + port,
-        "server smtp .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server smtp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "recursion authentication",
-        "server smtp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "recursion enable",
-        "server smtp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dsn",
-        "server smtp .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bcc",
-        "server smtp .*!" + cmds.tabulator + "rbl-threshold 0",
-        "server smtp .*!" + cmds.tabulator + "rbl-timeout 5000"
+    public final static userFilter[] defaultF = {
+        new userFilter("server smtp .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server smtp .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "recursion authentication", null),
+        new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "recursion enable", null),
+        new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "dsn", null),
+        new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bcc", null),
+        new userFilter("server smtp .*", cmds.tabulator + "rbl-threshold 0", null),
+        new userFilter("server smtp .*", cmds.tabulator + "rbl-timeout 5000", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -303,7 +298,7 @@ public class servSmtp extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "dsn", "allow delivery notification");
         l.add(null, false, 1, new int[]{2}, "recursion", "recursive parameters");
         l.add(null, false, 2, new int[]{-1}, "enable", "allow recursion");

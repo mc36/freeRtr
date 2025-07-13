@@ -22,7 +22,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -502,6 +502,11 @@ public abstract class rtrBgpParam {
      * use multiple labels
      */
     public boolean nxtHopMltlb;
+
+    /**
+     * use next hop capabilities
+     */
+    public boolean nxtHopCapa;
 
     /**
      * propagate community 0=none, 1=std, 2=ext, 4=lrg, 7=all
@@ -1222,7 +1227,7 @@ public abstract class rtrBgpParam {
      * @param end ending
      * @param all all, none
      */
-    public static void getAfiList(userHelping hl, int lev, int[] nxt, String end, boolean all) {
+    public static void getAfiList(userHelp hl, int lev, int[] nxt, String end, boolean all) {
         if (all) {
             hl.add(null, false, lev, nxt, "all", "all address family to " + end);
             hl.add(null, false, lev, nxt, "none", "no address family to " + end);
@@ -1397,6 +1402,7 @@ public abstract class rtrBgpParam {
         nxtHopPeer = src.nxtHopPeer;
         nxtHopSelf = src.nxtHopSelf;
         nxtHopMltlb = src.nxtHopMltlb;
+        nxtHopCapa = src.nxtHopCapa;
         sendCommunity = src.sendCommunity;
         intVpnClnt = src.intVpnClnt;
         allowAsIn = src.allowAsIn;
@@ -1597,6 +1603,9 @@ public abstract class rtrBgpParam {
         if (nxtHopMltlb != src.nxtHopMltlb) {
             return true;
         }
+        if (nxtHopCapa != src.nxtHopCapa) {
+            return true;
+        }
         if (sendCommunity != src.sendCommunity) {
             return true;
         }
@@ -1776,7 +1785,7 @@ public abstract class rtrBgpParam {
      *
      * @param l list to append
      */
-    public static void getParamHelp(userHelping l) {
+    public static void getParamHelp(userHelp l) {
         l.add(null, false, 3, new int[]{4}, "remote-as", "remote as number");
         l.add(null, false, 4, new int[]{5, -1}, "any", "any autonomous system number");
         l.add(null, false, 4, new int[]{5, -1}, "<num>", "autonomous system number");
@@ -1927,6 +1936,7 @@ public abstract class rtrBgpParam {
         l.add(null, false, 3, new int[]{-1}, "override-peer-as-in", "replace peer as from peer");
         l.add(null, false, 3, new int[]{-1}, "next-hop-unchanged", "send next hop unchanged to peer");
         l.add(null, false, 3, new int[]{-1}, "next-hop-multilabel", "send multiple labels to peer");
+        l.add(null, false, 3, new int[]{-1}, "next-hop-capability", "send next hop capabilities to peer");
         l.add(null, false, 3, new int[]{-1}, "next-hop-self", "send next hop myself to peer");
         l.add(null, false, 3, new int[]{-1}, "next-hop-peer", "set next hop to peer address");
         l.add(null, false, 3, new int[]{4}, "proxy-profile", "proxy profile to use");
@@ -2230,6 +2240,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !remoteConfed, beg, nei + "confederation-peer", "");
         cmds.cfgLine(l, !nxtHopUnchgd, beg, nei + "next-hop-unchanged", "");
         cmds.cfgLine(l, !nxtHopMltlb, beg, nei + "next-hop-multilabel", "");
+        cmds.cfgLine(l, !nxtHopCapa, beg, nei + "next-hop-capability", "");
         cmds.cfgLine(l, !nxtHopSelf, beg, nei + "next-hop-self", "");
         cmds.cfgLine(l, !nxtHopPeer, beg, nei + "next-hop-peer", "");
         switch (sendCommunity) {
@@ -3077,6 +3088,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("next-hop-multilabel")) {
             nxtHopMltlb = !negated;
+            return false;
+        }
+        if (s.equals("next-hop-capability")) {
+            nxtHopCapa = !negated;
             return false;
         }
         if (s.equals("next-hop-self")) {

@@ -7,7 +7,7 @@ import org.freertr.cfg.cfgInit;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -99,7 +99,7 @@ public class ifcHairpin {
      *
      * @param l storage
      */
-    public static void getHelp(userHelping l) {
+    public static void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this hairpin");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this hairpin");
         l.add(null, false, 1, new int[]{-1}, "ethernet", "specify type of hairpin");

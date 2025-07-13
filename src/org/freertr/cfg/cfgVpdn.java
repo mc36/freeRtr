@@ -49,7 +49,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.state;
@@ -418,34 +418,29 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "interface",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-group",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "proxy",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "script",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "target",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "called",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "calling",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "params",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "crypto",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "pubkey",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "username",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "password",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "mtu",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "vcid",
-        "vpdn .*!" + cmds.tabulator + "direction outgoing",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "control-word",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "pwtype",
-        "vpdn .*!" + cmds.tabulator + "prefer none",
-        "vpdn .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "protocol"
+    public final static userFilter[] defaultF = {
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "interface", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bridge-group", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "proxy", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "script", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "called", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "calling", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "params", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "crypto", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "pubkey", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "username", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "password", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mtu", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "vcid", null),
+        new userFilter("vpdn .*", cmds.tabulator + "direction outgoing", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "control-word", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "physical-interface", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "pwtype", null),
+        new userFilter("vpdn .*", cmds.tabulator + "prefer none", null),
+        new userFilter("vpdn .*", cmds.tabulator + cmds.negated + cmds.tabulator + "protocol", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     /**
      * convert type to string
@@ -738,7 +733,7 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "protocol", "specify protocol to use");
         l.add(null, false, 2, new int[]{-1}, "l2f", "select l2f");
         l.add(null, false, 2, new int[]{-1}, "l2tp2", "select l2tp v2");

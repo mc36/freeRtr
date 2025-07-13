@@ -19,7 +19,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -549,7 +549,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
      *
      * @param l list
      */
-    public void routerGetHelp(userHelping l) {
+    public void routerGetHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
     }
 

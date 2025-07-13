@@ -12,7 +12,7 @@ import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -227,7 +227,7 @@ public class tabNshEntry implements Comparable<tabNshEntry>, cfgGeneric {
      *
      * @param l help text
      */
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
     }
 
     private String getCmd() {

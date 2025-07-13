@@ -13,7 +13,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -174,18 +174,6 @@ public class servStreamingMdt extends servGeneric implements prtServS {
     public final static String nmDat = "content";
 
     /**
-     * defaults text
-     */
-    public final static String[] defaultL = {
-        "server streamingmdt .*!" + cmds.tabulator + "port " + port,
-        "server streamingmdt .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    /**
      * convert type to string
      *
      * @param i type
@@ -258,7 +246,15 @@ public class servStreamingMdt extends servGeneric implements prtServS {
      */
     protected tabGen<servTelemetryConn> conns = new tabGen<servTelemetryConn>();
 
-    public tabGen<userFilter> srvDefFlt() {
+    /**
+     * defaults text
+     */
+    public final static userFilter[] defaultF = {
+        new userFilter("server streamingmdt .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server streamingmdt .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
+    };
+
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -289,7 +285,7 @@ public class servStreamingMdt extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {

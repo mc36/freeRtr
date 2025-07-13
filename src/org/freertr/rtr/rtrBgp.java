@@ -48,7 +48,7 @@ import org.freertr.tab.tabRouteUtil;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -3029,7 +3029,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      *
      * @param l list
      */
-    public void routerGetHelp(userHelping l) {
+    public void routerGetHelp(userHelp l) {
         List<String> tmps = new ArrayList<String>();
         for (int i = 0; i < temps.size(); i++) {
             rtrBgpTemp ntry = temps.get(i);
@@ -4350,7 +4350,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 l = new userFormat("|", "neighbor|as|domain");
                 break;
             case 13:
-                l = new userFormat("|", "neighbor|as|ready|learn|sent|uptime");
+                l = new userFormat("|", "neighbor|as|state|learn|sent|uptime");
                 break;
             case 14:
                 l = new userFormat("|", "neighbor|as|rx|tx");
@@ -4359,13 +4359,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 l = new userFormat("|", "neighbor|as|software");
                 break;
             case 17:
-                l = new userFormat("|", "neighbor|as|ready|learn|sent|uptim|descr");
+                l = new userFormat("|", "neighbor|as|state|learn|sent|uptim|descr");
                 break;
             case 18:
                 l = new userFormat("|", "neighbor|as|updates|bytes|ago");
                 break;
             case 19:
-                l = new userFormat("|", "neighbor|as|ready|learn|sent|uptim|asname|asinfo");
+                l = new userFormat("|", "neighbor|as|state|learn|sent|uptim|asname|asinfo");
                 break;
             case 20:
                 l = new userFormat("|", "neighbor|as|rx|tx|rx|tx|rx|tx", "2|2reach|2unrea|2ago");
@@ -5157,12 +5157,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return log of spf
      */
     public userFormat getSpfTopo(cmds cmd) {
-        if (cmd.size() < 1) {
-            return lspf.lastSpf.listTopology();
-        }
-        addrIPv4 ned = new addrIPv4();
-        ned.fromString(cmd.word());
-        return lspf.lastSpf.listTopology(ned);
+        return lspf.lastSpf.listTopology(new addrIPv4(), cmd);
     }
 
     /**
@@ -5177,10 +5172,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * show tree
      *
+     * @param cmd entry to find
      * @return tree of spf
      */
-    public List<String> getSpfTree() {
-        return lspf.lastSpf.listTree();
+    public List<String> getSpfTree(cmds cmd) {
+        return lspf.lastSpf.listTree(cmd);
     }
 
     /**
@@ -5194,7 +5190,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        return spf.listTree();
+        return spf.listTree(cmd);
     }
 
     /**
@@ -5208,12 +5204,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        if (cmd.size() < 1) {
-            return spf.listTopology();
-        }
-        ned = new addrIPv4();
-        ned.fromString(cmd.word());
-        return spf.listTopology(ned);
+        return spf.listTopology(new addrIPv4(), cmd);
     }
 
     /**

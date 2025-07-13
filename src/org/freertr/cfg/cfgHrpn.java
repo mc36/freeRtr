@@ -5,7 +5,7 @@ import java.util.List;
 import org.freertr.ifc.ifcHairpin;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -43,28 +43,23 @@ public class cfgHrpn implements Comparable<cfgHrpn>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "hairpin .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "hairpin .*!" + cmds.tabulator + "ethernet",
-        "hairpin .*!" + cmds.tabulator + "random12drop 0",
-        "hairpin .*!" + cmds.tabulator + "random12burst 0 0 0",
-        "hairpin .*!" + cmds.tabulator + "random12duplicate 0",
-        "hairpin .*!" + cmds.tabulator + "random12reorder 0",
-        "hairpin .*!" + cmds.tabulator + "random12delay 0 0 0",
-        "hairpin .*!" + cmds.tabulator + "random12corrupt 0",
-        "hairpin .*!" + cmds.tabulator + "random21drop 0",
-        "hairpin .*!" + cmds.tabulator + "random21burst 0 0 0",
-        "hairpin .*!" + cmds.tabulator + "random21duplicate 0",
-        "hairpin .*!" + cmds.tabulator + "random21reorder 0",
-        "hairpin .*!" + cmds.tabulator + "random21delay 0 0 0",
-        "hairpin .*!" + cmds.tabulator + "random21corrupt 0",
-        "hairpin .*!" + cmds.tabulator + "buffer 65536"
+    public final static userFilter[] defaultF = {
+        new userFilter("hairpin .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("hairpin .*", cmds.tabulator + "ethernet", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random12drop 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random12burst 0 0 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random12duplicate 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random12reorder 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random12delay 0 0 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random12corrupt 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random21drop 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random21burst 0 0 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random21duplicate 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random21reorder 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random21delay 0 0 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "random21corrupt 0", null),
+        new userFilter("hairpin .*", cmds.tabulator + "buffer 65536", null)
     };
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
 
     /**
      * create new hairpin instance
@@ -111,7 +106,7 @@ public class cfgHrpn implements Comparable<cfgHrpn>, cfgGeneric {
         return userFilter.filterText(l, defaultF);
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         ifcHairpin.getHelp(l);
     }
 

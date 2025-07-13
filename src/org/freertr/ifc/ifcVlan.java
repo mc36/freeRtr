@@ -5,7 +5,7 @@ import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabGen;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -59,7 +59,7 @@ public abstract class ifcVlan implements ifcUp {
      *
      * @param l storage
      */
-    public static void vlnGetHelp(userHelping l) {
+    public static void vlnGetHelp(userHelp l) {
         l.add(null, false, 2, new int[]{-1}, "subif-macs", "assign different macs to subinterfaces");
     }
 

@@ -726,27 +726,15 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     /**
      * find one ldp neighbor
      *
-     * @param iface receiving interface
      * @param addr peer address
      * @param create create if not yet
      * @return found neighbor, null if nothing
      */
-    public rtrLdpNeigh ldpNeighFind(ipFwdIface iface, addrIP addr, boolean create) {
-        if (iface != null) {
-            iface = ifaces.find(iface);
-            if (iface == null) {
-                return null;
-            }
-            tabRouteEntry<addrIP> route = connedR.route(addr);
-            if (route == null) {
-                return null;
-            }
-        }
+    public rtrLdpNeigh ldpNeighFind(addrIP addr, boolean create) {
         rtrLdpNeigh ntry = new rtrLdpNeigh(addr);
         if (!create) {
             return ldpNeighs.find(ntry);
         }
-        ntry.ifc = iface;
         ntry.ip = this;
         rtrLdpNeigh old = ldpNeighs.add(ntry);
         if (old != null) {

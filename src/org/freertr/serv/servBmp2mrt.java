@@ -19,7 +19,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabListing;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logFil;
@@ -93,29 +93,24 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "server bmp2mrt .*!" + cmds.tabulator + "port " + port,
-        "server bmp2mrt .*!" + cmds.tabulator + "protocol " + proto2string(protoAllStrm),
-        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "local",
-        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "bulk-down",
-        "server bmp2mrt .*!" + cmds.tabulator + "rate-down 0 0",
-        "server bmp2mrt .*!" + cmds.tabulator + "max-time 0",
-        "server bmp2mrt .*!" + cmds.tabulator + "max-pack 0",
-        "server bmp2mrt .*!" + cmds.tabulator + "max-byte 0",
-        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "listen-bmp",
-        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "listen-bgp",
-        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "listen-ris",
-        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "file",
-        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "backup",
-        "server bmp2mrt .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "dyneigh"
+    public final static userFilter[] defaultF = {
+        new userFilter("server bmp2mrt .*", cmds.tabulator + "port " + port, null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bulk-down", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + "rate-down 0 0", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + "max-time 0", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + "max-pack 0", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + "max-byte 0", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + cmds.negated + cmds.tabulator + "listen-bmp", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + cmds.negated + cmds.tabulator + "listen-bgp", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + cmds.negated + cmds.tabulator + "listen-ris", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + cmds.negated + cmds.tabulator + "file", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + cmds.negated + cmds.tabulator + "backup", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + cmds.negated + cmds.tabulator + "dyneigh", null)
     };
 
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
-
-    public tabGen<userFilter> srvDefFlt() {
+    public userFilter[] srvDefFlt() {
         return defaultF;
     }
 
@@ -388,7 +383,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
         return true;
     }
 
-    public void srvHelp(userHelping l) {
+    public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "bulk-down", "down peers on speaker loss");
         l.add(null, false, 1, new int[]{2}, "rate-down", "down peers on inactivity");
         l.add(null, false, 2, new int[]{3}, "<num>", "ms between checks");

@@ -1196,6 +1196,29 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         else hasht_add(&neigh_table, &neigh_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "labsnei") == 0) {
+        neigh_ntry.id = atoi(arg[2]);
+        neigh_ntry.vrf = atoi(arg[4]);
+        neigh_ntry.port = atoi(arg[6]);
+        neigh_ntry.aclport = atoi(arg[7]);
+        neigh_ntry.command = 24;
+        str2mac(&neigh_ntry.macs[0], arg[3]);
+        str2mac(&neigh_ntry.macs[6], arg[5]);
+        neigh_ntry.tid = atoi(arg[8]);
+        neigh_ntry.dprt = atoi(arg[9]);
+        neigh_ntry.sprt = atoi(arg[10]);
+        neigh_ntry.sip1 = atoi(arg[11]);
+        neigh_ntry.sip2 = atoi(arg[12]);
+        neigh_ntry.sip3 = atoi(arg[13]);
+        neigh_ntry.sip4 = atoi(arg[14]);
+        neigh_ntry.dip1 = atoi(arg[15]);
+        neigh_ntry.dip2 = atoi(arg[16]);
+        neigh_ntry.dip3 = atoi(arg[17]);
+        neigh_ntry.dip4 = atoi(arg[18]);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "mysrv4") == 0) {
         inet_pton(AF_INET6, arg[3], buf2);
         vrf2rib_ntry.vrf = atoi(arg[2]);

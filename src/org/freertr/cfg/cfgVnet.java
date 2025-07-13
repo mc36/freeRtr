@@ -8,11 +8,10 @@ import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
-import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFlash;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.user.userHwdet;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -59,33 +58,29 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
     /**
      * defaults text
      */
-    public final static String[] defaultL = {
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "description",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 type",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 local",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 connect",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 log-actions",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 log-console",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side1 log-collect",
-        "vnet .*!" + cmds.tabulator + "side1 time 1000",
-        "vnet .*!" + cmds.tabulator + "side1 delay 1000",
-        "vnet .*!" + cmds.tabulator + "side1 random-time 0",
-        "vnet .*!" + cmds.tabulator + "side1 random-delay 0",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 type",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 local",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 connect",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 log-actions",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 log-console",
-        "vnet .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "side2 log-collect",
-        "vnet .*!" + cmds.tabulator + "side2 time 1000",
-        "vnet .*!" + cmds.tabulator + "side2 delay 1000",
-        "vnet .*!" + cmds.tabulator + "side2 random-time 0",
-        "vnet .*!" + cmds.tabulator + "side2 random-delay 0",};
-
-    /**
-     * defaults filter
-     */
-    public static tabGen<userFilter> defaultF;
+    public final static userFilter[] defaultF = {
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side1 type", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side1 local", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side1 connect", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side1 log-actions", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side1 log-console", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side1 log-collect", null),
+        new userFilter("vnet .*", cmds.tabulator + "side1 time 1000", null),
+        new userFilter("vnet .*", cmds.tabulator + "side1 delay 1000", null),
+        new userFilter("vnet .*", cmds.tabulator + "side1 random-time 0", null),
+        new userFilter("vnet .*", cmds.tabulator + "side1 random-delay 0", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side2 type", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side2 local", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side2 connect", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side2 log-actions", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side2 log-console", null),
+        new userFilter("vnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "side2 log-collect", null),
+        new userFilter("vnet .*", cmds.tabulator + "side2 time 1000", null),
+        new userFilter("vnet .*", cmds.tabulator + "side2 delay 1000", null),
+        new userFilter("vnet .*", cmds.tabulator + "side2 random-time 0", null),
+        new userFilter("vnet .*", cmds.tabulator + "side2 random-delay 0", null)
+    };
 
     public int compareTo(cfgVnet o) {
         if (number < o.number) {
@@ -123,7 +118,7 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
         number = bits.str2num(nam);
     }
 
-    private void getHelpSide(userHelping l) {
+    private void getHelpSide(userHelp l) {
         l.add(null, false, 2, new int[]{3}, "type", "type of process");
         l.add(null, false, 3, new int[]{-1}, "socat", "use socat");
         l.add(null, false, 3, new int[]{-1}, "pcap", "use pcapint");
@@ -150,7 +145,7 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "<num>", "milliseconds before start");
     }
 
-    public void getHelp(userHelping l) {
+    public void getHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2, -1}, "description", "description of this bridge");
         l.add(null, false, 2, new int[]{2, -1}, "[text]", "text describing this bridge");
         l.add(null, false, 1, new int[]{2}, "side1", "configure first side");
@@ -360,7 +355,12 @@ class cfgVnetSide implements Runnable {
             return;
         }
         if (a.equals("local")) {
-            a = cfgIfc.dissectName(cmd.word())[0];
+            String pnm[] = cfgIfc.dissectName(cmd.word());
+            if (pnm == null) {
+                cmd.error("invalid interface name");
+                return;
+            }
+            a = pnm[0] + pnm[1] + pnm[2];
             locTyp = cfgIfc.string2type(a);
             if (locTyp == null) {
                 cmd.error("bad name");

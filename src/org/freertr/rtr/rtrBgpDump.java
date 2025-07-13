@@ -709,7 +709,7 @@ public class rtrBgpDump {
             ntry.best.fullDump(ufmt, "");
             List<String> dump2 = ufmt.formatAll(userFormat.tableMode.normal);
             differ dfr = new differ();
-            dfr.calc(dump1, dump2);
+            dfr.calc1by1(dump1, dump2);
             List<String> dft = dfr.getDiff(true, "    ");
             enc7bit.buf2hex(res, hlp.getCopy(), 0, "    ");
             res.addAll(dft);

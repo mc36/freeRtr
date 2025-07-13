@@ -1,7 +1,7 @@
 package org.freertr.cfg;
 
 import java.util.List;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
 
 /**
@@ -16,7 +16,7 @@ public interface cfgGeneric {
      *
      * @param l help text
      */
-    public void getHelp(userHelping l);
+    public void getHelp(userHelp l);
 
     /**
      * get configuration of this item

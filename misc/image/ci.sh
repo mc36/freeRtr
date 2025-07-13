@@ -43,7 +43,7 @@ zstd -9 $MNT/cpio
 mv $MNT/cpio.zst $MNT/rtr.ird
 rm $MNT/cpio
 rm -rf $MNT/lib/modules
-cp boot.cfg $MNT/syslinux.cfg
+cp boot.sys $MNT/syslinux.cfg
 guestfish -a $IMG/rtr-$ARCH.dsk -m /dev/sda2 extlinux / : copy-in $MNT/* /
 rm -rf $MNT
 

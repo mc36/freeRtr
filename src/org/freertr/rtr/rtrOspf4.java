@@ -27,7 +27,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -281,7 +281,7 @@ public class rtrOspf4 extends ipRtr {
      *
      * @param l list
      */
-    public void routerGetHelp(userHelping l) {
+    public void routerGetHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "router-id", "specify router id");
         l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
         l.add(null, false, 1, new int[]{2}, "traffeng-id", "specify traffic engineering id");
@@ -1047,12 +1047,7 @@ public class rtrOspf4 extends ipRtr {
         if (ara == null) {
             return null;
         }
-        if (cmd.size() < 1) {
-            return ara.lastSpf.listTopology();
-        }
-        addrIPv4 ned = new addrIPv4();
-        ned.fromString(cmd.word());
-        return ara.lastSpf.listTopology(ned);
+        return ara.lastSpf.listTopology(new addrIPv4(), cmd);
     }
 
     /**
@@ -1074,15 +1069,16 @@ public class rtrOspf4 extends ipRtr {
      * show tree
      *
      * @param area area number
+     * @param cmd entry to find
      * @return tree of spf
      */
-    public List<String> showSpfTree(int area) {
+    public List<String> showSpfTree(int area, cmds cmd) {
         rtrOspf4area ara = new rtrOspf4area(this, area);
         ara = areas.find(ara);
         if (ara == null) {
             return new ArrayList<String>();
         }
-        return ara.lastSpf.listTree();
+        return ara.lastSpf.listTree(cmd);
     }
 
     /**
@@ -1102,7 +1098,7 @@ public class rtrOspf4 extends ipRtr {
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        return spf.listTree();
+        return spf.listTree(cmd);
     }
 
     /**
@@ -1122,12 +1118,7 @@ public class rtrOspf4 extends ipRtr {
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
         spf.doWork(null, ned, null);
-        if (cmd.size() < 1) {
-            return spf.listTopology();
-        }
-        ned = new addrIPv4();
-        ned.fromString(cmd.word());
-        return spf.listTopology(ned);
+        return spf.listTopology(new addrIPv4(), cmd);
     }
 
     /**

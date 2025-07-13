@@ -18,7 +18,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.user.userFormat;
-import org.freertr.user.userHelping;
+import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -249,7 +249,7 @@ public class rtrEigrpIface implements Comparable<rtrEigrpIface>, ipPrt {
      *
      * @param l list to update
      */
-    public static void routerGetHelp(userHelping l) {
+    public static void routerGetHelp(userHelp l) {
         l.add(null, false, 4, new int[]{-1}, "enable", "enable protocol processing");
         l.add(null, false, 4, new int[]{-1}, "bfd", "enable bfd triggered down");
         l.add(null, false, 4, new int[]{-1}, "default-originate", "send default route to peer");

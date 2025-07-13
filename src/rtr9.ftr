@@ -95,6 +95,14 @@ qc pass: interop1: integrated isis
 qc pass: interop1: isis md5 authentication
 qc pass: interop1: isis lsp md5 authentication
 qc pass: interop1: integrated isis multi-topology
+qc pass: interop1: isis sha1 authentication
+qc pass: interop1: isis lsp sha1 authentication
+qc pass: interop1: isis sha256 authentication
+qc pass: interop1: isis lsp sha256 authentication
+qc pass: interop1: isis sha384 authentication
+qc pass: interop1: isis lsp sha384 authentication
+qc pass: interop1: isis sha512 authentication
+qc pass: interop1: isis lsp sha512 authentication
 qc pass: interop1: l2tp2 client
 qc pass: interop1: l2tp2 server
 qc pass: interop1: l2tp3 server
@@ -108,6 +116,7 @@ qc pass: interop1: ldp over point2point ethernet
 qc pass: interop1: ethernet over mpls cw
 qc pass: interop1: igmp3/mld2
 qc pass: interop1: pim
+qc pass: interop1: mgre
 qc pass: interop1: modem with alaw
 qc pass: interop1: modem with ulaw
 qc pass: interop1: point2point ospf
@@ -124,6 +133,10 @@ qc pass: interop1: ospf sr
 qc pass: interop1: ospf php sr
 qc pass: interop1: ospf te with pcep
 qc pass: interop1: ospf md5 authentication
+qc pass: interop1: ospf sha1 authentication
+qc pass: interop1: ospf sha256 authentication
+qc pass: interop1: ospf sha384 authentication
+qc pass: interop1: ospf sha512 authentication
 qc pass: interop1: pppoe client
 qc pass: interop1: pppoe server
 qc pass: interop1: pppoe with pap
@@ -192,8 +205,6 @@ todo: alias with regexps to ios regexps, steal cache from *ec* and idea from **
 todo: alias to have config aliases
 todo: under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
 todo: default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
-todo: flash mailer <server-smtp> that is a loadable module
-todo: flash xxxxxx from the misc/mailer shitload like the http server classes knob
 todo: flash overlap-clear should happen once one finds a nice and easy use-case for that
 todo: rtr-hw to have tcp2linux and vrf2linux knobs
 todo: test todo knob as an editor but in the running-config
@@ -231,7 +242,6 @@ todo: tcp selective ack
 todo: ilnp (rfc6740)
 todo: lisp4, lisp6
 todo: l2vpn for isis
-todo: hip (rfc4423)
 todo: more upgrade-cli knobs
 todo: more renamers
 todo: more tabbables

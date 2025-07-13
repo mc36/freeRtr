@@ -1,6 +1,6 @@
 exec cp /usr/lib/ISOLINUX/isolinux.bin %tmp%/isolinux.bin
 exec cp /usr/lib/syslinux/modules/bios/ldlinux.c32 %tmp%/ldlinux.c32
-exec cp ../misc/image/boot.cfg %tmp%/syslinux.cfg
+exec cp ../misc/image/boot.sys %tmp%/syslinux.cfg
 exec cp %img%.krn %tmp%/rtr.krn
 exec cp %img%.ird %tmp%/rtr.ird
 exec cp %img%.grb %tmp%/rtr.grb

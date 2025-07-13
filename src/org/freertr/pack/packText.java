@@ -128,7 +128,7 @@ public class packText {
      */
     public boolean codedSend(int c, List<String> l) {
         String cc = bits.padBeg("" + c, 3, "0");
-        for (int i = 0; i < l.size() - 1; i++) {
+        for (int i = 0; i < (l.size() - 1); i++) {
             pipe.linePut(cc + "-" + l.get(i));
         }
         pipe.linePut(cc + " " + l.get(l.size() - 1));
