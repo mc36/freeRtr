@@ -17236,3 +17236,6 @@ qc pass: ospf sha1 authentication
 qc pass: ospf sha256 authentication
 qc pass: ospf sha384 authentication
 qc pass: ospf sha512 authentication
+---------------------------------- 2025-07-13 08:17:55 25.7.13
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard
