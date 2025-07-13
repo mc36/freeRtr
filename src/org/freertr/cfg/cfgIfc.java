@@ -1642,6 +1642,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 prefix-suppress",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 slaac-client enable",
         "interface .*!" + cmds.tabulator + "ipv4 dhcp-client fill-ciaddr",
+        "interface .*!" + cmds.tabulator + "ipv6 dhcp-client address",
         "interface .*!" + cmds.tabulator + "ipv6 slaac-client renew-min 60000",
         "interface .*!" + cmds.tabulator + "ipv6 slaac-client renew-max 43200000",
         "interface .*!" + cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 prefix-dns",
@@ -6834,7 +6835,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 4, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 2, new int[]{3}, "dhcp-client", "acquire address by dhcp");
         l.add(null, false, 3, new int[]{-1}, "enable", "start address acquision");
-        l.add(null, false, 3, new int[]{-1}, "prefix", "request prefix");
+        l.add(null, false, 3, new int[]{-1}, "address", "request address (IA_NA)");
+        l.add(null, false, 3, new int[]{-1}, "prefix", "request prefix (IA_PD)");
         l.add(null, false, 3, new int[]{-1}, "early", "pick up address early");
         l.add(null, false, 3, new int[]{4}, "renew-min", "minimum renew time");
         l.add(null, false, 4, new int[]{-1}, "<num>", "time in ms");
