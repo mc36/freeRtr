@@ -84,6 +84,7 @@ server dhcp4 dh4
 server dhcp6 dh6
  netmask ffff:ffff:ffff:ffff::
  gateway 2222::1
+ dynamic-address
  interface ethernet1
  vrf v1
  exit
@@ -111,7 +112,7 @@ int eth1
  ipv6 enable
  ipv6 gateway-prefix p6
  ipv6 dhcp-client enable
- ipv6 dhcp-client prefix
+ ipv6 dhcp-client early
  exit
 !
 
