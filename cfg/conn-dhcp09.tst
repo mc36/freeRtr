@@ -7,16 +7,6 @@ int eth2 eth 0000.0000.1112 $2a$ $2b$
 vrf def v1
  rd 1:1
  exit
-router ospf4 1
- vrf v1
- router-id 1.1.1.1
- area 0 enable
- exit
-router ospf6 1
- vrf v1
- router-id 1.1.1.1
- area 0 enable
- exit
 server dhcp4 RELAY4
  mode relay
  helper-addresses 1.1.1.2
@@ -31,10 +21,6 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1111::1 ffff::
- router ospf4 1 enable
- router ospf4 1 area 0
- router ospf6 1 enable
- router ospf6 1 area 0
  exit
 int eth2
  vrf for v1
@@ -42,11 +28,9 @@ int eth2
  ipv6 addr 1201::1 ffff::
  ipv4 dhcp-relay RELAY4
  ipv6 dhcp-relay RELAY6
- router ospf4 1 enable
- router ospf4 1 area 0
- router ospf6 1 enable
- router ospf6 1 area 0
  exit
+ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.2
+ipv6 route v1 :: :: 1111::2
 !
 
 addrouter r2
@@ -55,16 +39,6 @@ int eth2 eth 0000.0000.2222 $3a$ $3b$
 !
 vrf def v1
  rd 1:1
- exit
-router ospf4 1
- vrf v1
- router-id 2.2.2.1
- area 0 enable
- exit
-router ospf6 1
- vrf v1
- router-id 2.2.2.1
- area 0 enable
  exit
 server dhcp4 RELAY4
  mode relay
@@ -84,20 +58,14 @@ int eth1
  ipv6 addr 1111::2 ffff::
  ipv4 dhcp-relay RELAY4
  ipv6 dhcp-relay RELAY6
- router ospf4 1 enable
- router ospf4 1 area 0
- router ospf6 1 enable
- router ospf6 1 area 0
  exit
 int eth2
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  ipv6 addr 2222::1 ffff::
- router ospf4 1 enable
- router ospf4 1 area 0
- router ospf6 1 enable
- router ospf6 1 area 0
  exit
+ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.1
+ipv6 route v1 :: :: 1111::1
 !
 
 addrouter r3
@@ -106,25 +74,13 @@ int eth1 eth 0000.0000.3311 $3b$ $3a$
 vrf def v1
  rd 1:1
  exit
-router ospf4 1
- vrf v1
- router-id 2.2.2.2
- area 0 enable
- exit
-router ospf6 1
- vrf v1
- router-id 2.2.2.2
- area 0 enable
- exit
 int eth1
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  ipv6 addr 2222::2 ffff::
- router ospf4 1 enable
- router ospf4 1 area 0
- router ospf6 1 enable
- router ospf6 1 area 0
  exit
+ipv4 route v1 0.0.0.0 0.0.0.0 2.2.2.1
+ipv6 route v1 :: :: 2222::1
 server dhcp4 dh4
  pool 1.2.0.100 1.2.0.199
  gateway 1.2.0.1
@@ -141,7 +97,7 @@ server dhcp6 dh6
  exit
 !
 
-addrouter c1
+addrouter r4
 int eth1 eth 0000.0000.c111 $2b$ $2a$
 !
 vrf def v1
@@ -169,11 +125,11 @@ int eth1
 
 r1 tping 100 20 1.1.1.2 vrf v1
 r2 tping 100 20 1.1.1.1 vrf v1
-c1 tping 0 20 2.2.2.1 vrf v1
-c1 tping 0 20 1.1.1.2 vrf v1
+r4 tping 0 20 2.2.2.1 vrf v1
+r4 tping 0 20 1.1.1.2 vrf v1
 
 
 r1 tping 100 20 1111::2 vrf v1
 r2 tping 100 20 1111::1 vrf v1
-c1 tping 0 20 2222::1 vrf v1
-c1 tping 0 20 1111::2 vrf v1
+r4 tping 0 20 2222::1 vrf v1
+r4 tping 0 20 1111::2 vrf v1

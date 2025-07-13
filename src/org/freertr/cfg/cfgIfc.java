@@ -942,11 +942,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public servDhcp4 dhcp4s;
 
     /**
-     * dhcp4 relay profile name
-     */
-    public String dhcp4relay;
-
-    /**
      * dhcp4 relay service
      */
     public servDhcp4 dhcp4r;
@@ -955,11 +950,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      * dhcp6 server
      */
     public servDhcp6 dhcp6s;
-
-    /**
-     * dhcp6 relay name
-     */
-    public String dhcp6relay;
 
     /**
      * dhcp6 relay service
@@ -6519,11 +6509,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 if (dhcp4c != null) {
                     dhcp4c.getConfig(l, cmds.tabulator, "ipv4 dhcp-client ");
                 }
-                if (dhcp4relay != null) {
-                    l.add(cmds.tabulator + "ipv4 dhcp-relay " + dhcp4relay);
-                }
-                if (dhcp6relay != null) {
-                    l.add(cmds.tabulator + "ipv6 dhcp-relay " + dhcp6relay);
+                if (dhcp4r != null) {
+                    l.add(cmds.tabulator + "ipv4 dhcp-relay " + dhcp4r.srvName);
                 }
                 cmds.cfgLine(l, ip4polC == null, cmds.tabulator, "ipv4 pool", "" + ip4polC);
             }
@@ -6549,6 +6536,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 cmds.cfgLine(l, dhcp6c == null, cmds.tabulator, "ipv6 dhcp-client enable", "");
                 if (dhcp6c != null) {
                     dhcp6c.getConfig(l, cmds.tabulator, "ipv6 dhcp-client ");
+                }
+                if (dhcp6r != null) {
+                    l.add(cmds.tabulator + "ipv6 dhcp-relay " + dhcp6r.srvName);
                 }
                 cmds.cfgLine(l, ip6polC == null, cmds.tabulator, "ipv6 pool", "" + ip6polC);
                 cmds.cfgLine(l, !ipIf6.rtrAdvSuppress, cmds.tabulator, "ipv6 prefix-suppress", "");
@@ -8045,18 +8035,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             ethtyp.timerUpdate();
             return;
         }
-        if (a.equals("dhcp-relay")) {
-            dhcp4relay = cmd.word();
-            dhcp4r = cfgAll.srvrFind(new servDhcp4(), cfgAll.dmnDhcp4, dhcp4relay);
-            if (dhcp4r != null) {
-                // Add interface to service's relay interface list
-                dhcp4r.addRelayInterface(this);
-                if (dhcp4r.srvVrf == null) {
-                    dhcp4r.srvInit();
-                }
-            }
-            return;
-        }
         if (a.equals("dhcp4server")) {
             a = cmd.word();
             if (a.equals("enable")) {
@@ -9113,14 +9091,12 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("dhcp-relay")) {
-            dhcp4relay = cmd.word();
-            dhcp4r = cfgAll.srvrFind(new servDhcp4(), cfgAll.dmnDhcp4, dhcp4relay);
-            if (dhcp4r != null) {
-                // Add interface to the relay interfaces list
-                dhcp4r.addRelayInterface(this);
-                dhcp4r.srvDeinit();
-                dhcp4r.srvInit();
+            dhcp4r = cfgAll.srvrFind(new servDhcp4(), cfgAll.dmnDhcp4, cmd.word());
+            if (dhcp4r == null) {
+                cmd.error("no such server");
+                return;
             }
+            dhcp4r.addRelayInterface(this);
             return;
         }
         if (a.equals("pool")) {
@@ -9158,10 +9134,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (a.equals("dhcp-relay")) {
             if (dhcp4r != null) {
-                // Remove this interface from the service's interface list
                 dhcp4r.removeRelayInterface(this);
             }
-            dhcp4relay = null;
             dhcp4r = null;
             return;
         }
@@ -9275,25 +9249,12 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             return;
         }
         if (a.equals("dhcp-relay")) {
-            dhcp6relay = cmd.word();
-            dhcp6r = cfgAll.srvrFind(new servDhcp6(), cfgAll.dmnDhcp6, dhcp6relay);
-            if (dhcp6r != null) {
-                // relayInterfaces list for multi-interface support
-                dhcp6r.addRelayInterface(this);
-            }
-            return;
-        }
-        if (a.equals("helper-addresses")) {
+            dhcp6r = cfgAll.srvrFind(new servDhcp6(), cfgAll.dmnDhcp6, cmd.word());
             if (dhcp6r == null) {
-                cmd.error("no dhcp6 relay service configured");
+                cmd.error("no such server");
                 return;
             }
-            String addrStr = cmd.word();
-            // Forward this to the relay service configuration
-            cmds helperCmd = new cmds("helper-addresses", addrStr);
-            if (dhcp6r.srvCfgStr(helperCmd)) {
-                cmd.error("failed to configure helper address");
-            }
+            dhcp6r.addRelayInterface(this);
             return;
         }
         if (a.equals("slaac-client")) {
@@ -9423,22 +9384,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             if (dhcp6r != null) {
                 dhcp6r.removeRelayInterface(this);
             }
-            dhcp6relay = null;
             dhcp6r = null;
-            return;
-        }
-        if (a.equals("helper-addresses")) {
-            if (dhcp6r == null) {
-                cmd.error("no dhcp6 relay service configured");
-                return;
-            }
-            String addrStr = cmd.word();
-
-            // Forward this to the relay service configuration (with "no" prefix)
-            cmds helperCmd = new cmds("no helper-addresses", addrStr);
-            if (dhcp6r.srvCfgStr(helperCmd)) {
-                cmd.error("failed to remove helper address");
-            }
             return;
         }
         if (!fwdIf6.unConfig(a, cmd, vrfFor.fwd6)) {
