@@ -3693,7 +3693,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             par = " " + labs.length;
-            for (int i = 0; i < labs.length; i++) {
+            for (int i = labs.length - 1; i >= 0; i--) {
                 par += " " + labs[i];
             }
             for (int i = labs.length; i < 10; i++) {
