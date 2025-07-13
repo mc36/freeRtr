@@ -54,6 +54,8 @@ import org.freertr.rtr.rtrPvrpNeigh;
 import org.freertr.rtr.rtrRip4neigh;
 import org.freertr.rtr.rtrRip6neigh;
 import org.freertr.serv.servBmp2mrt;
+import org.freertr.serv.servDhcp4;
+import org.freertr.serv.servDhcp6;
 import org.freertr.serv.servP4lang;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.util.bits;
@@ -529,6 +531,38 @@ public class userClear {
                 return null;
             }
             ntry.rouplc.counterClear();
+            return null;
+        }
+        if (a.equals("dhcp4")) {
+            String profileName = cmd.word();
+            servDhcp4 srv = cfgAll.srvrFind(new servDhcp4(), cfgAll.dmnDhcp4, profileName);
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            String subCmd = cmd.word();
+            if (subCmd.equals("statistics")) {
+                srv.resetRelayStatistics();
+                cmd.error("dhcp4 relay statistics cleared for " + profileName);
+                return null;
+            }
+            cmd.badCmd();
+            return null;
+        }
+        if (a.equals("dhcp6")) {
+            String profileName = cmd.word();
+            servDhcp6 srv = cfgAll.srvrFind(new servDhcp6(), cfgAll.dmnDhcp6, profileName);
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            String subCmd = cmd.word();
+            if (subCmd.equals("statistics")) {
+                srv.resetRelayStatistics();
+                cmd.error("dhcp6 relay statistics cleared for " + profileName);
+                return null;
+            }
+            cmd.badCmd();
             return null;
         }
         if (a.equals("counters")) {
