@@ -198,16 +198,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     private final static int AGENT_SUBSCRIBER_ID_SUBOPTION = 6;
 
     /**
-     * target vrf for relay
-     */
-    public cfgVrf relayVrf;
-
-    /**
-     * target interface for relay
-     */
-    public cfgIfc relayIface;
-
-    /**
      * list of interfaces for relay (multiple interface support)
      */
     private List<cfgIfc> relayInterfaces = new ArrayList<cfgIfc>();
@@ -538,19 +528,8 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
         // Check if giaddr points to a network we can reach
         // In multi-hop relay, we need to forward to the giaddr, not necessarily the client
-        cfgVrf vrf = relayVrf != null ? relayVrf : srvVrf;
-        if (vrf == null) {
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp relay no VRF for forwarding");
-            }
-            relayStats.routingErrors++;
-            relayStats.packetsDropped++;
-            relayStats.updateErrorProcessingTime(bits.getTime() - startTime);
-            return false; // Cannot route
-        }
-
         // Determine if we should forward to giaddr (relay) or broadcast to client
-        boolean forwardToRelay = !isOurGiaddr(dhcp.bootpGiaddr, vrf);
+        boolean forwardToRelay = !isOurGiaddr(dhcp.bootpGiaddr, srvVrf);
 
         if (forwardToRelay) {
             // Multi-hop: Forward to the relay (giaddr)
@@ -596,7 +575,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
 
             // Clear giaddr before forwarding to client
-            dhcp.bootpGiaddr.fromString("0.0.0.0");
+            dhcp.bootpGiaddr.fillBytes(0);
 
             // Create new packet with filtered options for client
             packHolder newPck = new packHolder(true, true);
@@ -621,14 +600,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
     private boolean forwardToServer(packHolder pck, addrIP serverAddr, prtGenConn incomingConn) {
         try {
-            cfgVrf vrf = relayVrf != null ? relayVrf : srvVrf;
-            if (vrf == null) {
-                return false;
-            }
-            prtUdp udp = vrf.getUdp(serverAddr);
-            if (udp == null) {
-                return false;
-            }
+            prtUdp udp = srvVrf.getUdp(serverAddr);
 
             // Use the interface where the relay is configured,
             // not the interface with best route to server
@@ -639,8 +611,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 if (debugger.servDhcp4traf) {
                     logger.debug("dhcp4 relay using relay interface " + fwdIfc + " to forward to server");
                 }
-            } else if (relayIface != null) {
-                fwdIfc = relayIface.getFwdIfc(serverAddr);
             }
 
             // Use port 67 as source port so server responses come back to port 67
@@ -662,11 +632,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
     private boolean forwardToClient(packHolder pck, packDhcp4 dhcp, ipFwdIface clientInterface) {
         try {
-            cfgVrf vrf = relayVrf != null ? relayVrf : srvVrf;
-            if (vrf == null) {
-                return false;
-            }
-
             // Determine client address - RFC 2131 compliant
             addrIP clientAddr = new addrIP();
             if (!dhcp.bootpCiaddr.isEmpty()) {
@@ -678,10 +643,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 clientAddr.fromIPv4addr(addrIPv4.getBroadcast());
             }
 
-            prtUdp udp = vrf.getUdp(clientAddr);
-            if (udp == null) {
-                return false;
-            }
+            prtUdp udp = srvVrf.getUdp(clientAddr);
 
             // Use provided client interface
             ipFwdIface fwdIfc = clientInterface;
@@ -1110,34 +1072,18 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         return false; // Not our address
     }
 
-    ;
-
-
     /**
      * Forward packet to another relay (multi-hop)
      */
     private boolean forwardToRelay(packHolder pck, addrIPv4 relayAddr) {
         try {
-            cfgVrf vrf = relayVrf != null ? relayVrf : srvVrf;
-            if (vrf == null) {
-                return false;
-            }
 
             addrIP targetAddr = new addrIP();
             targetAddr.fromIPv4addr(relayAddr);
 
-            prtUdp udp = vrf.getUdp(targetAddr);
-            if (udp == null) {
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay no UDP for target " + targetAddr);
-                }
-                return false;
-            }
+            prtUdp udp = srvVrf.getUdp(targetAddr);
 
             ipFwdIface fwdIfc = null;
-            if (relayIface != null) {
-                fwdIfc = relayIface.getFwdIfc(targetAddr);
-            }
 
             // Forward to relay on port 67
             prtGenConn conn = udp.packetConnect(this, fwdIfc, packDhcp4.portSnum, targetAddr, packDhcp4.portSnum,
@@ -1566,7 +1512,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             return genStrmStart(this, new pipeLine(32768, true), 0);
         }
 
-
         // Validation: Check upstream servers
         if (helperAddresses.isEmpty()) {
             if (debugger.servDhcp6traf) {
@@ -1586,20 +1531,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         if (debugger.servDhcp4traf) {
             logger.info("DHCP4 Relay: Starting service on " + relayInterfaces.size() + " configured interfaces");
         }
-
-        // Use the first interface to determine VRF
-        cfgIfc useIface = relayInterfaces.get(0);
-        if (relayVrf == null) {
-            relayVrf = useIface.vrfFor; // Use interface VRF, not service VRF
-        }
-        srvVrf = relayVrf;
-
-        if (debugger.servDhcp4traf) {
-            logger.info("DHCP4 Relay: Using VRF " + srvVrf.name);
-        }
-
-        // Listen only on configured interfaces, not globally in VRF
-        srvIface = null; // interface handled via interface config
 
         // Start datagram service on each configured relay interface
         boolean allStarted = true;
@@ -2196,9 +2127,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
         // Use the same pattern as relay functions for proper connection cleanup
         prtUdp udp = srvVrf.getUdp(adr);
-        if (udp == null) {
-            return true;
-        }
 
         // Use port 0 (random) as source port for server replies to avoid conflicts
         int sourcePort = (!pckd.bootpGiaddr.isEmpty()) ? 0 : packDhcp4.portSnum;

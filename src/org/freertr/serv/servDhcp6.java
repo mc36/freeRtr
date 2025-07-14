@@ -10,7 +10,6 @@ import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrMac;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
-import org.freertr.cfg.cfgVrf;
 import org.freertr.pack.packDhcp6;
 import org.freertr.pack.packDhcpOption;
 import org.freertr.pack.packHolder;
@@ -151,16 +150,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
      * maximum hop count
      */
     private int maxHopCount = 10;
-
-    /**
-     * target vrf for relay
-     */
-    public cfgVrf relayVrf;
-
-    /**
-     * target interface for relay (backward compatibility)
-     */
-    public cfgIfc relayIface;
 
     /**
      * List of relay interfaces for multi-interface support
@@ -690,37 +679,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
             return false; // Not ready yet - wait for interfaces to be configured
         }
-        
+
         if (debugger.servDhcp6traf) {
             logger.info("DHCP6 Relay: Starting service on " + relayInterfaces.size() + " configured interfaces");
         }
-
-        // Use the first available interface if relayIface is not set yet
-        cfgIfc useIface = relayIface;
-        if (useIface == null && !relayInterfaces.isEmpty()) {
-            useIface = relayInterfaces.get(0);
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 relay: using first relay interface: " + useIface.name);
-            }
-        }
-
-        if (useIface == null) {
-            if (debugger.servDhcp6traf) {
-                logger.warn("dhcp6 relay: no relay interface available yet, deferring initialization");
-            }
-            return false; // Don't fail, just defer
-        }
-
-        // Setup VRF
-        relayVrf = useIface.vrfFor;
-        if (relayVrf == null) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 relay: no vrf found for interface " + useIface.name);
-            }
-            return true;
-        }
-        srvVrf = relayVrf;
-        srvIface = null;
 
         // Start UDP listening on interfaces
         boolean allStarted = true;
@@ -739,6 +701,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
         }
 
+        if (debugger.servDhcp6traf) {
+            logger.info("DHCP6 Relay: Service start result: " + (!allStarted ? "FAILED" : "SUCCESS"));
+        }
         return !allStarted; // return true on failure
     }
 
@@ -2214,10 +2179,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         // Determine source interface - use the interface the packet came from
         cfgIfc sourceIface = findInterfaceByConnection(id);
         if (sourceIface == null) {
-            sourceIface = relayIface; // Fallback to default interface
-            if (debugger.servDhcp6traf) {
-                logger.warn("dhcp6 relayClientToServer: could not determine source interface, using default: " + (sourceIface != null ? sourceIface.name : "null"));
-            }
         } else {
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 relayClientToServer: using source interface: " + sourceIface.name);
@@ -2478,36 +2439,16 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             relayPck.putByte(1, hopCount);
 
             // Link address (16 bytes) - address of link on which client is located
-            if (relayIface != null && relayIface.addr6 != null) {
-                byte[] linkAddrBytes = new byte[16];
-                relayIface.addr6.toBuffer(linkAddrBytes, 0);
-                relayPck.putCopy(linkAddrBytes, 0, 2, 16);
-            } else {
-                // All zeros if no link address
-                for (int i = 0; i < 16; i++) {
-                    relayPck.putByte(2 + i, 0);
-                }
-            }
+            relayPck.putAddr(2, id.iface.addr.toIPv6());
 
             // Peer address (16 bytes) - address of client or previous relay
-            if (id.peerAddr != null) {
-                addrIPv6 peerAddr = id.peerAddr.toIPv6();
-                byte[] peerAddrBytes = new byte[16];
-                peerAddr.toBuffer(peerAddrBytes, 0);
-                relayPck.putCopy(peerAddrBytes, 0, 18, 16);
-            } else {
-                // All zeros if no peer address
-                for (int i = 0; i < 16; i++) {
-                    relayPck.putByte(18 + i, 0);
-                }
-            }
+            relayPck.putAddr(18, id.peerAddr.toIPv6());
 
             relayPck.putSkip(34); // Header is 34 bytes
 
             // Add interface-id option if enabled
-            if (useInterfaceId && relayIface != null) {
-                String ifName = relayIface.name;
-                byte[] ifNameBytes = ifName.getBytes();
+            if (useInterfaceId) {
+                byte[] ifNameBytes = ("" + id.iface).getBytes();
                 relayPck.putByte(0, (D6O_INTERFACE_ID >>> 8) & 0xff); // Option type high byte
                 relayPck.putByte(1, D6O_INTERFACE_ID & 0xff);          // Option type low byte
                 relayPck.putByte(2, (ifNameBytes.length >>> 8) & 0xff); // Length high byte
@@ -2602,9 +2543,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
 
             addrIPv6 peerAddr = new addrIPv6();
-            byte[] peerAddrBytes = new byte[16];
-            pck.getCopy(peerAddrBytes, 0, 18, 16); // Peer address starts at offset 18
-            peerAddr.fromBuf(peerAddrBytes, 0);
+            pck.getAddr(peerAddr, 18);
             return peerAddr;
 
         } catch (Exception e) {
