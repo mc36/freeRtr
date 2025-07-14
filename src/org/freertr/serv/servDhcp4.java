@@ -312,7 +312,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             synchronized (helperAddresses) {
                 String helpers = "";
                 for (int i = 0; i < helperAddresses.size(); i++) {
-                    helpers += helperAddresses.get(i);
+                    helpers += " " + helperAddresses.get(i);
                 }
                 if (helpers.length() > 0) {
                     l.add(beg + "helper-addresses" + helpers);

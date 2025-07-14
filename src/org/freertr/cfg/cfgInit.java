@@ -214,7 +214,10 @@ public class cfgInit implements Runnable {
         "route-map .*",
         "route-policy .*",
         "proxy-profile .*",
-        "vdc definition .*",};
+        "vdc definition .*",
+        "server dhcp4 .*",
+        "server dhcp6 .*",
+    };
 
     private final static String[] needFull = {
         "vnet .*",};
