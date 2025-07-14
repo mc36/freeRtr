@@ -216,8 +216,7 @@ public class cfgInit implements Runnable {
         "proxy-profile .*",
         "vdc definition .*",
         "server dhcp4 .*",
-        "server dhcp6 .*",
-    };
+        "server dhcp6 .*",};
 
     private final static String[] needFull = {
         "vnet .*",};
