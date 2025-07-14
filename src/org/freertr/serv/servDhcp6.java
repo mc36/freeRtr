@@ -2388,26 +2388,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // Create new packet for relay-forward message
             packHolder relayPck = new packHolder(true, true);
 
-            // DHCP6 Relay-Forward Message Format (RFC 3315):
-            // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-            // +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-            // |    msg-type   |   hop-count   |                               |
-            // +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |
-            // |                                                               |
-            // |                         link-address                          |
-            // |                                                               |
-            // |                                                               |
-            // |                                                               |
-            // +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-|                               |
-            // |                                                               |
-            // |                         peer-address                          |
-            // |                                                               |
-            // |                                                               |
-            // |                                                               |
-            // +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+|                               +
-            // .                                                               .
-            // .            options (variable number and length)   ....        .
-            // +---------------------------------------------------------------+
             // Message type (1 byte) = 12 (RELAY-FORW)
             relayPck.putByte(0, packDhcp6.typReReq);
 
