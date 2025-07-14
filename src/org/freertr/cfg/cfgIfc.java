@@ -1646,6 +1646,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] ptp enable", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] ptp receive", null),
         new userFilter("interface .*", cmds.tabulator + "ipv4 dhcp-client broadcast", null),
+        new userFilter("interface .*", cmds.tabulator + "ipv6 dhcp-client address", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 dhcp-client prefix", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] dhcp-client early", null),
         new userFilter("interface .*", cmds.tabulator + "ipv[46] dhcp-client renew-min 60000", null),
