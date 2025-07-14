@@ -50,7 +50,14 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
      * operation mode enum
      */
     public enum dhcpMode {
-        server, relay
+        /**
+         * server
+         */
+        server,
+        /**
+         * relay
+         */
+        relay
     }
 
     /**
@@ -184,11 +191,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     private String agentRelayMode = "append";
 
     // Agent Options Constants (RFC 3046)
-    private static final int DHCP_OPTION_RELAY_AGENT_INFO = 82;
-    private static final int AGENT_CIRCUIT_ID_SUBOPTION = 1;
-    private static final int AGENT_REMOTE_ID_SUBOPTION = 2;
-    private static final int AGENT_LINK_SELECTION_SUBOPTION = 5;
-    private static final int AGENT_SUBSCRIBER_ID_SUBOPTION = 6;
+    private final static int DHCP_OPTION_RELAY_AGENT_INFO = 82;
+    private final static int AGENT_CIRCUIT_ID_SUBOPTION = 1;
+    private final static int AGENT_REMOTE_ID_SUBOPTION = 2;
+    private final static int AGENT_LINK_SELECTION_SUBOPTION = 5;
+    private final static int AGENT_SUBSCRIBER_ID_SUBOPTION = 6;
 
     /**
      * target vrf for relay
@@ -257,7 +264,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {
-        l.add(beg + "mode " + mode.toString());
+        l.add(beg + "mode " + mode);
 
         if (mode == dhcpMode.server) {
             if ((poolLo == null) || (poolHi == null)) {
@@ -315,13 +322,10 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             synchronized (helperAddresses) {
                 String helpers = "";
                 for (int i = 0; i < helperAddresses.size(); i++) {
-                    if (i > 0) {
-                        helpers += " ";
-                    }
-                    helpers += helperAddresses.get(i).toString();
+                    helpers += helperAddresses.get(i);
                 }
                 if (helpers.length() > 0) {
-                    l.add(beg + "helper-addresses " + helpers);
+                    l.add(beg + "helper-addresses" + helpers);
                 }
             }
             l.add(beg + (addAgentOptions ? "" : "no ") + "add-agent-options");
@@ -675,11 +679,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             addrIP clientAddr = new addrIP();
             if (!dhcp.bootpCiaddr.isEmpty()) {
                 // Client already has an IP address - unicast is OK
-                clientAddr.fromString(dhcp.bootpCiaddr.toString());
+                clientAddr.fromIPv4addr(dhcp.bootpCiaddr);
             } else {
                 // Client has no IP address yet - MUST use broadcast
                 // This includes DHCP Offer messages where bootpYiaddr is set but client can't receive unicast yet
-                clientAddr.fromString("255.255.255.255");
+                clientAddr.fromIPv4addr(addrIPv4.getBroadcast());
             }
 
             prtUdp udp = vrf.getUdp(clientAddr);
@@ -907,7 +911,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             case "hostname":
                 return cfgAll.hostName;
             case "ip-address":
-                return id.iface != null ? id.iface.addr.toString() : "0.0.0.0";
+                return id.iface != null ? ("" + id.iface.addr) : "0.0.0.0";
             case "mac-address":
                 return id.iface != null ? "mac-" + id.iface.ifwNum : "00:00:00:00:00:00";
             default:
@@ -1654,6 +1658,14 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         purgeTimer.schedule(task, 1000, 60000);
     }
 
+    /**
+     * find binding
+     *
+     * @param mac mac address
+     * @param create create mode
+     * @param hint hint address
+     * @return binding
+     */
     protected servDhcp4bind findBinding(addrMac mac, int create, addrIPv4 hint) {
         servDhcp4bind ntry = new servDhcp4bind();
         ntry.mac = mac.copyBytes();
@@ -1876,12 +1888,12 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
         // Performance metrics
         if (relayStats.packetProcessingCount > 0) {
-            res.add("Average Processing Time|" + relayStats.getAverageProcessingTime() + " μs|Average packet processing time");
-            res.add("Max Processing Time|" + relayStats.maxProcessingTime + " μs|Maximum packet processing time");
-            res.add("Min Processing Time|" + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime) + " μs|Minimum packet processing time");
+            res.add("Average Processing Time|" + relayStats.getAverageProcessingTime() + "|Average packet processing time");
+            res.add("Max Processing Time|" + relayStats.maxProcessingTime + "|Maximum packet processing time");
+            res.add("Min Processing Time|" + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime) + "|Minimum packet processing time");
         }
         if (relayStats.errorProcessingCount > 0) {
-            res.add("Average Error Processing Time|" + relayStats.getAverageErrorProcessingTime() + " μs|Average error processing time");
+            res.add("Average Error Processing Time|" + relayStats.getAverageErrorProcessingTime() + "|Average error processing time");
         }
 
         // Error statistics
@@ -1937,10 +1949,10 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             res.add("Total Packets Processed|" + totalProcessed + "|packets");
             res.add("Successful Packets|" + relayStats.packetProcessingCount + "|packets");
             res.add("Error Packets|" + relayStats.errorProcessingCount + "|packets");
-            res.add("Total Processing Time|" + relayStats.totalProcessingTime + "|μs");
-            res.add("Average Processing Time|" + relayStats.getAverageProcessingTime() + "|μs");
-            res.add("Maximum Processing Time|" + relayStats.maxProcessingTime + "|μs");
-            res.add("Minimum Processing Time|" + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime) + "|μs");
+            res.add("Total Processing Time|" + relayStats.totalProcessingTime + "|");
+            res.add("Average Processing Time|" + relayStats.getAverageProcessingTime() + "|");
+            res.add("Maximum Processing Time|" + relayStats.maxProcessingTime + "|");
+            res.add("Minimum Processing Time|" + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime) + "|");
 
             // Calculate packets per second (rough estimate)
             long uptimeSeconds = (bits.getTime() - statsResetTime) / 1000;
@@ -1994,23 +2006,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         if (debugger.servDhcp4traf) {
             logger.debug("dhcp4 relay statistics reset");
         }
-    }
-
-    /**
-     * Process a DHCP packet received on the relay interface This method is
-     * called by the interface when DHCP packets are received
-     */
-    public void relayPacket(packHolder pck, prtGenConn id) {
-        if (mode != dhcpMode.relay) {
-            return; // Only process in relay mode
-        }
-
-        if (debugger.servDhcp4traf) {
-            logger.debug("dhcp4 relay Packet received from interface " + (relayIface != null ? relayIface.name : "unknown"));
-        }
-
-        // Process the packet as if it came through datagramRecv
-        datagramRecv(id, pck);
     }
 
     /**
@@ -2073,13 +2068,13 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             result.add("  Total Packets Processed: " + totalProcessed);
             result.add("  Successful Packets: " + relayStats.packetProcessingCount);
             result.add("  Error Packets: " + relayStats.errorProcessingCount);
-            result.add("  Total Processing Time: " + relayStats.totalProcessingTime + " μs");
-            result.add("  Average Processing Time: " + relayStats.getAverageProcessingTime() + " μs");
-            result.add("  Maximum Processing Time: " + relayStats.maxProcessingTime + " μs");
-            result.add("  Minimum Processing Time: " + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime) + " μs");
+            result.add("  Total Processing Time: " + relayStats.totalProcessingTime);
+            result.add("  Average Processing Time: " + relayStats.getAverageProcessingTime());
+            result.add("  Maximum Processing Time: " + relayStats.maxProcessingTime);
+            result.add("  Minimum Processing Time: " + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime));
 
             if (relayStats.errorProcessingCount > 0) {
-                result.add("  Average Error Processing Time: " + relayStats.getAverageErrorProcessingTime() + " μs");
+                result.add("  Average Error Processing Time: " + relayStats.getAverageErrorProcessingTime());
             }
 
             // Calculate packets per second (rough estimate)
@@ -2126,6 +2121,8 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
     /**
      * Add interface to relay interfaces list
+     *
+     * @param iface interface
      */
     public synchronized void addRelayInterface(cfgIfc iface) {
         if (iface == null) {
@@ -2159,6 +2156,8 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
     /**
      * Remove interface from relay interfaces list
+     *
+     * @param iface interface
      */
     public synchronized void removeRelayInterface(cfgIfc iface) {
         if (iface == null) {

@@ -41,16 +41,20 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
      * create instance
      */
     public servDhcp6() {
-        if (debugger.servDhcp6traf) {
-            logger.debug("DHCP6 constructor called");
-        }
     }
 
     /**
      * operation mode enum
      */
     public enum dhcpMode {
-        server, relay
+        /**
+         * server
+         */
+        server,
+        /**
+         * relay
+         */
+        relay
     }
 
     /**
@@ -174,9 +178,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     private long statsResetTime = bits.getTime();
 
     // DHCP6 Relay Constants
-    private static final int D6O_INTERFACE_ID = 18;
-    private static final int D6O_RELAY_MSG = 9;
-    private static final int D6O_SUBSCRIBER_ID = 38;
+    private final static int D6O_INTERFACE_ID = 18;
+    private final static int D6O_RELAY_MSG = 9;
+    private final static int D6O_SUBSCRIBER_ID = 38;
 
     /**
      * defaults text
@@ -216,7 +220,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {
-        l.add(beg + "mode " + mode.toString());
+        l.add(beg + "mode " + mode);
 
         if (mode == dhcpMode.server) {
             if (gateway == null) {
@@ -794,6 +798,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         purgeTimer.schedule(task, 1000, 60000);
     }
 
+    /**
+     * find binding
+     *
+     * @param mac mac address
+     * @param create create mode
+     * @param hint hint address
+     * @return binding
+     */
     private servDhcp6bind findBinding(addrMac mac, int create, addrIPv6 hint) {
         if ((hint != null) && (gateway != null) && (netmask != null)) {
             addrIPv6 a1 = new addrIPv6();
@@ -1176,6 +1188,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     /**
      * Create nested relay-reply structure that mirrors the Relay-Forward
      * nesting
+     *
+     * @param relayForwardPck packet to deal with
+     * @return reply, null if nothing
      */
     public packHolder createRelayReply(packHolder relayForwardPck) {
         try {
@@ -1679,12 +1694,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
 
             // If MAC extraction failed, create a random MAC
-            String macStr = clientMac.toString();
-            if (macStr.equals("00:00:00:00:00:00") || macStr.equals("")) {
-                clientMac.fromString("00:11:22:33:44:55");
+            if (clientMac.isFilled(0)) {
                 if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 createServerResponse: using default mac " + clientMac);
+                    logger.info("dhcp6 createServerResponse: found default mac " + clientMac);
                 }
+                return null;
             }
 
             // First check if there's a static binding before generating IP
@@ -1712,7 +1726,15 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     return null;
                 }
 
-                assignedAddr = generateIPv6Address(clientMac);
+                if (gateway == null) {
+                    return null;
+                }
+                // Use addrIPv6.genPublic to generate a MAC-based address
+                assignedAddr = addrIPv6.genPublic(clientMac, gateway);
+                if (debugger.servDhcp6traf) {
+                    logger.info("dhcp6 generateIPv6Address: generated " + assignedAddr + " for mac " + clientMac);
+                }
+
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 createServerResponse: generated new ip " + assignedAddr + " for mac " + clientMac);
                 }
@@ -2002,65 +2024,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     }
 
     /**
-     * Generate IPv6 address from configured pool
-     */
-    private addrIPv6 generateIPv6Address(addrMac mac) {
-        try {
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 generateIPv6Address: generating address for mac " + mac);
-            }
-
-            // Use configured gateway range if available
-            if (gateway != null) {
-                // Use addrIPv6.genPublic to generate a MAC-based address
-                addrIPv6 result = addrIPv6.genPublic(mac, gateway);
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 generateIPv6Address: generated " + result + " for mac " + mac);
-                }
-                return result;
-            }
-
-            // Fallback: Use a default range based on 2001:db8:: prefix with MAC-based suffix
-            addrIPv6 result = new addrIPv6();
-            // Create a unique address based on MAC
-            String macStr = mac.toString().replace(":", "");
-            String lastFour = macStr.substring(Math.max(0, macStr.length() - 4));
-            String addr = "2001:db8::" + lastFour;
-            result.fromString(addr);
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 generateIPv6Address: generated fallback " + result + " for mac " + mac);
-            }
-            return result;
-
-        } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 generateIPv6Address: exception: " + e.getMessage());
-            }
-            // Emergency fallback
-            addrIPv6 result = new addrIPv6();
-            try {
-                // Use last 4 digits of MAC to make address unique
-                String macStr = mac.toString().replace(":", "");
-                String lastFour = macStr.substring(Math.max(0, macStr.length() - 4));
-                String addr = "2001:db8::" + lastFour;
-                result.fromString(addr);
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 generateIPv6Address: generated emergency " + result + " for mac " + mac);
-                }
-            } catch (Exception e2) {
-                if (debugger.servDhcp6traf) {
-                    logger.error("dhcp6 generateIPv6Address: emergency fallback failed: " + e2.getMessage());
-                }
-                try {
-                    result.fromString("2001:db8::1001");
-                } catch (Exception e3) {
-                }
-            }
-            return result;
-        }
-    }
-
-    /**
      * purge binding table
      */
     protected void doPurging() {
@@ -2185,18 +2148,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return false;
         }
 
-        if (debugger.servDhcp6traf) {
-            logger.info("dhcp6 datagramRecv: calling relayPacket");
-        }
-        // Process DHCP6 relay packet
-        return relayPacket(pck, id);
-    }
-
-    private boolean relayPacket(packHolder pck, prtGenConn id) {
         long startTime = bits.getTime();
-        if (debugger.servDhcp6traf) {
-            logger.info("dhcp6 relayPacket: processing packet from " + id.peerAddr + ", size=" + pck.dataSize());
-        }
 
         try {
             // For relay purposes, we only need basic packet validation and message type
@@ -2814,10 +2766,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         result.add("Performance Metrics:");
         if (relayStats.packetProcessingCount > 0) {
             result.add("  Total Packets Processed: " + relayStats.packetProcessingCount);
-            result.add("  Total Processing Time: " + (relayStats.totalProcessingTime * 1000) + " μs");  // Convert ms to μs
-            result.add("  Average Processing Time: " + (relayStats.getAverageProcessingTime() * 1000) + " μs");
-            result.add("  Maximum Processing Time: " + (relayStats.maxProcessingTime * 1000) + " μs");
-            result.add("  Minimum Processing Time: " + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime * 1000) + " μs");
+            result.add("  Total Processing Time: " + relayStats.totalProcessingTime);
+            result.add("  Average Processing Time: " + relayStats.getAverageProcessingTime());
+            result.add("  Maximum Processing Time: " + relayStats.maxProcessingTime);
+            result.add("  Minimum Processing Time: " + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime));
 
             // Calculate packets per second (rough estimate)
             long uptimeSeconds = (bits.getTime() - statsResetTime) / 1000;
@@ -2829,10 +2781,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
         } else {
             result.add("  Total Packets Processed: 0");
-            result.add("  Total Processing Time: 0 μs");
-            result.add("  Average Processing Time: 0 μs");
-            result.add("  Maximum Processing Time: 0 μs");
-            result.add("  Minimum Processing Time: 0 μs");
+            result.add("  Total Processing Time: 0");
+            result.add("  Average Processing Time: 0");
+            result.add("  Maximum Processing Time: 0");
+            result.add("  Minimum Processing Time: 0");
             result.add("  Packets Per Second: 0 pps");
         }
         result.add("");
@@ -2879,6 +2831,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
     /**
      * Add interface to relay interfaces list
+     *
+     * @param iface interface
      */
     public synchronized void addRelayInterface(cfgIfc iface) {
         if (iface == null) {
@@ -2918,6 +2872,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
     /**
      * Remove interface from relay interfaces list
+     *
+     * @param iface interface
      */
     public synchronized void removeRelayInterface(cfgIfc iface) {
         if (iface == null) {
