@@ -667,14 +667,14 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     }
 
     public boolean srvInit() {
-        if (mode == dhcpMode.relay) {
-            return initRelayMode();
-        } else {
-            return initServerMode();
+        if (mode == dhcpMode.server) {
+            if (srvIface == null) {
+                return true;
+            }
+            restartTimer(false);
+            return genStrmStart(this, new pipeLine(32768, true), 0);
         }
-    }
 
-    private boolean initRelayMode() {
         // Validation: Check upstream servers
         if (upstreamServers.isEmpty()) {
             if (debugger.servDhcp6traf) {
@@ -683,42 +683,18 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return true;
         }
 
-        // Debug logging
-        logRelayConfiguration();
-
-        // Implementation
-        return startRelayListening();
-    }
-
-    private boolean initServerMode() {
-        // Server mode validation
-        if (srvIface == null) {
-            return true;
+        // Relay mode: start datagram service on specific relay interfaces only
+        if (relayInterfaces.isEmpty()) {
+            if (debugger.servDhcp6traf) {
+                logger.debug("DHCP6 Relay: Waiting for interface configuration - no interfaces configured yet");
+            }
+            return false; // Not ready yet - wait for interfaces to be configured
+        }
+        
+        if (debugger.servDhcp6traf) {
+            logger.info("DHCP6 Relay: Starting service on " + relayInterfaces.size() + " configured interfaces");
         }
 
-        // Start server mode
-        restartTimer(false);
-        return genStrmStart(this, new pipeLine(32768, true), 0);
-    }
-
-    private void logRelayConfiguration() {
-        if (!debugger.servDhcp6traf) {
-            return;
-        }
-
-        // Log upstream servers
-        for (int i = 0; i < upstreamServers.size(); i++) {
-            logger.info("dhcp6 relay: upstream server " + i + ": " + upstreamServers.get(i));
-        }
-
-        // Log relay interfaces status
-        logger.info("dhcp6 relay: current relay interfaces: " + relayInterfaces.size()
-                + ", relayIface: " + (relayIface != null ? relayIface.name : "null"));
-
-        logger.info("dhcp6 relay: starting in relay mode");
-    }
-
-    private boolean startRelayListening() {
         // Use the first available interface if relayIface is not set yet
         cfgIfc useIface = relayIface;
         if (useIface == null && !relayInterfaces.isEmpty()) {
@@ -747,32 +723,19 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         srvIface = null;
 
         // Start UDP listening on interfaces
-        return startUdpListening(useIface);
-    }
-
-    private boolean startUdpListening(cfgIfc useIface) {
         boolean allStarted = true;
 
-        if (relayInterfaces.isEmpty()) {
-            // Single interface mode - use relayIface
-            boolean result = srvVrf.udp6.packetListen(this, useIface.fwdIf6, srvPort(), null, 0, srvName(), -1, null, -1, -1);
+        // Multi-interface mode - start on all relay interfaces
+        if (debugger.servDhcp6traf) {
+            logger.info("dhcp6 relay: starting datagram service on " + relayInterfaces.size() + " relay interfaces");
+        }
+        for (cfgIfc ifc : relayInterfaces) {
+            boolean result = srvVrf.udp6.packetListen(this, ifc.fwdIf6, srvPort(), null, 0, srvName(), -1, null, -1, -1);
             if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 relay: packetListen result=" + result + ", listening on " + useIface.name + " port " + srvPort());
+                logger.info("dhcp6 relay: packetListen result=" + result + " for interface " + ifc.name + " port " + srvPort());
             }
-            allStarted = !result; // packetListen returns true on error, we want success
-        } else {
-            // Multi-interface mode - start on all relay interfaces
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 relay: starting datagram service on " + relayInterfaces.size() + " relay interfaces");
-            }
-            for (cfgIfc ifc : relayInterfaces) {
-                boolean result = srvVrf.udp6.packetListen(this, ifc.fwdIf6, srvPort(), null, 0, srvName(), -1, null, -1, -1);
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 relay: packetListen result=" + result + " for interface " + ifc.name + " port " + srvPort());
-                }
-                if (result) { // packetListen returns true on error
-                    allStarted = false;
-                }
+            if (result) { // packetListen returns true on error
+                allStarted = false;
             }
         }
 

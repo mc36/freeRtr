@@ -345,14 +345,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
             l.add(beg + "max-hop-count " + maxHopCount);
             l.add(beg + "agent-relay-mode " + agentRelayMode);
-            // Only output relay VRF if it differs from service VRF
-            if (relayVrf != srvVrf) {
-                if (relayVrf == null) {
-                    l.add(beg + "no vrf");
-                } else {
-                    l.add(beg + "vrf " + relayVrf.name);
-                }
-            }
         }
     }
 
@@ -431,7 +423,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     }
 
     private boolean relayClientToServer(packDhcp4 dhcp, packHolder pck, prtGenConn id) {
-        long startTime = System.nanoTime();
+        long startTime = bits.getTime();
 
         if (debugger.servDhcp4traf) {
             logger.debug("dhcp relay client->server from " + id.peerAddr + " hops=" + dhcp.bootpHops);
@@ -451,7 +443,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
             relayStats.maxHopCountExceeded++;
             relayStats.packetsDropped++;
-            relayStats.updateErrorProcessingTime((System.nanoTime() - startTime) / 1000);
+            relayStats.updateErrorProcessingTime(bits.getTime() - startTime);
             return false; // Drop packet - don't process further
         }
 
@@ -483,7 +475,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                     logger.debug("dhcp4 relay packet discarded due to existing agent options");
                 }
                 relayStats.packetsDropped++;
-                relayStats.updateProcessingTime((System.nanoTime() - startTime) / 1000);
+                relayStats.updateProcessingTime(bits.getTime() - startTime);
                 return false; // Discard packet
             }
             addAgentInformationOption(options, id);
@@ -518,12 +510,12 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             relayStats.packetsDropped++;
         }
 
-        relayStats.updateProcessingTime((System.nanoTime() - startTime) / 1000);
+        relayStats.updateProcessingTime(bits.getTime() - startTime);
         return false; // Packet processed successfully
     }
 
     private boolean relayServerToClient(packDhcp4 dhcp, packHolder pck, prtGenConn id) {
-        long startTime = System.nanoTime();
+        long startTime = bits.getTime();
 
         if (debugger.servDhcp4traf) {
             logger.debug("dhcp relay server->client giaddr=" + dhcp.bootpGiaddr);
@@ -540,7 +532,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
             relayStats.packetsDropped++;
             relayStats.invalidGiaddrErrors++;
-            relayStats.updateErrorProcessingTime((System.nanoTime() - startTime) / 1000);
+            relayStats.updateErrorProcessingTime(bits.getTime() - startTime);
             return false; // Ignore packet
         }
 
@@ -553,7 +545,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
             relayStats.routingErrors++;
             relayStats.packetsDropped++;
-            relayStats.updateErrorProcessingTime((System.nanoTime() - startTime) / 1000);
+            relayStats.updateErrorProcessingTime(bits.getTime() - startTime);
             return false; // Cannot route
         }
 
@@ -623,7 +615,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             logger.debug("dhcp relay forwarded server reply");
         }
 
-        relayStats.updateProcessingTime((System.nanoTime() - startTime) / 1000);
+        relayStats.updateProcessingTime(bits.getTime() - startTime);
         return false; // Packet processed successfully
     }
 
@@ -1247,19 +1239,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             agentRelayMode = cmd.word();
             return false;
         }
-        if (a.equals("vrf")) {
-            cfgVrf v = cfgAll.vrfFind(cmd.word(), false);
-            if (v == null) {
-                cmd.error("no such vrf");
-                return false;
-            }
-            if (mode == dhcpMode.relay) {
-                relayVrf = v;
-            } else {
-                srvVrf = v;
-            }
-            return false;
-        }
         if (a.equals("bind-file")) {
             bindFile = cmd.getRemaining();
             List<String> res = bits.txt2buf(bindFile);
@@ -1475,10 +1454,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             findBinding(mac, 2, null);
             return false;
         }
-        if (a.equals("vrf")) {
-            relayVrf = null;
-            return false;
-        }
         if (a.equals("helper-addresses")) {
             synchronized (helperAddresses) {
                 helperAddresses.clear();
@@ -1589,54 +1564,63 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
             restartTimer(false);
             return genStrmStart(this, new pipeLine(32768, true), 0);
-        } else {
-            // Relay mode: start datagram service on specific relay interfaces only
-            if (relayInterfaces.isEmpty()) {
-                if (debugger.servDhcp4traf) {
-                    logger.debug("DHCP4 Relay: Waiting for interface configuration - no interfaces configured yet");
-                }
-                return false; // Not ready yet - wait for interfaces to be configured
-            }
-
-            if (debugger.servDhcp4traf) {
-                logger.info("DHCP4 Relay: Starting service on " + relayInterfaces.size() + " configured interfaces");
-            }
-
-            // Use the first interface to determine VRF
-            cfgIfc useIface = relayInterfaces.get(0);
-            if (relayVrf == null) {
-                relayVrf = useIface.vrfFor; // Use interface VRF, not service VRF
-            }
-            srvVrf = relayVrf;
-
-            if (debugger.servDhcp4traf) {
-                logger.info("DHCP4 Relay: Using VRF " + srvVrf.name);
-            }
-
-            // Listen only on configured interfaces, not globally in VRF
-            srvIface = null; // interface handled via interface config
-
-            // Start datagram service on each configured relay interface
-            boolean allStarted = true;
-            for (cfgIfc ifc : relayInterfaces) {
-                if (debugger.servDhcp4traf) {
-                    logger.info("DHCP4 Relay: Starting packetListen on interface " + ifc.name);
-                }
-
-                boolean result = srvVrf.udp4.packetListen(this, ifc.fwdIf4, srvPort(), null, 0, srvName(), -1, null, -1, -1);
-                if (debugger.servDhcp4traf) {
-                    logger.info("DHCP4 Relay: packetListen result=" + result + " for interface " + ifc.name + " port " + srvPort());
-                }
-                if (result) { // packetListen returns true on error
-                    allStarted = false;
-                }
-            }
-
-            if (debugger.servDhcp4traf) {
-                logger.info("DHCP4 Relay: Service start result: " + (!allStarted ? "FAILED" : "SUCCESS"));
-            }
-            return !allStarted; // return true on failure
         }
+
+
+        // Validation: Check upstream servers
+        if (helperAddresses.isEmpty()) {
+            if (debugger.servDhcp6traf) {
+                logger.error("dhcp4 relay: no upstream servers configured");
+            }
+            return true;
+        }
+
+        // Relay mode: start datagram service on specific relay interfaces only
+        if (relayInterfaces.isEmpty()) {
+            if (debugger.servDhcp4traf) {
+                logger.debug("DHCP4 Relay: Waiting for interface configuration - no interfaces configured yet");
+            }
+            return false; // Not ready yet - wait for interfaces to be configured
+        }
+
+        if (debugger.servDhcp4traf) {
+            logger.info("DHCP4 Relay: Starting service on " + relayInterfaces.size() + " configured interfaces");
+        }
+
+        // Use the first interface to determine VRF
+        cfgIfc useIface = relayInterfaces.get(0);
+        if (relayVrf == null) {
+            relayVrf = useIface.vrfFor; // Use interface VRF, not service VRF
+        }
+        srvVrf = relayVrf;
+
+        if (debugger.servDhcp4traf) {
+            logger.info("DHCP4 Relay: Using VRF " + srvVrf.name);
+        }
+
+        // Listen only on configured interfaces, not globally in VRF
+        srvIface = null; // interface handled via interface config
+
+        // Start datagram service on each configured relay interface
+        boolean allStarted = true;
+        for (cfgIfc ifc : relayInterfaces) {
+            if (debugger.servDhcp4traf) {
+                logger.info("DHCP4 Relay: Starting packetListen on interface " + ifc.name);
+            }
+
+            boolean result = srvVrf.udp4.packetListen(this, ifc.fwdIf4, srvPort(), null, 0, srvName(), -1, null, -1, -1);
+            if (debugger.servDhcp4traf) {
+                logger.info("DHCP4 Relay: packetListen result=" + result + " for interface " + ifc.name + " port " + srvPort());
+            }
+            if (result) { // packetListen returns true on error
+                allStarted = false;
+            }
+        }
+
+        if (debugger.servDhcp4traf) {
+            logger.info("DHCP4 Relay: Service start result: " + (!allStarted ? "FAILED" : "SUCCESS"));
+        }
+        return !allStarted; // return true on failure
     }
 
     public boolean srvDeinit() {
