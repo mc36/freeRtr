@@ -73,6 +73,7 @@ qc pass: dhcp with interface server
 qc pass: dhcp relay
 qc pass: dhcp relay multihop/chaining
 qc pass: dhcp relay multihop/chaining max hop count 1
+qc pass: dhcp with unicast
 qc pass: dlsw over ipv4
 qc pass: dlsw over ipv6
 qc pass: dlsw over loopback
