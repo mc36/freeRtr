@@ -1674,16 +1674,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
 
             // Preferred lifetime (4 bytes) - 27000 seconds
-            response.putByte(currentPos++, 0);
-            response.putByte(currentPos++, 0);
-            response.putByte(currentPos++, 0x69);
-            response.putByte(currentPos++, 0x78);
+            response.msbPutD(currentPos, renew / 1000);
+            currentPos += 4;
 
             // Valid lifetime (4 bytes) - 43200 seconds
-            response.putByte(currentPos++, 0);
-            response.putByte(currentPos++, 0);
-            response.putByte(currentPos++, 0xa8);
-            response.putByte(currentPos++, 0xc0);
+            response.msbPutD(currentPos, lease / 1000);
+            currentPos += 4;
 
             // Add Server Identifier Option (Type 2)
             response.putByte(currentPos++, 0);  // Option Type high
@@ -1718,46 +1714,42 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 response.putByte(currentPos++, 0);  // Option Length high
                 response.putByte(currentPos++, 16); // Option Length low (16 bytes for 1 IPv6 address)
 
-                byte[] dns1Bytes = dns1.getBytes();
-                for (int i = 0; i < 16; i++) {
-                    response.putByte(currentPos++, dns1Bytes[i] & 0xff);
-                }
+                response.putAddr(currentPos, dns1);
+                currentPos += addrIPv6.size;
             }
 
             response.putSkip(currentPos);
             response.merge2beg();
 
             // Create or update binding for this client
-            if (clientMac != null) {
-                // If we found a static binding earlier, update its timestamp
-                if (staticBinding != null) {
-                    // Update static binding's timestamp
-                    staticBinding.reqd = bits.getTime();
-                    if (debugger.servDhcp6traf) {
-                        logger.info("dhcp6 createServerResponse: using static binding IP " + assignedAddr);
+            // If we found a static binding earlier, update its timestamp
+            if (staticBinding != null) {
+                // Update static binding's timestamp
+                staticBinding.reqd = bits.getTime();
+                if (debugger.servDhcp6traf) {
+                    logger.info("dhcp6 createServerResponse: using static binding IP " + assignedAddr);
+                }
+            } else {
+                // Normal flow - use the generated address
+                servDhcp6bind ntry = findBinding(clientMac, 1, assignedAddr);
+                if (ntry == null) {
+                    // Create new binding directly
+                    ntry = new servDhcp6bind();
+                    ntry.mac = clientMac.copyBytes();
+                    ntry.ip = assignedAddr.copyBytes();
+                    ntry.reqd = bits.getTime();
+
+                    synchronized (bindings) {
+                        bindings.add(ntry);
+                        if (debugger.servDhcp6traf) {
+                            logger.info("dhcp6 createServerResponse: added new binding for mac " + clientMac + " with ip " + assignedAddr + ", total bindings: " + bindings.size());
+                        }
                     }
                 } else {
-                    // Normal flow - use the generated address
-                    servDhcp6bind ntry = findBinding(clientMac, 1, assignedAddr);
-                    if (ntry == null) {
-                        // Create new binding directly
-                        ntry = new servDhcp6bind();
-                        ntry.mac = clientMac.copyBytes();
-                        ntry.ip = assignedAddr.copyBytes();
-                        ntry.reqd = bits.getTime();
-
-                        synchronized (bindings) {
-                            bindings.add(ntry);
-                            if (debugger.servDhcp6traf) {
-                                logger.info("dhcp6 createServerResponse: added new binding for mac " + clientMac + " with ip " + assignedAddr + ", total bindings: " + bindings.size());
-                            }
-                        }
-                    } else {
-                        // Update existing binding
-                        ntry.reqd = bits.getTime();
-                        if (debugger.servDhcp6traf) {
-                            logger.info("dhcp6 createServerResponse: updated binding for mac " + clientMac + " with ip " + assignedAddr);
-                        }
+                    // Update existing binding
+                    ntry.reqd = bits.getTime();
+                    if (debugger.servDhcp6traf) {
+                        logger.info("dhcp6 createServerResponse: updated binding for mac " + clientMac + " with ip " + assignedAddr);
                     }
                 }
             }

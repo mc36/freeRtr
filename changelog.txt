@@ -17257,3 +17257,6 @@ qc pass: dhcp with interface server
 ---------------------------------- 2025-07-13 22:39:38 25.7.13
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2025-07-14 07:31:24 25.7.14
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard
