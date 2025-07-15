@@ -1505,9 +1505,13 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             return genStrmStart(this, new pipeLine(32768, true), 0);
         }
 
+        if (srvVrf == null) {
+            return true;
+        }
+
         // Validation: Check upstream servers
         if (helperAddresses.isEmpty()) {
-            if (debugger.servDhcp6traf) {
+            if (debugger.servDhcp4traf) {
                 logger.error("dhcp4 relay: no upstream servers configured");
             }
             return true;
@@ -1548,8 +1552,22 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     }
 
     public boolean srvDeinit() {
-        restartTimer(true);
-        return genericStop(0);
+        if (mode == dhcpMode.server) {
+            restartTimer(true);
+            return genericStop(0);
+        }
+
+        if (srvVrf == null) {
+            return true;
+        }
+
+        for (cfgIfc ifc : relayInterfaces) {
+            if (debugger.servDhcp4traf) {
+                logger.info("DHCP4 Relay: Starting packetStop on interface " + ifc.name);
+            }
+            srvVrf.udp4.listenStop(ifc.fwdIf4, srvPort(), null, 0);
+        }
+        return false;
     }
 
     private void restartTimer(boolean shutdown) {
@@ -2033,10 +2051,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
      * @param iface interface
      */
     public synchronized void addRelayInterface(cfgIfc iface) {
-        if (iface == null) {
-            return;
-        }
-
         // Check if already in list
         for (cfgIfc existing : relayInterfaces) {
             if (existing.name.equals(iface.name)) {
@@ -2046,19 +2060,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 return;
             }
         }
-
+        srvDeinit();
         relayInterfaces.add(iface);
+        srvInit();
         if (debugger.servDhcp4traf) {
             logger.info("dhcp4 relay added interface " + iface.name + " to relay list. total interfaces: " + relayInterfaces.size());
-        }
-
-        // If we're in relay mode and have helper addresses, reinitialize to bind to all interfaces
-        if (mode == dhcpMode.relay && !helperAddresses.isEmpty()) {
-            if (debugger.servDhcp4traf) {
-                logger.info("dhcp4 relay reinitializing service for interface " + iface.name);
-            }
-            srvDeinit();
-            srvInit();
         }
     }
 
@@ -2068,11 +2074,9 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
      * @param iface interface
      */
     public synchronized void removeRelayInterface(cfgIfc iface) {
-        if (iface == null) {
-            return;
-        }
-
+        srvDeinit();
         boolean removed = relayInterfaces.removeIf(existing -> existing.name.equals(iface.name));
+        srvInit();
         if (removed) {
             if (debugger.servDhcp4traf) {
                 logger.info("dhcp4 relay removed interface " + iface.name + " from relay list. total interfaces: " + relayInterfaces.size());

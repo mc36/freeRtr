@@ -633,6 +633,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return genStrmStart(this, new pipeLine(32768, true), 0);
         }
 
+        if (srvVrf == null) {
+            return true;
+        }
+
         // Validation: Check upstream servers
         if (helperAddresses.isEmpty()) {
             if (debugger.servDhcp6traf) {
@@ -677,8 +681,22 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     }
 
     public boolean srvDeinit() {
-        restartTimer(true);
-        return genericStop(0);
+        if (mode == dhcpMode.server) {
+            restartTimer(true);
+            return genericStop(0);
+        }
+
+        if (srvVrf == null) {
+            return true;
+        }
+
+        for (cfgIfc ifc : relayInterfaces) {
+            if (debugger.servDhcp6traf) {
+                logger.info("DHCP6 Relay: Starting packetStop on interface " + ifc.name);
+            }
+            srvVrf.udp6.listenStop(ifc.fwdIf6, srvPort(), null, 0);
+        }
+        return false;
     }
 
     private void restartTimer(boolean shutdown) {
@@ -2678,10 +2696,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
      * @param iface interface
      */
     public synchronized void addRelayInterface(cfgIfc iface) {
-        if (iface == null) {
-            return;
-        }
-
         // Check if already in list
         for (cfgIfc existing : relayInterfaces) {
             if (existing.name.equals(iface.name)) {
@@ -2691,25 +2705,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 return;
             }
         }
-
+        srvDeinit();
         relayInterfaces.add(iface);
+        srvInit();
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 relay:  added interface " + iface.name + " to relay list. total interfaces: " + relayInterfaces.size());
-        }
-
-        // If we're in relay mode and have upstream servers, reinitialize to bind to all interfaces
-        if (mode == dhcpMode.relay && !helperAddresses.isEmpty()) {
-            if (srvIface == null) {
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 relay: first interface added, attempting to initialize service");
-                }
-            } else {
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 relay: additional interface added, reinitializing service for multi-interface support");
-                }
-            }
-            srvDeinit();
-            srvInit();
         }
     }
 
@@ -2719,11 +2719,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
      * @param iface interface
      */
     public synchronized void removeRelayInterface(cfgIfc iface) {
-        if (iface == null) {
-            return;
-        }
-
+        srvDeinit();
         boolean removed = relayInterfaces.removeIf(existing -> existing.name.equals(iface.name));
+        srvInit();
         if (removed) {
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 relay: removed interface " + iface.name + " from relay list. total interfaces: " + relayInterfaces.size());
