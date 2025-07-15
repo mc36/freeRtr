@@ -6930,7 +6930,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 4, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 3, new int[]{-1}, "fill-ciaddr", "fill in bootp ciaddr or dhcpserver address");
         l.add(null, false, 2, new int[]{3}, "dhcp-relay", "configure dhcp relay");
-        l.add(null, false, 3, new int[]{-1}, "<name:dhcp>", "name of dhcp relay profile");
+        l.add(cfgAll.dmnDhcp4.listServers(), false, 3, new int[]{-1}, "<name:loc>", "name of dhcp relay profile");
         l.add(null, false, 2, new int[]{3}, "pool", "peer address pool");
         l.add(null, false, 3, new int[]{-1}, "<name:pl4>", "name of address pool");
         l.add(null, false, 1, new int[]{2}, "ipv6", "interface internet protocol config commands");
@@ -6951,7 +6951,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{4}, "renew-max", "maximum renew time");
         l.add(null, false, 4, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 2, new int[]{3}, "dhcp-relay", "configure dhcp relay");
-        l.add(null, false, 3, new int[]{-1}, "<name:dhcp>", "name of dhcp relay profile");
+        l.add(cfgAll.dmnDhcp6.listServers(), false, 3, new int[]{-1}, "<name:loc>", "name of dhcp relay profile");
         l.add(null, false, 2, new int[]{-1}, "prefix-suppress", "suppress router advertisements");
         l.add(null, false, 2, new int[]{3}, "prefix-dns", "name server in router advertisements");
         l.add(null, false, 3, new int[]{4, -1}, "<addr>", "name server address");
@@ -7319,8 +7319,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 4, new int[]{-1}, "<num>", "number of bridge group");
         l.add(null, false, 3, new int[]{4}, "xconnect", "cross connect vlan");
         cfgXconnSide.getHelp(l, 4);
-        l.add(null, false, 1, new int[]{2}, "dhcp-relay", "relay ipv4 dhcp requests");
-        l.add(null, false, 2, new int[]{-1}, "<name:srv>", "name of dhcp4 relay profile");
         l.add(null, false, 1, new int[]{2}, "dhcp4server", "serve ipv4 dhcp requests");
         l.add(null, false, 2, new int[]{-1}, "enable", "enable processing");
         l.add(null, false, 2, new int[]{3}, "pool", "address pool to use");
