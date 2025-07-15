@@ -1240,6 +1240,7 @@ public class spfCalc<Ta extends addrType> {
      */
     public userFormat listTopology(Ta adr, cmds cmd) {
         String dns = null;
+        String remv = null;
         String nod = null;
         for (;;) {
             String a = cmd.word();
@@ -1248,6 +1249,10 @@ public class spfCalc<Ta extends addrType> {
             }
             if (a.equals("dns")) {
                 dns = cmd.word();
+                continue;
+            }
+            if (a.equals("remv")) {
+                remv = cmd.word();
                 continue;
             }
             nod = a;
@@ -1259,7 +1264,7 @@ public class spfCalc<Ta extends addrType> {
                 if (ntry == null) {
                     continue;
                 }
-                String nam = node2name(ntry, dns);
+                String nam = node2name(ntry, dns, remv);
                 res.add(nam + "|reach|" + ntry.visited + "|" + ntry.conn.size());
                 res.add(nam + "|segrou|" + ntry.srIdx);
                 res.add(nam + "|bieri|" + ntry.brIdx);
@@ -1272,7 +1277,7 @@ public class spfCalc<Ta extends addrType> {
                     if (con == null) {
                         continue;
                     }
-                    res.add(nam + "|neigh|" + node2name(con.target, dns) + "|" + con.metric);
+                    res.add(nam + "|neigh|" + node2name(con.target, dns, remv) + "|" + con.metric);
                 }
                 for (int o = 0; o < ntry.prfFix.size(); o++) {
                     tabRouteEntry<addrIP> rou = ntry.prfFix.get(o);
@@ -1442,6 +1447,7 @@ public class spfCalc<Ta extends addrType> {
      */
     public List<String> listTree(cmds cmd) {
         String dns = null;
+        String remv = null;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -1451,16 +1457,20 @@ public class spfCalc<Ta extends addrType> {
                 dns = cmd.word();
                 continue;
             }
+            if (a.equals("remv")) {
+                remv = cmd.word();
+                continue;
+            }
         }
         List<String> res = new ArrayList<String>();
         if (spfRoot == null) {
             return res;
         }
-        listTree(res, dns, spfRoot, "");
+        listTree(res, dns, remv, spfRoot, "");
         return res;
     }
 
-    private void listTree(List<String> res, String dns, spfNode<Ta> ntry, String pref) {
+    private void listTree(List<String> res, String dns, String remv, spfNode<Ta> ntry, String pref) {
         List<spfConn<Ta>> down = new ArrayList<spfConn<Ta>>();
         for (int i = 0; i < ntry.conn.size(); i++) {
             spfConn<Ta> cur = ntry.conn.get(i);
@@ -1472,16 +1482,19 @@ public class spfCalc<Ta extends addrType> {
             }
             down.add(cur);
         }
-        res.add(pref + "`--" + node2name(ntry, dns));
+        res.add(pref + "`--" + node2name(ntry, dns, remv));
         for (int i = 0; i < down.size(); i++) {
             spfConn<Ta> cur = down.get(i);
             String a = (i + 1) == down.size() ? "   " : "  |";
-            listTree(res, dns, cur.target, pref + a);
+            listTree(res, dns, remv, cur.target, pref + a);
         }
     }
 
-    private String node2name(spfNode<Ta> ntry, String dns) {
+    private String node2name(spfNode<Ta> ntry, String dns, String rem) {
         String a = "" + ntry;
+        if (rem != null) {
+            a = a.replaceAll(rem, "");
+        }
         if (dns == null) {
             return a;
         }
@@ -1536,6 +1549,7 @@ public class spfCalc<Ta extends addrType> {
         String dns = null;
         boolean nets = false;
         boolean ints = false;
+        String remv = null;
         String locs = null;
         String defl[] = null;
         float recBX = 0;
@@ -1608,6 +1622,10 @@ public class spfCalc<Ta extends addrType> {
                 scale = true;
                 continue;
             }
+            if (a.equals("remv")) {
+                remv = cmd.word();
+                continue;
+            }
         }
         List<String> res = new ArrayList<String>();
         if (cli) {
@@ -1619,7 +1637,7 @@ public class spfCalc<Ta extends addrType> {
         }
         for (int o = 0; o < nodes.size(); o++) {
             spfNode<Ta> ntry = nodes.get(o);
-            String nam = node2name(ntry, dns);
+            String nam = node2name(ntry, dns, remv);
             res.add("//" + nam);
             if (locs != null) {
                 clntDns clnt = new clntDns();
@@ -1660,7 +1678,7 @@ public class spfCalc<Ta extends addrType> {
                 if (ints) {
                     a = " [taillabel=\"" + cur.ident + "\"]";
                 }
-                res.add("  \"" + nam + "\" -- \"" + node2name(cur.target, dns) + "\" [weight=" + cur.metric + "]" + a);
+                res.add("  \"" + nam + "\" -- \"" + node2name(cur.target, dns, remv) + "\" [weight=" + cur.metric + "]" + a);
             }
             if (!nets) {
                 continue;
