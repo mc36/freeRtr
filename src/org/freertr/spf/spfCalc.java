@@ -1502,10 +1502,10 @@ public class spfCalc<Ta extends addrType> {
         if (adr.fromString(a)) {
             return a;
         }
-        a = packDnsRec.generateReverse(adr);
+        String b = packDnsRec.generateReverse(adr);
         clntDns clnt = new clntDns();
-        clnt.doResolvList(cfgAll.nameServerAddr, a, false, packDnsRec.typePTR);
-        String b = clnt.getPTR();
+        clnt.doResolvList(cfgAll.nameServerAddr, b, false, packDnsRec.typePTR);
+        b = clnt.getPTR();
         if (b == null) {
             return a;
         }
