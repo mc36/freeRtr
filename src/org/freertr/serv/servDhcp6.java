@@ -134,7 +134,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     /**
      * upstream servers - DHCP6 servers to forward to
      */
-    private List<addrIP> upstreamServers = new ArrayList<addrIP>();
+    private List<addrIP> helperAddresses = new ArrayList<addrIP>();
 
     /**
      * use interface-id option
@@ -264,8 +264,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             cmds.cfgLine(l, bindFile == null, beg, "bind-file", bindFile);
         } else {
             // Relay mode configuration
-            for (addrIP addr : upstreamServers) {
-                l.add(beg + "helper-addresses " + addr);
+            String helpers = "";
+            for (int i = 0; i < helperAddresses.size(); i++) {
+                helpers += " " + helperAddresses.get(i);
+            }
+            if (helpers.length() > 0) {
+                l.add(beg + "helper-addresses" + helpers);
             }
             if (useInterfaceId) {
                 l.add(beg + "use-interface-id");
@@ -306,24 +310,20 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return false;
         }
         if (a.equals("helper-addresses")) {
-            addrIP addr = new addrIP();
-            String addrStr = cmd.word();
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 relay: Adding helper-address: " + addrStr);
-            }
-            if (addr.fromString(addrStr)) {
-                if (debugger.servDhcp6traf) {
-                    logger.error("dhcp6 relay: Invalid helper-address: " + addrStr);
+            helperAddresses.clear();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
                 }
-                cmd.error("bad address");
-                return false;
+                addrIP addr = new addrIP();
+                if (addr.fromString(a)) {
+                    cmd.error("bad helper address");
+                    return false;
+                }
+                helperAddresses.add(addr);
             }
-            upstreamServers.add(addr);
-            // Automatically switch to relay mode when relay commands are used
             mode = dhcpMode.relay;
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 relay: helper-address added: " + addr + ", switched to relay mode, total servers: " + upstreamServers.size());
-            }
             return false;
         }
         if (a.equals("bind-file")) {
@@ -469,7 +469,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                 }
             }
-
             return false;
         }
         if (a.equals("option")) {
@@ -483,28 +482,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
         a = cmd.word();
         if (a.equals("helper-addresses")) {
-            String addrStr = cmd.word();
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 relay: removing helper-address: " + addrStr);
-            }
-            addrIP addr = new addrIP();
-            if (addr.fromString(addrStr)) {
-                if (debugger.servDhcp6traf) {
-                    logger.error("dhcp6 relay: invalid helper-address to remove: " + addrStr);
-                }
-                cmd.error("bad address");
-                return false;
-            }
-            boolean removed = upstreamServers.removeIf(existingAddr -> existingAddr.compareTo(addr) == 0);
-            if (removed) {
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 relay: helper-address removed: " + addr + ", total servers: " + upstreamServers.size());
-                }
-            } else {
-                if (debugger.servDhcp6traf) {
-                    logger.warn("dhcp6 relay: helper-address not found for removal: " + addr);
-                }
-            }
+            helperAddresses.clear();
             return false;
         }
         if (a.equals("bind-file")) {
@@ -546,15 +524,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
         if (a.equals("dynamic-address")) {
             dynamicAddress = false;
-            return false;
-        }
-        if (a.equals("helper-addresses")) {
-            addrIP addr = new addrIP();
-            if (addr.fromString(cmd.word())) {
-                cmd.error("bad address");
-                return false;
-            }
-            upstreamServers.remove(addr);
             return false;
         }
         if (a.equals("use-interface-id")) {
@@ -610,7 +579,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         l.add(null, false, 1, new int[]{2}, "max-hop-count", "maximum hop count for relay");
         l.add(null, false, 2, new int[]{-1}, "<num>", "hop count limit");
         l.add(null, false, 1, new int[]{2}, "helper-addresses", "upstream DHCP6 server for relay");
-        l.add(null, false, 2, new int[]{-1}, "<addr>", "server address");
+        l.add(null, false, 2, new int[]{2, -1}, "<addr>", "server address");
         l.add(null, false, 1, new int[]{2}, "bind-file", "save bindings");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "file name");
         l.add(null, false, 1, new int[]{2}, "gateway", "gateway address to delegate");
@@ -665,7 +634,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
 
         // Validation: Check upstream servers
-        if (upstreamServers.isEmpty()) {
+        if (helperAddresses.isEmpty()) {
             if (debugger.servDhcp6traf) {
                 logger.error("dhcp6 relay: no upstream servers configured");
             }
@@ -2140,7 +2109,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     private boolean relayClientToServer(packDhcp6 dhcp, packHolder pck, prtGenConn id) {
         relayStats.packetsClientToServer++;
         if (debugger.servDhcp6traf) {
-            logger.info("dhcp6 relayClientToServer: processing client packet, msgType=" + dhcp.msgTyp + ", upstreamServers=" + upstreamServers.size());
+            logger.info("dhcp6 relayClientToServer: processing client packet, msgType=" + dhcp.msgTyp + ", upstreamServers=" + helperAddresses.size());
         }
 
         // Check hop count for relay-forward messages
@@ -2160,7 +2129,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
 
         // Forward to all upstream servers
-        if (upstreamServers.isEmpty()) {
+        if (helperAddresses.isEmpty()) {
             if (debugger.servDhcp6traf) {
                 logger.error("dhcp6 relayClientToServer: no upstream servers configured");
             }
@@ -2178,7 +2147,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
 
         int forwardedCount = 0;
-        for (addrIP serverAddr : upstreamServers) {
+        for (addrIP serverAddr : helperAddresses) {
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 relayClientToServer: forwarding to server " + serverAddr + " from interface " + (sourceIface != null ? sourceIface.name : "default"));
             }
@@ -2729,7 +2698,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
 
         // If we're in relay mode and have upstream servers, reinitialize to bind to all interfaces
-        if (mode == dhcpMode.relay && !upstreamServers.isEmpty()) {
+        if (mode == dhcpMode.relay && !helperAddresses.isEmpty()) {
             if (srvIface == null) {
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 relay: first interface added, attempting to initialize service");

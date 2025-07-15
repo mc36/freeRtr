@@ -309,29 +309,25 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             cmds.cfgLine(l, bindFile == null, beg, "bind-file", bindFile);
         } else {
             // Relay mode configuration
-            synchronized (helperAddresses) {
-                String helpers = "";
-                for (int i = 0; i < helperAddresses.size(); i++) {
-                    helpers += " " + helperAddresses.get(i);
-                }
-                if (helpers.length() > 0) {
-                    l.add(beg + "helper-addresses" + helpers);
-                }
+            String helpers = "";
+            for (int i = 0; i < helperAddresses.size(); i++) {
+                helpers += " " + helperAddresses.get(i);
             }
-            l.add(beg + (addAgentOptions ? "" : "no ") + "add-agent-options");
-            if (addAgentOptions) {
-                if (circuitIdTemplate != null) {
-                    l.add(beg + "circuit-id-template " + circuitIdTemplate);
-                }
-                if (remoteIdTemplate != null) {
-                    l.add(beg + "remote-id-template " + remoteIdTemplate);
-                }
-                if (linkSelectionAddr != null) {
-                    l.add(beg + "link-selection-address " + linkSelectionAddr);
-                }
-                if (subscriberId != null && !subscriberId.isEmpty()) {
-                    l.add(beg + "subscriber-id " + subscriberId);
-                }
+            if (helpers.length() > 0) {
+                l.add(beg + "helper-addresses" + helpers);
+            }
+            cmds.cfgLine(l, !addAgentOptions, beg, "add-agent-options", "");
+            if (circuitIdTemplate != null) {
+                l.add(beg + "circuit-id-template " + circuitIdTemplate);
+            }
+            if (remoteIdTemplate != null) {
+                l.add(beg + "remote-id-template " + remoteIdTemplate);
+            }
+            if (linkSelectionAddr != null) {
+                l.add(beg + "link-selection-address " + linkSelectionAddr);
+            }
+            if (subscriberId != null && !subscriberId.isEmpty()) {
+                l.add(beg + "subscriber-id " + subscriberId);
             }
             l.add(beg + "max-hop-count " + maxHopCount);
             l.add(beg + "agent-relay-mode " + agentRelayMode);
@@ -1124,21 +1120,20 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             return false;
         }
         if (a.equals("helper-addresses")) {
-            synchronized (helperAddresses) {
-                helperAddresses.clear();
-                for (;;) {
-                    a = cmd.word();
-                    if (a.length() < 1) {
-                        break;
-                    }
-                    addrIP addr = new addrIP();
-                    if (addr.fromString(a)) {
-                        cmd.error("bad helper address");
-                        return false;
-                    }
-                    helperAddresses.add(addr);
+            helperAddresses.clear();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
                 }
+                addrIP addr = new addrIP();
+                if (addr.fromString(a)) {
+                    cmd.error("bad helper address");
+                    return false;
+                }
+                helperAddresses.add(addr);
             }
+            mode = dhcpMode.relay;
             return false;
         }
         if (a.equals("add-agent-options")) {
@@ -1401,9 +1396,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             return false;
         }
         if (a.equals("helper-addresses")) {
-            synchronized (helperAddresses) {
-                helperAddresses.clear();
-            }
+            helperAddresses.clear();
             return false;
         }
         if (a.equals("add-agent-options")) {
@@ -1435,8 +1428,8 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
         // Relay mode commands
         l.add(null, false, 1, new int[]{2}, "helper-addresses", "dhcp server addresses to forward to");
-        l.add(null, false, 2, new int[]{-1}, "<addr>", "server ip address");
-        l.add(null, false, 1, new int[]{2}, "add-agent-options", "add relay agent options");
+        l.add(null, false, 2, new int[]{2, -1}, "<addr>", "server ip address");
+        l.add(null, false, 1, new int[]{-1}, "add-agent-options", "add relay agent options");
         l.add(null, false, 1, new int[]{2}, "circuit-id-template", "circuit id template for agent options");
         l.add(null, false, 2, new int[]{-1}, "interface-name", "use interface name as circuit id");
         l.add(null, false, 2, new int[]{-1}, "interface-number", "use interface number as circuit id");
