@@ -1211,13 +1211,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // Find and extract the relay message option and other options
             int offset = 34;
             packHolder relayMessageContent = null;
-            List<packHolder> otherOptions = new ArrayList<packHolder>();
+            List<byte[]> otherOptions = new ArrayList<byte[]>();
 
             while (offset + 4 <= relayForwardPck.dataSize()) {
-                int optType = ((relayForwardPck.getByte(offset) & 0xff) << 8)
-                        | (relayForwardPck.getByte(offset + 1) & 0xff);
-                int optLen = ((relayForwardPck.getByte(offset + 2) & 0xff) << 8)
-                        | (relayForwardPck.getByte(offset + 3) & 0xff);
+                int optType = relayForwardPck.msbGetW(offset);
+                int optLen = relayForwardPck.msbGetW(offset + 2);
 
                 if (optType == D6O_RELAY_MSG) { // Relay Message Option
                     if (debugger.servDhcp6traf) {
@@ -1238,17 +1236,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                         logger.info("dhcp6 createNestedRelayReply: found option type " + optType + ", length=" + optLen);
                     }
 
-                    packHolder optionData = new packHolder(true, true);
-                    optionData.putByte(0, (optType >>> 8) & 0xff);
-                    optionData.putByte(1, optType & 0xff);
-                    optionData.putByte(2, (optLen >>> 8) & 0xff);
-                    optionData.putByte(3, optLen & 0xff);
-
-                    for (int i = 0; i < optLen; i++) {
-                        optionData.putByte(4 + i, relayForwardPck.getByte(offset + 4 + i));
-                    }
-                    optionData.putSkip(4 + optLen);
-                    optionData.merge2beg();
+                    byte[] optionData = new byte[optLen + 4];
+                    relayForwardPck.getCopy(optionData, 0, offset, optionData.length);
                     otherOptions.add(optionData);
                 }
 
@@ -1317,9 +1306,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
             // Add all other options first (like Interface-Id)
             for (int i = 0; i < otherOptions.size(); i++) {
-                packHolder option = otherOptions.get(i);
-                byte[] optionBytes = new byte[option.dataSize()];
-                option.getCopy(optionBytes, 0, 0, option.dataSize());
+                byte[] optionBytes = otherOptions.get(i);
                 relayReply.putCopy(optionBytes, 0, 0, optionBytes.length);
                 relayReply.putSkip(optionBytes.length);
             }
@@ -1362,10 +1349,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
             // Search for Relay Message Option (Type 9)
             while (offset + 4 <= relayForwardPck.dataSize()) {
-                int optType = ((relayForwardPck.getByte(offset) & 0xff) << 8)
-                        | (relayForwardPck.getByte(offset + 1) & 0xff);
-                int optLen = ((relayForwardPck.getByte(offset + 2) & 0xff) << 8)
-                        | (relayForwardPck.getByte(offset + 3) & 0xff);
+                int optType = relayForwardPck.msbGetW(offset);
+                int optLen = relayForwardPck.msbGetW(offset + 2);
 
                 if (optType == 9) { // Relay Message Option
                     if (debugger.servDhcp6traf) {
@@ -1424,9 +1409,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
 
             int clientMsgType = originalMessage.getByte(0) & 0xff;
-            int transactionId = ((originalMessage.getByte(1) & 0xff) << 16)
-                    | ((originalMessage.getByte(2) & 0xff) << 8)
-                    | (originalMessage.getByte(3) & 0xff);
+            int transactionId = originalMessage.msbGetD(1) >>> 8;
 
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 createServerResponse: client msgType=" + clientMsgType + ", transId=" + transactionId);
@@ -1822,8 +1805,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
         int offset = 4; // Skip message header
         while (offset + 4 <= message.dataSize()) {
-            int optionType = ((message.getByte(offset) & 0xff) << 8) | (message.getByte(offset + 1) & 0xff);
-            int optionLength = ((message.getByte(offset + 2) & 0xff) << 8) | (message.getByte(offset + 3) & 0xff);
+            int optionType = message.msbGetW(offset);
+            int optionLength = message.msbGetW(offset + 2);
 
             if (optionType == 3) { // IA_NA
                 foundIA_NA = true;
@@ -1870,17 +1853,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // Search for IA_NA option (Type 3) in the message
             int offset = 4; // Skip message header
             while (offset + 4 <= message.dataSize()) {
-                int optType = ((message.getByte(offset) & 0xff) << 8)
-                        | (message.getByte(offset + 1) & 0xff);
-                int optLen = ((message.getByte(offset + 2) & 0xff) << 8)
-                        | (message.getByte(offset + 3) & 0xff);
+                int optType = message.msbGetW(offset);
+                int optLen = message.msbGetW(offset + 2);
 
                 if (optType == 3 && optLen >= 12) { // IA_NA option
                     // Extract IAID (first 4 bytes of IA_NA data)
-                    int iaid = ((message.getByte(offset + 4) & 0xff) << 24)
-                            | ((message.getByte(offset + 5) & 0xff) << 16)
-                            | ((message.getByte(offset + 6) & 0xff) << 8)
-                            | (message.getByte(offset + 7) & 0xff);
+                    int iaid = message.msbGetD(offset + 4);
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 extractIAID: found iaid=" + iaid);
                     }
@@ -1918,10 +1896,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // Search for Client Identifier option (Type 1) in the message
             int offset = 4; // Skip message header
             while (offset + 4 <= message.dataSize()) {
-                int optType = ((message.getByte(offset) & 0xff) << 8)
-                        | (message.getByte(offset + 1) & 0xff);
-                int optLen = ((message.getByte(offset + 2) & 0xff) << 8)
-                        | (message.getByte(offset + 3) & 0xff);
+                int optType = message.msbGetW(offset);
+                int optLen = message.msbGetW(offset + 2);
 
                 // Validate option length is within bounds
                 if (optLen < 0 || offset + 4 + optLen > message.dataSize()) {
