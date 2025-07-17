@@ -1312,10 +1312,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
 
             // Add Relay Message option containing the response content
-            relayReply.putByte(0, (D6O_RELAY_MSG >>> 8) & 0xff);      // Option type high byte
-            relayReply.putByte(1, D6O_RELAY_MSG & 0xff);              // Option type low byte
-            relayReply.putByte(2, (responseContent.dataSize() >>> 8) & 0xff); // Length high byte
-            relayReply.putByte(3, responseContent.dataSize() & 0xff);         // Length low byte
+            relayReply.msbPutW(0, D6O_RELAY_MSG);      // Option type
+            relayReply.msbPutW(2, responseContent.dataSize()); // Length
 
             // Copy response content into option
             byte[] responseData = new byte[responseContent.dataSize()];
@@ -1447,9 +1445,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 // Create response without IA options
                 packHolder configOnlyResponse = new packHolder(true, true);
                 configOnlyResponse.putByte(0, (clientMsgType == packDhcp6.typSolicit) ? packDhcp6.typAdvertise : packDhcp6.typReply);
-                configOnlyResponse.putByte(1, (transactionId >> 16) & 0xff);
-                configOnlyResponse.putByte(2, (transactionId >> 8) & 0xff);
-                configOnlyResponse.putByte(3, transactionId & 0xff);
+                configOnlyResponse.msbPutD(1, transactionId << 8);
 
                 int pos = 4;
 
@@ -1495,9 +1491,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 // Create minimal error response
                 packHolder errorResponse = new packHolder(true, true);
                 errorResponse.putByte(0, (clientMsgType == packDhcp6.typSolicit) ? packDhcp6.typAdvertise : packDhcp6.typReply);
-                errorResponse.putByte(1, (transactionId >> 16) & 0xff);
-                errorResponse.putByte(2, (transactionId >> 8) & 0xff);
-                errorResponse.putByte(3, transactionId & 0xff);
+                errorResponse.msbPutD(1, transactionId << 8);
 
                 // Add Server Identifier (Option 2)
                 byte[] serverDUID = packDhcp6.encodeDUID(srvIface.ethtyp.getHwAddr());
@@ -1569,9 +1563,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
             // Build response packet
             response.putByte(0, responseType);
-            response.putByte(1, (transactionId >> 16) & 0xff);
-            response.putByte(2, (transactionId >> 8) & 0xff);
-            response.putByte(3, transactionId & 0xff);
+            response.msbPutD(1, transactionId << 8);
 
             int currentPos = 4;
 
@@ -1582,26 +1574,20 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             response.putByte(currentPos++, 40); // Option Length low (40 bytes: 12 header + 28 IA Address)
 
             // IA_NA header (12 bytes)
-            response.putByte(currentPos++, (clientIAID >> 24) & 0xff); // IAID
-            response.putByte(currentPos++, (clientIAID >> 16) & 0xff);
-            response.putByte(currentPos++, (clientIAID >> 8) & 0xff);
-            response.putByte(currentPos++, clientIAID & 0xff);
+            response.msbPutD(currentPos, clientIAID); // IAID
+            currentPos += 4;
 
-            response.putByte(currentPos++, 0); // T1 (4 bytes) - 0 means server chooses
-            response.putByte(currentPos++, 0);
-            response.putByte(currentPos++, 0);
-            response.putByte(currentPos++, 0);
+            response.msbPutD(currentPos, 0); // T1 (4 bytes) - 0 means server chooses
+            currentPos += 4;
 
-            response.putByte(currentPos++, 0); // T2 (4 bytes) - 0 means server chooses
-            response.putByte(currentPos++, 0);
-            response.putByte(currentPos++, 0);
-            response.putByte(currentPos++, 0);
+            response.msbPutD(currentPos, 0); // T2 (4 bytes) - 0 means server chooses
+            currentPos += 4;
 
             // IA Address Option (Type 5) - 28 bytes
-            response.putByte(currentPos++, 0);  // Option Type high
-            response.putByte(currentPos++, 5);  // Option Type low (5 = IA Address)
-            response.putByte(currentPos++, 0);  // Option Length high
-            response.putByte(currentPos++, 24); // Option Length low (24 bytes)
+            response.msbPutW(currentPos, 5);  // Option Type
+            currentPos += 2;
+            response.msbPutW(currentPos, 24); // Option Length
+            currentPos += 2;
 
             // IPv6 Address (16 bytes) - Generate from pool or use configured range
             // Create a MAC address from the client DUID
@@ -2428,10 +2414,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // Add interface-id option if enabled
             if (useInterfaceId) {
                 byte[] ifNameBytes = ("" + id.iface).getBytes();
-                relayPck.putByte(0, (D6O_INTERFACE_ID >>> 8) & 0xff); // Option type high byte
-                relayPck.putByte(1, D6O_INTERFACE_ID & 0xff);          // Option type low byte
-                relayPck.putByte(2, (ifNameBytes.length >>> 8) & 0xff); // Length high byte
-                relayPck.putByte(3, ifNameBytes.length & 0xff);         // Length low byte
+                relayPck.msbPutW(0, D6O_INTERFACE_ID); // Option type
+                relayPck.msbPutW(2, ifNameBytes.length); // Length
                 relayPck.putCopy(ifNameBytes, 0, 4, ifNameBytes.length);
                 relayPck.putSkip(4 + ifNameBytes.length);
                 relayStats.interfaceIdAdded++;
@@ -2440,20 +2424,16 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // Add subscriber-id option if configured
             if (subscriberId != null && !subscriberId.isEmpty()) {
                 byte[] subIdBytes = subscriberId.getBytes();
-                relayPck.putByte(0, (D6O_SUBSCRIBER_ID >>> 8) & 0xff); // Option type high byte
-                relayPck.putByte(1, D6O_SUBSCRIBER_ID & 0xff);          // Option type low byte
-                relayPck.putByte(2, (subIdBytes.length >>> 8) & 0xff);  // Length high byte
-                relayPck.putByte(3, subIdBytes.length & 0xff);          // Length low byte
+                relayPck.msbPutW(0, D6O_SUBSCRIBER_ID); // Option type
+                relayPck.msbPutW(2, subIdBytes.length);  // Length
                 relayPck.putCopy(subIdBytes, 0, 4, subIdBytes.length);
                 relayPck.putSkip(4 + subIdBytes.length);
                 relayStats.subscriberIdAdded++;
             }
 
             // Add relay message option containing original packet
-            relayPck.putByte(0, (D6O_RELAY_MSG >>> 8) & 0xff);      // Option type high byte
-            relayPck.putByte(1, D6O_RELAY_MSG & 0xff);              // Option type low byte
-            relayPck.putByte(2, (originalPck.dataSize() >>> 8) & 0xff); // Length high byte
-            relayPck.putByte(3, originalPck.dataSize() & 0xff);         // Length low byte
+            relayPck.msbPutW(0, D6O_RELAY_MSG);      // Option type
+            relayPck.msbPutW(2, originalPck.dataSize()); // Length
             byte[] originalData = new byte[originalPck.dataSize()];
             originalPck.getCopy(originalData, 0, 0, originalPck.dataSize());
             relayPck.putCopy(originalData, 0, 4, originalPck.dataSize());
@@ -2484,8 +2464,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
             // Parse options to find relay message option (type 9)
             while (pos + 4 <= pck.dataSize()) {
-                int optType = (pck.getByte(pos) << 8) | pck.getByte(pos + 1);
-                int optLen = (pck.getByte(pos + 2) << 8) | pck.getByte(pos + 3);
+                int optType = pck.msbGetW(pos);
+                int optLen = pck.msbGetW(pos + 2);
 
                 if (optType == D6O_RELAY_MSG) {
                     // Found relay message option, extract the original message
@@ -2974,10 +2954,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (useInterfaceId && sourceIface != null) {
                 String ifName = sourceIface.name;
                 byte[] ifNameBytes = ifName.getBytes();
-                relayPck.putByte(0, (D6O_INTERFACE_ID >>> 8) & 0xff); // Option type high byte
-                relayPck.putByte(1, D6O_INTERFACE_ID & 0xff);          // Option type low byte
-                relayPck.putByte(2, (ifNameBytes.length >>> 8) & 0xff); // Length high byte
-                relayPck.putByte(3, ifNameBytes.length & 0xff);         // Length low byte
+                relayPck.msbPutW(0, D6O_INTERFACE_ID); // Option type 
+                relayPck.msbPutW(2, ifNameBytes.length); // Length 
                 relayPck.putCopy(ifNameBytes, 0, 4, ifNameBytes.length);
                 relayPck.putSkip(4 + ifNameBytes.length);
                 relayStats.interfaceIdAdded++;
@@ -2986,20 +2964,16 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // Add subscriber-id option if configured
             if (subscriberId != null && !subscriberId.isEmpty()) {
                 byte[] subIdBytes = subscriberId.getBytes();
-                relayPck.putByte(0, (D6O_SUBSCRIBER_ID >>> 8) & 0xff); // Option type high byte
-                relayPck.putByte(1, D6O_SUBSCRIBER_ID & 0xff);          // Option type low byte
-                relayPck.putByte(2, (subIdBytes.length >>> 8) & 0xff);  // Length high byte
-                relayPck.putByte(3, subIdBytes.length & 0xff);          // Length low byte
+                relayPck.msbPutW(0, D6O_SUBSCRIBER_ID); // Option type 
+                relayPck.msbPutW(2, subIdBytes.length);  // Length 
                 relayPck.putCopy(subIdBytes, 0, 4, subIdBytes.length);
                 relayPck.putSkip(4 + subIdBytes.length);
                 relayStats.subscriberIdAdded++;
             }
 
             // Add relay message option containing original packet
-            relayPck.putByte(0, (D6O_RELAY_MSG >>> 8) & 0xff);      // Option type high byte
-            relayPck.putByte(1, D6O_RELAY_MSG & 0xff);              // Option type low byte
-            relayPck.putByte(2, (originalPck.dataSize() >>> 8) & 0xff); // Length high byte
-            relayPck.putByte(3, originalPck.dataSize() & 0xff);         // Length low byte
+            relayPck.msbPutW(0, D6O_RELAY_MSG);      // Option type 
+            relayPck.msbPutW(2, originalPck.dataSize()); // Length 
             byte[] originalData = new byte[originalPck.dataSize()];
             originalPck.getCopy(originalData, 0, 0, originalPck.dataSize());
             relayPck.putCopy(originalData, 0, 4, originalPck.dataSize());
