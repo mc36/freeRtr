@@ -297,6 +297,9 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             synchronized (bindings) {
                 for (int i = 0; i < bindings.size(); i++) {
                     servDhcp4bind ntry = bindings.get(i);
+                    if (ntry == null) {
+                        continue;
+                    }
                     if (!ntry.confed) {
                         continue;
                     }
@@ -552,7 +555,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             // Find client interface based on giaddr BEFORE clearing it
             ipFwdIface clientInterface = null;
             if (!dhcp.bootpGiaddr.isEmpty()) {
-                for (cfgIfc ifc : relayInterfaces) {
+                for (int i = 0; i < relayInterfaces.size(); i++) {
+                    cfgIfc ifc = relayInterfaces.get(i);
+                    if (ifc == null) {
+                        continue;
+                    }
                     if (ifc.addr4 != null && ifc.addr4.compareTo(dhcp.bootpGiaddr) == 0) {
                         clientInterface = ifc.fwdIf4;
                         if (debugger.servDhcp4traf) {
@@ -750,47 +757,41 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         agentOption.number = DHCP_OPTION_RELAY_AGENT_INFO;
 
         // Build sub-options data
-        List<Byte> subOptionData = new ArrayList<>();
+        List<Byte> subOptionData = new ArrayList<Byte>();
 
         // Sub-option 1: Circuit ID
         if (circuitIdTemplate != null && !circuitIdTemplate.isEmpty()) {
-            String circuitId = formatCircuitId(id);
-            if (!circuitId.isEmpty()) {
+            byte[] buf = formatCircuitId(id).getBytes();
+            if (buf.length > 0) {
                 subOptionData.add((byte) AGENT_CIRCUIT_ID_SUBOPTION);
-                subOptionData.add((byte) circuitId.length());
-                for (byte b : circuitId.getBytes()) {
-                    subOptionData.add(b);
+                subOptionData.add((byte) buf.length);
+                for (int i = 0; i < buf.length; i++) {
+                    subOptionData.add(buf[i]);
                 }
                 relayStats.circuitIdAdded++;
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay added circuit-id '" + circuitId + "'");
-                }
             }
         }
 
         // Sub-option 2: Remote ID
         if (remoteIdTemplate != null && !remoteIdTemplate.isEmpty()) {
-            String remoteId = formatRemoteId(id);
-            if (!remoteId.isEmpty()) {
+            byte[] buf = formatRemoteId(id).getBytes();
+            if (buf.length > 0) {
                 subOptionData.add((byte) AGENT_REMOTE_ID_SUBOPTION);
-                subOptionData.add((byte) remoteId.length());
-                for (byte b : remoteId.getBytes()) {
-                    subOptionData.add(b);
+                subOptionData.add((byte) buf.length);
+                for (int i = 0; i < buf.length; i++) {
+                    subOptionData.add(buf[i]);
                 }
                 relayStats.remoteIdAdded++;
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay added remote-id '" + remoteId + "'");
-                }
             }
         }
 
         // Sub-option 5: Link Selection
         if (linkSelectionAddr != null && !linkSelectionAddr.isEmpty()) {
             subOptionData.add((byte) AGENT_LINK_SELECTION_SUBOPTION);
-            subOptionData.add((byte) 4); // IPv4 address length
-            byte[] addrBytes = linkSelectionAddr.getBytes();
-            for (byte b : addrBytes) {
-                subOptionData.add(b);
+            byte[] buf = linkSelectionAddr.getBytes();
+            subOptionData.add((byte) buf.length); // IPv4 address length
+            for (int i = 0; i < buf.length; i++) {
+                subOptionData.add(buf[i]);
             }
             relayStats.linkSelectionAdded++;
             if (debugger.servDhcp4traf) {
@@ -801,9 +802,10 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         // Sub-option 6: Subscriber ID
         if (subscriberId != null && !subscriberId.isEmpty()) {
             subOptionData.add((byte) AGENT_SUBSCRIBER_ID_SUBOPTION);
-            subOptionData.add((byte) subscriberId.length());
-            for (byte b : subscriberId.getBytes()) {
-                subOptionData.add(b);
+            byte[] buf = subscriberId.getBytes();
+            subOptionData.add((byte) buf.length);
+            for (int i = 0; i < buf.length; i++) {
+                subOptionData.add(buf[i]);
             }
             relayStats.subscriberIdAdded++;
             if (debugger.servDhcp4traf) {
@@ -833,7 +835,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             case "interface-name":
                 if (id.iface != null) {
                     // Find corresponding cfgIfc to get the actual interface name
-                    for (cfgIfc ifc : relayInterfaces) {
+                    for (int i = 0; i < relayInterfaces.size(); i++) {
+                        cfgIfc ifc = relayInterfaces.get(i);
+                        if (ifc == null) {
+                            continue;
+                        }
                         if (ifc.fwdIf4 != null && ifc.fwdIf4.equals(id.iface)) {
                             return "interface-" + ifc.name;
                         }
@@ -1531,7 +1537,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
         // Start datagram service on each configured relay interface
         boolean allStarted = true;
-        for (cfgIfc ifc : relayInterfaces) {
+        for (int i = 0; i < relayInterfaces.size(); i++) {
+            cfgIfc ifc = relayInterfaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
             if (debugger.servDhcp4traf) {
                 logger.info("DHCP4 Relay: Starting packetListen on interface " + ifc.name);
             }
@@ -1561,7 +1571,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             return true;
         }
 
-        for (cfgIfc ifc : relayInterfaces) {
+        for (int i = 0; i < relayInterfaces.size(); i++) {
+            cfgIfc ifc = relayInterfaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
             if (debugger.servDhcp4traf) {
                 logger.info("DHCP4 Relay: Starting packetStop on interface " + ifc.name);
             }
@@ -1770,7 +1784,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         txt = new ArrayList<String>();
         synchronized (bindings) {
             for (int i = 0; i < bindings.size(); i++) {
-                txt.add("" + bindings.get(i));
+                servDhcp4bind ntry = bindings.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                txt.add("" + ntry);
             }
         }
         if (bits.buf2txt(true, txt, bindFile)) {
@@ -1787,6 +1805,9 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         userFormat res = new userFormat("|", "mac|ip|last");
         for (int i = 0; i < bindings.size(); i++) {
             servDhcp4bind ntry = bindings.get(i);
+            if (ntry == null) {
+                continue;
+            }
             res.add(ntry.mac + "|" + ntry.ip + "|" + bits.timePast(ntry.reqd));
         }
         return res;
@@ -2052,7 +2073,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
      */
     public synchronized void addRelayInterface(cfgIfc iface) {
         // Check if already in list
-        for (cfgIfc existing : relayInterfaces) {
+        for (int i = 0; i < relayInterfaces.size(); i++) {
+            cfgIfc existing = relayInterfaces.get(i);
+            if (existing == null) {
+                continue;
+            }
             if (existing.name.equals(iface.name)) {
                 if (debugger.servDhcp4traf) {
                     logger.debug("dhcp4 relay interface " + iface.name + " already in relay list");

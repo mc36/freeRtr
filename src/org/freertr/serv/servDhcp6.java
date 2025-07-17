@@ -252,6 +252,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             synchronized (bindings) {
                 for (int i = 0; i < bindings.size(); i++) {
                     servDhcp6bind ntry = bindings.get(i);
+                    if (ntry == null) {
+                        continue;
+                    }
                     if (!ntry.confed) {
                         continue;
                     }
@@ -439,7 +442,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // check if there's already a binding for this MAC
             boolean existingFound = false;
             synchronized (bindings) {
-                for (servDhcp6bind existing : bindings) {
+                for (int i = 0; i < bindings.size(); i++) {
+                    servDhcp6bind existing = bindings.get(i);
+                    if (existing == null) {
+                        continue;
+                    }
                     if (existing.mac.compareTo(mac) == 0) {
                         // Update existing binding to be static
                         existing.ip = ip.copyBytes();
@@ -664,7 +671,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         if (debugger.servDhcp6traf) {
             logger.info("dhcp6 relay: starting datagram service on " + relayInterfaces.size() + " relay interfaces");
         }
-        for (cfgIfc ifc : relayInterfaces) {
+        for (int i = 0; i < relayInterfaces.size(); i++) {
+            cfgIfc ifc = relayInterfaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
             boolean result = srvVrf.udp6.packetListen(this, ifc.fwdIf6, srvPort(), null, 0, srvName(), -1, null, -1, -1);
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 relay: packetListen result=" + result + " for interface " + ifc.name + " port " + srvPort());
@@ -690,7 +701,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return true;
         }
 
-        for (cfgIfc ifc : relayInterfaces) {
+        for (int i = 0; i < relayInterfaces.size(); i++) {
+            cfgIfc ifc = relayInterfaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
             if (debugger.servDhcp6traf) {
                 logger.info("DHCP6 Relay: Starting packetStop on interface " + ifc.name);
             }
@@ -746,7 +761,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
         synchronized (bindings) {
             // Check for static bindings by MAC address
-            for (servDhcp6bind existing : bindings) {
+            for (int i = 0; i < bindings.size(); i++) {
+                servDhcp6bind existing = bindings.get(i);
+                if (existing == null) {
+                    continue;
+                }
                 if (existing.mac.equals(mac) && existing.confed) {
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 findbinding: found static binding for mac " + mac + " with ip " + existing.ip);
@@ -762,7 +781,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
 
             // Check for dynamic bindings by MAC address
-            for (servDhcp6bind existing : bindings) {
+            for (int i = 0; i < bindings.size(); i++) {
+                servDhcp6bind existing = bindings.get(i);
+                if (existing == null) {
+                    continue;
+                }
                 if (existing.mac.compareTo(mac) == 0) {
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 findbinding: found dynamic binding for mac " + mac + " with ip " + existing.ip);
@@ -815,7 +838,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
 
                     // Look for static bindings again
-                    for (servDhcp6bind existing : bindings) {
+                    for (int i = 0; i < bindings.size(); i++) {
+                        servDhcp6bind existing = bindings.get(i);
+                        if (existing == null) {
+                            continue;
+                        }
                         if (existing.mac.compareTo(mac) == 0 && existing.confed) {
                             if (debugger.servDhcp6traf) {
                                 logger.info("dhcp6 findbinding: found static binding for mac " + mac + " when checking for dynamic allocation");
@@ -1050,7 +1077,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         // Ensure binding is in the list
         boolean foundInList = false;
         synchronized (bindings) {
-            for (servDhcp6bind existing : bindings) {
+            for (int i = 0; i < bindings.size(); i++) {
+                servDhcp6bind existing = bindings.get(i);
+                if (existing == null) {
+                    continue;
+                }
                 if (existing.mac.compareTo(mac) == 0) {
                     foundInList = true;
                     break;
@@ -1180,7 +1211,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // Find and extract the relay message option and other options
             int offset = 34;
             packHolder relayMessageContent = null;
-            List<packHolder> otherOptions = new ArrayList<>();
+            List<packHolder> otherOptions = new ArrayList<packHolder>();
 
             while (offset + 4 <= relayForwardPck.dataSize()) {
                 int optType = ((relayForwardPck.getByte(offset) & 0xff) << 8)
@@ -1285,7 +1316,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             relayReply.putSkip(34);
 
             // Add all other options first (like Interface-Id)
-            for (packHolder option : otherOptions) {
+            for (int i = 0; i < otherOptions.size(); i++) {
+                packHolder option = otherOptions.get(i);
                 byte[] optionBytes = new byte[option.dataSize()];
                 option.getCopy(optionBytes, 0, 0, option.dataSize());
                 relayReply.putCopy(optionBytes, 0, 0, optionBytes.length);
@@ -1620,7 +1652,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             addrIPv6 assignedAddr = null;
             servDhcp6bind staticBinding = null;
             synchronized (bindings) {
-                for (servDhcp6bind existing : bindings) {
+                for (int i = 0; i < bindings.size(); i++) {
+                    servDhcp6bind existing = bindings.get(i);
+                    if (existing == null) {
+                        continue;
+                    }
                     if (existing.mac.compareTo(clientMac) == 0 && existing.confed) {
                         staticBinding = existing;
                         assignedAddr = staticBinding.ip.copyBytes();
@@ -1990,7 +2026,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         txt = new ArrayList<String>();
         synchronized (bindings) {
             for (int i = 0; i < bindings.size(); i++) {
-                txt.add("" + bindings.get(i));
+                servDhcp6bind ntry = bindings.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                txt.add("" + ntry);
             }
         }
         if (bits.buf2txt(true, txt, bindFile)) {
@@ -2016,6 +2056,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         // Add each binding to the result
         for (int i = 0; i < bindings.size(); i++) {
             servDhcp6bind ntry = bindings.get(i);
+            if (ntry == null) {
+                continue;
+            }
             String entry = ntry.mac + "|" + ntry.ip + "|" + bits.timePast(ntry.reqd);
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 getShow: adding binding: " + entry);
@@ -2165,7 +2208,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
 
         int forwardedCount = 0;
-        for (addrIP serverAddr : helperAddresses) {
+        for (int i = 0; i < helperAddresses.size(); i++) {
+            addrIP serverAddr = helperAddresses.get(i);
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 relayClientToServer: forwarding to server " + serverAddr + " from interface " + (sourceIface != null ? sourceIface.name : "default"));
             }
@@ -2697,7 +2741,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
      */
     public synchronized void addRelayInterface(cfgIfc iface) {
         // Check if already in list
-        for (cfgIfc existing : relayInterfaces) {
+        for (int i = 0; i < relayInterfaces.size(); i++) {
+            cfgIfc existing = relayInterfaces.get(i);
+            if (existing == null) {
+                continue;
+            }
             if (existing.name.equals(iface.name)) {
                 if (debugger.servDhcp6traf) {
                     logger.debug("dhcp6 relay:  interface " + iface.name + " already in relay list");
@@ -3006,7 +3054,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         targetAddr.fromIPv6addr(linkAddr);
 
         // Direct lookup in relay interfaces using their IP addresses
-        for (cfgIfc iface : relayInterfaces) {
+        for (int i = 0; i < relayInterfaces.size(); i++) {
+            cfgIfc iface = relayInterfaces.get(i);
             if (iface == null) {
                 continue;
             }
@@ -3048,7 +3097,11 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
 
         // Search through relay interfaces to find matching forwarding interface
-        for (cfgIfc iface : relayInterfaces) {
+        for (int i = 0; i < relayInterfaces.size(); i++) {
+            cfgIfc iface = relayInterfaces.get(i);
+            if (iface == null) {
+                continue;
+            }
             if (iface.fwdIf6 != null && iface.fwdIf6 == conn.iface) {
                 if (debugger.servDhcp6traf) {
                     logger.debug("dhcp6 findInterfaceByConnection: found interface " + iface.name + " for connection");

@@ -1614,7 +1614,8 @@ public class cfgInit implements Runnable {
                 }
             }
             s = "";
-            for (int i = b ? 1 : 0; i < args.length; i++) {
+            int i = b ? 1 : 0;
+            for (; i < args.length; i++) {
                 s += " " + args[i];
             }
             pipeSide pip = pipeConsole.create();
