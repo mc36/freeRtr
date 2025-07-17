@@ -17292,3 +17292,6 @@ qc pass: wireguard over asymmetric ports
 ---------------------------------- 2025-07-17 10:47:24 25.7.17
 no qc pass: dhcp with excluded address
 failed: dhcp with excluded address
+---------------------------------- 2025-07-17 11:21:57 25.7.17
+no failed: dhcp with excluded address
+qc pass: dhcp with excluded address

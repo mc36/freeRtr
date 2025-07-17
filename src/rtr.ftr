@@ -67,7 +67,7 @@ qc pass: tunnel interface with capwap
 qc pass: dhcp
 qc pass: dhcp with arp/nd security
 qc pass: dhcp with static allocation
-failed: dhcp with excluded address
+qc pass: dhcp with excluded address
 qc pass: dhcp with upgraded server
 qc pass: dhcp with interface server
 qc pass: dhcp relay
