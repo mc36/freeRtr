@@ -17283,3 +17283,6 @@ failed: wireguard over ipv6
 ---------------------------------- 2025-07-16 22:57:30 25.7.16
 no failed: wireguard over ipv6
 qc pass: wireguard over ipv6
+---------------------------------- 2025-07-17 07:55:51 25.7.17
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
