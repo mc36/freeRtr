@@ -705,11 +705,10 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         encPrtbuf pb = new encPrtbuf();
         a = cl.get(namC);
         if ((acol >= 0) && (acol < cls)) {
-            a = asep;
-            if (asep.equals("*")) {
-                a = "";
+            if (!asep.equals("*")) {
+                a += asep;
             }
-            a = a + cl.get(acol);
+            a += cl.get(acol);
         }
         a = doReplaces(a, reps);
         packHolder pck1 = new packHolder(true, true);
@@ -761,11 +760,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         }
         a = cl.get(namC);
         if ((acol >= 0) && (acol < cls)) {
-            a = asep;
-            if (asep.equals("*")) {
-                a = "";
-            }
-            a = a + cl.get(acol);
+            a += ";" + cl.get(acol);
         }
         String beg = prepend + doReplaces(a, reps);
         for (int o = 0; o < cols.size(); o++) {
@@ -814,11 +809,10 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         }
         a = cl.get(namC);
         if ((acol >= 0) && (acol < cls)) {
-            a = asep;
-            if (asep.equals("*")) {
-                a = "";
+            if (!asep.equals("*")) {
+                a += asep;
             }
-            a = a + cl.get(acol);
+            a += cl.get(acol);
         }
         String beg = doReplaces(a, reps);
         for (int o = 0; o < cols.size(); o++) {
@@ -849,11 +843,10 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         }
         a = cl.get(namC);
         if ((acol >= 0) && (acol < cls)) {
-            a = asep;
-            if (asep.equals("*")) {
-                a = "";
+            if (!asep.equals("*")) {
+                a += asep;
             }
-            a = a + cl.get(acol);
+            a += cl.get(acol);
         }
         a = doReplaces(a, reps);
         res.data.add(new encXmlEntry(null, beg + keyP + "/" + keyN, "", a));
