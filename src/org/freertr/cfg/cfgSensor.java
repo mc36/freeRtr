@@ -803,9 +803,9 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         return beg;
     }
 
-    private void doLineMem(tabGen<cfgSensorMem> tab, String beg, int col, String val) {
+    private void doLineMem(String beg, int col, long mul, String val) {
         cfgSensorMem ntry = new cfgSensorMem(beg, col);
-        cfgSensorMem old = tab.add(ntry);
+        cfgSensorMem old = locMem.add(ntry);
         if (old != null) {
             ntry = old;
         } else {
@@ -813,14 +813,14 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             ntry.cntr = new counter();
         }
         counter cntr = new counter();
-        cntr.packRx = bits.str2long(val);
-        cntr.packTx = bits.str2long(val);
+        cntr.packRx = bits.str2long(val) * mul;
+        cntr.packTx = cntr.packRx;
         cntr = cntr.plus(ntry.cntr);
         ntry.hist.update(cntr);
         ntry.cntr = cntr;
     }
 
-    private void doLineMem(tabGen<cfgSensorMem> tab, String a) {
+    private void doLineMem(String a) {
         List<String> cl = doSplitLine(a);
         int cls = cl.size();
         if (namC >= cls) {
@@ -834,6 +834,10 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             a += cl.get(acol);
         }
         String beg = doReplaces(a, reps);
+        long mul = locInt / 1000;
+        if (mul < 1) {
+            mul = 1;
+        }
         for (int o = 0; o < cols.size(); o++) {
             cfgSensorCol cc = cols.get(o);
             if (cl.size() <= cc.num) {
@@ -841,16 +845,16 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             }
             a = doReplaces(cl.get(cc.num), cc.reps);
             if (cc.splS == null) {
-                doLineMem(tab, beg, cc.num, a);
+                doLineMem(beg, cc.num, mul, a);
                 continue;
             }
             int i = a.indexOf(cc.splS);
             if (i < 0) {
-                doLineMem(tab, beg, cc.num, a);
+                doLineMem(beg, cc.num, mul, a);
                 continue;
             }
-            doLineMem(tab, beg, cc.num, a.substring(0, i));
-            doLineMem(tab, beg, cc.num, a.substring(i + cc.splS.length(), a.length()));
+            doLineMem(beg, cc.num, mul, a.substring(0, i));
+            doLineMem(beg, cc.num, mul, a.substring(i + cc.splS.length(), a.length()));
         }
     }
 
@@ -1079,47 +1083,6 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     }
 
     /**
-     * generate report
-     *
-     * @param tab table to update
-     */
-    public void getReportMem(tabGen<cfgSensorMem> tab) {
-        if (tab == null) {
-            return;
-        }
-        last = bits.getTime();
-        cnt++;
-        List<String> res = getResult();
-        for (int i = 0; i < skip; i++) {
-            if (res.size() < 1) {
-                break;
-            }
-            res.remove(0);
-        }
-        for (int p = 0; p < res.size(); p++) {
-            doLineMem(tab, res.get(p));
-        }
-        time = (int) (bits.getTime() - last);
-    }
-
-    /**
-     * generate report
-     *
-     * @param tab table to update
-     * @return result
-     */
-    public List<String> showReportMem(tabGen<cfgSensorMem> tab) {
-        List<String> lst = new ArrayList<String>();
-        if (tab == null) {
-            return lst;
-        }
-        for (int i = 0; i < tab.size(); i++) {
-            tab.get(i).dump(lst);
-        }
-        return lst;
-    }
-
-    /**
      * get yang
      *
      * @return result
@@ -1251,7 +1214,14 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
      * @return result
      */
     public List<String> getShowMemory() {
-        return showReportMem(locMem);
+        List<String> lst = new ArrayList<String>();
+        if (locMem == null) {
+            return lst;
+        }
+        for (int i = 0; i < locMem.size(); i++) {
+            locMem.get(i).dump(lst);
+        }
+        return lst;
     }
 
     /**
@@ -1274,7 +1244,21 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     }
 
     private void doLocalCollect() {
-        getReportMem(locMem);
+        if (locMem != null) {
+            last = bits.getTime();
+            cnt++;
+            List<String> res = getResult();
+            for (int i = 0; i < skip; i++) {
+                if (res.size() < 1) {
+                    break;
+                }
+                res.remove(0);
+            }
+            for (int p = 0; p < res.size(); p++) {
+                doLineMem(res.get(p));
+            }
+            time = (int) (bits.getTime() - last);
+        }
         if (locFil == null) {
             return;
         }
