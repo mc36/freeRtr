@@ -3,6 +3,7 @@ package org.freertr.cfg;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Deflater;
+import org.freertr.enc.enc7bit;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
@@ -144,6 +145,11 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     public int locInt;
 
     /**
+     * collection delay
+     */
+    public int locDel;
+
+    /**
      * collection memory
      */
     public tabGen<cfgSensorMem> locMem;
@@ -169,6 +175,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         new userFilter("sensor .*", cmds.tabulator + "column .* split null null null", null),
         new userFilter("sensor .*", cmds.tabulator + "column .* help null", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local interval", null),
+        new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local delay", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local memory", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local file", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local backup", null),
@@ -266,6 +273,8 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         l.add(null, false, 1, new int[]{2}, "local", "local collection options");
         l.add(null, false, 2, new int[]{3}, "interval", "collection interval");
         l.add(null, false, 3, new int[]{-1}, "<num>", "time in ms");
+        l.add(null, false, 2, new int[]{3}, "delay", "collection delay");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 2, new int[]{-1}, "memory", "collect to memory");
         l.add(null, false, 2, new int[]{3}, "file", "collect to file");
         l.add(null, false, 3, new int[]{-1}, "<str>", "file name");
@@ -329,6 +338,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             }
         }
         cmds.cfgLine(l, locInt < 1, cmds.tabulator, "local interval", "" + locInt);
+        cmds.cfgLine(l, locDel < 1, cmds.tabulator, "local delay", "" + locDel);
         cmds.cfgLine(l, locMem == null, cmds.tabulator, "local memory", "");
         if (locFil == null) {
             l.add(cmds.tabulator + "no local file");
@@ -378,6 +388,15 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
                     return;
                 }
                 locInt = bits.str2num(cmd.word());
+                new Thread(this).start();
+                return;
+            }
+            if (s.equals("delay")) {
+                if (negated) {
+                    locDel = 0;
+                    return;
+                }
+                locDel = bits.str2num(cmd.word());
                 new Thread(this).start();
                 return;
             }
@@ -1182,38 +1201,69 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
      *
      * @return result
      */
-    public List<String> getShow() {
+    public List<String> getShowDetail() {
         List<String> res = new ArrayList<String>();
         res.add("command=" + command);
         res.add("path=" + path);
         res.add("prefix=" + prefix);
         res.add("asked=" + cnt + " times");
         res.add("reply=" + time + " ms");
-        res.add("output:");
-        res.addAll(getResult());
-        res.add("yang:");
-        res.addAll(getYang());
-        res.add("prometheus:");
-        List<String> lst = getReportProm();
-        res.addAll(lst);
-        res.add("promwire:" + bits.byteDump(compressReply(lst), 0, -1));
-        res.add("csv:");
-        lst = getReportCsv();
-        res.addAll(lst);
-        res.add("csvwire:" + bits.byteDump(compressReply(lst), 0, -1));
-        res.add("netconf:");
+        return res;
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public List<String> getShowNetconf() {
         encXml xml = new encXml();
         getReportNetConf(xml, "/");
-        lst = xml.show();
-        res.addAll(lst);
-        res.add("xml:");
-        lst = xml.toXMLlst();
-        res.addAll(lst);
-        res.add("xmlwire:" + bits.byteDump(compressReply(lst), 0, -1));
-        res.add("kvgpb:" + getReportKvGpb().dump());
-        res.add("memory:");
-        res.addAll(showReportMem(locMem));
+        return xml.show();
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public List<String> getShowXml() {
+        encXml xml = new encXml();
+        getReportNetConf(xml, "/");
+        return xml.toXMLlst();
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public List<String> getShowKvgpb() {
+        byte[] buf = getReportKvGpb().getCopy();
+        List<String> res = new ArrayList<String>();
+        enc7bit.buf2hex(res, buf, 0, "");
         return res;
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public List<String> getShowMemory() {
+        return showReportMem(locMem);
+    }
+
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public List<String> getShowHistory() {
+        if (locFil == null) {
+            return null;
+        }
+        return bits.txt2buf(locFil.name());
     }
 
     /**
@@ -1235,6 +1285,9 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     }
 
     public void run() {
+        if (locDel > 0) {
+            bits.sleep(locDel);
+        }
         for (;;) {
             if (locInt < 1) {
                 break;

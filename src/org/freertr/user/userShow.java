@@ -1216,7 +1216,48 @@ public class userShow {
                 cmd.error("no such exporter");
                 return null;
             }
-            rdr.putStrArr(exp.getShow());
+            a = cmd.word();
+            if (a.equals("details")) {
+                rdr.putStrArr(exp.getShowDetail());
+                return null;
+            }
+            if (a.equals("output")) {
+                rdr.putStrArr(exp.getResult());
+                return null;
+            }
+            if (a.equals("yang")) {
+                rdr.putStrArr(exp.getYang());
+                return null;
+            }
+            if (a.equals("prometheus")) {
+                rdr.putStrArr(exp.getReportProm());
+                return null;
+            }
+            if (a.equals("csv")) {
+                rdr.putStrArr(exp.getReportCsv());
+                return null;
+            }
+            if (a.equals("netconf")) {
+                rdr.putStrArr(exp.getShowNetconf());
+                return null;
+            }
+            if (a.equals("xml")) {
+                rdr.putStrArr(exp.getShowNetconf());
+                return null;
+            }
+            if (a.equals("kvgpb")) {
+                rdr.putStrArr(exp.getShowKvgpb());
+                return null;
+            }
+            if (a.equals("memory")) {
+                rdr.putStrArr(exp.getShowMemory());
+                return null;
+            }
+            if (a.equals("history")) {
+                rdr.putStrArr(exp.getShowHistory());
+                return null;
+            }
+            cmd.badCmd();
             return null;
         }
         if (a.equals("session")) {

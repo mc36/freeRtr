@@ -1736,7 +1736,17 @@ public class userExec {
         hl.add(null, false, 2, new int[]{3, -1}, "check", "check information");
         hl.add(null, false, 3, new int[]{-1}, "<name:chk>", "check name");
         hl.add(null, false, 2, new int[]{3, -1}, "sensor", "sensor information");
-        hl.add(null, false, 3, new int[]{-1}, "<name:sns>", "sensor name");
+        hl.add(null, false, 3, new int[]{4}, "<name:sns>", "sensor name");
+        hl.add(null, false, 4, new int[]{-1}, "details", "detailed information");
+        hl.add(null, false, 4, new int[]{-1}, "output", "output information");
+        hl.add(null, false, 4, new int[]{-1}, "yang", "yang information");
+        hl.add(null, false, 4, new int[]{-1}, "prometheus", "prometheus information");
+        hl.add(null, false, 4, new int[]{-1}, "csv", "csv information");
+        hl.add(null, false, 4, new int[]{-1}, "netconf", "netconf information");
+        hl.add(null, false, 4, new int[]{-1}, "xml", "xml information");
+        hl.add(null, false, 4, new int[]{-1}, "kvgpb", "kvgpb information");
+        hl.add(null, false, 4, new int[]{-1}, "memory", "memory information");
+        hl.add(null, false, 4, new int[]{-1}, "history", "history information");
         hl.add(null, false, 2, new int[]{3}, "netflow", "netflow collector information");
         hl.add(cfgAll.dmnNetflow.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
         hl.add(null, false, 4, new int[]{-1}, "session", "list of sessions");
