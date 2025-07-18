@@ -1242,7 +1242,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("xml")) {
-                rdr.putStrArr(exp.getShowNetconf());
+                rdr.putStrArr(exp.getShowXml());
                 return null;
             }
             if (a.equals("kvgpb")) {
