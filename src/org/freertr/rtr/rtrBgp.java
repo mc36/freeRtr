@@ -3388,6 +3388,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("client-reflect")) {
             clientReflect = !negated;
+            needFull.add(1);
+            compute.wakeup();
             return false;
         }
         if (s.equals("address-family")) {
