@@ -17301,3 +17301,6 @@ failed: wireguard over ipv4
 ---------------------------------- 2025-07-19 11:24:34 25.7.19
 no failed: wireguard over ipv4
 qc pass: wireguard over ipv4
+---------------------------------- 2025-07-19 14:51:29 25.7.19
+qc pass: ibgp rr in subnet without client reflection
+qc pass: vpns over ibgp rr without client reflection
