@@ -213,12 +213,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
         if (mode == dhcpMode.server) {
             if (gateway == null) {
-                l.add(beg + "no gateway");
+                l.add(beg + cmds.negated + " gateway");
             } else {
                 l.add(beg + "gateway " + gateway);
             }
             if (netmask == null) {
-                l.add(beg + "no netmask");
+                l.add(beg + cmds.negated + " netmask");
             } else {
                 l.add(beg + "netmask " + netmask);
             }
@@ -230,7 +230,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 s += " " + dns2;
             }
             if (s.length() < 1) {
-                l.add(beg + "no dns-server");
+                l.add(beg + cmds.negated + " dns-server");
             } else {
                 l.add(beg + "dns-server" + s);
             }
@@ -243,7 +243,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (dynamicAddress) {
                 l.add(beg + "dynamic-address");
             } else {
-                l.add(beg + "no dynamic-address");
+                l.add(beg + cmds.negated + " dynamic-address");
             }
             for (int i = 0; i < forbidden.size(); i++) {
                 servDhcp6bind ntry = forbidden.get(i);
@@ -2954,8 +2954,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (useInterfaceId && sourceIface != null) {
                 String ifName = sourceIface.name;
                 byte[] ifNameBytes = ifName.getBytes();
-                relayPck.msbPutW(0, D6O_INTERFACE_ID); // Option type 
-                relayPck.msbPutW(2, ifNameBytes.length); // Length 
+                relayPck.msbPutW(0, D6O_INTERFACE_ID); // Option type
+                relayPck.msbPutW(2, ifNameBytes.length); // Length
                 relayPck.putCopy(ifNameBytes, 0, 4, ifNameBytes.length);
                 relayPck.putSkip(4 + ifNameBytes.length);
                 relayStats.interfaceIdAdded++;
@@ -2964,16 +2964,16 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             // Add subscriber-id option if configured
             if (subscriberId != null && !subscriberId.isEmpty()) {
                 byte[] subIdBytes = subscriberId.getBytes();
-                relayPck.msbPutW(0, D6O_SUBSCRIBER_ID); // Option type 
-                relayPck.msbPutW(2, subIdBytes.length);  // Length 
+                relayPck.msbPutW(0, D6O_SUBSCRIBER_ID); // Option type
+                relayPck.msbPutW(2, subIdBytes.length);  // Length
                 relayPck.putCopy(subIdBytes, 0, 4, subIdBytes.length);
                 relayPck.putSkip(4 + subIdBytes.length);
                 relayStats.subscriberIdAdded++;
             }
 
             // Add relay message option containing original packet
-            relayPck.msbPutW(0, D6O_RELAY_MSG);      // Option type 
-            relayPck.msbPutW(2, originalPck.dataSize()); // Length 
+            relayPck.msbPutW(0, D6O_RELAY_MSG);      // Option type
+            relayPck.msbPutW(2, originalPck.dataSize()); // Length
             byte[] originalData = new byte[originalPck.dataSize()];
             originalPck.getCopy(originalData, 0, 0, originalPck.dataSize());
             relayPck.putCopy(originalData, 0, 4, originalPck.dataSize());

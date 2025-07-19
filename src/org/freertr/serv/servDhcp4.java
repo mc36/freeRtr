@@ -258,17 +258,17 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
         if (mode == dhcpMode.server) {
             if ((poolLo == null) || (poolHi == null)) {
-                l.add(beg + "no pool");
+                l.add(beg + cmds.negated + " pool");
             } else {
                 l.add(beg + "pool " + poolLo + " " + poolHi);
             }
             if (gateway == null) {
-                l.add(beg + "no gateway");
+                l.add(beg + cmds.negated + " gateway");
             } else {
                 l.add(beg + "gateway " + gateway);
             }
             if (netmask == null) {
-                l.add(beg + "no netmask");
+                l.add(beg + cmds.negated + " netmask");
             } else {
                 l.add(beg + "netmask " + netmask);
             }
@@ -280,7 +280,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 s += " " + dns2;
             }
             if (s.length() < 1) {
-                l.add(beg + "no dns-server");
+                l.add(beg + cmds.negated + " dns-server");
             } else {
                 l.add(beg + "dns-server" + s);
             }
