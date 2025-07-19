@@ -17298,3 +17298,6 @@ qc pass: dhcp with excluded address
 ---------------------------------- 2025-07-19 10:33:06 25.7.19
 no qc pass: wireguard over ipv4
 failed: wireguard over ipv4
+---------------------------------- 2025-07-19 11:24:34 25.7.19
+no failed: wireguard over ipv4
+qc pass: wireguard over ipv4
