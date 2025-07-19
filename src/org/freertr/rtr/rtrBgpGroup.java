@@ -1011,6 +1011,11 @@ public class rtrBgpGroup extends rtrBgpParam {
                             attr.clustList.add(addr);
                         }
                         break;
+                    case rtrBgpUtil.peerRflct:
+                        if (!lower.clientReflect) {
+                            return null;
+                        }
+                        break;
                     case rtrBgpUtil.peerExtrn:
                     case rtrBgpUtil.peerServr:
                         if (!nxtHopUnchgd) {

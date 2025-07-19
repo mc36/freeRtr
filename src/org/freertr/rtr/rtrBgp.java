@@ -95,6 +95,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public boolean safeEbgp;
 
     /**
+     * client reflection
+     */
+    public boolean clientReflect;
+
+    /**
      * segment routing index
      */
     public int segrouIdx = 0;
@@ -1196,6 +1201,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         evpnMul.setFwdPwe(tabLabelEntry.owner.evpnPbb, fwdCore, evpnRcv, 0, null);
         routerID = new addrIPv4();
         safeEbgp = true;
+        clientReflect = true;
         addrFams = rtrBgpParam.mskUni;
         rtrNum = id;
         for (int i = 0; i < msgStats.length; i++) {
@@ -3047,7 +3053,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 1, new int[]{-1}, "default-originate", "advertise default route");
         l.add(null, false, 1, new int[]{-1}, "conquer", "conquer bestpath advertisements");
         l.add(null, false, 1, new int[]{-1}, "flapstat", "count flap statistics");
-        l.add(null, false, 1, new int[]{-1}, "safe-ebgp", "safe ebgp policy");
+        l.add(null, false, 1, new int[]{-1}, "safe-ebgp", "enforce safe ebgp policy");
+        l.add(null, false, 1, new int[]{-1}, "client-reflect", "perform client to client reflection");
         l.add(null, false, 1, new int[]{2}, "incremental", "limit on incremental bestpath calculation");
         l.add(null, false, 2, new int[]{-1}, "<num>", "maximum prefixes");
         l.add(null, false, 1, new int[]{2}, "router-id", "specify router id");
@@ -3269,6 +3276,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(beg + "local-as " + bits.num2str(localAs));
         l.add(beg + "router-id " + routerID);
         cmds.cfgLine(l, !safeEbgp, beg, "safe-ebgp", "");
+        cmds.cfgLine(l, !clientReflect, beg, "client-reflect", "");
         l.add(beg + "address-family" + rtrBgpParam.mask2string(addrFams));
         l.add(beg + "distance " + distantExt + " " + distantInt + " " + distantLoc);
         l.add(beg + "scantime " + scanTime);
@@ -3376,6 +3384,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("safe-ebgp")) {
             safeEbgp = !negated;
+            return false;
+        }
+        if (s.equals("client-reflect")) {
+            clientReflect = !negated;
             return false;
         }
         if (s.equals("address-family")) {
