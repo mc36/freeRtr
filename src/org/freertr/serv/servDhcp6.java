@@ -1172,9 +1172,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return createNestedRelayReply(relayForwardPck);
 
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 createRelayReply: exception: " + e.getMessage());
-            }
+            logger.traceback(e);
             return null;
         }
     }
@@ -1331,9 +1329,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return relayReply;
 
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 createNestedRelayReply: exception: " + e.getMessage());
-            }
+            logger.traceback(e);
             return null;
         }
     }
@@ -1386,9 +1382,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return null;
 
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 extractRelayMessageFromForward: exception: " + e.getMessage());
-            }
+            logger.traceback(e);
             return null;
         }
     }
@@ -1753,9 +1747,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return response;
 
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 createServerResponse: exception: " + e.getMessage());
-            }
+            logger.traceback(e);
             return null;
         }
     }
@@ -1854,9 +1846,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 offset += 4 + optLen;
             }
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 extractIAID: exception: " + e.getMessage());
-            }
+            logger.traceback(e);
         }
 
         // Default IAID if not found
@@ -1909,9 +1899,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 offset += 4 + optLen;
             }
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 extractClientDUID: exception: " + e.getMessage());
-            }
+            logger.traceback(e);
         }
 
         return getDefaultDUID();
@@ -2116,9 +2104,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     return false;
             }
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 relayPacket: processing error: " + e.getMessage());
-            }
+            logger.traceback(e);
             relayStats.routingErrors++;
             relayStats.packetsDropped++;
             return false;
@@ -2269,9 +2255,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return true;
 
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 relay forward error: " + e.getMessage());
-            }
+            logger.traceback(e);
             relayStats.routingErrors++;
             return false;
         }
@@ -2367,9 +2351,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
             return true;
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.debug("dhcp6 relay reply error: " + e.getMessage());
-            }
+            logger.traceback(e);
             relayStats.routingErrors++;
             relayStats.packetsDropped++;
             return false;
@@ -2444,9 +2426,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return relayPck;
 
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.debug("dhcp6 createRelayForward error: " + e.getMessage());
-            }
+            logger.traceback(e);
             relayStats.bufferOverflowErrors++;
             return null;
         }
@@ -2486,9 +2466,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
             return null;
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.debug("dhcp6 extractRelayMessage error: " + e.getMessage());
-            }
+            logger.traceback(e);
             return null;
         }
     }
@@ -2506,9 +2484,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return peerAddr;
 
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.debug("dhcp6 extractPeerAddress error: " + e.getMessage());
-            }
+            logger.traceback(e);
             return null;
         }
     }
@@ -2524,9 +2500,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return pck.getByte(1) & 0xff; // Hop count is at offset 1
 
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.debug("dhcp6 extractHopCount error: " + e.getMessage());
-            }
+            logger.traceback(e);
             return 0;
         }
     }
@@ -2553,31 +2527,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
             return null;
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.debug("dhcp6 extractLinkAddress error: " + e.getMessage());
-            }
+            logger.traceback(e);
             return null;
         }
-    }
-
-    /**
-     * get relay statistics
-     *
-     * @return statistics
-     */
-    public userFormat getRelayStatistics() {
-        userFormat res = new userFormat("|", "category|value");
-        res.add("packets from client to server|" + relayStats.packetsClientToServer);
-        res.add("packets from server to client|" + relayStats.packetsServerToClient);
-        res.add("packets forwarded|" + relayStats.packetsForwarded);
-        res.add("packets dropped|" + relayStats.packetsDropped);
-        res.add("invalid packets|" + relayStats.packetsInvalid);
-        res.add("routing errors|" + relayStats.routingErrors);
-        res.add("option parsing errors|" + relayStats.optionParsingErrors);
-        res.add("max hop count exceeded|" + relayStats.maxHopCountExceeded);
-        res.add("average hop count|" + String.format("%.2f", relayStats.getAverageHopCount()));
-        res.add("average processing time|" + relayStats.getAverageProcessingTime() + "ms");
-        return res;
     }
 
     /**
@@ -2777,9 +2729,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return true;
 
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 relay forward from interface error: " + e.getMessage());
-            }
+            logger.traceback(e);
             relayStats.routingErrors++;
             return false;
         }
@@ -2884,9 +2834,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
             return true;
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.debug("dhcp6 relay reply from interface error: " + e.getMessage());
-            }
+            logger.traceback(e);
             relayStats.routingErrors++;
             relayStats.packetsDropped++;
             return false;
@@ -2984,9 +2932,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return relayPck;
 
         } catch (Exception e) {
-            if (debugger.servDhcp6traf) {
-                logger.debug("dhcp6 createRelayForwardFromInterface error: " + e.getMessage());
-            }
+            logger.traceback(e);
             relayStats.bufferOverflowErrors++;
             return null;
         }
@@ -3178,25 +3124,22 @@ class servDhcp6worker implements Runnable {
                 logger.info("dhcp6 server: processing relay-forward packet");
             }
             packHolder relayReply = parent.createRelayReply(pck);
-            if (relayReply != null) {
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 server: sending rfc 3315 compliant relay-reply");
-                    logger.info("dhcp6 server: relay-reply size=" + relayReply.dataSize()
-                            + ", message type=" + (relayReply.getByte(0) & 0xff)
-                            + ", hop count=" + (relayReply.getByte(1) & 0xff));
+            if (relayReply == null) {
+                return;
+            }
+            if (debugger.servDhcp6traf) {
+                logger.info("dhcp6 server: sending rfc 3315 compliant relay-reply");
+                logger.info("dhcp6 server: relay-reply size=" + relayReply.dataSize()
+                        + ", message type=" + (relayReply.getByte(0) & 0xff)
+                        + ", hop count=" + (relayReply.getByte(1) & 0xff));
 
-                    logger.info("dhcp6 server: connection info - peer=" + conn.peerAddr);
-                }
-                conn.send2net(relayReply);
+                logger.info("dhcp6 server: connection info - peer=" + conn.peerAddr);
+            }
+            conn.send2net(relayReply);
 
-                // Verify send operation
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 server: relay-reply sent to network");
-                }
-            } else {
-                if (debugger.servDhcp6traf) {
-                    logger.error("dhcp6 server: failed to create relay-reply");
-                }
+            // Verify send operation
+            if (debugger.servDhcp6traf) {
+                logger.info("dhcp6 server: relay-reply sent to network");
             }
             return;
         }

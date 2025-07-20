@@ -619,16 +619,14 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             // Use port 67 as source port so server responses come back to port 67
             prtGenConn conn = udp.packetConnect(this, fwdIfc, packDhcp4.portSnum, serverAddr, packDhcp4.portSnum,
                     "dhcp-relay", -1, null, -1, -1);
-            if (conn != null) {
-                conn.send2net(pck);
-                conn.setClosing();
-                return true;
+            if (conn == null) {
+                return false;
             }
-            return false;
+            conn.send2net(pck);
+            conn.setClosing();
+            return true;
         } catch (Exception e) {
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp relay forward to server error: " + e.getMessage());
-            }
+            logger.traceback(e);
             return false;
         }
     }
@@ -658,16 +656,14 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             // Use port 67 as source port so client recognizes DHCP messages
             prtGenConn conn = udp.packetConnect(this, fwdIfc, packDhcp4.portSnum, clientAddr, packDhcp4.portCnum,
                     "dhcp-relay", -1, null, -1, -1);
-            if (conn != null) {
-                conn.send2net(pck);
-                conn.setClosing();
-                return true;
+            if (conn == null) {
+                return false;
             }
-            return false;
+            conn.send2net(pck);
+            conn.setClosing();
+            return true;
         } catch (Exception e) {
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp relay forward to client error: " + e.getMessage());
-            }
+            logger.traceback(e);
             return false;
         }
     }
@@ -916,30 +912,28 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                     break;
                 }
 
-                if (optionType == DHCP_OPTION_RELAY_AGENT_INFO) {
-                    // Found agent information option
-                    packDhcpOption agentOption = new packDhcpOption();
-                    agentOption.number = DHCP_OPTION_RELAY_AGENT_INFO;
-                    agentOption.buffer = new byte[optionLength];
-                    pck.getCopy(agentOption.buffer, 2, 0, optionLength);
+                if (optionType != DHCP_OPTION_RELAY_AGENT_INFO) { // Skip this option
+                    pck.getSkip(2 + optionLength);
+                    continue;
+                }
+                // Found agent information option
+                packDhcpOption agentOption = new packDhcpOption();
+                agentOption.number = DHCP_OPTION_RELAY_AGENT_INFO;
+                agentOption.buffer = new byte[optionLength];
+                pck.getCopy(agentOption.buffer, 2, 0, optionLength);
 
-                    if (debugger.servDhcp4traf) {
-                        logger.debug("dhcp4 relay found existing agent information option with " + optionLength + " bytes");
-                    }
-
-                    return agentOption;
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp4 relay found existing agent information option with " + optionLength + " bytes");
                 }
 
-                // Skip this option
-                pck.getSkip(2 + optionLength);
+                return agentOption;
+
             }
 
             return null; // No agent information option found
 
         } catch (Exception e) {
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp4 relay error parsing options: " + e.getMessage());
-            }
+            logger.traceback(e);
             relayStats.optionParsingErrors++;
             return null;
         }
@@ -1090,23 +1084,14 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             // Forward to relay on port 67
             prtGenConn conn = udp.packetConnect(this, fwdIfc, packDhcp4.portSnum, targetAddr, packDhcp4.portSnum,
                     "dhcp-relay-hop", -1, null, -1, -1);
-            if (conn != null) {
-                conn.send2net(pck);
-                conn.setClosing();
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay forwarded to relay " + targetAddr);
-                }
-                return true;
-            } else {
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay failed to create connection to " + targetAddr);
-                }
+            if (conn == null) {
                 return false;
             }
+            conn.send2net(pck);
+            conn.setClosing();
+            return true;
         } catch (Exception e) {
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp relay forward to relay error: " + e.getMessage());
-            }
+            logger.traceback(e);
             return false;
         }
     }
