@@ -418,36 +418,7 @@ public class clntDhcp6 implements prtServP {
         pckd.msgId = lastId;
         pckd.clntId = packDhcp6.encodeDUID(locMac);
         pckd.clntTime = 0;
-        // RFC 7550 compliant IA selection logic
-        if (addressMode && prefixMode) {
-            // Both modes requested - request both IA_NA and IA_PD in same message
-            pckd.requestBothIA = true;
-            pckd.iamod = 2; // Set base mode to IA_NA
-            if (debugger.clntDhcp6traf) {
-                logger.debug("dhcp6 client: both modes enabled, requesting IA_NA and IA_PD (RFC 7550)");
-            }
-        } else if (prefixMode && !addressMode) {
-            // Only prefix mode
-            pckd.requestBothIA = false;
-            pckd.iamod = 3; // IA_PD mode
-            if (debugger.clntDhcp6traf) {
-                logger.debug("dhcp6 client: prefix mode only, requesting IA_PD");
-            }
-        } else if (addressMode && !prefixMode) {
-            // Only address mode
-            pckd.requestBothIA = false;
-            pckd.iamod = 2; // IA_NA mode
-            if (debugger.clntDhcp6traf) {
-                logger.debug("dhcp6 client: address mode only, requesting IA_NA");
-            }
-        } else {
-            // Neither address nor prefix mode enabled - request configuration only
-            pckd.requestBothIA = false;
-            pckd.iamod = 0; // No IA options
-            if (debugger.clntDhcp6traf) {
-                logger.debug("dhcp6 client: no address/prefix mode, requesting configuration only");
-            }
-        }
+        pckd.iamod = getIAmode();
         pckd.iaid = 1;
         pckd.iat1 = leaseTime / 2;
         pckd.iat2 = leaseTime;
@@ -457,6 +428,22 @@ public class clntDhcp6 implements prtServP {
         lastTime = bits.getTime();
         if (debugger.clntDhcp6traf) {
             logger.debug("tx " + sender + " " + pckd);
+        }
+    }
+
+    private int getIAmode() {
+        if (prefixMode) {
+            if (addressMode) { // Both modes requested
+                return 4;
+            } else { // Only prefix mode
+                return 3;
+            }
+        } else {
+            if (addressMode) { // Only address mode
+                return 2;
+            } else { // Request configuration only
+                return 0;
+            }
         }
     }
 
@@ -471,36 +458,7 @@ public class clntDhcp6 implements prtServP {
         pckd.clntId = packDhcp6.encodeDUID(locMac);
         pckd.servId = servId;
         pckd.clntTime = 0;
-        // RFC 7550 compliant IA selection logic
-        if (addressMode && prefixMode) {
-            // Both modes requested - request both IA_NA and IA_PD in same message
-            pckd.requestBothIA = true;
-            pckd.iamod = 2; // Set base mode to IA_NA
-            if (debugger.clntDhcp6traf) {
-                logger.debug("dhcp6 client: both modes enabled, requesting IA_NA and IA_PD (RFC 7550)");
-            }
-        } else if (prefixMode && !addressMode) {
-            // Only prefix mode
-            pckd.requestBothIA = false;
-            pckd.iamod = 3; // IA_PD mode
-            if (debugger.clntDhcp6traf) {
-                logger.debug("dhcp6 client: prefix mode only, requesting IA_PD");
-            }
-        } else if (addressMode && !prefixMode) {
-            // Only address mode
-            pckd.requestBothIA = false;
-            pckd.iamod = 2; // IA_NA mode
-            if (debugger.clntDhcp6traf) {
-                logger.debug("dhcp6 client: address mode only, requesting IA_NA");
-            }
-        } else {
-            // Neither address nor prefix mode enabled - request configuration only
-            pckd.requestBothIA = false;
-            pckd.iamod = 0; // No IA options
-            if (debugger.clntDhcp6traf) {
-                logger.debug("dhcp6 client: no address/prefix mode, requesting configuration only");
-            }
-        }
+        pckd.iamod = getIAmode();
         pckd.iaid = 1;
         pckd.iat1 = leaseTime / 2;
         pckd.iat2 = leaseTime;

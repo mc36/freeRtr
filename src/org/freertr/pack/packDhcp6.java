@@ -141,7 +141,7 @@ public class packDhcp6 {
     public byte[] servId;
 
     /**
-     * identity association mode: 1=temp, 2=perm, 3=pref
+     * identity association mode: 0=config, 1=temp, 2=perm, 3=pref, 4=both
      */
     public int iamod;
 
@@ -229,11 +229,6 @@ public class packDhcp6 {
      * boot url
      */
     public String bootUrl;
-
-    /**
-     * request both IA_NA and IA_PD in same message (RFC 7550)
-     */
-    public boolean requestBothIA = false;
 
     private encTlv tlv = new encTlv(0, 16, 16, 16, 1, 0, 4, 1, 0, 512, true);
 
@@ -505,47 +500,40 @@ public class packDhcp6 {
         pck.merge2beg();
         byte[] buf = pck.getCopy();
         pck.getSkip(buf.length);
-
-        if (requestBothIA) {
-            // RFC 7550: Add both IA_NA and IA_PD options
-            // Add IA_NA (option 3)
-            bits.msbPutD(tlv.valDat, 0, iaid); // ia id
-            bits.msbPutD(tlv.valDat, 4, iat1); // ia t1
-            bits.msbPutD(tlv.valDat, 8, iat2); // ia t2
-            bits.byteCopy(buf, 0, tlv.valDat, 12, buf.length);
-            tlv.putBytes(pck, 3, buf.length + 12, tlv.valDat);
-
-            // Add IA_PD (option 25)
-            bits.msbPutD(tlv.valDat, 0, iaid + 1); // ia id (different from IA_NA)
-            bits.msbPutD(tlv.valDat, 4, iat1); // ia t1
-            bits.msbPutD(tlv.valDat, 8, iat2); // ia t2
-            bits.byteCopy(buf, 0, tlv.valDat, 12, buf.length);
-            tlv.putBytes(pck, 25, buf.length + 12, tlv.valDat);
-        } else if (iamod > 0) {
-            switch (iamod) {
-                case 1: // temporary
-                    bits.msbPutD(tlv.valDat, 0, iaid); // ia id
-                    bits.byteCopy(buf, 0, tlv.valDat, 4, buf.length);
-                    tlv.putBytes(pck, 4, buf.length + 4, tlv.valDat);
-                    break;
-                case 2: // permanent
-                    bits.msbPutD(tlv.valDat, 0, iaid); // ia id
-                    bits.msbPutD(tlv.valDat, 4, iat1); // ia t1
-                    bits.msbPutD(tlv.valDat, 8, iat2); // ia t2
-                    bits.byteCopy(buf, 0, tlv.valDat, 12, buf.length);
-                    tlv.putBytes(pck, 3, buf.length + 12, tlv.valDat);
-                    break;
-                case 3: // prefix
-                    bits.msbPutD(tlv.valDat, 0, iaid); // ia id
-                    bits.msbPutD(tlv.valDat, 4, iat1); // ia t1
-                    bits.msbPutD(tlv.valDat, 8, iat2); // ia t2
-                    bits.byteCopy(buf, 0, tlv.valDat, 12, buf.length);
-                    tlv.putBytes(pck, 25, buf.length + 12, tlv.valDat);
-                    break;
-            }
-        } else {
-            // iamod = 0: RFC-compliant packet without any IA options
-            // Only requesting configuration information (DNS, domain, etc.)
+        switch (iamod) {
+            case 0: // config
+                break;
+            case 1: // temporary
+                bits.msbPutD(tlv.valDat, 0, iaid); // ia id
+                bits.byteCopy(buf, 0, tlv.valDat, 4, buf.length);
+                tlv.putBytes(pck, 4, buf.length + 4, tlv.valDat);
+                break;
+            case 2: // permanent
+                bits.msbPutD(tlv.valDat, 0, iaid); // ia id
+                bits.msbPutD(tlv.valDat, 4, iat1); // ia t1
+                bits.msbPutD(tlv.valDat, 8, iat2); // ia t2
+                bits.byteCopy(buf, 0, tlv.valDat, 12, buf.length);
+                tlv.putBytes(pck, 3, buf.length + 12, tlv.valDat);
+                break;
+            case 3: // prefix
+                bits.msbPutD(tlv.valDat, 0, iaid); // ia id
+                bits.msbPutD(tlv.valDat, 4, iat1); // ia t1
+                bits.msbPutD(tlv.valDat, 8, iat2); // ia t2
+                bits.byteCopy(buf, 0, tlv.valDat, 12, buf.length);
+                tlv.putBytes(pck, 25, buf.length + 12, tlv.valDat);
+                break;
+            case 4: // both
+                bits.msbPutD(tlv.valDat, 0, iaid); // ia id
+                bits.msbPutD(tlv.valDat, 4, iat1); // ia t1
+                bits.msbPutD(tlv.valDat, 8, iat2); // ia t2
+                bits.byteCopy(buf, 0, tlv.valDat, 12, buf.length);
+                tlv.putBytes(pck, 3, buf.length + 12, tlv.valDat);
+                bits.msbPutD(tlv.valDat, 0, iaid + 1); // ia id (different from IA_NA)
+                bits.msbPutD(tlv.valDat, 4, iat1); // ia t1
+                bits.msbPutD(tlv.valDat, 8, iat2); // ia t2
+                bits.byteCopy(buf, 0, tlv.valDat, 12, buf.length);
+                tlv.putBytes(pck, 25, buf.length + 12, tlv.valDat);
+                break;
         }
         pck.merge2beg();
         if (clntId != null) {
