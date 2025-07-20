@@ -748,7 +748,7 @@ public class player implements Runnable {
             return -1;
         }
         if (cmd.equals("lock")) {
-            putStart(buf, -1);
+            putStart(buf, 5);
             putMenu(buf);
             cmd = ".*" + song.trim().toLowerCase().replaceAll(" ", ".*") + ".*";
             List<playerSong> res = new ArrayList<playerSong>();
@@ -997,11 +997,11 @@ public class player implements Runnable {
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=airplay\">!airplay receiver!</a><br/>";
             buf.write(a.getBytes());
-            a = "<a href=\"" + urlR + "?cmd=unlock\">!unlock!</a><br/>";
-            buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=pendrive\">!pendrive!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=resync&song=" + rndSeed.nextInt() + "\">!resync!</a><br/>";
+            buf.write(a.getBytes());
+            a = "<a href=\"" + urlR + "?cmd=unlock\">!unlock!</a><br/>";
             buf.write(a.getBytes());
             a = "<br/><form action=\"" + urlR + "\" method=get>url:<input type=text name=song value=\"\"><input type=submit name=cmd value=\"url\"></form><br/>";
             buf.write(a.getBytes());
