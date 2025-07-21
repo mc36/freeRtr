@@ -1132,55 +1132,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     }
 
     /**
-     * Create nested relay-reply structure that mirrors the Relay-Forward
-     * nesting
-     *
-     * @param relayForwardPck packet to deal with
-     * @return reply, null if nothing
-     */
-    public packHolder createRelayReply(packHolder relayForwardPck) {
-        try {
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 createRelayReply: creating nested rfc 3315 compliant relay-reply");
-            }
-
-            // Check packet size
-            if (relayForwardPck.dataSize() < 34) {
-                if (debugger.servDhcp6traf) {
-                    logger.error("dhcp6 createRelayReply: relay-forward packet too small: " + relayForwardPck.dataSize());
-                }
-                return null;
-            }
-
-            // Extract message type and hop count
-            int msgType = relayForwardPck.getByte(0) & 0xff;
-            int hopCount = relayForwardPck.getByte(1) & 0xff;
-
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 createRelayReply: msgType=" + msgType + ", hopCount=" + hopCount);
-            }
-
-            // Verify this is a Relay-Forward message
-            if (msgType != packDhcp6.typReReq) {
-                if (debugger.servDhcp6traf) {
-                    logger.error("dhcp6 createRelayReply: not a relay-forward message: " + msgType);
-                }
-                return null;
-            }
-
-            // Use the new recursive method to create nested reply
-            return createNestedRelayReply(relayForwardPck);
-
-        } catch (Exception e) {
-            logger.traceback(e);
-            return null;
-        }
-    }
-
-    /**
      * Recursively create nested relay-reply structure
      */
-    private packHolder createNestedRelayReply(packHolder relayForwardPck) {
+    protected packHolder createNestedRelayReply(packHolder relayForwardPck) {
         try {
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 createNestedRelayReply: processing relay forward packet");
@@ -3123,7 +3077,7 @@ class servDhcp6worker implements Runnable {
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 server: processing relay-forward packet");
             }
-            packHolder relayReply = parent.createRelayReply(pck);
+            packHolder relayReply = parent.createNestedRelayReply(pck);
             if (relayReply == null) {
                 return;
             }

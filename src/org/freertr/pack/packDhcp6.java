@@ -31,9 +31,14 @@ public class packDhcp6 {
     public final static int portSnum = 547;
 
     /**
-     * size of header
+     * size of normal header
      */
-    public final static int size = 4;
+    public final static int sizeN = 4;
+
+    /**
+     * size of relay header
+     */
+    public final static int sizeR = 34;
 
     /**
      * solicit
@@ -101,9 +106,9 @@ public class packDhcp6 {
     public final static int typReRep = 13;
 
     /**
-     * lease query
+     * lease query request
      */
-    public final static int typLQ = 14;
+    public final static int typLQreq = 14;
 
     /**
      * lease query reply
@@ -129,6 +134,21 @@ public class packDhcp6 {
      * message id
      */
     public int msgId;
+
+    /**
+     * hop count
+     */
+    public int msgHop;
+
+    /**
+     * link address
+     */
+    public addrIPv6 msgLink;
+
+    /**
+     * peer address
+     */
+    public addrIPv6 msgPeer;
 
     /**
      * client id
@@ -194,6 +214,11 @@ public class packDhcp6 {
      * time elapsed
      */
     public int clntTime = -1;
+
+    /**
+     * relayed message
+     */
+    public byte[] relayed;
 
     /**
      * server address
@@ -327,8 +352,8 @@ public class packDhcp6 {
                 return "relayReq";
             case typReRep:
                 return "relayRep";
-            case typLQ:
-                return "lq";
+            case typLQreq:
+                return "lqReq";
             case typLQrep:
                 return "lqRep";
             case typLQdon:
@@ -347,12 +372,25 @@ public class packDhcp6 {
      * @return true on error, false on success
      */
     public boolean parsePacket(packHolder pck) {
-        if (pck.dataSize() < size) {
+        if (pck.dataSize() < sizeN) {
             return true;
         }
         msgTyp = pck.getByte(0) & 0xff;
-        msgId = pck.msbGetD(0) & 0xffffff;
-        pck.getSkip(size);
+        switch (msgTyp) {
+            case typReReq:
+            case typReRep:
+                msgHop = pck.getByte(1) & 0xff;
+                msgLink = new addrIPv6();
+                pck.getAddr(msgLink, 2);
+                msgPeer = new addrIPv6();
+                pck.getAddr(msgPeer, 18);
+                pck.getSkip(sizeR);
+                break;
+            default:
+                msgId = pck.msbGetD(0) & 0xffffff;
+                pck.getSkip(sizeN);
+                break;
+        }
         for (;;) {
             if (pck.dataSize() < 1) {
                 return false;
@@ -398,6 +436,10 @@ public class packDhcp6 {
                     break;
                 case 8: // time elapsed
                     clntTime = bits.msbGetW(tlv.valDat, 0);
+                    break;
+                case 9: // relayed message
+                    relayed = new byte[tlv.valSiz];
+                    bits.byteCopy(tlv.valDat, 0, relayed, 0, relayed.length);
                     break;
                 case 12: // server address
                     servAddr = new addrIPv6();
@@ -548,6 +590,9 @@ public class packDhcp6 {
             }
             tlv.putBytes(pck, 6, optionsReq.length * 2, tlv.valDat);
         }
+        if (relayed != null) {
+            tlv.putBytes(pck, 9, relayed.length, relayed);
+        }
         if (servPref >= 0) {
             tlv.valDat[0] = (byte) servPref;
             tlv.putBytes(pck, 7, 1, tlv.valDat);
@@ -592,9 +637,21 @@ public class packDhcp6 {
             }
         }
         pck.merge2end();
-        pck.msbPutD(0, msgId);
-        pck.putByte(0, msgTyp);
-        pck.putSkip(4);
+        switch (msgTyp) {
+            case typReReq:
+            case typReRep:
+                pck.putByte(0, msgTyp);
+                pck.putByte(1, msgHop);
+                pck.putAddr(2, msgLink);
+                pck.putAddr(18, msgPeer);
+                pck.putSkip(sizeR);
+                break;
+            default:
+                pck.msbPutD(0, msgId);
+                pck.putByte(0, msgTyp);
+                pck.putSkip(sizeN);
+                break;
+        }
         pck.merge2beg();
     }
 
