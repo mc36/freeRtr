@@ -1313,16 +1313,18 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 return false;
             }
 
-            int msgType = pck.getByte(0) & 0xff;
-            int msgId = pck.msbGetD(0) & 0xffffff;
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 relayPacket: received packet - msgType=" + msgType + ", msgId=0x" + Integer.toHexString(msgId));
-            }
-
             // Create a simple DHCP6 object with just the message type
             packDhcp6 dhcp = new packDhcp6();
-            dhcp.msgTyp = msgType;
-            dhcp.msgId = msgId;
+            byte[] buf = pck.getCopy();
+            if (dhcp.parsePacket(pck)) {
+                if (debugger.servDhcp6traf) {
+                    logger.error("dhcp6 server: failed to parse packet");
+                }
+                return false;
+            }
+            if (debugger.servDhcp6traf) {
+                logger.debug("rx " + dhcp);
+            }
 
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 relayPacket: processing as msgType=" + dhcp.msgTyp);
@@ -1339,13 +1341,127 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 case packDhcp6.typDecline:
                 case packDhcp6.typInfo:
                 case packDhcp6.typReReq:
-                    return relayClientToServer(dhcp, pck, id);
+                    relayStats.packetsClientToServer++;
+                    if (debugger.servDhcp6traf) {
+                        logger.info("dhcp6 relayClientToServer: processing client packet, msgType=" + dhcp.msgTyp + ", upstreamServers=" + helperAddresses.size());
+                    }
+                    int hops = dhcp.msgHop + 1;
+                    if (hops >= maxHopCount) {
+                        if (debugger.servDhcp6traf) {
+                            logger.error("dhcp6 relayClientToServer: max hop count exceeded: " + hops);
+                        }
+                        relayStats.maxHopCountExceeded++;
+                        relayStats.packetsDropped++;
+                        return false;
+                    }
+                    relayStats.relayForwardPackets++;
+                    dhcp = new packDhcp6();
+                    dhcp.msgHop = hops;
+                    dhcp.msgTyp = packDhcp6.typReReq;
+                    dhcp.relayed = buf;
+                    dhcp.msgLink = id.iface.addr.toIPv6();
+                    dhcp.msgPeer = id.peerAddr.toIPv6();
+                    if (useInterfaceId) {
+                        dhcp.ifcId = "" + id.iface;
+                        relayStats.interfaceIdAdded++;
+                    }
+                    if ((subscriberId != null) && !subscriberId.isEmpty()) {
+                        dhcp.subId = subscriberId;
+                        relayStats.subscriberIdAdded++;
+                    }
+                    int forwardedCount = 0;
+                    for (int i = 0; i < helperAddresses.size(); i++) {
+                        addrIP serverAddr = helperAddresses.get(i);
+                        if (debugger.servDhcp6traf) {
+                            logger.info("dhcp6 relayClientToServer: forwarding to server " + serverAddr);
+                        }
+                        pck.clear();
+                        dhcp.createPacket(pck, options);
+                        pck.merge2beg();
+                        prtGenConn conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, serverAddr, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
+                        if (conn == null) {
+                            if (debugger.servDhcp6traf) {
+                                logger.error("dhcp6 forwardToServerFromInterface: failed to create connection to server " + serverAddr);
+                            }
+                            relayStats.routingErrors++;
+                            continue;
+                        }
+                        conn.send2net(pck);
+                        conn.setClosing();
+                        forwardedCount++;
+                        relayStats.packetsForwarded++;
+                    }
+                    if (forwardedCount < 1) {
+                        relayStats.packetsDropped++;
+                        return false;
+                    }
+                    return true;
 
                 case packDhcp6.typAdvertise:
                 case packDhcp6.typReply:
                 case packDhcp6.typReconfig:
                 case packDhcp6.typReRep:
-                    return relayServerToClient(dhcp, pck, id);
+                    relayStats.packetsServerToClient++;
+                    if (dhcp.msgTyp != packDhcp6.typReRep) {
+                        if (debugger.servDhcp6traf) {
+                            logger.info("dhcp6 relayServerToClient: dropping non-relay-reply message, msgType=" + dhcp.msgTyp);
+                        }
+                        relayStats.packetsDropped++;
+                        return false;
+                    }
+                    if (dhcp.relayed == null) {
+                        if (debugger.servDhcp6traf) {
+                            logger.error("dhcp6 createNestedRelayReply: not a relay-forward message");
+                        }
+                        return false;
+                    }
+                    pck.clear();
+                    pck.putCopy(dhcp.relayed, 0, 0, dhcp.relayed.length);
+                    pck.putSkip(dhcp.relayed.length);
+                    pck.merge2beg();
+                    if (dhcp.msgPeer == null) {
+                        relayStats.optionParsingErrors++;
+                        relayStats.packetsDropped++;
+                        return false;
+                    }
+                    addrIP peerAddrIP = new addrIP();
+                    peerAddrIP.fromIPv6addr(dhcp.msgPeer);
+                    packDhcp6 inner = new packDhcp6();
+                    if (inner.parsePacket(pck)) {
+                        if (debugger.servDhcp6traf) {
+                            logger.error("dhcp6 server: failed to parse packet");
+                        }
+                        return false;
+                    }
+                    if (debugger.servDhcp6traf) {
+                        logger.debug("rx " + inner);
+                    }
+                    pck.clear();
+                    pck.putCopy(dhcp.relayed, 0, 0, dhcp.relayed.length);
+                    pck.putSkip(dhcp.relayed.length);
+                    pck.merge2beg();
+                    prtGenConn conn;
+                    if (inner.msgTyp == packDhcp6.typReRep) {
+                        conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, peerAddrIP, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
+
+                    } else {
+                        conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, peerAddrIP, packDhcp6.portCnum, srvName(), -1, null, -1, -1);
+                    }
+                    if (conn == null) {
+                        if (debugger.servDhcp6traf) {
+                            logger.error("dhcp6 forwardToClientFromInterface: failed to create connection to client " + peerAddrIP);
+                        }
+                        relayStats.routingErrors++;
+                        relayStats.packetsDropped++;
+                        return false;
+                    }
+                    if (debugger.servDhcp6traf) {
+                        logger.info("dhcp6 forwardToClientFromInterface: sending response to client " + peerAddrIP);
+                    }
+                    conn.send2net(pck);
+                    conn.setClosing();
+                    relayStats.packetsForwarded++;
+                    return true;
 
                 default:
                     if (debugger.servDhcp6traf) {
@@ -1364,186 +1480,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             long processingTime = bits.getTime() - startTime;
             relayStats.updateProcessingTime(processingTime);
             id.setClosing();
-        }
-    }
-
-    private boolean relayClientToServer(packDhcp6 dhcp, packHolder pck, prtGenConn id) {
-        relayStats.packetsClientToServer++;
-        if (debugger.servDhcp6traf) {
-            logger.info("dhcp6 relayClientToServer: processing client packet, msgType=" + dhcp.msgTyp + ", upstreamServers=" + helperAddresses.size());
-        }
-
-        if (dhcp.parsePacket(pck)) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 server: failed to parse packet");
-            }
-            return false;
-        }
-        if (debugger.servDhcp6traf) {
-            logger.debug("rx " + dhcp);
-        }
-        
-        
-        
-        // Check hop count for relay-forward messages
-        if (dhcp.msgTyp == packDhcp6.typReReq) {
-            // Extract hop count from relay message
-            int hopCount = extractHopCount(pck);
-            if (hopCount >= maxHopCount) {
-                if (debugger.servDhcp6traf) {
-                    logger.error("dhcp6 relayClientToServer: max hop count exceeded: " + hopCount);
-                }
-                relayStats.maxHopCountExceeded++;
-                relayStats.packetsDropped++;
-                return false;
-            }
-            relayStats.hopCountTotal += hopCount + 1;
-            relayStats.relayForwardPackets++;
-        }
-
-        // Forward to all upstream servers
-        if (helperAddresses.isEmpty()) {
-            if (debugger.servDhcp6traf) {
-                logger.error("dhcp6 relayClientToServer: no upstream servers configured");
-            }
-            relayStats.packetsDropped++;
-            return false;
-        }
-
-        int forwardedCount = 0;
-        for (int i = 0; i < helperAddresses.size(); i++) {
-            addrIP serverAddr = helperAddresses.get(i);
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 relayClientToServer: forwarding to server " + serverAddr);
-            }
-            boolean success = forwardToServerFromInterface(pck, serverAddr, dhcp, id);
-            if (success) {
-                forwardedCount++;
-                relayStats.packetsForwarded++;
-            }
-        }
-
-        // If no servers were successfully contacted, count as dropped
-        if (forwardedCount == 0) {
-            relayStats.packetsDropped++;
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean relayServerToClient(packDhcp6 dhcp, packHolder pck, prtGenConn id) {
-        relayStats.packetsServerToClient++;
-
-        // Only process relay-reply messages
-        if (dhcp.msgTyp != packDhcp6.typReRep) {
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 relayServerToClient: dropping non-relay-reply message, msgType=" + dhcp.msgTyp);
-            }
-            relayStats.packetsDropped++;
-            return false;
-        }
-
-        return forwardToClientFromInterface(pck, dhcp, id);
-    }
-
-    private packHolder extractRelayMessage(packHolder pck) {
-        try {
-            // DHCP6 relay-reply message format:
-            // Skip header (34 bytes): msg-type(1) + hop-count(1) + link-address(16) + peer-address(16)
-            if (pck.dataSize() < 34) {
-                return null;
-            }
-
-            int pos = 34; // Start after header
-
-            // Parse options to find relay message option (type 9)
-            while (pos + 4 <= pck.dataSize()) {
-                int optType = pck.msbGetW(pos);
-                int optLen = pck.msbGetW(pos + 2);
-
-                if (optType == D6O_RELAY_MSG) {
-                    // Found relay message option, extract the original message
-                    if (pos + 4 + optLen <= pck.dataSize()) {
-                        packHolder originalMsg = new packHolder(true, true);
-                        byte[] msgData = new byte[optLen];
-                        pck.getCopy(msgData, 0, pos + 4, optLen);
-                        originalMsg.putCopy(msgData, 0, 0, optLen);
-                        originalMsg.putSkip(optLen);
-                        originalMsg.merge2beg();
-                        return originalMsg;
-                    }
-                    break;
-                }
-
-                pos += 4 + optLen; // Move to next option
-            }
-
-            return null;
-        } catch (Exception e) {
-            logger.traceback(e);
-            return null;
-        }
-    }
-
-    private addrIPv6 extractPeerAddress(packHolder pck) {
-        try {
-            // DHCP6 Relay message format:
-            // Skip msg-type(1) + hop-count(1) + link-address(16) to get to peer-address(16)
-            if (pck.dataSize() < 34) {
-                return null;
-            }
-
-            addrIPv6 peerAddr = new addrIPv6();
-            pck.getAddr(peerAddr, 18);
-            return peerAddr;
-
-        } catch (Exception e) {
-            logger.traceback(e);
-            return null;
-        }
-    }
-
-    private int extractHopCount(packHolder pck) {
-        try {
-            // DHCP6 Relay message format:
-            // msg-type(1) + hop-count(1) + etc
-            if (pck.dataSize() < 2) {
-                return 0;
-            }
-
-            return pck.getByte(1) & 0xff; // Hop count is at offset 1
-
-        } catch (Exception e) {
-            logger.traceback(e);
-            return 0;
-        }
-    }
-
-    private addrIPv6 extractLinkAddress(packHolder pck) {
-        try {
-            // DHCP6 relay-reply message format:
-            // 0-1: msg-type + hop-count
-            // 2-17: link-address (16 bytes)
-            if (pck.dataSize() < 18) {
-                return null;
-            }
-
-            byte[] linkAddrBytes = new byte[16];
-            pck.getCopy(linkAddrBytes, 0, 2, 16);
-
-            addrIPv6 linkAddr = new addrIPv6();
-            linkAddr.fromBuf(linkAddrBytes, 0);
-
-            // Check if it's not all zeros
-            if (linkAddr.isLinkLocal() || !linkAddr.isEmpty()) {
-                return linkAddr;
-            }
-
-            return null;
-        } catch (Exception e) {
-            logger.traceback(e);
-            return null;
         }
     }
 
@@ -1712,19 +1648,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (debugger.servDhcp6traf) {
                 logger.info("dhcp6 forwardToServerFromInterface: creating relay-forward message for server " + serverAddr);
             }
-            // Create relay-forward message with specific interface
-            packHolder relayPck = createRelayForwardFromInterface(pck, dhcp, id);
-            if (relayPck == null) {
-                if (debugger.servDhcp6traf) {
-                    logger.error("dhcp6 forwardToServerFromInterface: failed to create relay-forward message");
-                }
-                relayStats.routingErrors++;
-                return false;
-            }
 
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 forwardToServerFromInterface: created relay packet, size=" + relayPck.dataSize());
-            }
+            pck.clear();
+            dhcp.createPacket(pck, options);
+            pck.merge2beg();
 
             // Send to server using the correct source interface
             prtGenConn conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, serverAddr, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
@@ -1737,198 +1664,15 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             }
 
             if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 forwardToServerFromInterface: sending packet to server " + serverAddr + ", size=" + relayPck.dataSize());
+                logger.info("dhcp6 forwardToServerFromInterface: sending packet to server " + serverAddr + ", size=" + pck.dataSize());
             }
-            conn.send2net(relayPck);
+            conn.send2net(pck);
             conn.setClosing();
             return true;
-
         } catch (Exception e) {
             logger.traceback(e);
             relayStats.routingErrors++;
             return false;
-        }
-    }
-
-    /**
-     * Forward packet to client using specific interface
-     */
-    private boolean forwardToClientFromInterface(packHolder pck, packDhcp6 dhcp, prtGenConn id) {
-        try {
-            // Extract original message from relay-reply
-            packHolder clientPck = extractRelayMessage(pck);
-            if (clientPck == null) {
-                relayStats.optionParsingErrors++;
-                relayStats.packetsDropped++;
-                return false;
-            }
-
-            int extractedMsgType = clientPck.getByte(0) & 0xff;
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 forwardToClientFromInterface: extracted client packet, size=" + clientPck.dataSize());
-                logger.info("dhcp6 forwardToClientFromInterface: client packet type=" + extractedMsgType);
-            }
-
-            // Check if the extracted message is another relay-reply (nested relay)
-            if (extractedMsgType == packDhcp6.typReRep) {
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 forwardToClientFromInterface: extracted message is a relay-reply, forwarding to next relay agent");
-                }
-
-                // This is a nested relay-reply - forward it to the peer address from the OUTER relay-reply
-                // The peer address in the outer relay-reply is the address of the next relay agent (R1)
-                addrIPv6 peerAddr = extractPeerAddress(pck); // Peer address from OUTER relay-reply
-                if (peerAddr == null) {
-                    if (debugger.servDhcp6traf) {
-                        logger.error("dhcp6 forwardToClientFromInterface: failed to extract peer address for nested relay");
-                    }
-                    relayStats.optionParsingErrors++;
-                    relayStats.packetsDropped++;
-                    return false;
-                }
-
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 forwardToClientFromInterface: forwarding nested relay-reply to next relay agent at " + peerAddr);
-                }
-
-                // Send the nested relay-reply to the peer (which should be the next relay agent)
-                addrIP peerAddrIP = new addrIP();
-                peerAddrIP.fromIPv6addr(peerAddr);
-                prtGenConn conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, peerAddrIP, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
-                if (conn == null) {
-                    if (debugger.servDhcp6traf) {
-                        logger.error("dhcp6 forwardToClientFromInterface: failed to create connection to next relay agent " + peerAddrIP);
-                    }
-                    relayStats.routingErrors++;
-                    relayStats.packetsDropped++;
-                    return false;
-                }
-
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 forwardToClientFromInterface: sending nested relay-reply to next relay agent " + peerAddrIP + ", size=" + clientPck.dataSize());
-                }
-
-                conn.send2net(clientPck); // Send the nested relay-reply
-                conn.setClosing();
-                relayStats.packetsForwarded++;
-
-                if (debugger.servDhcp6traf) {
-                    logger.info("dhcp6 forwardToClientFromInterface: successfully forwarded nested relay-reply to next relay agent");
-                }
-
-                return true;
-            }
-
-            // Extract peer address and send to client
-            addrIPv6 peerAddr = extractPeerAddress(pck);
-            if (peerAddr == null) {
-                relayStats.optionParsingErrors++;
-                relayStats.packetsDropped++;
-                return false;
-            }
-
-            // Send to client using the correct source interface
-            addrIP peerAddrIP = new addrIP();
-            peerAddrIP.fromIPv6addr(peerAddr);
-            prtGenConn conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, peerAddrIP, packDhcp6.portCnum, srvName(), -1, null, -1, -1);
-            if (conn == null) {
-                if (debugger.servDhcp6traf) {
-                    logger.error("dhcp6 forwardToClientFromInterface: failed to create connection to client " + peerAddrIP);
-                }
-                relayStats.routingErrors++;
-                relayStats.packetsDropped++;
-                return false;
-            }
-
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 forwardToClientFromInterface: sending response to client " + peerAddrIP);
-            }
-            conn.send2net(clientPck);
-            conn.setClosing();
-            relayStats.packetsForwarded++;
-
-            return true;
-        } catch (Exception e) {
-            logger.traceback(e);
-            relayStats.routingErrors++;
-            relayStats.packetsDropped++;
-            return false;
-        }
-    }
-
-    /**
-     * Create relay forward message with specific interface
-     */
-    private packHolder createRelayForwardFromInterface(packHolder originalPck, packDhcp6 dhcp, prtGenConn id) {
-        try {
-            // Create new packet for relay-forward message
-            packHolder relayPck = new packHolder(true, true);
-
-            // Message type (1 byte) = 12 (RELAY-FORW)
-            relayPck.putByte(0, packDhcp6.typReReq);
-
-            // Determine the hop count
-            int hopCount = 0;
-            if (dhcp.msgTyp == packDhcp6.typReReq) {
-                // Relay-Forward Message - extract and increment
-                hopCount = extractHopCount(originalPck) + 1;
-            } else {
-                // Client Message - start with 0 (per RFC 8415)
-                hopCount = 0;
-            }
-
-            // Check maxHopCount
-            if (hopCount >= maxHopCount) {
-                // Discard message
-                return null;
-            }
-
-            // Set the incremented hop count
-            relayPck.putByte(1, hopCount);
-
-            relayPck.putAddr(2, id.iface.addr);
-
-            relayPck.putAddr(18, id.peerAddr);
-
-            relayPck.putSkip(34); // Header is 34 bytes
-
-            // Add interface-id option if enabled
-            if (useInterfaceId) {
-                String ifName = "" + id.iface;
-                byte[] ifNameBytes = ifName.getBytes();
-                relayPck.msbPutW(0, D6O_INTERFACE_ID); // Option type
-                relayPck.msbPutW(2, ifNameBytes.length); // Length
-                relayPck.putCopy(ifNameBytes, 0, 4, ifNameBytes.length);
-                relayPck.putSkip(4 + ifNameBytes.length);
-                relayStats.interfaceIdAdded++;
-            }
-
-            // Add subscriber-id option if configured
-            if (subscriberId != null && !subscriberId.isEmpty()) {
-                byte[] subIdBytes = subscriberId.getBytes();
-                relayPck.msbPutW(0, D6O_SUBSCRIBER_ID); // Option type
-                relayPck.msbPutW(2, subIdBytes.length);  // Length
-                relayPck.putCopy(subIdBytes, 0, 4, subIdBytes.length);
-                relayPck.putSkip(4 + subIdBytes.length);
-                relayStats.subscriberIdAdded++;
-            }
-
-            // Add relay message option containing original packet
-            relayPck.msbPutW(0, D6O_RELAY_MSG);      // Option type
-            relayPck.msbPutW(2, originalPck.dataSize()); // Length
-            byte[] originalData = new byte[originalPck.dataSize()];
-            originalPck.getCopy(originalData, 0, 0, originalPck.dataSize());
-            relayPck.putCopy(originalData, 0, 4, originalPck.dataSize());
-            relayPck.putSkip(4 + originalPck.dataSize());
-            relayStats.relayMessageAdded++;
-
-            relayPck.merge2beg();
-            return relayPck;
-
-        } catch (Exception e) {
-            logger.traceback(e);
-            relayStats.bufferOverflowErrors++;
-            return null;
         }
     }
 

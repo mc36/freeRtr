@@ -236,6 +236,16 @@ public class packDhcp6 {
     public boolean rapid;
 
     /**
+     * interface id
+     */
+    public String ifcId;
+
+    /**
+     * subscriber id
+     */
+    public String subId;
+
+    /**
      * dns server address
      */
     public addrIPv6 dns1srv;
@@ -260,7 +270,7 @@ public class packDhcp6 {
     private static int hwType = 1;
 
     public String toString() {
-        return "typ=" + type2string(msgTyp) + " id=" + msgId + " clnt=" + bits.byteDump(clntId, 0, -1) + " serv=" + bits.byteDump(servId, 0, -1) + " mode=" + iamod + " iaid=" + iaid + " t1=" + iat1 + " t2=" + iat2 + " addr=" + ipaddr + "/" + ipsize + " lifeP=" + lifetimP + " lifeV=" + lifetimV + " pref=" + servPref + " time=" + clntTime + " serv=" + servAddr + " stat=" + status + " rapid=" + rapid + " dns1=" + dns1srv + " dns2=" + dns2srv + " relay=" + bits.byteDump(relayed, 0, -1);
+        return "typ=" + type2string(msgTyp) + " id=" + msgId + " clnt=" + bits.byteDump(clntId, 0, -1) + " serv=" + bits.byteDump(servId, 0, -1) + " mode=" + iamod + " iaid=" + iaid + " t1=" + iat1 + " t2=" + iat2 + " addr=" + ipaddr + "/" + ipsize + " lifeP=" + lifetimP + " lifeV=" + lifetimV + " pref=" + servPref + " time=" + clntTime + " serv=" + servAddr + " stat=" + status + " rapid=" + rapid + " dns1=" + dns1srv + " dns2=" + dns2srv + " ifid=" + ifcId + " sbid=" + subId + " relay=" + bits.byteDump(relayed, 0, -1);
     }
 
     /**
@@ -451,6 +461,9 @@ public class packDhcp6 {
                 case 14: // rapid commit
                     rapid = true;
                     break;
+                case 18: // interface id
+                    ifcId = tlv.getStr();
+                    break;
                 case 23: // dns servers
                     if (tlv.valSiz < addrIPv6.size) {
                         break;
@@ -484,6 +497,9 @@ public class packDhcp6 {
                     ipsize = tlv.valDat[8] & 0xff;
                     ipaddr.fromBuf(tlv.valDat, 9);
                     getOptions(pck, 25);
+                    break;
+                case 38: // subscriber id
+                    subId = tlv.getStr();
                     break;
                 case 59: // boot url
                     bootUrl = tlv.getStr();
@@ -607,6 +623,12 @@ public class packDhcp6 {
         }
         if (rapid) {
             tlv.putBytes(pck, 14, 0, tlv.valDat);
+        }
+        if (ifcId != null) {
+            tlv.putStr(pck, 18, ifcId);
+        }
+        if (subId != null) {
+            tlv.putStr(pck, 18, subId);
         }
         tlv.valSiz = 0;
         if (dns1srv != null) {
