@@ -186,7 +186,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     private int agentRelayMode = 0;
 
     // Agent Options Constants (RFC 3046)
-    private final static int DHCP_OPTION_RELAY_AGENT_INFO = 82;
     private final static int AGENT_CIRCUIT_ID_SUBOPTION = 1;
     private final static int AGENT_REMOTE_ID_SUBOPTION = 2;
     private final static int AGENT_LINK_SELECTION_SUBOPTION = 5;
@@ -397,26 +396,30 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         boolean result = false;
         // Handle DHCP packet based on operation type
         // Multi-hop relays: Requests can come from both client port (68) and server port (67)
-        if (dhcp.bootpOp == packDhcp4.bootpOpRequest) {
-            // This is a DHCP request - relay to servers
-            // Can come from client port (68) for direct clients OR server port (67) for multi-hop relay
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp4 relay processing request from port " + id.portRem
-                        + " (direct client: " + (id.portRem == packDhcp4.portCnum)
-                        + ", multi-hop: " + (id.portRem == packDhcp4.portSnum) + ")");
-            }
-            result = relayClientToServer(dhcp, pck, id);
-        } else if (dhcp.bootpOp == packDhcp4.bootpOpReply) {
-            // This is a DHCP reply - relay to client
-            // Always comes from server port (67)
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp4 relay processing reply from port " + id.portRem);
-            }
-            result = relayServerToClient(dhcp, pck, id);
-        } else {
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp relay unknown operation: " + dhcp.bootpOp + " port: " + id.portRem);
-            }
+        switch (dhcp.bootpOp) {
+            case packDhcp4.bootpOpRequest:
+                // This is a DHCP request - relay to servers
+                // Can come from client port (68) for direct clients OR server port (67) for multi-hop relay
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp4 relay processing request from port " + id.portRem
+                            + " (direct client: " + (id.portRem == packDhcp4.portCnum)
+                            + ", multi-hop: " + (id.portRem == packDhcp4.portSnum) + ")");
+                }
+                result = relayClientToServer(dhcp, pck, id);
+                break;
+            case packDhcp4.bootpOpReply:
+                // This is a DHCP reply - relay to client
+                // Always comes from server port (67)
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp4 relay processing reply from port " + id.portRem);
+                }
+                result = relayServerToClient(dhcp, pck, id);
+                break;
+            default:
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp relay unknown operation: " + dhcp.bootpOp + " port: " + id.portRem);
+                }
+                break;
         }
 
         // Always close the incoming connection after processing
@@ -468,24 +471,159 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
         }
 
-        // Handle existing agent options based on configured mode
-        tabGen<packDhcpOption> options = new tabGen<packDhcpOption>();
-        if (agentRelayMode != 0) {
-            if (!handleExistingAgentOptions(dhcp, pck, options)) {
-                // Packet should be discarded (discard mode with existing agent options)
+        boolean need2add = false;
+
+        // Handle based on configured relay mode
+        switch (agentRelayMode) {
+            case 0:
                 if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay packet discarded due to existing agent options");
+                    logger.debug("dhcp4 relay nothing agent relay mode options");
                 }
+                // Copy existing option and we'll add our own sub-options
+                relayStats.agentOptionsAppended++;
+                relayStats.appendOperations++;
+                break;
+
+            case 1:
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp4 relay replacing existing agent options");
+                }
+                // Don't copy existing option, we'll add our own
+                relayStats.agentOptionsReplaced++;
+                relayStats.replaceOperations++;
+                dhcp.dhcpAgentInfo = new byte[0];
+                need2add = true;
+                break;
+
+            case 2:
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp4 relay appending to existing agent options");
+                }
+                // Copy existing option and we'll add our own sub-options
+                relayStats.agentOptionsAppended++;
+                relayStats.appendOperations++;
+                need2add = true;
+                break;
+
+            case 3:
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp4 relay forwarding existing agent options unchanged");
+                }
+                // Copy existing option as-is, don't add our own
+                relayStats.agentOptionsForwarded++;
+                relayStats.forwardOperations++;
+                break;
+
+            case 4:
+                if (dhcp.dhcpAgentInfo == null) {
+                    // No existing agent options, proceed normally
+                    break;
+                }
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp4 relay discarding packet with existing agent options");
+                }
+                // Drop the packet
+                relayStats.agentOptionsDiscarded++;
+                relayStats.discardOperations++;
                 relayStats.packetsDropped++;
                 relayStats.updateProcessingTime(bits.getTime() - startTime);
                 return false; // Discard packet
+
+            default:
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp4 relay unknown agent relay mode " + agentRelayMode + ", using append");
+                }
+                // Copy existing option and we'll add our own sub-options
+                relayStats.agentOptionsAppended++;
+                relayStats.appendOperations++;
+                break;
+        }
+        if (need2add) {
+            if (debugger.servDhcp4traf) {
+                logger.debug("dhcp4 relay adding agent information option");
             }
-            addAgentInformationOption(options, id);
+
+            // Update statistics
+            relayStats.agentOptionsAdded++;
+
+            // Build sub-options data
+            List<Byte> subOptionData = new ArrayList<Byte>();
+            if (dhcp.dhcpAgentInfo != null) {
+                for (int i = 0; i < dhcp.dhcpAgentInfo.length; i++) {
+                    subOptionData.add(dhcp.dhcpAgentInfo[i]);
+                }
+            }
+
+            // Sub-option 1: Circuit ID
+            if (circuitIdTemplate != null && !circuitIdTemplate.isEmpty()) {
+                byte[] buf = formatCircuitId(id).getBytes();
+                if (buf.length > 0) {
+                    subOptionData.add((byte) AGENT_CIRCUIT_ID_SUBOPTION);
+                    subOptionData.add((byte) buf.length);
+                    for (int i = 0; i < buf.length; i++) {
+                        subOptionData.add(buf[i]);
+                    }
+                    relayStats.circuitIdAdded++;
+                }
+            }
+
+            // Sub-option 2: Remote ID
+            if (remoteIdTemplate != null && !remoteIdTemplate.isEmpty()) {
+                byte[] buf = formatRemoteId(id).getBytes();
+                if (buf.length > 0) {
+                    subOptionData.add((byte) AGENT_REMOTE_ID_SUBOPTION);
+                    subOptionData.add((byte) buf.length);
+                    for (int i = 0; i < buf.length; i++) {
+                        subOptionData.add(buf[i]);
+                    }
+                    relayStats.remoteIdAdded++;
+                }
+            }
+
+            // Sub-option 5: Link Selection
+            if (linkSelectionAddr != null && !linkSelectionAddr.isEmpty()) {
+                subOptionData.add((byte) AGENT_LINK_SELECTION_SUBOPTION);
+                byte[] buf = linkSelectionAddr.getBytes();
+                subOptionData.add((byte) buf.length); // IPv4 address length
+                for (int i = 0; i < buf.length; i++) {
+                    subOptionData.add(buf[i]);
+                }
+                relayStats.linkSelectionAdded++;
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp4 relay added link-selection '" + linkSelectionAddr + "'");
+                }
+            }
+
+            // Sub-option 6: Subscriber ID
+            if (subscriberId != null && !subscriberId.isEmpty()) {
+                subOptionData.add((byte) AGENT_SUBSCRIBER_ID_SUBOPTION);
+                byte[] buf = subscriberId.getBytes();
+                subOptionData.add((byte) buf.length);
+                for (int i = 0; i < buf.length; i++) {
+                    subOptionData.add(buf[i]);
+                }
+                relayStats.subscriberIdAdded++;
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp4 relay added subscriber-id '" + subscriberId + "'");
+                }
+            }
+
+            dhcp.dhcpAgentInfo = new byte[subOptionData.size()];
+            for (int i = 0; i < dhcp.dhcpAgentInfo.length; i++) {
+                dhcp.dhcpAgentInfo[i] = subOptionData.get(i);
+            }
+            if (dhcp.dhcpAgentInfo.length < 1) {
+                dhcp.dhcpAgentInfo = null;
+            }
+
+            if (debugger.servDhcp4traf) {
+                logger.debug("dhcp4 relay agent information option added with " + subOptionData.size() + " bytes");
+            }
         }
 
         // Create new packet with modified DHCP header and options
         packHolder newPck = new packHolder(true, true);
-        dhcp.createHeader(newPck, options);
+        dhcp.createHeader(newPck, null);
 
         // Forward to all helper addresses
         int forwardedCount = 0;
@@ -584,10 +722,8 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
 
             // Extract options without agent information
-            tabGen<packDhcpOption> clientOptions = null;
             if (agentRelayMode != 0) {
-                clientOptions = extractOptionsWithoutAgentInfo(pck);
-                stripAgentInformationOptions(dhcp);
+                dhcp.dhcpAgentInfo = null;
             }
 
             // Clear giaddr before forwarding to client
@@ -595,7 +731,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
             // Create new packet with filtered options for client
             packHolder newPck = new packHolder(true, true);
-            dhcp.createHeader(newPck, clientOptions);
+            dhcp.createHeader(newPck, null);
 
             // Forward to client
             if (forwardToClient(newPck, dhcp, clientInterface)) {
@@ -621,12 +757,8 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             // Use the interface where the relay is configured,
             // not the interface with best route to server
             ipFwdIface fwdIfc = null;
-            if (incomingConn != null && incomingConn.iface != null) {
-                // Use the same interface where the DHCP relay received the packet
+            if (incomingConn.iface != null) {
                 fwdIfc = incomingConn.iface;
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay using relay interface " + fwdIfc + " to forward to server");
-                }
             }
 
             // Use port 67 as source port so server responses come back to port 67
@@ -635,7 +767,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             if (conn == null) {
                 return false;
             }
-            conn.send2net(pck);
+            conn.send2net(pck.copyBytes(true, true));
             conn.setClosing();
             return true;
         } catch (Exception e) {
@@ -678,161 +810,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         } catch (Exception e) {
             logger.traceback(e);
             return false;
-        }
-    }
-
-    /**
-     * Handle existing agent options based on relay mode Returns true if packet
-     * should be processed, false if should be discarded
-     */
-    private boolean handleExistingAgentOptions(packDhcp4 dhcp, packHolder originalPacket, tabGen<packDhcpOption> options) {
-        if (debugger.servDhcp4traf) {
-            logger.debug("dhcp4 relay handling existing agent options in " + agentRelayMode + " mode");
-        }
-
-        // Find existing agent information option in the original packet
-        packDhcpOption existingOption = findAgentInformationOption(originalPacket);
-
-        if (existingOption == null) {
-            // No existing agent options, proceed normally
-            return true;
-        }
-
-        // Handle based on configured relay mode
-        switch (agentRelayMode) {
-            case 1:
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay replacing existing agent options");
-                }
-                // Don't copy existing option, we'll add our own
-                relayStats.agentOptionsReplaced++;
-                relayStats.replaceOperations++;
-                return true;
-
-            case 2:
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay appending to existing agent options");
-                }
-                // Copy existing option and we'll add our own sub-options
-                options.add(existingOption);
-                relayStats.agentOptionsAppended++;
-                relayStats.appendOperations++;
-                return true;
-
-            case 3:
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay forwarding existing agent options unchanged");
-                }
-                // Copy existing option as-is, don't add our own
-                options.add(existingOption);
-                relayStats.agentOptionsForwarded++;
-                relayStats.forwardOperations++;
-                return true;
-
-            case 4:
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay discarding packet with existing agent options");
-                }
-                // Drop the packet
-                relayStats.agentOptionsDiscarded++;
-                relayStats.discardOperations++;
-                return false;
-
-            default:
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay unknown agent relay mode " + agentRelayMode + ", using append");
-                }
-                // Copy existing option and we'll add our own sub-options
-                options.add(existingOption);
-                relayStats.agentOptionsAppended++;
-                relayStats.appendOperations++;
-                return true;
-        }
-    }
-
-    /**
-     * Add agent information option (Option 82) to DHCP packet
-     */
-    private void addAgentInformationOption(tabGen<packDhcpOption> options, prtGenConn id) {
-        if (debugger.servDhcp4traf) {
-            logger.debug("dhcp4 relay adding agent information option");
-        }
-
-        // Update statistics
-        relayStats.agentOptionsAdded++;
-
-        // Create the relay agent information option (Option 82)
-        packDhcpOption agentOption = new packDhcpOption();
-        agentOption.number = DHCP_OPTION_RELAY_AGENT_INFO;
-
-        // Build sub-options data
-        List<Byte> subOptionData = new ArrayList<Byte>();
-
-        // Sub-option 1: Circuit ID
-        if (circuitIdTemplate != null && !circuitIdTemplate.isEmpty()) {
-            byte[] buf = formatCircuitId(id).getBytes();
-            if (buf.length > 0) {
-                subOptionData.add((byte) AGENT_CIRCUIT_ID_SUBOPTION);
-                subOptionData.add((byte) buf.length);
-                for (int i = 0; i < buf.length; i++) {
-                    subOptionData.add(buf[i]);
-                }
-                relayStats.circuitIdAdded++;
-            }
-        }
-
-        // Sub-option 2: Remote ID
-        if (remoteIdTemplate != null && !remoteIdTemplate.isEmpty()) {
-            byte[] buf = formatRemoteId(id).getBytes();
-            if (buf.length > 0) {
-                subOptionData.add((byte) AGENT_REMOTE_ID_SUBOPTION);
-                subOptionData.add((byte) buf.length);
-                for (int i = 0; i < buf.length; i++) {
-                    subOptionData.add(buf[i]);
-                }
-                relayStats.remoteIdAdded++;
-            }
-        }
-
-        // Sub-option 5: Link Selection
-        if (linkSelectionAddr != null && !linkSelectionAddr.isEmpty()) {
-            subOptionData.add((byte) AGENT_LINK_SELECTION_SUBOPTION);
-            byte[] buf = linkSelectionAddr.getBytes();
-            subOptionData.add((byte) buf.length); // IPv4 address length
-            for (int i = 0; i < buf.length; i++) {
-                subOptionData.add(buf[i]);
-            }
-            relayStats.linkSelectionAdded++;
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp4 relay added link-selection '" + linkSelectionAddr + "'");
-            }
-        }
-
-        // Sub-option 6: Subscriber ID
-        if (subscriberId != null && !subscriberId.isEmpty()) {
-            subOptionData.add((byte) AGENT_SUBSCRIBER_ID_SUBOPTION);
-            byte[] buf = subscriberId.getBytes();
-            subOptionData.add((byte) buf.length);
-            for (int i = 0; i < buf.length; i++) {
-                subOptionData.add(buf[i]);
-            }
-            relayStats.subscriberIdAdded++;
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp4 relay added subscriber-id '" + subscriberId + "'");
-            }
-        }
-
-        // Set the option data
-        agentOption.buffer = new byte[subOptionData.size()];
-        for (int i = 0; i < subOptionData.size(); i++) {
-            agentOption.buffer[i] = subOptionData.get(i);
-        }
-
-        // Add to options list
-        options.add(agentOption);
-
-        if (debugger.servDhcp4traf) {
-            logger.debug("dhcp4 relay agent information option added with " + subOptionData.size() + " bytes");
         }
     }
 
@@ -882,170 +859,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             default:
                 return remoteIdTemplate;
         }
-    }
-
-    /**
-     * Parse DHCP options from original packet buffer to find agent information
-     * options Returns the agent information option if found, null otherwise
-     */
-    private packDhcpOption findAgentInformationOption(packHolder originalPacket) {
-        try {
-            // Make a copy to avoid modifying the original
-            packHolder pck = originalPacket.copyBytes(true, true);
-
-            // Skip to the options section (after BOOTP header + magic cookie)
-            if (pck.dataSize() < packDhcp4.size1 + 4) {
-                return null;
-            }
-            pck.getSkip(packDhcp4.size1);
-
-            // Check magic cookie
-            if (pck.msbGetD(0) != packDhcp4.magic) {
-                return null;
-            }
-            pck.getSkip(4);
-
-            // Parse options to find agent information option (82)
-            while (pck.dataSize() > 0) {
-                int optionType = pck.getByte(0);
-                if (optionType == 255) { // End option
-                    break;
-                }
-                if (optionType == 0) { // Pad option
-                    pck.getSkip(1);
-                    continue;
-                }
-
-                if (pck.dataSize() < 2) {
-                    break;
-                }
-
-                int optionLength = pck.getByte(1);
-                if (pck.dataSize() < 2 + optionLength) {
-                    break;
-                }
-
-                if (optionType != DHCP_OPTION_RELAY_AGENT_INFO) { // Skip this option
-                    pck.getSkip(2 + optionLength);
-                    continue;
-                }
-                // Found agent information option
-                packDhcpOption agentOption = new packDhcpOption();
-                agentOption.number = DHCP_OPTION_RELAY_AGENT_INFO;
-                agentOption.buffer = new byte[optionLength];
-                pck.getCopy(agentOption.buffer, 2, 0, optionLength);
-
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay found existing agent information option with " + optionLength + " bytes");
-                }
-
-                return agentOption;
-
-            }
-
-            return null; // No agent information option found
-
-        } catch (Exception e) {
-            logger.traceback(e);
-            relayStats.optionParsingErrors++;
-            return null;
-        }
-    }
-
-    /**
-     * Strip agent information options from DHCP packet Used when forwarding
-     * server replies to clients
-     */
-    private void stripAgentInformationOptions(packDhcp4 dhcp) {
-        // Agent options stripping is now handled in extractOptionsWithoutAgentInfo
-        // This method is kept for compatibility but the actual stripping
-        // happens when we extract options from the original packet
-        if (debugger.servDhcp4traf) {
-            logger.debug("dhcp4 relay agent options will be stripped during packet reconstruction");
-        }
-    }
-
-    /**
-     * Extract all DHCP options from a packet, excluding agent information
-     * options Used when forwarding server responses to clients
-     */
-    private tabGen<packDhcpOption> extractOptionsWithoutAgentInfo(packHolder originalPacket) {
-        tabGen<packDhcpOption> filteredOptions = new tabGen<packDhcpOption>();
-
-        if (originalPacket == null || originalPacket.dataSize() < packDhcp4.size1 + 4) {
-            return filteredOptions;
-        }
-
-        // Skip to options section (after DHCP header + magic cookie)
-        packHolder pck = originalPacket.copyBytes(true, true);
-        pck.getSkip(packDhcp4.size1); // Skip DHCP header
-
-        // Check magic cookie
-        if (pck.msbGetD(0) != packDhcp4.magic) {
-            return filteredOptions;
-        }
-        pck.getSkip(4); // Skip magic cookie
-
-        // Parse options
-        while (pck.dataSize() > 0) {
-            int optionType = pck.getByte(0);
-
-            // End of options
-            if (optionType == 255) {
-                break;
-            }
-
-            // Padding
-            if (optionType == 0) {
-                pck.getSkip(1);
-                continue;
-            }
-
-            // Check if we have enough data for length field
-            if (pck.dataSize() < 2) {
-                break;
-            }
-
-            int optionLength = pck.getByte(1);
-
-            // Check if we have enough data for the complete option
-            if (pck.dataSize() < (2 + optionLength)) {
-                break;
-            }
-
-            // Skip agent information option (Option 82)
-            if (optionType == DHCP_OPTION_RELAY_AGENT_INFO) {
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay stripping agent information option (length=" + optionLength + ")");
-                }
-                pck.getSkip(2 + optionLength);
-                continue;
-            }
-
-            // Copy other options
-            packDhcpOption option = new packDhcpOption();
-            option.number = optionType;
-            option.buffer = new byte[optionLength];
-
-            // Copy option data
-            pck.getSkip(2); // Skip type and length
-            for (int i = 0; i < optionLength; i++) {
-                option.buffer[i] = (byte) pck.getByte(i);
-            }
-            pck.getSkip(optionLength);
-
-            filteredOptions.add(option);
-
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp4 relay preserved option " + optionType + " (length=" + optionLength + ")");
-            }
-        }
-
-        if (debugger.servDhcp4traf) {
-            logger.debug("dhcp4 relay extracted " + filteredOptions.size() + " options (agent info stripped)");
-        }
-
-        return filteredOptions;
     }
 
     /**
@@ -2118,57 +1931,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         }
     }
 
-    /**
-     * Send DHCP packet with proper unicast/broadcast handling
-     *
-     * @param pckd DHCP packet to send
-     * @param ntry binding entry with client MAC and IP
-     * @return true if failed, false if successful
-     */
-    protected synchronized boolean sendPack(packDhcp4 pckd, servDhcp4bind ntry) {
-        addrIP adr = new addrIP();
-        int destPort = packDhcp4.portCnum; // Default: client port 68
-
-        // RFC 2131 compliant: Check giaddr first
-        if (!pckd.bootpGiaddr.isEmpty()) {
-            // Relayed packet: Send response to relay agent (giaddr) on port 67
-            adr.fromIPv4addr(pckd.bootpGiaddr);
-            destPort = packDhcp4.portSnum; // Relay port 67
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp server: sending to relay agent at " + pckd.bootpGiaddr + " port " + destPort);
-            }
-        } else {
-            // Direct packet: Use client IP or broadcast on port 68
-            adr.fromIPv4addr(ntry.ip);
-            srvIface.ipIf4.updateL2info(0, ntry.mac, adr);
-            if (pckd.bootpBroadcast) {
-                adr.fromIPv4addr(addrIPv4.getBroadcast());
-                srvIface.ipIf4.updateL2info(0, ntry.mac, adr);
-            }
-            destPort = packDhcp4.portCnum; // Client port 68
-        }
-
-        if (debugger.servDhcp4traf) {
-            logger.debug("tx " + adr + ":" + destPort + " " + pckd);
-        }
-
-        // Use the same pattern as relay functions for proper connection cleanup
-        prtUdp udp = srvVrf.getUdp(adr);
-
-        // Use port 0 (random) as source port for server replies to avoid conflicts
-        int sourcePort = (!pckd.bootpGiaddr.isEmpty()) ? 0 : packDhcp4.portSnum;
-        prtGenConn conn = udp.packetConnect(this, srvIface.fwdIf4, sourcePort, adr, destPort, "dhcp4-reply", -1, null, -1, -1);
-        if (conn == null) {
-            return true;
-        }
-
-        packHolder pckh = new packHolder(true, true);
-        pckd.createHeader(pckh, options);
-        conn.send2net(pckh);
-        conn.setClosing(); // Properly close connection
-        return false;
-    }
-
 }
 
 /**
@@ -2464,9 +2226,51 @@ class servDhcp4worker implements Runnable {
 
         // Find the binding for this client and use the existing sendPack method
         servDhcp4bind ntry = parent.findBinding(pckd.bootpChaddr, 0, pckd.bootpCiaddr);
-        if (ntry != null) {
-            parent.sendPack(pckd, ntry);
+        if (ntry == null) {
+            return;
         }
+
+        addrIP adr = new addrIP();
+        int destPort = packDhcp4.portCnum; // Default: client port 68
+
+        // RFC 2131 compliant: Check giaddr first
+        if (!pckd.bootpGiaddr.isEmpty()) {
+            // Relayed packet: Send response to relay agent (giaddr) on port 67
+            adr.fromIPv4addr(pckd.bootpGiaddr);
+            destPort = packDhcp4.portSnum; // Relay port 67
+            if (debugger.servDhcp4traf) {
+                logger.debug("dhcp server: sending to relay agent at " + pckd.bootpGiaddr + " port " + destPort);
+            }
+        } else {
+            // Direct packet: Use client IP or broadcast on port 68
+            adr.fromIPv4addr(ntry.ip);
+            parent.srvIface.ipIf4.updateL2info(0, ntry.mac, adr);
+            if (pckd.bootpBroadcast) {
+                adr.fromIPv4addr(addrIPv4.getBroadcast());
+                parent.srvIface.ipIf4.updateL2info(0, ntry.mac, adr);
+            }
+            destPort = packDhcp4.portCnum; // Client port 68
+        }
+
+        if (debugger.servDhcp4traf) {
+            logger.debug("tx " + adr + ":" + destPort + " " + pckd);
+        }
+
+        // Use the same pattern as relay functions for proper connection cleanup
+        prtUdp udp = parent.srvVrf.getUdp(adr);
+
+        // Use port 0 (random) as source port for server replies to avoid conflicts
+        int sourcePort = (!pckd.bootpGiaddr.isEmpty()) ? 0 : packDhcp4.portSnum;
+        prtGenConn conn = udp.packetConnect(parent, parent.srvIface.fwdIf4, sourcePort, adr, destPort, "dhcp4-reply", -1, null, -1, -1);
+        if (conn == null) {
+            return;
+        }
+
+        packHolder pckh = new packHolder(true, true);
+        pckd.createHeader(pckh, parent.options);
+        conn.send2net(pckh);
+        conn.setClosing(); // Properly close connection
+
     }
 
     public void run() {

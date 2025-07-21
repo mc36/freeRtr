@@ -219,6 +219,11 @@ public class packDhcp4 {
      */
     public addrIPv4 dhcpDns2srv;
 
+    /**
+     * forwarding agent information
+     */
+    public byte[] dhcpAgentInfo;
+
     private encTlv tlv = new encTlv(0, 8, 8, 8, 1, 0, 2, 1, 0, 512, true);
 
     private static int hwType = 1;
@@ -383,6 +388,10 @@ public class packDhcp4 {
                 case 15: // domain name
                     dhcpDomainName = tlv.getStr();
                     break;
+                case 82: // agent info
+                    dhcpAgentInfo = new byte[tlv.valSiz];
+                    bits.byteCopy(tlv.valDat, 0, dhcpAgentInfo, 0, dhcpAgentInfo.length);
+                    break;
                 default:
                     break;
             }
@@ -470,6 +479,9 @@ public class packDhcp4 {
                 i += dhcpDns2srv.getSize();
             }
             tlv.putBytes(pck, 6, i, tlv.valDat);
+        }
+        if (dhcpAgentInfo != null) {
+            tlv.putBytes(pck, 82, dhcpAgentInfo.length, dhcpAgentInfo);
         }
         if (opts != null) {
             for (i = 0; i < opts.size(); i++) {
