@@ -317,7 +317,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                     a = "unknown=" + circuitIdTemplate;
                     break;
             }
-            l.add(beg + "circuit-id-template " + circuitIdTemplate);
+            l.add(beg + "circuit-id-template " + a);
             switch (remoteIdTemplate) {
                 case 1:
                     a = "hostname";
@@ -332,7 +332,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                     a = "unknown=" + remoteIdTemplate;
                     break;
             }
-            l.add(beg + "remote-id-template " + remoteIdTemplate);
+            l.add(beg + "remote-id-template " + a);
             if (linkSelectionAddr != null) {
                 l.add(beg + "link-selection-address " + linkSelectionAddr);
             }
