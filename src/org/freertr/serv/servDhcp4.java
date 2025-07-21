@@ -11,8 +11,6 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrMac;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
-import org.freertr.cfg.cfgVrf;
-import org.freertr.ip.ipFwdIface;
 import org.freertr.pack.packDhcp4;
 import org.freertr.pack.packDhcpOption;
 import org.freertr.pack.packHolder;
@@ -666,9 +664,9 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                     // Check if giaddr points to a network we can reach
                     // In multi-hop relay, we need to forward to the giaddr, not necessarily the client
                     // Determine if we should forward to giaddr (relay) or broadcast to client
-                    boolean forwardToRelay = !isOurGiaddr(dhcp.bootpGiaddr, srvVrf);
-
-                    if (forwardToRelay) {
+                    addrIP targetAddr = new addrIP();
+                    targetAddr.fromIPv4addr(dhcp.bootpGiaddr);
+                    if (srvVrf.fwd4.connedR.route(targetAddr) == null) {
                         // Multi-hop: Forward to the relay (giaddr)
                         if (debugger.servDhcp4traf) {
                             logger.debug("dhcp relay multi-hop: forwarding to relay at " + dhcp.bootpGiaddr);
@@ -678,9 +676,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                         // Create new packet for multi-hop forwarding
                         packHolder newPck = new packHolder(true, true);
                         dhcp.createHeader(newPck, null);
-
-                        addrIP targetAddr = new addrIP();
-                        targetAddr.fromIPv4addr(dhcp.bootpGiaddr);
 
                         // Forward to relay on port 67
                         prtGenConn conn = srvVrf.getUdp(targetAddr).packetConnect(this, id.iface, packDhcp4.portSnum, targetAddr, packDhcp4.portSnum, "dhcp-relay-hop", -1, null, -1, -1);
@@ -748,39 +743,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             relayStats.packetsDropped++;
             return false;
         }
-    }
-
-    /**
-     * Check if the given giaddr matches one of our interfaces
-     */
-    private boolean isOurGiaddr(addrIPv4 giaddr, cfgVrf vrf) {
-        if (giaddr == null || vrf == null) {
-            return false;
-        }
-
-        addrIP targetAddr = new addrIP();
-        targetAddr.fromIPv4addr(giaddr);
-
-        // Check if the giaddr matches any of our interface addresses in this VRF.
-        if (vrf.fwd4 != null) {
-            for (int i = 0; i < vrf.fwd4.ifaces.size(); i++) {
-                ipFwdIface iface = vrf.fwd4.ifaces.get(i);
-                if (iface == null || iface.addr == null) {
-                    continue;
-                }
-                if (targetAddr.compareTo(iface.addr) == 0) {
-                    if (debugger.servDhcp4traf) {
-                        logger.debug("dhcp4 relay giaddr " + giaddr + " matches our interface " + iface);
-                    }
-                    return true; // It's our address
-                }
-            }
-        }
-
-        if (debugger.servDhcp4traf) {
-            logger.debug("dhcp4 relay giaddr " + giaddr + " does not match any of our interfaces in vrf " + vrf.name);
-        }
-        return false; // Not our address
     }
 
     public boolean srvCfgStr(cmds cmd) {

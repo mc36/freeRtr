@@ -1622,42 +1622,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         }
     }
 
-    /**
-     * Forward packet to server from specific interface
-     */
-    private boolean forwardToServerFromInterface(packHolder pck, addrIP serverAddr, packDhcp6 dhcp, prtGenConn id) {
-        try {
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 forwardToServerFromInterface: creating relay-forward message for server " + serverAddr);
-            }
-
-            pck.clear();
-            dhcp.createPacket(pck, options);
-            pck.merge2beg();
-
-            // Send to server using the correct source interface
-            prtGenConn conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, serverAddr, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
-            if (conn == null) {
-                if (debugger.servDhcp6traf) {
-                    logger.error("dhcp6 forwardToServerFromInterface: failed to create connection to server " + serverAddr);
-                }
-                relayStats.routingErrors++;
-                return false;
-            }
-
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 forwardToServerFromInterface: sending packet to server " + serverAddr + ", size=" + pck.dataSize());
-            }
-            conn.send2net(pck);
-            conn.setClosing();
-            return true;
-        } catch (Exception e) {
-            logger.traceback(e);
-            relayStats.routingErrors++;
-            return false;
-        }
-    }
-
 }
 
 class servDhcp6bindIp implements Comparator<servDhcp6bind> {

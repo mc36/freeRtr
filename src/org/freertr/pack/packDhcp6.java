@@ -382,13 +382,13 @@ public class packDhcp6 {
      * @return true on error, false on success
      */
     public boolean parsePacket(packHolder pck) {
-        if (pck.dataSize() < sizeN) {
-            return true;
-        }
         msgTyp = pck.getByte(0) & 0xff;
         switch (msgTyp) {
             case typReReq:
             case typReRep:
+                if (pck.dataSize() < sizeR) {
+                    return true;
+                }
                 msgHop = pck.getByte(1) & 0xff;
                 msgLink = new addrIPv6();
                 pck.getAddr(msgLink, 2);
@@ -397,6 +397,9 @@ public class packDhcp6 {
                 pck.getSkip(sizeR);
                 break;
             default:
+                if (pck.dataSize() < sizeN) {
+                    return true;
+                }
                 msgId = pck.msbGetD(0) & 0xffffff;
                 pck.getSkip(sizeN);
                 break;
