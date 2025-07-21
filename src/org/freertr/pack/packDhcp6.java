@@ -260,7 +260,7 @@ public class packDhcp6 {
     private static int hwType = 1;
 
     public String toString() {
-        return "typ=" + type2string(msgTyp) + " id=" + msgId + " clnt=" + bits.byteDump(clntId, 0, -1) + " serv=" + bits.byteDump(servId, 0, -1) + " mode=" + iamod + " iaid=" + iaid + " t1=" + iat1 + " t2=" + iat2 + " addr=" + ipaddr + "/" + ipsize + " lifeP=" + lifetimP + " lifeV=" + lifetimV + " pref=" + servPref + " time=" + clntTime + " serv=" + servAddr + " stat=" + status + " rapid=" + rapid + " dns1=" + dns1srv + " dns2=" + dns2srv;
+        return "typ=" + type2string(msgTyp) + " id=" + msgId + " clnt=" + bits.byteDump(clntId, 0, -1) + " serv=" + bits.byteDump(servId, 0, -1) + " mode=" + iamod + " iaid=" + iaid + " t1=" + iat1 + " t2=" + iat2 + " addr=" + ipaddr + "/" + ipsize + " lifeP=" + lifetimP + " lifeV=" + lifetimV + " pref=" + servPref + " time=" + clntTime + " serv=" + servAddr + " stat=" + status + " rapid=" + rapid + " dns1=" + dns1srv + " dns2=" + dns2srv + " relay=" + bits.byteDump(relayed, 0, -1);
     }
 
     /**

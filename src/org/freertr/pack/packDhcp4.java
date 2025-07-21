@@ -277,7 +277,7 @@ public class packDhcp4 {
     }
 
     public String toString() {
-        return "op=" + bootpOp2str(bootpOp) + " sec=" + bootpSecs + " cia=" + bootpCiaddr + " yia=" + bootpYiaddr + " sia=" + bootpSiaddr + " gia=" + bootpGiaddr + " cha=" + bootpChaddr + " srv=" + bootpSname + " fil=" + bootpSfile + " op=" + dhcpOp2str(dhcpOp) + " dhcpsrv=" + dhcpServer + " hstnm=" + dhcpHostName + " dom=" + dhcpDomainName + " lease=" + dhcpLeaseTime + " renew=" + dhcpRenewTime + " mask=" + dhcpNetMask + " gw=" + dhcpGateway + " dns1=" + dhcpDns1srv + " dns2=" + dhcpDns2srv + " req=" + dhcpRequested;
+        return "op=" + bootpOp2str(bootpOp) + " sec=" + bootpSecs + " cia=" + bootpCiaddr + " yia=" + bootpYiaddr + " sia=" + bootpSiaddr + " gia=" + bootpGiaddr + " cha=" + bootpChaddr + " srv=" + bootpSname + " fil=" + bootpSfile + " op=" + dhcpOp2str(dhcpOp) + " dhcpsrv=" + dhcpServer + " hstnm=" + dhcpHostName + " dom=" + dhcpDomainName + " lease=" + dhcpLeaseTime + " renew=" + dhcpRenewTime + " mask=" + dhcpNetMask + " gw=" + dhcpGateway + " dns1=" + dhcpDns1srv + " dns2=" + dhcpDns2srv + " req=" + dhcpRequested + " opreq=" + bits.byteDump(dhcpParamReqList, 0, -1) + " agent=" + bits.byteDump(dhcpAgentInfo, 0, -1);
     }
 
     /**
