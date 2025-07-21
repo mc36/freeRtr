@@ -156,11 +156,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     private List<addrIP> helperAddresses = new ArrayList<addrIP>();
 
     /**
-     * add agent options flag
-     */
-    private boolean addAgentOptions = false;
-
-    /**
      * circuit ID template for agent options
      */
     private String circuitIdTemplate = "interface-name";
@@ -186,9 +181,9 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     private int maxHopCount = 10;
 
     /**
-     * agent relay mode - how to handle existing agent options
+     * agent relay mode: 0=nothing, 1=replace, 2=append, 3=forward, 4=discard
      */
-    private String agentRelayMode = "append";
+    private int agentRelayMode = 0;
 
     // Agent Options Constants (RFC 3046)
     private final static int DHCP_OPTION_RELAY_AGENT_INFO = 82;
@@ -225,13 +220,12 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         new userFilter("server dhcp4 .*", cmds.tabulator + "renew 21600000", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + "remember 0", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bind-file", null),
-        new userFilter("server dhcp4 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "add-agent-options", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + "circuit-id-template interface-name", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + "remote-id-template hostname", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "link-selection-address", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "subscriber-id", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + "max-hop-count 10", null),
-        new userFilter("server dhcp4 .*", cmds.tabulator + "agent-relay-mode append", null)
+        new userFilter("server dhcp4 .*", cmds.tabulator + "agent-relay-mode nothing", null)
     };
 
     public userFilter[] srvDefFlt() {
@@ -312,14 +306,13 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             cmds.cfgLine(l, bindFile == null, beg, "bind-file", bindFile);
         } else {
             // Relay mode configuration
-            String helpers = "";
+            String a = "";
             for (int i = 0; i < helperAddresses.size(); i++) {
-                helpers += " " + helperAddresses.get(i);
+                a += " " + helperAddresses.get(i);
             }
-            if (helpers.length() > 0) {
-                l.add(beg + "helper-addresses" + helpers);
+            if (a.length() > 0) {
+                l.add(beg + "helper-addresses" + a);
             }
-            cmds.cfgLine(l, !addAgentOptions, beg, "add-agent-options", "");
             if (circuitIdTemplate != null) {
                 l.add(beg + "circuit-id-template " + circuitIdTemplate);
             }
@@ -333,7 +326,27 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 l.add(beg + "subscriber-id " + subscriberId);
             }
             l.add(beg + "max-hop-count " + maxHopCount);
-            l.add(beg + "agent-relay-mode " + agentRelayMode);
+            switch (agentRelayMode) {
+                case 0:
+                    a = "nothing";
+                    break;
+                case 1:
+                    a = "replace";
+                    break;
+                case 2:
+                    a = "append";
+                    break;
+                case 3:
+                    a = "forward";
+                    break;
+                case 4:
+                    a = "discard";
+                    break;
+                default:
+                    a = "unknown=" + agentRelayMode;
+                    break;
+            }
+            l.add(beg + "agent-relay-mode " + a);
         }
     }
 
@@ -457,7 +470,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
         // Handle existing agent options based on configured mode
         tabGen<packDhcpOption> options = new tabGen<packDhcpOption>();
-        if (addAgentOptions) {
+        if (agentRelayMode != 0) {
             if (!handleExistingAgentOptions(dhcp, pck, options)) {
                 // Packet should be discarded (discard mode with existing agent options)
                 if (debugger.servDhcp4traf) {
@@ -572,7 +585,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
             // Extract options without agent information
             tabGen<packDhcpOption> clientOptions = null;
-            if (addAgentOptions) {
+            if (agentRelayMode != 0) {
                 clientOptions = extractOptionsWithoutAgentInfo(pck);
                 stripAgentInformationOptions(dhcp);
             }
@@ -686,8 +699,8 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         }
 
         // Handle based on configured relay mode
-        switch (agentRelayMode.toLowerCase()) {
-            case "replace":
+        switch (agentRelayMode) {
+            case 1:
                 if (debugger.servDhcp4traf) {
                     logger.debug("dhcp4 relay replacing existing agent options");
                 }
@@ -696,7 +709,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 relayStats.replaceOperations++;
                 return true;
 
-            case "append":
+            case 2:
                 if (debugger.servDhcp4traf) {
                     logger.debug("dhcp4 relay appending to existing agent options");
                 }
@@ -706,7 +719,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 relayStats.appendOperations++;
                 return true;
 
-            case "forward":
+            case 3:
                 if (debugger.servDhcp4traf) {
                     logger.debug("dhcp4 relay forwarding existing agent options unchanged");
                 }
@@ -716,7 +729,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 relayStats.forwardOperations++;
                 return true;
 
-            case "discard":
+            case 4:
                 if (debugger.servDhcp4traf) {
                     logger.debug("dhcp4 relay discarding packet with existing agent options");
                 }
@@ -1127,10 +1140,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             mode = dhcpMode.relay;
             return false;
         }
-        if (a.equals("add-agent-options")) {
-            addAgentOptions = true;
-            return false;
-        }
         if (a.equals("circuit-id-template")) {
             String template = cmd.word();
             if (template.equals("interface-name")) {
@@ -1168,7 +1177,22 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             return false;
         }
         if (a.equals("agent-relay-mode")) {
-            agentRelayMode = cmd.word();
+            a = cmd.word();
+            if (a.equals("nothing")) {
+                agentRelayMode = 0;
+            }
+            if (a.equals("replace")) {
+                agentRelayMode = 1;
+            }
+            if (a.equals("append")) {
+                agentRelayMode = 2;
+            }
+            if (a.equals("forward")) {
+                agentRelayMode = 3;
+            }
+            if (a.equals("discard")) {
+                agentRelayMode = 4;
+            }
             return false;
         }
         if (a.equals("bind-file")) {
@@ -1390,16 +1414,12 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             helperAddresses.clear();
             return false;
         }
-        if (a.equals("add-agent-options")) {
-            addAgentOptions = false;
-            return false;
-        }
         if (a.equals("max-hop-count")) {
             maxHopCount = 10;
             return false;
         }
         if (a.equals("agent-relay-mode")) {
-            agentRelayMode = "append";
+            agentRelayMode = 0;
             return false;
         }
         if (a.equals("option")) {
@@ -1420,7 +1440,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         // Relay mode commands
         l.add(null, false, 1, new int[]{2}, "helper-addresses", "dhcp server addresses to forward to");
         l.add(null, false, 2, new int[]{2, -1}, "<addr>", "server ip address");
-        l.add(null, false, 1, new int[]{-1}, "add-agent-options", "add relay agent options");
         l.add(null, false, 1, new int[]{2}, "circuit-id-template", "circuit id template for agent options");
         l.add(null, false, 2, new int[]{-1}, "interface-name", "use interface name as circuit id");
         l.add(null, false, 2, new int[]{-1}, "interface-number", "use interface number as circuit id");
@@ -1435,7 +1454,8 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         l.add(null, false, 1, new int[]{2}, "max-hop-count", "specify maximum hop count");
         l.add(null, false, 2, new int[]{-1}, "<num>", "hop count (1-255)");
         l.add(null, false, 1, new int[]{2}, "agent-relay-mode", "specify agent relay mode");
-        l.add(null, false, 2, new int[]{-1}, "append", "append to existing agent options (default)");
+        l.add(null, false, 2, new int[]{-1}, "nothing", "do nothing with the option");
+        l.add(null, false, 2, new int[]{-1}, "append", "append to existing agent options");
         l.add(null, false, 2, new int[]{-1}, "replace", "replace existing agent options");
         l.add(null, false, 2, new int[]{-1}, "forward", "forward existing agent options unchanged");
         l.add(null, false, 2, new int[]{-1}, "discard", "discard packets with existing agent options");

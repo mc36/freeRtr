@@ -267,12 +267,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             cmds.cfgLine(l, bindFile == null, beg, "bind-file", bindFile);
         } else {
             // Relay mode configuration
-            String helpers = "";
+            String a = "";
             for (int i = 0; i < helperAddresses.size(); i++) {
-                helpers += " " + helperAddresses.get(i);
+                a += " " + helperAddresses.get(i);
             }
-            if (helpers.length() > 0) {
-                l.add(beg + "helper-addresses" + helpers);
+            if (a.length() > 0) {
+                l.add(beg + "helper-addresses" + a);
             }
             if (useInterfaceId) {
                 l.add(beg + "use-interface-id");
