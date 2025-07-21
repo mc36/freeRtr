@@ -1373,6 +1373,18 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             logger.info("dhcp6 relayClientToServer: processing client packet, msgType=" + dhcp.msgTyp + ", upstreamServers=" + helperAddresses.size());
         }
 
+        if (dhcp.parsePacket(pck)) {
+            if (debugger.servDhcp6traf) {
+                logger.error("dhcp6 server: failed to parse packet");
+            }
+            return false;
+        }
+        if (debugger.servDhcp6traf) {
+            logger.debug("rx " + dhcp);
+        }
+        
+        
+        
         // Check hop count for relay-forward messages
         if (dhcp.msgTyp == packDhcp6.typReReq) {
             // Extract hop count from relay message

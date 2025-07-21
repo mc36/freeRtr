@@ -17313,3 +17313,6 @@ qc pass: wireguard over ipv6
 ---------------------------------- 2025-07-21 12:59:06 25.7.21
 no qc pass: dhcp with arp/nd security
 failed: dhcp with arp/nd security
+---------------------------------- 2025-07-21 13:48:10 25.7.21
+no failed: dhcp with arp/nd security
+qc pass: dhcp with arp/nd security
