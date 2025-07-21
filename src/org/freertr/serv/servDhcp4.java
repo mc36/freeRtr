@@ -440,12 +440,9 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
                     // Set GIADDR to our interface IP if not already set by another relay
                     if (dhcp.bootpGiaddr.isEmpty()) {
-                        // Use the interface address as giaddr
-                        if (id.iface != null && id.iface.addr != null) {
-                            dhcp.bootpGiaddr.setAddr(id.iface.addr.toIPv4());
-                            if (debugger.servDhcp4traf) {
-                                logger.debug("dhcp4 relay set giaddr to " + dhcp.bootpGiaddr);
-                            }
+                        dhcp.bootpGiaddr.setAddr(id.iface.addr.toIPv4());
+                        if (debugger.servDhcp4traf) {
+                            logger.debug("dhcp4 relay set giaddr to " + dhcp.bootpGiaddr);
                         }
                     }
 
@@ -574,7 +571,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                         relayStats.remoteIdAdded++;
 
                         // Sub-option 5: Link Selection
-                        if (linkSelectionAddr != null && !linkSelectionAddr.isEmpty()) {
+                        if (linkSelectionAddr != null) {
                             subOptionData.add((byte) 5);
                             buf = linkSelectionAddr.getBytes();
                             subOptionData.add((byte) buf.length); // IPv4 address length
@@ -582,9 +579,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                                 subOptionData.add(buf[i]);
                             }
                             relayStats.linkSelectionAdded++;
-                            if (debugger.servDhcp4traf) {
-                                logger.debug("dhcp4 relay added link-selection '" + linkSelectionAddr + "'");
-                            }
                         }
 
                         // Sub-option 6: Subscriber ID
@@ -596,9 +590,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                                 subOptionData.add(buf[i]);
                             }
                             relayStats.subscriberIdAdded++;
-                            if (debugger.servDhcp4traf) {
-                                logger.debug("dhcp4 relay added subscriber-id '" + subscriberId + "'");
-                            }
                         }
 
                         dhcp.dhcpAgentInfo = new byte[subOptionData.size()];

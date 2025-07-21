@@ -84,7 +84,7 @@ public class cryHashBlake2s extends cryHashGeneric {
         buffer = new byte[BLOCK_LENGTH_BYTES];
         bufferPos = 0;
         keyLength = 0;
-        if (ky != null && ky.length > 0) {
+        if ((ky != null) && (ky.length > 0)) {
             key = new byte[ky.length];
             bits.byteCopy(ky, 0, key, 0, ky.length);
             keyLength = ky.length;

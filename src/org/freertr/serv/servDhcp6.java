@@ -270,7 +270,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 l.add(beg + "helper-addresses" + a);
             }
             cmds.cfgLine(l, !useInterfaceId, beg, "use-interface-id", "");
-            cmds.cfgLine(l, subscriberId==null, beg, "subscriber-id", subscriberId);
+            cmds.cfgLine(l, subscriberId == null, beg, "subscriber-id", subscriberId);
             l.add(beg + "max-hop-count " + maxHopCount);
         }
     }
@@ -822,7 +822,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (!dynamicAddress) {
                 // If we're creating a static binding (hint is provided and will be marked as confed later),
                 // we should allow it even when dynamic address allocation is disabled
-                boolean isCreatingStaticBinding = (hint != null && create == 1);
+                boolean isCreatingStaticBinding = ((hint != null) && (create == 1));
 
                 if (!isCreatingStaticBinding) {
                     if (debugger.servDhcp6traf) {
@@ -861,7 +861,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             ntry.reqd = bits.getTime();
 
             // Generate IPv6 address if not provided
-            if (ntry.ip == null && gateway != null) {
+            if ((ntry.ip == null) && (gateway != null)) {
                 ntry.ip = addrIPv6.genPublic(mac, gateway);
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 findbinding: generated new ip " + ntry.ip + " for mac " + mac);
@@ -1018,7 +1018,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             ntry.reqd = bits.getTime();
 
             // Generate IP address if not already set
-            if (ntry.ip == null && gateway != null) {
+            if ((ntry.ip == null) && (gateway != null)) {
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 gotpack: generating new ipv6 address for mac " + mac + " using gateway " + gateway);
                 }
@@ -1055,7 +1055,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 }
             }
 
-            if (!foundInList && ntry != null && ntry.ip != null) {
+            if (!foundInList && (ntry.ip != null)) {
                 bindings.add(ntry);
                 if (debugger.servDhcp6traf) {
                     logger.info("dhcp6 gotpack: added missing binding to list, total bindings: " + bindings.size());
