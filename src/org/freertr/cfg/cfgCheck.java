@@ -438,7 +438,12 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
         cmd.badCmd();
     }
 
-    private List<String> getResult() {
+    /**
+     * get result
+     *
+     * @return result
+     */
+    public List<String> getResult() {
         if (command == null) {
             return new ArrayList<String>();
         }
@@ -771,7 +776,7 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
      *
      * @return result
      */
-    public List<String> getShow() {
+    public List<String> getShowDetail() {
         List<String> res = new ArrayList<String>();
         res.add("name=" + name);
         res.add("template=" + template);
@@ -784,17 +789,23 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
         res.add("reply=" + time + " ms");
         res.add("passed=" + okNum + " times, last " + bits.time2str(cfgAll.timeZoneName, okTim + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(okTim) + " ago)");
         res.add("failed=" + errNum + " times, last " + bits.time2str(cfgAll.timeZoneName, errTim + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(errTim) + " ago)");
-        res.add("last error:");
-        if (errLst != null) {
-            res.addAll(errLst);
-        }
-        res.add("output:");
-        res.addAll(getResult());
-        res.add("result:");
-        res.addAll(doCheckText());
+        return res;
+    }
+
+    
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public List<String> getShowError() {
+        List<String> res = new ArrayList<String>();
         packNrpe nrp = new packNrpe();
         getReportNrpe(nrp);
         res.add("nrpe:" + packNrpe.code2string(nrp.cod));
+        if (errLst != null) {
+            res.addAll(errLst);
+        }
         return res;
     }
 

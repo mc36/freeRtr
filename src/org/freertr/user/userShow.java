@@ -1323,7 +1323,24 @@ public class userShow {
                 cmd.error("no such check");
                 return null;
             }
-            rdr.putStrArr(srv.getShow());
+            a = cmd.word();
+            if (a.equals("details")) {
+                rdr.putStrArr(srv.getShowDetail());
+                return null;
+            }
+            if (a.equals("output")) {
+                rdr.putStrArr(srv.getResult());
+                return null;
+            }
+            if (a.equals("result")) {
+                rdr.putStrArr(srv.doCheckText());
+                return null;
+            }
+            if (a.equals("error")) {
+                rdr.putStrArr(srv.getShowError());
+                return null;
+            }
+            cmd.badCmd();
             return null;
         }
         if (a.equals("dashboard")) {

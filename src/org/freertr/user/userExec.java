@@ -1734,7 +1734,11 @@ public class userExec {
         hl.add(null, false, 5, new int[]{-1}, "statistics", "dhcp6 relay statistics");
         hl.add(null, false, 2, new int[]{-1}, "clients", "client information");
         hl.add(null, false, 2, new int[]{3, -1}, "check", "check information");
-        hl.add(null, false, 3, new int[]{-1}, "<name:chk>", "check name");
+        hl.add(null, false, 3, new int[]{4}, "<name:chk>", "check name");
+        hl.add(null, false, 4, new int[]{-1}, "details", "detailed information");
+        hl.add(null, false, 4, new int[]{-1}, "output", "output information");
+        hl.add(null, false, 4, new int[]{-1}, "result", "resulting diff information");
+        hl.add(null, false, 4, new int[]{-1}, "error", "reported error information");
         hl.add(null, false, 2, new int[]{3, -1}, "sensor", "sensor information");
         hl.add(null, false, 3, new int[]{4}, "<name:sns>", "sensor name");
         hl.add(null, false, 4, new int[]{-1}, "details", "detailed information");
