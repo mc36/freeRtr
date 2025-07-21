@@ -166,11 +166,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
      */
     private long statsResetTime = bits.getTime();
 
-    // DHCP6 Relay Constants
-    private final static int D6O_INTERFACE_ID = 18;
-    private final static int D6O_RELAY_MSG = 9;
-    private final static int D6O_SUBSCRIBER_ID = 38;
-
     /**
      * defaults text
      */
@@ -1113,6 +1108,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
     /**
      * Recursively create nested relay-reply structure
+     *
+     * @param orig original packet
+     * @param pck original packet
+     * @return reply packet, null if error
      */
     protected packDhcp6 createNestedRelayReply(packDhcp6 orig, packHolder pck) {
         if (debugger.servDhcp6traf) {
@@ -1354,6 +1353,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                         relayStats.packetsDropped++;
                         return false;
                     }
+                    relayStats.hopCountTotal += hops;
                     relayStats.relayForwardPackets++;
                     dhcp = new packDhcp6();
                     dhcp.msgHop = hops;
@@ -1443,7 +1443,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     prtGenConn conn;
                     if (inner.msgTyp == packDhcp6.typReRep) {
                         conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, peerAddrIP, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
-
                     } else {
                         conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, peerAddrIP, packDhcp6.portCnum, srvName(), -1, null, -1, -1);
                     }
@@ -1904,4 +1903,5 @@ class servDhcp6RelayStats {
         }
         return (double) hopCountTotal / relayForwardPackets;
     }
+
 }

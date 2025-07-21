@@ -185,12 +185,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
      */
     private int agentRelayMode = 0;
 
-    // Agent Options Constants (RFC 3046)
-    private final static int AGENT_CIRCUIT_ID_SUBOPTION = 1;
-    private final static int AGENT_REMOTE_ID_SUBOPTION = 2;
-    private final static int AGENT_LINK_SELECTION_SUBOPTION = 5;
-    private final static int AGENT_SUBSCRIBER_ID_SUBOPTION = 6;
-
     /**
      * list of interfaces for relay (multiple interface support)
      */
@@ -556,33 +550,54 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
             // Sub-option 1: Circuit ID
             if (circuitIdTemplate != null && !circuitIdTemplate.isEmpty()) {
-                byte[] buf = formatCircuitId(id).getBytes();
-                if (buf.length > 0) {
-                    subOptionData.add((byte) AGENT_CIRCUIT_ID_SUBOPTION);
-                    subOptionData.add((byte) buf.length);
-                    for (int i = 0; i < buf.length; i++) {
-                        subOptionData.add(buf[i]);
-                    }
-                    relayStats.circuitIdAdded++;
+                byte[] buf;
+                switch (circuitIdTemplate) {
+                    case "interface-name":
+                        buf = ("" + id.iface).getBytes();
+                        break;
+                    case "interface-number":
+                        buf = ("interface-iface-" + id.iface.ifwNum).getBytes();
+                        break;
+                    default:
+                        buf = circuitIdTemplate.getBytes();
+                        break;
                 }
+                subOptionData.add((byte) 1);
+                subOptionData.add((byte) buf.length);
+                for (int i = 0; i < buf.length; i++) {
+                    subOptionData.add(buf[i]);
+                }
+                relayStats.circuitIdAdded++;
             }
 
             // Sub-option 2: Remote ID
             if (remoteIdTemplate != null && !remoteIdTemplate.isEmpty()) {
-                byte[] buf = formatRemoteId(id).getBytes();
-                if (buf.length > 0) {
-                    subOptionData.add((byte) AGENT_REMOTE_ID_SUBOPTION);
-                    subOptionData.add((byte) buf.length);
-                    for (int i = 0; i < buf.length; i++) {
-                        subOptionData.add(buf[i]);
-                    }
-                    relayStats.remoteIdAdded++;
+                byte[] buf;
+                switch (remoteIdTemplate) {
+                    case "hostname":
+                        buf = cfgAll.hostName.getBytes();
+                        break;
+                    case "ip-address":
+                        buf = ("" + id.iface.addr).getBytes();
+                        break;
+                    case "mac-address":
+                        buf = ("mac-" + id.iface.ifwNum).getBytes();
+                        break;
+                    default:
+                        buf = remoteIdTemplate.getBytes();
+                        break;
                 }
+                subOptionData.add((byte) 2);
+                subOptionData.add((byte) buf.length);
+                for (int i = 0; i < buf.length; i++) {
+                    subOptionData.add(buf[i]);
+                }
+                relayStats.remoteIdAdded++;
             }
 
             // Sub-option 5: Link Selection
             if (linkSelectionAddr != null && !linkSelectionAddr.isEmpty()) {
-                subOptionData.add((byte) AGENT_LINK_SELECTION_SUBOPTION);
+                subOptionData.add((byte) 5);
                 byte[] buf = linkSelectionAddr.getBytes();
                 subOptionData.add((byte) buf.length); // IPv4 address length
                 for (int i = 0; i < buf.length; i++) {
@@ -596,7 +611,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
             // Sub-option 6: Subscriber ID
             if (subscriberId != null && !subscriberId.isEmpty()) {
-                subOptionData.add((byte) AGENT_SUBSCRIBER_ID_SUBOPTION);
+                subOptionData.add((byte) 6);
                 byte[] buf = subscriberId.getBytes();
                 subOptionData.add((byte) buf.length);
                 for (int i = 0; i < buf.length; i++) {
@@ -621,21 +636,23 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
         }
 
-        // Create new packet with modified DHCP header and options
-        packHolder newPck = new packHolder(true, true);
-        dhcp.createHeader(newPck, null);
-
         // Forward to all helper addresses
         int forwardedCount = 0;
         synchronized (helperAddresses) {
             for (int i = 0; i < helperAddresses.size(); i++) {
                 addrIP target = helperAddresses.get(i);
-                if (forwardToServer(newPck, target, id)) {
-                    forwardedCount++;
-                    relayStats.packetsForwardedToServers++;
-                } else {
+                pck.clear();
+                dhcp.createHeader(pck, null);
+                pck.merge2beg();
+                prtGenConn conn = srvVrf.getUdp(target).packetConnect(this, id.iface, packDhcp4.portSnum, target, packDhcp4.portSnum, "dhcp-relay", -1, null, -1, -1);
+                if (conn == null) {
                     relayStats.forwardingErrors++;
+                    continue;
                 }
+                conn.send2net(pck.copyBytes(true, true));
+                conn.setClosing();
+                forwardedCount++;
+                relayStats.packetsForwardedToServers++;
             }
         }
 
@@ -691,34 +708,23 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             // Create new packet for multi-hop forwarding
             packHolder newPck = new packHolder(true, true);
             dhcp.createHeader(newPck, null);
-            if (forwardToRelay(newPck, dhcp.bootpGiaddr)) {
+
+            addrIP targetAddr = new addrIP();
+            targetAddr.fromIPv4addr(dhcp.bootpGiaddr);
+
+            // Forward to relay on port 67
+            prtGenConn conn = srvVrf.getUdp(targetAddr).packetConnect(this, id.iface, packDhcp4.portSnum, targetAddr, packDhcp4.portSnum, "dhcp-relay-hop", -1, null, -1, -1);
+            if (conn == null) {
                 relayStats.packetsForwarded++;
-            } else {
-                relayStats.packetsDropped++;
-                relayStats.forwardingErrors++;
+                return false;
             }
+            conn.send2net(pck);
+            conn.setClosing();
+
         } else {
-            // Final hop: Forward to client and clear giaddr
+
             if (debugger.servDhcp4traf) {
                 logger.debug("dhcp4 relay final hop: forwarding to client");
-            }
-
-            // Find client interface based on giaddr BEFORE clearing it
-            ipFwdIface clientInterface = null;
-            if (!dhcp.bootpGiaddr.isEmpty()) {
-                for (int i = 0; i < relayInterfaces.size(); i++) {
-                    cfgIfc ifc = relayInterfaces.get(i);
-                    if (ifc == null) {
-                        continue;
-                    }
-                    if (ifc.addr4 != null && ifc.addr4.compareTo(dhcp.bootpGiaddr) == 0) {
-                        clientInterface = ifc.fwdIf4;
-                        if (debugger.servDhcp4traf) {
-                            logger.debug("dhcp4 relay found client interface " + ifc.name + " for giaddr=" + dhcp.bootpGiaddr);
-                        }
-                        break;
-                    }
-                }
             }
 
             // Extract options without agent information
@@ -729,55 +735,10 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             // Clear giaddr before forwarding to client
             dhcp.bootpGiaddr.fillBytes(0);
 
-            // Create new packet with filtered options for client
-            packHolder newPck = new packHolder(true, true);
-            dhcp.createHeader(newPck, null);
+            pck.clear();
+            dhcp.createHeader(pck, null);
+            pck.merge2beg();
 
-            // Forward to client
-            if (forwardToClient(newPck, dhcp, clientInterface)) {
-                relayStats.packetsForwarded++;
-            } else {
-                relayStats.packetsDropped++;
-                relayStats.forwardingErrors++;
-            }
-        }
-
-        if (debugger.servDhcp4traf) {
-            logger.debug("dhcp relay forwarded server reply");
-        }
-
-        relayStats.updateProcessingTime(bits.getTime() - startTime);
-        return false; // Packet processed successfully
-    }
-
-    private boolean forwardToServer(packHolder pck, addrIP serverAddr, prtGenConn incomingConn) {
-        try {
-            prtUdp udp = srvVrf.getUdp(serverAddr);
-
-            // Use the interface where the relay is configured,
-            // not the interface with best route to server
-            ipFwdIface fwdIfc = null;
-            if (incomingConn.iface != null) {
-                fwdIfc = incomingConn.iface;
-            }
-
-            // Use port 67 as source port so server responses come back to port 67
-            prtGenConn conn = udp.packetConnect(this, fwdIfc, packDhcp4.portSnum, serverAddr, packDhcp4.portSnum,
-                    "dhcp-relay", -1, null, -1, -1);
-            if (conn == null) {
-                return false;
-            }
-            conn.send2net(pck.copyBytes(true, true));
-            conn.setClosing();
-            return true;
-        } catch (Exception e) {
-            logger.traceback(e);
-            return false;
-        }
-    }
-
-    private boolean forwardToClient(packHolder pck, packDhcp4 dhcp, ipFwdIface clientInterface) {
-        try {
             // Determine client address - RFC 2131 compliant
             addrIP clientAddr = new addrIP();
             if (!dhcp.bootpCiaddr.isEmpty()) {
@@ -789,76 +750,21 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 clientAddr.fromIPv4addr(addrIPv4.getBroadcast());
             }
 
-            prtUdp udp = srvVrf.getUdp(clientAddr);
-
             // Use provided client interface
-            ipFwdIface fwdIfc = clientInterface;
-            if (fwdIfc != null && debugger.servDhcp4traf) {
-                logger.debug("dhcp4 relay using provided interface to forward to client");
-            }
-            // Note: clientInterface should always be provided by the caller
-
             // Use port 67 as source port so client recognizes DHCP messages
-            prtGenConn conn = udp.packetConnect(this, fwdIfc, packDhcp4.portSnum, clientAddr, packDhcp4.portCnum,
-                    "dhcp-relay", -1, null, -1, -1);
+            prtGenConn conn = srvVrf.getUdp(clientAddr).packetConnect(this, id.iface, packDhcp4.portSnum, clientAddr, packDhcp4.portCnum, "dhcp-relay", -1, null, -1, -1);
             if (conn == null) {
-                return false;
+                relayStats.packetsForwarded++;
+                return true;
             }
             conn.send2net(pck);
             conn.setClosing();
-            return true;
-        } catch (Exception e) {
-            logger.traceback(e);
-            return false;
         }
-    }
 
-    /**
-     * Format circuit ID based on template and interface
-     */
-    private String formatCircuitId(prtGenConn id) {
-        switch (circuitIdTemplate) {
-            case "interface-name":
-                if (id.iface != null) {
-                    // Find corresponding cfgIfc to get the actual interface name
-                    for (int i = 0; i < relayInterfaces.size(); i++) {
-                        cfgIfc ifc = relayInterfaces.get(i);
-                        if (ifc == null) {
-                            continue;
-                        }
-                        if (ifc.fwdIf4 != null && ifc.fwdIf4.equals(id.iface)) {
-                            return "interface-" + ifc.name;
-                        }
-                    }
-                }
-                return "interface-unknown";
-
-            case "interface-number":
-                if (id.iface != null) {
-                    return "interface-iface-" + id.iface.ifwNum; // Use interface number
-                }
-                return "interface-iface-0";
-
-            default:
-                // Should never happen due to config validation
-                return "interface-invalid";
-        }
-    }
-
-    /**
-     * Format remote ID based on template and system information
-     */
-    private String formatRemoteId(prtGenConn id) {
-        switch (remoteIdTemplate.toLowerCase()) {
-            case "hostname":
-                return cfgAll.hostName;
-            case "ip-address":
-                return id.iface != null ? ("" + id.iface.addr) : "0.0.0.0";
-            case "mac-address":
-                return id.iface != null ? "mac-" + id.iface.ifwNum : "00:00:00:00:00:00";
-            default:
-                return remoteIdTemplate;
-        }
+        relayStats.packetsDropped++;
+        relayStats.forwardingErrors++;
+        relayStats.updateProcessingTime(bits.getTime() - startTime);
+        return false; // Packet processed successfully
     }
 
     /**
@@ -892,34 +798,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             logger.debug("dhcp4 relay giaddr " + giaddr + " does not match any of our interfaces in vrf " + vrf.name);
         }
         return false; // Not our address
-    }
-
-    /**
-     * Forward packet to another relay (multi-hop)
-     */
-    private boolean forwardToRelay(packHolder pck, addrIPv4 relayAddr) {
-        try {
-
-            addrIP targetAddr = new addrIP();
-            targetAddr.fromIPv4addr(relayAddr);
-
-            prtUdp udp = srvVrf.getUdp(targetAddr);
-
-            ipFwdIface fwdIfc = null;
-
-            // Forward to relay on port 67
-            prtGenConn conn = udp.packetConnect(this, fwdIfc, packDhcp4.portSnum, targetAddr, packDhcp4.portSnum,
-                    "dhcp-relay-hop", -1, null, -1, -1);
-            if (conn == null) {
-                return false;
-            }
-            conn.send2net(pck);
-            conn.setClosing();
-            return true;
-        } catch (Exception e) {
-            logger.traceback(e);
-            return false;
-        }
     }
 
     public boolean srvCfgStr(cmds cmd) {
