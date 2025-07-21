@@ -3,7 +3,7 @@
 scanOne()
 {
 echo "scanning for $1 as $2."
-find . -type f -exec grep -l -P "$2" {} \;
+find org/ -type f -exec grep -l -P "$2" {} \;
 }
 
 
@@ -18,6 +18,8 @@ scanOne "this" "this\."
 scanOne "here" "\"here"
 scanOne "for-each" " for .* : "
 scanOne "diamond" "<>"
+scanOne "finally" "\ finally\ "
+scanOne "case-str" "case \""
 scanOne "stat-fin" "static\ final"
 scanOne "stat-imp" "import\ static"
 scanOne "pre-inc" "\ \+\+[a-z|A-Z]"

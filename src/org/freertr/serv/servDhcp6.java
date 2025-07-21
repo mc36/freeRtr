@@ -144,7 +144,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     /**
      * subscriber ID for relay
      */
-    private String subscriberId = "";
+    private String subscriberId = null;
 
     /**
      * maximum hop count
@@ -269,10 +269,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             if (a.length() > 0) {
                 l.add(beg + "helper-addresses" + a);
             }
-            if (useInterfaceId) {
-                l.add(beg + "use-interface-id");
-            }
-            cmds.cfgLine(l, subscriberId.isEmpty(), beg, "subscriber-id", subscriberId);
+            cmds.cfgLine(l, !useInterfaceId, beg, "use-interface-id", "");
+            cmds.cfgLine(l, subscriberId==null, beg, "subscriber-id", subscriberId);
             l.add(beg + "max-hop-count " + maxHopCount);
         }
     }
@@ -281,16 +279,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
         String a = cmd.word();
         if (a.equals("mode")) {
             a = cmd.word();
-            switch (a) {
-                case "server":
-                    mode = dhcpMode.server;
-                    break;
-                case "relay":
-                    mode = dhcpMode.relay;
-                    break;
-                default:
-                    cmd.error("invalid mode");
-                    return false;
+            if (a.equals("server")) {
+                mode = dhcpMode.server;
+            } else if (a.equals("relay")) {
+                mode = dhcpMode.relay;
+            } else {
+                cmd.error("invalid mode");
             }
             return false;
         }
@@ -536,7 +530,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             return false;
         }
         if (a.equals("subscriber-id")) {
-            subscriberId = "";
+            subscriberId = null;
             return false;
         }
         if (a.equals("max-hop-count")) {
@@ -1292,30 +1286,13 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     }
 
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        if (debugger.servDhcp6traf) {
-            logger.info("dhcp6 datagramRecv called, mode=" + mode + ", packet size=" + pck.dataSize() + ", from=" + id.peerAddr);
-        }
+        long startTime = bits.getTime();
+        id.setClosing();
         if (mode != dhcpMode.relay) {
-            if (debugger.servDhcp6traf) {
-                logger.info("dhcp6 datagramRecv: Not in relay mode, returning false");
-            }
             return false;
         }
 
-        long startTime = bits.getTime();
-
         try {
-            // For relay purposes, we only need basic packet validation and message type
-            if (pck.dataSize() < 4) {
-                if (debugger.servDhcp6traf) {
-                    logger.error("dhcp6 relayPacket: Packet too small: " + pck.dataSize());
-                }
-                relayStats.packetsInvalid++;
-                relayStats.packetsDropped++;
-                return false;
-            }
-
-            // Create a simple DHCP6 object with just the message type
             packDhcp6 dhcp = new packDhcp6();
             byte[] buf = pck.getCopy();
             if (dhcp.parsePacket(pck)) {
@@ -1347,7 +1324,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 relayClientToServer: processing client packet, msgType=" + dhcp.msgTyp + ", upstreamServers=" + helperAddresses.size());
                     }
-                    int hops = dhcp.msgHop + 1;
+                    int hops;
+                    if (dhcp.msgLink == null) {
+                        hops = 0;
+                    } else {
+                        hops = dhcp.msgHop + 1;
+                    }
                     if (hops >= maxHopCount) {
                         if (debugger.servDhcp6traf) {
                             logger.error("dhcp6 relayClientToServer: max hop count exceeded: " + hops);
@@ -1368,7 +1350,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                         dhcp.ifcId = "" + id.iface;
                         relayStats.interfaceIdAdded++;
                     }
-                    if ((subscriberId != null) && !subscriberId.isEmpty()) {
+                    if (subscriberId != null) {
                         dhcp.subId = subscriberId;
                         relayStats.subscriberIdAdded++;
                     }
@@ -1396,9 +1378,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                     if (forwardedCount < 1) {
                         relayStats.packetsDropped++;
-                        return false;
+                        return true;
                     }
-                    return true;
+                    relayStats.updateProcessingTime(bits.getTime() - startTime);
+                    return false;
 
                 case packDhcp6.typAdvertise:
                 case packDhcp6.typReply:
@@ -1463,6 +1446,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     conn.send2net(pck);
                     conn.setClosing();
                     relayStats.packetsForwarded++;
+                    relayStats.updateProcessingTime(bits.getTime() - startTime);
                     return true;
 
                 default:
@@ -1478,10 +1462,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             relayStats.routingErrors++;
             relayStats.packetsDropped++;
             return false;
-        } finally {
-            long processingTime = bits.getTime() - startTime;
-            relayStats.updateProcessingTime(processingTime);
-            id.setClosing();
         }
     }
 

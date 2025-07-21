@@ -156,14 +156,14 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     private List<addrIP> helperAddresses = new ArrayList<addrIP>();
 
     /**
-     * circuit ID template for agent options
+     * circuit ID template for agent options, 1=name, 2=ifcid
      */
-    private String circuitIdTemplate = "interface-name";
+    private int circuitIdTemplate = 1;
 
     /**
-     * remote ID template for agent options
+     * remote ID template for agent options, 1=hostname, 2=ipaddr, 3=macaddr
      */
-    private String remoteIdTemplate = "hostname";
+    private int remoteIdTemplate = 1;
 
     /**
      * link selection address for agent options
@@ -173,7 +173,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     /**
      * subscriber ID for agent options
      */
-    private String subscriberId = "";
+    private String subscriberId = null;
 
     /**
      * maximum hop count
@@ -306,18 +306,37 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             if (a.length() > 0) {
                 l.add(beg + "helper-addresses" + a);
             }
-            if (circuitIdTemplate != null) {
-                l.add(beg + "circuit-id-template " + circuitIdTemplate);
+            switch (circuitIdTemplate) {
+                case 1:
+                    a = "interface-name";
+                    break;
+                case 2:
+                    a = "interface-number";
+                    break;
+                default:
+                    a = "unknown=" + circuitIdTemplate;
+                    break;
             }
-            if (remoteIdTemplate != null) {
-                l.add(beg + "remote-id-template " + remoteIdTemplate);
+            l.add(beg + "circuit-id-template " + circuitIdTemplate);
+            switch (remoteIdTemplate) {
+                case 1:
+                    a = "hostname";
+                    break;
+                case 2:
+                    a = "ip-address";
+                    break;
+                case 3:
+                    a = "mac-address";
+                    break;
+                default:
+                    a = "unknown=" + remoteIdTemplate;
+                    break;
             }
+            l.add(beg + "remote-id-template " + remoteIdTemplate);
             if (linkSelectionAddr != null) {
                 l.add(beg + "link-selection-address " + linkSelectionAddr);
             }
-            if (subscriberId != null && !subscriberId.isEmpty()) {
-                l.add(beg + "subscriber-id " + subscriberId);
-            }
+            cmds.cfgLine(l, subscriberId == null, beg, "subscriber-id", subscriberId);
             l.add(beg + "max-hop-count " + maxHopCount);
             switch (agentRelayMode) {
                 case 0:
@@ -362,174 +381,167 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     }
 
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
+        long startTime = bits.getTime();
+        id.setClosing();
         if (mode != dhcpMode.relay) {
             return false;
         }
-        if (debugger.servDhcp4traf) {
-            logger.debug("dhcp relay recv from " + id.peerAddr + " port " + id.portRem);
-        }
-        // Parse DHCP packet
-        packDhcp4 dhcp = new packDhcp4();
-        if (dhcp.parseHeader(pck, false)) {
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp relay bad packet");
-            }
-            id.setClosing(); // Close connection for bad packets
-            return false;
-        }
 
-        // Check hop count
-        if (dhcp.bootpHops >= maxHopCount) {
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp relay max hops exceeded: " + dhcp.bootpHops + " >= " + maxHopCount);
-            }
-            id.setClosing(); // Close connection for dropped packets
-            return false;
-        }
-
-        id.setClosing();
-        long startTime = bits.getTime();
-
-        // Handle DHCP packet based on operation type
-        // Multi-hop relays: Requests can come from both client port (68) and server port (67)
-        switch (dhcp.bootpOp) {
-            case packDhcp4.bootpOpRequest:
+        try {
+            packDhcp4 dhcp = new packDhcp4();
+            if (dhcp.parseHeader(pck, false)) {
                 if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp relay client->server from " + id.peerAddr + " hops=" + dhcp.bootpHops);
+                    logger.debug("dhcp relay bad packet");
                 }
+                return false;
+            }
 
-                // Update statistics
-                relayStats.packetsClientToServer++;
-                relayStats.totalPacketsProcessed++;
+            // Check hop count
+            if (dhcp.bootpHops >= maxHopCount) {
+                if (debugger.servDhcp4traf) {
+                    logger.debug("dhcp relay max hops exceeded: " + dhcp.bootpHops + " >= " + maxHopCount);
+                }
+                return false;
+            }
 
-                // Track hop count statistics BEFORE incrementing
-                relayStats.hopCountTotal += dhcp.bootpHops;
-
-                // Check max hop count to prevent loops
-                if (dhcp.bootpHops >= maxHopCount) {
+            // Handle DHCP packet based on operation type
+            // Multi-hop relays: Requests can come from both client port (68) and server port (67)
+            switch (dhcp.bootpOp) {
+                case packDhcp4.bootpOpRequest:
                     if (debugger.servDhcp4traf) {
-                        logger.debug("dhcp4 relay max hop count exceeded (" + dhcp.bootpHops + " >= " + maxHopCount + ")");
-                    }
-                    relayStats.maxHopCountExceeded++;
-                    relayStats.packetsDropped++;
-                    relayStats.updateErrorProcessingTime(bits.getTime() - startTime);
-                    return false; // Drop packet - don't process further
-                }
-
-                // Increment hop count
-                dhcp.bootpHops++;
-
-                // Track multi-hop statistics (after incrementing)
-                if (dhcp.bootpHops > 1) {
-                    relayStats.multiHopPackets++;
-                }
-
-                // Set GIADDR to our interface IP if not already set by another relay
-                if (dhcp.bootpGiaddr.isEmpty()) {
-                    // Use the interface address as giaddr
-                    if (id.iface != null && id.iface.addr != null) {
-                        dhcp.bootpGiaddr.setAddr(id.iface.addr.toIPv4());
-                        if (debugger.servDhcp4traf) {
-                            logger.debug("dhcp4 relay set giaddr to " + dhcp.bootpGiaddr);
-                        }
-                    }
-                }
-
-                boolean need2add = false;
-
-                // Handle based on configured relay mode
-                switch (agentRelayMode) {
-                    case 0:
-                        if (debugger.servDhcp4traf) {
-                            logger.debug("dhcp4 relay nothing agent relay mode options");
-                        }
-                        // Copy existing option and we'll add our own sub-options
-                        relayStats.agentOptionsAppended++;
-                        relayStats.appendOperations++;
-                        break;
-
-                    case 1:
-                        if (debugger.servDhcp4traf) {
-                            logger.debug("dhcp4 relay replacing existing agent options");
-                        }
-                        // Don't copy existing option, we'll add our own
-                        relayStats.agentOptionsReplaced++;
-                        relayStats.replaceOperations++;
-                        dhcp.dhcpAgentInfo = new byte[0];
-                        need2add = true;
-                        break;
-
-                    case 2:
-                        if (debugger.servDhcp4traf) {
-                            logger.debug("dhcp4 relay appending to existing agent options");
-                        }
-                        // Copy existing option and we'll add our own sub-options
-                        relayStats.agentOptionsAppended++;
-                        relayStats.appendOperations++;
-                        need2add = true;
-                        break;
-
-                    case 3:
-                        if (debugger.servDhcp4traf) {
-                            logger.debug("dhcp4 relay forwarding existing agent options unchanged");
-                        }
-                        // Copy existing option as-is, don't add our own
-                        relayStats.agentOptionsForwarded++;
-                        relayStats.forwardOperations++;
-                        break;
-
-                    case 4:
-                        if (dhcp.dhcpAgentInfo == null) {
-                            // No existing agent options, proceed normally
-                            break;
-                        }
-                        if (debugger.servDhcp4traf) {
-                            logger.debug("dhcp4 relay discarding packet with existing agent options");
-                        }
-                        // Drop the packet
-                        relayStats.agentOptionsDiscarded++;
-                        relayStats.discardOperations++;
-                        relayStats.packetsDropped++;
-                        relayStats.updateProcessingTime(bits.getTime() - startTime);
-                        return false; // Discard packet
-
-                    default:
-                        if (debugger.servDhcp4traf) {
-                            logger.debug("dhcp4 relay unknown agent relay mode " + agentRelayMode + ", using append");
-                        }
-                        // Copy existing option and we'll add our own sub-options
-                        relayStats.agentOptionsAppended++;
-                        relayStats.appendOperations++;
-                        break;
-                }
-                if (need2add) {
-                    if (debugger.servDhcp4traf) {
-                        logger.debug("dhcp4 relay adding agent information option");
+                        logger.debug("dhcp relay client->server from " + id.peerAddr + " hops=" + dhcp.bootpHops);
                     }
 
                     // Update statistics
-                    relayStats.agentOptionsAdded++;
+                    relayStats.packetsClientToServer++;
+                    relayStats.totalPacketsProcessed++;
 
-                    // Build sub-options data
-                    List<Byte> subOptionData = new ArrayList<Byte>();
-                    if (dhcp.dhcpAgentInfo != null) {
-                        for (int i = 0; i < dhcp.dhcpAgentInfo.length; i++) {
-                            subOptionData.add(dhcp.dhcpAgentInfo[i]);
+                    // Track hop count statistics BEFORE incrementing
+                    relayStats.hopCountTotal += dhcp.bootpHops;
+
+                    // Check max hop count to prevent loops
+                    if (dhcp.bootpHops >= maxHopCount) {
+                        if (debugger.servDhcp4traf) {
+                            logger.debug("dhcp4 relay max hop count exceeded (" + dhcp.bootpHops + " >= " + maxHopCount + ")");
+                        }
+                        relayStats.maxHopCountExceeded++;
+                        relayStats.packetsDropped++;
+                        relayStats.updateErrorProcessingTime(bits.getTime() - startTime);
+                        return false; // Drop packet - don't process further
+                    }
+
+                    // Increment hop count
+                    dhcp.bootpHops++;
+
+                    // Track multi-hop statistics (after incrementing)
+                    if (dhcp.bootpHops > 1) {
+                        relayStats.multiHopPackets++;
+                    }
+
+                    // Set GIADDR to our interface IP if not already set by another relay
+                    if (dhcp.bootpGiaddr.isEmpty()) {
+                        // Use the interface address as giaddr
+                        if (id.iface != null && id.iface.addr != null) {
+                            dhcp.bootpGiaddr.setAddr(id.iface.addr.toIPv4());
+                            if (debugger.servDhcp4traf) {
+                                logger.debug("dhcp4 relay set giaddr to " + dhcp.bootpGiaddr);
+                            }
                         }
                     }
 
-                    // Sub-option 1: Circuit ID
-                    if (circuitIdTemplate != null && !circuitIdTemplate.isEmpty()) {
+                    boolean need2add = false;
+
+                    // Handle based on configured relay mode
+                    switch (agentRelayMode) {
+                        case 0:
+                            if (debugger.servDhcp4traf) {
+                                logger.debug("dhcp4 relay nothing agent relay mode options");
+                            }
+                            // Copy existing option and we'll add our own sub-options
+                            relayStats.agentOptionsAppended++;
+                            relayStats.appendOperations++;
+                            break;
+
+                        case 1:
+                            if (debugger.servDhcp4traf) {
+                                logger.debug("dhcp4 relay replacing existing agent options");
+                            }
+                            // Don't copy existing option, we'll add our own
+                            relayStats.agentOptionsReplaced++;
+                            relayStats.replaceOperations++;
+                            dhcp.dhcpAgentInfo = new byte[0];
+                            need2add = true;
+                            break;
+
+                        case 2:
+                            if (debugger.servDhcp4traf) {
+                                logger.debug("dhcp4 relay appending to existing agent options");
+                            }
+                            // Copy existing option and we'll add our own sub-options
+                            relayStats.agentOptionsAppended++;
+                            relayStats.appendOperations++;
+                            need2add = true;
+                            break;
+
+                        case 3:
+                            if (debugger.servDhcp4traf) {
+                                logger.debug("dhcp4 relay forwarding existing agent options unchanged");
+                            }
+                            // Copy existing option as-is, don't add our own
+                            relayStats.agentOptionsForwarded++;
+                            relayStats.forwardOperations++;
+                            break;
+
+                        case 4:
+                            if (dhcp.dhcpAgentInfo == null) {
+                                // No existing agent options, proceed normally
+                                break;
+                            }
+                            if (debugger.servDhcp4traf) {
+                                logger.debug("dhcp4 relay discarding packet with existing agent options");
+                            }
+                            // Drop the packet
+                            relayStats.agentOptionsDiscarded++;
+                            relayStats.discardOperations++;
+                            relayStats.packetsDropped++;
+                            relayStats.updateProcessingTime(bits.getTime() - startTime);
+                            return false; // Discard packet
+
+                        default:
+                            if (debugger.servDhcp4traf) {
+                                logger.debug("dhcp4 relay unknown agent relay mode " + agentRelayMode + ", using append");
+                            }
+                            // Copy existing option and we'll add our own sub-options
+                            relayStats.agentOptionsAppended++;
+                            relayStats.appendOperations++;
+                            break;
+                    }
+                    if (need2add) {
+                        if (debugger.servDhcp4traf) {
+                            logger.debug("dhcp4 relay adding agent information option");
+                        }
+
+                        // Update statistics
+                        relayStats.agentOptionsAdded++;
+
+                        // Build sub-options data
+                        List<Byte> subOptionData = new ArrayList<Byte>();
+                        if (dhcp.dhcpAgentInfo != null) {
+                            for (int i = 0; i < dhcp.dhcpAgentInfo.length; i++) {
+                                subOptionData.add(dhcp.dhcpAgentInfo[i]);
+                            }
+                        }
+
                         byte[] buf;
                         switch (circuitIdTemplate) {
-                            case "interface-name":
-                                buf = ("" + id.iface).getBytes();
+                            case 1:
+                                buf = ("interface-" + id.iface).getBytes();
                                 break;
-                            case "interface-number":
+                            case 2:
                                 buf = ("interface-iface-" + id.iface.ifwNum).getBytes();
                                 break;
                             default:
-                                buf = circuitIdTemplate.getBytes();
+                                buf = ("" + circuitIdTemplate).getBytes();
                                 break;
                         }
                         subOptionData.add((byte) 1);
@@ -538,23 +550,20 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                             subOptionData.add(buf[i]);
                         }
                         relayStats.circuitIdAdded++;
-                    }
 
-                    // Sub-option 2: Remote ID
-                    if (remoteIdTemplate != null && !remoteIdTemplate.isEmpty()) {
-                        byte[] buf;
+                        // Sub-option 2: Remote ID
                         switch (remoteIdTemplate) {
-                            case "hostname":
+                            case 1:
                                 buf = cfgAll.hostName.getBytes();
                                 break;
-                            case "ip-address":
+                            case 2:
                                 buf = ("" + id.iface.addr).getBytes();
                                 break;
-                            case "mac-address":
+                            case 3:
                                 buf = ("mac-" + id.iface.ifwNum).getBytes();
                                 break;
                             default:
-                                buf = remoteIdTemplate.getBytes();
+                                buf = ("" + remoteIdTemplate).getBytes();
                                 break;
                         }
                         subOptionData.add((byte) 2);
@@ -563,188 +572,191 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                             subOptionData.add(buf[i]);
                         }
                         relayStats.remoteIdAdded++;
-                    }
 
-                    // Sub-option 5: Link Selection
-                    if (linkSelectionAddr != null && !linkSelectionAddr.isEmpty()) {
-                        subOptionData.add((byte) 5);
-                        byte[] buf = linkSelectionAddr.getBytes();
-                        subOptionData.add((byte) buf.length); // IPv4 address length
-                        for (int i = 0; i < buf.length; i++) {
-                            subOptionData.add(buf[i]);
+                        // Sub-option 5: Link Selection
+                        if (linkSelectionAddr != null && !linkSelectionAddr.isEmpty()) {
+                            subOptionData.add((byte) 5);
+                            buf = linkSelectionAddr.getBytes();
+                            subOptionData.add((byte) buf.length); // IPv4 address length
+                            for (int i = 0; i < buf.length; i++) {
+                                subOptionData.add(buf[i]);
+                            }
+                            relayStats.linkSelectionAdded++;
+                            if (debugger.servDhcp4traf) {
+                                logger.debug("dhcp4 relay added link-selection '" + linkSelectionAddr + "'");
+                            }
                         }
-                        relayStats.linkSelectionAdded++;
+
+                        // Sub-option 6: Subscriber ID
+                        if (subscriberId != null) {
+                            subOptionData.add((byte) 6);
+                            buf = subscriberId.getBytes();
+                            subOptionData.add((byte) buf.length);
+                            for (int i = 0; i < buf.length; i++) {
+                                subOptionData.add(buf[i]);
+                            }
+                            relayStats.subscriberIdAdded++;
+                            if (debugger.servDhcp4traf) {
+                                logger.debug("dhcp4 relay added subscriber-id '" + subscriberId + "'");
+                            }
+                        }
+
+                        dhcp.dhcpAgentInfo = new byte[subOptionData.size()];
+                        for (int i = 0; i < dhcp.dhcpAgentInfo.length; i++) {
+                            dhcp.dhcpAgentInfo[i] = subOptionData.get(i);
+                        }
+                        if (dhcp.dhcpAgentInfo.length < 1) {
+                            dhcp.dhcpAgentInfo = null;
+                        }
+
                         if (debugger.servDhcp4traf) {
-                            logger.debug("dhcp4 relay added link-selection '" + linkSelectionAddr + "'");
+                            logger.debug("dhcp4 relay agent information option added with " + subOptionData.size() + " bytes");
                         }
                     }
 
-                    // Sub-option 6: Subscriber ID
-                    if (subscriberId != null && !subscriberId.isEmpty()) {
-                        subOptionData.add((byte) 6);
-                        byte[] buf = subscriberId.getBytes();
-                        subOptionData.add((byte) buf.length);
-                        for (int i = 0; i < buf.length; i++) {
-                            subOptionData.add(buf[i]);
+                    // Forward to all helper addresses
+                    int forwardedCount = 0;
+                    synchronized (helperAddresses) {
+                        for (int i = 0; i < helperAddresses.size(); i++) {
+                            addrIP target = helperAddresses.get(i);
+                            pck.clear();
+                            dhcp.createHeader(pck, null);
+                            pck.merge2beg();
+                            prtGenConn conn = srvVrf.getUdp(target).packetConnect(this, id.iface, packDhcp4.portSnum, target, packDhcp4.portSnum, "dhcp-relay", -1, null, -1, -1);
+                            if (conn == null) {
+                                relayStats.forwardingErrors++;
+                                continue;
+                            }
+                            conn.send2net(pck.copyBytes(true, true));
+                            conn.setClosing();
+                            forwardedCount++;
+                            relayStats.packetsForwardedToServers++;
                         }
-                        relayStats.subscriberIdAdded++;
-                        if (debugger.servDhcp4traf) {
-                            logger.debug("dhcp4 relay added subscriber-id '" + subscriberId + "'");
-                        }
-                    }
-
-                    dhcp.dhcpAgentInfo = new byte[subOptionData.size()];
-                    for (int i = 0; i < dhcp.dhcpAgentInfo.length; i++) {
-                        dhcp.dhcpAgentInfo[i] = subOptionData.get(i);
-                    }
-                    if (dhcp.dhcpAgentInfo.length < 1) {
-                        dhcp.dhcpAgentInfo = null;
                     }
 
                     if (debugger.servDhcp4traf) {
-                        logger.debug("dhcp4 relay agent information option added with " + subOptionData.size() + " bytes");
+                        logger.debug("dhcp relay forwarded client request to " + forwardedCount + "/" + helperAddresses.size() + " servers");
                     }
-                }
 
-                // Forward to all helper addresses
-                int forwardedCount = 0;
-                synchronized (helperAddresses) {
-                    for (int i = 0; i < helperAddresses.size(); i++) {
-                        addrIP target = helperAddresses.get(i);
+                    if (forwardedCount < 1) {
+                        relayStats.packetsDropped++;
+                        return true;
+                    }
+                    relayStats.packetsForwarded++;
+                    relayStats.updateProcessingTime(bits.getTime() - startTime);
+                    return false;
+
+                case packDhcp4.bootpOpReply:
+                    // This is a DHCP reply - relay to client
+                    // Always comes from server port (67)
+                    if (debugger.servDhcp4traf) {
+                        logger.debug("dhcp4 relay processing reply from port " + id.portRem);
+                    }
+
+                    if (debugger.servDhcp4traf) {
+                        logger.debug("dhcp relay server->client giaddr=" + dhcp.bootpGiaddr);
+                    }
+
+                    // Update statistics
+                    relayStats.packetsServerToClient++;
+                    relayStats.totalPacketsProcessed++;
+
+                    // Check if this reply has giaddr
+                    if (dhcp.bootpGiaddr.isEmpty()) {
+                        if (debugger.servDhcp4traf) {
+                            logger.debug("dhcp relay reply has empty giaddr, ignoring");
+                        }
+                        relayStats.packetsDropped++;
+                        relayStats.invalidGiaddrErrors++;
+                        relayStats.updateErrorProcessingTime(bits.getTime() - startTime);
+                        return false; // Ignore packet
+                    }
+
+                    // Check if giaddr points to a network we can reach
+                    // In multi-hop relay, we need to forward to the giaddr, not necessarily the client
+                    // Determine if we should forward to giaddr (relay) or broadcast to client
+                    boolean forwardToRelay = !isOurGiaddr(dhcp.bootpGiaddr, srvVrf);
+
+                    if (forwardToRelay) {
+                        // Multi-hop: Forward to the relay (giaddr)
+                        if (debugger.servDhcp4traf) {
+                            logger.debug("dhcp relay multi-hop: forwarding to relay at " + dhcp.bootpGiaddr);
+                        }
+                        relayStats.multiHopPackets++;
+
+                        // Create new packet for multi-hop forwarding
+                        packHolder newPck = new packHolder(true, true);
+                        dhcp.createHeader(newPck, null);
+
+                        addrIP targetAddr = new addrIP();
+                        targetAddr.fromIPv4addr(dhcp.bootpGiaddr);
+
+                        // Forward to relay on port 67
+                        prtGenConn conn = srvVrf.getUdp(targetAddr).packetConnect(this, id.iface, packDhcp4.portSnum, targetAddr, packDhcp4.portSnum, "dhcp-relay-hop", -1, null, -1, -1);
+                        if (conn == null) {
+                            relayStats.packetsDropped++;
+                            relayStats.forwardingErrors++;
+                            return false;
+                        }
+                        conn.send2net(pck);
+                        conn.setClosing();
+
+                    } else {
+
+                        if (debugger.servDhcp4traf) {
+                            logger.debug("dhcp4 relay final hop: forwarding to client");
+                        }
+
+                        // Extract options without agent information
+                        if (agentRelayMode != 0) {
+                            dhcp.dhcpAgentInfo = null;
+                        }
+
+                        // Clear giaddr before forwarding to client
+                        dhcp.bootpGiaddr.fillBytes(0);
+
                         pck.clear();
                         dhcp.createHeader(pck, null);
                         pck.merge2beg();
-                        prtGenConn conn = srvVrf.getUdp(target).packetConnect(this, id.iface, packDhcp4.portSnum, target, packDhcp4.portSnum, "dhcp-relay", -1, null, -1, -1);
-                        if (conn == null) {
-                            relayStats.forwardingErrors++;
-                            continue;
+
+                        // Determine client address - RFC 2131 compliant
+                        addrIP clientAddr = new addrIP();
+                        if (!dhcp.bootpCiaddr.isEmpty()) {
+                            // Client already has an IP address - unicast is OK
+                            clientAddr.fromIPv4addr(dhcp.bootpCiaddr);
+                        } else {
+                            // Client has no IP address yet - MUST use broadcast
+                            // This includes DHCP Offer messages where bootpYiaddr is set but client can't receive unicast yet
+                            clientAddr.fromIPv4addr(addrIPv4.getBroadcast());
                         }
-                        conn.send2net(pck.copyBytes(true, true));
+
+                        // Use provided client interface
+                        // Use port 67 as source port so client recognizes DHCP messages
+                        prtGenConn conn = srvVrf.getUdp(clientAddr).packetConnect(this, id.iface, packDhcp4.portSnum, clientAddr, packDhcp4.portCnum, "dhcp-relay", -1, null, -1, -1);
+                        if (conn == null) {
+                            relayStats.packetsDropped++;
+                            relayStats.forwardingErrors++;
+                            return true;
+                        }
+                        conn.send2net(pck);
                         conn.setClosing();
-                        forwardedCount++;
-                        relayStats.packetsForwardedToServers++;
                     }
-                }
 
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp relay forwarded client request to " + forwardedCount + "/" + helperAddresses.size() + " servers");
-                }
-
-                // Count as forwarded if at least one server received it
-                if (forwardedCount > 0) {
                     relayStats.packetsForwarded++;
-                } else {
-                    relayStats.packetsDropped++;
-                }
-
-                break;
-
-            case packDhcp4.bootpOpReply:
-                // This is a DHCP reply - relay to client
-                // Always comes from server port (67)
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay processing reply from port " + id.portRem);
-                }
-
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp relay server->client giaddr=" + dhcp.bootpGiaddr);
-                }
-
-                // Update statistics
-                relayStats.packetsServerToClient++;
-                relayStats.totalPacketsProcessed++;
-
-                // Check if this reply has giaddr
-                if (dhcp.bootpGiaddr.isEmpty()) {
+                    relayStats.updateProcessingTime(bits.getTime() - startTime);
+                    return true;
+                default:
                     if (debugger.servDhcp4traf) {
-                        logger.debug("dhcp relay reply has empty giaddr, ignoring");
+                        logger.debug("dhcp relay unknown operation: " + dhcp.bootpOp + " port: " + id.portRem);
                     }
-                    relayStats.packetsDropped++;
-                    relayStats.invalidGiaddrErrors++;
-                    relayStats.updateErrorProcessingTime(bits.getTime() - startTime);
-                    return false; // Ignore packet
-                }
-
-                // Check if giaddr points to a network we can reach
-                // In multi-hop relay, we need to forward to the giaddr, not necessarily the client
-                // Determine if we should forward to giaddr (relay) or broadcast to client
-                boolean forwardToRelay = !isOurGiaddr(dhcp.bootpGiaddr, srvVrf);
-
-                if (forwardToRelay) {
-                    // Multi-hop: Forward to the relay (giaddr)
-                    if (debugger.servDhcp4traf) {
-                        logger.debug("dhcp relay multi-hop: forwarding to relay at " + dhcp.bootpGiaddr);
-                    }
-                    relayStats.multiHopPackets++;
-
-                    // Create new packet for multi-hop forwarding
-                    packHolder newPck = new packHolder(true, true);
-                    dhcp.createHeader(newPck, null);
-
-                    addrIP targetAddr = new addrIP();
-                    targetAddr.fromIPv4addr(dhcp.bootpGiaddr);
-
-                    // Forward to relay on port 67
-                    prtGenConn conn = srvVrf.getUdp(targetAddr).packetConnect(this, id.iface, packDhcp4.portSnum, targetAddr, packDhcp4.portSnum, "dhcp-relay-hop", -1, null, -1, -1);
-                    if (conn == null) {
-                        relayStats.packetsForwarded++;
-                        return false;
-                    }
-                    conn.send2net(pck);
-                    conn.setClosing();
-
-                } else {
-
-                    if (debugger.servDhcp4traf) {
-                        logger.debug("dhcp4 relay final hop: forwarding to client");
-                    }
-
-                    // Extract options without agent information
-                    if (agentRelayMode != 0) {
-                        dhcp.dhcpAgentInfo = null;
-                    }
-
-                    // Clear giaddr before forwarding to client
-                    dhcp.bootpGiaddr.fillBytes(0);
-
-                    pck.clear();
-                    dhcp.createHeader(pck, null);
-                    pck.merge2beg();
-
-                    // Determine client address - RFC 2131 compliant
-                    addrIP clientAddr = new addrIP();
-                    if (!dhcp.bootpCiaddr.isEmpty()) {
-                        // Client already has an IP address - unicast is OK
-                        clientAddr.fromIPv4addr(dhcp.bootpCiaddr);
-                    } else {
-                        // Client has no IP address yet - MUST use broadcast
-                        // This includes DHCP Offer messages where bootpYiaddr is set but client can't receive unicast yet
-                        clientAddr.fromIPv4addr(addrIPv4.getBroadcast());
-                    }
-
-                    // Use provided client interface
-                    // Use port 67 as source port so client recognizes DHCP messages
-                    prtGenConn conn = srvVrf.getUdp(clientAddr).packetConnect(this, id.iface, packDhcp4.portSnum, clientAddr, packDhcp4.portCnum, "dhcp-relay", -1, null, -1, -1);
-                    if (conn == null) {
-                        relayStats.packetsForwarded++;
-                        return true;
-                    }
-                    conn.send2net(pck);
-                    conn.setClosing();
-                }
-
-                relayStats.packetsDropped++;
-                relayStats.forwardingErrors++;
-                break;
-            default:
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp relay unknown operation: " + dhcp.bootpOp + " port: " + id.portRem);
-                }
-                break;
+                    return false;
+            }
+        } catch (Exception e) {
+            logger.traceback(e);
+            relayStats.routingErrors++;
+            relayStats.packetsDropped++;
+            return false;
         }
-
-        relayStats.updateProcessingTime(bits.getTime() - startTime);
-        return true;
     }
 
     /**
@@ -784,16 +796,12 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         String a = cmd.word();
         if (a.equals("mode")) {
             a = cmd.word();
-            switch (a) {
-                case "server":
-                    mode = dhcpMode.server;
-                    break;
-                case "relay":
-                    mode = dhcpMode.relay;
-                    break;
-                default:
-                    cmd.error("invalid mode");
-                    return false;
+            if (a.equals("server")) {
+                mode = dhcpMode.server;
+            } else if (a.equals("relay")) {
+                mode = dhcpMode.relay;
+            } else {
+                cmd.error("invalid mode");
             }
             return false;
         }
@@ -815,22 +823,22 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             return false;
         }
         if (a.equals("circuit-id-template")) {
-            String template = cmd.word();
-            if (template.equals("interface-name")) {
-                circuitIdTemplate = "interface-name";
-            } else if (template.equals("interface-number")) {
-                circuitIdTemplate = "interface-number";
+            a = cmd.word();
+            if (a.equals("interface-name")) {
+                circuitIdTemplate = 1;
+            } else if (a.equals("interface-number")) {
+                circuitIdTemplate = 2;
             }
             return false;
         }
         if (a.equals("remote-id-template")) {
-            String template = cmd.word();
-            if (template.equals("hostname")) {
-                remoteIdTemplate = "hostname";
-            } else if (template.equals("ip-address")) {
-                remoteIdTemplate = "ip-address";
-            } else if (template.equals("mac-address")) {
-                remoteIdTemplate = "mac-address";
+            a = cmd.word();
+            if (a.equals("hostname")) {
+                remoteIdTemplate = 1;
+            } else if (a.equals("ip-address")) {
+                remoteIdTemplate = 2;
+            } else if (a.equals("mac-address")) {
+                remoteIdTemplate = 3;
             }
             return false;
         }
@@ -1086,6 +1094,22 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         }
         if (a.equals("helper-addresses")) {
             helperAddresses.clear();
+            return false;
+        }
+        if (a.equals("circuit-id-template")) {
+            circuitIdTemplate = 1;
+            return false;
+        }
+        if (a.equals("remote-id-template")) {
+            remoteIdTemplate = 1;
+            return false;
+        }
+        if (a.equals("link-selection-address")) {
+            linkSelectionAddr = null;
+            return false;
+        }
+        if (a.equals("subscriber-id")) {
+            subscriberId = null;
             return false;
         }
         if (a.equals("max-hop-count")) {
@@ -1790,6 +1814,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 logger.debug("dhcp4 relay interface " + iface.name + " was not in relay list");
             }
         }
+
     }
 
 }
