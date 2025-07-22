@@ -19,7 +19,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServP;
 import org.freertr.prt.prtServS;
-import org.freertr.prt.prtUdp;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
@@ -2091,20 +2090,17 @@ class servDhcp4worker implements Runnable {
             logger.debug("tx " + adr + ":" + destPort + " " + pckd);
         }
 
-        // Use the same pattern as relay functions for proper connection cleanup
-        prtUdp udp = parent.srvVrf.getUdp(adr);
-
         // Use port 0 (random) as source port for server replies to avoid conflicts
         int sourcePort = (!pckd.bootpGiaddr.isEmpty()) ? 0 : packDhcp4.portSnum;
-        prtGenConn conn = udp.packetConnect(parent, parent.srvIface.fwdIf4, sourcePort, adr, destPort, "dhcp4-reply", -1, null, -1, -1);
-        if (conn == null) {
+        prtGenConn con = parent.srvVrf.getUdp(adr).packetConnect(parent, parent.srvIface.fwdIf4, sourcePort, adr, destPort, "dhcp4-reply", -1, null, -1, -1);
+        if (con == null) {
             return;
         }
 
         packHolder pckh = new packHolder(true, true);
         pckd.createHeader(pckh, parent.options);
-        conn.send2net(pckh);
-        conn.setClosing(); // Properly close connection
+        con.send2net(pckh);
+        con.setClosing(); // Properly close connection
 
     }
 

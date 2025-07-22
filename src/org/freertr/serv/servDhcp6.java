@@ -1363,7 +1363,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                         pck.clear();
                         dhcp.createPacket(pck, options);
                         pck.merge2beg();
-                        prtGenConn conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, serverAddr, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
+                        prtGenConn conn = srvVrf.getUdp(serverAddr).packetConnect(this, id.iface, packDhcp6.portSnum, serverAddr, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
                         if (conn == null) {
                             if (debugger.servDhcp6traf) {
                                 logger.error("dhcp6 forwardToServerFromInterface: failed to create connection to server " + serverAddr);
@@ -1428,9 +1428,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     pck.merge2beg();
                     prtGenConn conn;
                     if (inner.msgTyp == packDhcp6.typReRep) {
-                        conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, peerAddrIP, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
+                        conn = srvVrf.getUdp(peerAddrIP).packetConnect(this, id.iface, packDhcp6.portSnum, peerAddrIP, packDhcp6.portSnum, srvName(), -1, null, -1, -1);
                     } else {
-                        conn = srvVrf.udp6.packetConnect(this, id.iface, packDhcp6.portSnum, peerAddrIP, packDhcp6.portCnum, srvName(), -1, null, -1, -1);
+                        conn = srvVrf.getUdp(peerAddrIP).packetConnect(this, id.iface, packDhcp6.portSnum, peerAddrIP, packDhcp6.portCnum, srvName(), -1, null, -1, -1);
                     }
                     if (conn == null) {
                         if (debugger.servDhcp6traf) {
