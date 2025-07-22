@@ -629,7 +629,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
                     if (forwardedCount < 1) {
                         relayStats.packetsDropped++;
-                        return true;
+                        return false;
                     }
                     relayStats.packetsForwarded++;
                     relayStats.updateProcessingTime(bits.getTime() - startTime);
@@ -666,16 +666,12 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                     // Determine if we should forward to giaddr (relay) or broadcast to client
                     addrIP targetAddr = new addrIP();
                     targetAddr.fromIPv4addr(dhcp.bootpGiaddr);
-                    if (srvVrf.fwd4.connedR.route(targetAddr) == null) {
+                    if (id.iface.addr.compareTo(targetAddr) != 0) {
                         // Multi-hop: Forward to the relay (giaddr)
                         if (debugger.servDhcp4traf) {
                             logger.debug("dhcp relay multi-hop: forwarding to relay at " + dhcp.bootpGiaddr);
                         }
                         relayStats.multiHopPackets++;
-
-                        // Create new packet for multi-hop forwarding
-                        packHolder newPck = new packHolder(true, true);
-                        dhcp.createHeader(newPck, null);
 
                         // Forward to relay on port 67
                         prtGenConn conn = srvVrf.getUdp(targetAddr).packetConnect(this, id.iface, packDhcp4.portSnum, targetAddr, packDhcp4.portSnum, "dhcp-relay-hop", -1, null, -1, -1);
@@ -722,7 +718,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                         if (conn == null) {
                             relayStats.packetsDropped++;
                             relayStats.forwardingErrors++;
-                            return true;
+                            return false;
                         }
                         conn.send2net(pck);
                         conn.setClosing();
@@ -730,7 +726,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
                     relayStats.packetsForwarded++;
                     relayStats.updateProcessingTime(bits.getTime() - startTime);
-                    return true;
+                    return false;
                 default:
                     if (debugger.servDhcp4traf) {
                         logger.debug("dhcp relay unknown operation: " + dhcp.bootpOp + " port: " + id.portRem);

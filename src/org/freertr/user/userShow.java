@@ -1217,7 +1217,7 @@ public class userShow {
                 return null;
             }
             a = cmd.word();
-            if (a.equals("details")) {
+            if (a.equals("status")) {
                 rdr.putStrArr(exp.getShowDetail());
                 return null;
             }
@@ -1324,7 +1324,7 @@ public class userShow {
                 return null;
             }
             a = cmd.word();
-            if (a.equals("details")) {
+            if (a.equals("status")) {
                 rdr.putStrArr(srv.getShowDetail());
                 return null;
             }

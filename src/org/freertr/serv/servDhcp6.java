@@ -1378,7 +1378,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                     if (forwardedCount < 1) {
                         relayStats.packetsDropped++;
-                        return true;
+                        return false;
                     }
                     relayStats.updateProcessingTime(bits.getTime() - startTime);
                     return false;
@@ -1447,7 +1447,7 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     conn.setClosing();
                     relayStats.packetsForwarded++;
                     relayStats.updateProcessingTime(bits.getTime() - startTime);
-                    return true;
+                    return false;
 
                 default:
                     if (debugger.servDhcp6traf) {
