@@ -17325,3 +17325,22 @@ qc pass: wireguard over ipv6
 ---------------------------------- 2025-07-25 04:07:49 25.7.25
 qc pass: integrated babel over ipv4
 qc pass: integrated babel over ipv6
+---------------------------------- 2025-07-25 04:46:15 25.7.25
+qc pass: integrated babel ingress route filtering with prefixlist
+qc pass: integrated babel egress route filtering with prefixlist
+qc pass: integrated babel ingress route filtering with routemap
+qc pass: integrated babel egress route filtering with routemap
+qc pass: integrated babel ingress route filtering with routepolicy
+qc pass: integrated babel egress route filtering with routepolicy
+qc pass: integrated babel address suppression
+qc pass: integrated babel default route
+qc pass: integrated babel incoming metric with routemap
+qc pass: integrated babel outgoing metric with routemap
+qc pass: integrated babel incoming metric with routepolicy
+qc pass: integrated babel outgoing metric with routepolicy
+qc pass: integrated babel prefix withdraw
+qc pass: integrated babel aggregation
+qc pass: integrated babel ecmp connection
+qc pass: integrated babel default address suppression
+qc pass: integrated babel address unsuppression
+qc pass: integrated babel auto summarization

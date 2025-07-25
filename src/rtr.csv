@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.7.25-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-07-25 04:21:40, took 00:13:51, with 50 workers, on 3994 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2025-07-25 05:00:26, took 00:14:11, with 50 workers, on 4012 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2572,6 +2572,24 @@ http://sources.freertr.org/cfg/rout-babel28.tst;rout-babel28.tst;success;babel a
 http://sources.freertr.org/cfg/rout-babel29.tst;rout-babel29.tst;success;babel auto summarization
 http://sources.freertr.org/cfg/rout-babel30.tst;rout-babel30.tst;success;integrated babel over ipv4
 http://sources.freertr.org/cfg/rout-babel31.tst;rout-babel31.tst;success;integrated babel over ipv6
+http://sources.freertr.org/cfg/rout-babel32.tst;rout-babel32.tst;success;integrated babel ingress route filtering with prefixlist
+http://sources.freertr.org/cfg/rout-babel33.tst;rout-babel33.tst;success;integrated babel egress route filtering with prefixlist
+http://sources.freertr.org/cfg/rout-babel34.tst;rout-babel34.tst;success;integrated babel ingress route filtering with routemap
+http://sources.freertr.org/cfg/rout-babel35.tst;rout-babel35.tst;success;integrated babel egress route filtering with routemap
+http://sources.freertr.org/cfg/rout-babel36.tst;rout-babel36.tst;success;integrated babel ingress route filtering with routepolicy
+http://sources.freertr.org/cfg/rout-babel37.tst;rout-babel37.tst;success;integrated babel egress route filtering with routepolicy
+http://sources.freertr.org/cfg/rout-babel38.tst;rout-babel38.tst;success;integrated babel address suppression
+http://sources.freertr.org/cfg/rout-babel39.tst;rout-babel39.tst;success;integrated babel default route
+http://sources.freertr.org/cfg/rout-babel40.tst;rout-babel40.tst;success;integrated babel incoming metric with routemap
+http://sources.freertr.org/cfg/rout-babel41.tst;rout-babel41.tst;success;integrated babel outgoing metric with routemap
+http://sources.freertr.org/cfg/rout-babel42.tst;rout-babel42.tst;success;integrated babel incoming metric with routepolicy
+http://sources.freertr.org/cfg/rout-babel43.tst;rout-babel43.tst;success;integrated babel outgoing metric with routepolicy
+http://sources.freertr.org/cfg/rout-babel44.tst;rout-babel44.tst;success;integrated babel prefix withdraw
+http://sources.freertr.org/cfg/rout-babel45.tst;rout-babel45.tst;success;integrated babel aggregation
+http://sources.freertr.org/cfg/rout-babel46.tst;rout-babel46.tst;success;integrated babel ecmp connection
+http://sources.freertr.org/cfg/rout-babel47.tst;rout-babel47.tst;success;integrated babel default address suppression
+http://sources.freertr.org/cfg/rout-babel48.tst;rout-babel48.tst;success;integrated babel address unsuppression
+http://sources.freertr.org/cfg/rout-babel49.tst;rout-babel49.tst;success;integrated babel auto summarization
 http://sources.freertr.org/cfg/rout-bgp001.tst;rout-bgp001.tst;success;ebgp in chain
 http://sources.freertr.org/cfg/rout-bgp002.tst;rout-bgp002.tst;success;confed bgp in chain
 http://sources.freertr.org/cfg/rout-bgp003.tst;rout-bgp003.tst;success;ibgp in chain

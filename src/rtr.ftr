@@ -2568,6 +2568,24 @@ qc pass: babel address unsuppression
 qc pass: babel auto summarization
 qc pass: integrated babel over ipv4
 qc pass: integrated babel over ipv6
+qc pass: integrated babel ingress route filtering with prefixlist
+qc pass: integrated babel egress route filtering with prefixlist
+qc pass: integrated babel ingress route filtering with routemap
+qc pass: integrated babel egress route filtering with routemap
+qc pass: integrated babel ingress route filtering with routepolicy
+qc pass: integrated babel egress route filtering with routepolicy
+qc pass: integrated babel address suppression
+qc pass: integrated babel default route
+qc pass: integrated babel incoming metric with routemap
+qc pass: integrated babel outgoing metric with routemap
+qc pass: integrated babel incoming metric with routepolicy
+qc pass: integrated babel outgoing metric with routepolicy
+qc pass: integrated babel prefix withdraw
+qc pass: integrated babel aggregation
+qc pass: integrated babel ecmp connection
+qc pass: integrated babel default address suppression
+qc pass: integrated babel address unsuppression
+qc pass: integrated babel auto summarization
 qc pass: ebgp in chain
 qc pass: confed bgp in chain
 qc pass: ibgp in chain
