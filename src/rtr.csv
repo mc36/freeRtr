@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.7.25-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-07-25 03:47:58, took 00:14:13, with 50 workers, on 3992 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2025-07-25 04:21:40, took 00:13:51, with 50 workers, on 3994 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2570,6 +2570,8 @@ http://sources.freertr.org/cfg/rout-babel26.tst;rout-babel26.tst;success;babel e
 http://sources.freertr.org/cfg/rout-babel27.tst;rout-babel27.tst;success;babel default address suppression
 http://sources.freertr.org/cfg/rout-babel28.tst;rout-babel28.tst;success;babel address unsuppression
 http://sources.freertr.org/cfg/rout-babel29.tst;rout-babel29.tst;success;babel auto summarization
+http://sources.freertr.org/cfg/rout-babel30.tst;rout-babel30.tst;success;integrated babel over ipv4
+http://sources.freertr.org/cfg/rout-babel31.tst;rout-babel31.tst;success;integrated babel over ipv6
 http://sources.freertr.org/cfg/rout-bgp001.tst;rout-bgp001.tst;success;ebgp in chain
 http://sources.freertr.org/cfg/rout-bgp002.tst;rout-bgp002.tst;success;confed bgp in chain
 http://sources.freertr.org/cfg/rout-bgp003.tst;rout-bgp003.tst;success;ibgp in chain

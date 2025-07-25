@@ -2566,6 +2566,8 @@ qc pass: babel ecmp connection
 qc pass: babel default address suppression
 qc pass: babel address unsuppression
 qc pass: babel auto summarization
+qc pass: integrated babel over ipv4
+qc pass: integrated babel over ipv6
 qc pass: ebgp in chain
 qc pass: confed bgp in chain
 qc pass: ibgp in chain

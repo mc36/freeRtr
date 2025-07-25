@@ -17322,3 +17322,6 @@ failed: wireguard over ipv6
 ---------------------------------- 2025-07-21 15:45:11 25.7.21
 no failed: wireguard over ipv6
 qc pass: wireguard over ipv6
+---------------------------------- 2025-07-25 04:07:49 25.7.25
+qc pass: integrated babel over ipv4
+qc pass: integrated babel over ipv6
