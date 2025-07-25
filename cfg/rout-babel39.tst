@@ -1,4 +1,4 @@
-description integrated babel default route
+description integrated babel address suppression
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -15,16 +15,24 @@ int lo0
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.255
  ipv6 addr 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ router babel4 1 ena
+ router babel4 1 other-ena
  exit
 int lo1
  vrf for v1
  ipv4 addr 2.2.2.11 255.255.255.255
  ipv6 addr 4321::11 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ router babel4 1 ena
+ router babel4 1 other-ena
+ router babel4 1 suppress-prefix
+ router babel4 1 other-suppress-prefix
  exit
 int lo2
  vrf for v1
  ipv4 addr 2.2.2.21 255.255.255.255
  ipv6 addr 4321::21 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ router babel4 1 ena
+ router babel4 1 other-ena
  exit
 int eth1
  vrf for v1
@@ -32,8 +40,6 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  router babel4 1 ena
  router babel4 1 other-ena
- router babel4 1 default-originate
- router babel4 1 other-default-originate
  exit
 !
 
@@ -83,8 +89,8 @@ r1 tping 100 130 4321::22 vrf v1
 
 r2 tping 100 130 2.2.2.1 vrf v1
 r2 tping 100 130 4321::1 vrf v1
-r2 tping 100 130 2.2.2.11 vrf v1
-r2 tping 100 130 4321::11 vrf v1
+r2 tping 0 130 2.2.2.11 vrf v1
+r2 tping 0 130 4321::11 vrf v1
 r2 tping 100 130 2.2.2.21 vrf v1
 r2 tping 100 130 4321::21 vrf v1
 

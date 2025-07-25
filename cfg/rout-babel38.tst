@@ -1,4 +1,4 @@
-description integrated babel address suppression
+description integrated babel egress route filtering with routepolicy
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -10,29 +10,37 @@ router babel4 1
  vrf v1
  router 1111-2222-3333-0001
  afi-other enable
+ afi-other red conn
+ red conn
  exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.255
  ipv6 addr 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- router babel4 1 ena
- router babel4 1 other-ena
  exit
 int lo1
  vrf for v1
  ipv4 addr 2.2.2.11 255.255.255.255
  ipv6 addr 4321::11 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- router babel4 1 ena
- router babel4 1 other-ena
- router babel4 1 suppress-prefix
- router babel4 1 other-suppress-prefix
  exit
 int lo2
  vrf for v1
  ipv4 addr 2.2.2.21 255.255.255.255
  ipv6 addr 4321::21 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- router babel4 1 ena
- router babel4 1 other-ena
+ exit
+route-policy p4
+ if network 2.2.2.11/32
+  drop
+ else
+  pass
+ enif
+ exit
+route-policy p6
+ if network 4321::11/128
+  drop
+ else
+  pass
+ enif
  exit
 int eth1
  vrf for v1
@@ -40,6 +48,8 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  router babel4 1 ena
  router babel4 1 other-ena
+ router babel4 1 route-policy-out p4
+ router babel4 1 other-route-policy-out p6
  exit
 !
 

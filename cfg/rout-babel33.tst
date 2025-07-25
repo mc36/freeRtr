@@ -1,4 +1,4 @@
-description integrated babel egress route filtering with prefixlist
+description integrated babel ingress route filtering with prefixlist
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -29,11 +29,11 @@ int lo2
  ipv6 addr 4321::21 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 prefix-list p4
- sequence 10 deny 2.2.2.11/32
+ sequence 10 deny 2.2.2.12/32
  sequence 20 permit 0.0.0.0/0 le 32
  exit
 prefix-list p6
- sequence 10 deny 4321::11/128
+ sequence 10 deny 4321::12/128
  sequence 20 permit ::/0 le 128
  exit
 int eth1
@@ -42,8 +42,8 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  router babel4 1 ena
  router babel4 1 other-ena
- router babel4 1 prefix-list-out p4
- router babel4 1 other-prefix-list-out p6
+ router babel4 1 prefix-list-in p4
+ router babel4 1 other-prefix-list-in p6
  exit
 !
 
@@ -86,15 +86,15 @@ int eth1
 
 r1 tping 100 130 2.2.2.2 vrf v1
 r1 tping 100 130 4321::2 vrf v1
-r1 tping 100 130 2.2.2.12 vrf v1
-r1 tping 100 130 4321::12 vrf v1
+r1 tping 0 130 2.2.2.12 vrf v1
+r1 tping 0 130 4321::12 vrf v1
 r1 tping 100 130 2.2.2.22 vrf v1
 r1 tping 100 130 4321::22 vrf v1
 
 r2 tping 100 130 2.2.2.1 vrf v1
 r2 tping 100 130 4321::1 vrf v1
-r2 tping 0 130 2.2.2.11 vrf v1
-r2 tping 0 130 4321::11 vrf v1
+r2 tping 100 130 2.2.2.11 vrf v1
+r2 tping 100 130 4321::11 vrf v1
 r2 tping 100 130 2.2.2.21 vrf v1
 r2 tping 100 130 4321::21 vrf v1
 

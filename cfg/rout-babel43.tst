@@ -1,4 +1,4 @@
-description integrated babel outgoing metric with routepolicy
+description integrated babel incoming metric with routepolicy
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -62,6 +62,10 @@ int lo0
  ipv4 addr 2.2.2.2 255.255.255.255
  ipv6 addr 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
+route-policy rm1
+ set metric +40000
+ pass
+ exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
@@ -75,6 +79,8 @@ int eth2
  ipv6 addr 1234:2::1 ffff:ffff::
  router babel4 1 ena
  router babel4 1 other-ena
+ router babel4 1 route-policy-in rm1
+ router babel4 1 other-route-policy-in rm1
  exit
 !
 
@@ -103,18 +109,12 @@ int lo1
  router babel4 1 ena
  router babel4 1 other-ena
  exit
-route-policy rm1
- set metric +40000
- pass
- exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  router babel4 1 ena
  router babel4 1 other-ena
- router babel4 1 route-policy-out rm1
- router babel4 1 other-route-policy-out rm1
  exit
 !
 

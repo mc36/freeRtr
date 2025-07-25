@@ -1,4 +1,4 @@
-description integrated babel address unsuppression
+description integrated babel default address suppression
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -26,8 +26,6 @@ int lo1
  ipv6 addr 4321::11 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  router babel4 1 ena
  router babel4 1 other-ena
- router babel4 1 unsuppress
- router babel4 1 other-unsuppress
  exit
 int lo2
  vrf for v1
@@ -91,8 +89,8 @@ r1 tping 100 130 4321::22 vrf v1
 
 r2 tping 0 130 2.2.2.1 vrf v1
 r2 tping 0 130 4321::1 vrf v1
-r2 tping 100 130 2.2.2.11 vrf v1
-r2 tping 100 130 4321::11 vrf v1
+r2 tping 0 130 2.2.2.11 vrf v1
+r2 tping 0 130 4321::11 vrf v1
 r2 tping 0 130 2.2.2.21 vrf v1
 r2 tping 0 130 4321::21 vrf v1
 

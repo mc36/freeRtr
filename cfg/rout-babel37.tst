@@ -1,4 +1,4 @@
-description integrated babel egress route filtering with routepolicy
+description integrated babel ingress route filtering with routepolicy
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -29,14 +29,14 @@ int lo2
  ipv6 addr 4321::21 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 route-policy p4
- if network 2.2.2.11/32
+ if network 2.2.2.12/32
   drop
  else
   pass
  enif
  exit
 route-policy p6
- if network 4321::11/128
+ if network 4321::12/128
   drop
  else
   pass
@@ -48,8 +48,8 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  router babel4 1 ena
  router babel4 1 other-ena
- router babel4 1 route-policy-out p4
- router babel4 1 other-route-policy-out p6
+ router babel4 1 route-policy-in p4
+ router babel4 1 other-route-policy-in p6
  exit
 !
 
@@ -92,15 +92,15 @@ int eth1
 
 r1 tping 100 130 2.2.2.2 vrf v1
 r1 tping 100 130 4321::2 vrf v1
-r1 tping 100 130 2.2.2.12 vrf v1
-r1 tping 100 130 4321::12 vrf v1
+r1 tping 0 130 2.2.2.12 vrf v1
+r1 tping 0 130 4321::12 vrf v1
 r1 tping 100 130 2.2.2.22 vrf v1
 r1 tping 100 130 4321::22 vrf v1
 
 r2 tping 100 130 2.2.2.1 vrf v1
 r2 tping 100 130 4321::1 vrf v1
-r2 tping 0 130 2.2.2.11 vrf v1
-r2 tping 0 130 4321::11 vrf v1
+r2 tping 100 130 2.2.2.11 vrf v1
+r2 tping 100 130 4321::11 vrf v1
 r2 tping 100 130 2.2.2.21 vrf v1
 r2 tping 100 130 4321::21 vrf v1
 
