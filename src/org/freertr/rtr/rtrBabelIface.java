@@ -120,9 +120,69 @@ public class rtrBabelIface implements Comparable<rtrBabelIface> {
     public tabListing<tabRtrplcN, addrIP> roupolOut;
 
     /**
+     * other enabled
+     */
+    public boolean otherEna;
+
+    /**
+     * other unsuppress interface address
+     */
+    public boolean othUnsuppAddr = false;
+
+    /**
+     * other suppress interface address
+     */
+    public boolean othSuppAddr = false;
+
+    /**
+     * other advertise default route
+     */
+    public boolean othDefOrg = false;
+
+    /**
+     * other default distance
+     */
+    public int othDist = 130;
+
+    /**
+     * ingress prefix list
+     */
+    public tabListing<tabPrfxlstN, addrIP> oprflstIn;
+
+    /**
+     * egress prefix list
+     */
+    public tabListing<tabPrfxlstN, addrIP> oprflstOut;
+
+    /**
+     * ingress route map
+     */
+    public tabListing<tabRtrmapN, addrIP> oroumapIn;
+
+    /**
+     * egress route map
+     */
+    public tabListing<tabRtrmapN, addrIP> oroumapOut;
+
+    /**
+     * ingress route policy
+     */
+    public tabListing<tabRtrplcN, addrIP> oroupolIn;
+
+    /**
+     * egress route policy
+     */
+    public tabListing<tabRtrplcN, addrIP> oroupolOut;
+
+    /**
      * the interface this works on
      */
     protected final ipFwdIface iface;
+
+    /**
+     * the other interface this works on
+     */
+    protected final ipFwdIface oface;
 
     /**
      * the udp connection it uses to multicast
@@ -145,16 +205,24 @@ public class rtrBabelIface implements Comparable<rtrBabelIface> {
     public tabRoute<addrIP> advert;
 
     /**
+     * other prefixes advertised on interface
+     */
+    public tabRoute<addrIP> oadvert;
+
+    /**
      * create one instance
      *
      * @param parent the babel protocol
      * @param ifc the ip interface to work on
+     * @param oifc the other ip interface to work on
      */
-    public rtrBabelIface(rtrBabel parent, ipFwdIface ifc) {
+    public rtrBabelIface(rtrBabel parent, ipFwdIface ifc, ipFwdIface oifc) {
         lower = parent;
         iface = ifc;
+        oface = oifc;
         seqno = bits.randomW();
         advert = new tabRoute<addrIP>("babel");
+        oadvert = new tabRoute<addrIP>("babel");
     }
 
     /**
@@ -222,6 +290,17 @@ public class rtrBabelIface implements Comparable<rtrBabelIface> {
         cmds.cfgLine(l, roumapOut == null, cmds.tabulator, beg + "route-map-out", "" + roumapOut);
         cmds.cfgLine(l, roupolIn == null, cmds.tabulator, beg + "route-policy-in", "" + roupolIn);
         cmds.cfgLine(l, roupolOut == null, cmds.tabulator, beg + "route-policy-out", "" + roupolOut);
+        cmds.cfgLine(l, !otherEna, cmds.tabulator, beg + "other-enable", "");
+        cmds.cfgLine(l, !othDefOrg, cmds.tabulator, beg + "other-default-originate", "");
+        cmds.cfgLine(l, !othSuppAddr, cmds.tabulator, beg + "other-suppress-prefix", "");
+        cmds.cfgLine(l, !othUnsuppAddr, cmds.tabulator, beg + "other-unsuppress-prefix", "");
+        l.add(cmds.tabulator + beg + "other-distance " + othDist);
+        cmds.cfgLine(l, oprflstIn == null, cmds.tabulator, beg + "other-prefix-list-in", "" + oprflstIn);
+        cmds.cfgLine(l, oprflstOut == null, cmds.tabulator, beg + "other-prefix-list-out", "" + oprflstOut);
+        cmds.cfgLine(l, oroumapIn == null, cmds.tabulator, beg + "other-route-map-in", "" + oroumapIn);
+        cmds.cfgLine(l, oroumapOut == null, cmds.tabulator, beg + "other-route-map-out", "" + oroumapOut);
+        cmds.cfgLine(l, oroupolIn == null, cmds.tabulator, beg + "other-route-policy-in", "" + oroupolIn);
+        cmds.cfgLine(l, oroupolOut == null, cmds.tabulator, beg + "other-route-policy-out", "" + oroupolOut);
     }
 
     /**
@@ -253,6 +332,80 @@ public class rtrBabelIface implements Comparable<rtrBabelIface> {
         }
         if (a.equals("split-horizon")) {
             splitHorizon = true;
+            return;
+        }
+        if (a.equals("other-enable")) {
+            otherEna = oface != null;
+            return;
+        }
+        if (a.equals("other-default-originate")) {
+            othDefOrg = true;
+            return;
+        }
+        if (a.equals("other-suppress-prefix")) {
+            othSuppAddr = true;
+            return;
+        }
+        if (a.equals("other-unsuppress-prefix")) {
+            othUnsuppAddr = true;
+            return;
+        }
+        if (a.equals("other-distance")) {
+            othDist = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("other-prefix-list-in")) {
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            oprflstIn = ntry.prflst;
+            return;
+        }
+        if (a.equals("other-prefix-list-out")) {
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            oprflstOut = ntry.prflst;
+            return;
+        }
+        if (a.equals("other-route-map-in")) {
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return;
+            }
+            oroumapIn = ntry.roumap;
+            return;
+        }
+        if (a.equals("other-route-map-out")) {
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return;
+            }
+            oroumapOut = ntry.roumap;
+            return;
+        }
+        if (a.equals("other-route-policy-in")) {
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return;
+            }
+            oroupolIn = ntry.rouplc;
+            return;
+        }
+        if (a.equals("other-route-policy-out")) {
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return;
+            }
+            oroupolOut = ntry.rouplc;
             return;
         }
         if (a.equals("distance")) {
@@ -363,6 +516,46 @@ public class rtrBabelIface implements Comparable<rtrBabelIface> {
             splitHorizon = false;
             return;
         }
+        if (a.equals("other-enable")) {
+            otherEna = false;
+            return;
+        }
+        if (a.equals("other-default-originate")) {
+            othDefOrg = false;
+            return;
+        }
+        if (a.equals("other-suppress-prefix")) {
+            othSuppAddr = false;
+            return;
+        }
+        if (a.equals("other-unsuppress-prefix")) {
+            othUnsuppAddr = false;
+            return;
+        }
+        if (a.equals("other-prefix-list-in")) {
+            oprflstIn = null;
+            return;
+        }
+        if (a.equals("other-prefix-list-out")) {
+            oprflstOut = null;
+            return;
+        }
+        if (a.equals("other-route-map-in")) {
+            oroumapIn = null;
+            return;
+        }
+        if (a.equals("other-route-map-out")) {
+            oroumapOut = null;
+            return;
+        }
+        if (a.equals("other-route-policy-in")) {
+            oroupolIn = null;
+            return;
+        }
+        if (a.equals("other-route-policy-out")) {
+            oroupolOut = null;
+            return;
+        }
         if (a.equals("prefix-list-in")) {
             prflstIn = null;
             return;
@@ -425,6 +618,28 @@ public class rtrBabelIface implements Comparable<rtrBabelIface> {
         l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
         l.add(null, false, 4, new int[]{5}, "prefix-list-out", "filter prefixes in egress updates");
         l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, 4, new int[]{-1}, "other-enable", "enable other protocol processing");
+        l.add(null, false, 4, new int[]{-1}, "other-default-originate", "send other default route to peer");
+        l.add(null, false, 4, new int[]{-1}, "other-suppress-prefix", "do not advertise other interface");
+        l.add(null, false, 4, new int[]{-1}, "other-unsuppress-prefix", "do advertise other interface");
+        l.add(null, false, 4, new int[]{5}, "other-distance", "administrative distance of other routes");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "set administrative distance");
+        l.add(null, false, 4, new int[]{5}, "other-metric-in", "other interface incoming metric");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "metric");
+        l.add(null, false, 4, new int[]{5}, "other-metric-out", "other interface outgoing metric");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "metric");
+        l.add(null, false, 4, new int[]{5}, "other-route-map-in", "process other prefixes in ingress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:rm>", "name of route map");
+        l.add(null, false, 4, new int[]{5}, "other-route-map-out", "process other prefixes in egress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:rm>", "name of route map");
+        l.add(null, false, 4, new int[]{5}, "other-route-policy-in", "process other prefixes in ingress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:rpl>", "name of route policy");
+        l.add(null, false, 4, new int[]{5}, "other-route-policy-out", "process other prefixes in egress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:rpl>", "name of route policy");
+        l.add(null, false, 4, new int[]{5}, "other-prefix-list-in", "filter other prefixes in ingress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, 4, new int[]{5}, "other-prefix-list-out", "filter other prefixes in egress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
     }
 
     private void createBabelHeader(packHolder pck) {
@@ -471,7 +686,35 @@ public class rtrBabelIface implements Comparable<rtrBabelIface> {
         tlv.putBytes(pck, rtrBabel.tlvIhu, i, tlv.valDat);
     }
 
+    private void createBabelNhop(addrIP adr, packHolder pck) {
+        encTlv tlv = rtrBabel.getTlv();
+        bits.putByte(tlv.valDat, 1, 0); // reserved
+        int i;
+        if (adr.isIPv4()) {
+            bits.putByte(tlv.valDat, 0, 1); // ipv4
+            adr.toIPv4().toBuffer(tlv.valDat, 2); // address
+            i = 6;
+        } else {
+            addrIPv6 a6 = adr.toIPv6();
+            if (a6.isLinkLocal()) {
+                bits.putByte(tlv.valDat, 0, 3); // ipv6ll
+                addrEui ae = new addrEui();
+                ae.fromIPv6(a6);
+                ae.toBuffer(tlv.valDat, 2); // address
+                i = 10;
+            } else {
+                bits.putByte(tlv.valDat, 0, 2); // ipv6
+                a6.toBuffer(tlv.valDat, 2); // address
+                i = 18;
+            }
+        }
+        tlv.putBytes(pck, rtrBabel.tlvNxtHop, i, tlv.valDat);
+    }
+
     private void createBabelUpdate(tabRouteEntry<addrIP> ntry, addrEui last, packHolder pck) {
+        if ((ntry.best.metric + metricOut) >= 0xffff) {
+            return;
+        }
         encTlv tlv = rtrBabel.getTlv();
         if (ntry.best.aggrRtr == null) {
             ntry.best.aggrRtr = new addrIP();
@@ -535,6 +778,24 @@ public class rtrBabelIface implements Comparable<rtrBabelIface> {
         tabRoute<addrIP> tab2 = new tabRoute<addrIP>("copy");
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, roumapOut, roupolOut, prflstOut);
         advert = tab2;
+        tab1 = new tabRoute<addrIP>("copy");
+        if (otherEna) {
+            if (othDefOrg) {
+                if (oface.addr.isIPv4()) {
+                    tab1.add(tabRoute.addType.better, addrPrefix.ip4toIP(addrPrefix.defaultRoute4()), new addrIP());
+                } else {
+                    tab1.add(tabRoute.addType.better, addrPrefix.ip6toIP(addrPrefix.defaultRoute6()), new addrIP());
+                }
+            }
+            tab1.mergeFrom(tabRoute.addType.better, lower.other.routerComputedU, tabRouteAttr.distanLim);
+            if (splitHorizon) {
+                tab1.delIface(oface);
+            }
+            tab1.mergeFrom(tabRoute.addType.better, lower.other.routerRedistedU, tabRouteAttr.distanLim);
+            tab2 = new tabRoute<addrIP>("copy");
+            tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, oroumapOut, oroupolOut, oprflstOut);
+            oadvert = tab2;
+        }
         if (debugger.rtrBabelTraf) {
             logger.debug("tx " + conn);
         }
@@ -560,12 +821,9 @@ public class rtrBabelIface implements Comparable<rtrBabelIface> {
             bits.sleep(interPackTime);
         }
         addrEui last = new addrEui();
-        for (int i = 0; i < tab2.size(); i++) {
-            tabRouteEntry<addrIP> ntry = tab2.get(i);
+        for (int i = 0; i < advert.size(); i++) {
+            tabRouteEntry<addrIP> ntry = advert.get(i);
             if (ntry == null) {
-                continue;
-            }
-            if ((ntry.best.metric + metricOut) >= 0xffff) {
                 continue;
             }
             createBabelUpdate(ntry, last, pck);
@@ -576,6 +834,27 @@ public class rtrBabelIface implements Comparable<rtrBabelIface> {
             createBabelHeader(pck);
             conn.send2net(pck);
             pck.clear();
+            last = new addrEui();
+            entries = 0;
+            bits.sleep(interPackTime);
+        }
+        if (otherEna) {
+            createBabelNhop(oface.addr, pck);
+        }
+        for (int i = 0; i < oadvert.size(); i++) {
+            tabRouteEntry<addrIP> ntry = oadvert.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            createBabelUpdate(ntry, last, pck);
+            entries++;
+            if (pck.headSize() < 512) {
+                continue;
+            }
+            createBabelHeader(pck);
+            conn.send2net(pck);
+            pck.clear();
+            createBabelNhop(oface.addr, pck);
             last = new addrEui();
             entries = 0;
             bits.sleep(interPackTime);

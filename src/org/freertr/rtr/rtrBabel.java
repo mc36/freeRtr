@@ -5,6 +5,7 @@ import org.freertr.addr.addrEui;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
+import org.freertr.cfg.cfgRtr;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
@@ -147,29 +148,55 @@ public class rtrBabel extends ipRtr implements prtServP {
     protected int seqno;
 
     /**
+     * other afi router
+     */
+    public final rtrBabelOther other;
+
+    /**
+     * route type
+     */
+    protected final tabRouteAttr.routeType rouTyp;
+
+    /**
+     * router number
+     */
+    protected final int rtrNum;
+
+    /**
+     * router family
+     */
+    protected final boolean rouAfi;
+
+    /**
      * create one babel process
      *
      * @param forwarder the ip protocol
+     * @param otherfwd the other ip protocol
      * @param protocol the udp protocol
      * @param id process id
      */
-    public rtrBabel(ipFwd forwarder, prtUdp protocol, int id) {
+    public rtrBabel(ipFwd forwarder, ipFwd otherfwd, prtUdp protocol, int id) {
         if (debugger.rtrBabelEvnt) {
             logger.debug("startup");
         }
         fwdCore = forwarder;
         udpCore = protocol;
-        tabRouteAttr.routeType rouTyp = null;
+        rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
                 rouTyp = tabRouteAttr.routeType.babel4;
+                rouAfi = true;
                 break;
             case ipCor6.protocolVersion:
                 rouTyp = tabRouteAttr.routeType.babel6;
+                rouAfi = false;
                 break;
             default:
+                rouTyp = null;
+                rouAfi = false;
                 break;
         }
+        other = new rtrBabelOther(this, otherfwd);
         ifaces = new tabGen<rtrBabelIface>();
         neighs = new tabGen<rtrBabelNeigh>();
         seqno = bits.randomW();
@@ -282,16 +309,17 @@ public class rtrBabel extends ipRtr implements prtServP {
      * add one interface to work on
      *
      * @param ifc ip forwarder interface
+     * @param oifc the other ip interface to work on
      * @return false if successful, true if error happened
      */
-    public rtrBabelIface addInterface(ipFwdIface ifc) {
+    public rtrBabelIface addInterface(ipFwdIface ifc, ipFwdIface oifc) {
         if (debugger.rtrBabelEvnt) {
             logger.debug("add iface " + ifc);
         }
         if (ifc == null) {
             return null;
         }
-        rtrBabelIface ntry = new rtrBabelIface(this, ifc);
+        rtrBabelIface ntry = new rtrBabelIface(this, ifc, oifc);
         rtrBabelIface old = ifaces.add(ntry);
         if (old != null) {
             ntry = old;
@@ -307,7 +335,7 @@ public class rtrBabel extends ipRtr implements prtServP {
      * @param iface interface
      */
     public void closedInterface(ipFwdIface iface) {
-        rtrBabelIface ifc = new rtrBabelIface(this, iface);
+        rtrBabelIface ifc = new rtrBabelIface(this, iface, null);
         ifc = ifaces.del(ifc);
         if (ifc == null) {
             return;
@@ -331,7 +359,7 @@ public class rtrBabel extends ipRtr implements prtServP {
      * @return false if success, true if error
      */
     public boolean datagramAccept(prtGenConn id) {
-        rtrBabelIface ifc = new rtrBabelIface(this, id.iface);
+        rtrBabelIface ifc = new rtrBabelIface(this, id.iface, null);
         ifc = ifaces.find(ifc);
         if (ifc == null) {
             logger.warn("no interface " + id);
@@ -392,7 +420,7 @@ public class rtrBabel extends ipRtr implements prtServP {
             }
             return;
         }
-        rtrBabelIface ifc = new rtrBabelIface(this, id.iface);
+        rtrBabelIface ifc = new rtrBabelIface(this, id.iface, null);
         ifc = ifaces.find(ifc);
         if (ifc != null) {
             ifc.doWork();
@@ -463,7 +491,8 @@ public class rtrBabel extends ipRtr implements prtServP {
         if (debugger.rtrBabelEvnt) {
             logger.debug("create table");
         }
-        tabRoute<addrIP> tab = new tabRoute<addrIP>("babel");
+        tabRoute<addrIP> tab1 = new tabRoute<addrIP>("babel");
+        tabRoute<addrIP> tab2 = new tabRoute<addrIP>("babel");
         tabRouteEntry<addrIP> ntry;
         for (int i = 0; i < ifaces.size(); i++) {
             rtrBabelIface ifc = ifaces.get(i);
@@ -476,10 +505,31 @@ public class rtrBabel extends ipRtr implements prtServP {
             if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
-            ntry = tab.add(tabRoute.addType.better, ifc.iface.network, null);
+            ntry = tab1.add(tabRoute.addType.better, ifc.iface.network, null);
             ntry.best.rouTyp = tabRouteAttr.routeType.conn;
             ntry.best.iface = ifc.iface;
             ntry.best.distance = tabRouteAttr.distanIfc;
+        }
+        if (other.enabled) {
+            for (int i = 0; i < ifaces.size(); i++) {
+                rtrBabelIface ifc = ifaces.get(i);
+                if (ifc == null) {
+                    continue;
+                }
+                if (ifc.iface.lower.getState() != state.states.up) {
+                    continue;
+                }
+                if (!ifc.otherEna) {
+                    continue;
+                }
+                if ((other.suppressAddr || ifc.othSuppAddr) && (!ifc.othUnsuppAddr)) {
+                    continue;
+                }
+                ntry = tab2.add(tabRoute.addType.better, ifc.oface.network, null);
+                ntry.best.rouTyp = tabRouteAttr.routeType.conn;
+                ntry.best.iface = ifc.iface;
+                ntry.best.distance = tabRouteAttr.distanIfc;
+            }
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBabelNeigh nei = neighs.get(i);
@@ -489,15 +539,29 @@ public class rtrBabel extends ipRtr implements prtServP {
             if (nei.iface.iface.lower.getState() != state.states.up) {
                 continue;
             }
-            tab.mergeFrom(tabRoute.addType.ecmp, nei.learned, tabRouteAttr.distanLim);
+            tab1.mergeFrom(tabRoute.addType.ecmp, nei.learned, tabRouteAttr.distanLim);
+            if (!other.enabled) {
+                continue;
+            }
+            if (!nei.iface.otherEna) {
+                continue;
+            }
+            tab2.mergeFrom(tabRoute.addType.ecmp, nei.olearned, tabRouteAttr.distanLim);
         }
-        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab, tab, fwdCore.commonLabel, null, 0);
-        tab.setProto(routerProtoTyp, routerProcNum);
-        if (tab.preserveTime(routerComputedU)) {
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab1, tab1, fwdCore.commonLabel, null, 0);
+        other.routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, other.fwd.commonLabel, null, 0);
+        tab1.setProto(routerProtoTyp, routerProcNum);
+        tab2.setProto(routerProtoTyp, routerProcNum);
+        if (!tab2.preserveTime(other.routerComputedU)) {
+            other.routerComputedU = tab2;
+            other.routerComputedM = tab2;
+            other.fwd.routerChg(other, false);
+        }
+        if (tab1.preserveTime(routerComputedU)) {
             return;
         }
-        routerComputedU = tab;
-        routerComputedM = tab;
+        routerComputedU = tab1;
+        routerComputedM = tab1;
         routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = new tabGen<tabIndex<addrIP>>();
         fwdCore.routerChg(this, false);
@@ -547,6 +611,10 @@ public class rtrBabel extends ipRtr implements prtServP {
     public void routerGetHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "router-id", "specify router id");
         l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
+        l.add(null, false, 1, new int[]{2}, "afi-other", "select other to advertise");
+        l.add(null, false, 2, new int[]{-1}, "enable", "enable processing");
+        l.add(null, false, 2, new int[]{-1}, "suppress-prefix", "do not advertise other interfaces");
+        cfgRtr.getRedistHelp(l, 1);
         l.add(null, false, 1, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
     }
 
@@ -559,6 +627,7 @@ public class rtrBabel extends ipRtr implements prtServP {
      */
     public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "router-id " + routerID);
+        other.getConfig(l, beg, "afi-other ");
         cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
     }
 
@@ -586,6 +655,25 @@ public class rtrBabel extends ipRtr implements prtServP {
             suppressAddr = !negated;
             return false;
         }
+        if (s.equals("afi-other")) {
+            s = cmd.word();
+            if (s.equals("enable")) {
+                if (negated) {
+                    other.unregister2ip();
+                } else {
+                    other.register2ip();
+                }
+                return false;
+            }
+            if (s.equals("suppress-prefix")) {
+                other.suppressAddr = !negated;
+                return false;
+            }
+            if (cfgRtr.doCfgRedist(other, other.fwd, negated, s, cmd)) {
+                cmd.badCmd();
+            }
+            return false;
+        }
         return true;
     }
 
@@ -595,13 +683,13 @@ public class rtrBabel extends ipRtr implements prtServP {
      * @return list of neighbors
      */
     public userFormat showNeighs() {
-        userFormat l = new userFormat("|", "interface|learn|neighbor|uptime");
+        userFormat l = new userFormat("|", "interface|neighbor|learn|olearn|uptime");
         for (int i = 0; i < neighs.size(); i++) {
             rtrBabelNeigh ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.iface.iface + "|" + ntry.learned.size() + "|" + ntry.conn.peerAddr + "|" + bits.timePast(ntry.upTime));
+            l.add(ntry.iface.iface + "|" + ntry.conn.peerAddr + "|" + ntry.learned.size() + "|" + ntry.olearned.size() + "|" + bits.timePast(ntry.upTime));
         }
         return l;
     }
