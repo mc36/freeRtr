@@ -1699,6 +1699,17 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* route-map-out", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* route-policy-in", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* route-policy-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* other-enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* other-default-originate", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* other-suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* other-unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + "router babel[46] .* other-distance 130", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* other-prefix-list-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* other-prefix-list-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* other-route-map-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* other-route-map-out", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* other-route-policy-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router babel[46] .* other-route-policy-out", null),
         // olsr
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router olsr[46] .* bfd", null),
         new userFilter("interface .*", cmds.tabulator + "router olsr[46] .* split-horizon", null),
@@ -3011,7 +3022,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 if (rtrBabel4ifc != null) {
                     break;
                 }
-                rtrBabel4ifc = rtr.babel.addInterface(fwdIf4);
+                rtrBabel4ifc = rtr.babel.addInterface(fwdIf4, fwdIf6);
                 if (rtrBabel4ifc == null) {
                     break;
                 }
@@ -3021,7 +3032,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 if (rtrBabel6ifc != null) {
                     break;
                 }
-                rtrBabel6ifc = rtr.babel.addInterface(fwdIf6);
+                rtrBabel6ifc = rtr.babel.addInterface(fwdIf6, fwdIf4);
                 if (rtrBabel6ifc == null) {
                     break;
                 }

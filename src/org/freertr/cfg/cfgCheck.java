@@ -792,7 +792,6 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
         return res;
     }
 
-    
     /**
      * get show
      *

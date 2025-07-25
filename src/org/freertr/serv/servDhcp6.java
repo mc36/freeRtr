@@ -189,17 +189,17 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        if (mode == dhcpMode.relay) {
-            // Relay mode: configure pipe properly
-            if (pipe != null) {
-                pipe.setTime(1000);
-                pipe.setClose();
-            }
+        if (mode == dhcpMode.server) {
+            pipe.setTime(10000);
+            new servDhcp6worker(this, pipe, id);
             return false;
         }
-        // Server mode: use worker thread
-        pipe.setTime(10000);
-        new servDhcp6worker(this, pipe, id);
+        // Relay mode: configure pipe properly
+        id.timeout = 1000;
+        if (pipe != null) {
+            pipe.setTime(1000);
+            pipe.setClose();
+        }
         return false;
     }
 

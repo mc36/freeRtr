@@ -227,14 +227,14 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             pipe.setTime(10000);
             new servDhcp4worker(this, pipe, id);
             return false;
-        } else {
-            // Relay mode: configure pipe properly if not null
-            if (pipe != null) {
-                pipe.setTime(1000); // Use longer timeout
-                pipe.setClose(); // Explicit close after sending
-            }
-            return false; // Accept connection (false = success)
         }
+        // Relay mode: configure pipe properly
+        id.timeout = 1000;
+        if (pipe != null) {
+            pipe.setTime(1000);
+            pipe.setClose();
+        }
+        return false;
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {

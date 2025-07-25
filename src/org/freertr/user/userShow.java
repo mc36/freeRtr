@@ -4414,6 +4414,14 @@ public class userShow {
             doShowRoutes(r.babel.fwdCore, r.babel.routerRedistedU, 1);
             return;
         }
+        if (a.equals("other-database")) {
+            doShowRoutes(r.babel.fwdCore, r.babel.other.routerComputedU, 1);
+            return;
+        }
+        if (a.equals("other-originate")) {
+            doShowRoutes(r.babel.fwdCore, r.babel.other.routerRedistedU, 1);
+            return;
+        }
         if (!a.equals("neighbor")) {
             cmd.badCmd();
             return;
@@ -4428,6 +4436,10 @@ public class userShow {
         a = cmd.word();
         if (a.equals("learned")) {
             doShowRoutes(r.babel.fwdCore, nei.learned, 1);
+            return;
+        }
+        if (a.equals("other-learned")) {
+            doShowRoutes(r.babel.fwdCore, nei.olearned, 1);
             return;
         }
         cmd.badCmd();

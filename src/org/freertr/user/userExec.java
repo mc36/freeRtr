@@ -518,11 +518,17 @@ public class userExec {
         hl.add(null, false, 6, new int[]{7}, "<addr>", "neighbor address");
         hl.add(null, false, 7, new int[]{8, -1}, "learned", "routes learned from neighbor");
         hl.add(null, false, 8, new int[]{-1}, "[addr]", "prefix to view");
+        hl.add(null, false, 7, new int[]{8, -1}, "other-learned", "other routes learned from neighbor");
+        hl.add(null, false, 8, new int[]{-1}, "[addr]", "prefix to view");
         hl.add(null, false, 5, new int[]{-1}, "summary", "list of neighbors");
         hl.add(null, false, 5, new int[]{-1}, "interface", "list of interfaces");
         hl.add(null, false, 5, new int[]{6, -1}, "database", "list of routes in database");
         hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
         hl.add(null, false, 5, new int[]{6, -1}, "originate", "list of routes originated locally");
+        hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
+        hl.add(null, false, 5, new int[]{6, -1}, "other-database", "list of other routes in database");
+        hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
+        hl.add(null, false, 5, new int[]{6, -1}, "other-originate", "list of other routes originated locally");
         hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
         hl.add(null, false, 3, new int[]{4}, "olsr", "optimized link state routing protocol");
         hl.add(null, false, 4, new int[]{5}, "<num:rtr>", "process id");

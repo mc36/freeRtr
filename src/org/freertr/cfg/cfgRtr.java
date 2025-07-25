@@ -258,6 +258,8 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router eigrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "suppress-prefix", null),
         // router babel
         new userFilter("router babel[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "suppress-prefix", null),
+        new userFilter("router babel[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other enable", null),
+        new userFilter("router babel[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other suppress-prefix", null),
         // router olsr
         new userFilter("router olsr[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "suppress-prefix", null),
         // router rip
@@ -1779,11 +1781,11 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
                 break;
             case babel4:
                 fwd = vrf.fwd4;
-                babel = new rtrBabel(vrf.fwd4, vrf.udp4, number);
+                babel = new rtrBabel(vrf.fwd4, vrf.fwd6, vrf.udp4, number);
                 break;
             case babel6:
                 fwd = vrf.fwd6;
-                babel = new rtrBabel(vrf.fwd6, vrf.udp6, number);
+                babel = new rtrBabel(vrf.fwd6, vrf.fwd4, vrf.udp6, number);
                 break;
             case blackhole4:
                 fwd = vrf.fwd4;
