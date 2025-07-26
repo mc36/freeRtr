@@ -244,6 +244,9 @@ public class clntRadius {
         if (radRx.valMgtPrv > 0) {
             res.privilege = radRx.valMgtPrv;
         }
+        if (radRx.valFilter != null) {
+            res.filter = radRx.valFilter;
+        }
         if (radRx.valFrmAdr4 != null) {
             res.ipv4addr = radRx.valFrmAdr4.copyBytes();
         }

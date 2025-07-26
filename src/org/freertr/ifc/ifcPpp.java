@@ -1235,6 +1235,25 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         if ((auth.result.ipv6route != null) && (cfger.fwdIf6 != null)) {
             cfger.fwdIf6.gatePrfx = authGeneric.route2prefixes(auth.result.ipv6route);
         }
+        if (auth.result.filter != null) {
+            String a = auth.result.filter;
+            for (;;) {
+                cmds cmd;
+                int i = a.length();
+                if (i < 1) {
+                    break;
+                }
+                i = a.indexOf("/");
+                if (i < 0) {
+                    cmd = new cmds("fltr", a);
+                    a = "";
+                } else {
+                    cmd = new cmds("fltr", a.substring(0, i));
+                    a = a.substring(i + 1, a.length());
+                }
+                cfger.doCfgStr(cmd);
+            }
+        }
         sendKeepReq();
         if (accontRem == null) {
             return;

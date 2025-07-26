@@ -55,6 +55,11 @@ public class authResult {
     public int privilege = 0;
 
     /**
+     * privilege level
+     */
+    public String filter;
+
+    /**
      * ipv4 address
      */
     public addrIPv4 ipv4addr;
@@ -164,6 +169,7 @@ public class authResult {
         lst.add("command|" + autoCommand);
         lst.add("hangup|" + autoHangup);
         lst.add("privilege|" + privilege);
+        lst.add("filter|" + filter);
         lst.add("ipv4 addr|" + ipv4addr);
         lst.add("ipv4 route|" + ipv4route);
         lst.add("ipv6 addr|" + ipv6addr);

@@ -249,6 +249,9 @@ class servRadiusConn implements Runnable {
             if (res.privilege > 0) {
                 radTx.valMgtPrv = res.privilege;
             }
+            if (res.filter != null) {
+                radTx.valFilter = res.filter;
+            }
             if (res.ipv4addr != null) {
                 radTx.valFrmAdr4 = res.ipv4addr.copyBytes();
             }

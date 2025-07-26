@@ -312,6 +312,8 @@ public class authLocal extends authGeneric {
         l.add(null, false, 4, new int[]{4, -1}, "[text]", "route");
         l.add(null, false, 3, new int[]{4}, "privilege", "set privilege level of user");
         l.add(null, false, 4, new int[]{-1}, "<priv>", "privilege of user");
+        l.add(null, false, 3, new int[]{4}, "filter", "specify filter id");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "string");
     }
 
     /**
@@ -416,6 +418,9 @@ public class authLocal extends authGeneric {
         res.autoCommand = ntry.autoCommand;
         res.autoHangup = ntry.autoHangup;
         res.privilege = ntry.privilege;
+        if (ntry.filterid != null) {
+            res.filter = ntry.filterid;
+        }
         if (ntry.ipv4addr != null) {
             res.ipv4addr = ntry.ipv4addr.copyBytes();
         }
@@ -728,6 +733,11 @@ class authLocalEntry implements Comparable<authLocalEntry> {
     public int privilege = 15;
 
     /**
+     * filter id of user
+     */
+    public String filterid;
+
+    /**
      * usage counter
      */
     public int countdown = -1;
@@ -784,6 +794,9 @@ class authLocalEntry implements Comparable<authLocalEntry> {
         }
         if (countdown >= 0) {
             lst.add(beg + "countdown " + countdown);
+        }
+        if (filterid != null) {
+            lst.add(beg + "filter " + filterid);
         }
         if (anyPass) {
             lst.add(beg + "anypass");
@@ -905,6 +918,14 @@ class authLocalEntry implements Comparable<authLocalEntry> {
         }
         if (s.equals("autohangup")) {
             autoHangup = !neg;
+            return false;
+        }
+        if (s.equals("filter")) {
+            if (neg) {
+                filterid = null;
+                return false;
+            }
+            filterid = cmd.getRemaining();
             return false;
         }
         if (s.equals("ipv4addr")) {
