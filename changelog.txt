@@ -17356,3 +17356,6 @@ qc pass: integrated babel over ipv6ll
 ---------------------------------- 2025-07-26 14:46:15 25.7.26
 qc pass: ppp policy with local authentication
 qc pass: ppp policy with radius authentication
+---------------------------------- 2025-07-26 17:59:13 25.7.26
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
