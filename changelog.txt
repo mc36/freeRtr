@@ -17353,3 +17353,6 @@ qc pass: wireguard over ipv6
 ---------------------------------- 2025-07-25 23:21:41 25.7.25
 qc pass: interop8: wired babel
 qc pass: integrated babel over ipv6ll
+---------------------------------- 2025-07-26 14:46:15 25.7.26
+qc pass: ppp policy with local authentication
+qc pass: ppp policy with radius authentication

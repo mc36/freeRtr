@@ -388,6 +388,8 @@ qc pass: ppp address propagation
 qc pass: ppp labeled gateway
 qc pass: ppp no remote address
 qc pass: ppp no local address
+qc pass: ppp policy with local authentication
+qc pass: ppp policy with radius authentication
 qc pass: pppoe over ethernet encapsulation
 qc pass: pppoe over bridge encapsulation
 qc pass: ppp relay over pppoe
