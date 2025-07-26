@@ -1300,6 +1300,7 @@ qc pass: interop2: rip prefix withdraw
 qc pass: interop2: rip authentication
 qc pass: interop2: gre tunnel
 qc pass: interop2: ipip tunnel
+qc pass: interop8: wired babel
 qc pass: interop8: ebgp
 qc pass: interop8: ibgp
 qc pass: interop8: bgp locpref
@@ -2568,6 +2569,7 @@ qc pass: babel address unsuppression
 qc pass: babel auto summarization
 qc pass: integrated babel over ipv4
 qc pass: integrated babel over ipv6
+qc pass: integrated babel over ipv6ll
 qc pass: integrated babel ingress route filtering with prefixlist
 qc pass: integrated babel egress route filtering with prefixlist
 qc pass: integrated babel ingress route filtering with routemap
