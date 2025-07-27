@@ -63,4 +63,22 @@ public class tabRateLimit {
         return false;
     }
 
+    /**
+     * get interval in ms
+     *
+     * @return interval
+     */
+    public int getInterval() {
+        return intrvl;
+    }
+
+    /**
+     * get bytes/interval
+     *
+     * @return bytes/int
+     */
+    public int getBytePerInt() {
+        return allowd;
+    }
+
 }

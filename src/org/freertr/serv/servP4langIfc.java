@@ -97,6 +97,26 @@ public class servP4langIfc implements ifcDn, Comparable<servP4langIfc> {
     protected int sentMon;
 
     /**
+     * sent rate-limit in
+     */
+    protected int sentRatBin;
+
+    /**
+     * sent rate-limit in
+     */
+    protected int sentRatTin;
+
+    /**
+     * sent rate-limit out
+     */
+    protected int sentRatBout;
+
+    /**
+     * sent rate-limit out
+     */
+    protected int sentRatTout;
+
+    /**
      * sent vlan
      */
     protected int sentVlan;
@@ -546,6 +566,10 @@ public class servP4langIfc implements ifcDn, Comparable<servP4langIfc> {
         sentMacsec = null;
         sentVrf = 0;
         sentMon = -1;
+        sentRatBin = -1;
+        sentRatTin = -1;
+        sentRatBout = -1;
+        sentRatTout = -1;
         sentState = state.states.close;
         sentMtu = 0;
         sentLabel = -1;

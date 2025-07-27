@@ -2121,6 +2121,46 @@ public class servP4langConn implements Runnable {
         }
         ifc.setup2apiPack();
         int i = -1;
+        int o = -1;
+        if (ifc.ifc.ethtyp.rateIn != null) {
+            i = ifc.ifc.ethtyp.rateIn.getBytePerInt();
+            o = ifc.ifc.ethtyp.rateIn.getInterval();
+        }
+        if ((i != ifc.sentRatBin) || (o != ifc.sentRatTin)) {
+            String a;
+            if (ifc.sentRatBin < 0) {
+                a = "add";
+            } else {
+                a = "mod";
+            }
+            if (i < 0) {
+                a = "del";
+            }
+            lower.sendLine("ratein_" + a + " " + ifc.id + " " + i + " " + o);
+            ifc.sentRatBin = i;
+            ifc.sentRatTin = o;
+        }
+        i = -1;
+        o = -1;
+        if (ifc.ifc.ethtyp.rateOut != null) {
+            i = ifc.ifc.ethtyp.rateOut.getBytePerInt();
+            o = ifc.ifc.ethtyp.rateOut.getInterval();
+        }
+        if ((i != ifc.sentRatBout) || (o != ifc.sentRatTout)) {
+            String a;
+            if (ifc.sentRatBout < 0) {
+                a = "add";
+            } else {
+                a = "mod";
+            }
+            if (i < 0) {
+                a = "del";
+            }
+            lower.sendLine("rateout_" + a + " " + ifc.id + " " + i + " " + o);
+            ifc.sentRatBout = i;
+            ifc.sentRatTout = o;
+        }
+        i = -1;
         if (ifc.ifc.ethtyp.monSes != null) {
             servP4langIfc res = lower.findIfc(ifc.ifc.ethtyp.monSes);
             if (res != null) {
@@ -2128,7 +2168,7 @@ public class servP4langConn implements Runnable {
             }
         }
         if (i != ifc.sentMon) {
-            int o = i;
+            o = i;
             String a;
             if (ifc.sentMon < 0) {
                 a = "add";
@@ -2289,7 +2329,7 @@ public class servP4langConn implements Runnable {
             ifc.sentVlan = ifc.ifc.vlanNum;
         }
         if (ifc.ifc.hairpinHed != null) {
-            int o = 0;
+            o = 0;
             for (i = 0; i < lower.expIfc.size(); i++) {
                 servP4langIfc ntry = lower.expIfc.get(i);
                 if (ntry == ifc) {
@@ -2378,7 +2418,7 @@ public class servP4langConn implements Runnable {
                     vln.add(ntry);
                 }
             }
-            int o = ap.size();
+            o = ap.size();
             for (i = 0; i < ap.size(); i++) {
                 o += ap.get(i).id;
             }
@@ -2430,7 +2470,7 @@ public class servP4langConn implements Runnable {
             }
             if (br.routed == null) {
                 i = ifc.ifc.bridgeIfc.tcp4mssIn;
-                int o = ifc.ifc.bridgeIfc.tcp4mssOut;
+                o = ifc.ifc.bridgeIfc.tcp4mssOut;
                 int p = ifc.ifc.bridgeIfc.pmtud4valIn;
                 int q = ifc.ifc.bridgeIfc.pmtud4valOut;
                 if (i != ifc.sentMss4in) {
@@ -2625,7 +2665,7 @@ public class servP4langConn implements Runnable {
             ifc.sentNsh = -1;
         }
         i = 0;
-        int o = 0;
+        o = 0;
         int p = 0;
         int q = 0;
         if (mstr.ifc.fwdIf4 != null) {
