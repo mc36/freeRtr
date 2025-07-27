@@ -593,10 +593,21 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
     if (ctx->sgt < 0) return 0;
     unsigned char *bufD = ctx->bufD;
     struct port2vrf_entry port2vrf_ntry;
+    struct policer_entry policer_ntry;
     struct port2vrf_entry *port2vrf_res;
+    struct policer_entry *policer_res;
     port2vrf_ntry.port = prt;
     port2vrf_res = hasht_find(&port2vrf_table, &port2vrf_ntry);
     if (port2vrf_res == NULL) return 0;
+    if (port2vrf_res->rateOut != 0) {
+        policer_ntry.vrf = 0;
+        policer_ntry.meter = port2vrf_res->rateOut;
+        policer_ntry.dir = 6;
+        policer_res = hasht_find(&policer_table, &policer_ntry);
+        if (policer_res == NULL) doDropper;
+        if (policer_res->avail < 1) doDropper;
+        policer_res->avail -= bufS - bufP + preBuff;
+    }
     if (port2vrf_res->sgtTag != 0) {
         *bufP -= 8;
         put16msb(bufD, *bufP + 2, 0x0101);
@@ -658,12 +669,10 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
     *bufP -= 8;
     *ethtyp = port2vrf_res->mcscEthtyp;
     memcpy(&bufD[*bufP], &bufD[0], 8);
+#endif
     return 0;
 drop:
     return 1;
-#else
-    return 0;
-#endif
 }
 
 
@@ -1387,6 +1396,15 @@ ethtyp_rx:
     port2vrf_ntry.port = prt;
     port2vrf_res = hasht_find(&port2vrf_table, &port2vrf_ntry);
     if (port2vrf_res == NULL) goto etyped_rx;
+    if (port2vrf_res->rateIn != 0) {
+        policer_ntry.vrf = 0;
+        policer_ntry.meter = port2vrf_res->rateIn;
+        policer_ntry.dir = 5;
+        policer_res = hasht_find(&policer_table, &policer_ntry);
+        if (policer_res == NULL) doDropper;
+        if (policer_res->avail < 1) doDropper;
+        policer_res->avail -= bufS - bufP + preBuff;
+    }
 #ifndef HAVE_NOCRYPTO
     if (port2vrf_res->mcscEthtyp != 0) {
         port2vrf_res->mcscPackRx++;

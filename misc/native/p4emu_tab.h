@@ -115,6 +115,8 @@ struct port2vrf_entry {
     int nflw6;
     int pttl4;
     int pttl6;
+    int rateIn;
+    int rateOut;
     int mpls;
     int nsh;
     int monTarget;
@@ -664,7 +666,7 @@ struct tun6_entry {
 
 struct policer_entry {
     int vrf;
-    int dir; // 1=in, 2=out, 3=flwspc4, 4=flwspc6
+    int dir; // 1=ifcin, 2=ifcout, 3=flwspc4, 4=flwspc6, 5=ratein, 6=rateout
     int meter;
     long allow;
     long avail;

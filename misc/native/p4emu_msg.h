@@ -1300,6 +1300,30 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         else table_add(&port2vrf_res->outacl6, &acl6_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "ratein") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        policer_ntry.meter = port2vrf_ntry.port;
+        policer_ntry.dir = 5;
+        policer_ntry.allow = readRate(&arg[0]);
+        if (del == 0) hasht_del(&policer_table, &policer_ntry);
+        else hasht_add(&policer_table, &policer_ntry);
+        if (del == 0) port2vrf_res->rateIn = 0;
+        else port2vrf_res->rateIn = port2vrf_ntry.port;
+        return 0;
+    }
+    if (strcmp(arg[0], "rateout") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        policer_ntry.meter = port2vrf_ntry.port;
+        policer_ntry.dir = 6;
+        policer_ntry.allow = readRate(&arg[0]);
+        if (del == 0) hasht_del(&policer_table, &policer_ntry);
+        else hasht_add(&policer_table, &policer_ntry);
+        if (del == 0) port2vrf_res->rateOut = 0;
+        else port2vrf_res->rateOut = port2vrf_ntry.port;
+        return 0;
+    }
     if (strcmp(arg[0], "inqos4") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
