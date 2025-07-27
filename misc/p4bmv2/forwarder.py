@@ -3157,6 +3157,48 @@ def writeOutQosRules(delete, p4info_helper, ingress_sw, meter, bytes, interval):
 
 
 
+def writeRateInRules(delete, p4info_helper, ingress_sw, subif, bytes, interval):
+    metid = p4info_helper.get_meters_id("ig_ctl.ig_ctl_qos_in.rate")
+    if delete != 3:
+        ingress_sw.WriteMeter(metid, subif, bytes, bytes)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_qos_in.tbl_rate",
+        match_fields={
+            "ig_md.source_id": subif,
+        },
+        action_name="ig_ctl.ig_ctl_qos_in.act_rate",
+        action_params={
+            "metid": subif,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+def writeRateOutRules(delete, p4info_helper, ingress_sw, subif, bytes, interval):
+    metid = p4info_helper.get_meters_id("ig_ctl.ig_ctl_qos_out.rate")
+    if delete != 3:
+        ingress_sw.WriteMeter(metid, subif, bytes, bytes)
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_qos_out.tbl_rate",
+        match_fields={
+            "ig_md.aclport_id": subif,
+        },
+        action_name="ig_ctl.ig_ctl_qos_out.act_rate",
+        action_params={
+            "metid": subif,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+
 
 def writeFlowspecRules4(delete, p4info_helper, ingress_sw, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm):
     matches={"ig_md.vrf": vrf}
@@ -4398,6 +4440,14 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "outqos":
             writeOutQosRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "ratein":
+            writeRateInRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "rateout":
+            writeRateOutRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
             continue
 
         if cmds[0] == "flowspec4":

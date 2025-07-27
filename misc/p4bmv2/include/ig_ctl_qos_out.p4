@@ -21,9 +21,11 @@ control IngressControlQosOut(inout headers hdr,
                              inout ingress_metadata_t ig_md,
                              inout standard_metadata_t ig_intr_md) {
 
+    meter((MAX_PORT+1), MeterType.bytes) rate;
     meter((MAX_PORT+1), MeterType.bytes) policer;
     direct_counter(CounterType.packets_and_bytes) stats4;
     direct_counter(CounterType.packets_and_bytes) stats6;
+    direct_counter(CounterType.packets_and_bytes) statsr;
 
     action act_deny(SubIntId_t metid) {
         ig_md.meter_id = metid;
@@ -33,6 +35,17 @@ control IngressControlQosOut(inout headers hdr,
     action act_permit(SubIntId_t metid) {
         ig_md.meter_id = metid;
         policer.execute_meter((bit<32>)metid, ig_md.meter_res);
+        if (ig_md.meter_res == 0) {
+            ig_md.dropping = (bit<2>)ig_md.layer3_frag;
+        } else {
+            ig_md.dropping = 1;
+        }
+    }
+
+
+    action act_rate(SubIntId_t metid) {
+        ig_md.meter_id = metid;
+        rate.execute_meter((bit<32>)metid, ig_md.meter_res);
         if (ig_md.meter_res == 0) {
             ig_md.dropping = (bit<2>)ig_md.layer3_frag;
         } else {
@@ -103,6 +116,20 @@ ig_md.sec_grp_id:
         counters = stats6;
     }
 
+    table tbl_rate {
+        key = {
+ig_md.aclport_id:
+            exact;
+        }
+        actions = {
+            act_rate;
+            @defaultonly NoAction;
+        }
+        size = IPV4_INQOS_TABLE_SIZE;
+        const default_action = NoAction();
+        counters = statsr;
+    }
+
     apply {
         if (hdr.ipv4.isValid() && (ig_md.ipv4_valid==1))  {
             tbl_ipv4_qos.apply();
@@ -110,6 +137,7 @@ ig_md.sec_grp_id:
         if (hdr.ipv6.isValid() && (ig_md.ipv6_valid==1))  {
             tbl_ipv6_qos.apply();
         }
+        if (ig_md.dropping == 0) tbl_rate.apply();
     }
 }
 
