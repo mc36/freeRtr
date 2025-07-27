@@ -47,6 +47,7 @@ class RareApi(BfRtRare):
     from .inqos4 import writeInQos4Rules
     from .inqos6 import writeInQos6Rules
     from .inqos import writeInQosRules
+    from .inqos import writeInRateRules
     from .ipip4 import writeIpip4rules
     from .ipip6 import writeIpip6rules
     from .l2tp4 import writeL2tp4rules
@@ -100,6 +101,7 @@ class RareApi(BfRtRare):
     from .outqos4 import writeOutQos4Rules
     from .outqos6 import writeOutQos6Rules
     from .outqos import writeOutQosRules
+    from .outqos import writeOutRateRules
     from .pbr4hop import writePbrHopRules4
     from .pbr4lab import writePbrLabRules4
     from .pbr4norm import writePbrNormRules4

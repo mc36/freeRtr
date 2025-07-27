@@ -93,6 +93,8 @@ class BfForwarder(Thread, RareApi):
             # IN/OUT meters cannot be cleared
             if "policer" in table_name_key:
                 continue
+            if "rater" in table_name_key:
+                continue
             if "hash" in table_name_key:
                 continue
             # IN/OUT counters cannot be cleared

@@ -4,12 +4,12 @@
 ig_md._padding1 = 0;
 ig_md._padding2 = 0;
 #ifdef HAVE_INQOS
-ig_md.inqos_id = 0;
 ig_md.inqos_res = MeterColor_t.GREEN;
+ig_md.inrate_res = MeterColor_t.GREEN;
 #endif
 #ifdef HAVE_OUTQOS
-ig_md.outqos_id = 0;
 ig_md.outqos_res = MeterColor_t.GREEN;
+ig_md.outrate_res = MeterColor_t.GREEN;
 #endif
 #ifdef HAVE_FLOWSPEC
 ig_md.flowspec_id = 0;

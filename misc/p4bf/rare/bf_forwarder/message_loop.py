@@ -1269,6 +1269,24 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "ratein":
+            self.writeInRateRules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+            )
+            continue
+
+        if cmds[0] == "rateout":
+            self.writeOutRateRules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+            )
+            continue
+
         if cmds[0] == "inqos":
             self.writeInQosRules(
                 mode,

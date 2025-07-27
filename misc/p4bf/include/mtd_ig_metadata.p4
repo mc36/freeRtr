@@ -68,12 +68,12 @@ struct ingress_metadata_t {
     SubIntId_t rpf_iface;
 #endif
 #ifdef HAVE_INQOS
-    SubIntId_t inqos_id;
     bit <8> inqos_res;
+    bit <8> inrate_res;
 #endif
 #ifdef HAVE_OUTQOS
-    SubIntId_t outqos_id;
     bit <8> outqos_res;
+    bit <8> outrate_res;
 #endif
 #ifdef HAVE_FLOWSPEC
     SubIntId_t flowspec_id;

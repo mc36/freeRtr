@@ -46,9 +46,7 @@ control IngressControlQosOut(inout headers hdr,
     action act_rate(SubIntId_t metid) {
         ig_md.meter_id = metid;
         rate.execute_meter((bit<32>)metid, ig_md.meter_res);
-        if (ig_md.meter_res == 0) {
-            ig_md.dropping = (bit<2>)ig_md.layer3_frag;
-        } else {
+        if (ig_md.meter_res != 0) {
             ig_md.dropping = 1;
         }
     }
@@ -125,7 +123,7 @@ ig_md.aclport_id:
             act_rate;
             @defaultonly NoAction;
         }
-        size = IPV4_INQOS_TABLE_SIZE;
+        size = MAX_PORT;
         const default_action = NoAction();
         counters = statsr;
     }
@@ -137,7 +135,7 @@ ig_md.aclport_id:
         if (hdr.ipv6.isValid() && (ig_md.ipv6_valid==1))  {
             tbl_ipv6_qos.apply();
         }
-        if (ig_md.dropping == 0) tbl_rate.apply();
+        tbl_rate.apply();
     }
 }
 

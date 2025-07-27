@@ -25,6 +25,7 @@ control IngressControlQosIn(inout headers hdr, inout ingress_metadata_t ig_md,
                             inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
+    Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) rater;
     Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) policer;
 
     action act_deny() {
@@ -34,10 +35,14 @@ control IngressControlQosIn(inout headers hdr, inout ingress_metadata_t ig_md,
     }
 
     action act_permit(SubIntId_t metid) {
-        ig_md.inqos_id = metid;
+        ig_md.inqos_res = policer.execute(metid);
 #ifdef HAVE_FRAG
         ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
 #endif
+    }
+
+    action act_rate(SubIntId_t metid) {
+        ig_md.inrate_res = rater.execute(metid);
     }
 
 
@@ -105,16 +110,28 @@ ig_md.sec_grp_id:
         const default_action = NoAction();
     }
 
+    table tbl_rate {
+        key = {
+ig_md.source_id:
+            exact;
+        }
+        actions = {
+            act_rate;
+            @defaultonly NoAction;
+        }
+        size = MAX_PORT;
+        const default_action = NoAction();
+    }
+
     apply {
+        tbl_rate.apply();
         if (ig_md.ipv4_valid==1)  {
             tbl_ipv4_qos.apply();
         } else if (ig_md.ipv6_valid==1)  {
             tbl_ipv6_qos.apply();
         }
-        ig_md.inqos_res = policer.execute(ig_md.inqos_id);
-        if ((ig_md.inqos_id != 0) && (ig_md.inqos_res != MeterColor_t.GREEN)) {
-            ig_dprsr_md.drop_ctl = 1;
-        }
+        if (ig_md.inrate_res != MeterColor_t.GREEN) ig_dprsr_md.drop_ctl = 1;
+        if (ig_md.inqos_res != MeterColor_t.GREEN) ig_dprsr_md.drop_ctl = 1;
     }
 }
 
