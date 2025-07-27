@@ -17362,3 +17362,10 @@ failed: wireguard over asymmetric ports
 ---------------------------------- 2025-07-26 19:38:34 25.7.26
 no failed: wireguard over asymmetric ports
 qc pass: wireguard over asymmetric ports
+---------------------------------- 2025-07-27 12:49:39 25.7.27
+qc pass: p4lang: ingress rate limit
+qc pass: p4lang: egress rate limit
+qc pass: p4lang: vlan ingress rate limit
+qc pass: p4lang: vlan egress rate limit
+qc pass: p4lang: qinq ingress rate limit
+qc pass: p4lang: qinq egress rate limit
