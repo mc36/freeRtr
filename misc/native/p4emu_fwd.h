@@ -606,7 +606,7 @@ int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *
         policer_res = hasht_find(&policer_table, &policer_ntry);
         if (policer_res == NULL) doDropper;
         if (policer_res->avail < 1) doDropper;
-        policer_res->avail -= bufS - bufP + preBuff;
+        policer_res->avail -= *bufS - *bufP + preBuff;
     }
     if (port2vrf_res->sgtTag != 0) {
         *bufP -= 8;
