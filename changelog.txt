@@ -17369,3 +17369,6 @@ qc pass: p4lang: vlan ingress rate limit
 qc pass: p4lang: vlan egress rate limit
 qc pass: p4lang: qinq ingress rate limit
 qc pass: p4lang: qinq egress rate limit
+---------------------------------- 2025-07-28 05:59:46 25.7.28
+no qc pass: wireguard over ipv6
+failed: wireguard over ipv6
