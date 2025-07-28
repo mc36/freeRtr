@@ -1724,17 +1724,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
      */
     public synchronized void addRelayInterface(cfgIfc iface) {
         // Check if already in list
-        for (int i = 0; i < relayInterfaces.size(); i++) {
-            cfgIfc existing = relayInterfaces.get(i);
-            if (existing == null) {
-                continue;
+        if (relayInterfaces.indexOf(iface) >= 0) {
+            if (debugger.servDhcp4traf) {
+                logger.debug("dhcp4 relay interface " + iface.name + " already in relay list");
             }
-            if (existing.name.equals(iface.name)) {
-                if (debugger.servDhcp4traf) {
-                    logger.debug("dhcp4 relay interface " + iface.name + " already in relay list");
-                }
-                return;
-            }
+            return;
         }
         srvDeinit();
         relayInterfaces.add(iface);
@@ -1750,19 +1744,18 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
      * @param iface interface
      */
     public synchronized void removeRelayInterface(cfgIfc iface) {
-        srvDeinit();
-        boolean removed = relayInterfaces.removeIf(existing -> existing.name.equals(iface.name));
-        srvInit();
-        if (removed) {
-            if (debugger.servDhcp4traf) {
-                logger.info("dhcp4 relay removed interface " + iface.name + " from relay list. total interfaces: " + relayInterfaces.size());
+        if (relayInterfaces.indexOf(iface) < 0) {
+            if (debugger.servDhcp6traf) {
+                logger.debug("dhcp6 relay: interface " + iface.name + " was not in relay list");
             }
-        } else {
-            if (debugger.servDhcp4traf) {
-                logger.debug("dhcp4 relay interface " + iface.name + " was not in relay list");
-            }
+            return;
         }
-
+        srvDeinit();
+        relayInterfaces.remove(iface);
+        srvInit();
+        if (debugger.servDhcp6traf) {
+            logger.debug("dhcp6 relay: removed interface " + iface.name + " from relay list. total interfaces: " + relayInterfaces.size());
+        }
     }
 
 }
