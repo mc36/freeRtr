@@ -37,7 +37,7 @@ public class servP4langVrf implements Comparable<servP4langVrf> {
     /**
      * exported copp
      */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> conn4c = null;
+    protected tabListing<tabAceslstN<addrIP>, addrIP> copp4c = null;
 
     /**
      * exported copp

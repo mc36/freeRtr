@@ -991,9 +991,9 @@ public class servP4langConn implements Runnable {
         }
         for (int i = 0; i < lower.expVrf.size(); i++) {
             servP4langVrf vrf = lower.expVrf.get(i);
-            if (servP4langUtil.needAcl(vrf.copp4p, vrf.conn4c, null, null, null, vrf.copp4f)) {
+            if (servP4langUtil.needAcl(vrf.copp4p, vrf.copp4c, null, null, null, vrf.copp4f)) {
                 sendAcl(0, "copp4_del " + vrf.id + " ", "", "", "", "", true, false, vrf.copp4f, null, null, null);
-                vrf.copp4p = vrf.conn4c;
+                vrf.copp4p = vrf.copp4c;
                 sendAcl(0, "copp4_add " + vrf.id + " ", "", "", "", "", true, false, vrf.copp4p, null, null, vrf.copp4f);
             }
             if (servP4langUtil.needAcl(vrf.copp6p, vrf.copp6c, null, null, null, vrf.copp6f)) {

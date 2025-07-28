@@ -345,7 +345,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         for (int i = 0; i < expVrf.size(); i++) {
             servP4langVrf ntry = expVrf.get(i);
             l.add(beg + "export-vrf " + ntry.vrf.name);
-            cmds.cfgLine(l, ntry.conn4c == null, beg, "export-copp4 " + ntry.vrf.name, "" + ntry.conn4c);
+            cmds.cfgLine(l, ntry.copp4c == null, beg, "export-copp4 " + ntry.vrf.name, "" + ntry.copp4c);
             cmds.cfgLine(l, ntry.copp6c == null, beg, "export-copp6 " + ntry.vrf.name, "" + ntry.copp6c);
             cmds.cfgLine(l, ntry.prflst4 == null, beg, "filter-list4 " + ntry.vrf.name, "" + ntry.prflst4);
             cmds.cfgLine(l, ntry.prflst6 == null, beg, "filter-list6 " + ntry.vrf.name, "" + ntry.prflst6);
@@ -482,7 +482,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
                 cmd.error("no such access list");
                 return false;
             }
-            pv.conn4c = acl.aceslst;
+            pv.copp4c = acl.aceslst;
             return false;
         }
         if (s.equals("export-copp6")) {
@@ -804,7 +804,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
                 cmd.error("vrf not exported");
                 return false;
             }
-            pv.conn4c = null;
+            pv.copp4c = null;
             return false;
         }
         if (s.equals("export-copp6")) {
