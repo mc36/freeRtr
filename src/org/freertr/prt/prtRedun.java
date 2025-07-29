@@ -513,7 +513,7 @@ class prtRedunIfc implements ifcUp {
         lower.setUpper(this);
         lower.startLoop(1);
         hwaddr = (addrMac) lower.getHwAddr();
-        filNm = cfgInit.getRWpath() + "red" + bits.randomD() + ".tmp";
+        filNm = cfgInit.getRWpath() + "red" + bits.randomD() + userUpgrade.tmpExt;
     }
 
     public void setParent(ifcDn parent) {
@@ -917,7 +917,7 @@ class prtRedunExec implements Runnable {
             }
             txt.add(a);
         }
-        a = cfgInit.getRWpath() + "exe" + bits.randomD() + ".tmp";
+        a = cfgInit.getRWpath() + "exe" + bits.randomD() + userUpgrade.tmpExt;
         if (bits.buf2txt(true, txt, a)) {
             logger.error("unable to save file");
             userFlash.delete(a);

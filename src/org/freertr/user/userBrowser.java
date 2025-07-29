@@ -45,7 +45,7 @@ public class userBrowser {
      */
     public userBrowser(userScreen pip, String u) {
         console = pip;
-        tempFile = cfgInit.getRWpath() + "web" + bits.randomD() + ".tmp";
+        tempFile = cfgInit.getRWpath() + "web" + bits.randomD() + userUpgrade.tmpExt;
         if (u.length() < 1) {
             url = version.homeUrl;
         } else {

@@ -124,6 +124,9 @@ public class userHwext {
             orig.error("error reading " + hwdn);
             return;
         }
+        bits.buf2txt(true, hwc, pref + cfgInit.hwCfgEnd + userUpgrade.bakExt);
+        bits.buf2txt(true, swc, pref + cfgInit.swCfgEnd + userUpgrade.bakExt);
+        bits.buf2txt(true, hwd, pref + hwdn + userUpgrade.bakExt);
         List<String> hw1 = new ArrayList<String>();
         List<String> hw2 = new ArrayList<String>();
         if (hwd.indexOf("### dataplane ###") >= 0) {

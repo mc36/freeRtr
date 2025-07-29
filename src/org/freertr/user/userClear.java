@@ -103,7 +103,7 @@ public class userClear {
 
     private void doOneCrashFile(File fl) {
         String a = fl.getName();
-        if (a.endsWith(".bak")) {
+        if (a.endsWith(userUpgrade.bakExt)) {
             return;
         }
         boolean need = a.startsWith("core");
@@ -112,7 +112,7 @@ public class userClear {
             return;
         }
         a = fl.getAbsolutePath();
-        userFlash.rename(a, a + ".bak", true, true);
+        userFlash.rename(a, a + userUpgrade.bakExt, true, true);
         bits.buf2txt(false, bits.str2lst("core dump detected at " + a), cfgInit.myErrorFile());
     }
 

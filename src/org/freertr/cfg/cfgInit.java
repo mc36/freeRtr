@@ -44,6 +44,7 @@ import org.freertr.user.userHwdet;
 import org.freertr.user.userNetconf;
 import org.freertr.user.userRead;
 import org.freertr.user.userScreen;
+import org.freertr.user.userUpgrade;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -539,7 +540,7 @@ public class cfgInit implements Runnable {
         if (i > 0) {
             a = a.substring(0, i);
         }
-        a = a + ".bak";
+        a = a + userUpgrade.bakExt;
         return a;
     }
 

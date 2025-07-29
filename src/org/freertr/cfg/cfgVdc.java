@@ -16,6 +16,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
+import org.freertr.user.userUpgrade;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -1089,7 +1090,7 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         String cmd = getCommand();
-        bits.buf2txt(true, bits.str2lst(cmd), cfgBase + "cmd.tmp");
+        bits.buf2txt(true, bits.str2lst(cmd), cfgBase + "cmd" + userUpgrade.tmpExt);
         proc = pipeShell.exec(pl.getSide(), cmd, null, true, true, false, children);
         if (proc == null) {
             return;

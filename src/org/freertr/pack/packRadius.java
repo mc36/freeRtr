@@ -344,6 +344,16 @@ public class packRadius {
     public final static int tlvActLnk = 51;
 
     /**
+     * account input gigawords
+     */
+    public final static int tlvActInG = 52;
+
+    /**
+     * account output gigawords
+     */
+    public final static int tlvActOtG = 53;
+
+    /**
      * chap challenge
      */
     public final static int tlvChpChl = 60;
@@ -1191,12 +1201,12 @@ public class packRadius {
     /**
      * account input octets
      */
-    public int valActInB = -1;
+    public long valActInB = -1;
 
     /**
      * account output octets
      */
-    public int valActOtB = -1;
+    public long valActOtB = -1;
 
     /**
      * account session id
@@ -1937,6 +1947,25 @@ public class packRadius {
         return bits.msbGetD(tlv.valDat, 0);
     }
 
+    private long getLint(long old) {
+        old >>>= 32;
+        if (old == 0xffffffff) {
+            old = 0;
+        }
+        old <<= 32;
+        old |= bits.msbGetD(tlv.valDat, 0);
+        return old;
+    }
+
+    private long getHint(long old) {
+        old &= 0xffffffff;
+        if (old == 0xffffffff) {
+            old = 0;
+        }
+        old |= (long) bits.msbGetD(tlv.valDat, 0) << 32;
+        return old;
+    }
+
     private String getStr() {
         return tlv.getStr();
     }
@@ -2081,10 +2110,16 @@ public class packRadius {
                     valActDel = getInt();
                     break;
                 case tlvActInB:
-                    valActInB = getInt();
+                    valActInB = getLint(valActInB);
+                    break;
+                case tlvActInG:
+                    valActInB = getHint(valActInB);
                     break;
                 case tlvActOtB:
-                    valActOtB = getInt();
+                    valActOtB = getLint(valActOtB);
+                    break;
+                case tlvActOtG:
+                    valActOtB = getHint(valActOtB);
                     break;
                 case tlvActSes:
                     valActSes = getStr();
@@ -2539,6 +2574,17 @@ public class packRadius {
         tlv.putBytes(pck, typ);
     }
 
+    private void put2int(packHolder pck, int typL, int typH, long val) {
+        if (val == -1) {
+            return;
+        }
+        tlv.valSiz = 4;
+        bits.msbPutD(tlv.valDat, 0, (int) val);
+        tlv.putBytes(pck, typL);
+        bits.msbPutD(tlv.valDat, 0, (int) (val >>> 32));
+        tlv.putBytes(pck, typH);
+    }
+
     /**
      * parse packet
      *
@@ -2600,8 +2646,8 @@ public class packRadius {
         putStr(pck, tlvFrmZon, valFrmZon);
         putInt(pck, tlvActAut, valActAut);
         putInt(pck, tlvActDel, valActDel);
-        putInt(pck, tlvActInB, valActInB);
-        putInt(pck, tlvActOtB, valActOtB);
+        put2int(pck, tlvActInB, tlvActInG, valActInB);
+        put2int(pck, tlvActOtB, tlvActOtG, valActOtB);
         putInt(pck, tlvActInP, valActInP);
         putInt(pck, tlvActOtP, valActOtP);
         putInt(pck, tlvActInt, valActInt);

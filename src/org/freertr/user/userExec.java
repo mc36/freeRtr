@@ -3325,7 +3325,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("reload")) {
-                a = cfgInit.getRWpath() + "cfg" + bits.randomD() + ".tmp";
+                a = cfgInit.getRWpath() + "cfg" + bits.randomD() + userUpgrade.tmpExt;
                 boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
                 List<String> cfg = bits.txt2buf(a);
                 userFlash.delete(a);
@@ -3345,7 +3345,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("overwrite-network")) {
-                a = cfgInit.getRWpath() + "cfg" + bits.randomD() + ".tmp";
+                a = cfgInit.getRWpath() + "cfg" + bits.randomD() + userUpgrade.tmpExt;
                 boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
                 List<String> c2 = bits.txt2buf(a);
                 userFlash.delete(a);
@@ -3367,7 +3367,7 @@ public class userExec {
                 return cmdRes.command;
             }
             if (a.equals("network")) {
-                a = cfgInit.getRWpath() + "cfg" + bits.randomD() + ".tmp";
+                a = cfgInit.getRWpath() + "cfg" + bits.randomD() + userUpgrade.tmpExt;
                 boolean dl = userFlash.doReceive(pipe, encUrl.parseOne(cmd.getRemaining()), new File(a));
                 List<String> cfg = bits.txt2buf(a);
                 userFlash.delete(a);
@@ -3545,7 +3545,7 @@ public class userExec {
                     url.filName = "" + cfgAll.hostName;
                     url.filExt = ".txt";
                 }
-                a = cfgInit.getRWpath() + "wrt" + bits.randomD() + ".tmp";
+                a = cfgInit.getRWpath() + "wrt" + bits.randomD() + userUpgrade.tmpExt;
                 if (bits.buf2txt(true, cfgAll.getShRun(1), a)) {
                     cmd.error("failed to write temporary file!");
                     return cmdRes.command;

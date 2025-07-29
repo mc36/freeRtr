@@ -186,13 +186,13 @@ public class userImage {
             case 0:
                 return false;
         }
-        userFlash.delete(fil + ".tmp");
+        userFlash.delete(fil + userUpgrade.tmpExt);
         if (execCmd("wget -O " + fil + ".tmp " + url) != 0) {
             pip.linePut("error downloading " + fil);
             return true;
         }
-        userFlash.rename(fil, fil + ".bak", true, true);
-        userFlash.rename(fil + ".tmp", fil, true, true);
+        userFlash.rename(fil, fil + userUpgrade.bakExt, true, true);
+        userFlash.rename(fil + userUpgrade.tmpExt, fil, true, true);
         new File(fil).setLastModified(bits.getTime());
         return false;
     }
@@ -445,7 +445,7 @@ public class userImage {
             if (!vrfy) {
                 return false;
             }
-            userFlash.rename(name, name + ".bak", true, true);
+            userFlash.rename(name, name + userUpgrade.bakExt, true, true);
         }
         return true;
     }
@@ -727,7 +727,7 @@ public class userImage {
                         continue;
                     }
                     cmd.error("renaming legacy " + a);
-                    userFlash.rename(a, a + ".bak", true, true);
+                    userFlash.rename(a, a + userUpgrade.bakExt, true, true);
                 }
                 continue;
             }

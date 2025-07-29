@@ -27,6 +27,7 @@ import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.user.userFlash;
 import org.freertr.user.userHelp;
+import org.freertr.user.userUpgrade;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -212,7 +213,7 @@ public class rtrDownload extends ipRtr {
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
         pip.setTime(120000);
-        String tmp = cfgInit.getRWpath() + "rou" + bits.randomD() + ".tmp";
+        String tmp = cfgInit.getRWpath() + "rou" + bits.randomD() + userUpgrade.tmpExt;
         userFlash.delete(tmp);
         if (userFlash.doReceive(pip, encUrl.parseOne(url), new File(tmp))) {
             logger.warn("error downloading " + url);

@@ -13,6 +13,7 @@ import org.freertr.user.userFilter;
 import org.freertr.user.userFlash;
 import org.freertr.user.userHelp;
 import org.freertr.user.userHwdet;
+import org.freertr.user.userUpgrade;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logBuf;
@@ -231,7 +232,7 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
         userHwdet.setupVeth(lst, "./", userHwdet.ifcTyp.raw, side1.getOSname(), side2.getOSname());
         userHwdet.setupIface(lst, "./", userHwdet.ifcTyp.raw, side1.getOSname(), 8192, null);
         userHwdet.setupIface(lst, "./", userHwdet.ifcTyp.raw, side2.getOSname(), 8192, null);
-        String a = cfgInit.getRWpath() + "vnet" + bits.randomD() + ".tmp";
+        String a = cfgInit.getRWpath() + "vnet" + bits.randomD() + userUpgrade.tmpExt;
         if (bits.buf2txt(true, lst, a)) {
             return;
         }

@@ -109,9 +109,9 @@ public class clntRadius {
         radTx.valActSta = stat;
         radTx.valActSes = "" + sess;
         radTx.valCalling = addr;
-        radTx.valActInB = (int) cntr.byteRx;
+        radTx.valActInB = cntr.byteRx;
         radTx.valActInP = (int) cntr.packRx;
-        radTx.valActOtB = (int) cntr.byteTx;
+        radTx.valActOtB = cntr.byteTx;
         radTx.valActOtP = (int) cntr.packTx;
         doXfer();
     }

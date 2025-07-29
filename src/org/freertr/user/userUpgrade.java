@@ -34,10 +34,16 @@ public class userUpgrade {
      * version extension
      */
     public static String verExt = ".ver";
+
     /**
      * backup extension
      */
     public static String bakExt = ".bak";
+
+    /**
+     * temp extension
+     */
+    public static String tmpExt = ".tmp";
 
     /**
      * update progress indicator, 0=none, 1=upgrade, 2=auto-revert
@@ -467,7 +473,7 @@ public class userUpgrade {
      * do auto-revert
      */
     protected static void doAutoRevert() {
-        String tmp = cfgInit.getRWpath() + "rev" + bits.randomD() + ".tmp";
+        String tmp = cfgInit.getRWpath() + "rev" + bits.randomD() + userUpgrade.tmpExt;
         encUrl url = encUrl.parseOne(cfgAll.upgradeServer + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
@@ -518,7 +524,7 @@ public class userUpgrade {
             server = cfgAll.upgradeServer;
         }
         cons.debugStat("downloading version info");
-        String tmp = cfgInit.getRWpath() + "upg" + bits.randomD() + ".tmp";
+        String tmp = cfgInit.getRWpath() + "upg" + bits.randomD() + userUpgrade.tmpExt;
         encUrl url = encUrl.parseOne(server + myFileName());
         url.filExt = verExt;
         userFlash.delete(tmp);
