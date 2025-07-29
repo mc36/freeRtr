@@ -1,5 +1,6 @@
 package org.freertr.serv;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
@@ -324,42 +325,42 @@ public class servP4langIfc implements ifcDn, Comparable<servP4langIfc> {
     /**
      * sent qos
      */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos4in;
+    protected List<tabListing<tabAceslstN<addrIP>, addrIP>> sentQos4in;
 
     /**
      * sent qos
      */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos4out;
+    protected List<tabListing<tabAceslstN<addrIP>, addrIP>> sentQos4out;
 
     /**
      * sent qos
      */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos6in;
+    protected List<tabListing<tabAceslstN<addrIP>, addrIP>> sentQos6in;
 
     /**
      * sent qos
      */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos6out;
+    protected List<tabListing<tabAceslstN<addrIP>, addrIP>> sentQos6out;
 
     /**
      * sent qos
      */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos4inF;
+    protected List<tabListing<tabAceslstN<addrIP>, addrIP>> sentQos4inF;
 
     /**
      * sent qos
      */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos4outF;
+    protected List<tabListing<tabAceslstN<addrIP>, addrIP>> sentQos4outF;
 
     /**
      * sent qos
      */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos6inF;
+    protected List<tabListing<tabAceslstN<addrIP>, addrIP>> sentQos6inF;
 
     /**
      * sent qos
      */
-    protected tabListing<tabAceslstN<addrIP>, addrIP> sentQos6outF;
+    protected List<tabListing<tabAceslstN<addrIP>, addrIP>> sentQos6outF;
 
     /**
      * sent bridge encapsulation
@@ -604,14 +605,14 @@ public class servP4langIfc implements ifcDn, Comparable<servP4langIfc> {
         sentAcl6out1 = null;
         sentAcl6out2 = null;
         sentAcl6outF = new tabListing<tabAceslstN<addrIP>, addrIP>();
-        sentQos4in = null;
-        sentQos4inF = new tabListing<tabAceslstN<addrIP>, addrIP>();
-        sentQos4out = null;
-        sentQos4outF = new tabListing<tabAceslstN<addrIP>, addrIP>();
-        sentQos6in = null;
-        sentQos6inF = new tabListing<tabAceslstN<addrIP>, addrIP>();
-        sentQos6out = null;
-        sentQos6outF = new tabListing<tabAceslstN<addrIP>, addrIP>();
+        sentQos4in = new ArrayList<tabListing<tabAceslstN<addrIP>, addrIP>>();
+        sentQos4inF = new ArrayList<tabListing<tabAceslstN<addrIP>, addrIP>>();
+        sentQos4out = new ArrayList<tabListing<tabAceslstN<addrIP>, addrIP>>();
+        sentQos4outF = new ArrayList<tabListing<tabAceslstN<addrIP>, addrIP>>();
+        sentQos6in = new ArrayList<tabListing<tabAceslstN<addrIP>, addrIP>>();
+        sentQos6inF = new ArrayList<tabListing<tabAceslstN<addrIP>, addrIP>>();
+        sentQos6out = new ArrayList<tabListing<tabAceslstN<addrIP>, addrIP>>();
+        sentQos6outF = new ArrayList<tabListing<tabAceslstN<addrIP>, addrIP>>();
         sentInsp4 = null;
         sentInsp6 = null;
         sentBrTun = null;
