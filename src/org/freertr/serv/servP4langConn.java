@@ -4882,7 +4882,7 @@ public class servP4langConn implements Runnable {
         int seq = 0;
         if (qos == null) {
             for (int i = 0; i < sent.size(); i++) {
-                seq += sendAcl(seq, dir + "qos" + prt + "_del " + ifc + " " + (ifc + i) + " ", "", "", "", "", ipv4, true, sent.get(i), null, null, null);
+                seq = sendAcl(seq, dir + "qos" + prt + "_del " + ifc + " " + (ifc + i) + " ", "", "", "", "", ipv4, true, sent.get(i), null, null, null);
                 if (ipv4) {
                     lower.sendLine(dir + "qos_del " + (ifc + i) + " 1 1");
                 }
@@ -4893,8 +4893,8 @@ public class servP4langConn implements Runnable {
         }
         boolean ned = false;
         int saw = 0;
-        for (;; saw++) {
-            tabQosN cur = qos.getClass(saw);
+        for (int i = 0;; i++) {
+            tabQosN cur = qos.getClass(i);
             if (cur == null) {
                 break;
             }
@@ -4909,6 +4909,7 @@ public class servP4langConn implements Runnable {
                 ned = servP4langUtil.needAcl(done.get(saw), cur.entry.aclMatch, null, null, null, sent.get(saw));
             }
             if (!ned) {
+                saw++;
                 continue;
             }
             if (ipv4) {
@@ -4916,10 +4917,11 @@ public class servP4langConn implements Runnable {
             }
             sendAcl(seq, dir + "qos" + prt + "_del " + ifc + " " + (ifc + saw) + " ", "", "", "", "", ipv4, true, sent.get(saw), null, null, null);
             done.set(saw, cur.entry.aclMatch);
-            seq += sendAcl(seq, dir + "qos" + prt + "_add " + ifc + " " + (ifc + saw) + " ", "", "", "", "", ipv4, true, cur.entry.aclMatch, null, null, sent.get(saw));
+            seq = sendAcl(seq, dir + "qos" + prt + "_add " + ifc + " " + (ifc + saw) + " ", "", "", "", "", ipv4, true, cur.entry.aclMatch, null, null, sent.get(saw));
+            saw++;
         }
         for (int i = saw; i < sent.size(); i++) {
-            seq += sendAcl(seq, dir + "qos" + prt + "_del " + ifc + " " + (ifc + i) + " ", "", "", "", "", ipv4, true, sent.get(saw), null, null, null);
+            seq = sendAcl(seq, dir + "qos" + prt + "_del " + ifc + " " + (ifc + i) + " ", "", "", "", "", ipv4, true, sent.get(saw), null, null, null);
             if (ipv4) {
                 lower.sendLine(dir + "qos_del " + (ifc + i) + " 1 1");
             }
