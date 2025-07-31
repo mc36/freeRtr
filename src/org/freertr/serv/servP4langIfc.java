@@ -345,6 +345,46 @@ public class servP4langIfc implements ifcDn, Comparable<servP4langIfc> {
     /**
      * sent qos
      */
+    protected List<Long> sentQos4inB;
+
+    /**
+     * sent qos
+     */
+    protected List<Long> sentQos4outB;
+
+    /**
+     * sent qos
+     */
+    protected List<Long> sentQos6inB;
+
+    /**
+     * sent qos
+     */
+    protected List<Long> sentQos6outB;
+
+    /**
+     * sent qos
+     */
+    protected List<Integer> sentQos4inI;
+
+    /**
+     * sent qos
+     */
+    protected List<Integer> sentQos4outI;
+
+    /**
+     * sent qos
+     */
+    protected List<Integer> sentQos6inI;
+
+    /**
+     * sent qos
+     */
+    protected List<Integer> sentQos6outI;
+
+    /**
+     * sent qos
+     */
     protected List<tabListing<tabAceslstN<addrIP>, addrIP>> sentQos4inF;
 
     /**
@@ -613,6 +653,14 @@ public class servP4langIfc implements ifcDn, Comparable<servP4langIfc> {
         sentQos6inF = new ArrayList<tabListing<tabAceslstN<addrIP>, addrIP>>();
         sentQos6out = new ArrayList<tabListing<tabAceslstN<addrIP>, addrIP>>();
         sentQos6outF = new ArrayList<tabListing<tabAceslstN<addrIP>, addrIP>>();
+        sentQos4inB = new ArrayList<Long>();
+        sentQos4outB = new ArrayList<Long>();
+        sentQos6inB = new ArrayList<Long>();
+        sentQos6outB = new ArrayList<Long>();
+        sentQos4inI = new ArrayList<Integer>();
+        sentQos4outI = new ArrayList<Integer>();
+        sentQos6inI = new ArrayList<Integer>();
+        sentQos6outI = new ArrayList<Integer>();
         sentInsp4 = null;
         sentInsp6 = null;
         sentBrTun = null;
