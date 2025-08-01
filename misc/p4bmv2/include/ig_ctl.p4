@@ -61,6 +61,8 @@ control ig_ctl(inout headers hdr,
     IngressControlPBR() ig_ctl_pbr;
     IngressControlQosIn() ig_ctl_qos_in;
     IngressControlQosOut() ig_ctl_qos_out;
+    IngressControlRateIn() ig_ctl_rate_in;
+    IngressControlRateOut() ig_ctl_rate_out;
     IngressControlFlowspec() ig_ctl_flowspec;
     IngressControlMcast() ig_ctl_mcast;
     IngressControlOutPort() ig_ctl_outport;
@@ -105,6 +107,11 @@ control ig_ctl(inout headers hdr,
             hdr.cpu.port = ig_md.ingress_id;
             ig_intr_md.egress_spec = CPU_PORT;
             ig_md.punting = 1;
+            return;
+        }
+        ig_ctl_rate_in.apply(hdr,ig_md,ig_intr_md);
+        if (ig_md.dropping == 1) {
+            mark_to_drop(ig_intr_md);
             return;
         }
         ig_ctl_qos_in.apply(hdr,ig_md,ig_intr_md);
@@ -225,6 +232,11 @@ control ig_ctl(inout headers hdr,
             hdr.cpu.port = ig_md.ingress_id;
             ig_intr_md.egress_spec = CPU_PORT;
             ig_md.punting = 1;
+            return;
+        }
+        ig_ctl_rate_out.apply(hdr,ig_md,ig_intr_md);
+        if (ig_md.dropping == 1) {
+            mark_to_drop(ig_intr_md);
             return;
         }
         ig_ctl_qos_out.apply(hdr,ig_md,ig_intr_md);

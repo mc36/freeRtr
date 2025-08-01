@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-#ifndef _IG_CTL_Rate_out_P4_
-#define _IG_CTL_Rate_out_P4_
+#ifndef _IG_CTL_rate_out_P4_
+#define _IG_CTL_rate_out_P4_
 
-#ifdef HAVE_OUTRATE
+control IngressControlRateOut(inout headers hdr,
+                              inout ingress_metadata_t ig_md,
+                              inout standard_metadata_t ig_intr_md) {
 
-control IngressControlRateOut(inout headers hdr, inout ingress_metadata_t ig_md,
-                              in ingress_intrinsic_metadata_t ig_intr_md,
-                              inout ingress_intrinsic_metadata_for_deparser_t ig_dprsr_md,
-                              inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
-{
-
-    Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) rater;
+    meter((MAX_PORT+1), MeterType.bytes) rate;
+    direct_counter(CounterType.packets_and_bytes) statsr;
 
 
     action act_rate(SubIntId_t metid) {
-        ig_md.outrate_res = rater.execute(metid);
+        ig_md.meter_id = metid;
+        rate.execute_meter((bit<32>)metid, ig_md.meter_res);
+        if (ig_md.meter_res != 0) {
+            ig_md.dropping = 1;
+        }
     }
+
 
 
     table tbl_rate {
@@ -44,15 +46,13 @@ ig_md.aclport_id:
         }
         size = MAX_PORT;
         const default_action = NoAction();
+        counters = statsr;
     }
 
     apply {
         tbl_rate.apply();
-        if (ig_md.outrate_res != MeterColor_t.GREEN) ig_dprsr_md.drop_ctl = 1;
     }
 }
 
-#endif
-
-#endif // _IG_CTL_Rate_out_P4_
+#endif // _IG_CTL_rate_out_P4_
 

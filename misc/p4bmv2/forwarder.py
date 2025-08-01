@@ -3158,15 +3158,15 @@ def writeOutQosRules(delete, p4info_helper, ingress_sw, meter, bytes, interval):
 
 
 def writeRateInRules(delete, p4info_helper, ingress_sw, subif, bytes, interval):
-    metid = p4info_helper.get_meters_id("ig_ctl.ig_ctl_qos_in.rate")
+    metid = p4info_helper.get_meters_id("ig_ctl.ig_ctl_rate_in.rate")
     if delete != 3:
         ingress_sw.WriteMeter(metid, subif, bytes, bytes)
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ig_ctl.ig_ctl_qos_in.tbl_rate",
+        table_name="ig_ctl.ig_ctl_rate_in.tbl_rate",
         match_fields={
             "ig_md.source_id": subif,
         },
-        action_name="ig_ctl.ig_ctl_qos_in.act_rate",
+        action_name="ig_ctl.ig_ctl_rate_in.act_rate",
         action_params={
             "metid": subif,
         })
@@ -3178,15 +3178,15 @@ def writeRateInRules(delete, p4info_helper, ingress_sw, subif, bytes, interval):
         ingress_sw.DeleteTableEntry(table_entry, False)
 
 def writeRateOutRules(delete, p4info_helper, ingress_sw, subif, bytes, interval):
-    metid = p4info_helper.get_meters_id("ig_ctl.ig_ctl_qos_out.rate")
+    metid = p4info_helper.get_meters_id("ig_ctl.ig_ctl_rate_out.rate")
     if delete != 3:
         ingress_sw.WriteMeter(metid, subif, bytes, bytes)
     table_entry = p4info_helper.buildTableEntry(
-        table_name="ig_ctl.ig_ctl_qos_out.tbl_rate",
+        table_name="ig_ctl.ig_ctl_rate_out.tbl_rate",
         match_fields={
             "ig_md.aclport_id": subif,
         },
-        action_name="ig_ctl.ig_ctl_qos_out.act_rate",
+        action_name="ig_ctl.ig_ctl_rate_out.act_rate",
         action_params={
             "metid": subif,
         })
