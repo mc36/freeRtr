@@ -4927,10 +4927,10 @@ public class servP4langConn implements Runnable {
             }
             if (ipv4) {
                 lower.sendLine(dir + "qos_" + a + " " + (ifc + saw) + " " + o + " " + p);
-                byts.set(saw, o);
-                ints.set(saw, p);
             }
             sendAcl(seq, dir + "qos" + prt + "_del " + ifc + " " + (ifc + saw) + " ", "", "", "", "", ipv4, true, sent.get(saw), null, null, null);
+            byts.set(saw, o);
+            ints.set(saw, p);
             done.set(saw, cur.entry.aclMatch);
             seq = sendAcl(seq, dir + "qos" + prt + "_add " + ifc + " " + (ifc + saw) + " ", "", "", "", "", ipv4, true, cur.entry.aclMatch, null, null, sent.get(saw));
             saw++;
