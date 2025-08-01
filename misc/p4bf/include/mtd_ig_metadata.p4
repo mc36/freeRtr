@@ -30,6 +30,28 @@ struct ingress_metadata_t {
 #ifdef NEED_REPLICA
     bit<16> clone_session;
 #endif
+#ifdef HAVE_POLKA
+    bit<16> polka_next;
+#endif
+#ifdef HAVE_SRV6
+    ipv6_addr_t srv_target;
+#endif
+#ifdef HAVE_INQOS
+    bit <8> inqos_res;
+    bit <8> inrate_res;
+#endif
+#ifdef HAVE_OUTQOS
+    bit <8> outqos_res;
+    bit <8> outrate_res;
+#endif
+#ifdef HAVE_FLOWSPEC
+    bit <8> flowspec_res;
+#endif
+    layer4_port_t layer4_srcprt;
+    layer4_port_t layer4_dstprt;
+#ifdef HAVE_SGT
+    sec_grp_t sec_grp_id;
+#endif
     NextHopId_t nexthop_id;
     SubIntPad_t _padding1;
     SubIntId_t target_id;
@@ -45,18 +67,20 @@ struct ingress_metadata_t {
     SubIntId_t output_id;
     ethertype_t ethertype;
     switch_vrf_t vrf;
-#ifdef HAVE_POLKA
-    bit<16> polka_next;
-#endif
 #ifdef HAVE_MPLS
     label_t mpls_encap_egress_label;
     label_t mpls_encap_svc_label;
 #endif
-#ifdef HAVE_SRV6
-    ipv6_addr_t srv_target;
-#endif
     bit <3> mpls_op_type;
     bit <3> srv_op_type;
+    bit <3> mpls_encap_decap_sap_type; // service access point type
+    bit <1> srv_encap_l3vpn_valid;
+    bit <1> mpls_encap_rawip_valid;
+    bit <1> mpls_encap_l3vpn_valid;
+    bit <1> mpls_encap_l2vpn_valid;
+    bit <1> arp_valid;
+    bit <1> ipv4_valid;
+    bit <1> ipv6_valid;
     bit <1> srv_remove;
     bit <1> saw_rsvp;
     bit <1> bier_remove;
@@ -66,18 +90,6 @@ struct ingress_metadata_t {
     bit <1> mpls1_remove;
 #ifdef NEED_REPLICA
     SubIntId_t rpf_iface;
-#endif
-#ifdef HAVE_INQOS
-    bit <8> inqos_res;
-    bit <8> inrate_res;
-#endif
-#ifdef HAVE_OUTQOS
-    bit <8> outqos_res;
-    bit <8> outrate_res;
-#endif
-#ifdef HAVE_FLOWSPEC
-    SubIntId_t flowspec_id;
-    bit <8> flowspec_res;
 #endif
 #ifdef HAVE_PPPOE
     bit<1>  pppoe_ctrl_valid;
@@ -99,22 +111,9 @@ struct ingress_metadata_t {
 #ifdef HAVE_GTP
     bit<3>  gtp_type;
 #endif
-    bit <1> arp_valid;
-    bit <1> ipv4_valid;
-    bit <1> ipv6_valid;
 #ifdef HAVE_FRAG
     bit <3> layer3_frag;
 #endif
-    layer4_port_t layer4_srcprt;
-    layer4_port_t layer4_dstprt;
-#ifdef HAVE_SGT
-    sec_grp_t sec_grp_id;
-#endif
-    bit <1> srv_encap_l3vpn_valid;
-    bit <1> mpls_encap_rawip_valid;
-    bit <1> mpls_encap_l3vpn_valid;
-    bit <1> mpls_encap_l2vpn_valid;
-    bit <3> mpls_encap_decap_sap_type; // service access point type
 #ifdef HAVE_NAT
     bit<1> natted_ipv4tcp;
     bit<1> natted_ipv4udp;

@@ -12,7 +12,6 @@ ig_md.outqos_res = MeterColor_t.GREEN;
 ig_md.outrate_res = MeterColor_t.GREEN;
 #endif
 #ifdef HAVE_FLOWSPEC
-ig_md.flowspec_id = 0;
 ig_md.flowspec_res = MeterColor_t.GREEN;
 #endif
 #ifdef NEED_REPLICA

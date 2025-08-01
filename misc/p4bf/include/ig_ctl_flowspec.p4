@@ -39,7 +39,7 @@ control IngressControlFlowspec(inout headers hdr, inout ingress_metadata_t ig_md
 
     action act4_permit(SubIntId_t metid) {
         stats4.count();
-        ig_md.flowspec_id = metid;
+        ig_md.flowspec_res = policer4.execute(metid);
 #ifdef HAVE_FRAG
         ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
 #endif
@@ -54,7 +54,7 @@ control IngressControlFlowspec(inout headers hdr, inout ingress_metadata_t ig_md
 
     action act6_permit(SubIntId_t metid) {
         stats6.count();
-        ig_md.flowspec_id = metid;
+        ig_md.flowspec_res = policer6.execute(metid);
 #ifdef HAVE_FRAG
         ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
 #endif
@@ -130,12 +130,10 @@ ig_md.sec_grp_id:
     apply {
         if (ig_md.ipv4_valid==1)  {
             tbl_ipv4_flowspec.apply();
-            ig_md.flowspec_res = policer4.execute(ig_md.flowspec_id);
         } else if (ig_md.ipv6_valid==1)  {
             tbl_ipv6_flowspec.apply();
-            ig_md.flowspec_res = policer6.execute(ig_md.flowspec_id);
         }
-        if ((ig_md.flowspec_id != 0) && (ig_md.flowspec_res != MeterColor_t.GREEN)) {
+        if (ig_md.flowspec_res != MeterColor_t.GREEN) {
             ig_dprsr_md.drop_ctl = 1;
         }
     }
