@@ -1,5 +1,5 @@
 url;file;udp;dpdk;xdp;bmv2;tofino;test
--;-;-;-;-;-;-;freeRouter v25.7.27-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v25.8.1-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;not ok;ok;ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;not ok;ok;ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;not ok;ok;ok;p4lang: egress access list
@@ -44,10 +44,10 @@ http://sources.freertr.org/cfg/p4lang-acl041.tst;p4lang-acl041.tst;ok;ok;not ok;
 http://sources.freertr.org/cfg/p4lang-acl042.tst;p4lang-acl042.tst;ok;ok;not ok;ok;ok;p4lang: egress hybrid access list
 http://sources.freertr.org/cfg/p4lang-acl043.tst;p4lang-acl043.tst;ok;ok;not ok;ok;ok;p4lang: ingress hierarchical access list
 http://sources.freertr.org/cfg/p4lang-acl044.tst;p4lang-acl044.tst;ok;ok;not ok;ok;ok;p4lang: egress hierarchical access list
-http://sources.freertr.org/cfg/p4lang-acl045.tst;p4lang-acl045.tst;ok;ok;not ok;ok;ok;p4lang: ingress policer
-http://sources.freertr.org/cfg/p4lang-acl046.tst;p4lang-acl046.tst;ok;ok;not ok;ok;ok;p4lang: egress policer
-http://sources.freertr.org/cfg/p4lang-acl047.tst;p4lang-acl047.tst;ok;ok;not ok;ok;ok;p4lang: vlan ingress policer
-http://sources.freertr.org/cfg/p4lang-acl048.tst;p4lang-acl048.tst;ok;ok;not ok;ok;ok;p4lang: vlan egress policer
+http://sources.freertr.org/cfg/p4lang-acl045.tst;p4lang-acl045.tst;ok;ok;not ok;ok;not ok;p4lang: ingress policer
+http://sources.freertr.org/cfg/p4lang-acl046.tst;p4lang-acl046.tst;ok;ok;not ok;ok;not ok;p4lang: egress policer
+http://sources.freertr.org/cfg/p4lang-acl047.tst;p4lang-acl047.tst;ok;ok;not ok;ok;not ok;p4lang: vlan ingress policer
+http://sources.freertr.org/cfg/p4lang-acl048.tst;p4lang-acl048.tst;ok;ok;not ok;ok;not ok;p4lang: vlan egress policer
 http://sources.freertr.org/cfg/p4lang-acl049.tst;p4lang-acl049.tst;ok;ok;not ok;ok;ok;p4lang: transmit flowspec
 http://sources.freertr.org/cfg/p4lang-acl050.tst;p4lang-acl050.tst;ok;ok;not ok;ok;ok;p4lang: drop flowspec
 http://sources.freertr.org/cfg/p4lang-acl051.tst;p4lang-acl051.tst;ok;ok;not ok;ok;ok;p4lang: policer flowspec
@@ -112,8 +112,8 @@ http://sources.freertr.org/cfg/p4lang-acl109.tst;p4lang-acl109.tst;ok;ok;not ok;
 http://sources.freertr.org/cfg/p4lang-acl110.tst;p4lang-acl110.tst;ok;ok;not ok;ok;ok;p4lang: egress qinq gre access list
 http://sources.freertr.org/cfg/p4lang-acl111.tst;p4lang-acl111.tst;ok;ok;not ok;ok;ok;p4lang: ingress qinq l2tp access list
 http://sources.freertr.org/cfg/p4lang-acl112.tst;p4lang-acl112.tst;ok;ok;not ok;ok;ok;p4lang: egress qinq l2tp access list
-http://sources.freertr.org/cfg/p4lang-acl113.tst;p4lang-acl113.tst;ok;ok;not ok;ok;ok;p4lang: qinq ingress policer
-http://sources.freertr.org/cfg/p4lang-acl114.tst;p4lang-acl114.tst;ok;ok;not ok;ok;ok;p4lang: qinq egress policer
+http://sources.freertr.org/cfg/p4lang-acl113.tst;p4lang-acl113.tst;ok;ok;not ok;ok;not ok;p4lang: qinq ingress policer
+http://sources.freertr.org/cfg/p4lang-acl114.tst;p4lang-acl114.tst;ok;ok;not ok;ok;not ok;p4lang: qinq egress policer
 http://sources.freertr.org/cfg/p4lang-acl115.tst;p4lang-acl115.tst;ok;ok;not ok;ok;ok;p4lang: qinq interface inspection with egress drop
 http://sources.freertr.org/cfg/p4lang-acl116.tst;p4lang-acl116.tst;ok;ok;not ok;ok;ok;p4lang: qinq interface inspection with ingress drop
 http://sources.freertr.org/cfg/p4lang-acl117.tst;p4lang-acl117.tst;ok;ok;ok;not ok;not ok;p4lang: qinq interface verify source
@@ -140,6 +140,12 @@ http://sources.freertr.org/cfg/p4lang-acl137.tst;p4lang-acl137.tst;ok;ok;not ok;
 http://sources.freertr.org/cfg/p4lang-acl138.tst;p4lang-acl138.tst;ok;ok;not ok;not ok;not ok;p4lang: mgre interface loose verify source
 http://sources.freertr.org/cfg/p4lang-acl139.tst;p4lang-acl139.tst;ok;ok;not ok;ok;not ok;p4lang: ingress qinq mgre access list
 http://sources.freertr.org/cfg/p4lang-acl140.tst;p4lang-acl140.tst;ok;ok;not ok;ok;not ok;p4lang: egress qinq mgre access list
+http://sources.freertr.org/cfg/p4lang-acl141.tst;p4lang-acl141.tst;ok;ok;not ok;ok;ok;p4lang: ingress rate limit
+http://sources.freertr.org/cfg/p4lang-acl142.tst;p4lang-acl142.tst;ok;ok;not ok;ok;ok;p4lang: egress rate limit
+http://sources.freertr.org/cfg/p4lang-acl143.tst;p4lang-acl143.tst;ok;ok;not ok;ok;ok;p4lang: vlan ingress rate limit
+http://sources.freertr.org/cfg/p4lang-acl144.tst;p4lang-acl144.tst;ok;ok;not ok;ok;ok;p4lang: vlan egress rate limit
+http://sources.freertr.org/cfg/p4lang-acl145.tst;p4lang-acl145.tst;ok;ok;not ok;ok;ok;p4lang: qinq ingress rate limit
+http://sources.freertr.org/cfg/p4lang-acl146.tst;p4lang-acl146.tst;ok;ok;not ok;ok;ok;p4lang: qinq egress rate limit
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec with aes128cbc
@@ -737,7 +743,7 @@ http://sources.freertr.org/cfg/p4lang-rout391.tst;p4lang-rout391.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout392.tst;p4lang-rout392.tst;ok;ok;ok;ok;ok;p4lang: l3vpn over pwhe mpls
 http://sources.freertr.org/cfg/p4lang-rout393.tst;p4lang-rout393.tst;ok;ok;ok;ok;ok;p4lang: pwhe routing over qinq
 http://sources.freertr.org/cfg/p4lang-rout394.tst;p4lang-rout394.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls over qinq
-http://sources.freertr.org/cfg/p4lang-rout395.tst;p4lang-rout395.tst;ok;ok;ok;ok;ok;p4lang: bridge routing over backplane
+http://sources.freertr.org/cfg/p4lang-rout395.tst;p4lang-rout395.tst;ok;ok;ok;not ok;ok;p4lang: bridge routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout396.tst;p4lang-rout396.tst;ok;ok;ok;ok;ok;p4lang: mixed bridge routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout397.tst;p4lang-rout397.tst;ok;ok;ok;ok;ok;p4lang: routed vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout398.tst;p4lang-rout398.tst;ok;ok;ok;ok;ok;p4lang: routed vlan vpls/ldp with bgp
@@ -747,8 +753,8 @@ http://sources.freertr.org/cfg/p4lang-rout401.tst;p4lang-rout401.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout402.tst;p4lang-rout402.tst;ok;ok;ok;ok;ok;p4lang: routed qinq evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout403.tst;p4lang-rout403.tst;ok;ok;ok;ok;ok;p4lang: vpls/ldp over backplane
 http://sources.freertr.org/cfg/p4lang-rout404.tst;p4lang-rout404.tst;ok;ok;ok;ok;ok;p4lang: evpn/cmac over backplane
-http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;ok;ok;ok;ok;ok;p4lang: routed vpls/ldp over backplane
-http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;ok;ok;ok;ok;ok;p4lang: routed evpn/cmac over backplane
+http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;ok;ok;ok;not ok;ok;p4lang: routed vpls/ldp over backplane
+http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;ok;ok;ok;not ok;ok;p4lang: routed evpn/cmac over backplane
 http://sources.freertr.org/cfg/p4lang-rout407.tst;p4lang-rout407.tst;ok;ok;not ok;ok;ok;p4lang: vpn mldp egress edge
 http://sources.freertr.org/cfg/p4lang-rout408.tst;p4lang-rout408.tst;ok;ok;not ok;ok;ok;p4lang: vpn mldp ingress edge
 http://sources.freertr.org/cfg/p4lang-rout409.tst;p4lang-rout409.tst;ok;ok;not ok;ok;ok;p4lang: vpn bier egress edge
