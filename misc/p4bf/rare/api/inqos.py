@@ -17,7 +17,7 @@ def writeInQosRules(
 def writeInRateRules(
     self, op_type, subif, bytes, interval
 ):
-    tbl_global_path = "ig_ctl.ig_ctl_qos_in"
+    tbl_global_path = "ig_ctl.ig_ctl_rate_in"
     tbl_name = "%s.rater" % (tbl_global_path)
     self._processMeterFromControlPlane(
         op_type,

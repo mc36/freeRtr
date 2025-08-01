@@ -91,6 +91,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_PBR
     IngressControlPBR() ig_ctl_pbr;
 #endif
+#ifdef HAVE_INRATE
+    IngressControlRateIn() ig_ctl_rate_in;
+#endif
 #ifdef HAVE_INQOS
     IngressControlQosIn() ig_ctl_qos_in;
 #endif
@@ -99,6 +102,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #endif
 #ifdef HAVE_OUTACL
     IngressControlAclOut() ig_ctl_acl_out;
+#endif
+#ifdef HAVE_OUTRATE
+    IngressControlRateOut() ig_ctl_rate_out;
 #endif
 #ifdef HAVE_OUTQOS
     IngressControlQosOut() ig_ctl_qos_out;
@@ -148,6 +154,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_INACL
             ig_ctl_acl_in.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
+#ifdef HAVE_INRATE
+            ig_ctl_rate_in.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
 #ifdef HAVE_INQOS
             ig_ctl_qos_in.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
@@ -190,6 +199,9 @@ control ig_ctl(inout headers hdr, inout ingress_metadata_t ig_md,
             ig_ctl_outport.apply(hdr, ig_md, ig_dprsr_md, ig_tm_md);
 #ifdef HAVE_OUTACL
             ig_ctl_acl_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
+#endif
+#ifdef HAVE_OUTRATE
+            ig_ctl_rate_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);
 #endif
 #ifdef HAVE_OUTQOS
             ig_ctl_qos_out.apply(hdr, ig_md, ig_intr_md, ig_dprsr_md, ig_tm_md);

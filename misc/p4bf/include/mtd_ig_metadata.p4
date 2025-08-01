@@ -38,10 +38,14 @@ struct ingress_metadata_t {
 #endif
 #ifdef HAVE_INQOS
     bit <8> inqos_res;
+#endif
+#ifdef HAVE_INRATE
     bit <8> inrate_res;
 #endif
 #ifdef HAVE_OUTQOS
     bit <8> outqos_res;
+#endif
+#ifdef HAVE_OUTRATE
     bit <8> outrate_res;
 #endif
 #ifdef HAVE_FLOWSPEC

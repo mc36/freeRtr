@@ -25,7 +25,6 @@ control IngressControlQosOut(inout headers hdr, inout ingress_metadata_t ig_md,
                              inout ingress_intrinsic_metadata_for_tm_t ig_tm_md)
 {
 
-    Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) rater;
     Meter<SubIntId_t>((MAX_PORT+1), MeterType_t.BYTES) policer;
 
     action act_deny() {
@@ -39,10 +38,6 @@ control IngressControlQosOut(inout headers hdr, inout ingress_metadata_t ig_md,
 #ifdef HAVE_FRAG
         ig_dprsr_md.drop_ctl = ig_dprsr_md.drop_ctl | ig_md.layer3_frag;
 #endif
-    }
-
-    action act_rate(SubIntId_t metid) {
-        ig_md.outrate_res = rater.execute(metid);
     }
 
 
@@ -110,27 +105,13 @@ ig_md.sec_grp_id:
         const default_action = NoAction();
     }
 
-    table tbl_rate {
-        key = {
-ig_md.aclport_id:
-            exact;
-        }
-        actions = {
-            act_rate;
-            @defaultonly NoAction;
-        }
-        size = MAX_PORT;
-        const default_action = NoAction();
-    }
 
     apply {
-        tbl_rate.apply();
         if (ig_md.ipv4_valid==1)  {
             tbl_ipv4_qos.apply();
         } else if (ig_md.ipv6_valid==1)  {
             tbl_ipv6_qos.apply();
         }
-        if (ig_md.outrate_res != MeterColor_t.GREEN) ig_dprsr_md.drop_ctl = 1;
         if (ig_md.outqos_res != MeterColor_t.GREEN) ig_dprsr_md.drop_ctl = 1;
     }
 }
