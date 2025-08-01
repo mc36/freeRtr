@@ -138,6 +138,12 @@ qc pass: p4lang: mgre interface verify source
 qc pass: p4lang: mgre interface loose verify source
 qc pass: p4lang: ingress qinq mgre access list
 qc pass: p4lang: egress qinq mgre access list
+qc pass: p4lang: ingress rate limit
+qc pass: p4lang: egress rate limit
+qc pass: p4lang: vlan ingress rate limit
+qc pass: p4lang: vlan egress rate limit
+qc pass: p4lang: qinq ingress rate limit
+qc pass: p4lang: qinq egress rate limit
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc

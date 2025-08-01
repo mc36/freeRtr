@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v25.7.24-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-07-24 21:04:07, took 01:13:43, with 10 workers, on 836 cases, 0 failed, 0 traces, 2 retries
+-;-;-;freeRouter v25.7.31-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-07-31 21:43:13, took 01:13:44, with 10 workers, on 842 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar, dpdk
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -142,6 +142,12 @@ http://sources.freertr.org/cfg/p4lang-acl137.tst;p4lang-acl137.tst;success;p4lan
 http://sources.freertr.org/cfg/p4lang-acl138.tst;p4lang-acl138.tst;success;p4lang: mgre interface loose verify source
 http://sources.freertr.org/cfg/p4lang-acl139.tst;p4lang-acl139.tst;success;p4lang: ingress qinq mgre access list
 http://sources.freertr.org/cfg/p4lang-acl140.tst;p4lang-acl140.tst;success;p4lang: egress qinq mgre access list
+http://sources.freertr.org/cfg/p4lang-acl141.tst;p4lang-acl141.tst;success;p4lang: ingress rate limit
+http://sources.freertr.org/cfg/p4lang-acl142.tst;p4lang-acl142.tst;success;p4lang: egress rate limit
+http://sources.freertr.org/cfg/p4lang-acl143.tst;p4lang-acl143.tst;success;p4lang: vlan ingress rate limit
+http://sources.freertr.org/cfg/p4lang-acl144.tst;p4lang-acl144.tst;success;p4lang: vlan egress rate limit
+http://sources.freertr.org/cfg/p4lang-acl145.tst;p4lang-acl145.tst;success;p4lang: qinq ingress rate limit
+http://sources.freertr.org/cfg/p4lang-acl146.tst;p4lang-acl146.tst;success;p4lang: qinq egress rate limit
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;success;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;success;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;success;p4lang: macsec with aes128cbc

@@ -1,3 +1,4 @@
+qc pass: interop8: wired babel
 qc pass: interop8: ebgp
 qc pass: interop8: ibgp
 qc pass: interop8: bgp locpref

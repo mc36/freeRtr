@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v25.7.24-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-07-24 23:41:33, took 02:37:23, with 10 workers, on 836 cases, 1 failed, 0 traces, 20 retries
+-;-;-;freeRouter v25.7.31-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-08-01 00:32:48, took 02:49:32, with 10 workers, on 842 cases, 7 failed, 0 traces, 66 retries
 -;-;-;java -Xmx256m -jar rtr.jar, tofino
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -46,10 +46,10 @@ http://sources.freertr.org/cfg/p4lang-acl041.tst;p4lang-acl041.tst;success;p4lan
 http://sources.freertr.org/cfg/p4lang-acl042.tst;p4lang-acl042.tst;success;p4lang: egress hybrid access list
 http://sources.freertr.org/cfg/p4lang-acl043.tst;p4lang-acl043.tst;success;p4lang: ingress hierarchical access list
 http://sources.freertr.org/cfg/p4lang-acl044.tst;p4lang-acl044.tst;success;p4lang: egress hierarchical access list
-http://sources.freertr.org/cfg/p4lang-acl045.tst;p4lang-acl045.tst;success;p4lang: ingress policer
-http://sources.freertr.org/cfg/p4lang-acl046.tst;p4lang-acl046.tst;success;p4lang: egress policer
-http://sources.freertr.org/cfg/p4lang-acl047.tst;p4lang-acl047.tst;success;p4lang: vlan ingress policer
-http://sources.freertr.org/cfg/p4lang-acl048.tst;p4lang-acl048.tst;success;p4lang: vlan egress policer
+http://sources.freertr.org/cfg/p4lang-acl045.tst;p4lang-acl045.tst;#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250;p4lang: ingress policer
+http://sources.freertr.org/cfg/p4lang-acl046.tst;p4lang-acl046.tst;#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250;p4lang: egress policer
+http://sources.freertr.org/cfg/p4lang-acl047.tst;p4lang-acl047.tst;#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250;p4lang: vlan ingress policer
+http://sources.freertr.org/cfg/p4lang-acl048.tst;p4lang-acl048.tst;#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250;p4lang: vlan egress policer
 http://sources.freertr.org/cfg/p4lang-acl049.tst;p4lang-acl049.tst;success;p4lang: transmit flowspec
 http://sources.freertr.org/cfg/p4lang-acl050.tst;p4lang-acl050.tst;success;p4lang: drop flowspec
 http://sources.freertr.org/cfg/p4lang-acl051.tst;p4lang-acl051.tst;success;p4lang: policer flowspec
@@ -114,8 +114,8 @@ http://sources.freertr.org/cfg/p4lang-acl109.tst;p4lang-acl109.tst;success;p4lan
 http://sources.freertr.org/cfg/p4lang-acl110.tst;p4lang-acl110.tst;success;p4lang: egress qinq gre access list
 http://sources.freertr.org/cfg/p4lang-acl111.tst;p4lang-acl111.tst;success;p4lang: ingress qinq l2tp access list
 http://sources.freertr.org/cfg/p4lang-acl112.tst;p4lang-acl112.tst;success;p4lang: egress qinq l2tp access list
-http://sources.freertr.org/cfg/p4lang-acl113.tst;p4lang-acl113.tst;success;p4lang: qinq ingress policer
-http://sources.freertr.org/cfg/p4lang-acl114.tst;p4lang-acl114.tst;success;p4lang: qinq egress policer
+http://sources.freertr.org/cfg/p4lang-acl113.tst;p4lang-acl113.tst;#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250;p4lang: qinq ingress policer
+http://sources.freertr.org/cfg/p4lang-acl114.tst;p4lang-acl114.tst;#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250;p4lang: qinq egress policer
 http://sources.freertr.org/cfg/p4lang-acl115.tst;p4lang-acl115.tst;success;p4lang: qinq interface inspection with egress drop
 http://sources.freertr.org/cfg/p4lang-acl116.tst;p4lang-acl116.tst;success;p4lang: qinq interface inspection with ingress drop
 http://sources.freertr.org/cfg/p4lang-acl117.tst;p4lang-acl117.tst;not applicable;p4lang: qinq interface verify source
@@ -142,6 +142,12 @@ http://sources.freertr.org/cfg/p4lang-acl137.tst;p4lang-acl137.tst;not applicabl
 http://sources.freertr.org/cfg/p4lang-acl138.tst;p4lang-acl138.tst;not applicable;p4lang: mgre interface loose verify source
 http://sources.freertr.org/cfg/p4lang-acl139.tst;p4lang-acl139.tst;not applicable;p4lang: ingress qinq mgre access list
 http://sources.freertr.org/cfg/p4lang-acl140.tst;p4lang-acl140.tst;not applicable;p4lang: egress qinq mgre access list
+http://sources.freertr.org/cfg/p4lang-acl141.tst;p4lang-acl141.tst;success;p4lang: ingress rate limit
+http://sources.freertr.org/cfg/p4lang-acl142.tst;p4lang-acl142.tst;success;p4lang: egress rate limit
+http://sources.freertr.org/cfg/p4lang-acl143.tst;p4lang-acl143.tst;success;p4lang: vlan ingress rate limit
+http://sources.freertr.org/cfg/p4lang-acl144.tst;p4lang-acl144.tst;success;p4lang: vlan egress rate limit
+http://sources.freertr.org/cfg/p4lang-acl145.tst;p4lang-acl145.tst;success;p4lang: qinq ingress rate limit
+http://sources.freertr.org/cfg/p4lang-acl146.tst;p4lang-acl146.tst;success;p4lang: qinq egress rate limit
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;not applicable;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;not applicable;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;not applicable;p4lang: macsec with aes128cbc

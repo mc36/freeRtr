@@ -42,10 +42,10 @@ qc pass: p4lang: ingress hybrid access list
 qc pass: p4lang: egress hybrid access list
 qc pass: p4lang: ingress hierarchical access list
 qc pass: p4lang: egress hierarchical access list
-qc pass: p4lang: ingress policer
-qc pass: p4lang: egress policer
-qc pass: p4lang: vlan ingress policer
-qc pass: p4lang: vlan egress policer
+failed: p4lang: ingress policer
+failed: p4lang: egress policer
+failed: p4lang: vlan ingress policer
+failed: p4lang: vlan egress policer
 qc pass: p4lang: transmit flowspec
 qc pass: p4lang: drop flowspec
 qc pass: p4lang: policer flowspec
@@ -110,8 +110,8 @@ qc pass: p4lang: ingress qinq gre access list
 qc pass: p4lang: egress qinq gre access list
 qc pass: p4lang: ingress qinq l2tp access list
 qc pass: p4lang: egress qinq l2tp access list
-qc pass: p4lang: qinq ingress policer
-qc pass: p4lang: qinq egress policer
+failed: p4lang: qinq ingress policer
+failed: p4lang: qinq egress policer
 qc pass: p4lang: qinq interface inspection with egress drop
 qc pass: p4lang: qinq interface inspection with ingress drop
 qc pass: p4lang: qinq interface verify source
@@ -138,6 +138,12 @@ qc pass: p4lang: mgre interface verify source
 qc pass: p4lang: mgre interface loose verify source
 qc pass: p4lang: ingress qinq mgre access list
 qc pass: p4lang: egress qinq mgre access list
+qc pass: p4lang: ingress rate limit
+qc pass: p4lang: egress rate limit
+qc pass: p4lang: vlan ingress rate limit
+qc pass: p4lang: vlan egress rate limit
+qc pass: p4lang: qinq ingress rate limit
+qc pass: p4lang: qinq egress rate limit
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc
