@@ -200,18 +200,18 @@ public class ipIfc4 implements ipIfc, ifcUp {
     }
 
     public boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {
+        if (!nexthop.isIPv4()) {
+            if (otherHdr == null) {
+                return true;
+            }
+            return otherHdr.createETHheader(pck, nexthop, typ);
+        }
         pck.msbPutW(0, typ);
         pck.putSkip(2);
         pck.merge2beg();
         pck.putStart();
         if (arpCache == null) {
             return false;
-        }
-        if (!nexthop.isIPv4()) {
-            if (otherHdr == null) {
-                return true;
-            }
-            return otherHdr.createETHheader(pck, nexthop, typ);
         }
         return arpCache.readMACheader(pck, nexthop.toIPv4());
     }

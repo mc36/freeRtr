@@ -71,6 +71,11 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     public final int vrfNum;
 
     /**
+     * other afi
+     */
+    public ipFwd other;
+
+    /**
      * delay between updates
      */
     public int updateInterval;

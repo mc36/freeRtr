@@ -624,6 +624,37 @@ public class ipFwdTab {
         if (imp.best.distance >= tabRouteAttr.distanMax) {
             return null;
         }
+        if (ntry.ohop) {
+            if (ntry.iface == null) {
+                tabRouteEntry<addrIP> nh = lower.other.connedR.route(imp.best.nextHop);
+                if (nh == null) {
+                    return null;
+                }
+                ipFwdIface ifc = (ipFwdIface) nh.best.iface;
+                if (ifc == null) {
+                    return null;
+                }
+                imp.best.iface = ifc.otherHandler;
+                return imp;
+            }
+            ipFwdIface ifc = new ipFwdIface(ntry.iface.ifwNum, null);
+            ifc = lower.ifaces.find(ifc);
+            if (ifc == null) {
+                return null;
+            }
+            ifc = ifc.otherHandler;
+            if (ifc == null) {
+                return null;
+            }
+            if (!ifc.ready) {
+                return null;
+            }
+            if (!ifc.network.matches(imp.best.nextHop)) {
+                return null;
+            }
+            imp.best.iface = ifc.otherHandler;
+            return imp;
+        }
         if (ntry.recur == 0) {
             if (ntry.iface == null) {
                 tabRouteEntry<addrIP> nh = conn.route(imp.best.nextHop);

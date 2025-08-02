@@ -56,6 +56,11 @@ public class ipFwdRoute implements Comparable<ipFwdRoute> {
     public addrIP hop;
 
     /**
+     * other hop
+     */
+    public boolean ohop;
+
+    /**
      * interface
      */
     public ipFwdIface iface;
@@ -184,10 +189,17 @@ public class ipFwdRoute implements Comparable<ipFwdRoute> {
                 msk = mask.toIPv6().toNetmask();
             }
         }
-        hop = getAddr(ver, cmd.word());
+        a = cmd.word();
+        hop = getAddr(ver, a);
         if (hop == null) {
-            cmd.error("bad hop");
-            return true;
+            hop = getAddr(ver ^ 2, a);
+            if (hop == null) {
+                cmd.error("bad hop");
+                return true;
+            }
+            ohop = true;
+        } else {
+            ohop = false;
         }
         if (ver == 4) {
             pref = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(addr.toIPv4(), msk));

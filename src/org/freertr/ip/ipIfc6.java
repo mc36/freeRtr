@@ -333,18 +333,18 @@ public class ipIfc6 implements ipIfc, ifcUp {
     }
 
     public boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {
+        if (nexthop.isIPv4()) {
+            if (otherHdr == null) {
+                return true;
+            }
+            return otherHdr.createETHheader(pck, nexthop, typ);
+        }
         pck.msbPutW(0, typ);
         pck.putSkip(2);
         pck.merge2beg();
         pck.putStart();
         if (neiCache == null) {
             return false;
-        }
-        if (nexthop.isIPv4()) {
-            if (otherHdr == null) {
-                return true;
-            }
-            return otherHdr.createETHheader(pck, nexthop, typ);
         }
         return neiCache.readMACheader(pck, nexthop.toIPv6());
     }

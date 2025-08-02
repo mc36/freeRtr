@@ -381,6 +381,8 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         ipx = new ipxFwd(name);
         fwd4 = new ipFwd(core4, icmp4, mhst4, name, name + ":4");
         fwd6 = new ipFwd(core6, icmp6, mhst6, name, name + ":6");
+        fwd4.other = fwd6;
+        fwd6.other = fwd4;
         udp4 = new prtUdp(fwd4);
         udp6 = new prtUdp(fwd6);
         ludp4 = new prtLudp(fwd4);
