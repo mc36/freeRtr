@@ -17387,3 +17387,8 @@ failed: wireguard over asymmetric ports
 ---------------------------------- 2025-07-30 06:08:00 25.7.30
 no failed: wireguard over asymmetric ports
 qc pass: wireguard over asymmetric ports
+---------------------------------- 2025-08-02 16:24:26 25.8.2
+qc pass: static routing over ipv4 nexthop
+qc pass: static routing over ipv6 nexthop
+qc pass: static routing over ipv4 nexthop with interface
+qc pass: static routing over ipv6 nexthop with interface

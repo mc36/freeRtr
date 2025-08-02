@@ -3990,6 +3990,10 @@ qc pass: static routing with nrpe tracker
 qc pass: verify source with static routing
 qc pass: loose verify source with static routing
 qc pass: static routing with lpm
+qc pass: static routing over ipv4 nexthop
+qc pass: static routing over ipv6 nexthop
+qc pass: static routing over ipv4 nexthop with interface
+qc pass: static routing over ipv6 nexthop with interface
 qc pass: static bmp peer
 qc pass: dynamic bmp peer
 qc pass: authoritative dns server
