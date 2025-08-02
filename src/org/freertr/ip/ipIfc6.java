@@ -77,6 +77,11 @@ public class ipIfc6 implements ipIfc, ifcUp {
     public ipIfc6 redirect;
 
     /**
+     * other interface handler
+     */
+    protected ipIfc otherHdr;
+
+    /**
      * interface handler
      */
     protected ipFwdIface ifcHdr;
@@ -283,6 +288,15 @@ public class ipIfc6 implements ipIfc, ifcUp {
     }
 
     /**
+     * set other forwarder
+     *
+     * @param o lower layer
+     */
+    public void setOther(ipIfc o) {
+        otherHdr = o;
+    }
+
+    /**
      * set polka forwarder
      *
      * @param p lower layer
@@ -325,6 +339,12 @@ public class ipIfc6 implements ipIfc, ifcUp {
         pck.putStart();
         if (neiCache == null) {
             return false;
+        }
+        if (nexthop.isIPv4()) {
+            if (otherHdr == null) {
+                return true;
+            }
+            return otherHdr.createETHheader(pck, nexthop, typ);
         }
         return neiCache.readMACheader(pck, nexthop.toIPv6());
     }

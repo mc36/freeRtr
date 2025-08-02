@@ -3965,9 +3965,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (fwdIf4 != null) {
             fwdIf4.otherHandler = fwdIf6;
+            ipIf4.setOther(ipIf6);
         }
         if (fwdIf6 != null) {
             fwdIf6.otherHandler = fwdIf4;
+            ipIf6.setOther(ipIf4);
         }
         setSRv6sec(srv6sec);
         update2mpls();
