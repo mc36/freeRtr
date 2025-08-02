@@ -867,7 +867,7 @@ public class ipFwdTab {
             }
             imp = imp.copyBytes(rtr.getAddMode());
             if ((mode < 3) && (rtr.isBGP() == 1)) {
-                if (tabRouteUtil.doNexthopFix(imp, res, lower.directR, rtr.routerRecursions())) {
+                if (tabRouteUtil.doNexthopFix(imp, res, lower.directR, lower.other.directR, rtr.routerRecursions())) {
                     continue;
                 }
             }
@@ -1132,8 +1132,8 @@ public class ipFwdTab {
             }
             tabRoute.addType adm = rtr.getAddMode();
             int rec = rtr.routerRecursions();
-            tabU.mergeFrom(adm, rtr.routerComputedU, tabL, rec, tabRouteAttr.distanMax);
-            tabM.mergeFrom(adm, rtr.routerComputedM, tabL, rec, tabRouteAttr.distanMax);
+            tabU.mergeFrom(adm, rtr.routerComputedU, tabL, lower.other.directR, rec, tabRouteAttr.distanMax);
+            tabM.mergeFrom(adm, rtr.routerComputedM, tabL, lower.other.directR, rec, tabRouteAttr.distanMax);
             tabF.mergeFrom(adm, rtr.routerComputedF, tabRouteAttr.distanMax);
             tabIndex.mergeTable(tabIU, rtr.routerComputedI);
         }

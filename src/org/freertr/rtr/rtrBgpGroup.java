@@ -649,7 +649,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.labelRem = tabLabel.prependLabel(ntry.labelRem, loc.label);
             done = true;
         }
-        if ((afi == lower.afiOmlt) || ((afi == lower.afiOuni) && ((addrFams & (rtrBgpParam.mskOlab | rtrBgpParam.mskOctp | rtrBgpParam.mskOcar)) == 0))) {
+        if ((afi == lower.afiOmlt) || ((afi == lower.afiOuni) && lower.other.routerVpn && ((addrFams & (rtrBgpParam.mskOlab | rtrBgpParam.mskOctp | rtrBgpParam.mskOcar)) == 0))) {
             ntry.nextHop = localOddr.copyBytes();
         } else {
             ntry.nextHop = localAddr.copyBytes();

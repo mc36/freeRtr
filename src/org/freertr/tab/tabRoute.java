@@ -666,11 +666,12 @@ public class tabRoute<T extends addrType> {
      *
      * @param mod mode to use
      * @param other table to import
-     * @param nexthops table where look up nexthops
+     * @param nexthops table where look up resolved nexthops
+     * @param othrhops table where look up other nexthops
      * @param recur maximum recursion depth
      * @param distan highest allowed distance
      */
-    public void mergeFrom(addType mod, tabRoute<T> other, tabRoute<T> nexthops, int recur, int distan) {
+    public void mergeFrom(addType mod, tabRoute<T> other, tabRoute<T> nexthops, tabRoute<T> othrhops, int recur, int distan) {
         for (int i = 0; i < other.prefixes.size(); i++) {
             tabRouteEntry<T> imp = other.prefixes.get(i);
             if (imp == null) {
@@ -680,7 +681,7 @@ public class tabRoute<T extends addrType> {
                 continue;
             }
             imp = imp.copyBytes(mod);
-            if (tabRouteUtil.doNexthopFix(imp, other, nexthops, recur)) {
+            if (tabRouteUtil.doNexthopFix(imp, other, nexthops, othrhops, recur)) {
                 continue;
             }
             add(mod, imp, false, false);

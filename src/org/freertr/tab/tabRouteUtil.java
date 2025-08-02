@@ -8,6 +8,7 @@ import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgIfc;
+import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipMpls;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
@@ -1549,7 +1550,7 @@ public class tabRouteUtil {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends addrType> boolean doNexthopFix(tabRouteAttr<T> attr, tabRoute<T> recurs, int recurn, tabRoute<T> nexthops) {
+    private static <T extends addrType> boolean doNexthopFix(tabRouteAttr<T> attr, tabRoute<T> recurs, int recurn, tabRoute<T> nexthops, tabRoute<T> othrhops) {
         T hop = attr.nextHop;
         T orig = hop;
         if (hop == null) {
@@ -1557,25 +1558,38 @@ public class tabRouteUtil {
         }
         for (int i = 0; i < recurn; i++) {
             tabRouteEntry<T> nhr = nexthops.route(hop);
+            if (nhr != null) {
+                if (nhr.best.nextHop != null) {
+                    attr.oldHop = orig;
+                    attr.nextHop = (T) nhr.best.nextHop.copyBytes();
+                }
+                attr.iface = nhr.best.iface;
+                return false;
+            }
+            nhr = othrhops.route(hop);
+            if (nhr != null) {
+                if (nhr.best.nextHop != null) {
+                    attr.oldHop = orig;
+                    attr.nextHop = (T) nhr.best.nextHop.copyBytes();
+                }
+                ipFwdIface ifc = (ipFwdIface) nhr.best.iface;
+                if (ifc == null) {
+                    return true;
+                }
+                ifc = ifc.otherHandler;
+                attr.iface = ifc;
+                return false;
+            }
+            nhr = recurs.route(hop);
             if (nhr == null) {
-                nhr = recurs.route(hop);
-                if (nhr == null) {
-                    return true;
-                }
-                hop = nhr.best.nextHop;
-                if (hop == null) {
-                    return true;
-                }
-                attr.oldHop = orig;
-                attr.nextHop = (T) hop.copyBytes();
-                continue;
+                return true;
             }
-            if (nhr.best.nextHop != null) {
-                attr.oldHop = orig;
-                attr.nextHop = (T) nhr.best.nextHop.copyBytes();
+            hop = nhr.best.nextHop;
+            if (hop == null) {
+                return true;
             }
-            attr.iface = nhr.best.iface;
-            return false;
+            attr.oldHop = orig;
+            attr.nextHop = (T) hop.copyBytes();
         }
         return true;
     }
@@ -1587,13 +1601,14 @@ public class tabRouteUtil {
      * @param imp route entry to update
      * @param recurs where to look up nexthops recursively
      * @param nexthops table where look up resolved nexthops
+     * @param othrhops table where look up other nexthops
      * @param recurn maximum recursion depth
      * @return true if failed, false if ready
      */
-    public static <T extends addrType> boolean doNexthopFix(tabRouteEntry<T> imp, tabRoute<T> recurs, tabRoute<T> nexthops, int recurn) {
+    public static <T extends addrType> boolean doNexthopFix(tabRouteEntry<T> imp, tabRoute<T> recurs, tabRoute<T> nexthops, tabRoute<T> othrhops, int recurn) {
         for (int o = imp.alts.size() - 1; o >= 0; o--) {
             tabRouteAttr<T> attr = imp.alts.get(o);
-            if (!doNexthopFix(attr, recurs, recurn, nexthops)) {
+            if (!doNexthopFix(attr, recurs, recurn, nexthops, othrhops)) {
                 continue;
             }
             imp.delAlt(o);
