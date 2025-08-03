@@ -1464,14 +1464,17 @@ public class ipFwdTab {
         if (ntry.rouTab != null) {
             return;
         }
-        tabRouteEntry<addrIP> stLb = ((ipFwdIface) ntry.iface).labelsFind(lower, prefix.prefix, ntry.nextHop);
-        if (stLb != null) {
-            tabRouteAttr<addrIP> stBn = stLb.sameFwder(ntry);
-            if (stBn != null) {
-                if (stBn.labelRem != null) {
-                    updateTableRouteLabels(ntry, loc, stBn);
+        if (ntry.iface != null) {
+            ipFwdIface ifc = (ipFwdIface) ntry.iface;
+            tabRouteEntry<addrIP> stLb = ifc.labelsFind(lower, prefix.prefix, ntry.nextHop);
+            if (stLb != null) {
+                tabRouteAttr<addrIP> stBn = stLb.sameFwder(ntry);
+                if (stBn != null) {
+                    if (stBn.labelRem != null) {
+                        updateTableRouteLabels(ntry, loc, stBn);
+                    }
+                    return;
                 }
-                return;
             }
         }
         rtrLdpNeigh nei = lower.ldpNeighFind(ntry.nextHop, false);
