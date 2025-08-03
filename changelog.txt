@@ -17395,3 +17395,6 @@ qc pass: static routing over ipv6 nexthop with interface
 ---------------------------------- 2025-08-03 06:45:56 25.8.3
 qc pass: interop2: bgp extended nexthop
 qc pass: interop8: bgp extended nexthop
+---------------------------------- 2025-08-03 07:28:08 25.8.3
+qc pass: p4lang: ouni with bgp
+qc pass: p4lang: ouni with bgp over vlan
