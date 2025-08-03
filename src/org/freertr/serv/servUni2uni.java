@@ -10,7 +10,6 @@ import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServP;
-import org.freertr.tab.tabGen;
 import org.freertr.tab.tabNatCfgN;
 import org.freertr.tab.tabNatTraN;
 import org.freertr.user.userFilter;
@@ -55,6 +54,16 @@ public class servUni2uni extends servGeneric implements prtServP {
     public int sourceP = -1;
 
     /**
+     * source ipv4 address
+     */
+    public addrIP source4;
+
+    /**
+     * source ipv6 address
+     */
+    public addrIP source6;
+
+    /**
      * target ipv4 address
      */
     public addrIP target4;
@@ -87,6 +96,9 @@ public class servUni2uni extends servGeneric implements prtServP {
         new userFilter("server uni2uni .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
         new userFilter("server uni2uni .*", cmds.tabulator + "source port -1", null),
         new userFilter("server uni2uni .*", cmds.tabulator + "target port 1234", null),
+        new userFilter("server uni2uni .*", cmds.tabulator + cmds.negated + cmds.tabulator + "source interface", null),
+        new userFilter("server uni2uni .*", cmds.tabulator + cmds.negated + cmds.tabulator + "source ipv4", null),
+        new userFilter("server uni2uni .*", cmds.tabulator + cmds.negated + cmds.tabulator + "source ipv6", null),
         new userFilter("server uni2uni .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null),
         new userFilter("server uni2uni .*", cmds.tabulator + cmds.negated + cmds.tabulator + "script", null),
         new userFilter("server uni2uni .*", cmds.tabulator + "timeout 60000", null)
@@ -101,6 +113,16 @@ public class servUni2uni extends servGeneric implements prtServP {
             l.add(beg + "no source interface");
         } else {
             l.add(beg + "source interface " + sourceI.name);
+        }
+        if (source4 == null) {
+            l.add(beg + "no source ipv4");
+        } else {
+            l.add(beg + "source ipv4 " + source4);
+        }
+        if (source6 == null) {
+            l.add(beg + "no source ipv6");
+        } else {
+            l.add(beg + "source ipv6 " + source6);
         }
         l.add(beg + "source port " + sourceP);
         if (target4 == null) {
@@ -142,6 +164,30 @@ public class servUni2uni extends servGeneric implements prtServP {
             s = cmd.word();
             if (s.equals("port")) {
                 sourceP = bits.str2num(cmd.word());
+                return false;
+            }
+            if (s.equals("ipv4")) {
+                if (negated) {
+                    source4 = null;
+                    return false;
+                }
+                source4 = new addrIP();
+                if (source4.fromString(cmd.word())) {
+                    cmd.error("bad address");
+                    return false;
+                }
+                return false;
+            }
+            if (s.equals("ipv6")) {
+                if (negated) {
+                    source6 = null;
+                    return false;
+                }
+                source6 = new addrIP();
+                if (source6.fromString(cmd.word())) {
+                    cmd.error("bad address");
+                    return false;
+                }
                 return false;
             }
             if (s.equals("interface")) {
@@ -211,6 +257,10 @@ public class servUni2uni extends servGeneric implements prtServP {
         l.add(null, false, 1, new int[]{2}, "source", "specify translated source");
         l.add(null, false, 2, new int[]{3}, "interface", "interface to use");
         l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, 2, new int[]{3}, "ipv4", "ipv4 address");
+        l.add(null, false, 3, new int[]{-1}, "<addr>", "address");
+        l.add(null, false, 2, new int[]{3}, "ipv6", "ipv6 address");
+        l.add(null, false, 3, new int[]{-1}, "<addr>", "address");
         l.add(null, false, 2, new int[]{3}, "port", "port number");
         l.add(null, false, 3, new int[]{-1}, "<num>", "number");
         l.add(null, false, 1, new int[]{2}, "target", "specify translated target");
@@ -264,16 +314,24 @@ public class servUni2uni extends servGeneric implements prtServP {
             return true;
         }
         addrIP trg;
+        addrIP src;
         if (id.peerAddr.isIPv4()) {
             trg = target4;
+            src = source4;
         } else {
             trg = target6;
+            src = source6;
         }
-        addrIP src = sourceI.getFwdIfc(id.peerAddr).addr;
+        if (trg == null) {
+            return true;
+        }
+        if (sourceI != null) {
+            src = sourceI.getFwdIfc(trg).addr;
+        }
         if (src == null) {
             return true;
         }
-        ipFwd fwd = srvVrf.getFwd(id.peerAddr);
+        ipFwd fwd = srvVrf.getFwd(trg);
         tabNatCfgN natC = new tabNatCfgN();
         tabNatTraN natT = natC.createEntry(pck, fwd.icmpCore);
         natT.newSrcAddr = src.copyBytes();
@@ -283,7 +341,7 @@ public class servUni2uni extends servGeneric implements prtServP {
         if (sourceP > 0) {
             natT.newSrcPort = sourceP;
         }
-        natT.newTrgAddr = trg;
+        natT.newTrgAddr = trg.copyBytes();
         if (targetP == -1) {
             natT.newTrgPort = bits.random(0x1000, 0xf000);
         }
