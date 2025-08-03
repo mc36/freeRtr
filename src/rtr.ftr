@@ -1237,6 +1237,7 @@ qc pass: interop2: evpn/vpws over bgp
 qc pass: interop2: bgp aigp
 qc pass: interop2: bgp with php labels
 qc pass: interop2: bgp ao authentication
+qc pass: interop2: bgp extended nexthop
 qc pass: interop2: eigrp
 qc pass: interop2: eigrp prefix withdraw
 qc pass: interop2: ethernet encapsulation
@@ -1319,6 +1320,7 @@ qc pass: interop8: bgp large community
 qc pass: interop8: bgp with php labels
 qc pass: interop8: ebgp peer role
 qc pass: interop8: ebgp ix role
+qc pass: interop8: bgp extended nexthop
 qc pass: interop8: eigrp
 qc pass: interop8: fragmentation and reassembly
 qc pass: interop8: verify source

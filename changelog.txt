@@ -17392,3 +17392,6 @@ qc pass: static routing over ipv4 nexthop
 qc pass: static routing over ipv6 nexthop
 qc pass: static routing over ipv4 nexthop with interface
 qc pass: static routing over ipv6 nexthop with interface
+---------------------------------- 2025-08-03 06:45:56 25.8.3
+qc pass: interop2: bgp extended nexthop
+qc pass: interop8: bgp extended nexthop
