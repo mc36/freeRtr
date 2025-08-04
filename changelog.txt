@@ -17398,3 +17398,6 @@ qc pass: interop8: bgp extended nexthop
 ---------------------------------- 2025-08-03 07:28:08 25.8.3
 qc pass: p4lang: ouni with bgp
 qc pass: p4lang: ouni with bgp over vlan
+---------------------------------- 2025-08-04 12:22:45 25.8.4
+no qc pass: wireguard over ipv6
+failed: wireguard over ipv6
