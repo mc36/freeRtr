@@ -17413,3 +17413,6 @@ qc pass: wireguard over asymmetric ports
 ---------------------------------- 2025-08-05 14:31:33 25.8.5
 no qc pass: wireguard over ipv4
 failed: wireguard over ipv4
+---------------------------------- 2025-08-05 15:07:33 25.8.5
+no failed: wireguard over ipv4
+qc pass: wireguard over ipv4
