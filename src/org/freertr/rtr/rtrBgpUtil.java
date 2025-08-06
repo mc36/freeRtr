@@ -1538,14 +1538,14 @@ public class rtrBgpUtil {
                 }
                 pck.getCopy(ntry.prefix.broadcast.getBytes(), 0, 4, 8);
                 ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
-                if (pck.msbGetW(2) > 12) {
+                if (pck.msbGetW(2) > (8 * 12)) {
                     addrIPv6 a6 = new addrIPv6();
-                    pck.getAddr(a6, 0);
+                    pck.getAddr(a6, 12);
                     ntry.prefix.network.fromIPv6addr(a6);
                     pck.getSkip(28);
                 } else {
                     addrIPv4 a4 = new addrIPv4();
-                    pck.getAddr(a4, 0);
+                    pck.getAddr(a4, 12);
                     ntry.prefix.network.fromIPv4addr(a4);
                     pck.getSkip(16);
                 }
@@ -1856,11 +1856,11 @@ public class rtrBgpUtil {
                 pck.msbPutW(0, 1);
                 pck.putCopy(ntry.prefix.broadcast.getBytes(), 0, 4, 8);
                 if (ntry.prefix.network.isIPv4()) {
-                    pck.msbPutW(2, 12);
+                    pck.msbPutW(2, 8 * 12);
                     pck.putAddr(12, ntry.prefix.network.toIPv4());
                     pck.putSkip(16);
                 } else {
-                    pck.msbPutW(2, 24);
+                    pck.msbPutW(2, 8 * 24);
                     pck.putAddr(12, ntry.prefix.network.toIPv6());
                     pck.putSkip(28);
                 }

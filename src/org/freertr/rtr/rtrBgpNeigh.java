@@ -166,6 +166,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     public tabRoute<addrIP> accRpd = new tabRoute<addrIP>("rx");
 
     /**
+     * accepted sdwan prefixes
+     */
+    public tabRoute<addrIP> accSdw = new tabRoute<addrIP>("rx");
+
+    /**
      * accepted spf prefixes
      */
     public tabRoute<addrIP> accSpf = new tabRoute<addrIP>("rx");
@@ -301,6 +306,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     public tabRoute<addrIP> wilRpd = new tabRoute<addrIP>("tx");
 
     /**
+     * willing sdwan prefixes
+     */
+    public tabRoute<addrIP> wilSdw = new tabRoute<addrIP>("tx");
+
+    /**
      * willing spf prefixes
      */
     public tabRoute<addrIP> wilSpf = new tabRoute<addrIP>("tx");
@@ -434,6 +444,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * changed rpd prefixes
      */
     public tabRoute<addrIP> chgRpd = new tabRoute<addrIP>("chg");
+
+    /**
+     * changed sdwan prefixes
+     */
+    public tabRoute<addrIP> chgSdw = new tabRoute<addrIP>("chg");
 
     /**
      * changed spf prefixes
@@ -744,6 +759,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("mdt advertised|" + conn.advMdt.size() + " of " + wilMdt.size() + ", list = " + chgMdt.size() + ", accepted = " + accMdt.size() + " of " + conn.lrnMdt.size());
         l.add("nsh advertised|" + conn.advNsh.size() + " of " + wilNsh.size() + ", list = " + chgNsh.size() + ", accepted = " + accNsh.size() + " of " + conn.lrnNsh.size());
         l.add("rpd advertised|" + conn.advRpd.size() + " of " + wilRpd.size() + ", list = " + chgRpd.size() + ", accepted = " + accRpd.size() + " of " + conn.lrnRpd.size());
+        l.add("sdwan advertised|" + conn.advSdw.size() + " of " + wilSdw.size() + ", list = " + chgSdw.size() + ", accepted = " + accSdw.size() + " of " + conn.lrnSdw.size());
         l.add("spf advertised|" + conn.advSpf.size() + " of " + wilSpf.size() + ", list = " + chgSpf.size() + ", accepted = " + accSpf.size() + " of " + conn.lrnSpf.size());
         l.add("rtfilter advertised|" + conn.advRtf.size() + " of " + wilRtf.size() + ", list = " + chgRtf.size() + ", accepted = " + accRtf.size() + " of " + conn.lrnRtf.size());
         l.add("srte advertised|" + conn.advSrte.size() + " of " + wilSrte.size() + ", list = " + chgSrte.size() + ", accepted = " + accSrte.size() + " of " + conn.lrnSrte.size());
@@ -1159,6 +1175,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if (advertFullTable(lower.afiRpd, rtrBgpParam.mskRpd, wilRpd, conn.advRpd)) {
             return true;
         }
+        if (advertFullTable(lower.afiSdw, rtrBgpParam.mskSdw, wilSdw, conn.advSdw)) {
+            return true;
+        }
         if (advertFullTable(lower.afiSpf, rtrBgpParam.mskSpf, wilSpf, conn.advSpf)) {
             return true;
         }
@@ -1367,6 +1386,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if (advertIncrTable(lower.afiRpd, rtrBgpParam.mskRpd, wilRpd, chgRpd, conn.advRpd)) {
             return true;
         }
+        if (advertIncrTable(lower.afiSdw, rtrBgpParam.mskSdw, wilSdw, chgSdw, conn.advSdw)) {
+            return true;
+        }
         if (advertIncrTable(lower.afiSpf, rtrBgpParam.mskSpf, wilSpf, chgSpf, conn.advSpf)) {
             return true;
         }
@@ -1496,6 +1518,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         accMdt = new tabRoute<addrIP>("bgp");
         accNsh = new tabRoute<addrIP>("bgp");
         accRpd = new tabRoute<addrIP>("bgp");
+        accSdw = new tabRoute<addrIP>("bgp");
         accSpf = new tabRoute<addrIP>("bgp");
         accRtf = new tabRoute<addrIP>("bgp");
         accSrte = new tabRoute<addrIP>("bgp");
@@ -1566,6 +1589,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             accMdt = conn.lrnMdt;
             accNsh = conn.lrnNsh;
             accRpd = conn.lrnRpd;
+            accSdw = conn.lrnSdw;
             accSpf = conn.lrnSpf;
             accRtf = conn.lrnRtf;
             accSrte = conn.lrnSrte;
@@ -1612,6 +1636,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMdt, remoteAs, accMdt, conn.lrnMdt, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiNsh, remoteAs, accNsh, conn.lrnNsh, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiRpd, remoteAs, accRpd, conn.lrnRpd, true, vroumapIn, vroupolIn, null);
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiSdw, remoteAs, accSdw, conn.lrnSdw, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiSpf, remoteAs, accSpf, conn.lrnSpf, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiRtf, remoteAs, accRtf, conn.lrnRtf, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiSrte, remoteAs, accSrte, conn.lrnSrte, true, vroumapIn, vroupolIn, null);
@@ -1674,6 +1699,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         lower.newlyMdt.mergeFrom(mod, new tabRoute<addrIP>(accMdt), tabRouteAttr.distanLim);
         lower.newlyNsh.mergeFrom(mod, new tabRoute<addrIP>(accNsh), tabRouteAttr.distanLim);
         lower.newlyRpd.mergeFrom(mod, new tabRoute<addrIP>(accRpd), tabRouteAttr.distanLim);
+        lower.newlySdw.mergeFrom(mod, new tabRoute<addrIP>(accSdw), tabRouteAttr.distanLim);
         lower.newlySpf.mergeFrom(mod, new tabRoute<addrIP>(accSpf), tabRouteAttr.distanLim);
         lower.newlyRtf.mergeFrom(mod, new tabRoute<addrIP>(accRtf), tabRouteAttr.distanLim);
         lower.newlySrte.mergeFrom(mod, new tabRoute<addrIP>(accSrte), tabRouteAttr.distanLim);
@@ -1759,6 +1785,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             wilMdt = new tabRoute<addrIP>("tx");
             wilNsh = new tabRoute<addrIP>("tx");
             wilRpd = new tabRoute<addrIP>("tx");
+            wilSdw = new tabRoute<addrIP>("tx");
             wilSpf = new tabRoute<addrIP>("tx");
             wilRtf = new tabRoute<addrIP>("tx");
             wilSrte = new tabRoute<addrIP>("tx");
@@ -1786,6 +1813,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             chgMdt = new tabRoute<addrIP>("chg");
             chgNsh = new tabRoute<addrIP>("chg");
             chgRpd = new tabRoute<addrIP>("chg");
+            chgSdw = new tabRoute<addrIP>("chg");
             chgSpf = new tabRoute<addrIP>("chg");
             chgRtf = new tabRoute<addrIP>("chg");
             chgSrte = new tabRoute<addrIP>("chg");
@@ -1815,6 +1843,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             wilMdt = grp.wilMdt;
             wilNsh = grp.wilNsh;
             wilRpd = grp.wilRpd;
+            wilSdw = grp.wilSdw;
             wilSpf = grp.wilSpf;
             wilRtf = grp.wilRtf;
             wilSrte = grp.wilSrte;
@@ -1842,6 +1871,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             chgMdt = grp.chgMdt;
             chgNsh = grp.chgNsh;
             chgRpd = grp.chgRpd;
+            chgSdw = grp.chgSdw;
             chgSpf = grp.chgSpf;
             chgRtf = grp.chgRtf;
             chgSrte = grp.chgSrte;
@@ -2051,6 +2081,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if (safi == lower.afiRpd) {
             return accRpd;
         }
+        if (safi == lower.afiSdw) {
+            return accSdw;
+        }
         if (safi == lower.afiSpf) {
             return accSpf;
         }
@@ -2160,6 +2193,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         }
         if (safi == lower.afiRpd) {
             return wilRpd;
+        }
+        if (safi == lower.afiSdw) {
+            return wilSdw;
         }
         if (safi == lower.afiSpf) {
             return wilSpf;
