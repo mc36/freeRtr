@@ -215,11 +215,6 @@ public class rtrBgpUtil {
     public final static int sfiVpnLnkSt = 0x48;
 
     /**
-     * shortest path first address family
-     */
-    public final static int sfiSpf = 0x50;
-
-    /**
      * segment routing traffic engineering address family
      */
     public final static int sfiSrTe = 0x49;
@@ -255,9 +250,9 @@ public class rtrBgpUtil {
     public final static int sfiDps = 0x4f;
 
     /**
-     * bgp ls sfp address family
+     * shortest path first address family
      */
-    public final static int sfiLsSfp = 0x50;
+    public final static int sfiSpf = 0x50;
 
     /**
      * color aware routing address family
@@ -423,6 +418,16 @@ public class rtrBgpUtil {
      * ipv6 mdt address family
      */
     public final static int safiIp6mdt = afiIpv6 | sfiMdt;
+
+    /**
+     * ipv4 sdwan address family
+     */
+    public final static int safiIp4sdwan = afiIpv4 | sfiSdwan;
+
+    /**
+     * ipv6 sdwan address family
+     */
+    public final static int safiIp6sdwan = afiIpv6 | sfiSdwan;
 
     /**
      * ipv4/ipv6 link state address family
@@ -1527,6 +1532,24 @@ public class rtrBgpUtil {
                     ntry.best.labelRem.add(p >>> 4);
                 }
                 return ntry;
+            case sfiSdwan:
+                if (pck.msbGetW(0) != 1) {
+                    return null;
+                }
+                pck.getCopy(ntry.prefix.broadcast.getBytes(), 0, 4, 8);
+                ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
+                if (pck.msbGetW(2) > 12) {
+                    addrIPv6 a6 = new addrIPv6();
+                    pck.getAddr(a6, 0);
+                    ntry.prefix.network.fromIPv6addr(a6);
+                    pck.getSkip(28);
+                } else {
+                    addrIPv4 a4 = new addrIPv4();
+                    pck.getAddr(a4, 0);
+                    ntry.prefix.network.fromIPv4addr(a4);
+                    pck.getSkip(16);
+                }
+                return ntry;
             case sfiSpf:
             case sfiVpnLnkSt:
             case sfiLnkSt:
@@ -1828,6 +1851,19 @@ public class rtrBgpUtil {
                 pck.putSkip(2);
                 pck.putCopy(buf1, 0, 0, p);
                 pck.putSkip(p);
+                return;
+            case sfiSdwan:
+                pck.msbPutW(0, 1);
+                pck.putCopy(ntry.prefix.broadcast.getBytes(), 0, 4, 8);
+                if (ntry.prefix.network.isIPv4()) {
+                    pck.msbPutW(2, 12);
+                    pck.putAddr(12, ntry.prefix.network.toIPv4());
+                    pck.putSkip(16);
+                } else {
+                    pck.msbPutW(2, 24);
+                    pck.putAddr(12, ntry.prefix.network.toIPv6());
+                    pck.putSkip(28);
+                }
                 return;
             case sfiSpf:
             case sfiVpnLnkSt:
