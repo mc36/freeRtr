@@ -504,6 +504,11 @@ public abstract class rtrBgpParam {
     public boolean nxtHopMltlb;
 
     /**
+     * use link local next hop
+     */
+    public boolean nxtHopLnkLoc;
+
+    /**
      * use next hop capabilities
      */
     public boolean nxtHopCapa;
@@ -1402,6 +1407,7 @@ public abstract class rtrBgpParam {
         nxtHopPeer = src.nxtHopPeer;
         nxtHopSelf = src.nxtHopSelf;
         nxtHopMltlb = src.nxtHopMltlb;
+        nxtHopLnkLoc = src.nxtHopLnkLoc;
         nxtHopCapa = src.nxtHopCapa;
         sendCommunity = src.sendCommunity;
         intVpnClnt = src.intVpnClnt;
@@ -1936,6 +1942,7 @@ public abstract class rtrBgpParam {
         l.add(null, false, 3, new int[]{-1}, "override-peer-as-in", "replace peer as from peer");
         l.add(null, false, 3, new int[]{-1}, "next-hop-unchanged", "send next hop unchanged to peer");
         l.add(null, false, 3, new int[]{-1}, "next-hop-multilabel", "send multiple labels to peer");
+        l.add(null, false, 3, new int[]{-1}, "next-hop-linklocal", "send link local nexthop to peer");
         l.add(null, false, 3, new int[]{-1}, "next-hop-capability", "send next hop capabilities to peer");
         l.add(null, false, 3, new int[]{-1}, "next-hop-self", "send next hop myself to peer");
         l.add(null, false, 3, new int[]{-1}, "next-hop-peer", "set next hop to peer address");
@@ -2240,6 +2247,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !remoteConfed, beg, nei + "confederation-peer", "");
         cmds.cfgLine(l, !nxtHopUnchgd, beg, nei + "next-hop-unchanged", "");
         cmds.cfgLine(l, !nxtHopMltlb, beg, nei + "next-hop-multilabel", "");
+        cmds.cfgLine(l, !nxtHopLnkLoc, beg, nei + "next-hop-linklocal", "");
         cmds.cfgLine(l, !nxtHopCapa, beg, nei + "next-hop-capability", "");
         cmds.cfgLine(l, !nxtHopSelf, beg, nei + "next-hop-self", "");
         cmds.cfgLine(l, !nxtHopPeer, beg, nei + "next-hop-peer", "");
@@ -3088,6 +3096,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("next-hop-multilabel")) {
             nxtHopMltlb = !negated;
+            return false;
+        }
+        if (s.equals("next-hop-linklocal")) {
+            nxtHopLnkLoc = !negated;
             return false;
         }
         if (s.equals("next-hop-capability")) {

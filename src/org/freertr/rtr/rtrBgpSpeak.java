@@ -1994,6 +1994,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.extUpdate) {
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtMessage, new byte[0]);
         }
+        if (neigh.nxtHopLnkLoc) {
+            rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaLinkLocal, new byte[0]);
+        }
         if ((neigh.compressMode & 1) != 0) {
             compressRx = new Inflater[8];
             for (int i = 0; i < compressRx.length; i++) {

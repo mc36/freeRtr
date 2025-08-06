@@ -449,6 +449,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* next-hop-unchanged", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* next-hop-capability", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* next-hop-multilabel", null),
+        new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* next-hop-linklocal", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* next-hop-self", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* next-hop-peer", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* send-community", null),

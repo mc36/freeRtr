@@ -900,6 +900,11 @@ public class rtrBgpUtil {
     public final static int capaCompress = 76;
 
     /**
+     * link local
+     */
+    public final static int capaLinkLocal = 77;
+
+    /**
      * no export community
      */
     public final static int commNoExport = 0xffffff01;
