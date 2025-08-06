@@ -17416,3 +17416,7 @@ failed: wireguard over ipv4
 ---------------------------------- 2025-08-05 15:07:33 25.8.5
 no failed: wireguard over ipv4
 qc pass: wireguard over ipv4
+---------------------------------- 2025-08-06 16:37:16 25.8.6
+qc pass: unicast+sdwan over bgp
+qc pass: unicast+sdwan over bgp with soft-reconfig
+qc pass: unicast+sdwan over bgp with additional path
