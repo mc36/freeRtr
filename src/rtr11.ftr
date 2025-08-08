@@ -15,6 +15,7 @@ qc pass: interop8: bgp large community
 qc pass: interop8: bgp with php labels
 qc pass: interop8: ebgp peer role
 qc pass: interop8: ebgp ix role
+qc pass: interop8: bgp extended nexthop
 qc pass: interop8: eigrp
 qc pass: interop8: fragmentation and reassembly
 qc pass: interop8: verify source

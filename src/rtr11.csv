@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v25.7.31-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-08-01 03:28:50, took 00:03:18, with 10 workers, on 46 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v25.8.7-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-08-08 02:39:30, took 00:03:12, with 10 workers, on 47 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar, frr
 http://sources.freertr.org/cfg/intop8-babel01.tst;intop8-babel01.tst;success;interop8: wired babel
 http://sources.freertr.org/cfg/intop8-bgp01.tst;intop8-bgp01.tst;success;interop8: ebgp
@@ -19,6 +19,7 @@ http://sources.freertr.org/cfg/intop8-bgp13.tst;intop8-bgp13.tst;success;interop
 http://sources.freertr.org/cfg/intop8-bgp14.tst;intop8-bgp14.tst;success;interop8: bgp with php labels
 http://sources.freertr.org/cfg/intop8-bgp15.tst;intop8-bgp15.tst;success;interop8: ebgp peer role
 http://sources.freertr.org/cfg/intop8-bgp16.tst;intop8-bgp16.tst;success;interop8: ebgp ix role
+http://sources.freertr.org/cfg/intop8-bgp17.tst;intop8-bgp17.tst;success;interop8: bgp extended nexthop
 http://sources.freertr.org/cfg/intop8-eigrp01.tst;intop8-eigrp01.tst;success;interop8: eigrp
 http://sources.freertr.org/cfg/intop8-eth01.tst;intop8-eth01.tst;success;interop8: fragmentation and reassembly
 http://sources.freertr.org/cfg/intop8-eth02.tst;intop8-eth02.tst;success;interop8: verify source

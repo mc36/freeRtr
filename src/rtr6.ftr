@@ -42,10 +42,10 @@ qc pass: p4lang: ingress hybrid access list
 qc pass: p4lang: egress hybrid access list
 qc pass: p4lang: ingress hierarchical access list
 qc pass: p4lang: egress hierarchical access list
-failed: p4lang: ingress policer
-failed: p4lang: egress policer
-failed: p4lang: vlan ingress policer
-failed: p4lang: vlan egress policer
+qc pass: p4lang: ingress policer
+qc pass: p4lang: egress policer
+qc pass: p4lang: vlan ingress policer
+qc pass: p4lang: vlan egress policer
 qc pass: p4lang: transmit flowspec
 qc pass: p4lang: drop flowspec
 qc pass: p4lang: policer flowspec
@@ -110,8 +110,8 @@ qc pass: p4lang: ingress qinq gre access list
 qc pass: p4lang: egress qinq gre access list
 qc pass: p4lang: ingress qinq l2tp access list
 qc pass: p4lang: egress qinq l2tp access list
-failed: p4lang: qinq ingress policer
-failed: p4lang: qinq egress policer
+qc pass: p4lang: qinq ingress policer
+qc pass: p4lang: qinq egress policer
 qc pass: p4lang: qinq interface inspection with egress drop
 qc pass: p4lang: qinq interface inspection with ingress drop
 qc pass: p4lang: qinq interface verify source
@@ -840,6 +840,8 @@ qc pass: p4lang: mgre routing over qinq bridge
 qc pass: p4lang: mgre mpls over qinq
 qc pass: p4lang: ldp te over mpls tail+head
 qc pass: p4lang: ldp te over mpls mid
+qc pass: p4lang: ouni with bgp
+qc pass: p4lang: ouni with bgp over vlan
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

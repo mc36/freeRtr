@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v25.7.31-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-07-31 21:43:13, took 01:13:44, with 10 workers, on 842 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v25.8.7-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-08-07 21:04:21, took 01:14:20, with 10 workers, on 844 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar, dpdk
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -844,3 +844,5 @@ http://sources.freertr.org/cfg/p4lang-rout490.tst;p4lang-rout490.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout491.tst;p4lang-rout491.tst;success;p4lang: mgre mpls over qinq
 http://sources.freertr.org/cfg/p4lang-rout492.tst;p4lang-rout492.tst;success;p4lang: ldp te over mpls tail+head
 http://sources.freertr.org/cfg/p4lang-rout493.tst;p4lang-rout493.tst;success;p4lang: ldp te over mpls mid
+http://sources.freertr.org/cfg/p4lang-rout494.tst;p4lang-rout494.tst;success;p4lang: ouni with bgp
+http://sources.freertr.org/cfg/p4lang-rout495.tst;p4lang-rout495.tst;success;p4lang: ouni with bgp over vlan

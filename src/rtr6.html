@@ -9,8 +9,8 @@
 .bad { color: red }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v25.7.31-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-08-01 00:32:48, took 02:49:32, with 10 workers, on 842 cases, 7 failed, 0 traces, 66 retries<br/>
+release: freeRouter v25.8.7-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2025-08-07 23:46:45, took 02:42:21, with 10 workers, on 844 cases, 1 failed, 0 traces, 10 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar, other: tofino<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -58,10 +58,10 @@ jvm: java -Xmx256m -jar rtr.jar, other: tofino<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl042.tst">p4lang-acl042.tst</a></td><td>success</td><td>p4lang: egress hybrid access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl043.tst">p4lang-acl043.tst</a></td><td>success</td><td>p4lang: ingress hierarchical access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl044.tst">p4lang-acl044.tst</a></td><td>success</td><td>p4lang: egress hierarchical access list</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl045.tst">p4lang-acl045.tst</a></td><td>#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250</td><td>p4lang: ingress policer</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl046.tst">p4lang-acl046.tst</a></td><td>#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250</td><td>p4lang: egress policer</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl047.tst">p4lang-acl047.tst</a></td><td>#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250</td><td>p4lang: vlan ingress policer</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl048.tst">p4lang-acl048.tst</a></td><td>#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250</td><td>p4lang: vlan egress policer</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl045.tst">p4lang-acl045.tst</a></td><td>success</td><td>p4lang: ingress policer</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl046.tst">p4lang-acl046.tst</a></td><td>success</td><td>p4lang: egress policer</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl047.tst">p4lang-acl047.tst</a></td><td>success</td><td>p4lang: vlan ingress policer</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl048.tst">p4lang-acl048.tst</a></td><td>success</td><td>p4lang: vlan egress policer</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl049.tst">p4lang-acl049.tst</a></td><td>success</td><td>p4lang: transmit flowspec</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl050.tst">p4lang-acl050.tst</a></td><td>success</td><td>p4lang: drop flowspec</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl051.tst">p4lang-acl051.tst</a></td><td>success</td><td>p4lang: policer flowspec</td></tr>
@@ -126,8 +126,8 @@ jvm: java -Xmx256m -jar rtr.jar, other: tofino<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl110.tst">p4lang-acl110.tst</a></td><td>success</td><td>p4lang: egress qinq gre access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl111.tst">p4lang-acl111.tst</a></td><td>success</td><td>p4lang: ingress qinq l2tp access list</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl112.tst">p4lang-acl112.tst</a></td><td>success</td><td>p4lang: egress qinq l2tp access list</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl113.tst">p4lang-acl113.tst</a></td><td>#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250</td><td>p4lang: qinq ingress policer</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl114.tst">p4lang-acl114.tst</a></td><td>#6-run-r4 tping 5-95 10 2.2.2.106 vrf v1 sou lo0 rep 100 tim 250 siz 250</td><td>p4lang: qinq egress policer</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl113.tst">p4lang-acl113.tst</a></td><td>success</td><td>p4lang: qinq ingress policer</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl114.tst">p4lang-acl114.tst</a></td><td>success</td><td>p4lang: qinq egress policer</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl115.tst">p4lang-acl115.tst</a></td><td>success</td><td>p4lang: qinq interface inspection with egress drop</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl116.tst">p4lang-acl116.tst</a></td><td>success</td><td>p4lang: qinq interface inspection with ingress drop</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl117.tst">p4lang-acl117.tst</a></td><td>not applicable</td><td>p4lang: qinq interface verify source</td></tr>
@@ -856,4 +856,6 @@ jvm: java -Xmx256m -jar rtr.jar, other: tofino<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout491.tst">p4lang-rout491.tst</a></td><td>not applicable</td><td>p4lang: mgre mpls over qinq</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout492.tst">p4lang-rout492.tst</a></td><td>success</td><td>p4lang: ldp te over mpls tail+head</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout493.tst">p4lang-rout493.tst</a></td><td>success</td><td>p4lang: ldp te over mpls mid</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout494.tst">p4lang-rout494.tst</a></td><td>success</td><td>p4lang: ouni with bgp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout495.tst">p4lang-rout495.tst</a></td><td>success</td><td>p4lang: ouni with bgp over vlan</td></tr>
 </tbody></table></body></html>
