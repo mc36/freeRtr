@@ -1856,7 +1856,7 @@ public class tabRouteUtil {
                 continue;
             }
             ntry = ntry.copyBytes(tabRoute.addType.better);
-            String a = addrPrefix.ip2str(ntry.prefix) + "|";
+            String a = addrPrefix.ip2str(ntry.prefix) + " " + rd2string(ntry.rouDst) + "|";
             int fnd = 0;
             ntry.prefix.maskLen--;
             for (; ntry.prefix.maskLen >= 0; ntry.prefix.maskLen--) {
