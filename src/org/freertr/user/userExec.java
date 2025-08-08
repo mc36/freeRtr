@@ -340,6 +340,9 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "<name:vrf>", "name of routing table");
         hl.add(null, false, 3, new int[]{4}, "compress", "compressed unicast routing table");
         hl.add(null, false, 4, new int[]{-1}, "<name:vrf>", "name of routing table");
+        hl.add(null, false, 3, new int[]{4, -1}, "overlap", "overlapping advertisements of prefixes");
+        hl.add(null, false, 4, new int[]{5,-1}, "<name:vrf>", "name of routing table");
+        hl.add(null, false, 5, new int[]{-1}, "[str]", "int matcher");
         hl.add(null, false, 3, new int[]{4}, "unused", "unused unicast routing table");
         hl.add(null, false, 4, new int[]{-1}, "<name:vrf>", "name of routing table");
         hl.add(null, false, 3, new int[]{4}, "changes", "changed unicast routing table");
@@ -614,7 +617,7 @@ public class userExec {
         hl.add(null, false, 9, new int[]{10}, "<num>", "multiply y coordinate");
         hl.add(null, false, 10, new int[]{11}, "<num>", "substract x coordinate");
         hl.add(null, false, 11, new int[]{7, -1}, "<num>", "substract y coordinate");
-        hl.add(null, false, 5, new int[]{7}, "lnkinconsistent", "inconsistent advertisements of metrics");
+        hl.add(null, false, 5, new int[]{6}, "lnkinconsistent", "inconsistent advertisements of metrics");
         hl.add(null, false, 6, new int[]{7, -1}, "<dir>", "north or south spf");
         hl.add(null, false, 7, new int[]{-1}, "[str]", "int matcher");
         hl.add(null, false, 5, new int[]{6}, "nhinconsistent", "inconsistent advertisements of next hops");
@@ -1047,6 +1050,8 @@ public class userExec {
         hl.add(null, false, 6, new int[]{7, -1}, "compress", "list of compressed routes");
         hl.add(null, false, 7, new int[]{8, -1}, "[addr]", "prefix to view");
         hl.add(null, false, 8, new int[]{-1}, "[rd]", "route distinguisher");
+        hl.add(null, false, 6, new int[]{7, -1}, "overlap", "overlapping advertisements of prefixes");
+        hl.add(null, false, 7, new int[]{-1}, "[str]", "int matcher");
         hl.add(null, false, 6, new int[]{7, -1}, "deaggregated", "list of deaggregated routes");
         hl.add(null, false, 7, new int[]{8, -1}, "[addr]", "prefix to view");
         hl.add(null, false, 8, new int[]{-1}, "[rd]", "route distinguisher");

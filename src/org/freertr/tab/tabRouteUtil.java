@@ -13,6 +13,7 @@ import org.freertr.ip.ipMpls;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.rtr.rtrBgpUtil;
+import org.freertr.user.userFormat;
 import org.freertr.user.userScript;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -1838,6 +1839,40 @@ public class tabRouteUtil {
             }
         }
         return done;
+    }
+
+    /**
+     * list overlapping prefixes
+     *
+     * @param lst table to scan
+     * @param mtch matcher
+     * @return overlapping prefixes
+     */
+    public static userFormat overlapTable(tabRoute<addrIP> lst, tabIntMatcher mtch) {
+        userFormat res = new userFormat("|", "prefix|supernets");
+        for (int i = 0; i < lst.prefixes.size(); i++) {
+            tabRouteEntry<addrIP> ntry = lst.prefixes.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry = ntry.copyBytes(tabRoute.addType.better);
+            String a = addrPrefix.ip2str(ntry.prefix) + "|";
+            int fnd = 0;
+            ntry.prefix.maskLen--;
+            for (; ntry.prefix.maskLen >= 0; ntry.prefix.maskLen--) {
+                ntry.prefix.setMask(ntry.prefix.maskLen);
+                if (lst.find(ntry) == null) {
+                    continue;
+                }
+                fnd++;
+                a += " " + addrPrefix.ip2str(ntry.prefix);
+            }
+            if (!mtch.matches(fnd)) {
+                continue;
+            }
+            res.add(a);
+        }
+        return res;
     }
 
 }

@@ -2715,6 +2715,10 @@ public class userShow {
                 doShowRouteCompr(4);
                 return null;
             }
+            if (a.equals("overlap")) {
+                doShowRouteOvrlp(4);
+                return null;
+            }
             if (a.equals("unused")) {
                 doShowRouteUnusd(4);
                 return null;
@@ -3080,6 +3084,10 @@ public class userShow {
             }
             if (a.equals("compress")) {
                 doShowRouteCompr(6);
+                return null;
+            }
+            if (a.equals("overlap")) {
+                doShowRouteOvrlp(6);
                 return null;
             }
             if (a.equals("unused")) {
@@ -5148,6 +5156,12 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
         }
+        if (a.equals("overlap")) {
+            tabIntMatcher mtch = new tabIntMatcher();
+            mtch.fromString(cmd.word());
+            rdr.putStrTab(tabRouteUtil.overlapTable(tab, mtch));
+            return;
+        }
         if (a.equals("deaggregated")) {
             tab = tabRouteUtil.deaggregatedPaths(tab);
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
@@ -5569,6 +5583,16 @@ public class userShow {
         tabRoute<addrIP> tab = new tabRoute<addrIP>(fwd.actualU);
         tabRouteUtil.compressTable(rtrBgpUtil.sfiUnicast, tab, null);
         doShowRoutes(fwd, tab, 1);
+    }
+
+    private void doShowRouteOvrlp(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        tabIntMatcher mtch = new tabIntMatcher();
+        mtch.fromString(cmd.word());
+        rdr.putStrTab(tabRouteUtil.overlapTable(fwd.actualU, mtch));
     }
 
     private void doShowRouteUnusd(int ver) {
