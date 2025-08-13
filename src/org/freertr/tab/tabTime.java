@@ -133,6 +133,26 @@ public class tabTime implements Comparable<tabTime> {
     }
 
     /**
+     * patch file name
+     *
+     * @param fn filename to patch
+     * @param zoNam name
+     * @param tim time
+     * @return patched file name
+     */
+    public static String patchFileName(String fn, String zoNam, long tim) {
+        Calendar cal = time2calendar(zoNam, tim);
+        fn = fn.replaceAll("%year%", "" + cal.get(Calendar.YEAR));
+        fn = fn.replaceAll("%month%", "" + (cal.get(Calendar.MONTH) + 1));
+        fn = fn.replaceAll("%day%", "" + cal.get(Calendar.DAY_OF_MONTH));
+        fn = fn.replaceAll("%hour%", "" + cal.get(Calendar.HOUR_OF_DAY));
+        fn = fn.replaceAll("%minute%", "" + cal.get(Calendar.MINUTE));
+        fn = fn.replaceAll("%second%", "" + cal.get(Calendar.SECOND));
+        fn = fn.replaceAll("%millis%", "" + cal.get(Calendar.MILLISECOND));
+        return fn;
+    }
+
+    /**
      * matches a date or not
      *
      * @param cal calendar

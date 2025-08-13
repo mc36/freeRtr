@@ -3,6 +3,8 @@ package org.freertr.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import org.freertr.cfg.cfgAll;
+import org.freertr.tab.tabTime;
 import org.freertr.user.userFlash;
 
 /**
@@ -152,7 +154,8 @@ public class logFil {
      */
     public synchronized boolean open(boolean rot) {
         if (rot) {
-            userFlash.rename(logFilNam, logRotNam, true, true);
+            String a = tabTime.patchFileName(logRotNam, cfgAll.timeZoneName, bits.getTime());
+            userFlash.rename(logFilNam, a, true, true);
             logFilTim = bits.getTime();
         }
         try {
@@ -195,7 +198,8 @@ public class logFil {
             logFilHnd.close();
         } catch (Exception e) {
         }
-        userFlash.rename(logFilNam, logRotNam, true, true);
+        String a = tabTime.patchFileName(logRotNam, cfgAll.timeZoneName, bits.getTime());
+        userFlash.rename(logFilNam, a, true, true);
         try {
             logFilHnd = new PrintStream(new FileOutputStream(logFilNam, true));
         } catch (Exception e) {
