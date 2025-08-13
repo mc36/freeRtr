@@ -17438,3 +17438,6 @@ failed: wireguard over ipv4
 ---------------------------------- 2025-08-13 14:16:08 25.8.13
 no failed: wireguard over ipv4
 qc pass: wireguard over ipv4
+---------------------------------- 2025-08-13 19:52:15 25.8.13
+no qc pass: wireguard over ipv6
+failed: wireguard over ipv6
