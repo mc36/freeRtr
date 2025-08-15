@@ -28,6 +28,7 @@ import org.freertr.util.state;
 import org.freertr.util.syncInt;
 import org.freertr.enc.encTlv;
 import org.freertr.tab.tabLabelEntry;
+import org.freertr.user.userFormat;
 import org.freertr.util.cmds;
 
 /**
@@ -1133,6 +1134,43 @@ public class rtrIsisLevel implements Runnable {
      */
     public void stopNow() {
         todo.and(2);
+    }
+
+    /**
+     * show afi inconsistency
+     *
+     * @return inconsistency list
+     */
+    public userFormat showAfiIncons() {
+        int protoId = lower.getNLPIDval(false);
+        int otherId = lower.getNLPIDval(true);
+        userFormat res = new userFormat("|", "router|this|other");
+        for (int i = 0; i < lsps.size(); i++) {
+            rtrIsisLsp lsp = lsps.get(i);
+            if (lsp == null) {
+                continue;
+            }
+            packHolder pck = lsp.getPayload();
+            rtrIsisLevelSpf src = new rtrIsisLevelSpf(lsp.srcID, lsp.nodID);
+            encTlv tlv = rtrIsis.getTlv();
+            boolean protoSupp = false;
+            boolean otherSupp = false;
+            for (;;) {
+                if (tlv.getBytes(pck)) {
+                    break;
+                }
+                if (tlv.valTyp != rtrIsisLsp.tlvProtSupp) {
+                    continue;
+                }
+                for (int o = 0; o < tlv.valSiz; o++) {
+                    int currId = bits.getByte(tlv.valDat, o);
+                    protoSupp |= currId == protoId;
+                    otherSupp |= currId == otherId;
+                }
+            }
+            res.add(src + "|" + cmds.upDown(protoSupp) + "|" + cmds.upDown(otherSupp));
+        }
+        return res;
     }
 
     /**

@@ -2487,6 +2487,17 @@ public class rtrIsis extends ipRtr {
     }
 
     /**
+     * show afi inconsistency
+     *
+     * @param level level number
+     * @return inconsistency list
+     */
+    public userFormat showAfiIncons(int level) {
+        rtrIsisLevel lev = getLevel(level);
+        return lev.showAfiIncons();
+    }
+
+    /**
      * show hostnames
      *
      * @param level level number

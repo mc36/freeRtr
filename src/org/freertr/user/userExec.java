@@ -341,7 +341,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{4}, "compress", "compressed unicast routing table");
         hl.add(null, false, 4, new int[]{-1}, "<name:vrf>", "name of routing table");
         hl.add(null, false, 3, new int[]{4, -1}, "overlap", "overlapping advertisements of prefixes");
-        hl.add(null, false, 4, new int[]{5,-1}, "<name:vrf>", "name of routing table");
+        hl.add(null, false, 4, new int[]{5, -1}, "<name:vrf>", "name of routing table");
         hl.add(null, false, 5, new int[]{-1}, "[str]", "int matcher");
         hl.add(null, false, 3, new int[]{4}, "unused", "unused unicast routing table");
         hl.add(null, false, 4, new int[]{-1}, "<name:vrf>", "name of routing table");
@@ -888,6 +888,8 @@ public class userExec {
         hl.add(null, false, 9, new int[]{10}, "<num>", "multiply y coordinate");
         hl.add(null, false, 10, new int[]{11}, "<num>", "substract x coordinate");
         hl.add(null, false, 11, new int[]{7, -1}, "<num>", "substract y coordinate");
+        hl.add(null, false, 5, new int[]{6}, "afinconsistent", "inconsistent advertisements of afi");
+        hl.add(null, false, 6, new int[]{-1}, "<num>", "level number");
         hl.add(null, false, 5, new int[]{6}, "lnkinconsistent", "inconsistent advertisements of metrics");
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "level number");
         hl.add(null, false, 7, new int[]{-1}, "[str]", "int matcher");

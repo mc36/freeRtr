@@ -3732,6 +3732,11 @@ public class userShow {
             rdr.putStrTab(r.isis.showMetIncons(i, mtch));
             return;
         }
+        if (a.equals("afinconsistent")) {
+            int i = bits.str2num(cmd.word());
+            rdr.putStrTab(r.isis.showAfiIncons(i));
+            return;
+        }
         if (a.equals("route")) {
             doShowRoutes(r.isis.fwdCore, r.isis.showRoute(bits.str2num(cmd.word())), 1);
             return;
