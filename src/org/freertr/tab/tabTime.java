@@ -141,6 +141,9 @@ public class tabTime implements Comparable<tabTime> {
      * @return patched file name
      */
     public static String patchFileName(String fn, String zoNam, long tim) {
+        if (fn == null) {
+            return null;
+        }
         Calendar cal = time2calendar(zoNam, tim);
         fn = fn.replaceAll("%year%", "" + cal.get(Calendar.YEAR));
         fn = fn.replaceAll("%month%", "" + (cal.get(Calendar.MONTH) + 1));
