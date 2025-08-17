@@ -17468,3 +17468,6 @@ failed: dhcp with excluded address
 ---------------------------------- 2025-08-16 19:09:43 25.8.16
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2025-08-17 14:19:36 25.8.17
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard
