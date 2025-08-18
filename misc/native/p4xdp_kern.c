@@ -616,7 +616,7 @@ __u32 xdp_router(struct xdp_md *ctx) {
     hash ^= get32msb(macaddr, 8);
     __u32 sgt = 0;
 
-    for (__u32 rounds = 0; rounds < 8; rounds++) {
+    for (__u32 rounds = 0; rounds < 3; rounds++) {
 
         __u64 bufP = sizeof(macaddr) + 2;
         revalidatePacket(bufP);
