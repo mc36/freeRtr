@@ -5331,6 +5331,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("incr time|" + incrTime + "|ms");
         rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgOpen, msgStats, "|", "|");
         rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgUpdate, msgStats, "|", "|");
+        rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgRefrsh, msgStats, "|", "|");
+        rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgCapability, msgStats, "|", "|");
         rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgNotify, msgStats, "|", "|");
         rtrBgpDump.getUnReachStats(l, reachabStat, unreachStat, "|", "|");
         rtrBgpDump.getUnknwSum(l, false, msgStats, "|", "|");

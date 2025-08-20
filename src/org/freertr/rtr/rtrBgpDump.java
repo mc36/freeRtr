@@ -389,7 +389,7 @@ public class rtrBgpDump {
             if (!rtrBgpUtil.isUnknownAttr(i)) {
                 continue;
             }
-            res.plus(c[i]);
+            res = res.plus(c[i]);
         }
         return res;
     }
@@ -406,7 +406,7 @@ public class rtrBgpDump {
             if (!rtrBgpUtil.isUnknownMsg(i)) {
                 continue;
             }
-            res.plus(c[i]);
+            res = res.plus(c[i]);
         }
         return res;
     }
