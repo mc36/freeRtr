@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v25.8.14-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-08-14 21:08:26, took 01:20:49, with 10 workers, on 844 cases, 1 failed, 0 traces, 19 retries
+-;-;-;freeRouter v25.8.21-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-08-21 17:38:27, took 01:21:39, with 10 workers, on 844 cases, 2 failed, 0 traces, 20 retries
 -;-;-;java -Xmx256m -jar rtr.jar, bmv2
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -756,7 +756,7 @@ http://sources.freertr.org/cfg/p4lang-rout402.tst;p4lang-rout402.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout403.tst;p4lang-rout403.tst;success;p4lang: vpls/ldp over backplane
 http://sources.freertr.org/cfg/p4lang-rout404.tst;p4lang-rout404.tst;success;p4lang: evpn/cmac over backplane
 http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;#6-run-r5 tping 100 10 3.3.3.104 vrf v1 sou lo1;p4lang: routed vpls/ldp over backplane
-http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;success;p4lang: routed evpn/cmac over backplane
+http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;#6-run-r5 tping 100 10 3.3.3.105 vrf v1 sou lo1;p4lang: routed evpn/cmac over backplane
 http://sources.freertr.org/cfg/p4lang-rout407.tst;p4lang-rout407.tst;success;p4lang: vpn mldp egress edge
 http://sources.freertr.org/cfg/p4lang-rout408.tst;p4lang-rout408.tst;success;p4lang: vpn mldp ingress edge
 http://sources.freertr.org/cfg/p4lang-rout409.tst;p4lang-rout409.tst;success;p4lang: vpn bier egress edge

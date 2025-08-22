@@ -384,17 +384,17 @@ qc pass: p4lang: hairpin vlan routing
 qc pass: p4lang: hairpin vlan bridging
 qc pass: p4lang: hairpin vlan mpls
 qc pass: p4lang: hairpin pppoe routing
-qc pass: p4lang: hairpin vlan pppoe routing
+failed: p4lang: hairpin vlan pppoe routing
 qc pass: p4lang: hairpin pppoe mpls
-qc pass: p4lang: hairpin vlan pppoe mpls
+failed: p4lang: hairpin vlan pppoe mpls
 qc pass: p4lang: hairpin vpls/ldp with bgp
-qc pass: p4lang: hairpin vlan vpls/ldp with bgp
+failed: p4lang: hairpin vlan vpls/ldp with bgp
 qc pass: p4lang: hairpin eompls
 qc pass: p4lang: hairpin vlan eompls
 qc pass: p4lang: vlan evpn/cmac with bgp
 qc pass: p4lang: bundle vlan evpn/cmac with bgp
 qc pass: p4lang: hairpin evpn/cmac with bgp
-qc pass: p4lang: hairpin vlan evpn/cmac with bgp
+failed: p4lang: hairpin vlan evpn/cmac with bgp
 qc pass: p4lang: gre routing over ipv4
 qc pass: p4lang: gre routing over ipv6
 qc pass: p4lang: gre routing over ipv4 loopback
@@ -403,7 +403,7 @@ qc pass: p4lang: gre routing over vlan
 qc pass: p4lang: gre routing over bundle
 qc pass: p4lang: gre routing over bundle vlan
 qc pass: p4lang: gre routing over hairpin
-qc pass: p4lang: gre routing over hairpin vlan
+failed: p4lang: gre routing over hairpin vlan
 qc pass: p4lang: gre routing over bridge
 qc pass: p4lang: gre routing over vlan bridge
 qc pass: p4lang: gre mpls over ipv4
@@ -414,7 +414,7 @@ qc pass: p4lang: gre mpls over vlan
 qc pass: p4lang: gre mpls over bundle
 qc pass: p4lang: gre mpls over bundle vlan
 qc pass: p4lang: gre mpls over hairpin
-qc pass: p4lang: gre mpls over hairpin vlan
+failed: p4lang: gre mpls over hairpin vlan
 qc pass: p4lang: gre mpls over bridge
 qc pass: p4lang: gre mpls over vlan bridge
 qc pass: p4lang: l2tp routing over ipv4
@@ -674,26 +674,26 @@ qc pass: p4lang: qinq vpls/ldp with bgp
 qc pass: p4lang: qinq eompls
 qc pass: p4lang: bundle qinq vpls/ldp with bgp
 qc pass: p4lang: bundle qinq eompls
-qc pass: p4lang: qinq pppoe routing
-qc pass: p4lang: qinq pppoe mpls
-qc pass: p4lang: hairpin qinq routing
-qc pass: p4lang: hairpin qinq bridging
-qc pass: p4lang: hairpin qinq mpls
-qc pass: p4lang: hairpin qinq pppoe routing
-qc pass: p4lang: hairpin qinq vpls/ldp with bgp
-qc pass: p4lang: hairpin qinq eompls
+failed: p4lang: qinq pppoe routing
+failed: p4lang: qinq pppoe mpls
+failed: p4lang: hairpin qinq routing
+failed: p4lang: hairpin qinq bridging
+failed: p4lang: hairpin qinq mpls
+failed: p4lang: hairpin qinq pppoe routing
+failed: p4lang: hairpin qinq vpls/ldp with bgp
+failed: p4lang: hairpin qinq eompls
 qc pass: p4lang: qinq evpn/cmac with bgp
 qc pass: p4lang: bundle qinq evpn/cmac with bgp
-qc pass: p4lang: hairpin qinq evpn/cmac with bgp
-qc pass: p4lang: gre routing over qinq
-qc pass: p4lang: gre routing over bundle qinq
-qc pass: p4lang: gre routing over hairpin qinq
-qc pass: p4lang: gre routing over qinq bridge
-qc pass: p4lang: gre mpls over qinq
-qc pass: p4lang: l2tp routing over qinq
-qc pass: p4lang: l2tp mpls over qinq
-qc pass: p4lang: vxlan over qinq
-qc pass: p4lang: pckoudp over qinq
+failed: p4lang: hairpin qinq evpn/cmac with bgp
+failed: p4lang: gre routing over qinq
+failed: p4lang: gre routing over bundle qinq
+failed: p4lang: gre routing over hairpin qinq
+failed: p4lang: gre routing over qinq bridge
+failed: p4lang: gre mpls over qinq
+failed: p4lang: l2tp routing over qinq
+failed: p4lang: l2tp mpls over qinq
+failed: p4lang: vxlan over qinq
+failed: p4lang: pckoudp over qinq
 qc pass: p4lang: multicast qinq routing
 qc pass: p4lang: multicast bundle qinq routing
 qc pass: p4lang: mldp qinq core
@@ -702,8 +702,8 @@ qc pass: p4lang: mldp qinq egress edge
 qc pass: p4lang: mldp qinq ingress edge
 qc pass: p4lang: bier qinq core
 qc pass: p4lang: bier bundle qinq core
-qc pass: p4lang: qinq nsh
-qc pass: p4lang: qinq polka
+failed: p4lang: qinq nsh
+failed: p4lang: qinq polka
 qc pass: p4lang: l2vpn over bundle qinq mpls
 qc pass: p4lang: l3vpn over bundle qinq mpls
 qc pass: p4lang: qinq local connect
@@ -739,8 +739,8 @@ qc pass: p4lang: pwhe mpls pop
 qc pass: p4lang: pwhe mpls push
 qc pass: p4lang: l2vpn over pwhe mpls
 qc pass: p4lang: l3vpn over pwhe mpls
-qc pass: p4lang: pwhe routing over qinq
-qc pass: p4lang: pwhe mpls over qinq
+failed: p4lang: pwhe routing over qinq
+failed: p4lang: pwhe mpls over qinq
 qc pass: p4lang: bridge routing over backplane
 qc pass: p4lang: mixed bridge routing over backplane
 qc pass: p4lang: routed vpls/ldp with bgp
