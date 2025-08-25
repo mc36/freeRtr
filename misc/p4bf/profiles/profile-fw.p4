@@ -4,6 +4,7 @@
 #define HAVE_RACL
 #define HAVE_INSPECT
 #define HAVE_SGT
+##define HAVE_LOCONN
 ##define HAVE_MPLS
 ##define HAVE_FLOWSPEC
 ##define HAVE_COPP

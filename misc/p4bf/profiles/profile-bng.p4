@@ -1,7 +1,6 @@
 #ifdef PROFILE_BNG
 #define HAVE_ALPM
 #define HAVE_PPPOE
-##define HAVE_LOCONN
 ##define HAVE_MPLS
 ##define HAVE_FLOWSPEC
 ##define HAVE_COPP

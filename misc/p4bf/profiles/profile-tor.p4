@@ -2,6 +2,7 @@
 #define HAVE_VXLAN
 #define HAVE_TUN
 #define HAVE_BRIDGE
+##define HAVE_LOCONN
 ##define HAVE_COPP
 ##define HAVE_INACL
 ##define HAVE_INQOS

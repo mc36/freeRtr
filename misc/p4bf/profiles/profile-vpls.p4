@@ -1,6 +1,7 @@
 #ifdef PROFILE_VPLS
 #define HAVE_MPLS
 #define HAVE_BRIDGE
+##define HAVE_LOCONN
 ##define HAVE_COPP
 ##define HAVE_INACL
 ##define HAVE_INQOS

@@ -1,5 +1,6 @@
 #ifdef PROFILE_RAWIP
 #define HAVE_ALPM
+##define HAVE_LOCONN
 ##define HAVE_COPP
 ##define HAVE_INACL
 ##define HAVE_INQOS

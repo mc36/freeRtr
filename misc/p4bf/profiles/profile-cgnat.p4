@@ -1,5 +1,6 @@
 #ifdef PROFILE_CGNAT
 #define HAVE_NAT
+##define HAVE_LOCONN
 ##define HAVE_MPLS
 ##define HAVE_FLOWSPEC
 ##define HAVE_COPP

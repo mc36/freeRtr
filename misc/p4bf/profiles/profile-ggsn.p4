@@ -2,6 +2,7 @@
 #define HAVE_ALPM
 #define HAVE_GTP
 #define HAVE_TUN
+##define HAVE_LOCONN
 ##define HAVE_MPLS
 ##define HAVE_FLOWSPEC
 ##define HAVE_COPP

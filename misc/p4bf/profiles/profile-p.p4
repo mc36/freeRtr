@@ -2,6 +2,7 @@
 #define HAVE_ALPM
 #define HAVE_MPLS
 ##define HAVE_DUPLAB
+##define HAVE_LOCONN
 ##HAVE_COPP
 ##HAVE_INACL
 ##HAVE_INQOS
@@ -25,6 +26,6 @@
 #define NEXTHOP_TABLE_SIZE                     512
 
 
-#define MPLS_TABLE_SIZE                165888
+#define MPLS_TABLE_SIZE                106496
 #define _TABLE_SIZE_P4_
 #endif

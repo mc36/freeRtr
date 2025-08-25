@@ -1,5 +1,6 @@
 #ifdef PROFILE_CPE
 #define HAVE_ALPM
+##define HAVE_LOCONN
 ##define HAVE_MCAST
 ##define HAVE_PBR
 ##define HAVE_NAT

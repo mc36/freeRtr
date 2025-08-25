@@ -1,5 +1,6 @@
 #ifdef PROFILE_SRV6
 #define HAVE_SRV6
+##define HAVE_LOCONN
 ##define HAVE_MCAST
 ##define HAVE_FLOWSPEC
 ##define HAVE_BRIDGE
