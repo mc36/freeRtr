@@ -667,9 +667,18 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      * update vrf history
      */
     public void alertHistory() {
-    
-
-    ///////////////
+        String a = hstryT.threshold(thresholdT);
+        if (a != null) {
+            logger.info("vrf " + vrfName + " traffic " + a);
+        }
+        a = hstryH.threshold(thresholdT);
+        if (a != null) {
+            logger.info("vrf " + vrfName + " hwtraffic " + a);
+        }
+        a = hstryR.threshold(thresholdR);
+        if (a != null) {
+            logger.info("vrf " + vrfName + " routes " + a);
+        }
     }
 
     /**

@@ -838,6 +838,14 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "<num>", "routes");
         l.add(null, false, 1, new int[]{2}, "incremental6", "specify ipv6 incremental limit");
         l.add(null, false, 2, new int[]{-1}, "<num>", "routes");
+        l.add(null, false, 1, new int[]{2}, "threshold-traffic", "specify alarm limit");
+        l.add(null, false, 1, new int[]{2}, "threshold4traffic", "specify ipv4 alarm limit");
+        l.add(null, false, 1, new int[]{2}, "threshold6traffic", "specify ipv6 alarm limit");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "percent");
+        l.add(null, false, 1, new int[]{2}, "threshold-route", "specify alarm limit");
+        l.add(null, false, 1, new int[]{2}, "threshold4route", "specify ipv4 alarm limit");
+        l.add(null, false, 1, new int[]{2}, "threshold6route", "specify ipv6 alarm limit");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "percent");
     }
 
     private List<Long> string2rts(cmds cmd) {
@@ -1409,8 +1417,36 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
             fwd4.incrLimit = bits.str2num(cmd.word());
             return;
         }
-        if (a.equals("route6limit")) {
+        if (a.equals("incremental6")) {
             fwd6.incrLimit = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("threshold4traffic")) {
+            fwd4.thresholdT = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("threshold6traffic")) {
+            fwd6.thresholdT = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("threshold-traffic")) {
+            int res = bits.str2num(cmd.word());
+            fwd4.thresholdT = res;
+            fwd6.thresholdT = res;
+            return;
+        }
+        if (a.equals("threshold-route")) {
+            int res = bits.str2num(cmd.word());
+            fwd4.thresholdR = res;
+            fwd6.thresholdR = res;
+            return;
+        }
+        if (a.equals("threshold4route")) {
+            fwd4.thresholdR = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("threshold6route")) {
+            fwd6.thresholdR = bits.str2num(cmd.word());
             return;
         }
         if (!a.equals(cmds.negated)) {
@@ -1764,6 +1800,32 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         }
         if (a.equals("packet6filter")) {
             fwd6.packetFilter = null;
+            return;
+        }
+        if (a.equals("threshold4traffic")) {
+            fwd4.thresholdT = 0;
+            return;
+        }
+        if (a.equals("threshold6traffic")) {
+            fwd6.thresholdT = 0;
+            return;
+        }
+        if (a.equals("threshold-traffic")) {
+            fwd4.thresholdT = 0;
+            fwd6.thresholdT = 0;
+            return;
+        }
+        if (a.equals("threshold-route")) {
+            fwd4.thresholdR = 0;
+            fwd6.thresholdR = 0;
+            return;
+        }
+        if (a.equals("threshold4route")) {
+            fwd4.thresholdR = 0;
+            return;
+        }
+        if (a.equals("threshold6route")) {
+            fwd6.thresholdR = 0;
             return;
         }
         cmd.badCmd();

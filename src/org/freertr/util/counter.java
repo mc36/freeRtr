@@ -400,6 +400,48 @@ public class counter implements Comparable<counter> {
     }
 
     /**
+     * percent values
+     *
+     * @param old percent this
+     * @param pkt packets too
+     * @param drp drops too
+     * @return percent value
+     */
+    public int percent(counter old, boolean pkt, boolean drp) {
+        int res = percent(old.byteRx, byteRx);
+        res += percent(old.byteTx, byteTx);
+        if (!pkt) {
+            if (!drp) {
+                return res / 2;
+            }
+            res += percent(old.byteDr, byteDr);
+            return res / 3;
+        }
+        res += percent(old.packRx, packRx);
+        res += percent(old.packTx, packTx);
+        if (!drp) {
+            return res / 4;
+        }
+        res += percent(old.packDr, packDr);
+        res += percent(old.byteDr, byteDr);
+        return res / 6;
+    }
+
+    private int percent(long prv, long cur) {
+        if (prv < 1) {
+            return 100;
+        }
+        if (cur < 1) {
+            return 100;
+        }
+        if (cur > prv) {
+            return (int) ((cur * 100) / prv);
+        } else {
+            return (int) ((prv * 100) / cur);
+        }
+    }
+
+    /**
      * substract values
      *
      * @param old substract this

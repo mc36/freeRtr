@@ -49,6 +49,27 @@ public class history {
     }
 
     /**
+     * threshold message
+     *
+     * @param prc percent
+     * @return text, null if below
+     */
+    public String threshold(int prc) {
+        if (prc < 1) {
+            return null;
+        }
+        int siz = mina.size();
+        if (siz < 2) {
+            return null;
+        }
+        int r = mina.get(siz - 1).percent(mina.get(siz - 2), false, false) - 100;
+        if (r < prc) {
+            return null;
+        }
+        return "changed by " + r + " percent";
+    }
+
+    /**
      * update counter
      *
      * @param cur current counter
