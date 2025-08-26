@@ -52,8 +52,9 @@ public class history {
      * update counter
      *
      * @param cur current counter
+     * @param inc value increasing
      */
-    public void update(counter cur) {
+    public void update(counter cur, boolean inc) {
         long tim = bits.getTime();
         int pst = (int) ((tim - otim) / 1000);
         if (pst < 1) {
@@ -62,14 +63,18 @@ public class history {
         if (pst > limit) {
             pst = limit;
         }
-        counter res = cur.minus(ocnt);
-        if (res.compareTo(new counter()) < 0) {
-            res = new counter();
+        if (inc) {
+            counter res = cur.minus(ocnt);
+            if (res.compareTo(new counter()) < 0) {
+                res = new counter();
+            }
+            res = res.div(pst);
+            update(secs, res, pst);
+        } else {
+            update(secs, cur.copyBytes(), pst);
         }
-        res = res.div(pst);
         ocnt = cur.copyBytes();
         otim = tim;
-        update(secs, res, pst);
         secc += pst;
         if (secc <= limit) {
             return;

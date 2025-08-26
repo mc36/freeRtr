@@ -810,14 +810,11 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             ntry = old;
         } else {
             ntry.hist = new history();
-            ntry.cntr = new counter();
         }
         counter cntr = new counter();
         cntr.packRx = bits.str2long(val) * mul;
         cntr.packTx = cntr.packRx;
-        cntr = cntr.plus(ntry.cntr);
-        ntry.hist.update(cntr);
-        ntry.cntr = cntr;
+        ntry.hist.update(cntr, false);
     }
 
     private void doLineMem(String a) {
@@ -1347,8 +1344,6 @@ class cfgSensorMem implements Comparable<cfgSensorMem> {
     public final String key;
 
     public final int col;
-
-    public counter cntr;
 
     public history hist;
 

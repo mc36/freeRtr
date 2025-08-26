@@ -6052,10 +6052,21 @@ public class userShow {
     }
 
     private void doShowVrfRout() {
-        userFormat l = new userFormat("|", "name|rd|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6", "2|2ifc|2uni|2mlt|2flw|2lab|2con");
+        if (cmd.size() > 0) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            String a = cmd.word();
+            doShowHistory(a, vrf.fwd4.hstryR);
+            doShowHistory(a, vrf.fwd6.hstryR);
+            return;
+        }
+        userFormat l = new userFormat("|", "name|rd|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6|v4|v6", "2|2ifc|2uni|2mlt|2flw|2lab|2con|2nat|2grp");
         for (int o = 0; o < cfgAll.vrfs.size(); o++) {
             cfgVrf v = cfgAll.vrfs.get(o);
-            l.add(v.name + "|" + tabRouteUtil.rd2string(v.fwd4.rd) + "|" + v.fwd4.ifaces.size() + "|" + v.fwd6.ifaces.size() + "|" + v.fwd4.actualU.size() + "|" + v.fwd6.actualU.size() + "|" + v.fwd4.actualM.size() + "|" + v.fwd6.actualM.size() + "|" + v.fwd4.actualF.size() + "|" + v.fwd6.actualF.size() + "|" + v.fwd4.labeldR.size() + "|" + v.fwd6.labeldR.size() + "|" + v.fwd4.connedR.size() + "|" + v.fwd6.connedR.size());
+            l.add(v.name + "|" + tabRouteUtil.rd2string(v.fwd4.rd) + "|" + v.fwd4.ifaces.size() + "|" + v.fwd6.ifaces.size() + "|" + v.fwd4.actualU.size() + "|" + v.fwd6.actualU.size() + "|" + v.fwd4.actualM.size() + "|" + v.fwd6.actualM.size() + "|" + v.fwd4.actualF.size() + "|" + v.fwd6.actualF.size() + "|" + v.fwd4.labeldR.size() + "|" + v.fwd6.labeldR.size() + "|" + v.fwd4.connedR.size() + "|" + v.fwd6.connedR.size() + "|" + v.fwd4.natTrns.size() + "|" + v.fwd6.natTrns.size() + "|" + v.fwd4.groups.size() + "|" + v.fwd6.groups.size());
         }
         rdr.putStrTab(l);
     }

@@ -1997,12 +1997,11 @@ public class ipFwdTab {
     public static void checkVrfs() {
         for (int i = cfgAll.vrfs.size() - 1; i >= 0; i--) {
             cfgVrf ntry = cfgAll.vrfs.get(i);
-            ntry.fwd4.hstryH.update(ntry.fwd4.cntrH);
-            ntry.fwd6.hstryH.update(ntry.fwd6.cntrH);
-            ntry.fwd4.hstryT.update(ntry.fwd4.cntrT);
-            ntry.fwd6.hstryT.update(ntry.fwd6.cntrT);
-            ntry.fwd4.hstryL.update(ntry.fwd4.cntrL);
-            ntry.fwd6.hstryL.update(ntry.fwd6.cntrL);
+            if (ntry == null) {
+                continue;
+            }
+            ntry.fwd4.updateHistory();
+            ntry.fwd6.updateHistory();
         }
     }
 

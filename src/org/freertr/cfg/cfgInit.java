@@ -1678,8 +1678,7 @@ public class cfgInit implements Runnable {
         cntr.byteRx = bits.getTime() / 8;
         timerHistory = new history(cntr);
         Runtime rt = Runtime.getRuntime();
-        long oldM = rt.freeMemory() / 8;
-        cntr.byteRx = oldM;
+        cntr.byteRx = rt.freeMemory() / 8;
         memoryHistory = new history(cntr);
         for (;;) {
             try {
@@ -1691,10 +1690,9 @@ public class cfgInit implements Runnable {
                 ifcThread.checkIfaces();
                 ipFwdTab.checkVrfs();
                 cntr.byteRx = bits.getTime() / 8;
-                timerHistory.update(cntr);
-                oldM += rt.freeMemory() / 8;
-                cntr.byteRx = oldM;
-                memoryHistory.update(cntr);
+                timerHistory.update(cntr, true);
+                cntr.byteRx = rt.freeMemory() / 8;
+                memoryHistory.update(cntr, false);
                 if ((rnd % 120) != 0) {
                     continue;
                 }

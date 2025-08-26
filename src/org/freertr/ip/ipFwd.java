@@ -346,6 +346,16 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     public history hstryL;
 
     /**
+     * route counter for this vrf
+     */
+    public counter cntrR;
+
+    /**
+     * route historic for this vrf
+     */
+    public history hstryR;
+
+    /**
      * netflow exporter
      */
     public clntNetflow netflow;
@@ -634,11 +644,29 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         hstryT = new history();
         cntrL = new counter();
         hstryL = new history();
+        cntrR = new counter();
+        hstryR = new history();
         needFull = new syncInt(3);
         triggerUpdate = new notifier();
         ipFwdTab.updateEverything(this);
         icc.setForwarder(this);
         mhst.setForwarder(this, icc);
+    }
+
+    /**
+     * update vrf history
+     */
+    public void updateHistory() {
+        hstryH.update(cntrH, true);
+        hstryT.update(cntrT, true);
+        hstryL.update(cntrL, true);
+        cntrR.byteRx = actualU.size() / 8;
+        cntrR.byteTx = actualM.size() / 8;
+        cntrR.byteDr = actualF.size() / 8;
+        cntrR.packRx = labeldR.size() / 8;
+        cntrR.packTx = natTrns.size() / 8;
+        cntrR.packDr = groups.size() / 8;
+        hstryR.update(cntrR, false);
     }
 
     /**

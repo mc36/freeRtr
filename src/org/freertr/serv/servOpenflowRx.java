@@ -110,7 +110,7 @@ class servOpenflowRx implements Runnable {
                             ntry.ifc.ethtyp.hwCntr.byteRx = pckB.msbGetQ(24);
                             ntry.ifc.ethtyp.hwCntr.byteTx = pckB.msbGetQ(32);
                             ntry.ifc.ethtyp.hwCntr.packDr = pckB.msbGetQ(40) + pckB.msbGetQ(48);
-                            ntry.ifc.ethtyp.hwHstry.update(ntry.ifc.ethtyp.hwCntr);
+                            ntry.ifc.ethtyp.hwHstry.update(ntry.ifc.ethtyp.hwCntr, true);
                             if (ntry.ifc.ethtyp.hwSub == null) {
                                 break;
                             }
