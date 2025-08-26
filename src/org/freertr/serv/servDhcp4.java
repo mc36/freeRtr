@@ -188,16 +188,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     private List<cfgIfc> relayInterfaces = new ArrayList<cfgIfc>();
 
     /**
-     * DHCP Relay Statistics
-     */
-    private servDhcp4RelayStats relayStats = new servDhcp4RelayStats();
-
-    /**
-     * Statistics reset timestamp
-     */
-    private long statsResetTime = bits.getTime();
-
-    /**
      * defaults text
      */
     public final static userFilter[] defaultF = {
@@ -409,31 +399,16 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                         logger.debug("dhcp relay client->server from " + id.peerAddr + " hops=" + dhcp.bootpHops);
                     }
 
-                    // Update statistics
-                    relayStats.packetsClientToServer++;
-                    relayStats.totalPacketsProcessed++;
-
-                    // Track hop count statistics BEFORE incrementing
-                    relayStats.hopCountTotal += dhcp.bootpHops;
-
                     // Check max hop count to prevent loops
                     if (dhcp.bootpHops >= maxHopCount) {
                         if (debugger.servDhcp4traf) {
                             logger.debug("dhcp4 relay max hop count exceeded (" + dhcp.bootpHops + " >= " + maxHopCount + ")");
                         }
-                        relayStats.maxHopCountExceeded++;
-                        relayStats.packetsDropped++;
-                        relayStats.updateErrorProcessingTime(bits.getTime() - startTime);
                         return false; // Drop packet - don't process further
                     }
 
                     // Increment hop count
                     dhcp.bootpHops++;
-
-                    // Track multi-hop statistics (after incrementing)
-                    if (dhcp.bootpHops > 1) {
-                        relayStats.multiHopPackets++;
-                    }
 
                     // Set GIADDR to our interface IP if not already set by another relay
                     if (dhcp.bootpGiaddr.isEmpty()) {
@@ -452,8 +427,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                                 logger.debug("dhcp4 relay nothing agent relay mode options");
                             }
                             // Copy existing option and we'll add our own sub-options
-                            relayStats.agentOptionsAppended++;
-                            relayStats.appendOperations++;
                             break;
 
                         case 1:
@@ -461,8 +434,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                                 logger.debug("dhcp4 relay replacing existing agent options");
                             }
                             // Don't copy existing option, we'll add our own
-                            relayStats.agentOptionsReplaced++;
-                            relayStats.replaceOperations++;
                             dhcp.dhcpAgentInfo = new byte[0];
                             need2add = true;
                             break;
@@ -472,8 +443,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                                 logger.debug("dhcp4 relay appending to existing agent options");
                             }
                             // Copy existing option and we'll add our own sub-options
-                            relayStats.agentOptionsAppended++;
-                            relayStats.appendOperations++;
                             need2add = true;
                             break;
 
@@ -482,8 +451,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                                 logger.debug("dhcp4 relay forwarding existing agent options unchanged");
                             }
                             // Copy existing option as-is, don't add our own
-                            relayStats.agentOptionsForwarded++;
-                            relayStats.forwardOperations++;
                             break;
 
                         case 4:
@@ -495,10 +462,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                                 logger.debug("dhcp4 relay discarding packet with existing agent options");
                             }
                             // Drop the packet
-                            relayStats.agentOptionsDiscarded++;
-                            relayStats.discardOperations++;
-                            relayStats.packetsDropped++;
-                            relayStats.updateProcessingTime(bits.getTime() - startTime);
                             return false; // Discard packet
 
                         default:
@@ -506,17 +469,12 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                                 logger.debug("dhcp4 relay unknown agent relay mode " + agentRelayMode + ", using append");
                             }
                             // Copy existing option and we'll add our own sub-options
-                            relayStats.agentOptionsAppended++;
-                            relayStats.appendOperations++;
                             break;
                     }
                     if (need2add) {
                         if (debugger.servDhcp4traf) {
                             logger.debug("dhcp4 relay adding agent information option");
                         }
-
-                        // Update statistics
-                        relayStats.agentOptionsAdded++;
 
                         // Build sub-options data
                         List<Byte> subOptionData = new ArrayList<Byte>();
@@ -543,7 +501,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                         for (int i = 0; i < buf.length; i++) {
                             subOptionData.add(buf[i]);
                         }
-                        relayStats.circuitIdAdded++;
 
                         // Sub-option 2: Remote ID
                         switch (remoteIdTemplate) {
@@ -565,7 +522,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                         for (int i = 0; i < buf.length; i++) {
                             subOptionData.add(buf[i]);
                         }
-                        relayStats.remoteIdAdded++;
 
                         // Sub-option 5: Link Selection
                         if (linkSelectionAddr != null) {
@@ -575,7 +531,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                             for (int i = 0; i < buf.length; i++) {
                                 subOptionData.add(buf[i]);
                             }
-                            relayStats.linkSelectionAdded++;
                         }
 
                         // Sub-option 6: Subscriber ID
@@ -586,7 +541,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                             for (int i = 0; i < buf.length; i++) {
                                 subOptionData.add(buf[i]);
                             }
-                            relayStats.subscriberIdAdded++;
                         }
 
                         dhcp.dhcpAgentInfo = new byte[subOptionData.size()];
@@ -603,7 +557,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                     }
 
                     // Forward to all helper addresses
-                    int forwardedCount = 0;
                     synchronized (helperAddresses) {
                         for (int i = 0; i < helperAddresses.size(); i++) {
                             addrIP target = helperAddresses.get(i);
@@ -612,26 +565,12 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                             pck.merge2beg();
                             prtGenConn conn = srvVrf.getUdp(target).packetConnect(this, id.iface, packDhcp4.portSnum, target, packDhcp4.portSnum, "dhcp-relay", -1, null, -1, -1);
                             if (conn == null) {
-                                relayStats.forwardingErrors++;
                                 continue;
                             }
                             conn.send2net(pck.copyBytes(true, true));
                             conn.setClosing();
-                            forwardedCount++;
-                            relayStats.packetsForwardedToServers++;
                         }
                     }
-
-                    if (debugger.servDhcp4traf) {
-                        logger.debug("dhcp relay forwarded client request to " + forwardedCount + "/" + helperAddresses.size() + " servers");
-                    }
-
-                    if (forwardedCount < 1) {
-                        relayStats.packetsDropped++;
-                        return false;
-                    }
-                    relayStats.packetsForwarded++;
-                    relayStats.updateProcessingTime(bits.getTime() - startTime);
                     return false;
 
                 case packDhcp4.bootpOpReply:
@@ -645,18 +584,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                         logger.debug("dhcp relay server->client giaddr=" + dhcp.bootpGiaddr);
                     }
 
-                    // Update statistics
-                    relayStats.packetsServerToClient++;
-                    relayStats.totalPacketsProcessed++;
-
                     // Check if this reply has giaddr
                     if (dhcp.bootpGiaddr.isEmpty()) {
                         if (debugger.servDhcp4traf) {
                             logger.debug("dhcp relay reply has empty giaddr, ignoring");
                         }
-                        relayStats.packetsDropped++;
-                        relayStats.invalidGiaddrErrors++;
-                        relayStats.updateErrorProcessingTime(bits.getTime() - startTime);
                         return false; // Ignore packet
                     }
 
@@ -670,13 +602,10 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                         if (debugger.servDhcp4traf) {
                             logger.debug("dhcp relay multi-hop: forwarding to relay at " + dhcp.bootpGiaddr);
                         }
-                        relayStats.multiHopPackets++;
 
                         // Forward to relay on port 67
                         prtGenConn conn = srvVrf.getUdp(targetAddr).packetConnect(this, id.iface, packDhcp4.portSnum, targetAddr, packDhcp4.portSnum, "dhcp-relay-hop", -1, null, -1, -1);
                         if (conn == null) {
-                            relayStats.packetsDropped++;
-                            relayStats.forwardingErrors++;
                             return false;
                         }
                         conn.send2net(pck);
@@ -715,16 +644,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                         // Use port 67 as source port so client recognizes DHCP messages
                         prtGenConn conn = srvVrf.getUdp(clientAddr).packetConnect(this, id.iface, packDhcp4.portSnum, clientAddr, packDhcp4.portCnum, "dhcp-relay", -1, null, -1, -1);
                         if (conn == null) {
-                            relayStats.packetsDropped++;
-                            relayStats.forwardingErrors++;
                             return false;
                         }
                         conn.send2net(pck);
                         conn.setClosing();
                     }
-
-                    relayStats.packetsForwarded++;
-                    relayStats.updateProcessingTime(bits.getTime() - startTime);
                     return false;
                 default:
                     if (debugger.servDhcp4traf) {
@@ -734,8 +658,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
         } catch (Exception e) {
             logger.traceback(e);
-            relayStats.routingErrors++;
-            relayStats.packetsDropped++;
             return false;
         }
     }
@@ -1462,259 +1384,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             res.add(ntry.mac + "|" + ntry.ip + "|" + bits.timePast(ntry.reqd));
         }
         return res;
-    }
-
-    /**
-     * get relay statistics
-     *
-     * @return result
-     */
-    public userFormat getRelayStatistics() {
-        userFormat res = new userFormat("|", "statistic|value|description");
-
-        // Packet flow statistics
-        res.add("Packets Client->Server|" + relayStats.packetsClientToServer + "|DHCP packets relayed from client to server");
-        res.add("Packets Server->Client|" + relayStats.packetsServerToClient + "|DHCP packets relayed from server to client");
-        res.add("Packets Forwarded|" + relayStats.packetsForwarded + "|Total packets successfully forwarded");
-        res.add("Packets Dropped|" + relayStats.packetsDropped + "|Packets dropped due to errors or policy");
-        res.add("Packets Invalid|" + relayStats.packetsInvalid + "|Malformed or invalid packets received");
-
-        // Multi-hop statistics
-        res.add("Multi-hop Packets|" + relayStats.multiHopPackets + "|Packets with hop count > 1");
-        res.add("Max Hop Count Exceeded|" + relayStats.maxHopCountExceeded + "|Packets dropped due to hop limit");
-        res.add("Average Hop Count|" + String.format("%.2f", relayStats.getAverageHopCount()) + "|Average hop count of multi-hop packets");
-
-        // Performance metrics
-        if (relayStats.packetProcessingCount > 0) {
-            res.add("Average Processing Time|" + relayStats.getAverageProcessingTime() + "|Average packet processing time");
-            res.add("Max Processing Time|" + relayStats.maxProcessingTime + "|Maximum packet processing time");
-            res.add("Min Processing Time|" + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime) + "|Minimum packet processing time");
-        }
-        if (relayStats.errorProcessingCount > 0) {
-            res.add("Average Error Processing Time|" + relayStats.getAverageErrorProcessingTime() + "|Average error processing time");
-        }
-
-        // Error statistics
-        res.add("Invalid GIADDR Errors|" + relayStats.invalidGiaddrErrors + "|Packets with invalid or missing GIADDR");
-        res.add("Routing Errors|" + relayStats.routingErrors + "|Packets that could not be routed");
-        res.add("Option Parsing Errors|" + relayStats.optionParsingErrors + "|Errors parsing DHCP options");
-        res.add("Buffer Overflow Errors|" + relayStats.bufferOverflowErrors + "|Buffer overflow errors");
-        res.add("Forwarding Errors|" + relayStats.forwardingErrors + "|Errors forwarding packets to servers");
-
-        return res;
-    }
-
-    /**
-     * get agent options statistics
-     *
-     * @return result
-     */
-    public userFormat getAgentOptionsStatistics() {
-        userFormat res = new userFormat("|", "statistic|value|description");
-
-        // Agent options operations
-        res.add("Agent Options Added|" + relayStats.agentOptionsAdded + "|Total agent information options added");
-        res.add("Agent Options Replaced|" + relayStats.agentOptionsReplaced + "|Existing options replaced");
-        res.add("Agent Options Appended|" + relayStats.agentOptionsAppended + "|Options appended to existing");
-        res.add("Agent Options Forwarded|" + relayStats.agentOptionsForwarded + "|Existing options forwarded unchanged");
-        res.add("Agent Options Discarded|" + relayStats.agentOptionsDiscarded + "|Packets discarded due to existing options");
-
-        // Relay mode operations
-        res.add("Replace Operations|" + relayStats.replaceOperations + "|Replace mode operations");
-        res.add("Append Operations|" + relayStats.appendOperations + "|Append mode operations");
-        res.add("Forward Operations|" + relayStats.forwardOperations + "|Forward mode operations");
-        res.add("Discard Operations|" + relayStats.discardOperations + "|Discard mode operations");
-
-        // Sub-option statistics
-        res.add("Circuit ID Added|" + relayStats.circuitIdAdded + "|Circuit ID sub-options added");
-        res.add("Remote ID Added|" + relayStats.remoteIdAdded + "|Remote ID sub-options added");
-        res.add("Link Selection Added|" + relayStats.linkSelectionAdded + "|Link Selection sub-options added");
-        res.add("Subscriber ID Added|" + relayStats.subscriberIdAdded + "|Subscriber ID sub-options added");
-
-        return res;
-    }
-
-    /**
-     * get performance statistics
-     *
-     * @return result
-     */
-    public userFormat getPerformanceStatistics() {
-        userFormat res = new userFormat("|", "metric|value|unit");
-
-        long totalProcessed = relayStats.getTotalPacketsProcessed();
-        if (totalProcessed > 0) {
-            res.add("Total Packets Processed|" + totalProcessed + "|packets");
-            res.add("Successful Packets|" + relayStats.packetProcessingCount + "|packets");
-            res.add("Error Packets|" + relayStats.errorProcessingCount + "|packets");
-            res.add("Total Processing Time|" + relayStats.totalProcessingTime + "|");
-            res.add("Average Processing Time|" + relayStats.getAverageProcessingTime() + "|");
-            res.add("Maximum Processing Time|" + relayStats.maxProcessingTime + "|");
-            res.add("Minimum Processing Time|" + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime) + "|");
-
-            // Calculate packets per second (rough estimate)
-            long uptimeSeconds = (bits.getTime() - statsResetTime) / 1000;
-            if (uptimeSeconds > 0) {
-                long packetsPerSecond = totalProcessed / uptimeSeconds;
-                res.add("Packets Per Second|" + packetsPerSecond + "|pps");
-            }
-        } else {
-            res.add("No Performance Data|0|No packets processed yet");
-        }
-
-        return res;
-    }
-
-    /**
-     * get statistics summary
-     *
-     * @return result
-     */
-    public userFormat getStatisticsSummary() {
-        userFormat res = new userFormat("|", "category|packets|percentage");
-
-        long totalPackets = relayStats.getTotalPacketsProcessed();
-
-        if (totalPackets > 0) {
-            res.add("Client to Server|" + relayStats.packetsClientToServer + "|"
-                    + String.format("%.1f%%", (relayStats.packetsClientToServer * 100.0) / totalPackets));
-            res.add("Server to Client|" + relayStats.packetsServerToClient + "|"
-                    + String.format("%.1f%%", (relayStats.packetsServerToClient * 100.0) / totalPackets));
-            res.add("Forwarded|" + relayStats.packetsForwarded + "|"
-                    + String.format("%.1f%%", relayStats.getSuccessRate()));
-            res.add("Dropped|" + relayStats.packetsDropped + "|"
-                    + String.format("%.1f%%", relayStats.getDropRate()));
-            res.add("Forwarded to Servers|" + relayStats.packetsForwardedToServers + "|individual server forwards");
-        } else {
-            res.add("No Traffic|0|No packets processed");
-        }
-
-        // Statistics reset time
-        res.add("Statistics Reset|" + bits.time2str(cfgAll.timeZoneName, statsResetTime, 3) + "|Last reset time");
-
-        return res;
-    }
-
-    /**
-     * reset relay statistics
-     */
-    public void resetRelayStatistics() {
-        relayStats.reset();
-        statsResetTime = bits.getTime();
-        if (debugger.servDhcp4traf) {
-            logger.debug("dhcp4 relay statistics reset");
-        }
-    }
-
-    /**
-     * get relay statistics display for show command
-     *
-     * @return list of statistics lines
-     */
-    public List<String> getRelayStatisticsDisplay() {
-        List<String> result = new ArrayList<String>();
-
-        result.add("DHCP Relay Statistics for " + srvName);
-        result.add("=====================================");
-        result.add("");
-
-        // Packet flow statistics
-        result.add("Packet Flow Statistics:");
-        result.add("  Client->Server: " + relayStats.packetsClientToServer);
-        result.add("  Server->Client: " + relayStats.packetsServerToClient);
-        result.add("  Forwarded: " + relayStats.packetsForwarded);
-        result.add("  Dropped: " + relayStats.packetsDropped);
-        result.add("  Invalid: " + relayStats.packetsInvalid);
-        result.add("");
-
-        // Multi-hop statistics
-        result.add("Multi-hop Statistics:");
-        result.add("  Multi-hop Packets: " + relayStats.multiHopPackets);
-        result.add("  Max Hop Count Exceeded: " + relayStats.maxHopCountExceeded);
-        result.add("  Average Hop Count: " + String.format("%.2f", relayStats.getAverageHopCount()));
-        result.add("");
-
-        // Agent options statistics
-        result.add("Agent Options Statistics:");
-        result.add("  Options Added: " + relayStats.agentOptionsAdded);
-        result.add("  Options Replaced: " + relayStats.agentOptionsReplaced);
-        result.add("  Options Appended: " + relayStats.agentOptionsAppended);
-        result.add("  Options Forwarded: " + relayStats.agentOptionsForwarded);
-        result.add("  Options Discarded: " + relayStats.agentOptionsDiscarded);
-        result.add("");
-
-        // Relay mode operations
-        result.add("Relay Mode Operations:");
-        result.add("  Replace Operations: " + relayStats.replaceOperations);
-        result.add("  Append Operations: " + relayStats.appendOperations);
-        result.add("  Forward Operations: " + relayStats.forwardOperations);
-        result.add("  Discard Operations: " + relayStats.discardOperations);
-        result.add("");
-
-        // Sub-option statistics
-        result.add("Sub-option Statistics:");
-        result.add("  Circuit ID Added: " + relayStats.circuitIdAdded);
-        result.add("  Remote ID Added: " + relayStats.remoteIdAdded);
-        result.add("  Link Selection Added: " + relayStats.linkSelectionAdded);
-        result.add("  Subscriber ID Added: " + relayStats.subscriberIdAdded);
-        result.add("");
-
-        // Performance metrics
-        result.add("Performance Metrics:");
-        long totalProcessed = relayStats.getTotalPacketsProcessed();
-        if (totalProcessed > 0) {
-            result.add("  Total Packets Processed: " + totalProcessed);
-            result.add("  Successful Packets: " + relayStats.packetProcessingCount);
-            result.add("  Error Packets: " + relayStats.errorProcessingCount);
-            result.add("  Total Processing Time: " + relayStats.totalProcessingTime);
-            result.add("  Average Processing Time: " + relayStats.getAverageProcessingTime());
-            result.add("  Maximum Processing Time: " + relayStats.maxProcessingTime);
-            result.add("  Minimum Processing Time: " + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime));
-
-            if (relayStats.errorProcessingCount > 0) {
-                result.add("  Average Error Processing Time: " + relayStats.getAverageErrorProcessingTime());
-            }
-
-            // Calculate packets per second (rough estimate)
-            long uptimeSeconds = (bits.getTime() - statsResetTime) / 1000;
-            if (uptimeSeconds > 0) {
-                long packetsPerSecond = totalProcessed / uptimeSeconds;
-                result.add("  Packets Per Second: " + packetsPerSecond + " pps");
-            }
-        } else {
-            result.add("  No Performance Data Available");
-        }
-        result.add("");
-
-        // Error statistics
-        result.add("Error Statistics:");
-        result.add("  Invalid GIADDR Errors: " + relayStats.invalidGiaddrErrors);
-        result.add("  Routing Errors: " + relayStats.routingErrors);
-        result.add("  Option Parsing Errors: " + relayStats.optionParsingErrors);
-        result.add("  Buffer Overflow Errors: " + relayStats.bufferOverflowErrors);
-        result.add("  Forwarding Errors: " + relayStats.forwardingErrors);
-        result.add("");
-
-        // Summary with percentages
-        long totalPackets = relayStats.getTotalPacketsProcessed();
-        result.add("Summary:");
-        if (totalPackets > 0) {
-            result.add("  Client to Server: " + relayStats.packetsClientToServer + " ("
-                    + String.format("%.1f%%", (relayStats.packetsClientToServer * 100.0) / totalPackets) + ")");
-            result.add("  Server to Client: " + relayStats.packetsServerToClient + " ("
-                    + String.format("%.1f%%", (relayStats.packetsServerToClient * 100.0) / totalPackets) + ")");
-            result.add("  Success Rate: " + String.format("%.1f%%", relayStats.getSuccessRate()));
-            result.add("  Drop Rate: " + String.format("%.1f%%", relayStats.getDropRate()));
-            result.add("  Forwarded to Servers: " + relayStats.packetsForwardedToServers + " (individual server forwards)");
-        } else {
-            result.add("  No Traffic Statistics Available");
-        }
-        result.add("");
-
-        // Statistics reset time
-        result.add("Statistics Reset: " + bits.time2str(cfgAll.timeZoneName, statsResetTime, 3));
-
-        return result;
     }
 
     /**

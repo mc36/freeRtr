@@ -20,7 +20,6 @@ import org.freertr.prt.prtLudp;
 import org.freertr.prt.prtSctp;
 import org.freertr.prt.prtTcp;
 import org.freertr.prt.prtUdp;
-import org.freertr.tab.tabGen;
 import org.freertr.tab.tabLabel;
 import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabNatCfgN;
@@ -229,6 +228,10 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         new userFilter("vrf definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "packet6filter", null),
         new userFilter("vrf definition .*", cmds.tabulator + "incremental4 1000", null),
         new userFilter("vrf definition .*", cmds.tabulator + "incremental6 1000", null),
+        new userFilter("vrf definition .*", cmds.tabulator + "threshold4traffic 0", null),
+        new userFilter("vrf definition .*", cmds.tabulator + "threshold6traffic 0", null),
+        new userFilter("vrf definition .*", cmds.tabulator + "threshold4route 0", null),
+        new userFilter("vrf definition .*", cmds.tabulator + "threshold6route 0", null),
         new userFilter("", "ipv[46] nat .* sequence .* timeout 300000", null),
         new userFilter("", "ipv[46] nat .* sequence .* sessions 0", null),
         new userFilter("", "ipv[46] flow .* parameters ", null)
@@ -634,6 +637,10 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, fwd6.packetFilter == null, cmds.tabulator, "packet6filter", "" + fwd6.packetFilter);
         l.add(cmds.tabulator + "incremental4 " + fwd4.incrLimit);
         l.add(cmds.tabulator + "incremental6 " + fwd6.incrLimit);
+        l.add(cmds.tabulator + "threshold4traffic " + fwd4.thresholdT);
+        l.add(cmds.tabulator + "threshold6traffic " + fwd6.thresholdT);
+        l.add(cmds.tabulator + "threshold4route " + fwd4.thresholdR);
+        l.add(cmds.tabulator + "threshold6route " + fwd6.thresholdR);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {

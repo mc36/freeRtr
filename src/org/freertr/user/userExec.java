@@ -1752,13 +1752,9 @@ public class userExec {
         hl.add(null, false, 2, new int[]{3}, "rpki", "rpki protocol information");
         hl.add(cfgAll.dmnRpki.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "dhcp4", "dhcp4 protocol information");
-        hl.add(cfgAll.dmnDhcp4.listServers(), false, 3, new int[]{4, -1}, "<name:loc>", "server name");
-        hl.add(null, false, 4, new int[]{5}, "relay", "dhcp4 relay information");
-        hl.add(null, false, 5, new int[]{-1}, "statistics", "dhcp4 relay statistics");
+        hl.add(cfgAll.dmnDhcp4.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "dhcp6", "dhcp6 protocol information");
-        hl.add(cfgAll.dmnDhcp6.listServers(), false, 3, new int[]{4, -1}, "<name:loc>", "server name");
-        hl.add(null, false, 4, new int[]{5}, "relay", "dhcp6 relay information");
-        hl.add(null, false, 5, new int[]{-1}, "statistics", "dhcp6 relay statistics");
+        hl.add(cfgAll.dmnDhcp6.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{-1}, "clients", "client information");
         hl.add(null, false, 2, new int[]{3, -1}, "check", "check information");
         hl.add(null, false, 3, new int[]{4}, "<name:chk>", "check name");
@@ -2396,9 +2392,6 @@ public class userExec {
         hl.add(cfgAll.dmnOpenflow.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "p4lang", "clear one p4lang server");
         hl.add(cfgAll.dmnP4lang.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
-        hl.add(null, false, 2, new int[]{3}, "dhcp4", "clear dhcp4 server statistics");
-        hl.add(cfgAll.dmnDhcp4.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
-        hl.add(null, false, 4, new int[]{-1}, "statistics", "clear relay statistics");
         hl.add(null, false, 2, new int[]{3}, "socket", "clear one socket");
         hl.add(null, false, 3, new int[]{4}, "<name:vrf>", "vrf name");
         hl.add(null, false, 4, new int[]{5}, "tcp", "select tcp");

@@ -1693,9 +1693,10 @@ public class cfgInit implements Runnable {
                 timerHistory.update(cntr, true);
                 cntr.byteRx = rt.freeMemory() / 8;
                 memoryHistory.update(cntr, false);
-                if ((rnd % 120) != 0) {
+                if ((rnd % 60) != 0) {
                     continue;
                 }
+                ipFwdTab.alertVrfs();
                 clntDns.purgeLocalCache(false);
                 stateSave();
             } catch (Exception e) {

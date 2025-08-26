@@ -356,6 +356,16 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     public history hstryR;
 
     /**
+     * traffic threshold for this vrf
+     */
+    public int thresholdT;
+
+    /**
+     * route threshold for this vrf
+     */
+    public int thresholdR;
+
+    /**
      * netflow exporter
      */
     public clntNetflow netflow;
@@ -651,6 +661,15 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         ipFwdTab.updateEverything(this);
         icc.setForwarder(this);
         mhst.setForwarder(this, icc);
+    }
+
+    /**
+     * update vrf history
+     */
+    public void alertHistory() {
+    
+
+    ///////////////
     }
 
     /**

@@ -2005,4 +2005,18 @@ public class ipFwdTab {
         }
     }
 
+    /**
+     * check for stalled vrfs
+     */
+    public static void alertVrfs() {
+        for (int i = cfgAll.vrfs.size() - 1; i >= 0; i--) {
+            cfgVrf ntry = cfgAll.vrfs.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry.fwd4.alertHistory();
+            ntry.fwd6.alertHistory();
+        }
+    }
+
 }

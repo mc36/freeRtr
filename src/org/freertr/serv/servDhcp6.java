@@ -8,7 +8,6 @@ import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrMac;
-import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.pack.packDhcp6;
 import org.freertr.pack.packDhcpOption;
@@ -155,16 +154,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
      * List of relay interfaces for multi-interface support
      */
     private List<cfgIfc> relayInterfaces = new ArrayList<cfgIfc>();
-
-    /**
-     * DHCP6 Relay Statistics
-     */
-    private servDhcp6RelayStats relayStats = new servDhcp6RelayStats();
-
-    /**
-     * Statistics reset timestamp
-     */
-    private long statsResetTime = bits.getTime();
 
     /**
      * defaults text
@@ -1320,7 +1309,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                 case packDhcp6.typDecline:
                 case packDhcp6.typInfo:
                 case packDhcp6.typReReq:
-                    relayStats.packetsClientToServer++;
                     if (debugger.servDhcp6traf) {
                         logger.info("dhcp6 relayClientToServer: processing client packet, msgType=" + dhcp.msgTyp + ", upstreamServers=" + helperAddresses.size());
                     }
@@ -1334,12 +1322,8 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                         if (debugger.servDhcp6traf) {
                             logger.error("dhcp6 relayClientToServer: max hop count exceeded: " + hops);
                         }
-                        relayStats.maxHopCountExceeded++;
-                        relayStats.packetsDropped++;
                         return false;
                     }
-                    relayStats.hopCountTotal += hops;
-                    relayStats.relayForwardPackets++;
                     dhcp = new packDhcp6();
                     dhcp.msgHop = hops;
                     dhcp.msgTyp = packDhcp6.typReReq;
@@ -1348,13 +1332,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     dhcp.msgPeer = id.peerAddr.toIPv6();
                     if (useInterfaceId) {
                         dhcp.ifcId = "" + id.iface;
-                        relayStats.interfaceIdAdded++;
                     }
                     if (subscriberId != null) {
                         dhcp.subId = subscriberId;
-                        relayStats.subscriberIdAdded++;
                     }
-                    int forwardedCount = 0;
                     for (int i = 0; i < helperAddresses.size(); i++) {
                         addrIP serverAddr = helperAddresses.get(i);
                         if (debugger.servDhcp6traf) {
@@ -1368,31 +1349,21 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                             if (debugger.servDhcp6traf) {
                                 logger.error("dhcp6 forwardToServerFromInterface: failed to create connection to server " + serverAddr);
                             }
-                            relayStats.routingErrors++;
                             continue;
                         }
                         conn.send2net(pck);
                         conn.setClosing();
-                        forwardedCount++;
-                        relayStats.packetsForwarded++;
                     }
-                    if (forwardedCount < 1) {
-                        relayStats.packetsDropped++;
-                        return false;
-                    }
-                    relayStats.updateProcessingTime(bits.getTime() - startTime);
                     return false;
 
                 case packDhcp6.typAdvertise:
                 case packDhcp6.typReply:
                 case packDhcp6.typReconfig:
                 case packDhcp6.typReRep:
-                    relayStats.packetsServerToClient++;
                     if (dhcp.msgTyp != packDhcp6.typReRep) {
                         if (debugger.servDhcp6traf) {
                             logger.info("dhcp6 relayServerToClient: dropping non-relay-reply message, msgType=" + dhcp.msgTyp);
                         }
-                        relayStats.packetsDropped++;
                         return false;
                     }
                     if (dhcp.relayed == null) {
@@ -1406,8 +1377,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     pck.putSkip(dhcp.relayed.length);
                     pck.merge2beg();
                     if (dhcp.msgPeer == null) {
-                        relayStats.optionParsingErrors++;
-                        relayStats.packetsDropped++;
                         return false;
                     }
                     addrIP peerAddrIP = new addrIP();
@@ -1436,8 +1405,6 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                         if (debugger.servDhcp6traf) {
                             logger.error("dhcp6 forwardToClientFromInterface: failed to create connection to client " + peerAddrIP);
                         }
-                        relayStats.routingErrors++;
-                        relayStats.packetsDropped++;
                         return false;
                     }
                     if (debugger.servDhcp6traf) {
@@ -1445,134 +1412,18 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
                     }
                     conn.send2net(pck);
                     conn.setClosing();
-                    relayStats.packetsForwarded++;
-                    relayStats.updateProcessingTime(bits.getTime() - startTime);
                     return false;
 
                 default:
                     if (debugger.servDhcp6traf) {
                         logger.error("dhcp6 relayPacket: unknown message type: " + dhcp.msgTyp);
                     }
-                    relayStats.packetsInvalid++;
-                    relayStats.packetsDropped++;
                     return false;
             }
         } catch (Exception e) {
             logger.traceback(e);
-            relayStats.routingErrors++;
-            relayStats.packetsDropped++;
             return false;
         }
-    }
-
-    /**
-     * get relay statistics display for show command
-     *
-     * @return list of statistics lines
-     */
-    public List<String> getRelayStatisticsDisplay() {
-        List<String> result = new ArrayList<String>();
-
-        result.add("DHCP6 Relay Statistics for " + srvName);
-        result.add("=====================================");
-        result.add("");
-
-        // Packet flow statistics
-        result.add("Packet Flow Statistics:");
-        result.add("  Client->Server: " + relayStats.packetsClientToServer);
-        result.add("  Server->Client: " + relayStats.packetsServerToClient);
-        result.add("  Forwarded: " + relayStats.packetsForwarded);
-        result.add("  Dropped: " + relayStats.packetsDropped);
-        result.add("  Invalid: " + relayStats.packetsInvalid);
-        result.add("");
-
-        // Multi-hop statistics
-        result.add("Multi-hop Statistics:");
-        result.add("  Multi-hop Packets: " + relayStats.relayForwardPackets);
-        result.add("  Max Hop Count Exceeded: " + relayStats.maxHopCountExceeded);
-        result.add("  Average Hop Count: " + String.format("%.2f", relayStats.getAverageHopCount()));
-        result.add("");
-
-        // Agent options statistics (IPv6 specific)
-        result.add("DHCPv6 Options Statistics:");
-        result.add("  Interface-ID Options Added: " + relayStats.interfaceIdAdded);
-        result.add("  Subscriber-ID Options Added: " + relayStats.subscriberIdAdded);
-        result.add("  Relay Message Options Added: " + relayStats.relayMessageAdded);
-        result.add("  Total Options Added: " + (relayStats.interfaceIdAdded + relayStats.subscriberIdAdded + relayStats.relayMessageAdded));
-        result.add("");
-
-        // Sub-option statistics (IPv6 specific)
-        result.add("Sub-option Statistics:");
-        result.add("  Interface-ID Added: " + relayStats.interfaceIdAdded);
-        result.add("  Subscriber-ID Added: " + relayStats.subscriberIdAdded);
-        result.add("  Relay Message Added: " + relayStats.relayMessageAdded);
-        result.add("");
-
-        // Performance metrics
-        result.add("Performance Metrics:");
-        if (relayStats.packetProcessingCount > 0) {
-            result.add("  Total Packets Processed: " + relayStats.packetProcessingCount);
-            result.add("  Total Processing Time: " + relayStats.totalProcessingTime);
-            result.add("  Average Processing Time: " + relayStats.getAverageProcessingTime());
-            result.add("  Maximum Processing Time: " + relayStats.maxProcessingTime);
-            result.add("  Minimum Processing Time: " + (relayStats.minProcessingTime == Long.MAX_VALUE ? 0 : relayStats.minProcessingTime));
-
-            // Calculate packets per second (rough estimate)
-            long uptimeSeconds = (bits.getTime() - statsResetTime) / 1000;
-            if (uptimeSeconds > 0) {
-                long packetsPerSecond = relayStats.packetProcessingCount / uptimeSeconds;
-                result.add("  Packets Per Second: " + packetsPerSecond + " pps");
-            } else {
-                result.add("  Packets Per Second: 0 pps");
-            }
-        } else {
-            result.add("  Total Packets Processed: 0");
-            result.add("  Total Processing Time: 0");
-            result.add("  Average Processing Time: 0");
-            result.add("  Maximum Processing Time: 0");
-            result.add("  Minimum Processing Time: 0");
-            result.add("  Packets Per Second: 0 pps");
-        }
-        result.add("");
-
-        // Error statistics
-        result.add("Error Statistics:");
-        result.add("  Invalid GIADDR Errors: 0");  // IPv6 doesn't have GIADDR
-        result.add("  Routing Errors: " + relayStats.routingErrors);
-        result.add("  Option Parsing Errors: " + relayStats.optionParsingErrors);
-        result.add("  Buffer Overflow Errors: " + relayStats.bufferOverflowErrors);
-        result.add("");
-
-        // Summary with percentages
-        long totalPackets = relayStats.packetsClientToServer + relayStats.packetsServerToClient;
-        result.add("Summary:");
-        if (totalPackets > 0) {
-            result.add("  Client to Server: " + relayStats.packetsClientToServer + " ("
-                    + String.format("%.1f%%", (relayStats.packetsClientToServer * 100.0) / totalPackets) + ")");
-            result.add("  Server to Client: " + relayStats.packetsServerToClient + " ("
-                    + String.format("%.1f%%", (relayStats.packetsServerToClient * 100.0) / totalPackets) + ")");
-            result.add("  Success Rate: " + String.format("%.1f%%", (relayStats.packetsForwarded * 100.0) / totalPackets));
-            result.add("  Drop Rate: " + String.format("%.1f%%", (relayStats.packetsDropped * 100.0) / totalPackets));
-        } else {
-            result.add("  Client to Server: 0 (0.0%)");
-            result.add("  Server to Client: 0 (0.0%)");
-            result.add("  Success Rate: 0.0%");
-            result.add("  Drop Rate: 0.0%");
-        }
-        result.add("");
-
-        // Statistics reset time
-        result.add("Statistics Reset: " + bits.time2str(cfgAll.timeZoneName, statsResetTime, 3));
-
-        return result;
-    }
-
-    /**
-     * reset relay statistics
-     */
-    public void resetRelayStatistics() {
-        relayStats.reset();
-        statsResetTime = bits.getTime();
     }
 
     /**
@@ -1744,105 +1595,6 @@ class servDhcp6worker implements Runnable {
         }
         conn.setClosing();
         pipe.setClose();
-    }
-
-}
-
-/**
- * DHCP6 relay statistics
- */
-class servDhcp6RelayStats {
-
-    // Packet counters
-    public long packetsClientToServer = 0;
-    public long packetsServerToClient = 0;
-    public long packetsDropped = 0;
-    public long packetsInvalid = 0;
-    public long packetsForwarded = 0;
-
-    // Hop count statistics
-    public long maxHopCountExceeded = 0;
-    public long hopCountTotal = 0;
-    public long relayForwardPackets = 0;
-
-    // Performance statistics
-    public long totalProcessingTime = 0;
-    public long packetProcessingCount = 0;
-    public long maxProcessingTime = 0;
-    public long minProcessingTime = Long.MAX_VALUE;
-
-    // Error counters
-    public long routingErrors = 0;
-    public long optionParsingErrors = 0;
-    public long bufferOverflowErrors = 0;
-
-    // Option statistics
-    public long interfaceIdAdded = 0;
-    public long subscriberIdAdded = 0;
-    public long relayMessageAdded = 0;
-
-    /**
-     * reset all statistics
-     */
-    public void reset() {
-        packetsClientToServer = 0;
-        packetsServerToClient = 0;
-        packetsDropped = 0;
-        packetsInvalid = 0;
-        packetsForwarded = 0;
-        maxHopCountExceeded = 0;
-        hopCountTotal = 0;
-        relayForwardPackets = 0;
-        totalProcessingTime = 0;
-        packetProcessingCount = 0;
-        maxProcessingTime = 0;
-        minProcessingTime = Long.MAX_VALUE;
-        routingErrors = 0;
-        optionParsingErrors = 0;
-        bufferOverflowErrors = 0;
-        interfaceIdAdded = 0;
-        subscriberIdAdded = 0;
-        relayMessageAdded = 0;
-    }
-
-    /**
-     * update processing time statistics
-     *
-     * @param processingTime processing time in milliseconds
-     */
-    public void updateProcessingTime(long processingTime) {
-        totalProcessingTime += processingTime;
-        packetProcessingCount++;
-        if (processingTime > maxProcessingTime) {
-            maxProcessingTime = processingTime;
-        }
-        if (minProcessingTime == Long.MAX_VALUE || processingTime < minProcessingTime) {
-            minProcessingTime = processingTime;
-        }
-    }
-
-    /**
-     * get average processing time
-     *
-     * @return average processing time in milliseconds
-     */
-    public long getAverageProcessingTime() {
-        if (packetProcessingCount == 0) {
-            return 0;
-        }
-        return totalProcessingTime / packetProcessingCount;
-    }
-
-    /**
-     * get average hop count
-     *
-     * @return average hop count
-     */
-    public double getAverageHopCount() {
-        if (relayForwardPackets == 0) {
-            return 0.0;
-        }
-        return (double) hopCountTotal / relayForwardPackets;
     }
 
 }

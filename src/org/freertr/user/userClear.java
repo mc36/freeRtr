@@ -533,38 +533,6 @@ public class userClear {
             ntry.rouplc.counterClear();
             return null;
         }
-        if (a.equals("dhcp4")) {
-            String profileName = cmd.word();
-            servDhcp4 srv = cfgAll.srvrFind(new servDhcp4(), cfgAll.dmnDhcp4, profileName);
-            if (srv == null) {
-                cmd.error("no such server");
-                return null;
-            }
-            String subCmd = cmd.word();
-            if (subCmd.equals("statistics")) {
-                srv.resetRelayStatistics();
-                cmd.error("dhcp4 relay statistics cleared for " + profileName);
-                return null;
-            }
-            cmd.badCmd();
-            return null;
-        }
-        if (a.equals("dhcp6")) {
-            String profileName = cmd.word();
-            servDhcp6 srv = cfgAll.srvrFind(new servDhcp6(), cfgAll.dmnDhcp6, profileName);
-            if (srv == null) {
-                cmd.error("no such server");
-                return null;
-            }
-            String subCmd = cmd.word();
-            if (subCmd.equals("statistics")) {
-                srv.resetRelayStatistics();
-                cmd.error("dhcp6 relay statistics cleared for " + profileName);
-                return null;
-            }
-            cmd.badCmd();
-            return null;
-        }
         if (a.equals("counters")) {
             a = cmd.word();
             if (a.length() < 1) {
