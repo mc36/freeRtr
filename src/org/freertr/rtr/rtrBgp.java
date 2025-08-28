@@ -5303,6 +5303,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * show non redundant nodes
+     *
+     * @return necessity list
+     */
+    public userFormat showNonRedundant() {
+        return lspf.lastSpf.listNonRedundant();
+    }
+
+    /**
      * show route
      *
      * @return routes of spf

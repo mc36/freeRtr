@@ -646,6 +646,15 @@ public class rtrLsrp extends ipRtr implements Runnable {
     }
 
     /**
+     * show non redundant nodes
+     *
+     * @return necessity list
+     */
+    public userFormat showNonRedundant() {
+        return lastSpf.listNonRedundant();
+    }
+
+    /**
      * show hostnames
      *
      * @return names list

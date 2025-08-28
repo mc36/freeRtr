@@ -1217,6 +1217,21 @@ public class rtrOspf6 extends ipRtr {
     }
 
     /**
+     * show non redundant nodes
+     *
+     * @param area area number
+     * @return necessity list
+     */
+    public userFormat showNonRedundant(int area) {
+        rtrOspf6area ara = new rtrOspf6area(this, area);
+        ara = areas.find(ara);
+        if (ara == null) {
+            return null;
+        }
+        return ara.lastSpf.listNonRedundant();
+    }
+
+    /**
      * show hostnames
      *
      * @param area area number

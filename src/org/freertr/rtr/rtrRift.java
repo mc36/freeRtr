@@ -490,6 +490,16 @@ public class rtrRift extends ipRtr implements Runnable {
     }
 
     /**
+     * show non redundant nodes
+     *
+     * @param dir direction
+     * @return necessity list
+     */
+    public userFormat showNonRedundant(String dir) {
+        return getSpf(dir).listNonRedundant();
+    }
+
+    /**
      * show hostnames
      *
      * @param dir direction

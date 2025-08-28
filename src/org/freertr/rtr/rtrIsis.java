@@ -2487,6 +2487,17 @@ public class rtrIsis extends ipRtr {
     }
 
     /**
+     * show non redundant nodes
+     *
+     * @param level level number
+     * @return necessity list
+     */
+    public userFormat showNonRedundant(int level) {
+        rtrIsisLevel lev = getLevel(level);
+        return lev.lastSpf.listNonRedundant();
+    }
+
+    /**
      * show afi inconsistency
      *
      * @param level level number

@@ -254,6 +254,10 @@ public class spfCalc<Ta extends addrType> {
             res.addBierI(nod.name, nod.brIdx);
             res.addBierS(nod.name, nod.brSub);
         }
+        if (spfRoot == null) {
+            return res;
+        }
+        res.spfRoot = res.nodes.find(spfRoot);
         return res;
     }
 
@@ -1760,6 +1764,34 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
             res.add("" + ntry);
+        }
+        return res;
+    }
+
+    /**
+     * inconsistent metrics
+     *
+     * @return text
+     */
+    public userFormat listNonRedundant() {
+        if (spfRoot == null) {
+            return null;
+        }
+        userFormat res = new userFormat("|", "necessary|dependants");
+        int ned = countReachablility(false);
+        spfCalc<Ta> tmp = copyBytes();
+        for (int i = 0; i < tmp.nodes.size(); i++) {
+            spfNode<Ta> ntry = tmp.nodes.get(i);
+            if (ntry.stub) {
+                continue;
+            }
+            ntry.stub = true;
+            tmp.doWork(null, spfRoot.name, null);
+            ntry.stub = false;
+            if (tmp.countReachablility(false) == ned) {
+                continue;
+            }
+            res.add(ntry + "|" + tmp.listReachablility(false));
         }
         return res;
     }

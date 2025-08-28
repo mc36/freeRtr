@@ -2529,6 +2529,11 @@ public class userShow {
                     rdr.putStrTab(r.ospf4.showMetIncons(i, mtch));
                     return null;
                 }
+                if (a.equals("nonredundant")) {
+                    int i = bits.str2num(cmd.word());
+                    rdr.putStrTab(r.ospf4.showNonRedundant(i));
+                    return null;
+                }
                 if (a.equals("route")) {
                     doShowRoutes(r.ospf4.fwdCore, r.ospf4.showRoute(bits.str2num(cmd.word())), 1);
                     return null;
@@ -2898,6 +2903,11 @@ public class userShow {
                     tabIntMatcher mtch = new tabIntMatcher();
                     mtch.fromString(cmd.word());
                     rdr.putStrTab(r.ospf6.showMetIncons(i, mtch));
+                    return null;
+                }
+                if (a.equals("nonredundant")) {
+                    int i = bits.str2num(cmd.word());
+                    rdr.putStrTab(r.ospf6.showNonRedundant(i));
                     return null;
                 }
                 if (a.equals("route")) {
@@ -3458,6 +3468,10 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showMetIncons(mtch));
             return;
         }
+        if (a.equals("nonredundant")) {
+            rdr.putStrTab(r.lsrp.showNonRedundant());
+            return;
+        }
         if (a.equals("route")) {
             doShowRoutes(r.lsrp.fwdCore, r.lsrp.routerComputedU, 1);
             return;
@@ -3527,8 +3541,8 @@ public class userShow {
             return;
         }
         if (a.equals("graph")) {
-            String dir = cmd.word();
-            rdr.putStrArr(r.rift.showSpfGraph(dir, cmd));
+            a = cmd.word();
+            rdr.putStrArr(r.rift.showSpfGraph(a, cmd));
             return;
         }
         if (a.equals("nhinconsistent")) {
@@ -3543,6 +3557,10 @@ public class userShow {
             tabIntMatcher mtch = new tabIntMatcher();
             mtch.fromString(cmd.word());
             rdr.putStrTab(r.rift.showMetIncons(a, mtch));
+            return;
+        }
+        if (a.equals("nonredundant")) {
+            rdr.putStrTab(r.rift.showNonRedundant(cmd.word()));
             return;
         }
         if (a.equals("route")) {
@@ -3690,6 +3708,11 @@ public class userShow {
             tabIntMatcher mtch = new tabIntMatcher();
             mtch.fromString(cmd.word());
             rdr.putStrTab(r.isis.showMetIncons(i, mtch));
+            return;
+        }
+        if (a.equals("nonredundant")) {
+            int i = bits.str2num(cmd.word());
+            rdr.putStrTab(r.isis.showNonRedundant(i));
             return;
         }
         if (a.equals("afinconsistent")) {
@@ -4524,6 +4547,10 @@ public class userShow {
                 tabIntMatcher mtch = new tabIntMatcher();
                 mtch.fromString(cmd.word());
                 rdr.putStrTab(r.bgp.getMetIncons(mtch));
+                return;
+            }
+            if (a.equals("nonredundant")) {
+                rdr.putStrTab(r.bgp.showNonRedundant());
                 return;
             }
             if (a.equals("route")) {
