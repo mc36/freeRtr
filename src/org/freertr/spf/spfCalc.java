@@ -1778,8 +1778,15 @@ public class spfCalc<Ta extends addrType> {
             return null;
         }
         userFormat res = new userFormat("|", "necessary|dependants");
-        int ned = countReachablility(false);
         spfCalc<Ta> tmp = copyBytes();
+        tmp.doWork(null, spfRoot.name, null);
+        for (int i = tmp.nodes.size() - 1; i >= 0; i--) {
+            spfNode<Ta> ntry = tmp.nodes.get(i);
+            if (ntry.visited) {
+                continue;
+            }
+            tmp.nodes.del(ntry);
+        }
         for (int i = 0; i < tmp.nodes.size(); i++) {
             spfNode<Ta> ntry = tmp.nodes.get(i);
             if (ntry.stub) {
@@ -1788,7 +1795,7 @@ public class spfCalc<Ta extends addrType> {
             ntry.stub = true;
             tmp.doWork(null, spfRoot.name, null);
             ntry.stub = false;
-            if (tmp.countReachablility(false) == ned) {
+            if (tmp.countReachablility(false) == 0) {
                 continue;
             }
             res.add(ntry + "|" + tmp.listReachablility(false));
