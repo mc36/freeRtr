@@ -137,6 +137,7 @@ public class renamer {
         s = s.replaceAll("ː", "");
         s = s.replaceAll("：", "");
         s = s.replaceAll("？", "");
+        s = s.replaceAll("…", "");
         s = s.replaceAll("”", "");
         s = s.replaceAll("“", "");
         s = s.replaceAll("’", "");
