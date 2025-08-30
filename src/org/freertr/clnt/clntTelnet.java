@@ -216,7 +216,7 @@ public class clntTelnet implements Runnable, ifcDn {
 
     private void workDoer() {
         if (port == 0) {
-            port = new servTelnet().srvPort();
+            port = servTelnet.port;
         }
         addrIP trg = userTerminal.justResolv(target, proxy.prefer);
         if (trg == null) {

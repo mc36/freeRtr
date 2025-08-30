@@ -8,7 +8,6 @@ import org.freertr.pack.packHolder;
 import org.freertr.pack.packRadius;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
-import org.freertr.serv.servRadius;
 import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
@@ -172,7 +171,7 @@ public class clntRadius {
             return true;
         }
         if (port < 1) {
-            port = new servRadius().srvPort();
+            port = packRadius.port;
         }
         pipeSide conn = prx.doConnect(servGeneric.protoUdp, trg, port, "radius");
         if (conn == null) {

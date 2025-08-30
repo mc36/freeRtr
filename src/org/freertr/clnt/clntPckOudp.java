@@ -282,7 +282,7 @@ public class clntPckOudp implements Runnable, prtServP, ifcDn {
             fwdIfc = srcIfc.getFwdIfc(trg);
         }
         if (prtR == 0) {
-            prtR = new servPckOudp().srvPort();
+            prtR = servPckOudp.port;
         }
         if (prtL == 0) {
             prtL = prtR;

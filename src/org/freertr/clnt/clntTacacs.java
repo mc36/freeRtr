@@ -9,7 +9,6 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.pack.packTacacs;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
-import org.freertr.serv.servTacacs;
 import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -113,7 +112,7 @@ public class clntTacacs {
             return true;
         }
         if (port < 1) {
-            port = new servTacacs().srvPort();
+            port = packTacacs.port;
         }
         pipeSide conn = prx.doConnect(servGeneric.protoTcp, trg, port, "tacacs");
         if (conn == null) {
@@ -235,7 +234,7 @@ public class clntTacacs {
             return new authResult(par, authResult.authServerError, usr, cmd);
         }
         if (port < 1) {
-            port = new servTacacs().srvPort();
+            port = packTacacs.port;
         }
         pipeSide conn = prx.doConnect(servGeneric.protoTcp, trg, port, "tacacs");
         if (conn == null) {

@@ -571,10 +571,10 @@ public class encUrl {
             return port;
         }
         if (proto.equals("http")) {
-            return new servHttp().srvPort();
+            return servHttp.clearPort;
         }
         if (proto.equals("http2")) {
-            return new servHttp().srvPort();
+            return servHttp.clearPort;
         }
         if (proto.equals("https")) {
             return servHttp.securePort;
