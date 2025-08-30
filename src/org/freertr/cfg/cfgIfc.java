@@ -4274,15 +4274,16 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         switch (tunMode) {
             case gre:
                 tunGRE = new prtGre(fwd);
+                tunGRE.tunnelKyT = tunKey;
+                tunGRE.tunnelKyR = tunKey2;
+                tunGRE.tunnelSum = tunSum;
+                tunGRE.tunnelSeq = tunSeq;
                 tunGRE.setEndpoints(ifc, tunTrg, true);
                 tunGRE.setUpper(ethtyp);
                 tunGRE.sendingDFN = tunDFN;
                 tunGRE.sendingTOS = tunTOS;
                 tunGRE.sendingFLW = tunFLW;
                 tunGRE.sendingTTL = tunTTL;
-                tunGRE.tunnelKey = tunKey;
-                tunGRE.tunnelSum = tunSum;
-                tunGRE.tunnelSeq = tunSeq;
                 lower = tunGRE;
                 break;
             case mgre:

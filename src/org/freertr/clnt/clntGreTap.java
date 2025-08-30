@@ -244,8 +244,9 @@ public class clntGreTap implements ifcDn, ifcUp, Runnable {
             return;
         }
         gre = new prtGre(fwdCor);
+        gre.tunnelKyT = vcid;
+        gre.tunnelKyR = vcid;
         gre.setEndpoints(fwdIfc, fwdTrg, true);
-        gre.tunnelKey = vcid;
         gre.sendingTOS = sendingTOS;
         gre.sendingDFN = sendingDFN;
         gre.sendingFLW = sendingFLW;

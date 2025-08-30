@@ -53,9 +53,14 @@ public class prtGre implements ipPrt, ifcDn {
     public int sendingFLW = -1;
 
     /**
-     * tunnel key to use, 0 means disabled
+     * tunnel tx key to use, 0 means disabled
      */
-    public int tunnelKey = 0;
+    public int tunnelKyT = 0;
+
+    /**
+     * tunnel rx key to use, 0 means use tx key
+     */
+    public int tunnelKyR = 0;
 
     /**
      * tunnel mask to use, -1 means disabled
@@ -191,6 +196,9 @@ public class prtGre implements ipPrt, ifcDn {
      * @return false if successful, true if error happened
      */
     public boolean setEndpoints(ipFwdIface ifc, addrIP trg, boolean reg) {
+        if (tunnelKyR == 0) {
+            tunnelKyR = tunnelKyT;
+        }
         if (!reg) {
             remote = trg;
             sendingIfc = ifc;
@@ -240,7 +248,7 @@ public class prtGre implements ipPrt, ifcDn {
             cntr.drop(pck, counter.reasons.badHdr);
             return;
         }
-        if (keyp != (tunnelKey != 0)) {
+        if (keyp != (tunnelKyR != 0)) {
             logger.info("got mismatching header from " + remote);
             cntr.drop(pck, counter.reasons.badHdr);
             return;
@@ -262,7 +270,7 @@ public class prtGre implements ipPrt, ifcDn {
         if (keyp) {
             int key = pck.msbGetD(0); // key
             pck.getSkip(size);
-            if ((key & tunnelMsk) != tunnelKey) {
+            if ((key & tunnelMsk) != tunnelKyR) {
                 logger.info("got bad key from " + remote);
                 cntr.drop(pck, counter.reasons.badKey);
                 return;
@@ -317,7 +325,7 @@ public class prtGre implements ipPrt, ifcDn {
         if (tunnelSum) {
             hdr |= 0x8000;
         }
-        if (tunnelKey != 0) {
+        if (tunnelKyT != 0) {
             hdr |= 0x2000;
         }
         if (tunnelSeq) {
@@ -330,8 +338,8 @@ public class prtGre implements ipPrt, ifcDn {
             pck.msbPutD(0, 0); // sum
             pck.putSkip(size);
         }
-        if (tunnelKey != 0) {
-            pck.msbPutD(0, tunnelKey); // key
+        if (tunnelKyT != 0) {
+            pck.msbPutD(0, tunnelKyT); // key
             pck.putSkip(size);
         }
         if (tunnelSeq) {
@@ -376,7 +384,7 @@ public class prtGre implements ipPrt, ifcDn {
      */
     public int getMTUsize() {
         int i = sendingIfc.mtu - size;
-        if (tunnelKey != 0) {
+        if (tunnelKyT != 0) {
             i -= size;
         }
         if (tunnelSum) {
