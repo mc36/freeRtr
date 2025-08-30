@@ -201,13 +201,12 @@ public class renamer {
         if (basic) {
             return s;
         }
-        if (s.endsWith(" Ep")) {
-            s = s.substring(0, s.length() - 3);
+        int p = s.lastIndexOf(" ");
+        a = s.substring(p + 1, s.length());
+        if ("|Ep|Live|Demo|Split|Promo||Single|Compilation|Deluxe|Limited|Edition|".indexOf("|" + a + "|") >= 0) {
+            s = s.substring(0, p);
         }
-        if (s.endsWith(" Single")) {
-            s = s.substring(0, s.length() - 7);
-        }
-        int p = -1;
+        p = -1;
         for (int i = s.length(); i >= 0; i--) {
             if (isDate(s, i)) {
                 p = i;
