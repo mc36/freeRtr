@@ -13,7 +13,6 @@ select-sum
 package-down
 package-inst
 
-exec cp /usr/bin/qemu-%qemu%-static %tmp%/qemu-static
 mkdir %tmp%/rtr
 exec cd %tmp%/rtr/;tar xfz ../../binImg/rtr-%unam%.tgz
-exec %tmp%/qemu-static -L %tmp%/ %tmp%/rtr/p4bench.bin
+exec /usr/bin/qemu-%qemu% -L %tmp%/ %tmp%/rtr/p4bench.bin

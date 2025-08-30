@@ -33,6 +33,6 @@ exec cd %tmp%/misc/native/ ; ./p.sh
 
 exec mv %tmp%/binImg/*.tgz ../binImg/rtr-%unam%.tgz
 
-exec /usr/bin/qemu-%qemu%-static -L %tmp%/ %tmp%/binTmp/p4bench.bin
+exec /usr/bin/qemu-%qemu% -L %tmp%/ %tmp%/binTmp/p4bench.bin
 
 del-alw %tmp%
