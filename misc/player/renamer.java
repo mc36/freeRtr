@@ -201,6 +201,12 @@ public class renamer {
         if (basic) {
             return s;
         }
+        if (s.endsWith(" Ep")) {
+            s = s.substring(0, s.length() - 3);
+        }
+        if (s.endsWith(" Single")) {
+            s = s.substring(0, s.length() - 7);
+        }
         int p = -1;
         for (int i = s.length(); i >= 0; i--) {
             if (isDate(s, i)) {
