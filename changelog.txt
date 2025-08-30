@@ -17492,3 +17492,9 @@ failed: wireguard over wireguard
 ---------------------------------- 2025-08-29 13:15:00 25.8.29
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
+---------------------------------- 2025-08-30 06:20:29 25.8.30
+qc pass: gre with checksum
+qc pass: gre with sequence
+qc pass: gre with key
+qc pass: gre with everything
+qc pass: gre with asymmetric key

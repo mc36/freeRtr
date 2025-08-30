@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.8.30-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-08-30 05:59:54, took 00:13:59, with 50 workers, on 4033 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2025-08-30 06:34:27, took 00:13:58, with 50 workers, on 4038 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -200,6 +200,11 @@ http://sources.freertr.org/cfg/conn-gre09.tst;conn-gre09.tst;success;atmdxi with
 http://sources.freertr.org/cfg/conn-gre10.tst;conn-gre10.tst;success;isdn with gre
 http://sources.freertr.org/cfg/conn-gre11.tst;conn-gre11.tst;success;sep with gre
 http://sources.freertr.org/cfg/conn-gre12.tst;conn-gre12.tst;success;gre server
+http://sources.freertr.org/cfg/conn-gre13.tst;conn-gre13.tst;success;gre with checksum
+http://sources.freertr.org/cfg/conn-gre14.tst;conn-gre14.tst;success;gre with sequence
+http://sources.freertr.org/cfg/conn-gre15.tst;conn-gre15.tst;success;gre with key
+http://sources.freertr.org/cfg/conn-gre16.tst;conn-gre16.tst;success;gre with everything
+http://sources.freertr.org/cfg/conn-gre17.tst;conn-gre17.tst;success;gre with asymmetric key
 http://sources.freertr.org/cfg/conn-gtp01.tst;conn-gtp01.tst;success;ppp over gtp
 http://sources.freertr.org/cfg/conn-gtp02.tst;conn-gtp02.tst;success;ipv4 over gtp
 http://sources.freertr.org/cfg/conn-gtp03.tst;conn-gtp03.tst;success;ipv6 over gtp

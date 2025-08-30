@@ -196,6 +196,11 @@ qc pass: atmdxi with gre
 qc pass: isdn with gre
 qc pass: sep with gre
 qc pass: gre server
+qc pass: gre with checksum
+qc pass: gre with sequence
+qc pass: gre with key
+qc pass: gre with everything
+qc pass: gre with asymmetric key
 qc pass: ppp over gtp
 qc pass: ipv4 over gtp
 qc pass: ipv6 over gtp
