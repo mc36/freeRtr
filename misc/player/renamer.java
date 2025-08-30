@@ -203,8 +203,8 @@ public class renamer {
         }
         int p = s.lastIndexOf(" ");
         a = s.substring(p + 1, s.length());
-        if ("|Ep|Live|Demo|Split|Promo||Single|Compilation|Deluxe|Limited|Edition|".indexOf("|" + a + "|") >= 0) {
-            s = s.substring(0, p);
+        if ("|Ep|Live|Demo|Split|Promo||Single|Instrumental|Remastered|Rerecorded|Reissue|Re-recorded|Re-mastered|Re-issue|Compilation|Deluxe|Limited|Edition|".indexOf("|" + a + "|") >= 0) {
+            s = s.substring(0, p).trim();
         }
         p = -1;
         for (int i = s.length(); i >= 0; i--) {
