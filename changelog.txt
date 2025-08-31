@@ -17498,3 +17498,6 @@ qc pass: gre with sequence
 qc pass: gre with key
 qc pass: gre with everything
 qc pass: gre with asymmetric key
+---------------------------------- 2025-08-31 20:15:18 25.8.31
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard
