@@ -1,6 +1,9 @@
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * rename files
@@ -64,10 +67,15 @@ public class renamer {
         String s = args[0];
         playerUtil.put("reading " + s + "...");
         String[] l1 = new File(s).list();
+        List<String> l2 = new ArrayList<String>();
+        for (int i = 0; i < l1.length; i++) {
+            l2.add(l1[i]);
+        }
+        Collections.sort(l2, new duplicates());
         int tried = 0;
         int failed = 0;
-        for (int i = 0; i < l1.length; i++) {
-            s = l1[i];
+        for (int i = 0; i < l2.size(); i++) {
+            s = l2.get(i);
             String a = guessName(prepend + s, basic);
             a = guessName(a, basic);
             a = guessName(a, basic);
@@ -203,7 +211,7 @@ public class renamer {
         }
         int p = s.lastIndexOf(" ");
         a = s.substring(p + 1, s.length());
-        if ("|Ep|Live|Demo|Split|Promo||Single|Instrumental|Remastered|Rerecorded|Reissue|Re-recorded|Re-mastered|Re-issue|Compilation|Deluxe|Limited|Edition|".indexOf("|" + a + "|") >= 0) {
+        if ("|-|Ep|Live|Demo|Split|Promo||Single|Instrumental|Remastered|Rerecorded|Reissue|Re-recorded|Re-mastered|Re-issue|Compilation|Deluxe|Limited|Edition|".indexOf("|" + a + "|") >= 0) {
             s = s.substring(0, p).trim();
         }
         p = -1;
