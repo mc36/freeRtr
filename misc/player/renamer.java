@@ -72,7 +72,7 @@ public class renamer {
             a = guessName(a, basic);
             a = guessName(a, basic);
             if (a == null) {
-                playerUtil.put("no guess to " + s);
+                playerUtil.put(s + " have no guess");
                 continue;
             }
             if (a.startsWith(remover)) {
