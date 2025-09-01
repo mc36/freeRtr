@@ -17501,3 +17501,6 @@ qc pass: gre with asymmetric key
 ---------------------------------- 2025-08-31 20:15:18 25.8.31
 no qc pass: wireguard over wireguard
 failed: wireguard over wireguard
+---------------------------------- 2025-08-31 21:15:13 25.8.31
+no failed: wireguard over wireguard
+qc pass: wireguard over wireguard
