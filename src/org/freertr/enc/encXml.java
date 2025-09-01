@@ -29,7 +29,7 @@ public class encXml {
     /**
      * values
      */
-    public final static String value = "identifier-value";
+    public final static String content = "identifier-value";
 
     /**
      * original string
@@ -203,7 +203,7 @@ public class encXml {
                 if (data.size() > 0) {
                     encXmlEntry ntry = data.get(data.size() - 1);
                     if (ntry.name.equals(path)) {
-                        ntry.value += a;
+                        ntry.data += a;
                         continue;
                     }
                 }
@@ -335,7 +335,7 @@ public class encXml {
         String path = "";
         for (int pos = 0; pos < data.size(); pos++) {
             encXmlEntry ntry = data.get(pos);
-            lst.add(getMove(path, ntry.name, ntry.param) + ntry.value);
+            lst.add(getMove(path, ntry.name, ntry.param) + ntry.data);
             path = ntry.name;
         }
         lst.add(getMove(path, "", ""));
@@ -401,7 +401,7 @@ public class encXml {
         List<Integer> lnk = new ArrayList<Integer>();
         for (int num = 0; num < data.size(); num++) {
             encXmlEntry ntry = data.get(num);
-            String str = ntry.value.trim();
+            String str = ntry.data.trim();
             String tag = "/" + ntry.name.trim().toLowerCase().replaceAll(" ", "") + "/";
             if (tag.indexOf("/script/") > 0) {
                 str = "";
@@ -478,7 +478,7 @@ public class encXml {
                 if (i < 0) {
                     continue;
                 }
-                if (!lst.get(i).value.trim().toLowerCase().equals("refresh")) {
+                if (!lst.get(i).data.trim().toLowerCase().equals("refresh")) {
                     continue;
                 }
                 str = "<refresh>";
@@ -491,7 +491,7 @@ public class encXml {
                 if (i < 0) {
                     a = "unknown";
                 } else {
-                    a = lst.get(i).value.trim().toLowerCase();
+                    a = lst.get(i).data.trim().toLowerCase();
                 }
                 if (a.equals("hidden")) {
                     continue;
@@ -499,7 +499,7 @@ public class encXml {
                 if (a.equals("submit")) {
                     i = findParam(lst, "|value|");
                     if (i >= 0) {
-                        str = "<" + lst.get(i).value + ">";
+                        str = "<" + lst.get(i).data + ">";
                     } else {
                         str = "<submit>";
                     }
@@ -634,7 +634,7 @@ public class encXml {
         String str = "";
         for (int i = 0; i < lst.size(); i++) {
             encXmlEntry ntry = lst.get(i);
-            str = str + " " + ntry.name + "=\"" + ntry.value + "\"";
+            str = str + " " + ntry.name + "=\"" + ntry.data + "\"";
         }
         return str;
     }

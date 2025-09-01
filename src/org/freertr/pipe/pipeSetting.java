@@ -115,7 +115,7 @@ public class pipeSetting implements Comparable<pipeSetting> {
     /**
      * value of the object
      */
-    protected Object value;
+    protected Object data;
 
     /**
      * create instance

@@ -56,7 +56,7 @@ public class userXml {
         for (int i = 0; i < req.data.size(); i++) {
             encXmlEntry ntry = req.data.get(i);
             if (ntry.name.equals("/?xml/Request/CLI/Exec")) {
-                cmds cmd = new cmds("xml", ntry.value);
+                cmds cmd = new cmds("xml", ntry.data);
                 String e = new String(pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
                 for (;;) {
                     if (cmd.size() < 1) {
@@ -94,7 +94,7 @@ public class userXml {
                     rep.data.add(new encXmlEntry(null, "/Response/CLI/Configuration", "", "not enough privileges"));
                     continue;
                 }
-                cmds cmd = new cmds("xml", ntry.value);
+                cmds cmd = new cmds("xml", ntry.data);
                 pipeLine pl = new pipeLine(65535, false);
                 pipeSide pip = pl.getSide();
                 pip.lineTx = pipeSide.modTyp.modeCRLF;

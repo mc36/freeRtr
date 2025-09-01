@@ -15,7 +15,7 @@ public class encJsonEntry {
     /**
      * value
      */
-    public String value;
+    public String data;
 
     /**
      * create instance
@@ -25,7 +25,7 @@ public class encJsonEntry {
      */
     public encJsonEntry(int n, String v) {
         level = n;
-        value = v;
+        data = v;
     }
 
     /**
@@ -43,7 +43,7 @@ public class encJsonEntry {
     public encJsonEntry copyBytes() {
         encJsonEntry ntry = new encJsonEntry();
         ntry.level = level;
-        ntry.value = "" + value;
+        ntry.data = "" + data;
         return ntry;
     }
 
@@ -52,11 +52,11 @@ public class encJsonEntry {
      */
     public void clear() {
         level = 0;
-        value = "";
+        data = "";
     }
 
     public String toString() {
-        return level + "=\"" + value + "\"";
+        return level + "=\"" + data + "\"";
     }
 
 }

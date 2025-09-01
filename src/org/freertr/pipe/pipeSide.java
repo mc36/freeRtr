@@ -980,7 +980,7 @@ public class pipeSide {
             return;
         }
         pipeSetting ntry = new pipeSetting(nam);
-        ntry.value = val;
+        ntry.data = val;
         synchronized (settings) {
             settings.put(ntry);
         }
@@ -997,7 +997,7 @@ public class pipeSide {
             return;
         }
         pipeSetting ntry = new pipeSetting(nam);
-        ntry.value = val;
+        ntry.data = val;
         synchronized (settings) {
             settings.add(ntry);
         }
@@ -1039,7 +1039,7 @@ public class pipeSide {
             return def;
         }
         try {
-            T fin = (T) ntry.value;
+            T fin = (T) ntry.data;
             return fin;
         } catch (Exception e) {
             return def;

@@ -116,13 +116,13 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
             for (int i = 0; i < 32; i++) {
                 int bit = (i * 8) % 26;
                 int word = (i * 8) / 26;
-                int value = pub[i] & 0xFF;
+                int val = pub[i] & 0xFF;
                 if (bit <= (26 - 8)) {
-                    x_1[word] |= value << bit;
+                    x_1[word] |= val << bit;
                 } else {
-                    x_1[word] |= value << bit;
+                    x_1[word] |= val << bit;
                     x_1[word] &= 0x03FFFFFF;
-                    x_1[word + 1] |= value >> (26 - bit);
+                    x_1[word + 1] |= val >> (26 - bit);
                 }
             }
             reduceQuick(x_1);

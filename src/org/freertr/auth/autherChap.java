@@ -112,7 +112,7 @@ public class autherChap extends autherDoer {
                 working = true;
                 msg.code = codeResp;
                 msg.message = sentUser;
-                msg.value = calcAuthHash(id, sentPass, msg.value);
+                msg.data = calcAuthHash(id, sentPass, msg.data);
                 msg.createPack(pck);
                 parent.sendAuthPack(pck, pppCtrl, msg.code, msg.id, "" + msg);
                 break;
@@ -125,7 +125,7 @@ public class autherChap extends autherDoer {
                     working = true;
                     return;
                 }
-                result = authenRem.authUserChap(msg.message, sentId, sentCh, msg.value);
+                result = authenRem.authUserChap(msg.message, sentId, sentCh, msg.data);
                 if (result.result == authResult.authSuccessful) {
                     msg.code = codeSucc;
                 } else {
@@ -170,7 +170,7 @@ public class autherChap extends autherDoer {
         msg.code = codeChal;
         msg.id = sentId;
         msg.message = "";
-        msg.value = sentCh;
+        msg.data = sentCh;
         msg.createPack(pck);
         parent.sendAuthPack(pck, pppCtrl, msg.code, msg.id, "" + msg);
         return;
@@ -184,7 +184,7 @@ class autherChapMsg {
 
     public int id;
 
-    public byte[] value;
+    public byte[] data;
 
     public String message;
 
@@ -202,11 +202,11 @@ class autherChapMsg {
         if (needValue()) {
             int i = pck.getByte(0);
             pck.getSkip(1);
-            value = new byte[i];
-            pck.getCopy(value, 0, 0, i);
+            data = new byte[i];
+            pck.getCopy(data, 0, 0, i);
             pck.getSkip(i);
         } else {
-            value = new byte[0];
+            data = new byte[0];
         }
         message = pck.getAsciiZ(0, pck.dataSize(), 0);
         return false;
@@ -215,10 +215,10 @@ class autherChapMsg {
     public void createPack(packHolder pck) {
         pck.clear();
         if (needValue()) {
-            pck.putByte(0, value.length);
+            pck.putByte(0, data.length);
             pck.putSkip(1);
-            pck.putCopy(value, 0, 0, value.length);
-            pck.putSkip(value.length);
+            pck.putCopy(data, 0, 0, data.length);
+            pck.putSkip(data.length);
         }
         pck.putAsciiZ(0, message.length(), message, 0);
         pck.putSkip(message.length());
@@ -226,7 +226,7 @@ class autherChapMsg {
     }
 
     public String toString() {
-        return "cod=" + autherChap.code2str(code) + " id=" + id + " msg=" + message + " val=" + bits.byteDump(value, 0, -1);
+        return "cod=" + autherChap.code2str(code) + " id=" + id + " msg=" + message + " val=" + bits.byteDump(data, 0, -1);
     }
 
 }

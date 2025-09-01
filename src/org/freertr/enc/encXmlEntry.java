@@ -25,7 +25,7 @@ public class encXmlEntry {
     /**
      * value
      */
-    public String value;
+    public String data;
 
     /**
      * create instance
@@ -39,7 +39,7 @@ public class encXmlEntry {
         parent = pr;
         name = n;
         param = p;
-        value = v;
+        data = v;
     }
 
     /**
@@ -59,7 +59,7 @@ public class encXmlEntry {
         ntry.parent = parent;
         ntry.name = "" + name;
         ntry.param = "" + param;
-        ntry.value = "" + value;
+        ntry.data = "" + data;
         return ntry;
     }
 
@@ -69,11 +69,11 @@ public class encXmlEntry {
     public void clear() {
         name = "";
         param = "";
-        value = "";
+        data = "";
     }
 
     public String toString() {
-        return name + "<" + param + ">" + value;
+        return name + "<" + param + ">" + data;
     }
 
     /**
@@ -95,7 +95,7 @@ public class encXmlEntry {
      * @return string
      */
     public String getNamVal() {
-        return name + "=" + value;
+        return name + "=" + data;
     }
 
     /**
@@ -108,8 +108,8 @@ public class encXmlEntry {
         encXmlEntry cur = this;
         for (; cur != null;) {
             String a = cur.getTag();
-            if (a.startsWith(encXml.value)) {
-                a = cur.value;
+            if (a.startsWith(encXml.content)) {
+                a = cur.data;
             }
             cur = cur.parent;
             if (a.startsWith(encXml.ignore)) {

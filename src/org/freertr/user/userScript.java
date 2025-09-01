@@ -1035,9 +1035,9 @@ class userScriptList {
         userScriptEntry ntry = new userScriptEntry(nam);
         userScriptEntry old = lst.add(ntry);
         if (old != null) {
-            old.value = val;
+            old.data = val;
         } else {
-            ntry.value = val;
+            ntry.data = val;
         }
     }
 
@@ -1051,7 +1051,7 @@ class userScriptList {
         if (ntry == null) {
             return null;
         }
-        return ntry.value;
+        return ntry.data;
     }
 
     public void global(String nam) {
@@ -1070,7 +1070,7 @@ class userScriptEntry implements Comparable<userScriptEntry> {
 
     public final String name;
 
-    public String value;
+    public String data;
 
     public userScriptEntry(String n) {
         name = n;

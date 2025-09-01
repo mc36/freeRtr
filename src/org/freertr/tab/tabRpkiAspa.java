@@ -221,7 +221,7 @@ public class tabRpkiAspa implements Comparable<tabRpkiAspa> {
             if (jnt.level != o) {
                 break;
             }
-            provs.add(bits.str2num(jnt.value));
+            provs.add(bits.str2num(jnt.data));
         }
         srcIP = new addrIP();
         srcRtr = tabRouteAttr.routeType.staticRoute;

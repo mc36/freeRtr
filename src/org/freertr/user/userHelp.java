@@ -1100,7 +1100,7 @@ public class userHelp {
             }
             if (nxt.size() < 1) {
                 if (ntry.variable) {
-                    dat.add(id + "leaf " + encXml.value + vn + " {");
+                    dat.add(id + "leaf " + encXml.content + vn + " {");
                     dat.add(id + "  description \"" + ntry.description + "\";");
                     dat.add(id + "  type string;");
                     dat.add(id + "}");
@@ -1128,8 +1128,8 @@ public class userHelp {
                 continue;
             }
             dat.add(id + "list " + encXml.ignore + o + " {");
-            dat.add(id + "  key \"" + encXml.value + o + "\";");
-            dat.add(id + "  leaf " + encXml.value + o + " {");
+            dat.add(id + "  key \"" + encXml.content + o + "\";");
+            dat.add(id + "  leaf " + encXml.content + o + " {");
             dat.add(id + "    description \"" + ntry.description + "\";");
             dat.add(id + "    type string;");
             dat.add(id + "  }");

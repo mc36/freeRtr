@@ -30,7 +30,7 @@ public class tabGepV2<T extends addrType> {
         tabGepV2nod<T> bas = root;
         for (int p = 0;; p++) {
             if (p >= val.prefix.maskLen) {
-                cur.value = val;
+                cur.val = val;
                 cache(bas);
                 return;
             }
@@ -62,7 +62,7 @@ public class tabGepV2<T extends addrType> {
         tabGepV2nod<T> bas = root;
         for (int p = 0;; p++) {
             if (p >= val.prefix.maskLen) {
-                cur.value = null;
+                cur.val = null;
                 cache(bas);
                 return;
             }
@@ -91,12 +91,12 @@ public class tabGepV2<T extends addrType> {
         if (cur == null) {
             return;
         }
-        if (cur.value != null) {
-            lst = cur.value;
+        if (cur.val != null) {
+            lst = cur.val;
         }
         int mid = end - beg;
         if (mid < 256) {
-            cur.result = lst;
+            cur.res = lst;
         }
         for (int i = beg; i < end; i++) {
             res[i] = cur;
@@ -114,8 +114,8 @@ public class tabGepV2<T extends addrType> {
         tabGepV2nod<T> cur = root;
         tabRouteEntry<T> lst = null;
         for (int p = 0;; p++) {
-            if (cur.value != null) {
-                lst = cur.value;
+            if (cur.val != null) {
+                lst = cur.val;
             }
             if (p >= val.prefix.maskLen) {
                 return lst;
@@ -141,8 +141,8 @@ public class tabGepV2<T extends addrType> {
         tabGepV2nod<T> cur = root;
         tabRouteEntry<T> lst = null;
         for (int p = 0;; p += 8) {
-            if (cur.result != null) {
-                lst = cur.result;
+            if (cur.res != null) {
+                lst = cur.res;
             }
             if (cur.cache == null) {
                 return lst;
@@ -166,14 +166,14 @@ class tabGepV2nod<T extends addrType> {
 
     public tabGepV2nod<T> one;
 
-    public tabRouteEntry<T> value;
+    public tabRouteEntry<T> val;
 
-    public tabRouteEntry<T> result;
+    public tabRouteEntry<T> res;
 
     public tabGepV2nod<T> cache[];
 
     public tabGepV2nod() {
-        value = null;
+        val = null;
         zero = null;
         one = null;
     }

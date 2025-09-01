@@ -1186,16 +1186,16 @@ public class tabRouteUtil {
             case nothing:
                 break;
             case setter:
-                attr.labelRem = tabLabel.prependLabel(attr.labelRem, setter.value);
+                attr.labelRem = tabLabel.prependLabel(attr.labelRem, setter.val);
                 if (attr.labelRem.size() > 1) {
                     attr.labelRem.remove(1);
                 }
                 break;
             case adder:
-                attr.labelRem = tabLabel.prependLabel(attr.labelRem, setter.value);
+                attr.labelRem = tabLabel.prependLabel(attr.labelRem, setter.val);
                 break;
             case suber:
-                removeIntList(attr.labelRem, setter.value);
+                removeIntList(attr.labelRem, setter.val);
                 break;
             default:
                 break;

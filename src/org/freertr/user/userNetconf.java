@@ -191,7 +191,7 @@ public class userNetconf {
             if (!a.equals("/?xml/hello/capabilities/capability")) {
                 continue;
             }
-            if (ntry.value.equals("urn:ietf:params:netconf:base:1.1")) {
+            if (ntry.data.equals("urn:ietf:params:netconf:base:1.1")) {
                 currVer = 11;
                 continue;
             }

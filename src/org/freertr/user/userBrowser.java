@@ -460,7 +460,7 @@ public class userBrowser {
             return null;
         }
         ntry = lst.get(i);
-        b = ntry.value;
+        b = ntry.data;
         if (a.equals("meta")) {
             i = b.indexOf("=");
             if (i > 0) {
@@ -658,13 +658,13 @@ public class userBrowser {
             if (i < 0) {
                 a = "";
             } else {
-                a = lst.get(i).value;
+                a = lst.get(i).data;
             }
-            String b = console.askUser("enter value of " + a + ":", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, ntry.value);
+            String b = console.askUser("enter value of " + a + ":", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, ntry.data);
             if (b.length() < 1) {
                 return;
             }
-            ntry.value = b;
+            ntry.data = b;
             return;
         }
         if (!(a.equals("input") || a.equals("button"))) {
@@ -675,14 +675,14 @@ public class userBrowser {
         if (i < 0) {
             a = "unknown";
         } else {
-            a = lst.get(i).value.trim().toLowerCase();
+            a = lst.get(i).data.trim().toLowerCase();
         }
         if (!a.equals("submit")) {
             i = encXml.findParam(lst, "|name|");
             if (i < 0) {
                 a = "";
             } else {
-                a = lst.get(i).value;
+                a = lst.get(i).data;
             }
             i = encXml.findParam(lst, "|value|");
             String b;
@@ -694,11 +694,11 @@ public class userBrowser {
             } else {
                 rec = lst.get(i);
             }
-            b = console.askUser("enter value of " + a + ":", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, rec.value);
+            b = console.askUser("enter value of " + a + ":", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, rec.data);
             if (b.length() < 1) {
                 return;
             }
-            rec.value = b;
+            rec.data = b;
             ntry.param = encXml.encodeParams(lst);
             return;
         }
@@ -729,7 +729,7 @@ public class userBrowser {
         if (i < 0) {
             a = url;
         } else {
-            a = lst.get(i).value;
+            a = lst.get(i).data;
         }
         encUrl res = doUrl(a);
         res.param.clear();
@@ -742,7 +742,7 @@ public class userBrowser {
                 if (i < 0) {
                     continue;
                 }
-                res.addParam(lst.get(i).value, ntry.value);
+                res.addParam(lst.get(i).data, ntry.data);
                 continue;
             }
             if (!(a.equals("input") || a.equals("button"))) {
@@ -753,7 +753,7 @@ public class userBrowser {
             if (i < 0) {
                 a = "unknown";
             } else {
-                a = lst.get(i).value.trim().toLowerCase();
+                a = lst.get(i).data.trim().toLowerCase();
             }
             if (a.equals("submit") && (pos != ps)) {
                 continue;
@@ -762,12 +762,12 @@ public class userBrowser {
             if (i < 0) {
                 continue;
             }
-            a = lst.get(i).value;
+            a = lst.get(i).data;
             i = encXml.findParam(lst, "|value|");
             if (i < 0) {
                 continue;
             }
-            res.addParam(a, lst.get(i).value);
+            res.addParam(a, lst.get(i).data);
         }
         oldurl = url;
         url = res.toURL(true, true, true, true);

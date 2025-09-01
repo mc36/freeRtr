@@ -157,7 +157,7 @@ public class autherEap extends autherDoer {
                     case typeChal:
                         msg.code = codeRep;
                         msg.message = sentUser;
-                        msg.value = autherChap.calcAuthHash(id, sentPass, msg.value);
+                        msg.data = autherChap.calcAuthHash(id, sentPass, msg.data);
                         break;
                     default:
                         return;
@@ -180,7 +180,7 @@ public class autherEap extends autherDoer {
                             working = true;
                             return;
                         }
-                        result = authenRem.authUserChap(gotId, sentId, sentCh, msg.value);
+                        result = authenRem.authUserChap(gotId, sentId, sentCh, msg.data);
                         if (result.result == authResult.authSuccessful) {
                             msg.code = codeSucc;
                         } else {
@@ -224,7 +224,7 @@ public class autherEap extends autherDoer {
         msg.id = sentId;
         if (gotId == null) {
             msg.type = typeId;
-            msg.value = new byte[0];
+            msg.data = new byte[0];
             msg.message = "";
         } else {
             sentCh = new byte[16];
@@ -232,7 +232,7 @@ public class autherEap extends autherDoer {
                 sentCh[i] = (byte) bits.randomB();
             }
             msg.type = typeChal;
-            msg.value = sentCh;
+            msg.data = sentCh;
             msg.message = "";
         }
         msg.createPack(pck);
@@ -252,7 +252,7 @@ class autherEapMsg {
 
     public String message;
 
-    public byte[] value;
+    public byte[] data;
 
     private boolean needData() {
         switch (code) {
@@ -273,9 +273,9 @@ class autherEapMsg {
         if (type == autherEap.typeChal) {
             int i = pck.getByte(0);
             pck.getSkip(1);
-            value = new byte[i];
-            pck.getCopy(value, 0, 0, value.length);
-            pck.getSkip(value.length);
+            data = new byte[i];
+            pck.getCopy(data, 0, 0, data.length);
+            pck.getSkip(data.length);
         }
         message = pck.getAsciiZ(0, pck.dataSize(), 0);
         return false;
@@ -289,10 +289,10 @@ class autherEapMsg {
         pck.putByte(0, type);
         pck.putSkip(1);
         if (type == autherEap.typeChal) {
-            pck.putByte(0, value.length);
+            pck.putByte(0, data.length);
             pck.putSkip(1);
-            pck.putCopy(value, 0, 0, value.length);
-            pck.putSkip(value.length);
+            pck.putCopy(data, 0, 0, data.length);
+            pck.putSkip(data.length);
         }
         pck.putAsciiZ(0, message.length(), message, 0);
         pck.putSkip(message.length());
@@ -300,7 +300,7 @@ class autherEapMsg {
     }
 
     public String toString() {
-        return "cod=" + autherEap.code2str(code) + " id=" + id + " typ=" + autherEap.type2str(type) + " message=" + message + " val=" + bits.byteDump(value, 0, -1);
+        return "cod=" + autherEap.code2str(code) + " id=" + id + " typ=" + autherEap.type2str(type) + " message=" + message + " val=" + bits.byteDump(data, 0, -1);
     }
 
 }

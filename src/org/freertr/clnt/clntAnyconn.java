@@ -299,13 +299,13 @@ public class clntAnyconn implements Runnable, ifcDn {
         cln.doHeaders(url);
         i = encXml.findParam(cln.headers, "|x-cstp-address|");
         if (i >= 0) {
-            String s = cln.headers.get(i).value;
+            String s = cln.headers.get(i).data;
             addr4 = new addrIP();
             addr4.fromString(s);
         }
         i = encXml.findParam(cln.headers, "|x-cstp-address-ip6|");
         if (i >= 0) {
-            String s = cln.headers.get(i).value;
+            String s = cln.headers.get(i).data;
             i = s.indexOf("/");
             if (i >= 0) {
                 s = s.substring(0, i).trim();

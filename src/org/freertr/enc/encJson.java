@@ -85,7 +85,7 @@ public class encJson {
             if (a.equals(":")) {
                 encJsonEntry ntry = new encJsonEntry();
                 ntry.level = lev;
-                ntry.value = "" + cur;
+                ntry.data = "" + cur;
                 if (cur.length() > 0) {
                     data.add(ntry);
                 }
@@ -95,7 +95,7 @@ public class encJson {
             if (a.equals(",")) {
                 encJsonEntry ntry = new encJsonEntry();
                 ntry.level = lev;
-                ntry.value = "" + cur;
+                ntry.data = "" + cur;
                 if (cur.length() > 0) {
                     data.add(ntry);
                 }
@@ -110,7 +110,7 @@ public class encJson {
                 }
                 encJsonEntry ntry = new encJsonEntry();
                 ntry.level = lev;
-                ntry.value = s.substring(0, i);
+                ntry.data = s.substring(0, i);
                 s = s.substring(i + 1, s.length());
                 data.add(ntry);
                 cur = "";
@@ -119,7 +119,7 @@ public class encJson {
             if (a.equals("{")) {
                 encJsonEntry ntry = new encJsonEntry();
                 ntry.level = lev;
-                ntry.value = "" + cur;
+                ntry.data = "" + cur;
                 if (cur.length() > 0) {
                     data.add(ntry);
                 }
@@ -130,7 +130,7 @@ public class encJson {
             if (a.equals("}")) {
                 encJsonEntry ntry = new encJsonEntry();
                 ntry.level = lev;
-                ntry.value = "" + cur;
+                ntry.data = "" + cur;
                 if (cur.length() > 0) {
                     data.add(ntry);
                 }
@@ -141,7 +141,7 @@ public class encJson {
             if (a.equals("[")) {
                 encJsonEntry ntry = new encJsonEntry();
                 ntry.level = lev;
-                ntry.value = "" + cur;
+                ntry.data = "" + cur;
                 if (cur.length() > 0) {
                     data.add(ntry);
                 }
@@ -152,7 +152,7 @@ public class encJson {
             if (a.equals("]")) {
                 encJsonEntry ntry = new encJsonEntry();
                 ntry.level = lev;
-                ntry.value = "" + cur;
+                ntry.data = "" + cur;
                 if (cur.length() > 0) {
                     data.add(ntry);
                 }
@@ -164,7 +164,7 @@ public class encJson {
         }
         encJsonEntry ntry = new encJsonEntry();
         ntry.level = lev;
-        ntry.value = "" + cur;
+        ntry.data = "" + cur;
         if (cur.length() > 0) {
             data.add(ntry);
         }
@@ -196,7 +196,7 @@ public class encJson {
             encJsonEntry ntry = data.get(i);
             res += bits.padEnd("", ntry.level - old.level, "{");
             res += bits.padEnd("", old.level - ntry.level, "}");
-            res += "\"" + ntry.value + "\"";
+            res += "\"" + ntry.data + "\"";
             old = ntry;
         }
         res += bits.padEnd("", old.level, "}");
@@ -212,7 +212,7 @@ public class encJson {
         List<String> lst = new ArrayList<String>();
         for (int pos = 0; pos < data.size(); pos++) {
             encJsonEntry ntry = data.get(pos);
-            lst.add(ntry.level + "," + ntry.value);
+            lst.add(ntry.level + "," + ntry.data);
         }
         return lst;
     }
@@ -239,7 +239,7 @@ public class encJson {
     public int findValue(String s) {
         for (int i = 0; i < data.size(); i++) {
             encJsonEntry ntry = data.get(i);
-            if (!s.equals(ntry.value)) {
+            if (!s.equals(ntry.data)) {
                 continue;
             }
             return i;
@@ -260,7 +260,7 @@ public class encJson {
         if (i >= data.size()) {
             return null;
         }
-        return data.get(i).value;
+        return data.get(i).data;
     }
 
 

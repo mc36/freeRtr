@@ -323,14 +323,14 @@ public class clntPulse implements Runnable, ifcDn {
             if (i < 0) {
                 continue;
             }
-            if (!lst.get(i).value.trim().toLowerCase().equals("realm")) {
+            if (!lst.get(i).data.trim().toLowerCase().equals("realm")) {
                 continue;
             }
             i = encXml.findParam(lst, "|value|");
             if (i < 0) {
                 continue;
             }
-            realm = lst.get(i).value.trim();
+            realm = lst.get(i).data.trim();
         }
         if (realm == null) {
             return;
@@ -356,7 +356,7 @@ public class clntPulse implements Runnable, ifcDn {
         if (i < 0) {
             return;
         }
-        cookie = cln.cookies.get(i).value;
+        cookie = cln.cookies.get(i).data;
         cln = new clntHttp(null, proxy, pubkey, debugger.clntPulseTraf);
         if (cln.doConnect(url)) {
             return;

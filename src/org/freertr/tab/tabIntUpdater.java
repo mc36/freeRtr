@@ -57,7 +57,7 @@ public class tabIntUpdater {
     /**
      * updater value
      */
-    public int value = 0;
+    public int val = 0;
 
     /**
      * update value by this updater
@@ -70,17 +70,17 @@ public class tabIntUpdater {
             case nothing:
                 return i;
             case setter:
-                return value;
+                return val;
             case adder:
-                return i + value;
+                return i + val;
             case suber:
-                return i - value;
+                return i - val;
             case ander:
-                return i & value;
+                return i & val;
             case orer:
-                return i | value;
+                return i | val;
             case xorer:
-                return i ^ value;
+                return i ^ val;
             default:
                 return i;
         }
@@ -91,7 +91,7 @@ public class tabIntUpdater {
      */
     public void set2unchange() {
         action = actionType.nothing;
-        value = 0;
+        val = 0;
     }
 
     /**
@@ -110,7 +110,7 @@ public class tabIntUpdater {
         if (s.length() < 1) {
             return false;
         }
-        value = bits.str2num(s.substring(1, s.length()));
+        val = bits.str2num(s.substring(1, s.length()));
         if (s.startsWith("=")) {
             action = actionType.setter;
             return false;
@@ -135,7 +135,7 @@ public class tabIntUpdater {
             action = actionType.xorer;
             return false;
         }
-        value = bits.str2num(s);
+        val = bits.str2num(s);
         action = actionType.setter;
         return false;
     }
@@ -145,17 +145,17 @@ public class tabIntUpdater {
             case nothing:
                 return "leave";
             case setter:
-                return "" + value;
+                return "" + val;
             case adder:
-                return "+" + value;
+                return "+" + val;
             case suber:
-                return "-" + value;
+                return "-" + val;
             case ander:
-                return "&" + value;
+                return "&" + val;
             case orer:
-                return "|" + value;
+                return "|" + val;
             case xorer:
-                return "^" + value;
+                return "^" + val;
             default:
                 return "unknown";
         }

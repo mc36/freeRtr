@@ -205,7 +205,7 @@ public class userFilter implements Comparable<userFilter> {
                     t += "/" + a;
                     continue;
                 }
-                t += "/" + encXml.value;
+                t += "/" + encXml.content;
             }
             s = t;
             cmd = new cmds("x", b);
@@ -218,7 +218,7 @@ public class userFilter implements Comparable<userFilter> {
                     s += "/" + a;
                     continue;
                 }
-                s += "/" + encXml.value;
+                s += "/" + encXml.content;
                 a = encXml.escId(a);
                 rep.data.add(new encXmlEntry(null, s, "", a));
             }
