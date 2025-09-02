@@ -139,6 +139,11 @@ public class temper implements Runnable {
     protected int refreshSeconds = 3;
 
     /**
+     * http refresh site
+     */
+    protected String refreshSite = "/index.html";
+
+    /**
      * log file
      */
     protected String logFile = "temper.log";
@@ -526,6 +531,10 @@ public class temper implements Runnable {
                 refreshSeconds = (int) temperUtil.str2num(s);
                 continue;
             }
+            if (a.equals("refresh-site")) {
+                refreshSite = s;
+                continue;
+            }
             if (a.equals("allowed-ip")) {
                 allowIp = s;
                 continue;
@@ -551,7 +560,9 @@ public class temper implements Runnable {
         buf.write("<meta http-equiv=refresh content=\"".getBytes());
         String a = "" + refreshSeconds;
         buf.write(a.getBytes());
-        buf.write(";url=/index.html\"><title>".getBytes());
+        buf.write(";url=".getBytes());
+        buf.write(refreshSite.getBytes());
+        buf.write("\"><title>".getBytes());
         buf.write(tit.getBytes());
         buf.write("</title><body>".getBytes());
         buf.write(res.getBytes());
