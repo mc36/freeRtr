@@ -211,7 +211,7 @@ public class renamer {
         }
         int p = s.lastIndexOf(" ");
         a = s.substring(p + 1, s.length());
-        if ("|-|128|192|256|320|Kbps|Ep|Lp|Vinyl|Dvd|Cd|Cds|2cd|3cd|4cd|5cd|6cd|7cd|7cd|9cd|Live|Demo|Split|Promo|Bootleg|Single|Version|Edition|Instrumental|Remastered|Rerecorded|Reissue|Re-recorded|Re-mastered|Re-issue|Compilation|Deluxe|Limited|Special|Digipack|".indexOf("|" + a + "|") >= 0) {
+        if ("|-|128|192|224|256|320|Kbps|Ep|Lp|Vinyl|Dvd|Cd|Cds|2cd|3cd|4cd|5cd|6cd|7cd|7cd|9cd|Live|Demo|Split|Promo|Bootleg|Single|Version|Edition|Instrumental|Remastered|Rerecorded|Reissue|Re-recorded|Re-mastered|Re-issue|Compilation|Deluxe|Limited|Special|Digipack|".indexOf("|" + a + "|") >= 0) {
             s = s.substring(0, p).trim();
         }
         p = -1;
