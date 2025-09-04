@@ -74,7 +74,7 @@ public class badLyric {
                 continue;
             }
             String b = a.substring(o, a.length()).toLowerCase() + ".";
-            if (".cue.".indexOf(b) >= 0) {
+            if (".cue.ape.flac.m4a.".indexOf(b) >= 0) {
                 delFile(s + "/" + a, false);
                 continue;
             }
