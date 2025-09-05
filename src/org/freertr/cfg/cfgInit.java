@@ -1339,9 +1339,9 @@ public class cfgInit implements Runnable {
     }
 
     /**
-     * save state
+     * generate state data
      */
-    public final static void stateSave() {
+    public final static List<String> stateData() {
         List<String> res = new ArrayList<String>();
         for (int i = 0; i < cfgAll.routers.size(); i++) {
             cfgRtr c = cfgAll.routers.get(i);
@@ -1354,6 +1354,14 @@ public class cfgInit implements Runnable {
             }
             e.routerStateGet(res);
         }
+        return res;
+    }
+
+    /**
+     * save state
+     */
+    public final static void stateSave() {
+        List<String> res = stateData();
         boolean e = res.size() == stateLast.size();
         if (e) {
             for (int i = 0; i < res.size(); i++) {

@@ -538,8 +538,16 @@ public class userShow {
                 rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnStart));
                 return null;
             }
-            if (a.equals("state")) {
+            if (a.equals("state-hash")) {
                 rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnState));
+                return null;
+            }
+            if (a.equals("state-save")) {
+                rdr.putStrArr(bits.txt2buf(cfgInit.myStateFile()));
+                return null;
+            }
+            if (a.equals("state-data")) {
+                rdr.putStrArr(cfgInit.stateData());
                 return null;
             }
             if (a.equals("remote")) {
