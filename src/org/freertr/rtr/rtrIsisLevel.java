@@ -915,7 +915,7 @@ public class rtrIsisLevel implements Runnable {
                     spf.addConn(trg, src, 0, false, stub, null);
                     continue;
                 }
-                tabGen<rtrIsisLsp> nel = lower.getISneigh(false, lower.metricWide, lower.multiTopo, tlv);
+                List<rtrIsisLsp> nel = lower.getISneigh(false, lower.metricWide, lower.multiTopo, tlv);
                 if (nel != null) {
                     for (int o = 0; o < nel.size(); o++) {
                         rtrIsisLsp nei = nel.get(o);
@@ -926,7 +926,7 @@ public class rtrIsisLevel implements Runnable {
                     }
                     continue;
                 }
-                tabGen<tabRouteEntry<addrIP>> rou = lower.getAddrReach(false, lower.metricWide, lower.multiTopo, tlv);
+                List<tabRouteEntry<addrIP>> rou = lower.getAddrReach(false, lower.metricWide, lower.multiTopo, tlv);
                 if (rou != null) {
                     for (int o = 0; o < rou.size(); o++) {
                         tabRouteEntry<addrIP> pref = rou.get(o);

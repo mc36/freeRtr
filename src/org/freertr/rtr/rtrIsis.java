@@ -738,8 +738,8 @@ public class rtrIsis extends ipRtr {
      * @param tlv tlv to read
      * @return addresses, null if nothing
      */
-    protected tabGen<tabRouteEntry<addrIP>> getAddrReach(boolean other, boolean wide, boolean multi, encTlv tlv) {
-        tabGen<tabRouteEntry<addrIP>> l = new tabGen<tabRouteEntry<addrIP>>();
+    protected List<tabRouteEntry<addrIP>> getAddrReach(boolean other, boolean wide, boolean multi, encTlv tlv) {
+        List<tabRouteEntry<addrIP>> l = new ArrayList<tabRouteEntry<addrIP>>();
         if (other ^ (fwdCore.ipVersion != ipCor4.protocolVersion)) {
             if (multi) {
                 if (tlv.valTyp != rtrIsisLsp.tlvMtIpv6reach) {
@@ -956,8 +956,8 @@ public class rtrIsis extends ipRtr {
      * @param tlv tlv to read
      * @return neighbors, null if nothing
      */
-    protected tabGen<rtrIsisLsp> getISneigh(boolean other, boolean wide, boolean multi, encTlv tlv) {
-        tabGen<rtrIsisLsp> l = new tabGen<rtrIsisLsp>();
+    protected List<rtrIsisLsp> getISneigh(boolean other, boolean wide, boolean multi, encTlv tlv) {
+        List<rtrIsisLsp> l = new ArrayList<rtrIsisLsp>();
         if (multi) {
             switch (tlv.valTyp) {
                 case rtrIsisLsp.tlvMtIsNeigh:
