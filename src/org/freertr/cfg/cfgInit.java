@@ -1340,6 +1340,8 @@ public class cfgInit implements Runnable {
 
     /**
      * generate state data
+     *
+     * @return list of states
      */
     public final static List<String> stateData() {
         List<String> res = new ArrayList<String>();
