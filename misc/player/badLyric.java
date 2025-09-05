@@ -74,7 +74,12 @@ public class badLyric {
                 continue;
             }
             String b = a.substring(o, a.length()).toLowerCase() + ".";
-            if (".cue.ape.flac.m4a.".indexOf(b) >= 0) {
+            if (".wav.ape.flac.m4a.".indexOf(b) >= 0) {
+                convFile(s + "/" + a);
+                q++;
+                continue;
+            }
+            if (".cue.".indexOf(b) >= 0) {
                 delFile(s + "/" + a, false);
                 continue;
             }
@@ -133,6 +138,39 @@ public class badLyric {
             return;
         }
         new File(s).delete();
+    }
+
+    private static int convFile(String s) {
+        playerUtil.put("cnv " + s);
+        int i = s.lastIndexOf(".");
+        if (i < 0) {
+            return -1;
+        }
+        String[] cmds = new String[11];
+        cmds[0] = "ffmpeg";
+        cmds[1] = "-i";
+        cmds[2] = s;
+        cmds[3] = "-ab";
+        cmds[4] = "320k";
+        cmds[5] = "-map_metadata";
+        cmds[6] = "0";
+        cmds[7] = "-id3v2_version";
+        cmds[8] = "3";
+        cmds[9] = "-y";
+        cmds[10] = s.substring(0, i) + ".mp3";
+        try {
+            Runtime rtm = Runtime.getRuntime();
+            Process prc = rtm.exec(cmds);
+            playerUtil.doRead(prc.getInputStream());
+            i = prc.waitFor();
+            if (i != 0) {
+                return i;
+            }
+            delFile(s, true);
+            return 0;
+        } catch (Exception e) {
+            return -2;
+        }
     }
 
     private static void moveFiles(String s, String t) {
