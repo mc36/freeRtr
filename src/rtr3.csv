@@ -1,5 +1,5 @@
 url;file;udp;dpdk;xdp;bmv2;tofino;test
--;-;-;-;-;-;-;freeRouter v25.9.4-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v25.9.5-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;not ok;ok;ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;not ok;ok;ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;not ok;ok;ok;p4lang: egress access list
@@ -753,7 +753,7 @@ http://sources.freertr.org/cfg/p4lang-rout401.tst;p4lang-rout401.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout402.tst;p4lang-rout402.tst;ok;ok;ok;ok;ok;p4lang: routed qinq evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout403.tst;p4lang-rout403.tst;ok;ok;ok;ok;ok;p4lang: vpls/ldp over backplane
 http://sources.freertr.org/cfg/p4lang-rout404.tst;p4lang-rout404.tst;ok;ok;ok;ok;ok;p4lang: evpn/cmac over backplane
-http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;ok;ok;ok;ok;ok;p4lang: routed vpls/ldp over backplane
+http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;ok;ok;ok;not ok;ok;p4lang: routed vpls/ldp over backplane
 http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;ok;ok;ok;ok;ok;p4lang: routed evpn/cmac over backplane
 http://sources.freertr.org/cfg/p4lang-rout407.tst;p4lang-rout407.tst;ok;ok;not ok;ok;ok;p4lang: vpn mldp egress edge
 http://sources.freertr.org/cfg/p4lang-rout408.tst;p4lang-rout408.tst;ok;ok;not ok;ok;ok;p4lang: vpn mldp ingress edge
