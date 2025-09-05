@@ -1572,6 +1572,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, false, lv, new int[]{lv, -1}, "validity", "ignore validity");
         hl.add(null, false, lv, new int[]{lv, -1}, "aspath", "ignore as path");
         hl.add(null, false, lv, new int[]{lv, -1}, "asconf", "ignore confed path");
+        hl.add(null, false, lv, new int[]{lv, -1}, "asset", "ignore path set");
         hl.add(null, false, lv, new int[]{lv, -1}, "stdcomm", "ignore standard community");
         hl.add(null, false, lv, new int[]{lv, -1}, "extcomm", "ignore extended community");
         hl.add(null, false, lv, new int[]{lv, -1}, "lrgcomm", "ignore large community");
@@ -1709,6 +1710,9 @@ public class tabRouteAttr<T extends addrType> {
         if (a.equals("hopcapa")) {
             return 0x400000000L;
         }
+        if (a.equals("asset")) {
+            return 0x800000000L;
+        }
         return 0;
     }
 
@@ -1828,6 +1832,9 @@ public class tabRouteAttr<T extends addrType> {
         if ((i & 0x400000000L) != 0) {
             a += " hopcapa";
         }
+        if ((i & 0x800000000L) != 0) {
+            a += " asset";
+        }
         return a.substring(1, a.length());
     }
 
@@ -1872,12 +1879,12 @@ public class tabRouteAttr<T extends addrType> {
             ntry.validAspa = 0;
         }
         if ((ign & 0x100) != 0) {
-            ntry.pathSeq = null;
-            ntry.pathSet = null;
+            ntry.pathSeq = new ArrayList<>();
+            ntry.pathSet = new ArrayList<>();
         }
         if ((ign & 0x200) != 0) {
-            ntry.confSeq = null;
-            ntry.confSet = null;
+            ntry.confSeq = new ArrayList<>();
+            ntry.confSet = new ArrayList<>();
         }
         if ((ign & 0x400) != 0) {
             ntry.stdComm = null;
@@ -1987,6 +1994,10 @@ public class tabRouteAttr<T extends addrType> {
         }
         if ((ign & 0x400000000L) != 0) {
             ntry.hopCapa = null;
+        }
+        if ((ign & 0x800000000L) != 0) {
+            ntry.pathSet = new ArrayList<Integer>();
+            ntry.confSet = new ArrayList<Integer>();
         }
     }
 
