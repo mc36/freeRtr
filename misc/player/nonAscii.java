@@ -16,40 +16,21 @@ public class nonAscii {
      * @param a string to check
      * @return false if safe
      */
-    public final static boolean doNonAscii(String a) {
+    public final static int doNonAscii(String a) {
         if (a == null) {
-            return true;
+            return -2;
         }
         byte[] b = a.getBytes();
         for (int i = 0; i < b.length; i++) {
             int c = b[i];
             if (c < 0x20) {
-                return true;
+                return i;
             }
             if (c >= 0x7e) {
-                return true;
+                return i;
             }
         }
-        return false;
-    }
-
-    /**
-     * add non ascii names
-     *
-     * @param fl list of files
-     * @param na not ascii
-     * @param oa only ascii
-     */
-    public final static void doNascii(List<File> fl, List<File> na, List<File> oa) {
-        for (int i = 0; i < fl.size(); i++) {
-            File fi = fl.get(i);
-            String a = fi.getAbsolutePath();
-            if (doNonAscii(a)) {
-                na.add(fi);
-            } else {
-                oa.add(fi);
-            }
-        }
+        return -1;
     }
 
     /**
@@ -62,18 +43,23 @@ public class nonAscii {
         if (args.length > 0) {
             s = args[0];
         }
-        List<File> na = new ArrayList<File>();
-        List<File> oa = new ArrayList<File>();
         List<File> fl = findSongs.doFindDir(s);
-        doNascii(fl, na, oa);
-        for (int i = 0; i < na.size(); i++) {
-            File ntry = na.get(i);
-            playerUtil.put("not ascii " + ntry.getAbsolutePath());
+        int err = 0;
+        for (int i = 0; i < fl.size(); i++) {
+            File ntry = fl.get(i);
+            String a = ntry.getName();
+            int o = doNonAscii(a);
+            if (o < 0) {
+                continue;
+            }
+            err++;
+            playerUtil.put(a);
+            playerUtil.put(" ".repeat(o) + "^");
         }
-        if (na.size() < 1) {
+        if (err < 1) {
             return;
         }
-        playerUtil.put("found " + oa.size() + " ok and " + na.size() + " not ok");
+        playerUtil.put("found " + err + " bad of " + fl.size());
     }
 
 }
