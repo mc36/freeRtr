@@ -653,11 +653,10 @@ public class spfCalc<Ta extends addrType> {
      * keep just participating nodes
      *
      * @param algo algorithm
-     * @return exclude list
      */
     public void justFlexAlgo(int algo) {
         tabGen<spfNode<Ta>> res = new tabGen<spfNode<Ta>>();
-        for (int i = nodes.size()-1; i>=0;i--) {
+        for (int i = nodes.size() - 1; i >= 0; i--) {
             spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
@@ -665,6 +664,7 @@ public class spfCalc<Ta extends addrType> {
             if (ntry.algo.indexOf(algo) >= 0) {
                 continue;
             }
+            ntry.stub = true;
             nodes.del(ntry);
         }
     }

@@ -1879,12 +1879,12 @@ public class tabRouteAttr<T extends addrType> {
             ntry.validAspa = 0;
         }
         if ((ign & 0x100) != 0) {
-            ntry.pathSeq = new ArrayList<>();
-            ntry.pathSet = new ArrayList<>();
+            ntry.pathSeq = new ArrayList<Integer>();
+            ntry.pathSet = new ArrayList<Integer>();
         }
         if ((ign & 0x200) != 0) {
-            ntry.confSeq = new ArrayList<>();
-            ntry.confSet = new ArrayList<>();
+            ntry.confSeq = new ArrayList<Integer>();
+            ntry.confSet = new ArrayList<Integer>();
         }
         if ((ign & 0x400) != 0) {
             ntry.stdComm = null;
