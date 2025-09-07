@@ -506,8 +506,8 @@ public class rtrIsisLevel implements Runnable {
         }
         rtrIsisLsp lsp = new rtrIsisLsp();
         lsp.srcID = lower.routerID.copyBytes();
-        lsp.nodID = pck.RTPsrc;
-        lsp.lspNum = pck.RTPtyp;
+        lsp.nodID = pck.UDPsrc;
+        lsp.lspNum = pck.UDPsiz;
         lsp.bufDat = pck.getCopy();
         lsp.flags = getFlagsVal();
         need2adv.put(lsp);
@@ -529,7 +529,7 @@ public class rtrIsisLevel implements Runnable {
         if ((pck.headSize() + tlv.valSiz) > maxLspSize) {
             advertiseLsp(pck);
             pck.setDataSize(0);
-            pck.RTPtyp++;
+            pck.UDPsiz++;
             byte[] buf = getAuthen(new packHolder(true, true), 0, 0);
             if (buf != null) {
                 advertiseTlv(pck, rtrIsisLsp.tlvAuthen, buf);
@@ -558,7 +558,7 @@ public class rtrIsisLevel implements Runnable {
             if (nei.level.level != level) {
                 continue;
             }
-            if (pck.RTPsrc != 0) {
+            if (pck.UDPsrc != 0) {
                 if (!lower.multiTopo && !lower.other.multiTopo) {
                     advertiseTlv(pck, lower.putISneigh(false, lower.metricWide, lower.multiTopo, nei.rtrID, 0, 0, new byte[0]));
                 } else {
@@ -612,7 +612,7 @@ public class rtrIsisLevel implements Runnable {
             return;
         }
         packHolder p = new packHolder(true, true);
-        p.RTPsrc = ifc.circuitID;
+        p.UDPsrc = ifc.circuitID;
         buf = getAuthen(new packHolder(true, true), 0, 0);
         if (buf != null) {
             advertiseTlv(pck, rtrIsisLsp.tlvAuthen, buf);

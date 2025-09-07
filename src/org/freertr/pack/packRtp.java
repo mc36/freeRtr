@@ -26,9 +26,45 @@ public class packRtp {
 
     private long lastCtrl;
 
-    private int packTx;
+    /**
+     * packets sent
+     */
+    public int packTx;
 
-    private int byteTx;
+    /**
+     * bytes sent
+     */
+    public int byteTx;
+
+    /**
+     * packets received
+     */
+    public int packRx;
+
+    /**
+     * bytes received
+     */
+    public int byteRx;
+    
+    /**
+     * type sent
+     */
+    public int typeTx;
+    
+    /**
+     * type received
+     */
+    public int typeRx;
+    
+    /**
+     * sync sent
+     */
+    public int syncTx;
+    
+    /**
+     * sync received
+     */
+    public int syncRx;
 
     /**
      * create connection
@@ -144,8 +180,8 @@ public class packRtp {
         }
         int ver = pck.getByte(0);
         pck.RTPtyp = pck.getByte(1);
-        // int seq = pck.msbGetW(2);
-        // int tim = pck.msbGetD(4);
+        packRx = pck.msbGetW(2);
+        byteRx = pck.msbGetD(4);
         pck.RTPsrc = pck.msbGetD(8);
         if ((ver & 0xf0) != 0x80) {
             return pipeLine.tryLater;
