@@ -433,7 +433,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         for (int o = 0; o < fwds.size(); o++) {
             cur = fwds.get(o);
             addrIP adr = forwarder2addr(o);
-            cur.spf.doWork(null, adr, null);
+            cur.spf.doWork(adr);
         }
         for (int o = 0; o < fwds.size(); o++) {
             cur = fwds.get(o);

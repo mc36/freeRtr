@@ -650,14 +650,14 @@ public class spfCalc<Ta extends addrType> {
     }
 
     /**
-     * collect exclude list
+     * keep just participating nodes
      *
      * @param algo algorithm
      * @return exclude list
      */
-    public tabGen<spfNode<Ta>> flexExcl(int algo) {
+    public void justFlexAlgo(int algo) {
         tabGen<spfNode<Ta>> res = new tabGen<spfNode<Ta>>();
-        for (int i = 0; i < nodes.size(); i++) {
+        for (int i = nodes.size()-1; i>=0;i--) {
             spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
                 continue;
@@ -665,24 +665,18 @@ public class spfCalc<Ta extends addrType> {
             if (ntry.algo.indexOf(algo) >= 0) {
                 continue;
             }
-            res.add(ntry);
+            nodes.del(ntry);
         }
-        return res;
     }
 
     /**
      * find shortest path
      *
-     * @param excl exclude list
      * @param from starting node
-     * @param to target node, null to every node
      * @return false on success, true on error
      */
-    public boolean doWork(tabGen<spfNode<Ta>> excl, Ta from, Ta to) {
+    public boolean doWork(Ta from) {
         tim2 = bits.getTime();
-        if (excl == null) {
-            excl = new tabGen<spfNode<Ta>>();
-        }
         for (int i = 0; i < nodes.size(); i++) {
             spfNode<Ta> ntry = nodes.get(i);
             if (ntry == null) {
@@ -721,16 +715,7 @@ public class spfCalc<Ta extends addrType> {
                     ntry = cur;
                 }
             }
-            if (to != null) {
-                if (to.compareTo(ntry.name) == 0) {
-                    res = false;
-                    break;
-                }
-            }
             lst.del(ntry);
-            if (excl.find(ntry) != null) {
-                continue;
-            }
             ntry.visited = true;
             if ((!frst) && ntry.stub) {
                 continue;
@@ -1779,7 +1764,7 @@ public class spfCalc<Ta extends addrType> {
         }
         userFormat res = new userFormat("|", "necessary|dependants");
         spfCalc<Ta> tmp = copyBytes();
-        tmp.doWork(null, spfRoot.name, null);
+        tmp.doWork(spfRoot.name);
         for (int i = tmp.nodes.size() - 1; i >= 0; i--) {
             spfNode<Ta> ntry = tmp.nodes.get(i);
             if (ntry.visited) {
@@ -1793,9 +1778,9 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
             ntry.stub = true;
-            tmp.doWork(null, spfRoot.name, null);
+            tmp.doWork(spfRoot.name);
             ntry.stub = false;
-            if (tmp.countReachablility(false) == 0) {
+            if (tmp.countReachablility(false) < 1) {
                 continue;
             }
             res.add(ntry + "|" + tmp.listReachablility(false));

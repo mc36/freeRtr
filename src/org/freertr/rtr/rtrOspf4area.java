@@ -1042,7 +1042,7 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
                     break;
             }
         }
-        spf.doWork(null, lower.routerID, null);
+        spf.doWork(lower.routerID);
         if (segrouEna && (lower.segrouLab != null)) {
             segrouUsd = new tabGen<tabIndex<addrIP>>();
         } else {
@@ -1108,7 +1108,8 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
                 continue;
             }
             spf = lastSpf.copyBytes();
-            spf.doWork(spf.flexExcl(alg.num), lower.routerID, null);
+            spf.justFlexAlgo(alg.num);
+            spf.doWork(lower.routerID);
             for (int i = 0; i < lower.ifaces.size(); i++) {
                 rtrOspf4iface ifc = lower.ifaces.get(i);
                 if (ifc == null) {

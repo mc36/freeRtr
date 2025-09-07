@@ -285,7 +285,7 @@ public class rtrBgpSpf {
                     break;
             }
         }
-        spf.doWork(null, parent.routerID, null);
+        spf.doWork(parent.routerID);
         for (int i = 0; i < parent.neighs.size(); i++) {
             doSpfNei(spf, parent.neighs.get(i));
         }

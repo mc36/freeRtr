@@ -2430,7 +2430,7 @@ public class rtrIsis extends ipRtr {
         spfCalc<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
         rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
         ned.fromString(cmd.word());
-        spf.doWork(null, ned, null);
+        spf.doWork(ned);
         return spf.listTree(cmd);
     }
 
@@ -2446,7 +2446,7 @@ public class rtrIsis extends ipRtr {
         spfCalc<rtrIsisLevelSpf> spf = lev.lastSpf.copyBytes();
         rtrIsisLevelSpf ned = new rtrIsisLevelSpf(new addrIsis(), 0);
         ned.fromString(cmd.word());
-        spf.doWork(null, ned, null);
+        spf.doWork(ned);
         return spf.listTopology(new rtrIsisLevelSpf(new addrIsis(), 0), cmd);
     }
 

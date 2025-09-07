@@ -5254,7 +5254,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         spfCalc<addrIPv4> spf = lspf.lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
-        spf.doWork(null, ned, null);
+        spf.doWork(ned);
         return spf.listTree(cmd);
     }
 
@@ -5268,7 +5268,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         spfCalc<addrIPv4> spf = lspf.lastSpf.copyBytes();
         addrIPv4 ned = new addrIPv4();
         ned.fromString(cmd.word());
-        spf.doWork(null, ned, null);
+        spf.doWork(ned);
         return spf.listTopology(new addrIPv4(), cmd);
     }
 

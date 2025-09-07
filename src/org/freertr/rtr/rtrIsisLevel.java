@@ -964,7 +964,7 @@ public class rtrIsisLevel implements Runnable {
                 }
             }
         }
-        spf.doWork(null, new rtrIsisLevelSpf(lower.routerID, 0), null);
+        spf.doWork(new rtrIsisLevelSpf(lower.routerID, 0));
         for (int i = 0; i < lower.ifaces.size(); i++) {
             rtrIsisIface ifc = lower.ifaces.get(i);
             if (ifc == null) {
@@ -1027,7 +1027,8 @@ public class rtrIsisLevel implements Runnable {
                 continue;
             }
             spf = lastSpf.copyBytes();
-            spf.doWork(spf.flexExcl(alg.num), new rtrIsisLevelSpf(lower.routerID, 0), null);
+            spf.justFlexAlgo(alg.num);
+            spf.doWork(new rtrIsisLevelSpf(lower.routerID, 0));
             for (int i = 0; i < lower.ifaces.size(); i++) {
                 rtrIsisIface ifc = lower.ifaces.get(i);
                 if (ifc == null) {
