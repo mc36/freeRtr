@@ -203,7 +203,7 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
                 if (rtp.recvPack(pck, true) < 1) {
                     break;
                 }
-                int dif = rtp.packRx - seq;
+                int dif = (short) (rtp.packRx - seq);
                 if (dif < 0) {
                     dif = -dif;
                 }
