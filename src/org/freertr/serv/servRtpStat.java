@@ -129,7 +129,7 @@ public class servRtpStat extends servGeneric implements prtServS {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "peer|port|miss|ssrc|seq|pack|byte");
+        userFormat res = new userFormat("|", "peer|port|type|miss|ssrc|seq|pack|byte");
         for (int i = 0; i < stats.size(); i++) {
             res.add("" + stats.get(i));
         }
@@ -169,7 +169,7 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
     }
 
     public String toString() {
-        return peer + "|" + port + "|" + mis + "|" + sync + "|" + seq + "|" + pak + "|" + byt;
+        return peer + "|" + port + "|" + typ + "|" + mis + "|" + sync + "|" + seq + "|" + pak + "|" + byt;
     }
 
     public int compareTo(servRtpStatOne o) {
@@ -209,7 +209,7 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
         }
         lower.stats.del(this);
         if (lower.logging) {
-            logger.info("stopped " + peer + " " + port);
+            logger.info("stopped " + peer + " " + port + " with " + mis + " missing packets");
         }
     }
 
