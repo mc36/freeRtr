@@ -63,6 +63,10 @@ class ifcConnectWorker implements ifcUp {
 
     public counter cntr = new counter();
 
+    public String toString() {
+        return "" + lower;
+    }
+
     public void setParent(ifcDn parent) {
         lower = parent;
     }

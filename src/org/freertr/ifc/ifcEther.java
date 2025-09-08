@@ -282,6 +282,10 @@ class ifcEtherWorker implements ifcUp {
 
     public ifcDn lower = new ifcNull();
 
+    public String toString() {
+        return "" + lower;
+    }
+
     public void setParent(ifcDn parent) {
         lower = parent;
     }
