@@ -345,16 +345,6 @@ public class packHolder {
     public int TCPaut;
 
     /**
-     * payload type
-     */
-    public int RTPtyp;
-
-    /**
-     * sync source
-     */
-    public int RTPsrc;
-
-    /**
      * clear all variables except buffers
      */
     public void clear() {
@@ -419,8 +409,6 @@ public class packHolder {
         TCPtsE = 0;
         TCPwsc = 0;
         TCPaut = -1;
-        RTPtyp = 0;
-        RTPsrc = 0;
     }
 
     /**
@@ -498,8 +486,6 @@ public class packHolder {
         TCPtsE = src.TCPtsE;
         TCPwsc = src.TCPwsc;
         TCPaut = src.TCPaut;
-        RTPtyp = src.RTPtyp;
-        RTPsrc = src.RTPsrc;
         if (copyHdr) {
             int i = headS + marginCopy;
             if (i > headD.length) {

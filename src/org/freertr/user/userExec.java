@@ -1793,6 +1793,8 @@ public class userExec {
         hl.add(null, false, 4, new int[]{5, -1}, "<str>", "peer");
         hl.add(null, false, 5, new int[]{6}, "<str>", "path");
         hl.add(null, false, 6, new int[]{-1}, "<str>", "key");
+        hl.add(null, false, 2, new int[]{3}, "rtpstat", "rtp statistics information");
+        hl.add(cfgAll.dmnRtpStat.listServers(), false, 3, new int[]{4, -1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "bmp", "bgp monitoring protocol information");
         hl.add(cfgAll.dmnBmp.listServers(), false, 3, new int[]{4, -1}, "<name:loc>", "server name");
         hl.add(null, false, 4, new int[]{5, -1}, "<addr>", "from");

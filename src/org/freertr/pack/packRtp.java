@@ -45,22 +45,22 @@ public class packRtp {
      * bytes received
      */
     public int byteRx;
-    
+
     /**
      * type sent
      */
     public int typeTx;
-    
+
     /**
      * type received
      */
     public int typeRx;
-    
+
     /**
      * sync sent
      */
     public int syncTx;
-    
+
     /**
      * sync received
      */
@@ -93,6 +93,18 @@ public class packRtp {
     }
 
     /**
+     * start connection
+     *
+     * @param data existing connection
+     * @param ctrl existing connection
+     */
+    public void startConnect(pipeSide data, pipeSide ctrl) {
+        connData = data;
+        connCtrl = ctrl;
+        lastCtrl = bits.getTime();
+    }
+
+    /**
      * close this side
      */
     public void setClose() {
@@ -110,7 +122,7 @@ public class packRtp {
      * @return 0=no, 1=this side, 1=other side, 3=both sides
      */
     public int isClosed() {
-        if ((connData == null) || (connCtrl == null)) {
+        if (connData == null) {
             return 3;
         }
         return connData.isClosed();
@@ -127,10 +139,10 @@ public class packRtp {
         packTx++;
         byteTx += pck.dataSize();
         pck.putByte(0, 0x80);
-        pck.putByte(1, pck.RTPtyp);
+        pck.putByte(1, typeTx);
         pck.msbPutW(2, packTx - 1);
         pck.msbPutD(4, byteTx);
-        pck.msbPutD(8, pck.RTPsrc);
+        pck.msbPutD(8, syncTx);
         pck.putSkip(12);
         pck.merge2beg();
         pck.pipeSend(connData, 0, pck.dataSize(), 2);
@@ -138,12 +150,14 @@ public class packRtp {
             return;
         }
         lastCtrl = tim;
-        int id = pck.RTPsrc;
+        if (connCtrl == null) {
+            return;
+        }
         pck.clear();
         pck.putByte(0, 0x80);
         pck.putByte(1, 200);
         pck.msbPutW(2, 6); // (size/4)-1
-        pck.msbPutD(4, id);
+        pck.msbPutD(4, syncTx);
         pck.msbPutQ(8, packNtp.encode(tim));
         pck.msbPutD(16, byteTx);
         pck.msbPutD(20, packTx);
@@ -161,10 +175,12 @@ public class packRtp {
      * @return bytes received
      */
     public int recvPack(packHolder pck, boolean blocking) {
-        for (;;) {
-            pck.clear();
-            if (pck.pipeRecv(connCtrl, 0, -1, 142) < 1) {
-                break;
+        if (connCtrl != null) {
+            for (;;) {
+                pck.clear();
+                if (pck.pipeRecv(connCtrl, 0, -1, 142) < 1) {
+                    break;
+                }
             }
         }
         pck.clear();
@@ -179,10 +195,10 @@ public class packRtp {
             return i;
         }
         int ver = pck.getByte(0);
-        pck.RTPtyp = pck.getByte(1);
+        typeRx = pck.getByte(1);
         packRx = pck.msbGetW(2);
         byteRx = pck.msbGetD(4);
-        pck.RTPsrc = pck.msbGetD(8);
+        syncRx = pck.msbGetD(8);
         if ((ver & 0xf0) != 0x80) {
             return pipeLine.tryLater;
         }

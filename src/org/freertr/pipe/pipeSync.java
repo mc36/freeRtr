@@ -188,8 +188,8 @@ class pipeSyncTx extends TimerTask {
         seq++;
         pck.putSkip(pipeSync.size);
         pck.merge2beg();
-        pck.RTPtyp = 0;
-        pck.RTPsrc = syncSrc;
+        conn.typeTx = 0;
+        conn.syncTx = syncSrc;
         conn.sendPack(pck);
     }
 

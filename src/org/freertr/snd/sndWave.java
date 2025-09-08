@@ -216,8 +216,8 @@ class sndWavePlay extends TimerTask {
         pck.clear();
         pck.putCopy(lower.buf, pos, 0, paySiz);
         pck.putSkip(paySiz);
-        pck.RTPtyp = codec.getRTPtype();
-        pck.RTPsrc = syncSrc;
+        rtp.typeTx = codec.getRTPtype();
+        rtp.syncTx = syncSrc;
         rtp.sendPack(pck);
         pos += paySiz;
     }
@@ -272,7 +272,7 @@ class sndWaveRec implements Runnable {
             if (rtp.recvPack(pck, true) < 1) {
                 break;
             }
-            if (pck.RTPtyp != codec.getRTPtype()) {
+            if (rtp.typeRx != codec.getRTPtype()) {
                 continue;
             }
             byte[] buf = pck.getCopy();
@@ -332,7 +332,7 @@ class sndWaveDtmf implements Runnable {
             if (rtp.recvPack(pck, true) < 1) {
                 break;
             }
-            if (pck.RTPtyp != codec.getRTPtype()) {
+            if (rtp.typeRx != codec.getRTPtype()) {
                 continue;
             }
             byte[] buf = pck.getCopy();

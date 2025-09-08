@@ -407,8 +407,8 @@ class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
         if (rtp == null) {
             return;
         }
-        pck.RTPtyp = codec.getRTPtype();
-        pck.RTPsrc = syncSrc;
+        rtp.typeTx = codec.getRTPtype();
+        rtp.syncTx = syncSrc;
         rtp.sendPack(pck);
     }
 
@@ -444,7 +444,7 @@ class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
             if (rtp.recvPack(pck, true) < 1) {
                 break;
             }
-            if (pck.RTPtyp != codec.getRTPtype()) {
+            if (rtp.typeRx != codec.getRTPtype()) {
                 continue;
             }
             byte[] buf = pck.getCopy();

@@ -111,6 +111,7 @@ import org.freertr.rtr.rtrRpkiNeigh;
 import org.freertr.serv.servNrpe;
 import org.freertr.serv.servOpenflow;
 import org.freertr.serv.servRpki;
+import org.freertr.serv.servRtpStat;
 import org.freertr.serv.servStack;
 import org.freertr.tab.tabAceslstN;
 import org.freertr.tab.tabGen;
@@ -1534,6 +1535,15 @@ public class userShow {
                 doShowRoutes(null, srv.getShowRoute(bits.str2num(cmd.word())), 1);
                 return null;
             }
+            return null;
+        }
+        if (a.equals("rtpstat")) {
+            servRtpStat srv = cfgAll.srvrFind(new servRtpStat(), cfgAll.dmnRtpStat, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
             return null;
         }
         if (a.equals("bmp")) {

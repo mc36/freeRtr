@@ -83,9 +83,11 @@ class sndConnectSmpl implements Runnable {
             if (rx.recvPack(pck, true) < 1) {
                 break;
             }
-            if (pck.RTPtyp != codec.getRTPtype()) {
+            if (rx.typeRx != codec.getRTPtype()) {
                 continue;
             }
+            tx.typeTx = rx.typeRx;
+            tx.syncTx = rx.syncRx;
             tx.sendPack(pck);
         }
     }
@@ -136,7 +138,7 @@ class sndConnectTrns implements Runnable {
             if (rxS.recvPack(pck, true) < 1) {
                 break;
             }
-            if (pck.RTPtyp != rxC.getRTPtype()) {
+            if (rxS.typeRx != rxC.getRTPtype()) {
                 continue;
             }
             byte[] buf = txC.encodeBuf(rxC.decodeBuf(pck.getCopy()));
@@ -144,8 +146,8 @@ class sndConnectTrns implements Runnable {
             pck.putCopy(buf, 0, 0, buf.length);
             pck.putSkip(buf.length);
             pck.merge2end();
-            pck.RTPtyp = txC.getRTPtype();
-            pck.RTPsrc = syncSrc;
+            txS.typeTx = txC.getRTPtype();
+            txS.syncTx = syncSrc;
             txS.sendPack(pck);
         }
     }

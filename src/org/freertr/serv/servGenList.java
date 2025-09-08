@@ -237,7 +237,8 @@ public class servGenList<T extends servGeneric> {
         srvHelp(l, p, n, e, o, "sdwan", cfgAll.dmnSdwan.listServers());
         srvHelp(l, p, n, e, o, "pcep", cfgAll.dmnPcep.listServers());
         srvHelp(l, p, n, e, o, "ntp", cfgAll.dmnNtp.listServers());
-        srvHelp(l, p, n, e, o, "daytime", cfgAll.dmnNtp.listServers());
+        srvHelp(l, p, n, e, o, "daytime", cfgAll.dmnDaytime.listServers());
+        srvHelp(l, p, n, e, o, "rtpstat", cfgAll.dmnRtpStat.listServers());
         srvHelp(l, p, n, e, o, "time", cfgAll.dmnTime.listServers());
         srvHelp(l, p, n, e, o, "snmp", cfgAll.dmnSnmp.listServers());
         srvHelp(l, p, n, e, o, "socks", cfgAll.dmnSocks.listServers());
@@ -430,6 +431,9 @@ class servGenEntry {
         }
         if (typ.equals("daytime")) {
             return new servGenEntry(new servDaytime(), cfgAll.dmnDaytime);
+        }
+        if (typ.equals("rtpstat")) {
+            return new servGenEntry(new servRtpStat(), cfgAll.dmnRtpStat);
         }
         if (typ.equals("time")) {
             return new servGenEntry(new servTime(), cfgAll.dmnTime);

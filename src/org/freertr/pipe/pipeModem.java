@@ -108,8 +108,8 @@ class pipeModemTx extends TimerTask {
         pck.clear();
         pck.putCopy(buf, 0, 0, buf.length);
         pck.putSkip(buf.length);
-        pck.RTPtyp = codec.getRTPtype();
-        pck.RTPsrc = syncSrc;
+        rtp.typeTx = codec.getRTPtype();
+        rtp.syncTx = syncSrc;
         rtp.sendPack(pck);
     }
 
@@ -156,7 +156,7 @@ class pipeModemRx implements Runnable {
             if (rtp.recvPack(pck, true) < 1) {
                 return;
             }
-            if (pck.RTPtyp != codec.getRTPtype()) {
+            if (rtp.typeRx != codec.getRTPtype()) {
                 continue;
             }
             modem.sampAdd(codec.decodeBuf(pck.getCopy()));

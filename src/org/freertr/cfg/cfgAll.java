@@ -75,6 +75,7 @@ import org.freertr.serv.servQuote;
 import org.freertr.serv.servRadius;
 import org.freertr.serv.servRfb;
 import org.freertr.serv.servRpki;
+import org.freertr.serv.servRtpStat;
 import org.freertr.serv.servSdwan;
 import org.freertr.serv.servSip;
 import org.freertr.serv.servSmtp;
@@ -546,6 +547,11 @@ public class cfgAll {
      * daytime daemons
      */
     public final static servGenList<servDaytime> dmnDaytime = new servGenList<servDaytime>();
+
+    /**
+     * rtpstat daemons
+     */
+    public final static servGenList<servRtpStat> dmnRtpStat = new servGenList<servRtpStat>();
 
     /**
      * time daemons
@@ -4045,6 +4051,7 @@ public class cfgAll {
         dmnPlan9.getShRun(l, filter);
         dmnNtp.getShRun(l, filter);
         dmnDaytime.getShRun(l, filter);
+        dmnRtpStat.getShRun(l, filter);
         dmnTime.getShRun(l, filter);
         dmnSnmp.getShRun(l, filter);
         dmnIscsi.getShRun(l, filter);
