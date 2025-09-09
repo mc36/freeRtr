@@ -1,5 +1,6 @@
 package org.freertr.serv;
 
+import org.freertr.util.keyword;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
@@ -719,39 +720,6 @@ public class servP4langUtil {
         s = s.replaceAll("_add ", "_del ");
         s = s.replaceAll("_mod ", "_del ");
         return s;
-    }
-
-    /**
-     * dump api statistics
-     *
-     * @param tab table to dump
-     * @return dump
-     */
-    protected final static userFormat dumpApiStats(tabGen<servP4langMsg> tab) {
-        if (tab == null) {
-            return null;
-        }
-        userFormat res = new userFormat("|", "message|count|last|ago");
-        for (int i = 0; i < tab.size(); i++) {
-            res.add("" + tab.get(i));
-        }
-        return res;
-    }
-
-    /**
-     * update api statistics
-     *
-     * @param l table to dump
-     * @param a message
-     */
-    protected final static void updateApiStats(tabGen<servP4langMsg> l, String a) {
-        servP4langMsg m = new servP4langMsg(a);
-        servP4langMsg o = l.add(m);
-        if (o != null) {
-            m = o;
-        }
-        m.cnt++;
-        m.lst = bits.getTime();
     }
 
 }

@@ -1,5 +1,6 @@
 package org.freertr.serv;
 
+import org.freertr.util.keyword;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
@@ -297,12 +298,12 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
     /**
      * transmitted message statistics
      */
-    protected tabGen<servP4langMsg> apiStatTx;
+    protected tabGen<keyword> apiStatTx;
 
     /**
      * received message statistics
      */
-    protected tabGen<servP4langMsg> apiStatRx;
+    protected tabGen<keyword> apiStatRx;
 
     /**
      * interconnect interface
@@ -647,8 +648,8 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
             return false;
         }
         if (s.equals("api-stat")) {
-            apiStatTx = new tabGen<servP4langMsg>();
-            apiStatRx = new tabGen<servP4langMsg>();
+            apiStatTx = new tabGen<keyword>();
+            apiStatRx = new tabGen<keyword>();
             return false;
         }
         if (s.equals("export-socket")) {
@@ -1098,7 +1099,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
      * @return show
      */
     public userFormat getShowApiTx() {
-        return servP4langUtil.dumpApiStats(apiStatTx);
+        return keyword.dump(apiStatTx);
     }
 
     /**
@@ -1107,7 +1108,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
      * @return show
      */
     public userFormat getShowApiRx() {
-        return servP4langUtil.dumpApiStats(apiStatRx);
+        return keyword.dump(apiStatRx);
     }
 
     /**
@@ -1499,11 +1500,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         if (apiStatTx == null) {
             return;
         }
-        int i = a.indexOf(" ");
-        if (i > 0) {
-            a = a.substring(0, i);
-        }
-        servP4langUtil.updateApiStats(apiStatTx, a);
+        keyword.update(apiStatTx, a);
     }
 
     /**

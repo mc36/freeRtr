@@ -26,6 +26,7 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
+import org.freertr.util.keyword;
 import org.freertr.util.logFil;
 import org.freertr.util.logger;
 import org.freertr.util.state;
@@ -61,6 +62,16 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
      * echo parameters
      */
     public tabAverage echoParam = new tabAverage(1, 100000);
+
+    /**
+     * transmitted message statistics
+     */
+    protected tabGen<keyword> msgStatTx = new tabGen<keyword>();
+
+    /**
+     * received message statistics
+     */
+    protected tabGen<keyword> msgStatRx = new tabGen<keyword>();
 
     /**
      * default metric

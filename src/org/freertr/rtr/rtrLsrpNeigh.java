@@ -28,6 +28,7 @@ import org.freertr.user.userUpgrade;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
+import org.freertr.util.keyword;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
 
@@ -295,6 +296,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
         }
         cmds cmd = new cmds("rx", a);
         if (signRx == null) {
+            keyword.update(iface.msgStatRx, a);
             return cmd;
         }
         a = cmd.word();
@@ -312,6 +314,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
             sendErr("badSign");
             return null;
         }
+        keyword.update(iface.msgStatRx, cmd.getRemaining());
         return cmd;
     }
 
@@ -323,6 +326,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
     protected synchronized void sendLn(String s) {
         seqTx++;
         s = s.trim();
+        keyword.update(iface.msgStatTx, s);
         if (signTx != null) {
             List<String> lst = new ArrayList<String>();
             lst.add(signTx);

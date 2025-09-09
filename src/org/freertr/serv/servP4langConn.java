@@ -76,6 +76,7 @@ import org.freertr.util.cmds;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.history;
+import org.freertr.util.keyword;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 
@@ -202,7 +203,7 @@ public class servP4langConn implements Runnable {
             s = cmd.word();
             lower.msgsGot++;
             if (lower.apiStatRx != null) {
-                servP4langUtil.updateApiStats(lower.apiStatRx, s);
+                keyword.update(lower.apiStatRx, s);
             }
             if (s.equals("nomore")) {
                 break;
@@ -339,7 +340,7 @@ public class servP4langConn implements Runnable {
             s = cmd.word();
             lower.msgsGot++;
             if (lower.apiStatRx != null) {
-                servP4langUtil.updateApiStats(lower.apiStatRx, s);
+                keyword.update(lower.apiStatRx, s);
             }
             if (s.equals("state")) {
                 servP4langIfc ntry = lower.findIfc(bits.str2num(cmd.word()));
