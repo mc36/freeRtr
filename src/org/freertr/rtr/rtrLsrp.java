@@ -44,6 +44,7 @@ import org.freertr.util.logger;
 import org.freertr.util.notifier;
 import org.freertr.spf.spfCalc;
 import org.freertr.spf.spfLnkst;
+import org.freertr.util.keyword;
 import org.freertr.util.state;
 import org.freertr.util.syncInt;
 
@@ -374,6 +375,24 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
         }
         return null;
+    }
+
+    /**
+     * list statistics
+     *
+     * @param iface forwarding interface
+     * @return list of interfaces
+     */
+    public userFormat showStats(ipFwdIface iface) {
+        if (iface == null) {
+            return null;
+        }
+        rtrLsrpIface ifc = new rtrLsrpIface(this, iface);
+        ifc = ifaces.find(ifc);
+        if (ifc == null) {
+            return null;
+        }
+        return keyword.dump(ifc.msgStatRx, ifc.msgStatTx);
     }
 
     /**

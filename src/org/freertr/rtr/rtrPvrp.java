@@ -27,6 +27,7 @@ import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
+import org.freertr.util.keyword;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
 import org.freertr.util.state;
@@ -276,6 +277,24 @@ public class rtrPvrp extends ipRtr implements Runnable {
             }
         }
         return null;
+    }
+
+    /**
+     * list statistics
+     *
+     * @param iface forwarding interface
+     * @return list of interfaces
+     */
+    public userFormat showStats(ipFwdIface iface) {
+        if (iface == null) {
+            return null;
+        }
+        rtrPvrpIface ifc = new rtrPvrpIface(this, iface);
+        ifc = ifaces.find(ifc);
+        if (ifc == null) {
+            return null;
+        }
+        return keyword.dump(ifc.msgStatRx, ifc.msgStatTx);
     }
 
     /**

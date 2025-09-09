@@ -648,6 +648,8 @@ public class userExec {
         hl.add(null, false, 6, new int[]{-1}, "brief", "only brief listing");
         hl.add(null, false, 5, new int[]{-1}, "metric", "list of metrics");
         hl.add(null, false, 5, new int[]{-1}, "interface", "list of interfaces");
+        hl.add(null, false, 5, new int[]{6}, "statistics", "collected message statistics");
+        hl.add(null, false, 6, new int[]{-1}, "<name:ifc>", "name of interface");
         hl.add(null, false, 5, new int[]{6, -1}, "route", "list of routes in database");
         hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
         hl.add(null, false, 5, new int[]{6, -1}, "originate", "list of routes originated locally");
@@ -659,6 +661,8 @@ public class userExec {
         hl.add(null, false, 5, new int[]{-1}, "flexalgo", "list of algorithms");
         hl.add(null, false, 5, new int[]{-1}, "metric", "list of metrics");
         hl.add(null, false, 5, new int[]{-1}, "interface", "list of interfaces");
+        hl.add(null, false, 5, new int[]{6}, "statistics", "collected message statistics");
+        hl.add(null, false, 6, new int[]{-1}, "<name:ifc>", "name of interface");
         hl.add(null, false, 5, new int[]{-1}, "software", "list of software");
         hl.add(null, false, 5, new int[]{-1}, "hardware", "list of hardware");
         hl.add(null, false, 5, new int[]{-1}, "forwarder", "list of forwarder");

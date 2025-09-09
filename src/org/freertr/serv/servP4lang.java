@@ -1497,9 +1497,6 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         }
         conn.pipe.linePut(a + " ");
         msgsSent++;
-        if (apiStatTx == null) {
-            return;
-        }
         keyword.update(apiStatTx, a);
     }
 

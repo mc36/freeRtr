@@ -29,10 +29,14 @@ public class keyword implements Comparable<keyword> {
     /**
      * create instance
      *
-     * @param m message
+     * @param a message
      */
-    public keyword(String m) {
-        msg = m;
+    public keyword(String a) {
+        int i = a.indexOf(" ");
+        if (i > 0) {
+            a = a.substring(0, i);
+        }
+        msg = a;
     }
 
     public int compareTo(keyword o) {
@@ -44,36 +48,14 @@ public class keyword implements Comparable<keyword> {
     }
 
     /**
-     * dump statistics
+     * update statistics
      *
-     * @param tab table to dump
-     * @return dump
-     */
-    public final static userFormat dump(tabGen<keyword> tab) {
-        if (tab == null) {
-            return null;
-        }
-        userFormat res = new userFormat("|", "message|count|last|ago");
-        for (int i = 0; i < tab.size(); i++) {
-            keyword k = tab.get(i);
-            if (k == null) {
-                continue;
-            }
-            res.add(k.msg + "|" + k.cnt + "|" + bits.time2str(cfgAll.timeZoneName, k.lst + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(k.lst));
-        }
-        return res;
-    }
-
-    /**
-     * update api statistics
-     *
-     * @param l table to dump
+     * @param l list to update
      * @param a message
      */
     public final static void update(tabGen<keyword> l, String a) {
-        int i = a.indexOf(" ");
-        if (i > 0) {
-            a = a.substring(0, i);
+        if (l == null) {
+            return;
         }
         keyword m = new keyword(a);
         keyword o = l.add(m);
@@ -82,6 +64,70 @@ public class keyword implements Comparable<keyword> {
         }
         m.cnt++;
         m.lst = bits.getTime();
+    }
+
+    /**
+     * dump statistics
+     *
+     * @param l list to dump
+     * @return dump
+     */
+    public final static userFormat dump(tabGen<keyword> l) {
+        if (l == null) {
+            return null;
+        }
+        userFormat r = new userFormat("|", "message|count|last|ago");
+        for (int i = 0; i < l.size(); i++) {
+            keyword k = l.get(i);
+            if (k == null) {
+                continue;
+            }
+            r.add(k.msg + "|" + k.cnt + "|" + bits.time2str(cfgAll.timeZoneName, k.lst + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(k.lst));
+        }
+        return r;
+    }
+
+    /**
+     * dump statistics
+     *
+     * @param r rx list to dump
+     * @param t tx list to dump
+     * @return dump
+     */
+    public final static userFormat dump(tabGen<keyword> r, tabGen<keyword> t) {
+        userFormat l = new userFormat("|", "message|rx|tx|rx|tx|rx|tx", "1|2counts|2last|2ago");
+        for (int i = 0; i < r.size(); i++) {
+            keyword k = r.get(i);
+            if (k == null) {
+                continue;
+            }
+            if (t.find(k) != null) {
+                continue;
+            }
+            l.add(k.msg + "|" + k.cnt + "|0|" + bits.time2str(cfgAll.timeZoneName, k.lst + cfgAll.timeServerOffset, 3) + "|-|" + bits.timePast(k.lst) + "|-");
+        }
+        for (int i = 0; i < t.size(); i++) {
+            keyword k = t.get(i);
+            if (k == null) {
+                continue;
+            }
+            if (r.find(k) != null) {
+                continue;
+            }
+            l.add(k.msg + "|0|" + k.cnt + "|-|" + bits.time2str(cfgAll.timeZoneName, k.lst + cfgAll.timeServerOffset, 3) + "|-|" + bits.timePast(k.lst));
+        }
+        for (int i = 0; i < t.size(); i++) {
+            keyword k = t.get(i);
+            if (k == null) {
+                continue;
+            }
+            keyword p = r.find(k);
+            if (p == null) {
+                continue;
+            }
+            l.add(k.msg + "|" + p.cnt + "|" + k.cnt + "|" + bits.time2str(cfgAll.timeZoneName, p.lst + cfgAll.timeServerOffset, 3) + "|" + bits.time2str(cfgAll.timeZoneName, k.lst + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(p.lst) + "|" + bits.timePast(k.lst));
+        }
+        return l;
     }
 
 }

@@ -3403,6 +3403,19 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showIfaces());
             return;
         }
+        if (a.equals("statistics")) {
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return;
+            }
+            if (afi == tabRouteAttr.routeType.lsrp4) {
+                rdr.putStrTab(r.lsrp.showStats(ifc.fwdIf4));
+            } else {
+                rdr.putStrTab(r.lsrp.showStats(ifc.fwdIf6));
+            }
+            return;
+        }
         if (a.equals("uptime")) {
             rdr.putStrTab(r.lsrp.showDatabase(2));
             return;
@@ -3630,6 +3643,19 @@ public class userShow {
         }
         if (a.equals("interface")) {
             rdr.putStrTab(r.pvrp.showIfaces());
+            return;
+        }
+        if (a.equals("statistics")) {
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return;
+            }
+            if (afi == tabRouteAttr.routeType.pvrp4) {
+                rdr.putStrTab(r.pvrp.showStats(ifc.fwdIf4));
+            } else {
+                rdr.putStrTab(r.pvrp.showStats(ifc.fwdIf6));
+            }
             return;
         }
         if (a.equals("neighbor")) {
