@@ -273,7 +273,7 @@ public class userExec {
         hl.add(null, false, 5, new int[]{-1}, "peaks", "collected peak statistics");
         hl.add(null, false, 5, new int[]{-1}, "tinys", "collected tiny statistics");
         hl.add(null, false, 5, new int[]{-1}, "attribs", "collected attributes statistics");
-        hl.add(null, false, 5, new int[]{-1}, "messages", "collected message statistics");
+        hl.add(null, false, 5, new int[]{-1}, "statistics", "collected message statistics");
         hl.add(null, false, 3, new int[]{4}, "eigrp", "enhanced interior gateway routing protocol");
         hl.add(null, false, 4, new int[]{5}, "<num:rtr>", "process id");
         hl.add(null, false, 5, new int[]{-1}, "<addr>", "neighbor address");
@@ -994,7 +994,7 @@ public class userExec {
         hl.add(null, false, 7, new int[]{-1}, "[addr]", "prefix to view");
         hl.add(null, false, 6, new int[]{7, -1}, "originate", "list of routes originated locally");
         hl.add(null, false, 7, new int[]{-1}, "[addr]", "prefix to view");
-        hl.add(null, false, 5, new int[]{-1}, "messages", "message statistics");
+        hl.add(null, false, 5, new int[]{-1}, "statistics", "message statistics");
         hl.add(null, false, 5, new int[]{-1}, "attributes", "attribute statistics");
         hl.add(null, false, 5, new int[]{-1}, "graceful-restart", "list of graceful restart");
         hl.add(null, false, 5, new int[]{-1}, "longlived-graceful", "list of long lived graceful restart");
@@ -1022,7 +1022,7 @@ public class userExec {
         hl.add(null, false, 7, new int[]{8}, "dampening", "route flap dampening");
         hl.add(null, false, 8, new int[]{-1}, "<str>", "int matcher");
         hl.add(null, false, 7, new int[]{-1}, "attributes", "collected attributes statistics");
-        hl.add(null, false, 7, new int[]{-1}, "messages", "collected message statistics");
+        hl.add(null, false, 7, new int[]{-1}, "statistics", "collected message statistics");
         hl.add(null, false, 7, new int[]{-1}, "config", "peer configuration");
         hl.add(null, false, 7, new int[]{-1}, "status", "peer status");
         rtrBgpParam.getAfiList(hl, 7, new int[]{8}, "show", false);

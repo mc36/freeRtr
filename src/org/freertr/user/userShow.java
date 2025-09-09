@@ -4551,7 +4551,7 @@ public class userShow {
             rdr.putStrTab(r.bgp.getBestpath());
             return;
         }
-        if (a.equals("messages")) {
+        if (a.equals("statistics")) {
             rdr.putStrTab(r.bgp.getMsgStats());
             return;
         }
@@ -4754,7 +4754,7 @@ public class userShow {
                 rdr.putStrTab(nei.getAttrStats());
                 return;
             }
-            if (a.equals("messages")) {
+            if (a.equals("statistics")) {
                 rdr.putStrTab(nei.getMsgStats());
                 return;
             }

@@ -1076,7 +1076,7 @@ public class userClear {
             return;
         }
         String a = cmd.word();
-        if (a.equals("messages")) {
+        if (a.equals("statistics")) {
             r.bgp.doClearMsgs();
             return;
         }
