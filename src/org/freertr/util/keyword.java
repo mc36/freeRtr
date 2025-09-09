@@ -95,6 +95,12 @@ public class keyword implements Comparable<keyword> {
      * @return dump
      */
     public final static userFormat dump(tabGen<keyword> r, tabGen<keyword> t) {
+        if (r == null) {
+            return null;
+        }
+        if (t == null) {
+            return null;
+        }
         userFormat l = new userFormat("|", "message|rx|tx|rx|tx|rx|tx", "1|2counts|2last|2ago");
         for (int i = 0; i < r.size(); i++) {
             keyword k = r.get(i);
