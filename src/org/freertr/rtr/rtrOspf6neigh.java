@@ -347,6 +347,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparable<rtrOspf6n
             return;
         }
         pck.setDataSize(i);
+        iface.msgStats[typ].rx(pck);
         addrIPv4 adr = new addrIPv4();
         pck.getAddr(adr, 4); // neighbor router id
         if (adr.compareTo(rtrID) != 0) {

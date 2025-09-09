@@ -97,6 +97,11 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
     protected counter cntr = new counter();
 
     /**
+     * message types received
+     */
+    public final counter[] msgStats = new counter[256];
+
+    /**
      * send csnp
      */
     public boolean sendCsnp;
@@ -321,6 +326,9 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         lev1disA = new addrIsis();
         lev2disA = new addrIsis();
         teMetric = 10;
+        for (int i = 0; i < msgStats.length; i++) {
+            msgStats[i] = new counter();
+        }
         if (iface != null) {
             teBandwidth = iface.lower.getBandwidth();
         }
@@ -1298,6 +1306,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         if (lev == 3) {
             lev = pck.getByte(0); // circuit type
         }
+        msgStats[typ].rx(pck);
         boolean needRetrans;
         switch (lev & circuitLevel) {
             case 1:
@@ -1343,6 +1352,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             logger.debug("sending " + rtrIsisNeigh.msgTyp2string(typ) + " on " + upper);
         }
         pck.merge2beg();
+        msgStats[typ].tx(pck);
         switch (rtrIsisNeigh.msgTyp2level(typ)) {
             case 1:
                 pck.ETHtrg.fromString("0180:c200:0014");

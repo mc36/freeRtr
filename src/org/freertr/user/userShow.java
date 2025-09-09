@@ -2487,6 +2487,15 @@ public class userShow {
                     rdr.putStrTab(r.ospf4.showIfaces());
                     return null;
                 }
+                if (a.equals("statistics")) {
+                    cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+                    if (ifc == null) {
+                        cmd.error("no such interface");
+                        return null;
+                    }
+                    rdr.putStrTab(r.ospf4.showStats(ifc.fwdIf4));
+                    return null;
+                }
                 if (a.equals("flexalgo")) {
                     int i = bits.str2num(cmd.word());
                     rdr.putStrTab(r.ospf4.showAlgorithms(i));
@@ -2861,6 +2870,15 @@ public class userShow {
                 }
                 if (a.equals("interface")) {
                     rdr.putStrTab(r.ospf6.showIfaces());
+                    return null;
+                }
+                if (a.equals("statistics")) {
+                    cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+                    if (ifc == null) {
+                        cmd.error("no such interface");
+                        return null;
+                    }
+                    rdr.putStrTab(r.ospf6.showStats(ifc.fwdIf6));
                     return null;
                 }
                 if (a.equals("flexalgo")) {
@@ -3662,6 +3680,19 @@ public class userShow {
         }
         if (a.equals("metric")) {
             rdr.putStrTab(r.isis.showMetrics());
+            return;
+        }
+        if (a.equals("statistics")) {
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+            if (ifc == null) {
+                cmd.error("no such interface");
+                return;
+            }
+            if (afi == tabRouteAttr.routeType.isis4) {
+                rdr.putStrTab(r.isis.showStats(ifc.fwdIf4));
+            } else {
+                rdr.putStrTab(r.isis.showStats(ifc.fwdIf6));
+            }
             return;
         }
         if (a.equals("interface")) {

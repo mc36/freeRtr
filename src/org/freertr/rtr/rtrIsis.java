@@ -51,6 +51,7 @@ import org.freertr.util.logger;
 import org.freertr.spf.spfCalc;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
+import org.freertr.util.counter;
 
 /**
  * intermediate system to intermediate system (rfc1142) protocol
@@ -2285,6 +2286,28 @@ public class rtrIsis extends ipRtr {
             return null;
         }
         return lev.lastSpf.listAlgorithm();
+    }
+
+    /**
+     * list statistics
+     *
+     * @param iface forwarding interface
+     * @return list of interfaces
+     */
+    public userFormat showStats(ipFwdIface iface) {
+        if (iface == null) {
+            return null;
+        }
+        rtrIsisIface ifc = new rtrIsisIface(this, iface, null, null);
+        ifc = ifaces.find(ifc);
+        if (ifc == null) {
+            return null;
+        }
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
+        for (int i = 0; i < ifc.msgStats.length; i++) {
+            l.add(i + "|" + rtrIsisNeigh.msgTyp2string(i) + "|" + rtrBgpDump.counter2stats(ifc.msgStats[i]));
+        }
+        return l;
     }
 
     /**

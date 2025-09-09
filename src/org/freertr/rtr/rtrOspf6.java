@@ -962,6 +962,28 @@ public class rtrOspf6 extends ipRtr {
     }
 
     /**
+     * list statistics
+     *
+     * @param iface forwarding interface
+     * @return list of interfaces
+     */
+    public userFormat showStats(ipFwdIface iface) {
+        if (iface == null) {
+            return null;
+        }
+        rtrOspf6iface ifc = new rtrOspf6iface(this, null, iface);
+        ifc = ifaces.find(ifc);
+        if (ifc == null) {
+            return null;
+        }
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
+        for (int i = 0; i < ifc.msgStats.length; i++) {
+            l.add(i + "|" + rtrOspf6neigh.msgTyp2string(i) + "|" + rtrBgpDump.counter2stats(ifc.msgStats[i]));
+        }
+        return l;
+    }
+
+    /**
      * list interfaces
      *
      * @return list of interfaces

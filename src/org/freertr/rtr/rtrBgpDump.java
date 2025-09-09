@@ -455,8 +455,7 @@ public class rtrBgpDump {
     public static userFormat getMsgStats(counter s[]) {
         userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
         for (int i = 0; i < s.length; i++) {
-            counter c = s[i];
-            l.add(i + "|" + rtrBgpUtil.msgType2string(i) + "|" + counter2stats(c));
+            l.add(i + "|" + rtrBgpUtil.msgType2string(i) + "|" + counter2stats(s[i]));
         }
         return l;
     }
@@ -470,8 +469,7 @@ public class rtrBgpDump {
     public static userFormat getAttrStats(counter s[]) {
         userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
         for (int i = 0; i < s.length; i++) {
-            counter c = s[i];
-            l.add(i + "|" + rtrBgpUtil.attrType2string(i) + "|" + counter2stats(c));
+            l.add(i + "|" + rtrBgpUtil.attrType2string(i) + "|" + counter2stats(s[i]));
         }
         return l;
     }

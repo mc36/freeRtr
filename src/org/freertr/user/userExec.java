@@ -756,6 +756,8 @@ public class userExec {
         hl.add(null, false, 6, new int[]{-1}, "brief", "only brief listing");
         hl.add(null, false, 5, new int[]{-1}, "metric", "list of metrics");
         hl.add(null, false, 5, new int[]{-1}, "interface", "list of interfaces");
+        hl.add(null, false, 5, new int[]{6}, "statistics", "collected message statistics");
+        hl.add(null, false, 6, new int[]{-1}, "<name:ifc>", "name of interface");
         hl.add(null, false, 5, new int[]{6}, "database", "list of lsas in area");
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "area number");
         hl.add(null, false, 7, new int[]{8}, "[addr]", "entry to view");
@@ -838,6 +840,8 @@ public class userExec {
         hl.add(null, false, 6, new int[]{-1}, "brief", "only brief listing");
         hl.add(null, false, 5, new int[]{-1}, "metric", "list of metrics");
         hl.add(null, false, 5, new int[]{-1}, "interface", "list of interfaces");
+        hl.add(null, false, 5, new int[]{6}, "statistics", "collected message statistics");
+        hl.add(null, false, 6, new int[]{-1}, "<name:ifc>", "name of interface");
         hl.add(null, false, 5, new int[]{6}, "database", "list of lsas in area");
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "level number");
         hl.add(null, false, 7, new int[]{-1}, "[addr]", "entry to view");

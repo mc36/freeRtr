@@ -62,6 +62,11 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
     protected counter cntr;
 
     /**
+     * message types received
+     */
+    public final counter[] msgStats = new counter[256];
+
+    /**
      * interface type
      */
     public int networkType;
@@ -294,6 +299,9 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
         ttlSecurity = -1;
         echoTimer = 60000;
         echoParam = new tabAverage(1, 65530);
+        for (int i = 0; i < msgStats.length; i++) {
+            msgStats[i] = new counter();
+        }
         if (iface != null) {
             teBandwidth = iface.lower.getBandwidth();
         }
@@ -1265,6 +1273,7 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
      */
     protected void mkPackHead(packHolder pck, rtrOspf4area area, int typ) {
         pck.merge2beg();
+        msgStats[typ].tx(pck);
         if (debugger.rtrOspf4traf) {
             logger.debug("sending " + rtrOspf4neigh.msgTyp2string(typ) + " on " + iface);
         }

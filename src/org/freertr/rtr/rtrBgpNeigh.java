@@ -692,6 +692,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("socket mode|" + socketMode);
         rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgOpen, msgStats, "|tx=", " rx=");
         rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgUpdate, msgStats, "|tx=", " rx=");
+        rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgRefrsh, msgStats, "|tx=", " rx=");
+        rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgCapability, msgStats, "|tx=", " rx=");
         rtrBgpDump.getMsgStats(l, rtrBgpUtil.msgNotify, msgStats, "|tx=", " rx=");
         rtrBgpDump.getUnReachStats(l, reachabStat, unreachStat, "|rx=", " tx=");
         rtrBgpDump.getUnknwSum(l, false, msgStats, "|rx=", " tx=");
