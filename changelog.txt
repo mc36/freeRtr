@@ -17516,3 +17516,6 @@ failed: wireguard over wireguard
 ---------------------------------- 2025-09-03 14:57:26 25.9.3
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
+---------------------------------- 2025-09-10 05:16:12 25.9.10
+no qc pass: wireguard over ipv4
+failed: wireguard over ipv4
