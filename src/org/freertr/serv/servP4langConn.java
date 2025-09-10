@@ -200,9 +200,9 @@ public class servP4langConn implements Runnable {
                 logger.debug("rx: " + s);
             }
             cmds cmd = new cmds("p4lang", s);
-            s = cmd.word();
             lower.msgsGot++;
             keyword.update(lower.apiStatRx, s);
+            s = cmd.word();
             if (s.equals("nomore")) {
                 break;
             }
@@ -335,9 +335,9 @@ public class servP4langConn implements Runnable {
                 logger.debug("rx: " + s);
             }
             cmds cmd = new cmds("p4lang", s);
-            s = cmd.word();
             lower.msgsGot++;
             keyword.update(lower.apiStatRx, s);
+            s = cmd.word();
             if (s.equals("state")) {
                 servP4langIfc ntry = lower.findIfc(bits.str2num(cmd.word()));
                 if (ntry == null) {
