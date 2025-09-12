@@ -741,7 +741,7 @@ qc pass: p4lang: l2vpn over pwhe mpls
 qc pass: p4lang: l3vpn over pwhe mpls
 qc pass: p4lang: pwhe routing over qinq
 qc pass: p4lang: pwhe mpls over qinq
-qc pass: p4lang: bridge routing over backplane
+failed: p4lang: bridge routing over backplane
 qc pass: p4lang: mixed bridge routing over backplane
 qc pass: p4lang: routed vpls/ldp with bgp
 qc pass: p4lang: routed vlan vpls/ldp with bgp
@@ -751,7 +751,7 @@ qc pass: p4lang: routed vlan evpn/cmac with bgp
 qc pass: p4lang: routed qinq evpn/cmac with bgp
 qc pass: p4lang: vpls/ldp over backplane
 qc pass: p4lang: evpn/cmac over backplane
-failed: p4lang: routed vpls/ldp over backplane
+qc pass: p4lang: routed vpls/ldp over backplane
 qc pass: p4lang: routed evpn/cmac over backplane
 qc pass: p4lang: vpn mldp egress edge
 qc pass: p4lang: vpn mldp ingress edge
