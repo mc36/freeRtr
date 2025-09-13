@@ -142,6 +142,7 @@ public class renamer {
         s = s.replaceAll("ü", "u");
         s = s.replaceAll("Ü", "u");
         s = s.replaceAll("̸", "");
+        s = s.replaceAll("∕", "");
         s = s.replaceAll("ː", "");
         s = s.replaceAll("꞉", "");
         s = s.replaceAll("：", "");
