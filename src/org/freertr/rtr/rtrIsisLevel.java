@@ -941,6 +941,7 @@ public class rtrIsisLevel implements Runnable {
                         }
                         spf.addPref(src, pref, false);
                     }
+                    continue;
                 }
                 if (!lower.other.enabled) {
                     continue;
