@@ -510,15 +510,6 @@ public class rtrRift extends ipRtr implements Runnable {
     }
 
     /**
-     * get ip protocol version
-     *
-     * @return protocol version
-     */
-    public int getProtoVer() {
-        return fwdCore.ipVersion;
-    }
-
-    /**
      * create computed
      */
     public synchronized void routerCreateComputed() {
@@ -531,7 +522,7 @@ public class rtrRift extends ipRtr implements Runnable {
         tabRoute<addrIP> rou = new tabRoute<addrIP>("adv");
         if (defOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
+            ntry.prefix = addrPrefix.defaultRoute(fwdCore.ipVersion);
             rou.add(tabRoute.addType.always, ntry, true, true);
         }
         for (int o = 0; o < ifaces.size(); o++) {
@@ -570,7 +561,7 @@ public class rtrRift extends ipRtr implements Runnable {
         }
         if (haveNorthPeer()) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
+            ntry.prefix = addrPrefix.defaultRoute(fwdCore.ipVersion);
             ned.put(createPrefix(1, Integer.MAX_VALUE, ntry));
         }
         long tim = bits.getTime();

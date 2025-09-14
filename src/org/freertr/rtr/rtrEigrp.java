@@ -254,15 +254,6 @@ public class rtrEigrp extends ipRtr implements Runnable {
     }
 
     /**
-     * get ip protocol version
-     *
-     * @return protocol version
-     */
-    public int getProtoVer() {
-        return fwdCore.ipVersion;
-    }
-
-    /**
      * create computed
      */
     public synchronized void routerCreateComputed() {
@@ -318,7 +309,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
             tabRoute.addUpdatedTable(tabRoute.addType.always, rtrBgpUtil.sfiUnicast, 0, tab1, need2adv, true, ifc.roumapOut, ifc.roupolOut, ifc.prflstOut);
             if (ifc.defOrigin) {
                 ntry = new tabRouteEntry<addrIP>();
-                ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
+                ntry.prefix = addrPrefix.defaultRoute(fwdCore.ipVersion);
                 tab1.add(tabRoute.addType.always, ntry, true, true);
             }
             if (ifc.splitHorizon) {

@@ -683,15 +683,6 @@ public class rtrLsrp extends ipRtr implements Runnable {
     }
 
     /**
-     * get ip protocol version
-     *
-     * @return protocol version
-     */
-    public int getProtoVer() {
-        return fwdCore.ipVersion;
-    }
-
-    /**
      * create computed
      */
     public synchronized void routerCreateComputed() {
@@ -702,7 +693,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         dat.fromString(new cmds("", ""));
         if (defOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = addrPrefix.defaultRoute(getProtoVer());
+            ntry.prefix = addrPrefix.defaultRoute(fwdCore.ipVersion);
             ntry.best.segrouIdx = segrouIdx;
             ntry.best.rouSrc = segrouPop ? 16 : 0;
             ntry.best.bierIdx = bierIdx;
