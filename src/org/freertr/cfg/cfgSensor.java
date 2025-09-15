@@ -1244,6 +1244,10 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         sizY -= 3;
         cmds cmd = new cmds("ts", res.get(0));
         long beg = bits.str2long(cmd.word(";"));
+        for (int o = 0; o < col; o++) {
+            cmd.word(";");
+        }
+        long prev = bits.str2long(cmd.word(";"));
         cmd = new cmds("ts", res.get(res.size() - 1));
         long end = bits.str2long(cmd.word(";"));
         end -= beg;
@@ -1252,27 +1256,36 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         int pos = 0;
         for (int i = 0; i < avg.length; i++) {
             long cAvg = 0;
-            int old = pos;
+            int ok = 0;
             for (;;) {
                 cmd = new cmds("ts", res.get(pos));
-                long tim = bits.str2long(cmd.word(";"));
-                tim -= beg;
-                tim /= end;
-                if (tim > i) {
+                long curr = bits.str2long(cmd.word(";"));
+                curr -= beg;
+                curr /= end;
+                if (curr > i) {
                     break;
                 }
                 pos++;
                 for (int o = 0; o < col; o++) {
                     cmd.word(";");
                 }
-                tim = bits.str2long(cmd.word(";"));
-                cAvg += tim;
+                curr = bits.str2long(cmd.word(";"));
+                long diff = curr - prev;
+                if (diff < 0) {
+                    diff = -diff;
+                }
+                diff *= 3;
+                if (diff > prev) {
+                    continue;
+                }
+                cAvg += curr;
+                ok++;
+                prev = curr;
             }
-            old = pos - old;
-            if (old < 1) {
+            if (ok < 1) {
                 return null;
             }
-            avg[i] = cAvg / old;
+            avg[i] = cAvg / ok;
         }
         res = new ArrayList<String>();
         for (int i = 0; i < sizY; i++) {
