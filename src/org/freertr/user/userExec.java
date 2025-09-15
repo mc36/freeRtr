@@ -1792,6 +1792,8 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "kvgpb", "kvgpb data");
         hl.add(null, false, 4, new int[]{-1}, "memory", "local stored data");
         hl.add(null, false, 4, new int[]{-1}, "history", "historical data");
+        hl.add(null, false, 4, new int[]{5}, "graph", "graph historical data");
+        hl.add(null, false, 5, new int[]{-1}, "<num>", "column number");
         hl.add(null, false, 2, new int[]{3}, "netflow", "netflow collector information");
         hl.add(cfgAll.dmnNetflow.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
         hl.add(null, false, 4, new int[]{-1}, "session", "list of sessions");

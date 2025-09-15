@@ -1224,6 +1224,108 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     /**
      * get show
      *
+     * @param col column
+     * @param sizX width
+     * @param sizY height
+     * @return result
+     */
+    public List<String> getShowGraph(int col, int sizX, int sizY) {
+        if (locFil == null) {
+            return null;
+        }
+        List<String> res = bits.txt2buf(locFil.name());
+        if (res == null) {
+            return null;
+        }
+        if (res.size() < sizX) {
+            return null;
+        }
+        sizX -= 6;
+        sizY -= 3;
+        cmds cmd = new cmds("ts", res.get(0));
+        long beg = bits.str2long(cmd.word(";"));
+        cmd = new cmds("ts", res.get(res.size() - 1));
+        long end = bits.str2long(cmd.word(";"));
+        end -= beg;
+        end /= sizX;
+        long[] avg = new long[sizX];
+        int pos = 0;
+        for (int i = 0; i < avg.length; i++) {
+            long cAvg = 0;
+            int old = pos;
+            for (;;) {
+                cmd = new cmds("ts", res.get(pos));
+                long tim = bits.str2long(cmd.word(";"));
+                tim -= beg;
+                tim /= end;
+                if (tim > i) {
+                    break;
+                }
+                pos++;
+                for (int o = 0; o < col; o++) {
+                    cmd.word(";");
+                }
+                tim = bits.str2long(cmd.word(";"));
+                cAvg += tim;
+            }
+            old = pos - old;
+            if (old < 1) {
+                return null;
+            }
+            avg[i] = cAvg / old;
+        }
+        res = new ArrayList<String>();
+        for (int i = 0; i < sizY; i++) {
+            res.add(bits.padEnd("", sizX, " ") + "|");
+        }
+        long cMin = avg[0];
+        long cMax = avg[0];
+        for (int i = 1; i < avg.length; i++) {
+            long o = avg[i];
+            if (o < cMin) {
+                cMin = o;
+            }
+            if (o > cMax) {
+                cMax = o;
+            }
+        }
+        cMax -= cMin;
+        cMax /= sizY;
+        if (cMax < 1) {
+            cMax = 1;
+        }
+        for (int i = 1; i < avg.length; i++) {
+            long y = avg[i];
+            y -= cMin;
+            y /= cMax;
+            int ln = res.size() - (int) y;
+            if (ln < 0) {
+                ln = 0;
+            }
+            if (ln >= res.size()) {
+                ln = res.size() - 1;
+            }
+            String a = res.get(ln);
+            a = a.substring(0, i) + "*" + a.substring(i + 1, a.length());
+            res.set(ln, a);
+        }
+        for (int i = 0; i < sizY; i++) {
+            String a = res.get(i);
+            a += bits.toUser(cMin + (cMax * (sizY - i)));
+            res.set(i, a);
+        }
+        String a = "";
+        for (int i = 0; i <= sizX; i += 15) {
+            a += bits.padEnd(bits.time2str(cfgAll.timeZoneName, beg + (i * end), 1), 15, " ");
+        }
+        res.add(bits.padEnd("", sizX, "-") + "/");
+        res.add(a.substring(0, sizX));
+        return res;
+    }
+
+    /**
+     * get show
+     *
      * @return result
      */
     public List<String> getShowHistory() {

@@ -1226,6 +1226,13 @@ public class userShow {
                 rdr.putStrArr(exp.getShowHistory());
                 return null;
             }
+            if (a.equals("graph")) {
+                a = cmd.word();
+                int x = cmd.pipe.settingsGet(pipeSetting.width, 80);
+                int y = cmd.pipe.settingsGet(pipeSetting.height, 25);
+                rdr.putStrArr(exp.getShowGraph(bits.str2num(a), x, y));
+                return null;
+            }
             cmd.badCmd();
             return null;
         }
