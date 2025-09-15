@@ -1255,22 +1255,22 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         long[] avg = new long[sizX];
         int pos = 0;
         for (int i = 0; i < avg.length; i++) {
-            long cAvg = 0;
+            long sum = 0;
             int ok = 0;
             for (;;) {
                 cmd = new cmds("ts", res.get(pos));
-                long curr = bits.str2long(cmd.word(";"));
-                curr -= beg;
-                curr /= end;
-                if (curr > i) {
+                long cur = bits.str2long(cmd.word(";"));
+                cur -= beg;
+                cur /= end;
+                if (cur > i) {
                     break;
                 }
                 pos++;
                 for (int o = 0; o < col; o++) {
                     cmd.word(";");
                 }
-                curr = bits.str2long(cmd.word(";"));
-                long diff = curr - prev;
+                cur = bits.str2long(cmd.word(";"));
+                long diff = cur - prev;
                 if (diff < 0) {
                     diff = -diff;
                 }
@@ -1278,14 +1278,14 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
                 if (diff > prev) {
                     continue;
                 }
-                cAvg += curr;
+                sum += cur;
                 ok++;
-                prev = curr;
+                prev = cur;
             }
             if (ok < 1) {
                 return null;
             }
-            avg[i] = cAvg / ok;
+            avg[i] = sum / ok;
         }
         res = new ArrayList<String>();
         for (int i = 0; i < sizY; i++) {

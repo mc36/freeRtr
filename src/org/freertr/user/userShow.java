@@ -235,6 +235,12 @@ public class userShow {
             if (a.equals("ascii")) {
                 int x = cmd.pipe.settingsGet(pipeSetting.width, 80);
                 int y = cmd.pipe.settingsGet(pipeSetting.height, 25);
+                if (x < 10) {
+                    x = 80;
+                }
+                if (y < 5) {
+                    y = 25;
+                }
                 List<String> lst = userFlash.asciiArt(cmd.getRemaining(), x, y);
                 rdr.putStrArr(lst);
                 return null;
@@ -1230,6 +1236,12 @@ public class userShow {
                 a = cmd.word();
                 int x = cmd.pipe.settingsGet(pipeSetting.width, 80);
                 int y = cmd.pipe.settingsGet(pipeSetting.height, 25);
+                if (x < 10) {
+                    x = 80;
+                }
+                if (y < 5) {
+                    y = 25;
+                }
                 rdr.putStrArr(exp.getShowGraph(bits.str2num(a), x, y));
                 return null;
             }
