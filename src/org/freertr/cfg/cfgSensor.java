@@ -1306,9 +1306,9 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             cMax = 1;
         }
         for (int i = 1; i < avg.length; i++) {
-            getShowGraph(res, i, min[i], cMin, cMax, '-');
-            getShowGraph(res, i, max[i], cMin, cMax, '+');
-            getShowGraph(res, i, avg[i], cMin, cMax, '*');
+            getShowGraph(res, i, min[i], cMin, cMax, "-");
+            getShowGraph(res, i, max[i], cMin, cMax, "+");
+            getShowGraph(res, i, avg[i], cMin, cMax, "*");
         }
         for (int i = 0; i < sizY; i++) {
             String a = res.get(i);
@@ -1324,7 +1324,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         return res;
     }
 
-    private void getShowGraph(List<String> res, int i, long v, long cMin, long cMax, char ch) {
+    private void getShowGraph(List<String> res, int i, long v, long cMin, long cMax, String ch) {
         v -= cMin;
         v /= cMax;
         int ln = res.size() - (int) v;
