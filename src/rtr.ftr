@@ -1056,7 +1056,7 @@ qc pass: tls with dsa
 qc pass: tls with rsa
 qc pass: tls with ecdsa
 qc pass: tls with mldsa
-qc pass: wireguard over ipv4
+failed: wireguard over ipv4
 qc pass: wireguard over ipv6
 qc pass: wireguard over wireguard
 qc pass: wireguard over loopback
