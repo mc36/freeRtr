@@ -1244,18 +1244,18 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         sizY -= 3;
         cmds cmd = new cmds("ts", res.get(0));
         long beg = bits.str2long(cmd.word(";"));
-        for (int o = 0; o < col; o++) {
-            cmd.word(";");
-        }
-        long prev = bits.str2long(cmd.word(";"));
         cmd = new cmds("ts", res.get(res.size() - 1));
         long end = bits.str2long(cmd.word(";"));
         end -= beg;
         end /= sizX;
         long[] avg = new long[sizX];
+        long[] min = new long[sizX];
+        long[] max = new long[sizX];
         int pos = 0;
         for (int i = 0; i < avg.length; i++) {
             long sum = 0;
+            long vMin = Long.MAX_VALUE;
+            long vMax = Long.MIN_VALUE;
             int ok = 0;
             for (;;) {
                 cmd = new cmds("ts", res.get(pos));
@@ -1270,36 +1270,34 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
                     cmd.word(";");
                 }
                 cur = bits.str2long(cmd.word(";"));
-                long diff = cur - prev;
-                if (diff < 0) {
-                    diff = -diff;
+                if (cur < vMin) {
+                    vMin = cur;
                 }
-                diff *= 3;
-                if (diff > prev) {
-                    continue;
+                if (cur > vMax) {
+                    vMax = cur;
                 }
                 sum += cur;
                 ok++;
-                prev = cur;
             }
             if (ok < 1) {
                 return null;
             }
             avg[i] = sum / ok;
+            min[i] = vMin;
+            max[i] = vMax;
         }
         res = new ArrayList<String>();
         for (int i = 0; i < sizY; i++) {
             res.add(bits.padEnd("", sizX, " ") + "|");
         }
-        long cMin = avg[0];
-        long cMax = avg[0];
+        long cMin = min[0];
+        long cMax = max[0];
         for (int i = 1; i < avg.length; i++) {
-            long o = avg[i];
-            if (o < cMin) {
-                cMin = o;
+            if (min[i] < cMin) {
+                cMin = min[i];
             }
-            if (o > cMax) {
-                cMax = o;
+            if (max[i] > cMax) {
+                cMax = max[i];
             }
         }
         cMax -= cMin;
@@ -1308,19 +1306,9 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             cMax = 1;
         }
         for (int i = 1; i < avg.length; i++) {
-            long y = avg[i];
-            y -= cMin;
-            y /= cMax;
-            int ln = res.size() - (int) y;
-            if (ln < 0) {
-                ln = 0;
-            }
-            if (ln >= res.size()) {
-                ln = res.size() - 1;
-            }
-            String a = res.get(ln);
-            a = a.substring(0, i) + "*" + a.substring(i + 1, a.length());
-            res.set(ln, a);
+            getShowGraph(res, i, min[i], cMin, cMax, '-');
+            getShowGraph(res, i, max[i], cMin, cMax, '+');
+            getShowGraph(res, i, avg[i], cMin, cMax, '*');
         }
         for (int i = 0; i < sizY; i++) {
             String a = res.get(i);
@@ -1334,6 +1322,21 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         res.add(bits.padEnd("", sizX, "-") + "/");
         res.add(a.substring(0, sizX));
         return res;
+    }
+
+    private void getShowGraph(List<String> res, int i, long v, long cMin, long cMax, char ch) {
+        v -= cMin;
+        v /= cMax;
+        int ln = res.size() - (int) v;
+        if (ln < 0) {
+            ln = 0;
+        }
+        if (ln >= res.size()) {
+            ln = res.size() - 1;
+        }
+        String a = res.get(ln);
+        a = a.substring(0, i) + ch + a.substring(i + 1, a.length());
+        res.set(ln, a);
     }
 
     /**
