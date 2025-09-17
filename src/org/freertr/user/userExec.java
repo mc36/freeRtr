@@ -1373,6 +1373,7 @@ public class userExec {
         hl.add(null, false, 2, new int[]{-1}, "platform", "platform information");
         hl.add(null, false, 2, new int[]{3}, "me-the", "show something");
         hl.add(null, false, 3, new int[]{-1}, "time", "show some time");
+        hl.add(null, false, 3, new int[]{-1}, "clock", "show some time");
         hl.add(null, false, 3, new int[]{4}, "calendar", "show some time");
         hl.add(null, false, 4, new int[]{5}, "<num>", "year to show");
         hl.add(null, false, 5, new int[]{-1}, "<num>", "month to show");
@@ -1578,6 +1579,8 @@ public class userExec {
         hl.add(null, false, 2, new int[]{3, -1}, "clock", "current date and time");
         hl.add(null, false, 3, new int[]{-1}, "big", "a big clock");
         hl.add(null, false, 3, new int[]{-1}, "raw", "a raw clock");
+        hl.add(null, false, 3, new int[]{-1}, "analog", "analog clock");
+        hl.add(null, false, 3, new int[]{-1}, "calendar", "calendar");
         hl.add(null, false, 2, new int[]{3, -1}, "logging", "logged messages");
         hl.add(null, false, 3, new int[]{4}, "script", "script messages");
         hl.add(null, false, 4, new int[]{-1}, "<name:scr>", "name of script");
@@ -2222,6 +2225,7 @@ public class userExec {
         hl.add(null, false, 2, new int[]{-1}, "chess", "play game");
         hl.add(null, false, 2, new int[]{-1}, "hanoi", "play game");
         hl.add(null, false, 2, new int[]{-1}, "minesweep", "play game");
+        hl.add(null, false, 2, new int[]{-1}, "time", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "clock", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "snake", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "matrix", "view demo");

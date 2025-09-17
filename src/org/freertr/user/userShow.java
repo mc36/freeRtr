@@ -282,6 +282,19 @@ public class userShow {
                 rdr.putStrArr(l);
                 return null;
             }
+            if (a.equals("clock")) {
+                int x = cmd.pipe.settingsGet(pipeSetting.width, 80);
+                int y = cmd.pipe.settingsGet(pipeSetting.height, 25);
+                if (x < 10) {
+                    x = 80;
+                }
+                if (y < 5) {
+                    y = 25;
+                }
+                List<String> l = tabTime.getClock(x, y, true);
+                rdr.putStrArr(l);
+                return null;
+            }
             if (a.equals("calendar")) {
                 int i = bits.str2num(cmd.word());
                 int o = bits.str2num(cmd.word());
@@ -450,6 +463,26 @@ public class userShow {
             }
             if (a.equals("raw")) {
                 l.add("" + tim);
+                rdr.putStrArr(l);
+                return null;
+            }
+            if (a.equals("calendar")) {
+                a = bits.time2str(cfgAll.timeZoneName, tim, 1);
+                int i = a.indexOf("-");
+                l = tabTime.getCalendar(bits.str2num(a.substring(0, i)), bits.str2num(a.substring(i + 1, i + 3)));
+                rdr.putStrArr(l);
+                return null;
+            }
+            if (a.equals("analog")) {
+                int x = cmd.pipe.settingsGet(pipeSetting.width, 80);
+                int y = cmd.pipe.settingsGet(pipeSetting.height, 25);
+                if (x < 10) {
+                    x = 80;
+                }
+                if (y < 5) {
+                    y = 25;
+                }
+                l = tabTime.getClock(x, y, false);
                 rdr.putStrArr(l);
                 return null;
             }

@@ -7,6 +7,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.serv.servQuote;
+import org.freertr.tab.tabTime;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -227,6 +228,21 @@ public class userGame {
             }
             console.putCls();
             console.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, s);
+            console.refresh();
+            bits.sleep(5000);
+        }
+    }
+
+    /**
+     * flying clock
+     */
+    public void doClock() {
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            console.putCls();
+            console.putStrs(0, 0, userScreen.colBlack, bits.random(1, 15), false, tabTime.getClock(console.sizX, console.sizY, true));
             console.refresh();
             bits.sleep(5000);
         }
@@ -902,8 +918,12 @@ public class userGame {
             doLogo(txt);
             return;
         }
-        if (a.equals("clock")) {
+        if (a.equals("time")) {
             doClock(userFonts.font8x16());
+            return;
+        }
+        if (a.equals("clock")) {
+            doClock();
             return;
         }
         if (a.equals("snake")) {
