@@ -34,6 +34,10 @@ public class userFormat {
          */
         fancy,
         /**
+         * json mode
+         */
+        json,
+        /**
          * csv mode
          */
         csv,
@@ -60,6 +64,8 @@ public class userFormat {
                 return "table";
             case fancy:
                 return "fancy";
+            case json:
+                return "json";
             case csv:
                 return "csv";
             case html:
@@ -88,6 +94,9 @@ public class userFormat {
         if (a.equals("fancy")) {
             return tableMode.fancy;
         }
+        if (a.equals("json")) {
+            return tableMode.json;
+        }
         if (a.equals("csv")) {
             return tableMode.csv;
         }
@@ -107,6 +116,7 @@ public class userFormat {
         h.add(null, false, beg, new int[]{-1}, "normal", "select normal mode");
         h.add(null, false, beg, new int[]{-1}, "table", "select table mode");
         h.add(null, false, beg, new int[]{-1}, "fancy", "select fancy mode");
+        h.add(null, false, beg, new int[]{-1}, "json", "select json mode");
         h.add(null, false, beg, new int[]{-1}, "csv", "select csv mode");
         h.add(null, false, beg, new int[]{-1}, "raw", "select raw mode");
         h.add(null, false, beg, new int[]{-1}, "html", "select html mode");
@@ -362,6 +372,9 @@ public class userFormat {
             case html:
                 s += "<tr>";
                 break;
+            case json:
+                s += "\"summ\":{";
+                break;
             default:
                 break;
         }
@@ -375,8 +388,15 @@ public class userFormat {
                 q += size.get(p);
                 p++;
             }
-            if (sep == tableMode.html) {
-                s += "<td colspan=" + o + ">";
+            switch (sep) {
+                case html:
+                    s += "<td colspan=" + o + ">";
+                    break;
+                case json:
+                    s += "\"col" + i + "\":\"";
+                    break;
+                default:
+                    break;
             }
             if (sep == tableMode.raw) {
                 s += a;
@@ -396,8 +416,15 @@ public class userFormat {
                 }
                 s += bits.padEnd(a, q, " ");
             }
-            if (sep == tableMode.html) {
-                s += "</td>";
+            switch (sep) {
+                case html:
+                    s += "</td>";
+                    break;
+                case json:
+                    s += "\"";
+                    break;
+                default:
+                    break;
             }
             if (p >= size.size()) {
                 continue;
@@ -418,6 +445,9 @@ public class userFormat {
                 case raw:
                     s += ";";
                     break;
+                case json:
+                    s += ",";
+                    break;
                 default:
                     break;
             }
@@ -429,13 +459,16 @@ public class userFormat {
             case html:
                 s += "</tr>";
                 break;
+            case json:
+                s += "},";
+                break;
             default:
                 break;
         }
         return bits.trimE(s);
     }
 
-    private String formatLine(userFormatLine dat, tableMode sep) {
+    private String formatLine(String nam, boolean mor, userFormatLine dat, tableMode sep) {
         String s = "";
         switch (sep) {
             case fancy:
@@ -443,6 +476,9 @@ public class userFormat {
                 break;
             case html:
                 s += "<tr>";
+                break;
+            case json:
+                s += "\"" + nam + "\":{";
                 break;
             default:
                 break;
@@ -454,16 +490,30 @@ public class userFormat {
             } else {
                 a = "";
             }
-            if (sep == tableMode.html) {
-                s += "<td>";
+            switch (sep) {
+                case html:
+                    s += "<td>";
+                    break;
+                case json:
+                    s += "\"col" + i + "\":\"";
+                    break;
+                default:
+                    break;
             }
             if (sep == tableMode.raw) {
                 s += a;
             } else {
                 s += bits.padEnd(a, size.get(i), " ");
             }
-            if (sep == tableMode.html) {
-                s += "</td>";
+            switch (sep) {
+                case html:
+                    s += "</td>";
+                    break;
+                case json:
+                    s += "\"";
+                    break;
+                default:
+                    break;
             }
             if ((i + 1) >= size.size()) {
                 continue;
@@ -484,6 +534,9 @@ public class userFormat {
                 case raw:
                     s += ";";
                     break;
+                case json:
+                    s += ",";
+                    break;
                 default:
                     break;
             }
@@ -494,6 +547,12 @@ public class userFormat {
                 break;
             case html:
                 s += "</tr>";
+                break;
+            case json:
+                s += "}";
+                if (mor) {
+                    s += ",";
+                }
                 break;
             default:
                 break;
@@ -508,12 +567,13 @@ public class userFormat {
         if (summary != null) {
             trg.add(formatSumm(summary, sep));
         }
-        trg.add(formatLine(header, sep));
+        final int len = lines.size() - 1;
+        trg.add(formatLine("head", len >= 0, header, sep));
         if (sep == tableMode.fancy) {
             trg.add(formatSep(sep, "-"));
         }
-        for (int i = 0; i < lines.size(); i++) {
-            trg.add(formatLine(lines.get(i), sep));
+        for (int i = 0; i <= len; i++) {
+            trg.add(formatLine("row" + i, i < len, lines.get(i), sep));
         }
         if (sep == tableMode.fancy) {
             trg.add(formatSep(sep, "_"));
