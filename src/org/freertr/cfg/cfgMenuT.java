@@ -235,6 +235,7 @@ class cfgMenuTdoer {
     }
 
     public void doWork() {
+        console.putCls();
         doReset();
         doFilter();
         for (;;) {

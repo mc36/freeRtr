@@ -41,6 +41,7 @@ public class userFilman {
      * do work
      */
     public void doWork() {
+        console.putCls();
         for (;;) {
             console.putCur(console.sizX, console.sizY);
             for (int i = 0; i < pan.length; i++) {

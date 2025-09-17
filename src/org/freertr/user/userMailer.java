@@ -42,6 +42,7 @@ public class userMailer {
      * do work
      */
     public void doWork() {
+        console.putCls();
         doRead();
         doClear();
         for (;;) {
@@ -251,7 +252,7 @@ public class userMailer {
                 fg = userScreen.colWhite;
             }
             console.putStr(siz, o + 1, bg, fg, false, bits.padEnd("", console.sizX, " "));
-            if ((beg + o) > mails.size()) {
+            if ((beg + o) >= mails.size()) {
                 continue;
             }
             userMailerNtry msg = mails.get(beg + o);

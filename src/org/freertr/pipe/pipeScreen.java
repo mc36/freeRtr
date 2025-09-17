@@ -45,6 +45,7 @@ public class pipeScreen {
         userRead.setTermWdt(ps, x);
         userRead.setTermLen(ps, y);
         scr = new userScreen(ps);
+        scr.putCls();
     }
 
     private void putChar(int ch, boolean cr) {

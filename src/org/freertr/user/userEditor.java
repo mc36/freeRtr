@@ -142,6 +142,7 @@ public class userEditor {
     }
 
     private boolean doWork() {
+        console.putCls();
         doReset();
         for (;;) {
             doRange();

@@ -62,6 +62,7 @@ public class userBrowser {
      * do work
      */
     public void doWork() {
+        console.putCls();
         doKeyRead();
         for (;;) {
             doRange();

@@ -376,7 +376,7 @@ public class userScreen {
         chrs = new int[y][x];
         atrs = new int[y][x];
         remP = -1;
-        sendCls();
+        doReset();
     }
 
     /**
@@ -840,10 +840,7 @@ public class userScreen {
         pip.strPut(s + "m");
     }
 
-    private void sendCls() {
-        sendCol(colWhite);
-        sendCur(0, 0);
-        sendCls(pipe);
+    private void doReset() {
         remP = 0x12345678;
         remX = remP;
         remY = remP;
@@ -939,7 +936,10 @@ public class userScreen {
      * put clear screen
      */
     public void putCls() {
-        sendCls();
+        sendCol(colWhite);
+        sendCur(0, 0);
+        sendCls(pipe);
+        doReset();
         curX = 0;
         curY = sizY - 1;
         for (int y = 0; y < sizY; y++) {
