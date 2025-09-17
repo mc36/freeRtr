@@ -507,6 +507,44 @@ public abstract class prtGen implements ipPrt {
     }
 
     /**
+     * find accepter server
+     *
+     * @param rxIfc source interface
+     * @param srcA source address
+     * @param trgP target port
+     * @param srcP source port
+     * @return accepter, null if not found
+     */
+    public prtGenServ findAccepter(ipFwdIface rxIfc, addrIP srcA, int trgP, int srcP) {
+        prtGenServ srv = null;
+        if (srv == null) {
+            srv = srvrs.get(rxIfc, srcA, trgP, srcP);
+        }
+        if (srv == null) {
+            srv = srvrs.get(null, srcA, trgP, srcP);
+        }
+        if (srv == null) {
+            srv = srvrs.get(rxIfc, srcA, trgP, 0);
+        }
+        if (srv == null) {
+            srv = srvrs.get(null, srcA, trgP, 0);
+        }
+        if (srv == null) {
+            srv = srvrs.get(rxIfc, null, trgP, srcP);
+        }
+        if (srv == null) {
+            srv = srvrs.get(null, null, trgP, srcP);
+        }
+        if (srv == null) {
+            srv = srvrs.get(rxIfc, null, trgP, 0);
+        }
+        if (srv == null) {
+            srv = srvrs.get(null, null, trgP, 0);
+        }
+        return srv;
+    }
+
+    /**
      * accept incoming connection
      *
      * @param rxIfc source interface
@@ -514,31 +552,7 @@ public abstract class prtGen implements ipPrt {
      * @return new connection entry
      */
     protected prtGenConn connectionAccept(ipFwdIface rxIfc, packHolder pck) {
-        prtGenServ srv = null;
-        if (srv == null) {
-            srv = srvrs.get(rxIfc, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
-        }
-        if (srv == null) {
-            srv = srvrs.get(null, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
-        }
-        if (srv == null) {
-            srv = srvrs.get(rxIfc, pck.IPsrc, pck.UDPtrg, 0);
-        }
-        if (srv == null) {
-            srv = srvrs.get(null, pck.IPsrc, pck.UDPtrg, 0);
-        }
-        if (srv == null) {
-            srv = srvrs.get(rxIfc, null, pck.UDPtrg, pck.UDPsrc);
-        }
-        if (srv == null) {
-            srv = srvrs.get(null, null, pck.UDPtrg, pck.UDPsrc);
-        }
-        if (srv == null) {
-            srv = srvrs.get(rxIfc, null, pck.UDPtrg, 0);
-        }
-        if (srv == null) {
-            srv = srvrs.get(null, null, pck.UDPtrg, 0);
-        }
+        prtGenServ srv = findAccepter(rxIfc, pck.IPsrc, pck.UDPtrg, pck.UDPsrc);
         if (srv == null) {
             cntr.drop(pck, counter.reasons.badTrgPort);
             connectionRefuse(rxIfc, pck);

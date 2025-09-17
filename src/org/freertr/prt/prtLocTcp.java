@@ -10,6 +10,9 @@ import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.cfg.cfgVrf;
+import org.freertr.ip.ipFwd;
+import org.freertr.ip.ipFwdIface;
+import org.freertr.ip.ipFwdTab;
 import org.freertr.ip.ipIfcLoop;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
@@ -24,7 +27,7 @@ public class prtLocTcp implements Runnable {
 
     private ServerSocket socket;
 
-    private prtGen proto;
+    private cfgVrf vrf;
 
     private int port;
 
@@ -40,7 +43,7 @@ public class prtLocTcp implements Runnable {
      * @param fake address to fake on connection
      * @throws Exception if something went wrong
      */
-    public prtLocTcp(int local, prtGen prt, int remote, String bind, String fake) throws Exception {
+    public prtLocTcp(int local, cfgVrf prt, int remote, String bind, String fake) throws Exception {
         if (fake.length() < 2) {
             source = null;
         } else {
@@ -58,7 +61,7 @@ public class prtLocTcp implements Runnable {
         socket = new ServerSocket();
         socket.setReuseAddress(true);
         socket.bind(sadr);
-        proto = prt;
+        vrf = prt;
         port = remote;
         new Thread(this).start();
     }
@@ -75,7 +78,7 @@ public class prtLocTcp implements Runnable {
      */
     public static boolean startServer(int loc, cfgVrf vrf, int rem, String bind, String fake) {
         try {
-            new prtLocTcp(loc, vrf.tcp4, rem, bind, fake);
+            new prtLocTcp(loc, vrf, rem, bind, fake);
             return false;
         } catch (Exception e) {
             logger.traceback(e);
@@ -128,19 +131,10 @@ public class prtLocTcp implements Runnable {
             srcA = java2addr(clnt.getInetAddress());
         }
         int srcP = clnt.getPort();
-        prtGenServ srv = null;
-        if (srv == null) {
-            srv = proto.srvrs.get(null, srcA, port, srcP);
-        }
-        if (srv == null) {
-            srv = proto.srvrs.get(null, srcA, port, 0);
-        }
-        if (srv == null) {
-            srv = proto.srvrs.get(null, null, port, srcP);
-        }
-        if (srv == null) {
-            srv = proto.srvrs.get(null, null, port, 0);
-        }
+        prtTcp tcp = vrf.getTcp(srcA);
+        ipFwd fwd = vrf.getFwd(srcA);
+        ipFwdIface ifc = ipFwdTab.findSendingIface(fwd, srcA);
+        prtGenServ srv = tcp.findAccepter(ifc, srcA, port, srcP);
         if (srv == null) {
             logger.warn("server not found on port " + port + " from " + srcA + " " + srcP);
             return true;
