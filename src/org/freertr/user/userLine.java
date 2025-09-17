@@ -830,12 +830,7 @@ public class userLine {
         l.add(null, false, 2, new int[]{-1}, "capslock", "enable caps lock");
         l.add(null, false, 2, new int[]{-1}, "bells", "enable beep boops");
         l.add(null, false, 2, new int[]{3}, "tablemode", "set table mode");
-        l.add(null, false, 3, new int[]{-1}, "csv", "select csv mode");
-        l.add(null, false, 3, new int[]{-1}, "fancy", "select fancy mode");
-        l.add(null, false, 3, new int[]{-1}, "html", "select html mode");
-        l.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
-        l.add(null, false, 3, new int[]{-1}, "raw", "select raw mode");
-        l.add(null, false, 3, new int[]{-1}, "table", "select table mode");
+        userFormat.listTableModes(l, 3);
         l.add(null, false, 2, new int[]{3}, "ansimode", "select ansi coloring mode");
         l.add(null, false, 3, new int[]{-1}, "none", "select black and white mode");
         l.add(null, false, 3, new int[]{-1}, "original", "select 8 colors mode");

@@ -2056,12 +2056,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "indexed", "select 256 colors mode");
         hl.add(null, false, 3, new int[]{-1}, "palette", "select 16m colors mode");
         hl.add(null, false, 2, new int[]{3, -1}, "tablemode", "select table formatting mode");
-        hl.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
-        hl.add(null, false, 3, new int[]{-1}, "table", "select table mode");
-        hl.add(null, false, 3, new int[]{-1}, "fancy", "select fancy mode");
-        hl.add(null, false, 3, new int[]{-1}, "csv", "select csv mode");
-        hl.add(null, false, 3, new int[]{-1}, "raw", "select raw mode");
-        hl.add(null, false, 3, new int[]{-1}, "html", "select html mode");
+        userFormat.listTableModes(hl, 3);
         hl.add(null, false, 1, new int[]{2}, "hostscan", "scan ports on remote");
         hl.add(null, false, 2, new int[]{3}, "<host>", "starting host");
         hl.add(null, false, 3, new int[]{4}, "<host>", "increment host");

@@ -685,12 +685,7 @@ public class secInfoUtl {
         lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "style", "colorize prefix details");
         lst.add(null, false, tab + 2, new int[]{-1}, "<str>", "string to send");
         lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "format", "format prefix details");
-        lst.add(null, false, tab + 2, new int[]{-1}, "normal", "select normal mode");
-        lst.add(null, false, tab + 2, new int[]{-1}, "table", "select table mode");
-        lst.add(null, false, tab + 2, new int[]{-1}, "fancy", "select fancy mode");
-        lst.add(null, false, tab + 2, new int[]{-1}, "csv", "select csv mode");
-        lst.add(null, false, tab + 2, new int[]{-1}, "raw", "select raw mode");
-        lst.add(null, false, tab + 2, new int[]{-1}, "html", "select html mode");
+        userFormat.listTableModes(lst, tab + 2);
         lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "tracker", "check tracker");
         lst.add(null, false, tab + 2, new int[]{-1}, "<name:trk>", "tracker name");
         lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "rate", "access rate");

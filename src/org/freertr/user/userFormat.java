@@ -98,6 +98,21 @@ public class userFormat {
     }
 
     /**
+     * list possible table modes
+     *
+     * @param h help to append
+     * @param beg beginning
+     */
+    public static void listTableModes(userHelp h, int beg) {
+        h.add(null, false, beg, new int[]{-1}, "normal", "select normal mode");
+        h.add(null, false, beg, new int[]{-1}, "table", "select table mode");
+        h.add(null, false, beg, new int[]{-1}, "fancy", "select fancy mode");
+        h.add(null, false, beg, new int[]{-1}, "csv", "select csv mode");
+        h.add(null, false, beg, new int[]{-1}, "raw", "select raw mode");
+        h.add(null, false, beg, new int[]{-1}, "html", "select html mode");
+    }
+
+    /**
      * color modes
      */
     public enum colorMode {
@@ -230,6 +245,7 @@ public class userFormat {
 
     /**
      * get index of header
+     *
      * @return header index
      */
     public int headerIdx() {
