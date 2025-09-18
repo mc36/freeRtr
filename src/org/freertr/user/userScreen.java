@@ -377,6 +377,7 @@ public class userScreen {
         atrs = new int[y][x];
         remP = -1;
         doReset();
+        doClear();
     }
 
     /**
@@ -904,6 +905,23 @@ public class userScreen {
     }
 
     /**
+     * get current screen
+     *
+     * @return ascii text
+     */
+    public List<String> getAscii() {
+        List<String> res = new ArrayList<String>();
+        for (int y = 0; y < sizY; y++) {
+            String a = "";
+            for (int x = 0; x < sizX; x++) {
+                a += (char) chrs[y][x];
+            }
+            res.add(bits.trimE(a));
+        }
+        return res;
+    }
+
+    /**
      * refresh terminal
      */
     public void refresh() {
@@ -940,6 +958,13 @@ public class userScreen {
         sendCur(0, 0);
         sendCls(pipe);
         doReset();
+        doClear();
+    }
+
+    /**
+     * clear buffer
+     */
+    public void doClear() {
         curX = 0;
         curY = sizY - 1;
         for (int y = 0; y < sizY; y++) {

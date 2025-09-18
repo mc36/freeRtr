@@ -25,6 +25,7 @@ import org.freertr.util.logFil;
 import org.freertr.util.logger;
 import org.freertr.enc.encPrtbuf;
 import org.freertr.enc.encPrtbufEntry;
+import org.freertr.user.userScreen;
 import org.freertr.util.version;
 
 /**
@@ -1225,23 +1226,21 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
      * get show
      *
      * @param col column
-     * @param sizX width
-     * @param sizY height
-     * @return result
+     * @param scr screen
      */
-    public List<String> getShowGraph(int col, int sizX, int sizY) {
+    public void getShowGraph(int col, userScreen scr) {
         if (locFil == null) {
-            return null;
+            return;
         }
         List<String> res = bits.txt2buf(locFil.name());
         if (res == null) {
-            return null;
+            return;
         }
-        if (res.size() < sizX) {
-            return null;
+        if (res.size() < scr.sizX) {
+            return;
         }
-        sizX -= 6;
-        sizY -= 3;
+        int sizX = scr.sizX - 6;
+        int sizY = scr.sizY - 3;
         cmds cmd = new cmds("ts", res.get(0));
         long beg = bits.str2long(cmd.word(";"));
         cmd = new cmds("ts", res.get(res.size() - 1));
@@ -1280,15 +1279,11 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
                 ok++;
             }
             if (ok < 1) {
-                return null;
+                return;
             }
             avg[i] = sum / ok;
             min[i] = vMin;
             max[i] = vMax;
-        }
-        res = new ArrayList<String>();
-        for (int i = 0; i < sizY; i++) {
-            res.add(bits.padEnd("", sizX, " ") + "|");
         }
         long cMin = min[0];
         long cMax = max[0];
@@ -1306,37 +1301,31 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             cMax = 1;
         }
         for (int i = 1; i < avg.length; i++) {
-            getShowGraph(res, i, min[i], cMin, cMax, "-");
-            getShowGraph(res, i, max[i], cMin, cMax, "+");
-            getShowGraph(res, i, avg[i], cMin, cMax, "*");
+            getShowGraph(scr, sizY, i, min[i], cMin, cMax, "-");
+            getShowGraph(scr, sizY, i, max[i], cMin, cMax, "+");
+            getShowGraph(scr, sizY, i, avg[i], cMin, cMax, "*");
         }
         for (int i = 0; i < sizY; i++) {
-            String a = res.get(i);
-            a += bits.toUser(cMin + (cMax * (sizY - i)));
-            res.set(i, a);
+            scr.putStr(sizX, i, userScreen.colBlack, userScreen.colWhite, false, "|" + bits.toUser(cMin + (cMax * (sizY - i))));
         }
+        scr.putStr(0, sizY, userScreen.colBlack, userScreen.colWhite, false, bits.padEnd("", sizX, "-") + "/");
         String a = "";
         for (int i = 0; i <= sizX; i += 15) {
-            a += bits.padEnd(bits.time2str(cfgAll.timeZoneName, beg + (i * end), 1), 15, " ");
+            scr.putStr(i, sizY + 1, userScreen.colBlack, userScreen.colWhite, false, bits.time2str(cfgAll.timeZoneName, beg + (i * end), 1));
         }
-        res.add(bits.padEnd("", sizX, "-") + "/");
-        res.add(a.substring(0, sizX));
-        return res;
     }
 
-    private void getShowGraph(List<String> res, int i, long v, long cMin, long cMax, String ch) {
+    private void getShowGraph(userScreen scr, int max, int i, long v, long cMin, long cMax, String ch) {
         v -= cMin;
         v /= cMax;
-        int ln = res.size() - (int) v;
+        int ln = max - (int) v;
         if (ln < 0) {
             ln = 0;
         }
-        if (ln >= res.size()) {
-            ln = res.size() - 1;
+        if (ln >= max) {
+            ln = max - 1;
         }
-        String a = res.get(ln);
-        a = a.substring(0, i) + ch + a.substring(i + 1, a.length());
-        res.set(ln, a);
+        scr.putStr(i, ln, userScreen.colBlack, userScreen.colWhite, false, ch);
     }
 
     /**

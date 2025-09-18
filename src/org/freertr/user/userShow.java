@@ -1267,15 +1267,9 @@ public class userShow {
             }
             if (a.equals("graph")) {
                 a = cmd.word();
-                int x = cmd.pipe.settingsGet(pipeSetting.width, 80);
-                int y = cmd.pipe.settingsGet(pipeSetting.height, 25);
-                if (x < 10) {
-                    x = 80;
-                }
-                if (y < 5) {
-                    y = 25;
-                }
-                rdr.putStrArr(exp.getShowGraph(bits.str2num(a), x, y));
+                userScreen scr = new userScreen(cmd.pipe);
+                exp.getShowGraph(bits.str2num(a), scr);
+                rdr.putStrArr(scr.getAscii());
                 return null;
             }
             cmd.badCmd();
