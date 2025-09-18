@@ -7,7 +7,6 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.serv.servQuote;
-import org.freertr.tab.tabTime;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -811,6 +810,177 @@ public class userGame {
     }
 
     /**
+     * 3d maze game
+     */
+    public void doMaze() {
+        byte[][] maze = {
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,},
+            {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,},
+            {1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1,},
+            {1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,},
+            {1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1,},
+            {1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1,},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1,},
+            {1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1,},
+            {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1,},
+            {1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1,},
+            {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1,},
+            {1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1,},
+            {1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1,},
+            {1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1,},
+            {1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1,},
+            {1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1,},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,},};
+        int dir = 0;
+        int curx = 9;
+        int cury = 13;
+        for (;;) {
+            int lftx;
+            int lfty;
+            int rgtx;
+            int rgty;
+            int advx;
+            int advy;
+            switch (dir) {
+                case 0: // north
+                    lftx = -1;
+                    lfty = 0;
+                    rgtx = 1;
+                    rgty = 0;
+                    advx = 0;
+                    advy = -1;
+                    break;
+                case 1: // west
+                    lftx = 0;
+                    lfty = 1;
+                    rgtx = 0;
+                    rgty = -1;
+                    advx = -1;
+                    advy = 0;
+                    break;
+                case 2: // south
+                    lftx = 1;
+                    lfty = 0;
+                    rgtx = -1;
+                    rgty = 0;
+                    advx = 0;
+                    advy = 1;
+                    break;
+                case 3: // east
+                    lftx = 0;
+                    lfty = -1;
+                    rgtx = 0;
+                    rgty = 1;
+                    advx = 1;
+                    advy = 0;
+                    break;
+                default:
+                    return;
+            }
+            console.doClear();
+            int dszx = console.sizX / 10;
+            int dszy = console.sizY / 10;
+            int posx = curx;
+            int posy = cury;
+            for (int step = 0; step < 6; step++) {
+                int sszx = step * dszx;
+                int sszy = step * dszy;
+                int pszx = (step + 1) * dszx;
+                int pszy = (step + 1) * dszy;
+                if (maze[posy + rgty][posx + rgtx] != 0) {
+                    console.drawLine(console.sizX - sszx, sszy, console.sizX - pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    console.drawLine(console.sizX - sszx, console.sizY - sszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                } else {
+                    console.drawLine(console.sizX - sszx, sszy, console.sizX - sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    if (maze[posy + advy][posx + advx] == 0) {
+                        console.drawLine(console.sizX - pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    }
+                    console.drawLine(console.sizX - pszx, pszy, console.sizX - sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    console.drawLine(console.sizX - pszx, console.sizY - pszy, console.sizX - sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                }
+                if (maze[posy + lfty][posx + lftx] != 0) {
+                    console.drawLine(sszx, sszy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    console.drawLine(sszx, console.sizY - sszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                } else {
+                    console.drawLine(sszx, sszy, sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    if (maze[posy + advy][posx + advx] == 0) {
+                        console.drawLine(pszx, pszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    }
+                    console.drawLine(pszx, pszy, sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    console.drawLine(pszx, console.sizY - pszy, sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                }
+                posx += advx;
+                posy += advy;
+                if (maze[posy][posx] == 0) {
+                    continue;
+                }
+                console.drawBox(pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                break;
+            }
+            console.refresh();
+            boolean map = false;
+            int i = userScreen.getKey(console.pipe);
+            switch (i) {
+                case -1: // end
+                    return;
+                case 0x800c: // up
+                    if (maze[cury + advy][curx + advx] != 0) {
+                        break;
+                    }
+                    curx += advx;
+                    cury += advy;
+                    break;
+                case 0x800d: // down
+                    if (maze[cury - advy][curx - advx] != 0) {
+                        break;
+                    }
+                    curx -= advx;
+                    cury -= advy;
+                    break;
+                case 0x800e: // left
+                    dir = (dir + 1) & 3;
+                    break;
+                case 0x800f: // right
+                    dir = (dir - 1) & 3;
+                    break;
+                case 0x8002: // tabulator
+                    map = true;
+                    break;
+                case 0x8004: // enter
+                    map = true;
+                    break;
+                case 0x0271: // ctrl+q
+                    return;
+                case 0x0278: // ctrl+x
+                    return;
+                case 0x8005: // escape
+                    return;
+            }
+            if (!map) {
+                continue;
+            }
+            console.doClear();
+            for (int y = 0; y < console.sizY; y++) {
+                if (y >= maze.length) {
+                    break;
+                }
+                for (int x = 0; x < console.sizX; x++) {
+                    if (x >= maze[0].length) {
+                        break;
+                    }
+                    if (maze[y][x] == 0) {
+                        continue;
+                    }
+                    console.putStr(x, y, userScreen.colBlack, userScreen.colWhite, false, "#");
+                }
+            }
+            console.putStr(curx, cury, userScreen.colBlack, userScreen.colBrGreen, false, "@");
+            console.refresh();
+            userScreen.getKey(console.pipe);
+        }
+    }
+
+    /**
      * do one command
      *
      * @param cmd parameters
@@ -826,6 +996,10 @@ public class userGame {
         }
         if (a.equals("zenmaster")) {
             doZenmaster(cmd);
+            return;
+        }
+        if (a.equals("maze")) {
+            doMaze();
             return;
         }
         if (a.equals("tetris")) {

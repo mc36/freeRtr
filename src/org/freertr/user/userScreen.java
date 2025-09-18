@@ -1186,6 +1186,24 @@ public class userScreen {
     }
 
     /**
+     * draw a box
+     *
+     * @param bx begin x
+     * @param by begin y
+     * @param ex end x
+     * @param ey end y
+     * @param bg background color
+     * @param fg foreground color
+     * @param s string to write
+     */
+    public void drawBox(int bx, int by, int ex, int ey, int bg, int fg, String s) {
+        drawLine(ex, ey, bx, ey, bg, fg, s);
+        drawLine(bx, ey, bx, by, bg, fg, s);
+        drawLine(bx, by, ex, by, bg, fg, s);
+        drawLine(ex, by, ex, ey, bg, fg, s);
+    }
+
+    /**
      * draw a line
      *
      * @param bx begin x
