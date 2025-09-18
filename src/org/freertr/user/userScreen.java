@@ -1224,15 +1224,15 @@ public class userScreen {
         }
         int hlfY = maxY / 2;
         drawCircle(maxY, hlfY, maxY, hlfY, bg, fg, "*");
-        getClock(bg, fg, maxY, hlfY, (hlfY * 2) / 3, bits.str2num(a.substring(0, 2)) / 24.0, "@");
-        getClock(bg, fg, maxY, hlfY, (hlfY * 5) / 6, bits.str2num(a.substring(3, 5)) / 60.0, "#");
+        drawClock(bg, fg, maxY, hlfY, (hlfY * 2) / 3, bits.str2num(a.substring(0, 2)) / 12.0, "@");
+        drawClock(bg, fg, maxY, hlfY, (hlfY * 5) / 6, bits.str2num(a.substring(3, 5)) / 60.0, "#");
         if (a.length() < 8) {
             return;
         }
-        getClock(bg, fg, maxY, hlfY, hlfY, bits.str2num(a.substring(6, 8)) / 60.0, "%");
+        drawClock(bg, fg, maxY, hlfY, hlfY, bits.str2num(a.substring(6, 8)) / 60.0, "%");
     }
 
-    private void getClock(int bg, int fg, int bx, int by, int len, double val, String ch) {
+    private void drawClock(int bg, int fg, int bx, int by, int len, double val, String ch) {
         val *= Math.PI * 2.0;
         val += Math.PI * 1.5;
         int sx = (int) (len * Math.cos(val) * 2.0);
