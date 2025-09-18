@@ -283,16 +283,10 @@ public class userShow {
                 return null;
             }
             if (a.equals("clock")) {
-                int x = cmd.pipe.settingsGet(pipeSetting.width, 80);
-                int y = cmd.pipe.settingsGet(pipeSetting.height, 25);
-                if (x < 10) {
-                    x = 80;
-                }
-                if (y < 5) {
-                    y = 25;
-                }
-                List<String> l = tabTime.getClock(x, y, true);
-                rdr.putStrArr(l);
+                userScreen scr = new userScreen(cmd.pipe);
+                a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
+                scr.drawClock(a, userScreen.colBlack, userScreen.colWhite);
+                rdr.putStrArr(scr.getAscii());
                 return null;
             }
             if (a.equals("calendar")) {
@@ -474,16 +468,11 @@ public class userShow {
                 return null;
             }
             if (a.equals("analog")) {
-                int x = cmd.pipe.settingsGet(pipeSetting.width, 80);
-                int y = cmd.pipe.settingsGet(pipeSetting.height, 25);
-                if (x < 10) {
-                    x = 80;
-                }
-                if (y < 5) {
-                    y = 25;
-                }
-                l = tabTime.getClock(x, y, false);
-                rdr.putStrArr(l);
+                a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
+                a = a.substring(0, a.length() - 3);
+                userScreen scr = new userScreen(cmd.pipe);
+                scr.drawClock(a, userScreen.colBlack, userScreen.colWhite);
+                rdr.putStrArr(scr.getAscii());
                 return null;
             }
             l.add("machine: " + bits.time2str(cfgAll.timeZoneName, tim, 3));

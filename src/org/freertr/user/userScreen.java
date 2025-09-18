@@ -1166,6 +1166,81 @@ public class userScreen {
     }
 
     /**
+     * draw a circle
+     *
+     * @param cx central x
+     * @param cy central y
+     * @param sx size x
+     * @param sy size y
+     * @param bg background color
+     * @param fg foreground color
+     * @param s string to write
+     */
+    public void drawCircle(int cx, int cy, int sx, int sy, int bg, int fg, String s) {
+        for (int i = 0; i < 360; i++) {
+            double v = i * Math.PI * 2.0 / 360.0;
+            int x = (int) (sx * Math.cos(v));
+            int y = (int) (sy * Math.sin(v));
+            putStr(cx + x, cy + y, bg, fg, false, s);
+        }
+    }
+
+    /**
+     * draw a line
+     *
+     * @param bx begin x
+     * @param by begin y
+     * @param ex end x
+     * @param ey end y
+     * @param bg background color
+     * @param fg foreground color
+     * @param s string to write
+     */
+    public void drawLine(int bx, int by, int ex, int ey, int bg, int fg, String s) {
+        ex -= bx;
+        ey -= by;
+        for (int i = 0; i < 100; i++) {
+            int x = (ex * i) / 100;
+            int y = (ey * i) / 100;
+            putStr(bx + x, by + y, bg, fg, false, s);
+        }
+    }
+
+    /**
+     * draw clock
+     *
+     * @param a time
+     * @param bg background color
+     * @param fg foreground color
+     */
+    public void drawClock(String a, int bg, int fg) {
+        int maxX = sizX;
+        int maxY = sizY;
+        if (maxX > (maxY * 2)) {
+            maxX = maxY * 2;
+        }
+        if (maxY > (maxX / 2)) {
+            maxY = maxX / 2;
+        }
+        int hlfY = maxY / 2;
+        drawCircle(maxY, hlfY, maxY, hlfY, bg, fg, "*");
+        getClock(bg, fg, maxY, hlfY, (hlfY * 2) / 3, bits.str2num(a.substring(0, 2)) / 24.0, "@");
+        getClock(bg, fg, maxY, hlfY, (hlfY * 5) / 6, bits.str2num(a.substring(3, 5)) / 60.0, "#");
+        if (a.length() < 8) {
+            return;
+        }
+        getClock(bg, fg, maxY, hlfY, hlfY, bits.str2num(a.substring(6, 8)) / 60.0, "%");
+    }
+
+    private void getClock(int bg, int fg, int bx, int by, int len, double val, String ch) {
+        val *= Math.PI * 2.0;
+        val += Math.PI * 1.5;
+        int sx = (int) (len * Math.cos(val) * 2.0);
+        int sy = (int) (len * Math.sin(val));
+        drawLine(bx, by, bx + sx, by + sy, bg, fg, ch);
+    }
+
+    /**
      * fill line
      *
      * @param y line to fill

@@ -242,7 +242,7 @@ public class userGame {
                 break;
             }
             console.putCls();
-            console.putStrs(0, 0, userScreen.colBlack, bits.random(1, 15), false, tabTime.getClock(console.sizX, console.sizY, true));
+            console.drawClock(bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2), userScreen.colBlack, bits.random(1, 15));
             console.refresh();
             bits.sleep(5000);
         }
