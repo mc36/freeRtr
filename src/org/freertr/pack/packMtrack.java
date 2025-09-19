@@ -60,7 +60,12 @@ public class packMtrack {
     /**
      * packet time
      */
-    public int tim;
+    public long tim;
+
+    /**
+     * packet sequence
+     */
+    public int seq;
 
     /**
      * addresses
@@ -73,18 +78,25 @@ public class packMtrack {
     public List<Integer> rtts = new ArrayList<Integer>();
 
     /**
+     * loss counts
+     */
+    public List<Integer> loss = new ArrayList<Integer>();
+
+    /**
      * parse one packet
      *
      * @param pck packet to update
      */
     public void parsePacket(packHolder pck) {
         typ = pck.getByte(0); // type
-        tim = pck.msbGetD(1); // time
-        pck.getSkip(5);
+        tim = pck.msbGetQ(1); // time
+        seq = pck.msbGetD(9); // sequence
+        pck.getSkip(13);
         adrs.clear();
         for (;;) {
             int i = pck.getByte(0);
-            pck.getSkip(1);
+            int o = pck.getByte(1);
+            pck.getSkip(2);
             if (pck.dataSize() < addrIP.size) {
                 return;
             }
@@ -93,6 +105,7 @@ public class packMtrack {
             pck.getSkip(addrIP.size);
             adrs.add(a);
             rtts.add(i);
+            loss.add(o);
         }
     }
 
@@ -104,13 +117,20 @@ public class packMtrack {
     public void createPacket(packHolder pck) {
         pck.clear();
         pck.putByte(0, typ); // type
-        pck.msbPutD(1, tim); // time
-        pck.putSkip(5);
+        pck.msbPutQ(1, tim); // time
+        pck.msbPutD(9, seq); // sequence
+        pck.putSkip(13);
         for (int i = 0; i < adrs.size(); i++) {
             if (tim == 0) {
                 pck.putByte(0, 0); // rtt
             } else {
                 pck.putByte(0, rtts.get(i)); // rtt
+            }
+            pck.putSkip(1);
+            if (seq == 0) {
+                pck.putByte(0, 0); // loss
+            } else {
+                pck.putByte(0, loss.get(i)); // loss
             }
             pck.putSkip(1);
             pck.putAddr(0, adrs.get(i)); // address

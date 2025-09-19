@@ -346,7 +346,7 @@ public class clntMtrack implements Runnable, prtServS {
         packMtrack pck = new packMtrack();
         pck.typ = packMtrack.typReport;
         long tim = bits.getTime();
-        pck.tim = (int) tim;
+        pck.tim = tim;
         tim -= (interval * timeout);
         addrIP my = ifc.addr;
         clntMtrackPeer.computeRxing(pers, my);
@@ -376,7 +376,7 @@ public class clntMtrack implements Runnable, prtServS {
             }
             bits.sleep(packTim);
             pck.adrs.clear();
-            pck.tim = (int) bits.getTime();
+            pck.tim = bits.getTime();
         }
         pck.typ = packMtrack.typLreport;
         pck.createPacket(pckB);
@@ -773,7 +773,7 @@ class clntMtrackPeer implements Comparable<clntMtrackPeer> {
 
     public void gotReport(packMtrack pck) {
         lastRx = bits.getTime();
-        rtt = (int) lastRx - pck.tim;
+        rtt = (int) (lastRx - pck.tim);
         if (rtt < 0) {
             rtt = -rtt;
         }
