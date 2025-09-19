@@ -11,5 +11,6 @@ column 2 name state
 column 2 replace down 0
 column 2 replace up 1
 column 6 name rtt
+column 7 name loss
 .
 exit

@@ -912,33 +912,33 @@ public class userGame {
                 int pszx = (step + 1) * dszx;
                 int pszy = (step + 1) * dszy;
                 if (maze[posy + rgty][posx + rgtx] != 0) {
-                    console.drawLine(console.sizX - sszx, sszy, console.sizX - pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
-                    console.drawLine(console.sizX - sszx, console.sizY - sszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    console.drawLine(console.sizX - sszx, sszy, console.sizX - pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - sszx, console.sizY - sszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 } else {
-                    console.drawLine(console.sizX - sszx, sszy, console.sizX - sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    console.drawLine(console.sizX - sszx, sszy, console.sizX - sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     if (maze[posy + advy][posx + advx] == 0) {
-                        console.drawLine(console.sizX - pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                        console.drawLine(console.sizX - pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     }
-                    console.drawLine(console.sizX - pszx, pszy, console.sizX - sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
-                    console.drawLine(console.sizX - pszx, console.sizY - pszy, console.sizX - sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    console.drawLine(console.sizX - pszx, pszy, console.sizX - sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - pszx, console.sizY - pszy, console.sizX - sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 }
                 if (maze[posy + lfty][posx + lftx] != 0) {
-                    console.drawLine(sszx, sszy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
-                    console.drawLine(sszx, console.sizY - sszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    console.drawLine(sszx, sszy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(sszx, console.sizY - sszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 } else {
-                    console.drawLine(sszx, sszy, sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    console.drawLine(sszx, sszy, sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     if (maze[posy + advy][posx + advx] == 0) {
-                        console.drawLine(pszx, pszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                        console.drawLine(pszx, pszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     }
-                    console.drawLine(pszx, pszy, sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
-                    console.drawLine(pszx, console.sizY - pszy, sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                    console.drawLine(pszx, pszy, sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(pszx, console.sizY - pszy, sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 }
                 posx += advx;
                 posy += advy;
                 if (maze[posy][posx] == 0) {
                     continue;
                 }
-                console.drawBox(pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, "*");
+                console.drawBox(pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 break;
             }
             console.refresh();
