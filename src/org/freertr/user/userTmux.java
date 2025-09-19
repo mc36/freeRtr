@@ -204,7 +204,7 @@ public class userTmux {
             case 0x70: // p
             case 0x50: // P
             case 0x10: // ctrl+p
-                cur = (cur - 1) % scr.length;
+                cur = (cur - 1 + scr.length) % scr.length;
                 break;
             case 0x78: // x
             case 0x58: // X

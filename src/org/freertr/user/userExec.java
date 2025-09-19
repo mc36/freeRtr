@@ -1492,6 +1492,7 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "peer", "peer information");
         hl.add(null, false, 4, new int[]{-1}, "reach", "reachability matrix");
         hl.add(null, false, 4, new int[]{-1}, "time", "rtt time matrix");
+        hl.add(null, false, 4, new int[]{-1}, "loss", "loss time matrix");
         hl.add(null, false, 4, new int[]{-1}, "list", "full list");
         hl.add(null, false, 2, new int[]{3}, "lldp", "link layer discovery protocol");
         hl.add(null, false, 3, new int[]{-1}, "interface", "summary list of interfaces");
