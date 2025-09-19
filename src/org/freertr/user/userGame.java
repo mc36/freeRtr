@@ -822,7 +822,7 @@ public class userGame {
                 }
             }
         }
-        for (int rnd = 0; rnd < 111; rnd++) {
+        for (int rnd = 0; rnd < 16; rnd++) {
             byte[][] old = maze;
             maze = new byte[maze.length][maze[0].length];
             for (int y = 0; y < (maze.length - 2); y++) {
@@ -851,7 +851,7 @@ public class userGame {
         int curx = 0;
         int cury = 0;
         int dir = 0;
-        for (int rnd = 0; rnd < 111; rnd++) {
+        for (int rnd = 0; rnd < 128; rnd++) {
             curx = bits.random(1, maze[0].length - 1);
             cury = bits.random(1, maze.length - 1);
             if (maze[cury][curx] == 0) {
@@ -938,7 +938,12 @@ public class userGame {
                 if (maze[posy][posx] == 0) {
                     continue;
                 }
-                console.drawBox(pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                posx = console.sizX - pszx;
+                posy = console.sizY - pszy;
+                console.drawLine(posx, posy, pszx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                console.drawLine(pszx, posy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                console.drawLine(pszx, pszy, posx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                console.drawLine(posx, pszy, posx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 break;
             }
             console.refresh();
