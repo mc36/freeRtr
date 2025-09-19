@@ -848,10 +848,10 @@ public class userGame {
             maze[0][x] = 1;
             maze[maze.length - 1][x] = 1;
         }
-        int curx;
-        int cury;
+        int curx = 0;
+        int cury = 0;
         int dir = 0;
-        for (;;) {
+        for (int rnd = 0; rnd < 111; rnd++) {
             curx = bits.random(1, maze[0].length - 1);
             cury = bits.random(1, maze.length - 1);
             if (maze[cury][curx] == 0) {
