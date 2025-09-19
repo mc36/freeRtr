@@ -723,7 +723,7 @@ public class userShow {
                 rdr.putStrArr(bits.txt2buf(logger.fileName()));
                 return null;
             }
-            if (a.equals("bgp-dump")) {
+            if (a.equals("bgpdump")) {
                 List<String> txt = logger.bufferRead();
                 List<packHolder> pcks = rtrBgpDump.logs2pcks(txt);
                 int o = pcks.size();
@@ -740,7 +740,7 @@ public class userShow {
                 }
                 return null;
             }
-            if (a.equals("old-file")) {
+            if (a.equals("oldfile")) {
                 a = logger.fileRotate();
                 if (a == null) {
                     return null;
@@ -1258,6 +1258,13 @@ public class userShow {
                 a = cmd.word();
                 userScreen scr = new userScreen(cmd.pipe);
                 exp.getShowGraph(bits.str2num(a), scr);
+                rdr.putStrArr(scr.getAscii());
+                return null;
+            }
+            if (a.equals("oldgraph")) {
+                a = cmd.word();
+                userScreen scr = new userScreen(cmd.pipe);
+                exp.getShowOldGraph(bits.str2num(a), scr);
                 rdr.putStrArr(scr.getAscii());
                 return null;
             }

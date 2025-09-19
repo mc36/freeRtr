@@ -1592,8 +1592,8 @@ public class userExec {
         hl.add(null, false, 3, new int[]{4}, "vdc", "vdcmessages");
         hl.add(null, false, 4, new int[]{-1}, "<name:vdc>", "name of vdc");
         hl.add(null, false, 3, new int[]{-1}, "file", "saved messages");
-        hl.add(null, false, 3, new int[]{-1}, "bgp-dump", "saw bgp dumps");
-        hl.add(null, false, 3, new int[]{-1}, "old-file", "old saved messages");
+        hl.add(null, false, 3, new int[]{-1}, "bgpdump", "saw bgp dumps");
+        hl.add(null, false, 3, new int[]{-1}, "oldfile", "old saved messages");
         hl.add(null, false, 3, new int[]{4}, "last", "last messages");
         hl.add(null, false, 4, new int[]{-1}, "<num>", "message count");
         hl.add(null, false, 2, new int[]{3, -1}, "config-differences", "startup->running differences");
@@ -1797,6 +1797,8 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "memory", "local stored data");
         hl.add(null, false, 4, new int[]{-1}, "history", "historical data");
         hl.add(null, false, 4, new int[]{5}, "graph", "graph historical data");
+        hl.add(null, false, 5, new int[]{-1}, "<num>", "column number");
+        hl.add(null, false, 4, new int[]{5}, "oldgraph", "graph historical data");
         hl.add(null, false, 5, new int[]{-1}, "<num>", "column number");
         hl.add(null, false, 2, new int[]{3}, "netflow", "netflow collector information");
         hl.add(cfgAll.dmnNetflow.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");

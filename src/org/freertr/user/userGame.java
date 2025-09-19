@@ -901,7 +901,7 @@ public class userGame {
                 default:
                     return;
             }
-            console.doClear();
+            console.putCls();
             int dszx = console.sizX / 10;
             int dszy = console.sizY / 10;
             int posx = curx;
@@ -983,7 +983,7 @@ public class userGame {
             if (!map) {
                 continue;
             }
-            console.doClear();
+            console.putCls();
             for (int y = 0; y < console.sizY; y++) {
                 if (y >= maze.length) {
                     break;

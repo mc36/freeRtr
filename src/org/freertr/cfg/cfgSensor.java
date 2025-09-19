@@ -1232,7 +1232,27 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         if (locFil == null) {
             return;
         }
-        List<String> res = bits.txt2buf(locFil.name());
+        getShowGraph(locFil.name(), col, scr);
+    }
+
+    /**
+     * get show
+     *
+     * @param col column
+     * @param scr screen
+     */
+    public void getShowOldGraph(int col, userScreen scr) {
+        if (locFil == null) {
+            return;
+        }
+        getShowGraph(locFil.rotateN(), col, scr);
+    }
+
+    private void getShowGraph(String a, int col, userScreen scr) {
+        if (a == null) {
+            return;
+        }
+        List<String> res = bits.txt2buf(a);
         if (res == null) {
             return;
         }
@@ -1309,7 +1329,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             scr.putStr(sizX, i, userScreen.colBlack, userScreen.colWhite, false, "|" + bits.toUser(cMin + (cMax * (sizY - i))));
         }
         scr.putStr(0, sizY, userScreen.colBlack, userScreen.colWhite, false, bits.padEnd("", sizX, "-") + "/");
-        String a = "";
+        a = "";
         for (int i = 0; i <= sizX; i += 15) {
             scr.putStr(i, sizY + 1, userScreen.colBlack, userScreen.colWhite, false, bits.time2str(cfgAll.timeZoneName, beg + (i * end), 1));
         }
