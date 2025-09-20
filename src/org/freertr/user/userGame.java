@@ -863,7 +863,7 @@ public class userGame {
     }
 
     /**
-     * 3d maze game
+     * maze game
      */
     public void doMaze() {
         byte[][] maze = new byte[console.sizY - 2][console.sizX - 2];
@@ -1084,6 +1084,13 @@ public class userGame {
             doMaze();
             return;
         }
+        if (a.equals("cube")) {
+            userGameCube t = new userGameCube(console);
+            t.doStart();
+            t.doGame();
+            t.doFinish();
+            return;
+        }
         if (a.equals("tetris")) {
             userGameTetris t = new userGameTetris(console);
             t.doStart();
@@ -1227,32 +1234,6 @@ public class userGame {
         god[4] = userScreen.colBrBlue;
         god[5] = userScreen.colBrRed;
         colorDrawer(god, lst);
-    }
-
-}
-
-class userGame3d {
-
-    public final userScreen scr;
-
-    public final int sizX;
-
-    public final int sizY;
-
-    public final int sizZ;
-
-    /**
-     * create instance
-     *
-     * @param s screen to use
-     * @param d screen divisor
-     * @param z maximum depth
-     */
-    public userGame3d(userScreen s, int d, int z) {
-        scr = s;
-        sizX = scr.sizX / d;
-        sizY = scr.sizY / d;
-        sizZ = z;
     }
 
 }
@@ -2471,6 +2452,215 @@ class userGameChess {
     public void doFinish() {
         scr.putCls();
         scr.refresh();
+    }
+
+}
+
+class userGameCube {
+
+    public final userScreen scr;
+
+    public final double sizX;
+
+    public final double sizY;
+
+    public final double sizZ;
+
+    public final double hlfZ;
+
+    public final double[][] dep;
+
+    /**
+     * create instance
+     *
+     * @param s screen to use
+     * @param d screen divisor
+     * @param z maximum depth
+     */
+    public userGameCube(userScreen s) {
+        scr = s;
+        dep = new double[scr.sizY][scr.sizX];
+        if (scr.sizX > scr.sizY) {
+            sizZ = scr.sizY;
+        } else {
+            sizZ = scr.sizX;
+        }
+        sizX = scr.sizX / 2;
+        sizY = scr.sizY / 2;
+        hlfZ = sizZ / 2;
+        clear();
+    }
+
+    public void clear() {
+        for (int i = 0; i < scr.sizY; i++) {
+            for (int o = 0; o < scr.sizX; o++) {
+                dep[i][o] = Double.MAX_VALUE;
+            }
+        }
+        scr.doClear();
+    }
+
+    public void putCls() {
+        clear();
+        scr.putCls();
+    }
+
+    public void refresh() {
+        scr.refresh();
+    }
+
+    public void pixel(double x, double y, double z, int bg, int fg, boolean cr, int ch) {
+        x += sizX;
+        y += sizY;
+        z += hlfZ;
+        double px = (sizZ - z) * (dep[0].length - sizX) / sizZ;
+        double py = (sizZ - z) * (dep.length - sizY) / sizZ;
+        px = x * (px + sizX) / dep[0].length;
+        py = y * (py + sizY) / dep.length;
+        px += z * (dep[0].length - sizX) / 2.0 / sizZ;
+        py += z * (dep.length - sizY) / 2.0 / sizZ;
+        int cx = (int) px;
+        int cy = (int) py;
+        if (cx < 0) {
+            return;
+        }
+        if (cy < 0) {
+            return;
+        }
+        if (cx >= dep[0].length) {
+            return;
+        }
+        if (cy >= dep.length) {
+            return;
+        }
+        if (dep[cy][cx] < z) {
+            return;
+        }
+        dep[cy][cx] = (byte) z;
+        scr.putInt(cx, cy, bg, fg, cr, ch);
+    }
+
+    public void line(double bx, double by, double bz, double ex, double ey, double ez, int bg, int fg, int ch) {
+        ex -= bx;
+        ey -= by;
+        ez -= bz;
+        for (int i = 0; i < 100; i++) {
+            double x = (ex * i) / 100;
+            double y = (ey * i) / 100;
+            double z = (ez * i) / 100;
+            pixel(bx + x, by + y, bz + z, bg, fg, false, ch);
+        }
+    }
+
+    public void line(double b[], double e[], int bg, int fg, int ch) {
+        line(b[0], b[1], b[2], e[0], e[1], e[2], bg, fg, ch);
+    }
+
+    public void rotate(double[] c, int p, double a) {
+        double sin = Math.sin(a);
+        double cos = Math.cos(a);
+        double x = c[p + 0];
+        double y = c[p + 1];
+        double rx = (x * cos) + (y * sin);
+        double ry = (y * cos) - (x * sin);
+        c[p + 0] = rx;
+        c[p + 1] = ry;
+    }
+
+    public void rotate(double c[], double a, double b) {
+        rotate(c, 0, a);
+        rotate(c, 1, b);
+    }
+
+    /**
+     * start screen
+     */
+    public void doStart() {
+        putCls();
+    }
+
+    /**
+     * finish screen
+     */
+    public void doFinish() {
+        scr.putCls();
+        scr.refresh();
+    }
+
+    /**
+     * play game
+     */
+    public void doGame() {
+        double cubX = sizZ / 2;
+        double cubY = cubX / 2;
+        double p = 0;
+        double q = 0;
+        int r = 5;
+        int s = 5;
+        for (;;) {
+            double a[] = {-cubX, -cubY, -cubY};
+            double b[] = {cubX, a[1], a[2]};
+            double c[] = {b[0], cubY, a[2]};
+            double d[] = {a[0], c[1], a[2]};
+            double e[] = {a[0], a[1], c[1]};
+            double f[] = {b[0], a[1], c[1]};
+            double g[] = {b[0], c[1], c[1]};
+            double h[] = {a[0], c[1], c[1]};
+            switch (bits.random(0, 8)) {
+                case 1:
+                    r += 1;
+                    break;
+                case 2:
+                    r -= 1;
+                    break;
+                case 3:
+                    s += 1;
+                    break;
+                case 4:
+                    s -= 1;
+                    break;
+            }
+            if (r < -5) {
+                r = -5;
+            }
+            if (r > 5) {
+                r = 5;
+            }
+            if (s < -5) {
+                s = -5;
+            }
+            if (s > 5) {
+                s = 5;
+            }
+            p += Math.PI / 100 * r;
+            q += Math.PI / 100 * s;
+            rotate(a, p, q);
+            rotate(b, p, q);
+            rotate(c, p, q);
+            rotate(d, p, q);
+            rotate(e, p, q);
+            rotate(f, p, q);
+            rotate(g, p, q);
+            rotate(h, p, q);
+            clear();
+            line(a, b, userScreen.colBlack, userScreen.colBrCyan, '*');
+            line(b, c, userScreen.colBlack, userScreen.colBrCyan, '*');
+            line(c, d, userScreen.colBlack, userScreen.colBrCyan, '*');
+            line(d, a, userScreen.colBlack, userScreen.colBrCyan, '*');
+            line(e, f, userScreen.colBlack, userScreen.colBrGreen, '*');
+            line(f, g, userScreen.colBlack, userScreen.colBrGreen, '*');
+            line(g, h, userScreen.colBlack, userScreen.colBrGreen, '*');
+            line(h, e, userScreen.colBlack, userScreen.colBrGreen, '*');
+            line(a, e, userScreen.colBlack, userScreen.colBrMagenta, '*');
+            line(b, f, userScreen.colBlack, userScreen.colBrMagenta, '*');
+            line(c, g, userScreen.colBlack, userScreen.colBrMagenta, '*');
+            line(d, h, userScreen.colBlack, userScreen.colBrMagenta, '*');
+            refresh();
+            if (scr.keyPress()) {
+                break;
+            }
+            bits.sleep(1000);
+        }
     }
 
 }
