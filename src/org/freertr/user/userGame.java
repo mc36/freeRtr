@@ -79,7 +79,7 @@ public class userGame {
 
     private void colorDrawer(int[] god, List<String> sec) {
         int gods = god.length;
-        console.putCls();
+        console.doClear();
         for (int o = 0; o < sec.size(); o++) {
             String s = sec.get(o);
             byte[] b = s.getBytes();
@@ -114,7 +114,7 @@ public class userGame {
      * palette test
      */
     public void doPalette() {
-        console.putCls();
+        console.doClear();
         for (int i = 0; i < 16; i++) {
             int o = 15 - i;
             String a = bits.padEnd("  bg=" + o, 10, " ");
@@ -137,7 +137,7 @@ public class userGame {
      * ascii table
      */
     public void doAscTab() {
-        console.putCls();
+        console.doClear();
         for (int o = 0; o < 16; o++) {
             console.putStr(7, 2 + o, userScreen.colBlack, userScreen.colGreen, true, "" + o);
             console.putStr(10 + (o * 3), 1, userScreen.colBlack, userScreen.colGreen, true, "" + o);
@@ -159,7 +159,7 @@ public class userGame {
      * keyboard codes
      */
     public void doKeys() {
-        console.putCls();
+        console.doClear();
         console.putCur(0, 0);
         console.refresh();
         for (;;) {
@@ -193,7 +193,7 @@ public class userGame {
             if (console.keyPress()) {
                 break;
             }
-            console.putCls();
+            console.doClear();
             console.putStr(bits.random(0, maxX), bits.random(0, console.sizY), userScreen.colBlack, bits.random(1, 15), false, s);
             console.refresh();
             bits.sleep(5000);
@@ -225,7 +225,7 @@ public class userGame {
             if (console.keyPress()) {
                 break;
             }
-            console.putCls();
+            console.doClear();
             console.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, s);
             console.refresh();
             bits.sleep(5000);
@@ -244,11 +244,12 @@ public class userGame {
      * @param ch character to write
      */
     public void drawLine(int bx, int by, int ex, int ey, int bg, int fg, int ch) {
+        int step = Math.abs(bx - ex) + Math.abs(by - ey);
         ex -= bx;
         ey -= by;
-        for (int i = 0; i < 100; i++) {
-            int x = (ex * i) / 100;
-            int y = (ey * i) / 100;
+        for (int i = 0; i < step; i++) {
+            int x = (ex * i) / step;
+            int y = (ey * i) / step;
             console.putInt(bx + x, by + y, bg, fg, false, ch);
         }
     }
@@ -263,8 +264,10 @@ public class userGame {
     public void drawClock(String a, int bg, int fg) {
         int hlfX = console.sizX / 2;
         int hlfY = console.sizY / 2;
-        for (int i = 0; i < 400; i++) {
-            double v = i * Math.PI / 200.0;
+        int step = console.sizX + console.sizY;
+        step *= 4;
+        for (int i = -step; i < step; i++) {
+            double v = i * Math.PI / step;
             int x = (int) (hlfX * Math.cos(v));
             int y = (int) (hlfY * Math.sin(v));
             console.putInt(hlfX + x, hlfY + y, bg, fg, false, '*');
@@ -293,7 +296,7 @@ public class userGame {
             if (console.keyPress()) {
                 break;
             }
-            console.putCls();
+            console.doClear();
             drawClock(bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2), userScreen.colBlack, bits.random(1, 15));
             console.refresh();
             bits.sleep(5000);
@@ -314,7 +317,7 @@ public class userGame {
             }
             String s = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 2);
             s = s.substring(0, 5);
-            console.putCls();
+            console.doClear();
             console.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, userScreen.fontText(s, " ", userFonts.fontFiller, font));
             console.refresh();
             bits.sleep(5000);
@@ -366,7 +369,7 @@ public class userGame {
             if (console.keyPress()) {
                 break;
             }
-            console.putCls();
+            console.doClear();
             for (int i = 0; i < poss.length; i++) {
                 poss[i]--;
                 if (doMatrix(i * 2, poss[i], strs[i])) {
@@ -417,7 +420,7 @@ public class userGame {
                 movY = bits.random(1, 10);
                 movC = bits.random(1, 16);
             }
-            console.putCls();
+            console.doClear();
             for (int i = 0; i < chars.length; i++) {
                 int x = posX[i] / 10;
                 int y = posY[i] / 10;
@@ -522,7 +525,7 @@ public class userGame {
                 break;
             }
             double z[][] = new double[console.sizY][console.sizX];
-            console.putCls();
+            console.doClear();
             for (double j = 0; j < 6.28; j += 0.07) {
                 for (double i = 0; i < 6.28; i += 0.02) {
                     double c = Math.sin(i);
@@ -633,7 +636,7 @@ public class userGame {
             for (int i = 0; i < console.sizX; i++) {
                 buf[console.sizY + 3][i + 4] = bits.random(0, 2) * 82;
             }
-            console.putCls();
+            console.doClear();
             for (int y = 0; y < console.sizY; y++) {
                 for (int x = 0; x < console.sizX; x++) {
                     int i = buf[y + 4][x + 4];
@@ -696,7 +699,7 @@ public class userGame {
                     buf[y + 4][x + 4] = i;
                 }
             }
-            console.putCls();
+            console.doClear();
             for (int y = 0; y < console.sizY; y++) {
                 for (int x = 0; x < console.sizX; x++) {
                     int i = buf[y + 4][x + 4];
@@ -714,7 +717,7 @@ public class userGame {
     }
 
     private void doAntBall() {
-        console.putCls();
+        console.doClear();
         for (;;) {
             if (console.keyPress()) {
                 return;
@@ -774,7 +777,7 @@ public class userGame {
         int towerX[] = new int[3];
         int curX = 0;
         int selX = -1;
-        console.putCls();
+        console.doClear();
         int towerS = towerX.length + 2;
         for (int i = 0; i < towerX.length; i++) {
             towerX[i] = (i + 1) * (console.sizX / towerS);
@@ -785,7 +788,7 @@ public class userGame {
             tw.add(Integer.valueOf(i));
         }
         for (;;) {
-            console.putCls();
+            console.doClear();
             for (int i = 0; i < towerX.length; i++) {
                 tw = towerC.get(i);
                 for (int o = 0; o < tw.size(); o++) {
@@ -955,7 +958,7 @@ public class userGame {
                 default:
                     return;
             }
-            console.putCls();
+            console.doClear();
             int dszx = console.sizX / 10;
             int dszy = console.sizY / 10;
             int posx = curx;
@@ -1042,7 +1045,7 @@ public class userGame {
             if (!map) {
                 continue;
             }
-            console.putCls();
+            console.doClear();
             for (int y = 0; y < console.sizY; y++) {
                 if (y >= maze.length) {
                     break;
@@ -1115,7 +1118,6 @@ public class userGame {
         }
         if (a.equals("hanoi")) {
             doHanoi();
-            console.putCls();
             console.refresh();
             return;
         }
@@ -1266,7 +1268,7 @@ class userGameGomoku {
      * start screen
      */
     public void doStart() {
-        scr.putCls();
+        scr.doClear();
         store = new int[sizeX][sizeY];
         curX = sizeX / 2;
         curY = sizeY / 2;
@@ -1276,7 +1278,7 @@ class userGameGomoku {
      * print table
      */
     public void doPrint() {
-        scr.putCls();
+        scr.doClear();
         for (int i = 0; i < sizeY; i++) {
             for (int o = 0; o < sizeX; o++) {
                 String s;
@@ -1358,7 +1360,7 @@ class userGameGomoku {
      * finish screen
      */
     public void doFinish() {
-        scr.putCls();
+        scr.doClear();
         scr.refresh();
     }
 
@@ -1482,7 +1484,7 @@ class userGameMines {
      * start screen
      */
     public void doStart() {
-        scr.putCls();
+        scr.doClear();
         bomb = new boolean[sizeY][sizeX];
         mark = new boolean[sizeY][sizeX];
         show = new boolean[sizeY][sizeX];
@@ -1497,7 +1499,7 @@ class userGameMines {
      * print table
      */
     public void doPrint() {
-        scr.putCls();
+        scr.doClear();
         for (int i = 0; i < sizeX; i++) {
             for (int o = 0; o < sizeY; o++) {
                 String s;
@@ -1575,7 +1577,7 @@ class userGameMines {
      * finish screen
      */
     public void doFinish() {
-        scr.putCls();
+        scr.doClear();
         scr.refresh();
     }
 
@@ -1713,7 +1715,7 @@ class userGameTetris implements Runnable {
      */
     public void doStart() {
         need2run = true;
-        scr.putCls();
+        scr.doClear();
         tab = new int[sizeY][];
         thg = things.get(bits.random(0, things.size())).copyBytes();
         nxt = things.get(bits.random(0, things.size())).copyBytes();
@@ -1733,7 +1735,7 @@ class userGameTetris implements Runnable {
      * print table
      */
     public synchronized void doPrint() {
-        scr.putCls();
+        scr.doClear();
         for (int o = 0; o < sizeY; o++) {
             scr.putStr(19, o + 1, userScreen.colBlack, userScreen.colWhite, false, "|");
             scr.putStr(20 + (sizeX * 2), o + 1, userScreen.colBlack, userScreen.colWhite, false, "|");
@@ -1756,7 +1758,7 @@ class userGameTetris implements Runnable {
      */
     public void doFinish() {
         need2run = false;
-        scr.putCls();
+        scr.doClear();
         scr.refresh();
     }
 
@@ -2315,7 +2317,7 @@ class userGameChess {
      * start screen
      */
     public void doStart() {
-        scr.putCls();
+        scr.doClear();
     }
 
     /**
@@ -2451,7 +2453,7 @@ class userGameChess {
      * finish screen
      */
     public void doFinish() {
-        scr.putCls();
+        scr.doClear();
         scr.refresh();
     }
 
@@ -2463,6 +2465,8 @@ class userGameCube {
 
     public final double[][] dep;
 
+    public final int siz;
+
     /**
      * create instance
      *
@@ -2473,6 +2477,11 @@ class userGameCube {
     public userGameCube(userScreen s) {
         scr = s;
         dep = new double[scr.sizY][scr.sizX];
+        if (scr.sizX > scr.sizY) {
+            siz = scr.sizY;
+        } else {
+            siz = scr.sizX;
+        }
         clear();
     }
 
@@ -2487,7 +2496,7 @@ class userGameCube {
 
     public void putCls() {
         clear();
-        scr.putCls();
+        scr.doClear();
     }
 
     public void refresh() {
@@ -2507,12 +2516,12 @@ class userGameCube {
                 - cx * Math.cos(b) * Math.sin(c);
         double z = cz * Math.cos(a) * Math.cos(b)
                 - cy * Math.sin(a) * Math.cos(b)
-                + cx * Math.sin(b) + 100;
+                + cx * Math.sin(b) + siz * 3;
         if (z == 0.0) {
             z = 0.000001;
         }
-        double ooz = 40 / z;
-        int px = (int) (scr.sizX / 2 + 0 + ooz * x * 2);
+        double ooz = siz / z / 1.6;
+        int px = (int) (scr.sizX / 2 + ooz * x * 2);
         int py = (int) (scr.sizY / 2 + ooz * y);
         if (px < 0) {
             return;
@@ -2537,14 +2546,14 @@ class userGameCube {
      * start screen
      */
     public void doStart() {
-        putCls();
+        clear();
     }
 
     /**
      * finish screen
      */
     public void doFinish() {
-        scr.putCls();
+        scr.doClear();
         scr.refresh();
     }
 
@@ -2563,14 +2572,14 @@ class userGameCube {
             a += bits.random(10, 20) / 100.0;
             b += bits.random(10, 20) / 100.0;
             c += bits.random(20, 40) / 100.0;
-            for (int x = -20; x < 20; x += 1) {
-                for (int y = -20; y < 20; y += 1) {
-                    point(a, b, c, x, y, -20, userScreen.colBlack, userScreen.colBrBlue, '@');
-                    point(a, b, c, 20, y, x, userScreen.colBlack, userScreen.colBrCyan, '#');
-                    point(a, b, c, -20, y, -x, userScreen.colBlack, userScreen.colBrGreen, '$');
-                    point(a, b, c, -x, y, 20, userScreen.colBlack, userScreen.colBrMagenta, '%');
-                    point(a, b, c, x, -20, -y, userScreen.colBlack, userScreen.colBrRed, '&');
-                    point(a, b, c, x, 20, y, userScreen.colBlack, userScreen.colBrYellow, '*');
+            for (int x = -siz; x < siz; x += 1) {
+                for (int y = -siz; y < siz; y += 1) {
+                    point(a, b, c, x, y, -siz, userScreen.colBlack, userScreen.colBrBlue, '@');
+                    point(a, b, c, siz, y, x, userScreen.colBlack, userScreen.colBrCyan, '#');
+                    point(a, b, c, -siz, y, -x, userScreen.colBlack, userScreen.colBrGreen, '$');
+                    point(a, b, c, -x, y, siz, userScreen.colBlack, userScreen.colBrMagenta, '%');
+                    point(a, b, c, x, -siz, -y, userScreen.colBlack, userScreen.colBrRed, '&');
+                    point(a, b, c, x, siz, y, userScreen.colBlack, userScreen.colBrYellow, '*');
                 }
             }
             refresh();
