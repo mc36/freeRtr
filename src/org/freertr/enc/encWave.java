@@ -1,4 +1,4 @@
-package org.freertr.snd;
+package org.freertr.enc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +14,12 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class sndWave {
+public class encWave {
 
     /**
      * header size
      */
     public final static int size = 44;
-
-    private final sndCodec codr;
-
-    private final packRtp strm;
 
     /**
      * state: 1=running, 2=need2stop, 4=stopped
@@ -40,7 +36,11 @@ public class sndWave {
      */
     public byte[] buf;
 
-    private sndDtmf detect;
+    private encDtmf detect;
+
+    private final encCodec codr;
+
+    private final packRtp strm;
 
     /**
      * make wave handler
@@ -48,13 +48,13 @@ public class sndWave {
      * @param codec codec to use
      * @param rtp voice connection
      */
-    public sndWave(sndCodec codec, packRtp rtp) {
+    public encWave(encCodec codec, packRtp rtp) {
         codr = codec;
         strm = rtp;
         state = 0;
         buf = new byte[0];
         dtmf = "";
-        detect = new sndDtmf();
+        detect = new encDtmf();
         detect.sampDat = new int[detect.sampRate];
     }
 
@@ -101,21 +101,21 @@ public class sndWave {
      * start playback
      */
     public void startPlay() {
-        new sndWavePlay(this, codr, strm);
+        new encWavePlay(this, codr, strm);
     }
 
     /**
      * start record
      */
     public void startRecord() {
-        new sndWaveRec(this, codr, strm);
+        new encWaveRec(this, codr, strm);
     }
 
     /**
      * start dtmf
      */
     public void startDtmf() {
-        new sndWaveDtmf(this, codr, strm);
+        new encWaveDtmf(this, codr, strm);
     }
 
     /**
@@ -152,9 +152,9 @@ public class sndWave {
 
 }
 
-class sndWavePlay extends TimerTask {
+class encWavePlay extends TimerTask {
 
-    private sndWave lower;
+    private encWave lower;
 
     private Timer keepTimer = new Timer();
 
@@ -162,7 +162,7 @@ class sndWavePlay extends TimerTask {
 
     private packHolder pck;
 
-    private sndCodec codec;
+    private encCodec codec;
 
     private packRtp rtp;
 
@@ -172,13 +172,13 @@ class sndWavePlay extends TimerTask {
 
     private final static int payInt = 1000 / (8000 / paySiz);
 
-    public sndWavePlay(sndWave parent, sndCodec codr, packRtp strm) {
+    public encWavePlay(encWave parent, encCodec codr, packRtp strm) {
         lower = parent;
         rtp = strm;
         codec = codr;
         pck = new packHolder(true, true);
         syncSrc = bits.randomD();
-        pos = sndWave.size;
+        pos = encWave.size;
         lower.state = 1;
         keepTimer.scheduleAtFixedRate(this, 10, payInt);
     }
@@ -224,25 +224,25 @@ class sndWavePlay extends TimerTask {
 
 }
 
-class sndWaveRec implements Runnable {
+class encWaveRec implements Runnable {
 
-    private sndWave lower;
+    private encWave lower;
 
     private packHolder pck;
 
-    private sndCodec codec;
+    private encCodec codec;
 
     private packRtp rtp;
 
     private List<Byte> got;
 
-    public sndWaveRec(sndWave parent, sndCodec codr, packRtp strm) {
+    public encWaveRec(encWave parent, encCodec codr, packRtp strm) {
         lower = parent;
         rtp = strm;
         codec = codr;
         pck = new packHolder(true, true);
         got = new ArrayList<Byte>();
-        for (int i = 0; i < sndWave.size; i++) {
+        for (int i = 0; i < encWave.size; i++) {
             got.add((byte) 0);
         }
         lower.buf = new byte[0];
@@ -285,23 +285,23 @@ class sndWaveRec implements Runnable {
         for (int i = 0; i < buf.length; i++) {
             buf[i] = got.get(i);
         }
-        sndWave.makeHeader(buf, codec.getWAVtype());
+        encWave.makeHeader(buf, codec.getWAVtype());
         lower.buf = buf;
     }
 
 }
 
-class sndWaveDtmf implements Runnable {
+class encWaveDtmf implements Runnable {
 
-    private sndWave lower;
+    private encWave lower;
 
     private packHolder pck;
 
-    private sndCodec codec;
+    private encCodec codec;
 
     private packRtp rtp;
 
-    public sndWaveDtmf(sndWave parent, sndCodec codr, packRtp strm) {
+    public encWaveDtmf(encWave parent, encCodec codr, packRtp strm) {
         lower = parent;
         rtp = strm;
         codec = codr;

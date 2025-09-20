@@ -1,16 +1,16 @@
-package org.freertr.snd;
+package org.freertr.enc;
 
 /**
  * raw codec
  *
  * @author matecsaba
  */
-public class sndCodecRaw extends sndCodec {
+public class encCodecRaw extends encCodec {
 
     /**
      * create instance
      */
-    public sndCodecRaw() {
+    public encCodecRaw() {
     }
 
     private static int[] decode;

@@ -412,6 +412,24 @@ public class bits {
     }
 
     /**
+     * load bytes to file
+     *
+     * @param src filename to use
+     * @return bytes on success, null on error
+     */
+    public static byte[] byteLoad(String src) {
+        try {
+            RandomAccessFile fr = new RandomAccessFile(src, "r");
+            byte[] buf = new byte[(int) fr.length()];
+            fr.read(buf, 0, buf.length);
+            fr.close();
+            return buf;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
      * save bytes to file
      *
      * @param overwrite overwrite file

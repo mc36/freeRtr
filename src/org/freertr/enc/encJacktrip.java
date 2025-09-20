@@ -1,4 +1,4 @@
-package org.freertr.snd;
+package org.freertr.enc;
 
 import org.freertr.pack.packHolder;
 
@@ -7,9 +7,9 @@ import org.freertr.pack.packHolder;
  *
  * @author matecsaba
  */
-public class sndJacktrip {
+public class encJacktrip {
 
-    private sndJacktrip() {
+    private encJacktrip() {
     }
 
     /**

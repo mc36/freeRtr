@@ -1,16 +1,16 @@
-package org.freertr.snd;
+package org.freertr.enc;
 
 /**
  * dual tone multi frequency signaling
  *
  * @author matecsaba
  */
-public class sndDtmf extends sndDft {
+public class encDtmf extends encDft {
 
     /**
      * create instance
      */
-    public sndDtmf() {
+    public encDtmf() {
     }
 
     private final static int[] dtmfCols = {1209, 1336, 1477, 1633};
@@ -25,11 +25,8 @@ public class sndDtmf extends sndDft {
     };
 
     //private final static int[] busy = {480, 620};
-
     //private final static int[] ringback = {440, 480};
-
     //private final static int[] dialTone = {350, 440};
-
     private static int detectWinner(int[] sen) {
         int bn = 0;
         int bv = sen[bn];

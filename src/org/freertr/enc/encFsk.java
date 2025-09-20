@@ -1,16 +1,16 @@
-package org.freertr.snd;
+package org.freertr.enc;
 
 /**
  * frequency shift keying
  *
  * @author matecsaba
  */
-public class sndFsk extends sndDft {
+public class encFsk extends encDft {
 
     /**
      * create instance
      */
-    public sndFsk() {
+    public encFsk() {
     }
 
     /**

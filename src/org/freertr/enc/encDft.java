@@ -1,16 +1,16 @@
-package org.freertr.snd;
+package org.freertr.enc;
 
 /**
  * goertzel's discrete fourier transform
  *
  * @author matecsaba
  */
-public class sndDft {
+public class encDft {
 
     /**
      * create instance
      */
-    public sndDft() {
+    public encDft() {
     }
 
     /**

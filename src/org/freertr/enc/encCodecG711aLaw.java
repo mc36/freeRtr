@@ -1,16 +1,16 @@
-package org.freertr.snd;
+package org.freertr.enc;
 
 /**
- * pulse code modulation
+ * itu g711 a law codec handler
  *
  * @author matecsaba
  */
-public class sndPcm extends sndCodec {
+public class encCodecG711aLaw extends encCodec {
 
     /**
      * create instance
      */
-    public sndPcm() {
+    public encCodecG711aLaw() {
     }
 
     private static int[] decode;
@@ -23,7 +23,7 @@ public class sndPcm extends sndCodec {
      * @return type
      */
     public int getRTPtype() {
-        return 5;
+        return 8;
     }
 
     /**
@@ -32,7 +32,7 @@ public class sndPcm extends sndCodec {
      * @return name
      */
     public String getRTPname() {
-        return "PCM";
+        return "PCMA";
     }
 
     /**
@@ -41,7 +41,7 @@ public class sndPcm extends sndCodec {
      * @return type
      */
     public int getWAVtype() {
-        return 1;
+        return 6;
     }
 
     /**
@@ -79,11 +79,20 @@ public class sndPcm extends sndCodec {
      * @return value
      */
     protected int calcDecodeOneValue(int val) {
-        if ((val & 0x80) != 0) {
-            return -((0x80 - (val & 0x7f)) << 8);
+        val ^= 0x55;
+        boolean signed = (val & 0x80) != 0;
+        int exp = (val >>> 4) & 0x7;
+        int man = val & 0xf;
+        if (exp == 0) {
+            exp++;
         } else {
-            return (val & 0x7f) << 8;
+            man |= 0x10;
         }
+        val = man << (exp + 3);
+        if (signed) {
+            val = -val;
+        }
+        return val;
     }
 
 }

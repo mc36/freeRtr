@@ -1,5 +1,6 @@
-package org.freertr.snd;
+package org.freertr.clnt;
 
+import org.freertr.enc.encCodec;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packRtp;
 import org.freertr.util.bits;
@@ -10,10 +11,9 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class sndConnect {
+public class clntVconn {
 
     private final packRtp side1;
-
     private final packRtp side2;
 
     /**
@@ -24,15 +24,15 @@ public class sndConnect {
      * @param c1 codec one
      * @param c2 codec two
      */
-    public sndConnect(packRtp s1, packRtp s2, sndCodec c1, sndCodec c2) {
+    public clntVconn(packRtp s1, packRtp s2, encCodec c1, encCodec c2) {
         side1 = s1;
         side2 = s2;
         if (c1.getRTPtype() == c2.getRTPtype()) {
-            new sndConnectSmpl(s1, s2, c1);
-            new sndConnectSmpl(s2, s1, c2);
+            new clntVconnSmpl(s1, s2, c1);
+            new clntVconnSmpl(s2, s1, c2);
         } else {
-            new sndConnectTrns(s1, s2, c1, c2);
-            new sndConnectTrns(s2, s1, c2, c1);
+            new clntVconnTrns(s1, s2, c1, c2);
+            new clntVconnTrns(s2, s1, c2, c1);
         }
     }
 
@@ -55,15 +55,15 @@ public class sndConnect {
 
 }
 
-class sndConnectSmpl implements Runnable {
+class clntVconnSmpl implements Runnable {
 
     private packRtp rx;
 
     private packRtp tx;
 
-    private sndCodec codec;
+    private encCodec codec;
 
-    public sndConnectSmpl(packRtp s1, packRtp s2, sndCodec c) {
+    public clntVconnSmpl(packRtp s1, packRtp s2, encCodec c) {
         rx = s1;
         tx = s2;
         codec = c;
@@ -104,19 +104,19 @@ class sndConnectSmpl implements Runnable {
 
 }
 
-class sndConnectTrns implements Runnable {
+class clntVconnTrns implements Runnable {
 
     private packRtp rxS;
 
     private packRtp txS;
 
-    private sndCodec rxC;
+    private encCodec rxC;
 
-    private sndCodec txC;
+    private encCodec txC;
 
     private int syncSrc;
 
-    public sndConnectTrns(packRtp s1, packRtp s2, sndCodec c1, sndCodec c2) {
+    public clntVconnTrns(packRtp s1, packRtp s2, encCodec c1, encCodec c2) {
         rxS = s1;
         txS = s2;
         rxC = c1;

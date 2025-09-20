@@ -7,8 +7,7 @@ import org.freertr.pack.packRtp;
 import org.freertr.pack.packSip;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
-import org.freertr.snd.sndCodec;
-import org.freertr.snd.sndScript;
+import org.freertr.enc.encCodec;
 
 /**
  * voice script client
@@ -43,7 +42,7 @@ public class clntVoice {
 
     private pipeSide pipeScr;
 
-    private sndScript scr;
+    private clntVscript scr;
 
     /**
      * get pipe side
@@ -91,14 +90,14 @@ public class clntVoice {
             return true;
         }
         pipeRtp = pipePer.getCall(pipeRcd);
-        sndCodec codec = pipePer.getCodec();
+        encCodec codec = pipePer.getCodec();
         pipeLine pip = new pipeLine(32768, false);
         pipeUsr = pip.getSide();
         pipeScr = pip.getSide();
         pipeScr.setTime(120000);
         pipeScr.lineTx = pipeSide.modTyp.modeCRLF;
         pipeScr.lineRx = pipeSide.modTyp.modeCRtryLF;
-        scr = new sndScript(pipeScr, codec, pipeRtp, packSip.removeTag(calling), packSip.removeTag(called));
+        scr = new clntVscript(pipeScr, codec, pipeRtp, packSip.removeTag(calling), packSip.removeTag(called));
         return false;
     }
 

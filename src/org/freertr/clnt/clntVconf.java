@@ -8,7 +8,7 @@ import org.freertr.pack.packHolder;
 import org.freertr.pack.packRtp;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
-import org.freertr.snd.sndCodec;
+import org.freertr.enc.encCodec;
 import org.freertr.tab.tabGen;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -355,7 +355,7 @@ class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
 
     public int[] sam = new int[clntVconfWork.paySiz];
 
-    public sndCodec codec;
+    public encCodec codec;
 
     public int volIn = 100;
 

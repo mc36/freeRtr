@@ -4,8 +4,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packRtp;
-import org.freertr.snd.sndCodec;
-import org.freertr.snd.sndFsk;
+import org.freertr.enc.encCodec;
+import org.freertr.enc.encFsk;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
 
@@ -26,9 +26,9 @@ public class pipeModem {
      * @param codec codec to use
      * @param rtp voice connection
      */
-    public static void answer(pipeSide pipe, sndCodec codec, packRtp rtp) {
-        new pipeModemTx(pipe, codec, rtp, sndFsk.ituV21carrier[1]);
-        new pipeModemRx(pipe, codec, rtp, sndFsk.ituV21carrier[0]);
+    public static void answer(pipeSide pipe, encCodec codec, packRtp rtp) {
+        new pipeModemTx(pipe, codec, rtp, encFsk.ituV21carrier[1]);
+        new pipeModemRx(pipe, codec, rtp, encFsk.ituV21carrier[0]);
     }
 
     /**
@@ -38,9 +38,9 @@ public class pipeModem {
      * @param codec codec to use
      * @param rtp voice connection
      */
-    public static void originate(pipeSide pipe, sndCodec codec, packRtp rtp) {
-        new pipeModemTx(pipe, codec, rtp, sndFsk.ituV21carrier[0]);
-        new pipeModemRx(pipe, codec, rtp, sndFsk.ituV21carrier[1]);
+    public static void originate(pipeSide pipe, encCodec codec, packRtp rtp) {
+        new pipeModemTx(pipe, codec, rtp, encFsk.ituV21carrier[0]);
+        new pipeModemRx(pipe, codec, rtp, encFsk.ituV21carrier[1]);
     }
 
 }
@@ -49,13 +49,13 @@ class pipeModemTx extends TimerTask {
 
     private pipeSide pipe;
 
-    private sndCodec codec;
+    private encCodec codec;
 
     private packRtp rtp;
 
     private Timer keepTimer = new Timer();
 
-    private sndFsk modem = new sndFsk();
+    private encFsk modem = new encFsk();
 
     private packHolder queue = new packHolder(true, true);
 
@@ -67,7 +67,7 @@ class pipeModemTx extends TimerTask {
 
     private final static int payInt = 1000 / (8000 / paySiz);
 
-    public pipeModemTx(pipeSide line, sndCodec sound, packRtp conn, int freq) {
+    public pipeModemTx(pipeSide line, encCodec sound, packRtp conn, int freq) {
         pipe = line;
         codec = sound;
         rtp = conn;
@@ -129,13 +129,13 @@ class pipeModemRx implements Runnable {
 
     private pipeSide pipe;
 
-    private sndCodec codec;
+    private encCodec codec;
 
     private packRtp rtp;
 
-    private sndFsk modem = new sndFsk();
+    private encFsk modem = new encFsk();
 
-    public pipeModemRx(pipeSide line, sndCodec sound, packRtp conn, int freq) {
+    public pipeModemRx(pipeSide line, encCodec sound, packRtp conn, int freq) {
         pipe = line;
         codec = sound;
         rtp = conn;

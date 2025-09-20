@@ -1,11 +1,11 @@
-package org.freertr.snd;
+package org.freertr.enc;
 
 /**
  * codec handler
  *
  * @author matecsaba
  */
-public abstract class sndCodec {
+public abstract class encCodec {
 
     private int[] decode;
 
@@ -59,7 +59,7 @@ public abstract class sndCodec {
     /**
      * construct tables
      */
-    public sndCodec() {
+    public encCodec() {
         decode = getBuffer(false);
         if (decode == null) {
             decode = new int[128];

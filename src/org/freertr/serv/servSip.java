@@ -6,13 +6,13 @@ import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
 import org.freertr.cfg.cfgTrnsltn;
+import org.freertr.clnt.clntVconn;
 import org.freertr.pack.packRtp;
 import org.freertr.pack.packSip;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
-import org.freertr.snd.sndConnect;
 import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
@@ -509,7 +509,7 @@ class servSipDoer implements Runnable, Comparable<servSipDoer> {
                 peer.stopCall(rcd);
                 continue;
             }
-            sndConnect conner = new sndConnect(data, peer.getCall(rcd), peer.getCodec(), peer.getCodec());
+            clntVconn conner = new clntVconn(data, peer.getCall(rcd), peer.getCodec(), peer.getCodec());
             for (;;) {
                 if (conner.isClosed() != 0) {
                     break;

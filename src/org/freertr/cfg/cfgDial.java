@@ -6,9 +6,9 @@ import org.freertr.auth.authLocal;
 import org.freertr.clnt.clntSip;
 import org.freertr.pack.packRtp;
 import org.freertr.pack.packSip;
-import org.freertr.snd.sndCodec;
-import org.freertr.snd.sndCodecG711aLaw;
-import org.freertr.snd.sndCodecG711uLaw;
+import org.freertr.enc.encCodec;
+import org.freertr.enc.encCodecG711aLaw;
+import org.freertr.enc.encCodecG711uLaw;
 import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
@@ -602,11 +602,11 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
      *
      * @return codec
      */
-    public sndCodec getCodec() {
+    public encCodec getCodec() {
         if (aLaw) {
-            return new sndCodecG711aLaw();
+            return new encCodecG711aLaw();
         } else {
-            return new sndCodecG711uLaw();
+            return new encCodecG711uLaw();
         }
     }
 

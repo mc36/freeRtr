@@ -18,10 +18,9 @@ import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtAccept;
 import org.freertr.prt.prtGen;
-import org.freertr.snd.sndCodec;
-import org.freertr.snd.sndCodecG711aLaw;
-import org.freertr.snd.sndCodecG711uLaw;
-import org.freertr.snd.sndConnect;
+import org.freertr.enc.encCodec;
+import org.freertr.enc.encCodecG711aLaw;
+import org.freertr.enc.encCodecG711uLaw;
 import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userTerminal;
@@ -292,11 +291,11 @@ public class clntSip implements Runnable {
      *
      * @return codec
      */
-    protected sndCodec getCodec() {
+    protected encCodec getCodec() {
         if (aLaw) {
-            return new sndCodecG711aLaw();
+            return new encCodecG711aLaw();
         } else {
-            return new sndCodecG711uLaw();
+            return new encCodecG711uLaw();
         }
     }
 
@@ -1147,7 +1146,7 @@ class clntSipIn implements Runnable, Comparable<clntSipIn> {
 
     public packRtp data;
 
-    public sndConnect conner;
+    public clntVconn conner;
 
     public clntSipIn(clntSip prnt, String id) {
         lower = prnt;
@@ -1265,7 +1264,7 @@ class clntSipIn implements Runnable, Comparable<clntSipIn> {
             lower.delCall(this);
             return;
         }
-        conner = new sndConnect(data, peer.getCall(rcd), lower.getCodec(), peer.getCodec());
+        conner = new clntVconn(data, peer.getCall(rcd), lower.getCodec(), peer.getCodec());
         for (;;) {
             if (conner.isClosed() != 0) {
                 break;

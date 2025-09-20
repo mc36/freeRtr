@@ -9,10 +9,10 @@ import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
-import org.freertr.snd.sndCodec;
-import org.freertr.snd.sndCodecG711aLaw;
-import org.freertr.snd.sndCodecG711uLaw;
-import org.freertr.snd.sndScript;
+import org.freertr.enc.encCodec;
+import org.freertr.enc.encCodecG711aLaw;
+import org.freertr.enc.encCodecG711uLaw;
+import org.freertr.clnt.clntVscript;
 import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
@@ -183,11 +183,11 @@ class servVoiceDoer implements Runnable {
         return "<sip:voice@" + encUrl.addr2str(conn.iface.addr, conn.portLoc) + ">";
     }
 
-    public sndCodec getCodec() {
+    public encCodec getCodec() {
         if (lower.aLaw) {
-            return new sndCodecG711aLaw();
+            return new encCodecG711aLaw();
         } else {
-            return new sndCodecG711uLaw();
+            return new encCodecG711uLaw();
         }
     }
 
@@ -446,7 +446,7 @@ class servVoiceConn implements Runnable, Comparable<servVoiceConn> {
             pipeC.setTime(120000);
             pipeC.lineTx = pipeSide.modTyp.modeCRLF;
             pipeC.lineRx = pipeSide.modTyp.modeCRtryLF;
-            new sndScript(pipeC, lower.getCodec(), data, encUrl.fromEmail(packSip.removeTag(callInv.headerGet("From", 1))), encUrl.fromEmail(packSip.removeTag(callInv.headerGet("To", 1))));
+            new clntVscript(pipeC, lower.getCodec(), data, encUrl.fromEmail(packSip.removeTag(callInv.headerGet("From", 1))), encUrl.fromEmail(packSip.removeTag(callInv.headerGet("To", 1))));
             pipeS.setTime(120000);
             pipeS.lineTx = pipeSide.modTyp.modeCRLF;
             pipeS.lineRx = pipeSide.modTyp.modeCRorLF;

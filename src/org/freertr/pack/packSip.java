@@ -7,7 +7,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
 import org.freertr.clnt.clntHttp;
 import org.freertr.pipe.pipeSide;
-import org.freertr.snd.sndCodec;
+import org.freertr.enc.encCodec;
 import org.freertr.enc.encUrl;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -437,7 +437,7 @@ public class packSip {
      * @param port local port
      * @param alaw true=aLaw, false=uLaw
      */
-    public void makeSdp(addrIP addr, int port, sndCodec alaw) {
+    public void makeSdp(addrIP addr, int port, encCodec alaw) {
         header.add("Content-Type: application/sdp");
         content.add("v=0");
         int i;

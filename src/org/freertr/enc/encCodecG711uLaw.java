@@ -1,16 +1,16 @@
-package org.freertr.snd;
+package org.freertr.enc;
 
 /**
- * itu g711 a law codec handler
+ * itu g711 u law codec handler
  *
  * @author matecsaba
  */
-public class sndCodecG711aLaw extends sndCodec {
+public class encCodecG711uLaw extends encCodec {
 
     /**
      * create instance
      */
-    public sndCodecG711aLaw() {
+    public encCodecG711uLaw() {
     }
 
     private static int[] decode;
@@ -23,7 +23,7 @@ public class sndCodecG711aLaw extends sndCodec {
      * @return type
      */
     public int getRTPtype() {
-        return 8;
+        return 0;
     }
 
     /**
@@ -32,7 +32,7 @@ public class sndCodecG711aLaw extends sndCodec {
      * @return name
      */
     public String getRTPname() {
-        return "PCMA";
+        return "PCMU";
     }
 
     /**
@@ -41,7 +41,7 @@ public class sndCodecG711aLaw extends sndCodec {
      * @return type
      */
     public int getWAVtype() {
-        return 6;
+        return 7;
     }
 
     /**
@@ -79,15 +79,11 @@ public class sndCodecG711aLaw extends sndCodec {
      * @return value
      */
     protected int calcDecodeOneValue(int val) {
-        val ^= 0x55;
+        val ^= 0x7f;
         boolean signed = (val & 0x80) != 0;
         int exp = (val >>> 4) & 0x7;
         int man = val & 0xf;
-        if (exp == 0) {
-            exp++;
-        } else {
-            man |= 0x10;
-        }
+        man |= 0x10;
         val = man << (exp + 3);
         if (signed) {
             val = -val;

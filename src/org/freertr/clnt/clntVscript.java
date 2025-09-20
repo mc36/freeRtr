@@ -1,8 +1,9 @@
-package org.freertr.snd;
+package org.freertr.clnt;
 
-import java.io.RandomAccessFile;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
+import org.freertr.enc.encCodec;
+import org.freertr.enc.encWave;
 import org.freertr.pack.packRtp;
 import org.freertr.pipe.pipeModem;
 import org.freertr.pipe.pipeSide;
@@ -15,14 +16,14 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class sndScript implements Runnable {
+public class clntVscript implements Runnable {
 
     /**
      * need prompt
      */
     public boolean prompt = false;
 
-    private final sndCodec codr;
+    private final encCodec codr;
 
     private final String calSrc;
 
@@ -38,13 +39,13 @@ public class sndScript implements Runnable {
 
     private packRtp fwd;
 
-    private sndWave play;
+    private encWave play;
 
-    private sndWave rec;
+    private encWave rec;
 
     private String recF;
 
-    private sndWave dtmf;
+    private encWave dtmf;
 
     /**
      * make script handler
@@ -55,7 +56,7 @@ public class sndScript implements Runnable {
      * @param calling called number
      * @param called calling number
      */
-    public sndScript(pipeSide script, sndCodec codec, packRtp rtp, String calling, String called) {
+    public clntVscript(pipeSide script, encCodec codec, packRtp rtp, String calling, String called) {
         user = script;
         codr = codec;
         strm = rtp;
@@ -335,7 +336,7 @@ public class sndScript implements Runnable {
                     continue;
                 }
                 fwd = per.getCall(rcd);
-                new sndConnect(strm, fwd, codr, per.getCodec());
+                new clntVconn(strm, fwd, codr, per.getCodec());
                 user.linePut("forwarded");
                 continue;
             }
@@ -348,17 +349,12 @@ public class sndScript implements Runnable {
                     user.linePut("error already-playing");
                     continue;
                 }
-                byte[] buf = null;
-                try {
-                    RandomAccessFile fr = new RandomAccessFile(cmd.getRemaining(), "r");
-                    buf = new byte[(int) fr.length()];
-                    fr.read(buf, 0, buf.length);
-                    fr.close();
-                } catch (Exception e) {
+                byte[] buf = bits.byteLoad(cmd.getRemaining());
+                if (buf == null) {
                     user.linePut("error no-file");
                     continue;
                 }
-                play = new sndWave(codr, strm);
+                play = new encWave(codr, strm);
                 play.buf = buf;
                 play.startPlay();
                 continue;
@@ -377,7 +373,7 @@ public class sndScript implements Runnable {
                     continue;
                 }
                 recF = cmd.getRemaining();
-                rec = new sndWave(codr, strm);
+                rec = new encWave(codr, strm);
                 rec.startRecord();
                 continue;
             }
@@ -394,7 +390,7 @@ public class sndScript implements Runnable {
                     user.linePut("error already-detecting");
                     continue;
                 }
-                dtmf = new sndWave(codr, strm);
+                dtmf = new encWave(codr, strm);
                 dtmf.startDtmf();
                 continue;
             }

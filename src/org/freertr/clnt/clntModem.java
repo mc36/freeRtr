@@ -6,7 +6,7 @@ import org.freertr.pack.packRtp;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeModem;
 import org.freertr.pipe.pipeSide;
-import org.freertr.snd.sndCodec;
+import org.freertr.enc.encCodec;
 
 /**
  * modulator demodulator client
@@ -87,7 +87,7 @@ public class clntModem {
             return true;
         }
         pipeRtp = pipePer.getCall(pipeRcd);
-        sndCodec codec = pipePer.getCodec();
+        encCodec codec = pipePer.getCodec();
         pipeLine pip = new pipeLine(32768, false);
         pipeUsr = pip.getSide();
         pipeMdm = pip.getSide();
