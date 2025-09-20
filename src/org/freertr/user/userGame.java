@@ -516,6 +516,7 @@ public class userGame {
      * rotating donut
      */
     public void doDonut() {
+        userGameZbuf gfx = new userGameZbuf(console);
         final int[] chrs = {'.', ',', '-', '~', ':', ';', '=', '!', '*', '#', '$', '@'};
         final int[] cols = {userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite,};
         double a = 0;
@@ -524,8 +525,7 @@ public class userGame {
             if (console.keyPress()) {
                 break;
             }
-            double z[][] = new double[console.sizY][console.sizX];
-            console.doClear();
+            gfx.clear();
             for (double j = 0; j < 6.28; j += 0.07) {
                 for (double i = 0; i < 6.28; i += 0.02) {
                     double c = Math.sin(i);
@@ -542,33 +542,71 @@ public class userGame {
                     int x = (int) ((console.sizX / 2) + (console.sizX * k / 2) * (l * h * m - t * n));
                     int y = (int) ((console.sizY / 2) + (console.sizY * k / 2) * (l * h * n + t * m));
                     int o = (int) (8 * ((f * e - c * d * g) * m - c * d * e - f * g - l * d * n));
-                    if (y < 0) {
-                        continue;
-                    }
-                    if (x < 0) {
-                        continue;
-                    }
-                    if (x >= console.sizX) {
-                        continue;
-                    }
-                    if (y >= console.sizY) {
-                        continue;
-                    }
-                    if (k < z[y][x]) {
-                        continue;
-                    }
-                    z[y][x] = k;
                     if (o < 0) {
                         continue;
                     }
-                    console.putInt(x, y, userScreen.colBlack, cols[o], false, chrs[o]);
+                    gfx.pixel(x, y, k, userScreen.colBlack, cols[o], chrs[o]);
                 }
             }
             a += bits.randomB() / 500.0;
             b += bits.randomB() / 1000.0;
-            console.refresh();
+            gfx.refresh();
             bits.sleep(500);
         }
+    }
+
+    /**
+     * rotating cube
+     */
+    public void doCube() {
+        userGameZbuf gfx = new userGameZbuf(console);
+        double a = 0.0;
+        double b = 0.0;
+        double c = 0.0;
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            gfx.clear();
+            a += bits.random(10, 20) / 100.0;
+            b += bits.random(10, 20) / 100.0;
+            c += bits.random(20, 40) / 100.0;
+            for (int x = -gfx.max; x < gfx.max; x += 1) {
+                for (int y = -gfx.max; y < gfx.max; y += 1) {
+                    cubePoint(gfx, a, b, c, x, y, -gfx.max, userScreen.colBlack, userScreen.colBrBlue, '@');
+                    cubePoint(gfx, a, b, c, gfx.max, y, x, userScreen.colBlack, userScreen.colBrCyan, '#');
+                    cubePoint(gfx, a, b, c, -gfx.max, y, -x, userScreen.colBlack, userScreen.colBrGreen, '$');
+                    cubePoint(gfx, a, b, c, -x, y, gfx.max, userScreen.colBlack, userScreen.colBrMagenta, '%');
+                    cubePoint(gfx, a, b, c, x, -gfx.max, -y, userScreen.colBlack, userScreen.colBrRed, '&');
+                    cubePoint(gfx, a, b, c, x, gfx.max, y, userScreen.colBlack, userScreen.colBrYellow, '*');
+                }
+            }
+            gfx.refresh();
+            bits.sleep(500);
+        }
+    }
+
+    private void cubePoint(userGameZbuf gfx, double a, double b, double c, double cx, double cy, double cz, int bg, int fg, int ch) {
+        double x = cy * Math.sin(a) * Math.sin(b) * Math.cos(c)
+                - cz * Math.cos(a) * Math.sin(b) * Math.cos(c)
+                + cy * Math.cos(a) * Math.sin(c)
+                + cz * Math.sin(a) * Math.sin(c)
+                + cx * Math.cos(b) * Math.cos(c);
+        double y = cy * Math.cos(a) * Math.cos(c)
+                + cz * Math.sin(a) * Math.cos(c)
+                - cy * Math.sin(a) * Math.sin(b) * Math.sin(c)
+                + cz * Math.cos(a) * Math.sin(b) * Math.sin(c)
+                - cx * Math.cos(b) * Math.sin(c);
+        double z = cz * Math.cos(a) * Math.cos(b)
+                - cy * Math.sin(a) * Math.cos(b)
+                + cx * Math.sin(b) + gfx.max * 3;
+        if (z == 0.0) {
+            z = 0.000001;
+        }
+        double ooz = gfx.max / z / 1.6;
+        int px = (int) (console.sizX / 2 + ooz * x * 2);
+        int py = (int) (console.sizY / 2 + ooz * y);
+        gfx.pixel(px, py, ooz, bg, fg, ch);
     }
 
     /**
@@ -1080,21 +1118,6 @@ public class userGame {
             t.doFinish();
             return;
         }
-        if (a.equals("zenmaster")) {
-            doZenmaster(cmd);
-            return;
-        }
-        if (a.equals("maze")) {
-            doMaze();
-            return;
-        }
-        if (a.equals("cube")) {
-            userGameCube t = new userGameCube(console);
-            t.doStart();
-            t.doGame();
-            t.doFinish();
-            return;
-        }
         if (a.equals("tetris")) {
             userGameTetris t = new userGameTetris(console);
             t.doStart();
@@ -1208,6 +1231,18 @@ public class userGame {
             doPlasma();
             return;
         }
+        if (a.equals("zenmaster")) {
+            doZenmaster(cmd);
+            return;
+        }
+        if (a.equals("maze")) {
+            doMaze();
+            return;
+        }
+        if (a.equals("cube")) {
+            doCube();
+            return;
+        }
         if (a.equals("donut")) {
             doDonut();
             return;
@@ -1237,6 +1272,70 @@ public class userGame {
         god[4] = userScreen.colBrBlue;
         god[5] = userScreen.colBrRed;
         colorDrawer(god, lst);
+    }
+
+}
+
+class userGameZbuf {
+
+    public final userScreen scr;
+
+    public final double[][] dep;
+
+    public final int max;
+
+    /**
+     * create instance
+     *
+     * @param s screen to use
+     */
+    public userGameZbuf(userScreen s) {
+        scr = s;
+        dep = new double[scr.sizY][scr.sizX];
+        if (scr.sizX > scr.sizY) {
+            max = scr.sizY;
+        } else {
+            max = scr.sizX;
+        }
+        clear();
+    }
+
+    public void clear() {
+        for (int i = 0; i < scr.sizY; i++) {
+            for (int o = 0; o < scr.sizX; o++) {
+                dep[i][o] = Double.MIN_VALUE;
+            }
+        }
+        scr.doClear();
+    }
+
+    public void putCls() {
+        clear();
+        scr.doClear();
+    }
+
+    public void refresh() {
+        scr.refresh();
+    }
+
+    public void pixel(int x, int y, double z, int bg, int fg, int ch) {
+        if (x < 0) {
+            return;
+        }
+        if (y < 0) {
+            return;
+        }
+        if (x >= scr.sizX) {
+            return;
+        }
+        if (y >= scr.sizY) {
+            return;
+        }
+        if (z <= dep[y][x]) {
+            return;
+        }
+        dep[y][x] = z;
+        scr.putInt(x, y, bg, fg, false, ch);
     }
 
 }
@@ -2455,136 +2554,6 @@ class userGameChess {
     public void doFinish() {
         scr.doClear();
         scr.refresh();
-    }
-
-}
-
-class userGameCube {
-
-    public final userScreen scr;
-
-    public final double[][] dep;
-
-    public final int siz;
-
-    /**
-     * create instance
-     *
-     * @param s screen to use
-     * @param d screen divisor
-     * @param z maximum depth
-     */
-    public userGameCube(userScreen s) {
-        scr = s;
-        dep = new double[scr.sizY][scr.sizX];
-        if (scr.sizX > scr.sizY) {
-            siz = scr.sizY;
-        } else {
-            siz = scr.sizX;
-        }
-        clear();
-    }
-
-    public void clear() {
-        for (int i = 0; i < scr.sizY; i++) {
-            for (int o = 0; o < scr.sizX; o++) {
-                dep[i][o] = Double.MIN_VALUE;
-            }
-        }
-        scr.doClear();
-    }
-
-    public void putCls() {
-        clear();
-        scr.doClear();
-    }
-
-    public void refresh() {
-        scr.refresh();
-    }
-
-    private void point(double a, double b, double c, double cx, double cy, double cz, int bg, int fg, int ch) {
-        double x = cy * Math.sin(a) * Math.sin(b) * Math.cos(c)
-                - cz * Math.cos(a) * Math.sin(b) * Math.cos(c)
-                + cy * Math.cos(a) * Math.sin(c)
-                + cz * Math.sin(a) * Math.sin(c)
-                + cx * Math.cos(b) * Math.cos(c);
-        double y = cy * Math.cos(a) * Math.cos(c)
-                + cz * Math.sin(a) * Math.cos(c)
-                - cy * Math.sin(a) * Math.sin(b) * Math.sin(c)
-                + cz * Math.cos(a) * Math.sin(b) * Math.sin(c)
-                - cx * Math.cos(b) * Math.sin(c);
-        double z = cz * Math.cos(a) * Math.cos(b)
-                - cy * Math.sin(a) * Math.cos(b)
-                + cx * Math.sin(b) + siz * 3;
-        if (z == 0.0) {
-            z = 0.000001;
-        }
-        double ooz = siz / z / 1.6;
-        int px = (int) (scr.sizX / 2 + ooz * x * 2);
-        int py = (int) (scr.sizY / 2 + ooz * y);
-        if (px < 0) {
-            return;
-        }
-        if (py < 0) {
-            return;
-        }
-        if (px >= scr.sizX) {
-            return;
-        }
-        if (py >= scr.sizY) {
-            return;
-        }
-        if (ooz <= dep[py][px]) {
-            return;
-        }
-        dep[py][px] = ooz;
-        scr.putInt(px, py, bg, fg, false, ch);
-    }
-
-    /**
-     * start screen
-     */
-    public void doStart() {
-        clear();
-    }
-
-    /**
-     * finish screen
-     */
-    public void doFinish() {
-        scr.doClear();
-        scr.refresh();
-    }
-
-    /**
-     * play game
-     */
-    public void doGame() {
-        double a = 0.0;
-        double b = 0.0;
-        double c = 0.0;
-        for (;;) {
-            if (scr.keyPress()) {
-                break;
-            }
-            clear();
-            a += bits.random(10, 20) / 100.0;
-            b += bits.random(10, 20) / 100.0;
-            c += bits.random(20, 40) / 100.0;
-            for (int x = -siz; x < siz; x += 1) {
-                for (int y = -siz; y < siz; y += 1) {
-                    point(a, b, c, x, y, -siz, userScreen.colBlack, userScreen.colBrBlue, '@');
-                    point(a, b, c, siz, y, x, userScreen.colBlack, userScreen.colBrCyan, '#');
-                    point(a, b, c, -siz, y, -x, userScreen.colBlack, userScreen.colBrGreen, '$');
-                    point(a, b, c, -x, y, siz, userScreen.colBlack, userScreen.colBrMagenta, '%');
-                    point(a, b, c, x, -siz, -y, userScreen.colBlack, userScreen.colBrRed, '&');
-                    point(a, b, c, x, siz, y, userScreen.colBlack, userScreen.colBrYellow, '*');
-                }
-            }
-            refresh();
-            bits.sleep(500);
-        }
     }
 
 }
