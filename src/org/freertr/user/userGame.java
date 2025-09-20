@@ -513,7 +513,8 @@ public class userGame {
      * rotating donut
      */
     public void doDonut() {
-        final int[] chars = {'.', ',', '-', '~', ':', ';', '=', '!', '*', '#', '$', '@'};
+        final int[] chrs = {'.', ',', '-', '~', ':', ';', '=', '!', '*', '#', '$', '@'};
+        final int[] cols = {userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite,};
         double a = 0;
         double b = 0;
         for (;;) {
@@ -530,14 +531,14 @@ public class userGame {
                     double f = Math.sin(j);
                     double g = Math.cos(a);
                     double h = d + 2;
-                    double D = 1 / (c * h * e + f * g + 5);
+                    double k = 1 / (c * h * e + f * g + 5);
                     double l = Math.cos(i);
                     double m = Math.cos(b);
                     double n = Math.sin(b);
                     double t = c * h * g - f * e;
-                    int x = (int) ((console.sizX / 2) + (console.sizX * D / 2) * (l * h * m - t * n));
-                    int y = (int) ((console.sizY / 2) + (console.sizY * D / 2) * (l * h * n + t * m));
-                    int N = (int) (8 * ((f * e - c * d * g) * m - c * d * e - f * g - l * d * n));
+                    int x = (int) ((console.sizX / 2) + (console.sizX * k / 2) * (l * h * m - t * n));
+                    int y = (int) ((console.sizY / 2) + (console.sizY * k / 2) * (l * h * n + t * m));
+                    int o = (int) (8 * ((f * e - c * d * g) * m - c * d * e - f * g - l * d * n));
                     if (y < 0) {
                         continue;
                     }
@@ -550,14 +551,14 @@ public class userGame {
                     if (y >= console.sizY) {
                         continue;
                     }
-                    if (D < z[y][x]) {
+                    if (k < z[y][x]) {
                         continue;
                     }
-                    z[y][x] = D;
-                    if (N < 0) {
+                    z[y][x] = k;
+                    if (o < 0) {
                         continue;
                     }
-                    console.putInt(x, y, userScreen.colBlack, userScreen.colWhite, false, chars[N]);
+                    console.putInt(x, y, userScreen.colBlack, cols[o], false, chrs[o]);
                 }
             }
             a += bits.randomB() / 500.0;
@@ -2555,12 +2556,15 @@ class userGameCube {
         double b = 0.0;
         double c = 0.0;
         for (;;) {
+            if (scr.keyPress()) {
+                break;
+            }
             clear();
-            a += 0.1;
-            b += 0.1;
-            c += 0.02;
-            for (double x = -20; x < 20; x += 0.5) {
-                for (double y = -20; y < 20; y += 0.5) {
+            a += bits.random(10, 20) / 100.0;
+            b += bits.random(10, 20) / 100.0;
+            c += bits.random(20, 40) / 100.0;
+            for (int x = -20; x < 20; x += 1) {
+                for (int y = -20; y < 20; y += 1) {
                     point(a, b, c, x, y, -20, userScreen.colBlack, userScreen.colBrBlue, '@');
                     point(a, b, c, 20, y, x, userScreen.colBlack, userScreen.colBrCyan, '#');
                     point(a, b, c, -20, y, -x, userScreen.colBlack, userScreen.colBrGreen, '$');
@@ -2570,9 +2574,6 @@ class userGameCube {
                 }
             }
             refresh();
-            if (scr.keyPress()) {
-                break;
-            }
             bits.sleep(500);
         }
     }
