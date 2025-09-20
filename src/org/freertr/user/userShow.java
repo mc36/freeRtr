@@ -285,7 +285,8 @@ public class userShow {
             if (a.equals("clock")) {
                 userScreen scr = new userScreen(cmd.pipe);
                 a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
-                scr.drawClock(a, userScreen.colBlack, userScreen.colWhite);
+                userGame t = new userGame(scr, rdr);
+                t.drawClock(a, userScreen.colBlack, userScreen.colWhite);
                 rdr.putStrArr(scr.getAscii());
                 return null;
             }
@@ -471,7 +472,8 @@ public class userShow {
                 a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
                 a = a.substring(0, a.length() - 3);
                 userScreen scr = new userScreen(cmd.pipe);
-                scr.drawClock(a, userScreen.colBlack, userScreen.colWhite);
+                userGame t = new userGame(scr, rdr);
+                t.drawClock(a, userScreen.colBlack, userScreen.colWhite);
                 rdr.putStrArr(scr.getAscii());
                 return null;
             }

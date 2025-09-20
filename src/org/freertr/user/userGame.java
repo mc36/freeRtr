@@ -233,6 +233,59 @@ public class userGame {
     }
 
     /**
+     * draw a line
+     *
+     * @param bx begin x
+     * @param by begin y
+     * @param ex end x
+     * @param ey end y
+     * @param bg background color
+     * @param fg foreground color
+     * @param ch character to write
+     */
+    public void drawLine(int bx, int by, int ex, int ey, int bg, int fg, int ch) {
+        ex -= bx;
+        ey -= by;
+        for (int i = 0; i < 100; i++) {
+            int x = (ex * i) / 100;
+            int y = (ey * i) / 100;
+            console.putInt(bx + x, by + y, bg, fg, false, ch);
+        }
+    }
+
+    /**
+     * draw clock
+     *
+     * @param a time
+     * @param bg background color
+     * @param fg foreground color
+     */
+    public void drawClock(String a, int bg, int fg) {
+        int hlfX = console.sizX / 2;
+        int hlfY = console.sizY / 2;
+        for (int i = 0; i < 400; i++) {
+            double v = i * Math.PI / 200.0;
+            int x = (int) (hlfX * Math.cos(v));
+            int y = (int) (hlfY * Math.sin(v));
+            console.putInt(hlfX + x, hlfY + y, bg, fg, false, '*');
+        }
+        drawClock(bg, fg, hlfX, hlfY, 0.6, bits.str2num(a.substring(0, 2)) / 12.0, '@');
+        drawClock(bg, fg, hlfX, hlfY, 0.8, bits.str2num(a.substring(3, 5)) / 60.0, '#');
+        if (a.length() < 8) {
+            return;
+        }
+        drawClock(bg, fg, hlfX, hlfY, 1.0, bits.str2num(a.substring(6, 8)) / 60.0, '%');
+    }
+
+    private void drawClock(int bg, int fg, int bx, int by, double scl, double val, int ch) {
+        val *= Math.PI * 2.0;
+        val += Math.PI * 1.5;
+        double px = bx * Math.cos(val) * scl;
+        double py = by * Math.sin(val) * scl;
+        drawLine(bx, by, bx + (int) px, by + (int) py, bg, fg, ch);
+    }
+
+    /**
      * flying clock
      */
     public void doClock() {
@@ -241,7 +294,7 @@ public class userGame {
                 break;
             }
             console.putCls();
-            console.drawClock(bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2), userScreen.colBlack, bits.random(1, 15));
+            drawClock(bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2), userScreen.colBlack, bits.random(1, 15));
             console.refresh();
             bits.sleep(5000);
         }
@@ -912,26 +965,26 @@ public class userGame {
                 int pszx = (step + 1) * dszx;
                 int pszy = (step + 1) * dszy;
                 if (maze[posy + rgty][posx + rgtx] != 0) {
-                    console.drawLine(console.sizX - sszx, sszy, console.sizX - pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    console.drawLine(console.sizX - sszx, console.sizY - sszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    drawLine(console.sizX - sszx, sszy, console.sizX - pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    drawLine(console.sizX - sszx, console.sizY - sszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 } else {
-                    console.drawLine(console.sizX - sszx, sszy, console.sizX - sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    drawLine(console.sizX - sszx, sszy, console.sizX - sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     if (maze[posy + advy][posx + advx] == 0) {
-                        console.drawLine(console.sizX - pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                        drawLine(console.sizX - pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     }
-                    console.drawLine(console.sizX - pszx, pszy, console.sizX - sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    console.drawLine(console.sizX - pszx, console.sizY - pszy, console.sizX - sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    drawLine(console.sizX - pszx, pszy, console.sizX - sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    drawLine(console.sizX - pszx, console.sizY - pszy, console.sizX - sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 }
                 if (maze[posy + lfty][posx + lftx] != 0) {
-                    console.drawLine(sszx, sszy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    console.drawLine(sszx, console.sizY - sszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    drawLine(sszx, sszy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    drawLine(sszx, console.sizY - sszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 } else {
-                    console.drawLine(sszx, sszy, sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    drawLine(sszx, sszy, sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     if (maze[posy + advy][posx + advx] == 0) {
-                        console.drawLine(pszx, pszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                        drawLine(pszx, pszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     }
-                    console.drawLine(pszx, pszy, sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    console.drawLine(pszx, console.sizY - pszy, sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    drawLine(pszx, pszy, sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    drawLine(pszx, console.sizY - pszy, sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 }
                 posx += advx;
                 posy += advy;
@@ -940,10 +993,10 @@ public class userGame {
                 }
                 posx = console.sizX - pszx;
                 posy = console.sizY - pszy;
-                console.drawLine(posx, posy, pszx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                console.drawLine(pszx, posy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                console.drawLine(pszx, pszy, posx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                console.drawLine(posx, pszy, posx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                drawLine(posx, posy, pszx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                drawLine(pszx, posy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                drawLine(pszx, pszy, posx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                drawLine(posx, pszy, posx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 break;
             }
             console.refresh();
@@ -1174,6 +1227,32 @@ public class userGame {
         god[4] = userScreen.colBrBlue;
         god[5] = userScreen.colBrRed;
         colorDrawer(god, lst);
+    }
+
+}
+
+class userGame3d {
+
+    public final userScreen scr;
+
+    public final int sizX;
+
+    public final int sizY;
+
+    public final int sizZ;
+
+    /**
+     * create instance
+     *
+     * @param s screen to use
+     * @param d screen divisor
+     * @param z maximum depth
+     */
+    public userGame3d(userScreen s, int d, int z) {
+        scr = s;
+        sizX = scr.sizX / d;
+        sizY = scr.sizY / d;
+        sizZ = z;
     }
 
 }

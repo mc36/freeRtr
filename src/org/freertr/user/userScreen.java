@@ -1166,59 +1166,6 @@ public class userScreen {
     }
 
     /**
-     * draw a line
-     *
-     * @param bx begin x
-     * @param by begin y
-     * @param ex end x
-     * @param ey end y
-     * @param bg background color
-     * @param fg foreground color
-     * @param ch character to write
-     */
-    public void drawLine(int bx, int by, int ex, int ey, int bg, int fg, int ch) {
-        ex -= bx;
-        ey -= by;
-        for (int i = 0; i < 100; i++) {
-            int x = (ex * i) / 100;
-            int y = (ey * i) / 100;
-            putInt(bx + x, by + y, bg, fg, false, ch);
-        }
-    }
-
-    /**
-     * draw clock
-     *
-     * @param a time
-     * @param bg background color
-     * @param fg foreground color
-     */
-    public void drawClock(String a, int bg, int fg) {
-        int hlfX = sizX / 2;
-        int hlfY = sizY / 2;
-        for (int i = 0; i < 400; i++) {
-            double v = i * Math.PI / 200.0;
-            int x = (int) (hlfX * Math.cos(v));
-            int y = (int) (hlfY * Math.sin(v));
-            putInt(hlfX + x, hlfY + y, bg, fg, false, '*');
-        }
-        drawClock(bg, fg, hlfX, hlfY, 0.6, bits.str2num(a.substring(0, 2)) / 12.0, '@');
-        drawClock(bg, fg, hlfX, hlfY, 0.8, bits.str2num(a.substring(3, 5)) / 60.0, '#');
-        if (a.length() < 8) {
-            return;
-        }
-        drawClock(bg, fg, hlfX, hlfY, 1.0, bits.str2num(a.substring(6, 8)) / 60.0, '%');
-    }
-
-    private void drawClock(int bg, int fg, int bx, int by, double scl, double val, int ch) {
-        val *= Math.PI * 2.0;
-        val += Math.PI * 1.5;
-        double px = bx * Math.cos(val) * scl;
-        double py = by * Math.sin(val) * scl;
-        drawLine(bx, by, bx + (int) px, by + (int) py, bg, fg, ch);
-    }
-
-    /**
      * fill line
      *
      * @param y line to fill
