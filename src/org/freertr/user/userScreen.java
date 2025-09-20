@@ -1166,26 +1166,6 @@ public class userScreen {
     }
 
     /**
-     * draw a circle
-     *
-     * @param cx central x
-     * @param cy central y
-     * @param sx size x
-     * @param sy size y
-     * @param bg background color
-     * @param fg foreground color
-     * @param s string to write
-     */
-    public void drawCircle(int cx, int cy, int sx, int sy, int bg, int fg, String s) {
-        for (int i = 0; i < 360; i++) {
-            double v = i * Math.PI * 2.0 / 360.0;
-            int x = (int) (sx * Math.cos(v));
-            int y = (int) (sy * Math.sin(v));
-            putStr(cx + x, cy + y, bg, fg, false, s);
-        }
-    }
-
-    /**
      * draw a line
      *
      * @param bx begin x
@@ -1214,30 +1194,28 @@ public class userScreen {
      * @param fg foreground color
      */
     public void drawClock(String a, int bg, int fg) {
-        int maxX = sizX;
-        int maxY = sizY;
-        if (maxX > (maxY * 2)) {
-            maxX = maxY * 2;
+        int hlfX = sizX / 2;
+        int hlfY = sizY / 2;
+        for (int i = 0; i < 400; i++) {
+            double v = i * Math.PI / 200.0;
+            int x = (int) (hlfX * Math.cos(v));
+            int y = (int) (hlfY * Math.sin(v));
+            putInt(hlfX + x, hlfY + y, bg, fg, false, '*');
         }
-        if (maxY > (maxX / 2)) {
-            maxY = maxX / 2;
-        }
-        int hlfY = maxY / 2;
-        drawCircle(maxY, hlfY, maxY, hlfY, bg, fg, "*");
-        drawClock(bg, fg, maxY, hlfY, (hlfY * 2) / 3, bits.str2num(a.substring(0, 2)) / 12.0, '@');
-        drawClock(bg, fg, maxY, hlfY, (hlfY * 5) / 6, bits.str2num(a.substring(3, 5)) / 60.0, '#');
+        drawClock(bg, fg, hlfX, hlfY, 0.6, bits.str2num(a.substring(0, 2)) / 12.0, '@');
+        drawClock(bg, fg, hlfX, hlfY, 0.8, bits.str2num(a.substring(3, 5)) / 60.0, '#');
         if (a.length() < 8) {
             return;
         }
-        drawClock(bg, fg, maxY, hlfY, hlfY, bits.str2num(a.substring(6, 8)) / 60.0, '%');
+        drawClock(bg, fg, hlfX, hlfY, 1.0, bits.str2num(a.substring(6, 8)) / 60.0, '%');
     }
 
-    private void drawClock(int bg, int fg, int bx, int by, int len, double val, int ch) {
+    private void drawClock(int bg, int fg, int bx, int by, double scl, double val, int ch) {
         val *= Math.PI * 2.0;
         val += Math.PI * 1.5;
-        int sx = (int) (len * Math.cos(val) * 2.0);
-        int sy = (int) (len * Math.sin(val));
-        drawLine(bx, by, bx + sx, by + sy, bg, fg, ch);
+        double px = bx * Math.cos(val) * scl;
+        double py = by * Math.sin(val) * scl;
+        drawLine(bx, by, bx + (int) px, by + (int) py, bg, fg, ch);
     }
 
     /**
