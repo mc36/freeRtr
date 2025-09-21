@@ -69,21 +69,25 @@ public class pipeWindow extends JPanel {
      * @return converted ansi
      */
     public static userScreen imageAnsi(pipeSide ps, File fil, int[] chr) {
+        BufferedImage img1 = null;
         userScreen scr = new userScreen(ps);
         scr.putCls();
         scr.putCur(0, 0);
         try {
-            BufferedImage img1 = ImageIO.read(fil);
-            int[][] img2 = scaleImage(img1, scr.sizX, scr.sizY, userFonts.colorData);
-            for (int y = 0; y < img2.length; y++) {
-                for (int x = 0; x < img2[0].length; x++) {
-                    int v = img2[y][x];
-                    int c = chr[bits.random(0, chr.length)];
-                    scr.putInt(x, y, false, v, c);
-                }
-            }
+            img1 = ImageIO.read(fil);
         } catch (Exception e) {
             logger.traceback(e, "error converting");
+        }
+        if (img1 == null) {
+            return scr;
+        }
+        int[][] img2 = scaleImage(img1, scr.sizX, scr.sizY, userFonts.colorData);
+        for (int y = 0; y < img2.length; y++) {
+            for (int x = 0; x < img2[0].length; x++) {
+                int v = img2[y][x];
+                int c = chr[bits.random(0, chr.length)];
+                scr.putInt(x, y, false, v, c);
+            }
         }
         scr.refresh();
         return scr;

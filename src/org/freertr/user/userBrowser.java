@@ -567,12 +567,6 @@ public class userBrowser {
         }
         doClear();
         userFlash.ansiArt(tempFile, console);
-        for (;;) {
-            if (console.keyPress()) {
-                break;
-            }
-            bits.sleep(1000);
-        }
         userScreen.getKey(console.pipe);
         doClear();
     }

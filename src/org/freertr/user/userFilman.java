@@ -357,12 +357,6 @@ public class userFilman {
     private void doKeyCol() {
         String a = pan[act].getFn();
         userFlash.ansiArt(a, console);
-        for (;;) {
-            if (console.keyPress()) {
-                break;
-            }
-            bits.sleep(1000);
-        }
         userScreen.getKey(console.pipe);
     }
 

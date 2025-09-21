@@ -77,39 +77,6 @@ public class userGame {
         return "sent to " + userLine.sendBcastMsg(a, txt) + " terminals";
     }
 
-    private void colorDrawer(int[] god, List<String> sec) {
-        int gods = god.length;
-        console.doClear();
-        for (int o = 0; o < sec.size(); o++) {
-            String s = sec.get(o);
-            byte[] b = s.getBytes();
-            for (int i = 0; i < b.length; i++) {
-                int ch = b[i];
-                int cl = userScreen.colBrGreen;
-                char chr = (char) ch;
-                switch (chr) {
-                    case 'o':
-                    case '0':
-                    case '@':
-                    case 'O':
-                    case '3':
-                        cl = god[bits.random(0, gods)];
-                        break;
-                    default:
-                        break;
-                }
-                console.putInt(i, o, false, cl, ch);
-            }
-        }
-        console.refresh();
-        for (;;) {
-            if (console.keyPress()) {
-                break;
-            }
-            bits.sleep(1000);
-        }
-    }
-
     /**
      * palette test
      */
@@ -125,12 +92,7 @@ public class userGame {
         }
         console.putCur(0, 0);
         console.refresh();
-        for (;;) {
-            if (console.keyPress()) {
-                break;
-            }
-            bits.sleep(1000);
-        }
+        userScreen.getKey(console.pipe);
     }
 
     /**
@@ -147,12 +109,7 @@ public class userGame {
         }
         console.putCur(0, 0);
         console.refresh();
-        for (;;) {
-            if (console.keyPress()) {
-                break;
-            }
-            bits.sleep(1000);
-        }
+        userScreen.getKey(console.pipe);
     }
 
     /**
@@ -573,12 +530,12 @@ public class userGame {
             c += bits.random(20, 40) / 100.0;
             for (int x = -gfx.max; x < gfx.max; x += 1) {
                 for (int y = -gfx.max; y < gfx.max; y += 1) {
-                    cubePoint(gfx, a, b, c, x, y, -gfx.max, userScreen.colBlack, userScreen.colBrBlue, '@');
-                    cubePoint(gfx, a, b, c, gfx.max, y, x, userScreen.colBlack, userScreen.colBrCyan, '#');
-                    cubePoint(gfx, a, b, c, -gfx.max, y, -x, userScreen.colBlack, userScreen.colBrGreen, '$');
-                    cubePoint(gfx, a, b, c, -x, y, gfx.max, userScreen.colBlack, userScreen.colBrMagenta, '%');
-                    cubePoint(gfx, a, b, c, x, -gfx.max, -y, userScreen.colBlack, userScreen.colBrRed, '&');
-                    cubePoint(gfx, a, b, c, x, gfx.max, y, userScreen.colBlack, userScreen.colBrYellow, '*');
+                    doCube(gfx, a, b, c, x, y, -gfx.max, userScreen.colBlack, userScreen.colBrBlue, '@');
+                    doCube(gfx, a, b, c, gfx.max, y, x, userScreen.colBlack, userScreen.colBrCyan, '#');
+                    doCube(gfx, a, b, c, -gfx.max, y, -x, userScreen.colBlack, userScreen.colBrGreen, '$');
+                    doCube(gfx, a, b, c, -x, y, gfx.max, userScreen.colBlack, userScreen.colBrMagenta, '%');
+                    doCube(gfx, a, b, c, x, -gfx.max, -y, userScreen.colBlack, userScreen.colBrRed, '&');
+                    doCube(gfx, a, b, c, x, gfx.max, y, userScreen.colBlack, userScreen.colBrYellow, '*');
                 }
             }
             gfx.refresh();
@@ -586,7 +543,7 @@ public class userGame {
         }
     }
 
-    private void cubePoint(userGameZbuf gfx, double a, double b, double c, double cx, double cy, double cz, int bg, int fg, int ch) {
+    private void doCube(userGameZbuf gfx, double a, double b, double c, double cx, double cy, double cz, int bg, int fg, int ch) {
         double x = cy * Math.sin(a) * Math.sin(b) * Math.cos(c)
                 - cz * Math.cos(a) * Math.sin(b) * Math.cos(c)
                 + cy * Math.cos(a) * Math.sin(c)
@@ -1160,12 +1117,7 @@ public class userGame {
         }
         if (a.equals("ansi")) {
             userFlash.ansiArt(cmd.getRemaining(), console);
-            for (;;) {
-                if (console.keyPress()) {
-                    break;
-                }
-                bits.sleep(1000);
-            }
+            userScreen.getKey(console.pipe);
             return;
         }
         if (a.equals("color")) {
@@ -1264,14 +1216,32 @@ public class userGame {
             cmd.badCmd();
             return;
         }
-        int[] god = new int[6];
-        god[0] = userScreen.colBrCyan;
-        god[1] = userScreen.colBrWhite;
-        god[2] = userScreen.colBrYellow;
-        god[3] = userScreen.colBrGreen;
-        god[4] = userScreen.colBrBlue;
-        god[5] = userScreen.colBrRed;
-        colorDrawer(god, lst);
+        int[] god = new int[]{userScreen.colBrCyan, userScreen.colBrWhite, userScreen.colBrYellow,
+            userScreen.colBrGreen, userScreen.colBrBlue, userScreen.colBrRed};
+        console.doClear();
+        for (int o = 0; o < lst.size(); o++) {
+            String s = lst.get(o);
+            byte[] b = s.getBytes();
+            for (int i = 0; i < b.length; i++) {
+                int ch = b[i];
+                int cl = userScreen.colBrGreen;
+                char chr = (char) ch;
+                switch (chr) {
+                    case 'o':
+                    case '0':
+                    case '@':
+                    case 'O':
+                    case '3':
+                        cl = god[bits.random(0, god.length)];
+                        break;
+                    default:
+                        break;
+                }
+                console.putInt(i, o, false, cl, ch);
+            }
+        }
+        console.refresh();
+        userScreen.getKey(console.pipe);
     }
 
 }
