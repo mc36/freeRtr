@@ -150,25 +150,6 @@ public class userFormat {
     }
 
     /**
-     * boxer modes
-     */
-    public enum boxerMode {
-        /**
-         * normal
-         */
-        normal,
-        /**
-         * simple
-         */
-        simple,
-        /**
-         * cowsay
-         */
-        cowsay,
-
-    }
-
-    /**
      * convert string to color mode
      *
      * @param a string
@@ -220,6 +201,43 @@ public class userFormat {
     }
 
     /**
+     * list possible color modes
+     *
+     * @param h help to append
+     * @param beg beginning
+     */
+    public static void listColorModes(userHelp h, int beg) {
+        h.add(null, false, beg, new int[]{-1}, "normal", "select normal mode");
+        h.add(null, false, beg, new int[]{-1}, "header", "select header mode");
+        h.add(null, false, beg, new int[]{-1}, "rainbow", "select rainbow mode");
+        h.add(null, false, beg, new int[]{-1}, "zeroes", "select zeroes mode");
+        h.add(null, false, beg, new int[]{-1}, "prompt", "select prompt mode");
+    }
+
+    /**
+     * boxer modes
+     */
+    public enum boxerMode {
+        /**
+         * normal
+         */
+        normal,
+        /**
+         * simple
+         */
+        simple,
+        /**
+         * cowsay
+         */
+        cowsay,
+        /**
+         * bear
+         */
+        bear,
+
+    }
+
+    /**
      * convert string to color mode
      *
      * @param a string
@@ -238,6 +256,9 @@ public class userFormat {
         if (a.equals("cowsay")) {
             return boxerMode.cowsay;
         }
+        if (a.equals("bear")) {
+            return boxerMode.bear;
+        }
         return boxerMode.normal;
     }
 
@@ -255,9 +276,24 @@ public class userFormat {
                 return "simple";
             case cowsay:
                 return "cowsay";
+            case bear:
+                return "bear";
             default:
                 return "unknown";
         }
+    }
+
+    /**
+     * list possible boxer modes
+     *
+     * @param h help to append
+     * @param beg beginning
+     */
+    public static void listBoxerModes(userHelp h, int beg) {
+        h.add(null, false, beg, new int[]{-1}, "normal", "select normal mode");
+        h.add(null, false, beg, new int[]{-1}, "simple", "select simple mode");
+        h.add(null, false, beg, new int[]{-1}, "cowsay", "select cowsay mode");
+        h.add(null, false, beg, new int[]{-1}, "bear", "select bear mode");
     }
 
     /**
@@ -292,34 +328,105 @@ public class userFormat {
         if (mod == boxerMode.normal) {
             return;
         }
-        if (box) {
-            int p = 0;
-            for (int i = 0; i < lst.size(); i++) {
-                int o = lst.get(i).length();
-                if (o < p) {
-                    continue;
-                }
-                p = o;
+        int max = 0;
+        for (int i = 0; i < lst.size(); i++) {
+            int o = lst.get(i).length();
+            if (o < max) {
+                continue;
             }
+            max = o;
+        }
+        if (box) {
             for (int i = 0; i < lst.size(); i++) {
                 String a = lst.get(i);
-                a = "| " + bits.padEnd(a, p, " ") + " |";
+                a = "| " + bits.padEnd(a, max, " ") + " |";
                 lst.set(i, a);
             }
-            lst.add(0, " /" + bits.padEnd("", p, "~") + "\\");
-            lst.add(" \\" + bits.padEnd("", p, "_") + "/");
+            lst.add(0, " /" + bits.padEnd("", max, "~") + "\\");
+            lst.add(" \\" + bits.padEnd("", max, "_") + "/");
+            max += 4;
         }
+        String[] headL = new String[0];
+        String[] footL = new String[0];
+        String headM = null;
+        String footM = null;
+        int len;
         switch (mod) {
             case simple:
+                len = 0;
                 break;
             case cowsay:
-                lst.add("     \\   ^__^");
-                lst.add("      \\  (oo)\\_______");
-                lst.add("         (__)\\       )\\/\\");
-                lst.add("             ||----w |");
-                lst.add("             ||     ||");
+                footL = new String[]{
+                    "\\",
+                    " \\   ^__^",
+                    "  \\  (oo)\\_______",
+                    "     (__)\\       )\\/\\",
+                    "         ||----w |",
+                    "         ||     ||",};
+                len = 21;
                 break;
+            case bear:
+                headL = new String[]{
+                    "         ,---.           ,---.",
+                    "        / /\"`.\\.--\"\"\"--./,'\"\\ \\",
+                    "        \\ \\    _       _    / /",
+                    "         `./  / __   __ \\  \\,'",
+                    "          /    /_O)_(_O\\    \\",
+                    "          |  .-'  ___  `-.  |",
+                    "       .--|       \\_/       |--.",
+                    "     ,'    \\   \\   |   /   /    `.",
+                    "    /       `.  `--^--'  ,'       \\",
+                    " .-\"\"\"\"\"-.    `--.___.--'     .-\"\"\"\"\"-.",
+                    "/         \\                  /         \\",
+                    "\\         /                  \\         /",};
+                headM = " `-`--`--'                    `--'--'-'";
+                footL = new String[]{
+                    "       )__________|__|__________(",
+                    "       )__________|__|__________(",
+                    "      |            ||            |",
+                    "      |____________||____________|",
+                    "        ),-----.(      ),-----.(",
+                    "      ,'   ==.   \\    /  .==    `.",
+                    "     /            )  (            \\",
+                    "     `==========='    `==========='",};
+                len = 39;
+                break;
+            default:
+                return;
         }
+        int i = lst.size();
+        if (i < 1) {
+            return;
+        }
+        String a = bits.padBeg("", (max - len) / 2, " ");
+        applyBoxing(lst, 0, a, headM);
+        applyBoxing(lst, i - 1, a, footM);
+        for (i = 0; i < headL.length; i++) {
+            lst.add(i, a + headL[i]);
+        }
+        for (i = 0; i < footL.length; i++) {
+            lst.add(a + footL[i]);
+        }
+    }
+
+    private static void applyBoxing(List<String> lst, int idx, String beg, String mod) {
+        if (mod == null) {
+            return;
+        }
+        beg += mod;
+        byte[] ned = beg.getBytes();
+        byte[] str = bits.padEnd(lst.get(idx), ned.length, " ").getBytes();
+        for (int i = 0; i < ned.length; i++) {
+            int o = ned[i];
+            if (o <= 32) {
+                continue;
+            }
+            if (o == 'D') {
+                o = ' ';
+            }
+            str[i] = (byte) o;
+        }
+        lst.set(idx, new String(str));
     }
 
     private String separator;

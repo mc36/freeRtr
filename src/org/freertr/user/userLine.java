@@ -832,15 +832,9 @@ public class userLine {
         l.add(null, false, 2, new int[]{-1}, "logging", "enable logging");
         l.add(null, false, 2, new int[]{-1}, "timestamp", "enable timestamps");
         l.add(null, false, 2, new int[]{3, -1}, "boxer", "make shows cute");
-        l.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
-        l.add(null, false, 3, new int[]{-1}, "simple", "select simple mode");
-        l.add(null, false, 3, new int[]{-1}, "cowsay", "select coway mode");
+        userFormat.listBoxerModes(l, 3);
         l.add(null, false, 2, new int[]{3, -1}, "colorize", "enable colorization");
-        l.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
-        l.add(null, false, 3, new int[]{-1}, "header", "select header mode");
-        l.add(null, false, 3, new int[]{-1}, "rainbow", "select rainbow mode");
-        l.add(null, false, 3, new int[]{-1}, "zeroes", "select zeroes mode");
-        l.add(null, false, 3, new int[]{-1}, "prompt", "select prompt mode");
+        userFormat.listColorModes(l, 3);
         l.add(null, false, 2, new int[]{-1}, "spacetab", "enable space as tab");
         l.add(null, false, 2, new int[]{-1}, "capslock", "enable caps lock");
         l.add(null, false, 2, new int[]{-1}, "bells", "enable beep boops");

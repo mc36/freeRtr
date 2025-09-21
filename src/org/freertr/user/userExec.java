@@ -2041,15 +2041,9 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "bright-cyan", "select color");
         hl.add(null, false, 3, new int[]{-1}, "bright-white", "select color");
         hl.add(null, false, 2, new int[]{3, -1}, "boxer", "make shows cute");
-        hl.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
-        hl.add(null, false, 3, new int[]{-1}, "simple", "select simple mode");
-        hl.add(null, false, 3, new int[]{-1}, "cowsay", "select coway mode");
+        userFormat.listBoxerModes(hl, 3);
         hl.add(null, false, 2, new int[]{3, -1}, "colorize", "sending to ansi terminal");
-        hl.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
-        hl.add(null, false, 3, new int[]{-1}, "header", "select header mode");
-        hl.add(null, false, 3, new int[]{-1}, "rainbow", "select rainbow mode");
-        hl.add(null, false, 3, new int[]{-1}, "zeroes", "select zeroes mode");
-        hl.add(null, false, 3, new int[]{-1}, "prompt", "select prompt mode");
+        userFormat.listColorModes(hl, 3);
         hl.add(null, false, 2, new int[]{-1}, "spacetab", "treat space as tabulator");
         hl.add(null, false, 2, new int[]{-1}, "stars", "use stars in password prompt");
         hl.add(null, false, 2, new int[]{-1}, "title", "resend terminal title");
