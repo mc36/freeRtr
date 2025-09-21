@@ -5411,12 +5411,7 @@ public class userExec {
             return;
         }
         if (a.equals("tablemode")) {
-            a = cmd.word();
-            if (a.length() < 1) {
-                pipe.settingsPut(pipeSetting.tabMod, userFormat.tableMode.fancy);
-                return;
-            }
-            pipe.settingsPut(pipeSetting.tabMod, userFormat.str2tabmod(a));
+            pipe.settingsPut(pipeSetting.tabMod, userFormat.str2tabmod(cmd.word()));
             return;
         }
         if (!a.equals(cmds.negated)) {

@@ -509,7 +509,7 @@ public class enc7bit {
             byte r = doHackOneChar(c);
             res[i] = r;
         }
-        return new String(res) + " loOolz#xDDD";
+        return new String(res);
     }
 
     /**

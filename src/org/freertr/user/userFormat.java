@@ -82,6 +82,9 @@ public class userFormat {
      * @return table mode
      */
     public static tableMode str2tabmod(String a) {
+        if (a.length() < 1) {
+            return tableMode.table;
+        }
         if (a.equals("raw")) {
             return tableMode.raw;
         }
