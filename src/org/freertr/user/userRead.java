@@ -332,6 +332,27 @@ public class userRead implements Comparator<String> {
     }
 
     /**
+     * colorize a zeroes character
+     *
+     * @param ch character to match
+     * @param def default color
+     * @param cols colors to pick
+     * @return chosen color
+     */
+    public static int zeroesColor(int ch, int def, int[] cols) {
+        switch (ch) {
+            case 'o':
+            case '0':
+            case '@':
+            case 'O':
+            case '3':
+                return cols[bits.random(0, cols.length)];
+            default:
+                return def;
+        }
+    }
+
+    /**
      * set height of screen
      *
      * @param pip pipe to set
@@ -934,8 +955,7 @@ public class userRead implements Comparator<String> {
             p++;
         }
         int o = p;
-        final byte[] rainc = {userScreen.colBrWhite, userScreen.colBrYellow, userScreen.colBrCyan, userScreen.colBrGreen, userScreen.colBrRed, userScreen.colBrMagenta};
-        final int rains = 12;
+        int[] rainc = {userScreen.colBrWhite, userScreen.colBrYellow, userScreen.colBrCyan, userScreen.colBrGreen, userScreen.colBrRed, userScreen.colBrMagenta};
         for (int i = 0; i < lst.size(); i++) {
             String a = lst.get(i);
             switch (color) {
@@ -955,18 +975,34 @@ public class userRead implements Comparator<String> {
                     int d = pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite);
                     int r = a.length();
                     for (int q = 0;; q++) {
-                        int s = q * rains;
+                        int s = q * rainc.length;
                         if (s >= r) {
                             break;
                         }
-                        int t = s + rains;
+                        int t = s + rainc.length;
                         if (t > r) {
                             t = r;
                         }
                         userScreen.sendAnsCol(pipe, userScreen.setForeground(d, rainc[(i + q) % rainc.length]));
                         pipe.strPut(a.substring(s, t));
                     }
-                    userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite));
+                    userScreen.sendAnsCol(pipe, d);
+                    pipe.linePut("");
+                    break;
+                case zeroes:
+                    d = pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite);
+                    r = d;
+                    byte[] b = a.getBytes();
+                    for (int q = 0; q < b.length; q++) {
+                        int ch = b[q];
+                        int s = zeroesColor(ch, d, rainc);
+                        if (s != r) {
+                            userScreen.sendAnsCol(pipe, userScreen.setForeground(d, s));
+                            r = s;
+                        }
+                        pipe.strPut("" + (char) ch);
+                    }
+                    userScreen.sendAnsCol(pipe, d);
                     pipe.linePut("");
                     break;
                 default:

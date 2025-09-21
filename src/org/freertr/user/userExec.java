@@ -2044,6 +2044,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
         hl.add(null, false, 3, new int[]{-1}, "header", "select header mode");
         hl.add(null, false, 3, new int[]{-1}, "rainbow", "select rainbow mode");
+        hl.add(null, false, 3, new int[]{-1}, "zeroes", "select zeroes mode");
         hl.add(null, false, 3, new int[]{-1}, "prompt", "select prompt mode");
         hl.add(null, false, 2, new int[]{-1}, "spacetab", "treat space as tabulator");
         hl.add(null, false, 2, new int[]{-1}, "stars", "use stars in password prompt");

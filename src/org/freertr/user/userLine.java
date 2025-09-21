@@ -825,6 +825,7 @@ public class userLine {
         l.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
         l.add(null, false, 3, new int[]{-1}, "header", "select header mode");
         l.add(null, false, 3, new int[]{-1}, "rainbow", "select rainbow mode");
+        l.add(null, false, 3, new int[]{-1}, "zeroes", "select zeroes mode");
         l.add(null, false, 3, new int[]{-1}, "prompt", "select prompt mode");
         l.add(null, false, 2, new int[]{-1}, "spacetab", "enable space as tab");
         l.add(null, false, 2, new int[]{-1}, "capslock", "enable caps lock");

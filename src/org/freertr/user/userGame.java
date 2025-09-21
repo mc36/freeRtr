@@ -1224,19 +1224,7 @@ public class userGame {
             byte[] b = s.getBytes();
             for (int i = 0; i < b.length; i++) {
                 int ch = b[i];
-                int cl = userScreen.colBrGreen;
-                char chr = (char) ch;
-                switch (chr) {
-                    case 'o':
-                    case '0':
-                    case '@':
-                    case 'O':
-                    case '3':
-                        cl = god[bits.random(0, god.length)];
-                        break;
-                    default:
-                        break;
-                }
+                int cl = userRead.zeroesColor(ch, userScreen.colBrGreen, god);
                 console.putInt(i, o, false, cl, ch);
             }
         }
