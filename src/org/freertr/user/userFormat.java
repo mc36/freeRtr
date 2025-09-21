@@ -234,6 +234,22 @@ public class userFormat {
          * bear
          */
         bear,
+        /**
+         * boy
+         */
+        boy,
+        /**
+         * girl
+         */
+        girl,
+        /**
+         * baby
+         */
+        baby,
+        /**
+         * mouse
+         */
+        mouse,
 
     }
 
@@ -259,6 +275,18 @@ public class userFormat {
         if (a.equals("bear")) {
             return boxerMode.bear;
         }
+        if (a.equals("boy")) {
+            return boxerMode.boy;
+        }
+        if (a.equals("girl")) {
+            return boxerMode.girl;
+        }
+        if (a.equals("baby")) {
+            return boxerMode.baby;
+        }
+        if (a.equals("mouse")) {
+            return boxerMode.mouse;
+        }
         return boxerMode.normal;
     }
 
@@ -278,6 +306,14 @@ public class userFormat {
                 return "cowsay";
             case bear:
                 return "bear";
+            case boy:
+                return "boy";
+            case girl:
+                return "girl";
+            case baby:
+                return "baby";
+            case mouse:
+                return "mouse";
             default:
                 return "unknown";
         }
@@ -294,6 +330,10 @@ public class userFormat {
         h.add(null, false, beg, new int[]{-1}, "simple", "select simple mode");
         h.add(null, false, beg, new int[]{-1}, "cowsay", "select cowsay mode");
         h.add(null, false, beg, new int[]{-1}, "bear", "select bear mode");
+        h.add(null, false, beg, new int[]{-1}, "boy", "select boy mode");
+        h.add(null, false, beg, new int[]{-1}, "girl", "select girl mode");
+        h.add(null, false, beg, new int[]{-1}, "baby", "select baby mode");
+        h.add(null, false, beg, new int[]{-1}, "mouse", "select mouse mode");
     }
 
     /**
@@ -390,6 +430,68 @@ public class userFormat {
                     "     /            )  (            \\",
                     "     `==========='    `==========='",};
                 len = 39;
+                break;
+            case boy:
+                headL = new String[]{
+                    "     .-\"\"\"-.",
+                    "    / .===. \\",
+                    "    \\/ 6 6 \\/",
+                    "    ( \\___/ )",};
+                headM = "ooo  \\_____/";
+                footM = "              ooo";
+                footL = new String[]{
+                    "     |  |  |",
+                    "     |_ | _|",
+                    "     |  |  |",
+                    "     |__|__|",
+                    "     /-'Y'-\\",
+                    "    (__/ \\__)",};
+                len = 17;
+                break;
+            case girl:
+                headL = new String[]{
+                    "      .-\"```\"-.",
+                    "     /_______; \\",
+                    "    (_________)\\|",
+                    "    / / a a \\ \\(_)",
+                    "   / ( \\___/ ) \\",};
+                headM = "ooo\\__\\_____/__/";
+                footM = "                ooo";
+                footL = new String[]{
+                    "   /           \\",
+                    "  /:.:.:.:.:.:.:\\",
+                    "      |  |  |",
+                    "      \\==|==/",
+                    "      /-'Y'-\\",
+                    "     (__/ \\__)",};
+                len = 19;
+                break;
+            case baby:
+                headL = new String[]{
+                    "       \\\\\\///",
+                    "      / _  _ \\",
+                    "    (| (.)(.) |)",};
+                headM = "  .OOOo--()--oOOO.";
+                footM = ".oooO";
+                footL = new String[]{
+                    " (   )   Oooo.",
+                    "  \\ (    (   )",
+                    "   \\_)    ) /",
+                    "         (_/",};
+                len = 18;
+                break;
+            case mouse:
+                headL = new String[]{
+                    " .--,       .--,",
+                    "( (  \\.---./  ) )",
+                    " '.__/o   o\\__.'",
+                    "    {=  ^  =}",
+                    "     >  -  <",};
+                headM = " .\"\"`       `\"\".";
+                footL = new String[]{
+                    "   ___)( )(___",
+                    "  (((__) (__)))",};
+                len = 17;
                 break;
             default:
                 return;
