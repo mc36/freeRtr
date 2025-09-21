@@ -474,14 +474,26 @@ public class enc7bit {
                 return '0';
             case 'e':
                 return '3';
+            case '3':
+                return 'E';
+            case '2':
+                return 'Z';
             case 's':
-                return 'z';
+                return '$';
             case 'z':
-                return 's';
+                return '2';
             case 'a':
                 return '4';
             case '4':
-                return 'a';
+                return 'A';
+            case 't':
+                return '7';
+            case '7':
+                return 'T';
+            case '8':
+                return 'B';
+            case 'b':
+                return '8';
             case 'v':
                 return 'w';
             case 'w':
