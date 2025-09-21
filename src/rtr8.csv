@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.9.21-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-09-21 14:40:03, took 00:13:31, with 50 workers, on 844 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2025-09-21 15:09:17, took 00:12:03, with 50 workers, on 844 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
