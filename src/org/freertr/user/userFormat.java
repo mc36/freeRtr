@@ -250,6 +250,34 @@ public class userFormat {
          * mouse
          */
         mouse,
+        /**
+         * panther
+         */
+        panther,
+        /**
+         * santa
+         */
+        santa,
+        /**
+         * sunset
+         */
+        sunset,
+        /**
+         * horse
+         */
+        horse,
+        /**
+         * cat
+         */
+        cat,
+        /**
+         * dog
+         */
+        dog,
+        /**
+         * flower
+         */
+        flower,
 
     }
 
@@ -287,6 +315,27 @@ public class userFormat {
         if (a.equals("mouse")) {
             return boxerMode.mouse;
         }
+        if (a.equals("panther")) {
+            return boxerMode.panther;
+        }
+        if (a.equals("santa")) {
+            return boxerMode.santa;
+        }
+        if (a.equals("sunset")) {
+            return boxerMode.sunset;
+        }
+        if (a.equals("horse")) {
+            return boxerMode.horse;
+        }
+        if (a.equals("cat")) {
+            return boxerMode.cat;
+        }
+        if (a.equals("dog")) {
+            return boxerMode.dog;
+        }
+        if (a.equals("flower")) {
+            return boxerMode.flower;
+        }
         return boxerMode.normal;
     }
 
@@ -314,6 +363,20 @@ public class userFormat {
                 return "baby";
             case mouse:
                 return "mouse";
+            case panther:
+                return "panther";
+            case santa:
+                return "santa";
+            case sunset:
+                return "sunset";
+            case horse:
+                return "horse";
+            case cat:
+                return "cat";
+            case dog:
+                return "dog";
+            case flower:
+                return "flower";
             default:
                 return "unknown";
         }
@@ -334,6 +397,13 @@ public class userFormat {
         h.add(null, false, beg, new int[]{-1}, "girl", "select girl mode");
         h.add(null, false, beg, new int[]{-1}, "baby", "select baby mode");
         h.add(null, false, beg, new int[]{-1}, "mouse", "select mouse mode");
+        h.add(null, false, beg, new int[]{-1}, "panther", "select panther mode");
+        h.add(null, false, beg, new int[]{-1}, "santa", "select santa mode");
+        h.add(null, false, beg, new int[]{-1}, "sunset", "select sunset mode");
+        h.add(null, false, beg, new int[]{-1}, "horse", "select horse mode");
+        h.add(null, false, beg, new int[]{-1}, "cat", "select cat mode");
+        h.add(null, false, beg, new int[]{-1}, "dog", "select dog mode");
+        h.add(null, false, beg, new int[]{-1}, "flower", "select flower mode");
     }
 
     /**
@@ -435,7 +505,7 @@ public class userFormat {
                 headL = new String[]{
                     "     .-\"\"\"-.",
                     "    / .===. \\",
-                    "    \\/ 6 6 \\/",
+                    "    \\/ o o \\/",
                     "    ( \\___/ )",};
                 headM = "ooo  \\_____/";
                 footM = "              ooo";
@@ -453,7 +523,7 @@ public class userFormat {
                     "      .-\"```\"-.",
                     "     /_______; \\",
                     "    (_________)\\|",
-                    "    / / a a \\ \\(_)",
+                    "    / / o o \\ \\(_)",
                     "   / ( \\___/ ) \\",};
                 headM = "ooo\\__\\_____/__/";
                 footM = "                ooo";
@@ -470,7 +540,7 @@ public class userFormat {
                 headL = new String[]{
                     "       \\\\\\///",
                     "      / _  _ \\",
-                    "    (| (.)(.) |)",};
+                    "    (| (o)(o) |)",};
                 headM = "  .OOOo--()--oOOO.";
                 footM = ".oooO";
                 footL = new String[]{
@@ -492,6 +562,92 @@ public class userFormat {
                     "   ___)( )(___",
                     "  (((__) (__)))",};
                 len = 17;
+                break;
+            case panther:
+                headL = new String[]{
+                    "   _\\|/_",
+                    "   (o o)",};
+                headM = "oOO {_} OOo";
+                len = 11;
+                break;
+            case santa:
+                headL = new String[]{
+                    "        .-\"``\"-.",
+                    "       /______; \\",
+                    "      {_______}\\|",
+                    "      (/ o o \\)(_)",
+                    "      (.-.).-.)",
+                    "     (    ^    )",};
+                headM = "ooo   '-.___.-'";
+                footM = "                 ooo";
+                footL = new String[]{
+                    "      |_  |  _|",
+                    "      \\___|___/",
+                    "      {___|___}",
+                    "       |_ | _|",
+                    "       /-'Y'-\\",
+                    "      (__/ \\__)",};
+                len = 20;
+                break;
+            case sunset:
+                headL = new String[]{
+                    "           .",
+                    "      .    |    .",
+                    "       \\   |   /",
+                    "   '.   \\  '  /   .'",
+                    "     '. .'```'. .'",};
+                headM = ":::::::`       `:::::::";
+                len = 23;
+                break;
+            case horse:
+                headL = new String[]{
+                    "  |\\\\/|",
+                    "  / \" '\\",
+                    "  /o o  \\",
+                    " /    ) |",
+                    "'  _.'  |",};
+                headM = "'-'/    \\";
+                len = 9;
+                break;
+            case cat:
+                headL = new String[]{
+                    "        /\\             /\\",
+                    "       |`\\\\_,--=\"=--,_//`|",
+                    "       \\ .\"  :'. .':  \". /",
+                    "      ==)  _ :  '  : _  (==",
+                    "        |>/O\\   _   /O\\<|",
+                    "        | \\-\"~` _ `~\"-/ |",
+                    "       >|`===. \\_/ .===`|<",
+                    " .-\"-.   \\==='  |  '===/   .-\"-.",
+                    "{'. '`}   \\,  .-'-.  ,/   {.'. '}",};
+                headM = "`\"---\"`     `~-===-~`     `\"---\"`";
+                len = 33;
+                break;
+            case dog:
+                headL = new String[]{
+                    "      __   _,--=\"=--,_   __",
+                    "     /  \\.\"    .-.    \"./  \\",
+                    "    /  ,/  _   : :   _  \\/` \\",
+                    "    \\  `| /o\\  :_:  /o\\ |\\__/",
+                    "     `-'| :=\"~` _ `~\"=: |",
+                    "        \\`     (_)     `/",
+                    " .-\"-.   \\      |      /   .-\"-.",
+                    "{     }  |  /,.-'-.,\\  |  {     }",};
+                headM = "(_)_)_)  \\_/`~-===-~`\\_/  (_(_(_)";
+                len = 33;
+                break;
+            case flower:
+                headL = new String[]{
+                    "   _ _  ",
+                    " _{ ' }_",
+                    "{ `.!.` }",
+                    "',_/Y\\_,'",
+                    "  {_,_}",
+                    "    |",
+                    "  (\\|  /)",
+                    "   \\| //",};
+                headM = "    |//";
+                len = 9;
                 break;
             default:
                 return;
