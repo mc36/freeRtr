@@ -150,6 +150,25 @@ public class userFormat {
     }
 
     /**
+     * boxer modes
+     */
+    public enum boxerMode {
+        /**
+         * normal
+         */
+        normal,
+        /**
+         * simple
+         */
+        simple,
+        /**
+         * cowsay
+         */
+        cowsay,
+
+    }
+
+    /**
      * convert string to color mode
      *
      * @param a string
@@ -197,6 +216,109 @@ public class userFormat {
                 return "prompt";
             default:
                 return "unknown";
+        }
+    }
+
+    /**
+     * convert string to color mode
+     *
+     * @param a string
+     * @return color mode
+     */
+    public static boxerMode str2boxmod(String a) {
+        if (a.length() < 1) {
+            return boxerMode.normal;
+        }
+        if (a.equals("normal")) {
+            return boxerMode.normal;
+        }
+        if (a.equals("simple")) {
+            return boxerMode.simple;
+        }
+        if (a.equals("cowsay")) {
+            return boxerMode.cowsay;
+        }
+        return boxerMode.normal;
+    }
+
+    /**
+     * convert color mode to string
+     *
+     * @param mod table mode
+     * @return string
+     */
+    public static String boxmod2str(boxerMode mod) {
+        switch (mod) {
+            case normal:
+                return "normal";
+            case simple:
+                return "simple";
+            case cowsay:
+                return "cowsay";
+            default:
+                return "unknown";
+        }
+    }
+
+    /**
+     * colorize a zeroes character
+     *
+     * @param ch character to match
+     * @param def default color
+     * @param cols colors to pick
+     * @return chosen color
+     */
+    public static int zeroesColor(int ch, int def, int[] cols) {
+        switch (ch) {
+            case 'o':
+            case '0':
+            case '@':
+            case 'O':
+            case '3':
+                return cols[bits.random(0, cols.length)];
+            default:
+                return def;
+        }
+    }
+
+    /**
+     * apply boxing
+     *
+     * @param lst list to apply
+     * @param mod mode to use
+     * @param box need to box
+     */
+    public static void applyBoxing(List<String> lst, boxerMode mod, boolean box) {
+        if (mod == boxerMode.normal) {
+            return;
+        }
+        if (box) {
+            int p = 0;
+            for (int i = 0; i < lst.size(); i++) {
+                int o = lst.get(i).length();
+                if (o < p) {
+                    continue;
+                }
+                p = o;
+            }
+            for (int i = 0; i < lst.size(); i++) {
+                String a = lst.get(i);
+                a = "| " + bits.padEnd(a, p, " ") + " |";
+                lst.set(i, a);
+            }
+            lst.add(0, " /" + bits.padEnd("", p, "~") + "\\");
+            lst.add(" \\" + bits.padEnd("", p, "_") + "/");
+        }
+        switch (mod) {
+            case simple:
+                break;
+            case cowsay:
+                lst.add("     \\   ^__^");
+                lst.add("      \\  (oo)\\_______");
+                lst.add("         (__)\\       )\\/\\");
+                lst.add("             ||----w |");
+                lst.add("             ||     ||");
+                break;
         }
     }
 

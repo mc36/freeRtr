@@ -1224,7 +1224,7 @@ public class userGame {
             byte[] b = s.getBytes();
             for (int i = 0; i < b.length; i++) {
                 int ch = b[i];
-                int cl = userRead.zeroesColor(ch, userScreen.colBrGreen, god);
+                int cl = userFormat.zeroesColor(ch, userScreen.colBrGreen, god);
                 console.putInt(i, o, false, cl, ch);
             }
         }

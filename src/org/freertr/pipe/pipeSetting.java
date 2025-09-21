@@ -43,69 +43,74 @@ public class pipeSetting implements Comparable<pipeSetting> {
     public final static int colors = 6;
 
     /**
+     * boxer
+     */
+    public final static int boxer = 7;
+
+    /**
      * spacetab
      */
-    public final static int spacTab = 7;
+    public final static int spacTab = 8;
 
     /**
      * logging
      */
-    public final static int logging = 8;
+    public final static int logging = 9;
 
     /**
      * table mode
      */
-    public final static int tabMod = 9;
+    public final static int tabMod = 10;
 
     /**
      * deactivation character
      */
-    public final static int deactive = 10;
+    public final static int deactive = 11;
 
     /**
      * escape character
      */
-    public final static int escape = 11;
+    public final static int escape = 12;
 
     /**
      * routing table lines
      */
-    public final static int riblines = 12;
+    public final static int riblines = 13;
 
     /**
      * capslock
      */
-    public final static int capsLock = 13;
+    public final static int capsLock = 14;
 
     /**
      * bells
      */
-    public final static int termBells = 14;
+    public final static int termBells = 15;
 
     /**
      * ansi mode
      */
-    public final static int ansiMode = 15;
+    public final static int ansiMode = 16;
 
     /**
      * password stars
      */
-    public final static int passStar = 16;
+    public final static int passStar = 17;
 
     /**
      * normal color
      */
-    public final static int colNormal = 17;
+    public final static int colNormal = 18;
 
     /**
      * prompt color
      */
-    public final static int colPrompt = 18;
+    public final static int colPrompt = 19;
 
     /**
      * header color
      */
-    public final static int colHeader = 19;
+    public final static int colHeader = 20;
 
     /**
      * name of the setting
@@ -151,6 +156,7 @@ public class pipeSetting implements Comparable<pipeSetting> {
         l.add("authenticate|" + pip.settingsGet(pipeSetting.authed, new authResult()));
         l.add("monitor|" + pip.settingsGet(pipeSetting.logging, false));
         l.add("colorize|" + pip.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
+        l.add("boxer|" + pip.settingsGet(pipeSetting.boxer, userFormat.boxerMode.normal));
         l.add("background|" + userScreen.color2string(pip.settingsGet(pipeSetting.colNormal, userScreen.colWhite) >>> 16));
         l.add("foreground|" + userScreen.color2string(pip.settingsGet(pipeSetting.colNormal, userScreen.colWhite)));
         l.add("prompt|" + userScreen.color2string(pip.settingsGet(pipeSetting.colPrompt, userScreen.colBrGreen)));

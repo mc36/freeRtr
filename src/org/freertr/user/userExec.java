@@ -2040,6 +2040,10 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "bright-magenta", "select color");
         hl.add(null, false, 3, new int[]{-1}, "bright-cyan", "select color");
         hl.add(null, false, 3, new int[]{-1}, "bright-white", "select color");
+        hl.add(null, false, 2, new int[]{3, -1}, "boxer", "make shows cute");
+        hl.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
+        hl.add(null, false, 3, new int[]{-1}, "simple", "select simple mode");
+        hl.add(null, false, 3, new int[]{-1}, "cowsay", "select coway mode");
         hl.add(null, false, 2, new int[]{3, -1}, "colorize", "sending to ansi terminal");
         hl.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
         hl.add(null, false, 3, new int[]{-1}, "header", "select header mode");
@@ -5365,6 +5369,10 @@ public class userExec {
             pipe.settingsPut(pipeSetting.colors, userFormat.str2colmod(cmd.word()));
             return;
         }
+        if (a.equals("boxer")) {
+            pipe.settingsPut(pipeSetting.boxer, userFormat.str2boxmod(cmd.word()));
+            return;
+        }
         if (a.equals("spacetab")) {
             pipe.settingsPut(pipeSetting.spacTab, true);
             return;
@@ -5455,6 +5463,10 @@ public class userExec {
         }
         if (a.equals("colorize")) {
             pipe.settingsPut(pipeSetting.colors, userFormat.colorMode.normal);
+            return;
+        }
+        if (a.equals("boxer")) {
+            pipe.settingsPut(pipeSetting.boxer, userFormat.boxerMode.normal);
             return;
         }
         if (a.equals("spacetab")) {
@@ -5562,6 +5574,7 @@ public class userExec {
         userRead.setTermWdt(pip, pipe.settingsGet(pipeSetting.width, 80));
         userRead.setTermLen(pip, 0);
         pip.settingsPut(pipeSetting.tabMod, pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
+        pip.settingsPut(pipeSetting.boxer, pipe.settingsGet(pipeSetting.boxer, userFormat.boxerMode.normal));
         pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));
         if (col) {
             pip.settingsPut(pipeSetting.colors, pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));

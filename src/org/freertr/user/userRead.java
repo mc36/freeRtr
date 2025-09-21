@@ -14,7 +14,6 @@ import org.freertr.pipe.pipeConnect;
 import org.freertr.pipe.pipeReader;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
-import org.freertr.tab.tabGen;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -215,6 +214,7 @@ public class userRead implements Comparator<String> {
         new userFilter(".*", cmds.tabulator + "exec riblines 8192", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec timestamp", null),
         new userFilter(".*", cmds.tabulator + "exec colorize normal", null),
+        new userFilter(".*", cmds.tabulator + "exec boxer normal", null),
         new userFilter(".*", cmds.tabulator + "exec background black", null),
         new userFilter(".*", cmds.tabulator + "exec foreground white", null),
         new userFilter(".*", cmds.tabulator + "exec prompt bright-green", null),
@@ -271,6 +271,7 @@ public class userRead implements Comparator<String> {
             pipe.settingsAdd(pipeSetting.times, false);
             pipe.settingsAdd(pipeSetting.passStar, false);
             pipe.settingsAdd(pipeSetting.colors, userFormat.colorMode.normal);
+            pipe.settingsAdd(pipeSetting.boxer, userFormat.boxerMode.normal);
             pipe.settingsAdd(pipeSetting.colNormal, userScreen.colWhite);
             pipe.settingsAdd(pipeSetting.colPrompt, userScreen.colBrGreen);
             pipe.settingsAdd(pipeSetting.colHeader, userScreen.colBrYellow);
@@ -291,6 +292,7 @@ public class userRead implements Comparator<String> {
         pipe.settingsAdd(pipeSetting.times, parent.execTimes);
         pipe.settingsAdd(pipeSetting.passStar, parent.passStars);
         pipe.settingsAdd(pipeSetting.colors, parent.execColor);
+        pipe.settingsAdd(pipeSetting.boxer, parent.execBoxer);
         pipe.settingsAdd(pipeSetting.colNormal, parent.execColNrm);
         pipe.settingsAdd(pipeSetting.colPrompt, parent.execColPrm);
         pipe.settingsAdd(pipeSetting.colHeader, parent.execColHdr);
@@ -329,27 +331,6 @@ public class userRead implements Comparator<String> {
             siz = 5;
         }
         pip.settingsPut(pipeSetting.riblines, siz);
-    }
-
-    /**
-     * colorize a zeroes character
-     *
-     * @param ch character to match
-     * @param def default color
-     * @param cols colors to pick
-     * @return chosen color
-     */
-    public static int zeroesColor(int ch, int def, int[] cols) {
-        switch (ch) {
-            case 'o':
-            case '0':
-            case '@':
-            case 'O':
-            case '3':
-                return cols[bits.random(0, cols.length)];
-            default:
-                return def;
-        }
     }
 
     /**
@@ -939,7 +920,7 @@ public class userRead implements Comparator<String> {
         }
     }
 
-    private boolean doPutArr(List<String> lst, userFormat.colorMode color) {
+    private boolean doPutArr(List<String> lst, userFormat.colorMode color, boolean boxed) {
         lst = doFilterList(lst);
         for (; filterN.length() > 0;) {
             setNfilter();
@@ -949,6 +930,7 @@ public class userRead implements Comparator<String> {
             pipe.linePut("");
             return true;
         }
+        userFormat.applyBoxing(lst, pipe.settingsGet(pipeSetting.boxer, userFormat.boxerMode.normal), !boxed);
         final int height = pipe.settingsGet(pipeSetting.height, 25);
         int p = 2;
         if (pipe.settingsGet(pipeSetting.times, false)) {
@@ -995,7 +977,7 @@ public class userRead implements Comparator<String> {
                     byte[] b = a.getBytes();
                     for (int q = 0; q < b.length; q++) {
                         int ch = b[q];
-                        int s = zeroesColor(ch, d, rainc);
+                        int s = userFormat.zeroesColor(ch, d, rainc);
                         if (s != r) {
                             userScreen.sendAnsCol(pipe, userScreen.setForeground(d, s));
                             r = s;
@@ -1046,7 +1028,7 @@ public class userRead implements Comparator<String> {
             color = userFormat.colorMode.normal;
         }
         columnL = 0;
-        return doPutArr(lst, color);
+        return doPutArr(lst, color, false);
     }
 
     /**
@@ -1065,7 +1047,7 @@ public class userRead implements Comparator<String> {
         if (mod == userFormat.tableMode.fancy) {
             columnL++;
         }
-        return doPutArr(lst.formatAll(mod), pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
+        return doPutArr(lst.formatAll(mod), pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal), mod == userFormat.tableMode.fancy);
     }
 
     /**

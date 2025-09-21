@@ -73,6 +73,11 @@ public class userLine {
     public userFormat.colorMode execColor = userFormat.colorMode.normal;
 
     /**
+     * boxer
+     */
+    public userFormat.boxerMode execBoxer = userFormat.boxerMode.normal;
+
+    /**
      * normal color
      */
     public int execColNrm = userScreen.colWhite;
@@ -415,6 +420,7 @@ public class userLine {
         lst.add(beg + "exec prompt " + userScreen.color2string(execColPrm));
         lst.add(beg + "exec header " + userScreen.color2string(execColHdr));
         lst.add(beg + "exec colorize " + userFormat.colmod2str(execColor));
+        lst.add(beg + "exec boxer " + userFormat.boxmod2str(execBoxer));
         lst.add(beg + "exec ansimode " + userScreen.ansimod2str(ansiMode));
         lst.add(beg + "exec tablemode " + userFormat.tabmod2str(execTables));
         lst.add(beg + "exec welcome " + promptWelcome);
@@ -563,6 +569,10 @@ public class userLine {
             }
             if (s.equals("colorize")) {
                 execColor = userFormat.str2colmod(cmd.word());
+                return false;
+            }
+            if (s.equals("boxer")) {
+                execBoxer = userFormat.str2boxmod(cmd.word());
                 return false;
             }
             if (s.equals("spacetab")) {
@@ -821,6 +831,10 @@ public class userLine {
         l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of interface");
         l.add(null, false, 2, new int[]{-1}, "logging", "enable logging");
         l.add(null, false, 2, new int[]{-1}, "timestamp", "enable timestamps");
+        l.add(null, false, 2, new int[]{3, -1}, "boxer", "make shows cute");
+        l.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
+        l.add(null, false, 3, new int[]{-1}, "simple", "select simple mode");
+        l.add(null, false, 3, new int[]{-1}, "cowsay", "select coway mode");
         l.add(null, false, 2, new int[]{3, -1}, "colorize", "enable colorization");
         l.add(null, false, 3, new int[]{-1}, "normal", "select normal mode");
         l.add(null, false, 3, new int[]{-1}, "header", "select header mode");
