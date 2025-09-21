@@ -171,6 +171,11 @@ public class secInfoCfg {
      * set table formatter
      */
     public userFormat.tableMode format = userFormat.tableMode.normal;
+    
+    /**
+     * set box formatter
+     */
+    public userFormat.boxerMode boxed = userFormat.boxerMode.normal;
 
     /**
      * pmtud min

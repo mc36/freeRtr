@@ -575,6 +575,10 @@ public class userLine {
                 execBoxer = userFormat.str2boxmod(cmd.word());
                 return false;
             }
+            if (s.equals("tablemode")) {
+                execTables = userFormat.str2tabmod(cmd.word());
+                return false;
+            }
             if (s.equals("spacetab")) {
                 execSpace = true;
                 return false;
@@ -585,10 +589,6 @@ public class userLine {
             }
             if (s.equals("bells")) {
                 execBells = true;
-                return false;
-            }
-            if (s.equals("tablemode")) {
-                execTables = userFormat.str2tabmod(cmd.word());
                 return false;
             }
             if (s.equals("before")) {
@@ -793,6 +793,18 @@ public class userLine {
             }
             if (s.equals("authorization")) {
                 authorizeList = null;
+                return false;
+            }
+            if (s.equals("colorize")) {
+                execColor = userFormat.colorMode.normal;
+                return false;
+            }
+            if (s.equals("boxer")) {
+                execBoxer = userFormat.boxerMode.normal;
+                return false;
+            }
+            if (s.equals("tablemode")) {
+                execTables = userFormat.tableMode.normal;
                 return false;
             }
             return true;

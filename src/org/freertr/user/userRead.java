@@ -184,6 +184,10 @@ public class userRead implements Comparator<String> {
          */
         hacked,
         /**
+         * boxed mode
+         */
+        boxed,
+        /**
          * specified section
          */
         section,
@@ -845,6 +849,9 @@ public class userRead implements Comparator<String> {
                 return bits.lst2lin(lst, true);
             case hacked:
                 return enc7bit.toHackedLst(lst);
+            case boxed:
+                userFormat.applyBoxing(lst, userFormat.boxerMode.baby, true);
+                return lst;
             case section:
                 return userFilter.getSection(lst, filterS);
             case level:
@@ -1928,6 +1935,10 @@ public class userRead implements Comparator<String> {
         }
         if (a.equals("hacked")) {
             filterM = mode.hacked;
+            return;
+        }
+        if (a.equals("boxed")) {
+            filterM = mode.boxed;
             return;
         }
         if (a.equals("include")) {

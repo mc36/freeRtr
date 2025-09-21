@@ -1260,6 +1260,7 @@ public class userExec {
         hl.add(null, false, beg + 1, new int[]{beg, -1}, "ccode", "level hierarchy in brackets");
         hl.add(null, false, beg + 1, new int[]{beg, -1}, "linenumbers", "prepend lines with numbers");
         hl.add(null, false, beg + 1, new int[]{beg, -1}, "hacked", "hacker writing");
+        hl.add(null, false, beg + 1, new int[]{beg, -1}, "boxed", "boxed output");
         hl.add(null, false, beg + 1, new int[]{beg, -1}, "raw", "unfiltered");
         hl.add(null, false, beg + 1, new int[]{beg, -1}, "count", "count entities");
         hl.add(null, false, beg + 1, new int[]{beg, -1}, "summary", "summary of columns");

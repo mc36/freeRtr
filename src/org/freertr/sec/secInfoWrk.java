@@ -84,6 +84,11 @@ public class secInfoWrk implements Runnable {
     protected userFormat.tableMode format;
 
     /**
+     * set box formatter
+     */
+    public userFormat.boxerMode boxed;
+
+    /**
      * hack route details
      */
     protected boolean hack;
@@ -188,6 +193,7 @@ public class secInfoWrk implements Runnable {
         justip = ned.justip;
         style = ned.style;
         format = ned.format;
+        boxed = ned.boxed;
         detail = ned.details;
         single = ned.single;
         client = ned.client;
@@ -540,7 +546,7 @@ public class secInfoWrk implements Runnable {
         if (!detail) {
             return res;
         }
-        res.addAll(secInfoUtl.getRouteDetails(fwd, ntry, format, hack));
+        res.addAll(secInfoUtl.getRouteDetails(fwd, ntry, format, boxed, hack));
         return res;
     }
 

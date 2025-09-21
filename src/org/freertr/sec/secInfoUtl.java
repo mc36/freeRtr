@@ -316,6 +316,16 @@ public class secInfoUtl {
             doSanityChecks(cfg);
             return cfg;
         }
+        if (s.equals("boxer")) {
+            if (negated) {
+                cfg.boxed = userFormat.boxerMode.normal;
+                return cfg;
+            }
+            s = cmd.word();
+            cfg.boxed = userFormat.str2boxmod(s);
+            doSanityChecks(cfg);
+            return cfg;
+        }
         if (s.equals("router4")) {
             if (negated) {
                 cfg.router4typ = null;
@@ -517,19 +527,22 @@ public class secInfoUtl {
      * @param fwd forwarder to use
      * @param ntry route entry
      * @param tm table mode
+     * @param bm box mode
      * @param hck hacker voiced
      * @return text representing the route
      */
-    public final static List<String> getRouteDetails(ipFwd fwd, tabRouteEntry<addrIP> ntry, userFormat.tableMode tm, boolean hck) {
+    public final static List<String> getRouteDetails(ipFwd fwd, tabRouteEntry<addrIP> ntry, userFormat.tableMode tm, userFormat.boxerMode bm, boolean hck) {
         if (ntry == null) {
             return bits.str2lst(noRoute);
         }
         userFormat res = ntry.fullDump("", fwd);
         List<String> lst = res.formatAll(tm);
         if (!hck) {
+            userFormat.applyBoxing(lst, bm, true);
             return lst;
         }
         lst = enc7bit.toHackedLst(lst);
+        userFormat.applyBoxing(lst, bm, true);
         return lst;
     }
 
@@ -642,6 +655,9 @@ public class secInfoUtl {
         if (cfg.format != userFormat.tableMode.normal) {
             lst.add(beg + "format " + userFormat.tabmod2str(cfg.format));
         }
+        if (cfg.boxed != userFormat.boxerMode.normal) {
+            lst.add(beg + "boxed " + userFormat.boxmod2str(cfg.boxed));
+        }
         if (cfg.script != null) {
             lst.add(beg + "script " + cfg.script.name);
         }
@@ -684,6 +700,8 @@ public class secInfoUtl {
         lst.add(null, false, tab + 2, new int[]{-1}, "<name:scr>", "script name");
         lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "style", "colorize prefix details");
         lst.add(null, false, tab + 2, new int[]{-1}, "<str>", "string to send");
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "boxer", "box prefix details");
+        userFormat.listBoxerModes(lst, tab + 2);
         lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "format", "format prefix details");
         userFormat.listTableModes(lst, tab + 2);
         lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "tracker", "check tracker");
@@ -883,6 +901,10 @@ public class secInfoUtl {
         }
         if (a.equals("format")) {
             wrk.format = userFormat.str2tabmod(cmd.word());
+            return false;
+        }
+        if (a.equals("boxer")) {
+            wrk.boxed = userFormat.str2boxmod(cmd.word());
             return false;
         }
         if (debugger.clntIpInfo) {
