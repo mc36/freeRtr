@@ -2785,6 +2785,8 @@ class userGameRacer {
 
     private List<userGameRacerOpp> ops;
 
+    private int opm;
+
     private String sky;
 
     private int sped;
@@ -2808,6 +2810,7 @@ class userGameRacer {
         ops = new ArrayList<userGameRacerOpp>();
         sped = 100;
         lane = 0;
+        opm = bits.random(3, 6);
         sky = "";
         char[] gras = new char[]{' ', ' ', '_', '.', '-', '=', '^'};
         int len = 0;
@@ -2861,7 +2864,7 @@ class userGameRacer {
                 crs |= lane == op.lne;
                 ops.remove(op);
             }
-            for (int i = ops.size(); i < 4; i++) {
+            for (int i = ops.size(); i < opm; i++) {
                 userGameRacerOpp op = new userGameRacerOpp();
                 op.random();
                 for (;;) {
