@@ -1,6 +1,7 @@
 package org.freertr.user;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAll;
@@ -190,28 +191,6 @@ public class userGame {
     }
 
     /**
-     * draw a line
-     *
-     * @param bx begin x
-     * @param by begin y
-     * @param ex end x
-     * @param ey end y
-     * @param bg background color
-     * @param fg foreground color
-     * @param ch character to write
-     */
-    public void drawLine(int bx, int by, int ex, int ey, int bg, int fg, int ch) {
-        int step = Math.abs(bx - ex) + Math.abs(by - ey);
-        ex -= bx;
-        ey -= by;
-        for (int i = 0; i < step; i++) {
-            int x = (ex * i) / step;
-            int y = (ey * i) / step;
-            console.putInt(bx + x, by + y, bg, fg, false, ch);
-        }
-    }
-
-    /**
      * draw clock
      *
      * @param a time
@@ -242,7 +221,7 @@ public class userGame {
         val += Math.PI * 1.5;
         double px = bx * Math.cos(val) * scl;
         double py = by * Math.sin(val) * scl;
-        drawLine(bx, by, bx + (int) px, by + (int) py, bg, fg, ch);
+        console.drawLine(bx, by, bx + (int) px, by + (int) py, bg, fg, ch);
     }
 
     /**
@@ -1118,26 +1097,26 @@ public class userGame {
                 int pszx = (step + 1) * dszx;
                 int pszy = (step + 1) * dszy;
                 if (maze[posy + rgty][posx + rgtx] != 0) {
-                    drawLine(console.sizX - sszx, sszy, console.sizX - pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    drawLine(console.sizX - sszx, console.sizY - sszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - sszx, sszy, console.sizX - pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - sszx, console.sizY - sszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 } else {
-                    drawLine(console.sizX - sszx, sszy, console.sizX - sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - sszx, sszy, console.sizX - sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     if (maze[posy + advy][posx + advx] == 0) {
-                        drawLine(console.sizX - pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                        console.drawLine(console.sizX - pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     }
-                    drawLine(console.sizX - pszx, pszy, console.sizX - sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    drawLine(console.sizX - pszx, console.sizY - pszy, console.sizX - sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - pszx, pszy, console.sizX - sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - pszx, console.sizY - pszy, console.sizX - sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 }
                 if (maze[posy + lfty][posx + lftx] != 0) {
-                    drawLine(sszx, sszy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    drawLine(sszx, console.sizY - sszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(sszx, sszy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(sszx, console.sizY - sszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 } else {
-                    drawLine(sszx, sszy, sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(sszx, sszy, sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     if (maze[posy + advy][posx + advx] == 0) {
-                        drawLine(pszx, pszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                        console.drawLine(pszx, pszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                     }
-                    drawLine(pszx, pszy, sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    drawLine(pszx, console.sizY - pszy, sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(pszx, pszy, sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(pszx, console.sizY - pszy, sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 }
                 posx += advx;
                 posy += advy;
@@ -1146,10 +1125,10 @@ public class userGame {
                 }
                 posx = console.sizX - pszx;
                 posy = console.sizY - pszy;
-                drawLine(posx, posy, pszx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                drawLine(pszx, posy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                drawLine(pszx, pszy, posx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                drawLine(posx, pszy, posx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                console.drawLine(posx, posy, pszx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                console.drawLine(pszx, posy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                console.drawLine(pszx, pszy, posx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                console.drawLine(posx, pszy, posx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
                 break;
             }
             console.refresh();
@@ -1245,6 +1224,13 @@ public class userGame {
         }
         if (a.equals("minesweep")) {
             userGameMines t = new userGameMines(console);
+            t.doStart();
+            t.doGame();
+            t.doFinish();
+            return;
+        }
+        if (a.equals("racer")) {
+            userGameRacer t = new userGameRacer(console);
             t.doStart();
             t.doGame();
             t.doFinish();
@@ -2708,6 +2694,244 @@ class userGameChess {
     public void doFinish() {
         scr.doClear();
         scr.refresh();
+    }
+
+}
+
+class userGameRacerOpp implements Comparable<userGameRacerOpp> {
+
+    public int lne;
+
+    public int spd;
+
+    public int dst;
+
+    public int clr;
+
+    public void random() {
+        spd = bits.random(90, 130);
+        lne = bits.random(-1, 2);
+        dst = bits.random(0, 2) * 100;
+        clr = userScreen.colBright + bits.random(1, 8);
+    }
+
+    public int compareTo(userGameRacerOpp o) {
+        if (dst < o.dst) {
+            return -1;
+        }
+        if (dst > o.dst) {
+            return +1;
+        }
+        return 0;
+    }
+
+    public void draw(userScreen scr, int dir, int bx, int by, int mul) {
+        dir += lne;
+        String[] chr;
+        if (dir == 0) {
+            chr = new String[]{
+                "     _________",
+                "   ,'`-------'`.",
+                "  (/ /       \\ \\)",
+                "  / /---------\\ \\",
+                "/_-'-----------`-_\\",
+                "\\[::]_________[::]/",
+                " `--'         `--'"
+            };
+        } else if (dir < 0) {
+            chr = new String[]{
+                "        _,---____",
+                "      ,,-`-----__^^`",
+                "     /'         /  ()",
+                "   /___       ,/  /",
+                "___-__ ---___/  .'",
+                "(_ --_^^----' _/",
+                "  ^'  ^^^---.__)"
+            };
+        } else {
+            chr = new String[]{
+                "    ____---._",
+                " '^^__-----'-..",
+                "()   \\        `\\",
+                "  \\  \\.       ___\\",
+                "   `.  \\___--- __-_\\",
+                "     \\_ `____^^_-- _)",
+                "     (__.---^^^  `^"
+            };
+        }
+        for (int y = chr.length - 1; y >= 0; y--) {
+            byte[] b = chr[y].getBytes();
+            int x = 0;
+            for (; x < b.length; x++) {
+                if (b[x] != 32) {
+                    break;
+                }
+            }
+            for (; x < b.length; x++) {
+                int ch = b[x];
+                if (ch == 32) {
+                    continue;
+                }
+                scr.putInt(bx + (x * mul) / 100, by + (y * mul) / 100, userScreen.colBlack, clr, false, ch);
+            }
+        }
+    }
+
+}
+
+class userGameRacer {
+
+    private userScreen scr;
+
+    private List<userGameRacerOpp> ops;
+
+    private String sky;
+
+    private int sped;
+
+    private int lane;
+
+    /**
+     * create game
+     *
+     * @param screen screen to use
+     */
+    public userGameRacer(userScreen screen) {
+        scr = screen;
+    }
+
+    /**
+     * start screen
+     */
+    public void doStart() {
+        scr.doClear();
+        ops = new ArrayList<userGameRacerOpp>();
+        sped = 100;
+        lane = 0;
+        sky = "";
+        char[] gras = new char[]{' ', ' ', '_', '.', '-', '=', '^'};
+        int len = 0;
+        for (int i = 0; i < scr.sizX; i++) {
+            len += bits.random(-1, 2);
+            if (len < 0) {
+                len = 0;
+            }
+            if (len >= gras.length) {
+                len = gras.length - 1;
+            }
+            sky += gras[len];
+        }
+    }
+
+    /**
+     * finish screen
+     */
+    public void doFinish() {
+        scr.doClear();
+        scr.refresh();
+    }
+
+    public int[] coords(int lane, int dist) {
+        dist = (int) (Math.sqrt(dist) * 10);
+        int[] res = new int[3];
+        res[0] = (scr.sizX / 2) + ((lane * scr.sizX * (100 - dist)) / 400);
+        res[1] = scr.sizY - ((dist * scr.sizY) / 100);
+        res[2] = 100 - dist;
+        return res;
+    }
+
+    /**
+     * play game
+     */
+    public void doGame() {
+        int[] lanep = new int[]{-5, -3, -1, 1, 3, 5};
+        int[] lanes = new int[]{'/', '/', '/', '\\', '\\', '\\'};
+        for (;;) {
+            boolean crs = false;
+            for (int i = ops.size() - 1; i >= 0; i--) {
+                userGameRacerOpp op = ops.get(i);
+                op.dst -= (sped - op.spd) / 2;
+                if (op.dst > 100) {
+                    ops.remove(op);
+                    continue;
+                }
+                if (op.dst > 0) {
+                    continue;
+                }
+                crs |= lane == op.lne;
+                ops.remove(op);
+            }
+            for (int i = ops.size(); i < 4; i++) {
+                userGameRacerOpp op = new userGameRacerOpp();
+                op.random();
+                for (;;) {
+                    if (op.dst > 10) {
+                        break;
+                    }
+                    if (lane != op.lne) {
+                        break;
+                    }
+                    op.random();
+                }
+                ops.add(op);
+            }
+            Collections.sort(ops);
+            scr.doClear();
+            for (int i = 1; i < 5; i++) {
+                int[] a = coords(lanep[i - lane], 1);
+                int[] b = coords(lanep[i - lane], 100);
+                scr.drawLine(a[0], a[1], b[0], b[1], userScreen.colBlack, userScreen.colWhite, lanes[i - lane]);
+            }
+            for (int i = 0; i < ops.size(); i++) {
+                userGameRacerOpp op = ops.get(i);
+                int[] a = coords(lanep[op.lne + 2 - lane], op.dst);
+                op.draw(scr, -lane, ((scr.sizX * a[2]) / 800) + a[0], a[1], a[2]);
+            }
+            scr.putStr(0, 0, userScreen.colBlack, userScreen.colCyan, false, sky);
+            scr.putStr(0, 0, 0, 7, false, sped + " km/h");
+            scr.refresh();
+            if (crs) {
+                return;
+            }
+            for (; scr.keyPress();) {
+                int i = userScreen.getKey(scr.pipe);
+                switch (i) {
+                    case -1: // end
+                        return;
+                    case 0x800c: // up
+                        sped += 5;
+                        break;
+                    case 0x800d: // down
+                        sped -= 5;
+                        break;
+                    case 0x800e: // left
+                        lane--;
+                        break;
+                    case 0x800f: // right
+                        lane++;
+                        break;
+                    case 0x0271: // ctrl+q
+                        return;
+                    case 0x0278: // ctrl+x
+                        return;
+                    case 0x8005: // escape
+                        return;
+                }
+            }
+            if (sped < 0) {
+                sped = 0;
+            }
+            if (sped > 250) {
+                sped = 250;
+            }
+            if (lane < -1) {
+                lane = -1;
+            }
+            if (lane > +1) {
+                lane = +1;
+            }
+            bits.sleep(500);
+        }
     }
 
 }

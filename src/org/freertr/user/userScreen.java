@@ -1166,6 +1166,28 @@ public class userScreen {
     }
 
     /**
+     * draw a line
+     *
+     * @param bx begin x
+     * @param by begin y
+     * @param ex end x
+     * @param ey end y
+     * @param bg background color
+     * @param fg foreground color
+     * @param ch character to write
+     */
+    public void drawLine(int bx, int by, int ex, int ey, int bg, int fg, int ch) {
+        int step = Math.abs(bx - ex) + Math.abs(by - ey);
+        ex -= bx;
+        ey -= by;
+        for (int i = 0; i < step; i++) {
+            int x = (ex * i) / step;
+            int y = (ey * i) / step;
+            putInt(bx + x, by + y, bg, fg, false, ch);
+        }
+    }
+
+    /**
      * fill line
      *
      * @param y line to fill
