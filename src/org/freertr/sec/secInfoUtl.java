@@ -656,7 +656,7 @@ public class secInfoUtl {
             lst.add(beg + "format " + userFormat.tabmod2str(cfg.format));
         }
         if (cfg.boxed != userFormat.boxerMode.normal) {
-            lst.add(beg + "boxed " + userFormat.boxmod2str(cfg.boxed));
+            lst.add(beg + "boxer " + userFormat.boxmod2str(cfg.boxed));
         }
         if (cfg.script != null) {
             lst.add(beg + "script " + cfg.script.name);

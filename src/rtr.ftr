@@ -4163,7 +4163,6 @@ todo: misc images to not blink finally in the browsers like at least send the im
 todo: server tftp to have server http backup alike functionality
 todo: show running-config vrf iot to display routing protocols, servers and interfaces
 todo: interface * vrf <tabbable> and upgrade-cli
-todo: terminal clear same as game clear
 todo: clear aaa <tabbable>
 todo: ping and friends to accept delay as range
 todo: router * upgrade-cli as default
