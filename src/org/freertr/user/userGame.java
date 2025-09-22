@@ -726,6 +726,105 @@ public class userGame {
     }
 
     /**
+     * breakout
+     */
+    public void doBreakout() {
+        int cols[] = new int[]{userScreen.colBrBlack, userScreen.colBrRed, userScreen.colBrYellow, userScreen.colBrBlue, userScreen.colBrMagenta, userScreen.colBrGreen};
+        boolean[][] del = new boolean[6][console.sizX / 4];
+        int px = console.sizX / 2;
+        int pm = 3;
+        int bx = px + 2;
+        int by = console.sizY - 2;
+        int dx = bits.random(-2, 2);
+        int dy = -1;
+        for (;;) {
+            console.doClear();
+            for (int y = 0; y < del.length; y++) {
+                for (int x = 0; x < del[0].length; x++) {
+                    if (del[y][x]) {
+                        continue;
+                    }
+                    console.putStr(x * 4, y, userScreen.colBlack, cols[y], false, "###");
+                }
+            }
+            console.putStr(px, console.sizY - 1, userScreen.colBlack, userScreen.colBrWhite, false, "^^^^^^^");
+            console.putInt(bx, by, userScreen.colBlack, userScreen.colBrCyan, false, '@');
+            console.refresh();
+            for (; console.keyPress();) {
+                int i = userScreen.getKey(console.pipe);
+                switch (i) {
+                    case -1: // end
+                        return;
+                    case 0x800c: // up
+                        pm = 0;
+                        break;
+                    case 0x800d: // down
+                        pm = 0;
+                        break;
+                    case 0x800e: // left
+                        pm = -3;
+                        break;
+                    case 0x800f: // right
+                        pm = 3;
+                        break;
+                    case 0x0271: // ctrl+q
+                        return;
+                    case 0x0278: // ctrl+x
+                        return;
+                    case 0x8005: // escape
+                        return;
+                }
+            }
+            bits.sleep(500);
+            bx += dx;
+            by += dy;
+            px += pm;
+            if (px < 0) {
+                px = 0;
+                pm = 3;
+            }
+            if (px >= (console.sizX - 7)) {
+                px = console.sizX - 7;
+                pm = -3;
+            }
+            if (bx < 0) {
+                bx = dx;
+                dx = bits.random(1, 2);
+            }
+            if (bx >= console.sizX) {
+                bx = console.sizX - dx;
+                dx = -bits.random(1, 2);
+            }
+            boolean bnc = by < 0;
+            if (!bnc && (by < del.length)) {
+                int i = bx / 4;
+                if (i >= del[0].length) {
+                    i = del[0].length - 1;
+                }
+                bnc = !del[by][i];
+                del[by][i] = true;
+            }
+            if (bnc) {
+                by -= dy;
+                dy = 1;
+                dx = bits.random(-2, 2);
+            }
+            if (by < console.sizY) {
+                continue;
+            }
+            if (bx < px) {
+                break;
+            }
+            if (bx > (px + 7)) {
+                break;
+            }
+            by = console.sizY - 1;
+            dy = -1;
+            dx = bits.random(-2, 2);
+        }
+    }
+
+    /**
      * nibbles
      */
     public void doNibbles() {
@@ -744,15 +843,10 @@ public class userGame {
         for (;;) {
             console.doClear();
             for (int i = 0; i < px.size(); i++) {
-                int x = px.get(i) * 2;
-                int y = py.get(i);
-                console.putInt(x + 0, y, userScreen.colBlack, userScreen.colBrGreen, false, '#');
-                console.putInt(x + 1, y, userScreen.colBlack, userScreen.colBrGreen, false, '#');
+                console.putStr(px.get(i) * 2, py.get(i), userScreen.colBlack, userScreen.colBrGreen, false, "##");
             }
-            console.putInt(fx * 2 + 0, fy, userScreen.colBlack, userScreen.colBrMagenta, false, '#');
-            console.putInt(fx * 2 + 1, fy, userScreen.colBlack, userScreen.colBrMagenta, false, '#');
-            console.putInt(cx * 2 + 0, cy, userScreen.colBlack, userScreen.colBrCyan, true, '@');
-            console.putInt(cx * 2 + 1, cy, userScreen.colBlack, userScreen.colBrCyan, true, '@');
+            console.putStr(fx * 2, fy, userScreen.colBlack, userScreen.colBrMagenta, false, "$$");
+            console.putStr(cx * 2, cy, userScreen.colBlack, userScreen.colBrCyan, true, "@@");
             console.refresh();
             for (; console.keyPress();) {
                 int i = userScreen.getKey(console.pipe);
@@ -1158,12 +1252,14 @@ public class userGame {
         }
         if (a.equals("hanoi")) {
             doHanoi();
-            console.refresh();
             return;
         }
         if (a.equals("nibbles")) {
             doNibbles();
-            console.refresh();
+            return;
+        }
+        if (a.equals("breakout")) {
+            doBreakout();
             return;
         }
         if (a.equals("clear")) {
