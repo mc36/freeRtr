@@ -474,39 +474,28 @@ public class userGame {
      */
     public void doDonut() {
         userGameZbuf gfx = new userGameZbuf(console);
-        final int[] chrs = {'.', ',', '-', '~', ':', ';', '=', '!', '*', '#', '$', '@'};
-        final int[] cols = {userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite, userScreen.colBrWhite,};
-        double a = 0;
-        double b = 0;
+        int[] chrs = new int[]{'@', '#', '$', '%', '&', '*', '!'};
+        int[] cols = new int[]{userScreen.colBrWhite, userScreen.colBrMagenta, userScreen.colBrCyan,
+            userScreen.colBrGreen, userScreen.colBrRed, userScreen.colBrYellow, userScreen.colBrBlue};
+        double r1 = 2;
+        double r2 = 1;
+        double tau = 2.0 * Math.PI;
+        double mul = gfx.max / 2;
         for (;;) {
             if (console.keyPress()) {
                 break;
             }
             gfx.clear();
-            for (double j = 0; j < 6.28; j += 0.07) {
-                for (double i = 0; i < 6.28; i += 0.02) {
-                    double c = Math.sin(i);
-                    double d = Math.cos(j);
-                    double e = Math.sin(a);
-                    double f = Math.sin(j);
-                    double g = Math.cos(a);
-                    double h = d + 2;
-                    double k = 1 / (c * h * e + f * g + 5);
-                    double l = Math.cos(i);
-                    double m = Math.cos(b);
-                    double n = Math.sin(b);
-                    double t = c * h * g - f * e;
-                    int x = (int) ((console.sizX / 2) + (console.sizX * k / 2) * (l * h * m - t * n));
-                    int y = (int) ((console.sizY / 2) + (console.sizY * k / 2) * (l * h * n + t * m));
-                    int o = (int) (8 * ((f * e - c * d * g) * m - c * d * e - f * g - l * d * n));
-                    if (o < 0) {
-                        continue;
-                    }
-                    gfx.pixel(x, y, k, userScreen.colBlack, cols[o], chrs[o]);
+            gfx.rotate();
+            for (double u = 0; u < tau; u += 0.07) {
+                for (double v = 0; v < tau; v += 0.02) {
+                    double x = (r1 + r2 * Math.cos(v)) * Math.cos(u) * mul;
+                    double y = (r1 + r2 * Math.cos(v)) * Math.sin(u) * mul;
+                    double z = r2 * Math.sin(v) * mul;
+                    int p = (int) (cols.length * u / tau);
+                    gfx.pixelR(x, y, z, userScreen.colBlack, cols[p], chrs[p]);
                 }
             }
-            a += bits.randomB() / 500.0;
-            b += bits.randomB() / 1000.0;
             gfx.refresh();
             bits.sleep(500);
         }
@@ -517,53 +506,25 @@ public class userGame {
      */
     public void doCube() {
         userGameZbuf gfx = new userGameZbuf(console);
-        double a = 0.0;
-        double b = 0.0;
-        double c = 0.0;
         for (;;) {
             if (console.keyPress()) {
                 break;
             }
             gfx.clear();
-            a += bits.random(10, 20) / 100.0;
-            b += bits.random(10, 20) / 100.0;
-            c += bits.random(20, 40) / 100.0;
+            gfx.rotate();
             for (int x = -gfx.max; x < gfx.max; x += 1) {
                 for (int y = -gfx.max; y < gfx.max; y += 1) {
-                    doCube(gfx, a, b, c, x, y, -gfx.max, userScreen.colBlack, userScreen.colBrBlue, '@');
-                    doCube(gfx, a, b, c, gfx.max, y, x, userScreen.colBlack, userScreen.colBrCyan, '#');
-                    doCube(gfx, a, b, c, -gfx.max, y, -x, userScreen.colBlack, userScreen.colBrGreen, '$');
-                    doCube(gfx, a, b, c, -x, y, gfx.max, userScreen.colBlack, userScreen.colBrMagenta, '%');
-                    doCube(gfx, a, b, c, x, -gfx.max, -y, userScreen.colBlack, userScreen.colBrRed, '&');
-                    doCube(gfx, a, b, c, x, gfx.max, y, userScreen.colBlack, userScreen.colBrYellow, '*');
+                    gfx.pixelR(x, y, -gfx.max, userScreen.colBlack, userScreen.colBrBlue, '@');
+                    gfx.pixelR(gfx.max, y, x, userScreen.colBlack, userScreen.colBrCyan, '#');
+                    gfx.pixelR(-gfx.max, y, -x, userScreen.colBlack, userScreen.colBrGreen, '$');
+                    gfx.pixelR(-x, y, gfx.max, userScreen.colBlack, userScreen.colBrMagenta, '%');
+                    gfx.pixelR(x, -gfx.max, -y, userScreen.colBlack, userScreen.colBrRed, '&');
+                    gfx.pixelR(x, gfx.max, y, userScreen.colBlack, userScreen.colBrYellow, '*');
                 }
             }
             gfx.refresh();
             bits.sleep(500);
         }
-    }
-
-    private void doCube(userGameZbuf gfx, double a, double b, double c, double cx, double cy, double cz, int bg, int fg, int ch) {
-        double x = cy * Math.sin(a) * Math.sin(b) * Math.cos(c)
-                - cz * Math.cos(a) * Math.sin(b) * Math.cos(c)
-                + cy * Math.cos(a) * Math.sin(c)
-                + cz * Math.sin(a) * Math.sin(c)
-                + cx * Math.cos(b) * Math.cos(c);
-        double y = cy * Math.cos(a) * Math.cos(c)
-                + cz * Math.sin(a) * Math.cos(c)
-                - cy * Math.sin(a) * Math.sin(b) * Math.sin(c)
-                + cz * Math.cos(a) * Math.sin(b) * Math.sin(c)
-                - cx * Math.cos(b) * Math.sin(c);
-        double z = cz * Math.cos(a) * Math.cos(b)
-                - cy * Math.sin(a) * Math.cos(b)
-                + cx * Math.sin(b) + gfx.max * 3;
-        if (z == 0.0) {
-            z = 0.000001;
-        }
-        double ooz = gfx.max / z / 1.6;
-        int px = (int) (console.sizX / 2 + ooz * x * 2);
-        int py = (int) (console.sizY / 2 + ooz * y);
-        gfx.pixel(px, py, ooz, bg, fg, ch);
     }
 
     /**
@@ -1242,6 +1203,12 @@ class userGameZbuf {
 
     public final int max;
 
+    public double a = 0;
+
+    public double b = 0;
+
+    public double c = 0;
+
     /**
      * create instance
      *
@@ -1272,11 +1239,40 @@ class userGameZbuf {
         scr.doClear();
     }
 
+    public void rotate() {
+        a += bits.random(10, 20) / 100.0;
+        b += bits.random(10, 20) / 100.0;
+        c += bits.random(20, 40) / 100.0;
+    }
+
     public void refresh() {
         scr.refresh();
     }
 
-    public void pixel(int x, int y, double z, int bg, int fg, int ch) {
+    public void pixelR(double cx, double cy, double cz, int bg, int fg, int ch) {
+        double x = cy * Math.sin(a) * Math.sin(b) * Math.cos(c)
+                - cz * Math.cos(a) * Math.sin(b) * Math.cos(c)
+                + cy * Math.cos(a) * Math.sin(c)
+                + cz * Math.sin(a) * Math.sin(c)
+                + cx * Math.cos(b) * Math.cos(c);
+        double y = cy * Math.cos(a) * Math.cos(c)
+                + cz * Math.sin(a) * Math.cos(c)
+                - cy * Math.sin(a) * Math.sin(b) * Math.sin(c)
+                + cz * Math.cos(a) * Math.sin(b) * Math.sin(c)
+                - cx * Math.cos(b) * Math.sin(c);
+        double z = cz * Math.cos(a) * Math.cos(b)
+                - cy * Math.sin(a) * Math.cos(b)
+                + cx * Math.sin(b) + max * 3;
+        if (z == 0.0) {
+            z = 0.000001;
+        }
+        double ooz = max / z / 1.6;
+        int px = (int) (scr.sizX / 2 + ooz * x * 2);
+        int py = (int) (scr.sizY / 2 + ooz * y);
+        pixelZ(px, py, ooz, bg, fg, ch);
+    }
+
+    public void pixelZ(int x, int y, double z, int bg, int fg, int ch) {
         if (x < 0) {
             return;
         }
