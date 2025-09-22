@@ -726,6 +726,105 @@ public class userGame {
     }
 
     /**
+     * nibbles
+     */
+    public void doNibbles() {
+        List<Integer> px = new ArrayList<Integer>();
+        List<Integer> py = new ArrayList<Integer>();
+        int dx = -1;
+        int dy = 0;
+        int cx = console.sizX / 4;
+        int cy = console.sizY / 2;
+        int fx = bits.random(0, console.sizX / 2);
+        int fy = bits.random(0, console.sizY);
+        for (int i = 1; i < 5; i++) {
+            px.add(cx + i);
+            py.add(cy);
+        }
+        for (;;) {
+            console.doClear();
+            for (int i = 0; i < px.size(); i++) {
+                int x = px.get(i) * 2;
+                int y = py.get(i);
+                console.putInt(x + 0, y, userScreen.colBlack, userScreen.colBrGreen, false, '#');
+                console.putInt(x + 1, y, userScreen.colBlack, userScreen.colBrGreen, false, '#');
+            }
+            console.putInt(fx * 2 + 0, fy, userScreen.colBlack, userScreen.colBrMagenta, false, '#');
+            console.putInt(fx * 2 + 1, fy, userScreen.colBlack, userScreen.colBrMagenta, false, '#');
+            console.putInt(cx * 2 + 0, cy, userScreen.colBlack, userScreen.colBrCyan, true, '@');
+            console.putInt(cx * 2 + 1, cy, userScreen.colBlack, userScreen.colBrCyan, true, '@');
+            console.refresh();
+            for (; console.keyPress();) {
+                int i = userScreen.getKey(console.pipe);
+                switch (i) {
+                    case -1: // end
+                        return;
+                    case 0x800c: // up
+                        dx = 0;
+                        dy = -1;
+                        break;
+                    case 0x800d: // down
+                        dx = 0;
+                        dy = +1;
+                        break;
+                    case 0x800e: // left
+                        dy = 0;
+                        dx = -1;
+                        break;
+                    case 0x800f: // right
+                        dy = 0;
+                        dx = +1;
+                        break;
+                    case 0x0271: // ctrl+q
+                        return;
+                    case 0x0278: // ctrl+x
+                        return;
+                    case 0x8005: // escape
+                        return;
+                }
+            }
+            bits.sleep(500);
+            px.add(0, cx);
+            py.add(0, cy);
+            cx += dx;
+            cy += dy;
+            if (cx < 0) {
+                break;
+            }
+            if (cy < 0) {
+                break;
+            }
+            if (cx >= (console.sizX / 2)) {
+                break;
+            }
+            if (cy >= console.sizY) {
+                break;
+            }
+            boolean bit = false;
+            for (int i = 1; i < px.size(); i++) {
+                if (cx != px.get(i)) {
+                    continue;
+                }
+                if (cy != py.get(i)) {
+                    continue;
+                }
+                bit = true;
+                break;
+            }
+            if (bit) {
+                break;
+            }
+            if ((cx == fx) && (cy == fy)) {
+                fx = bits.random(0, console.sizX / 2);
+                fy = bits.random(0, console.sizY);
+                continue;
+            }
+            px.remove(px.size() - 1);
+            py.remove(py.size() - 1);
+        }
+    }
+
+    /**
      * tower of hanoi
      */
     public void doHanoi() {
@@ -1059,6 +1158,11 @@ public class userGame {
         }
         if (a.equals("hanoi")) {
             doHanoi();
+            console.refresh();
+            return;
+        }
+        if (a.equals("nibbles")) {
+            doNibbles();
             console.refresh();
             return;
         }
