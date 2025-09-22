@@ -541,7 +541,7 @@ public class userFormat {
                 break;
             case baby:
                 headL = new String[]{
-                    "       \\\\\\///",
+                    "       \\\\\\/" + "//",
                     "      / _  _ \\",
                     "    (| (o)(o) |)",};
                 headM = "  .OOOo--()--oOOO.";

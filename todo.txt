@@ -216,7 +216,6 @@ show running-config vrf iot to display routing protocols, servers and interfaces
 
 
 interface * vrf <tabbable> and upgrade-cli
-terminal clear same as game clear
 clear aaa <tabbable>
 ping and friends to accept delay as range
 router * upgrade-cli as default

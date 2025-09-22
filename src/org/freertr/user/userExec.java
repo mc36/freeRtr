@@ -2020,6 +2020,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "<num>", "number of lines");
         hl.add(null, false, 2, new int[]{-1}, "monitor", "log to this terminal");
         hl.add(null, false, 2, new int[]{-1}, "detect", "detect size of terminal");
+        hl.add(null, false, 2, new int[]{-1}, "clear", "clear terminal");
         hl.add(null, false, 2, new int[]{-1}, "timestamps", "put time before each executed command");
         hl.add(null, false, 2, new int[]{3}, "background", "select background color");
         hl.add(null, false, 2, new int[]{3}, "foreground", "select foreground color");
@@ -5296,6 +5297,11 @@ public class userExec {
 
     private void doTerminal() {
         String a = cmd.word();
+        if (a.equals("clear")) {
+            userScreen scr = new userScreen(pipe);
+            scr.putCls();
+            return;
+        }
         if (a.equals("detect")) {
             cmd.error(cmds.doneFail(userScreen.updtSiz(pipe)));
             return;
