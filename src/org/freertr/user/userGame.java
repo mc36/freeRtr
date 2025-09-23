@@ -2725,7 +2725,10 @@ class userGameRacerOpp implements Comparable<userGameRacerOpp> {
         return 0;
     }
 
-    public void draw(userScreen scr, int dir, int bx, int by, int mul) {
+    public void draw(userScreen scr, int dir, int bx, int by, int max) {
+        if (max < 1) {
+            return;
+        }
         dir += lne;
         String[] chr;
         if (dir == 0) {
@@ -2759,6 +2762,14 @@ class userGameRacerOpp implements Comparable<userGameRacerOpp> {
                 "     (__.---^^^  `^"
             };
         }
+        int tot = 0;
+        for (int y = chr.length - 1; y >= 0; y--) {
+            int x = chr[y].length();
+            if (x < tot) {
+                continue;
+            }
+            tot = x;
+        }
         for (int y = chr.length - 1; y >= 0; y--) {
             byte[] b = chr[y].getBytes();
             int x = 0;
@@ -2767,12 +2778,20 @@ class userGameRacerOpp implements Comparable<userGameRacerOpp> {
                     break;
                 }
             }
+            int py = by + (y * max) / tot;
             for (; x < b.length; x++) {
                 int ch = b[x];
                 if (ch == 32) {
                     continue;
                 }
-                scr.putInt(bx + (x * mul) / 100, by + (y * mul) / 100, userScreen.colBlack, clr, false, ch);
+                int px = bx + (x * max) / tot;
+                scr.putInt(px, py, userScreen.colBlack, clr, false, ch);
+                if (max < tot) {
+                    continue;
+                }
+                scr.putInt(1 + px, py, userScreen.colBlack, clr, false, ch);
+                scr.putInt(px, py + 1, userScreen.colBlack, clr, false, ch);
+                scr.putInt(px + 1, py + 1, userScreen.colBlack, clr, false, ch);
             }
         }
     }
@@ -2836,10 +2855,9 @@ class userGameRacer {
 
     public int[] coords(int lane, int dist) {
         dist = (int) (Math.sqrt(dist) * 10);
-        int[] res = new int[3];
-        res[0] = (scr.sizX / 2) + ((lane * scr.sizX * (100 - dist)) / 400);
+        int[] res = new int[2];
+        res[0] = (scr.sizX / 2) + (lane * scr.sizX * (100 - dist)) / 400;
         res[1] = scr.sizY - ((dist * scr.sizY) / 100);
-        res[2] = 100 - dist;
         return res;
     }
 
@@ -2888,7 +2906,8 @@ class userGameRacer {
             for (int i = 0; i < ops.size(); i++) {
                 userGameRacerOpp op = ops.get(i);
                 int[] a = coords(lanep[op.lne + 2 - lane], op.dst);
-                op.draw(scr, -lane, ((scr.sizX * a[2]) / 800) + a[0], a[1], a[2]);
+                int[] b = coords(lanep[op.lne + 3 - lane], op.dst);
+                op.draw(scr, -lane, a[0] + 1, a[1], b[0] - a[0] - 2);
             }
             scr.putStr(0, 0, userScreen.colBlack, userScreen.colCyan, false, sky);
             scr.putStr(0, 0, 0, 7, false, sped + " km/h");
