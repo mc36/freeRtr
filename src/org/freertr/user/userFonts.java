@@ -55,6 +55,20 @@ public class userFonts {
     };
 
     /**
+     * grayscale color data
+     */
+    public final static int[] colorGray = {
+        0x000000,
+        0x222222,
+        0x444444,
+        0x666666,
+        0x888888,
+        0xaaaaaa,
+        0xcccccc,
+        0xeeeeee
+    };
+
+    /**
      * indexed color codes
      */
     public final static int[] colorIdxd = {
