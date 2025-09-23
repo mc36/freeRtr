@@ -2786,7 +2786,7 @@ class userGameRacerOpp implements Comparable<userGameRacerOpp> {
                 }
                 int px = bx + (x * max) / tot;
                 scr.putInt(px, py, userScreen.colBlack, clr, false, ch);
-                if (max < tot) {
+                if (max <= tot) {
                     continue;
                 }
                 scr.putInt(1 + px, py, userScreen.colBlack, clr, false, ch);
@@ -2806,7 +2806,7 @@ class userGameRacer {
 
     private int opm;
 
-    private String sky;
+    private String grs;
 
     private int sped;
 
@@ -2830,7 +2830,7 @@ class userGameRacer {
         sped = 100;
         lane = 0;
         opm = bits.random(3, 6);
-        sky = "";
+        grs = "";
         char[] gras = new char[]{' ', ' ', '_', '.', '-', '=', '^'};
         int len = 0;
         for (int i = 0; i < scr.sizX; i++) {
@@ -2841,7 +2841,7 @@ class userGameRacer {
             if (len >= gras.length) {
                 len = gras.length - 1;
             }
-            sky += gras[len];
+            grs += gras[len];
         }
     }
 
@@ -2909,7 +2909,7 @@ class userGameRacer {
                 int[] b = coords(lanep[op.lne + 3 - lane], op.dst);
                 op.draw(scr, -lane, a[0] + 1, a[1], b[0] - a[0] - 2);
             }
-            scr.putStr(0, 0, userScreen.colBlack, userScreen.colCyan, false, sky);
+            scr.putStr(0, 0, userScreen.colBlack, userScreen.colGreen, false, grs);
             scr.putStr(0, 0, 0, 7, false, sped + " km/h");
             scr.refresh();
             if (crs) {
