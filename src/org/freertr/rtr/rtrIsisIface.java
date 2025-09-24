@@ -1629,14 +1629,17 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
     }
 
     private int sendLevCsnp(rtrIsisLevel lev, int frstSeq) {
-        if ((csnpTimer < 1) && !amIdis(lev.level)) {
-            return frstSeq;
+        if (csnpTimer < 1) {
+            if (!amIdis(lev.level)) {
+                return frstSeq;
+            }
+        } else {
+            long tim = bits.getTime();
+            if ((tim - lastCsnp) < csnpTimer) {
+                return frstSeq;
+            }
+            lastCsnp = tim;
         }
-        long tim = bits.getTime();
-        if ((tim - lastCsnp) < csnpTimer) {
-            return frstSeq;
-        }
-        lastCsnp = tim;
         if (frstSeq >= lev.lsps.size()) {
             frstSeq = 0;
         }
