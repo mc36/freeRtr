@@ -349,7 +349,7 @@ public class userFilman {
 
     private void doKeyImg() {
         String a = pan[act].getFn();
-        List<String> b = userFlash.asciiArt(a, console.sizX, console.sizY);
+        List<String> b = userFlash.asciiArt(a, console);
         userEditor v = new userEditor(console, b, a, false);
         v.doView();
     }

@@ -11,6 +11,13 @@ public class userFonts {
     }
 
     /**
+     * dithering data
+     */
+    public final static char[] ditherData = {
+        '.', '+', '*', '%', '$', '&', '#'
+    };
+
+    /**
      * color data
      */
     public final static int[] colorData = {

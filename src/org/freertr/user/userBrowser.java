@@ -547,7 +547,7 @@ public class userBrowser {
             return;
         }
         doClear();
-        List<String> b = userFlash.asciiArt(tempFile, console.sizX, console.sizY);
+        List<String> b = userFlash.asciiArt(tempFile, console);
         userEditor v = new userEditor(console, b, s, false);
         v.doView();
         doClear();

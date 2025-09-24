@@ -67,15 +67,14 @@ public class userFlash {
      * get ascii art from a file
      *
      * @param fn filename
-     * @param x x size
-     * @param y y size
+     * @param con console to draw
      * @return converted ascii
      */
-    public static List<String> asciiArt(String fn, int x, int y) {
+    public static List<String> asciiArt(String fn, userScreen con) {
         File fil = new File(fn);
         List<String> res = null;
         try {
-            res = pipeWindow.imageText(fil, x, y);
+            res = pipeWindow.imageText(con, fil);
         } catch (Exception e) {
             logger.traceback(e, "error converting " + fn);
         }
@@ -94,7 +93,7 @@ public class userFlash {
     public static void ansiArt(String fn, userScreen con) {
         File fil = new File(fn);
         con.putCls();
-        pipeWindow.imageAnsi(con.pipe, fil);
+        pipeWindow.imageAnsi(con, fil);
     }
 
     /**
