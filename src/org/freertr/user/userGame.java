@@ -1267,6 +1267,11 @@ public class userGame {
             userScreen.getKey(console.pipe);
             return;
         }
+        if (a.equals("animate")) {
+            userFlash.ansiAnim(cmd.getRemaining(), console);
+            userScreen.getKey(console.pipe);
+            return;
+        }
         if (a.equals("color")) {
             doPalette();
             return;

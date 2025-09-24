@@ -2216,6 +2216,8 @@ public class userExec {
         if (privileged) {
             hl.add(null, false, 2, new int[]{3}, "ansi", "show some art");
             hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
+            hl.add(null, false, 2, new int[]{3}, "animate", "show some art");
+            hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
         }
         hl.add(null, false, 2, new int[]{-1}, "chat", "chat with others");
         hl.add(null, false, 2, new int[]{3, -1}, "send", "chat with others");

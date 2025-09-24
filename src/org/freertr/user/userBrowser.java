@@ -132,6 +132,9 @@ public class userBrowser {
             case 0x026c: // ctrl+l
                 doClear();
                 return false;
+            case 0x0275: // ctrl+u
+                doKeyMov();
+                return false;
             case 0x026f: // ctrl+o
                 doKeyImg();
                 return false;
@@ -326,6 +329,7 @@ public class userBrowser {
         l.add("ctrl+e - move right");
         l.add("ctrl+s - save page");
         l.add("ctrl+d - download link");
+        l.add("ctrl+u - animate image link");
         l.add("ctrl+o - view image link");
         l.add("ctrl+p - view color link");
         l.add("ctrl+q - exit");
@@ -479,6 +483,8 @@ public class userBrowser {
         }
         for (;;) {
             if (curY < 0) {
+                curY = console.sizY - 3;
+                curX = console.sizX - 1;
                 break;
             }
             col = getLnk(beg + curY);
@@ -567,6 +573,24 @@ public class userBrowser {
         }
         doClear();
         userFlash.ansiArt(tempFile, console);
+        userScreen.getKey(console.pipe);
+        doClear();
+    }
+
+    private void doKeyMov() {
+        String s = getLink();
+        if (s == null) {
+            return;
+        }
+        doChg2txt();
+        if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(tempFile))) {
+            console.pipe.linePut("error downloading");
+            userScreen.getKey(console.pipe);
+            doClear();
+            return;
+        }
+        doClear();
+        userFlash.ansiAnim(tempFile, console);
         userScreen.getKey(console.pipe);
         doClear();
     }

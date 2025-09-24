@@ -94,11 +94,14 @@ public class userFilman {
             case 0x0262: // ctrl+b
                 doKeyBin();
                 return false;
-            case 0x0275: // ctrl+u
+            case 0x0279: // ctrl+y
                 doKeyHex();
                 return false;
             case 0x0274: // ctrl+t
                 doKeyHtml();
+                return false;
+            case 0x0275: // ctrl+u
+                doKeyMov();
                 return false;
             case 0x026f: // ctrl+o
                 doKeyImg();
@@ -290,8 +293,9 @@ public class userFilman {
         l.add("ctrl+z - move down");
         l.add("ctrl+i - change panel");
         l.add("ctrl+b - bin view file");
-        l.add("ctrl+u - hex view file");
+        l.add("ctrl+y - hex view file");
         l.add("ctrl+t - html view file");
+        l.add("ctrl+u - animate image file");
         l.add("ctrl+o - image view file");
         l.add("ctrl+p - color view file");
         l.add("ctrl+v - text view file");
@@ -357,6 +361,12 @@ public class userFilman {
     private void doKeyCol() {
         String a = pan[act].getFn();
         userFlash.ansiArt(a, console);
+        userScreen.getKey(console.pipe);
+    }
+
+    private void doKeyMov() {
+        String a = pan[act].getFn();
+        userFlash.ansiAnim(a, console);
         userScreen.getKey(console.pipe);
     }
 

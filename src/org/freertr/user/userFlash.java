@@ -72,16 +72,8 @@ public class userFlash {
      */
     public static List<String> asciiArt(String fn, userScreen con) {
         File fil = new File(fn);
-        List<String> res = null;
-        try {
-            res = pipeWindow.imageText(con, fil);
-        } catch (Exception e) {
-            logger.traceback(e, "error converting " + fn);
-        }
-        if (res == null) {
-            return bits.str2lst("failed to convert " + fn + " to text ");
-        }
-        return res;
+        pipeWindow.imageAscii(con, fil);
+        return con.getAscii();
     }
 
     /**
@@ -93,7 +85,21 @@ public class userFlash {
     public static void ansiArt(String fn, userScreen con) {
         File fil = new File(fn);
         con.putCls();
+        con.putCur(0, 0);
         pipeWindow.imageAnsi(con, fil);
+    }
+
+    /**
+     * play ansi animation from a file
+     *
+     * @param fn filename
+     * @param con console to draw
+     */
+    public static void ansiAnim(String fn, userScreen con) {
+        File fil = new File(fn);
+        con.putCls();
+        con.putCur(0, 0);
+        pipeWindow.imageAnim(con, fil);
     }
 
     /**

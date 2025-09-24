@@ -11,13 +11,15 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.IndexColorModel;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import org.freertr.cfg.cfgInit;
 import org.freertr.user.userFonts;
 import org.freertr.user.userScreen;
+import org.freertr.util.bits;
 import org.freertr.util.logger;
 
 /**
@@ -45,36 +47,74 @@ public class pipeWindow extends JPanel {
     protected JFrame win;
 
     /**
+     * play animated image
+     *
+     * @param scr console to draw
+     * @param fil file
+     */
+    public static void imageAnim(userScreen scr, File fil) {
+        String a = fil.getName();
+        int i = a.lastIndexOf(".");
+        if (i < 0) {
+            i = 0;
+        }
+        a = a.substring(i + 1, a.length());
+        a = cfgInit.findMimeType(a);
+        ImageReader ir = null;
+        ImageInputStream is = null;
+        int noi = 0;
+        try {
+            ir = ImageIO.getImageReadersByMIMEType(a).next();
+            is = ImageIO.createImageInputStream(fil);
+            ir.setInput(is, false);
+            noi = ir.getNumImages(true);
+        } catch (Exception e) {
+            logger.traceback(e, "error converting");
+            return;
+        }
+        BufferedImage img1 = null;
+        for (i = 0; i < noi; i++) {
+            BufferedImage img2 = null;
+            try {
+                img2 = ir.read(i);
+            } catch (Exception e) {
+                logger.traceback(e, "error converting");
+            }
+            if (img2 == null) {
+                continue;
+            }
+            if (img1 == null) {
+                img1 = img2;
+            } else {
+                img1.getGraphics().drawImage(img2, 0, 0, null);
+            }
+            image2scr(img1, scr, userFonts.colorData, userFonts.ditherData);
+            scr.refresh();
+            bits.sleep(500);
+            if (scr.keyPress()) {
+                break;
+            }
+        }
+    }
+
+    /**
      * convert image to ansi
      *
      * @param scr console to draw
      * @param fil file to convert
-     * @return converted ansi
      */
-    public static userScreen imageAnsi(userScreen scr, File fil) {
+    public static void imageAnsi(userScreen scr, File fil) {
         BufferedImage img1 = null;
-        scr.putCls();
-        scr.putCur(0, 0);
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
             logger.traceback(e, "error converting");
         }
         if (img1 == null) {
-            return scr;
+            return;
         }
-        int[][] img2 = scaleImage(img1, scr.sizX, scr.sizY, userFonts.colorData, userFonts.ditherData);
-        for (int y = 0; y < img2.length; y++) {
-            for (int x = 0; x < img2[0].length; x++) {
-                int v = img2[y][x];
-                int c = v % userFonts.ditherData.length;
-                v /= userFonts.ditherData.length;
-                c = userFonts.ditherData[c];
-                scr.putInt(x, y, userScreen.colBlack, v, false, c);
-            }
-        }
+        image2scr(img1, scr, userFonts.colorData, userFonts.ditherData);
         scr.refresh();
-        return scr;
     }
 
     /**
@@ -82,9 +122,8 @@ public class pipeWindow extends JPanel {
      *
      * @param scr console to draw
      * @param fil file
-     * @return converted text
      */
-    public static List<String> imageText(userScreen scr, File fil) {
+    public static void imageAscii(userScreen scr, File fil) {
         BufferedImage img1 = null;
         try {
             img1 = ImageIO.read(fil);
@@ -92,23 +131,12 @@ public class pipeWindow extends JPanel {
             logger.traceback(e, "while converting");
         }
         if (img1 == null) {
-            return new ArrayList<String>();
+            return;
         }
-        List<String> txt = new ArrayList<String>();
-        int[][] img2 = scaleImage(img1, scr.sizX, scr.sizY, userFonts.colorMono, userFonts.ditherData);
-        for (int y = 0; y < img2.length; y++) {
-            String a = "";
-            for (int x = 0; x < img2[0].length; x++) {
-                int v = img2[y][x];
-                v %= userFonts.ditherData.length;
-                a += userFonts.ditherData[v];
-            }
-            txt.add(a);
-        }
-        return txt;
+        image2scr(img1, scr, userFonts.colorMono, userFonts.ditherData);
     }
 
-    private static int[][] scaleImage(BufferedImage img1, int maxX, int maxY, int[] col, char chr[]) {
+    private static void image2scr(BufferedImage img1, userScreen scr, int[] col, char chr[]) {
         byte[] cls = new byte[col.length * chr.length * 3];
         int p = 0;
         for (int i = 0; i < col.length; i++) {
@@ -124,9 +152,14 @@ public class pipeWindow extends JPanel {
             }
         }
         IndexColorModel icm = new IndexColorModel(8, cls.length / 3, cls, 0, false);
+        int maxX = scr.sizX;
+        int maxY = scr.sizY;
         maxX = ((2 * img1.getWidth()) / maxX) + 1;
         maxY = (img1.getHeight() / maxY) + 1;
         p = maxX < maxY ? maxY : maxX;
+        if (p < 1) {
+            p = 1;
+        }
         maxX = (2 * img1.getWidth()) / p;
         maxY = img1.getHeight() / p;
         BufferedImage img2 = new BufferedImage(maxX, maxY, BufferedImage.TYPE_BYTE_INDEXED, icm);
@@ -141,16 +174,18 @@ public class pipeWindow extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
         byte[] img3 = ((DataBufferByte) img2.getRaster().getDataBuffer()).getData();
-        int[][] img4 = new int[maxY][maxX];
         p = 0;
+        scr.doClear();
         for (int y = 0; y < maxY; y++) {
             for (int x = 0; x < maxX; x++) {
                 int v = img3[p];
-                img4[y][x] = v;
+                int c = v % userFonts.ditherData.length;
+                v /= userFonts.ditherData.length;
+                c = userFonts.ditherData[c];
+                scr.putInt(x, y, userScreen.colBlack, v, false, c);
                 p++;
             }
         }
-        return img4;
     }
 
     /**
