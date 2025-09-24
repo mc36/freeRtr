@@ -102,11 +102,6 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
     public final counter[] msgStats = new counter[256];
 
     /**
-     * send csnp
-     */
-    public boolean sendCsnp;
-
-    /**
      * suppress interface address
      */
     public boolean suppressAddr;
@@ -150,6 +145,11 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
      * hello timer
      */
     public int helloTimer;
+
+    /**
+     * csnp timer
+     */
+    public int csnpTimer;
 
     /**
      * dead timer
@@ -294,6 +294,8 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
 
     private int lev2csnp;
 
+    private long lastCsnp;
+
     /**
      * create one instance
      *
@@ -369,7 +371,6 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         }
         l.add(cmds.tabulator + beg + "network " + s);
         cmds.cfgLine(l, !bfdTrigger, cmds.tabulator, beg + "bfd", "");
-        cmds.cfgLine(l, !sendCsnp, cmds.tabulator, beg + "send-csnp", "");
         cmds.cfgLine(l, !suppressInt, cmds.tabulator, beg + "suppress-address", "");
         cmds.cfgLine(l, !suppressAddr, cmds.tabulator, beg + "suppress-prefix", "");
         cmds.cfgLine(l, !unsuppressAddr, cmds.tabulator, beg + "unsuppress-prefix", "");
@@ -415,6 +416,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         l.add(cmds.tabulator + beg + "hello-time " + helloTimer);
         l.add(cmds.tabulator + beg + "dead-time " + deadTimer);
         l.add(cmds.tabulator + beg + "retransmit-time " + retransTimer);
+        l.add(cmds.tabulator + beg + "csnp-time " + csnpTimer);
         boolean b = false;
         if ((circuitLevel & 1) != 0) {
             b |= lower.level1.traffEng;
@@ -524,8 +526,8 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             bfdTrigger = true;
             return;
         }
-        if (a.equals("send-csnp")) {
-            sendCsnp = true;
+        if (a.equals("csnp-time")) {
+            csnpTimer = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("suppress-prefix")) {
@@ -781,8 +783,8 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
             bfdTrigger = false;
             return;
         }
-        if (a.equals("send-csnp")) {
-            sendCsnp = false;
+        if (a.equals("csnp-time")) {
+            csnpTimer = 0;
             return;
         }
         if (a.equals("raw-encapsulation")) {
@@ -945,7 +947,8 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         l.add(null, false, 4, new int[]{-1}, "suppress-prefix", "do not advertise interface");
         l.add(null, false, 4, new int[]{-1}, "unsuppress-prefix", "do advertise interface");
         l.add(null, false, 4, new int[]{-1}, "suppress-address", "do not advertise interface");
-        l.add(null, false, 4, new int[]{-1}, "send-csnp", "always send csnp");
+        l.add(null, false, 4, new int[]{5}, "csnp-time", "time between csnp");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 4, new int[]{5}, "metric", "interface metric");
         l.add(null, false, 5, new int[]{-1}, "<num>", "metric");
         l.add(null, false, 4, new int[]{-1}, "other-suppress-prefix", "do not advertise other interface");
@@ -1626,9 +1629,14 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
     }
 
     private int sendLevCsnp(rtrIsisLevel lev, int frstSeq) {
-        if (!sendCsnp && !amIdis(lev.level)) {
+        if ((csnpTimer < 1) && !amIdis(lev.level)) {
             return frstSeq;
         }
+        long tim = bits.getTime();
+        if ((tim - lastCsnp) < csnpTimer) {
+            return frstSeq;
+        }
+        lastCsnp = tim;
         if (frstSeq >= lev.lsps.size()) {
             frstSeq = 0;
         }
