@@ -1267,7 +1267,7 @@ public class userGame {
             userScreen.getKey(console.pipe);
             return;
         }
-        if (a.equals("animate")) {
+        if (a.equals("movie")) {
             userFlash.ansiAnim(cmd.getRemaining(), console);
             userScreen.getKey(console.pipe);
             return;

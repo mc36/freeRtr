@@ -62,18 +62,18 @@ public class pipeWindow extends JPanel {
         a = cfgInit.findMimeType(a);
         ImageReader ir = null;
         ImageInputStream is = null;
-        int noi = 0;
+        int n = 0;
         try {
             ir = ImageIO.getImageReadersByMIMEType(a).next();
             is = ImageIO.createImageInputStream(fil);
             ir.setInput(is, false);
-            noi = ir.getNumImages(true);
+            n = ir.getNumImages(true);
         } catch (Exception e) {
             logger.traceback(e, "error converting");
             return;
         }
         BufferedImage img1 = null;
-        for (i = 0; i < noi; i++) {
+        for (i = 0; i < n; i++) {
             BufferedImage img2 = null;
             try {
                 img2 = ir.read(i);

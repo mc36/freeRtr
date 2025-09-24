@@ -2216,7 +2216,7 @@ public class userExec {
         if (privileged) {
             hl.add(null, false, 2, new int[]{3}, "ansi", "show some art");
             hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
-            hl.add(null, false, 2, new int[]{3}, "animate", "show some art");
+            hl.add(null, false, 2, new int[]{3}, "movie", "show some art");
             hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
         }
         hl.add(null, false, 2, new int[]{-1}, "chat", "chat with others");
@@ -2450,7 +2450,6 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "<file>", "source file");
         hl.add(null, false, 2, new int[]{3}, "replace", "overwrite the running configuration");
         hl.add(null, false, 3, new int[]{-1}, "<file>", "source file");
-        hl.add(null, false, 2, new int[]{-1}, "banner", "edit the banner");
         hl.add(null, false, 2, new int[]{-1}, "startup", "edit the startup configuration");
         hl.add(null, false, 2, new int[]{3, -1}, "editor", "configure from editor");
         hl.add(null, false, 3, new int[]{3, -1}, "[name]", "section name");
@@ -3428,37 +3427,6 @@ public class userExec {
                 int res = cfgInit.executeSWcommands(cfg, false);
                 reader.putStrArr(bits.str2lst("errors=" + res));
                 return cmdRes.command;
-            }
-            if (a.equals("banner")) {
-                List<String> txt = new ArrayList<String>();
-                a = "";
-                for (int i = 0; i < cfgAll.banner.length; i++) {
-                    byte[] buf = new byte[1];
-                    buf[0] = cfgAll.banner[i];
-                    if (buf[0] == 13) {
-                        txt.add(a);
-                        a = "";
-                    }
-                    if (buf[0] < 32) {
-                        continue;
-                    }
-                    a = a + new String(buf);
-                }
-                txt.add(a);
-                userEditor e = new userEditor(new userScreen(pipe), txt, "banner", false);
-                if (e.doEdit()) {
-                    return null;
-                }
-                String s = "";
-                for (int i = 0; i < txt.size(); i++) {
-                    byte[] buf = pipeSide.getEnding(pipeSide.modTyp.modeCRLF);
-                    s += txt.get(i) + new String(buf);
-                }
-                byte[] buf = s.getBytes();
-                cfgAll.banner = buf;
-                s = encBase64.encodeBytes(buf, 0, buf.length);
-                cmd.error("banner set as " + s);
-                return null;
             }
             if (a.equals("startup")) {
                 List<String> c1 = bits.txt2buf(cfgInit.cfgFileSw);

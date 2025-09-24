@@ -1083,7 +1083,22 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
             userScreen.updtSiz(pipe);
         }
         if (parent.banner) {
-            pipe.blockingPut(cfgAll.banner, 0, cfgAll.banner.length);
+            if (cfgAll.bannerMov != null) {
+                userFlash.ansiAnim(cfgAll.bannerMov, new userScreen(pipe));
+            }
+            if (cfgAll.bannerImg != null) {
+                userFlash.ansiArt(cfgAll.bannerImg, new userScreen(pipe));
+            }
+            if (cfgAll.bannerTxt != null) {
+                List<String> lst = bits.txt2buf(cfgAll.bannerTxt);
+                if (lst == null) {
+                    lst = new ArrayList<String>();
+                }
+                for (int i = 0; i < lst.size(); i++) {
+                    pipe.linePut(lst.get(i));
+                }
+            }
+            pipe.blockingPut(cfgAll.bannerEnc, 0, cfgAll.bannerEnc.length);
         }
         if (parent.banner) {
             pipe.linePut(parent.promptWelcome);

@@ -372,6 +372,13 @@ public class userConfig {
         l.add(null, false, 3, new int[]{3, -1}, "<cmd>", "add line to banner");
         l.add(null, false, 2, new int[]{3}, "encoded", "set banner");
         l.add(null, false, 3, new int[]{3, -1}, "<cmd>", "encoded banner");
+        l.add(null, false, 2, new int[]{-1}, "editor", "edit the banner");
+        l.add(null, false, 2, new int[]{3}, "text", "add text file");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "file name");
+        l.add(null, false, 2, new int[]{3}, "image", "add image file");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "file name");
+        l.add(null, false, 2, new int[]{3}, "movie", "add movie file");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "file name");
         l.add(null, false, 1, new int[]{2}, "logging", "set logging parameters");
         l.add(null, false, 2, new int[]{3}, "debug", "always on debugging");
         debugger.getHelping(l, 3);
@@ -947,21 +954,64 @@ public class userConfig {
         if (a.equals("banner")) {
             a = cmd.word();
             if (a.equals("set")) {
-                cfgAll.banner = cmdGetRem();
+                cfgAll.bannerEnc = cmdGetRem();
                 return;
             }
             if (a.equals("add")) {
-                cfgAll.banner = bits.byteConcat(cfgAll.banner, cmdGetRem());
+                cfgAll.bannerEnc = bits.byteConcat(cfgAll.bannerEnc, cmdGetRem());
                 return;
             }
             if (a.equals("encoded")) {
-                cfgAll.banner = encBase64.decodeBytes(cmd.getRemaining());
-                if (cfgAll.banner == null) {
-                    cfgAll.banner = new byte[0];
+                byte[] buf = encBase64.decodeBytes(cmd.getRemaining());
+                if (buf == null) {
+                    cmd.error("error decoding");
+                    return;
                 }
+                cfgAll.bannerEnc = buf;
                 return;
             }
-            cmd.badCmd();
+            if (a.equals("text")) {
+                cfgAll.bannerTxt = cmd.getRemaining();
+                return;
+            }
+            if (a.equals("image")) {
+                cfgAll.bannerImg = cmd.getRemaining();
+                return;
+            }
+            if (a.equals("movie")) {
+                cfgAll.bannerMov = cmd.getRemaining();
+                return;
+            }
+            if (!a.equals("editor")) {
+                cmd.badCmd();
+                return;
+            }
+            List<String> txt = new ArrayList<String>();
+            a = "";
+            for (int i = 0; i < cfgAll.bannerEnc.length; i++) {
+                byte[] buf = new byte[1];
+                buf[0] = cfgAll.bannerEnc[i];
+                if (buf[0] == 13) {
+                    txt.add(a);
+                    a = "";
+                }
+                if (buf[0] < 32) {
+                    continue;
+                }
+                a = a + new String(buf);
+            }
+            txt.add(a);
+            userEditor e = new userEditor(new userScreen(pipe), txt, "banner", false);
+            if (e.doEdit()) {
+                return;
+            }
+            String s = "";
+            for (int i = 0; i < txt.size(); i++) {
+                byte[] buf = pipeSide.getEnding(pipeSide.modTyp.modeCRLF);
+                s += txt.get(i) + new String(buf);
+            }
+            byte[] buf = s.getBytes();
+            cfgAll.bannerEnc = buf;
             return;
         }
         if (a.equals("vdc")) {
@@ -1474,7 +1524,31 @@ public class userConfig {
             return;
         }
         if (a.equals("banner")) {
-            cfgAll.banner = new byte[0];
+            a = cmd.word();
+            if (a.equals("encoded")) {
+                cfgAll.bannerEnc = new byte[0];
+                return;
+            }
+            if (a.equals("add")) {
+                cfgAll.bannerEnc = new byte[0];
+                return;
+            }
+            if (a.equals("set")) {
+                cfgAll.bannerEnc = new byte[0];
+                return;
+            }
+            if (a.equals("text")) {
+                cfgAll.bannerTxt = null;
+                return;
+            }
+            if (a.equals("image")) {
+                cfgAll.bannerImg = null;
+                return;
+            }
+            if (a.equals("movie")) {
+                cfgAll.bannerMov = null;
+                return;
+            }
             return;
         }
         if (a.equals("vrf")) {

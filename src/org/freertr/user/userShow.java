@@ -311,7 +311,7 @@ public class userShow {
             return null;
         }
         if (a.equals("banner")) {
-            rdr.putStrArr(enc7bit.doOneArray(cfgAll.banner, ""));
+            rdr.putStrArr(enc7bit.doOneArray(cfgAll.bannerEnc, ""));
             return null;
         }
         if (a.equals("logo")) {

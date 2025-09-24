@@ -779,9 +779,24 @@ public class cfgAll {
     public static byte[] enaPass = null;
 
     /**
-     * banner of this host
+     * encoded banner of this host
      */
-    public static byte[] banner = new byte[0];
+    public static byte[] bannerEnc = new byte[0];
+
+    /**
+     * text banner of this host
+     */
+    public static String bannerTxt = null;
+
+    /**
+     * image banner of this host
+     */
+    public static String bannerImg = null;
+
+    /**
+     * movie banner of this host
+     */
+    public static String bannerMov = null;
 
     /**
      * locale of this host
@@ -1389,6 +1404,9 @@ public class cfgAll {
         new userFilter("", cmds.negated + cmds.tabulator + "logging irc debug", null),
         new userFilter("", cmds.negated + cmds.tabulator + "logging tracestop", null),
         new userFilter("", "banner encoded ", null),
+        new userFilter("", cmds.negated + cmds.tabulator + "banner text", null),
+        new userFilter("", cmds.negated + cmds.tabulator + "banner image", null),
+        new userFilter("", cmds.negated + cmds.tabulator + "banner movie", null),
         new userFilter("", cmds.negated + cmds.tabulator + "password-encrypt", null),
         new userFilter("", cmds.negated + cmds.tabulator + "enable", null),
         new userFilter("", cmds.negated + cmds.tabulator + "locale", null),
@@ -3778,7 +3796,10 @@ public class cfgAll {
         cmds.cfgLine(l, locale == null, "", "locale", locale);
         cmds.cfgLine(l, passEnc == null, "", "password-encrypt", "" + authLocal.passwdHide(passEnc, (filter & 2) != 0));
         cmds.cfgLine(l, enaPass == null, "", "enable", authLocal.secretEncode(enaPass, (filter & 2) != 0));
-        l.add("banner encoded " + encBase64.encodeBytes(banner));
+        l.add("banner encoded " + encBase64.encodeBytes(bannerEnc));
+        cmds.cfgLine(l, bannerTxt == null, "", "banner text", bannerTxt);
+        cmds.cfgLine(l, bannerImg == null, "", "banner image", bannerImg);
+        cmds.cfgLine(l, bannerMov == null, "", "banner movie", bannerMov);
         l.add(cmds.comment);
         l.add("client label-range " + labelRangeBeg + " " + labelRangeEnd);
         for (int i = 0; i < alwaysDebugs.size(); i++) {
