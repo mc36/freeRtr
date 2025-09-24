@@ -49,26 +49,14 @@ public class pipeWindow extends JPanel {
      * convert image to ansi
      *
      * @param ps pipe to draw
-     * @param fn file to convert
+     * @param fil file to convert
      * @return converted ansi
      */
-    public static userScreen imageAnsi(pipeSide ps, String fn) {
+    public static userScreen imageAnsi(pipeSide ps, File fil) {
         int[] chr = new int[3];
         chr[0] = '0';
         chr[1] = 'O';
         chr[2] = '@';
-        return imageAnsi(ps, new File(fn), chr);
-    }
-
-    /**
-     * convert image to ansi
-     *
-     * @param ps pipe to draw
-     * @param fil file to convert
-     * @param chr characters to put
-     * @return converted ansi
-     */
-    public static userScreen imageAnsi(pipeSide ps, File fil, int[] chr) {
         BufferedImage img1 = null;
         userScreen scr = new userScreen(ps);
         scr.putCls();
@@ -120,26 +108,13 @@ public class pipeWindow extends JPanel {
         if (img1 == null) {
             return new ArrayList<String>();
         }
-        return imageText(img1, maxX, maxY, chr);
-    }
-
-    /**
-     * convert image to string
-     *
-     * @param img1 image to convert
-     * @param maxX max x value
-     * @param maxY max y value
-     * @param chrs chars to use
-     * @return converted text
-     */
-    public static List<String> imageText(BufferedImage img1, int maxX, int maxY, final char[] chrs) {
         List<String> txt = new ArrayList<String>();
         int[][] img2 = scaleImage(img1, maxX, maxY, userFonts.colorGray);
         for (int y = 0; y < img2.length; y++) {
             String a = "";
             for (int x = 0; x < img2[0].length; x++) {
                 int v = img2[y][x];
-                a += chrs[v];
+                a += chr[v];
             }
             txt.add(a);
         }

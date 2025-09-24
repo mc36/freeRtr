@@ -94,7 +94,7 @@ public class userFlash {
     public static void ansiArt(String fn, userScreen con) {
         File fil = new File(fn);
         con.putCls();
-        pipeWindow.imageAnsi(con.pipe, fn);
+        pipeWindow.imageAnsi(con.pipe, fil);
     }
 
     /**
