@@ -2256,16 +2256,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         other.doAdvertise();
         lspf.doAdvertise();
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doAdvertise(newlyVpnU, newlyVpnM, newlyVpnF, newlyMvpn, newlyMdt);
+            vrfs.get(i).doer.doAdvertise(newlyVpnU, newlyVpnM, newlyVpnF, newlyMvpn);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doAdvertise(newlyVpoU, newlyVpoM, newlyVpoF, newlyMvpo, newlyMdt);
+            ovrfs.get(i).doer.doAdvertise(newlyVpoU, newlyVpoM, newlyVpoF, newlyMvpo);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            clrs.get(i).doer.doAdvertise(newlyUni, newlyMlt, newlyFlw, newlyMvpn, newlyMdt);
+            clrs.get(i).doer.doAdvertise(newlyUni, newlyMlt, newlyFlw, newlyMvpn);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doAdvertise(newlyOuni, newlyOmlt, newlyOflw, newlyMvpo, newlyMdt);
+            oclrs.get(i).doer.doAdvertise(newlyOuni, newlyOmlt, newlyOflw, newlyMvpo);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doAdvertise();
