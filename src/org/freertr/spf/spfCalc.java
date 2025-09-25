@@ -1538,6 +1538,7 @@ public class spfCalc<Ta extends addrType> {
         String dns = null;
         boolean nets = false;
         boolean ints = false;
+        boolean mets = false;
         String remv = null;
         String locs = null;
         String defl[] = null;
@@ -1579,6 +1580,10 @@ public class spfCalc<Ta extends addrType> {
             }
             if (a.equals("ints")) {
                 ints = true;
+                continue;
+            }
+            if (a.equals("mets")) {
+                mets = true;
                 continue;
             }
             if (a.equals("locs")) {
@@ -1665,7 +1670,14 @@ public class spfCalc<Ta extends addrType> {
                 spfConn<Ta> cur = ntry.conn.get(i);
                 String a = "";
                 if (ints) {
-                    a = " [taillabel=\"" + cur.ident + "\"]";
+                    a += " " + cur.ident;
+                }
+                if (mets) {
+                    a += " " + cur.metric;
+                }
+                if (a.length() > 0) {
+                    a = a.substring(1, a.length());
+                    a = " [taillabel=\"" + a + "\"]";
                 }
                 res.add("  \"" + nam + "\" -- \"" + node2name(cur.target, dns, remv) + "\" [weight=" + cur.metric + "]" + a);
             }
