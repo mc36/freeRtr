@@ -272,28 +272,23 @@ public class rtrBgpVrfRtr extends ipRtr {
             doExportRoute(rtrBgpUtil.sfiMulticast, ntry, nMlt, rt);
         }
         for (int i = 0; i < routerRedistedU.size(); i++) {
-            tabRouteEntry<addrIP> ntry = routerRedistedU.get(i);
-            doExportRoute(afi, ntry, nUni, rt);
+            doExportRoute(afi, routerRedistedU.get(i), nUni, rt);
         }
         for (int i = 0; i < routerRedistedM.size(); i++) {
-            tabRouteEntry<addrIP> ntry = routerRedistedM.get(i);
-            doExportRoute(rtrBgpUtil.sfiMulticast, ntry, nMlt, rt);
+            doExportRoute(rtrBgpUtil.sfiMulticast, routerRedistedM.get(i), nMlt, rt);
         }
         for (int i = 0; i < routerRedistedF.size(); i++) {
-            tabRouteEntry<addrIP> ntry = routerRedistedF.get(i);
-            doExportRoute(rtrBgpUtil.sfiFlwSpc, ntry, nFlw, rt);
+            doExportRoute(rtrBgpUtil.sfiFlwSpc, routerRedistedF.get(i), nFlw, rt);
         }
         tabRoute<addrIP> tab = new tabRoute<addrIP>("agg");
         routerDoAggregates(parent.afiUni, nUni, tab, fwd.commonLabel, parent.routerID, parent.localAs);
         for (int i = 0; i < tab.size(); i++) {
-            tabRouteEntry<addrIP> ntry = tab.get(i);
-            doExportRoute(afi, ntry, nUni, rt);
+            doExportRoute(afi, tab.get(i), nUni, rt);
         }
         tab = new tabRoute<addrIP>("agg");
         routerDoAggregates(parent.afiMlt, nMlt, tab, fwd.commonLabel, parent.routerID, parent.localAs);
         for (int i = 0; i < tab.size(); i++) {
-            tabRouteEntry<addrIP> ntry = tab.get(i);
-            doExportRoute(rtrBgpUtil.sfiMulticast, ntry, nMlt, rt);
+            doExportRoute(rtrBgpUtil.sfiMulticast, tab.get(i), nMlt, rt);
         }
         if (flowSpec != null) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
