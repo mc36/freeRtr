@@ -2811,6 +2811,8 @@ class userGameRacer {
 
     private int opm;
 
+    private int opd;
+
     private String grs;
 
     private int sped;
@@ -2835,6 +2837,7 @@ class userGameRacer {
         sped = 100;
         lane = 0;
         opm = bits.random(3, 6);
+        opd = 0;
         grs = "";
         char[] gras = new char[]{' ', ' ', '_', '.', '-', '=', '^'};
         int len = 0;
@@ -2899,6 +2902,7 @@ class userGameRacer {
                     }
                     op.random();
                 }
+                opd++;
                 ops.add(op);
             }
             Collections.sort(ops);
@@ -2915,7 +2919,7 @@ class userGameRacer {
                 op.draw(scr, -lane, a[0] + 1, a[1], b[0] - a[0] - 2);
             }
             scr.putStr(0, 0, userScreen.colBlack, userScreen.colGreen, false, grs);
-            scr.putStr(0, 0, 0, 7, false, sped + " km/h");
+            scr.putStr(0, 0, 0, 7, false, sped + " km/h, score=" + opd);
             scr.refresh();
             if (crs) {
                 return;
