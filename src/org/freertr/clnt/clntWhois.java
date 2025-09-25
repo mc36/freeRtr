@@ -12,7 +12,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFormat;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -186,7 +185,7 @@ public class clntWhois {
             cntrError.add(1);
             return null;
         }
-        addrIP trg = userTerminal.justResolv(server, 0);
+        addrIP trg = clntDns.justResolv(server, 0);
         if (trg == null) {
             cntrError.add(1);
             return null;

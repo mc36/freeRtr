@@ -17,6 +17,51 @@ public class secClient {
     }
 
     /**
+     * start ssh session
+     *
+     * @param console console to use
+     * @param stream connection to use
+     * @param proto protocol to use
+     * @param pubkey public key
+     * @param user username
+     * @param pass password
+     * @return pipeline of this connection, null=error
+     */
+    public static pipeSide startSecurity(pipeSide console, pipeSide stream, int proto, byte[] pubkey, String user, String pass) {
+        proto &= servGeneric.protoSec;
+        if (stream == null) {
+            return null;
+        }
+        if (proto == 0) {
+            return stream;
+        }
+        if (proto == servGeneric.protoSsh) {
+            if (user == null) {
+                console.strPut("username: ");
+                user = console.lineGet(50);
+            }
+            if (pass == null) {
+                console.strPut("password: ");
+                int red;
+                if (console.settingsGet(pipeSetting.passStar, false)) {
+                    red = 51;
+                } else {
+                    red = 49;
+                }
+                pass = console.lineGet(red);
+            }
+        }
+        console.strPut("securing connection");
+        stream = openSec(stream, proto, pubkey, user, pass);
+        if (stream == null) {
+            console.linePut(" failed!");
+            return null;
+        }
+        console.linePut(" ok!");
+        return stream;
+    }
+
+    /**
      * start secure connection
      *
      * @param pipe pipeline to use

@@ -13,6 +13,7 @@ import org.freertr.cfg.cfgInit;
 import org.freertr.cfg.cfgProxy;
 import org.freertr.cfg.cfgScrpt;
 import org.freertr.cfg.cfgTrnsltn;
+import org.freertr.clnt.clntDns;
 import org.freertr.enc.encBase64;
 import org.freertr.enc.encMarkDown;
 import org.freertr.enc.encUrl;
@@ -34,7 +35,6 @@ import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
 import org.freertr.user.userRead;
 import org.freertr.user.userScript;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -315,7 +315,7 @@ public class servHttpUtil {
             cn.sendRespError(502, "bad proxy profile");
             return false;
         }
-        addrIP adr = userTerminal.justResolv(l.get(1), prx.proxy.prefer);
+        addrIP adr = clntDns.justResolv(l.get(1), prx.proxy.prefer);
         if (adr == null) {
             cn.sendRespError(502, "bad target hostname");
             return false;
@@ -533,7 +533,7 @@ public class servHttpUtil {
             return true;
         }
         cn.gotUrl.fromString("tcp://" + cn.gotUrl.orig);
-        addrIP adr = userTerminal.justResolv(cn.gotUrl.server, cn.lower.proxy.prefer);
+        addrIP adr = clntDns.justResolv(cn.gotUrl.server, cn.lower.proxy.prefer);
         if (adr == null) {
             cn.sendRespError(502, "bad gateway");
             return true;
@@ -722,7 +722,7 @@ public class servHttpUtil {
         }
         addrIP[] adrs = new addrIP[urls.size()];
         for (int i = 0; i < adrs.length; i++) {
-            adrs[i] = userTerminal.justResolv(urls.get(i).server, cn.gotHost.multiAccP.prefer);
+            adrs[i] = clntDns.justResolv(urls.get(i).server, cn.gotHost.multiAccP.prefer);
         }
         pipeSide[] cons = new pipeSide[adrs.length];
         for (int i = 0; i < adrs.length; i++) {
@@ -776,7 +776,7 @@ public class servHttpUtil {
         encUrl srvUrl = encUrl.parseOne(cn.gotHost.reconnT);
         doTranslate(cn, srvUrl);
         doSubconn(cn, srvUrl);
-        addrIP adr = userTerminal.justResolv(srvUrl.server, cn.gotHost.reconnP.prefer);
+        addrIP adr = clntDns.justResolv(srvUrl.server, cn.gotHost.reconnP.prefer);
         if (adr == null) {
             cn.sendRespError(502, "bad gateway");
             return;

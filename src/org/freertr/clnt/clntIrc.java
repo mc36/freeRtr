@@ -9,7 +9,6 @@ import org.freertr.serv.servGeneric;
 import org.freertr.serv.servIrc;
 import org.freertr.user.userExec;
 import org.freertr.user.userRead;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -109,7 +108,7 @@ public class clntIrc implements Runnable {
         if (pipe != null) {
             pipe.setClose();
         }
-        addrIP trg = userTerminal.justResolv(hostName, 0);
+        addrIP trg = clntDns.justResolv(hostName, 0);
         if (trg == null) {
             return;
         }

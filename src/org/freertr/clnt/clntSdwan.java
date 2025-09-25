@@ -27,7 +27,6 @@ import org.freertr.serv.servGeneric;
 import org.freertr.serv.servSdwan;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFormat;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -480,7 +479,7 @@ public class clntSdwan implements Runnable, ifcDn {
         if (debugger.clntSdwanTraf) {
             logger.debug("resolving " + ctrlAddr + " for ipv" + prefer);
         }
-        addrIP trg = userTerminal.justResolv(ctrlAddr, prefer);
+        addrIP trg = clntDns.justResolv(ctrlAddr, prefer);
         if (trg == null) {
             logger.error("unable to resolve " + ctrlAddr);
             return;

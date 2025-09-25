@@ -16,7 +16,6 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServP;
 import org.freertr.prt.prtUdp;
 import org.freertr.sec.secTransform;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
@@ -317,7 +316,7 @@ public class clntSatp implements Runnable, prtServP, ifcDn {
         hashTx = transform.getHmac(buf1);
         hashRx = transform.getHmac(buf2);
         endptTx = bits.randomB();
-        addrIP trg = userTerminal.justResolv(target, prefer);
+        addrIP trg = clntDns.justResolv(target, prefer);
         if (trg == null) {
             return;
         }

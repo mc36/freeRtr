@@ -1,6 +1,7 @@
 package org.freertr.sec;
 
 import org.freertr.addr.addrIP;
+import org.freertr.clnt.clntDns;
 import org.freertr.clnt.clntProxy;
 import org.freertr.enc.encBase64;
 import org.freertr.cry.cryHashGeneric;
@@ -10,7 +11,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
 import org.freertr.serv.servHttp;
 import org.freertr.enc.encUrl;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -152,7 +152,7 @@ public class secWebsock {
      * @return pipe if success, null on error
      */
     public final static pipeSide doConnect(clntProxy prx, byte[] pubkey, encUrl trg, String prt) {
-        addrIP adr = userTerminal.justResolv(trg.server, prx.prefer);
+        addrIP adr = clntDns.justResolv(trg.server, prx.prefer);
         if (adr == null) {
             return null;
         }

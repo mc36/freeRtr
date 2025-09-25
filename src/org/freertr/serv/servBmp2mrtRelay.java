@@ -4,13 +4,13 @@ import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAceslst;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgProxy;
+import org.freertr.clnt.clntDns;
 import org.freertr.clnt.clntProxy;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.rtr.rtrBgpMon;
 import org.freertr.tab.tabAceslstN;
 import org.freertr.tab.tabListing;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -129,7 +129,7 @@ public class servBmp2mrtRelay implements Comparable<servBmp2mrtRelay>, Runnable 
 
     private void doWork() {
         bits.sleep(1000);
-        addrIP adr = userTerminal.justResolv(server, proxy.prefer);
+        addrIP adr = clntDns.justResolv(server, proxy.prefer);
         if (adr == null) {
             return;
         }

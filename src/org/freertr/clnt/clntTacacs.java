@@ -9,7 +9,6 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.pack.packTacacs;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -103,7 +102,7 @@ public class clntTacacs {
         if (server == null) {
             return true;
         }
-        addrIP trg = userTerminal.justResolv(server, 0);
+        addrIP trg = clntDns.justResolv(server, 0);
         if (trg == null) {
             return true;
         }
@@ -225,7 +224,7 @@ public class clntTacacs {
         if (server == null) {
             return new authResult(par, authResult.authServerError, usr, cmd);
         }
-        addrIP trg = userTerminal.justResolv(server, 0);
+        addrIP trg = clntDns.justResolv(server, 0);
         if (trg == null) {
             return new authResult(par, authResult.authServerError, usr, cmd);
         }

@@ -10,7 +10,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
 import org.freertr.serv.servStreamingMdt;
 import org.freertr.tab.tabGen;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
@@ -128,7 +127,7 @@ public class clntTelemetry implements Runnable {
         if (target == null) {
             return;
         }
-        addrIP trg = userTerminal.justResolv(target, proxy.prefer);
+        addrIP trg = clntDns.justResolv(target, proxy.prefer);
         if (trg == null) {
             return;
         }

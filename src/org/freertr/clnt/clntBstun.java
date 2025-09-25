@@ -13,7 +13,6 @@ import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servBstun;
 import org.freertr.serv.servGeneric;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
@@ -204,7 +203,7 @@ public class clntBstun implements Runnable, ifcDn {
     }
 
     private void workDoer() {
-        addrIP trg = userTerminal.justResolv(target, proxy.prefer);
+        addrIP trg = clntDns.justResolv(target, proxy.prefer);
         if (trg == null) {
             return;
         }

@@ -32,7 +32,6 @@ import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
 import org.freertr.user.userRead;
 import org.freertr.user.userScript;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -753,7 +752,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
             haveResult(false);
             return;
         }
-        addrIP fwdTrg = userTerminal.justResolv(target, prefer);
+        addrIP fwdTrg = clntDns.justResolv(target, prefer);
         if (fwdTrg == null) {
             haveResult(false);
             return;

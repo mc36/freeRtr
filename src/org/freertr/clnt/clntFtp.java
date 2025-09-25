@@ -18,7 +18,6 @@ import org.freertr.prt.prtServS;
 import org.freertr.serv.servFtp;
 import org.freertr.serv.servGeneric;
 import org.freertr.enc.encUrl;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -203,7 +202,7 @@ public class clntFtp implements prtServS {
         if (prx == null) {
             return true;
         }
-        srvr = userTerminal.justResolv(src.server, 0);
+        srvr = clntDns.justResolv(src.server, 0);
         if (srvr == null) {
             return true;
         }

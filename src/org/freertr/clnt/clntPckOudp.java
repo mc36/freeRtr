@@ -14,7 +14,6 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServP;
 import org.freertr.prt.prtUdp;
 import org.freertr.serv.servPckOudp;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
@@ -272,7 +271,7 @@ public class clntPckOudp implements Runnable, prtServP, ifcDn {
     }
 
     private void workDoer() {
-        addrIP trg = userTerminal.justResolv(target, prefer);
+        addrIP trg = clntDns.justResolv(target, prefer);
         if (trg == null) {
             return;
         }

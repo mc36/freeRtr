@@ -21,7 +21,6 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServP;
 import org.freertr.prt.prtUdp;
 import org.freertr.tab.tabWindow;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -359,7 +358,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         if (quantum.length < 1) {
             quantum = new byte[32];
         }
-        addrIP trg = userTerminal.justResolv(target, prefer);
+        addrIP trg = clntDns.justResolv(target, prefer);
         if (trg == null) {
             return;
         }

@@ -4,11 +4,11 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.cfg.cfgAll;
+import org.freertr.clnt.clntDns;
 import org.freertr.clnt.clntProxy;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
 import org.freertr.enc.encTlv;
@@ -179,7 +179,7 @@ public class rtrBgpMon implements Comparable<rtrBgpMon>, Runnable {
     }
 
     private void doWork() {
-        addrIP adr = userTerminal.justResolv(server, proxy.prefer);
+        addrIP adr = clntDns.justResolv(server, proxy.prefer);
         if (adr == null) {
             return;
         }

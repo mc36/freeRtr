@@ -13,6 +13,7 @@ import org.freertr.clnt.clntCapwap;
 import org.freertr.clnt.clntDhcp4;
 import org.freertr.clnt.clntDhcp6;
 import org.freertr.clnt.clntDlsw;
+import org.freertr.clnt.clntDns;
 import org.freertr.clnt.clntErspan;
 import org.freertr.clnt.clntEtherIp;
 import org.freertr.clnt.clntGeneve;
@@ -166,7 +167,6 @@ import org.freertr.tab.tabSession;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -5824,7 +5824,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (tunTrg == null) {
             return;
         }
-        addrIP adr = userTerminal.justResolv(tunFQDN, 0);
+        addrIP adr = clntDns.justResolv(tunFQDN, 0);
         if (adr == null) {
             return;
         }

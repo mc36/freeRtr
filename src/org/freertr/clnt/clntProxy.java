@@ -19,7 +19,6 @@ import org.freertr.prt.prtLocUdp;
 import org.freertr.sec.secClient;
 import org.freertr.sec.secWebsock;
 import org.freertr.serv.servGeneric;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -383,7 +382,7 @@ public class clntProxy {
         if (debugger.clntProxyTraf) {
             logger.debug("using " + type2string(prxProto) + " at " + target + " " + port + " on vrf " + vrf.name);
         }
-        addrIP adr = userTerminal.justResolv(target, prefer);
+        addrIP adr = clntDns.justResolv(target, prefer);
         if (adr == null) {
             cntrError.add(1);
             return null;

@@ -14,7 +14,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.sec.secClient;
 import org.freertr.serv.servGeneric;
 import org.freertr.enc.encUrl;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -245,7 +244,7 @@ public class clntSstp implements Runnable, ifcDn {
         if (debugger.clntSstpTraf) {
             logger.debug("resolving " + url.toURL(true, false, false, true));
         }
-        addrIP trg = userTerminal.justResolv(url.server, proxy.prefer);
+        addrIP trg = clntDns.justResolv(url.server, proxy.prefer);
         if (trg == null) {
             return;
         }

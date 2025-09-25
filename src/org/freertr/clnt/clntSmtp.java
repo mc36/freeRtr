@@ -15,7 +15,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
 import org.freertr.serv.servSmtp;
 import org.freertr.enc.encUrl;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -421,7 +420,7 @@ public class clntSmtp implements Runnable {
         if (prx == null) {
             return "no proxy configured";
         }
-        addrIP trg = userTerminal.justResolv(serv, 0);
+        addrIP trg = clntDns.justResolv(serv, 0);
         if (trg == null) {
             return "no address found for server";
         }

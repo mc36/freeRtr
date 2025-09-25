@@ -23,7 +23,6 @@ import org.freertr.enc.encCodecG711aLaw;
 import org.freertr.enc.encCodecG711uLaw;
 import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -631,7 +630,7 @@ public class clntSip implements Runnable {
             conn.setClose();
         }
         conn = null;
-        trgAdr = userTerminal.justResolv(trgDom, 0);
+        trgAdr = clntDns.justResolv(trgDom, 0);
         if (trgAdr == null) {
             return;
         }

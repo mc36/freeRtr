@@ -17,7 +17,6 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.prt.prtUdp;
 import org.freertr.enc.encUrl;
-import org.freertr.user.userTerminal;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.syncInt;
@@ -236,7 +235,7 @@ public class clntTftp implements prtServS {
     }
 
     private boolean openConn(String trg) {
-        adr = new userTerminal(conp).resolveAddr(trg, 0);
+        adr = clntDns.resolveAddr(conp, trg, 0);
         if (adr == null) {
             return true;
         }

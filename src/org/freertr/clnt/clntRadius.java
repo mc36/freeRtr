@@ -8,7 +8,6 @@ import org.freertr.pack.packHolder;
 import org.freertr.pack.packRadius;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -122,7 +121,7 @@ public class clntRadius {
         if (server == null) {
             return;
         }
-        addrIP trg = userTerminal.justResolv(server, 0);
+        addrIP trg = clntDns.justResolv(server, 0);
         if (trg == null) {
             return;
         }
@@ -162,7 +161,7 @@ public class clntRadius {
         if (server == null) {
             return true;
         }
-        addrIP trg = userTerminal.justResolv(server, 0);
+        addrIP trg = clntDns.justResolv(server, 0);
         if (trg == null) {
             return true;
         }

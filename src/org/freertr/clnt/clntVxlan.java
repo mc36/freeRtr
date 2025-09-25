@@ -14,7 +14,6 @@ import org.freertr.pack.packVxlan;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServP;
 import org.freertr.prt.prtUdp;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
@@ -289,7 +288,7 @@ public class clntVxlan implements Runnable, prtServP, ifcDn {
     }
 
     private void workDoer() {
-        trg = userTerminal.justResolv(target, prefer);
+        trg = clntDns.justResolv(target, prefer);
         if (trg == null) {
             return;
         }

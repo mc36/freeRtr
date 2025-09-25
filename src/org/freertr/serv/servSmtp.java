@@ -27,7 +27,6 @@ import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -618,7 +617,7 @@ class servSmtpRbler implements Runnable {
         if (srvN == null) {
             return 2;
         }
-        addrIP srvA = userTerminal.justResolv(srvN, 0);
+        addrIP srvA = clntDns.justResolv(srvN, 0);
         if (srvA == null) {
             return 2;
         }

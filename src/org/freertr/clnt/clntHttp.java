@@ -19,7 +19,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.sec.secClient;
 import org.freertr.sec.secHttp2;
 import org.freertr.serv.servGeneric;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.enc.encXmlEntry;
@@ -350,7 +349,7 @@ public class clntHttp {
             return true;
         }
         doDebug("resolving " + url.toURL(true, false, false, true));
-        addrIP trg = userTerminal.justResolv(url.server, proxy.prefer);
+        addrIP trg = clntDns.justResolv(url.server, proxy.prefer);
         if (trg == null) {
             return true;
         }

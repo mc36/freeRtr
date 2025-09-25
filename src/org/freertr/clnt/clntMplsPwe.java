@@ -20,7 +20,6 @@ import org.freertr.rtr.rtrLdpNeigh;
 import org.freertr.rtr.rtrLdpTrgtd;
 import org.freertr.tab.tabLabel;
 import org.freertr.tab.tabLabelEntry;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -334,7 +333,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
     }
 
     private void workDoer() {
-        fwdTrg = userTerminal.justResolv(target, prefer);
+        fwdTrg = clntDns.justResolv(target, prefer);
         if (fwdTrg == null) {
             return;
         }

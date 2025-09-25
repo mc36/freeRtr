@@ -6,7 +6,6 @@ import org.freertr.pack.packHolder;
 import org.freertr.pack.packNtp;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -74,7 +73,7 @@ public class clntNtp implements Runnable {
      * @return false on success, true on error
      */
     public boolean doWork() {
-        addrIP serverAddr = userTerminal.justResolv(serverName, 0);
+        addrIP serverAddr = clntDns.justResolv(serverName, 0);
         if (serverAddr == null) {
             return true;
         }

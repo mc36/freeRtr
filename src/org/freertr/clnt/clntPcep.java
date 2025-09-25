@@ -9,7 +9,6 @@ import org.freertr.pack.packPcep;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
 import org.freertr.tab.tabHop;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
@@ -66,7 +65,7 @@ public class clntPcep {
         if (debugger.clntPcepTraf) {
             logger.debug("resolving " + target);
         }
-        addrIP trg = userTerminal.justResolv(target, proxy.prefer);
+        addrIP trg = clntDns.justResolv(target, proxy.prefer);
         if (trg == null) {
             return true;
         }

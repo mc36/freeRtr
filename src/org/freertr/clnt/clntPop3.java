@@ -12,7 +12,6 @@ import org.freertr.pipe.pipeProgress;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
 import org.freertr.serv.servPop3;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -92,7 +91,7 @@ public class clntPop3 {
         if (prx == null) {
             return true;
         }
-        addrIP srvr = userTerminal.justResolv(src.server, 0);
+        addrIP srvr = clntDns.justResolv(src.server, 0);
         if (srvr == null) {
             return true;
         }

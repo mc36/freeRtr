@@ -18,7 +18,6 @@ import org.freertr.prt.prtServP;
 import org.freertr.prt.prtUdp;
 import org.freertr.sec.secTransform;
 import org.freertr.tab.tabWindow;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
@@ -392,7 +391,7 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
         if (replayCheck > 0) {
             sequence = new tabWindow<packHolder>(replayCheck);
         }
-        addrIP trg = userTerminal.justResolv(target, prefer);
+        addrIP trg = clntDns.justResolv(target, prefer);
         if (trg == null) {
             return;
         }

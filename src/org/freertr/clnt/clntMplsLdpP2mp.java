@@ -10,7 +10,6 @@ import org.freertr.ifc.ifcUp;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdMpmp;
 import org.freertr.pack.packHolder;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -230,7 +229,7 @@ public class clntMplsLdpP2mp implements Runnable, ifcDn {
     }
 
     private void workDoer() {
-        fwdTrg = userTerminal.justResolv(target, prefer);
+        fwdTrg = clntDns.justResolv(target, prefer);
         if (fwdTrg == null) {
             return;
         }

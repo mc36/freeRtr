@@ -2,9 +2,9 @@ package org.freertr.serv;
 
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgInit;
+import org.freertr.clnt.clntDns;
 import org.freertr.enc.encUrl;
 import org.freertr.pipe.pipeSide;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -48,7 +48,7 @@ public class servHttpStrm implements Runnable {
         }
         bits.sleep(1000);
         encUrl srvUrl = encUrl.parseOne(cfg.streamT);
-        addrIP adr = userTerminal.justResolv(srvUrl.server, cfg.streamP.prefer);
+        addrIP adr = clntDns.justResolv(srvUrl.server, cfg.streamP.prefer);
         if (adr == null) {
             return;
         }

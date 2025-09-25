@@ -77,6 +77,47 @@ public class clntDns {
     }
 
     /**
+     * resolve one host to address
+     *
+     * @param conole console to use
+     * @param host hostname
+     * @param prt protocol to prefer, 0=default
+     * @return ip address, null if not found
+     */
+    public static addrIP resolveAddr(pipeSide console, String host, int prt) {
+        addrIP addr = new addrIP();
+        if (!addr.fromString(host)) {
+            return addr;
+        }
+        if (prt == 0) {
+            prt = clntDns.getPriPref();
+        }
+        console.strPut("resolving " + host + " for ipv" + prt);
+        addrIP adr = clntDns.justResolv(host, prt);
+        if (adr == null) {
+            console.linePut(" failed!");
+            return null;
+        }
+        console.linePut(" ok!");
+        return adr;
+    }
+
+    /**
+     * do resolver work
+     *
+     * @param host server name
+     * @param prt protocol to prefer, 0=default, 4=ip4, 6=ip6
+     * @return address of remove, null on error
+     */
+    public static addrIP justResolv(String host, int prt) {
+        clntDns clnt = new clntDns();
+        if (clnt.doResolvAddr(cfgAll.nameServerAddr, host, prt)) {
+            return null;
+        }
+        return clnt.getAddr(prt);
+    }
+
+    /**
      * purge local cache
      *
      * @param full set true to full clear

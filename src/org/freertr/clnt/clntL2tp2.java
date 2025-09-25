@@ -22,7 +22,6 @@ import org.freertr.prt.prtServP;
 import org.freertr.prt.prtUdp;
 import org.freertr.serv.servL2tp2;
 import org.freertr.user.userFormat;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -372,7 +371,7 @@ public class clntL2tp2 implements Runnable, prtServP, ifcDn {
     }
 
     private void workDoer() {
-        addrIP trg = userTerminal.justResolv(target, prefer);
+        addrIP trg = clntDns.justResolv(target, prefer);
         if (trg == null) {
             return;
         }

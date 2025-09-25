@@ -18,6 +18,7 @@ import org.freertr.cfg.cfgProxy;
 import org.freertr.cfg.cfgRoump;
 import org.freertr.cfg.cfgRtr;
 import org.freertr.cfg.cfgVrf;
+import org.freertr.clnt.clntDns;
 import org.freertr.clnt.clntHttp;
 import org.freertr.clnt.clntModem;
 import org.freertr.clnt.clntNrpe;
@@ -70,6 +71,7 @@ import org.freertr.pack.packXotPad;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.prt.prtArping;
 import org.freertr.rtr.rtrBgpDump;
+import org.freertr.sec.secClient;
 import org.freertr.serv.servOpenflow;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabHop;
@@ -197,8 +199,7 @@ public class userPacket {
                 cmd.error("vrf not specified");
                 return null;
             }
-            userTerminal trm = new userTerminal(cmd.pipe);
-            addrIP trg = trm.resolveAddr(rem, proto);
+            addrIP trg = clntDns.resolveAddr(cmd.pipe, rem, proto);
             if (trg == null) {
                 return null;
             }
@@ -420,7 +421,7 @@ public class userPacket {
                 cmd.error("no such proxy profile");
                 return null;
             }
-            addrIP adr = userTerminal.justResolv(cmd.word(), prx.proxy.prefer);
+            addrIP adr = clntDns.justResolv(cmd.word(), prx.proxy.prefer);
             if (adr == null) {
                 cmd.error("unable to resolve bmp");
                 return null;
@@ -553,8 +554,7 @@ public class userPacket {
                     continue;
                 }
             }
-            userTerminal trm = new userTerminal(cmd.pipe);
-            addrIP trg = trm.resolveAddr(rem, proto);
+            addrIP trg = clntDns.resolveAddr(cmd.pipe, rem, proto);
             if (trg == null) {
                 return null;
             }
@@ -618,8 +618,7 @@ public class userPacket {
             if (delay < 1) {
                 delay = 1;
             }
-            userTerminal trm = new userTerminal(cmd.pipe);
-            addrIP trg = trm.resolveAddr(rem, proto);
+            addrIP trg = clntDns.resolveAddr(cmd.pipe, rem, proto);
             if (trg == null) {
                 return null;
             }
@@ -1977,7 +1976,7 @@ public class userPacket {
             return null;
         }
         if (a.equals("xotpad")) {
-            addrIP adr = userTerminal.justResolv(cmd.word(), 0);
+            addrIP adr = clntDns.justResolv(cmd.word(), 0);
             if (adr == null) {
                 cmd.error("bad address");
                 return null;
@@ -2037,8 +2036,7 @@ public class userPacket {
                 return null;
             }
             a = cmd.word();
-            userTerminal trm = new userTerminal(cmd.pipe);
-            addrIP trg = trm.resolveAddr(a, 0);
+            addrIP trg = clntDns.resolveAddr(cmd.pipe, a, 0);
             if (trg == null) {
                 cmd.error("server not found");
                 return null;
@@ -2054,7 +2052,7 @@ public class userPacket {
                 return null;
             }
             a = cmd.word();
-            conn = trm.startSecurity(conn, servGeneric.protoSsh, null, a, cmd.word());
+            conn = secClient.startSecurity(cmd.pipe, conn, servGeneric.protoSsh, null, a, cmd.word());
             if (conn == null) {
                 return null;
             }

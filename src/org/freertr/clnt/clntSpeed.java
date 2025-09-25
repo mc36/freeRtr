@@ -6,7 +6,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servCharGen;
 import org.freertr.serv.servDiscard;
 import org.freertr.serv.servGeneric;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -50,7 +49,7 @@ public class clntSpeed {
      */
     public static void smllClnt(cmds cmd) {
         String a = cmd.word();
-        addrIP trg = userTerminal.justResolv(a, 0);
+        addrIP trg = clntDns.justResolv(a, 0);
         if (trg == null) {
             return;
         }

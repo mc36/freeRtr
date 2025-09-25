@@ -16,7 +16,6 @@ import org.freertr.pack.packHolder;
 import org.freertr.pack.packPptp;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -271,7 +270,7 @@ public class clntPptp implements Runnable, ipPrt, ifcDn {
     }
 
     private void workDoer() {
-        fwdTrg = userTerminal.justResolv(target, prefer);
+        fwdTrg = clntDns.justResolv(target, prefer);
         if (fwdTrg == null) {
             return;
         }

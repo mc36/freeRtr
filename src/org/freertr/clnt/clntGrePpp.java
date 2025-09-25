@@ -14,7 +14,6 @@ import org.freertr.ip.ipFwdTab;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packPptp;
 import org.freertr.prt.prtGre;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
@@ -229,7 +228,7 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
     }
 
     private void workDoer() {
-        fwdTrg = userTerminal.justResolv(target, prefer);
+        fwdTrg = clntDns.justResolv(target, prefer);
         if (fwdTrg == null) {
             return;
         }

@@ -7,7 +7,6 @@ import org.freertr.pack.packSnmp;
 import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
-import org.freertr.user.userTerminal;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 
@@ -77,7 +76,7 @@ public class clntSnmp {
 
     private boolean doQuery(int cmd) {
         console.linePut("querying " + packSnmp.type2string(cmd) + " " + oid + " at " + server);
-        addrIP trg = userTerminal.justResolv(server, 0);
+        addrIP trg = clntDns.justResolv(server, 0);
         if (trg == null) {
             return true;
         }

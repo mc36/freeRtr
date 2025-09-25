@@ -55,6 +55,7 @@ import org.freertr.serv.servGenList;
 import org.freertr.serv.servGeneric;
 import org.freertr.enc.encUrl;
 import org.freertr.prt.prtIcmptun;
+import org.freertr.sec.secClient;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -3919,8 +3920,7 @@ public class userExec {
             cmd.error("vrf not specified");
             return;
         }
-        userTerminal trm = new userTerminal(pipe);
-        addrIP trg = trm.resolveAddr(rem, proto);
+        addrIP trg = clntDns.resolveAddr(pipe, rem, proto);
         if (trg == null) {
             return;
         }
@@ -4088,8 +4088,7 @@ public class userExec {
             cmd.error("vrf not specified");
             return;
         }
-        userTerminal trm = new userTerminal(pipe);
-        addrIP trg = trm.resolveAddr(rem, ipver);
+        addrIP trg = clntDns.resolveAddr(pipe, rem, ipver);
         if (trg == null) {
             return;
         }
@@ -4282,8 +4281,7 @@ public class userExec {
             cmd.error("vrf not specified");
             return;
         }
-        userTerminal trm = new userTerminal(pipe);
-        addrIP trg = trm.resolveAddr(rem, ipver);
+        addrIP trg = clntDns.resolveAddr(pipe, rem, ipver);
         if (trg == null) {
             return;
         }
@@ -4597,8 +4595,7 @@ public class userExec {
             cmd.error("vrf not specified");
             return;
         }
-        userTerminal trm = new userTerminal(pipe);
-        addrIP trg = trm.resolveAddr(rem, proto);
+        addrIP trg = clntDns.resolveAddr(pipe, rem, proto);
         if (trg == null) {
             return;
         }
@@ -4993,8 +4990,7 @@ public class userExec {
                 pipe.linePut("file open error");
             }
         }
-        userTerminal term = new userTerminal(pipe);
-        addrIP adr = term.resolveAddr(rem, proto);
+        addrIP adr = clntDns.resolveAddr(pipe, rem, proto);
         if (prx == null) {
             prx = clntProxy.makeTemp(vrf, ifc);
         }
@@ -5005,7 +5001,7 @@ public class userExec {
             return;
         }
         pipe.linePut(" ok!");
-        strm = term.startSecurity(strm, secur, pubkey, user, pass);
+        strm = secClient.startSecurity(pipe, strm, secur, pubkey, user, pass);
         if (strm == null) {
             return;
         }

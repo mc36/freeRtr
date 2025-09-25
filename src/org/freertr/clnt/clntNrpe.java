@@ -13,7 +13,6 @@ import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGen;
-import org.freertr.user.userTerminal;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.syncInt;
@@ -87,7 +86,7 @@ public class clntNrpe {
     public boolean doCheck(String check) {
         cntrStart.add(1);
         console.linePut("querying " + check + " at " + server);
-        addrIP trg = userTerminal.justResolv(server, 0);
+        addrIP trg = clntDns.justResolv(server, 0);
         if (trg == null) {
             cntrError.add(1);
             return true;
