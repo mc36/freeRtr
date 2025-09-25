@@ -58,18 +58,12 @@ router bgp4 1
  neigh 1.1.1.4 remote-as 1
  neigh 1.1.1.4 route-reflect
  neigh 1.1.1.4 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -85,18 +79,12 @@ router bgp6 1
  neigh 1234:1::4 remote-as 1
  neigh 1234:1::4 route-reflect
  neigh 1234:1::4 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn
  exit
 !
 
@@ -167,18 +155,12 @@ router bgp4 1
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 send-comm both
  neigh 1.1.1.1 evpn-route-map-in rm1
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -188,18 +170,12 @@ router bgp6 1
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 send-comm both
  neigh 1234:1::1 evpn-route-map-in rm1
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn
  exit
 !
 
@@ -267,18 +243,12 @@ router bgp4 1
  router-id 4.4.4.3
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn route-map rm1
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn route-map rm1
  exit
 router bgp6 1
  vrf v1
@@ -287,18 +257,12 @@ router bgp6 1
  router-id 6.6.6.3
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn route-map rm1
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn route-map rm1
  exit
 !
 
@@ -359,18 +323,12 @@ router bgp4 1
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 evpn-route-map-in rm1
  neigh 1.1.1.1 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -380,18 +338,12 @@ router bgp6 1
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 evpn-route-map-in rm1
  neigh 1234:1::1 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn
  exit
 !
 

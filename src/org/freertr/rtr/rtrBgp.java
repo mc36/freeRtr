@@ -2268,22 +2268,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         other.doAdvertise();
         lspf.doAdvertise();
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doAdvertise(newlyVpnU, newlyVpnM, newlyVpnF, newlyMvpn);
+            vrfs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, newlyVpnU, newlyVpnM, newlyVpnF, newlyMvpn);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doAdvertise(newlyVpoU, newlyVpoM, newlyVpoF, newlyMvpo);
+            ovrfs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, newlyVpoU, newlyVpoM, newlyVpoF, newlyMvpo);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            clrs.get(i).doer.doAdvertise(newlyUni, newlyMlt, newlyFlw, newlyMvpn);
+            clrs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, newlyUni, newlyMlt, newlyFlw, newlyMvpn);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doAdvertise(newlyOuni, newlyOmlt, newlyOflw, newlyMvpo);
+            oclrs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, newlyOuni, newlyOmlt, newlyOflw, newlyMvpo);
         }
         for (int i = 0; i < l3es.size(); i++) {
-            l3es.get(i).doer.doAdvertise(newlyEvpn, newlyVpnM, newlyFlw, newlyMvpn);
+            l3es.get(i).doer.doAdvertise(rtrBgpUtil.sfiEthVpn, newlyEvpn, newlyVpnM, newlyVpnF, newlyMvpn);
         }
         for (int i = 0; i < ol3es.size(); i++) {
-            ol3es.get(i).doer.doAdvertise(newlyEvpn, newlyVpoM, newlyOflw, newlyMvpo);
+            ol3es.get(i).doer.doAdvertise(rtrBgpUtil.sfiEthVpn, newlyEvpn, newlyVpoM, newlyVpoF, newlyMvpo);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doAdvertise();
@@ -2533,22 +2533,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         other.doPeersFull();
         for (int i = 0; i < vrfs.size(); i++) {
-            otherTrigger |= vrfs.get(i).doer.doPeersFull(newlyVpnU, newlyVpnM, newlyVpnF);
+            otherTrigger |= vrfs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, newlyVpnU, newlyVpnM, newlyVpnF);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            otherTrigger |= ovrfs.get(i).doer.doPeersFull(newlyVpoU, newlyVpoM, newlyVpoF);
+            otherTrigger |= ovrfs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, newlyVpoU, newlyVpoM, newlyVpoF);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            otherTrigger |= clrs.get(i).doer.doPeersFull(newlyUni, newlyMlt, newlyFlw);
+            otherTrigger |= clrs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, newlyUni, newlyMlt, newlyFlw);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            otherTrigger |= oclrs.get(i).doer.doPeersFull(newlyOuni, newlyOmlt, newlyOflw);
+            otherTrigger |= oclrs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, newlyOuni, newlyOmlt, newlyOflw);
         }
         for (int i = 0; i < l3es.size(); i++) {
-            otherTrigger |= l3es.get(i).doer.doPeersFull(newlyEvpn, newlyVpnM, newlyVpnF);
+            otherTrigger |= l3es.get(i).doer.doPeersFull(rtrBgpUtil.sfiEthVpn, newlyEvpn, newlyVpnM, newlyVpnF);
         }
         for (int i = 0; i < ol3es.size(); i++) {
-            otherTrigger |= ol3es.get(i).doer.doPeersFull(newlyEvpn, newlyVpoM, newlyVpoF);
+            otherTrigger |= ol3es.get(i).doer.doPeersFull(rtrBgpUtil.sfiEthVpn, newlyEvpn, newlyVpoM, newlyVpoF);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doPeers();
@@ -2905,22 +2905,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         other.doPeersIncr();
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doPeersIncr(computedVpnU, computedVpnM, computedVpnF, chgVpnU, chgVpnM, chgVpnF, chgEvpn);
+            vrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computedVpnU, computedVpnM, computedVpnF, chgVpnU, chgVpnM, chgVpnF);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doPeersIncr(computedVpoU, computedVpoM, computedVpoF, chgVpoU, chgVpoM, chgVpoF, chgEvpn);
+            ovrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computedVpoU, computedVpoM, computedVpoF, chgVpoU, chgVpoM, chgVpoF);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            clrs.get(i).doer.doPeersIncr(routerComputedU, routerComputedM, routerComputedF, routerChangedU, routerChangedM, routerChangedF, chgEvpn);
+            clrs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, routerComputedU, routerComputedM, routerComputedF, routerChangedU, routerChangedM, routerChangedF);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doPeersIncr(computedOuni, computedOmlt, computedOflw, other.routerChangedU, other.routerChangedM, other.routerChangedF, chgEvpn);
+            oclrs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computedOuni, computedOmlt, computedOflw, other.routerChangedU, other.routerChangedM, other.routerChangedF);
         }
         for (int i = 0; i < l3es.size(); i++) {
-            l3es.get(i).doer.doPeersIncr(computedEvpn, computedVpnM, computedVpnF, chgEvpn, chgVpnM, chgVpnF, chgEvpn);
+            l3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computedEvpn, computedVpnM, computedVpnF, chgEvpn, chgVpnM, chgVpnF);
         }
         for (int i = 0; i < ol3es.size(); i++) {
-            ol3es.get(i).doer.doPeersIncr(computedEvpn, computedVpoM, computedVpoF, chgEvpn, chgVpoM, chgVpoF, chgEvpn);
+            ol3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computedEvpn, computedVpoM, computedVpoF, chgEvpn, chgVpoM, chgVpoF);
         }
         if (cntVpls > 0) {
             for (int i = 0; i < vpls.size(); i++) {
@@ -3236,94 +3236,32 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 2, new int[]{3}, "spf-log", "spf log size");
         l.add(null, false, 3, new int[]{-1}, "<num>", "number of entries");
         l.add(null, false, 1, new int[]{2}, "afi-other", "select other to advertise");
-        l.add(null, false, 2, new int[]{-1}, "enable", "enable processing");
-        l.add(null, false, 2, new int[]{-1}, "default-originate", "generate default route");
         l.add(null, false, 2, new int[]{-1}, "vpn-mode", "enable vpn mode");
-        l.add(null, false, 2, new int[]{3}, "srv6", "srv6 advertisement");
-        l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "select source to advertise");
-        l.add(null, false, 2, new int[]{3}, "distance", "set import distance");
-        l.add(null, false, 3, new int[]{-1}, "<num>", "distance");
-        l.add(null, false, 2, new int[]{-1}, "flowspec-install", "specify flowspec installation");
-        l.add(null, false, 2, new int[]{3}, "flowspec-advert", "specify flowspec parameter");
-        l.add(null, false, 3, new int[]{-1}, "<name:pm>", "name of policy map");
+        rtrBgpVrfRtr.getHelp(l, 2);
         cfgRtr.getRedistHelp(l, 1);
         l.add(null, false, 1, new int[]{2}, "afi-vrf", "select vrf to advertise");
         l.add(null, false, 2, new int[]{3}, "<name:vrf>", "name of routing table");
-        l.add(null, false, 3, new int[]{-1}, "enable", "enable processing");
-        l.add(null, false, 3, new int[]{4}, "mdt", "mdt advertisement");
-        l.add(null, false, 4, new int[]{5}, "<name:ifc>", "select source to advertise");
-        l.add(null, false, 5, new int[]{-1}, "<addr>", "select group to advertise");
-        l.add(null, false, 3, new int[]{4}, "mvpn", "mvpn advertisement");
-        l.add(null, false, 4, new int[]{-1}, "<name:ifc>", "select source to advertise");
-        l.add(null, false, 3, new int[]{4}, "srv6", "srv6 advertisement");
-        l.add(null, false, 4, new int[]{-1}, "<name:ifc>", "select source to advertise");
-        l.add(null, false, 3, new int[]{4}, "set-vrf", "configure forwarder override");
-        l.add(null, false, 4, new int[]{5}, "<name:vrf>", "select vrf to use");
-        l.add(null, false, 5, new int[]{-1}, "ipv4", "select ipv4 to use");
-        l.add(null, false, 5, new int[]{-1}, "ipv6", "select ipv6 to use");
-        l.add(null, false, 3, new int[]{4}, "distance", "set import distance");
-        l.add(null, false, 4, new int[]{-1}, "<num>", "distance");
-        l.add(null, false, 3, new int[]{-1}, "default-originate", "generate default route");
-        l.add(null, false, 3, new int[]{4, -1}, "import", "specify import modes");
-        l.add(null, false, 4, new int[]{4, -1}, "evpn", "select evpn");
-        l.add(null, false, 4, new int[]{4, -1}, "l3vpn", "select l3vpn");
-        l.add(null, false, 3, new int[]{4, -1}, "export", "specify export modes");
-        l.add(null, false, 4, new int[]{4, -1}, "evpn", "select evpn");
-        l.add(null, false, 4, new int[]{4, -1}, "l3vpn", "select l3vpn");
-        l.add(null, false, 3, new int[]{4}, "update-source", "select source to advertise");
-        l.add(null, false, 4, new int[]{-1}, "<name:ifc>", "name of interface");
-        l.add(null, false, 3, new int[]{-1}, "flowspec-install", "specify flowspec installation");
-        l.add(null, false, 3, new int[]{4}, "flowspec-advert", "specify flowspec parameter");
-        l.add(null, false, 4, new int[]{-1}, "<name:pm>", "name of policy map");
+        rtrBgpVrfRtr.getHelp(l, 3);
         cfgRtr.getRedistHelp(l, 2);
         l.add(null, false, 1, new int[]{2}, "afi-ovrf", "select other vrf to advertise");
         l.add(null, false, 2, new int[]{3}, "<name:vrf>", "name of routing table");
-        l.add(null, false, 3, new int[]{-1}, "enable", "enable processing");
-        l.add(null, false, 3, new int[]{4}, "mdt", "mdt advertisement");
-        l.add(null, false, 4, new int[]{5}, "<name:ifc>", "select source to advertise");
-        l.add(null, false, 5, new int[]{-1}, "<addr>", "select group to advertise");
-        l.add(null, false, 3, new int[]{4}, "mvpn", "mvpn advertisement");
-        l.add(null, false, 4, new int[]{-1}, "<name:ifc>", "select source to advertise");
-        l.add(null, false, 3, new int[]{4}, "srv6", "srv6 advertisement");
-        l.add(null, false, 4, new int[]{-1}, "<name:ifc>", "select source to advertise");
-        l.add(null, false, 3, new int[]{4}, "set-vrf", "configure forwarder override");
-        l.add(null, false, 4, new int[]{5}, "<name:vrf>", "select vrf to use");
-        l.add(null, false, 5, new int[]{-1}, "ipv4", "select ipv4 to use");
-        l.add(null, false, 5, new int[]{-1}, "ipv6", "select ipv6 to use");
-        l.add(null, false, 3, new int[]{4}, "distance", "set import distance");
-        l.add(null, false, 4, new int[]{-1}, "<num>", "distance");
-        l.add(null, false, 3, new int[]{-1}, "default-originate", "generate default route");
-        l.add(null, false, 3, new int[]{4, -1}, "import", "specify import modes");
-        l.add(null, false, 4, new int[]{4, -1}, "evpn", "select evpn");
-        l.add(null, false, 4, new int[]{4, -1}, "l3vpn", "select l3vpn");
-        l.add(null, false, 3, new int[]{4, -1}, "export", "specify export modes");
-        l.add(null, false, 4, new int[]{4, -1}, "evpn", "select evpn");
-        l.add(null, false, 4, new int[]{4, -1}, "l3vpn", "select l3vpn");
-        l.add(null, false, 3, new int[]{4}, "update-source", "select source to advertise");
-        l.add(null, false, 4, new int[]{-1}, "<name:ifc>", "name of interface");
-        l.add(null, false, 3, new int[]{-1}, "flowspec-install", "specify flowspec installation");
-        l.add(null, false, 3, new int[]{4}, "flowspec-advert", "specify flowspec parameter");
-        l.add(null, false, 4, new int[]{-1}, "<name:pm>", "name of policy map");
+        rtrBgpVrfRtr.getHelp(l, 3);
         cfgRtr.getRedistHelp(l, 2);
         l.add(null, false, 1, new int[]{2}, "afi-clr", "select vrf to advertise");
         l.add(null, false, 2, new int[]{3}, "<name:vrf>", "name of routing table");
-        l.add(null, false, 3, new int[]{-1}, "enable", "enable processing");
-        l.add(null, false, 3, new int[]{4}, "distance", "set import distance");
-        l.add(null, false, 4, new int[]{-1}, "<num>", "distance");
-        l.add(null, false, 3, new int[]{-1}, "default-originate", "generate default route");
-        l.add(null, false, 3, new int[]{-1}, "flowspec-install", "specify flowspec installation");
-        l.add(null, false, 3, new int[]{4}, "flowspec-advert", "specify flowspec parameter");
-        l.add(null, false, 4, new int[]{-1}, "<name:pm>", "name of policy map");
+        rtrBgpVrfRtr.getHelp(l, 3);
         cfgRtr.getRedistHelp(l, 2);
         l.add(null, false, 1, new int[]{2}, "afi-oclr", "select other vrf to advertise");
         l.add(null, false, 2, new int[]{3}, "<name:vrf>", "name of routing table");
-        l.add(null, false, 3, new int[]{-1}, "enable", "enable processing");
-        l.add(null, false, 3, new int[]{4}, "distance", "set import distance");
-        l.add(null, false, 4, new int[]{-1}, "<num>", "distance");
-        l.add(null, false, 3, new int[]{-1}, "default-originate", "generate default route");
-        l.add(null, false, 3, new int[]{-1}, "flowspec-install", "specify flowspec installation");
-        l.add(null, false, 3, new int[]{4}, "flowspec-advert", "specify flowspec parameter");
-        l.add(null, false, 4, new int[]{-1}, "<name:pm>", "name of policy map");
+        rtrBgpVrfRtr.getHelp(l, 3);
+        cfgRtr.getRedistHelp(l, 2);
+        l.add(null, false, 1, new int[]{2}, "afi-l3e", "select vrf to advertise");
+        l.add(null, false, 2, new int[]{3}, "<name:vrf>", "name of routing table");
+        rtrBgpVrfRtr.getHelp(l, 3);
+        cfgRtr.getRedistHelp(l, 2);
+        l.add(null, false, 1, new int[]{2}, "afi-ol3e", "select other vrf to advertise");
+        l.add(null, false, 2, new int[]{3}, "<name:vrf>", "name of routing table");
+        rtrBgpVrfRtr.getHelp(l, 3);
         cfgRtr.getRedistHelp(l, 2);
         l.add(null, false, 1, new int[]{2}, "afi-vpls", "select vpls to advertise");
         l.add(null, false, 2, new int[]{3}, "<id>", "vpls id in ASnum:IDnum format");

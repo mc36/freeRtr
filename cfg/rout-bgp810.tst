@@ -57,18 +57,12 @@ router bgp4 1
  neigh 1.1.1.3 remote-as 1
  neigh 1.1.1.3 update lo0
  neigh 1.1.1.3 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -78,18 +72,12 @@ router bgp6 1
  neigh 1234:1::3 remote-as 1
  neigh 1234:1::3 update lo0
  neigh 1234:1::3 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn
  exit
 !
 
@@ -150,18 +138,12 @@ router bgp4 1
  neigh 1.1.1.3 remote-as 1
  neigh 1.1.1.3 update lo0
  neigh 1.1.1.3 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -171,18 +153,12 @@ router bgp6 1
  neigh 1234:1::3 remote-as 1
  neigh 1234:1::3 update lo0
  neigh 1234:1::3 send-comm both
- afi-ovrf v2 ena
- afi-ovrf v2 red conn
- afi-ovrf v2 import evpn
- afi-ovrf v2 export evpn
- afi-ovrf v3 ena
- afi-ovrf v3 red conn
- afi-ovrf v3 import evpn
- afi-ovrf v3 export evpn
- afi-ovrf v4 ena
- afi-ovrf v4 red conn
- afi-ovrf v4 import evpn
- afi-ovrf v4 export evpn
+ afi-ol3e v2 ena
+ afi-ol3e v2 red conn
+ afi-ol3e v3 ena
+ afi-ol3e v3 red conn
+ afi-ol3e v4 ena
+ afi-ol3e v4 red conn
  exit
 !
 

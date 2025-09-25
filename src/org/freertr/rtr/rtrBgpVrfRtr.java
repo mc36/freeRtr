@@ -52,16 +52,6 @@ public class rtrBgpVrfRtr extends ipRtr {
     public boolean flowInst;
 
     /**
-     * import mode
-     */
-    public int imprtMode;
-
-    /**
-     * export mode
-     */
-    public int exprtMode;
-
-    /**
      * originating interface
      */
     public cfgIfc iface;
@@ -156,8 +146,6 @@ public class rtrBgpVrfRtr extends ipRtr {
         vrf = v;
         routerVpn = true;
         distance = -1;
-        imprtMode = 1;
-        exprtMode = 1;
     }
 
     /**
@@ -249,12 +237,13 @@ public class rtrBgpVrfRtr extends ipRtr {
     /**
      * merge routes to table
      *
+     * @param afi address family
      * @param nUni unicast table to update
      * @param nMlt multicast table to update
      * @param nFlw flowspec table to update
      * @param nMvpn mvpn table to update
      */
-    public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn) {
+    public void doAdvertise(int afi, tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn) {
         final List<Long> rt = new ArrayList<Long>();
         for (int i = 0; i < fwd.rtExp.size(); i++) {
             rt.add(tabRouteUtil.rt2comm(fwd.rtExp.get(i)));
@@ -274,12 +263,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.best.aggrRtr = new addrIP();
             ntry.best.aggrRtr.fromIPv4addr(parent.routerID);
             ntry.best.aggrAs = parent.localAs;
-            if ((exprtMode & 1) != 0) {
-                doExportRoute(rtrBgpUtil.sfiUnicast, ntry, nUni, rt);
-            }
-            if ((exprtMode & 2) != 0) {
-                doExportRoute(rtrBgpUtil.sfiEthVpn, ntry, parent.newlyEvpn, rt);
-            }
+            doExportRoute(afi, ntry, nUni, rt);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = rtrBgpUtil.defaultRoute(other ? parent.afiOuni : parent.afiUni);
             ntry.best.aggrRtr = new addrIP();
@@ -289,34 +273,27 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         for (int i = 0; i < routerRedistedU.size(); i++) {
             tabRouteEntry<addrIP> ntry = routerRedistedU.get(i);
-            if ((exprtMode & 1) != 0) {
-                doExportRoute(rtrBgpUtil.sfiUnicast, ntry, nUni, rt);
-            }
-            if ((exprtMode & 2) != 0) {
-                doExportRoute(rtrBgpUtil.sfiEthVpn, ntry, parent.newlyEvpn, rt);
-            }
+            doExportRoute(afi, ntry, nUni, rt);
         }
         for (int i = 0; i < routerRedistedM.size(); i++) {
-            doExportRoute(rtrBgpUtil.sfiMulticast, routerRedistedM.get(i), nMlt, rt);
+            tabRouteEntry<addrIP> ntry = routerRedistedM.get(i);
+            doExportRoute(rtrBgpUtil.sfiMulticast, ntry, nMlt, rt);
         }
         for (int i = 0; i < routerRedistedF.size(); i++) {
-            doExportRoute(rtrBgpUtil.sfiFlwSpc, routerRedistedF.get(i), nFlw, rt);
+            tabRouteEntry<addrIP> ntry = routerRedistedF.get(i);
+            doExportRoute(rtrBgpUtil.sfiFlwSpc, ntry, nFlw, rt);
         }
         tabRoute<addrIP> tab = new tabRoute<addrIP>("agg");
         routerDoAggregates(parent.afiUni, nUni, tab, fwd.commonLabel, parent.routerID, parent.localAs);
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> ntry = tab.get(i);
-            if ((exprtMode & 1) != 0) {
-                doExportRoute(rtrBgpUtil.sfiUnicast, ntry, nUni, rt);
-            }
-            if ((exprtMode & 2) != 0) {
-                doExportRoute(rtrBgpUtil.sfiEthVpn, ntry, parent.newlyEvpn, rt);
-            }
+            doExportRoute(afi, ntry, nUni, rt);
         }
         tab = new tabRoute<addrIP>("agg");
         routerDoAggregates(parent.afiMlt, nMlt, tab, fwd.commonLabel, parent.routerID, parent.localAs);
         for (int i = 0; i < tab.size(); i++) {
-            doExportRoute(rtrBgpUtil.sfiMulticast, tab.get(i), nMlt, rt);
+            tabRouteEntry<addrIP> ntry = tab.get(i);
+            doExportRoute(rtrBgpUtil.sfiMulticast, ntry, nMlt, rt);
         }
         if (flowSpec != null) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -455,12 +432,13 @@ public class rtrBgpVrfRtr extends ipRtr {
     /**
      * full import routes from table
      *
+     * @param afi address family
      * @param cmpU unicast table to read
      * @param cmpM multicast table to read
      * @param cmpF flowspec table to read
      * @return other changes trigger full recomputation
      */
-    public boolean doPeersFull(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
+    public boolean doPeersFull(int afi, tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
         routerChangedU = null;
         routerChangedM = null;
         routerChangedF = null;
@@ -469,18 +447,11 @@ public class rtrBgpVrfRtr extends ipRtr {
         tabRoute<addrIP> tabM = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
         peers = new tabGen<addrIP>();
-        if ((imprtMode & 1) != 0) {
-            for (int i = 0; i < cmpU.size(); i++) {
-                doImportRoute(rtrBgpUtil.sfiUnicast, cmpU.get(i), tabU, rt);
-            }
-            for (int i = 0; i < cmpM.size(); i++) {
-                doImportRoute(rtrBgpUtil.sfiMulticast, cmpM.get(i), tabM, rt);
-            }
+        for (int i = 0; i < cmpU.size(); i++) {
+            doImportRoute(afi, cmpU.get(i), tabU, rt);
         }
-        if ((imprtMode & 2) != 0) {
-            for (int i = 0; i < parent.newlyEvpn.size(); i++) {
-                doImportRoute(rtrBgpUtil.sfiEthVpn, parent.newlyEvpn.get(i), tabU, rt);
-            }
+        for (int i = 0; i < cmpM.size(); i++) {
+            doImportRoute(rtrBgpUtil.sfiMulticast, cmpM.get(i), tabM, rt);
         }
         for (int i = 0; i < cmpF.size(); i++) {
             doImportRoute(rtrBgpUtil.sfiFlwSpc, cmpF.get(i), tabF, rt);
@@ -546,17 +517,17 @@ public class rtrBgpVrfRtr extends ipRtr {
     /**
      * incremental import routes from table
      *
+     * @param afi address family
      * @param cmpU unicast table to read
      * @param cmpM multicast table to read
      * @param cmpF flowspec table to read
      * @param chgU unicast table to process
      * @param chgM multicast table to process
      * @param chgF flowspec table to process
-     * @param chgE evpn table to process
      * @return other changes trigger full recomputation
      */
-    public boolean doPeersIncr(tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> chgU, tabRoute<addrIP> chgM, tabRoute<addrIP> chgF, tabRoute<addrIP> chgE) {
-        if ((chgU == null) || (chgM == null) || (chgF == null) || (chgE == null)) {
+    public boolean doPeersIncr(int afi, tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> chgU, tabRoute<addrIP> chgM, tabRoute<addrIP> chgF) {
+        if ((chgU == null) || (chgM == null) || (chgF == null)) {
             if (debugger.rtrBgpFull) {
                 logger.debug("changes disappeared");
             }
@@ -568,18 +539,11 @@ public class rtrBgpVrfRtr extends ipRtr {
         routerChangedU = new tabRoute<addrIP>("chg");
         routerChangedM = new tabRoute<addrIP>("chg");
         routerChangedF = new tabRoute<addrIP>("chg");
-        if ((imprtMode & 1) != 0) {
-            for (int i = 0; i < chgU.size(); i++) {
-                doUpdateRoute(rtrBgpUtil.sfiUnicast, chgU.get(i), routerChangedU, routerComputedU, cmpU, rt);
-            }
-            for (int i = 0; i < chgM.size(); i++) {
-                doUpdateRoute(rtrBgpUtil.sfiMulticast, chgM.get(i), routerChangedM, routerComputedM, cmpM, rt);
-            }
+        for (int i = 0; i < chgU.size(); i++) {
+            doUpdateRoute(afi, chgU.get(i), routerChangedU, routerComputedU, cmpU, rt);
         }
-        if ((imprtMode & 2) != 0) {
-            for (int i = 0; i < chgE.size(); i++) {
-                doUpdateRoute(rtrBgpUtil.sfiEthVpn, chgE.get(i), routerChangedU, routerComputedU, parent.computedEvpn, rt);
-            }
+        for (int i = 0; i < chgM.size(); i++) {
+            doUpdateRoute(rtrBgpUtil.sfiMulticast, chgM.get(i), routerChangedM, routerComputedM, cmpM, rt);
         }
         for (int i = 0; i < chgF.size(); i++) {
             doUpdateRoute(rtrBgpUtil.sfiFlwSpc, chgF.get(i), routerChangedF, routerComputedF, cmpF, rt);
@@ -631,6 +595,35 @@ public class rtrBgpVrfRtr extends ipRtr {
     }
 
     /**
+     * get help
+     *
+     * @param l list
+     * @param p start number
+     */
+    public static void getHelp(userHelp l, int p) {
+        l.add(null, false, p + 0, new int[]{-1}, "enable", "enable processing");
+        l.add(null, false, p + 0, new int[]{-1}, "default-originate", "generate default route");
+        l.add(null, false, p + 0, new int[]{p + 1}, "srv6", "srv6 advertisement");
+        l.add(null, false, p + 1, new int[]{-1}, "<name:ifc>", "select source to advertise");
+        l.add(null, false, p + 0, new int[]{p + 1}, "distance", "set import distance");
+        l.add(null, false, p + 1, new int[]{-1}, "<num>", "distance");
+        l.add(null, false, p + 0, new int[]{-1}, "flowspec-install", "specify flowspec installation");
+        l.add(null, false, p + 0, new int[]{p + 1}, "flowspec-advert", "specify flowspec parameter");
+        l.add(null, false, p + 1, new int[]{-1}, "<name:pm>", "name of policy map");
+        l.add(null, false, p + 0, new int[]{p + 1}, "mdt", "mdt advertisement");
+        l.add(null, false, p + 1, new int[]{p + 2}, "<name:ifc>", "select source to advertise");
+        l.add(null, false, p + 2, new int[]{-1}, "<addr>", "select group to advertise");
+        l.add(null, false, p + 0, new int[]{p + 1}, "mvpn", "mvpn advertisement");
+        l.add(null, false, p + 1, new int[]{-1}, "<name:ifc>", "select source to advertise");
+        l.add(null, false, p + 0, new int[]{p + 1}, "update-source", "select source to advertise");
+        l.add(null, false, p + 1, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, p + 0, new int[]{p + 1}, "set-vrf", "configure forwarder override");
+        l.add(null, false, p + 1, new int[]{p + 2}, "<name:vrf>", "select vrf to use");
+        l.add(null, false, p + 2, new int[]{-1}, "ipv4", "select ipv4 to use");
+        l.add(null, false, p + 2, new int[]{-1}, "ipv6", "select ipv6 to use");
+    }
+
+    /**
      * get config
      *
      * @param l list to append
@@ -641,8 +634,6 @@ public class rtrBgpVrfRtr extends ipRtr {
         beg2 += vrf.name + " ";
         l.add(beg1 + beg2 + "enable");
         l.add(beg1 + beg2 + "distance " + distance);
-        l.add(beg1 + beg2 + "import" + mode2string(imprtMode));
-        l.add(beg1 + beg2 + "export" + mode2string(exprtMode));
         cmds.cfgLine(l, !defRou, beg1, beg2 + "default-originate", "");
         cmds.cfgLine(l, !flowInst, beg1, beg2 + "flowspec-install", "");
         cmds.cfgLine(l, flowSpec == null, beg1, beg2 + "flowspec-advert", "" + flowSpec);
@@ -663,39 +654,6 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         cfgRtr.getShRedist(l, beg1 + beg2, this);
         l.add(beg1 + cmds.comment);
-    }
-
-    private final String mode2string(int i) {
-        String a = "";
-        if ((i & 1) != 0) {
-            a += " l3vpn";
-        }
-        if ((i & 2) != 0) {
-            a += " evpn";
-        }
-        return a;
-    }
-
-    private final int string2mode(boolean negated, cmds cmd) {
-        if (negated) {
-            return 1;
-        }
-        int i = 0;
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            if (a.equals("l3vpn")) {
-                i |= 1;
-                continue;
-            }
-            if (a.equals("evpn")) {
-                i |= 2;
-                continue;
-            }
-        }
-        return i;
     }
 
     /**
@@ -731,18 +689,6 @@ public class rtrBgpVrfRtr extends ipRtr {
             } else {
                 mvpn = cfgAll.ifcFind(cmd.word(), 0);
             }
-            parent.needFull.add(1);
-            parent.compute.wakeup();
-            return;
-        }
-        if (s.equals("import")) {
-            imprtMode = string2mode(negated, cmd);
-            parent.needFull.add(1);
-            parent.compute.wakeup();
-            return;
-        }
-        if (s.equals("export")) {
-            exprtMode = string2mode(negated, cmd);
             parent.needFull.add(1);
             parent.compute.wakeup();
             return;

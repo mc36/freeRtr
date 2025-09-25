@@ -81,18 +81,12 @@ router bgp4 1
  neigh 2.2.2.3 send-comm both
  neigh 2.2.2.3 maximum-prefix-in 5 50
  neigh 2.2.2.3 route-target-filter-in
- afi-vrf v2 ena
- afi-vrf v2 red conn
- afi-vrf v2 import evpn
- afi-vrf v2 export evpn
- afi-vrf v3 ena
- afi-vrf v3 red conn
- afi-vrf v3 import evpn
- afi-vrf v3 export evpn
- afi-vrf v4 ena
- afi-vrf v4 red conn
- afi-vrf v4 import evpn
- afi-vrf v4 export evpn
+ afi-l3e v2 ena
+ afi-l3e v2 red conn
+ afi-l3e v3 ena
+ afi-l3e v3 red conn
+ afi-l3e v4 ena
+ afi-l3e v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -104,18 +98,12 @@ router bgp6 1
  neigh 4321::3 send-comm both
  neigh 4321::3 maximum-prefix-in 5 50
  neigh 4321::3 route-target-filter-in
- afi-vrf v2 ena
- afi-vrf v2 red conn
- afi-vrf v2 import evpn
- afi-vrf v2 export evpn
- afi-vrf v3 ena
- afi-vrf v3 red conn
- afi-vrf v3 import evpn
- afi-vrf v3 export evpn
- afi-vrf v4 ena
- afi-vrf v4 red conn
- afi-vrf v4 import evpn
- afi-vrf v4 export evpn
+ afi-l3e v2 ena
+ afi-l3e v2 red conn
+ afi-l3e v3 ena
+ afi-l3e v3 red conn
+ afi-l3e v4 ena
+ afi-l3e v4 red conn
  exit
 !
 
@@ -235,18 +223,12 @@ router bgp4 1
  neigh 2.2.2.1 send-comm both
  neigh 2.2.2.1 maximum-prefix-in 5 50
  neigh 2.2.2.1 route-target-filter-in
- afi-vrf v2 ena
- afi-vrf v2 red conn
- afi-vrf v2 import evpn
- afi-vrf v2 export evpn
- afi-vrf v3 ena
- afi-vrf v3 red conn
- afi-vrf v3 import evpn
- afi-vrf v3 export evpn
- afi-vrf v4 ena
- afi-vrf v4 red conn
- afi-vrf v4 import evpn
- afi-vrf v4 export evpn
+ afi-l3e v2 ena
+ afi-l3e v2 red conn
+ afi-l3e v3 ena
+ afi-l3e v3 red conn
+ afi-l3e v4 ena
+ afi-l3e v4 red conn
  exit
 router bgp6 1
  vrf v1
@@ -258,18 +240,12 @@ router bgp6 1
  neigh 4321::1 send-comm both
  neigh 4321::1 maximum-prefix-in 5 50
  neigh 4321::1 route-target-filter-in
- afi-vrf v2 ena
- afi-vrf v2 red conn
- afi-vrf v2 import evpn
- afi-vrf v2 export evpn
- afi-vrf v3 ena
- afi-vrf v3 red conn
- afi-vrf v3 import evpn
- afi-vrf v3 export evpn
- afi-vrf v4 ena
- afi-vrf v4 red conn
- afi-vrf v4 import evpn
- afi-vrf v4 export evpn
+ afi-l3e v2 ena
+ afi-l3e v2 red conn
+ afi-l3e v3 ena
+ afi-l3e v3 red conn
+ afi-l3e v4 ena
+ afi-l3e v4 red conn
  exit
 !
 
