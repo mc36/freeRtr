@@ -1065,6 +1065,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected tabGen<rtrBgpVrf> oclrs;
 
     /**
+     * list of l3evpn
+     */
+    protected tabGen<rtrBgpVrf> l3es;
+
+    /**
+     * list of other l3evpn
+     */
+    protected tabGen<rtrBgpVrf> ol3es;
+
+    /**
      * list of vpls
      */
     protected tabGen<rtrBgpVpls> vpls;
@@ -1217,6 +1227,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ovrfs = new tabGen<rtrBgpVrf>();
         clrs = new tabGen<rtrBgpVrf>();
         oclrs = new tabGen<rtrBgpVrf>();
+        l3es = new tabGen<rtrBgpVrf>();
+        ol3es = new tabGen<rtrBgpVrf>();
         vpls = new tabGen<rtrBgpVpls>();
         evpn = new tabGen<rtrBgpEvpn>();
         evpnUni = tabLabel.allocate(tabLabelEntry.owner.evpnPbb);
@@ -2267,6 +2279,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < oclrs.size(); i++) {
             oclrs.get(i).doer.doAdvertise(newlyOuni, newlyOmlt, newlyOflw, newlyMvpo);
         }
+        for (int i = 0; i < l3es.size(); i++) {
+            l3es.get(i).doer.doAdvertise(newlyEvpn, newlyVpnM, newlyFlw, newlyMvpn);
+        }
+        for (int i = 0; i < ol3es.size(); i++) {
+            ol3es.get(i).doer.doAdvertise(newlyEvpn, newlyVpoM, newlyOflw, newlyMvpo);
+        }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doAdvertise();
         }
@@ -2525,6 +2543,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < oclrs.size(); i++) {
             otherTrigger |= oclrs.get(i).doer.doPeersFull(newlyOuni, newlyOmlt, newlyOflw);
+        }
+        for (int i = 0; i < l3es.size(); i++) {
+            otherTrigger |= l3es.get(i).doer.doPeersFull(newlyEvpn, newlyVpnM, newlyVpnF);
+        }
+        for (int i = 0; i < ol3es.size(); i++) {
+            otherTrigger |= ol3es.get(i).doer.doPeersFull(newlyEvpn, newlyVpoM, newlyVpoF);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doPeers();
@@ -2892,6 +2916,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < oclrs.size(); i++) {
             oclrs.get(i).doer.doPeersIncr(computedOuni, computedOmlt, computedOflw, other.routerChangedU, other.routerChangedM, other.routerChangedF, chgEvpn);
         }
+        for (int i = 0; i < l3es.size(); i++) {
+            l3es.get(i).doer.doPeersIncr(computedEvpn, computedVpnM, computedVpnF, chgEvpn, chgVpnM, chgVpnF, chgEvpn);
+        }
+        for (int i = 0; i < ol3es.size(); i++) {
+            ol3es.get(i).doer.doPeersIncr(computedEvpn, computedVpoM, computedVpoF, chgEvpn, chgVpoM, chgVpoF, chgEvpn);
+        }
         if (cntVpls > 0) {
             for (int i = 0; i < vpls.size(); i++) {
                 vpls.get(i).doPeers();
@@ -3067,6 +3097,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < oclrs.size(); i++) {
             oclrs.get(i).doer.unregister2ip();
+        }
+        for (int i = 0; i < l3es.size(); i++) {
+            l3es.get(i).doer.unregister2ip();
+        }
+        for (int i = 0; i < ol3es.size(); i++) {
+            ol3es.get(i).doer.unregister2ip();
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doStop();
@@ -3388,6 +3424,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < oclrs.size(); i++) {
             oclrs.get(i).doer.getConfig(l, beg, "afi-oclr ");
+        }
+        for (int i = 0; i < l3es.size(); i++) {
+            l3es.get(i).doer.getConfig(l, beg, "afi-l3e ");
+        }
+        for (int i = 0; i < ol3es.size(); i++) {
+            ol3es.get(i).doer.getConfig(l, beg, "afi-ol3e ");
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).getConfig(l, beg);
@@ -4011,6 +4053,80 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             cur.doer.doConfig(negated, cmd, s);
             return false;
         }
+        if (s.equals("afi-l3e")) {
+            cfgVrf cfv = cfgAll.vrfFind(cmd.word(), false);
+            if (cfv == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            rtrBgpVrf cur = new rtrBgpVrf(this, cfv, false);
+            s = cmd.word();
+            if (s.equals("enable")) {
+                rtrBgpVrf old = l3es.find(cur);
+                if (old != null) {
+                    if (!negated) {
+                        return false;
+                    }
+                    old.doer.unregister2ip();
+                    l3es.del(old);
+                    needFull.add(1);
+                    compute.wakeup();
+                    return false;
+                }
+                if (negated) {
+                    return false;
+                }
+                cur.doer.register2ip();
+                l3es.put(cur);
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            cur = l3es.find(cur);
+            if (cur == null) {
+                cmd.error("vrf not enabled");
+                return false;
+            }
+            cur.doer.doConfig(negated, cmd, s);
+            return false;
+        }
+        if (s.equals("afi-ol3e")) {
+            cfgVrf cfv = cfgAll.vrfFind(cmd.word(), false);
+            if (cfv == null) {
+                cmd.error("no such vrf");
+                return false;
+            }
+            rtrBgpVrf cur = new rtrBgpVrf(this, cfv, true);
+            s = cmd.word();
+            if (s.equals("enable")) {
+                rtrBgpVrf old = ol3es.find(cur);
+                if (old != null) {
+                    if (!negated) {
+                        return false;
+                    }
+                    old.doer.unregister2ip();
+                    ol3es.del(old);
+                    needFull.add(1);
+                    compute.wakeup();
+                    return false;
+                }
+                if (negated) {
+                    return false;
+                }
+                cur.doer.register2ip();
+                ol3es.put(cur);
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            cur = ol3es.find(cur);
+            if (cur == null) {
+                cmd.error("vrf not enabled");
+                return false;
+            }
+            cur.doer.doConfig(negated, cmd, s);
+            return false;
+        }
         if (s.equals("afi-vpls")) {
             rtrBgpVpls cur = new rtrBgpVpls(this);
             cur.id = tabRouteUtil.string2rd(cmd.word());
@@ -4581,6 +4697,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < oclrs.size(); i++) {
             oclrs.get(i).doer.getPeerList(tab);
+        }
+        for (int i = 0; i < l3es.size(); i++) {
+            l3es.get(i).doer.getPeerList(tab);
+        }
+        for (int i = 0; i < ol3es.size(); i++) {
+            ol3es.get(i).doer.getPeerList(tab);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).getPeerList(tab);
@@ -5363,6 +5485,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("other vrfs|" + rtrBgpUtil.tabSiz2str(ovrfs));
         l.add("colors|" + rtrBgpUtil.tabSiz2str(clrs));
         l.add("other colors|" + rtrBgpUtil.tabSiz2str(oclrs));
+        l.add("l3evpn|" + rtrBgpUtil.tabSiz2str(l3es));
+        l.add("other l3evpn|" + rtrBgpUtil.tabSiz2str(ol3es));
         l.add("vplses|" + rtrBgpUtil.tabSiz2str(vpls));
         l.add("evpns|" + rtrBgpUtil.tabSiz2str(evpn));
         l.add("groups|" + groups.size() + "|" + groupMin + ".." + groupMax);
