@@ -883,7 +883,7 @@ public class userConfig {
             a = cmd.word();
             if (a.equals("definition")) {
                 a = cmd.word();
-                modeDconfig = cfgAll.vdcFind(a, true);
+                modeDconfig = cfgAll.vdcFind(a, !ro);
                 if (modeDconfig == null) {
                     cmd.error("bad vdc name");
                     return;
@@ -901,7 +901,7 @@ public class userConfig {
             a = cmd.word();
             if (a.equals("definition")) {
                 a = cmd.word();
-                modeDconfig = cfgAll.prcFind(a, true);
+                modeDconfig = cfgAll.prcFind(a, !ro);
                 if (modeDconfig == null) {
                     cmd.error("bad process name");
                     return;
@@ -915,7 +915,7 @@ public class userConfig {
             a = cmd.word();
             if (a.equals("definition")) {
                 a = cmd.word();
-                modeDconfig = cfgAll.vrfFind(a, true);
+                modeDconfig = cfgAll.vrfFind(a, !ro);
                 if (modeDconfig == null) {
                     cmd.error("bad vrf name");
                     return;
@@ -926,7 +926,7 @@ public class userConfig {
             return;
         }
         if (a.equals("interface")) {
-            modeDconfig = cfgAll.ifcFind(cmd.word(), 1);
+            modeDconfig = cfgAll.ifcFind(cmd.word(), ro ? 0 : 1);
             if (modeDconfig == null) {
                 cmd.error("no such interface");
                 return;
@@ -934,7 +934,7 @@ public class userConfig {
             return;
         }
         if (a.equals("bridge")) {
-            modeDconfig = cfgAll.brdgFind(cmd.word(), true);
+            modeDconfig = cfgAll.brdgFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("invalid bridge number");
                 return;
@@ -942,7 +942,7 @@ public class userConfig {
             return;
         }
         if (a.equals("bundle")) {
-            modeDconfig = cfgAll.bndlFind(cmd.word(), true);
+            modeDconfig = cfgAll.bndlFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("invalid bundle number");
                 return;
@@ -950,7 +950,7 @@ public class userConfig {
             return;
         }
         if (a.equals("hairpin")) {
-            modeDconfig = cfgAll.hrpnFind(cmd.word(), true);
+            modeDconfig = cfgAll.hrpnFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("invalid hairpin number");
                 return;
@@ -958,7 +958,7 @@ public class userConfig {
             return;
         }
         if (a.equals("session")) {
-            modeDconfig = cfgAll.sessnFind(cmd.word(), true);
+            modeDconfig = cfgAll.sessnFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("invalid session name");
                 return;
@@ -966,7 +966,7 @@ public class userConfig {
             return;
         }
         if (a.equals("check")) {
-            modeDconfig = cfgAll.checkFind(cmd.word(), true);
+            modeDconfig = cfgAll.checkFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("invalid check name");
                 return;
@@ -974,7 +974,7 @@ public class userConfig {
             return;
         }
         if (a.equals("sensor")) {
-            modeDconfig = cfgAll.sensorFind(cmd.word(), true);
+            modeDconfig = cfgAll.sensorFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("invalid sensor name");
                 return;
@@ -982,7 +982,7 @@ public class userConfig {
             return;
         }
         if (a.equals("dial-peer")) {
-            modeDconfig = cfgAll.dialFind(cmd.word(), true);
+            modeDconfig = cfgAll.dialFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("invalid dial peer number");
                 return;
@@ -990,7 +990,7 @@ public class userConfig {
             return;
         }
         if (a.equals("translation-rule")) {
-            modeDconfig = cfgAll.trnsltnFind(cmd.word(), true);
+            modeDconfig = cfgAll.trnsltnFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("invalid translation rule number");
                 return;
@@ -1003,12 +1003,15 @@ public class userConfig {
                 cmd.error("invalid routing protocol");
                 return;
             }
-            cfgRtr rtr = cfgAll.rtrFind(o, bits.str2num(cmd.word()), true);
+            cfgRtr rtr = cfgAll.rtrFind(o, bits.str2num(cmd.word()), !ro);
             if (rtr == null) {
                 cmd.error("bad process number");
                 return;
             }
             modeDconfig = rtr;
+            if (ro) {
+                return;
+            }
             cmds c = cmd.copyBytes(false);
             if (!cmd.word().equals("vrf")) {
                 return;
@@ -1027,7 +1030,7 @@ public class userConfig {
             return;
         }
         if (a.equals("scheduler")) {
-            modeDconfig = cfgAll.schedFind(cmd.word(), true);
+            modeDconfig = cfgAll.schedFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad scheduler name");
                 return;
@@ -1035,7 +1038,7 @@ public class userConfig {
             return;
         }
         if (a.equals("script")) {
-            modeDconfig = cfgAll.scrptFind(cmd.word(), true);
+            modeDconfig = cfgAll.scrptFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad script name");
                 return;
@@ -1043,7 +1046,7 @@ public class userConfig {
             return;
         }
         if (a.equals("tracker")) {
-            modeDconfig = cfgAll.trackFind(cmd.word(), true);
+            modeDconfig = cfgAll.trackFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad track name");
                 return;
@@ -1051,7 +1054,7 @@ public class userConfig {
             return;
         }
         if (a.equals("mtracker")) {
-            modeDconfig = cfgAll.mtrackFind(cmd.word(), true);
+            modeDconfig = cfgAll.mtrackFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad mtrack name");
                 return;
@@ -1059,7 +1062,7 @@ public class userConfig {
             return;
         }
         if (a.equals("chat-script")) {
-            modeDconfig = cfgAll.chatFind(cmd.word(), true);
+            modeDconfig = cfgAll.chatFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad script name");
                 return;
@@ -1069,7 +1072,7 @@ public class userConfig {
         if (a.equals("object-group")) {
             a = cmd.word();
             if (a.equals("network")) {
-                modeDconfig = cfgAll.objnetFind(cmd.word(), true);
+                modeDconfig = cfgAll.objnetFind(cmd.word(), !ro);
                 if (modeDconfig == null) {
                     cmd.error("bad object group name");
                     return;
@@ -1077,7 +1080,7 @@ public class userConfig {
                 return;
             }
             if (a.equals("port")) {
-                modeDconfig = cfgAll.objprtFind(cmd.word(), true);
+                modeDconfig = cfgAll.objprtFind(cmd.word(), !ro);
                 if (modeDconfig == null) {
                     cmd.error("bad object group name");
                     return;
@@ -1087,7 +1090,7 @@ public class userConfig {
             return;
         }
         if (a.equals("access-list")) {
-            modeDconfig = cfgAll.aclsFind(cmd.word(), true);
+            modeDconfig = cfgAll.aclsFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad access list name");
                 return;
@@ -1095,7 +1098,7 @@ public class userConfig {
             return;
         }
         if (a.equals("telemetry")) {
-            modeDconfig = cfgAll.tlmdsFind(cmd.word(), true);
+            modeDconfig = cfgAll.tlmdsFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad destination name");
                 return;
@@ -1103,7 +1106,7 @@ public class userConfig {
             return;
         }
         if (a.equals("event-manager")) {
-            modeDconfig = cfgAll.eemFind(cmd.word(), true);
+            modeDconfig = cfgAll.eemFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad event manager name");
                 return;
@@ -1111,7 +1114,7 @@ public class userConfig {
             return;
         }
         if (a.equals("xconnect")) {
-            modeDconfig = cfgAll.xconFind(cmd.word(), true);
+            modeDconfig = cfgAll.xconFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad connect name");
                 return;
@@ -1119,7 +1122,7 @@ public class userConfig {
             return;
         }
         if (a.equals("vnet")) {
-            modeDconfig = cfgAll.vnetFind(cmd.word(), true);
+            modeDconfig = cfgAll.vnetFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad vnet name");
                 return;
@@ -1127,7 +1130,7 @@ public class userConfig {
             return;
         }
         if (a.equals("vpdn")) {
-            modeDconfig = cfgAll.vpdnFind(cmd.word(), true);
+            modeDconfig = cfgAll.vpdnFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad vpdn name");
                 return;
@@ -1135,7 +1138,7 @@ public class userConfig {
             return;
         }
         if (a.equals("proxy-profile")) {
-            modeDconfig = cfgAll.proxyFind(cmd.word(), true);
+            modeDconfig = cfgAll.proxyFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad proxy name");
                 return;
@@ -1143,7 +1146,7 @@ public class userConfig {
             return;
         }
         if (a.equals("time-map")) {
-            modeDconfig = cfgAll.timeFind(cmd.word(), true);
+            modeDconfig = cfgAll.timeFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad time name");
                 return;
@@ -1151,7 +1154,7 @@ public class userConfig {
             return;
         }
         if (a.equals("prefix-list")) {
-            modeDconfig = cfgAll.prfxFind(cmd.word(), true);
+            modeDconfig = cfgAll.prfxFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad prefix list name");
                 return;
@@ -1159,7 +1162,7 @@ public class userConfig {
             return;
         }
         if (a.equals("route-map")) {
-            modeDconfig = cfgAll.rtmpFind(cmd.word(), true);
+            modeDconfig = cfgAll.rtmpFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad route map name");
                 return;
@@ -1167,7 +1170,7 @@ public class userConfig {
             return;
         }
         if (a.equals("route-policy")) {
-            modeDconfig = cfgAll.rtplFind(cmd.word(), true);
+            modeDconfig = cfgAll.rtplFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad route policy name");
                 return;
@@ -1175,7 +1178,7 @@ public class userConfig {
             return;
         }
         if (a.equals("policy-map")) {
-            modeDconfig = cfgAll.plmpFind(cmd.word(), true);
+            modeDconfig = cfgAll.plmpFind(cmd.word(), !ro);
             if (modeDconfig == null) {
                 cmd.error("bad policy map name");
                 return;
@@ -1197,7 +1200,7 @@ public class userConfig {
         if (a.equals("menu")) {
             a = cmd.word();
             if (a.equals("key")) {
-                modeDconfig = cfgAll.menuKfind(cmd.word(), true);
+                modeDconfig = cfgAll.menuKfind(cmd.word(), !ro);
                 if (modeDconfig == null) {
                     cmd.error("invalid menu name");
                     return;
@@ -1205,7 +1208,7 @@ public class userConfig {
                 return;
             }
             if (a.equals("tui")) {
-                modeDconfig = cfgAll.menuTfind(cmd.word(), true);
+                modeDconfig = cfgAll.menuTfind(cmd.word(), !ro);
                 if (modeDconfig == null) {
                     cmd.error("invalid menu name");
                     return;
@@ -1221,6 +1224,9 @@ public class userConfig {
                 cmd.badCmd();
                 return;
             }
+            if (ro) {
+                i = null;
+            }
             modeDconfig = cfgAll.autherFind(cmd.word(), i);
             if (modeDconfig == null) {
                 cmd.error("invalid authenticator name");
@@ -1230,12 +1236,15 @@ public class userConfig {
         }
         if (a.equals("server")) {
             a = cmd.word();
-            servGeneric srv = servGenList.srvFind(a, cmd.word(), true);
+            servGeneric srv = servGenList.srvFind(a, cmd.word(), !ro);
             if (srv == null) {
                 cmd.error("invalid server");
                 return;
             }
             modeDconfig = srv;
+            if (ro) {
+                return;
+            }
             boolean b = false;
             for (;;) {
                 a = cmd.word();
@@ -1260,6 +1269,136 @@ public class userConfig {
             }
             srv.srvEmbedVrf |= b;
             srv.srvInit();
+            return;
+        }
+        if (a.equals("crypto")) {
+            if (a.equals("ipsec")) {
+                modeDconfig = cfgAll.ipsecFind(cmd.word(), !ro);
+                if (modeDconfig == null) {
+                    cmd.error("bad profile name");
+                    return;
+                }
+                return;
+            }
+            if (ro) {
+                return;
+            }
+            a = cmd.word();
+            if (a.equals("rsakey")) {
+                cryptoDoKey(cfgAll.rsakeys, new cryKeyRSA());
+                return;
+            }
+            if (a.equals("dsakey")) {
+                cryptoDoKey(cfgAll.dsakeys, new cryKeyDSA());
+                return;
+            }
+            if (a.equals("ecdsakey")) {
+                cryptoDoKey(cfgAll.ecdsakeys, new cryKeyECDSA());
+                return;
+            }
+            if (a.equals("mldsakey")) {
+                cryptoDoKey(cfgAll.mldsakeys, new cryKeyMLDSA());
+                return;
+            }
+            if (a.equals("certificate")) {
+                String nam = cmd.word();
+                a = cmd.word();
+                if (a.equals("zeroize")) {
+                    cfgAll.certDel(nam);
+                    return;
+                }
+                if (a.equals("editor")) {
+                    cryKeyGeneric k = findKey();
+                    if (k == null) {
+                        return;
+                    }
+                    cryCertificate c = new cryCertificate();
+                    c.crtName = nam;
+                    List<String> txt = new ArrayList<String>();
+                    userEditor e = new userEditor(new userScreen(cmd.pipe), txt, "cert", false);
+                    if (e.doEdit()) {
+                        return;
+                    }
+                    if (c.pemReadLst(txt)) {
+                        cmd.error("error decoding");
+                        return;
+                    }
+                    c.key = k;
+                    cfgCert cfg = cfgAll.certFind(nam, true);
+                    cfg.cert = c;
+                    cfg.key = k;
+                    return;
+                }
+                if (a.equals("import")) {
+                    cryKeyGeneric k = findKey();
+                    if (k == null) {
+                        return;
+                    }
+                    cryCertificate c = new cryCertificate();
+                    c.crtName = nam;
+                    a = authLocal.passwdDecode(cmd.word());
+                    if (a == null) {
+                        cmd.error("error reading");
+                        return;
+                    }
+                    if (c.pemReadStr(a)) {
+                        cmd.error("error decoding");
+                        return;
+                    }
+                    c.key = k;
+                    cfgCert cfg = cfgAll.certFind(nam, true);
+                    cfg.cert = c;
+                    cfg.key = k;
+                    return;
+                }
+                if (a.equals("external")) {
+                    cryKeyGeneric k = findKey();
+                    if (k == null) {
+                        return;
+                    }
+                    a = cmd.word();
+                    cryCertificate c = new cryCertificate();
+                    c.crtName = nam;
+                    List<String> t = bits.txt2buf(a);
+                    if (t == null) {
+                        cmd.error("not found");
+                        return;
+                    }
+                    if (c.pemReadLst(t)) {
+                        cmd.error("error decoding");
+                        return;
+                    }
+                    c.key = k;
+                    cfgCert cfg = cfgAll.certFind(nam, true);
+                    cfg.cert = c;
+                    cfg.key = k;
+                    cfg.filNam = a;
+                    return;
+                }
+                if (a.equals("generate")) {
+                    cryKeyGeneric k = findKey();
+                    if (k == null) {
+                        return;
+                    }
+                    a = cmd.word();
+                    if (a.length() < 1) {
+                        a = cfgAll.getFqdn();
+                    }
+                    int i = bits.str2num(cmd.word());
+                    if (i < 1) {
+                        i = 3650;
+                    }
+                    cryCertificate c = cryCertificate.createSelfSigned(k, a, i);
+                    c.crtName = nam;
+                    cfgCert cfg = cfgAll.certFind(nam, true);
+                    cfg.cert = c;
+                    cfg.key = k;
+                    return;
+                }
+                cmd.badCmd();
+                return;
+            }
+            cmd.badCmd();
             return;
         }
         if (ro) {
@@ -1291,10 +1430,6 @@ public class userConfig {
         }
         if (a.equals("client")) {
             doCmdClient();
-            return;
-        }
-        if (a.equals("crypto")) {
-            doCmdCrypto();
             return;
         }
         if (a.equals("alias")) {
@@ -3484,133 +3619,6 @@ public class userConfig {
             cmd.error("key not found");
         }
         return k;
-    }
-
-    private void doCmdCrypto() {
-        String a = cmd.word();
-        if (a.equals("rsakey")) {
-            cryptoDoKey(cfgAll.rsakeys, new cryKeyRSA());
-            return;
-        }
-        if (a.equals("dsakey")) {
-            cryptoDoKey(cfgAll.dsakeys, new cryKeyDSA());
-            return;
-        }
-        if (a.equals("ecdsakey")) {
-            cryptoDoKey(cfgAll.ecdsakeys, new cryKeyECDSA());
-            return;
-        }
-        if (a.equals("mldsakey")) {
-            cryptoDoKey(cfgAll.mldsakeys, new cryKeyMLDSA());
-            return;
-        }
-        if (a.equals("certificate")) {
-            String nam = cmd.word();
-            a = cmd.word();
-            if (a.equals("zeroize")) {
-                cfgAll.certDel(nam);
-                return;
-            }
-            if (a.equals("editor")) {
-                cryKeyGeneric k = findKey();
-                if (k == null) {
-                    return;
-                }
-                cryCertificate c = new cryCertificate();
-                c.crtName = nam;
-                List<String> txt = new ArrayList<String>();
-                userEditor e = new userEditor(new userScreen(cmd.pipe), txt, "cert", false);
-                if (e.doEdit()) {
-                    return;
-                }
-                if (c.pemReadLst(txt)) {
-                    cmd.error("error decoding");
-                    return;
-                }
-                c.key = k;
-                cfgCert cfg = cfgAll.certFind(nam, true);
-                cfg.cert = c;
-                cfg.key = k;
-                return;
-            }
-            if (a.equals("import")) {
-                cryKeyGeneric k = findKey();
-                if (k == null) {
-                    return;
-                }
-                cryCertificate c = new cryCertificate();
-                c.crtName = nam;
-                a = authLocal.passwdDecode(cmd.word());
-                if (a == null) {
-                    cmd.error("error reading");
-                    return;
-                }
-                if (c.pemReadStr(a)) {
-                    cmd.error("error decoding");
-                    return;
-                }
-                c.key = k;
-                cfgCert cfg = cfgAll.certFind(nam, true);
-                cfg.cert = c;
-                cfg.key = k;
-                return;
-            }
-            if (a.equals("external")) {
-                cryKeyGeneric k = findKey();
-                if (k == null) {
-                    return;
-                }
-                a = cmd.word();
-                cryCertificate c = new cryCertificate();
-                c.crtName = nam;
-                List<String> t = bits.txt2buf(a);
-                if (t == null) {
-                    cmd.error("not found");
-                    return;
-                }
-                if (c.pemReadLst(t)) {
-                    cmd.error("error decoding");
-                    return;
-                }
-                c.key = k;
-                cfgCert cfg = cfgAll.certFind(nam, true);
-                cfg.cert = c;
-                cfg.key = k;
-                cfg.filNam = a;
-                return;
-            }
-            if (a.equals("generate")) {
-                cryKeyGeneric k = findKey();
-                if (k == null) {
-                    return;
-                }
-                a = cmd.word();
-                if (a.length() < 1) {
-                    a = cfgAll.getFqdn();
-                }
-                int i = bits.str2num(cmd.word());
-                if (i < 1) {
-                    i = 3650;
-                }
-                cryCertificate c = cryCertificate.createSelfSigned(k, a, i);
-                c.crtName = nam;
-                cfgCert cfg = cfgAll.certFind(nam, true);
-                cfg.cert = c;
-                cfg.key = k;
-                return;
-            }
-            cmd.badCmd();
-            return;
-        }
-        if (a.equals("ipsec")) {
-            modeDconfig = cfgAll.ipsecFind(cmd.word(), true);
-            if (modeDconfig == null) {
-                cmd.error("bad profile name");
-                return;
-            }
-            return;
-        }
-        cmd.badCmd();
     }
 
 }
