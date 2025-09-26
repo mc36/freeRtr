@@ -368,7 +368,6 @@ public class userLine {
                 logger.info("configuration checkpoint frozen!");
                 sesStart = cfgAll.getShRun(1);
             }
-            int cnt = 0;
             for (;;) {
                 exe.last = bits.getTime();
                 String s = cfgAll.hostName + cfg.getPrompt() + "#";
@@ -380,17 +379,18 @@ public class userLine {
                 if (cfg.executeCommand(s)) {
                     break;
                 }
-                cnt++;
             }
             if (exe.pipe.isClosed() == 0) {
                 if (sesStart != null) {
                     logger.info("configuration checkpoint released!");
                 }
                 sesStart = null;
-                if ((cfg.commits != null) && (cnt > 0)) {
-                    String b = exe.pipe.strChr("uncommitted configuration found, discard?", "ynYN").toLowerCase();
-                    if (!b.equals("y")) {
-                        cfgInit.executeSWcommands(cfg.commits, false);
+                if (cfg.commits != null) {
+                    if (cfg.commits.size() > 0) {
+                        String b = exe.pipe.strChr("uncommitted configuration found, discard?", "ynYN").toLowerCase();
+                        if (!b.equals("y")) {
+                            cfgInit.executeSWcommands(cfg.commits, false);
+                        }
                     }
                 }
             }
