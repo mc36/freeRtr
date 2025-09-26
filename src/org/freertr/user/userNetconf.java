@@ -126,7 +126,7 @@ public class userNetconf {
                 pip.linePut("bad: " + a);
                 continue;
             }
-            cfg.executeCommand(null, b);
+            cfg.executeCommand(b);
         }
         pos++;
         userHelp ned = cfg.getHelping(false, false, false);
@@ -139,7 +139,7 @@ public class userNetconf {
                 pip.linePut("bad: " + a);
                 continue;
             }
-            cfg.executeCommand(null, b);
+            cfg.executeCommand(b);
         }
         pip = pl.getSide();
         pl.setClose();

@@ -3824,7 +3824,7 @@ public class userExec {
         if (last && negated) {
             a = cmds.negated + cmds.tabulator + a;
         }
-        cfg.executeCommand(null, a);
+        cfg.executeCommand(a);
         if (last) {
             return;
         }
@@ -3839,7 +3839,7 @@ public class userExec {
         if (negated) {
             a = cmds.negated + cmds.tabulator + a;
         }
-        cfg.executeCommand(null, a);
+        cfg.executeCommand(a);
     }
 
     private void doMenuK() {

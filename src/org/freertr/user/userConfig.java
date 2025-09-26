@@ -104,6 +104,11 @@ public class userConfig {
      * expand variables
      */
     public boolean needExpand;
+    
+    /**
+     * commit buffer
+     */
+    public List<String> commits;
 
     private pipeSide pipe; // pipe to use
 
@@ -182,7 +187,7 @@ public class userConfig {
      * @param a the command to execute
      * @return status of operation, false to continue processing
      */
-    public boolean executeCommand(List<String> l, String a) {
+    public boolean executeCommand(String a) {
         if (a == null) {
             a = "";
         }
@@ -202,8 +207,8 @@ public class userConfig {
         if (a.length() < 1) {
             return false;
         }
-        if (l != null) {
-            l.add(cmd.getRemaining());
+        if (commits != null) {
+            commits.add(cmd.getRemaining());
         }
         if (a.equals(cmds.finish)) {
             if (modeDconfig == null) {
@@ -216,8 +221,15 @@ public class userConfig {
             resetMode();
             return true;
         }
+        if (a.equals("commit")) {
+            if (commits != null) {
+                return false;
+            }
+            cfgInit.executeSWcommands(commits, false);
+            return false;
+        }
         if (a.equals("editor")) {
-            if (l != null) {
+            if (commits != null) {
                 return false;
             }
             if (authorization != null) {
@@ -292,10 +304,10 @@ public class userConfig {
         }
         cmd = cmd.copyBytes(true);
         if (modeDconfig == null) {
-            doGlobal(l != null);
+            doGlobal(commits != null);
             return false;
         }
-        if (l != null) {
+        if (commits != null) {
             return false;
         }
         modeDconfig.doCfgStr(cmd);

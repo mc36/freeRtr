@@ -79,7 +79,7 @@ public class clntDns {
     /**
      * resolve one host to address
      *
-     * @param conole console to use
+     * @param console console to use
      * @param host hostname
      * @param prt protocol to prefer, 0=default
      * @return ip address, null if not found

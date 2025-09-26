@@ -120,7 +120,7 @@ public class userXml {
                         continue;
                     }
                     pip.linePut("#" + b);
-                    cfg.executeCommand(null, b);
+                    cfg.executeCommand(b);
                 }
                 pip = pl.getSide();
                 pl.setClose();
