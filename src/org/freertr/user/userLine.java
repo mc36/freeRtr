@@ -388,7 +388,7 @@ public class userLine {
                 }
                 sesStart = null;
                 if ((cfg.commits != null) && (cnt > 0)) {
-                    String b = exe.pipe.strChr("uncommitted configuration, discard?", "ynYN").toLowerCase();
+                    String b = exe.pipe.strChr("uncommitted configuration found, discard?", "ynYN").toLowerCase();
                     if (!b.equals("y")) {
                         cfgInit.executeSWcommands(cfg.commits, false);
                     }

@@ -221,14 +221,6 @@ public class userConfig {
             resetMode();
             return true;
         }
-        if (a.equals("commit")) {
-            if (commits == null) {
-                return false;
-            }
-            cfgInit.executeSWcommands(commits, false);
-            commits.clear();
-            return false;
-        }
         if (a.equals("editor")) {
             if (commits != null) {
                 return false;
@@ -306,7 +298,7 @@ public class userConfig {
         }
         cmd = cmd.copyBytes(true);
         if (modeDconfig == null) {
-            doGlobal(commits != null);
+            doGlobal();
             return false;
         }
         if (commits != null) {
@@ -891,8 +883,16 @@ public class userConfig {
         return bits.byteConcat(cmd.getRemaining().getBytes(), pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
     }
 
-    private void doGlobal(boolean ro) {
+    private void doGlobal() {
         String a = cmd.word();
+        if (a.equals("commit")) {
+            if (commits == null) {
+                return;
+            }
+            cfgInit.executeSWcommands(commits, false);
+            commits.clear();
+            return;
+        }
         if (a.equals("vdc")) {
             if (cfgAll.evalVdcPrivs()) {
                 cmd.error("not in a vdc");
@@ -901,7 +901,7 @@ public class userConfig {
             a = cmd.word();
             if (a.equals("definition")) {
                 a = cmd.word();
-                modeDconfig = cfgAll.vdcFind(a, !ro);
+                modeDconfig = cfgAll.vdcFind(a, commits == null);
                 if (modeDconfig == null) {
                     cmd.error("bad vdc name");
                     return;
@@ -919,7 +919,7 @@ public class userConfig {
             a = cmd.word();
             if (a.equals("definition")) {
                 a = cmd.word();
-                modeDconfig = cfgAll.prcFind(a, !ro);
+                modeDconfig = cfgAll.prcFind(a, commits == null);
                 if (modeDconfig == null) {
                     cmd.error("bad process name");
                     return;
@@ -933,7 +933,7 @@ public class userConfig {
             a = cmd.word();
             if (a.equals("definition")) {
                 a = cmd.word();
-                modeDconfig = cfgAll.vrfFind(a, !ro);
+                modeDconfig = cfgAll.vrfFind(a, commits == null);
                 if (modeDconfig == null) {
                     cmd.error("bad vrf name");
                     return;
@@ -944,7 +944,7 @@ public class userConfig {
             return;
         }
         if (a.equals("interface")) {
-            modeDconfig = cfgAll.ifcFind(cmd.word(), ro ? 0 : 1);
+            modeDconfig = cfgAll.ifcFind(cmd.word(), commits == null ? 1 : 0);
             if (modeDconfig == null) {
                 cmd.error("no such interface");
                 return;
@@ -952,7 +952,7 @@ public class userConfig {
             return;
         }
         if (a.equals("bridge")) {
-            modeDconfig = cfgAll.brdgFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.brdgFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("invalid bridge number");
                 return;
@@ -960,7 +960,7 @@ public class userConfig {
             return;
         }
         if (a.equals("bundle")) {
-            modeDconfig = cfgAll.bndlFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.bndlFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("invalid bundle number");
                 return;
@@ -968,7 +968,7 @@ public class userConfig {
             return;
         }
         if (a.equals("hairpin")) {
-            modeDconfig = cfgAll.hrpnFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.hrpnFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("invalid hairpin number");
                 return;
@@ -976,7 +976,7 @@ public class userConfig {
             return;
         }
         if (a.equals("session")) {
-            modeDconfig = cfgAll.sessnFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.sessnFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("invalid session name");
                 return;
@@ -984,7 +984,7 @@ public class userConfig {
             return;
         }
         if (a.equals("check")) {
-            modeDconfig = cfgAll.checkFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.checkFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("invalid check name");
                 return;
@@ -992,7 +992,7 @@ public class userConfig {
             return;
         }
         if (a.equals("sensor")) {
-            modeDconfig = cfgAll.sensorFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.sensorFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("invalid sensor name");
                 return;
@@ -1000,7 +1000,7 @@ public class userConfig {
             return;
         }
         if (a.equals("dial-peer")) {
-            modeDconfig = cfgAll.dialFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.dialFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("invalid dial peer number");
                 return;
@@ -1008,7 +1008,7 @@ public class userConfig {
             return;
         }
         if (a.equals("translation-rule")) {
-            modeDconfig = cfgAll.trnsltnFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.trnsltnFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("invalid translation rule number");
                 return;
@@ -1021,13 +1021,13 @@ public class userConfig {
                 cmd.error("invalid routing protocol");
                 return;
             }
-            cfgRtr rtr = cfgAll.rtrFind(o, bits.str2num(cmd.word()), !ro);
+            cfgRtr rtr = cfgAll.rtrFind(o, bits.str2num(cmd.word()), commits == null);
             if (rtr == null) {
                 cmd.error("bad process number");
                 return;
             }
             modeDconfig = rtr;
-            if (ro) {
+            if (commits != null) {
                 return;
             }
             cmds c = cmd.copyBytes(false);
@@ -1048,7 +1048,7 @@ public class userConfig {
             return;
         }
         if (a.equals("scheduler")) {
-            modeDconfig = cfgAll.schedFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.schedFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad scheduler name");
                 return;
@@ -1056,7 +1056,7 @@ public class userConfig {
             return;
         }
         if (a.equals("script")) {
-            modeDconfig = cfgAll.scrptFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.scrptFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad script name");
                 return;
@@ -1064,7 +1064,7 @@ public class userConfig {
             return;
         }
         if (a.equals("tracker")) {
-            modeDconfig = cfgAll.trackFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.trackFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad track name");
                 return;
@@ -1072,7 +1072,7 @@ public class userConfig {
             return;
         }
         if (a.equals("mtracker")) {
-            modeDconfig = cfgAll.mtrackFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.mtrackFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad mtrack name");
                 return;
@@ -1080,7 +1080,7 @@ public class userConfig {
             return;
         }
         if (a.equals("chat-script")) {
-            modeDconfig = cfgAll.chatFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.chatFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad script name");
                 return;
@@ -1090,7 +1090,7 @@ public class userConfig {
         if (a.equals("object-group")) {
             a = cmd.word();
             if (a.equals("network")) {
-                modeDconfig = cfgAll.objnetFind(cmd.word(), !ro);
+                modeDconfig = cfgAll.objnetFind(cmd.word(), commits == null);
                 if (modeDconfig == null) {
                     cmd.error("bad object group name");
                     return;
@@ -1098,7 +1098,7 @@ public class userConfig {
                 return;
             }
             if (a.equals("port")) {
-                modeDconfig = cfgAll.objprtFind(cmd.word(), !ro);
+                modeDconfig = cfgAll.objprtFind(cmd.word(), commits == null);
                 if (modeDconfig == null) {
                     cmd.error("bad object group name");
                     return;
@@ -1108,7 +1108,7 @@ public class userConfig {
             return;
         }
         if (a.equals("access-list")) {
-            modeDconfig = cfgAll.aclsFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.aclsFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad access list name");
                 return;
@@ -1116,7 +1116,7 @@ public class userConfig {
             return;
         }
         if (a.equals("telemetry")) {
-            modeDconfig = cfgAll.tlmdsFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.tlmdsFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad destination name");
                 return;
@@ -1124,7 +1124,7 @@ public class userConfig {
             return;
         }
         if (a.equals("event-manager")) {
-            modeDconfig = cfgAll.eemFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.eemFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad event manager name");
                 return;
@@ -1132,7 +1132,7 @@ public class userConfig {
             return;
         }
         if (a.equals("xconnect")) {
-            modeDconfig = cfgAll.xconFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.xconFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad connect name");
                 return;
@@ -1140,7 +1140,7 @@ public class userConfig {
             return;
         }
         if (a.equals("vnet")) {
-            modeDconfig = cfgAll.vnetFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.vnetFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad vnet name");
                 return;
@@ -1148,7 +1148,7 @@ public class userConfig {
             return;
         }
         if (a.equals("vpdn")) {
-            modeDconfig = cfgAll.vpdnFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.vpdnFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad vpdn name");
                 return;
@@ -1156,7 +1156,7 @@ public class userConfig {
             return;
         }
         if (a.equals("proxy-profile")) {
-            modeDconfig = cfgAll.proxyFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.proxyFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad proxy name");
                 return;
@@ -1164,7 +1164,7 @@ public class userConfig {
             return;
         }
         if (a.equals("time-map")) {
-            modeDconfig = cfgAll.timeFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.timeFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad time name");
                 return;
@@ -1172,7 +1172,7 @@ public class userConfig {
             return;
         }
         if (a.equals("prefix-list")) {
-            modeDconfig = cfgAll.prfxFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.prfxFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad prefix list name");
                 return;
@@ -1180,7 +1180,7 @@ public class userConfig {
             return;
         }
         if (a.equals("route-map")) {
-            modeDconfig = cfgAll.rtmpFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.rtmpFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad route map name");
                 return;
@@ -1188,7 +1188,7 @@ public class userConfig {
             return;
         }
         if (a.equals("route-policy")) {
-            modeDconfig = cfgAll.rtplFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.rtplFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad route policy name");
                 return;
@@ -1196,7 +1196,7 @@ public class userConfig {
             return;
         }
         if (a.equals("policy-map")) {
-            modeDconfig = cfgAll.plmpFind(cmd.word(), !ro);
+            modeDconfig = cfgAll.plmpFind(cmd.word(), commits == null);
             if (modeDconfig == null) {
                 cmd.error("bad policy map name");
                 return;
@@ -1218,7 +1218,7 @@ public class userConfig {
         if (a.equals("menu")) {
             a = cmd.word();
             if (a.equals("key")) {
-                modeDconfig = cfgAll.menuKfind(cmd.word(), !ro);
+                modeDconfig = cfgAll.menuKfind(cmd.word(), commits == null);
                 if (modeDconfig == null) {
                     cmd.error("invalid menu name");
                     return;
@@ -1226,7 +1226,7 @@ public class userConfig {
                 return;
             }
             if (a.equals("tui")) {
-                modeDconfig = cfgAll.menuTfind(cmd.word(), !ro);
+                modeDconfig = cfgAll.menuTfind(cmd.word(), commits == null);
                 if (modeDconfig == null) {
                     cmd.error("invalid menu name");
                     return;
@@ -1242,7 +1242,7 @@ public class userConfig {
                 cmd.badCmd();
                 return;
             }
-            if (ro) {
+            if (commits != null) {
                 i = null;
             }
             modeDconfig = cfgAll.autherFind(cmd.word(), i);
@@ -1254,13 +1254,13 @@ public class userConfig {
         }
         if (a.equals("server")) {
             a = cmd.word();
-            servGeneric srv = servGenList.srvFind(a, cmd.word(), !ro);
+            servGeneric srv = servGenList.srvFind(a, cmd.word(), commits == null);
             if (srv == null) {
                 cmd.error("invalid server");
                 return;
             }
             modeDconfig = srv;
-            if (ro) {
+            if (commits != null) {
                 return;
             }
             boolean b = false;
@@ -1292,14 +1292,14 @@ public class userConfig {
         if (a.equals("crypto")) {
             a = cmd.word();
             if (a.equals("ipsec")) {
-                modeDconfig = cfgAll.ipsecFind(cmd.word(), !ro);
+                modeDconfig = cfgAll.ipsecFind(cmd.word(), commits == null);
                 if (modeDconfig == null) {
                     cmd.error("bad profile name");
                     return;
                 }
                 return;
             }
-            if (ro) {
+            if (commits != null) {
                 return;
             }
             if (a.equals("rsakey")) {
@@ -1419,7 +1419,7 @@ public class userConfig {
             cmd.badCmd();
             return;
         }
-        if (ro) {
+        if (commits != null) {
             return;
         }
         if (a.equals("ipv4")) {

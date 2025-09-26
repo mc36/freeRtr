@@ -1753,6 +1753,7 @@ public class userRead implements Comparator<String> {
                         if (exit == null) {
                             break;
                         }
+                        pipe.linePut("");
                         return exit;
                     case 0x0462: // alt + b
                         cmdBackward(bells);
