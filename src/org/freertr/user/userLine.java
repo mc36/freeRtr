@@ -363,19 +363,26 @@ public class userLine {
             logger.warn(exe.username + " configuring from " + remote);
             cfg.resetMode();
             List<String> sesStart = null;
+            List<String> sesComit = null;
             if (exe.rollback) {
                 logger.info("configuration checkpoint frozen!");
                 sesStart = cfgAll.getShRun(1);
             }
+            if (exe.committed) {
+                sesComit = new ArrayList<String>();
+            }
             for (;;) {
                 exe.last = bits.getTime();
                 String s = cfgAll.hostName + cfg.getPrompt() + "#";
-                rdr.setContext(cfg.getHelping(true, true, true), s);
+                rdr.setContext(cfg.getHelping(sesComit == null, true, true), s);
                 s = rdr.readLine(cmds.finish);
                 if (s == null) {
                     break;
                 }
-                if (cfg.executeCommand(false, s)) {
+                if (sesComit != null) {
+                    sesComit.add(s);
+                }
+                if (cfg.executeCommand(sesComit, s)) {
                     break;
                 }
             }

@@ -1170,7 +1170,7 @@ public class cfgInit implements Runnable {
                 continue;
             }
             try {
-                uc.executeCommand(false, b);
+                uc.executeCommand(null, b);
             } catch (Exception e) {
                 err++;
                 logger.info(beg + logger.dumpException(e, " at line " + err));

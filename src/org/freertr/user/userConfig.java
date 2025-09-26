@@ -178,11 +178,11 @@ public class userConfig {
     /**
      * execute one command
      *
-     * @param ro read only mode
+     * @param l commit buffer
      * @param a the command to execute
      * @return status of operation, false to continue processing
      */
-    public boolean executeCommand(boolean ro, String a) {
+    public boolean executeCommand(List<String> l, String a) {
         if (a == null) {
             a = "";
         }
@@ -202,6 +202,9 @@ public class userConfig {
         if (a.length() < 1) {
             return false;
         }
+        if (l != null) {
+            l.add(cmd.getRemaining());
+        }
         if (a.equals(cmds.finish)) {
             if (modeDconfig == null) {
                 return true;
@@ -214,7 +217,7 @@ public class userConfig {
             return true;
         }
         if (a.equals("editor")) {
-            if (ro) {
+            if (l != null) {
                 return false;
             }
             if (authorization != null) {
@@ -289,10 +292,10 @@ public class userConfig {
         }
         cmd = cmd.copyBytes(true);
         if (modeDconfig == null) {
-            doGlobal(ro);
+            doGlobal(l != null);
             return false;
         }
-        if (ro) {
+        if (l != null) {
             return false;
         }
         modeDconfig.doCfgStr(cmd);
@@ -1026,7 +1029,7 @@ public class userConfig {
                 return;
             }
             rtr.embedVrf = true;
-            executeCommand(ro, c.getRemaining());
+            rtr.doCfgStr(c);
             return;
         }
         if (a.equals("scheduler")) {
@@ -1272,6 +1275,7 @@ public class userConfig {
             return;
         }
         if (a.equals("crypto")) {
+            a = cmd.word();
             if (a.equals("ipsec")) {
                 modeDconfig = cfgAll.ipsecFind(cmd.word(), !ro);
                 if (modeDconfig == null) {
@@ -1283,7 +1287,6 @@ public class userConfig {
             if (ro) {
                 return;
             }
-            a = cmd.word();
             if (a.equals("rsakey")) {
                 cryptoDoKey(cfgAll.rsakeys, new cryKeyRSA());
                 return;

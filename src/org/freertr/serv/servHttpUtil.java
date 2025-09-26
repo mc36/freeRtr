@@ -1360,7 +1360,7 @@ public class servHttpUtil {
                     continue;
                 }
                 pip.linePut("#" + b);
-                cfg.executeCommand(false, b);
+                cfg.executeCommand(null, b);
             }
             pip = pl.getSide();
             pl.setClose();

@@ -625,7 +625,7 @@ public class userScript {
                     pip.linePut("bad: " + a);
                     continue;
                 }
-                cfg.executeCommand(false, b);
+                cfg.executeCommand(null, b);
             }
             pip = pl.getSide();
             pl.setClose();

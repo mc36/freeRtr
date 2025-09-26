@@ -127,6 +127,11 @@ public class userExec {
     public boolean rollback;
 
     /**
+     * committed configuration session requested
+     */
+    public boolean committed;
+
+    /**
      * command results
      */
     protected enum cmdRes {
@@ -2469,6 +2474,7 @@ public class userExec {
         hl.add(null, false, 2, new int[]{3}, "overwrite-network", "overwrite the running configuration");
         hl.add(null, false, 3, new int[]{3, -1}, "<url>", "source url");
         hl.add(null, false, 2, new int[]{-1}, "rollback", "configure within auto-revert session");
+        hl.add(null, false, 2, new int[]{-1}, "committed", "configure within committing session");
         hl.add(null, false, 2, new int[]{-1}, "revert", "revert to startup configuration");
         hl.add(null, true, 2, new int[]{-1}, "reapply", "try to reapply current configuration");
         userHelp hlp = new userHelp();
@@ -2990,6 +2996,7 @@ public class userExec {
      */
     public cmdRes doCommand() {
         rollback = false;
+        committed = false;
         reader.setContext(getHelping(), cfgAll.hostName + (privileged ? "#" : ">"));
         String s = reader.readLine(null);
         if (s == null) {
@@ -3337,11 +3344,14 @@ public class userExec {
                 a = "terminal";
             }
             if (a.equals("terminal")) {
-                rollback = false;
                 return cmdRes.config;
             }
             if (a.equals("rollback")) {
                 rollback = true;
+                return cmdRes.config;
+            }
+            if (a.equals("committed")) {
+                committed = true;
                 return cmdRes.config;
             }
             if (a.equals("reapply")) {
@@ -3814,7 +3824,7 @@ public class userExec {
         if (last && negated) {
             a = cmds.negated + cmds.tabulator + a;
         }
-        cfg.executeCommand(false, a);
+        cfg.executeCommand(null, a);
         if (last) {
             return;
         }
@@ -3829,7 +3839,7 @@ public class userExec {
         if (negated) {
             a = cmds.negated + cmds.tabulator + a;
         }
-        cfg.executeCommand(false, a);
+        cfg.executeCommand(null, a);
     }
 
     private void doMenuK() {
