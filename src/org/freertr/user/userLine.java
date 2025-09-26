@@ -391,6 +391,7 @@ public class userLine {
                         if (!b.equals("y")) {
                             cfgInit.executeSWcommands(cfg.commits, false);
                         }
+                        exe.pipe.linePut("");
                     }
                 }
             }
