@@ -111,15 +111,7 @@ public class userConfig {
 
     private cmds cmd; // currently processed string
 
-    private modes modeV; // mode value
-
     private cfgGeneric modeDconfig;
-
-    private enum modes {
-
-        global, config
-
-    }
 
     /**
      * constructs new reader for a pipeline
@@ -137,7 +129,6 @@ public class userConfig {
      * reset current mode to global config
      */
     public void resetMode() {
-        modeV = modes.global;
         modeDconfig = null;
     }
 
@@ -163,17 +154,12 @@ public class userConfig {
         if (needGen) {
             userHelp.getCfgGen(l);
         }
-        switch (modeV) {
-            case global:
-                getHelpGlobal(l);
-                return l;
-            case config:
-                modeDconfig.getHelp(l);
-                return l;
-            default:
-                resetMode();
-                return l;
+        if (modeDconfig == null) {
+            getHelpGlobal(l);
+        } else {
+            modeDconfig.getHelp(l);
         }
+        return l;
     }
 
     /**
@@ -182,25 +168,10 @@ public class userConfig {
      * @return prompt value
      */
     public String getPrompt() {
-        switch (modeV) {
-            case global:
-                return "(cfg)";
-            case config:
-                return "(cfg-" + modeDconfig.getPrompt() + ")";
-            default:
-                resetMode();
-                return "(bad)";
-        }
-    }
-
-    private cfgGeneric getCurrConfiger() {
-        switch (modeV) {
-            case config:
-                return modeDconfig;
-            case global:
-                return null;
-            default:
-                return null;
+        if (modeDconfig == null) {
+            return "(cfg)";
+        } else {
+            return "(cfg-" + modeDconfig.getPrompt() + ")";
         }
     }
 
@@ -231,7 +202,7 @@ public class userConfig {
             return false;
         }
         if (a.equals(cmds.finish)) {
-            if (modeV == modes.global) {
+            if (modeDconfig == null) {
                 return true;
             }
             resetMode();
@@ -249,12 +220,11 @@ public class userConfig {
                     return false;
                 }
             }
-            cfgGeneric cur = getCurrConfiger();
-            if (cur == null) {
+            if (modeDconfig == null) {
                 cmd.error("not allowed here");
                 return false;
             }
-            List<String> c1 = cur.getShRun(1);
+            List<String> c1 = modeDconfig.getShRun(1);
             List<String> c2 = new ArrayList<String>();
             c2.addAll(c1);
             userEditor edt = new userEditor(new userScreen(cmd.pipe), c2, "current", false);
@@ -278,7 +248,7 @@ public class userConfig {
             shw.cmd = cmd;
             shw.rdr = reader;
             shw.hlp = getHelping(false, false, false);
-            shw.cfg = getCurrConfiger();
+            shw.cfg = modeDconfig;
             if (authorization != null) {
                 authResult ntry = authorization.authUserCommand(username, cmd.getRemaining());
                 if (ntry.result != authResult.authSuccessful) {
@@ -314,18 +284,12 @@ public class userConfig {
             return false;
         }
         cmd = cmd.copyBytes(true);
-        switch (modeV) {
-            case global:
-                doGlobal();
-                return false;
-            case config:
-                modeDconfig.doCfgStr(cmd);
-                return false;
-            default:
-                cmd.badCmd();
-                resetMode();
-                return false;
+        if (modeDconfig == null) {
+            doGlobal();
+        } else {
+            modeDconfig.doCfgStr(cmd);
         }
+        return false;
     }
 
     /**
@@ -1014,7 +978,6 @@ public class userConfig {
                     cmd.error("bad vdc name");
                     return;
                 }
-                modeV = modes.config;
                 return;
             }
             cmd.badCmd();
@@ -1033,7 +996,6 @@ public class userConfig {
                     cmd.error("bad process name");
                     return;
                 }
-                modeV = modes.config;
                 return;
             }
             cmd.badCmd();
@@ -1048,7 +1010,6 @@ public class userConfig {
                     cmd.error("bad vrf name");
                     return;
                 }
-                modeV = modes.config;
                 return;
             }
             cmd.badCmd();
@@ -1060,7 +1021,6 @@ public class userConfig {
                 cmd.error("no such interface");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("bridge")) {
@@ -1069,7 +1029,6 @@ public class userConfig {
                 cmd.error("invalid bridge number");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("bundle")) {
@@ -1078,7 +1037,6 @@ public class userConfig {
                 cmd.error("invalid bundle number");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("hairpin")) {
@@ -1087,7 +1045,6 @@ public class userConfig {
                 cmd.error("invalid hairpin number");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("session")) {
@@ -1096,7 +1053,6 @@ public class userConfig {
                 cmd.error("invalid session name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("check")) {
@@ -1105,7 +1061,6 @@ public class userConfig {
                 cmd.error("invalid check name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("sensor")) {
@@ -1114,7 +1069,6 @@ public class userConfig {
                 cmd.error("invalid sensor name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("dial-peer")) {
@@ -1123,7 +1077,6 @@ public class userConfig {
                 cmd.error("invalid dial peer number");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("translation-rule")) {
@@ -1132,7 +1085,6 @@ public class userConfig {
                 cmd.error("invalid translation rule number");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("nsh")) {
@@ -1156,7 +1108,6 @@ public class userConfig {
             }
             modeDconfig = rtr;
             cmds c = cmd.copyBytes(false);
-            modeV = modes.config;
             if (!cmd.word().equals("vrf")) {
                 return;
             }
@@ -1166,7 +1117,6 @@ public class userConfig {
             String b = hlp.repairLine(a);
             if (b.length() < 1) {
                 pipe.linePut("bad: " + a);
-                modeV = modes.global;
                 reader.setContext(hlp, "");
                 return;
             }
@@ -1179,7 +1129,6 @@ public class userConfig {
             if (modeDconfig == null) {
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("script")) {
@@ -1187,7 +1136,6 @@ public class userConfig {
             if (modeDconfig == null) {
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("tracker")) {
@@ -1195,7 +1143,6 @@ public class userConfig {
             if (modeDconfig == null) {
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("mtracker")) {
@@ -1203,7 +1150,6 @@ public class userConfig {
             if (modeDconfig == null) {
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("alias")) {
@@ -1238,7 +1184,6 @@ public class userConfig {
                 cmd.error("bad script name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("object-group")) {
@@ -1249,7 +1194,6 @@ public class userConfig {
                     cmd.error("bad object group name");
                     return;
                 }
-                modeV = modes.config;
                 return;
             }
             if (a.equals("port")) {
@@ -1258,7 +1202,6 @@ public class userConfig {
                     cmd.error("bad object group name");
                     return;
                 }
-                modeV = modes.config;
                 return;
             }
             return;
@@ -1269,7 +1212,6 @@ public class userConfig {
                 cmd.error("bad access list name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("telemetry")) {
@@ -1278,7 +1220,6 @@ public class userConfig {
                 cmd.error("bad destination name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("event-manager")) {
@@ -1287,7 +1228,6 @@ public class userConfig {
                 cmd.error("bad event manager name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("xconnect")) {
@@ -1296,7 +1236,6 @@ public class userConfig {
                 cmd.error("bad connect name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("vnet")) {
@@ -1305,7 +1244,6 @@ public class userConfig {
                 cmd.error("bad vnet name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("vpdn")) {
@@ -1314,7 +1252,6 @@ public class userConfig {
                 cmd.error("bad vpdn name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("proxy-profile")) {
@@ -1323,7 +1260,6 @@ public class userConfig {
                 cmd.error("bad proxy name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("time-map")) {
@@ -1332,7 +1268,6 @@ public class userConfig {
                 cmd.error("bad time name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("prefix-list")) {
@@ -1341,7 +1276,6 @@ public class userConfig {
                 cmd.error("bad prefix list name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("route-map")) {
@@ -1350,7 +1284,6 @@ public class userConfig {
                 cmd.error("bad route map name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("route-policy")) {
@@ -1359,7 +1292,6 @@ public class userConfig {
                 cmd.error("bad route policy name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("policy-map")) {
@@ -1368,12 +1300,10 @@ public class userConfig {
                 cmd.error("bad policy map name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("console0")) {
             modeDconfig = cfgAll.con0;
-            modeV = modes.config;
             return;
         }
         if (a.equals("line")) {
@@ -1382,7 +1312,6 @@ public class userConfig {
                 cmd.error("invalid line name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("menu")) {
@@ -1393,7 +1322,6 @@ public class userConfig {
                     cmd.error("invalid menu name");
                     return;
                 }
-                modeV = modes.config;
                 return;
             }
             if (a.equals("tui")) {
@@ -1402,7 +1330,6 @@ public class userConfig {
                     cmd.error("invalid menu name");
                     return;
                 }
-                modeV = modes.config;
                 return;
             }
             cmd.badCmd();
@@ -1419,7 +1346,6 @@ public class userConfig {
                 cmd.error("invalid authenticator name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         if (a.equals("server")) {
@@ -1430,7 +1356,6 @@ public class userConfig {
                 return;
             }
             modeDconfig = srv;
-            modeV = modes.config;
             boolean b = false;
             for (;;) {
                 a = cmd.word();
@@ -3678,7 +3603,6 @@ public class userConfig {
                 cmd.error("bad profile name");
                 return;
             }
-            modeV = modes.config;
             return;
         }
         cmd.badCmd();
