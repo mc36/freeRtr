@@ -27,6 +27,8 @@ public class userTmux {
 
     private pipeScreen scr[];
 
+    private userRead rdr[];
+
     private userExec exe[];
 
     private userConfig cfg[];
@@ -103,13 +105,13 @@ public class userTmux {
             pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userRead rdr = new userRead(pip, null);
+            rdr[i] = new userRead(pip, null);
             pip.settingsCopy(cons.pipe);
             userRead.setTermWdt(pip, sizX);
             userRead.setTermLen(pip, sizY);
             pip.setTime(0);
-            exe[i] = new userExec(pip, rdr);
-            cfg[i] = new userConfig(pip, rdr);
+            exe[i] = new userExec(pip, rdr[i]);
+            cfg[i] = new userConfig(pip, rdr[i]);
             orig.copy2exec(exe[i]);
             orig.copy2cfg(cfg[i]);
             new userTmuxWin(this, i);
@@ -129,7 +131,7 @@ public class userTmux {
             if (!running) {
                 break;
             }
-            userLine.doCommands(exe[n], cfg[n]);
+            userLine.doCommands(rdr[n], exe[n], cfg[n]);
             exe[n].pipe.linePut("% not on this line");
         }
     }

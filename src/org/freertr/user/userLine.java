@@ -339,10 +339,11 @@ public class userLine {
     /**
      * do commands
      *
+     * @param rdr reader
      * @param exe exec handler
      * @param cfg config handler
      */
-    public static void doCommands(userExec exe, userConfig cfg) {
+    public static void doCommands(userRead rdr, userExec exe, userConfig cfg) {
         for (;;) {
             exe.last = bits.getTime();
             userExec.cmdRes i = exe.doCommand();
@@ -368,7 +369,12 @@ public class userLine {
             }
             for (;;) {
                 exe.last = bits.getTime();
-                if (cfg.doCommand()) {
+                rdr.setContext(cfg.getHelping(true, true, true), cfgAll.hostName + cfg.getPrompt() + "#");
+                String s = rdr.readLine(cmds.finish);
+                if (s == null) {
+                    break;
+                }
+                if (cfg.executeCommand(s)) {
                     break;
                 }
             }
@@ -1228,11 +1234,11 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         }
         if (physical == 2) {
             for (;;) {
-                userLine.doCommands(exe, cfg);
+                userLine.doCommands(rdr, exe, cfg);
                 pipe.linePut("% not possible on this line");
             }
         }
-        userLine.doCommands(exe, cfg);
+        userLine.doCommands(rdr, exe, cfg);
         if (parent.loginLogging) {
             logger.info(user.user + " logged out from " + remote);
         }

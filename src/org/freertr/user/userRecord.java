@@ -18,6 +18,8 @@ public class userRecord implements Runnable {
 
     private final String recn;
 
+    private userRead rdr;
+
     private userExec exe;
 
     private userConfig cfg;
@@ -50,7 +52,7 @@ public class userRecord implements Runnable {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userRead rdr = new userRead(pip, null);
+        rdr = new userRead(pip, null);
         pip.settingsCopy(orig.pipe);
         pip.setTime(0);
         exe = new userExec(pip, rdr);
@@ -71,7 +73,7 @@ public class userRecord implements Runnable {
 
     public void run() {
         try {
-            userLine.doCommands(exe, cfg);
+            userLine.doCommands(rdr, exe, cfg);
         } catch (Exception e) {
             logger.traceback(e);
         }

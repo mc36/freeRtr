@@ -292,20 +292,6 @@ public class userConfig {
         return false;
     }
 
-    /**
-     * execute one command
-     *
-     * @return status of operation, see at one command
-     */
-    public boolean doCommand() {
-        reader.setContext(getHelping(true, true, true), cfgAll.hostName + getPrompt() + "#");
-        String s = reader.readLine(cmds.finish);
-        if (s == null) {
-            return true;
-        }
-        return executeCommand(s);
-    }
-
     private void getHelpGlobal(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "hostname", "set name of system");
         l.add(null, false, 2, new int[]{-1}, "<str>", "name of system");
