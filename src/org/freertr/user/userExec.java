@@ -1608,6 +1608,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "oldfile", "old saved messages");
         hl.add(null, false, 3, new int[]{4}, "last", "last messages");
         hl.add(null, false, 4, new int[]{-1}, "<num>", "message count");
+        hl.add(null, false, 2, new int[]{-1}, "uncommitted-config", "uncommitted differences");
         hl.add(null, false, 2, new int[]{3, -1}, "config-differences", "startup->running differences");
         hl.add(null, false, 3, new int[]{3, -1}, "[name]", "name of section");
         hl.add(null, false, 3, new int[]{4, -1}, "this", "current subconfiguration");

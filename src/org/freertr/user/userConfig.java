@@ -104,7 +104,7 @@ public class userConfig {
      * expand variables
      */
     public boolean needExpand;
-    
+
     /**
      * commit buffer
      */
@@ -203,12 +203,12 @@ public class userConfig {
         if (debugger.userConfigEvnt) {
             logger.debug(cmd.getOriginal());
         }
+        if (commits != null) {
+            commits.add(cmd.getOriginal());
+        }
         a = cmd.word();
         if (a.length() < 1) {
             return false;
-        }
-        if (commits != null) {
-            commits.add(cmd.getRemaining());
         }
         if (a.equals(cmds.finish)) {
             if (modeDconfig == null) {
@@ -222,10 +222,11 @@ public class userConfig {
             return true;
         }
         if (a.equals("commit")) {
-            if (commits != null) {
+            if (commits == null) {
                 return false;
             }
             cfgInit.executeSWcommands(commits, false);
+            commits.clear();
             return false;
         }
         if (a.equals("editor")) {
@@ -268,6 +269,7 @@ public class userConfig {
             shw.rdr = reader;
             shw.hlp = getHelping(false, false, false);
             shw.cfg = modeDconfig;
+            shw.cmt = commits;
             if (authorization != null) {
                 authResult ntry = authorization.authUserCommand(username, cmd.getRemaining());
                 if (ntry.result != authResult.authSuccessful) {
@@ -318,6 +320,7 @@ public class userConfig {
         l.add(null, false, 1, new int[]{2}, "hostname", "set name of system");
         l.add(null, false, 2, new int[]{-1}, "<str>", "name of system");
         l.add(null, false, 1, new int[]{-1}, "buggy", "enable dangerous things");
+        l.add(null, false, 1, new int[]{-1}, "commit", "commit config changes");
         l.add(null, false, 1, new int[]{2}, "locale", "set locale of system");
         l.add(null, false, 2, new int[]{-1}, "<str>", "enable password");
         l.add(null, false, 1, new int[]{2}, "enable", "set enable password");

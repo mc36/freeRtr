@@ -180,6 +180,11 @@ public class userShow {
     public cfgGeneric cfg;
 
     /**
+     * current commit context
+     */
+    public List<String> cmt;
+
+    /**
      * do the work
      *
      * @return command to execute, null if nothing
@@ -750,6 +755,10 @@ public class userShow {
                 return null;
             }
             rdr.putStrArr(logger.bufferRead());
+            return null;
+        }
+        if (a.equals("uncommitted-config")) {
+            rdr.putStrArr(cmt);
             return null;
         }
         if (a.equals("rollback-config")) {
