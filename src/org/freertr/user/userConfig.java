@@ -113,13 +113,11 @@ public class userConfig {
 
     private modes modeV; // mode value
 
-    private servGeneric modeDserver;
-
     private cfgGeneric modeDconfig;
 
     private enum modes {
 
-        global, server, config
+        global, config
 
     }
 
@@ -140,7 +138,6 @@ public class userConfig {
      */
     public void resetMode() {
         modeV = modes.global;
-        modeDserver = null;
         modeDconfig = null;
     }
 
@@ -170,9 +167,6 @@ public class userConfig {
             case global:
                 getHelpGlobal(l);
                 return l;
-            case server:
-                modeDserver.getHelp(l);
-                return l;
             case config:
                 modeDconfig.getHelp(l);
                 return l;
@@ -191,8 +185,6 @@ public class userConfig {
         switch (modeV) {
             case global:
                 return "(cfg)";
-            case server:
-                return "(cfg-" + modeDserver.getPrompt() + ")";
             case config:
                 return "(cfg-" + modeDconfig.getPrompt() + ")";
             default:
@@ -203,8 +195,6 @@ public class userConfig {
 
     private cfgGeneric getCurrConfiger() {
         switch (modeV) {
-            case server:
-                return modeDserver;
             case config:
                 return modeDconfig;
             case global:
@@ -327,9 +317,6 @@ public class userConfig {
         switch (modeV) {
             case global:
                 doGlobal();
-                return false;
-            case server:
-                modeDserver.doCfgStr(cmd);
                 return false;
             case config:
                 modeDconfig.doCfgStr(cmd);
@@ -1437,12 +1424,13 @@ public class userConfig {
         }
         if (a.equals("server")) {
             a = cmd.word();
-            modeDserver = servGenList.srvFind(a, cmd.word(), true);
-            if (modeDserver == null) {
+            servGeneric srv = servGenList.srvFind(a, cmd.word(), true);
+            if (srv == null) {
                 cmd.error("invalid server");
                 return;
             }
-            modeV = modes.server;
+            modeDconfig = srv;
+            modeV = modes.config;
             boolean b = false;
             for (;;) {
                 a = cmd.word();
@@ -1451,13 +1439,13 @@ public class userConfig {
                 }
                 if (a.equals("vrf")) {
                     a = cmd.word();
-                    modeDserver.srvVrf = cfgAll.vrfFind(a, false);
+                    srv.srvVrf = cfgAll.vrfFind(a, false);
                     b = true;
                     continue;
                 }
                 if (a.equals("interface")) {
                     a = cmd.word();
-                    modeDserver.srvIface = cfgAll.ifcFind(a, 0);
+                    srv.srvIface = cfgAll.ifcFind(a, 0);
                     b = true;
                     continue;
                 }
@@ -1465,8 +1453,8 @@ public class userConfig {
             if (!b) {
                 return;
             }
-            modeDserver.srvEmbedVrf |= b;
-            modeDserver.srvInit();
+            srv.srvEmbedVrf |= b;
+            srv.srvInit();
             return;
         }
         if (a.equals("client")) {
