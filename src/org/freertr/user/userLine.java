@@ -369,12 +369,13 @@ public class userLine {
             }
             for (;;) {
                 exe.last = bits.getTime();
-                rdr.setContext(cfg.getHelping(true, true, true), cfgAll.hostName + cfg.getPrompt() + "#");
-                String s = rdr.readLine(cmds.finish);
+                String s = cfgAll.hostName + cfg.getPrompt() + "#";
+                rdr.setContext(cfg.getHelping(true, true, true), s);
+                s = rdr.readLine(cmds.finish);
                 if (s == null) {
                     break;
                 }
-                if (cfg.executeCommand(s)) {
+                if (cfg.executeCommand(false, s)) {
                     break;
                 }
             }

@@ -178,10 +178,11 @@ public class userConfig {
     /**
      * execute one command
      *
+     * @param ro read only mode
      * @param a the command to execute
      * @return status of operation, false to continue processing
      */
-    public boolean executeCommand(String a) {
+    public boolean executeCommand(boolean ro, String a) {
         if (a == null) {
             a = "";
         }
@@ -213,6 +214,9 @@ public class userConfig {
             return true;
         }
         if (a.equals("editor")) {
+            if (ro) {
+                return false;
+            }
             if (authorization != null) {
                 authResult ntry = authorization.authUserCommand(username, cmd.getRemaining());
                 if (ntry.result != authResult.authSuccessful) {
@@ -285,10 +289,13 @@ public class userConfig {
         }
         cmd = cmd.copyBytes(true);
         if (modeDconfig == null) {
-            doGlobal();
-        } else {
-            modeDconfig.doCfgStr(cmd);
+            doGlobal(ro);
+            return false;
         }
+        if (ro) {
+            return false;
+        }
+        modeDconfig.doCfgStr(cmd);
         return false;
     }
 
@@ -866,91 +873,8 @@ public class userConfig {
         return bits.byteConcat(cmd.getRemaining().getBytes(), pipeSide.getEnding(pipeSide.modTyp.modeCRLF));
     }
 
-    private void doGlobal() {
+    private void doGlobal(boolean ro) {
         String a = cmd.word();
-        if (a.equals("hostname")) {
-            cfgAll.hostName = cmd.word();
-            return;
-        }
-        if (a.equals("locale")) {
-            cfgAll.locale = cmd.word();
-            return;
-        }
-        if (a.equals("enable")) {
-            cfgAll.enaPass = authLocal.secretDecode(cmd.word());
-            return;
-        }
-        if (a.equals("password-encrypt")) {
-            cfgAll.passEnc = authLocal.passwdDecode(cmd.word());
-            return;
-        }
-        if (a.equals("buggy")) {
-            cfgAll.buggy = true;
-            return;
-        }
-        if (a.equals("banner")) {
-            a = cmd.word();
-            if (a.equals("set")) {
-                cfgAll.bannerEnc = cmdGetRem();
-                return;
-            }
-            if (a.equals("add")) {
-                cfgAll.bannerEnc = bits.byteConcat(cfgAll.bannerEnc, cmdGetRem());
-                return;
-            }
-            if (a.equals("encoded")) {
-                byte[] buf = encBase64.decodeBytes(cmd.getRemaining());
-                if (buf == null) {
-                    cmd.error("error decoding");
-                    return;
-                }
-                cfgAll.bannerEnc = buf;
-                return;
-            }
-            if (a.equals("text")) {
-                cfgAll.bannerTxt = cmd.getRemaining();
-                return;
-            }
-            if (a.equals("image")) {
-                cfgAll.bannerImg = cmd.getRemaining();
-                return;
-            }
-            if (a.equals("movie")) {
-                cfgAll.bannerMov = cmd.getRemaining();
-                return;
-            }
-            if (!a.equals("editor")) {
-                cmd.badCmd();
-                return;
-            }
-            List<String> txt = new ArrayList<String>();
-            a = "";
-            for (int i = 0; i < cfgAll.bannerEnc.length; i++) {
-                byte[] buf = new byte[1];
-                buf[0] = cfgAll.bannerEnc[i];
-                if (buf[0] == 13) {
-                    txt.add(a);
-                    a = "";
-                }
-                if (buf[0] < 32) {
-                    continue;
-                }
-                a = a + new String(buf);
-            }
-            txt.add(a);
-            userEditor e = new userEditor(new userScreen(pipe), txt, "banner", false);
-            if (e.doEdit()) {
-                return;
-            }
-            String s = "";
-            for (int i = 0; i < txt.size(); i++) {
-                byte[] buf = pipeSide.getEnding(pipeSide.modTyp.modeCRLF);
-                s += txt.get(i) + new String(buf);
-            }
-            byte[] buf = s.getBytes();
-            cfgAll.bannerEnc = buf;
-            return;
-        }
         if (a.equals("vdc")) {
             if (cfgAll.evalVdcPrivs()) {
                 cmd.error("not in a vdc");
@@ -1073,14 +997,6 @@ public class userConfig {
             }
             return;
         }
-        if (a.equals("nsh")) {
-            int p = bits.str2num(cmd.word());
-            int i = bits.str2num(cmd.word());
-            tabNshEntry ntry = new tabNshEntry(p, i);
-            ntry.doCfgStr(cmd);
-            tabNshEntry.services.put(ntry);
-            return;
-        }
         if (a.equals("router")) {
             tabRouteAttr.routeType o = cfgRtr.name2num(cmd.word());
             if (o == null) {
@@ -1107,12 +1023,13 @@ public class userConfig {
                 return;
             }
             rtr.embedVrf = true;
-            executeCommand(c.getRemaining());
+            executeCommand(ro, c.getRemaining());
             return;
         }
         if (a.equals("scheduler")) {
             modeDconfig = cfgAll.schedFind(cmd.word(), true);
             if (modeDconfig == null) {
+                cmd.error("bad scheduler name");
                 return;
             }
             return;
@@ -1120,6 +1037,7 @@ public class userConfig {
         if (a.equals("script")) {
             modeDconfig = cfgAll.scrptFind(cmd.word(), true);
             if (modeDconfig == null) {
+                cmd.error("bad script name");
                 return;
             }
             return;
@@ -1127,6 +1045,7 @@ public class userConfig {
         if (a.equals("tracker")) {
             modeDconfig = cfgAll.trackFind(cmd.word(), true);
             if (modeDconfig == null) {
+                cmd.error("bad track name");
                 return;
             }
             return;
@@ -1134,34 +1053,9 @@ public class userConfig {
         if (a.equals("mtracker")) {
             modeDconfig = cfgAll.mtrackFind(cmd.word(), true);
             if (modeDconfig == null) {
+                cmd.error("bad mtrack name");
                 return;
             }
-            return;
-        }
-        if (a.equals("alias")) {
-            a = cmd.word();
-            cfgAlias ntry = cfgAll.aliasFind(cmd.word(), cfgAlias.string2type(a), true);
-            ntry.doCfgStr(cmd);
-            return;
-        }
-        if (a.equals("ipx")) {
-            doCmdIpx();
-            return;
-        }
-        if (a.equals("ipv4")) {
-            doCmdIp4();
-            return;
-        }
-        if (a.equals("ipv6")) {
-            doCmdIp6();
-            return;
-        }
-        if (a.equals("logging")) {
-            doCmdLogging();
-            return;
-        }
-        if (a.equals("crypto")) {
-            doCmdCrypto();
             return;
         }
         if (a.equals("chat-script")) {
@@ -1368,8 +1262,128 @@ public class userConfig {
             srv.srvInit();
             return;
         }
+        if (ro) {
+            return;
+        }
+        if (a.equals("ipv4")) {
+            doCmdIp4();
+            return;
+        }
+        if (a.equals("ipv6")) {
+            doCmdIp6();
+            return;
+        }
+        if (a.equals("nsh")) {
+            int p = bits.str2num(cmd.word());
+            int i = bits.str2num(cmd.word());
+            tabNshEntry ntry = new tabNshEntry(p, i);
+            ntry.doCfgStr(cmd);
+            tabNshEntry.services.put(ntry);
+            return;
+        }
+        if (a.equals("ipx")) {
+            doCmdIpx();
+            return;
+        }
+        if (a.equals("logging")) {
+            doCmdLogging();
+            return;
+        }
         if (a.equals("client")) {
             doCmdClient();
+            return;
+        }
+        if (a.equals("crypto")) {
+            doCmdCrypto();
+            return;
+        }
+        if (a.equals("alias")) {
+            a = cmd.word();
+            cfgAlias ntry = cfgAll.aliasFind(cmd.word(), cfgAlias.string2type(a), true);
+            ntry.doCfgStr(cmd);
+            return;
+        }
+        if (a.equals("hostname")) {
+            cfgAll.hostName = cmd.word();
+            return;
+        }
+        if (a.equals("locale")) {
+            cfgAll.locale = cmd.word();
+            return;
+        }
+        if (a.equals("enable")) {
+            cfgAll.enaPass = authLocal.secretDecode(cmd.word());
+            return;
+        }
+        if (a.equals("password-encrypt")) {
+            cfgAll.passEnc = authLocal.passwdDecode(cmd.word());
+            return;
+        }
+        if (a.equals("buggy")) {
+            cfgAll.buggy = true;
+            return;
+        }
+        if (a.equals("banner")) {
+            a = cmd.word();
+            if (a.equals("set")) {
+                cfgAll.bannerEnc = cmdGetRem();
+                return;
+            }
+            if (a.equals("add")) {
+                cfgAll.bannerEnc = bits.byteConcat(cfgAll.bannerEnc, cmdGetRem());
+                return;
+            }
+            if (a.equals("encoded")) {
+                byte[] buf = encBase64.decodeBytes(cmd.getRemaining());
+                if (buf == null) {
+                    cmd.error("error decoding");
+                    return;
+                }
+                cfgAll.bannerEnc = buf;
+                return;
+            }
+            if (a.equals("text")) {
+                cfgAll.bannerTxt = cmd.getRemaining();
+                return;
+            }
+            if (a.equals("image")) {
+                cfgAll.bannerImg = cmd.getRemaining();
+                return;
+            }
+            if (a.equals("movie")) {
+                cfgAll.bannerMov = cmd.getRemaining();
+                return;
+            }
+            if (!a.equals("editor")) {
+                cmd.badCmd();
+                return;
+            }
+            List<String> txt = new ArrayList<String>();
+            a = "";
+            for (int i = 0; i < cfgAll.bannerEnc.length; i++) {
+                byte[] buf = new byte[1];
+                buf[0] = cfgAll.bannerEnc[i];
+                if (buf[0] == 13) {
+                    txt.add(a);
+                    a = "";
+                }
+                if (buf[0] < 32) {
+                    continue;
+                }
+                a = a + new String(buf);
+            }
+            txt.add(a);
+            userEditor e = new userEditor(new userScreen(pipe), txt, "banner", false);
+            if (e.doEdit()) {
+                return;
+            }
+            String s = "";
+            for (int i = 0; i < txt.size(); i++) {
+                byte[] buf = pipeSide.getEnding(pipeSide.modTyp.modeCRLF);
+                s += txt.get(i) + new String(buf);
+            }
+            byte[] buf = s.getBytes();
+            cfgAll.bannerEnc = buf;
             return;
         }
         if (!a.equals(cmds.negated)) {
@@ -1622,7 +1636,12 @@ public class userConfig {
             return;
         }
         if (a.equals("crypto")) {
-            doCmdNoCrypto();
+            a = cmd.word();
+            if (a.equals("ipsec")) {
+                cfgAll.ipsecDel(cmd.word());
+                return;
+            }
+            cmd.badCmd();
             return;
         }
         if (a.equals("chat-script")) {
@@ -3589,15 +3608,6 @@ public class userConfig {
                 cmd.error("bad profile name");
                 return;
             }
-            return;
-        }
-        cmd.badCmd();
-    }
-
-    private void doCmdNoCrypto() {
-        String a = cmd.word();
-        if (a.equals("ipsec")) {
-            cfgAll.ipsecDel(cmd.word());
             return;
         }
         cmd.badCmd();
