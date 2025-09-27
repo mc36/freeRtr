@@ -387,11 +387,14 @@ public class userLine {
                 sesStart = null;
                 if (cfg.commits != null) {
                     if (cfg.commits.size() > 0) {
+                        rdr.putStrArr(cfg.commits);
                         String b = exe.pipe.strChr("uncommitted configuration found, discard?", "ynYN").toLowerCase();
-                        if (!b.equals("y")) {
-                            cfgInit.executeSWcommands(cfg.commits, false);
-                        }
                         exe.pipe.linePut("");
+                        if (b.equals("n")) {
+                            int res = cfgInit.executeSWcommands(cfg.commits, false);
+                            rdr.putStrArr(bits.str2lst("errors=" + res));
+                        }
+                        cfg.commits.clear();
                     }
                 }
             }

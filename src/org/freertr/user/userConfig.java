@@ -211,7 +211,7 @@ public class userConfig {
                 return true;
             }
             if (commits != null) {
-                commits.add(cmd.getOriginal());
+                commits.add(cmds.tabulator + cmds.finish);
             }
             resetMode();
             return false;
@@ -274,25 +274,34 @@ public class userConfig {
             exe.executeCommand(a);
             return false;
         }
-        if (commits != null) {
-            commits.add(cmd.getOriginal());
-        }
         cmd = cmd.copyBytes(true);
         if (submode != null) {
             if (commits != null) {
+                commits.add(cmds.tabulator + cmd.getOriginal());
                 return false;
             }
             submode.doCfgStr(cmd);
             return false;
         }
+        if (a.equals("commit")) {
+            if (commits == null) {
+                return false;
+            }
+            commits.remove(commits.size() - 1);
+            reader.putStrArr(commits);
+            int res = cfgInit.executeSWcommands(commits, false);
+            commits.clear();
+            reader.putStrArr(bits.str2lst("errors=" + res));
+            return false;
+        }
         doGlobal();
-        if (cmd.barked < 1) {
+        if (cmd.barked > 0) {
             return false;
         }
         if (commits == null) {
             return false;
         }
-        commits.remove(commits.size() - 1);
+        commits.add(cmd.getOriginal());
         return false;
     }
 
@@ -873,16 +882,6 @@ public class userConfig {
 
     private void doGlobal() {
         String a = cmd.word();
-        if (a.equals("commit")) {
-            if (commits == null) {
-                return;
-            }
-            commits.remove(commits.size() - 1);
-            int res = cfgInit.executeSWcommands(commits, false);
-            commits.clear();
-            reader.putStrArr(bits.str2lst("errors=" + res));
-            return;
-        }
         if (a.equals("vdc")) {
             if (cfgAll.evalVdcPrivs()) {
                 cmd.error("not in a vdc");

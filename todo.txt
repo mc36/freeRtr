@@ -61,7 +61,6 @@ some more autocolorizers under the same termial propertiles like terminal colori
 configure diff to have chance to change the sho config-differences
 
 
-configure startup to have config committed but 4 now, only conf start tabbable stuffs
 
 
 
@@ -132,7 +131,6 @@ test todo knob as an editor but in the running-config
 inter xxx / macrandomize
 server security maximum pendings as access-security
 servers to have access-aaa
-config committed with check for saved and backup config
 
 interface lo0 as lo-core, persistently
 
