@@ -287,7 +287,6 @@ public class userConfig {
             if (commits == null) {
                 return false;
             }
-            commits.remove(commits.size() - 1);
             reader.putStrArr(commits);
             int res = cfgInit.executeSWcommands(commits, false);
             commits.clear();
