@@ -3502,6 +3502,13 @@ qc pass: l3evpns over srv6 over confed bgp
 qc pass: l3evpns over srv6 over bgp route server
 qc pass: l3evpns over srv6 over bgp with soft-reconfig
 qc pass: l3evpns over srv6 over bgp additional path
+qc pass: l3otherevpns over srv6 over ebgp
+qc pass: l3eothervpns over srv6 over ibgp
+qc pass: l3otherevpns over srv6 over ibgp rr
+qc pass: l3otherevpns over srv6 over confed bgp
+qc pass: l3otherevpns over srv6 over bgp route server
+qc pass: l3otherevpns over srv6 over bgp with soft-reconfig
+qc pass: l3otherevpns over srv6 over bgp additional path
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
