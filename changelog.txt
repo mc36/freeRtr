@@ -17533,3 +17533,11 @@ no todo: terminal clear same as game clear
 ---------------------------------- 2025-09-27 04:57:55 25.9.27
 no todo: config committed with check for saved and backup config
 no todo: configure startup to have config committed but 4 now, only conf start tabbable stuffs
+---------------------------------- 2025-09-27 07:57:54 25.9.27
+qc pass: l3evpns over srv6 over ebgp
+qc pass: l3evpns over srv6 over ibgp
+qc pass: l3evpns over srv6 over ibgp rr
+qc pass: l3evpns over srv6 over confed bgp
+qc pass: l3evpns over srv6 over bgp route server
+qc pass: l3evpns over srv6 over bgp with soft-reconfig
+qc pass: l3evpns over srv6 over bgp additional path
