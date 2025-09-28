@@ -270,6 +270,7 @@ public class servGenList<T extends servGeneric> {
         srvHelp(l, p, n, e, o, "gtp", cfgAll.dmnGtp.listServers());
         srvHelp(l, p, n, e, o, "pptp", cfgAll.dmnPptp.listServers());
         srvHelp(l, p, n, e, o, "radius", cfgAll.dmnRadius.listServers());
+        srvHelp(l, p, n, e, o, "ldap", cfgAll.dmnLdap.listServers());
         srvHelp(l, p, n, e, o, "tacacs", cfgAll.dmnTacacs.listServers());
     }
 
@@ -524,6 +525,9 @@ class servGenEntry {
         }
         if (typ.equals("radius")) {
             return new servGenEntry(new servRadius(), cfgAll.dmnRadius);
+        }
+        if (typ.equals("ldap")) {
+            return new servGenEntry(new servLdap(), cfgAll.dmnLdap);
         }
         if (typ.equals("tacacs")) {
             return new servGenEntry(new servTacacs(), cfgAll.dmnTacacs);

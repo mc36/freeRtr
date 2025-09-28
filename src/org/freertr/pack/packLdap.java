@@ -3,7 +3,6 @@ package org.freertr.pack;
 import java.math.BigInteger;
 import org.freertr.enc.encAsn1;
 import org.freertr.pipe.pipeSide;
-import org.freertr.util.logger;
 
 /**
  * lightweight directory access protocol (rfc4511) packet
@@ -318,11 +317,6 @@ public class packLdap {
     public packHolder pack;
 
     /**
-     * current packet
-     */
-    public packHolder temp;
-
-    /**
      * lower pipe
      */
     public pipeSide pipe;
@@ -357,16 +351,24 @@ public class packLdap {
      */
     public packLdap() {
         pack = new packHolder(true, true);
-        temp = new packHolder(true, true);
     }
 
     /**
      * create one header
      */
     public void packSend() {
+        packHolder temp = new packHolder(true, true);
+        encAsn1.writeBigInt(temp, new BigInteger("" + seq));
+        encAsn1 a = new encAsn1();
+        a.putEoc(pack);
+        a.tag = typ;
+        a.cls = 1;
+        a.tagWrite(temp);
+        temp.merge2end();
+        pack.clear();
+        encAsn1.writeSequence(pack, temp);
         pack.merge2beg();
         pack.pipeSend(pipe, 0, pack.dataSize(), 3);
-        seq++;
     }
 
     /**
@@ -413,6 +415,27 @@ public class packLdap {
             typ = -1;
             return true;
         }
+        encAsn1 a = new encAsn1();
+        if (a.tagRead(pack)) {
+            return true;
+        }
+        if ((!a.cnst) || (a.tag != encAsn1.tagSequence)) {
+            return true;
+        }
+        packHolder temp = a.getPack();
+        BigInteger num = encAsn1.readBigInt(temp);
+        if (num == null) {
+            return true;
+        }
+        seq = num.intValue();
+        if (a.tagRead(temp)) {
+            return true;
+        }
+        if (!a.cnst) {
+            return true;
+        }
+        typ = a.tag;
+        pack = a.getPack();
         return false;
     }
 
@@ -422,7 +445,7 @@ public class packLdap {
      * @return string
      */
     public String dump() {
-        return "typ=" + typ + " seq=" + seq + " usr=" + usr + " pwd=" + pwd;
+        return "typ=" + typ + " seq=" + seq + " cod=" + cod + " usr=" + usr + " pwd=" + pwd;
     }
 
     /**
@@ -431,6 +454,7 @@ public class packLdap {
     public void createBindReq() {
         pack.clear();
         encAsn1.writeBigInt(pack, new BigInteger("3"));
+        packHolder temp = new packHolder(true, true);
         temp.clear();
         byte[] buf = usr.getBytes();
         temp.putCopy(buf, 0, 0, buf.length);
@@ -445,15 +469,31 @@ public class packLdap {
         a.cnst = false;
         a.tagWrite(pack);
         pack.merge2end();
-        temp.clear();
-        encAsn1.writeBigInt(temp, new BigInteger("" + seq));
-        a = new encAsn1();
-        a.putEoc(pack);
-        a.cls = 1;
-        a.tagWrite(temp);
-        temp.merge2end();
-        pack.clear();
-        encAsn1.writeSequence(pack, temp);
+        typ = tpBindReq;
+    }
+
+    /**
+     * parse bind request
+     *
+     * @return true on error, false on success
+     */
+    public boolean parseBindReq() {
+        if (typ != tpBindReq) {
+            return true;
+        }
+        ///////////////////
+        return false;
+    }
+
+    /**
+     * create bind request
+     */
+    public void createBindRep() {
+
+    
+
+    ////////////////
+
     }
 
     /**
@@ -461,8 +501,23 @@ public class packLdap {
      *
      * @return true on error, false on success
      */
-    public boolean parseBindReq() {
-        cod = 255;
+    public boolean parseBindRep() {
+        cod = -1;
+        if (typ != tpBindRep) {
+            return true;
+        }
+        encAsn1 a = new encAsn1();
+        if (a.tagRead(pack)) {
+            return true;
+        }
+        if (a.cnst || (a.tag != encAsn1.tagEnumerated)) {
+            return true;
+        }
+        BigInteger num = a.getBigInt();
+        if (num == null) {
+            return true;
+        }
+        cod = num.intValue();
         return false;
     }
 

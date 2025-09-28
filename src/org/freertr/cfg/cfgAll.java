@@ -48,6 +48,7 @@ import org.freertr.serv.servIscsi;
 import org.freertr.serv.servL2f;
 import org.freertr.serv.servL2tp2;
 import org.freertr.serv.servL2tp3;
+import org.freertr.serv.servLdap;
 import org.freertr.serv.servLoadBalancer;
 import org.freertr.serv.servLpd;
 import org.freertr.serv.servModem;
@@ -737,6 +738,11 @@ public class cfgAll {
      * radius daemons
      */
     public final static servGenList<servRadius> dmnRadius = new servGenList<servRadius>();
+
+    /**
+     * ldap daemons
+     */
+    public final static servGenList<servLdap> dmnLdap = new servGenList<servLdap>();
 
     /**
      * tacacs daemons
@@ -4121,6 +4127,7 @@ public class cfgAll {
         dmnGtp.getShRun(l, filter);
         dmnPptp.getShRun(l, filter);
         dmnRadius.getShRun(l, filter);
+        dmnLdap.getShRun(l, filter);
         dmnTacacs.getShRun(l, filter);
         l.addAll(getGlobalRunEnd(filter));
         String s = "";

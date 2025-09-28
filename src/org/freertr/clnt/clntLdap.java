@@ -101,7 +101,7 @@ public class clntLdap {
             conn.setClose();
             return true;
         }
-        if (res.parseBindReq()) {
+        if (res.parseBindRep()) {
             conn.setClose();
             return true;
         }
