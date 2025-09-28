@@ -381,12 +381,13 @@ qc pass: ppp with local authentication
 qc pass: ppp with radius authentication
 qc pass: ppp with tacacs authentication
 qc pass: ppp with ldap authentication
+qc pass: ppp with pap authentication
 qc pass: ppp with chap authentication
 qc pass: ppp with eap authentication
-qc pass: ppp with eap authentication
+qc pass: ppp routes with local authentication
 qc pass: ppp routes with radius authentication
 qc pass: ppp with short multilink fragmentation
-qc pass: ppp with short multilink fragmentation
+qc pass: ppp with long multilink fragmentation
 qc pass: ppp with asymmetric multilink fragmentation
 qc pass: ppp with asymmetric multilink
 qc pass: ppp address propagation
@@ -4030,6 +4031,7 @@ qc pass: secondary dns server
 qc pass: dynamic tunnel destination
 qc pass: event manager
 qc pass: forwarder server
+qc pass: ldap server
 qc pass: load balancer server
 qc pass: proxy server
 qc pass: radius server

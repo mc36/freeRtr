@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.9.28-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-09-28 12:06:21, took 00:13:53, with 50 workers, on 4052 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2025-09-28 12:32:58, took 00:14:09, with 50 workers, on 4054 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -385,20 +385,21 @@ http://sources.freertr.org/cfg/conn-ppp02.tst;conn-ppp02.tst;success;ppp with lo
 http://sources.freertr.org/cfg/conn-ppp03.tst;conn-ppp03.tst;success;ppp with radius authentication
 http://sources.freertr.org/cfg/conn-ppp04.tst;conn-ppp04.tst;success;ppp with tacacs authentication
 http://sources.freertr.org/cfg/conn-ppp05.tst;conn-ppp05.tst;success;ppp with ldap authentication
-http://sources.freertr.org/cfg/conn-ppp06.tst;conn-ppp06.tst;success;ppp with chap authentication
-http://sources.freertr.org/cfg/conn-ppp07.tst;conn-ppp07.tst;success;ppp with eap authentication
+http://sources.freertr.org/cfg/conn-ppp06.tst;conn-ppp06.tst;success;ppp with pap authentication
+http://sources.freertr.org/cfg/conn-ppp07.tst;conn-ppp07.tst;success;ppp with chap authentication
 http://sources.freertr.org/cfg/conn-ppp08.tst;conn-ppp08.tst;success;ppp with eap authentication
-http://sources.freertr.org/cfg/conn-ppp09.tst;conn-ppp09.tst;success;ppp routes with radius authentication
-http://sources.freertr.org/cfg/conn-ppp10.tst;conn-ppp10.tst;success;ppp with short multilink fragmentation
+http://sources.freertr.org/cfg/conn-ppp09.tst;conn-ppp09.tst;success;ppp routes with local authentication
+http://sources.freertr.org/cfg/conn-ppp10.tst;conn-ppp10.tst;success;ppp routes with radius authentication
 http://sources.freertr.org/cfg/conn-ppp11.tst;conn-ppp11.tst;success;ppp with short multilink fragmentation
-http://sources.freertr.org/cfg/conn-ppp12.tst;conn-ppp12.tst;success;ppp with asymmetric multilink fragmentation
-http://sources.freertr.org/cfg/conn-ppp13.tst;conn-ppp13.tst;success;ppp with asymmetric multilink
-http://sources.freertr.org/cfg/conn-ppp14.tst;conn-ppp14.tst;success;ppp address propagation
-http://sources.freertr.org/cfg/conn-ppp15.tst;conn-ppp15.tst;success;ppp labeled gateway
-http://sources.freertr.org/cfg/conn-ppp16.tst;conn-ppp16.tst;success;ppp no remote address
-http://sources.freertr.org/cfg/conn-ppp17.tst;conn-ppp17.tst;success;ppp no local address
-http://sources.freertr.org/cfg/conn-ppp18.tst;conn-ppp18.tst;success;ppp policy with local authentication
-http://sources.freertr.org/cfg/conn-ppp19.tst;conn-ppp19.tst;success;ppp policy with radius authentication
+http://sources.freertr.org/cfg/conn-ppp12.tst;conn-ppp12.tst;success;ppp with long multilink fragmentation
+http://sources.freertr.org/cfg/conn-ppp13.tst;conn-ppp13.tst;success;ppp with asymmetric multilink fragmentation
+http://sources.freertr.org/cfg/conn-ppp14.tst;conn-ppp14.tst;success;ppp with asymmetric multilink
+http://sources.freertr.org/cfg/conn-ppp15.tst;conn-ppp15.tst;success;ppp address propagation
+http://sources.freertr.org/cfg/conn-ppp16.tst;conn-ppp16.tst;success;ppp labeled gateway
+http://sources.freertr.org/cfg/conn-ppp17.tst;conn-ppp17.tst;success;ppp no remote address
+http://sources.freertr.org/cfg/conn-ppp18.tst;conn-ppp18.tst;success;ppp no local address
+http://sources.freertr.org/cfg/conn-ppp19.tst;conn-ppp19.tst;success;ppp policy with local authentication
+http://sources.freertr.org/cfg/conn-ppp20.tst;conn-ppp20.tst;success;ppp policy with radius authentication
 http://sources.freertr.org/cfg/conn-pppoe01.tst;conn-pppoe01.tst;success;pppoe over ethernet encapsulation
 http://sources.freertr.org/cfg/conn-pppoe02.tst;conn-pppoe02.tst;success;pppoe over bridge encapsulation
 http://sources.freertr.org/cfg/conn-pppoe03.tst;conn-pppoe03.tst;success;ppp relay over pppoe
@@ -4034,6 +4035,7 @@ http://sources.freertr.org/cfg/serv-dns05.tst;serv-dns05.tst;success;secondary d
 http://sources.freertr.org/cfg/serv-dyndest.tst;serv-dyndest.tst;success;dynamic tunnel destination
 http://sources.freertr.org/cfg/serv-eventmgr.tst;serv-eventmgr.tst;success;event manager
 http://sources.freertr.org/cfg/serv-forward.tst;serv-forward.tst;success;forwarder server
+http://sources.freertr.org/cfg/serv-ldap.tst;serv-ldap.tst;success;ldap server
 http://sources.freertr.org/cfg/serv-loadbal.tst;serv-loadbal.tst;success;load balancer server
 http://sources.freertr.org/cfg/serv-proxy.tst;serv-proxy.tst;success;proxy server
 http://sources.freertr.org/cfg/serv-radius.tst;serv-radius.tst;success;radius server
