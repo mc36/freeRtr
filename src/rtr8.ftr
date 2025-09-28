@@ -918,7 +918,6 @@ todo: bgp layer2 flowspec
 todo: bgp flowspec v2
 todo: bgp signed path
 todo: parse privilege levels from tacacs
-todo: ldap client, server
 todo: diameter client, server
 todo: tester to have chatscript support
 todo: tester to have dynamips support with the proper image and magic
