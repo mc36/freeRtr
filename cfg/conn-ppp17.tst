@@ -1,4 +1,4 @@
-description ppp no local address
+description ppp no remote address
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -27,10 +27,6 @@ int ser1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff:ffff:ffff:ffff::
- no ipv4 gateway-local
- no ipv6 gateway-local
- no ipv4 gateway-connect
- no ipv6 gateway-connect
  exit
 !
 
@@ -64,6 +60,8 @@ int ser1
  ipv6 slaac ena
  ipv4 gateway-prefix p4
  ipv6 gateway-prefix p6
+ no ipv4 gateway-remote
+ no ipv6 gateway-remote
  exit
 !
 

@@ -17549,3 +17549,11 @@ qc pass: l3otherevpns over srv6 over confed bgp
 qc pass: l3otherevpns over srv6 over bgp route server
 qc pass: l3otherevpns over srv6 over bgp with soft-reconfig
 qc pass: l3otherevpns over srv6 over bgp additional path
+---------------------------------- 2025-09-28 11:52:28 25.9.28
+no todo: ldap client, server
+no qc pass: ppp with long multilink fragmentation
+no qc pass: ppp routes with local authentication
+no qc pass: ppp with pap authentication
+qc pass: ppp with ldap authentication
+qc pass: ppp with eap authentication
+qc pass: ppp with short multilink fragmentation

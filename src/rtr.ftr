@@ -380,13 +380,13 @@ qc pass: ppp encapsulation
 qc pass: ppp with local authentication
 qc pass: ppp with radius authentication
 qc pass: ppp with tacacs authentication
-qc pass: ppp with pap authentication
+qc pass: ppp with ldap authentication
 qc pass: ppp with chap authentication
 qc pass: ppp with eap authentication
-qc pass: ppp routes with local authentication
+qc pass: ppp with eap authentication
 qc pass: ppp routes with radius authentication
 qc pass: ppp with short multilink fragmentation
-qc pass: ppp with long multilink fragmentation
+qc pass: ppp with short multilink fragmentation
 qc pass: ppp with asymmetric multilink fragmentation
 qc pass: ppp with asymmetric multilink
 qc pass: ppp address propagation
@@ -4126,7 +4126,6 @@ todo: bgp layer2 flowspec
 todo: bgp flowspec v2
 todo: bgp signed path
 todo: parse privilege levels from tacacs
-todo: ldap client, server
 todo: diameter client, server
 todo: tester to have chatscript support
 todo: tester to have dynamips support with the proper image and magic

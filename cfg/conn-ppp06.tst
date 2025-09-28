@@ -1,4 +1,4 @@
-description ppp with chap authentication
+description ppp with pap authentication
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -33,7 +33,7 @@ int ser1
  ppp ip4cp close
  ppp ip6cp close
  ppp auth usr
- ppp refuseauth pap
+ ppp refuseauth chap
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::

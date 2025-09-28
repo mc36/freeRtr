@@ -1,4 +1,4 @@
-description ppp policy with local authentication
+description ppp policy with radius authentication
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -18,13 +18,22 @@ int ser1
 
 addrouter r2
 int ser1 ser - $1b$ $1a$
+int eth1 eth - $2a$ $2b$
 !
 vrf def v1
  rd 1:1
  exit
-aaa userlist usr
- username c password c
- username c filter rate-limit-in 819 100
+proxy-profile p1
+ vrf v1
+ exit
+client proxy p1
+aaa radius usr
+ secret c
+ server 3.3.3.3
+ exit
+int eth1
+ vrf for v1
+ ipv4 addr 3.3.3.2 255.255.255.0
  exit
 int ser1
  enc ppp
@@ -35,6 +44,30 @@ int ser1
  exit
 !
 
+addrouter r3
+int eth1 eth - $2b$ $2a$
+!
+vrf def v1
+ rd 1:1
+ exit
+int eth1
+ vrf for v1
+ ipv4 addr 3.3.3.3 255.255.255.0
+ exit
+aaa userlist usr
+ username c password c
+ username c filter rate-limit-out 819 100
+ exit
+server radius rad
+ authen usr
+ secret c
+ logg
+ vrf v1
+ exit
+!
+
+
+r2 tping 100 15 3.3.3.3 vrf v1
 r1 tping 100 15 1.1.1.2 vrf v1
 r2 tping 100 15 1.1.1.1 vrf v1
 r1 tping 100 15 1234::2 vrf v1

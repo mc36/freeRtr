@@ -214,18 +214,37 @@ class servLdapConn implements Runnable {
         if (debugger.servLdapTraf) {
             logger.debug("rx " + pck.dump());
         }
-        authResult res = lower.authentic.authUserPass(pck.usr, pck.pwd);
+        authResult res = null;
+        String usr = pck.usr;
+        if (lower.prefix != null) {
+            if (usr.startsWith(lower.prefix)) {
+                usr = usr.substring(lower.prefix.length(), usr.length());
+            } else {
+                res = new authResult(lower.authentic, authResult.authBadUserPass, pck.usr, pck.pwd);
+            }
+        }
+        if (lower.suffix != null) {
+            if (usr.endsWith(lower.suffix)) {
+                usr = usr.substring(0, usr.length() - lower.suffix.length());
+            } else {
+                res = new authResult(lower.authentic, authResult.authBadUserPass, pck.usr, pck.pwd);
+            }
+        }
+        if (res == null) {
+            res = lower.authentic.authUserPass(usr, pck.pwd);
+        }
         boolean b = res.result == authResult.authSuccessful;
         if (lower.logRes) {
             logger.info("stat=" + b + " user=" + pck.usr);
         }
         if (b) {
             pck.cod = packLdap.cdSucc;
-            pck.usr = lower.msgSucc;
+            pck.pwd = lower.msgSucc;
         } else {
             pck.cod = packLdap.cdCred;
-            pck.usr = lower.msgFail;
+            pck.pwd = lower.msgFail;
         }
+        pck.usr = "";
         pck.createBindRep();
         pck.packSend();
         if (debugger.servLdapTraf) {

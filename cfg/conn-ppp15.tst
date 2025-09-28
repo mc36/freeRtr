@@ -1,4 +1,4 @@
-description ppp labeled gateway
+description ppp address propagation
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -8,14 +8,6 @@ vrf def v1
  exit
 aaa userlist usr
  username c password c
- exit
-access-list test4
- deny 1 any all any all
- permit all any all any all
- exit
-access-list test6
- deny all 1234:: ffff:: all 1234:: ffff:: all
- permit all any all any all
  exit
 int ser1
  enc ppp
@@ -30,13 +22,6 @@ int ser1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff:ffff:ffff:ffff::
- ipv4 gateway-label expli
- ipv6 gateway-label expli
- ipv4 access-group-in test4
- ipv6 access-group-in test6
- no ipv4 unreachables
- no ipv6 unreachables
- mpls enable
  exit
 !
 
@@ -45,17 +30,6 @@ int ser1 ser - $1b$ $1a$
 !
 vrf def v1
  rd 1:1
- exit
-access-list test4
- deny 1 any all any all
- permit all any all any all
- exit
-access-list test6
- deny all 1234:: ffff:: all 1234:: ffff:: all
- permit all any all any all
- exit
-prefix-list p6
- permit 1234::1/128
  exit
 int ser1
  enc ppp
@@ -67,15 +41,7 @@ int ser1
  vrf for v1
  ipv4 addr 3.3.3.3 255.255.255.255
  ipv6 addr 3333::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- ipv4 gateway-label expli
- ipv6 gateway-label expli
  ipv6 slaac ena
- ipv6 gateway-prefix p6
- ipv4 access-group-in test4
- ipv6 access-group-in test6
- no ipv4 unreachables
- no ipv6 unreachables
- mpls enable
  exit
 !
 

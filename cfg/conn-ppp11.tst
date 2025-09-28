@@ -1,4 +1,4 @@
-description ppp with long multilink fragmentation
+description ppp with short multilink fragmentation
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -10,7 +10,7 @@ int ser1
  enc ppp
  ppp ip4cp close
  ppp ip6cp close
- ppp multi 1500 long
+ ppp multi 1500 short
  ppp frag 256
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
@@ -28,7 +28,7 @@ int ser1
  enc ppp
  ppp ip4cp close
  ppp ip6cp close
- ppp multi 1500 long
+ ppp multi 1500 short
  ppp frag 256
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0

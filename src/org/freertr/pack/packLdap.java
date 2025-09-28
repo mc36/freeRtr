@@ -481,7 +481,28 @@ public class packLdap {
         if (typ != tpBindReq) {
             return true;
         }
-        ///////////////////
+        BigInteger num = encAsn1.readBigInt(pack);
+        if (num == null) {
+            return true;
+        }
+        if (num.intValue() != 3) {
+            return true;
+        }
+        encAsn1 a = new encAsn1();
+        if (a.tagRead(pack)) {
+            return true;
+        }
+        if (a.cnst || (a.tag != encAsn1.tagOctetString)) {
+            return true;
+        }
+        usr = new String(a.buf);
+        if (a.tagRead(pack)) {
+            return true;
+        }
+        if (a.cnst || (a.tag != encAsn1.tagEoc)) {
+            return true;
+        }
+        pwd = new String(a.buf);
         return false;
     }
 
@@ -489,11 +510,19 @@ public class packLdap {
      * create bind request
      */
     public void createBindRep() {
-
-    
-
-    ////////////////
-
+        pack.clear();
+        encAsn1 a = new encAsn1();
+        a.putBigInt(new BigInteger("" + cod));
+        a.tag = encAsn1.tagEnumerated;
+        a.tagWrite(pack);
+        a.buf = usr.getBytes();
+        a.cls = 0;
+        a.cnst = false;
+        a.tag = encAsn1.tagOctetString;
+        a.tagWrite(pack);
+        a.buf = pwd.getBytes();
+        a.tagWrite(pack);
+        typ = tpBindRep;
     }
 
     /**

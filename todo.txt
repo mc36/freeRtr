@@ -151,7 +151,6 @@ bgp layer2 flowspec
 bgp flowspec v2
 bgp signed path
 parse privilege levels from tacacs
-ldap client, server
 diameter client, server
 tester to have chatscript support
 tester to have dynamips support with the proper image and magic

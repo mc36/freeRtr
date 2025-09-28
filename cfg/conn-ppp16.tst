@@ -1,4 +1,4 @@
-description ppp no remote address
+description ppp labeled gateway
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -9,10 +9,13 @@ vrf def v1
 aaa userlist usr
  username c password c
  exit
-int lo0
- vrf for v1
- ipv4 addr 2.2.2.1 255.255.255.255
- ipv6 addr 2222::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+access-list test4
+ deny 1 any all any all
+ permit all any all any all
+ exit
+access-list test6
+ deny all 1234:: ffff:: all 1234:: ffff:: all
+ permit all any all any all
  exit
 int ser1
  enc ppp
@@ -27,6 +30,13 @@ int ser1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff:ffff:ffff:ffff::
+ ipv4 gateway-label expli
+ ipv6 gateway-label expli
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
+ mpls enable
  exit
 !
 
@@ -36,16 +46,16 @@ int ser1 ser - $1b$ $1a$
 vrf def v1
  rd 1:1
  exit
-prefix-list p4
- permit 2.2.2.1/32
+access-list test4
+ deny 1 any all any all
+ permit all any all any all
+ exit
+access-list test6
+ deny all 1234:: ffff:: all 1234:: ffff:: all
+ permit all any all any all
  exit
 prefix-list p6
- permit 2222::1/128
- exit
-int lo1
- vrf for v1
- ipv4 addr 1.1.1.0 255.255.255.252
- ipv6 addr 1234::0 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ff00
+ permit 1234::1/128
  exit
 int ser1
  enc ppp
@@ -57,15 +67,19 @@ int ser1
  vrf for v1
  ipv4 addr 3.3.3.3 255.255.255.255
  ipv6 addr 3333::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ ipv4 gateway-label expli
+ ipv6 gateway-label expli
  ipv6 slaac ena
- ipv4 gateway-prefix p4
  ipv6 gateway-prefix p6
- no ipv4 gateway-remote
- no ipv6 gateway-remote
+ ipv4 access-group-in test4
+ ipv6 access-group-in test6
+ no ipv4 unreachables
+ no ipv6 unreachables
+ mpls enable
  exit
 !
 
-r1 tping 100 15 1.1.1.2 vrf v1 sou lo0
-r1 tping 100 15 1234::2 vrf v1 sou lo0
-r2 tping 0 15 1.1.1.1 vrf v1
-r2 tping 0 15 1234::1 vrf v1
+r1 tping 100 15 1.1.1.2 vrf v1
+r2 tping 100 15 1.1.1.1 vrf v1
+r1 tping 100 15 1234::2 vrf v1
+r2 tping 100 15 1234::1 vrf v1
