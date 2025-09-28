@@ -750,6 +750,8 @@ public class userConfig {
         l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authenticator");
         l.add(null, false, 2, new int[]{3}, "radius", "set up a radius client");
         l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authenticator");
+        l.add(null, false, 2, new int[]{3}, "ldap", "set up a ldap client");
+        l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authenticator");
         l.add(null, false, 2, new int[]{3}, "tacacs", "set up a tacacs client");
         l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authenticator");
         l.add(null, false, 2, new int[]{3}, "list", "set up an aaa list");

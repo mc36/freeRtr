@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.auth.authConstant;
 import org.freertr.auth.authGeneric;
+import org.freertr.auth.authLdap;
 import org.freertr.auth.authList;
 import org.freertr.auth.authLocal;
 import org.freertr.auth.authRadius;
 import org.freertr.auth.authTacacs;
-import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
@@ -44,6 +44,10 @@ public class cfgAuther implements Comparable<cfgAuther>, cfgGeneric {
          */
         radius,
         /**
+         * ldap
+         */
+        ldap,
+        /**
          * tacacs
          */
         tacacs,
@@ -66,6 +70,8 @@ public class cfgAuther implements Comparable<cfgAuther>, cfgGeneric {
 
     private authRadius rad;
 
+    private authLdap lda;
+
     private authTacacs tac;
 
     private authList lst;
@@ -82,6 +88,11 @@ public class cfgAuther implements Comparable<cfgAuther>, cfgGeneric {
         new userFilter("aaa radius .*", cmds.tabulator + cmds.negated + cmds.tabulator + "proxy", null),
         new userFilter("aaa radius .*", cmds.tabulator + "privilege 15", null),
         new userFilter("aaa radius .*", cmds.tabulator + cmds.negated + cmds.tabulator + "port", null),
+        new userFilter("aaa ldap .*", cmds.tabulator + cmds.negated + cmds.tabulator + "proxy", null),
+        new userFilter("aaa ldap .*", cmds.tabulator + cmds.negated + cmds.tabulator + "prefix", null),
+        new userFilter("aaa ldap .*", cmds.tabulator + cmds.negated + cmds.tabulator + "suffix", null),
+        new userFilter("aaa ldap .*", cmds.tabulator + "privilege 15", null),
+        new userFilter("aaa ldap .*", cmds.tabulator + cmds.negated + cmds.tabulator + "port", null),
         new userFilter("aaa tacacs .*", cmds.tabulator + cmds.negated + cmds.tabulator + "secret", null),
         new userFilter("aaa tacacs .*", cmds.tabulator + cmds.negated + cmds.tabulator + "proxy", null),
         new userFilter("aaa tacacs .*", cmds.tabulator + "privilege 15", null),
@@ -113,6 +124,9 @@ public class cfgAuther implements Comparable<cfgAuther>, cfgGeneric {
         if (rad != null) {
             return rad;
         }
+        if (lda != null) {
+            return lda;
+        }
         if (tac != null) {
             return tac;
         }
@@ -142,6 +156,9 @@ public class cfgAuther implements Comparable<cfgAuther>, cfgGeneric {
                 break;
             case radius:
                 rad = new authRadius();
+                break;
+            case ldap:
+                lda = new authLdap();
                 break;
             case tacacs:
                 tac = new authTacacs();
@@ -174,6 +191,9 @@ public class cfgAuther implements Comparable<cfgAuther>, cfgGeneric {
         }
         if (s.equals("radius")) {
             return methodType.radius;
+        }
+        if (s.equals("ldap")) {
+            return methodType.ldap;
         }
         if (s.equals("tacacs")) {
             return methodType.tacacs;

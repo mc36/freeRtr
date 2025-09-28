@@ -159,7 +159,7 @@ public class cryKeyECDSA extends cryKeyGeneric {
         p3.putSkip(buf.length);
         p3.merge2beg();
         encAsn1.writeBitString(p2, p3);
-        encAsn1.writeEoc2(p1, p2);
+        encAsn1.writeBool(p1, p2);
         encAsn1.writeSequence(pck, p1);
     }
 

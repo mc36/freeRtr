@@ -623,11 +623,11 @@ public class encAsn1 {
     }
 
     /**
-     * save packet data as bitString
+     * save packet data as boolean
      *
      * @param pck packet data to save
      */
-    public void putEoc2(packHolder pck) {
+    public void putBool(packHolder pck) {
         pck.mergeHeader(0, 0);
         buf = pck.getCopy();
         cnst = true;
@@ -897,9 +897,9 @@ public class encAsn1 {
      * @param trg target packet holder
      * @param src source packet holder
      */
-    public static void writeEoc2(packHolder trg, packHolder src) {
+    public static void writeBool(packHolder trg, packHolder src) {
         encAsn1 a = new encAsn1();
-        a.putEoc2(src);
+        a.putBool(src);
         a.tagWrite(trg);
         trg.merge2end();
     }

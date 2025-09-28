@@ -279,6 +279,11 @@ public class debugger {
     public static boolean servRadiusTraf = false;
 
     /**
+     * servLdap traffic
+     */
+    public static boolean servLdapTraf = false;
+
+    /**
      * servTacacs traffic
      */
     public static boolean servTacacsTraf = false;
@@ -667,6 +672,11 @@ public class debugger {
      * clntRadius traffic
      */
     public static boolean clntRadiusTraf = false;
+
+    /**
+     * clntLdap traffic
+     */
+    public static boolean clntLdapTraf = false;
 
     /**
      * clntTacacs traffic
@@ -1132,6 +1142,7 @@ public class debugger {
         l.add(null, false, b + 1, new int[]{-1}, "pptp", "point to point tunneling protocol");
         l.add(null, false, b + 1, new int[]{-1}, "gtp", "gprs tunneling protocol");
         l.add(null, false, b + 1, new int[]{-1}, "radius", "radius protocol");
+        l.add(null, false, b + 1, new int[]{-1}, "ldap", "ldap protocol");
         l.add(null, false, b + 1, new int[]{-1}, "tacacs", "tacacs protocol");
         l.add(null, false, b, new int[]{b + 1}, "proto", "transport protocols");
         l.add(null, false, b + 1, new int[]{b + 2}, "babel", "babel routing protocol");
@@ -1260,6 +1271,7 @@ public class debugger {
         l.add(null, false, b + 1, new int[]{-1}, "automesh", "mpls automesh tunnel");
         l.add(null, false, b + 1, new int[]{-1}, "mplsldp", "mpls ldp tunnel");
         l.add(null, false, b + 1, new int[]{-1}, "radius", "radius protocol");
+        l.add(null, false, b + 1, new int[]{-1}, "ldap", "ldap protocol");
         l.add(null, false, b + 1, new int[]{-1}, "tacacs", "tacacs protocol");
         l.add(null, false, b, new int[]{b + 1}, "fwd", "protocol forwarding");
         l.add(null, false, b + 1, new int[]{-1}, "event", "forwarding events");
@@ -1569,6 +1581,10 @@ public class debugger {
             }
             if (s.equals("radius")) {
                 servRadiusTraf = v;
+                return false;
+            }
+            if (s.equals("ldap")) {
+                servLdapTraf = v;
                 return false;
             }
             if (s.equals("tacacs")) {
@@ -1997,6 +2013,10 @@ public class debugger {
             }
             if (s.equals("radius")) {
                 clntRadiusTraf = v;
+                return false;
+            }
+            if (s.equals("ldap")) {
+                clntLdapTraf = v;
                 return false;
             }
             if (s.equals("tacacs")) {
