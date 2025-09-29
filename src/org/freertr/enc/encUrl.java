@@ -169,8 +169,7 @@ public class encUrl {
         final String e = " %:?#[]@!$&'()*+,;=\\|*\"'`";
         for (int ps = 0; ps < s.length(); ps++) {
             char c = s.charAt(ps);
-            boolean n;
-            n = (c <= 0x20) || (c >= 0x7e);
+            boolean n = (c <= 0x20) || (c >= 0x7e);
             if (!n) {
                 n = e.indexOf(c) >= 0;
             }

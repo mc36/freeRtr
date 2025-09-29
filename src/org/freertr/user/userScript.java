@@ -791,11 +791,11 @@ public class userScript {
                 }
                 return "%notyp%";
             }
-            if (a.equals("base64encode")) {
+            if (a.equals("base64enc")) {
                 a = getWord(true);
                 return encBase64.encodeString(a);
             }
-            if (a.equals("base64decode")) {
+            if (a.equals("base64dec")) {
                 a = getWord(true);
                 return "" + encBase64.decodeString(a);
             }
