@@ -5517,7 +5517,7 @@ public class userShow {
     }
 
     private int bgpMask2filter(long mask) {
-        if ((mask == rtrBgpParam.mskEvpn) || (mask == rtrBgpParam.mskMspw) || (mask == rtrBgpParam.mskMdt) || (mask == rtrBgpParam.mskMvpn) || (mask == rtrBgpParam.mskMvpo) || (mask == rtrBgpParam.mskMtre) || (mask == rtrBgpParam.mskMtro) || (mask == rtrBgpParam.mskFlw) || (mask == rtrBgpParam.mskOflw) || (mask == rtrBgpParam.mskVpnF) || (mask == rtrBgpParam.mskVpoF) || (mask == rtrBgpParam.mskNsh)) {
+        if ((mask & rtrBgpParam.mskDisplay) != 0) {
             return 5;
         } else {
             return 2;

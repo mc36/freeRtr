@@ -964,6 +964,11 @@ public abstract class rtrBgpParam {
     public final static long mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOlab | mskOctp | mskOcar | mskOuni | mskOmlt | mskOflw | mskOsrt | mskMspw | mskNsh | mskRpd | mskSpf | mskSdw | mskRtf | mskMtre | mskMtro;
 
     /**
+     * display
+     */
+    public final static long mskDisplay = mskEvpn | mskMspw | mskMdt | mskMvpn | mskMvpo | mskMtre | mskMtro | mskFlw | mskOflw | mskVpnF | mskVpoF | mskNsh;
+
+    /**
      * string to afi mask
      *
      * @param s string
