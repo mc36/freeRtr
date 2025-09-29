@@ -1,6 +1,8 @@
 package org.freertr.user;
 
 import java.util.List;
+import org.freertr.enc.encBase64;
+import org.freertr.enc.encUrl;
 import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
@@ -788,6 +790,22 @@ public class userScript {
                     return "" + bits.random(i, o);
                 }
                 return "%notyp%";
+            }
+            if (a.equals("base64encode")) {
+                a = getWord(true);
+                return encBase64.encodeString(a);
+            }
+            if (a.equals("base64decode")) {
+                a = getWord(true);
+                return "" + encBase64.decodeString(a);
+            }
+            if (a.equals("urlencode")) {
+                a = getWord(true);
+                return encUrl.percentEncode(a);
+            }
+            if (a.equals("urldecode")) {
+                a = getWord(true);
+                return encUrl.percentUncode(a);
             }
             return "%nostr%";
         }
