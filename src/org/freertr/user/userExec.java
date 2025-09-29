@@ -605,6 +605,7 @@ public class userExec {
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
         hl.add(null, false, 7, new int[]{7, -1}, "mets", "connected metrics");
+        hl.add(null, false, 7, new int[]{7, -1}, "half", "one way of connections");
         hl.add(null, false, 7, new int[]{8}, "locs", "resolve locations");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "domain part of txt");
         hl.add(null, false, 7, new int[]{8}, "defl", "default location");
@@ -713,7 +714,8 @@ public class userExec {
         hl.add(null, false, 6, new int[]{6, -1}, "svg", "svg commands");
         hl.add(null, false, 6, new int[]{6, -1}, "nets", "connected networks");
         hl.add(null, false, 6, new int[]{6, -1}, "ints", "connected interfaces");
-        hl.add(null, false, 6, new int[]{7, -1}, "mets", "connected metrics");
+        hl.add(null, false, 6, new int[]{6, -1}, "mets", "connected metrics");
+        hl.add(null, false, 6, new int[]{6, -1}, "half", "one way of connections");
         hl.add(null, false, 6, new int[]{7}, "locs", "resolve locations");
         hl.add(null, false, 7, new int[]{6, -1}, "<str>", "domain part of txt");
         hl.add(null, false, 6, new int[]{7}, "defl", "default location");
@@ -808,6 +810,7 @@ public class userExec {
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
         hl.add(null, false, 7, new int[]{7, -1}, "mets", "connected metrics");
+        hl.add(null, false, 7, new int[]{7, -1}, "half", "one way of connections");
         hl.add(null, false, 7, new int[]{8}, "locs", "resolve locations");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "domain part of txt");
         hl.add(null, false, 7, new int[]{8}, "defl", "default location");
@@ -892,6 +895,7 @@ public class userExec {
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
         hl.add(null, false, 7, new int[]{7, -1}, "mets", "connected metrics");
+        hl.add(null, false, 7, new int[]{7, -1}, "half", "one way of connections");
         hl.add(null, false, 7, new int[]{8}, "locs", "resolve locations");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "domain part of txt");
         hl.add(null, false, 7, new int[]{8}, "defl", "default location");
@@ -975,6 +979,7 @@ public class userExec {
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
         hl.add(null, false, 7, new int[]{7, -1}, "mets", "connected metrics");
+        hl.add(null, false, 7, new int[]{7, -1}, "half", "one way of connections");
         hl.add(null, false, 7, new int[]{8}, "locs", "resolve locations");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "domain part of txt");
         hl.add(null, false, 7, new int[]{8}, "defl", "default location");
