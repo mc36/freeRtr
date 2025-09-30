@@ -1298,10 +1298,8 @@ public abstract class rtrBgpParam {
     public rtrBgpParam(rtrBgp parent, boolean temp) {
         lower = parent;
         isTemplate = temp;
-        if (lower != null) {
-            localAs = lower.localAs;
-            addrFams = lower.addrFams;
-        }
+        localAs = lower.localAs;
+        addrFams = lower.addrFams;
         wideAsPath = true;
         routeRefreshOld = true;
         routeRefreshNew = true;
