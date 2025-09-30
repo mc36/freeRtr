@@ -985,131 +985,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return null;
     }
 
-    private boolean afiMsk(long val, int safi, long mask) {
-        if (safi == parent.afiUni) {
-            return (val & rtrBgpParam.mskUni) != 0;
-        }
-        if (safi == parent.afiLab) {
-            return (val & rtrBgpParam.mskLab) != 0;
-        }
-        if (safi == parent.afiCtp) {
-            return (val & rtrBgpParam.mskCtp) != 0;
-        }
-        if (safi == parent.afiCar) {
-            return (val & rtrBgpParam.mskCar) != 0;
-        }
-        if (safi == parent.afiMlt) {
-            return (val & rtrBgpParam.mskMlt) != 0;
-        }
-        if (safi == parent.afiOlab) {
-            return (val & rtrBgpParam.mskOlab) != 0;
-        }
-        if (safi == parent.afiOctp) {
-            return (val & rtrBgpParam.mskOctp) != 0;
-        }
-        if (safi == parent.afiOcar) {
-            return (val & rtrBgpParam.mskOcar) != 0;
-        }
-        if (safi == parent.afiOuni) {
-            return (val & rtrBgpParam.mskOuni) != 0;
-        }
-        if (safi == parent.afiOmlt) {
-            return (val & rtrBgpParam.mskOmlt) != 0;
-        }
-        if (safi == parent.afiOflw) {
-            return (val & rtrBgpParam.mskOflw) != 0;
-        }
-        if (safi == parent.afiOsrt) {
-            return (val & rtrBgpParam.mskOsrt) != 0;
-        }
-        if (safi == parent.afiFlw) {
-            return (val & rtrBgpParam.mskFlw) != 0;
-        }
-        if (safi == parent.afiVpnU) {
-            return (val & rtrBgpParam.mskVpnU) != 0;
-        }
-        if (safi == parent.afiVpnM) {
-            return (val & rtrBgpParam.mskVpnM) != 0;
-        }
-        if (safi == parent.afiVpnF) {
-            return (val & rtrBgpParam.mskVpnF) != 0;
-        }
-        if (safi == parent.afiVpoU) {
-            return (val & rtrBgpParam.mskVpoU) != 0;
-        }
-        if (safi == parent.afiVpoM) {
-            return (val & rtrBgpParam.mskVpoM) != 0;
-        }
-        if (safi == parent.afiVpoF) {
-            return (val & rtrBgpParam.mskVpoF) != 0;
-        }
-        if (safi == parent.afiVpls) {
-            return (val & rtrBgpParam.mskVpls) != 0;
-        }
-        if (safi == parent.afiMspw) {
-            return (val & rtrBgpParam.mskMspw) != 0;
-        }
-        if (safi == parent.afiEvpn) {
-            return (val & rtrBgpParam.mskEvpn) != 0;
-        }
-        if (safi == parent.afiMdt) {
-            return (val & rtrBgpParam.mskMdt) != 0;
-        }
-        if (safi == parent.afiNsh) {
-            return (val & rtrBgpParam.mskNsh) != 0;
-        }
-        if (safi == parent.afiRpd) {
-            return (val & rtrBgpParam.mskRpd) != 0;
-        }
-        if (safi == parent.afiSdw) {
-            return (val & rtrBgpParam.mskSdw) != 0;
-        }
-        if (safi == parent.afiSpf) {
-            return (val & rtrBgpParam.mskSpf) != 0;
-        }
-        if (safi == parent.afiRtf) {
-            return (val & rtrBgpParam.mskRtf) != 0;
-        }
-        if (safi == parent.afiSrte) {
-            return (val & rtrBgpParam.mskSrte) != 0;
-        }
-        if (safi == parent.afiLnks) {
-            return (val & rtrBgpParam.mskLnks) != 0;
-        }
-        if (safi == parent.afiMvpn) {
-            return (val & rtrBgpParam.mskMvpn) != 0;
-        }
-        if (safi == parent.afiMvpo) {
-            return (val & rtrBgpParam.mskMvpo) != 0;
-        }
-        if (safi == parent.afiMtre) {
-            return (val & rtrBgpParam.mskMtre) != 0;
-        }
-        if (safi == parent.afiMtro) {
-            return (val & rtrBgpParam.mskMtro) != 0;
-        }
-        return false;
-    }
-
-    /**
-     * addpath rx test
-     *
-     * @param safi safi to test
-     * @return true if addpath in use
-     */
-    public boolean addPthRx(long safi) {
-        return (addpathRx & safi) != 0;
-    }
-
-    /**
-     * addpath tx test
-     *
-     * @param safi safi to test
-     * @return true if addpath in use
-     */
-    public boolean addPthTx(long safi) {
-        return (addpathTx & safi) != 0;
-    }
 
     /**
      * close this session
@@ -1578,7 +1453,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 for (i = afiS.size() - 1; i >= 0; i--) {
                     int o = afiS.get(i);
                     long p = afiM.get(i);
-                    if (afiMsk(peerAfis, o, p) == add) {
+                    boolean cur = (peerAfis & p) != 0;
+                    if (cur == add) {
                         renegotiatingSafi(p, o, add, false);
                         continue;
                     }
@@ -2362,7 +2238,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (debugger.rtrBgpTraf) {
             logger.debug("got refresh mode " + mode + " from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
         }
-        if (!afiMsk(peerAfis, safi, mask)) {
+        if ((peerAfis & mask) == 0) {
             if (debugger.rtrBgpError) {
                 logger.debug("got unknown refresh from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
             }
@@ -2417,7 +2293,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!peerDynCap) {
             return;
         }
-        if (afiMsk(peerAfis, safi, msk) == add) {
+        boolean cur = (peerAfis & msk) != 0;
+        if (cur == add) {
             return;
         }
         packHolder pck = new packHolder(true, true);
@@ -2497,7 +2374,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if ((peerRefreshOld == false) && (peerRefreshNew == false)) {
             return;
         }
-        if (!afiMsk(peerAfis, safi, mask)) {
+        if ((peerAfis & mask) == 0) {
             return;
         }
         refreshTx++;
@@ -2737,7 +2614,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (mask < 0) {
             return true;
         }
-        boolean addpath = addPthRx(mask);
+        boolean addpath = (addpathRx & mask) != 0;
         int ident = 0;
         for (;;) {
             if (pck.dataSize() <= prt) {
@@ -2885,7 +2762,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     private void addAttribedTab(List<tabRouteEntry<addrIP>> currAdd, long mask, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
-        if (!afiMsk(peerAfis, safi, mask)) {
+        if ((peerAfis & mask) == 0) {
             return;
         }
         tabRoute<addrIP> learned = getLearned(safi);
@@ -2896,7 +2773,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (changed == null) {
             return;
         }
-        boolean addpath = addPthRx(mask);
+        boolean addpath = (addpathRx & mask) != 0;
         for (int o = 0; o < currAdd.size(); o++) {
             tabRouteEntry<addrIP> pref = currAdd.get(o);
             if (pref == null) {
@@ -3004,7 +2881,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (debugger.rtrBgpTraf) {
             logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
         }
-        if (!afiMsk(peerAfis, safi, mask)) {
+        if ((peerAfis & mask) == 0) {
             if (debugger.rtrBgpError) {
                 logger.debug("got unknown withdraw from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
             }
@@ -3049,7 +2926,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (debugger.rtrBgpTraf) {
             logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
         }
-        if (!afiMsk(peerAfis, safi, mask)) {
+        if ((peerAfis & mask) == 0) {
             if (debugger.rtrBgpError) {
                 logger.debug("got unknown reachable from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
             }

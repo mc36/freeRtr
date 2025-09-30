@@ -2753,7 +2753,7 @@ public class rtrBgpUtil {
         }
         int sfi = safi & sfiMask;
         int len = pck.getByte(3);
-        boolean addpath = spkr.addPthRx(mask);
+        boolean addpath = (spkr.addpathRx & mask) != 0;
         boolean oneLab = spkr.peerMltLab == 0;
         boolean v6nh = len >= addrIPv6.size;
         pck.getSkip(4);
@@ -2832,7 +2832,7 @@ public class rtrBgpUtil {
         if (mask < 0) {
             return null;
         }
-        boolean addpath = spkr.addPthRx(mask);
+        boolean addpath = (spkr.addpathRx & mask) != 0;
         int ident = 0;
         List<tabRouteEntry<addrIP>> pfxs = new ArrayList<tabRouteEntry<addrIP>>();
         for (; pck.dataSize() > 0;) {
