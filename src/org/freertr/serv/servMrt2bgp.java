@@ -152,7 +152,7 @@ class servMrt2bgpConn implements Runnable {
         packHolder tmp = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
         for (;;) {
-            int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+            int i = rtrBgpMrt.readNextMrt(spk, hlp, tmp, pck, fs);
             if (i == 1) {
                 break;
             }

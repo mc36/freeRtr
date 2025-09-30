@@ -734,6 +734,11 @@ public class userPacket {
             } catch (Exception e) {
                 return null;
             }
+            cfgVrf vrf = new cfgVrf("bgp");
+            vrf.allocThisVrf();
+            rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
@@ -743,7 +748,7 @@ public class userPacket {
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
             int pk = 0;
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+                int i = rtrBgpMrt.readNextMrt(spk, hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -774,13 +779,18 @@ public class userPacket {
                 fs = new RandomAccessFile(new File(a), "r");
             } catch (Exception e) {
             }
+            cfgVrf vrf = new cfgVrf("bgp");
+            vrf.allocThisVrf();
+            rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
             int[] afi = new int[3];
             int[] atr = new int[256];
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+                int i = rtrBgpMrt.readNextMrt(spk, hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -820,7 +830,7 @@ public class userPacket {
             rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+                int i = rtrBgpMrt.readNextMrt(spk, hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -862,7 +872,7 @@ public class userPacket {
             rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+                int i = rtrBgpMrt.readNextMrt(spk, hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -900,7 +910,7 @@ public class userPacket {
             rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+                int i = rtrBgpMrt.readNextMrt(spk, hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -964,6 +974,7 @@ public class userPacket {
             int mat = 0;
             int snt = 0;
             int tot = 0;
+            rtrBgpSpeak spk = new rtrBgpSpeak(rp.bgp, nei, null, 0);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
@@ -974,7 +985,7 @@ public class userPacket {
                 } catch (Exception e) {
                     break;
                 }
-                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+                int i = rtrBgpMrt.readNextMrt(spk, hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -1070,11 +1081,12 @@ public class userPacket {
             cmd.error("sending updates as it was from " + sip + " to " + tip);
             int snt = 0;
             int tot = 0;
+            rtrBgpSpeak spk = new rtrBgpSpeak(rp.bgp, nei, null, 0);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+                int i = rtrBgpMrt.readNextMrt(spk, hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -1152,13 +1164,16 @@ public class userPacket {
                 return null;
             }
             cmd.error("sending updates as it was from " + sip + " to " + tip);
+            rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
             int snt = 0;
             int tot = 0;
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+                int i = rtrBgpMrt.readNextMrt(spk, hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }
@@ -1261,7 +1276,7 @@ public class userPacket {
             int snt = 0;
             int tot = 0;
             for (;;) {
-                int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
+                int i = rtrBgpMrt.readNextMrt(spk, hlp, tmp, pck, fs);
                 if (i == 1) {
                     break;
                 }

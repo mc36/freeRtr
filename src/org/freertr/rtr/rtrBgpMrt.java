@@ -197,13 +197,14 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
     /**
      * read up next mrt entry
      *
+     * @param spk where to signal
      * @param hlp temporary packet
      * @param tmp temporary packet
      * @param pck packet to populate
      * @param fa file to read
      * @return result, 0=ok, 1=stop, 2=continue
      */
-    public static int readNextMrt(packHolder hlp, packHolder tmp, packHolder pck, RandomAccessFile fa) {
+    public static int readNextMrt(rtrBgpSpeak spk, packHolder hlp, packHolder tmp, packHolder pck, RandomAccessFile fa) {
         pck.clear();
         byte[] buf = new byte[12];
         try {
@@ -303,7 +304,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                         }
                         continue;
                     }
-                    rtrBgpUtil.placeAttrib(null, hlp.ETHcos, hlp.ETHtype, pck, hlp);
+                    rtrBgpUtil.placeAttrib(spk, hlp.ETHcos, hlp.ETHtype, pck, hlp);
                     pck.merge2end();
                 }
                 if (typ != rtrBgpUtil.safiIp4uni) {
@@ -312,7 +313,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                     }
                     List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
                     lst.add(pfx);
-                    rtrBgpUtil.placeReachable(null, typ, false, true, pck, hlp, lst);
+                    rtrBgpUtil.placeReachable(spk, typ, false, true, pck, hlp, lst);
                     pck.merge2end();
                 }
                 pck.msbPutW(0, 0);
@@ -390,7 +391,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
      * dump route table
      *
      * @param fil file to use
-     * @param spkr where to signal
+     * @param spk where to signal
      * @param safi safi to use
      * @param tab table to dump
      * @param dir direction
@@ -400,7 +401,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
      * @param adrR peer address
      * @param adrL local address
      */
-    public static void dumpTable(RandomAccessFile fil, rtrBgpSpeak spkr, int safi, tabRoute<addrIP> tab, boolean dir, int ipv, int asR, int asL, addrIP adrR, addrIP adrL) {
+    public static void dumpTable(RandomAccessFile fil, rtrBgpSpeak spk, int safi, tabRoute<addrIP> tab, boolean dir, int ipv, int asR, int asL, addrIP adrR, addrIP adrL) {
         if (tab == null) {
             return;
         }
@@ -412,7 +413,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
             if (ntry == null) {
                 continue;
             }
-            rtrBgpDump.witeFormat(spkr, safi, ntry, ipv, pck, tmp, true);
+            rtrBgpDump.witeFormat(spk, safi, ntry, ipv, pck, tmp, true);
             int len = rtrBgpMrt.putMrtHeader(hdr, ntry.best.time, dir, asR, asL, adrR, adrL, pck.dataSize());
             pck.putCopy(hdr, 0, 0, len);
             pck.putSkip(len);
