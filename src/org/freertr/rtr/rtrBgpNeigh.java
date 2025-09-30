@@ -612,7 +612,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         for (int i = 0; i < attrStats.length; i++) {
             attrStats[i] = new counter();
         }
-        conn = new rtrBgpSpeak(lower, this, null, 1);
+        conn = new rtrBgpSpeak(lower, this, null, 0);
     }
 
     public int compareTo(rtrBgpNeigh o) {

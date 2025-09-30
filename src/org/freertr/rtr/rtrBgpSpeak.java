@@ -1705,16 +1705,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param dir direction, true=tx, false=rx
      */
     protected void updateMsgCtr(packHolder pck, int typ, boolean dir) {
-        if (parent != null) {
-            rtrBgpUtil.updtStatsArr(dir, parent.msgStats, typ, pck);
-        }
-        if (neigh != null) {
-            rtrBgpUtil.updtStatsArr(dir, neigh.msgStats, typ, pck);
-        }
+        rtrBgpUtil.updtStatsArr(dir, parent.msgStats, typ, pck);
+        rtrBgpUtil.updtStatsArr(dir, neigh.msgStats, typ, pck);
         if (!rtrBgpUtil.isUnknownMsg(typ)) {
-            return;
-        }
-        if (neigh == null) {
             return;
         }
         if (neigh.unknownsLog) {
@@ -1739,16 +1732,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param typ type to use
      */
     protected void updateAttrCtr(boolean dir, packHolder pck, int typ) {
-        if (parent != null) {
-            rtrBgpUtil.updtStatsArr(dir, parent.attrStats, typ, pck);
-        }
-        if (neigh != null) {
-            rtrBgpUtil.updtStatsArr(dir, neigh.attrStats, typ, pck);
-        }
+        rtrBgpUtil.updtStatsArr(dir, parent.attrStats, typ, pck);
+        rtrBgpUtil.updtStatsArr(dir, neigh.attrStats, typ, pck);
         if (!rtrBgpUtil.isUnknownAttr(typ)) {
-            return;
-        }
-        if (neigh == null) {
             return;
         }
         if (neigh.unknownsLog) {
@@ -1765,36 +1751,20 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     protected void updateRchblCntr(int dir, packHolder pck) {
         switch (dir) {
             case 0:
-                if (parent != null) {
-                    parent.reachabStat.rx(pck);
-                }
-                if (neigh != null) {
-                    neigh.reachabStat.rx(pck);
-                }
+                parent.reachabStat.rx(pck);
+                neigh.reachabStat.rx(pck);
                 break;
             case 1:
-                if (parent != null) {
-                    parent.reachabStat.tx(pck);
-                }
-                if (neigh != null) {
-                    neigh.reachabStat.tx(pck);
-                }
+                parent.reachabStat.tx(pck);
+                neigh.reachabStat.tx(pck);
                 break;
             case 2:
-                if (parent != null) {
-                    parent.unreachStat.rx(pck);
-                }
-                if (neigh != null) {
-                    neigh.unreachStat.rx(pck);
-                }
+                parent.unreachStat.rx(pck);
+                neigh.unreachStat.rx(pck);
                 break;
             case 3:
-                if (parent != null) {
-                    parent.unreachStat.tx(pck);
-                }
-                if (neigh != null) {
-                    neigh.unreachStat.tx(pck);
-                }
+                parent.unreachStat.tx(pck);
+                neigh.unreachStat.tx(pck);
                 break;
         }
     }
@@ -2799,13 +2769,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             packHolder origPck = pck.copyBytes(false, false);
             origPck.setBytesLeft(origOfs);
             unknownCntr.rx(origPck);
-            if (neigh != null) {
-                if (neigh.unknownsColl != null) {
-                    neigh.unknownsColl.gotMessage(false, rtrBgpUtil.msgUpdate, neigh, origPck.getCopy());
-                }
-                if (neigh.unknownsLog) {
-                    logger.info("got update with unknowns " + neigh.peerAddr + " -> " + neigh.localAddr + " " + origPck.dump());
-                }
+            if (neigh.unknownsColl != null) {
+                neigh.unknownsColl.gotMessage(false, rtrBgpUtil.msgUpdate, neigh, origPck.getCopy());
+            }
+            if (neigh.unknownsLog) {
+                logger.info("got update with unknowns " + neigh.peerAddr + " -> " + neigh.localAddr + " " + origPck.dump());
             }
         }
         tabRouteUtil.removeUnknowns(ntry.best, neigh.unknownsIn);
@@ -2946,31 +2914,29 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tab.add(tabRoute.addType.always, ntry, false, false);
             return;
         }
-        if (neigh != null) {
-            if (neigh.hopChanges) {
-                if ((old.best.nextHop != null) && (ntry.best.nextHop != null)) {
-                    if (old.best.nextHop.compareTo(ntry.best.nextHop) != 0) {
-                        logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from nexthop " + old.best.nextHop + " to " + ntry.best.nextHop);
-                    }
+        if (neigh.hopChanges) {
+            if ((old.best.nextHop != null) && (ntry.best.nextHop != null)) {
+                if (old.best.nextHop.compareTo(ntry.best.nextHop) != 0) {
+                    logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from nexthop " + old.best.nextHop + " to " + ntry.best.nextHop);
                 }
             }
-            if (neigh.endChanges) {
-                int o = old.best.asPathEnd();
-                int c = ntry.best.asPathEnd();
-                if (o != c) {
-                    logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from lastasn " + o + " to " + c);
-                }
+        }
+        if (neigh.endChanges) {
+            int o = old.best.asPathEnd();
+            int c = ntry.best.asPathEnd();
+            if (o != c) {
+                logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from lastasn " + o + " to " + c);
             }
-            if (neigh.lengthChanges != null) {
-                int o = old.best.asPathLen();
-                int c = ntry.best.asPathLen();
-                int d = o - c;
-                if (d < 0) {
-                    d = -d;
-                }
-                if (neigh.lengthChanges.matches(d)) {
-                    logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from pathlen " + o + " to " + c);
-                }
+        }
+        if (neigh.lengthChanges != null) {
+            int o = old.best.asPathLen();
+            int c = ntry.best.asPathLen();
+            int d = o - c;
+            if (d < 0) {
+                d = -d;
+            }
+            if (neigh.lengthChanges.matches(d)) {
+                logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from pathlen " + o + " to " + c);
             }
         }
         old = old.copyBytes(tabRoute.addType.lnkAlters);
