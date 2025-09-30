@@ -2742,14 +2742,14 @@ public class rtrBgpUtil {
      * parse reachable attribute
      *
      * @param spkr where to signal
+     * @param pfxs prefixes read
      * @param pck packet to parse
-     * @return prefixed touched
      */
-    public static List<tabRouteEntry<addrIP>> parseReachable(rtrBgpSpeak spkr, packHolder pck) {
+    public static void parseReachable(rtrBgpSpeak spkr, List<tabRouteEntry<addrIP>> pfxs, packHolder pck) {
         int safi = triplet2safi(pck.msbGetD(0));
         long mask = spkr.parent.safi2mask(safi);
         if (mask < 0) {
-            return null;
+            return;
         }
         int sfi = safi & sfiMask;
         int len = pck.getByte(3);
@@ -2799,7 +2799,6 @@ public class rtrBgpUtil {
             pck.getSkip(pck.getByte(0) + 1);
         }
         int ident = 0;
-        List<tabRouteEntry<addrIP>> pfxs = new ArrayList<tabRouteEntry<addrIP>>();
         for (; pck.dataSize() > 0;) {
             if (addpath) {
                 ident = pck.msbGetD(0);
@@ -2809,32 +2808,30 @@ public class rtrBgpUtil {
             if (res == null) {
                 continue;
             }
+            res.oldDst = mask;
             res.best.ident = ident;
             res.best.nextHop = nextHop;
             pfxs.add(res);
-            spkr.prefixReach(mask, safi, addpath, res, pck);
         }
-        return pfxs;
     }
 
     /**
      * parse unreachable attribute
      *
      * @param spkr where to signal
+     * @param pfxs prefixes read
      * @param pck packet to parse
-     * @return prefixed touched
      */
-    public static List<tabRouteEntry<addrIP>> parseUnReach(rtrBgpSpeak spkr, packHolder pck) {
+    public static void parseUnReach(rtrBgpSpeak spkr, List<tabRouteEntry<addrIP>> pfxs, packHolder pck) {
         pck.merge2beg();
         int safi = triplet2safi(pck.msbGetD(0));
         pck.getSkip(3);
         long mask = spkr.parent.safi2mask(safi);
         if (mask < 0) {
-            return null;
+            return;
         }
         boolean addpath = (spkr.addpathRx & mask) != 0;
         int ident = 0;
-        List<tabRouteEntry<addrIP>> pfxs = new ArrayList<tabRouteEntry<addrIP>>();
         for (; pck.dataSize() > 0;) {
             if (addpath) {
                 ident = pck.msbGetD(0);
@@ -2844,11 +2841,10 @@ public class rtrBgpUtil {
             if (res == null) {
                 continue;
             }
+            res.oldDst = mask;
             res.best.ident = ident;
             pfxs.add(res);
-            spkr.prefixWithdraw(mask, safi, addpath, res, pck);
         }
-        return pfxs;
     }
 
     /**
@@ -2971,6 +2967,8 @@ public class rtrBgpUtil {
         if (ntry.best.attribVal == null) {
             return;
         }
+        List<tabRouteEntry<addrIP>> add = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> del = new ArrayList<tabRouteEntry<addrIP>>();
         packHolder pck = new packHolder(true, true);
         packHolder cur = new packHolder(true, true);
         pck.putCopy(ntry.best.attribVal, 0, 0, ntry.best.attribVal.length);
@@ -2983,7 +2981,7 @@ public class rtrBgpUtil {
                 break;
             }
             parseAttrib(pck, cur);
-            interpretAttribute(spkr, ntry, cur);
+            interpretAttribute(spkr, ntry, add, del, cur);
         }
     }
 
@@ -3008,115 +3006,118 @@ public class rtrBgpUtil {
      *
      * @param spkr where to signal
      * @param ntry table entry
+     * @param add prefixes reachable
+     * @param del prefixes unreachable
      * @param pck packet to parse
-     * @return prefixed touched
      */
-    public static List<tabRouteEntry<addrIP>> interpretAttribute(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+    public static void interpretAttribute(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, List<tabRouteEntry<addrIP>> add, List<tabRouteEntry<addrIP>> del, packHolder pck) {
         spkr.updateAttrCtr(false, pck, pck.ETHtype);
         if (spkr.neigh.attribFilter != null) {
             if (spkr.neigh.attribFilter.matches(pck.ETHtype)) {
                 logger.info("filtered attribute " + pck.ETHtype + " from " + spkr.neigh.peerAddr + " (" + pck.dump() + ")");
-                return null;
+                return;
             }
         }
         switch (pck.ETHtype) {
             case attrReachable:
-                return parseReachable(spkr, pck);
+                parseReachable(spkr, add, pck);
+                return;
             case attrUnReach:
-                return parseUnReach(spkr, pck);
+                parseUnReach(spkr, del, pck);
+                return;
             case attrOrigin:
                 parseOrigin(ntry, pck);
-                return null;
+                return;
             case attrAsPath:
                 parseAsPath(spkr, ntry, pck);
-                return null;
+                return;
             case attrNextHop:
                 parseNextHop(ntry, pck);
-                return null;
+                return;
             case attrMetric:
                 parseMetric(ntry, pck);
-                return null;
+                return;
             case attrLocPref:
                 parseLocPref(ntry, pck);
-                return null;
+                return;
             case attrAtomicAggr:
                 parseAtomicAggr(ntry);
-                return null;
+                return;
             case attrEntropyLab:
                 parseEntropyLab(ntry, pck);
-                return null;
+                return;
             case attrAggregator:
                 parseAggregator(spkr, ntry, pck);
-                return null;
+                return;
             case attrConnector:
                 parseConnector(spkr, ntry, pck);
-                return null;
+                return;
             case attrPathLimit:
                 parsePathLimit(spkr, ntry, pck);
-                return null;
+                return;
             case attrPeDistLab:
                 parsePeDistLab(spkr, ntry, pck);
-                return null;
+                return;
             case attrStdComm:
                 parseStdComm(ntry, pck);
-                return null;
+                return;
             case attrExtComm:
                 parseExtComm(ntry, pck);
-                return null;
+                return;
             case attrLrgComm:
                 parseLrgComm(ntry, pck);
-                return null;
+                return;
             case attrOriginator:
                 parseOriginator(ntry, pck);
-                return null;
+                return;
             case attrTraffEng:
                 parseTraffEng(ntry, pck);
-                return null;
+                return;
             case attrAccIgp:
                 parseAccIgp(ntry, pck);
-                return null;
+                return;
             case attrPmsiTun:
                 parsePmsiTun(ntry, pck);
-                return null;
+                return;
             case attrLinkState:
                 parseLnkSta(ntry, pck);
-                return null;
+                return;
             case attrTunEnc:
                 parseTunEnc(ntry, pck);
-                return null;
+                return;
             case attrAttribSet:
                 parseAttribSet(ntry, pck);
-                return null;
+                return;
             case attrNshChain:
                 parseNshChain(ntry, pck);
-                return null;
+                return;
             case attrDomPath:
                 parseDomainPath(ntry, pck);
-                return null;
+                return;
             case attrBfdDisc:
                 parseBfdDiscr(ntry, pck);
-                return null;
+                return;
             case attrHopCapa:
                 parseHopCapa(ntry, pck);
-                return null;
+                return;
             case attrPrefSid:
                 parsePrefSid(ntry, pck);
-                return null;
+                return;
             case attrBier:
                 parseBier(ntry, pck);
-                return null;
+                return;
             case attrClustList:
                 parseClustList(ntry, pck);
-                return null;
+                return;
             case attrOnlyCust:
                 parseOnlyCust(ntry, pck);
-                return null;
+                return;
             default:
                 parseUnknown(ntry, pck);
                 if (debugger.rtrBgpError) {
                     logger.debug("unknown (" + pck.ETHtype + ") attrib " + pck.dump());
                 }
-                return null;
+                return;
         }
     }
 

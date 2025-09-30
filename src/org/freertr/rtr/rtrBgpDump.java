@@ -685,22 +685,11 @@ public class rtrBgpDump {
             rtrBgpUtil.parseAttrib(pck, hlp);
             res.add("  attrib typ=" + hlp.ETHtype + " len=" + hlp.dataSize() + " " + rtrBgpUtil.attrType2string(hlp.ETHtype));
             ntry = new tabRouteEntry<addrIP>();
-            List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(spkr, ntry, hlp.copyBytes(true, true));
-            if (pfxs == null) {
-                pfxs = new ArrayList<tabRouteEntry<addrIP>>();
-            }
-            for (int i = 0; i < pfxs.size(); i++) {
-                tabRouteEntry<addrIP> rou = pfxs.get(i);
-                if (rou == null) {
-                    continue;
-                }
-                if (rou.prefix == null) {
-                    a = "" + rou;
-                } else {
-                    a = addrPrefix.ip2str(rou.prefix) + " " + tabRouteUtil.rd2string(rou.rouDst);
-                }
-                res.add("    prefix=" + a);
-            }
+            List<tabRouteEntry<addrIP>> add = new ArrayList<tabRouteEntry<addrIP>>();
+            List<tabRouteEntry<addrIP>> del = new ArrayList<tabRouteEntry<addrIP>>();
+            rtrBgpUtil.interpretAttribute(spkr, ntry, add, del, hlp.copyBytes(true, true));
+            dumpPacketFull(res, add);
+            dumpPacketFull(res, del);
             userFormat ufmt = new userFormat("|", "|");
             ntry.best.fullDump(ufmt, "");
             List<String> dump1 = ufmt.formatAll(userFormat.tableMode.normal);
@@ -723,6 +712,43 @@ public class rtrBgpDump {
             res.add("  reachable " + addrPrefix.ip2str(ntry.prefix));
         }
         return res;
+    }
+
+    private static void dumpPacketFull(List<String> res, List<tabRouteEntry<addrIP>> pfxs) {
+        for (int i = 0; i < pfxs.size(); i++) {
+            tabRouteEntry<addrIP> rou = pfxs.get(i);
+            if (rou == null) {
+                continue;
+            }
+            String a;
+            if (rou.prefix == null) {
+                a = "" + rou;
+            } else {
+                a = addrPrefix.ip2str(rou.prefix) + " " + tabRouteUtil.rd2string(rou.rouDst);
+            }
+            res.add("    prefix=" + a);
+        }
+    }
+
+    private static void dumpPacketSum(List<String> res, addrIP target, String b, List<tabRouteEntry<addrIP>> pfxs) {
+        for (int i = 0; i < pfxs.size(); i++) {
+            tabRouteEntry<addrIP> rou = pfxs.get(i);
+            if (rou == null) {
+                continue;
+            }
+            if ((target != null) && (rou.prefix != null)) {
+                if (!rou.prefix.matches(target)) {
+                    continue;
+                }
+            }
+            String a;
+            if (rou.prefix == null) {
+                a = "" + rou;
+            } else {
+                a = addrPrefix.ip2str(rou.prefix) + " " + tabRouteUtil.rd2string(rou.rouDst);
+            }
+            res.add(b + "|" + a);
+        }
     }
 
     /**
@@ -773,32 +799,15 @@ public class rtrBgpDump {
                 break;
             }
             rtrBgpUtil.parseAttrib(pck, hlp);
-            List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(spkr, ntry, hlp.copyBytes(true, true));
-            if (pfxs == null) {
-                pfxs = new ArrayList<tabRouteEntry<addrIP>>();
-            }
-            int o = pfxs.size();
-            if (o < 1) {
+            List<tabRouteEntry<addrIP>> add = new ArrayList<tabRouteEntry<addrIP>>();
+            List<tabRouteEntry<addrIP>> del = new ArrayList<tabRouteEntry<addrIP>>();
+            rtrBgpUtil.interpretAttribute(spkr, ntry, add, del, hlp.copyBytes(true, true));
+            if ((add.size() + del.size()) < 1) {
                 continue;
             }
             String b = rtrBgpUtil.attrType2string(hlp.ETHtype);
-            for (int i = 0; i < o; i++) {
-                tabRouteEntry<addrIP> rou = pfxs.get(i);
-                if (rou == null) {
-                    continue;
-                }
-                if ((target != null) && (rou.prefix != null)) {
-                    if (!rou.prefix.matches(target)) {
-                        continue;
-                    }
-                }
-                if (rou.prefix == null) {
-                    a = "" + rou;
-                } else {
-                    a = addrPrefix.ip2str(rou.prefix) + " " + tabRouteUtil.rd2string(rou.rouDst);
-                }
-                res.add(b + "|" + a);
-            }
+            dumpPacketSum(res, target, b, add);
+            dumpPacketSum(res, target, b, del);
         }
         a = rtrBgpUtil.attrType2string(rtrBgpUtil.attrReachable);
         for (;;) {

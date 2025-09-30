@@ -2602,6 +2602,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         int prt = pck.msbGetW(0);
         pck.getSkip(2);
         prt = pck.dataSize() - prt;
+        List<tabRouteEntry<addrIP>> currAdd = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currDel = new ArrayList<tabRouteEntry<addrIP>>();
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.best.rouTyp = neigh.lower.rouTyp;
         ntry.best.protoNum = neigh.lower.rtrNum;
@@ -2627,8 +2629,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (res == null) {
                 continue;
             }
+            res.oldDst = mask;
             res.best.ident = ident;
-            prefixWithdraw(mask, rtrBgpUtil.safiIp4uni, addpath, res, pck);
+            currDel.add(res);
         }
         pck.setBytesLeft(prt);
         prt = pck.msbGetW(0);
@@ -2639,7 +2642,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 break;
             }
             rtrBgpUtil.parseAttrib(pck, hlp);
-            rtrBgpUtil.interpretAttribute(this, ntry, hlp);
+            rtrBgpUtil.interpretAttribute(this, ntry, currAdd, currDel, hlp);
         }
         pck.setBytesLeft(prt);
         for (;;) {
@@ -2654,9 +2657,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (res == null) {
                 continue;
             }
+            res.oldDst = mask;
             res.best.ident = ident;
             res.best.nextHop = ntry.best.nextHop;
-            prefixReach(mask, rtrBgpUtil.safiIp4uni, addpath, res, pck);
+            currAdd.add(res);
         }
         if (ntry.best.unknown != null) {
             packHolder origPck = pck.copyBytes(false, false);
@@ -2670,6 +2674,22 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         tabRouteUtil.removeUnknowns(ntry.best, neigh.unknownsIn);
+        for (int i = 0; i < currDel.size(); i++) {
+            tabRouteEntry<addrIP> res = currDel.get(i);
+            mask = res.oldDst;
+            res.oldDst = 0;
+            int safi = parent.mask2safi(mask);
+            addpath = (addpathRx & mask) != 0;
+            prefixWithdraw(mask, safi, addpath, res, pck);
+        }
+        for (int i = 0; i < currAdd.size(); i++) {
+            tabRouteEntry<addrIP> res = currAdd.get(i);
+            mask = res.oldDst;
+            res.oldDst = 0;
+            int safi = parent.mask2safi(mask);
+            addpath = (addpathRx & mask) != 0;
+            prefixReach(mask, safi, addpath, res, pck);
+        }
         addAttribedTab(currUni, rtrBgpParam.mskUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribedTab(currUni, rtrBgpParam.mskLab, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribedTab(currUni, rtrBgpParam.mskCtp, parent.afiCtp, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
