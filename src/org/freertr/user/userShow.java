@@ -105,6 +105,7 @@ import org.freertr.enc.encUrl;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.pack.packRedundancy;
+import org.freertr.rtr.rtrBgp;
 import org.freertr.rtr.rtrBgpDump;
 import org.freertr.rtr.rtrBgpSpeak;
 import org.freertr.rtr.rtrRpki;
@@ -729,13 +730,16 @@ public class userShow {
                 List<packHolder> pcks = rtrBgpDump.logs2pcks(txt);
                 int o = pcks.size();
                 cmd.error(o + " dumps found");
-                ipCor4 ic4 = new ipCor4();
-                ipCor6 ic6 = new ipCor6();
+                cfgVrf vrf = new cfgVrf("bgp");
+                vrf.allocThisVrf();
+                rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+                rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+                rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
                 packHolder tmp = new packHolder(true, true);
                 tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
                 for (int i = 0; i < o; i++) {
                     packHolder pck = pcks.get(i);
-                    txt = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
+                    txt = rtrBgpDump.dumpPacketFull(spk, vrf.core4, vrf.core6, ses, tmp, pck);
                     txt.add("");
                     rdr.putStrArr(txt);
                 }
@@ -5210,7 +5214,7 @@ public class userShow {
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
-            List<String> l = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
+            List<String> l = rtrBgpDump.dumpPacketFull(spk, ic4, ic6, ses, tmp, pck);
             rdr.putStrArr(l);
             return;
         }
@@ -5245,7 +5249,7 @@ public class userShow {
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
-            List<String> l = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
+            List<String> l = rtrBgpDump.dumpPacketFull(spk, ic4, ic6, ses, tmp, pck);
             rdr.putStrArr(l);
             return;
         }

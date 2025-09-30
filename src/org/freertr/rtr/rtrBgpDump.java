@@ -627,6 +627,7 @@ public class rtrBgpDump {
     /**
      * dump one packet
      *
+     * @param spkr where to signal
      * @param ic4 ip4 core
      * @param ic6 ip6 core
      * @param ses sessions
@@ -634,7 +635,7 @@ public class rtrBgpDump {
      * @param pck packet to dump
      * @return text dump of the packet
      */
-    public static List<String> dumpPacketFull(ipCor4 ic4, ipCor6 ic6, tabGen<tabSessionEntry> ses, packHolder hlp, packHolder pck) {
+    public static List<String> dumpPacketFull(rtrBgpSpeak spkr, ipCor4 ic4, ipCor6 ic6, tabGen<tabSessionEntry> ses, packHolder hlp, packHolder pck) {
         pck = pck.copyBytes(true, true);
         pck.merge2end();
         List<String> res = new ArrayList<String>();
@@ -684,7 +685,7 @@ public class rtrBgpDump {
             rtrBgpUtil.parseAttrib(pck, hlp);
             res.add("  attrib typ=" + hlp.ETHtype + " len=" + hlp.dataSize() + " " + rtrBgpUtil.attrType2string(hlp.ETHtype));
             ntry = new tabRouteEntry<addrIP>();
-            List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(null, ntry, hlp.copyBytes(true, true));
+            List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(spkr, ntry, hlp.copyBytes(true, true));
             if (pfxs == null) {
                 pfxs = new ArrayList<tabRouteEntry<addrIP>>();
             }
@@ -727,6 +728,7 @@ public class rtrBgpDump {
     /**
      * dump one packet
      *
+     * @param spkr where to signal
      * @param ic4 ip4 core
      * @param ic6 ip6 core
      * @param hlp temporary packet
@@ -734,7 +736,7 @@ public class rtrBgpDump {
      * @param target address to filter
      * @return text dump of the packet
      */
-    public static List<String> dumpPacketSum(ipCor4 ic4, ipCor6 ic6, packHolder hlp, packHolder pck, addrIP target) {
+    public static List<String> dumpPacketSum(rtrBgpSpeak spkr, ipCor4 ic4, ipCor6 ic6, packHolder hlp, packHolder pck, addrIP target) {
         pck = pck.copyBytes(true, true);
         pck.merge2end();
         List<String> res = new ArrayList<String>();
@@ -771,7 +773,7 @@ public class rtrBgpDump {
                 break;
             }
             rtrBgpUtil.parseAttrib(pck, hlp);
-            List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(null, ntry, hlp.copyBytes(true, true));
+            List<tabRouteEntry<addrIP>> pfxs = rtrBgpUtil.interpretAttribute(spkr, ntry, hlp.copyBytes(true, true));
             if (pfxs == null) {
                 pfxs = new ArrayList<tabRouteEntry<addrIP>>();
             }

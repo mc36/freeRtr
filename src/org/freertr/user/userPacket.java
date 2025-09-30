@@ -245,12 +245,15 @@ public class userPacket {
                 cmd.error("no dumps found");
                 return null;
             }
-            ipCor4 ic4 = new ipCor4();
-            ipCor6 ic6 = new ipCor6();
             packHolder tmp = new packHolder(true, true);
+            cfgVrf vrf = new cfgVrf("bgp");
+            vrf.allocThisVrf();
+            rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             for (int i = 0; i < o; i++) {
                 packHolder pck = pcks.get(i);
-                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, tmp, pck, null);
+                txt = rtrBgpDump.dumpPacketSum(spk, vrf.core4, vrf.core6, tmp, pck, null);
                 if (txt.size() < 1) {
                     continue;
                 }
@@ -273,13 +276,16 @@ public class userPacket {
                 cmd.error("no dumps found");
                 return null;
             }
-            ipCor4 ic4 = new ipCor4();
-            ipCor6 ic6 = new ipCor6();
+            cfgVrf vrf = new cfgVrf("bgp");
+            vrf.allocThisVrf();
+            rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
             packHolder tmp = new packHolder(true, true);
             for (int i = 0; i < o; i++) {
                 packHolder pck = pcks.get(i);
-                txt = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
+                txt = rtrBgpDump.dumpPacketFull(spk, vrf.core4, vrf.core6, ses, tmp, pck);
                 txt.add("");
                 rdr.putStrArr(txt);
             }
@@ -349,8 +355,11 @@ public class userPacket {
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
             List<String> txt;
-            ipCor4 ic4 = new ipCor4();
-            ipCor6 ic6 = new ipCor6();
+            cfgVrf vrf = new cfgVrf("bgp");
+            vrf.allocThisVrf();
+            rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             for (;;) {
                 if (need2stop()) {
                     break;
@@ -362,7 +371,7 @@ public class userPacket {
                 if (i != 0) {
                     continue;
                 }
-                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, tmp, pck, trg);
+                txt = rtrBgpDump.dumpPacketSum(spk, vrf.core4, vrf.core6, tmp, pck, trg);
                 if (txt.size() < 1) {
                     continue;
                 }
@@ -387,8 +396,11 @@ public class userPacket {
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
             List<String> txt;
-            ipCor4 ic4 = new ipCor4();
-            ipCor6 ic6 = new ipCor6();
+            cfgVrf vrf = new cfgVrf("bgp");
+            vrf.allocThisVrf();
+            rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             for (;;) {
                 if (need2stop()) {
                     break;
@@ -400,7 +412,7 @@ public class userPacket {
                 if (i != 0) {
                     continue;
                 }
-                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, tmp, pck, null);
+                txt = rtrBgpDump.dumpPacketSum(spk, vrf.core4, vrf.core6, tmp, pck, null);
                 if (txt.size() < 1) {
                     continue;
                 }
@@ -802,8 +814,11 @@ public class userPacket {
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
             List<String> txt;
-            ipCor4 ic4 = new ipCor4();
-            ipCor6 ic6 = new ipCor6();
+            cfgVrf vrf = new cfgVrf("bgp");
+            vrf.allocThisVrf();
+            rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             for (;;) {
                 int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
@@ -812,7 +827,7 @@ public class userPacket {
                 if (i == 2) {
                     continue;
                 }
-                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, tmp, pck, null);
+                txt = rtrBgpDump.dumpPacketSum(spk, vrf.core4, vrf.core6, tmp, pck, null);
                 if (txt.size() < 1) {
                     continue;
                 }
@@ -841,8 +856,11 @@ public class userPacket {
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
             List<String> txt;
-            ipCor4 ic4 = new ipCor4();
-            ipCor6 ic6 = new ipCor6();
+            cfgVrf vrf = new cfgVrf("bgp");
+            vrf.allocThisVrf();
+            rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             for (;;) {
                 int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
@@ -851,7 +869,7 @@ public class userPacket {
                 if (i == 2) {
                     continue;
                 }
-                txt = rtrBgpDump.dumpPacketSum(ic4, ic6, tmp, pck, trg);
+                txt = rtrBgpDump.dumpPacketSum(spk, vrf.core4, vrf.core6, tmp, pck, trg);
                 if (txt.size() < 1) {
                     continue;
                 }
@@ -876,8 +894,11 @@ public class userPacket {
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
             List<String> txt;
-            ipCor4 ic4 = new ipCor4();
-            ipCor6 ic6 = new ipCor6();
+            cfgVrf vrf = new cfgVrf("bgp");
+            vrf.allocThisVrf();
+            rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
             for (;;) {
                 int i = rtrBgpMrt.readNextMrt(hlp, tmp, pck, fs);
                 if (i == 1) {
@@ -886,7 +907,7 @@ public class userPacket {
                 if (i == 2) {
                     continue;
                 }
-                txt = rtrBgpDump.dumpPacketFull(ic4, ic6, ses, tmp, pck);
+                txt = rtrBgpDump.dumpPacketFull(spk, vrf.core4, vrf.core6, ses, tmp, pck);
                 if (txt.size() < 1) {
                     continue;
                 }
