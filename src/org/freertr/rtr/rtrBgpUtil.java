@@ -2983,9 +2983,10 @@ public class rtrBgpUtil {
     /**
      * decode attribute set
      *
+     * @param spkr where to signal
      * @param ntry table entry
      */
-    public static void decodeAttribSet(tabRouteEntry<addrIP> ntry) {
+    public static void decodeAttribSet(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.attribVal == null) {
             return;
         }
@@ -3001,7 +3002,7 @@ public class rtrBgpUtil {
                 break;
             }
             parseAttrib(pck, cur);
-            interpretAttribute(null, ntry, cur);
+            interpretAttribute(spkr, ntry, cur);
         }
     }
 
