@@ -1195,10 +1195,10 @@ public class userClear {
             rtrBgpNeigh nei = neis.get(i);
             switch (mod) {
                 case 1:
-                    nei.conn.sendRefresh(sfi);
+                    nei.conn.sendRefresh(safi, sfi);
                     break;
                 case 2:
-                    nei.conn.gotRefresh(sfi);
+                    nei.conn.gotRefresh(safi, sfi);
                     break;
                 case 3:
                     nei.conn.sendDynamicCapa(true, true, safi, sfi);

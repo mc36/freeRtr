@@ -985,7 +985,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return null;
     }
 
-    private boolean afiMsk(long val, int safi) {
+    private boolean afiMsk(long val, int safi, long mask) {
         if (safi == parent.afiUni) {
             return (val & rtrBgpParam.mskUni) != 0;
         }
@@ -1097,8 +1097,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param safi safi to test
      * @return true if addpath in use
      */
-    public boolean addPthRx(long mask, int safi) {
-        return afiMsk(addpathRx, safi);
+    public boolean addPthRx(long safi) {
+        return (addpathRx & safi) != 0;
     }
 
     /**
@@ -1107,8 +1107,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param safi safi to test
      * @return true if addpath in use
      */
-    public boolean addPthTx(long mask, int safi) {
-        return afiMsk(addpathTx, safi);
+    public boolean addPthTx(long safi) {
+        return (addpathTx & safi) != 0;
     }
 
     /**
@@ -1350,8 +1350,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     continue;
                 }
                 int o = parent.mask2safi(p);
-                sendRefresh(o);
-                gotRefresh(o);
+                if (o < 0) {
+                    continue;
+                }
+                sendRefresh(p, o);
+                gotRefresh(p, o);
             }
         } else {
             sendOpen();
@@ -1511,7 +1514,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 break;
             }
             if (typ == rtrBgpUtil.msgRefrsh) {
-                gotRefresh(pckRx.msbGetD(0));
+                int i = pckRx.msbGetD(0);
+                long o = parent.safi2mask(i & rtrBgpUtil.frsMask);
+                if (o < 0) {
+                    continue;
+                }
+                gotRefresh(o, i);
                 continue;
             }
             if (typ == rtrBgpUtil.msgUpdate) {
@@ -1570,7 +1578,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 for (i = afiS.size() - 1; i >= 0; i--) {
                     int o = afiS.get(i);
                     long p = afiM.get(i);
-                    if (afiMsk(peerAfis, o) == add) {
+                    if (afiMsk(peerAfis, o, p) == add) {
                         renegotiatingSafi(p, o, add, false);
                         continue;
                     }
@@ -1667,7 +1675,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     break;
                 }
                 if (typ == rtrBgpUtil.msgRefrsh) {
-                    gotRefresh(pckRx.msbGetD(0));
+                    int i = pckRx.msbGetD(0);
+                    long o = parent.safi2mask(i & rtrBgpUtil.frsMask);
+                    if (o < 0) {
+                        continue;
+                    }
+                    gotRefresh(o, i);
                     continue;
                 }
                 if (typ != rtrBgpUtil.msgUpdate) {
@@ -2340,15 +2353,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * got route refresh request
      *
+     * @param mask safi to refresh
      * @param safi safi to refresh
      */
-    public void gotRefresh(int safi) {
+    public void gotRefresh(long mask, int safi) {
         int mode = (safi >>> 8) & 0xff;
-        safi &= 0xffff00ff;
+        safi &= rtrBgpUtil.frsMask;
         if (debugger.rtrBgpTraf) {
             logger.debug("got refresh mode " + mode + " from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
         }
-        if (!afiMsk(peerAfis, safi)) {
+        if (!afiMsk(peerAfis, safi, mask)) {
             if (debugger.rtrBgpError) {
                 logger.debug("got unknown refresh from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
             }
@@ -2403,7 +2417,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!peerDynCap) {
             return;
         }
-        if (afiMsk(peerAfis, safi) == add) {
+        if (afiMsk(peerAfis, safi, msk) == add) {
             return;
         }
         packHolder pck = new packHolder(true, true);
@@ -2476,13 +2490,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * send route refresh request
      *
+     * @param mask safi to refresh
      * @param safi safi to refresh
      */
-    public void sendRefresh(int safi) {
+    public void sendRefresh(long mask, int safi) {
         if ((peerRefreshOld == false) && (peerRefreshNew == false)) {
             return;
         }
-        if (!afiMsk(peerAfis, safi)) {
+        if (!afiMsk(peerAfis, safi, mask)) {
             return;
         }
         refreshTx++;
@@ -2722,7 +2737,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (mask < 0) {
             return true;
         }
-        boolean addpath = addPthRx(mask, rtrBgpUtil.safiIp4uni);
+        boolean addpath = addPthRx(mask);
         int ident = 0;
         for (;;) {
             if (pck.dataSize() <= prt) {
@@ -2765,7 +2780,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             res.best.ident = ident;
             res.best.nextHop = ntry.best.nextHop;
-            prefixReach(rtrBgpUtil.safiIp4uni, addpath, res, pck);
+            prefixReach(mask, rtrBgpUtil.safiIp4uni, addpath, res, pck);
         }
         if (ntry.best.unknown != null) {
             packHolder origPck = pck.copyBytes(false, false);
@@ -2870,7 +2885,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     private void addAttribedTab(List<tabRouteEntry<addrIP>> currAdd, long mask, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
-        if (!afiMsk(peerAfis, safi)) {
+        if (!afiMsk(peerAfis, safi, mask)) {
             return;
         }
         tabRoute<addrIP> learned = getLearned(safi);
@@ -2881,7 +2896,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (changed == null) {
             return;
         }
-        boolean addpath = addPthRx(mask, safi);
+        boolean addpath = addPthRx(mask);
         for (int o = 0; o < currAdd.size(); o++) {
             tabRouteEntry<addrIP> pref = currAdd.get(o);
             if (pref == null) {
@@ -2989,7 +3004,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (debugger.rtrBgpTraf) {
             logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
         }
-        if (!afiMsk(peerAfis, safi)) {
+        if (!afiMsk(peerAfis, safi, mask)) {
             if (debugger.rtrBgpError) {
                 logger.debug("got unknown withdraw from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
             }
@@ -3023,17 +3038,18 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * process reachable prefix
      *
+     * @param mask address family
      * @param safi address family
      * @param addpath addpath mode
      * @param ntry route entry
      * @param pck packet to signal
      */
-    protected void prefixReach(int safi, boolean addpath, tabRouteEntry<addrIP> ntry, packHolder pck) {
+    protected void prefixReach(long mask, int safi, boolean addpath, tabRouteEntry<addrIP> ntry, packHolder pck) {
         updateRchblCntr(0, pck);
         if (debugger.rtrBgpTraf) {
             logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
         }
-        if (!afiMsk(peerAfis, safi)) {
+        if (!afiMsk(peerAfis, safi, mask)) {
             if (debugger.rtrBgpError) {
                 logger.debug("got unknown reachable from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
             }

@@ -130,6 +130,11 @@ public class rtrBgpUtil {
     public final static int sfiMask = 0xffff;
 
     /**
+     * refresh mask
+     */
+    public final static int frsMask = 0xffff00ff;
+
+    /**
      * unicast address family
      */
     public final static int sfiUnicast = 0x01;
@@ -2748,7 +2753,7 @@ public class rtrBgpUtil {
         }
         int sfi = safi & sfiMask;
         int len = pck.getByte(3);
-        boolean addpath = spkr.addPthRx(mask, safi);
+        boolean addpath = spkr.addPthRx(mask);
         boolean oneLab = spkr.peerMltLab == 0;
         boolean v6nh = len >= addrIPv6.size;
         pck.getSkip(4);
@@ -2807,7 +2812,7 @@ public class rtrBgpUtil {
             res.best.ident = ident;
             res.best.nextHop = nextHop;
             pfxs.add(res);
-            spkr.prefixReach(safi, addpath, res, pck);
+            spkr.prefixReach(mask, safi, addpath, res, pck);
         }
         return pfxs;
     }
@@ -2827,7 +2832,7 @@ public class rtrBgpUtil {
         if (mask < 0) {
             return null;
         }
-        boolean addpath = spkr.addPthRx(mask, safi);
+        boolean addpath = spkr.addPthRx(mask);
         int ident = 0;
         List<tabRouteEntry<addrIP>> pfxs = new ArrayList<tabRouteEntry<addrIP>>();
         for (; pck.dataSize() > 0;) {
