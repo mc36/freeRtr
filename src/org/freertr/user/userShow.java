@@ -106,6 +106,7 @@ import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.pack.packRedundancy;
 import org.freertr.rtr.rtrBgpDump;
+import org.freertr.rtr.rtrBgpSpeak;
 import org.freertr.rtr.rtrRpki;
 import org.freertr.rtr.rtrRpkiNeigh;
 import org.freertr.serv.servNrpe;
@@ -5201,9 +5202,11 @@ public class userShow {
                 cmd.error("no such prefix");
                 return;
             }
+            rtrBgpNeigh nei = new rtrBgpNeigh(r.bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(r.bgp, nei, null, 0);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
-            rtrBgpDump.witeFormat(sfi, ntry, r.bgp.fwdCore.ipVersion, pck, tmp, true);
+            rtrBgpDump.witeFormat(spk, sfi, ntry, r.bgp.fwdCore.ipVersion, pck, tmp, true);
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
@@ -5234,9 +5237,11 @@ public class userShow {
                 cmd.error("no such prefix");
                 return;
             }
+            rtrBgpNeigh nei = new rtrBgpNeigh(r.bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(r.bgp, nei, null, 0);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
-            rtrBgpDump.witeFormat(sfi, ntry, r.bgp.fwdCore.ipVersion, pck, tmp, false);
+            rtrBgpDump.witeFormat(spk, sfi, ntry, r.bgp.fwdCore.ipVersion, pck, tmp, false);
             ipCor4 ic4 = new ipCor4();
             ipCor6 ic6 = new ipCor6();
             tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();

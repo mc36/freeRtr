@@ -558,6 +558,7 @@ public class rtrBgpDump {
     /**
      * convert route to wire format
      *
+     * @param spkr where to signal
      * @param sfi safi
      * @param ntry route to convert
      * @param ipv ip version
@@ -565,7 +566,7 @@ public class rtrBgpDump {
      * @param tmp temp packet
      * @param rch true if reachable, false if unreachable
      */
-    public static void witeFormat(int sfi, tabRouteEntry<addrIP> ntry, int ipv, packHolder pck, packHolder tmp, boolean rch) {
+    public static void witeFormat(rtrBgpSpeak spkr, int sfi, tabRouteEntry<addrIP> ntry, int ipv, packHolder pck, packHolder tmp, boolean rch) {
         pck.clear();
         ntry = ntry.copyBytes(tabRoute.addType.better);
         if (ntry.best.nextHop == null) {
@@ -579,9 +580,9 @@ public class rtrBgpDump {
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         lst.add(ntry);
         if (rch) {
-            rtrBgpUtil.createReachable(null, pck, tmp, sfi, false, lst);
+            rtrBgpUtil.createReachable(spkr, pck, tmp, sfi, false, lst);
         } else {
-            rtrBgpUtil.createWithdraw(null, pck, tmp, sfi, false, lst);
+            rtrBgpUtil.createWithdraw(spkr, pck, tmp, sfi, false, lst);
         }
         rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgUpdate);
     }

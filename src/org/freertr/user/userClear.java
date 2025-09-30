@@ -62,7 +62,9 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.enc.encXml;
 import org.freertr.prt.prtRedun;
+import org.freertr.rtr.rtrBgp;
 import org.freertr.rtr.rtrBgpMrt;
+import org.freertr.rtr.rtrBgpSpeak;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.rtr.rtrRiftIface;
 import org.freertr.rtr.rtrRpkiNeigh;
@@ -803,8 +805,11 @@ public class userClear {
             } catch (Exception e) {
                 return null;
             }
-            rtrBgpMrt.dumpTable(fs, rtrBgpUtil.safiIp4uni, vrf.fwd4.actualU, false, 4, 0, 0, new addrIP(), new addrIP());
-            rtrBgpMrt.dumpTable(fs, rtrBgpUtil.safiIp6uni, vrf.fwd6.actualU, false, 6, 0, 0, new addrIP(), new addrIP());
+            rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
+            rtrBgpMrt.dumpTable(fs, spk, rtrBgpUtil.safiIp4uni, vrf.fwd4.actualU, false, 4, 0, 0, new addrIP(), new addrIP());
+            rtrBgpMrt.dumpTable(fs, spk, rtrBgpUtil.safiIp6uni, vrf.fwd6.actualU, false, 6, 0, 0, new addrIP(), new addrIP());
             try {
                 fs.close();
             } catch (Exception e) {
@@ -864,7 +869,10 @@ public class userClear {
                 } catch (Exception e) {
                     return null;
                 }
-                rtrBgpMrt.dumpTable(fs, rtrBgpUtil.safiIp4uni, vrf.fwd4.actualU, false, 4, 0, 0, new addrIP(), new addrIP());
+                rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+                rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+                rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
+                rtrBgpMrt.dumpTable(fs, spk, rtrBgpUtil.safiIp4uni, vrf.fwd4.actualU, false, 4, 0, 0, new addrIP(), new addrIP());
                 try {
                     fs.close();
                 } catch (Exception e) {
@@ -991,7 +999,10 @@ public class userClear {
                 } catch (Exception e) {
                     return null;
                 }
-                rtrBgpMrt.dumpTable(fs, rtrBgpUtil.safiIp6uni, vrf.fwd6.actualU, false, 6, 0, 0, new addrIP(), new addrIP());
+                rtrBgp bgp = new rtrBgp(vrf.fwd6, vrf, null, 0);
+                rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
+                rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
+                rtrBgpMrt.dumpTable(fs, spk, rtrBgpUtil.safiIp6uni, vrf.fwd6.actualU, false, 6, 0, 0, new addrIP(), new addrIP());
                 try {
                     fs.close();
                 } catch (Exception e) {
