@@ -759,112 +759,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         new Thread(this).start();
     }
 
-    private boolean afiMsk(long val, long safi) {
-        if (safi == parent.afiUni) {
-            return (val & rtrBgpParam.mskUni) != 0;
-        }
-        if (safi == parent.afiLab) {
-            return (val & rtrBgpParam.mskLab) != 0;
-        }
-        if (safi == parent.afiCtp) {
-            return (val & rtrBgpParam.mskCtp) != 0;
-        }
-        if (safi == parent.afiCar) {
-            return (val & rtrBgpParam.mskCar) != 0;
-        }
-        if (safi == parent.afiMlt) {
-            return (val & rtrBgpParam.mskMlt) != 0;
-        }
-        if (safi == parent.afiOlab) {
-            return (val & rtrBgpParam.mskOlab) != 0;
-        }
-        if (safi == parent.afiOctp) {
-            return (val & rtrBgpParam.mskOctp) != 0;
-        }
-        if (safi == parent.afiOcar) {
-            return (val & rtrBgpParam.mskOcar) != 0;
-        }
-        if (safi == parent.afiOuni) {
-            return (val & rtrBgpParam.mskOuni) != 0;
-        }
-        if (safi == parent.afiOmlt) {
-            return (val & rtrBgpParam.mskOmlt) != 0;
-        }
-        if (safi == parent.afiOflw) {
-            return (val & rtrBgpParam.mskOflw) != 0;
-        }
-        if (safi == parent.afiOsrt) {
-            return (val & rtrBgpParam.mskOsrt) != 0;
-        }
-        if (safi == parent.afiFlw) {
-            return (val & rtrBgpParam.mskFlw) != 0;
-        }
-        if (safi == parent.afiVpnU) {
-            return (val & rtrBgpParam.mskVpnU) != 0;
-        }
-        if (safi == parent.afiVpnM) {
-            return (val & rtrBgpParam.mskVpnM) != 0;
-        }
-        if (safi == parent.afiVpnF) {
-            return (val & rtrBgpParam.mskVpnF) != 0;
-        }
-        if (safi == parent.afiVpoU) {
-            return (val & rtrBgpParam.mskVpoU) != 0;
-        }
-        if (safi == parent.afiVpoM) {
-            return (val & rtrBgpParam.mskVpoM) != 0;
-        }
-        if (safi == parent.afiVpoF) {
-            return (val & rtrBgpParam.mskVpoF) != 0;
-        }
-        if (safi == parent.afiVpls) {
-            return (val & rtrBgpParam.mskVpls) != 0;
-        }
-        if (safi == parent.afiMspw) {
-            return (val & rtrBgpParam.mskMspw) != 0;
-        }
-        if (safi == parent.afiEvpn) {
-            return (val & rtrBgpParam.mskEvpn) != 0;
-        }
-        if (safi == parent.afiMdt) {
-            return (val & rtrBgpParam.mskMdt) != 0;
-        }
-        if (safi == parent.afiNsh) {
-            return (val & rtrBgpParam.mskNsh) != 0;
-        }
-        if (safi == parent.afiRpd) {
-            return (val & rtrBgpParam.mskRpd) != 0;
-        }
-        if (safi == parent.afiSdw) {
-            return (val & rtrBgpParam.mskSdw) != 0;
-        }
-        if (safi == parent.afiSpf) {
-            return (val & rtrBgpParam.mskSpf) != 0;
-        }
-        if (safi == parent.afiRtf) {
-            return (val & rtrBgpParam.mskRtf) != 0;
-        }
-        if (safi == parent.afiSrte) {
-            return (val & rtrBgpParam.mskSrte) != 0;
-        }
-        if (safi == parent.afiLnks) {
-            return (val & rtrBgpParam.mskLnks) != 0;
-        }
-        if (safi == parent.afiMvpn) {
-            return (val & rtrBgpParam.mskMvpn) != 0;
-        }
-        if (safi == parent.afiMvpo) {
-            return (val & rtrBgpParam.mskMvpo) != 0;
-        }
-        if (safi == parent.afiMtre) {
-            return (val & rtrBgpParam.mskMtre) != 0;
-        }
-        if (safi == parent.afiMtro) {
-            return (val & rtrBgpParam.mskMtro) != 0;
-        }
-        return false;
-    }
-
     /**
      * get learned
      *
@@ -1091,13 +985,119 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return null;
     }
 
+    private boolean afiMsk(long val, int safi) {
+        if (safi == parent.afiUni) {
+            return (val & rtrBgpParam.mskUni) != 0;
+        }
+        if (safi == parent.afiLab) {
+            return (val & rtrBgpParam.mskLab) != 0;
+        }
+        if (safi == parent.afiCtp) {
+            return (val & rtrBgpParam.mskCtp) != 0;
+        }
+        if (safi == parent.afiCar) {
+            return (val & rtrBgpParam.mskCar) != 0;
+        }
+        if (safi == parent.afiMlt) {
+            return (val & rtrBgpParam.mskMlt) != 0;
+        }
+        if (safi == parent.afiOlab) {
+            return (val & rtrBgpParam.mskOlab) != 0;
+        }
+        if (safi == parent.afiOctp) {
+            return (val & rtrBgpParam.mskOctp) != 0;
+        }
+        if (safi == parent.afiOcar) {
+            return (val & rtrBgpParam.mskOcar) != 0;
+        }
+        if (safi == parent.afiOuni) {
+            return (val & rtrBgpParam.mskOuni) != 0;
+        }
+        if (safi == parent.afiOmlt) {
+            return (val & rtrBgpParam.mskOmlt) != 0;
+        }
+        if (safi == parent.afiOflw) {
+            return (val & rtrBgpParam.mskOflw) != 0;
+        }
+        if (safi == parent.afiOsrt) {
+            return (val & rtrBgpParam.mskOsrt) != 0;
+        }
+        if (safi == parent.afiFlw) {
+            return (val & rtrBgpParam.mskFlw) != 0;
+        }
+        if (safi == parent.afiVpnU) {
+            return (val & rtrBgpParam.mskVpnU) != 0;
+        }
+        if (safi == parent.afiVpnM) {
+            return (val & rtrBgpParam.mskVpnM) != 0;
+        }
+        if (safi == parent.afiVpnF) {
+            return (val & rtrBgpParam.mskVpnF) != 0;
+        }
+        if (safi == parent.afiVpoU) {
+            return (val & rtrBgpParam.mskVpoU) != 0;
+        }
+        if (safi == parent.afiVpoM) {
+            return (val & rtrBgpParam.mskVpoM) != 0;
+        }
+        if (safi == parent.afiVpoF) {
+            return (val & rtrBgpParam.mskVpoF) != 0;
+        }
+        if (safi == parent.afiVpls) {
+            return (val & rtrBgpParam.mskVpls) != 0;
+        }
+        if (safi == parent.afiMspw) {
+            return (val & rtrBgpParam.mskMspw) != 0;
+        }
+        if (safi == parent.afiEvpn) {
+            return (val & rtrBgpParam.mskEvpn) != 0;
+        }
+        if (safi == parent.afiMdt) {
+            return (val & rtrBgpParam.mskMdt) != 0;
+        }
+        if (safi == parent.afiNsh) {
+            return (val & rtrBgpParam.mskNsh) != 0;
+        }
+        if (safi == parent.afiRpd) {
+            return (val & rtrBgpParam.mskRpd) != 0;
+        }
+        if (safi == parent.afiSdw) {
+            return (val & rtrBgpParam.mskSdw) != 0;
+        }
+        if (safi == parent.afiSpf) {
+            return (val & rtrBgpParam.mskSpf) != 0;
+        }
+        if (safi == parent.afiRtf) {
+            return (val & rtrBgpParam.mskRtf) != 0;
+        }
+        if (safi == parent.afiSrte) {
+            return (val & rtrBgpParam.mskSrte) != 0;
+        }
+        if (safi == parent.afiLnks) {
+            return (val & rtrBgpParam.mskLnks) != 0;
+        }
+        if (safi == parent.afiMvpn) {
+            return (val & rtrBgpParam.mskMvpn) != 0;
+        }
+        if (safi == parent.afiMvpo) {
+            return (val & rtrBgpParam.mskMvpo) != 0;
+        }
+        if (safi == parent.afiMtre) {
+            return (val & rtrBgpParam.mskMtre) != 0;
+        }
+        if (safi == parent.afiMtro) {
+            return (val & rtrBgpParam.mskMtro) != 0;
+        }
+        return false;
+    }
+
     /**
      * addpath rx test
      *
      * @param safi safi to test
      * @return true if addpath in use
      */
-    public boolean addPthRx(int safi) {
+    public boolean addPthRx(long mask, int safi) {
         return afiMsk(addpathRx, safi);
     }
 
@@ -1107,7 +1107,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param safi safi to test
      * @return true if addpath in use
      */
-    public boolean addPthTx(int safi) {
+    public boolean addPthTx(long mask, int safi) {
         return afiMsk(addpathTx, safi);
     }
 
@@ -1936,6 +1936,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 int o = safis.get(i);
                 bits.msbPutD(buf, i * 4, rtrBgpUtil.safi2triplet(o));
                 long p = parent.safi2mask(o);
+                if (p < 0) {
+                    continue;
+                }
                 int m = 0;
                 if ((neigh.addpathRmode & p) != 0) {
                     m |= 1;
@@ -2056,9 +2059,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             int p = bits.msbGetD(tlv.valDat, i);
             long o = parent.safi2mask(p);
             if (o < 1) {
-                if (debugger.rtrBgpError) {
-                    logger.debug("unknown (" + p + ") afi");
-                }
                 continue;
             }
             afi.add(p);
@@ -2718,7 +2718,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         ntry.best.rouSrc = neigh.peerType;
         ntry.best.srcRtr = neigh.peerAddr.copyBytes();
         ntry.best.locPref = neigh.preference;
-        boolean addpath = addPthRx(rtrBgpUtil.safiIp4uni);
+        long mask = parent.safi2mask(rtrBgpUtil.safiIp4uni);
+        if (mask < 0) {
+            return true;
+        }
+        boolean addpath = addPthRx(mask, rtrBgpUtil.safiIp4uni);
         int ident = 0;
         for (;;) {
             if (pck.dataSize() <= prt) {
@@ -2733,7 +2737,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 continue;
             }
             res.best.ident = ident;
-            prefixWithdraw(rtrBgpUtil.safiIp4uni, addpath, res, pck);
+            prefixWithdraw(mask, rtrBgpUtil.safiIp4uni, addpath, res, pck);
         }
         pck.setBytesLeft(prt);
         prt = pck.msbGetW(0);
@@ -2775,40 +2779,40 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         tabRouteUtil.removeUnknowns(ntry.best, neigh.unknownsIn);
-        addAttribedTab(currUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribedTab(currUni, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribedTab(currUni, parent.afiCtp, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribedTab(currUni, parent.afiCar, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribedTab(currMlt, parent.afiMlt, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribedTab(currOuni, parent.afiOlab, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribedTab(currOuni, parent.afiOctp, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribedTab(currOuni, parent.afiOcar, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribedTab(currOuni, parent.afiOuni, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribedTab(currOmlt, parent.afiOmlt, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribedTab(currFlw, parent.afiFlw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currOflw, parent.afiOflw, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currSrte, parent.afiSrte, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currOsrt, parent.afiOsrt, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currVpnU, parent.afiVpnU, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currVpnM, parent.afiVpnM, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currVpnF, parent.afiVpnF, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currVpoU, parent.afiVpoU, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currVpoM, parent.afiVpoM, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currVpoF, parent.afiVpoF, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currVpls, parent.afiVpls, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
-        addAttribedTab(currMspw, parent.afiMspw, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
-        addAttribedTab(currEvpn, parent.afiEvpn, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
-        addAttribedTab(currMdt, parent.afiMdt, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currNsh, parent.afiNsh, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currRpd, parent.afiRpd, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currSdw, parent.afiSdw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currSpf, parent.afiSpf, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currRtf, parent.afiRtf, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currMvpn, parent.afiMvpn, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currMvpo, parent.afiMvpo, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currMtre, parent.afiMtre, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currMtro, parent.afiMtro, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currLnks, parent.afiLnks, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currUni, rtrBgpParam.mskUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+        addAttribedTab(currUni, rtrBgpParam.mskLab, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+        addAttribedTab(currUni, rtrBgpParam.mskCtp, parent.afiCtp, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+        addAttribedTab(currUni, rtrBgpParam.mskCar, parent.afiCar, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+        addAttribedTab(currMlt, rtrBgpParam.mskMlt, parent.afiMlt, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+        addAttribedTab(currOuni, rtrBgpParam.mskOlab, parent.afiOlab, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+        addAttribedTab(currOuni, rtrBgpParam.mskOctp, parent.afiOctp, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+        addAttribedTab(currOuni, rtrBgpParam.mskOcar, parent.afiOcar, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+        addAttribedTab(currOuni, rtrBgpParam.mskOuni, parent.afiOuni, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+        addAttribedTab(currOmlt, rtrBgpParam.mskOmlt, parent.afiOmlt, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+        addAttribedTab(currFlw, rtrBgpParam.mskFlw, parent.afiFlw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currOflw, rtrBgpParam.mskOflw, parent.afiOflw, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currSrte, rtrBgpParam.mskSrte, parent.afiSrte, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currOsrt, rtrBgpParam.mskOsrt, parent.afiOsrt, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currVpnU, rtrBgpParam.mskVpnU, parent.afiVpnU, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currVpnM, rtrBgpParam.mskVpnM, parent.afiVpnM, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currVpnF, rtrBgpParam.mskVpnF, parent.afiVpnF, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currVpoU, rtrBgpParam.mskVpoU, parent.afiVpoU, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currVpoM, rtrBgpParam.mskVpoM, parent.afiVpoM, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currVpoF, rtrBgpParam.mskVpoF, parent.afiVpoF, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currVpls, rtrBgpParam.mskVpls, parent.afiVpls, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
+        addAttribedTab(currMspw, rtrBgpParam.mskMspw, parent.afiMspw, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
+        addAttribedTab(currEvpn, rtrBgpParam.mskEvpn, parent.afiEvpn, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
+        addAttribedTab(currMdt, rtrBgpParam.mskMdt, parent.afiMdt, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currNsh, rtrBgpParam.mskNsh, parent.afiNsh, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currRpd, rtrBgpParam.mskRpd, parent.afiRpd, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currSdw, rtrBgpParam.mskSdw, parent.afiSdw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currSpf, rtrBgpParam.mskSpf, parent.afiSpf, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currRtf, rtrBgpParam.mskRtf, parent.afiRtf, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currMvpn, rtrBgpParam.mskMvpn, parent.afiMvpn, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currMvpo, rtrBgpParam.mskMvpo, parent.afiMvpo, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currMtre, rtrBgpParam.mskMtre, parent.afiMtre, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
+        addAttribedTab(currMtro, rtrBgpParam.mskMtro, parent.afiMtro, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
+        addAttribedTab(currLnks, rtrBgpParam.mskLnks, parent.afiLnks, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
         if (neigh.rtfilterOut && (currRtf.size() > 0)) {
             if (debugger.rtrBgpFull) {
                 logger.debug("rtfilter changed");
@@ -2865,7 +2869,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         changed.add(tabRoute.addType.always, cur, false, false);
     }
 
-    private void addAttribedTab(List<tabRouteEntry<addrIP>> currAdd, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
+    private void addAttribedTab(List<tabRouteEntry<addrIP>> currAdd, long mask, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
         if (!afiMsk(peerAfis, safi)) {
             return;
         }
@@ -2877,7 +2881,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (changed == null) {
             return;
         }
-        boolean addpath = addPthRx(safi);
+        boolean addpath = addPthRx(mask, safi);
         for (int o = 0; o < currAdd.size(); o++) {
             tabRouteEntry<addrIP> pref = currAdd.get(o);
             if (pref == null) {
@@ -2974,12 +2978,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * prefix withdrawal received
      *
+     * @param mask mask
      * @param safi safi
      * @param addpath addpath mode
      * @param ntry prefix
      * @param pck packet to signal
      */
-    protected void prefixWithdraw(int safi, boolean addpath, tabRouteEntry<addrIP> ntry, packHolder pck) {
+    protected void prefixWithdraw(long mask, int safi, boolean addpath, tabRouteEntry<addrIP> ntry, packHolder pck) {
         updateRchblCntr(2, pck);
         if (debugger.rtrBgpTraf) {
             logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);

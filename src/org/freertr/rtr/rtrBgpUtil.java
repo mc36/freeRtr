@@ -2742,9 +2742,13 @@ public class rtrBgpUtil {
      */
     public static List<tabRouteEntry<addrIP>> parseReachable(rtrBgpSpeak spkr, packHolder pck) {
         int safi = triplet2safi(pck.msbGetD(0));
+        long mask = spkr.parent.safi2mask(safi);
+        if (mask < 0) {
+            return null;
+        }
         int sfi = safi & sfiMask;
         int len = pck.getByte(3);
-        boolean addpath = spkr.addPthRx(safi);
+        boolean addpath = spkr.addPthRx(mask, safi);
         boolean oneLab = spkr.peerMltLab == 0;
         boolean v6nh = len >= addrIPv6.size;
         pck.getSkip(4);
@@ -2819,7 +2823,11 @@ public class rtrBgpUtil {
         pck.merge2beg();
         int safi = triplet2safi(pck.msbGetD(0));
         pck.getSkip(3);
-        boolean addpath = spkr.addPthRx(safi);
+        long mask = spkr.parent.safi2mask(safi);
+        if (mask < 0) {
+            return null;
+        }
+        boolean addpath = spkr.addPthRx(mask, safi);
         int ident = 0;
         List<tabRouteEntry<addrIP>> pfxs = new ArrayList<tabRouteEntry<addrIP>>();
         for (; pck.dataSize() > 0;) {
@@ -2833,7 +2841,7 @@ public class rtrBgpUtil {
             }
             res.best.ident = ident;
             pfxs.add(res);
-            spkr.prefixWithdraw(safi, addpath, res, pck);
+            spkr.prefixWithdraw(mask, safi, addpath, res, pck);
         }
         return pfxs;
     }
