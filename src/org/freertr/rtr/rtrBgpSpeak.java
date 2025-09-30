@@ -377,146 +377,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public final tabRoute<addrIP> advMtro = new tabRoute<addrIP>("tx");
 
     /**
-     * currently updating unicast prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currUni = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating multicast prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currMlt = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating other unicast prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currOuni = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating other multicast prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currOmlt = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating other flowspec prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currOflw = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating other srte prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currOsrt = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating flowspec prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currFlw = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating vpn uni prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currVpnU = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating vpn multi prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currVpnM = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating vpn flow prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currVpnF = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating other vpn uni prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currVpoU = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating other vpn multi prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currVpoM = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating other vpn flow prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currVpoF = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating vpls prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currVpls = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating mspw prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currMspw = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating evpn prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currEvpn = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating mdt prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currMdt = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating nsh prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currNsh = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating rpd prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currRpd = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating sdwan prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currSdw = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating spf prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currSpf = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating rtfilter prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currRtf = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating srte prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currSrte = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating linkstate prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currLnks = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating mvpn prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currMvpn = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating other mvpn prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currMvpo = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating mtree prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currMtre = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
-     * currently updating other mtree prefixes
-     */
-    private List<tabRouteEntry<addrIP>> currMtro = new ArrayList<tabRouteEntry<addrIP>>();
-
-    /**
      * currently changed prefixes
      */
     public int currChg;
@@ -2569,34 +2429,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (debugger.rtrBgpTraf) {
             logger.debug("update from peer " + neigh.peerAddr);
         }
-        currUni.clear();
-        currMlt.clear();
-        currOuni.clear();
-        currOmlt.clear();
-        currOflw.clear();
-        currOsrt.clear();
-        currFlw.clear();
-        currVpnU.clear();
-        currVpnM.clear();
-        currVpnF.clear();
-        currVpoU.clear();
-        currVpoM.clear();
-        currVpoF.clear();
-        currVpls.clear();
-        currMspw.clear();
-        currEvpn.clear();
-        currMdt.clear();
-        currNsh.clear();
-        currRpd.clear();
-        currSdw.clear();
-        currSpf.clear();
-        currRtf.clear();
-        currSrte.clear();
-        currLnks.clear();
-        currMvpn.clear();
-        currMvpo.clear();
-        currMtre.clear();
-        currMtro.clear();
         currChg = 0;
         int origOfs = pck.dataSize();
         int prt = pck.msbGetW(0);
@@ -2680,15 +2512,191 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             res.oldDst = 0;
             int safi = parent.mask2safi(mask);
             addpath = (addpathRx & mask) != 0;
-            prefixWithdraw(mask, safi, addpath, res, pck);
+            updateRchblCntr(2, pck);
+            if (debugger.rtrBgpTraf) {
+                logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
+            }
+            if ((peerAfis & mask) == 0) {
+                if (debugger.rtrBgpError) {
+                    logger.debug("got unknown withdraw from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+                }
+                continue;
+            }
+            if (parent.flaps != null) {
+                parent.prefixFlapped(safi, res.rouDst, res.prefix, null);
+            }
+            if (neigh.dampenPfxs != null) {
+                neigh.prefixDampen(safi, res.rouDst, res.prefix, neigh.dampenWthd);
+            }
+            tabRoute<addrIP> learned = getLearned(safi);
+            if (learned == null) {
+                continue;
+            }
+            if (doPrefDel(learned, addpath, res)) {
+                continue;
+            }
+            currChg++;
+            tabRoute<addrIP> changed = parent.getChanged(safi);
+            if (changed == null) {
+                if (debugger.rtrBgpFull) {
+                    logger.debug("table not found");
+                }
+                parent.needFull.add(1);
+                continue;
+            }
+            changed.add(tabRoute.addType.always, res, true, false);
         }
+        List<tabRouteEntry<addrIP>> currUni = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currMlt = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currOuni = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currOmlt = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currOflw = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currOsrt = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currFlw = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currVpnU = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currVpnM = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currVpnF = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currVpoU = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currVpoM = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currVpoF = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currVpls = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currMspw = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currEvpn = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currMdt = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currNsh = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currRpd = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currSdw = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currSpf = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currRtf = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currSrte = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currLnks = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currMvpn = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currMvpo = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currMtre = new ArrayList<tabRouteEntry<addrIP>>();
+        List<tabRouteEntry<addrIP>> currMtro = new ArrayList<tabRouteEntry<addrIP>>();
         for (int i = 0; i < currAdd.size(); i++) {
             tabRouteEntry<addrIP> res = currAdd.get(i);
             mask = res.oldDst;
             res.oldDst = 0;
             int safi = parent.mask2safi(mask);
             addpath = (addpathRx & mask) != 0;
-            prefixReach(mask, safi, addpath, res, pck);
+            updateRchblCntr(0, pck);
+            if (debugger.rtrBgpTraf) {
+                logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
+            }
+            if ((peerAfis & mask) == 0) {
+                if (debugger.rtrBgpError) {
+                    logger.debug("got unknown reachable from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+                }
+                continue;
+            }
+            List<tabRouteEntry<addrIP>> trg = null;
+            if (safi == parent.afiUni) {
+                trg = currUni;
+            }
+            if (safi == parent.afiLab) {
+                trg = currUni;
+            }
+            if (safi == parent.afiCtp) {
+                trg = currUni;
+            }
+            if (safi == parent.afiCar) {
+                trg = currUni;
+            }
+            if (safi == parent.afiMlt) {
+                trg = currMlt;
+            }
+            if (safi == parent.afiOlab) {
+                trg = currOuni;
+            }
+            if (safi == parent.afiOctp) {
+                trg = currOuni;
+            }
+            if (safi == parent.afiOcar) {
+                trg = currOuni;
+            }
+            if (safi == parent.afiOuni) {
+                trg = currOuni;
+            }
+            if (safi == parent.afiOmlt) {
+                trg = currOmlt;
+            }
+            if (safi == parent.afiOflw) {
+                trg = currOflw;
+            }
+            if (safi == parent.afiOsrt) {
+                trg = currOsrt;
+            }
+            if (safi == parent.afiFlw) {
+                trg = currFlw;
+            }
+            if (safi == parent.afiVpnU) {
+                trg = currVpnU;
+            }
+            if (safi == parent.afiVpnM) {
+                trg = currVpnM;
+            }
+            if (safi == parent.afiVpnF) {
+                trg = currVpnF;
+            }
+            if (safi == parent.afiVpoU) {
+                trg = currVpoU;
+            }
+            if (safi == parent.afiVpoM) {
+                trg = currVpoM;
+            }
+            if (safi == parent.afiVpoF) {
+                trg = currVpoF;
+            }
+            if (safi == parent.afiVpls) {
+                trg = currVpls;
+            }
+            if (safi == parent.afiMspw) {
+                trg = currMspw;
+            }
+            if (safi == parent.afiEvpn) {
+                trg = currEvpn;
+            }
+            if (safi == parent.afiMdt) {
+                trg = currMdt;
+            }
+            if (safi == parent.afiNsh) {
+                trg = currNsh;
+            }
+            if (safi == parent.afiRpd) {
+                trg = currRpd;
+            }
+            if (safi == parent.afiSdw) {
+                trg = currSdw;
+            }
+            if (safi == parent.afiSpf) {
+                trg = currSpf;
+            }
+            if (safi == parent.afiRtf) {
+                trg = currRtf;
+            }
+            if (safi == parent.afiSrte) {
+                trg = currSrte;
+            }
+            if (safi == parent.afiLnks) {
+                trg = currLnks;
+            }
+            if (safi == parent.afiMvpn) {
+                trg = currMvpn;
+            }
+            if (safi == parent.afiMvpo) {
+                trg = currMvpo;
+            }
+            if (safi == parent.afiMtre) {
+                trg = currMtre;
+            }
+            if (safi == parent.afiMtro) {
+                trg = currMtro;
+            }
+            if (trg == null) {
+                continue;
+            }
+            trg.add(res);
         }
         addAttribedTab(currUni, rtrBgpParam.mskUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
         addAttribedTab(currUni, rtrBgpParam.mskLab, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
@@ -2746,7 +2754,24 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return false;
     }
 
-    private void addAttribedOne(tabRouteEntry<addrIP> cur, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, int safi, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
+    private void addAttribedOne(tabRouteEntry<addrIP> cur, tabRouteEntry<addrIP> attr, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, int safi, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
+        if (cur.best.nextHop == null) {
+            cur.best.nextHop = neigh.peerAddr.copyBytes();
+        }
+        attr.best.ident = cur.best.ident;
+        attr.best.nextHop = cur.best.nextHop;
+        attr.best.labelRem = cur.best.labelRem;
+        attr.best.evpnLab = cur.best.evpnLab;
+        if ((attr.best.segrouPrf != null) && (attr.best.labelRem != null) && (attr.best.segrouSiz > 0)) {
+            addrIPv6 adr6 = new addrIPv6();
+            int i = attr.best.labelRem.get(0) >>> 4;
+            i &= (1 << attr.best.segrouSiz) - 1;
+            bits.msbPutD(adr6.getBytes(), addrIPv6.size - 4, i);
+            adr6.setShl(adr6, 128 - attr.best.segrouOfs - attr.best.segrouSiz);
+            adr6.setOr(attr.best.segrouPrf, adr6);
+            attr.best.segrouPrf.fromIPv6addr(adr6);
+        }
+        attr.best.copyBytes(cur.best, false);
         if (parent.flaps != null) {
             parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathInts(-1));
         }
@@ -2794,25 +2819,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         boolean addpath = (addpathRx & mask) != 0;
         for (int o = 0; o < currAdd.size(); o++) {
-            tabRouteEntry<addrIP> pref = currAdd.get(o);
-            if (pref == null) {
+            tabRouteEntry<addrIP> cur = currAdd.get(o);
+            if (cur == null) {
                 continue;
             }
-            attr.best.ident = pref.best.ident;
-            attr.best.nextHop = pref.best.nextHop;
-            attr.best.labelRem = pref.best.labelRem;
-            attr.best.evpnLab = pref.best.evpnLab;
-            if ((attr.best.segrouPrf != null) && (attr.best.labelRem != null) && (attr.best.segrouSiz > 0)) {
-                addrIPv6 adr6 = new addrIPv6();
-                int i = attr.best.labelRem.get(0) >>> 4;
-                i &= (1 << attr.best.segrouSiz) - 1;
-                bits.msbPutD(adr6.getBytes(), addrIPv6.size - 4, i);
-                adr6.setShl(adr6, 128 - attr.best.segrouOfs - attr.best.segrouSiz);
-                adr6.setOr(attr.best.segrouPrf, adr6);
-                attr.best.segrouPrf.fromIPv6addr(adr6);
-            }
-            attr.best.copyBytes(pref.best, false);
-            addAttribedOne(pref, addpath, learned, changed, safi, roumap, roupol, prflst);
+            addAttribedOne(cur, attr, addpath, learned, changed, safi, roumap, roupol, prflst);
         }
     }
 
@@ -2884,183 +2895,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tab.add(tabRoute.addType.always, old, false, false);
         }
         return false;
-    }
-
-    /**
-     * prefix withdrawal received
-     *
-     * @param mask mask
-     * @param safi safi
-     * @param addpath addpath mode
-     * @param ntry prefix
-     * @param pck packet to signal
-     */
-    protected void prefixWithdraw(long mask, int safi, boolean addpath, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        updateRchblCntr(2, pck);
-        if (debugger.rtrBgpTraf) {
-            logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
-        }
-        if ((peerAfis & mask) == 0) {
-            if (debugger.rtrBgpError) {
-                logger.debug("got unknown withdraw from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
-            }
-            return;
-        }
-        if (parent.flaps != null) {
-            parent.prefixFlapped(safi, ntry.rouDst, ntry.prefix, null);
-        }
-        if (neigh.dampenPfxs != null) {
-            neigh.prefixDampen(safi, ntry.rouDst, ntry.prefix, neigh.dampenWthd);
-        }
-        tabRoute<addrIP> learned = getLearned(safi);
-        if (learned == null) {
-            return;
-        }
-        if (doPrefDel(learned, addpath, ntry)) {
-            return;
-        }
-        currChg++;
-        tabRoute<addrIP> changed = parent.getChanged(safi);
-        if (changed == null) {
-            if (debugger.rtrBgpFull) {
-                logger.debug("table not found");
-            }
-            parent.needFull.add(1);
-            return;
-        }
-        changed.add(tabRoute.addType.always, ntry, true, false);
-    }
-
-    /**
-     * process reachable prefix
-     *
-     * @param mask address family
-     * @param safi address family
-     * @param addpath addpath mode
-     * @param ntry route entry
-     * @param pck packet to signal
-     */
-    protected void prefixReach(long mask, int safi, boolean addpath, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        updateRchblCntr(0, pck);
-        if (debugger.rtrBgpTraf) {
-            logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix + " " + ntry.best.ident);
-        }
-        if ((peerAfis & mask) == 0) {
-            if (debugger.rtrBgpError) {
-                logger.debug("got unknown reachable from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
-            }
-            return;
-        }
-        List<tabRouteEntry<addrIP>> trg = null;
-        if (safi == parent.afiUni) {
-            trg = currUni;
-        }
-        if (safi == parent.afiLab) {
-            trg = currUni;
-        }
-        if (safi == parent.afiCtp) {
-            trg = currUni;
-        }
-        if (safi == parent.afiCar) {
-            trg = currUni;
-        }
-        if (safi == parent.afiMlt) {
-            trg = currMlt;
-        }
-        if (safi == parent.afiOlab) {
-            trg = currOuni;
-        }
-        if (safi == parent.afiOctp) {
-            trg = currOuni;
-        }
-        if (safi == parent.afiOcar) {
-            trg = currOuni;
-        }
-        if (safi == parent.afiOuni) {
-            trg = currOuni;
-        }
-        if (safi == parent.afiOmlt) {
-            trg = currOmlt;
-        }
-        if (safi == parent.afiOflw) {
-            trg = currOflw;
-        }
-        if (safi == parent.afiOsrt) {
-            trg = currOsrt;
-        }
-        if (safi == parent.afiFlw) {
-            trg = currFlw;
-        }
-        if (safi == parent.afiVpnU) {
-            trg = currVpnU;
-        }
-        if (safi == parent.afiVpnM) {
-            trg = currVpnM;
-        }
-        if (safi == parent.afiVpnF) {
-            trg = currVpnF;
-        }
-        if (safi == parent.afiVpoU) {
-            trg = currVpoU;
-        }
-        if (safi == parent.afiVpoM) {
-            trg = currVpoM;
-        }
-        if (safi == parent.afiVpoF) {
-            trg = currVpoF;
-        }
-        if (safi == parent.afiVpls) {
-            trg = currVpls;
-        }
-        if (safi == parent.afiMspw) {
-            trg = currMspw;
-        }
-        if (safi == parent.afiEvpn) {
-            trg = currEvpn;
-        }
-        if (safi == parent.afiMdt) {
-            trg = currMdt;
-        }
-        if (safi == parent.afiNsh) {
-            trg = currNsh;
-        }
-        if (safi == parent.afiRpd) {
-            trg = currRpd;
-        }
-        if (safi == parent.afiSdw) {
-            trg = currSdw;
-        }
-        if (safi == parent.afiSpf) {
-            trg = currSpf;
-        }
-        if (safi == parent.afiRtf) {
-            trg = currRtf;
-        }
-        if (safi == parent.afiSrte) {
-            trg = currSrte;
-        }
-        if (safi == parent.afiLnks) {
-            trg = currLnks;
-        }
-        if (safi == parent.afiMvpn) {
-            trg = currMvpn;
-        }
-        if (safi == parent.afiMvpo) {
-            trg = currMvpo;
-        }
-        if (safi == parent.afiMtre) {
-            trg = currMtre;
-        }
-        if (safi == parent.afiMtro) {
-            trg = currMtro;
-        }
-        if (trg == null) {
-            return;
-        }
-        if (ntry.best.nextHop == null) {
-            ntry.best.nextHop = neigh.peerAddr.copyBytes();
-        }
-        trg.add(ntry);
     }
 
     private boolean prefixReachable(tabRouteEntry<addrIP> ntry, int safi) {
