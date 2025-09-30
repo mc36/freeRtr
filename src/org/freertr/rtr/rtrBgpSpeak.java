@@ -985,7 +985,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return null;
     }
 
-
     /**
      * close this session
      */
