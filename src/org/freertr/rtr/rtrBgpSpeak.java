@@ -755,7 +755,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         upTime = bits.getTime();
         lastRx = upTime;
-        if (parent == null) {
+        if (res == 0) {
             return;
         }
         new Thread(this).start();

@@ -1227,29 +1227,15 @@ public class userPacket {
                 return null;
             }
             cmd.error("sending safi=" + rtrBgpUtil.safi2string(safi) + " as=" + las + " open");
-            rtrBgpNeigh nei = new rtrBgpNeigh(null, trg);
+            rtrBgp bgp = new rtrBgp(vrf.getFwd(trg), vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, trg);
             nei.localAs = las;
             nei.addrFams = safi;
-            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm, 0);
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, strm, 0);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
-            byte[] buf = new byte[4];
-            bits.msbPutD(buf, 0, nei.localAs);
-            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
-            buf = new byte[4];
-            bits.msbPutD(buf, 0, safi);
-            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
-            pck.merge2beg();
-            pck.putByte(0, rtrBgpUtil.version);
-            pck.msbPutW(1, tabRouteUtil.asNum16bit(nei.localAs));
-            pck.msbPutW(3, nei.holdTimer / 1000);
-            buf = ifc.addr4.getBytes();
-            pck.putCopy(buf, 0, 5, buf.length);
-            pck.putByte(9, pck.dataSize());
-            pck.putSkip(10);
-            pck.merge2beg();
-            spk.packSend(pck, rtrBgpUtil.msgOpen);
+            spk.sendOpen();
             spk.sendKeepAlive();
             cmd.error("sending updates as it was from " + sip + " to " + tip);
             int snt = 0;
@@ -1358,7 +1344,8 @@ public class userPacket {
                 return null;
             }
             cmd.error("sending open");
-            rtrBgpNeigh nei = new rtrBgpNeigh(null, trg);
+            rtrBgp bgp = new rtrBgp(vrf.getFwd(trg), vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, trg);
             nei.localAs = las;
             int safi;
             if (prf.network.isIPv4()) {
@@ -1367,24 +1354,9 @@ public class userPacket {
                 safi = rtrBgpUtil.safiIp6uni;
             }
             nei.addrFams = safi;
-            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm, 0);
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, strm, 0);
             packHolder pck = new packHolder(true, true);
-            byte[] buf = new byte[4];
-            bits.msbPutD(buf, 0, nei.localAs);
-            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
-            buf = new byte[4];
-            bits.msbPutD(buf, 0, safi);
-            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
-            pck.merge2beg();
-            pck.putByte(0, rtrBgpUtil.version);
-            pck.msbPutW(1, tabRouteUtil.asNum16bit(nei.localAs));
-            pck.msbPutW(3, nei.holdTimer / 1000);
-            buf = ifc.addr4.getBytes();
-            pck.putCopy(buf, 0, 5, buf.length);
-            pck.putByte(9, pck.dataSize());
-            pck.putSkip(10);
-            pck.merge2beg();
-            spk.packSend(pck, rtrBgpUtil.msgOpen);
+            spk.sendOpen();
             spk.sendKeepAlive();
             cmd.error("sending " + prf + " network");
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -1464,7 +1436,8 @@ public class userPacket {
                 return null;
             }
             cmd.error("sending open");
-            rtrBgpNeigh nei = new rtrBgpNeigh(null, trg);
+            rtrBgp bgp = new rtrBgp(vrf.getFwd(trg), vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, trg);
             nei.localAs = las;
             int safi;
             if (prf.network.isIPv4()) {
@@ -1473,24 +1446,9 @@ public class userPacket {
                 safi = rtrBgpUtil.safiIp6uni;
             }
             nei.addrFams = safi;
-            rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, strm, 0);
+            rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, strm, 0);
             packHolder pck = new packHolder(true, true);
-            byte[] buf = new byte[4];
-            bits.msbPutD(buf, 0, nei.localAs);
-            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capa32bitAsNum, buf);
-            buf = new byte[4];
-            bits.msbPutD(buf, 0, safi);
-            rtrBgpUtil.placeCapability(pck, false, rtrBgpUtil.capaMultiProto, buf);
-            pck.merge2beg();
-            pck.putByte(0, rtrBgpUtil.version);
-            pck.msbPutW(1, tabRouteUtil.asNum16bit(nei.localAs));
-            pck.msbPutW(3, nei.holdTimer / 1000);
-            buf = ifc.addr4.getBytes();
-            pck.putCopy(buf, 0, 5, buf.length);
-            pck.putByte(9, pck.dataSize());
-            pck.putSkip(10);
-            pck.merge2beg();
-            spk.packSend(pck, rtrBgpUtil.msgOpen);
+            spk.sendOpen();
             spk.sendKeepAlive();
             cmd.error("sending " + num + " random " + prf + " networks");
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
