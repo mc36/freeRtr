@@ -2286,12 +2286,6 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseAsPath(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        boolean longAs;
-        if (spkr == null) {
-            longAs = true;
-        } else {
-            longAs = spkr.peer32bitAS;
-        }
         ntry.best.pathSeq = new ArrayList<Integer>();
         ntry.best.pathSet = new ArrayList<Integer>();
         ntry.best.confSeq = new ArrayList<Integer>();
@@ -2301,16 +2295,16 @@ public class rtrBgpUtil {
             pck.getSkip(1);
             switch (i) {
                 case 1: // as set
-                    parseAsList(longAs, ntry.best.pathSet, pck);
+                    parseAsList(spkr.peer32bitAS, ntry.best.pathSet, pck);
                     break;
                 case 2: // as seq
-                    parseAsList(longAs, ntry.best.pathSeq, pck);
+                    parseAsList(spkr.peer32bitAS, ntry.best.pathSeq, pck);
                     break;
                 case 3: // confed seq
-                    parseAsList(longAs, ntry.best.confSeq, pck);
+                    parseAsList(spkr.peer32bitAS, ntry.best.confSeq, pck);
                     break;
                 case 4: // confed set
-                    parseAsList(longAs, ntry.best.pathSet, pck);
+                    parseAsList(spkr.peer32bitAS, ntry.best.pathSet, pck);
                     break;
             }
         }
@@ -2431,13 +2425,7 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void parseAggregator(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        boolean longAs;
-        if (spkr == null) {
-            longAs = true;
-        } else {
-            longAs = spkr.peer32bitAS;
-        }
-        if (longAs) {
+        if (spkr.peer32bitAS) {
             ntry.best.aggrAs = pck.msbGetD(0);
             pck.getSkip(4);
         } else {
@@ -2756,15 +2744,8 @@ public class rtrBgpUtil {
         int safi = triplet2safi(pck.msbGetD(0));
         int sfi = safi & sfiMask;
         int len = pck.getByte(3);
-        boolean addpath;
-        boolean oneLab;
-        if (spkr == null) {
-            addpath = false;
-            oneLab = false;
-        } else {
-            addpath = spkr.addPthRx(safi);
-            oneLab = spkr.peerMltLab == 0;
-        }
+        boolean addpath = spkr.addPthRx(safi);
+        boolean oneLab = spkr.peerMltLab == 0;
         boolean v6nh = len >= addrIPv6.size;
         pck.getSkip(4);
         len = pck.dataSize() - len;
@@ -2822,9 +2803,6 @@ public class rtrBgpUtil {
             res.best.ident = ident;
             res.best.nextHop = nextHop;
             pfxs.add(res);
-            if (spkr == null) {
-                continue;
-            }
             spkr.prefixReach(safi, addpath, res, pck);
         }
         return pfxs;
@@ -2841,12 +2819,7 @@ public class rtrBgpUtil {
         pck.merge2beg();
         int safi = triplet2safi(pck.msbGetD(0));
         pck.getSkip(3);
-        boolean addpath;
-        if (spkr == null) {
-            addpath = false;
-        } else {
-            addpath = spkr.addPthRx(safi);
-        }
+        boolean addpath = spkr.addPthRx(safi);
         int ident = 0;
         List<tabRouteEntry<addrIP>> pfxs = new ArrayList<tabRouteEntry<addrIP>>();
         for (; pck.dataSize() > 0;) {
@@ -2860,9 +2833,6 @@ public class rtrBgpUtil {
             }
             res.best.ident = ident;
             pfxs.add(res);
-            if (spkr == null) {
-                continue;
-            }
             spkr.prefixWithdraw(safi, addpath, res, pck);
         }
         return pfxs;
@@ -2959,9 +2929,7 @@ public class rtrBgpUtil {
      * @param attr attribute
      */
     public static void placeAttrib(rtrBgpSpeak spkr, int flg, int typ, packHolder trg, packHolder attr) {
-        if (spkr != null) {
-            spkr.updateAttrCtr(true, attr, typ);
-        }
+        spkr.updateAttrCtr(true, attr, typ);
         attr.merge2beg();
         byte[] buf = attr.getCopy();
         if (buf.length > 0xff) {
@@ -3017,7 +2985,7 @@ public class rtrBgpUtil {
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         lst.add(ntry);
         packHolder pck = new packHolder(true, true);
-        createReachable(spkr, pck, new packHolder(true, true), safiAttrib, false, true, true, lst);
+        createReachable(spkr, pck, new packHolder(true, true), safiAttrib, false, lst);
         ntry.best.attribAs = as;
         ntry.best.attribVal = pck.getCopy();
     }
@@ -3031,13 +2999,11 @@ public class rtrBgpUtil {
      * @return prefixed touched
      */
     public static List<tabRouteEntry<addrIP>> interpretAttribute(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        if (spkr != null) {
-            spkr.updateAttrCtr(false, pck, pck.ETHtype);
-            if (spkr.neigh.attribFilter != null) {
-                if (spkr.neigh.attribFilter.matches(pck.ETHtype)) {
-                    logger.info("filtered attribute " + pck.ETHtype + " from " + spkr.neigh.peerAddr + " (" + pck.dump() + ")");
-                    return null;
-                }
+        spkr.updateAttrCtr(false, pck, pck.ETHtype);
+        if (spkr.neigh.attribFilter != null) {
+            if (spkr.neigh.attribFilter.matches(pck.ETHtype)) {
+                logger.info("filtered attribute " + pck.ETHtype + " from " + spkr.neigh.peerAddr + " (" + pck.dump() + ")");
+                return null;
             }
         }
         switch (pck.ETHtype) {
@@ -3168,9 +3134,7 @@ public class rtrBgpUtil {
             pck.msbPutW(0, 0);
             pck.putSkip(2);
             pck.merge2end();
-            if (spkr != null) {
-                spkr.updateRchblCntr(3, pck);
-            }
+            spkr.updateRchblCntr(3, pck);
             return;
         }
         placeUnreach(spkr, safi, addpath, pck, hlp, lst);
@@ -3181,9 +3145,7 @@ public class rtrBgpUtil {
         pck.msbPutW(0, 0);
         pck.putSkip(2);
         pck.merge2beg();
-        if (spkr != null) {
-            spkr.updateRchblCntr(3, pck);
-        }
+        spkr.updateRchblCntr(3, pck);
     }
 
     /**
@@ -3255,20 +3217,19 @@ public class rtrBgpUtil {
      * @param hlp helper packet
      * @param safi address family
      * @param addpath additional path
-     * @param longAS long as number supported
-     * @param oneLab just one label
      * @param lst list of prefixes to advertise
      */
-    public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int safi, boolean addpath, boolean longAS, boolean oneLab, List<tabRouteEntry<addrIP>> lst) {
+    public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int safi, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
+        boolean oneLab = spkr.peerMltLab == 0;
         tabRouteEntry<addrIP> ntry = lst.get(0);
         placeUnknown(spkr, pck, hlp, ntry);
         placeOrigin(spkr, pck, hlp, ntry);
-        placeAsPath(spkr, longAS, pck, hlp, ntry);
+        placeAsPath(spkr, pck, hlp, ntry);
         placeMetric(spkr, pck, hlp, ntry);
         placeLocPref(spkr, pck, hlp, ntry);
         placeEntropyLab(spkr, pck, hlp, ntry);
         placeAtomicAggr(spkr, pck, hlp, ntry);
-        placeAggregator(spkr, longAS, pck, hlp, ntry);
+        placeAggregator(spkr, pck, hlp, ntry);
         placeConnector(spkr, pck, hlp, ntry);
         placePathLimit(spkr, pck, hlp, ntry);
         placePeDistLab(spkr, pck, hlp, ntry);
@@ -3301,9 +3262,7 @@ public class rtrBgpUtil {
             pck.msbPutW(2, pck.dataSize());
             pck.putSkip(4);
             pck.merge2beg();
-            if (spkr != null) {
-                spkr.updateRchblCntr(1, pck);
-            }
+            spkr.updateRchblCntr(1, pck);
             return;
         }
         if (!ntry.best.nextHop.isIPv4()) {
@@ -3313,9 +3272,7 @@ public class rtrBgpUtil {
             pck.msbPutW(2, pck.dataSize());
             pck.putSkip(4);
             pck.merge2beg();
-            if (spkr != null) {
-                spkr.updateRchblCntr(1, pck);
-            }
+            spkr.updateRchblCntr(1, pck);
             return;
         }
         placeNextHop(spkr, pck, hlp, ntry);
@@ -3333,9 +3290,7 @@ public class rtrBgpUtil {
             writePrefix(safiIp4uni, oneLab, pck, ntry);
         }
         pck.merge2end();
-        if (spkr != null) {
-            spkr.updateRchblCntr(1, pck);
-        }
+        spkr.updateRchblCntr(1, pck);
     }
 
     /**
@@ -3426,17 +3381,16 @@ public class rtrBgpUtil {
      * place as path attribute
      *
      * @param spkr where to signal
-     * @param longAs long as support
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeAsPath(rtrBgpSpeak spkr, boolean longAs, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeAsPath(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
-        placeAsList(longAs, hlp, 3, ntry.best.confSeq); // confed seq
-        placeAsList(longAs, hlp, 4, ntry.best.confSet); // confed set
-        placeAsList(longAs, hlp, 2, ntry.best.pathSeq); // as seq
-        placeAsList(longAs, hlp, 1, ntry.best.pathSet); // as set
+        placeAsList(spkr.peer32bitAS, hlp, 3, ntry.best.confSeq); // confed seq
+        placeAsList(spkr.peer32bitAS, hlp, 4, ntry.best.confSet); // confed set
+        placeAsList(spkr.peer32bitAS, hlp, 2, ntry.best.pathSeq); // as seq
+        placeAsList(spkr.peer32bitAS, hlp, 1, ntry.best.pathSet); // as set
         placeAttrib(spkr, flagTransitive, attrAsPath, trg, hlp);
     }
 
@@ -3532,17 +3486,16 @@ public class rtrBgpUtil {
      * place aggregator attribute
      *
      * @param spkr where to signal
-     * @param longAs long as support
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placeAggregator(rtrBgpSpeak spkr, boolean longAs, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placeAggregator(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         if (ntry.best.aggrRtr == null) {
             return;
         }
         hlp.clear();
-        if (longAs) {
+        if (spkr.peer32bitAS) {
             hlp.msbPutD(0, ntry.best.aggrAs);
             hlp.putSkip(4);
         } else {

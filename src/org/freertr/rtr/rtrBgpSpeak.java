@@ -750,12 +750,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh = neighbor;
         pipe = socket;
         peerLeakRole = -1;
-        if (pipe == null) {
-            return;
-        }
         upTime = bits.getTime();
         lastRx = upTime;
         if (res == 0) {
+            peer32bitAS = true;
             return;
         }
         new Thread(this).start();
@@ -2587,7 +2585,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!reach) {
             rtrBgpUtil.createWithdraw(this, pckTx, pckTh, safi, false, lst);
         } else {
-            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, false, peer32bitAS, peerMltLab == 0, lst);
+            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, false, lst);
         }
         packSend(pckTx, rtrBgpUtil.msgUpdate);
     }
@@ -2633,7 +2631,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.clear();
                 lst.add(ntry);
                 pckTx.clear();
-                rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, peer32bitAS, peerMltLab == 0, lst);
+                rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, lst);
                 packSend(pckTx, rtrBgpUtil.msgUpdate);
             }
             return;
@@ -2651,7 +2649,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             lst.clear();
             lst.add(ntry);
             pckTx.clear();
-            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, peer32bitAS, peerMltLab == 0, lst);
+            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, lst);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
         }
         lst.clear();
