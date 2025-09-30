@@ -969,6 +969,21 @@ public abstract class rtrBgpParam {
     public final static long mskDisplay = mskEvpn | mskMspw | mskMdt | mskMvpn | mskMvpo | mskMtre | mskMtro | mskFlw | mskOflw | mskVpnF | mskVpoF | mskNsh;
 
     /**
+     * regular filter
+     */
+    public final static long mskFltR = mskUni|mskLab|mskCtp|mskCar|mskMlt;
+
+    /**
+     * other filter
+     */
+    public final static long mskFltO = mskOlab|mskOctp|mskOcar|mskOuni|mskOmlt;
+
+    /**
+     * ether filter
+     */
+    public final static long mskFltE = mskVpls|mskMspw|mskEvpn;
+    
+    /**
      * string to afi mask
      *
      * @param s string
