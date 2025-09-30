@@ -2506,6 +2506,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         tabRouteUtil.removeUnknowns(ntry.best, neigh.unknownsIn);
+        int ortf = lrnRtf.size();
         for (int i = 0; i < currDel.size(); i++) {
             tabRouteEntry<addrIP> res = currDel.get(i);
             mask = res.oldDst;
@@ -2546,34 +2547,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             changed.add(tabRoute.addType.always, res, true, false);
         }
-        List<tabRouteEntry<addrIP>> currUni = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currMlt = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currOuni = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currOmlt = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currOflw = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currOsrt = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currFlw = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currVpnU = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currVpnM = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currVpnF = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currVpoU = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currVpoM = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currVpoF = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currVpls = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currMspw = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currEvpn = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currMdt = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currNsh = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currRpd = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currSdw = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currSpf = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currRtf = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currSrte = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currLnks = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currMvpn = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currMvpo = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currMtre = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currMtro = new ArrayList<tabRouteEntry<addrIP>>();
         for (int i = 0; i < currAdd.size(); i++) {
             tabRouteEntry<addrIP> res = currAdd.get(i);
             mask = res.oldDst;
@@ -2590,149 +2563,37 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 continue;
             }
-            List<tabRouteEntry<addrIP>> trg = null;
-            if (safi == parent.afiUni) {
-                trg = currUni;
-            }
-            if (safi == parent.afiLab) {
-                trg = currUni;
-            }
-            if (safi == parent.afiCtp) {
-                trg = currUni;
-            }
-            if (safi == parent.afiCar) {
-                trg = currUni;
-            }
-            if (safi == parent.afiMlt) {
-                trg = currMlt;
-            }
-            if (safi == parent.afiOlab) {
-                trg = currOuni;
-            }
-            if (safi == parent.afiOctp) {
-                trg = currOuni;
-            }
-            if (safi == parent.afiOcar) {
-                trg = currOuni;
-            }
-            if (safi == parent.afiOuni) {
-                trg = currOuni;
-            }
-            if (safi == parent.afiOmlt) {
-                trg = currOmlt;
-            }
-            if (safi == parent.afiOflw) {
-                trg = currOflw;
-            }
-            if (safi == parent.afiOsrt) {
-                trg = currOsrt;
-            }
-            if (safi == parent.afiFlw) {
-                trg = currFlw;
-            }
-            if (safi == parent.afiVpnU) {
-                trg = currVpnU;
-            }
-            if (safi == parent.afiVpnM) {
-                trg = currVpnM;
-            }
-            if (safi == parent.afiVpnF) {
-                trg = currVpnF;
-            }
-            if (safi == parent.afiVpoU) {
-                trg = currVpoU;
-            }
-            if (safi == parent.afiVpoM) {
-                trg = currVpoM;
-            }
-            if (safi == parent.afiVpoF) {
-                trg = currVpoF;
-            }
-            if (safi == parent.afiVpls) {
-                trg = currVpls;
-            }
-            if (safi == parent.afiMspw) {
-                trg = currMspw;
-            }
-            if (safi == parent.afiEvpn) {
-                trg = currEvpn;
-            }
-            if (safi == parent.afiMdt) {
-                trg = currMdt;
-            }
-            if (safi == parent.afiNsh) {
-                trg = currNsh;
-            }
-            if (safi == parent.afiRpd) {
-                trg = currRpd;
-            }
-            if (safi == parent.afiSdw) {
-                trg = currSdw;
-            }
-            if (safi == parent.afiSpf) {
-                trg = currSpf;
-            }
-            if (safi == parent.afiRtf) {
-                trg = currRtf;
-            }
-            if (safi == parent.afiSrte) {
-                trg = currSrte;
-            }
-            if (safi == parent.afiLnks) {
-                trg = currLnks;
-            }
-            if (safi == parent.afiMvpn) {
-                trg = currMvpn;
-            }
-            if (safi == parent.afiMvpo) {
-                trg = currMvpo;
-            }
-            if (safi == parent.afiMtre) {
-                trg = currMtre;
-            }
-            if (safi == parent.afiMtro) {
-                trg = currMtro;
-            }
-            if (trg == null) {
+            tabRoute<addrIP> learned = getLearned(safi);
+            if (learned == null) {
                 continue;
             }
-            trg.add(res);
+            tabRoute<addrIP> changed = parent.getChanged(safi);
+            if (changed == null) {
+                continue;
+            }
+            if ((mask & rtrBgpParam.mskFltR) != 0) {
+                addAttribedOne(res, ntry, addpath, learned, changed, safi, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+                continue;
+            }
+            if ((mask & rtrBgpParam.mskFltO) != 0) {
+                addAttribedOne(res, ntry, addpath, learned, changed, safi, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+                continue;
+            }
+            if ((mask & rtrBgpParam.mskFltE) != 0) {
+                addAttribedOne(res, ntry, addpath, learned, changed, safi, neigh.eroumapIn, neigh.eroupolIn, null);
+                continue;
+            }
+            if ((mask & rtrBgpParam.mskFltW) != 0) {
+                addAttribedOne(res, ntry, addpath, learned, changed, safi, neigh.wroumapIn, neigh.wroupolIn, null);
+                continue;
+            }
+            if ((mask & rtrBgpParam.mskFltV) != 0) {
+                addAttribedOne(res, ntry, addpath, learned, changed, safi, neigh.vroumapIn, neigh.vroupolIn, null);
+                continue;
+            }
+            addAttribedOne(res, ntry, addpath, learned, changed, safi, null, null, null);
         }
-        addAttribedTab(currUni, rtrBgpParam.mskUni, parent.afiUni, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribedTab(currUni, rtrBgpParam.mskLab, parent.afiLab, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribedTab(currUni, rtrBgpParam.mskCtp, parent.afiCtp, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribedTab(currUni, rtrBgpParam.mskCar, parent.afiCar, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribedTab(currMlt, rtrBgpParam.mskMlt, parent.afiMlt, ntry, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-        addAttribedTab(currOuni, rtrBgpParam.mskOlab, parent.afiOlab, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribedTab(currOuni, rtrBgpParam.mskOctp, parent.afiOctp, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribedTab(currOuni, rtrBgpParam.mskOcar, parent.afiOcar, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribedTab(currOuni, rtrBgpParam.mskOuni, parent.afiOuni, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribedTab(currOmlt, rtrBgpParam.mskOmlt, parent.afiOmlt, ntry, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-        addAttribedTab(currFlw, rtrBgpParam.mskFlw, parent.afiFlw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currOflw, rtrBgpParam.mskOflw, parent.afiOflw, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currSrte, rtrBgpParam.mskSrte, parent.afiSrte, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currOsrt, rtrBgpParam.mskOsrt, parent.afiOsrt, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currVpnU, rtrBgpParam.mskVpnU, parent.afiVpnU, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currVpnM, rtrBgpParam.mskVpnM, parent.afiVpnM, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currVpnF, rtrBgpParam.mskVpnF, parent.afiVpnF, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currVpoU, rtrBgpParam.mskVpoU, parent.afiVpoU, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currVpoM, rtrBgpParam.mskVpoM, parent.afiVpoM, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currVpoF, rtrBgpParam.mskVpoF, parent.afiVpoF, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currVpls, rtrBgpParam.mskVpls, parent.afiVpls, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
-        addAttribedTab(currMspw, rtrBgpParam.mskMspw, parent.afiMspw, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
-        addAttribedTab(currEvpn, rtrBgpParam.mskEvpn, parent.afiEvpn, ntry, neigh.eroumapIn, neigh.eroupolIn, null);
-        addAttribedTab(currMdt, rtrBgpParam.mskMdt, parent.afiMdt, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currNsh, rtrBgpParam.mskNsh, parent.afiNsh, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currRpd, rtrBgpParam.mskRpd, parent.afiRpd, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currSdw, rtrBgpParam.mskSdw, parent.afiSdw, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currSpf, rtrBgpParam.mskSpf, parent.afiSpf, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currRtf, rtrBgpParam.mskRtf, parent.afiRtf, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currMvpn, rtrBgpParam.mskMvpn, parent.afiMvpn, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currMvpo, rtrBgpParam.mskMvpo, parent.afiMvpo, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currMtre, rtrBgpParam.mskMtre, parent.afiMtre, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        addAttribedTab(currMtro, rtrBgpParam.mskMtro, parent.afiMtro, ntry, neigh.wroumapIn, neigh.wroupolIn, null);
-        addAttribedTab(currLnks, rtrBgpParam.mskLnks, parent.afiLnks, ntry, neigh.vroumapIn, neigh.vroupolIn, null);
-        if (neigh.rtfilterOut && (currRtf.size() > 0)) {
+        if (neigh.rtfilterOut && (ortf != lrnRtf.size())) {
             if (debugger.rtrBgpFull) {
                 logger.debug("rtfilter changed");
             }
@@ -2803,28 +2664,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         doPrefAdd(learned, addpath, cur);
         currChg++;
         changed.add(tabRoute.addType.always, cur, false, false);
-    }
-
-    private void addAttribedTab(List<tabRouteEntry<addrIP>> currAdd, long mask, int safi, tabRouteEntry<addrIP> attr, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
-        if ((peerAfis & mask) == 0) {
-            return;
-        }
-        tabRoute<addrIP> learned = getLearned(safi);
-        if (learned == null) {
-            return;
-        }
-        tabRoute<addrIP> changed = parent.getChanged(safi);
-        if (changed == null) {
-            return;
-        }
-        boolean addpath = (addpathRx & mask) != 0;
-        for (int o = 0; o < currAdd.size(); o++) {
-            tabRouteEntry<addrIP> cur = currAdd.get(o);
-            if (cur == null) {
-                continue;
-            }
-            addAttribedOne(cur, attr, addpath, learned, changed, safi, roumap, roupol, prflst);
-        }
     }
 
     private void doPrefAdd(tabRoute<addrIP> tab, boolean addpath, tabRouteEntry<addrIP> ntry) {

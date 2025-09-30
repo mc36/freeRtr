@@ -971,18 +971,28 @@ public abstract class rtrBgpParam {
     /**
      * regular filter
      */
-    public final static long mskFltR = mskUni|mskLab|mskCtp|mskCar|mskMlt;
+    public final static long mskFltR = mskUni | mskLab | mskCtp | mskCar | mskMlt;
 
     /**
      * other filter
      */
-    public final static long mskFltO = mskOlab|mskOctp|mskOcar|mskOuni|mskOmlt;
+    public final static long mskFltO = mskOlab | mskOctp | mskOcar | mskOuni | mskOmlt;
 
     /**
      * ether filter
      */
-    public final static long mskFltE = mskVpls|mskMspw|mskEvpn;
-    
+    public final static long mskFltE = mskVpls | mskMspw | mskEvpn | mskMdt | mskNsh | mskRpd | mskSdw | mskSpf | mskRtf | mskLnks;
+
+    /**
+     * vpo filter
+     */
+    public final static long mskFltW = mskOflw | mskOsrt | mskVpoU | mskVpoM | mskVpoF | mskMvpo | mskMtro;
+
+    /**
+     * vpn filter
+     */
+    public final static long mskFltV = mskFlw | mskSrte | mskVpnU | mskVpnM | mskVpnF | mskMvpn | mskMtre;
+
     /**
      * string to afi mask
      *
