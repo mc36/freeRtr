@@ -740,11 +740,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param protocol process
      * @param neighbor neighbor
      * @param socket tcp socket to use, null if none
-     * @param res resume
+     * @param res resume, 0=disabled, 1=normal, 2=resume
      */
-    public rtrBgpSpeak(rtrBgp protocol, rtrBgpNeigh neighbor, pipeSide socket, boolean res) {
+    public rtrBgpSpeak(rtrBgp protocol, rtrBgpNeigh neighbor, pipeSide socket, int res) {
         ready2adv = false;
-        resumed = res;
+        resumed = res == 2;
         addpathBeg = bits.randomD();
         parent = protocol;
         neigh = neighbor;

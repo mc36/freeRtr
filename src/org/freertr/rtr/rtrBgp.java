@@ -1231,11 +1231,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ol3es = new tabGen<rtrBgpVrf>();
         vpls = new tabGen<rtrBgpVpls>();
         evpn = new tabGen<rtrBgpEvpn>();
-        evpnUni = tabLabel.allocate(tabLabelEntry.owner.evpnPbb);
-        evpnMul = tabLabel.allocate(tabLabelEntry.owner.evpnPbb);
         evpnRcv = new rtrBgpEvpnPbb(this);
-        evpnUni.setFwdPwe(tabLabelEntry.owner.evpnPbb, fwdCore, evpnRcv, 0, null);
-        evpnMul.setFwdPwe(tabLabelEntry.owner.evpnPbb, fwdCore, evpnRcv, 0, null);
         routerID = new addrIPv4();
         safeEbgp = true;
         clientReflect = true;
@@ -1385,7 +1381,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
+        if (vrfcfg == null) {
+            return;
+        }
         routerComputedI = new tabGen<tabIndex<addrIP>>();
+        evpnUni = tabLabel.allocate(tabLabelEntry.owner.evpnPbb);
+        evpnMul = tabLabel.allocate(tabLabelEntry.owner.evpnPbb);
+        evpnUni.setFwdPwe(tabLabelEntry.owner.evpnPbb, fwdCore, evpnRcv, 0, null);
+        evpnMul.setFwdPwe(tabLabelEntry.owner.evpnPbb, fwdCore, evpnRcv, 0, null);
         needFull.add(1);
         compRound.add(1);
         routerCreateComputed();
@@ -2093,7 +2096,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return true;
         }
         logger.info("accepting dynamic " + id.peerAddr + " " + id.portRem + " as " + lstn.temp);
-        ntry.conn = new rtrBgpSpeak(this, ntry, pipe, false);
+        ntry.conn = new rtrBgpSpeak(this, ntry, pipe, 1);
         ntry.socketMode = 4;
         ntry.startNow();
         accptStat.tx(pckCnt);
@@ -4751,7 +4754,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (pip == null) {
             return true;
         }
-        ntry.conn = new rtrBgpSpeak(this, ntry, pip, true);
+        ntry.conn = new rtrBgpSpeak(this, ntry, pip, 2);
         i = bits.str2num(cmd.word());
         if (ntry.remoteAny) {
             ntry.remoteAs = i;

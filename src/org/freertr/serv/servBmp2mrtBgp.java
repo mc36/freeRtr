@@ -39,7 +39,7 @@ public class servBmp2mrtBgp extends servBmp2mrtLstn {
         rtrBgpNeigh nei = new rtrBgpNeigh(null, conn.peerAddr.copyBytes());
         nei.localAs = lower.listenAsn;
         nei.addrFams = safi;
-        rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, pipe, false);
+        rtrBgpSpeak spk = new rtrBgpSpeak(null, nei, pipe, 0);
         packHolder pck = new packHolder(true, true);
         byte[] buf = new byte[4];
         bits.msbPutD(buf, 0, nei.localAs);
