@@ -858,7 +858,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         if (intVpnClnt) {
-            rtrBgpUtil.decodeAttribSet(null, ntry);
+            rtrBgpUtil.decodeAttribSet(lower.dummySpk, ntry);
         }
         if ((rtfilterUsed != null) && shouldRtfilter(afi)) {
             if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, remoteAs, rtfilterUsed, false) && tabRouteUtil.findRtfilterTab(ntry.best.extComm, localAs, rtfilterUsed, false)) {
@@ -947,7 +947,7 @@ public class rtrBgpGroup extends rtrBgpParam {
     public tabRouteEntry<addrIP> readvertPrefix(int afi, tabRouteEntry<addrIP> ntry) {
         if (intVpnClnt) {
             ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
-            rtrBgpUtil.decodeAttribSet(null, ntry);
+            rtrBgpUtil.decodeAttribSet(lower.dummySpk, ntry);
         }
         if ((rtfilterUsed != null) && shouldRtfilter(afi)) {
             if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, remoteAs, rtfilterUsed, false) && tabRouteUtil.findRtfilterTab(ntry.best.extComm, localAs, rtfilterUsed, false)) {

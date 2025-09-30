@@ -215,6 +215,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected tabGen<rtrBgpNeigh> lstnNei;
 
     /**
+     * dummy neighbor
+     */
+    protected rtrBgpNeigh dummyNei;
+
+    /**
+     * dummy speaker
+     */
+    protected rtrBgpSpeak dummySpk;
+
+    /**
      * route type
      */
     protected final tabRouteAttr.routeType rouTyp;
@@ -1381,6 +1391,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
         routerComputedF = new tabRoute<addrIP>("rx");
+        dummyNei = new rtrBgpNeigh(this, new addrIP());
+        dummySpk = new rtrBgpSpeak(this, dummyNei, null, 0);
         if (tcpCore == null) {
             return;
         }
