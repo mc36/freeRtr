@@ -1805,110 +1805,111 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * get database
      *
+     * @param mask safi to query
      * @param safi safi to query
      * @return table
      */
-    public tabRoute<addrIP> getDatabase(int safi) {
-        if (safi == afiUni) {
+    public tabRoute<addrIP> getDatabase(long mask, int safi) {
+        if (mask == rtrBgpParam.mskUni) {
             return routerComputedU;
         }
-        if (safi == afiLab) {
+        if (mask == rtrBgpParam.mskLab) {
             return routerComputedU;
         }
-        if (safi == afiCtp) {
+        if (mask == rtrBgpParam.mskCtp) {
             return routerComputedU;
         }
-        if (safi == afiCar) {
+        if (mask == rtrBgpParam.mskCar) {
             return routerComputedU;
         }
-        if (safi == afiMlt) {
+        if (mask == rtrBgpParam.mskMlt) {
             return routerComputedM;
         }
-        if (safi == afiOlab) {
+        if (mask == rtrBgpParam.mskOlab) {
             return computedOuni;
         }
-        if (safi == afiOctp) {
+        if (mask == rtrBgpParam.mskOctp) {
             return computedOuni;
         }
-        if (safi == afiOcar) {
+        if (mask == rtrBgpParam.mskOcar) {
             return computedOuni;
         }
-        if (safi == afiOuni) {
+        if (mask == rtrBgpParam.mskOuni) {
             return computedOuni;
         }
-        if (safi == afiOmlt) {
+        if (mask == rtrBgpParam.mskOmlt) {
             return computedOmlt;
         }
-        if (safi == afiOflw) {
+        if (mask == rtrBgpParam.mskOflw) {
             return computedOflw;
         }
-        if (safi == afiOsrt) {
+        if (mask == rtrBgpParam.mskOsrt) {
             return computedOsrt;
         }
-        if (safi == afiFlw) {
+        if (mask == rtrBgpParam.mskFlw) {
             return routerComputedF;
         }
-        if (safi == afiVpnU) {
+        if (mask == rtrBgpParam.mskVpnU) {
             return computedVpnU;
         }
-        if (safi == afiVpnM) {
+        if (mask == rtrBgpParam.mskVpnM) {
             return computedVpnM;
         }
-        if (safi == afiVpnF) {
+        if (mask == rtrBgpParam.mskVpnF) {
             return computedVpnF;
         }
-        if (safi == afiVpoU) {
+        if (mask == rtrBgpParam.mskVpoU) {
             return computedVpoU;
         }
-        if (safi == afiVpoM) {
+        if (mask == rtrBgpParam.mskVpoM) {
             return computedVpoM;
         }
-        if (safi == afiVpoF) {
+        if (mask == rtrBgpParam.mskVpoF) {
             return computedVpoF;
         }
-        if (safi == afiVpls) {
+        if (mask == rtrBgpParam.mskVpls) {
             return computedVpls;
         }
-        if (safi == afiMspw) {
+        if (mask == rtrBgpParam.mskMspw) {
             return computedMspw;
         }
-        if (safi == afiEvpn) {
+        if (mask == rtrBgpParam.mskEvpn) {
             return computedEvpn;
         }
-        if (safi == afiMdt) {
+        if (mask == rtrBgpParam.mskMdt) {
             return computedMdt;
         }
-        if (safi == afiNsh) {
+        if (mask == rtrBgpParam.mskNsh) {
             return computedNsh;
         }
-        if (safi == afiRpd) {
+        if (mask == rtrBgpParam.mskRpd) {
             return computedRpd;
         }
-        if (safi == afiSdw) {
+        if (mask == rtrBgpParam.mskSdw) {
             return computedSdw;
         }
-        if (safi == afiSpf) {
+        if (mask == rtrBgpParam.mskSpf) {
             return computedSpf;
         }
-        if (safi == afiRtf) {
+        if (mask == rtrBgpParam.mskRtf) {
             return computedRtf;
         }
-        if (safi == afiSrte) {
+        if (mask == rtrBgpParam.mskSrte) {
             return computedSrte;
         }
-        if (safi == afiLnks) {
+        if (mask == rtrBgpParam.mskLnks) {
             return computedLnks;
         }
-        if (safi == afiMvpn) {
+        if (mask == rtrBgpParam.mskMvpn) {
             return computedMvpn;
         }
-        if (safi == afiMvpo) {
+        if (mask == rtrBgpParam.mskMvpo) {
             return computedMvpo;
         }
-        if (safi == afiMtre) {
+        if (mask == rtrBgpParam.mskMtre) {
             return computedMtre;
         }
-        if (safi == afiMtro) {
+        if (mask == rtrBgpParam.mskMtro) {
             return computedMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");
@@ -4892,12 +4893,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * uplinking as
      *
+     * @param mask safi to query
      * @param safi safi to query
      * @return text
      */
-    public userFormat getAsUplink(int safi) {
+    public userFormat getAsUplink(long mask, int safi) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
-        tabRoute<addrIP> rou = getDatabase(safi);
+        tabRoute<addrIP> rou = getDatabase(mask, safi);
         for (int i = 0; i < rou.size(); i++) {
             tabRouteEntry<addrIP> ntry = rou.get(i);
             if (ntry == null) {
@@ -4921,12 +4923,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * originating as
      *
+     * @param mask safi to query
      * @param safi safi to query
      * @return text
      */
-    public userFormat getAsOrigin(int safi) {
+    public userFormat getAsOrigin(long mask, int safi) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
-        tabRoute<addrIP> rou = getDatabase(safi);
+        tabRoute<addrIP> rou = getDatabase(mask, safi);
         for (int i = 0; i < rou.size(); i++) {
             tabRouteEntry<addrIP> ntry = rou.get(i);
             if (ntry == null) {
@@ -4950,12 +4953,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * transiting as
      *
+     * @param mask safi to query
      * @param safi safi to query
      * @return text
      */
-    public userFormat getAsTransit(int safi) {
+    public userFormat getAsTransit(long mask, int safi) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
-        tabRoute<addrIP> rou = getDatabase(safi);
+        tabRoute<addrIP> rou = getDatabase(mask, safi);
         for (int i = 0; i < rou.size(); i++) {
             tabRouteEntry<addrIP> ntry = rou.get(i);
             if (ntry == null) {
@@ -5088,11 +5092,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * as path statistics
      *
+     * @param mask safi to query
      * @param safi safi to query
      * @return text
      */
-    public userFormat getPathStat(int safi) {
-        tabRoute<addrIP> rou = getDatabase(safi);
+    public userFormat getPathStat(long mask, int safi) {
+        tabRoute<addrIP> rou = getDatabase(mask, safi);
         List<Integer> res = new ArrayList<Integer>();
         for (int i = 0; i < rou.size(); i++) {
             tabRouteEntry<addrIP> ntry = rou.get(i);

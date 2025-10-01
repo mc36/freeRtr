@@ -4910,15 +4910,15 @@ public class userShow {
             return;
         }
         if (a.equals("asorigin")) {
-            rdr.putStrTab(r.bgp.getAsOrigin(sfi));
+            rdr.putStrTab(r.bgp.getAsOrigin(sfm, sfi));
             return;
         }
         if (a.equals("asuplink")) {
-            rdr.putStrTab(r.bgp.getAsUplink(sfi));
+            rdr.putStrTab(r.bgp.getAsUplink(sfm, sfi));
             return;
         }
         if (a.equals("astransit")) {
-            rdr.putStrTab(r.bgp.getAsTransit(sfi));
+            rdr.putStrTab(r.bgp.getAsTransit(sfm, sfi));
             return;
         }
         if (a.equals("asconn")) {
@@ -4936,11 +4936,11 @@ public class userShow {
             return;
         }
         if (a.equals("pathstat")) {
-            rdr.putStrTab(r.bgp.getPathStat(sfi));
+            rdr.putStrTab(r.bgp.getPathStat(sfm, sfi));
             return;
         }
         if (a.equals("prefix-lengths")) {
-            rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.getDatabase(sfi), rtrBgpUtil.safi2ipVers(sfi)));
+            rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.getDatabase(sfm, sfi), rtrBgpUtil.safi2ipVers(sfi)));
             return;
         }
         if (a.equals("asinconsistent")) {
@@ -5180,7 +5180,7 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, dif3, dsp);
             return;
         }
-        tabRoute<addrIP> tab = r.bgp.getDatabase(sfi);
+        tabRoute<addrIP> tab = r.bgp.getDatabase(sfm, sfi);
         if (tab == null) {
             return;
         }
