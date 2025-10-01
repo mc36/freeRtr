@@ -2790,7 +2790,8 @@ public class userExec {
         hl.add(null, true, 6, new int[]{7}, "<num>", "local as");
         hl.add(null, true, 7, new int[]{8}, "<addr>", "prefix to originate");
         hl.add(null, true, 8, new int[]{9}, "<name:rm>", "route map to apply");
-        hl.add(null, true, 9, new int[]{-1}, "<num>", "number of prefixes");
+        hl.add(null, true, 9, new int[]{10, -1}, "<num>", "number of prefixes");
+        hl.add(null, true, 10, new int[]{-1}, "<num>", "prefixes per update");
         hl.add(null, false, 2, new int[]{3}, "modem", "open modem session");
         hl.add(null, false, 3, new int[]{4, -1}, "<addr>", "address to call");
         hl.add(null, false, 4, new int[]{-1}, "<addr>", "address who calling");

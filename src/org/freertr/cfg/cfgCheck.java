@@ -776,19 +776,26 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
      *
      * @return result
      */
-    public List<String> getShowDetail() {
-        List<String> res = new ArrayList<String>();
-        res.add("name=" + name);
-        res.add("template=" + template);
-        res.add("description=" + dsc);
-        res.add("command=" + command);
-        res.add("error=" + err);
-        res.add("alternate=" + alternate);
-        res.add("severity=" + packNrpe.code2string(severity));
-        res.add("asked=" + (okNum + errNum) + " times");
-        res.add("reply=" + time + " ms");
-        res.add("passed=" + okNum + " times, last " + bits.time2str(cfgAll.timeZoneName, okTim + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(okTim) + " ago)");
-        res.add("failed=" + errNum + " times, last " + bits.time2str(cfgAll.timeZoneName, errTim + cfgAll.timeServerOffset, 3) + " (" + bits.timePast(errTim) + " ago)");
+    public userFormat getShowDetail() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("name|" + name);
+        packNrpe nrp = new packNrpe();
+        getReportNrpe(nrp);
+        res.add("nrpe|" + packNrpe.code2string(nrp.cod));
+        res.add("template|" + template);
+        res.add("description|" + dsc);
+        res.add("command|" + command);
+        res.add("error|" + err);
+        res.add("alternate|" + alternate);
+        res.add("severity|" + packNrpe.code2string(severity));
+        res.add("asked|" + (okNum + errNum) + " times");
+        res.add("reply|" + time + " ms");
+        res.add("passed|" + okNum + " times");
+        res.add("last|" + bits.time2str(cfgAll.timeZoneName, okTim + cfgAll.timeServerOffset, 3));
+        res.add("ago|" + bits.timePast(okTim));
+        res.add("failed|" + errNum + " times");
+        res.add("last|" + bits.time2str(cfgAll.timeZoneName, errTim + cfgAll.timeServerOffset, 3));
+        res.add("ago|" + bits.timePast(errTim));
         return res;
     }
 
@@ -799,9 +806,6 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
      */
     public List<String> getShowError() {
         List<String> res = new ArrayList<String>();
-        packNrpe nrp = new packNrpe();
-        getReportNrpe(nrp);
-        res.add("nrpe:" + packNrpe.code2string(nrp.cod));
         if (errLst != null) {
             res.addAll(errLst);
         }

@@ -77,6 +77,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.tab.tabHop;
 import org.freertr.tab.tabIntMatcher;
 import org.freertr.tab.tabQos;
+import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteBlob;
 import org.freertr.tab.tabRouteEntry;
@@ -1453,6 +1454,10 @@ public class userPacket {
                 return null;
             }
             int num = bits.str2num(cmd.word());
+            int stp = bits.str2num(cmd.word());
+            if (stp < 1) {
+                stp = 1;
+            }
             pipeSide strm = null;
             for (;;) {
                 cmd.error("connecting " + trg);
@@ -1492,7 +1497,7 @@ public class userPacket {
             rmp.roumap.update(rtrBgpUtil.sfiUnicast, 0, ntry, false);
             ntry.best.nextHop = ifc.getFwdIfc(trg).addr.copyBytes();
             packHolder tmp = new packHolder(true, true);
-            for (int o = 0; o < num; o++) {
+            for (int o = 0; o < num; o += stp) {
                 int i = strm.ready2rx();
                 if (i > 0) {
                     strm.moreSkip(i);
@@ -1504,14 +1509,16 @@ public class userPacket {
                 if (i < 4096) {
                     bits.sleep(1000);
                 }
-                addrIP adr = new addrIP();
-                adr.fillRandom();
-                adr.setAnd(adr, prf.wildcard);
-                adr.setOr(adr, prf.network);
-                ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-                pck.clear();
                 lst.clear();
-                lst.add(ntry);
+                pck.clear();
+                for (i = 0; i < stp; i++) {
+                    addrIP adr = new addrIP();
+                    adr.fillRandom();
+                    adr.setAnd(adr, prf.wildcard);
+                    adr.setOr(adr, prf.network);
+                    ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+                    lst.add(ntry.copyBytes(tabRoute.addType.ecmp));
+                }
                 rtrBgpUtil.createReachable(spk, pck, tmp, safi, false, lst);
                 spk.packSend(pck, rtrBgpUtil.msgUpdate);
                 cmd.pipe.strPut(".");

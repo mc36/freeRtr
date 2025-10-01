@@ -1162,13 +1162,16 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
      *
      * @return result
      */
-    public List<String> getShowDetail() {
-        List<String> res = new ArrayList<String>();
-        res.add("command=" + command);
-        res.add("path=" + path);
-        res.add("prefix=" + prefix);
-        res.add("asked=" + cnt + " times");
-        res.add("reply=" + time + " ms");
+    public userFormat getShowDetail() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("name|" + name);
+        res.add("command|" + command);
+        res.add("path|" + path);
+        res.add("prefix|" + prefix);
+        res.add("reply|" + time + " ms");
+        res.add("asked|" + cnt + " times");
+        res.add("last|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3));
+        res.add("ago|" + bits.timePast(last));
         return res;
     }
 
