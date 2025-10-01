@@ -4836,11 +4836,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * get flap stats
      *
+     * @param mask afi
      * @param afi afi
      * @param num minimum flap count
      * @return list of statistics
      */
-    public userFormat getFlapstat(int afi, int num) {
+    public userFormat getFlapstat(long mask, int afi, int num) {
         userFormat l = new userFormat("|", "prefix|count|paths|ago|last");
         if (flaps == null) {
             return l;
@@ -4850,7 +4851,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.afi != afi) {
+            if (ntry.mask != mask) {
                 continue;
             }
             if (ntry.count < num) {

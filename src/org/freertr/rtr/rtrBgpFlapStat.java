@@ -16,36 +16,6 @@ import org.freertr.util.bits;
 public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
 
     /**
-     * create instance
-     *
-     * @param m afi
-     * @param a afi
-     * @param r rd
-     * @param p prefix
-     */
-    public rtrBgpFlapStat(long m, int a, long r, addrPrefix<addrIP> p) {
-        mask = m;
-        afi = a;
-        rd = r;
-        prefix = p.copyBytes();
-    }
-
-    /**
-     * create instance
-     *
-     * @param m afi
-     * @param a afi
-     * @param r rd
-     * @param p prefix
-     */
-    public rtrBgpFlapStat(long m, int a, long r, addrIP p) {
-        mask = m;
-        afi = a;
-        rd = r;
-        prefix = new addrPrefix<addrIP>(p.copyBytes(), addrIP.size * 8);
-    }
-    
-    /**
      * address family
      */
     public final long mask;
@@ -85,11 +55,41 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
      */
     public tabGen<rtrBgpFlapStr> infos = new tabGen<rtrBgpFlapStr>();
 
+    /**
+     * create instance
+     *
+     * @param m afi
+     * @param a afi
+     * @param r rd
+     * @param p prefix
+     */
+    public rtrBgpFlapStat(long m, int a, long r, addrPrefix<addrIP> p) {
+        mask = m;
+        afi = a;
+        rd = r;
+        prefix = p.copyBytes();
+    }
+
+    /**
+     * create instance
+     *
+     * @param m afi
+     * @param a afi
+     * @param r rd
+     * @param p prefix
+     */
+    public rtrBgpFlapStat(long m, int a, long r, addrIP p) {
+        mask = m;
+        afi = a;
+        rd = r;
+        prefix = new addrPrefix<addrIP>(p.copyBytes(), addrIP.size * 8);
+    }
+
     public int compareTo(rtrBgpFlapStat o) {
-        if (afi < o.afi) {
+        if (mask < o.mask) {
             return -1;
         }
-        if (afi > o.afi) {
+        if (mask > o.mask) {
             return +1;
         }
         if (rd < o.rd) {

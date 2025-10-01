@@ -4976,7 +4976,7 @@ public class userShow {
             return;
         }
         if (a.equals("flapstat")) {
-            rdr.putStrTab(r.bgp.getFlapstat(sfi, bits.str2num(cmd.word())));
+            rdr.putStrTab(r.bgp.getFlapstat(sfm, sfi, bits.str2num(cmd.word())));
             return;
         }
         if (a.equals("flappath")) {

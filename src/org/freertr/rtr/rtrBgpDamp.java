@@ -64,10 +64,10 @@ public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
     }
 
     public int compareTo(rtrBgpDamp o) {
-        if (afi < o.afi) {
+        if (mask < o.mask) {
             return -1;
         }
-        if (afi > o.afi) {
+        if (mask > o.mask) {
             return +1;
         }
         if (rd < o.rd) {
