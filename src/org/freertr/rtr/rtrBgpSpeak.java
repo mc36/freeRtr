@@ -2188,32 +2188,25 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
     }
 
-    private static void clearOneTable(tabRoute<addrIP> tab) {
-        if (tab == null) {
-            return;
-        }
-        tab.clear();
-    }
-
-    private void renegotiatingSafi(long msk, int safi, boolean add, boolean cfg) {
+    private void renegotiatingSafi(long mask, int safi, boolean add, boolean cfg) {
         sendEndOfRib(safi);
-        clearOneTable(getLearned(msk, safi));
-        clearOneTable(getAdverted(msk, safi));
-        clearOneTable(neigh.getWilling(safi));
-        clearOneTable(neigh.getAccepted(safi));
-        needEorAfis |= msk;
+        getLearned(mask, safi).clear();
+        getAdverted(mask, safi).clear();
+        neigh.getWilling(mask, safi).clear();
+        neigh.getAccepted(safi).clear();
+        needEorAfis |= mask;
         if (add) {
-            peerAfis |= msk;
-            originalSafiList |= msk;
+            peerAfis |= mask;
+            originalSafiList |= mask;
         } else {
-            peerAfis &= ~msk;
-            originalSafiList &= ~msk;
+            peerAfis &= ~mask;
+            originalSafiList &= ~mask;
         }
         if (cfg) {
             if (add) {
-                neigh.addrFams |= msk;
+                neigh.addrFams |= mask;
             } else {
-                neigh.addrFams &= ~msk;
+                neigh.addrFams &= ~mask;
             }
         }
         if (debugger.rtrBgpFull) {

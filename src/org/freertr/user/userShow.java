@@ -4874,7 +4874,7 @@ public class userShow {
                 return;
             }
             if (a.equals("willing")) {
-                doShowRoutes(r.bgp.fwdCore, nei.getWilling(sfi), dsp);
+                doShowRoutes(r.bgp.fwdCore, nei.getWilling(sfm, sfi), dsp);
                 return;
             }
             if (a.equals("advertised")) {

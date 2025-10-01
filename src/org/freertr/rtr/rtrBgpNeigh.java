@@ -2118,10 +2118,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     /**
      * get willing
      *
+     * @param mask safi to query
      * @param safi safi to query
      * @return table
      */
-    public tabRoute<addrIP> getWilling(int safi) {
+    public tabRoute<addrIP> getWilling(long mask, int safi) {
         if (safi == lower.afiUni) {
             return wilUni;
         }
@@ -2243,7 +2244,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @return line of string
      */
     public String showNeighs(long mask, int safi) {
-        return showSummry1() + "|" + tabSiz(conn.getLearned(mask, safi)) + "|" + tabSiz(getAccepted(safi)) + "|" + tabSiz(getWilling(safi)) + "|" + tabSiz(conn.getAdverted(mask, safi)) + "|" + bits.timePast(conn.upTime);
+        return showSummry1() + "|" + tabSiz(conn.getLearned(mask, safi)) + "|" + tabSiz(getAccepted(safi)) + "|" + tabSiz(getWilling(mask, safi)) + "|" + tabSiz(conn.getAdverted(mask, safi)) + "|" + bits.timePast(conn.upTime);
     }
 
     /**
