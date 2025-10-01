@@ -4878,7 +4878,7 @@ public class userShow {
                 return;
             }
             if (a.equals("advertised")) {
-                doShowRoutes(r.bgp.fwdCore, nei.conn.getAdverted(sfi), dsp);
+                doShowRoutes(r.bgp.fwdCore, nei.conn.getAdverted(sfm, sfi), dsp);
                 return;
             }
             cmd.badCmd();
@@ -4896,7 +4896,7 @@ public class userShow {
         }
         a = cmd.word();
         if (a.equals("summary")) {
-            rdr.putStrTab(r.bgp.showNeighs(sfi));
+            rdr.putStrTab(r.bgp.showNeighs(sfm, sfi));
             return;
         }
         if (a.equals("asgraph")) {

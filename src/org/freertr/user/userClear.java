@@ -1159,7 +1159,7 @@ public class userClear {
             for (int i = 0; i < neis.size(); i++) {
                 rtrBgpNeigh nei = neis.get(i);
                 cmd.error("saving " + nei.peerAddr);
-                nei.saveTable(fs, sfi);
+                nei.saveTable(fs, safi, sfi);
             }
             try {
                 fs.close();
