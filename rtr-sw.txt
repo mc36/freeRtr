@@ -399,7 +399,7 @@ interface loopback0
 interface loopback42
  description dn42.net
  vrf forwarding dn42
- ipv4 address 172.23.199.97 255.255.255.255
+ ipv4 address 172.23.215.130 255.255.255.255
  ipv6 address fd40:cc1e:c0de::fffd ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  no shutdown
  no log-link-change
