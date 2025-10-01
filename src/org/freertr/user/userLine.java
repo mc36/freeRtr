@@ -403,7 +403,7 @@ public class userLine {
                 int res = cfgInit.executeSWcommands(sesStart, false);
                 logger.info("configuration reverted to frozen checkpoint with " + res + " errors.");
             }
-            if (cfgAll.configExclusive.get() > 0) {
+            if (cfgAll.configExclusive.get() > 1) {
                 cfgAll.configExclusive.set(1);
             }
             if (cfgAll.configAsave) {
