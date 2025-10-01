@@ -2532,7 +2532,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 continue;
             }
             currChg++;
-            tabRoute<addrIP> changed = parent.getChanged(safi);
+            tabRoute<addrIP> changed = parent.getChanged(mask, safi);
             if (changed == null) {
                 if (debugger.rtrBgpFull) {
                     logger.debug("table not found");
@@ -2562,7 +2562,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (learned == null) {
                 continue;
             }
-            tabRoute<addrIP> changed = parent.getChanged(safi);
+            tabRoute<addrIP> changed = parent.getChanged(mask, safi);
             if (changed == null) {
                 continue;
             }
