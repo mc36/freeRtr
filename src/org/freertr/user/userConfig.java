@@ -2953,7 +2953,7 @@ public class userConfig {
             return;
         }
         if (s.equals("config-exclusive")) {
-            cfgAll.configExclusive = 0;
+            cfgAll.configExclusive.set(0);
             return;
         }
         if (s.equals("time-server")) {
@@ -3435,7 +3435,7 @@ public class userConfig {
             return;
         }
         if (a.equals("config-exclusive")) {
-            cfgAll.configExclusive = 1;
+            cfgAll.configExclusive.set(1);
             return;
         }
         if (a.equals("access-subnet-ipv4")) {

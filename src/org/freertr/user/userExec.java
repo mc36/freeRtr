@@ -3341,7 +3341,7 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("configure")) {
-            if (cfgAll.configExclusive > 1) {
+            if (cfgAll.configExclusive.get() > 1) {
                 cmd.error("operation forbidden by exclusive configuration mode");
                 return cmdRes.command;
             }

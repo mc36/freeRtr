@@ -356,8 +356,8 @@ public class userLine {
             if (i != userExec.cmdRes.config) {
                 continue;
             }
-            if (cfgAll.configExclusive > 0) {
-                cfgAll.configExclusive++;
+            if (cfgAll.configExclusive.get() > 0) {
+                cfgAll.configExclusive.set(2);
             }
             String remote = exe.pipe.settingsGet(pipeSetting.origin, "?");
             logger.warn(exe.username + " configuring from " + remote);
@@ -403,8 +403,8 @@ public class userLine {
                 int res = cfgInit.executeSWcommands(sesStart, false);
                 logger.info("configuration reverted to frozen checkpoint with " + res + " errors.");
             }
-            if (cfgAll.configExclusive > 1) {
-                cfgAll.configExclusive--;
+            if (cfgAll.configExclusive.get() > 0) {
+                cfgAll.configExclusive.set(1);
             }
             if (cfgAll.configAsave) {
                 exe.executeCommand("write memory");

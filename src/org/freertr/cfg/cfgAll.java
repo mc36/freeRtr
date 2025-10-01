@@ -115,6 +115,7 @@ import org.freertr.util.bits;
 import org.freertr.util.chatter;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
+import org.freertr.util.syncInt;
 import org.freertr.util.version;
 
 /**
@@ -1382,7 +1383,7 @@ public class cfgAll {
     /**
      * allow only one user to configuration
      */
-    public static int configExclusive;
+    public static syncInt configExclusive = new syncInt(0);
 
     /**
      * custom defaults text
@@ -3948,7 +3949,7 @@ public class cfgAll {
         cmds.cfgLine(l, configBackup == null, "", "client config-backup", "" + configBackup);
         cmds.cfgLine(l, !configAsave, "", "client config-save", "");
         cmds.cfgLine(l, !configAbackup, "", "client config-archive", "");
-        cmds.cfgLine(l, configExclusive < 1, "", "client config-exclusive", "");
+        cmds.cfgLine(l, configExclusive.get() < 1, "", "client config-exclusive", "");
         l.add("client access-subnet-ipv4 " + accessSubnet4);
         l.add("client access-subnet-ipv6 " + accessSubnet6);
         l.add("client access-supernet-ipv4 " + accessSupnet4);
