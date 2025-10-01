@@ -4739,7 +4739,7 @@ public class userShow {
             if (sfi < 1) {
                 return;
             }
-            tabRoute<addrIP> tab = grp.getWilling(sfi);
+            tabRoute<addrIP> tab = grp.getWilling(sfm, sfi);
             if (tab == null) {
                 return;
             }
