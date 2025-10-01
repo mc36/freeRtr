@@ -627,106 +627,106 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @return table
      */
     public tabRoute<addrIP> getLearned(long mask, int safi) {
-        if (safi == parent.afiUni) {
+        if (mask == rtrBgpParam.mskUni) {
             return lrnUni;
         }
-        if (safi == parent.afiLab) {
+        if (mask == rtrBgpParam.mskLab) {
             return lrnUni;
         }
-        if (safi == parent.afiCtp) {
+        if (mask == rtrBgpParam.mskCtp) {
             return lrnUni;
         }
-        if (safi == parent.afiCar) {
+        if (mask == rtrBgpParam.mskCar) {
             return lrnUni;
         }
-        if (safi == parent.afiMlt) {
+        if (mask == rtrBgpParam.mskMlt) {
             return lrnMlt;
         }
-        if (safi == parent.afiOlab) {
+        if (mask == rtrBgpParam.mskOlab) {
             return lrnOuni;
         }
-        if (safi == parent.afiOctp) {
+        if (mask == rtrBgpParam.mskOctp) {
             return lrnOuni;
         }
-        if (safi == parent.afiOcar) {
+        if (mask == rtrBgpParam.mskOcar) {
             return lrnOuni;
         }
-        if (safi == parent.afiOuni) {
+        if (mask == rtrBgpParam.mskOuni) {
             return lrnOuni;
         }
-        if (safi == parent.afiOmlt) {
+        if (mask == rtrBgpParam.mskOmlt) {
             return lrnOmlt;
         }
-        if (safi == parent.afiOflw) {
+        if (mask == rtrBgpParam.mskOflw) {
             return lrnOflw;
         }
-        if (safi == parent.afiOsrt) {
+        if (mask == rtrBgpParam.mskOsrt) {
             return lrnOsrt;
         }
-        if (safi == parent.afiFlw) {
+        if (mask == rtrBgpParam.mskFlw) {
             return lrnFlw;
         }
-        if (safi == parent.afiVpnU) {
+        if (mask == rtrBgpParam.mskVpnU) {
             return lrnVpnU;
         }
-        if (safi == parent.afiVpnM) {
+        if (mask == rtrBgpParam.mskVpnM) {
             return lrnVpnM;
         }
-        if (safi == parent.afiVpnF) {
+        if (mask == rtrBgpParam.mskVpnF) {
             return lrnVpnF;
         }
-        if (safi == parent.afiVpoU) {
+        if (mask == rtrBgpParam.mskVpoU) {
             return lrnVpoU;
         }
-        if (safi == parent.afiVpoM) {
+        if (mask == rtrBgpParam.mskVpoM) {
             return lrnVpoM;
         }
-        if (safi == parent.afiVpoF) {
+        if (mask == rtrBgpParam.mskVpoF) {
             return lrnVpoF;
         }
-        if (safi == parent.afiVpls) {
+        if (mask == rtrBgpParam.mskVpls) {
             return lrnVpls;
         }
-        if (safi == parent.afiMspw) {
+        if (mask == rtrBgpParam.mskMspw) {
             return lrnMspw;
         }
-        if (safi == parent.afiEvpn) {
+        if (mask == rtrBgpParam.mskEvpn) {
             return lrnEvpn;
         }
-        if (safi == parent.afiMdt) {
+        if (mask == rtrBgpParam.mskMdt) {
             return lrnMdt;
         }
-        if (safi == parent.afiNsh) {
+        if (mask == rtrBgpParam.mskNsh) {
             return lrnNsh;
         }
-        if (safi == parent.afiRpd) {
+        if (mask == rtrBgpParam.mskRpd) {
             return lrnRpd;
         }
-        if (safi == parent.afiSdw) {
+        if (mask == rtrBgpParam.mskSdw) {
             return lrnSdw;
         }
-        if (safi == parent.afiSpf) {
+        if (mask == rtrBgpParam.mskSpf) {
             return lrnSpf;
         }
-        if (safi == parent.afiRtf) {
+        if (mask == rtrBgpParam.mskRtf) {
             return lrnRtf;
         }
-        if (safi == parent.afiSrte) {
+        if (mask == rtrBgpParam.mskSrte) {
             return lrnSrte;
         }
-        if (safi == parent.afiLnks) {
+        if (mask == rtrBgpParam.mskLnks) {
             return lrnLnks;
         }
-        if (safi == parent.afiMvpn) {
+        if (mask == rtrBgpParam.mskMvpn) {
             return lrnMvpn;
         }
-        if (safi == parent.afiMvpo) {
+        if (mask == rtrBgpParam.mskMvpo) {
             return lrnMvpo;
         }
-        if (safi == parent.afiMtre) {
+        if (mask == rtrBgpParam.mskMtre) {
             return lrnMtre;
         }
-        if (safi == parent.afiMtro) {
+        if (mask == rtrBgpParam.mskMtro) {
             return lrnMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");
