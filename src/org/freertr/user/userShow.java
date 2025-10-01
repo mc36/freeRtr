@@ -4870,7 +4870,7 @@ public class userShow {
                 return;
             }
             if (a.equals("accepted")) {
-                doShowRoutes(r.bgp.fwdCore, nei.getAccepted(sfi), dsp);
+                doShowRoutes(r.bgp.fwdCore, nei.getAccepted(sfm, sfi), dsp);
                 return;
             }
             if (a.equals("willing")) {
@@ -4985,7 +4985,7 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            rdr.putStrTab(r.bgp.getFlappath(sfi, tabRouteUtil.string2rd(cmd.word()), ntry, false));
+            rdr.putStrTab(r.bgp.getFlappath(sfm, sfi, tabRouteUtil.string2rd(cmd.word()), ntry, false));
             return;
         }
         if (a.equals("flaprevpath")) {
@@ -4994,7 +4994,7 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            rdr.putStrTab(r.bgp.getFlappath(sfi, tabRouteUtil.string2rd(cmd.word()), ntry, true));
+            rdr.putStrTab(r.bgp.getFlappath(sfm, sfi, tabRouteUtil.string2rd(cmd.word()), ntry, true));
             return;
         }
         if (a.equals("allroute")) {
@@ -5030,8 +5030,8 @@ public class userShow {
                 return;
             }
             ntry.rouDst = tabRouteUtil.string2rd(cmd.word());
-            tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
-            tabRoute<addrIP> acc2 = nei2.getAccepted(sfi);
+            tabRoute<addrIP> acc1 = nei1.getAccepted(sfm, sfi);
+            tabRoute<addrIP> acc2 = nei2.getAccepted(sfm, sfi);
             if ((acc1 == null) || (acc2 == null)) {
                 return;
             }
@@ -5096,8 +5096,8 @@ public class userShow {
                 }
                 ign |= tabRouteAttr.string2ignore(a);
             }
-            tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
-            tabRoute<addrIP> acc2 = nei2.getAccepted(sfi);
+            tabRoute<addrIP> acc1 = nei1.getAccepted(sfm, sfi);
+            tabRoute<addrIP> acc2 = nei2.getAccepted(sfm, sfi);
             if ((acc1 == null) || (acc2 == null)) {
                 return;
             }
@@ -5160,8 +5160,8 @@ public class userShow {
                 }
                 ign |= tabRouteAttr.string2ignore(a);
             }
-            tabRoute<addrIP> acc1 = nei1.getAccepted(sfi);
-            tabRoute<addrIP> acc2 = nei2.getAccepted(sfi);
+            tabRoute<addrIP> acc1 = nei1.getAccepted(sfm, sfi);
+            tabRoute<addrIP> acc2 = nei2.getAccepted(sfm, sfi);
             if ((acc1 == null) || (acc2 == null)) {
                 return;
             }

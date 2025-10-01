@@ -1662,7 +1662,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             if (!ntry.dampened) {
                 continue;
             }
-            tabRoute<addrIP> lst = getAccepted(ntry.afi);
+            tabRoute<addrIP> lst = getAccepted(ntry.mask, ntry.afi);
             if (lst == null) {
                 continue;
             }
@@ -1945,13 +1945,14 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     /**
      * update dampening statistics
      *
+     * @param mask afi
      * @param afi afi
      * @param rd rd
      * @param prf prefix
      * @param pnlt penalty
      */
-    protected void prefixDampen(int afi, long rd, addrPrefix<addrIP> prf, int pnlt) {
-        rtrBgpDamp ntry = new rtrBgpDamp(afi, rd, prf);
+    protected void prefixDampen(long mask, int afi, long rd, addrPrefix<addrIP> prf, int pnlt) {
+        rtrBgpDamp ntry = new rtrBgpDamp(mask, afi, rd, prf);
         rtrBgpDamp old = dampenPfxs.add(ntry);
         if (old != null) {
             ntry = old;
@@ -2005,10 +2006,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     /**
      * get accepted
      *
+     * @param mask safi to query
      * @param safi safi to query
      * @return table
      */
-    public tabRoute<addrIP> getAccepted(int safi) {
+    public tabRoute<addrIP> getAccepted(long mask, int safi) {
         if (safi == lower.afiUni) {
             return accUni;
         }
@@ -2244,7 +2246,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @return line of string
      */
     public String showNeighs(long mask, int safi) {
-        return showSummry1() + "|" + tabSiz(conn.getLearned(mask, safi)) + "|" + tabSiz(getAccepted(safi)) + "|" + tabSiz(getWilling(mask, safi)) + "|" + tabSiz(conn.getAdverted(mask, safi)) + "|" + bits.timePast(conn.upTime);
+        return showSummry1() + "|" + tabSiz(conn.getLearned(mask, safi)) + "|" + tabSiz(getAccepted(mask, safi)) + "|" + tabSiz(getWilling(mask, safi)) + "|" + tabSiz(conn.getAdverted(mask, safi)) + "|" + bits.timePast(conn.upTime);
     }
 
     /**

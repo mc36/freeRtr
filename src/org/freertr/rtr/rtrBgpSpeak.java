@@ -2193,7 +2193,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         getLearned(mask, safi).clear();
         getAdverted(mask, safi).clear();
         neigh.getWilling(mask, safi).clear();
-        neigh.getAccepted(safi).clear();
+        neigh.getAccepted(mask, safi).clear();
         needEorAfis |= mask;
         if (add) {
             peerAfis |= mask;
@@ -2519,10 +2519,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 continue;
             }
             if (parent.flaps != null) {
-                parent.prefixFlapped(safi, res.rouDst, res.prefix, null);
+                parent.prefixFlapped(mask, safi, res.rouDst, res.prefix, null);
             }
             if (neigh.dampenPfxs != null) {
-                neigh.prefixDampen(safi, res.rouDst, res.prefix, neigh.dampenWthd);
+                neigh.prefixDampen(mask, safi, res.rouDst, res.prefix, neigh.dampenWthd);
             }
             tabRoute<addrIP> learned = getLearned(mask, safi);
             if (learned == null) {
@@ -2567,26 +2567,26 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 continue;
             }
             if ((mask & rtrBgpParam.mskFltR) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, safi, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+                addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
                 continue;
             }
             if ((mask & rtrBgpParam.mskFltO) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, safi, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+                addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
                 continue;
             }
             if ((mask & rtrBgpParam.mskFltE) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, safi, neigh.eroumapIn, neigh.eroupolIn, null);
+                addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, neigh.eroumapIn, neigh.eroupolIn, null);
                 continue;
             }
             if ((mask & rtrBgpParam.mskFltW) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, safi, neigh.wroumapIn, neigh.wroupolIn, null);
+                addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, neigh.wroumapIn, neigh.wroupolIn, null);
                 continue;
             }
             if ((mask & rtrBgpParam.mskFltV) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, safi, neigh.vroumapIn, neigh.vroupolIn, null);
+                addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, neigh.vroumapIn, neigh.vroupolIn, null);
                 continue;
             }
-            addAttribedOne(res, ntry, addpath, learned, changed, safi, null, null, null);
+            addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, null, null, null);
         }
         if (neigh.rtfilterOut && (ortf != lrnRtf.size())) {
             if (debugger.rtrBgpFull) {
@@ -2610,7 +2610,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return false;
     }
 
-    private void addAttribedOne(tabRouteEntry<addrIP> cur, tabRouteEntry<addrIP> attr, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, int safi, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
+    private void addAttribedOne(tabRouteEntry<addrIP> cur, tabRouteEntry<addrIP> attr, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, long mask, int safi, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
         if (cur.best.nextHop == null) {
             cur.best.nextHop = neigh.peerAddr.copyBytes();
         }
@@ -2629,10 +2629,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         attr.best.copyBytes(cur.best, false);
         if (parent.flaps != null) {
-            parent.prefixFlapped(safi, cur.rouDst, cur.prefix, cur.best.asPathInts(-1));
+            parent.prefixFlapped(mask, safi, cur.rouDst, cur.prefix, cur.best.asPathInts(-1));
         }
         if (neigh.dampenPfxs != null) {
-            neigh.prefixDampen(safi, cur.rouDst, cur.prefix, neigh.dampenAnno);
+            neigh.prefixDampen(mask, safi, cur.rouDst, cur.prefix, neigh.dampenAnno);
         }
         neigh.setValidity(safi, cur);
         if (!neigh.softReconfig) {

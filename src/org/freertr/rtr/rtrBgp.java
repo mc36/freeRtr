@@ -2576,14 +2576,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         fullCount++;
     }
 
-    private tabRouteEntry<addrIP> computeIncrBest(int afi, rtrBgpNeigh nei, tabRouteEntry<addrIP> best, tabRouteEntry<addrIP> curr) {
+    private tabRouteEntry<addrIP> computeIncrBest(long mask, int afi, rtrBgpNeigh nei, tabRouteEntry<addrIP> best, tabRouteEntry<addrIP> curr) {
         if (nei == null) {
             return best;
         }
         if (!nei.reachable) {
             return best;
         }
-        tabRoute<addrIP> acc = nei.getAccepted(afi);
+        tabRoute<addrIP> acc = nei.getAccepted(mask, afi);
         if (acc == null) {
             if (debugger.rtrBgpFull) {
                 logger.debug("table not found");
@@ -2626,10 +2626,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             best.best.rouSrc = rtrBgpUtil.peerOriginate;
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            best = computeIncrBest(afi, lstnNei.get(i), best, curr);
+            best = computeIncrBest(mask, afi, lstnNei.get(i), best, curr);
         }
         for (int i = 0; i < neighs.size(); i++) {
-            best = computeIncrBest(afi, neighs.get(i), best, curr);
+            best = computeIncrBest(mask, afi, neighs.get(i), best, curr);
         }
         if (best == null) {
             cmp.del(curr);
@@ -2988,16 +2988,17 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * update flap statistics
      *
+     * @param mask afi
      * @param afi afi
      * @param rd rd
      * @param prf prefix
      * @param pth path
      */
-    protected void prefixFlapped(int afi, long rd, addrPrefix<addrIP> prf, List<Integer> pth) {
+    protected void prefixFlapped(long mask, int afi, long rd, addrPrefix<addrIP> prf, List<Integer> pth) {
         if (pth == null) {
             pth = new ArrayList<Integer>();
         }
-        rtrBgpFlapStat ntry = new rtrBgpFlapStat(afi, rd, prf);
+        rtrBgpFlapStat ntry = new rtrBgpFlapStat(mask, afi, rd, prf);
         rtrBgpFlapStat old = flaps.add(ntry);
         if (old != null) {
             ntry = old;
@@ -4863,17 +4864,18 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * get flap paths
      *
+     * @param mask afi
      * @param afi afi
      * @param rd rd
      * @param prf prefix
      * @param rev reverse path
      * @return list of paths
      */
-    public userFormat getFlappath(int afi, long rd, addrPrefix<addrIP> prf, boolean rev) {
+    public userFormat getFlappath(long mask, int afi, long rd, addrPrefix<addrIP> prf, boolean rev) {
         if (flaps == null) {
             return null;
         }
-        rtrBgpFlapStat ntry = new rtrBgpFlapStat(afi, rd, prf);
+        rtrBgpFlapStat ntry = new rtrBgpFlapStat(mask, afi, rd, prf);
         ntry = flaps.find(ntry);
         if (ntry == null) {
             return null;

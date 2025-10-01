@@ -235,7 +235,7 @@ public class rtrBgpDump {
             if (prf == null) {
                 continue;
             }
-            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, prf.rouDst, prf.prefix);
+            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, prf.rouDst, prf.prefix);
             rtrBgpFlapStat old = lst.add(ntry);
             if (old != null) {
                 ntry = old;
@@ -267,7 +267,7 @@ public class rtrBgpDump {
             if (prf == null) {
                 continue;
             }
-            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, prf.best.nextHop);
+            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, 0, prf.best.nextHop);
             rtrBgpFlapStat old = lst.add(ntry);
             if (old != null) {
                 ntry = old;
@@ -297,7 +297,7 @@ public class rtrBgpDump {
             if (prf == null) {
                 continue;
             }
-            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, prf.best.nextHop);
+            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, 0, prf.best.nextHop);
             rtrBgpFlapStat old = lst.add(ntry);
             if (old != null) {
                 ntry = old;
@@ -329,7 +329,7 @@ public class rtrBgpDump {
             if (prf == null) {
                 continue;
             }
-            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, prf.best.nextHop);
+            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, 0, prf.best.nextHop);
             rtrBgpFlapStat old = lst.add(ntry);
             if (old != null) {
                 ntry = old;
@@ -361,7 +361,7 @@ public class rtrBgpDump {
             if (prf == null) {
                 continue;
             }
-            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, prf.rouDst, prf.prefix);
+            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, prf.rouDst, prf.prefix);
             rtrBgpFlapStat old = lst.add(ntry);
             if (old != null) {
                 ntry = old;

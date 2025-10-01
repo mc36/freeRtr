@@ -12,6 +12,11 @@ import org.freertr.util.bits;
  * @author matecsaba
  */
 public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
+    
+    /**
+     * address family
+     */
+    public final long mask;
 
     /**
      * address family
@@ -46,11 +51,13 @@ public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
     /**
      * create instance
      *
+     * @param m afi
      * @param a afi
      * @param r rd
      * @param p prefix
      */
-    public rtrBgpDamp(int a, long r, addrPrefix<addrIP> p) {
+    public rtrBgpDamp(long m, int a, long r, addrPrefix<addrIP> p) {
+        mask = m;
         afi = a;
         rd = r;
         prefix = p.copyBytes();
