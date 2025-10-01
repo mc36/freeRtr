@@ -533,107 +533,107 @@ public class rtrBgpGroup extends rtrBgpParam {
      * @param safi safi to query
      * @return table
      */
-    public tabRoute<addrIP> getChanged(int safi) {
-        if (safi == lower.afiUni) {
+    public tabRoute<addrIP> getChanged(long mask, int safi) {
+        if (mask == rtrBgpParam.mskUni) {
             return chgUni;
         }
-        if (safi == lower.afiLab) {
+        if (mask == rtrBgpParam.mskLab) {
             return chgUni;
         }
-        if (safi == lower.afiCtp) {
+        if (mask == rtrBgpParam.mskCtp) {
             return chgUni;
         }
-        if (safi == lower.afiCar) {
+        if (mask == rtrBgpParam.mskCar) {
             return chgUni;
         }
-        if (safi == lower.afiMlt) {
+        if (mask == rtrBgpParam.mskMlt) {
             return chgMlt;
         }
-        if (safi == lower.afiOlab) {
+        if (mask == rtrBgpParam.mskOlab) {
             return chgOuni;
         }
-        if (safi == lower.afiOctp) {
+        if (mask == rtrBgpParam.mskOctp) {
             return chgOuni;
         }
-        if (safi == lower.afiOcar) {
+        if (mask == rtrBgpParam.mskOcar) {
             return chgOuni;
         }
-        if (safi == lower.afiOuni) {
+        if (mask == rtrBgpParam.mskOuni) {
             return chgOuni;
         }
-        if (safi == lower.afiOmlt) {
+        if (mask == rtrBgpParam.mskOmlt) {
             return chgOmlt;
         }
-        if (safi == lower.afiOflw) {
+        if (mask == rtrBgpParam.mskOflw) {
             return chgOflw;
         }
-        if (safi == lower.afiOsrt) {
+        if (mask == rtrBgpParam.mskOsrt) {
             return chgOsrt;
         }
-        if (safi == lower.afiFlw) {
+        if (mask == rtrBgpParam.mskFlw) {
             return chgFlw;
         }
-        if (safi == lower.afiVpnU) {
+        if (mask == rtrBgpParam.mskVpnU) {
             return chgVpnU;
         }
-        if (safi == lower.afiVpnM) {
+        if (mask == rtrBgpParam.mskVpnM) {
             return chgVpnM;
         }
-        if (safi == lower.afiVpnF) {
+        if (mask == rtrBgpParam.mskVpnF) {
             return chgVpnF;
         }
-        if (safi == lower.afiVpoU) {
+        if (mask == rtrBgpParam.mskVpoU) {
             return chgVpoU;
         }
-        if (safi == lower.afiVpoM) {
+        if (mask == rtrBgpParam.mskVpoM) {
             return chgVpoM;
         }
-        if (safi == lower.afiVpoF) {
+        if (mask == rtrBgpParam.mskVpoF) {
             return chgVpoF;
         }
-        if (safi == lower.afiVpls) {
+        if (mask == rtrBgpParam.mskVpls) {
             return chgVpls;
         }
-        if (safi == lower.afiMspw) {
+        if (mask == rtrBgpParam.mskMspw) {
             return chgMspw;
         }
-        if (safi == lower.afiEvpn) {
+        if (mask == rtrBgpParam.mskEvpn) {
             return chgEvpn;
         }
-        if (safi == lower.afiMdt) {
+        if (mask == rtrBgpParam.mskMdt) {
             return chgMdt;
         }
-        if (safi == lower.afiNsh) {
+        if (mask == rtrBgpParam.mskNsh) {
             return chgNsh;
         }
-        if (safi == lower.afiRpd) {
+        if (mask == rtrBgpParam.mskRpd) {
             return chgRpd;
         }
-        if (safi == lower.afiSdw) {
+        if (mask == rtrBgpParam.mskSdw) {
             return chgSdw;
         }
-        if (safi == lower.afiSpf) {
+        if (mask == rtrBgpParam.mskSpf) {
             return chgSpf;
         }
-        if (safi == lower.afiRtf) {
+        if (mask == rtrBgpParam.mskRtf) {
             return chgRtf;
         }
-        if (safi == lower.afiSrte) {
+        if (mask == rtrBgpParam.mskSrte) {
             return chgSrte;
         }
-        if (safi == lower.afiLnks) {
+        if (mask == rtrBgpParam.mskLnks) {
             return chgLnks;
         }
-        if (safi == lower.afiMvpn) {
+        if (mask == rtrBgpParam.mskMvpn) {
             return chgMvpn;
         }
-        if (safi == lower.afiMvpo) {
+        if (mask == rtrBgpParam.mskMvpo) {
             return chgMvpo;
         }
-        if (safi == lower.afiMtre) {
+        if (mask == rtrBgpParam.mskMtre) {
             return chgMtre;
         }
-        if (safi == lower.afiMtro) {
+        if (mask == rtrBgpParam.mskMtro) {
             return chgMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");

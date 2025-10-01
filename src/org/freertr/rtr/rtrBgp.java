@@ -2637,7 +2637,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             for (int i = 0; i < groups.size(); i++) {
                 rtrBgpGroup grp = groups.get(i);
                 tabRoute<addrIP> wil = grp.getWilling(mask, afi);
-                tabRoute<addrIP> chg = grp.getChanged(afi);
+                tabRoute<addrIP> chg = grp.getChanged(mask, afi);
                 if ((wil == null) || (chg == null)) {
                     if (debugger.rtrBgpFull) {
                         logger.debug("table not found");
@@ -2672,7 +2672,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < groups.size(); i++) {
             rtrBgpGroup grp = groups.get(i);
             tabRoute<addrIP> wil = grp.getWilling(mask, afi);
-            tabRoute<addrIP> chg = grp.getChanged(afi);
+            tabRoute<addrIP> chg = grp.getChanged(mask, afi);
             if ((wil == null) || (chg == null)) {
                 if (debugger.rtrBgpFull) {
                     logger.debug("table not found");
