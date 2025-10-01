@@ -622,10 +622,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * get learned
      *
+     * @param mask safi to query
      * @param safi safi to query
      * @return table
      */
-    public tabRoute<addrIP> getLearned(int safi) {
+    public tabRoute<addrIP> getLearned(long mask, int safi) {
         if (safi == parent.afiUni) {
             return lrnUni;
         }
@@ -2105,7 +2106,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         if (mode == 1) {
-            tabRoute<addrIP> learned = getLearned(safi);
+            tabRoute<addrIP> learned = getLearned(mask, safi);
             if (learned == null) {
                 return;
             }
@@ -2196,7 +2197,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
 
     private void renegotiatingSafi(long msk, int safi, boolean add, boolean cfg) {
         sendEndOfRib(safi);
-        clearOneTable(getLearned(safi));
+        clearOneTable(getLearned(msk, safi));
         clearOneTable(getAdverted(msk, safi));
         clearOneTable(neigh.getWilling(safi));
         clearOneTable(neigh.getAccepted(safi));
@@ -2238,7 +2239,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         refreshTx++;
-        tabRoute<addrIP> learned = getLearned(safi);
+        tabRoute<addrIP> learned = getLearned(mask, safi);
         if (learned == null) {
             return;
         }
@@ -2530,7 +2531,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (neigh.dampenPfxs != null) {
                 neigh.prefixDampen(safi, res.rouDst, res.prefix, neigh.dampenWthd);
             }
-            tabRoute<addrIP> learned = getLearned(safi);
+            tabRoute<addrIP> learned = getLearned(mask, safi);
             if (learned == null) {
                 continue;
             }
@@ -2564,7 +2565,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 continue;
             }
-            tabRoute<addrIP> learned = getLearned(safi);
+            tabRoute<addrIP> learned = getLearned(mask, safi);
             if (learned == null) {
                 continue;
             }

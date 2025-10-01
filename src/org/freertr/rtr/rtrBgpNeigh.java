@@ -638,7 +638,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @param safi safi to refresh
      */
     public void saveTable(RandomAccessFile fil, long mask, int safi) {
-        rtrBgpMrt.dumpTable(fil, conn, safi, conn.getLearned(safi), false, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
+        rtrBgpMrt.dumpTable(fil, conn, safi, conn.getLearned(mask, safi), false, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
         rtrBgpMrt.dumpTable(fil, conn, safi, conn.getAdverted(mask, safi), true, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
     }
 
@@ -2243,7 +2243,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @return line of string
      */
     public String showNeighs(long mask, int safi) {
-        return showSummry1() + "|" + tabSiz(conn.getLearned(safi)) + "|" + tabSiz(getAccepted(safi)) + "|" + tabSiz(getWilling(safi)) + "|" + tabSiz(conn.getAdverted(mask, safi)) + "|" + bits.timePast(conn.upTime);
+        return showSummry1() + "|" + tabSiz(conn.getLearned(mask, safi)) + "|" + tabSiz(getAccepted(safi)) + "|" + tabSiz(getWilling(safi)) + "|" + tabSiz(conn.getAdverted(mask, safi)) + "|" + bits.timePast(conn.upTime);
     }
 
     /**
