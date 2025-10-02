@@ -19,21 +19,23 @@ int eth1
 router bgp4 1
  vrf v1
  no safe-ebgp
- address uni
+ address uni multi
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 extended-nexthop-curr uni
+ neigh 1.1.1.2 extended-nexthop-oth multi
  red conn
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address uni
+ address uni multi
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
  neigh 1234:1::2 extended-nexthop-curr uni
+ neigh 1234:1::2 extended-nexthop-oth multi
  red conn
  exit
 !
@@ -63,25 +65,29 @@ int eth2
 router bgp4 1
  vrf v1
  no safe-ebgp
- address uni
+ address uni multi
  local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 extended-nexthop-curr uni
+ neigh 1.1.1.1 extended-nexthop-oth multi
  neigh 1.1.1.6 remote-as 3
  neigh 1.1.1.6 extended-nexthop-curr uni
+ neigh 1.1.1.6 extended-nexthop-oth multi
  red conn
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address uni
+ address uni multi
  local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
  neigh 1234:1::1 extended-nexthop-curr uni
+ neigh 1234:1::1 extended-nexthop-oth multi
  neigh 1234:2::2 remote-as 3
  neigh 1234:2::2 extended-nexthop-curr uni
+ neigh 1234:2::2 extended-nexthop-oth multi
  red conn
  exit
 !
@@ -111,7 +117,7 @@ int eth2
 router bgp4 1
  vrf v1
  no safe-ebgp
- address uni
+ address uni multi
  local-as 3
  router-id 4.4.4.3
  neigh 1.1.1.5 remote-as 2
@@ -121,7 +127,7 @@ router bgp4 1
 router bgp6 1
  vrf v1
  no safe-ebgp
- address uni
+ address uni multi
  local-as 3
  router-id 6.6.6.3
  neigh 1234:2::1 remote-as 2
@@ -149,21 +155,23 @@ int eth1
 router bgp4 1
  vrf v1
  no safe-ebgp
- address uni
+ address uni multi
  local-as 4
  router-id 4.4.4.4
  neigh 1.1.1.9 remote-as 3
  neigh 1.1.1.9 extended-nexthop-curr uni
+ neigh 1.1.1.9 extended-nexthop-oth multi
  red conn
  exit
 router bgp6 1
  vrf v1
  no safe-ebgp
- address uni
+ address uni multi
  local-as 4
  router-id 6.6.6.4
  neigh 1234:3::1 remote-as 3
  neigh 1234:3::1 extended-nexthop-curr uni
+ neigh 1234:3::1 extended-nexthop-oth multi
  red conn
  exit
 !

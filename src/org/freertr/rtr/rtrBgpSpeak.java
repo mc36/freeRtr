@@ -484,12 +484,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * peer extended nexthop capability
      */
-    public long peerExtNextCur;
+    public boolean[] peerExtNextCur;
 
     /**
      * peer extended nexthop capability
      */
-    public long peerExtNextOtr;
+    public boolean[] peerExtNextOtr;
 
     /**
      * peer leak prevention role capability
@@ -606,6 +606,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         peerGrace = rtrBgpParam.boolsSet(false);
         peerLlGrace = rtrBgpParam.boolsSet(false);
         peerMltLab = rtrBgpParam.boolsSet(false);
+        peerExtNextCur = rtrBgpParam.boolsSet(false);
+        peerExtNextOtr = rtrBgpParam.boolsSet(false);
         ready2adv = false;
         resumed = res == 2;
         addpathBeg = bits.randomD();
@@ -2081,15 +2083,15 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         for (i = 0; i < tlv.valSiz; i += 6) {
                             int o = bits.msbGetD(tlv.valDat, i + 0);
                             int p = bits.msbGetW(tlv.valDat, i + 4);
-                            long q = parent.safi2mask(o);
-                            if (q < 1) {
+                            int q = parent.safi2idx(o);
+                            if (q < 0) {
                                 continue;
                             }
                             if (p == (parent.afiUni >>> 16)) {
-                                peerExtNextCur |= q;
+                                peerExtNextCur[q] = true;
                             }
                             if (p == (parent.afiOuni >>> 16)) {
-                                peerExtNextOtr |= q;
+                                peerExtNextOtr[q] = true;
                             }
                         }
                         break;
@@ -2139,8 +2141,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             peerGrace = rtrBgpParam.boolsCopy(neigh.graceRestart);
             peerLlGrace = rtrBgpParam.boolsCopy(neigh.llGraceRestart);
             peerMltLab = rtrBgpParam.boolsCopy(neigh.multiLabel);
-            peerExtNextCur = rtrBgpParam.bools2mask(neigh.extNextCur);
-            peerExtNextOtr = rtrBgpParam.bools2mask(neigh.extNextOtr);
+            peerExtNextCur = rtrBgpParam.boolsCopy(neigh.extNextCur);
+            peerExtNextOtr = rtrBgpParam.boolsCopy(neigh.extNextOtr);
             addpathRx = neigh.addpathRmode;
             addpathTx = neigh.addpathTmode;
             peerRefreshOld = neigh.routeRefreshOld;

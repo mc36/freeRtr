@@ -733,8 +733,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("longlive graceful sent|" + rtrBgpParam.bools2string(llGraceRestart));
         l.add("multilabel got|" + rtrBgpParam.bools2string(conn.peerMltLab));
         l.add("multilabel sent|" + rtrBgpParam.bools2string(multiLabel));
-        l.add("extnexthop cur|" + rtrBgpParam.mask2string(conn.peerExtNextCur));
-        l.add("extnexthop otr|" + rtrBgpParam.mask2string(conn.peerExtNextOtr));
+        l.add("extnexthop cur|" + rtrBgpParam.bools2string(conn.peerExtNextCur));
+        l.add("extnexthop otr|" + rtrBgpParam.bools2string(conn.peerExtNextOtr));
         l.add("addpath rx open|" + rtrBgpParam.mask2string(conn.addpathRx));
         l.add("addpath tx open|" + rtrBgpParam.mask2string(conn.addpathTx));
         l.add("addpath rx got|" + rtrBgpParam.mask2string(conn.originalAddRlist));
