@@ -1810,7 +1810,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaAdditionPath, buf);
         }
-        safis = mask2list(neigh.extNextCur & neigh.addrFams);
+        safis = mask2list(rtrBgpParam.bools2mask(neigh.extNextCur) & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 6];
             for (int i = 0; i < safis.size(); i++) {
@@ -1819,7 +1819,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtNextHop, buf);
         }
-        safis = mask2list(neigh.extNextOtr & neigh.addrFams);
+        safis = mask2list(rtrBgpParam.bools2mask(neigh.extNextOtr) & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 6];
             for (int i = 0; i < safis.size(); i++) {
@@ -2139,8 +2139,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             peerGrace = rtrBgpParam.boolsCopy(neigh.graceRestart);
             peerLlGrace = rtrBgpParam.boolsCopy(neigh.llGraceRestart);
             peerMltLab = rtrBgpParam.boolsCopy(neigh.multiLabel);
-            peerExtNextCur = neigh.extNextCur;
-            peerExtNextOtr = neigh.extNextOtr;
+            peerExtNextCur = rtrBgpParam.bools2mask(neigh.extNextCur);
+            peerExtNextOtr = rtrBgpParam.bools2mask(neigh.extNextOtr);
             addpathRx = neigh.addpathRmode;
             addpathTx = neigh.addpathTmode;
             peerRefreshOld = neigh.routeRefreshOld;

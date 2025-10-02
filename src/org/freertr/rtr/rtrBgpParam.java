@@ -401,12 +401,12 @@ public abstract class rtrBgpParam {
     /**
      * extended nexthop current afi
      */
-    public long extNextCur;
+    public boolean[] extNextCur;
 
     /**
      * extended nexthop other afi
      */
-    public long extNextOtr;
+    public boolean[] extNextOtr;
 
     /**
      * hostname
@@ -1032,6 +1032,22 @@ public abstract class rtrBgpParam {
     }
 
     /**
+     * compare value
+     *
+     * @param src source
+     * @param val value
+     * @return result, true if equals, false if not
+     */
+    public final static boolean boolsComp(boolean[] src, boolean[] val) {
+        for (int i = 0; i < src.length; i++) {
+            if (src[i] != val[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * string to afi mask
      *
      * @param s string
@@ -1344,7 +1360,9 @@ public abstract class rtrBgpParam {
                     return null;
             }
         }
-        if (a.length()<1)return "none";
+        if (a.length() < 1) {
+            return " none";
+        }
         return a;
     }
 
@@ -1672,6 +1690,8 @@ public abstract class rtrBgpParam {
         graceRestart = boolsSet(false);
         llGraceRestart = boolsSet(false);
         multiLabel = boolsSet(false);
+        extNextCur = boolsSet(false);
+        extNextOtr = boolsSet(false);
         wideAsPath = true;
         routeRefreshOld = true;
         routeRefreshNew = true;
@@ -1773,8 +1793,8 @@ public abstract class rtrBgpParam {
         graceRestart = boolsCopy(src.graceRestart);
         llGraceRestart = boolsCopy(src.llGraceRestart);
         multiLabel = boolsCopy(src.multiLabel);
-        extNextCur = src.extNextCur;
-        extNextOtr = src.extNextOtr;
+        extNextCur = boolsCopy(src.extNextCur);
+        extNextOtr = boolsCopy(src.extNextOtr);
         hostname = src.hostname;
         software = src.software;
         extOpen = src.extOpen;
@@ -2557,8 +2577,8 @@ public abstract class rtrBgpParam {
         l.add(beg + nei + "multiple-labels" + bools2string(multiLabel));
         l.add(beg + nei + "graceful-restart" + bools2string(graceRestart));
         l.add(beg + nei + "longlived-graceful" + bools2string(llGraceRestart));
-        l.add(beg + nei + "extended-nexthop-current" + mask2string(extNextCur));
-        l.add(beg + nei + "extended-nexthop-other" + mask2string(extNextOtr));
+        l.add(beg + nei + "extended-nexthop-current" + bools2string(extNextCur));
+        l.add(beg + nei + "extended-nexthop-other" + bools2string(extNextOtr));
         s = "";
         if (hostname > 1) {
             s = "domain";
@@ -2995,16 +3015,16 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("extended-nexthop-current")) {
-            extNextCur = string2mask(cmd);
+            extNextCur = string2bools(cmd);
             if (negated) {
-                extNextCur = 0;
+                extNextCur = boolsSet(false);
             }
             return false;
         }
         if (s.equals("extended-nexthop-other")) {
-            extNextOtr = string2mask(cmd);
+            extNextOtr = string2bools(cmd);
             if (negated) {
-                extNextOtr = 0;
+                extNextOtr = boolsSet(false);
             }
             return false;
         }
