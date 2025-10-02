@@ -791,172 +791,468 @@ public abstract class rtrBgpParam {
     /**
      * unicast
      */
-    public final static long mskUni = 0x01;
+    public final static int idxUni = 0;
 
     /**
      * labeled unicast
      */
-    public final static long mskLab = 0x02;
+    public final static int idxLab = 1;
 
     /**
      * multicast
      */
-    public final static long mskMlt = 0x04;
+    public final static int idxMlt = 2;
 
     /**
      * vpn unicast
      */
-    public final static long mskVpnU = 0x08;
+    public final static int idxVpnU = 3;
 
     /**
      * vpn multicast
      */
-    public final static long mskVpnM = 0x10;
+    public final static int idxVpnM = 4;
 
     /**
      * vpls
      */
-    public final static long mskVpls = 0x20;
+    public final static int idxVpls = 5;
 
     /**
      * evpn
      */
-    public final static long mskEvpn = 0x40;
+    public final static int idxEvpn = 6;
 
     /**
      * mdt
      */
-    public final static long mskMdt = 0x80;
+    public final static int idxMdt = 7;
 
     /**
      * flowspec
      */
-    public final static long mskFlw = 0x100;
+    public final static int idxFlw = 8;
 
     /**
      * vpn flowspec
      */
-    public final static long mskVpnF = 0x200;
+    public final static int idxVpnF = 9;
 
     /**
      * other vpn unicast
      */
-    public final static long mskVpoU = 0x400;
+    public final static int idxVpoU = 10;
 
     /**
      * other vpn multicast
      */
-    public final static long mskVpoM = 0x800;
+    public final static int idxVpoM = 11;
 
     /**
      * other vpn flowspec
      */
-    public final static long mskVpoF = 0x1000;
+    public final static int idxVpoF = 12;
 
     /**
      * mvpn
      */
-    public final static long mskMvpn = 0x2000;
+    public final static int idxMvpn = 13;
 
     /**
      * other mvpn
      */
-    public final static long mskMvpo = 0x4000;
+    public final static int idxMvpo = 14;
 
     /**
      * other labeled unicast
      */
-    public final static long mskOlab = 0x8000;
+    public final static int idxOlab = 15;
 
     /**
      * mspw
      */
-    public final static long mskMspw = 0x10000;
+    public final static int idxMspw = 16;
 
     /**
      * srte
      */
-    public final static long mskSrte = 0x20000;
+    public final static int idxSrte = 17;
 
     /**
      * link state
      */
-    public final static long mskLnks = 0x40000;
+    public final static int idxLnks = 18;
 
     /**
      * other unicast
      */
-    public final static long mskOuni = 0x80000;
+    public final static int idxOuni = 19;
 
     /**
      * other multicast
      */
-    public final static long mskOmlt = 0x100000;
+    public final static int idxOmlt = 20;
 
     /**
      * other flowspec
      */
-    public final static long mskOflw = 0x200000;
+    public final static int idxOflw = 21;
 
     /**
      * other srte
      */
-    public final static long mskOsrt = 0x400000;
+    public final static int idxOsrt = 22;
 
     /**
      * nsh
      */
-    public final static long mskNsh = 0x800000;
+    public final static int idxNsh = 23;
 
     /**
      * rtfilter
      */
-    public final static long mskRtf = 0x1000000;
+    public final static int idxRtf = 24;
 
     /**
      * classful transport plane
      */
-    public final static long mskCtp = 0x2000000;
+    public final static int idxCtp = 25;
 
     /**
      * other classful transport plane
      */
-    public final static long mskOctp = 0x4000000;
+    public final static int idxOctp = 26;
 
     /**
      * rpd
      */
-    public final static long mskRpd = 0x8000000;
+    public final static int idxRpd = 27;
 
     /**
      * color aware routing
      */
-    public final static long mskCar = 0x10000000;
+    public final static int idxCar = 28;
 
     /**
      * other color aware routing
      */
-    public final static long mskOcar = 0x20000000;
+    public final static int idxOcar = 29;
 
     /**
      * mvpn
      */
-    public final static long mskMtre = 0x40000000;
+    public final static int idxMtre = 30;
 
     /**
      * other mvpn
      */
-    public final static long mskMtro = 0x80000000L;
+    public final static int idxMtro = 31;
 
     /**
      * spf
      */
-    public final static long mskSpf = 0x100000000L;
+    public final static int idxSpf = 32;
 
     /**
      * sdwan
      */
-    public final static long mskSdw = 0x200000000L;
+    public final static int idxSdw = 33;
+
+    /**
+     * afi index to string
+     *
+     * @param i afi index
+     * @return string
+     */
+    public final static String index2string(int i) {
+        switch (i) {
+            case idxUni:
+                return "unicast";
+            case idxLab:
+                return "labeled";
+            case idxCtp:
+                return "ctp";
+            case idxCar:
+                return "car";
+            case idxMlt:
+                return "multicast";
+            case idxOlab:
+                return "olab";
+            case idxOctp:
+                return "octp";
+            case idxOcar:
+                return "ocar";
+            case idxOuni:
+                return "ouni";
+            case idxOmlt:
+                return "omlt";
+            case idxFlw:
+                return "flowspec";
+            case idxOflw:
+                return "oflw";
+            case idxVpnU:
+                return "vpnuni";
+            case idxVpnM:
+                return "vpnmlt";
+            case idxVpnF:
+                return "vpnflw";
+            case idxVpoU:
+                return "ovpnuni";
+            case idxVpoM:
+                return "ovpnmlt";
+            case idxVpoF:
+                return "ovpnflw";
+            case idxVpls:
+                return "vpls";
+            case idxMspw:
+                return "mspw";
+            case idxEvpn:
+                return "evpn";
+            case idxMdt:
+                return "mdt";
+            case idxNsh:
+                return "nsh";
+            case idxRpd:
+                return "rpd";
+            case idxSpf:
+                return "spf";
+            case idxSdw:
+                return "sdwan";
+            case idxRtf:
+                return "rtfilter";
+            case idxSrte:
+                return "srte";
+            case idxOsrt:
+                return "osrt";
+            case idxLnks:
+                return "linkstate";
+            case idxMvpn:
+                return "mvpn";
+            case idxMvpo:
+                return "omvpn";
+            case idxMtre:
+                return "mtree";
+            case idxMtro:
+                return "omtree";
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * and value
+     *
+     * @param src source
+     * @param val value
+     * @return result
+     */
+    public final static boolean[] boolsAnd(boolean[] src, boolean val[]) {
+        boolean[] res = new boolean[src.length];
+        for (int i = 0; i < src.length; i++) {
+            res[i] = src[i] & val[i];
+        }
+        return res;
+    }
+
+    /**
+     * or value
+     *
+     * @param src source
+     * @param val value
+     * @return result
+     */
+    public final static boolean[] boolsOr(boolean[] src, boolean val[]) {
+        boolean[] res = new boolean[src.length];
+        for (int i = 0; i < src.length; i++) {
+            res[i] = src[i] | val[i];
+        }
+        return res;
+    }
+
+    /**
+     * or value
+     *
+     * @param src source
+     * @param val value
+     * @return result
+     */
+    public final static boolean[] boolsSet(boolean val) {
+        boolean[] res = new boolean[34];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = val;
+        }
+        return res;
+    }
+
+    /**
+     * unicast
+     */
+    public final static long mskUni = 1L << idxUni;
+
+    /**
+     * labeled unicast unicast
+     */
+    public final static long mskLab = 1L << idxLab;
+
+    /**
+     * multicast
+     */
+    public final static long mskMlt = 1L << idxMlt;
+
+    /**
+     * vpn unicast unicast
+     */
+    public final static long mskVpnU = 1L << idxVpnU;
+
+    /**
+     * vpn multicast multicast
+     */
+    public final static long mskVpnM = 1L << idxVpnM;
+
+    /**
+     * vpls
+     */
+    public final static long mskVpls = 1L << idxVpls;
+
+    /**
+     * evpn
+     */
+    public final static long mskEvpn = 1L << idxEvpn;
+
+    /**
+     * mdt
+     */
+    public final static long mskMdt = 1L << idxMdt;
+
+    /**
+     * flowspec
+     */
+    public final static long mskFlw = 1L << idxFlw;
+
+    /**
+     * vpn flowspec flowspec
+     */
+    public final static long mskVpnF = 1L << idxVpnF;
+
+    /**
+     * other vpn unicast vpn unicast
+     */
+    public final static long mskVpoU = 1L << idxVpoU;
+
+    /**
+     * other vpn multicast vpn multicast
+     */
+    public final static long mskVpoM = 1L << idxVpoM;
+
+    /**
+     * other vpn flowspec vpn flowspec
+     */
+    public final static long mskVpoF = 1L << idxVpoF;
+
+    /**
+     * mvpn
+     */
+    public final static long mskMvpn = 1L << idxMvpn;
+
+    /**
+     * other mvpn mvpn
+     */
+    public final static long mskMvpo = 1L << idxMvpo;
+
+    /**
+     * other labeled unicast labeled unicast
+     */
+    public final static long mskOlab = 1L << idxOlab;
+
+    /**
+     * mspw
+     */
+    public final static long mskMspw = 1L << idxMspw;
+
+    /**
+     * srte
+     */
+    public final static long mskSrte = 1L << idxSrte;
+
+    /**
+     * link state state
+     */
+    public final static long mskLnks = 1L << idxLnks;
+
+    /**
+     * other unicast unicast
+     */
+    public final static long mskOuni = 1L << idxOuni;
+
+    /**
+     * other multicast multicast
+     */
+    public final static long mskOmlt = 1L << idxOmlt;
+
+    /**
+     * other flowspec flowspec
+     */
+    public final static long mskOflw = 1L << idxOflw;
+
+    /**
+     * other srte srte
+     */
+    public final static long mskOsrt = 1L << idxOsrt;
+
+    /**
+     * nsh
+     */
+    public final static long mskNsh = 1L << idxNsh;
+
+    /**
+     * rtfilter
+     */
+    public final static long mskRtf = 1L << idxRtf;
+
+    /**
+     * classful transport plane transport plane
+     */
+    public final static long mskCtp = 1L << idxCtp;
+
+    /**
+     * other classful transport classful transport
+     */
+    public final static long mskOctp = 1L << idxOctp;
+
+    /**
+     * rpd
+     */
+    public final static long mskRpd = 1L << idxRpd;
+
+    /**
+     * color aware routing aware routing
+     */
+    public final static long mskCar = 1L << idxCar;
+
+    /**
+     * other color aware color aware
+     */
+    public final static long mskOcar = 1L << idxOcar;
+
+    /**
+     * mvpn
+     */
+    public final static long mskMtre = 1L << idxMtre;
+
+    /**
+     * other mvpn mvpn
+     */
+    public final static long mskMtro = 1L << idxMtro;
+
+    /**
+     * spf
+     */
+    public final static long mskSpf = 1L << idxSpf;
+
+    /**
+     * sdwan
+     */
+    public final static long mskSdw = 1L << idxSdw;
 
     /**
      * all
@@ -994,6 +1290,40 @@ public abstract class rtrBgpParam {
     public final static long mskFltV = mskFlw | mskSrte | mskVpnU | mskVpnM | mskVpnF | mskMvpn | mskMtre;
 
     /**
+     * convert booleans to mask
+     *
+     * @param src booleans
+     * @return mask
+     */
+    public final static long bools2mask(boolean[] src) {
+        long o = 0;
+        for (int i = 0; i < src.length; i++) {
+            if (!src[i]) {
+                continue;
+            }
+            o |= 1L << i;
+        }
+        return o;
+    }
+
+    /**
+     * convert mask to booleans
+     *
+     * @param src mask
+     * @return booleans
+     */
+    public final static boolean[] mask2bools(long o) {
+        boolean[] res = boolsSet(false);
+        for (int i = 0; i < res.length; i++) {
+            if ((o & (1 << i)) == 0) {
+                continue;
+            }
+            res[i] = true;
+        }
+        return res;
+    }
+
+    /**
      * string to afi mask
      *
      * @param s string
@@ -1005,150 +1335,201 @@ public abstract class rtrBgpParam {
     }
 
     /**
+     * convert mask to index
+     *
+     * @param o mask
+     * @return index
+     */
+    public final static int mask2index(long o) {
+        for (int i = 0; i < 60; i++) {
+            if (((1L << i) & o) != 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * string to afi mask
      *
      * @param c string
      * @return afi mask
      */
     public final static long string2mask(cmds c) {
-        long i = 0;
+        boolean[] res = boolsSet(false);
         for (;;) {
             String a = c.word();
             if (a.length() < 1) {
                 break;
             }
             if (a.equals("all")) {
-                i |= mskAll;
+                res = boolsSet(true);
+                continue;
             }
             if (a.equals("none")) {
-                i = 0;
+                res = boolsSet(false);
+                continue;
             }
             if (a.equals("unicast")) {
-                i |= mskUni;
+                res[idxUni] = true;
+                continue;
             }
             if (a.equals("labeled")) {
-                i |= mskLab;
+                res[idxLab] = true;
+                continue;
             }
             if (a.equals("ctp")) {
-                i |= mskCtp;
+                res[idxCtp] = true;
+                continue;
             }
             if (a.equals("car")) {
-                i |= mskCar;
+                res[idxCar] = true;
+                continue;
             }
             if (a.equals("multicast")) {
-                i |= mskMlt;
+                res[idxMlt] = true;
+                continue;
             }
             if (a.equals("flowspec")) {
-                i |= mskFlw;
+                res[idxFlw] = true;
+                continue;
             }
             if (a.equals("vpnuni")) {
-                i |= mskVpnU;
+                res[idxVpnU] = true;
+                continue;
             }
             if (a.equals("vpnmlt")) {
-                i |= mskVpnM;
+                res[idxVpnM] = true;
+                continue;
             }
             if (a.equals("vpnflw")) {
-                i |= mskVpnF;
+                res[idxVpnF] = true;
+                continue;
             }
             if (a.equals("vpls")) {
-                i |= mskVpls;
+                res[idxVpls] = true;
+                continue;
             }
             if (a.equals("mspw")) {
-                i |= mskMspw;
+                res[idxMspw] = true;
+                continue;
             }
             if (a.equals("evpn")) {
-                i |= mskEvpn;
+                res[idxEvpn] = true;
+                continue;
             }
             if (a.equals("mdt")) {
-                i |= mskMdt;
+                res[idxMdt] = true;
+                continue;
             }
             if (a.equals("nsh")) {
-                i |= mskNsh;
+                res[idxNsh] = true;
+                continue;
             }
             if (a.equals("rpd")) {
-                i |= mskRpd;
+                res[idxRpd] = true;
+                continue;
             }
             if (a.equals("spf")) {
-                i |= mskSpf;
+                res[idxSpf] = true;
+                continue;
             }
             if (a.equals("sdwan")) {
-                i |= mskSdw;
+                res[idxSdw] = true;
+                continue;
             }
             if (a.equals("rtfilter")) {
-                i |= mskRtf;
+                res[idxRtf] = true;
+                continue;
             }
             if (a.equals("srte")) {
-                i |= mskSrte;
+                res[idxSrte] = true;
+                continue;
             }
             if (a.equals("linkstate")) {
-                i |= mskLnks;
+                res[idxLnks] = true;
+                continue;
             }
             if (a.equals("mvpn")) {
-                i |= mskMvpn;
+                res[idxMvpn] = true;
+                continue;
             }
             if (a.equals("mtree")) {
-                i |= mskMtre;
+                res[idxMtre] = true;
+                continue;
             }
             if (a.equals("omtree")) {
-                i |= mskMtro;
+                res[idxMtro] = true;
+                continue;
             }
             if (a.equals("omvpn")) {
-                i |= mskMvpo;
+                res[idxMvpo] = true;
+                continue;
             }
             if (a.equals("ovpnuni")) {
-                i |= mskVpoU;
+                res[idxVpoU] = true;
+                continue;
             }
             if (a.equals("ovpnmlt")) {
-                i |= mskVpoM;
+                res[idxVpoM] = true;
+                continue;
             }
             if (a.equals("ovpnflw")) {
-                i |= mskVpoF;
+                res[idxVpoF] = true;
+                continue;
             }
             if (a.equals("olab")) {
-                i |= mskOlab;
+                res[idxOlab] = true;
+                continue;
             }
             if (a.equals("octp")) {
-                i |= mskOctp;
+                res[idxOctp] = true;
+                continue;
             }
             if (a.equals("ocar")) {
-                i |= mskOcar;
+                res[idxOcar] = true;
+                continue;
             }
             if (a.equals("ouni")) {
-                i |= mskOuni;
+                res[idxOuni] = true;
+                continue;
             }
             if (a.equals("omlt")) {
-                i |= mskOmlt;
+                res[idxOmlt] = true;
+                continue;
             }
             if (a.equals("oflw")) {
-                i |= mskOflw;
+                res[idxOflw] = true;
+                continue;
             }
             if (a.equals("osrt")) {
-                i |= mskOsrt;
+                res[idxOsrt] = true;
+                continue;
             }
         }
-        i = exclusiveMsk(i, mskUni, mskLab);
-        i = exclusiveMsk(i, mskUni, mskCtp);
-        i = exclusiveMsk(i, mskUni, mskCar);
-        i = exclusiveMsk(i, mskLab, mskCtp);
-        i = exclusiveMsk(i, mskLab, mskCar);
-        i = exclusiveMsk(i, mskCtp, mskCar);
-        i = exclusiveMsk(i, mskOuni, mskOlab);
-        i = exclusiveMsk(i, mskOuni, mskOctp);
-        i = exclusiveMsk(i, mskOuni, mskOcar);
-        i = exclusiveMsk(i, mskOlab, mskOctp);
-        i = exclusiveMsk(i, mskOlab, mskOcar);
-        i = exclusiveMsk(i, mskOctp, mskOcar);
-        return i;
+        exclusiveMsk(res, idxUni, idxLab);
+        exclusiveMsk(res, idxUni, idxCtp);
+        exclusiveMsk(res, idxUni, idxCar);
+        exclusiveMsk(res, idxLab, idxCtp);
+        exclusiveMsk(res, idxLab, idxCar);
+        exclusiveMsk(res, idxCtp, idxCar);
+        exclusiveMsk(res, idxOuni, idxOlab);
+        exclusiveMsk(res, idxOuni, idxOctp);
+        exclusiveMsk(res, idxOuni, idxOcar);
+        exclusiveMsk(res, idxOlab, idxOctp);
+        exclusiveMsk(res, idxOlab, idxOcar);
+        exclusiveMsk(res, idxOctp, idxOcar);
+        return bools2mask(res);
     }
 
-    private static long exclusiveMsk(long cur, long bck, long pri) {
-        if ((cur & bck) == 0) {
-            return cur;
+    private static void exclusiveMsk(boolean[] res, int bck, int pri) {
+        if (!res[bck]) {
+            return;
         }
-        if ((cur & pri) == 0) {
-            return cur;
+        if (!res[pri]) {
+            return;
         }
-        return cur - bck;
+        res[bck] = false;
     }
 
     /**
@@ -1159,107 +1540,15 @@ public abstract class rtrBgpParam {
      */
     public final static String mask2string(long i) {
         String a = "";
-        if ((i & mskUni) != 0) {
-            a += " unicast";
-        }
-        if ((i & mskLab) != 0) {
-            a += " labeled";
-        }
-        if ((i & mskCtp) != 0) {
-            a += " ctp";
-        }
-        if ((i & mskCar) != 0) {
-            a += " car";
-        }
-        if ((i & mskMlt) != 0) {
-            a += " multicast";
-        }
-        if ((i & mskOlab) != 0) {
-            a += " olab";
-        }
-        if ((i & mskOctp) != 0) {
-            a += " octp";
-        }
-        if ((i & mskOcar) != 0) {
-            a += " ocar";
-        }
-        if ((i & mskOuni) != 0) {
-            a += " ouni";
-        }
-        if ((i & mskOmlt) != 0) {
-            a += " omlt";
-        }
-        if ((i & mskFlw) != 0) {
-            a += " flowspec";
-        }
-        if ((i & mskOflw) != 0) {
-            a += " oflw";
-        }
-        if ((i & mskVpnU) != 0) {
-            a += " vpnuni";
-        }
-        if ((i & mskVpnM) != 0) {
-            a += " vpnmlt";
-        }
-        if ((i & mskVpnF) != 0) {
-            a += " vpnflw";
-        }
-        if ((i & mskVpoU) != 0) {
-            a += " ovpnuni";
-        }
-        if ((i & mskVpoM) != 0) {
-            a += " ovpnmlt";
-        }
-        if ((i & mskVpoF) != 0) {
-            a += " ovpnflw";
-        }
-        if ((i & mskVpls) != 0) {
-            a += " vpls";
-        }
-        if ((i & mskMspw) != 0) {
-            a += " mspw";
-        }
-        if ((i & mskEvpn) != 0) {
-            a += " evpn";
-        }
-        if ((i & mskMdt) != 0) {
-            a += " mdt";
-        }
-        if ((i & mskNsh) != 0) {
-            a += " nsh";
-        }
-        if ((i & mskRpd) != 0) {
-            a += " rpd";
-        }
-        if ((i & mskSpf) != 0) {
-            a += " spf";
-        }
-        if ((i & mskSdw) != 0) {
-            a += " sdwan";
-        }
-        if ((i & mskRtf) != 0) {
-            a += " rtfilter";
-        }
-        if ((i & mskSrte) != 0) {
-            a += " srte";
-        }
-        if ((i & mskOsrt) != 0) {
-            a += " osrt";
-        }
-        if ((i & mskLnks) != 0) {
-            a += " linkstate";
-        }
-        if ((i & mskMvpn) != 0) {
-            a += " mvpn";
-        }
-        if ((i & mskMvpo) != 0) {
-            a += " omvpn";
-        }
-        if ((i & mskMtre) != 0) {
-            a += " mtree";
-        }
-        if ((i & mskMtro) != 0) {
-            a += " omtree";
+        for (int o = 0; o < 63; o++) {
+            if (((1L << o) & i) == 0) {
+                continue;
+            }
+            String b = index2string(o);
+            if (b == null) {
+                continue;
+            }
+            a += " " + b;
         }
         return a;
     }
