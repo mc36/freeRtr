@@ -1054,7 +1054,7 @@ public abstract class rtrBgpParam {
      * @return afi mask
      */
     public final static boolean[] string2bools(String s) {
-        cmds c = new cmds("afi", s);
+        cmds c = new cmds("afi", s.trim());
         return string2bools(c);
     }
 

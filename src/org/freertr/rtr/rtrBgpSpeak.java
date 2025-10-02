@@ -519,7 +519,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * peer receives additional paths
      */
-    public long addpathTx;
+    public boolean[] addpathTx;
 
     /**
      * strict bfd mode
@@ -584,7 +584,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * addpath list sent by the peer
      */
-    public long originalAddTlist;
+    public boolean[] originalAddTlist;
 
     private packHolder pckRx = new packHolder(true, true);
 
@@ -609,7 +609,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         peerExtNextCur = rtrBgpParam.boolsSet(false);
         peerExtNextOtr = rtrBgpParam.boolsSet(false);
         addpathRx = rtrBgpParam.boolsSet(false);
+        addpathTx = rtrBgpParam.boolsSet(false);
         originalAddRlist = rtrBgpParam.boolsSet(false);
+        originalAddTlist = rtrBgpParam.boolsSet(false);
         ready2adv = false;
         resumed = res == 2;
         addpathBeg = bits.randomD();
@@ -2010,20 +2012,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         for (i = 0; i < tlv.valSiz; i += 4) {
                             int o = bits.msbGetD(tlv.valDat, i);
                             o = rtrBgpUtil.triplet2safi(o);
-                            long p = parent.safi2mask(o);
+                            int p = parent.safi2idx(o);
                             if (p < 0) {
-                                continue;
-                            }
-                            int q = parent.safi2idx(o);
-                            if (q < 0) {
                                 continue;
                             }
                             int m = tlv.valDat[i + 3];
                             if ((m & 2) != 0) {
-                                addpathRx[q] = true;
+                                addpathRx[p] = true;
                             }
                             if ((m & 1) != 0) {
-                                addpathTx |= p;
+                                addpathTx[p] = true;
                             }
                         }
                         break;
@@ -2059,7 +2057,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             peerExtNextCur = rtrBgpParam.boolsCopy(neigh.extNextCur);
             peerExtNextOtr = rtrBgpParam.boolsCopy(neigh.extNextOtr);
             addpathRx = rtrBgpParam.boolsCopy(neigh.addpathRmode);
-            addpathTx = rtrBgpParam.bools2mask(neigh.addpathTmode);
+            addpathTx = rtrBgpParam.boolsCopy(neigh.addpathTmode);
             peerRefreshOld = neigh.routeRefreshOld;
             peerRefreshNew = neigh.routeRefreshNew;
             peer32bitAS = neigh.wideAsPath;
@@ -2076,7 +2074,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         originalSafiList = peerAfis;
         originalAddRlist = rtrBgpParam.boolsCopy(addpathRx);
-        originalAddTlist = addpathTx;
+        originalAddTlist = rtrBgpParam.boolsCopy(addpathTx);
         peer32bitAS &= neigh.wideAsPath;
         peerRefreshOld &= neigh.routeRefreshOld;
         peerRefreshNew &= neigh.routeRefreshNew;
@@ -2089,8 +2087,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         needEorAfis = peerAfis;
         addpathRx = rtrBgpParam.boolsAnd(addpathRx, neigh.addpathRmode);
         addpathRx = rtrBgpParam.boolsAnd(addpathRx, neigh.addrFams);
-        addpathTx &= rtrBgpParam.bools2mask(neigh.addpathTmode);
-        addpathTx &= rtrBgpParam.bools2mask(neigh.addrFams);
+        addpathTx = rtrBgpParam.boolsAnd(addpathTx, neigh.addpathTmode);
+        addpathTx = rtrBgpParam.boolsAnd(addpathTx, neigh.addrFams);
         if (debugger.rtrBgpEvnt) {
             logger.debug("peer " + neigh.peerAddr + " id=" + peerRouterID + " hold=" + peerHold + " 32bitAS=" + peer32bitAS + " refresh=" + peerRefreshOld + " " + peerRefreshNew);
         }

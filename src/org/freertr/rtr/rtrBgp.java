@@ -4671,47 +4671,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry.socketMode = 4;
         }
         ntry.updatePeer();
-        int i = bits.str2num(cmd.word());
-        int o = bits.str2num(cmd.word());
-        cfgIfc cfg = cfgAll.ifcFind(cmd.word(), 0);
-        if (cfg == null) {
-            return true;
-        }
-        ipFwdIface ifc = cfg.getFwdIfc(adr);
-        if (ifc == null) {
-            return true;
-        }
-        ntry.updateAddr(ifc);
-        pipeSide pip = tcpCore.streamResume(new pipeLine(ntry.bufferSize, false), ntry.localIfc, i, ntry.peerAddr, o, "bgp", ntry.keyId, ntry.passwd, ntry.ttlSecurity, ntry.tosValue);
-        if (pip == null) {
-            return true;
-        }
-        ntry.conn = new rtrBgpSpeak(this, ntry, pip, 2);
-        i = bits.str2num(cmd.word());
-        if (ntry.remoteAny) {
-            ntry.remoteAs = i;
-        }
-        i = bits.str2num(cmd.word());
-        ntry.conn.peerHold = i;
-        ntry.conn.peerKeep = i / 3;
-        pip.setTime(i);
-        ntry.conn.upTime = bits.str2long(cmd.word());
-        ntry.conn.peerAfis = bits.str2long(cmd.word());
-        ntry.conn.addpathRx = rtrBgpParam.string2bools(cmd.word().replaceAll(",", " "));
-        ntry.conn.addpathTx = bits.str2long(cmd.word());
-        ntry.conn.peerMltLab = rtrBgpParam.string2bools(cmd.word().replaceAll(",", " "));
-        ntry.conn.peerDynCap = cmd.word().equals("true");
-        ntry.conn.peerRouterID = new addrIPv4();
-        if (ntry.conn.peerRouterID.fromString(cmd.word())) {
-            pip.setClose();
+        if (ntry.stateSet(cmd)) {
             return true;
         }
         if (old == null) {
             lstnNei.add(ntry);
         }
-        ntry.conn.peer32bitAS = true;
-        ntry.conn.peerRefreshOld = true;
-        ntry.conn.peerRefreshNew = true;
         ntry.startNow();
         return false;
     }

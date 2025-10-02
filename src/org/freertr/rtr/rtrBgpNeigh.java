@@ -4,8 +4,10 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
+import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgInit;
 import org.freertr.clnt.clntDns;
 import org.freertr.clnt.clntWhois;
@@ -736,13 +738,13 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("extnexthop cur|" + rtrBgpParam.bools2string(conn.peerExtNextCur));
         l.add("extnexthop otr|" + rtrBgpParam.bools2string(conn.peerExtNextOtr));
         l.add("addpath rx open|" + rtrBgpParam.bools2string(conn.addpathRx));
-        l.add("addpath tx open|" + rtrBgpParam.mask2string(conn.addpathTx));
+        l.add("addpath tx open|" + rtrBgpParam.bools2string(conn.addpathTx));
         l.add("addpath rx got|" + rtrBgpParam.bools2string(conn.originalAddRlist));
-        l.add("addpath tx got|" + rtrBgpParam.mask2string(conn.originalAddTlist));
+        l.add("addpath tx got|" + rtrBgpParam.bools2string(conn.originalAddTlist));
         l.add("addpath rx not remote|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addpathRmode) - rtrBgpParam.bools2mask(conn.addpathRx)));
-        l.add("addpath tx not remote|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addpathTmode) - conn.addpathTx));
+        l.add("addpath tx not remote|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addpathTmode) - rtrBgpParam.bools2mask(conn.addpathTx)));
         l.add("addpath rx not local|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalAddRlist) - rtrBgpParam.bools2mask(conn.addpathRx)));
-        l.add("addpath tx not local|" + rtrBgpParam.mask2string(conn.originalAddTlist - conn.addpathTx));
+        l.add("addpath tx not local|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalAddTlist) - rtrBgpParam.bools2mask(conn.addpathTx)));
         l.add("unicast advertised|" + conn.advUni.size() + " of " + wilUni.size() + ", list = " + chgUni.size() + ", accepted = " + accUni.size() + " of " + conn.lrnUni.size());
         l.add("multicast advertised|" + conn.advMlt.size() + " of " + wilMlt.size() + ", list = " + chgMlt.size() + ", accepted = " + accMlt.size() + " of " + conn.lrnMlt.size());
         l.add("ouni advertised|" + conn.advOuni.size() + " of " + wilOuni.size() + ", list = " + chgOuni.size() + ", accepted = " + accOuni.size() + " of " + conn.lrnOuni.size());
@@ -991,7 +993,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             needEor = (conn.needEorAfis & mask) != 0;
             needEof = (conn.needEofAfis & mask) != 0;
         }
-        if ((conn.addpathTx & mask) != 0) {
+        if (conn.addpathTx[idx]) {
             for (int i = 0; i < will.size(); i++) {
                 tabRouteEntry<addrIP> wil = will.get(i);
                 if (wil == null) {
@@ -1229,7 +1231,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         }
         boolean oneLab = !conn.peerMltLab[idx];
         chg = new tabRoute<addrIP>(chg);
-        if ((conn.addpathTx & mask) != 0) {
+        if (conn.addpathTx[idx]) {
             for (int i = 0; i < chg.size(); i++) {
                 tabRouteEntry<addrIP> cur = chg.get(i);
                 if (cur == null) {
@@ -2306,7 +2308,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             case 4:
                 return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerGrace) + "|" + rtrBgpParam.bools2string(graceRestart);
             case 5:
-                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.addpathTx) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addpathRmode) - rtrBgpParam.bools2mask(conn.addpathRx)) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addpathTmode) - conn.addpathTx) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalAddRlist) - rtrBgpParam.bools2mask(conn.addpathRx)) + "|" + rtrBgpParam.mask2string(conn.originalAddTlist - conn.addpathTx);
+                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.addpathRx) + "|" + rtrBgpParam.bools2string(conn.addpathTx) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addpathRmode) - rtrBgpParam.bools2mask(conn.addpathRx)) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addpathTmode) - rtrBgpParam.bools2mask(conn.addpathTx)) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalAddRlist) - rtrBgpParam.bools2mask(conn.addpathRx)) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalAddTlist) - rtrBgpParam.bools2mask(conn.addpathTx));
             case 6:
                 return showSummry1() + "|" + conn.peerRouterID + "|" + conn.peer32bitAS + "|" + conn.peerRefreshOld + " " + conn.peerRefreshNew + "|" + conn.peerDynCap + "|" + conn.peerExtOpen + "|" + conn.peerExtUpd + "|" + rtrBgpUtil.peerType2string(peerType) + "|" + rtrBgpUtil.leakRole2string(leakRole, leakAttr);
             case 7:
@@ -2391,7 +2393,55 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             return null;
         }
         sock.restartable = true;
-        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + bits.num2str(remoteAs) + " " + conn.peerHold + " " + conn.upTime + " " + conn.peerAfis + " " + rtrBgpParam.bools2string(conn.addpathRx).replaceAll(" ", ",") + " " + conn.addpathTx + " " + rtrBgpParam.bools2string(conn.peerMltLab).replaceAll(" ", ",") + " " + conn.peerDynCap + " " + conn.peerRouterID;
+        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + bits.num2str(remoteAs) + " " + conn.peerHold + " " + conn.upTime + " " + conn.peerAfis + " " + rtrBgpParam.bools2string(conn.addpathRx).replaceAll(" ", ",") + " " + rtrBgpParam.bools2string(conn.addpathTx).replaceAll(" ", ",") + " " + rtrBgpParam.bools2string(conn.peerMltLab).replaceAll(" ", ",") + " " + conn.peerDynCap + " " + conn.peerRouterID;
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     * @return true on error, false on success
+     */
+    public boolean stateSet(cmds cmd) {
+        int i = bits.str2num(cmd.word());
+        int o = bits.str2num(cmd.word());
+        cfgIfc cfg = cfgAll.ifcFind(cmd.word(), 0);
+        if (cfg == null) {
+            return true;
+        }
+        ipFwdIface ifc = cfg.getFwdIfc(peerAddr);
+        if (ifc == null) {
+            return true;
+        }
+        updateAddr(ifc);
+        pipeSide pip = lower.tcpCore.streamResume(new pipeLine(bufferSize, false), localIfc, i, peerAddr, o, "bgp", keyId, passwd, ttlSecurity, tosValue);
+        if (pip == null) {
+            return true;
+        }
+        conn = new rtrBgpSpeak(lower, this, pip, 2);
+        i = bits.str2num(cmd.word());
+        if (remoteAny) {
+            remoteAs = i;
+        }
+        i = bits.str2num(cmd.word());
+        conn.peerHold = i;
+        conn.peerKeep = i / 3;
+        pip.setTime(i);
+        conn.upTime = bits.str2long(cmd.word());
+        conn.peerAfis = bits.str2long(cmd.word());
+        conn.addpathRx = rtrBgpParam.string2bools(cmd.word().replaceAll(",", " "));
+        conn.addpathTx = rtrBgpParam.string2bools(cmd.word().replaceAll(",", " "));
+        conn.peerMltLab = rtrBgpParam.string2bools(cmd.word().replaceAll(",", " "));
+        conn.peerDynCap = cmd.word().equals("true");
+        conn.peerRouterID = new addrIPv4();
+        if (conn.peerRouterID.fromString(cmd.word())) {
+            pip.setClose();
+            return true;
+        }
+        conn.peer32bitAS = true;
+        conn.peerRefreshOld = true;
+        conn.peerRefreshNew = true;
+        return false;
     }
 
 }
