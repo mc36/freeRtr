@@ -2747,14 +2747,15 @@ public class rtrBgpUtil {
      */
     public static void parseReachable(rtrBgpSpeak spkr, List<tabRouteEntry<addrIP>> pfxs, packHolder pck) {
         int safi = triplet2safi(pck.msbGetD(0));
-        long mask = spkr.parent.safi2mask(safi);
-        if (mask < 0) {
+        int idx = spkr.parent.safi2idx(safi);
+        if (idx < 0) {
             return;
         }
+        long mask = 1L << idx;
         int sfi = safi & sfiMask;
         int len = pck.getByte(3);
         boolean addpath = (spkr.addpathRx & mask) != 0;
-        boolean oneLab = spkr.peerMltLab == 0;
+        boolean oneLab = !spkr.peerMltLab[idx];
         boolean v6nh = len >= addrIPv6.size;
         pck.getSkip(4);
         len = pck.dataSize() - len;
@@ -2996,7 +2997,7 @@ public class rtrBgpUtil {
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         lst.add(ntry);
         packHolder pck = new packHolder(true, true);
-        createReachable(spkr, pck, new packHolder(true, true), safiAttrib, false, lst);
+        createReachable(spkr, pck, new packHolder(true, true), safiAttrib, false, false, lst);
         ntry.best.attribAs = as;
         ntry.best.attribVal = pck.getCopy();
     }
@@ -3231,10 +3232,10 @@ public class rtrBgpUtil {
      * @param hlp helper packet
      * @param safi address family
      * @param addpath additional path
+     * @param oneLab just one label
      * @param lst list of prefixes to advertise
      */
-    public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int safi, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
-        boolean oneLab = spkr.peerMltLab == 0;
+    public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int safi, boolean addpath, boolean oneLab, List<tabRouteEntry<addrIP>> lst) {
         tabRouteEntry<addrIP> ntry = lst.get(0);
         placeUnknown(spkr, pck, hlp, ntry);
         placeOrigin(spkr, pck, hlp, ntry);

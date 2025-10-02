@@ -1666,8 +1666,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return safi
      */
     public int mask2safi(long mask) {
-        int i=rtrBgpParam.mask2index(mask);
-        if (i<0)return -1;
+        int i = rtrBgpParam.mask2index(mask);
+        if (i < 0) {
+            return -1;
+        }
         return idx2safi(i);
     }
 
@@ -4697,7 +4699,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         ntry.conn.peerAfis = bits.str2long(cmd.word());
         ntry.conn.addpathRx = bits.str2long(cmd.word());
         ntry.conn.addpathTx = bits.str2long(cmd.word());
-        ntry.conn.peerMltLab = bits.str2long(cmd.word());
+        ntry.conn.peerMltLab = rtrBgpParam.string2bools(cmd.word().replaceAll(",", " "));
         ntry.conn.peerDynCap = cmd.word().equals("true");
         ntry.conn.peerRouterID = new addrIPv4();
         if (ntry.conn.peerRouterID.fromString(cmd.word())) {

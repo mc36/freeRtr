@@ -396,7 +396,7 @@ public abstract class rtrBgpParam {
     /**
      * multiple labels
      */
-    public long multiLabel;
+    public boolean[] multiLabel;
 
     /**
      * extended nexthop current afi
@@ -1034,6 +1034,17 @@ public abstract class rtrBgpParam {
     /**
      * string to afi mask
      *
+     * @param s string
+     * @return afi mask
+     */
+    public final static boolean[] string2bools(String s) {
+        cmds c = new cmds("afi", s);
+        return string2bools(c);
+    }
+
+    /**
+     * string to afi mask
+     *
      * @param c string
      * @return afi mask
      */
@@ -1333,6 +1344,7 @@ public abstract class rtrBgpParam {
                     return null;
             }
         }
+        if (a.length()<1)return "none";
         return a;
     }
 
@@ -1659,6 +1671,7 @@ public abstract class rtrBgpParam {
         addrFams = bools2mask(lower.addrFams);
         graceRestart = boolsSet(false);
         llGraceRestart = boolsSet(false);
+        multiLabel = boolsSet(false);
         wideAsPath = true;
         routeRefreshOld = true;
         routeRefreshNew = true;
@@ -1759,7 +1772,7 @@ public abstract class rtrBgpParam {
         softReconfig = src.softReconfig;
         graceRestart = boolsCopy(src.graceRestart);
         llGraceRestart = boolsCopy(src.llGraceRestart);
-        multiLabel = src.multiLabel;
+        multiLabel = boolsCopy(src.multiLabel);
         extNextCur = src.extNextCur;
         extNextOtr = src.extNextOtr;
         hostname = src.hostname;
@@ -2541,7 +2554,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, bfdTrigger == 0, beg, nei + "bfd-trigger", s);
         cmds.cfgLine(l, !ungrpRemAs, beg, nei + "ungroup-remoteas", "");
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
-        l.add(beg + nei + "multiple-labels" + mask2string(multiLabel));
+        l.add(beg + nei + "multiple-labels" + bools2string(multiLabel));
         l.add(beg + nei + "graceful-restart" + bools2string(graceRestart));
         l.add(beg + nei + "longlived-graceful" + bools2string(llGraceRestart));
         l.add(beg + nei + "extended-nexthop-current" + mask2string(extNextCur));
@@ -2996,9 +3009,9 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("multiple-labels")) {
-            multiLabel = string2mask(cmd);
+            multiLabel = string2bools(cmd);
             if (negated) {
-                multiLabel = 0;
+                multiLabel = boolsSet(false);
             }
             return false;
         }

@@ -588,7 +588,7 @@ public class rtrBgpDump {
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         lst.add(ntry);
         if (rch) {
-            rtrBgpUtil.createReachable(spkr, pck, tmp, sfi, false, lst);
+            rtrBgpUtil.createReachable(spkr, pck, tmp, sfi, false, false, lst);
         } else {
             rtrBgpUtil.createWithdraw(spkr, pck, tmp, sfi, false, lst);
         }

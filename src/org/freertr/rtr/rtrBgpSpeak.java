@@ -479,7 +479,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * peer multiple labels capability
      */
-    public long peerMltLab;
+    public boolean[] peerMltLab;
 
     /**
      * peer extended nexthop capability
@@ -605,6 +605,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public rtrBgpSpeak(rtrBgp protocol, rtrBgpNeigh neighbor, pipeSide socket, int res) {
         peerGrace = rtrBgpParam.boolsSet(false);
         peerLlGrace = rtrBgpParam.boolsSet(false);
+        peerMltLab = rtrBgpParam.boolsSet(false);
         ready2adv = false;
         resumed = res == 2;
         addpathBeg = bits.randomD();
@@ -1845,7 +1846,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaLongGrace, buf);
         }
-        safis = mask2list(neigh.multiLabel & neigh.addrFams);
+        safis = mask2list(rtrBgpParam.bools2mask(neigh.multiLabel) & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 4];
             for (int i = 0; i < safis.size(); i++) {
@@ -2047,11 +2048,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         for (i = 0; i < tlv.valSiz; i += 4) {
                             int o = bits.msbGetD(tlv.valDat, i);
                             o = rtrBgpUtil.triplet2safi(o);
-                            long p = parent.safi2mask(o);
-                            if (p < 1) {
+                            int p = parent.safi2idx(o);
+                            if (p < 0) {
                                 continue;
                             }
-                            peerMltLab |= p;
+                            peerMltLab[p] = true;
                         }
                         break;
                     case rtrBgpUtil.capaGraceRestart:
@@ -2137,7 +2138,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             peerDynCap = neigh.dynamicCapab;
             peerGrace = rtrBgpParam.boolsCopy(neigh.graceRestart);
             peerLlGrace = rtrBgpParam.boolsCopy(neigh.llGraceRestart);
-            peerMltLab = neigh.multiLabel;
+            peerMltLab = rtrBgpParam.boolsCopy(neigh.multiLabel);
             peerExtNextCur = neigh.extNextCur;
             peerExtNextOtr = neigh.extNextOtr;
             addpathRx = neigh.addpathRmode;
@@ -2424,10 +2425,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * send update packet without addpath
      *
      * @param safi safi to update
+     * @param oneLab just one label
      * @param lst list of prefixes to advertise
      * @param reach true to reachable, false to withdraw
      */
-    public void sendUpdateSP(int safi, List<tabRouteEntry<addrIP>> lst, boolean reach) {
+    public void sendUpdateSP(int safi, boolean oneLab, List<tabRouteEntry<addrIP>> lst, boolean reach) {
         if (debugger.rtrBgpTraf) {
             String s = "";
             for (int i = 0; i < lst.size(); i++) {
@@ -2440,7 +2442,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!reach) {
             rtrBgpUtil.createWithdraw(this, pckTx, pckTh, safi, false, lst);
         } else {
-            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, false, lst);
+            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, false, oneLab, lst);
         }
         packSend(pckTx, rtrBgpUtil.msgUpdate);
     }
@@ -2449,10 +2451,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * send update packet with addpath
      *
      * @param safi safi to update
+     * @param oneLab just one label
      * @param wil prefix to advertise, null to withdraw
      * @param don old already advertised data
      */
-    public void sendUpdateAP(int safi, tabRouteEntry<addrIP> wil, tabRouteEntry<addrIP> don) {
+    public void sendUpdateAP(int safi, boolean oneLab, tabRouteEntry<addrIP> wil, tabRouteEntry<addrIP> don) {
         if (debugger.rtrBgpTraf) {
             String a;
             String s;
@@ -2486,7 +2489,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.clear();
                 lst.add(ntry);
                 pckTx.clear();
-                rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, lst);
+                rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, oneLab, lst);
                 packSend(pckTx, rtrBgpUtil.msgUpdate);
             }
             return;
@@ -2504,7 +2507,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             lst.clear();
             lst.add(ntry);
             pckTx.clear();
-            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, lst);
+            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, oneLab, lst);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
         }
         lst.clear();

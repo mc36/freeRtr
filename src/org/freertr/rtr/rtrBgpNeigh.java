@@ -731,8 +731,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("graceful sent|" + rtrBgpParam.bools2string(graceRestart));
         l.add("longlive graceful got|" + rtrBgpParam.bools2string(conn.peerLlGrace));
         l.add("longlive graceful sent|" + rtrBgpParam.bools2string(llGraceRestart));
-        l.add("multilabel got|" + rtrBgpParam.mask2string(conn.peerMltLab));
-        l.add("multilabel sent|" + rtrBgpParam.mask2string(multiLabel));
+        l.add("multilabel got|" + rtrBgpParam.bools2string(conn.peerMltLab));
+        l.add("multilabel sent|" + rtrBgpParam.bools2string(multiLabel));
         l.add("extnexthop cur|" + rtrBgpParam.mask2string(conn.peerExtNextCur));
         l.add("extnexthop otr|" + rtrBgpParam.mask2string(conn.peerExtNextOtr));
         l.add("addpath rx open|" + rtrBgpParam.mask2string(conn.addpathRx));
@@ -979,6 +979,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if ((conn.peerAfis & mask) == 0) {
             return false;
         }
+        int idx = lower.safi2idx(safi);
+        if (idx < 0) {
+            return false;
+        }
+        boolean oneLab = !conn.peerMltLab[idx];
         boolean needEor = false;
         boolean needEof = false;
         if (conn.needFull.get() < 2) {
@@ -996,7 +1001,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 if (wil.differs(tabRoute.addType.alters, don) == 0) {
                     continue;
                 }
-                conn.sendUpdateAP(safi, wil, don);
+                conn.sendUpdateAP(safi, oneLab, wil, don);
                 done.add(tabRoute.addType.always, wil, false, false);
                 if (conn.txFree() < 1024) {
                     return true;
@@ -1011,7 +1016,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                     continue;
                 }
                 done.del(don);
-                conn.sendUpdateAP(safi, null, don);
+                conn.sendUpdateAP(safi, oneLab, null, don);
                 if (conn.txFree() < 1024) {
                     return true;
                 }
@@ -1041,7 +1046,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             }
             if (ntry.differs(tabRoute.addType.notyet, sen) != 0) {
                 if (lst.size() > 0) {
-                    conn.sendUpdateSP(safi, lst, true);
+                    conn.sendUpdateSP(safi, oneLab, lst, true);
                 }
                 if (conn.txFree() < 2048) {
                     return true;
@@ -1056,7 +1061,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             }
         }
         if (lst.size() > 0) {
-            conn.sendUpdateSP(safi, lst, true);
+            conn.sendUpdateSP(safi, oneLab, lst, true);
             if (conn.txFree() < 2048) {
                 return true;
             }
@@ -1075,14 +1080,14 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             if (lst.size() < 64) {
                 continue;
             }
-            conn.sendUpdateSP(safi, lst, false);
+            conn.sendUpdateSP(safi, oneLab, lst, false);
             if (conn.txFree() < 2048) {
                 return true;
             }
             lst.clear();
         }
         if (lst.size() > 0) {
-            conn.sendUpdateSP(safi, lst, false);
+            conn.sendUpdateSP(safi, oneLab, lst, false);
             if (conn.txFree() < 2048) {
                 return true;
             }
@@ -1218,6 +1223,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         if ((conn.peerAfis & mask) == 0) {
             return false;
         }
+        int idx = lower.safi2idx(safi);
+        if (idx < 0) {
+            return false;
+        }
+        boolean oneLab = !conn.peerMltLab[idx];
         chg = new tabRoute<addrIP>(chg);
         if ((conn.addpathTx & mask) != 0) {
             for (int i = 0; i < chg.size(); i++) {
@@ -1232,13 +1242,13 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                         continue;
                     }
                     done.del(don);
-                    conn.sendUpdateAP(safi, wil, don);
+                    conn.sendUpdateAP(safi, oneLab, wil, don);
                 } else {
                     if (wil.differs(tabRoute.addType.alters, don) == 0) {
                         continue;
                     }
                     done.add(tabRoute.addType.always, wil, false, false);
-                    conn.sendUpdateAP(safi, wil, don);
+                    conn.sendUpdateAP(safi, oneLab, wil, don);
                 }
                 if (conn.txFree() < 1024) {
                     return true;
@@ -1265,7 +1275,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 if (lstW.size() < 64) {
                     continue;
                 }
-                conn.sendUpdateSP(safi, lstW, false);
+                conn.sendUpdateSP(safi, oneLab, lstW, false);
                 if (conn.txFree() < 2048) {
                     return true;
                 }
@@ -1280,7 +1290,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             }
             if (wil.differs(tabRoute.addType.notyet, sen) != 0) {
                 if (lstA.size() > 0) {
-                    conn.sendUpdateSP(safi, lstA, true);
+                    conn.sendUpdateSP(safi, oneLab, lstA, true);
                 }
                 if (conn.txFree() < 2048) {
                     return true;
@@ -1295,13 +1305,13 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             }
         }
         if (lstW.size() > 0) {
-            conn.sendUpdateSP(safi, lstW, false);
+            conn.sendUpdateSP(safi, oneLab, lstW, false);
             if (conn.txFree() < 2048) {
                 return true;
             }
         }
         if (lstA.size() > 0) {
-            conn.sendUpdateSP(safi, lstA, true);
+            conn.sendUpdateSP(safi, oneLab, lstA, true);
             if (conn.txFree() < 2048) {
                 return true;
             }
@@ -2294,7 +2304,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             case 3:
                 return showSummry1() + "|" + reachable + "|" + bits.timePast(reachTim) + "|" + reachNum + "|" + sessNum + "|" + bits.timePast(conn.upTime);
             case 4:
-                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerGrace) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(graceRestart) & addrFams);
+                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerGrace) + "|" + rtrBgpParam.bools2string(graceRestart);
             case 5:
                 return showSummry1() + "|" + rtrBgpParam.mask2string(conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.addpathTx) + "|" + rtrBgpParam.mask2string(addpathRmode - conn.addpathRx) + "|" + rtrBgpParam.mask2string(addpathTmode - conn.addpathTx) + "|" + rtrBgpParam.mask2string(conn.originalAddRlist - conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.originalAddTlist - conn.addpathTx);
             case 6:
@@ -2316,9 +2326,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             case 13:
                 return showSummry2();
             case 14:
-                return showSummry1() + "|" + rtrBgpParam.mask2string(conn.peerMltLab) + "|" + rtrBgpParam.mask2string(multiLabel & addrFams);
+                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerMltLab) + "|" + rtrBgpParam.bools2string(multiLabel);
             case 15:
-                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerLlGrace) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(llGraceRestart) & addrFams);
+                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerLlGrace) + "|" + rtrBgpParam.bools2string(llGraceRestart);
             case 16:
                 return showSummry1() + "|" + conn.peerSoftware;
             case 17:
@@ -2381,7 +2391,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             return null;
         }
         sock.restartable = true;
-        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + bits.num2str(remoteAs) + " " + conn.peerHold + " " + conn.upTime + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx + " " + conn.peerMltLab + " " + conn.peerDynCap + " " + conn.peerRouterID;
+        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + bits.num2str(remoteAs) + " " + conn.peerHold + " " + conn.upTime + " " + conn.peerAfis + " " + conn.addpathRx + " " + conn.addpathTx + " " + rtrBgpParam.bools2string(conn.peerMltLab).replaceAll(" ", ",") + " " + conn.peerDynCap + " " + conn.peerRouterID;
     }
 
 }
