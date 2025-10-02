@@ -466,12 +466,12 @@ public abstract class rtrBgpParam {
     /**
      * additional path receive(1) mode
      */
-    public long addpathRmode;
+    public boolean[] addpathRmode;
 
     /**
      * additional path transmit(2) mode
      */
-    public long addpathTmode;
+    public boolean[] addpathTmode;
 
     /**
      * default information originate
@@ -1692,6 +1692,8 @@ public abstract class rtrBgpParam {
         multiLabel = boolsSet(false);
         extNextCur = boolsSet(false);
         extNextOtr = boolsSet(false);
+        addpathRmode = boolsSet(false);
+        addpathTmode = boolsSet(false);
         wideAsPath = true;
         routeRefreshOld = true;
         routeRefreshNew = true;
@@ -1806,8 +1808,8 @@ public abstract class rtrBgpParam {
         bufferSize = src.bufferSize;
         ttlSecurity = src.ttlSecurity;
         tosValue = src.tosValue;
-        addpathRmode = src.addpathRmode;
-        addpathTmode = src.addpathTmode;
+        addpathRmode = boolsCopy(src.addpathRmode);
+        addpathTmode = boolsCopy(src.addpathTmode);
         sendDefRou = src.sendDefRou;
         sendOtrDefRou = src.sendOtrDefRou;
         nxtHopUnchgd = src.nxtHopUnchgd;
@@ -2545,8 +2547,8 @@ public abstract class rtrBgpParam {
         l.add(beg + nei + "buffer-size " + bufferSize);
         l.add(beg + nei + "ttl-security " + ttlSecurity);
         l.add(beg + nei + "tos-value " + tosValue);
-        l.add(beg + nei + "additional-path-rx" + mask2string(addpathRmode));
-        l.add(beg + nei + "additional-path-tx" + mask2string(addpathTmode));
+        l.add(beg + nei + "additional-path-rx" + bools2string(addpathRmode));
+        l.add(beg + nei + "additional-path-tx" + bools2string(addpathTmode));
         cmds.cfgLine(l, !shutdown, beg, nei + "shutdown", "");
         if (srcIface == null) {
             l.add(beg + cmds.negated + cmds.tabulator + nei + "update-source");
@@ -3143,17 +3145,17 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("additional-path-rx")) {
-            addpathRmode = string2mask(cmd);
+            addpathRmode = string2bools(cmd);
             if (negated) {
-                addpathRmode = 0;
+                addpathRmode = boolsSet(false);
                 return false;
             }
             return false;
         }
         if (s.equals("additional-path-tx")) {
-            addpathTmode = string2mask(cmd);
+            addpathTmode = string2bools(cmd);
             if (negated) {
-                addpathTmode = 0;
+                addpathTmode = boolsSet(false);
                 return false;
             }
             return false;

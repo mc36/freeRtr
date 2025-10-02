@@ -1791,21 +1791,21 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.routeRefreshNew) {
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaEnhancedRefresh, new byte[0]);
         }
-        safis = mask2list((neigh.addpathRmode | neigh.addpathTmode) & neigh.addrFams);
+        safis = mask2list(rtrBgpParam.bools2mask(rtrBgpParam.boolsOr(neigh.addpathRmode,neigh.addpathTmode)) & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 4];
             for (int i = 0; i < safis.size(); i++) {
                 int o = safis.get(i);
                 bits.msbPutD(buf, i * 4, rtrBgpUtil.safi2triplet(o));
-                long p = parent.safi2mask(o);
+                int p = parent.safi2idx(o);
                 if (p < 0) {
                     continue;
                 }
                 int m = 0;
-                if ((neigh.addpathRmode & p) != 0) {
+                if (neigh.addpathRmode[p]) {
                     m |= 1;
                 }
-                if ((neigh.addpathTmode & p) != 0) {
+                if (neigh.addpathTmode[p]) {
                     m |= 2;
                 }
                 buf[(i * 4) + 3] = (byte) m;
@@ -2143,8 +2143,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             peerMltLab = rtrBgpParam.boolsCopy(neigh.multiLabel);
             peerExtNextCur = rtrBgpParam.boolsCopy(neigh.extNextCur);
             peerExtNextOtr = rtrBgpParam.boolsCopy(neigh.extNextOtr);
-            addpathRx = neigh.addpathRmode;
-            addpathTx = neigh.addpathTmode;
+            addpathRx = rtrBgpParam.bools2mask(neigh.addpathRmode);
+            addpathTx = rtrBgpParam.bools2mask(neigh.addpathTmode);
             peerRefreshOld = neigh.routeRefreshOld;
             peerRefreshNew = neigh.routeRefreshNew;
             peer32bitAS = neigh.wideAsPath;
@@ -2172,8 +2172,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return true;
         }
         needEorAfis = peerAfis;
-        addpathRx &= neigh.addpathRmode;
-        addpathTx &= neigh.addpathTmode;
+        addpathRx &= rtrBgpParam.bools2mask(neigh.addpathRmode);
+        addpathTx &= rtrBgpParam.bools2mask(neigh.addpathTmode);
         addpathRx &= neigh.addrFams;
         addpathTx &= neigh.addrFams;
         if (debugger.rtrBgpEvnt) {
