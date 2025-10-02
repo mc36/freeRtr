@@ -959,84 +959,17 @@ public abstract class rtrBgpParam {
     public final static int idxSdw = 33;
 
     /**
-     * afi index to string
+     * set value
      *
-     * @param i afi index
-     * @return string
+     * @param val value
+     * @return result
      */
-    public final static String index2string(int i) {
-        switch (i) {
-            case idxUni:
-                return "unicast";
-            case idxLab:
-                return "labeled";
-            case idxCtp:
-                return "ctp";
-            case idxCar:
-                return "car";
-            case idxMlt:
-                return "multicast";
-            case idxOlab:
-                return "olab";
-            case idxOctp:
-                return "octp";
-            case idxOcar:
-                return "ocar";
-            case idxOuni:
-                return "ouni";
-            case idxOmlt:
-                return "omlt";
-            case idxFlw:
-                return "flowspec";
-            case idxOflw:
-                return "oflw";
-            case idxVpnU:
-                return "vpnuni";
-            case idxVpnM:
-                return "vpnmlt";
-            case idxVpnF:
-                return "vpnflw";
-            case idxVpoU:
-                return "ovpnuni";
-            case idxVpoM:
-                return "ovpnmlt";
-            case idxVpoF:
-                return "ovpnflw";
-            case idxVpls:
-                return "vpls";
-            case idxMspw:
-                return "mspw";
-            case idxEvpn:
-                return "evpn";
-            case idxMdt:
-                return "mdt";
-            case idxNsh:
-                return "nsh";
-            case idxRpd:
-                return "rpd";
-            case idxSpf:
-                return "spf";
-            case idxSdw:
-                return "sdwan";
-            case idxRtf:
-                return "rtfilter";
-            case idxSrte:
-                return "srte";
-            case idxOsrt:
-                return "osrt";
-            case idxLnks:
-                return "linkstate";
-            case idxMvpn:
-                return "mvpn";
-            case idxMvpo:
-                return "omvpn";
-            case idxMtre:
-                return "mtree";
-            case idxMtro:
-                return "omtree";
-            default:
-                return null;
+    public final static boolean[] boolsSet(boolean val) {
+        boolean[] res = new boolean[34];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = val;
         }
+        return res;
     }
 
     /**
@@ -1070,18 +1003,323 @@ public abstract class rtrBgpParam {
     }
 
     /**
-     * or value
+     * xor value
      *
      * @param src source
      * @param val value
      * @return result
      */
-    public final static boolean[] boolsSet(boolean val) {
-        boolean[] res = new boolean[34];
-        for (int i = 0; i < res.length; i++) {
-            res[i] = val;
+    public final static boolean[] boolsXor(boolean[] src, boolean val[]) {
+        boolean[] res = new boolean[src.length];
+        for (int i = 0; i < src.length; i++) {
+            res[i] = src[i] ^ val[i];
         }
         return res;
+    }
+
+    /**
+     * string to afi mask
+     *
+     * @param c string
+     * @return afi mask
+     */
+    public final static boolean[] string2bools(cmds c) {
+        boolean[] res = boolsSet(false);
+        for (;;) {
+            String a = c.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("all")) {
+                res = boolsSet(true);
+                continue;
+            }
+            if (a.equals("none")) {
+                res = boolsSet(false);
+                continue;
+            }
+            if (a.equals("unicast")) {
+                res[idxUni] = true;
+                continue;
+            }
+            if (a.equals("labeled")) {
+                res[idxLab] = true;
+                continue;
+            }
+            if (a.equals("ctp")) {
+                res[idxCtp] = true;
+                continue;
+            }
+            if (a.equals("car")) {
+                res[idxCar] = true;
+                continue;
+            }
+            if (a.equals("multicast")) {
+                res[idxMlt] = true;
+                continue;
+            }
+            if (a.equals("flowspec")) {
+                res[idxFlw] = true;
+                continue;
+            }
+            if (a.equals("vpnuni")) {
+                res[idxVpnU] = true;
+                continue;
+            }
+            if (a.equals("vpnmlt")) {
+                res[idxVpnM] = true;
+                continue;
+            }
+            if (a.equals("vpnflw")) {
+                res[idxVpnF] = true;
+                continue;
+            }
+            if (a.equals("vpls")) {
+                res[idxVpls] = true;
+                continue;
+            }
+            if (a.equals("mspw")) {
+                res[idxMspw] = true;
+                continue;
+            }
+            if (a.equals("evpn")) {
+                res[idxEvpn] = true;
+                continue;
+            }
+            if (a.equals("mdt")) {
+                res[idxMdt] = true;
+                continue;
+            }
+            if (a.equals("nsh")) {
+                res[idxNsh] = true;
+                continue;
+            }
+            if (a.equals("rpd")) {
+                res[idxRpd] = true;
+                continue;
+            }
+            if (a.equals("spf")) {
+                res[idxSpf] = true;
+                continue;
+            }
+            if (a.equals("sdwan")) {
+                res[idxSdw] = true;
+                continue;
+            }
+            if (a.equals("rtfilter")) {
+                res[idxRtf] = true;
+                continue;
+            }
+            if (a.equals("srte")) {
+                res[idxSrte] = true;
+                continue;
+            }
+            if (a.equals("linkstate")) {
+                res[idxLnks] = true;
+                continue;
+            }
+            if (a.equals("mvpn")) {
+                res[idxMvpn] = true;
+                continue;
+            }
+            if (a.equals("mtree")) {
+                res[idxMtre] = true;
+                continue;
+            }
+            if (a.equals("omtree")) {
+                res[idxMtro] = true;
+                continue;
+            }
+            if (a.equals("omvpn")) {
+                res[idxMvpo] = true;
+                continue;
+            }
+            if (a.equals("ovpnuni")) {
+                res[idxVpoU] = true;
+                continue;
+            }
+            if (a.equals("ovpnmlt")) {
+                res[idxVpoM] = true;
+                continue;
+            }
+            if (a.equals("ovpnflw")) {
+                res[idxVpoF] = true;
+                continue;
+            }
+            if (a.equals("olab")) {
+                res[idxOlab] = true;
+                continue;
+            }
+            if (a.equals("octp")) {
+                res[idxOctp] = true;
+                continue;
+            }
+            if (a.equals("ocar")) {
+                res[idxOcar] = true;
+                continue;
+            }
+            if (a.equals("ouni")) {
+                res[idxOuni] = true;
+                continue;
+            }
+            if (a.equals("omlt")) {
+                res[idxOmlt] = true;
+                continue;
+            }
+            if (a.equals("oflw")) {
+                res[idxOflw] = true;
+                continue;
+            }
+            if (a.equals("osrt")) {
+                res[idxOsrt] = true;
+                continue;
+            }
+        }
+        exclusiveMsk(res, idxUni, idxLab);
+        exclusiveMsk(res, idxUni, idxCtp);
+        exclusiveMsk(res, idxUni, idxCar);
+        exclusiveMsk(res, idxLab, idxCtp);
+        exclusiveMsk(res, idxLab, idxCar);
+        exclusiveMsk(res, idxCtp, idxCar);
+        exclusiveMsk(res, idxOuni, idxOlab);
+        exclusiveMsk(res, idxOuni, idxOctp);
+        exclusiveMsk(res, idxOuni, idxOcar);
+        exclusiveMsk(res, idxOlab, idxOctp);
+        exclusiveMsk(res, idxOlab, idxOcar);
+        exclusiveMsk(res, idxOctp, idxOcar);
+        return res;
+    }
+
+    /**
+     * afi mask to string
+     *
+     * @param i afi mask
+     * @return string
+     */
+    public final static String mask2string(boolean[] i) {
+        String a = "";
+        for (int o = 0; o < i.length; o++) {
+            if (!i[o]) {
+                continue;
+            }
+            switch (o) {
+                case idxUni:
+                    a += " unicast";
+                    break;
+                case idxLab:
+                    a += " labeled";
+                    break;
+                case idxCtp:
+                    a += " ctp";
+                    break;
+                case idxCar:
+                    a += " car";
+                    break;
+                case idxMlt:
+                    a += " multicast";
+                    break;
+                case idxOlab:
+                    a += " olab";
+                    break;
+                case idxOctp:
+                    a += " octp";
+                    break;
+                case idxOcar:
+                    a += " ocar";
+                    break;
+                case idxOuni:
+                    a += " ouni";
+                    break;
+                case idxOmlt:
+                    a += " omlt";
+                    break;
+                case idxFlw:
+                    a += " flowspec";
+                    break;
+                case idxOflw:
+                    a += " oflw";
+                    break;
+                case idxVpnU:
+                    a += " vpnuni";
+                    break;
+                case idxVpnM:
+                    a += " vpnmlt";
+                    break;
+                case idxVpnF:
+                    a += " vpnflw";
+                    break;
+                case idxVpoU:
+                    a += " ovpnuni";
+                    break;
+                case idxVpoM:
+                    a += " ovpnmlt";
+                    break;
+                case idxVpoF:
+                    a += " ovpnflw";
+                    break;
+                case idxVpls:
+                    a += " vpls";
+                    break;
+                case idxMspw:
+                    a += " mspw";
+                    break;
+                case idxEvpn:
+                    a += " evpn";
+                    break;
+                case idxMdt:
+                    a += " mdt";
+                    break;
+                case idxNsh:
+                    a += " nsh";
+                    break;
+                case idxRpd:
+                    a += " rpd";
+                    break;
+                case idxSpf:
+                    a += " spf";
+                    break;
+                case idxSdw:
+                    a += " sdwan";
+                    break;
+                case idxRtf:
+                    a += " rtfilter";
+                    break;
+                case idxSrte:
+                    a += " srte";
+                    break;
+                case idxOsrt:
+                    a += " osrt";
+                    break;
+                case idxLnks:
+                    a += " linkstate";
+                    break;
+                case idxMvpn:
+                    a += " mvpn";
+                    break;
+                case idxMvpo:
+                    a += " omvpn";
+                    break;
+                case idxMtre:
+                    a += " mtree";
+                    break;
+                case idxMtro:
+                    a += " omtree";
+                    break;
+                default:
+                    return null;
+            }
+        }
+        return a;
+    }
+
+    private static void exclusiveMsk(boolean[] res, int bck, int pri) {
+        if (!res[bck]) {
+            return;
+        }
+        if (!res[pri]) {
+            return;
+        }
+        res[bck] = false;
     }
 
     /**
@@ -1309,13 +1547,13 @@ public abstract class rtrBgpParam {
     /**
      * convert mask to booleans
      *
-     * @param src mask
+     * @param o mask
      * @return booleans
      */
     public final static boolean[] mask2bools(long o) {
         boolean[] res = boolsSet(false);
         for (int i = 0; i < res.length; i++) {
-            if ((o & (1 << i)) == 0) {
+            if ((o & (1L << i)) == 0) {
                 continue;
             }
             res[i] = true;
@@ -1356,180 +1594,7 @@ public abstract class rtrBgpParam {
      * @return afi mask
      */
     public final static long string2mask(cmds c) {
-        boolean[] res = boolsSet(false);
-        for (;;) {
-            String a = c.word();
-            if (a.length() < 1) {
-                break;
-            }
-            if (a.equals("all")) {
-                res = boolsSet(true);
-                continue;
-            }
-            if (a.equals("none")) {
-                res = boolsSet(false);
-                continue;
-            }
-            if (a.equals("unicast")) {
-                res[idxUni] = true;
-                continue;
-            }
-            if (a.equals("labeled")) {
-                res[idxLab] = true;
-                continue;
-            }
-            if (a.equals("ctp")) {
-                res[idxCtp] = true;
-                continue;
-            }
-            if (a.equals("car")) {
-                res[idxCar] = true;
-                continue;
-            }
-            if (a.equals("multicast")) {
-                res[idxMlt] = true;
-                continue;
-            }
-            if (a.equals("flowspec")) {
-                res[idxFlw] = true;
-                continue;
-            }
-            if (a.equals("vpnuni")) {
-                res[idxVpnU] = true;
-                continue;
-            }
-            if (a.equals("vpnmlt")) {
-                res[idxVpnM] = true;
-                continue;
-            }
-            if (a.equals("vpnflw")) {
-                res[idxVpnF] = true;
-                continue;
-            }
-            if (a.equals("vpls")) {
-                res[idxVpls] = true;
-                continue;
-            }
-            if (a.equals("mspw")) {
-                res[idxMspw] = true;
-                continue;
-            }
-            if (a.equals("evpn")) {
-                res[idxEvpn] = true;
-                continue;
-            }
-            if (a.equals("mdt")) {
-                res[idxMdt] = true;
-                continue;
-            }
-            if (a.equals("nsh")) {
-                res[idxNsh] = true;
-                continue;
-            }
-            if (a.equals("rpd")) {
-                res[idxRpd] = true;
-                continue;
-            }
-            if (a.equals("spf")) {
-                res[idxSpf] = true;
-                continue;
-            }
-            if (a.equals("sdwan")) {
-                res[idxSdw] = true;
-                continue;
-            }
-            if (a.equals("rtfilter")) {
-                res[idxRtf] = true;
-                continue;
-            }
-            if (a.equals("srte")) {
-                res[idxSrte] = true;
-                continue;
-            }
-            if (a.equals("linkstate")) {
-                res[idxLnks] = true;
-                continue;
-            }
-            if (a.equals("mvpn")) {
-                res[idxMvpn] = true;
-                continue;
-            }
-            if (a.equals("mtree")) {
-                res[idxMtre] = true;
-                continue;
-            }
-            if (a.equals("omtree")) {
-                res[idxMtro] = true;
-                continue;
-            }
-            if (a.equals("omvpn")) {
-                res[idxMvpo] = true;
-                continue;
-            }
-            if (a.equals("ovpnuni")) {
-                res[idxVpoU] = true;
-                continue;
-            }
-            if (a.equals("ovpnmlt")) {
-                res[idxVpoM] = true;
-                continue;
-            }
-            if (a.equals("ovpnflw")) {
-                res[idxVpoF] = true;
-                continue;
-            }
-            if (a.equals("olab")) {
-                res[idxOlab] = true;
-                continue;
-            }
-            if (a.equals("octp")) {
-                res[idxOctp] = true;
-                continue;
-            }
-            if (a.equals("ocar")) {
-                res[idxOcar] = true;
-                continue;
-            }
-            if (a.equals("ouni")) {
-                res[idxOuni] = true;
-                continue;
-            }
-            if (a.equals("omlt")) {
-                res[idxOmlt] = true;
-                continue;
-            }
-            if (a.equals("oflw")) {
-                res[idxOflw] = true;
-                continue;
-            }
-            if (a.equals("osrt")) {
-                res[idxOsrt] = true;
-                continue;
-            }
-        }
-        exclusiveMsk(res, idxUni, idxLab);
-        exclusiveMsk(res, idxUni, idxCtp);
-        exclusiveMsk(res, idxUni, idxCar);
-        exclusiveMsk(res, idxLab, idxCtp);
-        exclusiveMsk(res, idxLab, idxCar);
-        exclusiveMsk(res, idxCtp, idxCar);
-        exclusiveMsk(res, idxOuni, idxOlab);
-        exclusiveMsk(res, idxOuni, idxOctp);
-        exclusiveMsk(res, idxOuni, idxOcar);
-        exclusiveMsk(res, idxOlab, idxOctp);
-        exclusiveMsk(res, idxOlab, idxOcar);
-        exclusiveMsk(res, idxOctp, idxOcar);
-        return bools2mask(res);
-    }
-
-    private static void exclusiveMsk(boolean[] res, int bck, int pri) {
-        if (!res[bck]) {
-            return;
-        }
-        if (!res[pri]) {
-            return;
-        }
-        res[bck] = false;
+        return bools2mask(string2bools(c));
     }
 
     /**
@@ -1539,18 +1604,7 @@ public abstract class rtrBgpParam {
      * @return string
      */
     public final static String mask2string(long i) {
-        String a = "";
-        for (int o = 0; o < 63; o++) {
-            if (((1L << o) & i) == 0) {
-                continue;
-            }
-            String b = index2string(o);
-            if (b == null) {
-                continue;
-            }
-            a += " " + b;
-        }
-        return a;
+        return mask2string(mask2bools(i));
     }
 
     /**
@@ -1563,44 +1617,19 @@ public abstract class rtrBgpParam {
      * @param all all, none
      */
     public static void getAfiList(userHelp hl, int lev, int[] nxt, String end, boolean all) {
-        if (all) {
-            hl.add(null, false, lev, nxt, "all", "all address family to " + end);
-            hl.add(null, false, lev, nxt, "none", "no address family to " + end);
+        boolean[] b = boolsSet(false);
+        for (int i = 0; i < b.length; i++) {
+            b[i] = true;
+            String a = mask2string(b);
+            b[i] = false;
+            a = a.substring(1, a.length());
+            hl.add(null, false, lev, nxt, a, "address family to " + end);
         }
-        hl.add(null, false, lev, nxt, "unicast", "address family to " + end);
-        hl.add(null, false, lev, nxt, "labeled", "address family to " + end);
-        hl.add(null, false, lev, nxt, "ctp", "address family to " + end);
-        hl.add(null, false, lev, nxt, "car", "address family to " + end);
-        hl.add(null, false, lev, nxt, "olab", "address family to " + end);
-        hl.add(null, false, lev, nxt, "octp", "address family to " + end);
-        hl.add(null, false, lev, nxt, "ocar", "address family to " + end);
-        hl.add(null, false, lev, nxt, "ouni", "address family to " + end);
-        hl.add(null, false, lev, nxt, "omlt", "address family to " + end);
-        hl.add(null, false, lev, nxt, "oflw", "address family to " + end);
-        hl.add(null, false, lev, nxt, "osrt", "address family to " + end);
-        hl.add(null, false, lev, nxt, "multicast", "address family to " + end);
-        hl.add(null, false, lev, nxt, "flowspec", "address family to " + end);
-        hl.add(null, false, lev, nxt, "vpnuni", "address family to " + end);
-        hl.add(null, false, lev, nxt, "vpnmlt", "address family to " + end);
-        hl.add(null, false, lev, nxt, "vpnflw", "address family to " + end);
-        hl.add(null, false, lev, nxt, "ovpnuni", "address family to " + end);
-        hl.add(null, false, lev, nxt, "ovpnmlt", "address family to " + end);
-        hl.add(null, false, lev, nxt, "ovpnflw", "address family to " + end);
-        hl.add(null, false, lev, nxt, "vpls", "address family to " + end);
-        hl.add(null, false, lev, nxt, "mspw", "address family to " + end);
-        hl.add(null, false, lev, nxt, "evpn", "address family to " + end);
-        hl.add(null, false, lev, nxt, "mdt", "address family to " + end);
-        hl.add(null, false, lev, nxt, "nsh", "address family to " + end);
-        hl.add(null, false, lev, nxt, "rpd", "address family to " + end);
-        hl.add(null, false, lev, nxt, "spf", "address family to " + end);
-        hl.add(null, false, lev, nxt, "sdwan", "address family to " + end);
-        hl.add(null, false, lev, nxt, "rtfilter", "address family to " + end);
-        hl.add(null, false, lev, nxt, "srte", "address family to " + end);
-        hl.add(null, false, lev, nxt, "linkstate", "address family to " + end);
-        hl.add(null, false, lev, nxt, "mvpn", "address family to " + end);
-        hl.add(null, false, lev, nxt, "omvpn", "address family to " + end);
-        hl.add(null, false, lev, nxt, "mtree", "address family to " + end);
-        hl.add(null, false, lev, nxt, "omtree", "address family to " + end);
+        if (!all) {
+            return;
+        }
+        hl.add(null, false, lev, nxt, "all", "all address family to " + end);
+        hl.add(null, false, lev, nxt, "none", "no address family to " + end);
     }
 
     /**
