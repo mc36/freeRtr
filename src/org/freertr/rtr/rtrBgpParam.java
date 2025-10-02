@@ -386,12 +386,12 @@ public abstract class rtrBgpParam {
     /**
      * graceful restart
      */
-    public long graceRestart;
+    public boolean[] graceRestart;
 
     /**
      * long lived graceful restart
      */
-    public long llGraceRestart;
+    public boolean[] llGraceRestart;
 
     /**
      * multiple labels
@@ -1013,6 +1013,21 @@ public abstract class rtrBgpParam {
         boolean[] res = new boolean[src.length];
         for (int i = 0; i < src.length; i++) {
             res[i] = src[i] ^ val[i];
+        }
+        return res;
+    }
+
+    /**
+     * copy value
+     *
+     * @param src source
+     * @param val value
+     * @return result
+     */
+    public final static boolean[] boolsCopy(boolean[] src) {
+        boolean[] res = new boolean[src.length];
+        for (int i = 0; i < src.length; i++) {
+            res[i] = src[i];
         }
         return res;
     }
@@ -1643,6 +1658,8 @@ public abstract class rtrBgpParam {
         isTemplate = temp;
         localAs = lower.localAs;
         addrFams = bools2mask(lower.addrFams);
+        graceRestart = boolsSet(false);
+        llGraceRestart = boolsSet(false);
         wideAsPath = true;
         routeRefreshOld = true;
         routeRefreshNew = true;
@@ -1741,8 +1758,8 @@ public abstract class rtrBgpParam {
         bfdTrigger = src.bfdTrigger;
         backupPeer = src.backupPeer;
         softReconfig = src.softReconfig;
-        graceRestart = src.graceRestart;
-        llGraceRestart = src.llGraceRestart;
+        graceRestart = boolsCopy(src.graceRestart);
+        llGraceRestart = boolsCopy(src.llGraceRestart);
         multiLabel = src.multiLabel;
         extNextCur = src.extNextCur;
         extNextOtr = src.extNextOtr;
@@ -2526,8 +2543,8 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !ungrpRemAs, beg, nei + "ungroup-remoteas", "");
         cmds.cfgLine(l, !softReconfig, beg, nei + "soft-reconfiguration", "");
         l.add(beg + nei + "multiple-labels" + mask2string(multiLabel));
-        l.add(beg + nei + "graceful-restart" + mask2string(graceRestart));
-        l.add(beg + nei + "longlived-graceful" + mask2string(llGraceRestart));
+        l.add(beg + nei + "graceful-restart" + bools2string(graceRestart));
+        l.add(beg + nei + "longlived-graceful" + bools2string(llGraceRestart));
         l.add(beg + nei + "extended-nexthop-current" + mask2string(extNextCur));
         l.add(beg + nei + "extended-nexthop-other" + mask2string(extNextOtr));
         s = "";
@@ -2987,16 +3004,16 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("graceful-restart")) {
-            graceRestart = string2mask(cmd);
+            graceRestart = string2bools(cmd);
             if (negated) {
-                graceRestart = 0;
+                graceRestart = boolsSet(false);
             }
             return false;
         }
         if (s.equals("longlived-graceful")) {
-            llGraceRestart = string2mask(cmd);
+            llGraceRestart = string2bools(cmd);
             if (negated) {
-                llGraceRestart = 0;
+                llGraceRestart = boolsSet(false);
             }
             return false;
         }

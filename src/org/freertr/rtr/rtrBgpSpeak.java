@@ -1825,7 +1825,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtNextHop, buf);
         }
-        safis = mask2list(neigh.graceRestart & neigh.addrFams);
+        safis = mask2list(rtrBgpParam.bools2mask(neigh.graceRestart) & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[2 + (safis.size() * 4)];
             bits.msbPutW(buf, 0, ((parent.restartTime / 1000) & 0xfff) | 0x8000);
@@ -1834,7 +1834,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaGraceRestart, buf);
         }
-        safis = mask2list(neigh.llGraceRestart & neigh.addrFams);
+        safis = mask2list(rtrBgpParam.bools2mask(neigh.llGraceRestart) & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 7];
             for (int i = 0; i < safis.size(); i++) {
@@ -2133,8 +2133,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!neigh.capaNego) {
             peerAfis = neigh.addrFams;
             peerDynCap = neigh.dynamicCapab;
-            peerGrace = neigh.graceRestart;
-            peerLlGrace = neigh.llGraceRestart;
+            peerGrace = rtrBgpParam.bools2mask(neigh.graceRestart);
+            peerLlGrace = rtrBgpParam.bools2mask(neigh.llGraceRestart);
             peerMltLab = neigh.multiLabel;
             peerExtNextCur = neigh.extNextCur;
             peerExtNextOtr = neigh.extNextOtr;
