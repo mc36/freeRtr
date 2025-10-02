@@ -2751,10 +2751,9 @@ public class rtrBgpUtil {
         if (idx < 0) {
             return;
         }
-        long mask = 1L << idx;
         int sfi = safi & sfiMask;
         int len = pck.getByte(3);
-        boolean addpath = (spkr.addpathRx & mask) != 0;
+        boolean addpath = spkr.addpathRx[idx];
         boolean oneLab = !spkr.peerMltLab[idx];
         boolean v6nh = len >= addrIPv6.size;
         pck.getSkip(4);
@@ -2809,7 +2808,7 @@ public class rtrBgpUtil {
             if (res == null) {
                 continue;
             }
-            res.oldDst = mask;
+            res.oldDst = idx;
             res.best.ident = ident;
             res.best.nextHop = nextHop;
             pfxs.add(res);
@@ -2827,11 +2826,11 @@ public class rtrBgpUtil {
         pck.merge2beg();
         int safi = triplet2safi(pck.msbGetD(0));
         pck.getSkip(3);
-        long mask = spkr.parent.safi2mask(safi);
-        if (mask < 0) {
+        int idx = spkr.parent.safi2idx(safi);
+        if (idx < 0) {
             return;
         }
-        boolean addpath = (spkr.addpathRx & mask) != 0;
+        boolean addpath = spkr.addpathRx[idx];
         int ident = 0;
         for (; pck.dataSize() > 0;) {
             if (addpath) {
@@ -2842,7 +2841,7 @@ public class rtrBgpUtil {
             if (res == null) {
                 continue;
             }
-            res.oldDst = mask;
+            res.oldDst = idx;
             res.best.ident = ident;
             pfxs.add(res);
         }

@@ -514,7 +514,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * peer sends additional paths
      */
-    public long addpathRx;
+    public boolean[] addpathRx;
 
     /**
      * peer receives additional paths
@@ -579,7 +579,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * addpath list sent by the peer
      */
-    public long originalAddRlist;
+    public boolean[] originalAddRlist;
 
     /**
      * addpath list sent by the peer
@@ -608,6 +608,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         peerMltLab = rtrBgpParam.boolsSet(false);
         peerExtNextCur = rtrBgpParam.boolsSet(false);
         peerExtNextOtr = rtrBgpParam.boolsSet(false);
+        addpathRx = rtrBgpParam.boolsSet(false);
+        originalAddRlist = rtrBgpParam.boolsSet(false);
         ready2adv = false;
         resumed = res == 2;
         addpathBeg = bits.randomD();
@@ -2009,12 +2011,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                             int o = bits.msbGetD(tlv.valDat, i);
                             o = rtrBgpUtil.triplet2safi(o);
                             long p = parent.safi2mask(o);
-                            if (p < 1) {
+                            if (p < 0) {
+                                continue;
+                            }
+                            int q = parent.safi2idx(o);
+                            if (q < 0) {
                                 continue;
                             }
                             int m = tlv.valDat[i + 3];
                             if ((m & 2) != 0) {
-                                addpathRx |= p;
+                                addpathRx[q] = true;
                             }
                             if ((m & 1) != 0) {
                                 addpathTx |= p;
@@ -2052,7 +2058,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             peerMltLab = rtrBgpParam.boolsCopy(neigh.multiLabel);
             peerExtNextCur = rtrBgpParam.boolsCopy(neigh.extNextCur);
             peerExtNextOtr = rtrBgpParam.boolsCopy(neigh.extNextOtr);
-            addpathRx = rtrBgpParam.bools2mask(neigh.addpathRmode);
+            addpathRx = rtrBgpParam.boolsCopy(neigh.addpathRmode);
             addpathTx = rtrBgpParam.bools2mask(neigh.addpathTmode);
             peerRefreshOld = neigh.routeRefreshOld;
             peerRefreshNew = neigh.routeRefreshNew;
@@ -2069,7 +2075,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         originalSafiList = peerAfis;
-        originalAddRlist = addpathRx;
+        originalAddRlist = rtrBgpParam.boolsCopy(addpathRx);
         originalAddTlist = addpathTx;
         peer32bitAS &= neigh.wideAsPath;
         peerRefreshOld &= neigh.routeRefreshOld;
@@ -2081,9 +2087,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return true;
         }
         needEorAfis = peerAfis;
-        addpathRx &= rtrBgpParam.bools2mask(neigh.addpathRmode);
+        addpathRx = rtrBgpParam.boolsAnd(addpathRx, neigh.addpathRmode);
+        addpathRx = rtrBgpParam.boolsAnd(addpathRx, neigh.addrFams);
         addpathTx &= rtrBgpParam.bools2mask(neigh.addpathTmode);
-        addpathRx &= rtrBgpParam.bools2mask(neigh.addrFams);
         addpathTx &= rtrBgpParam.bools2mask(neigh.addrFams);
         if (debugger.rtrBgpEvnt) {
             logger.debug("peer " + neigh.peerAddr + " id=" + peerRouterID + " hold=" + peerHold + " 32bitAS=" + peer32bitAS + " refresh=" + peerRefreshOld + " " + peerRefreshNew);
@@ -2458,11 +2464,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         ntry.best.rouSrc = neigh.peerType;
         ntry.best.srcRtr = neigh.peerAddr.copyBytes();
         ntry.best.locPref = neigh.preference;
-        long mask = parent.safi2mask(rtrBgpUtil.safiIp4uni);
-        if (mask < 0) {
+        int idx = parent.safi2idx(rtrBgpUtil.safiIp4uni);
+        if (idx < 0) {
             return true;
         }
-        boolean addpath = (addpathRx & mask) != 0;
+        long mask = 1L << idx;
+        boolean addpath = addpathRx[idx];
         int ident = 0;
         for (;;) {
             if (pck.dataSize() <= prt) {
@@ -2476,7 +2483,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (res == null) {
                 continue;
             }
-            res.oldDst = mask;
+            res.oldDst = idx;
             res.best.ident = ident;
             currDel.add(res);
         }
@@ -2504,7 +2511,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (res == null) {
                 continue;
             }
-            res.oldDst = mask;
+            res.oldDst = idx;
             res.best.ident = ident;
             res.best.nextHop = ntry.best.nextHop;
             currAdd.add(res);
@@ -2524,10 +2531,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         int ortf = lrnRtf.size();
         for (int i = 0; i < currDel.size(); i++) {
             tabRouteEntry<addrIP> res = currDel.get(i);
-            mask = res.oldDst;
+            idx = (int) res.oldDst;
             res.oldDst = 0;
-            int safi = parent.mask2safi(mask);
-            addpath = (addpathRx & mask) != 0;
+            mask = 1L << idx;
+            int safi = parent.idx2safi(idx);
+            addpath = addpathRx[idx];
             updateRchblCntr(2, pck);
             if (debugger.rtrBgpTraf) {
                 logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
@@ -2564,10 +2572,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         for (int i = 0; i < currAdd.size(); i++) {
             tabRouteEntry<addrIP> res = currAdd.get(i);
-            mask = res.oldDst;
+            idx = (int) res.oldDst;
             res.oldDst = 0;
-            int safi = parent.mask2safi(mask);
-            addpath = (addpathRx & mask) != 0;
+            mask = 1L << idx;
+            int safi = parent.idx2safi(idx);
+            addpath = addpathRx[idx];
             updateRchblCntr(0, pck);
             if (debugger.rtrBgpTraf) {
                 logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);

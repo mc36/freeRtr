@@ -1729,7 +1729,7 @@ public abstract class rtrBgpParam {
         remoteAs = src.remoteAs;
         remoteAny = src.remoteAny;
         localAs = src.localAs;
-        addrFams = src.addrFams;
+        addrFams = boolsCopy(src.addrFams);
         template = src.template;
         description = src.description;
         haMode = src.haMode;

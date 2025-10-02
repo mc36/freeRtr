@@ -4697,7 +4697,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         pip.setTime(i);
         ntry.conn.upTime = bits.str2long(cmd.word());
         ntry.conn.peerAfis = bits.str2long(cmd.word());
-        ntry.conn.addpathRx = bits.str2long(cmd.word());
+        ntry.conn.addpathRx = rtrBgpParam.string2bools(cmd.word().replaceAll(",", " "));
         ntry.conn.addpathTx = bits.str2long(cmd.word());
         ntry.conn.peerMltLab = rtrBgpParam.string2bools(cmd.word().replaceAll(",", " "));
         ntry.conn.peerDynCap = cmd.word().equals("true");
