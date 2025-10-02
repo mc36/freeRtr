@@ -727,9 +727,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("software|" + conn.peerSoftware);
         l.add("compression|rx=" + (conn.compressRx != null) + ", tx=" + (conn.compressTx != null));
         l.add("strict bfd|" + conn.strictBfd);
-        l.add("graceful got|" + rtrBgpParam.mask2string(conn.peerGrace));
+        l.add("graceful got|" + rtrBgpParam.bools2string(conn.peerGrace));
         l.add("graceful sent|" + rtrBgpParam.bools2string(graceRestart));
-        l.add("longlive graceful got|" + rtrBgpParam.mask2string(conn.peerLlGrace));
+        l.add("longlive graceful got|" + rtrBgpParam.bools2string(conn.peerLlGrace));
         l.add("longlive graceful sent|" + rtrBgpParam.bools2string(llGraceRestart));
         l.add("multilabel got|" + rtrBgpParam.mask2string(conn.peerMltLab));
         l.add("multilabel sent|" + rtrBgpParam.mask2string(multiLabel));
@@ -2294,7 +2294,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             case 3:
                 return showSummry1() + "|" + reachable + "|" + bits.timePast(reachTim) + "|" + reachNum + "|" + sessNum + "|" + bits.timePast(conn.upTime);
             case 4:
-                return showSummry1() + "|" + rtrBgpParam.mask2string(conn.peerGrace) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(graceRestart) & addrFams);
+                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerGrace) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(graceRestart) & addrFams);
             case 5:
                 return showSummry1() + "|" + rtrBgpParam.mask2string(conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.addpathTx) + "|" + rtrBgpParam.mask2string(addpathRmode - conn.addpathRx) + "|" + rtrBgpParam.mask2string(addpathTmode - conn.addpathTx) + "|" + rtrBgpParam.mask2string(conn.originalAddRlist - conn.addpathRx) + "|" + rtrBgpParam.mask2string(conn.originalAddTlist - conn.addpathTx);
             case 6:
@@ -2318,7 +2318,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             case 14:
                 return showSummry1() + "|" + rtrBgpParam.mask2string(conn.peerMltLab) + "|" + rtrBgpParam.mask2string(multiLabel & addrFams);
             case 15:
-                return showSummry1() + "|" + rtrBgpParam.mask2string(conn.peerLlGrace) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(llGraceRestart) & addrFams);
+                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerLlGrace) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(llGraceRestart) & addrFams);
             case 16:
                 return showSummry1() + "|" + conn.peerSoftware;
             case 17:

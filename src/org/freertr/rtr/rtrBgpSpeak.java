@@ -469,12 +469,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * peer graceful restart capability
      */
-    public long peerGrace;
+    public boolean[] peerGrace;
 
     /**
      * peer long lived graceful restart capability
      */
-    public long peerLlGrace;
+    public boolean[] peerLlGrace;
 
     /**
      * peer multiple labels capability
@@ -603,6 +603,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param res resume, 0=disabled, 1=normal, 2=resume
      */
     public rtrBgpSpeak(rtrBgp protocol, rtrBgpNeigh neighbor, pipeSide socket, int res) {
+        peerGrace = rtrBgpParam.boolsSet(false);
+        peerLlGrace = rtrBgpParam.boolsSet(false);
         ready2adv = false;
         resumed = res == 2;
         addpathBeg = bits.randomD();
@@ -2056,22 +2058,22 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         for (i = 2; i < tlv.valSiz; i += 4) {
                             int o = bits.msbGetD(tlv.valDat, i);
                             o = rtrBgpUtil.triplet2safi(o);
-                            long p = parent.safi2mask(o);
-                            if (p < 1) {
+                            int p = parent.safi2idx(o);
+                            if (p < 0) {
                                 continue;
                             }
-                            peerGrace |= p;
+                            peerGrace[p] = true;
                         }
                         break;
                     case rtrBgpUtil.capaLongGrace:
                         for (i = 0; i < tlv.valSiz; i += 7) {
                             int o = bits.msbGetD(tlv.valDat, i);
                             o = rtrBgpUtil.triplet2safi(o);
-                            long p = parent.safi2mask(o);
-                            if (p < 1) {
+                            int p = parent.safi2idx(o);
+                            if (p < 0) {
                                 continue;
                             }
-                            peerLlGrace |= p;
+                            peerLlGrace[p] = true;
                         }
                         break;
                     case rtrBgpUtil.capaExtNextHop:
@@ -2133,8 +2135,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!neigh.capaNego) {
             peerAfis = neigh.addrFams;
             peerDynCap = neigh.dynamicCapab;
-            peerGrace = rtrBgpParam.bools2mask(neigh.graceRestart);
-            peerLlGrace = rtrBgpParam.bools2mask(neigh.llGraceRestart);
+            peerGrace = rtrBgpParam.boolsCopy(neigh.graceRestart);
+            peerLlGrace = rtrBgpParam.boolsCopy(neigh.llGraceRestart);
             peerMltLab = neigh.multiLabel;
             peerExtNextCur = neigh.extNextCur;
             peerExtNextOtr = neigh.extNextOtr;

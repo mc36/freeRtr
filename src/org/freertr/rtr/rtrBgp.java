@@ -1420,116 +1420,243 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * convert safi to index
+     *
+     * @param safi safi
+     * @return mask
+     */
+    public int safi2idx(int safi) {
+        if (safi == afiUni) {
+            return rtrBgpParam.idxUni;
+        }
+        if (safi == afiLab) {
+            return rtrBgpParam.idxLab;
+        }
+        if (safi == afiCtp) {
+            return rtrBgpParam.idxCtp;
+        }
+        if (safi == afiCar) {
+            return rtrBgpParam.idxCar;
+        }
+        if (safi == afiMlt) {
+            return rtrBgpParam.idxMlt;
+        }
+        if (safi == afiOlab) {
+            return rtrBgpParam.idxOlab;
+        }
+        if (safi == afiOctp) {
+            return rtrBgpParam.idxOctp;
+        }
+        if (safi == afiOcar) {
+            return rtrBgpParam.idxOcar;
+        }
+        if (safi == afiOuni) {
+            return rtrBgpParam.idxOuni;
+        }
+        if (safi == afiOmlt) {
+            return rtrBgpParam.idxOmlt;
+        }
+        if (safi == afiOflw) {
+            return rtrBgpParam.idxOflw;
+        }
+        if (safi == afiOsrt) {
+            return rtrBgpParam.idxOsrt;
+        }
+        if (safi == afiFlw) {
+            return rtrBgpParam.idxFlw;
+        }
+        if (safi == afiVpnU) {
+            return rtrBgpParam.idxVpnU;
+        }
+        if (safi == afiVpnM) {
+            return rtrBgpParam.idxVpnM;
+        }
+        if (safi == afiVpnF) {
+            return rtrBgpParam.idxVpnF;
+        }
+        if (safi == afiVpoU) {
+            return rtrBgpParam.idxVpoU;
+        }
+        if (safi == afiVpoM) {
+            return rtrBgpParam.idxVpoM;
+        }
+        if (safi == afiVpoF) {
+            return rtrBgpParam.idxVpoF;
+        }
+        if (safi == afiVpls) {
+            return rtrBgpParam.idxVpls;
+        }
+        if (safi == afiMspw) {
+            return rtrBgpParam.idxMspw;
+        }
+        if (safi == afiEvpn) {
+            return rtrBgpParam.idxEvpn;
+        }
+        if (safi == afiMdt) {
+            return rtrBgpParam.idxMdt;
+        }
+        if (safi == afiNsh) {
+            return rtrBgpParam.idxNsh;
+        }
+        if (safi == afiRpd) {
+            return rtrBgpParam.idxRpd;
+        }
+        if (safi == afiSdw) {
+            return rtrBgpParam.idxSdw;
+        }
+        if (safi == afiSpf) {
+            return rtrBgpParam.idxSpf;
+        }
+        if (safi == afiRtf) {
+            return rtrBgpParam.idxRtf;
+        }
+        if (safi == afiSrte) {
+            return rtrBgpParam.idxSrte;
+        }
+        if (safi == afiLnks) {
+            return rtrBgpParam.idxLnks;
+        }
+        if (safi == afiMvpn) {
+            return rtrBgpParam.idxMvpn;
+        }
+        if (safi == afiMvpo) {
+            return rtrBgpParam.idxMvpo;
+        }
+        if (safi == afiMtre) {
+            return rtrBgpParam.idxMtre;
+        }
+        if (safi == afiMtro) {
+            return rtrBgpParam.idxMtro;
+        }
+        logger.info("unknown safi (" + safi + ") requested");
+        return -1;
+    }
+
+    /**
+     * convert index to safi
+     *
+     * @param idx mask
+     * @return safi
+     */
+    public int idx2safi(int idx) {
+        if (idx == rtrBgpParam.idxUni) {
+            return afiUni;
+        }
+        if (idx == rtrBgpParam.idxLab) {
+            return afiLab;
+        }
+        if (idx == rtrBgpParam.idxCtp) {
+            return afiCtp;
+        }
+        if (idx == rtrBgpParam.idxCar) {
+            return afiCar;
+        }
+        if (idx == rtrBgpParam.idxMlt) {
+            return afiMlt;
+        }
+        if (idx == rtrBgpParam.idxOlab) {
+            return afiOlab;
+        }
+        if (idx == rtrBgpParam.idxOctp) {
+            return afiOctp;
+        }
+        if (idx == rtrBgpParam.idxOcar) {
+            return afiOcar;
+        }
+        if (idx == rtrBgpParam.idxOuni) {
+            return afiOuni;
+        }
+        if (idx == rtrBgpParam.idxOmlt) {
+            return afiOmlt;
+        }
+        if (idx == rtrBgpParam.idxOflw) {
+            return afiOflw;
+        }
+        if (idx == rtrBgpParam.idxOsrt) {
+            return afiOsrt;
+        }
+        if (idx == rtrBgpParam.idxFlw) {
+            return afiFlw;
+        }
+        if (idx == rtrBgpParam.idxVpnU) {
+            return afiVpnU;
+        }
+        if (idx == rtrBgpParam.idxVpnM) {
+            return afiVpnM;
+        }
+        if (idx == rtrBgpParam.idxVpnF) {
+            return afiVpnF;
+        }
+        if (idx == rtrBgpParam.idxVpoU) {
+            return afiVpoU;
+        }
+        if (idx == rtrBgpParam.idxVpoM) {
+            return afiVpoM;
+        }
+        if (idx == rtrBgpParam.idxVpoF) {
+            return afiVpoF;
+        }
+        if (idx == rtrBgpParam.idxVpls) {
+            return afiVpls;
+        }
+        if (idx == rtrBgpParam.idxMspw) {
+            return afiMspw;
+        }
+        if (idx == rtrBgpParam.idxEvpn) {
+            return afiEvpn;
+        }
+        if (idx == rtrBgpParam.idxMdt) {
+            return afiMdt;
+        }
+        if (idx == rtrBgpParam.idxNsh) {
+            return afiNsh;
+        }
+        if (idx == rtrBgpParam.idxRpd) {
+            return afiRpd;
+        }
+        if (idx == rtrBgpParam.idxSdw) {
+            return afiSdw;
+        }
+        if (idx == rtrBgpParam.idxSpf) {
+            return afiSpf;
+        }
+        if (idx == rtrBgpParam.idxRtf) {
+            return afiRtf;
+        }
+        if (idx == rtrBgpParam.idxSrte) {
+            return afiSrte;
+        }
+        if (idx == rtrBgpParam.idxLnks) {
+            return afiLnks;
+        }
+        if (idx == rtrBgpParam.idxMvpn) {
+            return afiMvpn;
+        }
+        if (idx == rtrBgpParam.idxMvpo) {
+            return afiMvpo;
+        }
+        if (idx == rtrBgpParam.idxMtre) {
+            return afiMtre;
+        }
+        if (idx == rtrBgpParam.idxMtro) {
+            return afiMtro;
+        }
+        logger.info("unknown safi (" + idx + ") requested");
+        return -1;
+    }
+
+    /**
      * convert safi to mask
      *
      * @param safi safi
      * @return mask
      */
     public long safi2mask(int safi) {
-        if (safi == afiUni) {
-            return rtrBgpParam.mskUni;
+        int i = safi2idx(safi);
+        if (i < 0) {
+            return -1;
         }
-        if (safi == afiLab) {
-            return rtrBgpParam.mskLab;
-        }
-        if (safi == afiCtp) {
-            return rtrBgpParam.mskCtp;
-        }
-        if (safi == afiCar) {
-            return rtrBgpParam.mskCar;
-        }
-        if (safi == afiMlt) {
-            return rtrBgpParam.mskMlt;
-        }
-        if (safi == afiOlab) {
-            return rtrBgpParam.mskOlab;
-        }
-        if (safi == afiOctp) {
-            return rtrBgpParam.mskOctp;
-        }
-        if (safi == afiOcar) {
-            return rtrBgpParam.mskOcar;
-        }
-        if (safi == afiOuni) {
-            return rtrBgpParam.mskOuni;
-        }
-        if (safi == afiOmlt) {
-            return rtrBgpParam.mskOmlt;
-        }
-        if (safi == afiOflw) {
-            return rtrBgpParam.mskOflw;
-        }
-        if (safi == afiOsrt) {
-            return rtrBgpParam.mskOsrt;
-        }
-        if (safi == afiFlw) {
-            return rtrBgpParam.mskFlw;
-        }
-        if (safi == afiVpnU) {
-            return rtrBgpParam.mskVpnU;
-        }
-        if (safi == afiVpnM) {
-            return rtrBgpParam.mskVpnM;
-        }
-        if (safi == afiVpnF) {
-            return rtrBgpParam.mskVpnF;
-        }
-        if (safi == afiVpoU) {
-            return rtrBgpParam.mskVpoU;
-        }
-        if (safi == afiVpoM) {
-            return rtrBgpParam.mskVpoM;
-        }
-        if (safi == afiVpoF) {
-            return rtrBgpParam.mskVpoF;
-        }
-        if (safi == afiVpls) {
-            return rtrBgpParam.mskVpls;
-        }
-        if (safi == afiMspw) {
-            return rtrBgpParam.mskMspw;
-        }
-        if (safi == afiEvpn) {
-            return rtrBgpParam.mskEvpn;
-        }
-        if (safi == afiMdt) {
-            return rtrBgpParam.mskMdt;
-        }
-        if (safi == afiNsh) {
-            return rtrBgpParam.mskNsh;
-        }
-        if (safi == afiRpd) {
-            return rtrBgpParam.mskRpd;
-        }
-        if (safi == afiSdw) {
-            return rtrBgpParam.mskSdw;
-        }
-        if (safi == afiSpf) {
-            return rtrBgpParam.mskSpf;
-        }
-        if (safi == afiRtf) {
-            return rtrBgpParam.mskRtf;
-        }
-        if (safi == afiSrte) {
-            return rtrBgpParam.mskSrte;
-        }
-        if (safi == afiLnks) {
-            return rtrBgpParam.mskLnks;
-        }
-        if (safi == afiMvpn) {
-            return rtrBgpParam.mskMvpn;
-        }
-        if (safi == afiMvpo) {
-            return rtrBgpParam.mskMvpo;
-        }
-        if (safi == afiMtre) {
-            return rtrBgpParam.mskMtre;
-        }
-        if (safi == afiMtro) {
-            return rtrBgpParam.mskMtro;
-        }
-        logger.info("unknown safi (" + safi + ") requested");
-        return -1;
+        return 1L << i;
     }
 
     /**
@@ -1539,110 +1666,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return safi
      */
     public int mask2safi(long mask) {
-        if (mask == rtrBgpParam.mskUni) {
-            return afiUni;
-        }
-        if (mask == rtrBgpParam.mskLab) {
-            return afiLab;
-        }
-        if (mask == rtrBgpParam.mskCtp) {
-            return afiCtp;
-        }
-        if (mask == rtrBgpParam.mskCar) {
-            return afiCar;
-        }
-        if (mask == rtrBgpParam.mskMlt) {
-            return afiMlt;
-        }
-        if (mask == rtrBgpParam.mskOlab) {
-            return afiOlab;
-        }
-        if (mask == rtrBgpParam.mskOctp) {
-            return afiOctp;
-        }
-        if (mask == rtrBgpParam.mskOcar) {
-            return afiOcar;
-        }
-        if (mask == rtrBgpParam.mskOuni) {
-            return afiOuni;
-        }
-        if (mask == rtrBgpParam.mskOmlt) {
-            return afiOmlt;
-        }
-        if (mask == rtrBgpParam.mskOflw) {
-            return afiOflw;
-        }
-        if (mask == rtrBgpParam.mskOsrt) {
-            return afiOsrt;
-        }
-        if (mask == rtrBgpParam.mskFlw) {
-            return afiFlw;
-        }
-        if (mask == rtrBgpParam.mskVpnU) {
-            return afiVpnU;
-        }
-        if (mask == rtrBgpParam.mskVpnM) {
-            return afiVpnM;
-        }
-        if (mask == rtrBgpParam.mskVpnF) {
-            return afiVpnF;
-        }
-        if (mask == rtrBgpParam.mskVpoU) {
-            return afiVpoU;
-        }
-        if (mask == rtrBgpParam.mskVpoM) {
-            return afiVpoM;
-        }
-        if (mask == rtrBgpParam.mskVpoF) {
-            return afiVpoF;
-        }
-        if (mask == rtrBgpParam.mskVpls) {
-            return afiVpls;
-        }
-        if (mask == rtrBgpParam.mskMspw) {
-            return afiMspw;
-        }
-        if (mask == rtrBgpParam.mskEvpn) {
-            return afiEvpn;
-        }
-        if (mask == rtrBgpParam.mskMdt) {
-            return afiMdt;
-        }
-        if (mask == rtrBgpParam.mskNsh) {
-            return afiNsh;
-        }
-        if (mask == rtrBgpParam.mskRpd) {
-            return afiRpd;
-        }
-        if (mask == rtrBgpParam.mskSdw) {
-            return afiSdw;
-        }
-        if (mask == rtrBgpParam.mskSpf) {
-            return afiSpf;
-        }
-        if (mask == rtrBgpParam.mskRtf) {
-            return afiRtf;
-        }
-        if (mask == rtrBgpParam.mskSrte) {
-            return afiSrte;
-        }
-        if (mask == rtrBgpParam.mskLnks) {
-            return afiLnks;
-        }
-        if (mask == rtrBgpParam.mskMvpn) {
-            return afiMvpn;
-        }
-        if (mask == rtrBgpParam.mskMvpo) {
-            return afiMvpo;
-        }
-        if (mask == rtrBgpParam.mskMtre) {
-            return afiMtre;
-        }
-        if (mask == rtrBgpParam.mskMtro) {
-            return afiMtro;
-        }
-        logger.info("unknown safi (" + mask + ") requested");
-        return -1;
+        int i=rtrBgpParam.mask2index(mask);
+        if (i<0)return -1;
+        return idx2safi(i);
     }
 
     /**

@@ -1021,7 +1021,6 @@ public abstract class rtrBgpParam {
      * copy value
      *
      * @param src source
-     * @param val value
      * @return result
      */
     public final static boolean[] boolsCopy(boolean[] src) {

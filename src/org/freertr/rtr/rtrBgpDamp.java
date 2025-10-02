@@ -12,7 +12,7 @@ import org.freertr.util.bits;
  * @author matecsaba
  */
 public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
-    
+
     /**
      * address family
      */
