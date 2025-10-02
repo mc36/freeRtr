@@ -71,6 +71,7 @@ import org.freertr.pack.packXotPad;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.prt.prtArping;
 import org.freertr.rtr.rtrBgpDump;
+import org.freertr.rtr.rtrBgpParam;
 import org.freertr.sec.secClient;
 import org.freertr.serv.servOpenflow;
 import org.freertr.tab.tabGen;
@@ -1266,7 +1267,8 @@ public class userPacket {
             rtrBgp bgp = new rtrBgp(vrf.getFwd(trg), vrf, null, 0);
             rtrBgpNeigh nei = new rtrBgpNeigh(bgp, trg);
             nei.localAs = las;
-            nei.addrFams = safi;
+            nei.addrFams = rtrBgpParam.boolsSet(false);
+            nei.addrFams[bgp.safi2idx(safi)] = true;
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, strm, 0);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
@@ -1389,7 +1391,8 @@ public class userPacket {
             } else {
                 safi = rtrBgpUtil.safiIp6uni;
             }
-            nei.addrFams = safi;
+            nei.addrFams = rtrBgpParam.boolsSet(false);
+            nei.addrFams[bgp.safi2idx(safi)] = true;
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, strm, 0);
             packHolder pck = new packHolder(true, true);
             spk.sendOpen();
@@ -1485,7 +1488,8 @@ public class userPacket {
             } else {
                 safi = rtrBgpUtil.safiIp6uni;
             }
-            nei.addrFams = safi;
+            nei.addrFams = rtrBgpParam.boolsSet(false);
+            nei.addrFams[bgp.safi2idx(safi)] = true;
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, strm, 0);
             packHolder pck = new packHolder(true, true);
             spk.sendOpen();

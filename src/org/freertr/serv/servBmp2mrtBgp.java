@@ -7,6 +7,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.rtr.rtrBgp;
 import org.freertr.rtr.rtrBgpMon;
 import org.freertr.rtr.rtrBgpNeigh;
+import org.freertr.rtr.rtrBgpParam;
 import org.freertr.rtr.rtrBgpSpeak;
 import org.freertr.rtr.rtrBgpUtil;
 
@@ -38,7 +39,8 @@ public class servBmp2mrtBgp extends servBmp2mrtLstn {
         rtrBgp bgp = new rtrBgp(lower.srvVrf.getFwd(conn.peerAddr), lower.srvVrf, null, 0);
         rtrBgpNeigh nei = new rtrBgpNeigh(bgp, conn.peerAddr.copyBytes());
         nei.localAs = lower.listenAsn;
-        nei.addrFams = safi;
+        nei.addrFams = rtrBgpParam.boolsSet(false);
+        nei.addrFams[bgp.safi2idx(safi)] = true;
         rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, pipe, 0);
         spk.sendOpen();
         spk.sendKeepAlive();

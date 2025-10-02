@@ -708,7 +708,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("rpki out|" + rtrBgpUtil.rpkiMode2string(rpkiOut) + " vpn=" + rtrBgpUtil.rpkiMode2string(vpkiOut));
         l.add("safi open|" + rtrBgpParam.mask2string(conn.peerAfis));
         l.add("safi got|" + rtrBgpParam.mask2string(conn.originalSafiList));
-        l.add("safi not remote|" + rtrBgpParam.mask2string(addrFams - conn.peerAfis));
+        l.add("safi not remote|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addrFams) - conn.peerAfis));
         l.add("safi not local|" + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis));
         l.add("ipinfo|" + conn.ipInfoRes);
         l.add("local address|" + localAddr);
@@ -2298,7 +2298,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     public String showSummary(int mod) {
         switch (mod) {
             case 1:
-                return showSummry1() + "|" + rtrBgpParam.mask2string(conn.peerAfis) + "|" + rtrBgpParam.mask2string(addrFams - conn.peerAfis) + "|" + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis);
+                return showSummry1() + "|" + rtrBgpParam.mask2string(conn.peerAfis) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addrFams) - conn.peerAfis) + "|" + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis);
             case 2:
                 return showSummry1() + "|" + groupMember + "|" + socketMode + "|" + bits.timePast(conn.upTime);
             case 3:

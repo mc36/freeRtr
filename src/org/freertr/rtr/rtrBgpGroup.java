@@ -377,7 +377,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         l.add("type|" + rtrBgpUtil.peerType2string(peerType));
         l.add("leak role|" + rtrBgpUtil.leakRole2string(leakRole, leakAttr));
         l.add("rpki|" + rtrBgpUtil.rpkiMode2string(rpkiOut) + " vpn=" + rtrBgpUtil.rpkiMode2string(vpkiOut));
-        l.add("safi|" + mask2string(addrFams));
+        l.add("safi|" + bools2string(addrFams));
         l.add("local|" + localAddr);
         l.add("other|" + localOddr);
         l.add("unicast advertise|" + wilUni.size() + ", list=" + chgUni.size());
@@ -668,7 +668,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.labelRem = tabLabel.prependLabel(ntry.labelRem, loc.label);
             done = true;
         }
-        if ((afi == lower.afiOmlt) || ((afi == lower.afiOuni) && lower.other.routerVpn && ((addrFams & (rtrBgpParam.mskOlab | rtrBgpParam.mskOctp | rtrBgpParam.mskOcar)) == 0))) {
+        if ((afi == lower.afiOmlt) || ((afi == lower.afiOuni) && lower.other.routerVpn && !addrFams[rtrBgpParam.idxOlab] && !addrFams[rtrBgpParam.idxOctp] && !addrFams[rtrBgpParam.idxOcar])) {
             ntry.nextHop = localOddr.copyBytes();
         } else {
             ntry.nextHop = localAddr.copyBytes();
@@ -1104,7 +1104,10 @@ public class rtrBgpGroup extends rtrBgpParam {
             nextHopSelf(afi, ntry);
             return ntry;
         }
-        if ((afi != lower.afiUni) || ((addrFams & (rtrBgpParam.mskLab | rtrBgpParam.mskCtp | rtrBgpParam.mskCar)) == 0)) {
+        if ((afi != lower.afiUni)) {
+            return ntry;
+        }
+        if (!addrFams[rtrBgpParam.idxLab] && !addrFams[rtrBgpParam.idxCtp] && !addrFams[rtrBgpParam.idxCar]) {
             return ntry;
         }
         for (int i = 0; i < ntry.alts.size(); i++) {

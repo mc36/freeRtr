@@ -13,6 +13,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.rtr.rtrBgp;
 import org.freertr.rtr.rtrBgpMrt;
 import org.freertr.rtr.rtrBgpNeigh;
+import org.freertr.rtr.rtrBgpParam;
 import org.freertr.rtr.rtrBgpSpeak;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.user.userFilter;
@@ -186,7 +187,8 @@ class servMrt2bgpConn implements Runnable {
             rtrBgp bgp = new rtrBgp(lower.srvVrf.getFwd(peer), lower.srvVrf, null, 0);
             rtrBgpNeigh nei = new rtrBgpNeigh(bgp, peer);
             nei.localAs = lower.localAs;
-            nei.addrFams = safi;
+            nei.addrFams = rtrBgpParam.boolsSet(false);
+            nei.addrFams[bgp.safi2idx(safi)] = true;
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, pipe, 0);
             packHolder pck = new packHolder(true, true);
             spk.sendOpen();

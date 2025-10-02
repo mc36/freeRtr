@@ -61,7 +61,7 @@ public abstract class rtrBgpParam {
     /**
      * address families
      */
-    public long addrFams;
+    public boolean[] addrFams;
 
     /**
      * source template
@@ -1686,7 +1686,7 @@ public abstract class rtrBgpParam {
         lower = parent;
         isTemplate = temp;
         localAs = lower.localAs;
-        addrFams = bools2mask(lower.addrFams);
+        addrFams = boolsCopy(lower.addrFams);
         graceRestart = boolsSet(false);
         llGraceRestart = boolsSet(false);
         multiLabel = boolsSet(false);
@@ -2508,7 +2508,7 @@ public abstract class rtrBgpParam {
         secInfoUtl.getConfig(l, ipInfoCfg, beg + nei + "ipinfo ");
         l.add(beg + nei + "advertisement-interval-tx " + advertIntTx);
         l.add(beg + nei + "advertisement-interval-rx " + advertIntRx);
-        l.add(beg + nei + "address-family" + mask2string(addrFams));
+        l.add(beg + nei + "address-family" + bools2string(addrFams));
         l.add(beg + nei + "distance " + distance);
         l.add(beg + nei + "preference " + preference);
         l.add(beg + nei + "timer " + keepAlive + " " + holdTimer);
@@ -2771,7 +2771,7 @@ public abstract class rtrBgpParam {
         if (remoteAs == localAs) {
             return false;
         }
-        if ((addrFams & mskUni) != 0) {
+        if (addrFams[idxUni]) {
             if ((roumapIn == null) && (roupolIn == null) && (prflstIn == null)) {
                 return true;
             }
@@ -2779,7 +2779,7 @@ public abstract class rtrBgpParam {
                 return true;
             }
         }
-        if ((addrFams & mskOuni) != 0) {
+        if (addrFams[idxOuni]) {
             if ((oroumapIn == null) && (oroupolIn == null) && (oprflstIn == null)) {
                 return true;
             }
@@ -2849,9 +2849,9 @@ public abstract class rtrBgpParam {
             return false;
         }
         if (s.equals("address-family")) {
-            addrFams = string2mask(cmd);
+            addrFams = string2bools(cmd);
             if (negated) {
-                addrFams = bools2mask(lower.addrFams);
+                addrFams = boolsCopy(lower.addrFams);
             }
             return false;
         }
