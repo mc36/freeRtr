@@ -1652,11 +1652,118 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return bits.byteConcat(tmp, buf);
     }
 
+    private List<Integer> mask2list(long mask) {
+        List<Integer> safis = new ArrayList<Integer>();
+        if ((mask & rtrBgpParam.mskUni) != 0) {
+            safis.add(parent.afiUni);
+        }
+        if ((mask & rtrBgpParam.mskLab) != 0) {
+            safis.add(parent.afiLab);
+        }
+        if ((mask & rtrBgpParam.mskCtp) != 0) {
+            safis.add(parent.afiCtp);
+        }
+        if ((mask & rtrBgpParam.mskCar) != 0) {
+            safis.add(parent.afiCar);
+        }
+        if ((mask & rtrBgpParam.mskMlt) != 0) {
+            safis.add(parent.afiMlt);
+        }
+        if ((mask & rtrBgpParam.mskOlab) != 0) {
+            safis.add(parent.afiOlab);
+        }
+        if ((mask & rtrBgpParam.mskOctp) != 0) {
+            safis.add(parent.afiOctp);
+        }
+        if ((mask & rtrBgpParam.mskOcar) != 0) {
+            safis.add(parent.afiOcar);
+        }
+        if ((mask & rtrBgpParam.mskOuni) != 0) {
+            safis.add(parent.afiOuni);
+        }
+        if ((mask & rtrBgpParam.mskOmlt) != 0) {
+            safis.add(parent.afiOmlt);
+        }
+        if ((mask & rtrBgpParam.mskOflw) != 0) {
+            safis.add(parent.afiOflw);
+        }
+        if ((mask & rtrBgpParam.mskOsrt) != 0) {
+            safis.add(parent.afiOsrt);
+        }
+        if ((mask & rtrBgpParam.mskFlw) != 0) {
+            safis.add(parent.afiFlw);
+        }
+        if ((mask & rtrBgpParam.mskVpnU) != 0) {
+            safis.add(parent.afiVpnU);
+        }
+        if ((mask & rtrBgpParam.mskVpnM) != 0) {
+            safis.add(parent.afiVpnM);
+        }
+        if ((mask & rtrBgpParam.mskVpnF) != 0) {
+            safis.add(parent.afiVpnF);
+        }
+        if ((mask & rtrBgpParam.mskVpoU) != 0) {
+            safis.add(parent.afiVpoU);
+        }
+        if ((mask & rtrBgpParam.mskVpoM) != 0) {
+            safis.add(parent.afiVpoM);
+        }
+        if ((mask & rtrBgpParam.mskVpoF) != 0) {
+            safis.add(parent.afiVpoF);
+        }
+        if ((mask & rtrBgpParam.mskVpls) != 0) {
+            safis.add(parent.afiVpls);
+        }
+        if ((mask & rtrBgpParam.mskMspw) != 0) {
+            safis.add(parent.afiMspw);
+        }
+        if ((mask & rtrBgpParam.mskEvpn) != 0) {
+            safis.add(parent.afiEvpn);
+        }
+        if ((mask & rtrBgpParam.mskMdt) != 0) {
+            safis.add(parent.afiMdt);
+        }
+        if ((mask & rtrBgpParam.mskNsh) != 0) {
+            safis.add(parent.afiNsh);
+        }
+        if ((mask & rtrBgpParam.mskRpd) != 0) {
+            safis.add(parent.afiRpd);
+        }
+        if ((mask & rtrBgpParam.mskSdw) != 0) {
+            safis.add(parent.afiSdw);
+        }
+        if ((mask & rtrBgpParam.mskSpf) != 0) {
+            safis.add(parent.afiSpf);
+        }
+        if ((mask & rtrBgpParam.mskRtf) != 0) {
+            safis.add(parent.afiRtf);
+        }
+        if ((mask & rtrBgpParam.mskSrte) != 0) {
+            safis.add(parent.afiSrte);
+        }
+        if ((mask & rtrBgpParam.mskLnks) != 0) {
+            safis.add(parent.afiLnks);
+        }
+        if ((mask & rtrBgpParam.mskMvpn) != 0) {
+            safis.add(parent.afiMvpn);
+        }
+        if ((mask & rtrBgpParam.mskMvpo) != 0) {
+            safis.add(parent.afiMvpo);
+        }
+        if ((mask & rtrBgpParam.mskMtre) != 0) {
+            safis.add(parent.afiMtre);
+        }
+        if ((mask & rtrBgpParam.mskMtro) != 0) {
+            safis.add(parent.afiMtro);
+        }
+        return safis;
+    }
+
     /**
      * send open message
      */
     public void sendOpen() {
-        List<Integer> safis = parent.mask2list(neigh.addrFams);
+        List<Integer> safis = mask2list(neigh.addrFams);
         packHolder pck = new packHolder(true, true);
         for (int i = 0; i < safis.size(); i++) {
             byte[] buf = new byte[4];
@@ -1679,7 +1786,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.routeRefreshNew) {
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaEnhancedRefresh, new byte[0]);
         }
-        safis = parent.mask2list((neigh.addpathRmode | neigh.addpathTmode) & neigh.addrFams);
+        safis = mask2list((neigh.addpathRmode | neigh.addpathTmode) & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 4];
             for (int i = 0; i < safis.size(); i++) {
@@ -1700,7 +1807,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaAdditionPath, buf);
         }
-        safis = parent.mask2list(neigh.extNextCur & neigh.addrFams);
+        safis = mask2list(neigh.extNextCur & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 6];
             for (int i = 0; i < safis.size(); i++) {
@@ -1709,7 +1816,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtNextHop, buf);
         }
-        safis = parent.mask2list(neigh.extNextOtr & neigh.addrFams);
+        safis = mask2list(neigh.extNextOtr & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 6];
             for (int i = 0; i < safis.size(); i++) {
@@ -1718,7 +1825,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtNextHop, buf);
         }
-        safis = parent.mask2list(neigh.graceRestart & neigh.addrFams);
+        safis = mask2list(neigh.graceRestart & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[2 + (safis.size() * 4)];
             bits.msbPutW(buf, 0, ((parent.restartTime / 1000) & 0xfff) | 0x8000);
@@ -1727,7 +1834,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaGraceRestart, buf);
         }
-        safis = parent.mask2list(neigh.llGraceRestart & neigh.addrFams);
+        safis = mask2list(neigh.llGraceRestart & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 7];
             for (int i = 0; i < safis.size(); i++) {
@@ -1736,7 +1843,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaLongGrace, buf);
         }
-        safis = parent.mask2list(neigh.multiLabel & neigh.addrFams);
+        safis = mask2list(neigh.multiLabel & neigh.addrFams);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 4];
             for (int i = 0; i < safis.size(); i++) {

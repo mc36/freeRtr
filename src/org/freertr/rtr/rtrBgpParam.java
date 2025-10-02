@@ -1190,13 +1190,23 @@ public abstract class rtrBgpParam {
         return res;
     }
 
+    private static void exclusiveMsk(boolean[] res, int bck, int pri) {
+        if (!res[bck]) {
+            return;
+        }
+        if (!res[pri]) {
+            return;
+        }
+        res[bck] = false;
+    }
+
     /**
      * afi mask to string
      *
      * @param i afi mask
      * @return string
      */
-    public final static String mask2string(boolean[] i) {
+    public final static String bools2string(boolean[] i) {
         String a = "";
         for (int o = 0; o < i.length; o++) {
             if (!i[o]) {
@@ -1310,16 +1320,6 @@ public abstract class rtrBgpParam {
             }
         }
         return a;
-    }
-
-    private static void exclusiveMsk(boolean[] res, int bck, int pri) {
-        if (!res[bck]) {
-            return;
-        }
-        if (!res[pri]) {
-            return;
-        }
-        res[bck] = false;
     }
 
     /**
@@ -1604,7 +1604,7 @@ public abstract class rtrBgpParam {
      * @return string
      */
     public final static String mask2string(long i) {
-        return mask2string(mask2bools(i));
+        return bools2string(mask2bools(i));
     }
 
     /**
@@ -1620,7 +1620,7 @@ public abstract class rtrBgpParam {
         boolean[] b = boolsSet(false);
         for (int i = 0; i < b.length; i++) {
             b[i] = true;
-            String a = mask2string(b);
+            String a = bools2string(b);
             b[i] = false;
             a = a.substring(1, a.length());
             hl.add(null, false, lev, nxt, a, "address family to " + end);
@@ -1642,7 +1642,7 @@ public abstract class rtrBgpParam {
         lower = parent;
         isTemplate = temp;
         localAs = lower.localAs;
-        addrFams = lower.addrFams;
+        addrFams = bools2mask(lower.addrFams);
         wideAsPath = true;
         routeRefreshOld = true;
         routeRefreshNew = true;
@@ -2800,7 +2800,7 @@ public abstract class rtrBgpParam {
         if (s.equals("address-family")) {
             addrFams = string2mask(cmd);
             if (negated) {
-                addrFams = lower.addrFams;
+                addrFams = bools2mask(lower.addrFams);
             }
             return false;
         }

@@ -82,7 +82,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * address families
      */
-    public long addrFams;
+    public boolean[] addrFams;
 
     /**
      * router id
@@ -1245,7 +1245,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         routerID = new addrIPv4();
         safeEbgp = true;
         clientReflect = true;
-        addrFams = rtrBgpParam.mskUni;
+        addrFams = rtrBgpParam.boolsSet(false);
+        addrFams[rtrBgpParam.idxUni] = true;
         rtrNum = id;
         for (int i = 0; i < msgStats.length; i++) {
             msgStats[i] = new counter();
@@ -1642,119 +1643,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         logger.info("unknown safi (" + mask + ") requested");
         return -1;
-    }
-
-    /**
-     * mask to list
-     *
-     * @param mask mask
-     * @return list
-     */
-    public List<Integer> mask2list(long mask) {
-        List<Integer> safis = new ArrayList<Integer>();
-        if ((mask & rtrBgpParam.mskUni) != 0) {
-            safis.add(afiUni);
-        }
-        if ((mask & rtrBgpParam.mskLab) != 0) {
-            safis.add(afiLab);
-        }
-        if ((mask & rtrBgpParam.mskCtp) != 0) {
-            safis.add(afiCtp);
-        }
-        if ((mask & rtrBgpParam.mskCar) != 0) {
-            safis.add(afiCar);
-        }
-        if ((mask & rtrBgpParam.mskMlt) != 0) {
-            safis.add(afiMlt);
-        }
-        if ((mask & rtrBgpParam.mskOlab) != 0) {
-            safis.add(afiOlab);
-        }
-        if ((mask & rtrBgpParam.mskOctp) != 0) {
-            safis.add(afiOctp);
-        }
-        if ((mask & rtrBgpParam.mskOcar) != 0) {
-            safis.add(afiOcar);
-        }
-        if ((mask & rtrBgpParam.mskOuni) != 0) {
-            safis.add(afiOuni);
-        }
-        if ((mask & rtrBgpParam.mskOmlt) != 0) {
-            safis.add(afiOmlt);
-        }
-        if ((mask & rtrBgpParam.mskOflw) != 0) {
-            safis.add(afiOflw);
-        }
-        if ((mask & rtrBgpParam.mskOsrt) != 0) {
-            safis.add(afiOsrt);
-        }
-        if ((mask & rtrBgpParam.mskFlw) != 0) {
-            safis.add(afiFlw);
-        }
-        if ((mask & rtrBgpParam.mskVpnU) != 0) {
-            safis.add(afiVpnU);
-        }
-        if ((mask & rtrBgpParam.mskVpnM) != 0) {
-            safis.add(afiVpnM);
-        }
-        if ((mask & rtrBgpParam.mskVpnF) != 0) {
-            safis.add(afiVpnF);
-        }
-        if ((mask & rtrBgpParam.mskVpoU) != 0) {
-            safis.add(afiVpoU);
-        }
-        if ((mask & rtrBgpParam.mskVpoM) != 0) {
-            safis.add(afiVpoM);
-        }
-        if ((mask & rtrBgpParam.mskVpoF) != 0) {
-            safis.add(afiVpoF);
-        }
-        if ((mask & rtrBgpParam.mskVpls) != 0) {
-            safis.add(afiVpls);
-        }
-        if ((mask & rtrBgpParam.mskMspw) != 0) {
-            safis.add(afiMspw);
-        }
-        if ((mask & rtrBgpParam.mskEvpn) != 0) {
-            safis.add(afiEvpn);
-        }
-        if ((mask & rtrBgpParam.mskMdt) != 0) {
-            safis.add(afiMdt);
-        }
-        if ((mask & rtrBgpParam.mskNsh) != 0) {
-            safis.add(afiNsh);
-        }
-        if ((mask & rtrBgpParam.mskRpd) != 0) {
-            safis.add(afiRpd);
-        }
-        if ((mask & rtrBgpParam.mskSdw) != 0) {
-            safis.add(afiSdw);
-        }
-        if ((mask & rtrBgpParam.mskSpf) != 0) {
-            safis.add(afiSpf);
-        }
-        if ((mask & rtrBgpParam.mskRtf) != 0) {
-            safis.add(afiRtf);
-        }
-        if ((mask & rtrBgpParam.mskSrte) != 0) {
-            safis.add(afiSrte);
-        }
-        if ((mask & rtrBgpParam.mskLnks) != 0) {
-            safis.add(afiLnks);
-        }
-        if ((mask & rtrBgpParam.mskMvpn) != 0) {
-            safis.add(afiMvpn);
-        }
-        if ((mask & rtrBgpParam.mskMvpo) != 0) {
-            safis.add(afiMvpo);
-        }
-        if ((mask & rtrBgpParam.mskMtre) != 0) {
-            safis.add(afiMtre);
-        }
-        if ((mask & rtrBgpParam.mskMtro) != 0) {
-            safis.add(afiMtro);
-        }
-        return safis;
     }
 
     /**
@@ -2541,9 +2429,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " export");
         }
-        otherTrigger = (addrFams & rtrBgpParam.mskLab) != 0;
-        otherTrigger |= (addrFams & rtrBgpParam.mskCtp) != 0;
-        otherTrigger |= (addrFams & rtrBgpParam.mskCar) != 0;
+        otherTrigger = addrFams[rtrBgpParam.idxLab];
+        otherTrigger |= addrFams[rtrBgpParam.idxCtp];
+        otherTrigger |= addrFams[rtrBgpParam.idxCar];
         otherTrigger |= linkStates.size() > 0;
         if (flowInst) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
@@ -3320,7 +3208,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(beg + "router-id " + routerID);
         cmds.cfgLine(l, !safeEbgp, beg, "safe-ebgp", "");
         cmds.cfgLine(l, !clientReflect, beg, "client-reflect", "");
-        l.add(beg + "address-family" + rtrBgpParam.mask2string(addrFams));
+        l.add(beg + "address-family" + rtrBgpParam.bools2string(addrFams));
         l.add(beg + "distance " + distantExt + " " + distantInt + " " + distantLoc);
         l.add(beg + "scantime " + scanTime);
         l.add(beg + "scandelay " + scanDelay);
@@ -3442,7 +3330,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return false;
         }
         if (s.equals("address-family")) {
-            addrFams = rtrBgpParam.string2mask(cmd);
+            addrFams = rtrBgpParam.string2bools(cmd);
             return false;
         }
         if (s.equals("distance")) {
