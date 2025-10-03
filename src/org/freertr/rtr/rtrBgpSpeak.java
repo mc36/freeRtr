@@ -1102,7 +1102,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     continue;
                 }
                 long p = 1L << i;
-                sendRefresh(p, o);
+                sendRefresh(i, p, o);
                 gotRefresh(p, o);
             }
         } else {
@@ -2252,15 +2252,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * send route refresh request
      *
+     * @param idx safi to refresh
      * @param mask safi to refresh
      * @param safi safi to refresh
      */
-    public void sendRefresh(long mask, int safi) {
+    public void sendRefresh(int idx, long mask, int safi) {
         if ((peerRefreshOld == false) && (peerRefreshNew == false)) {
-            return;
-        }
-        int idx = parent.safi2idx(safi);
-        if (idx < 0) {
             return;
         }
         if (!peerAfis[idx]) {

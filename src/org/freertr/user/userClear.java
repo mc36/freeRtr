@@ -1183,10 +1183,11 @@ public class userClear {
         if (mod < 1) {
             return;
         }
-        long safi = rtrBgpParam.string2mask(cmd.word());
-        if (safi < 1) {
+        int idx = rtrBgpParam.string2idx(cmd.word());
+        if (idx < 0) {
             return;
         }
+        long safi = 1L << idx;
         int sfi = r.bgp.mask2safi(safi);
         if (sfi < 1) {
             return;
@@ -1195,7 +1196,7 @@ public class userClear {
             rtrBgpNeigh nei = neis.get(i);
             switch (mod) {
                 case 1:
-                    nei.conn.sendRefresh(safi, sfi);
+                    nei.conn.sendRefresh(idx, safi, sfi);
                     break;
                 case 2:
                     nei.conn.gotRefresh(safi, sfi);

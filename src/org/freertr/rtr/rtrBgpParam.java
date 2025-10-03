@@ -1059,6 +1059,118 @@ public abstract class rtrBgpParam {
     }
 
     /**
+     * string to afi index
+     *
+     * @param c string
+     * @return afi index
+     */
+    public final static int string2idx(String a) {
+        if (a.equals("unicast")) {
+            return idxUni;
+        }
+        if (a.equals("labeled")) {
+            return idxLab;
+        }
+        if (a.equals("ctp")) {
+            return idxCtp;
+        }
+        if (a.equals("car")) {
+            return idxCar;
+        }
+        if (a.equals("multicast")) {
+            return idxMlt;
+        }
+        if (a.equals("flowspec")) {
+            return idxFlw;
+        }
+        if (a.equals("vpnuni")) {
+            return idxVpnU;
+        }
+        if (a.equals("vpnmlt")) {
+            return idxVpnM;
+        }
+        if (a.equals("vpnflw")) {
+            return idxVpnF;
+        }
+        if (a.equals("vpls")) {
+            return idxVpls;
+        }
+        if (a.equals("mspw")) {
+            return idxMspw;
+        }
+        if (a.equals("evpn")) {
+            return idxEvpn;
+        }
+        if (a.equals("mdt")) {
+            return idxMdt;
+        }
+        if (a.equals("nsh")) {
+            return idxNsh;
+        }
+        if (a.equals("rpd")) {
+            return idxRpd;
+        }
+        if (a.equals("spf")) {
+            return idxSpf;
+        }
+        if (a.equals("sdwan")) {
+            return idxSdw;
+        }
+        if (a.equals("rtfilter")) {
+            return idxRtf;
+        }
+        if (a.equals("srte")) {
+            return idxSrte;
+        }
+        if (a.equals("linkstate")) {
+            return idxLnks;
+        }
+        if (a.equals("mvpn")) {
+            return idxMvpn;
+        }
+        if (a.equals("mtree")) {
+            return idxMtre;
+        }
+        if (a.equals("omtree")) {
+            return idxMtro;
+        }
+        if (a.equals("omvpn")) {
+            return idxMvpo;
+        }
+        if (a.equals("ovpnuni")) {
+            return idxVpoU;
+        }
+        if (a.equals("ovpnmlt")) {
+            return idxVpoM;
+        }
+        if (a.equals("ovpnflw")) {
+            return idxVpoF;
+        }
+        if (a.equals("olab")) {
+            return idxOlab;
+        }
+        if (a.equals("octp")) {
+            return idxOctp;
+        }
+        if (a.equals("ocar")) {
+            return idxOcar;
+        }
+        if (a.equals("ouni")) {
+            return idxOuni;
+        }
+        if (a.equals("omlt")) {
+            return idxOmlt;
+        }
+        if (a.equals("oflw")) {
+            return idxOflw;
+        }
+        if (a.equals("osrt")) {
+            return idxOsrt;
+        }
+        return -1;
+    }
+
+    /**
      * string to afi mask
      *
      * @param c string
@@ -1079,142 +1191,11 @@ public abstract class rtrBgpParam {
                 res = boolsSet(false);
                 continue;
             }
-            if (a.equals("unicast")) {
-                res[idxUni] = true;
+            int i = string2idx(a);
+            if (i < 0) {
                 continue;
             }
-            if (a.equals("labeled")) {
-                res[idxLab] = true;
-                continue;
-            }
-            if (a.equals("ctp")) {
-                res[idxCtp] = true;
-                continue;
-            }
-            if (a.equals("car")) {
-                res[idxCar] = true;
-                continue;
-            }
-            if (a.equals("multicast")) {
-                res[idxMlt] = true;
-                continue;
-            }
-            if (a.equals("flowspec")) {
-                res[idxFlw] = true;
-                continue;
-            }
-            if (a.equals("vpnuni")) {
-                res[idxVpnU] = true;
-                continue;
-            }
-            if (a.equals("vpnmlt")) {
-                res[idxVpnM] = true;
-                continue;
-            }
-            if (a.equals("vpnflw")) {
-                res[idxVpnF] = true;
-                continue;
-            }
-            if (a.equals("vpls")) {
-                res[idxVpls] = true;
-                continue;
-            }
-            if (a.equals("mspw")) {
-                res[idxMspw] = true;
-                continue;
-            }
-            if (a.equals("evpn")) {
-                res[idxEvpn] = true;
-                continue;
-            }
-            if (a.equals("mdt")) {
-                res[idxMdt] = true;
-                continue;
-            }
-            if (a.equals("nsh")) {
-                res[idxNsh] = true;
-                continue;
-            }
-            if (a.equals("rpd")) {
-                res[idxRpd] = true;
-                continue;
-            }
-            if (a.equals("spf")) {
-                res[idxSpf] = true;
-                continue;
-            }
-            if (a.equals("sdwan")) {
-                res[idxSdw] = true;
-                continue;
-            }
-            if (a.equals("rtfilter")) {
-                res[idxRtf] = true;
-                continue;
-            }
-            if (a.equals("srte")) {
-                res[idxSrte] = true;
-                continue;
-            }
-            if (a.equals("linkstate")) {
-                res[idxLnks] = true;
-                continue;
-            }
-            if (a.equals("mvpn")) {
-                res[idxMvpn] = true;
-                continue;
-            }
-            if (a.equals("mtree")) {
-                res[idxMtre] = true;
-                continue;
-            }
-            if (a.equals("omtree")) {
-                res[idxMtro] = true;
-                continue;
-            }
-            if (a.equals("omvpn")) {
-                res[idxMvpo] = true;
-                continue;
-            }
-            if (a.equals("ovpnuni")) {
-                res[idxVpoU] = true;
-                continue;
-            }
-            if (a.equals("ovpnmlt")) {
-                res[idxVpoM] = true;
-                continue;
-            }
-            if (a.equals("ovpnflw")) {
-                res[idxVpoF] = true;
-                continue;
-            }
-            if (a.equals("olab")) {
-                res[idxOlab] = true;
-                continue;
-            }
-            if (a.equals("octp")) {
-                res[idxOctp] = true;
-                continue;
-            }
-            if (a.equals("ocar")) {
-                res[idxOcar] = true;
-                continue;
-            }
-            if (a.equals("ouni")) {
-                res[idxOuni] = true;
-                continue;
-            }
-            if (a.equals("omlt")) {
-                res[idxOmlt] = true;
-                continue;
-            }
-            if (a.equals("oflw")) {
-                res[idxOflw] = true;
-                continue;
-            }
-            if (a.equals("osrt")) {
-                res[idxOsrt] = true;
-                continue;
-            }
+            res[i] = true;
         }
         exclusiveMsk(res, idxUni, idxLab);
         exclusiveMsk(res, idxUni, idxCtp);
