@@ -1327,13 +1327,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     long p = afiM.get(i);
                     int q = afiI.get(i);
                     if (peerAfis[q] == add) {
-                        renegotiatingSafi(p, o, add, false);
+                        renegotiatingSafi(q, p, o, add, false);
                         continue;
                     }
                     afiS.remove(i);
                     afiM.remove(i);
                     afiI.remove(i);
-                    renegotiatingSafi(p, o, add, false);
+                    renegotiatingSafi(q, p, o, add, false);
                 }
                 packHolder pck = new packHolder(true, true);
                 for (i = 0; i < afiS.size(); i++) {
@@ -1348,7 +1348,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 for (i = 0; i < afiS.size(); i++) {
                     int o = afiS.get(i);
                     long p = afiM.get(i);
-                    renegotiatingSafi(p, o, add, false);
+                    int q = afiI.get(i);
+                    renegotiatingSafi(q, p, o, add, false);
                 }
                 continue;
             }
@@ -2204,7 +2205,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         rtrBgpUtil.placeCapability(pck, peerExtOpen, rtrBgpUtil.capaMultiProto, buf);
         dynCapaTx++;
         sendDynCapaMsg(init, true, add, dynCapaTx, pck);
-        renegotiatingSafi(msk, safi, add, true);
+        renegotiatingSafi(idx, msk, safi, add, true);
     }
 
     private void sendDynCapaMsg(boolean init, boolean ack, boolean add, int seq, packHolder pck) {
@@ -2228,8 +2229,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
     }
 
-    private void renegotiatingSafi(long mask, int safi, boolean add, boolean cfg) {
-        int idx = parent.safi2idx(safi);
+    private void renegotiatingSafi(int idx, long mask, int safi, boolean add, boolean cfg) {
         sendEndOfRib(safi);
         getLearned(mask, safi).clear();
         getAdverted(mask, safi).clear();
