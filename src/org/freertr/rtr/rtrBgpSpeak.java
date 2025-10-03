@@ -1103,7 +1103,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 long p = 1L << i;
                 sendRefresh(i, p, o);
-                gotRefresh(p, o);
+                gotRefresh(i, p, o);
             }
         } else {
             sendOpen();
@@ -1264,11 +1264,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             if (typ == rtrBgpUtil.msgRefrsh) {
                 int i = pckRx.msbGetD(0);
-                long o = parent.safi2mask(i & rtrBgpUtil.frsMask);
+                int o = parent.safi2idx(i & rtrBgpUtil.frsMask);
                 if (o < 0) {
                     continue;
                 }
-                gotRefresh(o, i);
+                long p = 1L << o;
+                gotRefresh(o, p, i);
                 continue;
             }
             if (typ == rtrBgpUtil.msgUpdate) {
@@ -1428,11 +1429,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 if (typ == rtrBgpUtil.msgRefrsh) {
                     int i = pckRx.msbGetD(0);
-                    long o = parent.safi2mask(i & rtrBgpUtil.frsMask);
+                    int o = parent.safi2idx(i & rtrBgpUtil.frsMask);
                     if (o < 0) {
                         continue;
                     }
-                    gotRefresh(o, i);
+                    long p = 1L << o;
+                    gotRefresh(o, p, i);
                     continue;
                 }
                 if (typ != rtrBgpUtil.msgUpdate) {
@@ -2126,16 +2128,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * got route refresh request
      *
+     * @param idx safi to refresh
      * @param mask safi to refresh
      * @param safi safi to refresh
      */
-    public void gotRefresh(long mask, int safi) {
+    public void gotRefresh(int idx, long mask, int safi) {
         int mode = (safi >>> 8) & 0xff;
         safi &= rtrBgpUtil.frsMask;
-        int idx = parent.safi2idx(safi);
-        if (idx < 0) {
-            return;
-        }
         if (debugger.rtrBgpTraf) {
             logger.debug("got refresh mode " + mode + " from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
         }
