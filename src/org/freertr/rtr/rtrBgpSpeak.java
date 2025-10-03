@@ -2231,7 +2231,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         getLearned(idx, mask, safi).clear();
         getAdverted(idx, mask, safi).clear();
         neigh.getWilling(idx, mask, safi).clear();
-        neigh.getAccepted(mask, safi).clear();
+        neigh.getAccepted(idx, mask, safi).clear();
         needEorAfis[idx] = true;
         peerAfis[idx] = add;
         originalSafiList[idx] = add;
@@ -2553,10 +2553,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 continue;
             }
             if (parent.flaps != null) {
-                parent.prefixFlapped(mask, safi, res.rouDst, res.prefix, null);
+                parent.prefixFlapped(idx, mask, safi, res.rouDst, res.prefix, null);
             }
             if (neigh.dampenPfxs != null) {
-                neigh.prefixDampen(mask, safi, res.rouDst, res.prefix, neigh.dampenWthd);
+                neigh.prefixDampen(idx, mask, safi, res.rouDst, res.prefix, neigh.dampenWthd);
             }
             tabRoute<addrIP> learned = getLearned(idx, mask, safi);
             if (learned == null) {
@@ -2602,26 +2602,26 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 continue;
             }
             if ((mask & rtrBgpParam.mskFltR) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
+                addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
                 continue;
             }
             if ((mask & rtrBgpParam.mskFltO) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
+                addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
                 continue;
             }
             if ((mask & rtrBgpParam.mskFltE) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, neigh.eroumapIn, neigh.eroupolIn, null);
+                addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, neigh.eroumapIn, neigh.eroupolIn, null);
                 continue;
             }
             if ((mask & rtrBgpParam.mskFltW) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, neigh.wroumapIn, neigh.wroupolIn, null);
+                addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, neigh.wroumapIn, neigh.wroupolIn, null);
                 continue;
             }
             if ((mask & rtrBgpParam.mskFltV) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, neigh.vroumapIn, neigh.vroupolIn, null);
+                addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, neigh.vroumapIn, neigh.vroupolIn, null);
                 continue;
             }
-            addAttribedOne(res, ntry, addpath, learned, changed, mask, safi, null, null, null);
+            addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, null, null, null);
         }
         if (neigh.rtfilterOut && (ortf != lrnRtf.size())) {
             if (debugger.rtrBgpFull) {
@@ -2645,7 +2645,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return false;
     }
 
-    private void addAttribedOne(tabRouteEntry<addrIP> cur, tabRouteEntry<addrIP> attr, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, long mask, int safi, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
+    private void addAttribedOne(tabRouteEntry<addrIP> cur, tabRouteEntry<addrIP> attr, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, int idx, long mask, int safi, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
         if (cur.best.nextHop == null) {
             cur.best.nextHop = neigh.peerAddr.copyBytes();
         }
@@ -2664,10 +2664,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         attr.best.copyBytes(cur.best, false);
         if (parent.flaps != null) {
-            parent.prefixFlapped(mask, safi, cur.rouDst, cur.prefix, cur.best.asPathInts(-1));
+            parent.prefixFlapped(idx, mask, safi, cur.rouDst, cur.prefix, cur.best.asPathInts(-1));
         }
         if (neigh.dampenPfxs != null) {
-            neigh.prefixDampen(mask, safi, cur.rouDst, cur.prefix, neigh.dampenAnno);
+            neigh.prefixDampen(idx, mask, safi, cur.rouDst, cur.prefix, neigh.dampenAnno);
         }
         neigh.setValidity(safi, cur);
         if (!neigh.softReconfig) {

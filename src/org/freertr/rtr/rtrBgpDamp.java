@@ -16,6 +16,11 @@ public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
     /**
      * address family
      */
+    public final int idx;
+
+    /**
+     * address family
+     */
     public final long mask;
 
     /**
@@ -51,12 +56,14 @@ public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
     /**
      * create instance
      *
+     * @param i idx
      * @param m afi
      * @param a afi
      * @param r rd
      * @param p prefix
      */
-    public rtrBgpDamp(long m, int a, long r, addrPrefix<addrIP> p) {
+    public rtrBgpDamp(int i, long m, int a, long r, addrPrefix<addrIP> p) {
+        idx = i;
         mask = m;
         afi = a;
         rd = r;
@@ -64,10 +71,10 @@ public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
     }
 
     public int compareTo(rtrBgpDamp o) {
-        if (mask < o.mask) {
+        if (idx < o.idx) {
             return -1;
         }
-        if (mask > o.mask) {
+        if (idx > o.idx) {
             return +1;
         }
         if (rd < o.rd) {

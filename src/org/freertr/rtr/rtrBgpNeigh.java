@@ -1661,7 +1661,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             if (!ntry.dampened) {
                 continue;
             }
-            tabRoute<addrIP> lst = getAccepted(ntry.mask, ntry.afi);
+            tabRoute<addrIP> lst = getAccepted(ntry.idx, ntry.mask, ntry.afi);
             if (lst == null) {
                 continue;
             }
@@ -1944,14 +1944,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     /**
      * update dampening statistics
      *
+     * @param idx afi
      * @param mask afi
      * @param afi afi
      * @param rd rd
      * @param prf prefix
      * @param pnlt penalty
      */
-    protected void prefixDampen(long mask, int afi, long rd, addrPrefix<addrIP> prf, int pnlt) {
-        rtrBgpDamp ntry = new rtrBgpDamp(mask, afi, rd, prf);
+    protected void prefixDampen(int idx, long mask, int afi, long rd, addrPrefix<addrIP> prf, int pnlt) {
+        rtrBgpDamp ntry = new rtrBgpDamp(idx, mask, afi, rd, prf);
         rtrBgpDamp old = dampenPfxs.add(ntry);
         if (old != null) {
             ntry = old;
@@ -2005,111 +2006,112 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     /**
      * get accepted
      *
+     * @param idx safi to query
      * @param mask safi to query
      * @param safi safi to query
      * @return table
      */
-    public tabRoute<addrIP> getAccepted(long mask, int safi) {
-        if (mask == rtrBgpParam.mskUni) {
+    public tabRoute<addrIP> getAccepted(int idx, long mask, int safi) {
+        if (idx == rtrBgpParam.idxUni) {
             return accUni;
         }
-        if (mask == rtrBgpParam.mskLab) {
+        if (idx == rtrBgpParam.idxLab) {
             return accUni;
         }
-        if (mask == rtrBgpParam.mskCtp) {
+        if (idx == rtrBgpParam.idxCtp) {
             return accUni;
         }
-        if (mask == rtrBgpParam.mskCar) {
+        if (idx == rtrBgpParam.idxCar) {
             return accUni;
         }
-        if (mask == rtrBgpParam.mskMlt) {
+        if (idx == rtrBgpParam.idxMlt) {
             return accMlt;
         }
-        if (mask == rtrBgpParam.mskOlab) {
+        if (idx == rtrBgpParam.idxOlab) {
             return accOuni;
         }
-        if (mask == rtrBgpParam.mskOctp) {
+        if (idx == rtrBgpParam.idxOctp) {
             return accOuni;
         }
-        if (mask == rtrBgpParam.mskOcar) {
+        if (idx == rtrBgpParam.idxOcar) {
             return accOuni;
         }
-        if (mask == rtrBgpParam.mskOuni) {
+        if (idx == rtrBgpParam.idxOuni) {
             return accOuni;
         }
-        if (mask == rtrBgpParam.mskOmlt) {
+        if (idx == rtrBgpParam.idxOmlt) {
             return accOmlt;
         }
-        if (mask == rtrBgpParam.mskOflw) {
+        if (idx == rtrBgpParam.idxOflw) {
             return accOflw;
         }
-        if (mask == rtrBgpParam.mskOsrt) {
+        if (idx == rtrBgpParam.idxOsrt) {
             return accOsrt;
         }
-        if (mask == rtrBgpParam.mskFlw) {
+        if (idx == rtrBgpParam.idxFlw) {
             return accFlw;
         }
-        if (mask == rtrBgpParam.mskVpnU) {
+        if (idx == rtrBgpParam.idxVpnU) {
             return accVpnU;
         }
-        if (mask == rtrBgpParam.mskVpnM) {
+        if (idx == rtrBgpParam.idxVpnM) {
             return accVpnM;
         }
-        if (mask == rtrBgpParam.mskVpnF) {
+        if (idx == rtrBgpParam.idxVpnF) {
             return accVpnF;
         }
-        if (mask == rtrBgpParam.mskVpoU) {
+        if (idx == rtrBgpParam.idxVpoU) {
             return accVpoU;
         }
-        if (mask == rtrBgpParam.mskVpoM) {
+        if (idx == rtrBgpParam.idxVpoM) {
             return accVpoM;
         }
-        if (mask == rtrBgpParam.mskVpoF) {
+        if (idx == rtrBgpParam.idxVpoF) {
             return accVpoF;
         }
-        if (mask == rtrBgpParam.mskVpls) {
+        if (idx == rtrBgpParam.idxVpls) {
             return accVpls;
         }
-        if (mask == rtrBgpParam.mskMspw) {
+        if (idx == rtrBgpParam.idxMspw) {
             return accMspw;
         }
-        if (mask == rtrBgpParam.mskEvpn) {
+        if (idx == rtrBgpParam.idxEvpn) {
             return accEvpn;
         }
-        if (mask == rtrBgpParam.mskMdt) {
+        if (idx == rtrBgpParam.idxMdt) {
             return accMdt;
         }
-        if (mask == rtrBgpParam.mskNsh) {
+        if (idx == rtrBgpParam.idxNsh) {
             return accNsh;
         }
-        if (mask == rtrBgpParam.mskRpd) {
+        if (idx == rtrBgpParam.idxRpd) {
             return accRpd;
         }
-        if (mask == rtrBgpParam.mskSdw) {
+        if (idx == rtrBgpParam.idxSdw) {
             return accSdw;
         }
-        if (mask == rtrBgpParam.mskSpf) {
+        if (idx == rtrBgpParam.idxSpf) {
             return accSpf;
         }
-        if (mask == rtrBgpParam.mskRtf) {
+        if (idx == rtrBgpParam.idxRtf) {
             return accRtf;
         }
-        if (mask == rtrBgpParam.mskSrte) {
+        if (idx == rtrBgpParam.idxSrte) {
             return accSrte;
         }
-        if (mask == rtrBgpParam.mskLnks) {
+        if (idx == rtrBgpParam.idxLnks) {
             return accLnks;
         }
-        if (mask == rtrBgpParam.mskMvpn) {
+        if (idx == rtrBgpParam.idxMvpn) {
             return accMvpn;
         }
-        if (mask == rtrBgpParam.mskMvpo) {
+        if (idx == rtrBgpParam.idxMvpo) {
             return accMvpo;
         }
-        if (mask == rtrBgpParam.mskMtre) {
+        if (idx == rtrBgpParam.idxMtre) {
             return accMtre;
         }
-        if (mask == rtrBgpParam.mskMtro) {
+        if (idx == rtrBgpParam.idxMtro) {
             return accMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");
@@ -2247,7 +2249,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @return line of string
      */
     public String showNeighs(int idx, long mask, int safi) {
-        return showSummry1() + "|" + tabSiz(conn.getLearned(idx, mask, safi)) + "|" + tabSiz(getAccepted(mask, safi)) + "|" + tabSiz(getWilling(idx, mask, safi)) + "|" + tabSiz(conn.getAdverted(idx, mask, safi)) + "|" + bits.timePast(conn.upTime);
+        return showSummry1() + "|" + tabSiz(conn.getLearned(idx, mask, safi)) + "|" + tabSiz(getAccepted(idx, mask, safi)) + "|" + tabSiz(getWilling(idx, mask, safi)) + "|" + tabSiz(conn.getAdverted(idx, mask, safi)) + "|" + bits.timePast(conn.upTime);
     }
 
     /**

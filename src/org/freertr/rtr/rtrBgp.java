@@ -2494,14 +2494,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         fullCount++;
     }
 
-    private tabRouteEntry<addrIP> computeIncrBest(long mask, int afi, rtrBgpNeigh nei, tabRouteEntry<addrIP> best, tabRouteEntry<addrIP> curr) {
+    private tabRouteEntry<addrIP> computeIncrBest(int idx, long mask, int afi, rtrBgpNeigh nei, tabRouteEntry<addrIP> best, tabRouteEntry<addrIP> curr) {
         if (nei == null) {
             return best;
         }
         if (!nei.reachable) {
             return best;
         }
-        tabRoute<addrIP> acc = nei.getAccepted(mask, afi);
+        tabRoute<addrIP> acc = nei.getAccepted(idx, mask, afi);
         if (acc == null) {
             if (debugger.rtrBgpFull) {
                 logger.debug("table not found");
@@ -2534,7 +2534,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
     }
 
-    private void computeIncrEntry(long mask, int afi, tabRouteEntry<addrIP> curr, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
+    private void computeIncrEntry(int idx, long mask, int afi, tabRouteEntry<addrIP> curr, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
         if (debugger.rtrBgpIncr) {
             logger.debug("bestpath for " + tabRouteUtil.rd2string(curr.rouDst) + " " + curr.prefix + " in " + rtrBgpUtil.safi2string(afi));
         }
@@ -2544,10 +2544,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             best.best.rouSrc = rtrBgpUtil.peerOriginate;
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            best = computeIncrBest(mask, afi, lstnNei.get(i), best, curr);
+            best = computeIncrBest(idx, mask, afi, lstnNei.get(i), best, curr);
         }
         for (int i = 0; i < neighs.size(); i++) {
-            best = computeIncrBest(mask, afi, neighs.get(i), best, curr);
+            best = computeIncrBest(idx, mask, afi, neighs.get(i), best, curr);
         }
         if (best == null) {
             cmp.del(curr);
@@ -2632,7 +2632,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
     }
 
-    private int computeIncrUpdate(int afi, long msk, tabRoute<addrIP> don, tabRoute<addrIP> chg, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
+    private int computeIncrUpdate(int idx, int afi, long msk, tabRoute<addrIP> don, tabRoute<addrIP> chg, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
         int res = 0;
         if (don == null) {
             don = new tabRoute<addrIP>("chg");
@@ -2641,7 +2641,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             tabRouteEntry<addrIP> ntry = chg.get(i);
             chg.del(ntry);
             don.add(tabRoute.addType.always, ntry, false, false);
-            computeIncrEntry(msk, afi, ntry, cmp, org);
+            computeIncrEntry(idx, msk, afi, ntry, cmp, org);
             res++;
         }
         return res;
@@ -2798,34 +2798,34 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         tabRoute<addrIP> chgVpoM = new tabRoute<addrIP>("chg");
         tabRoute<addrIP> chgVpoF = new tabRoute<addrIP>("chg");
         tabRoute<addrIP> chgEvpn = new tabRoute<addrIP>("chg");
-        int cntGlb = computeIncrUpdate(afiUni, rtrBgpParam.mskUni, routerChangedU, changedUni, routerComputedU, routerRedistedU);
-        cntGlb += computeIncrUpdate(afiMlt, rtrBgpParam.mskMlt, routerChangedM, changedMlt, routerComputedM, routerRedistedM);
-        computeIncrUpdate(afiOuni, rtrBgpParam.mskOuni, other.routerChangedU, changedOuni, computedOuni, origntedOuni);
-        computeIncrUpdate(afiOmlt, rtrBgpParam.mskOmlt, other.routerChangedM, changedOmlt, computedOmlt, origntedOmlt);
-        computeIncrUpdate(afiOflw, rtrBgpParam.mskOflw, other.routerChangedF, changedOflw, computedOflw, origntedOflw);
-        computeIncrUpdate(afiOsrt, rtrBgpParam.mskOsrt, null, changedOsrt, computedOsrt, origntedOsrt);
-        int cntFlw = computeIncrUpdate(afiFlw, rtrBgpParam.mskFlw, routerChangedF, changedFlw, routerComputedF, origntedFlw);
-        computeIncrUpdate(afiVpnU, rtrBgpParam.mskVpnU, chgVpnU, changedVpnU, computedVpnU, origntedVpnU);
-        computeIncrUpdate(afiVpnM, rtrBgpParam.mskVpnM, chgVpnM, changedVpnM, computedVpnM, origntedVpnM);
-        computeIncrUpdate(afiVpnF, rtrBgpParam.mskVpnF, chgVpnF, changedVpnF, computedVpnF, origntedVpnF);
-        computeIncrUpdate(afiVpoU, rtrBgpParam.mskVpoU, chgVpoU, changedVpoU, computedVpoU, origntedVpoU);
-        computeIncrUpdate(afiVpoM, rtrBgpParam.mskVpoM, chgVpoM, changedVpoM, computedVpoM, origntedVpoM);
-        computeIncrUpdate(afiVpoF, rtrBgpParam.mskVpoF, chgVpoF, changedVpoF, computedVpoF, origntedVpoF);
-        int cntVpls = computeIncrUpdate(afiVpls, rtrBgpParam.mskVpls, null, changedVpls, computedVpls, origntedVpls);
-        computeIncrUpdate(afiMspw, rtrBgpParam.mskMspw, null, changedMspw, computedMspw, origntedMspw);
-        int cntEvpn = computeIncrUpdate(afiEvpn, rtrBgpParam.mskEvpn, chgEvpn, changedEvpn, computedEvpn, origntedEvpn);
-        computeIncrUpdate(afiMdt, rtrBgpParam.mskMdt, null, changedMdt, computedMdt, origntedMdt);
-        computeIncrUpdate(afiNsh, rtrBgpParam.mskNsh, null, changedNsh, computedNsh, origntedNsh);
-        computeIncrUpdate(afiRpd, rtrBgpParam.mskRpd, null, changedRpd, computedRpd, origntedRpd);
-        computeIncrUpdate(afiSdw, rtrBgpParam.mskSdw, null, changedSdw, computedSdw, origntedSdw);
-        computeIncrUpdate(afiSpf, rtrBgpParam.mskSpf, null, changedSpf, computedSpf, origntedSpf);
-        computeIncrUpdate(afiRtf, rtrBgpParam.mskRtf, null, changedRtf, computedRtf, origntedRtf);
-        computeIncrUpdate(afiSrte, rtrBgpParam.mskSrte, null, changedSrte, computedSrte, origntedSrte);
-        computeIncrUpdate(afiLnks, rtrBgpParam.mskLnks, null, changedLnks, computedLnks, origntedLnks);
-        computeIncrUpdate(afiMvpn, rtrBgpParam.mskMvpn, null, changedMvpn, computedMvpn, origntedMvpn);
-        computeIncrUpdate(afiMvpo, rtrBgpParam.mskMvpo, null, changedMvpo, computedMvpo, origntedMvpo);
-        computeIncrUpdate(afiMtre, rtrBgpParam.mskMtre, null, changedMtre, computedMtre, origntedMtre);
-        computeIncrUpdate(afiMtro, rtrBgpParam.mskMtro, null, changedMtro, computedMtro, origntedMtro);
+        int cntGlb = computeIncrUpdate(rtrBgpParam.idxUni, afiUni, rtrBgpParam.mskUni, routerChangedU, changedUni, routerComputedU, routerRedistedU);
+        cntGlb += computeIncrUpdate(rtrBgpParam.idxMlt, afiMlt, rtrBgpParam.mskMlt, routerChangedM, changedMlt, routerComputedM, routerRedistedM);
+        computeIncrUpdate(rtrBgpParam.idxOuni, afiOuni, rtrBgpParam.mskOuni, other.routerChangedU, changedOuni, computedOuni, origntedOuni);
+        computeIncrUpdate(rtrBgpParam.idxOmlt, afiOmlt, rtrBgpParam.mskOmlt, other.routerChangedM, changedOmlt, computedOmlt, origntedOmlt);
+        computeIncrUpdate(rtrBgpParam.idxOflw, afiOflw, rtrBgpParam.mskOflw, other.routerChangedF, changedOflw, computedOflw, origntedOflw);
+        computeIncrUpdate(rtrBgpParam.idxOsrt, afiOsrt, rtrBgpParam.mskOsrt, null, changedOsrt, computedOsrt, origntedOsrt);
+        int cntFlw = computeIncrUpdate(rtrBgpParam.idxFlw, afiFlw, rtrBgpParam.mskFlw, routerChangedF, changedFlw, routerComputedF, origntedFlw);
+        computeIncrUpdate(rtrBgpParam.idxVpnU, afiVpnU, rtrBgpParam.mskVpnU, chgVpnU, changedVpnU, computedVpnU, origntedVpnU);
+        computeIncrUpdate(rtrBgpParam.idxVpnM, afiVpnM, rtrBgpParam.mskVpnM, chgVpnM, changedVpnM, computedVpnM, origntedVpnM);
+        computeIncrUpdate(rtrBgpParam.idxVpnF, afiVpnF, rtrBgpParam.mskVpnF, chgVpnF, changedVpnF, computedVpnF, origntedVpnF);
+        computeIncrUpdate(rtrBgpParam.idxVpoU, afiVpoU, rtrBgpParam.mskVpoU, chgVpoU, changedVpoU, computedVpoU, origntedVpoU);
+        computeIncrUpdate(rtrBgpParam.idxVpoM, afiVpoM, rtrBgpParam.mskVpoM, chgVpoM, changedVpoM, computedVpoM, origntedVpoM);
+        computeIncrUpdate(rtrBgpParam.idxVpoF, afiVpoF, rtrBgpParam.mskVpoF, chgVpoF, changedVpoF, computedVpoF, origntedVpoF);
+        int cntVpls = computeIncrUpdate(rtrBgpParam.idxVpls, afiVpls, rtrBgpParam.mskVpls, null, changedVpls, computedVpls, origntedVpls);
+        computeIncrUpdate(rtrBgpParam.idxMspw, afiMspw, rtrBgpParam.mskMspw, null, changedMspw, computedMspw, origntedMspw);
+        int cntEvpn = computeIncrUpdate(rtrBgpParam.idxEvpn, afiEvpn, rtrBgpParam.mskEvpn, chgEvpn, changedEvpn, computedEvpn, origntedEvpn);
+        computeIncrUpdate(rtrBgpParam.idxMdt, afiMdt, rtrBgpParam.mskMdt, null, changedMdt, computedMdt, origntedMdt);
+        computeIncrUpdate(rtrBgpParam.idxNsh, afiNsh, rtrBgpParam.mskNsh, null, changedNsh, computedNsh, origntedNsh);
+        computeIncrUpdate(rtrBgpParam.idxRpd, afiRpd, rtrBgpParam.mskRpd, null, changedRpd, computedRpd, origntedRpd);
+        computeIncrUpdate(rtrBgpParam.idxSdw, afiSdw, rtrBgpParam.mskSdw, null, changedSdw, computedSdw, origntedSdw);
+        computeIncrUpdate(rtrBgpParam.idxSpf, afiSpf, rtrBgpParam.mskSpf, null, changedSpf, computedSpf, origntedSpf);
+        computeIncrUpdate(rtrBgpParam.idxRtf, afiRtf, rtrBgpParam.mskRtf, null, changedRtf, computedRtf, origntedRtf);
+        computeIncrUpdate(rtrBgpParam.idxSrte, afiSrte, rtrBgpParam.mskSrte, null, changedSrte, computedSrte, origntedSrte);
+        computeIncrUpdate(rtrBgpParam.idxLnks, afiLnks, rtrBgpParam.mskLnks, null, changedLnks, computedLnks, origntedLnks);
+        computeIncrUpdate(rtrBgpParam.idxMvpn, afiMvpn, rtrBgpParam.mskMvpn, null, changedMvpn, computedMvpn, origntedMvpn);
+        computeIncrUpdate(rtrBgpParam.idxMvpo, afiMvpo, rtrBgpParam.mskMvpo, null, changedMvpo, computedMvpo, origntedMvpo);
+        computeIncrUpdate(rtrBgpParam.idxMtre, afiMtre, rtrBgpParam.mskMtre, null, changedMtre, computedMtre, origntedMtre);
+        computeIncrUpdate(rtrBgpParam.idxMtro, afiMtro, rtrBgpParam.mskMtro, null, changedMtro, computedMtro, origntedMtro);
         lspf.doPeersIncr();
         if (labPer || ((cntGlb + cntFlw) > 0)) {
             fwdCore.routerChg(this, labPer);
@@ -2906,17 +2906,18 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * update flap statistics
      *
+     * @param idx afi
      * @param mask afi
      * @param afi afi
      * @param rd rd
      * @param prf prefix
      * @param pth path
      */
-    protected void prefixFlapped(long mask, int afi, long rd, addrPrefix<addrIP> prf, List<Integer> pth) {
+    protected void prefixFlapped(int idx, long mask, int afi, long rd, addrPrefix<addrIP> prf, List<Integer> pth) {
         if (pth == null) {
             pth = new ArrayList<Integer>();
         }
-        rtrBgpFlapStat ntry = new rtrBgpFlapStat(mask, afi, rd, prf);
+        rtrBgpFlapStat ntry = new rtrBgpFlapStat(idx, mask, afi, rd, prf);
         rtrBgpFlapStat old = flaps.add(ntry);
         if (old != null) {
             ntry = old;
@@ -4750,6 +4751,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * get flap paths
      *
+     * @param idx afi
      * @param mask afi
      * @param afi afi
      * @param rd rd
@@ -4757,11 +4759,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param rev reverse path
      * @return list of paths
      */
-    public userFormat getFlappath(long mask, int afi, long rd, addrPrefix<addrIP> prf, boolean rev) {
+    public userFormat getFlappath(int idx, long mask, int afi, long rd, addrPrefix<addrIP> prf, boolean rev) {
         if (flaps == null) {
             return null;
         }
-        rtrBgpFlapStat ntry = new rtrBgpFlapStat(mask, afi, rd, prf);
+        rtrBgpFlapStat ntry = new rtrBgpFlapStat(idx, mask, afi, rd, prf);
         ntry = flaps.find(ntry);
         if (ntry == null) {
             return null;

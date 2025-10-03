@@ -18,6 +18,11 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
     /**
      * address family
      */
+    public final int idx;
+
+    /**
+     * address family
+     */
     public final long mask;
 
     /**
@@ -58,12 +63,14 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
     /**
      * create instance
      *
+     * @param i afi
      * @param m afi
      * @param a afi
      * @param r rd
      * @param p prefix
      */
-    public rtrBgpFlapStat(long m, int a, long r, addrPrefix<addrIP> p) {
+    public rtrBgpFlapStat(int i, long m, int a, long r, addrPrefix<addrIP> p) {
+        idx = i;
         mask = m;
         afi = a;
         rd = r;
@@ -73,12 +80,14 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
     /**
      * create instance
      *
+     * @param i afi
      * @param m afi
      * @param a afi
      * @param r rd
      * @param p prefix
      */
-    public rtrBgpFlapStat(long m, int a, long r, addrIP p) {
+    public rtrBgpFlapStat(int i, long m, int a, long r, addrIP p) {
+        idx = i;
         mask = m;
         afi = a;
         rd = r;
@@ -86,10 +95,10 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
     }
 
     public int compareTo(rtrBgpFlapStat o) {
-        if (mask < o.mask) {
+        if (idx < o.idx) {
             return -1;
         }
-        if (mask > o.mask) {
+        if (idx > o.idx) {
             return +1;
         }
         if (rd < o.rd) {
