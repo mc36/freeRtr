@@ -4730,16 +4730,17 @@ public class userShow {
                 rdr.putStrTab(grp.getStatus());
                 return;
             }
-            long sfm = rtrBgpParam.string2mask(a);
-            if (sfm < 1) {
+            int idx = rtrBgpParam.string2idx(a);
+            if (idx < 0) {
                 return;
             }
+            long sfm = 1L << idx;
             int dsp = bgpMask2filter(sfm);
             int sfi = r.bgp.mask2safi(sfm);
             if (sfi < 1) {
                 return;
             }
-            tabRoute<addrIP> tab = grp.getWilling(sfm, sfi);
+            tabRoute<addrIP> tab = grp.getWilling(idx, sfm, sfi);
             if (tab == null) {
                 return;
             }
