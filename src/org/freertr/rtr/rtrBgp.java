@@ -1836,111 +1836,112 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * get changed
      *
+     * @param idx safi to query
      * @param mask safi to query
      * @param safi safi to query
      * @return table
      */
-    public tabRoute<addrIP> getChanged(long mask, int safi) {
-        if (mask == rtrBgpParam.mskUni) {
+    public tabRoute<addrIP> getChanged(int idx, long mask, int safi) {
+        if (idx == rtrBgpParam.idxUni) {
             return changedUni;
         }
-        if (mask == rtrBgpParam.mskLab) {
+        if (idx == rtrBgpParam.idxLab) {
             return changedUni;
         }
-        if (mask == rtrBgpParam.mskCtp) {
+        if (idx == rtrBgpParam.idxCtp) {
             return changedUni;
         }
-        if (mask == rtrBgpParam.mskCar) {
+        if (idx == rtrBgpParam.idxCar) {
             return changedUni;
         }
-        if (mask == rtrBgpParam.mskMlt) {
+        if (idx == rtrBgpParam.idxMlt) {
             return changedMlt;
         }
-        if (mask == rtrBgpParam.mskOlab) {
+        if (idx == rtrBgpParam.idxOlab) {
             return changedOuni;
         }
-        if (mask == rtrBgpParam.mskOctp) {
+        if (idx == rtrBgpParam.idxOctp) {
             return changedOuni;
         }
-        if (mask == rtrBgpParam.mskOcar) {
+        if (idx == rtrBgpParam.idxOcar) {
             return changedOuni;
         }
-        if (mask == rtrBgpParam.mskOuni) {
+        if (idx == rtrBgpParam.idxOuni) {
             return changedOuni;
         }
-        if (mask == rtrBgpParam.mskOmlt) {
+        if (idx == rtrBgpParam.idxOmlt) {
             return changedOmlt;
         }
-        if (mask == rtrBgpParam.mskOflw) {
+        if (idx == rtrBgpParam.idxOflw) {
             return changedOflw;
         }
-        if (mask == rtrBgpParam.mskOsrt) {
+        if (idx == rtrBgpParam.idxOsrt) {
             return changedOsrt;
         }
-        if (mask == rtrBgpParam.mskFlw) {
+        if (idx == rtrBgpParam.idxFlw) {
             return changedFlw;
         }
-        if (mask == rtrBgpParam.mskVpnU) {
+        if (idx == rtrBgpParam.idxVpnU) {
             return changedVpnU;
         }
-        if (mask == rtrBgpParam.mskVpnM) {
+        if (idx == rtrBgpParam.idxVpnM) {
             return changedVpnM;
         }
-        if (mask == rtrBgpParam.mskVpnF) {
+        if (idx == rtrBgpParam.idxVpnF) {
             return changedVpnF;
         }
-        if (mask == rtrBgpParam.mskVpoU) {
+        if (idx == rtrBgpParam.idxVpoU) {
             return changedVpoU;
         }
-        if (mask == rtrBgpParam.mskVpoM) {
+        if (idx == rtrBgpParam.idxVpoM) {
             return changedVpoM;
         }
-        if (mask == rtrBgpParam.mskVpoF) {
+        if (idx == rtrBgpParam.idxVpoF) {
             return changedVpoF;
         }
-        if (mask == rtrBgpParam.mskVpls) {
+        if (idx == rtrBgpParam.idxVpls) {
             return changedVpls;
         }
-        if (mask == rtrBgpParam.mskMspw) {
+        if (idx == rtrBgpParam.idxMspw) {
             return changedMspw;
         }
-        if (mask == rtrBgpParam.mskEvpn) {
+        if (idx == rtrBgpParam.idxEvpn) {
             return changedEvpn;
         }
-        if (mask == rtrBgpParam.mskMdt) {
+        if (idx == rtrBgpParam.idxMdt) {
             return changedMdt;
         }
-        if (mask == rtrBgpParam.mskNsh) {
+        if (idx == rtrBgpParam.idxNsh) {
             return changedNsh;
         }
-        if (mask == rtrBgpParam.mskRpd) {
+        if (idx == rtrBgpParam.idxRpd) {
             return changedRpd;
         }
-        if (mask == rtrBgpParam.mskSdw) {
+        if (idx == rtrBgpParam.idxSdw) {
             return changedSdw;
         }
-        if (mask == rtrBgpParam.mskSpf) {
+        if (idx == rtrBgpParam.idxSpf) {
             return changedSpf;
         }
-        if (mask == rtrBgpParam.mskRtf) {
+        if (idx == rtrBgpParam.idxRtf) {
             return changedRtf;
         }
-        if (mask == rtrBgpParam.mskSrte) {
+        if (idx == rtrBgpParam.idxSrte) {
             return changedSrte;
         }
-        if (mask == rtrBgpParam.mskLnks) {
+        if (idx == rtrBgpParam.idxLnks) {
             return changedLnks;
         }
-        if (mask == rtrBgpParam.mskMvpn) {
+        if (idx == rtrBgpParam.idxMvpn) {
             return changedMvpn;
         }
-        if (mask == rtrBgpParam.mskMvpo) {
+        if (idx == rtrBgpParam.idxMvpo) {
             return changedMvpo;
         }
-        if (mask == rtrBgpParam.mskMtre) {
+        if (idx == rtrBgpParam.idxMtre) {
             return changedMtre;
         }
-        if (mask == rtrBgpParam.mskMtro) {
+        if (idx == rtrBgpParam.idxMtro) {
             return changedMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");
