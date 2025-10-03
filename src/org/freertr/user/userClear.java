@@ -1202,10 +1202,10 @@ public class userClear {
                     nei.conn.gotRefresh(idx, safi, sfi);
                     break;
                 case 3:
-                    nei.conn.sendDynamicCapa(true, true, safi, sfi);
+                    nei.conn.sendDynamicCapa(true, true, idx, safi, sfi);
                     break;
                 case 4:
-                    nei.conn.sendDynamicCapa(true, false, safi, sfi);
+                    nei.conn.sendDynamicCapa(true, false, idx, safi, sfi);
                     break;
             }
         }

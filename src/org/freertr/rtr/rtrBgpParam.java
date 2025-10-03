@@ -1061,7 +1061,7 @@ public abstract class rtrBgpParam {
     /**
      * string to afi index
      *
-     * @param c string
+     * @param a string
      * @return afi index
      */
     public final static int string2idx(String a) {

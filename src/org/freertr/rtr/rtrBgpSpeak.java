@@ -2183,15 +2183,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      *
      * @param init true to start the exchange, false to answer
      * @param add set true to add, false to remove
+     * @param idx afi mask to configure
      * @param msk afi mask to configure
      * @param safi safi to configure
      */
-    public void sendDynamicCapa(boolean init, boolean add, long msk, int safi) {
+    public void sendDynamicCapa(boolean init, boolean add, int idx, long msk, int safi) {
         if (!peerDynCap) {
-            return;
-        }
-        int idx = parent.safi2idx(safi);
-        if (idx < 0) {
             return;
         }
         if (peerAfis[idx] == add) {
