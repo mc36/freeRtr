@@ -990,8 +990,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         boolean needEof = false;
         if (conn.needFull.get() < 2) {
             will = new tabRoute<addrIP>(will);
-            needEor = (conn.needEorAfis & mask) != 0;
-            needEof = (conn.needEofAfis & mask) != 0;
+            needEor = conn.needEorAfis[idx];
+            needEof = conn.needEofAfis[idx];
         }
         if (conn.addpathTx[idx]) {
             for (int i = 0; i < will.size(); i++) {
@@ -1025,11 +1025,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             }
             if (needEor) {
                 conn.sendEndOfRib(safi);
-                conn.needEorAfis &= ~mask;
+                conn.needEorAfis[idx] = false;
             }
             if (needEof) {
                 conn.sendFreshMark(safi, 2);
-                conn.needEofAfis &= ~mask;
+                conn.needEofAfis[idx] = false;
             }
             return false;
         }
@@ -1096,11 +1096,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         }
         if (needEor) {
             conn.sendEndOfRib(safi);
-            conn.needEorAfis &= ~mask;
+            conn.needEorAfis[idx] = false;
         }
         if (needEof) {
             conn.sendFreshMark(safi, 2);
-            conn.needEofAfis &= ~mask;
+            conn.needEofAfis[idx] = false;
         }
         return false;
     }

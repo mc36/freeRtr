@@ -459,12 +459,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * eor needs in address families
      */
-    public long needEorAfis;
+    public boolean[] needEorAfis;
 
     /**
      * eof needs in address families
      */
-    public long needEofAfis;
+    public boolean[] needEofAfis;
 
     /**
      * peer graceful restart capability
@@ -614,6 +614,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         addpathTx = rtrBgpParam.boolsSet(false);
         originalAddRlist = rtrBgpParam.boolsSet(false);
         originalAddTlist = rtrBgpParam.boolsSet(false);
+        needEorAfis = rtrBgpParam.boolsSet(false);
+        needEofAfis = rtrBgpParam.boolsSet(false);
         ready2adv = false;
         resumed = res == 2;
         addpathBeg = bits.randomD();
@@ -2093,7 +2095,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             sendNotify(6, 3);
             return true;
         }
-        needEorAfis = rtrBgpParam.bools2mask(peerAfis);
+        needEorAfis = rtrBgpParam.boolsCopy(peerAfis);
         addpathRx = rtrBgpParam.boolsAnd(addpathRx, neigh.addpathRmode);
         addpathRx = rtrBgpParam.boolsAnd(addpathRx, neigh.addrFams);
         addpathTx = rtrBgpParam.boolsAnd(addpathTx, neigh.addpathTmode);
@@ -2168,10 +2170,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         if (peerRefreshNew) {
-            long p = parent.safi2mask(safi);
-            if (p >= 0) {
-                needEofAfis |= p;
-            }
+            needEofAfis[idx] = true;
             sendFreshMark(safi, 1);
         }
         adverted.clear();
@@ -2235,7 +2234,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         getAdverted(mask, safi).clear();
         neigh.getWilling(mask, safi).clear();
         neigh.getAccepted(mask, safi).clear();
-        needEorAfis |= mask;
+        needEorAfis[idx] = true;
         peerAfis[idx] = add;
         originalSafiList[idx] = add;
         if (cfg) {
