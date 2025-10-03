@@ -2229,7 +2229,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     private void renegotiatingSafi(long mask, int safi, boolean add, boolean cfg) {
-        int idx = rtrBgpParam.mask2index(mask);
+        int idx = parent.safi2idx(safi);
         sendEndOfRib(safi);
         getLearned(mask, safi).clear();
         getAdverted(mask, safi).clear();
