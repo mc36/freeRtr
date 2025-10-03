@@ -60,14 +60,15 @@ public class rtrBgpDump {
      * @param asn asn to look
      * @param lst path list
      * @param nei neighbor to read
+     * @param idx safi to use
      * @param mask safi to use
      * @param safi safi to use
      */
-    public static void updatePathContain(int asn, tabGen<rtrBgpFlapLst> lst, rtrBgpNeigh nei, long mask, int safi) {
+    public static void updatePathContain(int asn, tabGen<rtrBgpFlapLst> lst, rtrBgpNeigh nei, int idx, long mask, int safi) {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(mask, safi);
+        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
         if (tab == null) {
             return;
         }
@@ -96,14 +97,15 @@ public class rtrBgpDump {
      * @param asn asn to look
      * @param lst path list
      * @param nei neighbor to read
+     * @param idx safi to use
      * @param mask safi to use
      * @param safi safi to use
      */
-    public static void updatePathAround(int loc, int asn, tabGen<rtrBgpFlapAsn> lst, rtrBgpNeigh nei, long mask, int safi) {
+    public static void updatePathAround(int loc, int asn, tabGen<rtrBgpFlapAsn> lst, rtrBgpNeigh nei, int idx, long mask, int safi) {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(mask, safi);
+        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
         if (tab == null) {
             return;
         }
@@ -147,14 +149,15 @@ public class rtrBgpDump {
      * @param loc local asn
      * @param lst asn list
      * @param nei neighbor to read
+     * @param idx safi to use
      * @param mask safi to use
      * @param safi safi to use
      */
-    public static void updateAsGraph(int loc, tabGen<rtrBgpFlapAsn> lst, rtrBgpNeigh nei, long mask, int safi) {
+    public static void updateAsGraph(int loc, tabGen<rtrBgpFlapAsn> lst, rtrBgpNeigh nei, int idx, long mask, int safi) {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(mask, safi);
+        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
         if (tab == null) {
             return;
         }
@@ -219,14 +222,15 @@ public class rtrBgpDump {
      *
      * @param lst asn list
      * @param nei neighbor to read
+     * @param idx safi to use
      * @param mask safi to use
      * @param safi safi to use
      */
-    public static void updateAsIncons(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, long mask, int safi) {
+    public static void updateAsIncons(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int idx, long mask, int safi) {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(mask, safi);
+        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
         if (tab == null) {
             return;
         }
@@ -251,14 +255,15 @@ public class rtrBgpDump {
      *
      * @param lst asn list
      * @param nei neighbor to read
+     * @param idx safi to use
      * @param mask safi to use
      * @param safi safi to use
      */
-    public static void updateNhPrfxes(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, long mask, int safi) {
+    public static void updateNhPrfxes(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int idx, long mask, int safi) {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(mask, safi);
+        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
         if (tab == null) {
             return;
         }
@@ -281,14 +286,15 @@ public class rtrBgpDump {
      *
      * @param lst asn list
      * @param nei neighbor to read
+     * @param idx safi to use
      * @param mask safi to use
      * @param safi safi to use
      */
-    public static void updateNhTrnsit(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, long mask, int safi) {
+    public static void updateNhTrnsit(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int idx, long mask, int safi) {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(mask, safi);
+        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
         if (tab == null) {
             return;
         }
@@ -313,14 +319,15 @@ public class rtrBgpDump {
      *
      * @param lst asn list
      * @param nei neighbor to read
+     * @param idx safi to use
      * @param mask safi to use
      * @param safi safi to use
      */
-    public static void updateNhOrigin(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, long mask, int safi) {
+    public static void updateNhOrigin(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int idx, long mask, int safi) {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(mask, safi);
+        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
         if (tab == null) {
             return;
         }
@@ -345,14 +352,15 @@ public class rtrBgpDump {
      *
      * @param lst asn list
      * @param nei neighbor to read
+     * @param idx safi to use
      * @param mask safi to use
      * @param safi safi to use
      */
-    public static void updateNhIncons(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, long mask, int safi) {
+    public static void updateNhIncons(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int idx, long mask, int safi) {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(mask, safi);
+        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
         if (tab == null) {
             return;
         }

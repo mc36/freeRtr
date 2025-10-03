@@ -635,111 +635,112 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * get learned
      *
+     * @param idx safi to query
      * @param mask safi to query
      * @param safi safi to query
      * @return table
      */
-    public tabRoute<addrIP> getLearned(long mask, int safi) {
-        if (mask == rtrBgpParam.mskUni) {
+    public tabRoute<addrIP> getLearned(int idx, long mask, int safi) {
+        if (idx == rtrBgpParam.idxUni) {
             return lrnUni;
         }
-        if (mask == rtrBgpParam.mskLab) {
+        if (idx == rtrBgpParam.idxLab) {
             return lrnUni;
         }
-        if (mask == rtrBgpParam.mskCtp) {
+        if (idx == rtrBgpParam.idxCtp) {
             return lrnUni;
         }
-        if (mask == rtrBgpParam.mskCar) {
+        if (idx == rtrBgpParam.idxCar) {
             return lrnUni;
         }
-        if (mask == rtrBgpParam.mskMlt) {
+        if (idx == rtrBgpParam.idxMlt) {
             return lrnMlt;
         }
-        if (mask == rtrBgpParam.mskOlab) {
+        if (idx == rtrBgpParam.idxOlab) {
             return lrnOuni;
         }
-        if (mask == rtrBgpParam.mskOctp) {
+        if (idx == rtrBgpParam.idxOctp) {
             return lrnOuni;
         }
-        if (mask == rtrBgpParam.mskOcar) {
+        if (idx == rtrBgpParam.idxOcar) {
             return lrnOuni;
         }
-        if (mask == rtrBgpParam.mskOuni) {
+        if (idx == rtrBgpParam.idxOuni) {
             return lrnOuni;
         }
-        if (mask == rtrBgpParam.mskOmlt) {
+        if (idx == rtrBgpParam.idxOmlt) {
             return lrnOmlt;
         }
-        if (mask == rtrBgpParam.mskOflw) {
+        if (idx == rtrBgpParam.idxOflw) {
             return lrnOflw;
         }
-        if (mask == rtrBgpParam.mskOsrt) {
+        if (idx == rtrBgpParam.idxOsrt) {
             return lrnOsrt;
         }
-        if (mask == rtrBgpParam.mskFlw) {
+        if (idx == rtrBgpParam.idxFlw) {
             return lrnFlw;
         }
-        if (mask == rtrBgpParam.mskVpnU) {
+        if (idx == rtrBgpParam.idxVpnU) {
             return lrnVpnU;
         }
-        if (mask == rtrBgpParam.mskVpnM) {
+        if (idx == rtrBgpParam.idxVpnM) {
             return lrnVpnM;
         }
-        if (mask == rtrBgpParam.mskVpnF) {
+        if (idx == rtrBgpParam.idxVpnF) {
             return lrnVpnF;
         }
-        if (mask == rtrBgpParam.mskVpoU) {
+        if (idx == rtrBgpParam.idxVpoU) {
             return lrnVpoU;
         }
-        if (mask == rtrBgpParam.mskVpoM) {
+        if (idx == rtrBgpParam.idxVpoM) {
             return lrnVpoM;
         }
-        if (mask == rtrBgpParam.mskVpoF) {
+        if (idx == rtrBgpParam.idxVpoF) {
             return lrnVpoF;
         }
-        if (mask == rtrBgpParam.mskVpls) {
+        if (idx == rtrBgpParam.idxVpls) {
             return lrnVpls;
         }
-        if (mask == rtrBgpParam.mskMspw) {
+        if (idx == rtrBgpParam.idxMspw) {
             return lrnMspw;
         }
-        if (mask == rtrBgpParam.mskEvpn) {
+        if (idx == rtrBgpParam.idxEvpn) {
             return lrnEvpn;
         }
-        if (mask == rtrBgpParam.mskMdt) {
+        if (idx == rtrBgpParam.idxMdt) {
             return lrnMdt;
         }
-        if (mask == rtrBgpParam.mskNsh) {
+        if (idx == rtrBgpParam.idxNsh) {
             return lrnNsh;
         }
-        if (mask == rtrBgpParam.mskRpd) {
+        if (idx == rtrBgpParam.idxRpd) {
             return lrnRpd;
         }
-        if (mask == rtrBgpParam.mskSdw) {
+        if (idx == rtrBgpParam.idxSdw) {
             return lrnSdw;
         }
-        if (mask == rtrBgpParam.mskSpf) {
+        if (idx == rtrBgpParam.idxSpf) {
             return lrnSpf;
         }
-        if (mask == rtrBgpParam.mskRtf) {
+        if (idx == rtrBgpParam.idxRtf) {
             return lrnRtf;
         }
-        if (mask == rtrBgpParam.mskSrte) {
+        if (idx == rtrBgpParam.idxSrte) {
             return lrnSrte;
         }
-        if (mask == rtrBgpParam.mskLnks) {
+        if (idx == rtrBgpParam.idxLnks) {
             return lrnLnks;
         }
-        if (mask == rtrBgpParam.mskMvpn) {
+        if (idx == rtrBgpParam.idxMvpn) {
             return lrnMvpn;
         }
-        if (mask == rtrBgpParam.mskMvpo) {
+        if (idx == rtrBgpParam.idxMvpo) {
             return lrnMvpo;
         }
-        if (mask == rtrBgpParam.mskMtre) {
+        if (idx == rtrBgpParam.idxMtre) {
             return lrnMtre;
         }
-        if (mask == rtrBgpParam.mskMtro) {
+        if (idx == rtrBgpParam.idxMtro) {
             return lrnMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");
@@ -2146,7 +2147,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         if (mode == 1) {
-            tabRoute<addrIP> learned = getLearned(mask, safi);
+            tabRoute<addrIP> learned = getLearned(idx, mask, safi);
             if (learned == null) {
                 return;
             }
@@ -2227,7 +2228,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
 
     private void renegotiatingSafi(int idx, long mask, int safi, boolean add, boolean cfg) {
         sendEndOfRib(safi);
-        getLearned(mask, safi).clear();
+        getLearned(idx, mask, safi).clear();
         getAdverted(idx, mask, safi).clear();
         neigh.getWilling(mask, safi).clear();
         neigh.getAccepted(mask, safi).clear();
@@ -2261,7 +2262,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         refreshTx++;
-        tabRoute<addrIP> learned = getLearned(mask, safi);
+        tabRoute<addrIP> learned = getLearned(idx, mask, safi);
         if (learned == null) {
             return;
         }
@@ -2557,7 +2558,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (neigh.dampenPfxs != null) {
                 neigh.prefixDampen(mask, safi, res.rouDst, res.prefix, neigh.dampenWthd);
             }
-            tabRoute<addrIP> learned = getLearned(mask, safi);
+            tabRoute<addrIP> learned = getLearned(idx, mask, safi);
             if (learned == null) {
                 continue;
             }
@@ -2592,7 +2593,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 continue;
             }
-            tabRoute<addrIP> learned = getLearned(mask, safi);
+            tabRoute<addrIP> learned = getLearned(idx, mask, safi);
             if (learned == null) {
                 continue;
             }
