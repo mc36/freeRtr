@@ -409,7 +409,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * peer address families
      */
-    public long peerAfis;
+    public boolean[] peerAfis;
 
     /**
      * peer dynamic capability exchange
@@ -574,7 +574,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * safi list sent by the peer
      */
-    public long originalSafiList;
+    public boolean[] originalSafiList;
 
     /**
      * addpath list sent by the peer
@@ -603,6 +603,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param res resume, 0=disabled, 1=normal, 2=resume
      */
     public rtrBgpSpeak(rtrBgp protocol, rtrBgpNeigh neighbor, pipeSide socket, int res) {
+        peerAfis = rtrBgpParam.boolsSet(false);
+        originalSafiList = rtrBgpParam.boolsSet(false);
         peerGrace = rtrBgpParam.boolsSet(false);
         peerLlGrace = rtrBgpParam.boolsSet(false);
         peerMltLab = rtrBgpParam.boolsSet(false);
@@ -1089,15 +1091,15 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 closeNow();
                 return;
             }
-            for (int i = 0; i < 63; i++) {
-                long p = 1L << i;
-                if ((p & peerAfis) == 0) {
+            for (int i = 0; i < peerAfis.length; i++) {
+                if (!peerAfis[i]) {
                     continue;
                 }
-                int o = parent.mask2safi(p);
+                int o = parent.idx2safi(i);
                 if (o < 0) {
                     continue;
                 }
+                long p = 1L << i;
                 sendRefresh(p, o);
                 gotRefresh(p, o);
             }
@@ -1308,7 +1310,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 pckRh.merge2beg();
                 List<Integer> afiS = new ArrayList<Integer>();
                 List<Long> afiM = new ArrayList<Long>();
-                List<Integer> afiD = new ArrayList<Integer>();
+                List<Integer> afiI = new ArrayList<Integer>();
                 for (;;) {
                     tlv = rtrBgpUtil.getCapabilityTlv(false);
                     if (tlv.getBytes(pckRh)) {
@@ -1318,18 +1320,19 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         sendNotify(8, 4);
                         break;
                     }
-                    parseMultiProtoCapa(tlv, afiS, afiM);
+                    parseMultiProtoCapa(tlv, afiS, afiM, afiI);
                 }
                 for (i = afiS.size() - 1; i >= 0; i--) {
                     int o = afiS.get(i);
                     long p = afiM.get(i);
-                    boolean cur = (peerAfis & p) != 0;
-                    if (cur == add) {
+                    int q = afiI.get(i);
+                    if (peerAfis[q] == add) {
                         renegotiatingSafi(p, o, add, false);
                         continue;
                     }
                     afiS.remove(i);
                     afiM.remove(i);
+                    afiI.remove(i);
                     renegotiatingSafi(p, o, add, false);
                 }
                 packHolder pck = new packHolder(true, true);
@@ -1828,17 +1831,22 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         packSend(pck, rtrBgpUtil.msgOpen);
     }
 
-    private long parseMultiProtoCapa(encTlv tlv, List<Integer> afi, List<Long> msk) {
-        long res = 0;
+    private boolean[] parseMultiProtoCapa(encTlv tlv, List<Integer> afi, List<Long> msk, List<Integer> idx) {
+        boolean[] res = rtrBgpParam.boolsSet(false);
         for (int i = 0; i < tlv.valSiz; i += 4) {
             int p = bits.msbGetD(tlv.valDat, i);
             long o = parent.safi2mask(p);
             if (o < 1) {
                 continue;
             }
+            int q = parent.safi2idx(p);
+            if (q < 0) {
+                continue;
+            }
             afi.add(p);
             msk.add(o);
-            res |= o;
+            idx.add(q);
+            res[q] = true;
         }
         return res;
     }
@@ -1957,7 +1965,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         break;
                     case rtrBgpUtil.capaMultiProto:
                         mpGot = true;
-                        peerAfis |= parseMultiProtoCapa(tlv, new ArrayList<Integer>(), new ArrayList<Long>());
+                        peerAfis = rtrBgpParam.boolsOr(peerAfis, parseMultiProtoCapa(tlv, new ArrayList<Integer>(), new ArrayList<Long>(), new ArrayList<Integer>()));
                         break;
                     case rtrBgpUtil.capaMultiLabel:
                         for (i = 0; i < tlv.valSiz; i += 4) {
@@ -2043,13 +2051,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         if (!mpGot) {
-            long o = parent.safi2mask(rtrBgpUtil.safiIp4uni);
+            int o = parent.safi2idx(rtrBgpUtil.safiIp4uni);
             if (o > 0) {
-                peerAfis |= o;
+                peerAfis[o] = true;
             }
         }
         if (!neigh.capaNego) {
-            peerAfis = rtrBgpParam.bools2mask(neigh.addrFams);
+            peerAfis = rtrBgpParam.boolsCopy(neigh.addrFams);
             peerDynCap = neigh.dynamicCapab;
             peerGrace = rtrBgpParam.boolsCopy(neigh.graceRestart);
             peerLlGrace = rtrBgpParam.boolsCopy(neigh.llGraceRestart);
@@ -2072,19 +2080,19 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 return true;
             }
         }
-        originalSafiList = peerAfis;
+        originalSafiList = rtrBgpParam.boolsCopy(peerAfis);
         originalAddRlist = rtrBgpParam.boolsCopy(addpathRx);
         originalAddTlist = rtrBgpParam.boolsCopy(addpathTx);
         peer32bitAS &= neigh.wideAsPath;
         peerRefreshOld &= neigh.routeRefreshOld;
         peerRefreshNew &= neigh.routeRefreshNew;
-        peerAfis &= rtrBgpParam.bools2mask(neigh.addrFams);
-        if (peerAfis == 0) {
+        peerAfis = rtrBgpParam.boolsAnd(peerAfis, neigh.addrFams);
+        if (mask2list(peerAfis).size() < 1) {
             logger.info("neighbor " + neigh.peerAddr + " in wrong safi");
             sendNotify(6, 3);
             return true;
         }
-        needEorAfis = peerAfis;
+        needEorAfis = rtrBgpParam.bools2mask(peerAfis);
         addpathRx = rtrBgpParam.boolsAnd(addpathRx, neigh.addpathRmode);
         addpathRx = rtrBgpParam.boolsAnd(addpathRx, neigh.addrFams);
         addpathTx = rtrBgpParam.boolsAnd(addpathTx, neigh.addpathTmode);
@@ -2121,10 +2129,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public void gotRefresh(long mask, int safi) {
         int mode = (safi >>> 8) & 0xff;
         safi &= rtrBgpUtil.frsMask;
+        int idx = parent.safi2idx(safi);
+        if (idx < 0) {
+            return;
+        }
         if (debugger.rtrBgpTraf) {
             logger.debug("got refresh mode " + mode + " from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
         }
-        if ((peerAfis & mask) == 0) {
+        if (!peerAfis[idx]) {
             if (debugger.rtrBgpError) {
                 logger.debug("got unknown refresh from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
             }
@@ -2179,8 +2191,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (!peerDynCap) {
             return;
         }
-        boolean cur = (peerAfis & msk) != 0;
-        if (cur == add) {
+        int idx = parent.safi2idx(safi);
+        if (idx < 0) {
+            return;
+        }
+        if (peerAfis[idx] == add) {
             return;
         }
         packHolder pck = new packHolder(true, true);
@@ -2221,13 +2236,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.getWilling(mask, safi).clear();
         neigh.getAccepted(mask, safi).clear();
         needEorAfis |= mask;
-        if (add) {
-            peerAfis |= mask;
-            originalSafiList |= mask;
-        } else {
-            peerAfis &= ~mask;
-            originalSafiList &= ~mask;
-        }
+        peerAfis[idx] = add;
+        originalSafiList[idx] = add;
         if (cfg) {
             neigh.addrFams[idx] = add;
         }
@@ -2250,7 +2260,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if ((peerRefreshOld == false) && (peerRefreshNew == false)) {
             return;
         }
-        if ((peerAfis & mask) == 0) {
+        int idx = parent.safi2idx(safi);
+        if (idx < 0) {
+            return;
+        }
+        if (!peerAfis[idx]) {
             return;
         }
         refreshTx++;
@@ -2538,7 +2552,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (debugger.rtrBgpTraf) {
                 logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
             }
-            if ((peerAfis & mask) == 0) {
+            if (!peerAfis[idx]) {
                 if (debugger.rtrBgpError) {
                     logger.debug("got unknown withdraw from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
                 }
@@ -2579,7 +2593,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (debugger.rtrBgpTraf) {
                 logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
             }
-            if ((peerAfis & mask) == 0) {
+            if (!peerAfis[idx]) {
                 if (debugger.rtrBgpError) {
                     logger.debug("got unknown reachable from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
                 }

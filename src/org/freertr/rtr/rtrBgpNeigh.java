@@ -708,10 +708,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("dynamic capability|" + conn.peerDynCap + ", rx=" + conn.dynCapaRx + ", tx=" + conn.dynCapaTx);
         l.add("rpki in|" + rtrBgpUtil.rpkiMode2string(rpkiIn) + " vpn=" + rtrBgpUtil.rpkiMode2string(vpkiIn));
         l.add("rpki out|" + rtrBgpUtil.rpkiMode2string(rpkiOut) + " vpn=" + rtrBgpUtil.rpkiMode2string(vpkiOut));
-        l.add("safi open|" + rtrBgpParam.mask2string(conn.peerAfis));
-        l.add("safi got|" + rtrBgpParam.mask2string(conn.originalSafiList));
-        l.add("safi not remote|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addrFams) - conn.peerAfis));
-        l.add("safi not local|" + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis));
+        l.add("safi open|" + rtrBgpParam.bools2string(conn.peerAfis));
+        l.add("safi got|" + rtrBgpParam.bools2string(conn.originalSafiList));
+        l.add("safi not remote|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addrFams) - rtrBgpParam.bools2mask(conn.peerAfis)));
+        l.add("safi not local|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalSafiList) - rtrBgpParam.bools2mask(conn.peerAfis)));
         l.add("ipinfo|" + conn.ipInfoRes);
         l.add("local address|" + localAddr);
         l.add("other address|" + localOddr);
@@ -978,11 +978,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     }
 
     private boolean advertFullTable(int safi, long mask, tabRoute<addrIP> will, tabRoute<addrIP> done) {
-        if ((conn.peerAfis & mask) == 0) {
-            return false;
-        }
         int idx = lower.safi2idx(safi);
         if (idx < 0) {
+            return false;
+        }
+        if (!conn.peerAfis[idx]) {
             return false;
         }
         boolean oneLab = !conn.peerMltLab[idx];
@@ -1222,11 +1222,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     }
 
     private boolean advertIncrTable(int safi, long mask, tabRoute<addrIP> will, tabRoute<addrIP> chg, tabRoute<addrIP> done) {
-        if ((conn.peerAfis & mask) == 0) {
-            return false;
-        }
         int idx = lower.safi2idx(safi);
         if (idx < 0) {
+            return false;
+        }
+        if (!conn.peerAfis[idx]) {
             return false;
         }
         boolean oneLab = !conn.peerMltLab[idx];
@@ -1485,26 +1485,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         conn.adversion.set(doing);
     }
 
-    /**
-     * check if labeled peer
-     *
-     * @return true if yes, false if no
-     */
-    public boolean getLabeledPeer() {
-        if ((conn.peerAfis & rtrBgpParam.mskLab) != 0) {
-            return true;
-        }
-        if ((conn.peerAfis & rtrBgpParam.mskCtp) != 0) {
-            return true;
-        }
-        if ((conn.peerAfis & rtrBgpParam.mskCar) != 0) {
-            return true;
-        }
-        return false;
-    }
-
     private void addUpdateTableUni(int afi, long mask, tabRoute<addrIP> trg, tabRoute<addrIP> src, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
-        if ((conn.peerAfis & mask) == 0) {
+        int idx = lower.safi2idx(afi);
+        if (idx < 0) {
+            return;
+        }
+        if (!conn.peerAfis[idx]) {
             return;
         }
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, afi, remoteAs, trg, src, true, rouMap, rouPlc, prfLst);
@@ -1613,7 +1599,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             accMvpo = conn.lrnMvpo;
             accMtre = conn.lrnMtre;
             accMtro = conn.lrnMtro;
-            if (rtfilterOut && ((conn.peerAfis & rtrBgpParam.mskRtf) != 0)) {
+            if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {
                 rtfilterUsed = accRtf;
             }
             return;
@@ -1660,7 +1646,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpo, remoteAs, accMvpo, conn.lrnMvpo, true, wroumapIn, wroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMtre, remoteAs, accMtre, conn.lrnMtre, true, vroumapIn, vroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMtro, remoteAs, accMtro, conn.lrnMtro, true, wroumapIn, wroupolIn, null);
-        if (rtfilterOut && ((conn.peerAfis & rtrBgpParam.mskRtf) != 0)) {
+        if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {
             rtfilterUsed = accRtf;
         }
         if (dampenPfxs == null) {
@@ -2300,7 +2286,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     public String showSummary(int mod) {
         switch (mod) {
             case 1:
-                return showSummry1() + "|" + rtrBgpParam.mask2string(conn.peerAfis) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addrFams) - conn.peerAfis) + "|" + rtrBgpParam.mask2string(conn.originalSafiList - conn.peerAfis);
+                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerAfis) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addrFams) - rtrBgpParam.bools2mask(conn.peerAfis)) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalSafiList) - rtrBgpParam.bools2mask(conn.peerAfis));
             case 2:
                 return showSummry1() + "|" + groupMember + "|" + socketMode + "|" + bits.timePast(conn.upTime);
             case 3:
@@ -2393,7 +2379,20 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             return null;
         }
         sock.restartable = true;
-        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + bits.num2str(remoteAs) + " " + conn.peerHold + " " + conn.upTime + " " + conn.peerAfis + " " + rtrBgpParam.bools2string(conn.addpathRx).replaceAll(" ", ",") + " " + rtrBgpParam.bools2string(conn.addpathTx).replaceAll(" ", ",") + " " + rtrBgpParam.bools2string(conn.peerMltLab).replaceAll(" ", ",") + " " + conn.peerDynCap + " " + conn.peerRouterID;
+        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + bits.num2str(remoteAs) + " " + conn.peerHold + " " + conn.upTime + " " + stateGet(conn.peerAfis) + " " + stateGet(conn.addpathRx) + " " + stateGet(conn.addpathTx) + " " + stateGet(conn.peerMltLab) + " " + conn.peerDynCap + " " + conn.peerRouterID;
+    }
+
+    private String stateGet(boolean[] afi) {
+        String a = rtrBgpParam.bools2string(afi);
+        a = a.trim();
+        a = a.replaceAll(" ", ",");
+        return a;
+    }
+
+    private boolean[] stateSet(String a) {
+        a = a.replaceAll(",", " ");
+        a = a.trim();
+        return rtrBgpParam.string2bools(a);
     }
 
     /**
@@ -2428,10 +2427,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         conn.peerKeep = i / 3;
         pip.setTime(i);
         conn.upTime = bits.str2long(cmd.word());
-        conn.peerAfis = bits.str2long(cmd.word());
-        conn.addpathRx = rtrBgpParam.string2bools(cmd.word().replaceAll(",", " "));
-        conn.addpathTx = rtrBgpParam.string2bools(cmd.word().replaceAll(",", " "));
-        conn.peerMltLab = rtrBgpParam.string2bools(cmd.word().replaceAll(",", " "));
+        conn.peerAfis = stateSet(cmd.word());
+        conn.addpathRx = stateSet(cmd.word());
+        conn.addpathTx = stateSet(cmd.word());
+        conn.peerMltLab = stateSet(cmd.word());
         conn.peerDynCap = cmd.word().equals("true");
         conn.peerRouterID = new addrIPv4();
         if (conn.peerRouterID.fromString(cmd.word())) {

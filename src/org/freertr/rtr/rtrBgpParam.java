@@ -1054,7 +1054,7 @@ public abstract class rtrBgpParam {
      * @return afi mask
      */
     public final static boolean[] string2bools(String s) {
-        cmds c = new cmds("afi", s.trim());
+        cmds c = new cmds("afi", s);
         return string2bools(c);
     }
 
@@ -1922,7 +1922,7 @@ public abstract class rtrBgpParam {
         if (localAs != src.localAs) {
             return true;
         }
-        if (addrFams != src.addrFams) {
+        if (!boolsComp(addrFams, src.addrFams)) {
             return true;
         }
         if (preference != src.preference) {
@@ -2000,9 +2000,6 @@ public abstract class rtrBgpParam {
         if (bier != src.bier) {
             return true;
         }
-        if (addpathTmode != src.addpathTmode) {
-            return true;
-        }
         if (sendOtrDefRou != src.sendOtrDefRou) {
             return true;
         }
@@ -2034,6 +2031,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (overridePeerOut != src.overridePeerOut) {
+            return true;
+        }
+        if (!boolsComp(addpathTmode, src.addpathTmode)) {
             return true;
         }
         if (prflstOut == null) {

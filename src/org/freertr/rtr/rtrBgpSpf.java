@@ -139,7 +139,7 @@ public class rtrBgpSpf {
         if (!nei.conn.ready2adv) {
             return;
         }
-        if ((nei.conn.peerAfis & rtrBgpParam.mskSpf) == 0) {
+        if (!nei.conn.peerAfis[rtrBgpParam.idxSpf]) {
             return;
         }
         spf.addNextHop(nei.spfMetric, nei.conn.peerRouterID, nei.peerAddr, nei.localIfc, null, null);
@@ -152,7 +152,7 @@ public class rtrBgpSpf {
         if (!nei.conn.ready2adv) {
             return;
         }
-        if ((nei.conn.peerAfis & rtrBgpParam.mskSpf) == 0) {
+        if (!nei.conn.peerAfis[rtrBgpParam.idxSpf]) {
             return;
         }
         spfLnkst.createHeader(tlv, pck, spfLnkst.protoDirect, spfLnkst.nlriTypLink);
