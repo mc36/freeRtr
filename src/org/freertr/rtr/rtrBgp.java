@@ -1646,34 +1646,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
-     * convert safi to mask
-     *
-     * @param safi safi
-     * @return mask
-     */
-    public long safi2mask(int safi) {
-        int i = safi2idx(safi);
-        if (i < 0) {
-            return -1;
-        }
-        return 1L << i;
-    }
-
-    /**
-     * convert mask to safi
-     *
-     * @param mask mask
-     * @return safi
-     */
-    public int mask2safi(long mask) {
-        int i = rtrBgpParam.mask2index(mask);
-        if (i < 0) {
-            return -1;
-        }
-        return idx2safi(i);
-    }
-
-    /**
      * clear flap statistics
      */
     public void doClearFlaps() {

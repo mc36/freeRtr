@@ -1842,18 +1842,15 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         boolean[] res = rtrBgpParam.boolsSet(false);
         for (int i = 0; i < tlv.valSiz; i += 4) {
             int p = bits.msbGetD(tlv.valDat, i);
-            long o = parent.safi2mask(p);
-            if (o < 1) {
+            int o = parent.safi2idx(p);
+            if (o < 0) {
                 continue;
             }
-            int q = parent.safi2idx(p);
-            if (q < 0) {
-                continue;
-            }
+            long q = 1L << o;
             afi.add(p);
-            msk.add(o);
-            idx.add(q);
-            res[q] = true;
+            msk.add(q);
+            idx.add(o);
+            res[o] = true;
         }
         return res;
     }

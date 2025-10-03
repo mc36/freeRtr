@@ -4736,7 +4736,7 @@ public class userShow {
             }
             long sfm = 1L << idx;
             int dsp = bgpMask2filter(sfm);
-            int sfi = r.bgp.mask2safi(sfm);
+            int sfi = r.bgp.idx2safi(idx);
             if (sfi < 1) {
                 return;
             }
@@ -4862,7 +4862,7 @@ public class userShow {
             }
             long sfm = 1L << idx;
             int dsp = bgpMask2filter(sfm);
-            int sfi = r.bgp.mask2safi(sfm);
+            int sfi = r.bgp.idx2safi(idx);
             if (sfi < 1) {
                 return;
             }
@@ -4893,7 +4893,7 @@ public class userShow {
         }
         long sfm = 1L << idx;
         int dsp = bgpMask2filter(sfm);
-        int sfi = r.bgp.mask2safi(sfm);
+        int sfi = r.bgp.idx2safi(idx);
         if (sfi < 1) {
             return;
         }

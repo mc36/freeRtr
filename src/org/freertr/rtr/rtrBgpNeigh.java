@@ -711,8 +711,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("rpki out|" + rtrBgpUtil.rpkiMode2string(rpkiOut) + " vpn=" + rtrBgpUtil.rpkiMode2string(vpkiOut));
         l.add("safi open|" + rtrBgpParam.bools2string(conn.peerAfis));
         l.add("safi got|" + rtrBgpParam.bools2string(conn.originalSafiList));
-        l.add("safi not remote|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addrFams) - rtrBgpParam.bools2mask(conn.peerAfis)));
-        l.add("safi not local|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalSafiList) - rtrBgpParam.bools2mask(conn.peerAfis)));
+        l.add("safi not remote|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(addrFams, conn.peerAfis)));
+        l.add("safi not local|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(conn.originalSafiList, conn.peerAfis)));
         l.add("ipinfo|" + conn.ipInfoRes);
         l.add("local address|" + localAddr);
         l.add("other address|" + localOddr);
@@ -742,10 +742,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("addpath tx open|" + rtrBgpParam.bools2string(conn.addpathTx));
         l.add("addpath rx got|" + rtrBgpParam.bools2string(conn.originalAddRlist));
         l.add("addpath tx got|" + rtrBgpParam.bools2string(conn.originalAddTlist));
-        l.add("addpath rx not remote|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addpathRmode) - rtrBgpParam.bools2mask(conn.addpathRx)));
-        l.add("addpath tx not remote|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addpathTmode) - rtrBgpParam.bools2mask(conn.addpathTx)));
-        l.add("addpath rx not local|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalAddRlist) - rtrBgpParam.bools2mask(conn.addpathRx)));
-        l.add("addpath tx not local|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalAddTlist) - rtrBgpParam.bools2mask(conn.addpathTx)));
+        l.add("addpath rx not remote|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(addpathRmode, conn.addpathRx)));
+        l.add("addpath tx not remote|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(addpathTmode, conn.addpathTx)));
+        l.add("addpath rx not local|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(conn.originalAddRlist, conn.addpathRx)));
+        l.add("addpath tx not local|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(conn.originalAddTlist, conn.addpathTx)));
         l.add("unicast advertised|" + conn.advUni.size() + " of " + wilUni.size() + ", list = " + chgUni.size() + ", accepted = " + accUni.size() + " of " + conn.lrnUni.size());
         l.add("multicast advertised|" + conn.advMlt.size() + " of " + wilMlt.size() + ", list = " + chgMlt.size() + ", accepted = " + accMlt.size() + " of " + conn.lrnMlt.size());
         l.add("ouni advertised|" + conn.advOuni.size() + " of " + wilOuni.size() + ", list = " + chgOuni.size() + ", accepted = " + accOuni.size() + " of " + conn.lrnOuni.size());
@@ -978,11 +978,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         return false;
     }
 
-    private boolean advertFullTable(int safi, long mask, tabRoute<addrIP> will, tabRoute<addrIP> done) {
-        int idx = lower.safi2idx(safi);
-        if (idx < 0) {
-            return false;
-        }
+    private boolean advertFullTable(int idx, int safi, long mask, tabRoute<addrIP> will, tabRoute<addrIP> done) {
         if (!conn.peerAfis[idx]) {
             return false;
         }
@@ -1108,106 +1104,106 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
 
     private boolean advertFull() {
         long tim = bits.getTime();
-        if (advertFullTable(lower.afiUni, rtrBgpParam.mskUni, wilUni, conn.advUni)) {
+        if (advertFullTable(rtrBgpParam.idxUni, lower.afiUni, rtrBgpParam.mskUni, wilUni, conn.advUni)) {
             return true;
         }
-        if (advertFullTable(lower.afiLab, rtrBgpParam.mskLab, wilUni, conn.advUni)) {
+        if (advertFullTable(rtrBgpParam.idxLab, lower.afiLab, rtrBgpParam.mskLab, wilUni, conn.advUni)) {
             return true;
         }
-        if (advertFullTable(lower.afiCtp, rtrBgpParam.mskCtp, wilUni, conn.advUni)) {
+        if (advertFullTable(rtrBgpParam.idxCtp, lower.afiCtp, rtrBgpParam.mskCtp, wilUni, conn.advUni)) {
             return true;
         }
-        if (advertFullTable(lower.afiCar, rtrBgpParam.mskCar, wilUni, conn.advUni)) {
+        if (advertFullTable(rtrBgpParam.idxCar, lower.afiCar, rtrBgpParam.mskCar, wilUni, conn.advUni)) {
             return true;
         }
-        if (advertFullTable(lower.afiMlt, rtrBgpParam.mskMlt, wilMlt, conn.advMlt)) {
+        if (advertFullTable(rtrBgpParam.idxMlt, lower.afiMlt, rtrBgpParam.mskMlt, wilMlt, conn.advMlt)) {
             return true;
         }
-        if (advertFullTable(lower.afiOlab, rtrBgpParam.mskOlab, wilOuni, conn.advOuni)) {
+        if (advertFullTable(rtrBgpParam.idxOlab, lower.afiOlab, rtrBgpParam.mskOlab, wilOuni, conn.advOuni)) {
             return true;
         }
-        if (advertFullTable(lower.afiOctp, rtrBgpParam.mskOctp, wilOuni, conn.advOuni)) {
+        if (advertFullTable(rtrBgpParam.idxOctp, lower.afiOctp, rtrBgpParam.mskOctp, wilOuni, conn.advOuni)) {
             return true;
         }
-        if (advertFullTable(lower.afiOcar, rtrBgpParam.mskOcar, wilOuni, conn.advOuni)) {
+        if (advertFullTable(rtrBgpParam.idxOcar, lower.afiOcar, rtrBgpParam.mskOcar, wilOuni, conn.advOuni)) {
             return true;
         }
-        if (advertFullTable(lower.afiOuni, rtrBgpParam.mskOuni, wilOuni, conn.advOuni)) {
+        if (advertFullTable(rtrBgpParam.idxOuni, lower.afiOuni, rtrBgpParam.mskOuni, wilOuni, conn.advOuni)) {
             return true;
         }
-        if (advertFullTable(lower.afiOmlt, rtrBgpParam.mskOmlt, wilOmlt, conn.advOmlt)) {
+        if (advertFullTable(rtrBgpParam.idxOmlt, lower.afiOmlt, rtrBgpParam.mskOmlt, wilOmlt, conn.advOmlt)) {
             return true;
         }
-        if (advertFullTable(lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, conn.advFlw)) {
+        if (advertFullTable(rtrBgpParam.idxFlw, lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, conn.advFlw)) {
             return true;
         }
-        if (advertFullTable(lower.afiOflw, rtrBgpParam.mskOflw, wilOflw, conn.advOflw)) {
+        if (advertFullTable(rtrBgpParam.idxOflw, lower.afiOflw, rtrBgpParam.mskOflw, wilOflw, conn.advOflw)) {
             return true;
         }
-        if (advertFullTable(lower.afiSrte, rtrBgpParam.mskSrte, wilSrte, conn.advSrte)) {
+        if (advertFullTable(rtrBgpParam.idxSrte, lower.afiSrte, rtrBgpParam.mskSrte, wilSrte, conn.advSrte)) {
             return true;
         }
-        if (advertFullTable(lower.afiOsrt, rtrBgpParam.mskOsrt, wilOsrt, conn.advOsrt)) {
+        if (advertFullTable(rtrBgpParam.idxOsrt, lower.afiOsrt, rtrBgpParam.mskOsrt, wilOsrt, conn.advOsrt)) {
             return true;
         }
-        if (advertFullTable(lower.afiVpnU, rtrBgpParam.mskVpnU, wilVpnU, conn.advVpnU)) {
+        if (advertFullTable(rtrBgpParam.idxVpnU, lower.afiVpnU, rtrBgpParam.mskVpnU, wilVpnU, conn.advVpnU)) {
             return true;
         }
-        if (advertFullTable(lower.afiVpnM, rtrBgpParam.mskVpnM, wilVpnM, conn.advVpnM)) {
+        if (advertFullTable(rtrBgpParam.idxVpnM, lower.afiVpnM, rtrBgpParam.mskVpnM, wilVpnM, conn.advVpnM)) {
             return true;
         }
-        if (advertFullTable(lower.afiVpnF, rtrBgpParam.mskVpnF, wilVpnF, conn.advVpnF)) {
+        if (advertFullTable(rtrBgpParam.idxVpnF, lower.afiVpnF, rtrBgpParam.mskVpnF, wilVpnF, conn.advVpnF)) {
             return true;
         }
-        if (advertFullTable(lower.afiVpoU, rtrBgpParam.mskVpoU, wilVpoU, conn.advVpoU)) {
+        if (advertFullTable(rtrBgpParam.idxVpoU, lower.afiVpoU, rtrBgpParam.mskVpoU, wilVpoU, conn.advVpoU)) {
             return true;
         }
-        if (advertFullTable(lower.afiVpoM, rtrBgpParam.mskVpoM, wilVpoM, conn.advVpoM)) {
+        if (advertFullTable(rtrBgpParam.idxVpoM, lower.afiVpoM, rtrBgpParam.mskVpoM, wilVpoM, conn.advVpoM)) {
             return true;
         }
-        if (advertFullTable(lower.afiVpoF, rtrBgpParam.mskVpoF, wilVpoF, conn.advVpoF)) {
+        if (advertFullTable(rtrBgpParam.idxVpoF, lower.afiVpoF, rtrBgpParam.mskVpoF, wilVpoF, conn.advVpoF)) {
             return true;
         }
-        if (advertFullTable(lower.afiVpls, rtrBgpParam.mskVpls, wilVpls, conn.advVpls)) {
+        if (advertFullTable(rtrBgpParam.idxVpls, lower.afiVpls, rtrBgpParam.mskVpls, wilVpls, conn.advVpls)) {
             return true;
         }
-        if (advertFullTable(lower.afiMspw, rtrBgpParam.mskMspw, wilMspw, conn.advMspw)) {
+        if (advertFullTable(rtrBgpParam.idxMspw, lower.afiMspw, rtrBgpParam.mskMspw, wilMspw, conn.advMspw)) {
             return true;
         }
-        if (advertFullTable(lower.afiEvpn, rtrBgpParam.mskEvpn, wilEvpn, conn.advEvpn)) {
+        if (advertFullTable(rtrBgpParam.idxEvpn, lower.afiEvpn, rtrBgpParam.mskEvpn, wilEvpn, conn.advEvpn)) {
             return true;
         }
-        if (advertFullTable(lower.afiMdt, rtrBgpParam.mskMdt, wilMdt, conn.advMdt)) {
+        if (advertFullTable(rtrBgpParam.idxMdt, lower.afiMdt, rtrBgpParam.mskMdt, wilMdt, conn.advMdt)) {
             return true;
         }
-        if (advertFullTable(lower.afiNsh, rtrBgpParam.mskNsh, wilNsh, conn.advNsh)) {
+        if (advertFullTable(rtrBgpParam.idxNsh, lower.afiNsh, rtrBgpParam.mskNsh, wilNsh, conn.advNsh)) {
             return true;
         }
-        if (advertFullTable(lower.afiRpd, rtrBgpParam.mskRpd, wilRpd, conn.advRpd)) {
+        if (advertFullTable(rtrBgpParam.idxRpd, lower.afiRpd, rtrBgpParam.mskRpd, wilRpd, conn.advRpd)) {
             return true;
         }
-        if (advertFullTable(lower.afiSdw, rtrBgpParam.mskSdw, wilSdw, conn.advSdw)) {
+        if (advertFullTable(rtrBgpParam.idxSdw, lower.afiSdw, rtrBgpParam.mskSdw, wilSdw, conn.advSdw)) {
             return true;
         }
-        if (advertFullTable(lower.afiSpf, rtrBgpParam.mskSpf, wilSpf, conn.advSpf)) {
+        if (advertFullTable(rtrBgpParam.idxSpf, lower.afiSpf, rtrBgpParam.mskSpf, wilSpf, conn.advSpf)) {
             return true;
         }
-        if (advertFullTable(lower.afiRtf, rtrBgpParam.mskRtf, wilRtf, conn.advRtf)) {
+        if (advertFullTable(rtrBgpParam.idxRtf, lower.afiRtf, rtrBgpParam.mskRtf, wilRtf, conn.advRtf)) {
             return true;
         }
-        if (advertFullTable(lower.afiMvpn, rtrBgpParam.mskMvpn, wilMvpn, conn.advMvpn)) {
+        if (advertFullTable(rtrBgpParam.idxMvpn, lower.afiMvpn, rtrBgpParam.mskMvpn, wilMvpn, conn.advMvpn)) {
             return true;
         }
-        if (advertFullTable(lower.afiMvpo, rtrBgpParam.mskMvpo, wilMvpo, conn.advMvpo)) {
+        if (advertFullTable(rtrBgpParam.idxMvpo, lower.afiMvpo, rtrBgpParam.mskMvpo, wilMvpo, conn.advMvpo)) {
             return true;
         }
-        if (advertFullTable(lower.afiMtre, rtrBgpParam.mskMtre, wilMtre, conn.advMtre)) {
+        if (advertFullTable(rtrBgpParam.idxMtre, lower.afiMtre, rtrBgpParam.mskMtre, wilMtre, conn.advMtre)) {
             return true;
         }
-        if (advertFullTable(lower.afiMtro, rtrBgpParam.mskMtro, wilMtro, conn.advMtro)) {
+        if (advertFullTable(rtrBgpParam.idxMtro, lower.afiMtro, rtrBgpParam.mskMtro, wilMtro, conn.advMtro)) {
             return true;
         }
-        if (advertFullTable(lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, conn.advLnks)) {
+        if (advertFullTable(rtrBgpParam.idxLnks, lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, conn.advLnks)) {
             return true;
         }
         int ver = conn.needFull.ver();
@@ -1222,11 +1218,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         return false;
     }
 
-    private boolean advertIncrTable(int safi, long mask, tabRoute<addrIP> will, tabRoute<addrIP> chg, tabRoute<addrIP> done) {
-        int idx = lower.safi2idx(safi);
-        if (idx < 0) {
-            return false;
-        }
+    private boolean advertIncrTable(int idx, int safi, long mask, tabRoute<addrIP> will, tabRoute<addrIP> chg, tabRoute<addrIP> done) {
         if (!conn.peerAfis[idx]) {
             return false;
         }
@@ -1324,106 +1316,106 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
 
     private boolean advertIncr() {
         long tim = bits.getTime();
-        if (advertIncrTable(lower.afiUni, rtrBgpParam.mskUni, wilUni, chgUni, conn.advUni)) {
+        if (advertIncrTable(rtrBgpParam.idxUni, lower.afiUni, rtrBgpParam.mskUni, wilUni, chgUni, conn.advUni)) {
             return true;
         }
-        if (advertIncrTable(lower.afiLab, rtrBgpParam.mskLab, wilUni, chgUni, conn.advUni)) {
+        if (advertIncrTable(rtrBgpParam.idxLab, lower.afiLab, rtrBgpParam.mskLab, wilUni, chgUni, conn.advUni)) {
             return true;
         }
-        if (advertIncrTable(lower.afiCtp, rtrBgpParam.mskCtp, wilUni, chgUni, conn.advUni)) {
+        if (advertIncrTable(rtrBgpParam.idxCtp, lower.afiCtp, rtrBgpParam.mskCtp, wilUni, chgUni, conn.advUni)) {
             return true;
         }
-        if (advertIncrTable(lower.afiCar, rtrBgpParam.mskCar, wilUni, chgUni, conn.advUni)) {
+        if (advertIncrTable(rtrBgpParam.idxCar, lower.afiCar, rtrBgpParam.mskCar, wilUni, chgUni, conn.advUni)) {
             return true;
         }
-        if (advertIncrTable(lower.afiMlt, rtrBgpParam.mskMlt, wilMlt, chgMlt, conn.advMlt)) {
+        if (advertIncrTable(rtrBgpParam.idxMlt, lower.afiMlt, rtrBgpParam.mskMlt, wilMlt, chgMlt, conn.advMlt)) {
             return true;
         }
-        if (advertIncrTable(lower.afiOlab, rtrBgpParam.mskOlab, wilOuni, chgOuni, conn.advOuni)) {
+        if (advertIncrTable(rtrBgpParam.idxOlab, lower.afiOlab, rtrBgpParam.mskOlab, wilOuni, chgOuni, conn.advOuni)) {
             return true;
         }
-        if (advertIncrTable(lower.afiOctp, rtrBgpParam.mskOctp, wilOuni, chgOuni, conn.advOuni)) {
+        if (advertIncrTable(rtrBgpParam.idxOctp, lower.afiOctp, rtrBgpParam.mskOctp, wilOuni, chgOuni, conn.advOuni)) {
             return true;
         }
-        if (advertIncrTable(lower.afiOcar, rtrBgpParam.mskOcar, wilOuni, chgOuni, conn.advOuni)) {
+        if (advertIncrTable(rtrBgpParam.idxOcar, lower.afiOcar, rtrBgpParam.mskOcar, wilOuni, chgOuni, conn.advOuni)) {
             return true;
         }
-        if (advertIncrTable(lower.afiOuni, rtrBgpParam.mskOuni, wilOuni, chgOuni, conn.advOuni)) {
+        if (advertIncrTable(rtrBgpParam.idxOuni, lower.afiOuni, rtrBgpParam.mskOuni, wilOuni, chgOuni, conn.advOuni)) {
             return true;
         }
-        if (advertIncrTable(lower.afiOmlt, rtrBgpParam.mskOmlt, wilOmlt, chgOmlt, conn.advOmlt)) {
+        if (advertIncrTable(rtrBgpParam.idxOmlt, lower.afiOmlt, rtrBgpParam.mskOmlt, wilOmlt, chgOmlt, conn.advOmlt)) {
             return true;
         }
-        if (advertIncrTable(lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, chgFlw, conn.advFlw)) {
+        if (advertIncrTable(rtrBgpParam.idxFlw, lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, chgFlw, conn.advFlw)) {
             return true;
         }
-        if (advertIncrTable(lower.afiOflw, rtrBgpParam.mskOflw, wilOflw, chgOflw, conn.advOflw)) {
+        if (advertIncrTable(rtrBgpParam.idxOflw, lower.afiOflw, rtrBgpParam.mskOflw, wilOflw, chgOflw, conn.advOflw)) {
             return true;
         }
-        if (advertIncrTable(lower.afiSrte, rtrBgpParam.mskSrte, wilSrte, chgSrte, conn.advSrte)) {
+        if (advertIncrTable(rtrBgpParam.idxSrte, lower.afiSrte, rtrBgpParam.mskSrte, wilSrte, chgSrte, conn.advSrte)) {
             return true;
         }
-        if (advertIncrTable(lower.afiOsrt, rtrBgpParam.mskOsrt, wilOsrt, chgOsrt, conn.advOsrt)) {
+        if (advertIncrTable(rtrBgpParam.idxOsrt, lower.afiOsrt, rtrBgpParam.mskOsrt, wilOsrt, chgOsrt, conn.advOsrt)) {
             return true;
         }
-        if (advertIncrTable(lower.afiVpnU, rtrBgpParam.mskVpnU, wilVpnU, chgVpnU, conn.advVpnU)) {
+        if (advertIncrTable(rtrBgpParam.idxVpnU, lower.afiVpnU, rtrBgpParam.mskVpnU, wilVpnU, chgVpnU, conn.advVpnU)) {
             return true;
         }
-        if (advertIncrTable(lower.afiVpnM, rtrBgpParam.mskVpnM, wilVpnM, chgVpnM, conn.advVpnM)) {
+        if (advertIncrTable(rtrBgpParam.idxVpnM, lower.afiVpnM, rtrBgpParam.mskVpnM, wilVpnM, chgVpnM, conn.advVpnM)) {
             return true;
         }
-        if (advertIncrTable(lower.afiVpnF, rtrBgpParam.mskVpnF, wilVpnF, chgVpnF, conn.advVpnF)) {
+        if (advertIncrTable(rtrBgpParam.idxVpnF, lower.afiVpnF, rtrBgpParam.mskVpnF, wilVpnF, chgVpnF, conn.advVpnF)) {
             return true;
         }
-        if (advertIncrTable(lower.afiVpoU, rtrBgpParam.mskVpoU, wilVpoU, chgVpoU, conn.advVpoU)) {
+        if (advertIncrTable(rtrBgpParam.idxVpoU, lower.afiVpoU, rtrBgpParam.mskVpoU, wilVpoU, chgVpoU, conn.advVpoU)) {
             return true;
         }
-        if (advertIncrTable(lower.afiVpoM, rtrBgpParam.mskVpoM, wilVpoM, chgVpoM, conn.advVpoM)) {
+        if (advertIncrTable(rtrBgpParam.idxVpoM, lower.afiVpoM, rtrBgpParam.mskVpoM, wilVpoM, chgVpoM, conn.advVpoM)) {
             return true;
         }
-        if (advertIncrTable(lower.afiVpoF, rtrBgpParam.mskVpoF, wilVpoF, chgVpoF, conn.advVpoF)) {
+        if (advertIncrTable(rtrBgpParam.idxVpoF, lower.afiVpoF, rtrBgpParam.mskVpoF, wilVpoF, chgVpoF, conn.advVpoF)) {
             return true;
         }
-        if (advertIncrTable(lower.afiVpls, rtrBgpParam.mskVpls, wilVpls, chgVpls, conn.advVpls)) {
+        if (advertIncrTable(rtrBgpParam.idxVpls, lower.afiVpls, rtrBgpParam.mskVpls, wilVpls, chgVpls, conn.advVpls)) {
             return true;
         }
-        if (advertIncrTable(lower.afiMspw, rtrBgpParam.mskMspw, wilMspw, chgMspw, conn.advMspw)) {
+        if (advertIncrTable(rtrBgpParam.idxMspw, lower.afiMspw, rtrBgpParam.mskMspw, wilMspw, chgMspw, conn.advMspw)) {
             return true;
         }
-        if (advertIncrTable(lower.afiEvpn, rtrBgpParam.mskEvpn, wilEvpn, chgEvpn, conn.advEvpn)) {
+        if (advertIncrTable(rtrBgpParam.idxEvpn, lower.afiEvpn, rtrBgpParam.mskEvpn, wilEvpn, chgEvpn, conn.advEvpn)) {
             return true;
         }
-        if (advertIncrTable(lower.afiMdt, rtrBgpParam.mskMdt, wilMdt, chgMdt, conn.advMdt)) {
+        if (advertIncrTable(rtrBgpParam.idxMdt, lower.afiMdt, rtrBgpParam.mskMdt, wilMdt, chgMdt, conn.advMdt)) {
             return true;
         }
-        if (advertIncrTable(lower.afiNsh, rtrBgpParam.mskNsh, wilNsh, chgNsh, conn.advNsh)) {
+        if (advertIncrTable(rtrBgpParam.idxNsh, lower.afiNsh, rtrBgpParam.mskNsh, wilNsh, chgNsh, conn.advNsh)) {
             return true;
         }
-        if (advertIncrTable(lower.afiRpd, rtrBgpParam.mskRpd, wilRpd, chgRpd, conn.advRpd)) {
+        if (advertIncrTable(rtrBgpParam.idxRpd, lower.afiRpd, rtrBgpParam.mskRpd, wilRpd, chgRpd, conn.advRpd)) {
             return true;
         }
-        if (advertIncrTable(lower.afiSdw, rtrBgpParam.mskSdw, wilSdw, chgSdw, conn.advSdw)) {
+        if (advertIncrTable(rtrBgpParam.idxSdw, lower.afiSdw, rtrBgpParam.mskSdw, wilSdw, chgSdw, conn.advSdw)) {
             return true;
         }
-        if (advertIncrTable(lower.afiSpf, rtrBgpParam.mskSpf, wilSpf, chgSpf, conn.advSpf)) {
+        if (advertIncrTable(rtrBgpParam.idxSpf, lower.afiSpf, rtrBgpParam.mskSpf, wilSpf, chgSpf, conn.advSpf)) {
             return true;
         }
-        if (advertIncrTable(lower.afiRtf, rtrBgpParam.mskRtf, wilRtf, chgRtf, conn.advRtf)) {
+        if (advertIncrTable(rtrBgpParam.idxRtf, lower.afiRtf, rtrBgpParam.mskRtf, wilRtf, chgRtf, conn.advRtf)) {
             return true;
         }
-        if (advertIncrTable(lower.afiMvpn, rtrBgpParam.mskMvpn, wilMvpn, chgMvpn, conn.advMvpn)) {
+        if (advertIncrTable(rtrBgpParam.idxMvpn, lower.afiMvpn, rtrBgpParam.mskMvpn, wilMvpn, chgMvpn, conn.advMvpn)) {
             return true;
         }
-        if (advertIncrTable(lower.afiMvpo, rtrBgpParam.mskMvpo, wilMvpo, chgMvpo, conn.advMvpo)) {
+        if (advertIncrTable(rtrBgpParam.idxMvpo, lower.afiMvpo, rtrBgpParam.mskMvpo, wilMvpo, chgMvpo, conn.advMvpo)) {
             return true;
         }
-        if (advertIncrTable(lower.afiMtre, rtrBgpParam.mskMtre, wilMtre, chgMtre, conn.advMtre)) {
+        if (advertIncrTable(rtrBgpParam.idxMtre, lower.afiMtre, rtrBgpParam.mskMtre, wilMtre, chgMtre, conn.advMtre)) {
             return true;
         }
-        if (advertIncrTable(lower.afiMtro, rtrBgpParam.mskMtro, wilMtro, chgMtro, conn.advMtro)) {
+        if (advertIncrTable(rtrBgpParam.idxMtro, lower.afiMtro, rtrBgpParam.mskMtro, wilMtro, chgMtro, conn.advMtro)) {
             return true;
         }
-        if (advertIncrTable(lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, chgLnks, conn.advLnks)) {
+        if (advertIncrTable(rtrBgpParam.idxLnks, lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, chgLnks, conn.advLnks)) {
             return true;
         }
         incrLast = bits.getTime();
@@ -1486,11 +1478,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         conn.adversion.set(doing);
     }
 
-    private void addUpdateTableUni(int afi, long mask, tabRoute<addrIP> trg, tabRoute<addrIP> src, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
-        int idx = lower.safi2idx(afi);
-        if (idx < 0) {
-            return;
-        }
+    private void addUpdateTableUni(int idx, int afi, long mask, tabRoute<addrIP> trg, tabRoute<addrIP> src, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
         if (!conn.peerAfis[idx]) {
             return;
         }
@@ -1613,15 +1601,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         setValidity(accVpnM, vpkiIn, lower.rpkiA);
         setValidity(accVpoU, vpkiIn, lower.rpkiO);
         setValidity(accVpoM, vpkiIn, lower.rpkiO);
-        addUpdateTableUni(lower.afiUni, rtrBgpParam.mskUni, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
-        addUpdateTableUni(lower.afiLab, rtrBgpParam.mskLab, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
-        addUpdateTableUni(lower.afiCtp, rtrBgpParam.mskCtp, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
-        addUpdateTableUni(lower.afiCar, rtrBgpParam.mskCar, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
+        addUpdateTableUni(rtrBgpParam.idxUni, lower.afiUni, rtrBgpParam.mskUni, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
+        addUpdateTableUni(rtrBgpParam.idxLab, lower.afiLab, rtrBgpParam.mskLab, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
+        addUpdateTableUni(rtrBgpParam.idxCtp, lower.afiCtp, rtrBgpParam.mskCtp, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
+        addUpdateTableUni(rtrBgpParam.idxCar, lower.afiCar, rtrBgpParam.mskCar, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMlt, remoteAs, accMlt, conn.lrnMlt, true, roumapIn, roupolIn, prflstIn);
-        addUpdateTableUni(lower.afiOuni, rtrBgpParam.mskOuni, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
-        addUpdateTableUni(lower.afiOlab, rtrBgpParam.mskOlab, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
-        addUpdateTableUni(lower.afiOctp, rtrBgpParam.mskOctp, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
-        addUpdateTableUni(lower.afiOcar, rtrBgpParam.mskOcar, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
+        addUpdateTableUni(rtrBgpParam.idxOuni, lower.afiOuni, rtrBgpParam.mskOuni, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
+        addUpdateTableUni(rtrBgpParam.idxOlab, lower.afiOlab, rtrBgpParam.mskOlab, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
+        addUpdateTableUni(rtrBgpParam.idxOctp, lower.afiOctp, rtrBgpParam.mskOctp, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
+        addUpdateTableUni(rtrBgpParam.idxOcar, lower.afiOcar, rtrBgpParam.mskOcar, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOmlt, remoteAs, accOmlt, conn.lrnOmlt, true, oroumapIn, oroupolIn, oprflstIn);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOflw, remoteAs, accOflw, conn.lrnOflw, true, wroumapIn, wroupolIn, null);
         tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOsrt, remoteAs, accOsrt, conn.lrnOsrt, true, wroumapIn, wroupolIn, null);
@@ -2291,7 +2279,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     public String showSummary(int mod) {
         switch (mod) {
             case 1:
-                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerAfis) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addrFams) - rtrBgpParam.bools2mask(conn.peerAfis)) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalSafiList) - rtrBgpParam.bools2mask(conn.peerAfis));
+                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerAfis) + "|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(addrFams, conn.peerAfis)) + "|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(conn.originalSafiList, conn.peerAfis));
             case 2:
                 return showSummry1() + "|" + groupMember + "|" + socketMode + "|" + bits.timePast(conn.upTime);
             case 3:
@@ -2299,7 +2287,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             case 4:
                 return showSummry1() + "|" + rtrBgpParam.bools2string(conn.peerGrace) + "|" + rtrBgpParam.bools2string(graceRestart);
             case 5:
-                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.addpathRx) + "|" + rtrBgpParam.bools2string(conn.addpathTx) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addpathRmode) - rtrBgpParam.bools2mask(conn.addpathRx)) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(addpathTmode) - rtrBgpParam.bools2mask(conn.addpathTx)) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalAddRlist) - rtrBgpParam.bools2mask(conn.addpathRx)) + "|" + rtrBgpParam.mask2string(rtrBgpParam.bools2mask(conn.originalAddTlist) - rtrBgpParam.bools2mask(conn.addpathTx));
+                return showSummry1() + "|" + rtrBgpParam.bools2string(conn.addpathRx) + "|" + rtrBgpParam.bools2string(conn.addpathTx) + "|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(addpathRmode, conn.addpathRx)) + "|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(addpathTmode, conn.addpathTx)) + "|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(conn.originalAddRlist, conn.addpathRx)) + "|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(conn.originalAddTlist, conn.addpathTx));
             case 6:
                 return showSummry1() + "|" + conn.peerRouterID + "|" + conn.peer32bitAS + "|" + conn.peerRefreshOld + " " + conn.peerRefreshNew + "|" + conn.peerDynCap + "|" + conn.peerExtOpen + "|" + conn.peerExtUpd + "|" + rtrBgpUtil.peerType2string(peerType) + "|" + rtrBgpUtil.leakRole2string(leakRole, leakAttr);
             case 7:
@@ -2397,7 +2385,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     private boolean[] stateSet(String a) {
         a = a.replaceAll(",", " ");
         a = a.trim();
-        return rtrBgpParam.string2bools(a);
+        cmds c = new cmds("afi", a);
+        return rtrBgpParam.string2bools(c);
     }
 
     /**

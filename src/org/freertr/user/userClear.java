@@ -1144,7 +1144,7 @@ public class userClear {
                 return;
             }
             long safi = 1L << idx;
-            int sfi = r.bgp.mask2safi(safi);
+            int sfi = r.bgp.idx2safi(idx);
             if (sfi < 1) {
                 return;
             }
@@ -1189,7 +1189,7 @@ public class userClear {
             return;
         }
         long safi = 1L << idx;
-        int sfi = r.bgp.mask2safi(safi);
+        int sfi = r.bgp.idx2safi(idx);
         if (sfi < 1) {
             return;
         }

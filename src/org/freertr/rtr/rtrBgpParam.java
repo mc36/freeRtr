@@ -1048,17 +1048,6 @@ public abstract class rtrBgpParam {
     }
 
     /**
-     * string to afi mask
-     *
-     * @param s string
-     * @return afi mask
-     */
-    public final static boolean[] string2bools(String s) {
-        cmds c = new cmds("afi", s);
-        return string2bools(c);
-    }
-
-    /**
      * string to afi index
      *
      * @param a string
@@ -1551,86 +1540,6 @@ public abstract class rtrBgpParam {
      * vpn filter
      */
     public final static long mskFltV = mskFlw | mskSrte | mskVpnU | mskVpnM | mskVpnF | mskMvpn | mskMtre;
-
-    /**
-     * convert booleans to mask
-     *
-     * @param src booleans
-     * @return mask
-     */
-    public final static long bools2mask(boolean[] src) {
-        long o = 0;
-        for (int i = 0; i < src.length; i++) {
-            if (!src[i]) {
-                continue;
-            }
-            o |= 1L << i;
-        }
-        return o;
-    }
-
-    /**
-     * convert mask to booleans
-     *
-     * @param o mask
-     * @return booleans
-     */
-    public final static boolean[] mask2bools(long o) {
-        boolean[] res = boolsSet(false);
-        for (int i = 0; i < res.length; i++) {
-            if ((o & (1L << i)) == 0) {
-                continue;
-            }
-            res[i] = true;
-        }
-        return res;
-    }
-
-    /**
-     * string to afi mask
-     *
-     * @param s string
-     * @return afi mask
-     */
-    public final static long string2mask(String s) {
-        cmds c = new cmds("afi", s);
-        return string2mask(c);
-    }
-
-    /**
-     * convert mask to index
-     *
-     * @param o mask
-     * @return index
-     */
-    public final static int mask2index(long o) {
-        for (int i = 0; i < 60; i++) {
-            if (((1L << i) & o) != 0) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * string to afi mask
-     *
-     * @param c string
-     * @return afi mask
-     */
-    public final static long string2mask(cmds c) {
-        return bools2mask(string2bools(c));
-    }
-
-    /**
-     * afi mask to string
-     *
-     * @param i afi mask
-     * @return string
-     */
-    public final static String mask2string(long i) {
-        return bools2string(mask2bools(i));
-    }
 
     /**
      * get list of address families
