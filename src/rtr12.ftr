@@ -82,7 +82,6 @@ todo: server transproxy but with some protocols rewritten, the choice of the use
 todo: ctrl+l/r to try to redetect the screen resolution
 todo: some more autocolorizers under the same termial propertiles like terminal colorize mains subs etc
 todo: configure diff to have chance to change the sho config-differences
-todo: configure startup to have config committed but 4 now, only conf start tabbable stuffs
 todo: server security to have settable tls version from client knob first
 todo: server security to log the transactions
 todo: server security to stick to the good protocols
@@ -123,7 +122,6 @@ todo: test todo knob as an editor but in the running-config
 todo: inter xxx / macrandomize
 todo: server security maximum pendings as access-security
 todo: servers to have access-aaa
-todo: config committed with check for saved and backup config
 todo: interface lo0 as lo-core, persistently
 todo: bgp to have xr-alike neighbor/template statements with upgrade-cli
 todo: rework snmp to use sensors
@@ -142,7 +140,6 @@ todo: bgp layer2 flowspec
 todo: bgp flowspec v2
 todo: bgp signed path
 todo: parse privilege levels from tacacs
-todo: ldap client, server
 todo: diameter client, server
 todo: tester to have chatscript support
 todo: tester to have dynamips support with the proper image and magic
