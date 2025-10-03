@@ -755,106 +755,106 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @return table
      */
     public tabRoute<addrIP> getAdverted(int idx, long mask, int safi) {
-        if (mask == rtrBgpParam.mskUni) {
+        if (idx == rtrBgpParam.idxUni) {
             return advUni;
         }
-        if (mask == rtrBgpParam.mskLab) {
+        if (idx == rtrBgpParam.idxLab) {
             return advUni;
         }
-        if (mask == rtrBgpParam.mskCtp) {
+        if (idx == rtrBgpParam.idxCtp) {
             return advUni;
         }
-        if (mask == rtrBgpParam.mskCar) {
+        if (idx == rtrBgpParam.idxCar) {
             return advUni;
         }
-        if (mask == rtrBgpParam.mskMlt) {
+        if (idx == rtrBgpParam.idxMlt) {
             return advMlt;
         }
-        if (mask == rtrBgpParam.mskOlab) {
+        if (idx == rtrBgpParam.idxOlab) {
             return advOuni;
         }
-        if (mask == rtrBgpParam.mskOctp) {
+        if (idx == rtrBgpParam.idxOctp) {
             return advOuni;
         }
-        if (mask == rtrBgpParam.mskOcar) {
+        if (idx == rtrBgpParam.idxOcar) {
             return advOuni;
         }
-        if (mask == rtrBgpParam.mskOuni) {
+        if (idx == rtrBgpParam.idxOuni) {
             return advOuni;
         }
-        if (mask == rtrBgpParam.mskOmlt) {
+        if (idx == rtrBgpParam.idxOmlt) {
             return advOmlt;
         }
-        if (mask == rtrBgpParam.mskOflw) {
+        if (idx == rtrBgpParam.idxOflw) {
             return advOflw;
         }
-        if (mask == rtrBgpParam.mskOsrt) {
+        if (idx == rtrBgpParam.idxOsrt) {
             return advOsrt;
         }
-        if (mask == rtrBgpParam.mskFlw) {
+        if (idx == rtrBgpParam.idxFlw) {
             return advFlw;
         }
-        if (mask == rtrBgpParam.mskVpnU) {
+        if (idx == rtrBgpParam.idxVpnU) {
             return advVpnU;
         }
-        if (mask == rtrBgpParam.mskVpnM) {
+        if (idx == rtrBgpParam.idxVpnM) {
             return advVpnM;
         }
-        if (mask == rtrBgpParam.mskVpnF) {
+        if (idx == rtrBgpParam.idxVpnF) {
             return advVpnF;
         }
-        if (mask == rtrBgpParam.mskVpoU) {
+        if (idx == rtrBgpParam.idxVpoU) {
             return advVpoU;
         }
-        if (mask == rtrBgpParam.mskVpoM) {
+        if (idx == rtrBgpParam.idxVpoM) {
             return advVpoM;
         }
-        if (mask == rtrBgpParam.mskVpoF) {
+        if (idx == rtrBgpParam.idxVpoF) {
             return advVpoF;
         }
-        if (mask == rtrBgpParam.mskVpls) {
+        if (idx == rtrBgpParam.idxVpls) {
             return advVpls;
         }
-        if (mask == rtrBgpParam.mskMspw) {
+        if (idx == rtrBgpParam.idxMspw) {
             return advMspw;
         }
-        if (mask == rtrBgpParam.mskEvpn) {
+        if (idx == rtrBgpParam.idxEvpn) {
             return advEvpn;
         }
-        if (mask == rtrBgpParam.mskMdt) {
+        if (idx == rtrBgpParam.idxMdt) {
             return advMdt;
         }
-        if (mask == rtrBgpParam.mskNsh) {
+        if (idx == rtrBgpParam.idxNsh) {
             return advNsh;
         }
-        if (mask == rtrBgpParam.mskRpd) {
+        if (idx == rtrBgpParam.idxRpd) {
             return advRpd;
         }
-        if (mask == rtrBgpParam.mskSdw) {
+        if (idx == rtrBgpParam.idxSdw) {
             return advSdw;
         }
-        if (mask == rtrBgpParam.mskSpf) {
+        if (idx == rtrBgpParam.idxSpf) {
             return advSpf;
         }
-        if (mask == rtrBgpParam.mskRtf) {
+        if (idx == rtrBgpParam.idxRtf) {
             return advRtf;
         }
-        if (mask == rtrBgpParam.mskSrte) {
+        if (idx == rtrBgpParam.idxSrte) {
             return advSrte;
         }
-        if (mask == rtrBgpParam.mskLnks) {
+        if (idx == rtrBgpParam.idxLnks) {
             return advLnks;
         }
-        if (mask == rtrBgpParam.mskMvpn) {
+        if (idx == rtrBgpParam.idxMvpn) {
             return advMvpn;
         }
-        if (mask == rtrBgpParam.mskMvpo) {
+        if (idx == rtrBgpParam.idxMvpo) {
             return advMvpo;
         }
-        if (mask == rtrBgpParam.mskMtre) {
+        if (idx == rtrBgpParam.idxMtre) {
             return advMtre;
         }
-        if (mask == rtrBgpParam.mskMtro) {
+        if (idx == rtrBgpParam.idxMtro) {
             return advMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");
