@@ -4331,25 +4331,26 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * list neighbor summary
      *
+     * @param idx safi to query
      * @param mask safi to query
      * @param safi safi to query
      * @return list of neighbors
      */
-    public userFormat showNeighs(long mask, int safi) {
+    public userFormat showNeighs(int idx, long mask, int safi) {
         userFormat l = new userFormat("|", "neighbor|as|learn|accept|will|done|uptime");
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.showNeighs(mask, safi));
+            l.add(ntry.showNeighs(idx, mask, safi));
         }
         for (int i = 0; i < lstnNei.size(); i++) {
             rtrBgpNeigh ntry = lstnNei.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.showNeighs(mask, safi));
+            l.add(ntry.showNeighs(idx, mask, safi));
         }
         return l;
     }

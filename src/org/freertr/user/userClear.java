@@ -1139,10 +1139,11 @@ public class userClear {
             return;
         }
         if (a.equals("save")) {
-            long safi = rtrBgpParam.string2mask(cmd.word());
-            if (safi < 1) {
+            int idx = rtrBgpParam.string2idx(cmd.word());
+            if (idx < 0) {
                 return;
             }
+            long safi = 1L << idx;
             int sfi = r.bgp.mask2safi(safi);
             if (sfi < 1) {
                 return;
@@ -1159,7 +1160,7 @@ public class userClear {
             for (int i = 0; i < neis.size(); i++) {
                 rtrBgpNeigh nei = neis.get(i);
                 cmd.error("saving " + nei.peerAddr);
-                nei.saveTable(fs, safi, sfi);
+                nei.saveTable(fs, idx, safi, sfi);
             }
             try {
                 fs.close();

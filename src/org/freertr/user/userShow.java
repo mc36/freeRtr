@@ -4855,10 +4855,11 @@ public class userShow {
                 rdr.putStrTab(nei.getStatus());
                 return;
             }
-            long sfm = rtrBgpParam.string2mask(a);
-            if (sfm < 1) {
+            int idx = rtrBgpParam.string2idx(a);
+            if (idx < 0) {
                 return;
             }
+            long sfm = 1L << idx;
             int dsp = bgpMask2filter(sfm);
             int sfi = r.bgp.mask2safi(sfm);
             if (sfi < 1) {
@@ -4878,17 +4879,18 @@ public class userShow {
                 return;
             }
             if (a.equals("advertised")) {
-                doShowRoutes(r.bgp.fwdCore, nei.conn.getAdverted(sfm, sfi), dsp);
+                doShowRoutes(r.bgp.fwdCore, nei.conn.getAdverted(idx, sfm, sfi), dsp);
                 return;
             }
             cmd.badCmd();
             return;
         }
-        long sfm = rtrBgpParam.string2mask(a);
-        if (sfm < 1) {
+        int idx = rtrBgpParam.string2idx(a);
+        if (idx < 0) {
             cmd.badCmd();
             return;
         }
+        long sfm = 1L << idx;
         int dsp = bgpMask2filter(sfm);
         int sfi = r.bgp.mask2safi(sfm);
         if (sfi < 1) {
@@ -4896,7 +4898,7 @@ public class userShow {
         }
         a = cmd.word();
         if (a.equals("summary")) {
-            rdr.putStrTab(r.bgp.showNeighs(sfm, sfi));
+            rdr.putStrTab(r.bgp.showNeighs(idx, sfm, sfi));
             return;
         }
         if (a.equals("asgraph")) {

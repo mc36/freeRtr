@@ -749,11 +749,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * get adverted
      *
+     * @param idx safi to query
      * @param mask safi to query
      * @param safi safi to query
      * @return table
      */
-    public tabRoute<addrIP> getAdverted(long mask, int safi) {
+    public tabRoute<addrIP> getAdverted(int idx, long mask, int safi) {
         if (mask == rtrBgpParam.mskUni) {
             return advUni;
         }
@@ -2164,7 +2165,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         refreshRx++;
-        tabRoute<addrIP> adverted = getAdverted(mask, safi);
+        tabRoute<addrIP> adverted = getAdverted(idx, mask, safi);
         if (adverted == null) {
             return;
         }
@@ -2227,7 +2228,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     private void renegotiatingSafi(int idx, long mask, int safi, boolean add, boolean cfg) {
         sendEndOfRib(safi);
         getLearned(mask, safi).clear();
-        getAdverted(mask, safi).clear();
+        getAdverted(idx, mask, safi).clear();
         neigh.getWilling(mask, safi).clear();
         neigh.getAccepted(mask, safi).clear();
         needEorAfis[idx] = true;
