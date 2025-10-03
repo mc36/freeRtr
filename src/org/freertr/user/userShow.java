@@ -4912,15 +4912,15 @@ public class userShow {
             return;
         }
         if (a.equals("asorigin")) {
-            rdr.putStrTab(r.bgp.getAsOrigin(sfm, sfi));
+            rdr.putStrTab(r.bgp.getAsOrigin(idx, sfm, sfi));
             return;
         }
         if (a.equals("asuplink")) {
-            rdr.putStrTab(r.bgp.getAsUplink(sfm, sfi));
+            rdr.putStrTab(r.bgp.getAsUplink(idx, sfm, sfi));
             return;
         }
         if (a.equals("astransit")) {
-            rdr.putStrTab(r.bgp.getAsTransit(sfm, sfi));
+            rdr.putStrTab(r.bgp.getAsTransit(idx, sfm, sfi));
             return;
         }
         if (a.equals("asconn")) {
@@ -4938,11 +4938,11 @@ public class userShow {
             return;
         }
         if (a.equals("pathstat")) {
-            rdr.putStrTab(r.bgp.getPathStat(sfm, sfi));
+            rdr.putStrTab(r.bgp.getPathStat(idx, sfm, sfi));
             return;
         }
         if (a.equals("prefix-lengths")) {
-            rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.getDatabase(sfm, sfi), rtrBgpUtil.safi2ipVers(sfi)));
+            rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.getDatabase(idx, sfm, sfi), rtrBgpUtil.safi2ipVers(sfi)));
             return;
         }
         if (a.equals("asinconsistent")) {
@@ -5182,7 +5182,7 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, dif3, dsp);
             return;
         }
-        tabRoute<addrIP> tab = r.bgp.getDatabase(sfm, sfi);
+        tabRoute<addrIP> tab = r.bgp.getDatabase(idx, sfm, sfi);
         if (tab == null) {
             return;
         }
