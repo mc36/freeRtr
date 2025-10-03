@@ -2230,7 +2230,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         sendEndOfRib(safi);
         getLearned(idx, mask, safi).clear();
         getAdverted(idx, mask, safi).clear();
-        neigh.getWilling(mask, safi).clear();
+        neigh.getWilling(idx, mask, safi).clear();
         neigh.getAccepted(mask, safi).clear();
         needEorAfis[idx] = true;
         peerAfis[idx] = add;
