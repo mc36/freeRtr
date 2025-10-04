@@ -17564,3 +17564,6 @@ qc pass: ppp with pap authentication
 qc pass: ppp routes with local authentication
 qc pass: ppp with long multilink fragmentation
 qc pass: ldap server
+---------------------------------- 2025-10-04 13:36:06 25.10.4
+no qc pass: bgp maximum prefix in
+failed: bgp maximum prefix in

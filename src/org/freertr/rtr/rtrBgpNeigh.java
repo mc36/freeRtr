@@ -746,6 +746,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("addpath tx not remote|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(addpathTmode, conn.addpathTx)));
         l.add("addpath rx not local|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(conn.originalAddRlist, conn.addpathRx)));
         l.add("addpath tx not local|" + rtrBgpParam.bools2string(rtrBgpParam.boolsXor(conn.originalAddTlist, conn.addpathTx)));
+
+        /*
+        ////////////
         l.add("unicast advertised|" + conn.advUni.size() + " of " + wilUni.size() + ", list = " + chgUni.size() + ", accepted = " + accUni.size() + " of " + conn.lrnUni.size());
         l.add("multicast advertised|" + conn.advMlt.size() + " of " + wilMlt.size() + ", list = " + chgMlt.size() + ", accepted = " + accMlt.size() + " of " + conn.lrnMlt.size());
         l.add("ouni advertised|" + conn.advOuni.size() + " of " + wilOuni.size() + ", list = " + chgOuni.size() + ", accepted = " + accOuni.size() + " of " + conn.lrnOuni.size());
@@ -774,6 +777,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         l.add("omvpn advertised|" + conn.advMvpo.size() + " of " + wilMvpo.size() + ", list = " + chgMvpo.size() + ", accepted = " + accMvpo.size() + " of " + conn.lrnMvpo.size());
         l.add("mtree advertised|" + conn.advMtre.size() + " of " + wilMtre.size() + ", list = " + chgMtre.size() + ", accepted = " + accMtre.size() + " of " + conn.lrnMtre.size());
         l.add("omtree advertised|" + conn.advMtro.size() + " of " + wilMtro.size() + ", list = " + chgMtro.size() + ", accepted = " + accMtro.size() + " of " + conn.lrnMtro.size());
+         */
         l.add("version|" + conn.adversion + " of " + lower.compRound + ", needfull=" + conn.needFull + ", buffull=" + conn.buffFull);
         l.add("full|" + fullCount + ", " + bits.time2str(cfgAll.timeZoneName, fullLast + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(fullLast) + " ago, " + fullTime + " ms");
         l.add("incremental|" + incrCount + ", " + bits.time2str(cfgAll.timeZoneName, incrLast + cfgAll.timeServerOffset, 3) + ", " + bits.timePast(incrLast) + " ago, " + incrTime + " ms");
@@ -1459,34 +1463,34 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         }
         reachable = true;
         if (!softReconfig) {
-            accUni = conn.lrnUni;
-            accMlt = conn.lrnMlt;
-            accOuni = conn.lrnOuni;
-            accOmlt = conn.lrnOmlt;
-            accOflw = conn.lrnOflw;
-            accOsrt = conn.lrnOsrt;
-            accFlw = conn.lrnFlw;
-            accVpnU = conn.lrnVpnU;
-            accVpnM = conn.lrnVpnM;
-            accVpnF = conn.lrnVpnF;
-            accVpoU = conn.lrnVpoU;
-            accVpoM = conn.lrnVpoM;
-            accVpoF = conn.lrnVpoF;
-            accVpls = conn.lrnVpls;
-            accMspw = conn.lrnMspw;
-            accEvpn = conn.lrnEvpn;
-            accMdt = conn.lrnMdt;
-            accNsh = conn.lrnNsh;
-            accRpd = conn.lrnRpd;
-            accSdw = conn.lrnSdw;
-            accSpf = conn.lrnSpf;
-            accRtf = conn.lrnRtf;
-            accSrte = conn.lrnSrte;
-            accLnks = conn.lrnLnks;
-            accMvpn = conn.lrnMvpn;
-            accMvpo = conn.lrnMvpo;
-            accMtre = conn.lrnMtre;
-            accMtro = conn.lrnMtro;
+            accUni = conn.learnt[rtrBgpParam.idxUni];
+            accMlt = conn.learnt[rtrBgpParam.idxMlt];
+            accOuni = conn.learnt[rtrBgpParam.idxOuni];
+            accOmlt = conn.learnt[rtrBgpParam.idxOmlt];
+            accOflw = conn.learnt[rtrBgpParam.idxOflw];
+            accOsrt = conn.learnt[rtrBgpParam.idxOsrt];
+            accFlw = conn.learnt[rtrBgpParam.idxFlw];
+            accVpnU = conn.learnt[rtrBgpParam.idxVpnU];
+            accVpnM = conn.learnt[rtrBgpParam.idxVpnM];
+            accVpnF = conn.learnt[rtrBgpParam.idxVpnF];
+            accVpoU = conn.learnt[rtrBgpParam.idxVpoU];
+            accVpoM = conn.learnt[rtrBgpParam.idxVpoM];
+            accVpoF = conn.learnt[rtrBgpParam.idxVpoF];
+            accVpls = conn.learnt[rtrBgpParam.idxVpls];
+            accMspw = conn.learnt[rtrBgpParam.idxMspw];
+            accEvpn = conn.learnt[rtrBgpParam.idxEvpn];
+            accMdt = conn.learnt[rtrBgpParam.idxMdt];
+            accNsh = conn.learnt[rtrBgpParam.idxNsh];
+            accRpd = conn.learnt[rtrBgpParam.idxRpd];
+            accSdw = conn.learnt[rtrBgpParam.idxSdw];
+            accSpf = conn.learnt[rtrBgpParam.idxSpf];
+            accRtf = conn.learnt[rtrBgpParam.idxRtf];
+            accSrte = conn.learnt[rtrBgpParam.idxSrte];
+            accLnks = conn.learnt[rtrBgpParam.idxLnks];
+            accMvpn = conn.learnt[rtrBgpParam.idxMvpn];
+            accMvpo = conn.learnt[rtrBgpParam.idxMvpo];
+            accMtre = conn.learnt[rtrBgpParam.idxMtre];
+            accMtro = conn.learnt[rtrBgpParam.idxMtro];
             if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {
                 rtfilterUsed = accRtf;
             }

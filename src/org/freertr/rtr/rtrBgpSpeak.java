@@ -94,144 +94,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public secInfoWrk ipInfoRes;
 
     /**
-     * learned unicast prefixes
+     * learnt prefixes
      */
-    public final tabRoute<addrIP> lrnUni = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned multicast prefixes
-     */
-    public final tabRoute<addrIP> lrnMlt = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned other unicast prefixes
-     */
-    public final tabRoute<addrIP> lrnOuni = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned other multicast prefixes
-     */
-    public final tabRoute<addrIP> lrnOmlt = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned other flowspec prefixes
-     */
-    public final tabRoute<addrIP> lrnOflw = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned other srte prefixes
-     */
-    public final tabRoute<addrIP> lrnOsrt = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned flowspec prefixes
-     */
-    public final tabRoute<addrIP> lrnFlw = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned vpnuni prefixes
-     */
-    public final tabRoute<addrIP> lrnVpnU = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned vpnmulti prefixes
-     */
-    public final tabRoute<addrIP> lrnVpnM = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned vpnflow prefixes
-     */
-    public final tabRoute<addrIP> lrnVpnF = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned other vpnuni prefixes
-     */
-    public final tabRoute<addrIP> lrnVpoU = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned other vpnmulti prefixes
-     */
-    public final tabRoute<addrIP> lrnVpoM = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned other vpnflow prefixes
-     */
-    public final tabRoute<addrIP> lrnVpoF = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned vpls prefixes
-     */
-    public final tabRoute<addrIP> lrnVpls = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned mspw prefixes
-     */
-    public final tabRoute<addrIP> lrnMspw = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned evpn prefixes
-     */
-    public final tabRoute<addrIP> lrnEvpn = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned mdt prefixes
-     */
-    public final tabRoute<addrIP> lrnMdt = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned nsh prefixes
-     */
-    public final tabRoute<addrIP> lrnNsh = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned rpd prefixes
-     */
-    public final tabRoute<addrIP> lrnRpd = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned sdwan prefixes
-     */
-    public final tabRoute<addrIP> lrnSdw = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned spf prefixes
-     */
-    public final tabRoute<addrIP> lrnSpf = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned rtfilter prefixes
-     */
-    public final tabRoute<addrIP> lrnRtf = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned srte prefixes
-     */
-    public final tabRoute<addrIP> lrnSrte = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned linkstate prefixes
-     */
-    public final tabRoute<addrIP> lrnLnks = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned mvpn prefixes
-     */
-    public final tabRoute<addrIP> lrnMvpn = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned other mvpn prefixes
-     */
-    public final tabRoute<addrIP> lrnMvpo = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned mtree prefixes
-     */
-    public final tabRoute<addrIP> lrnMtre = new tabRoute<addrIP>("rx");
-
-    /**
-     * learned other mtree prefixes
-     */
-    public final tabRoute<addrIP> lrnMtro = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP> learnt[];
 
     /**
      * advertised unicast prefixes
@@ -600,6 +465,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param res resume, 0=disabled, 1=normal, 2=resume
      */
     public rtrBgpSpeak(rtrBgp protocol, rtrBgpNeigh neighbor, pipeSide socket, int res) {
+        learnt = rtrBgpParam.freshTables();
         peerAfis = rtrBgpParam.boolsSet(false);
         originalSafiList = rtrBgpParam.boolsSet(false);
         peerGrace = rtrBgpParam.boolsSet(false);
@@ -638,110 +504,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @return table
      */
     public tabRoute<addrIP> getLearned(int idx, long mask, int safi) {
-        if (idx == rtrBgpParam.idxUni) {
-            return lrnUni;
-        }
-        if (idx == rtrBgpParam.idxLab) {
-            return lrnUni;
-        }
-        if (idx == rtrBgpParam.idxCtp) {
-            return lrnUni;
-        }
-        if (idx == rtrBgpParam.idxCar) {
-            return lrnUni;
-        }
-        if (idx == rtrBgpParam.idxMlt) {
-            return lrnMlt;
-        }
-        if (idx == rtrBgpParam.idxOlab) {
-            return lrnOuni;
-        }
-        if (idx == rtrBgpParam.idxOctp) {
-            return lrnOuni;
-        }
-        if (idx == rtrBgpParam.idxOcar) {
-            return lrnOuni;
-        }
-        if (idx == rtrBgpParam.idxOuni) {
-            return lrnOuni;
-        }
-        if (idx == rtrBgpParam.idxOmlt) {
-            return lrnOmlt;
-        }
-        if (idx == rtrBgpParam.idxOflw) {
-            return lrnOflw;
-        }
-        if (idx == rtrBgpParam.idxOsrt) {
-            return lrnOsrt;
-        }
-        if (idx == rtrBgpParam.idxFlw) {
-            return lrnFlw;
-        }
-        if (idx == rtrBgpParam.idxVpnU) {
-            return lrnVpnU;
-        }
-        if (idx == rtrBgpParam.idxVpnM) {
-            return lrnVpnM;
-        }
-        if (idx == rtrBgpParam.idxVpnF) {
-            return lrnVpnF;
-        }
-        if (idx == rtrBgpParam.idxVpoU) {
-            return lrnVpoU;
-        }
-        if (idx == rtrBgpParam.idxVpoM) {
-            return lrnVpoM;
-        }
-        if (idx == rtrBgpParam.idxVpoF) {
-            return lrnVpoF;
-        }
-        if (idx == rtrBgpParam.idxVpls) {
-            return lrnVpls;
-        }
-        if (idx == rtrBgpParam.idxMspw) {
-            return lrnMspw;
-        }
-        if (idx == rtrBgpParam.idxEvpn) {
-            return lrnEvpn;
-        }
-        if (idx == rtrBgpParam.idxMdt) {
-            return lrnMdt;
-        }
-        if (idx == rtrBgpParam.idxNsh) {
-            return lrnNsh;
-        }
-        if (idx == rtrBgpParam.idxRpd) {
-            return lrnRpd;
-        }
-        if (idx == rtrBgpParam.idxSdw) {
-            return lrnSdw;
-        }
-        if (idx == rtrBgpParam.idxSpf) {
-            return lrnSpf;
-        }
-        if (idx == rtrBgpParam.idxRtf) {
-            return lrnRtf;
-        }
-        if (idx == rtrBgpParam.idxSrte) {
-            return lrnSrte;
-        }
-        if (idx == rtrBgpParam.idxLnks) {
-            return lrnLnks;
-        }
-        if (idx == rtrBgpParam.idxMvpn) {
-            return lrnMvpn;
-        }
-        if (idx == rtrBgpParam.idxMvpo) {
-            return lrnMvpo;
-        }
-        if (idx == rtrBgpParam.idxMtre) {
-            return lrnMtre;
-        }
-        if (idx == rtrBgpParam.idxMtro) {
-            return lrnMtro;
-        }
-        logger.info("unknown safi (" + safi + ") requested");
-        return null;
+        return learnt[idx];
     }
 
     /**
@@ -870,34 +633,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.localIfc != null) {
             neigh.localIfc.bfdDel(neigh.peerAddr, this);
         }
-        lrnUni.clear();
-        lrnMlt.clear();
-        lrnOuni.clear();
-        lrnOmlt.clear();
-        lrnOflw.clear();
-        lrnOsrt.clear();
-        lrnFlw.clear();
-        lrnVpnU.clear();
-        lrnVpnM.clear();
-        lrnVpnF.clear();
-        lrnVpoU.clear();
-        lrnVpoM.clear();
-        lrnVpoF.clear();
-        lrnVpls.clear();
-        lrnMspw.clear();
-        lrnEvpn.clear();
-        lrnMdt.clear();
-        lrnNsh.clear();
-        lrnRpd.clear();
-        lrnSdw.clear();
-        lrnSpf.clear();
-        lrnRtf.clear();
-        lrnSrte.clear();
-        lrnLnks.clear();
-        lrnMvpn.clear();
-        lrnMvpo.clear();
-        lrnMtre.clear();
-        lrnMtro.clear();
+        for (int i = 0; i < learnt.length; i++) {
+            learnt[i].clear();
+        }
         advUni.clear();
         advMlt.clear();
         advOuni.clear();
@@ -1149,34 +887,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 return;
             }
         }
-        lrnUni.clear();
-        lrnMlt.clear();
-        lrnOuni.clear();
-        lrnOmlt.clear();
-        lrnOflw.clear();
-        lrnOsrt.clear();
-        lrnFlw.clear();
-        lrnVpnU.clear();
-        lrnVpnM.clear();
-        lrnVpnF.clear();
-        lrnVpoU.clear();
-        lrnVpoM.clear();
-        lrnVpoF.clear();
-        lrnVpls.clear();
-        lrnMspw.clear();
-        lrnEvpn.clear();
-        lrnMdt.clear();
-        lrnNsh.clear();
-        lrnRpd.clear();
-        lrnSdw.clear();
-        lrnSpf.clear();
-        lrnRtf.clear();
-        lrnSrte.clear();
-        lrnLnks.clear();
-        lrnMvpn.clear();
-        lrnMvpo.clear();
-        lrnMtre.clear();
-        lrnMtro.clear();
+        for (int i = 0; i < learnt.length; i++) {
+            learnt[i].clear();
+        }
         advUni.clear();
         advMlt.clear();
         advOuni.clear();
@@ -2207,16 +1920,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @return number
      */
     public int getPrefixGot() {
-        return lrnUni.size() + lrnMlt.size() + lrnOuni.size()
-                + lrnOmlt.size() + lrnOflw.size() + lrnOsrt.size()
-                + lrnFlw.size() + lrnVpnU.size() + lrnVpnM.size()
-                + lrnVpnF.size() + lrnVpoU.size() + lrnVpoM.size()
-                + lrnVpoF.size() + lrnVpls.size() + lrnMspw.size()
-                + lrnEvpn.size() + lrnMdt.size() + lrnNsh.size()
-                + lrnRpd.size() + lrnSdw.size() + lrnSpf.size()
-                + lrnSrte.size() + lrnLnks.size() + lrnRtf.size()
-                + lrnMvpn.size() + lrnMvpo.size() + lrnMtre.size()
-                + lrnMtro.size();
+        int o = 0;
+        for (int i = 0; i < learnt.length; i++) {
+            if (!peerAfis[i]) {
+                continue;
+            }
+            o += learnt[i].size();
+        }
+        return o;
     }
 
     /**
@@ -2473,7 +2184,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         tabRouteUtil.removeUnknowns(ntry.best, neigh.unknownsIn);
-        int ortf = lrnRtf.size();
+        long ortf = learnt[rtrBgpParam.idxRtf].version;
         for (int i = 0; i < currDel.size(); i++) {
             tabRouteEntry<addrIP> res = currDel.get(i);
             idx = (int) res.oldDst;
@@ -2579,7 +2290,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             currChg++;
             changed.add(tabRoute.addType.always, res, false, false);
         }
-        if (neigh.rtfilterOut && (ortf != lrnRtf.size())) {
+        if (neigh.rtfilterOut && (ortf != learnt[rtrBgpParam.idxRtf].version)) {
             if (debugger.rtrBgpFull) {
                 logger.debug("rtfilter changed");
             }

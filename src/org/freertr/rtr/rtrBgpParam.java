@@ -864,29 +864,29 @@ public abstract class rtrBgpParam {
     public final static int idxMvpo = 14;
 
     /**
-     * other labeled unicast
-     */
-    public final static int idxOlab = 15;
-
-    /**
      * mspw
      */
-    public final static int idxMspw = 16;
+    public final static int idxMspw = 15;
 
     /**
      * srte
      */
-    public final static int idxSrte = 17;
+    public final static int idxSrte = 16;
 
     /**
      * link state
      */
-    public final static int idxLnks = 18;
+    public final static int idxLnks = 17;
 
     /**
      * other unicast
      */
-    public final static int idxOuni = 19;
+    public final static int idxOuni = 18;
+
+    /**
+     * other labeled unicast
+     */
+    public final static int idxOlab = 19;
 
     /**
      * other multicast
