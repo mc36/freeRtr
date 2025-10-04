@@ -4730,6 +4730,10 @@ public class userShow {
                 rdr.putStrTab(grp.getStatus());
                 return;
             }
+            if (a.equals("afis")) {
+                rdr.putStrTab(grp.getAfis());
+                return;
+            }
             int idx = rtrBgpParam.string2idx(a);
             if (idx < 0) {
                 return;
@@ -4850,6 +4854,10 @@ public class userShow {
             }
             if (a.equals("status")) {
                 rdr.putStrTab(nei.getStatus());
+                return;
+            }
+            if (a.equals("afis")) {
+                rdr.putStrTab(nei.getAfis());
                 return;
             }
             int idx = rtrBgpParam.string2idx(a);

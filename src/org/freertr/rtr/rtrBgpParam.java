@@ -1165,6 +1165,87 @@ public abstract class rtrBgpParam {
     }
 
     /**
+     * convert index to string
+     *
+     * @param i index
+     * @return string, null if error
+     */
+    public final static String idx2string(int i) {
+        switch (i) {
+            case idxUni:
+                return "unicast";
+            case idxLab:
+                return "labeled";
+            case idxCtp:
+                return "ctp";
+            case idxCar:
+                return "car";
+            case idxMlt:
+                return "multicast";
+            case idxOlab:
+                return "olab";
+            case idxOctp:
+                return "octp";
+            case idxOcar:
+                return "ocar";
+            case idxOuni:
+                return "ouni";
+            case idxOmlt:
+                return "omlt";
+            case idxFlw:
+                return "flowspec";
+            case idxOflw:
+                return "oflw";
+            case idxVpnU:
+                return "vpnuni";
+            case idxVpnM:
+                return "vpnmlt";
+            case idxVpnF:
+                return "vpnflw";
+            case idxVpoU:
+                return "ovpnuni";
+            case idxVpoM:
+                return "ovpnmlt";
+            case idxVpoF:
+                return "ovpnflw";
+            case idxVpls:
+                return "vpls";
+            case idxMspw:
+                return "mspw";
+            case idxEvpn:
+                return "evpn";
+            case idxMdt:
+                return "mdt";
+            case idxNsh:
+                return "nsh";
+            case idxRpd:
+                return "rpd";
+            case idxSpf:
+                return "spf";
+            case idxSdw:
+                return "sdwan";
+            case idxRtf:
+                return "rtfilter";
+            case idxSrte:
+                return "srte";
+            case idxOsrt:
+                return "osrt";
+            case idxLnks:
+                return "linkstate";
+            case idxMvpn:
+                return "mvpn";
+            case idxMvpo:
+                return "omvpn";
+            case idxMtre:
+                return "mtree";
+            case idxMtro:
+                return "omtree";
+            default:
+                return null;
+        }
+    }
+
+    /**
      * string to afi mask
      *
      * @param c string
@@ -1228,112 +1309,11 @@ public abstract class rtrBgpParam {
             if (!i[o]) {
                 continue;
             }
-            switch (o) {
-                case idxUni:
-                    a += " unicast";
-                    break;
-                case idxLab:
-                    a += " labeled";
-                    break;
-                case idxCtp:
-                    a += " ctp";
-                    break;
-                case idxCar:
-                    a += " car";
-                    break;
-                case idxMlt:
-                    a += " multicast";
-                    break;
-                case idxOlab:
-                    a += " olab";
-                    break;
-                case idxOctp:
-                    a += " octp";
-                    break;
-                case idxOcar:
-                    a += " ocar";
-                    break;
-                case idxOuni:
-                    a += " ouni";
-                    break;
-                case idxOmlt:
-                    a += " omlt";
-                    break;
-                case idxFlw:
-                    a += " flowspec";
-                    break;
-                case idxOflw:
-                    a += " oflw";
-                    break;
-                case idxVpnU:
-                    a += " vpnuni";
-                    break;
-                case idxVpnM:
-                    a += " vpnmlt";
-                    break;
-                case idxVpnF:
-                    a += " vpnflw";
-                    break;
-                case idxVpoU:
-                    a += " ovpnuni";
-                    break;
-                case idxVpoM:
-                    a += " ovpnmlt";
-                    break;
-                case idxVpoF:
-                    a += " ovpnflw";
-                    break;
-                case idxVpls:
-                    a += " vpls";
-                    break;
-                case idxMspw:
-                    a += " mspw";
-                    break;
-                case idxEvpn:
-                    a += " evpn";
-                    break;
-                case idxMdt:
-                    a += " mdt";
-                    break;
-                case idxNsh:
-                    a += " nsh";
-                    break;
-                case idxRpd:
-                    a += " rpd";
-                    break;
-                case idxSpf:
-                    a += " spf";
-                    break;
-                case idxSdw:
-                    a += " sdwan";
-                    break;
-                case idxRtf:
-                    a += " rtfilter";
-                    break;
-                case idxSrte:
-                    a += " srte";
-                    break;
-                case idxOsrt:
-                    a += " osrt";
-                    break;
-                case idxLnks:
-                    a += " linkstate";
-                    break;
-                case idxMvpn:
-                    a += " mvpn";
-                    break;
-                case idxMvpo:
-                    a += " omvpn";
-                    break;
-                case idxMtre:
-                    a += " mtree";
-                    break;
-                case idxMtro:
-                    a += " omtree";
-                    break;
-                default:
-                    return null;
+            String b = idx2string(o);
+            if (b == null) {
+                continue;
             }
+            a += " " + b;
         }
         if (a.length() < 1) {
             return " none";

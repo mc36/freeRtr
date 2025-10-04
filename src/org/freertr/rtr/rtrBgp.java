@@ -2637,14 +2637,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             for (int i = 0; i < groups.size(); i++) {
                 rtrBgpGroup grp = groups.get(i);
                 tabRoute<addrIP> wil = grp.willing[idx];
-                tabRoute<addrIP> chg = grp.getChanged(idx, mask, afi);
-                if ((wil == null) || (chg == null)) {
-                    if (debugger.rtrBgpFull) {
-                        logger.debug("table not found");
-                    }
-                    needFull.add(1);
-                    continue;
-                }
+                tabRoute<addrIP> chg = grp.changed[idx];
                 if (wil.del(curr)) {
                     continue;
                 }
@@ -2672,14 +2665,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < groups.size(); i++) {
             rtrBgpGroup grp = groups.get(i);
             tabRoute<addrIP> wil = grp.willing[idx];
-            tabRoute<addrIP> chg = grp.getChanged(idx, mask, afi);
-            if ((wil == null) || (chg == null)) {
-                if (debugger.rtrBgpFull) {
-                    logger.debug("table not found");
-                }
-                needFull.add(1);
-                continue;
-            }
+            tabRoute<addrIP> chg = grp.changed[idx];
             tabRouteEntry<addrIP> ntry = null;
             tabRouteEntry<addrIP> old = wil.find(best);
             if (best.best.rouSrc == rtrBgpUtil.peerOriginate) {
@@ -2727,16 +2713,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             res++;
         }
         return res;
-    }
-
-    private void computeIncrPurge(int ver, tabRoute<addrIP> chg) {
-        for (int i = chg.size() - 1; i >= 0; i--) {
-            tabRouteEntry<addrIP> ntry = chg.get(i);
-            if (ntry.best.version >= ver) {
-                continue;
-            }
-            chg.del(ntry);
-        }
     }
 
     private boolean computeIncr() {
@@ -2835,34 +2811,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (grp.minversion > groupMax) {
                 groupMax = grp.minversion;
             }
-            computeIncrPurge(grp.minversion, grp.chgUni);
-            computeIncrPurge(grp.minversion, grp.chgMlt);
-            computeIncrPurge(grp.minversion, grp.chgOuni);
-            computeIncrPurge(grp.minversion, grp.chgOmlt);
-            computeIncrPurge(grp.minversion, grp.chgOflw);
-            computeIncrPurge(grp.minversion, grp.chgOsrt);
-            computeIncrPurge(grp.minversion, grp.chgFlw);
-            computeIncrPurge(grp.minversion, grp.chgVpnU);
-            computeIncrPurge(grp.minversion, grp.chgVpnM);
-            computeIncrPurge(grp.minversion, grp.chgVpnF);
-            computeIncrPurge(grp.minversion, grp.chgVpoU);
-            computeIncrPurge(grp.minversion, grp.chgVpoM);
-            computeIncrPurge(grp.minversion, grp.chgVpoF);
-            computeIncrPurge(grp.minversion, grp.chgVpls);
-            computeIncrPurge(grp.minversion, grp.chgMspw);
-            computeIncrPurge(grp.minversion, grp.chgEvpn);
-            computeIncrPurge(grp.minversion, grp.chgMdt);
-            computeIncrPurge(grp.minversion, grp.chgNsh);
-            computeIncrPurge(grp.minversion, grp.chgRpd);
-            computeIncrPurge(grp.minversion, grp.chgSdw);
-            computeIncrPurge(grp.minversion, grp.chgSpf);
-            computeIncrPurge(grp.minversion, grp.chgRtf);
-            computeIncrPurge(grp.minversion, grp.chgSrte);
-            computeIncrPurge(grp.minversion, grp.chgLnks);
-            computeIncrPurge(grp.minversion, grp.chgMvpn);
-            computeIncrPurge(grp.minversion, grp.chgMvpo);
-            computeIncrPurge(grp.minversion, grp.chgMtre);
-            computeIncrPurge(grp.minversion, grp.chgMtro);
+            grp.computeIncrPurge();
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " changes");

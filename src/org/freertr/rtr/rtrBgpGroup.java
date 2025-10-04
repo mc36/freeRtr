@@ -19,7 +19,6 @@ import org.freertr.tab.tabRouteUtil;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.user.userFormat;
-import org.freertr.util.logger;
 
 /**
  * bgp4 update group
@@ -44,144 +43,9 @@ public class rtrBgpGroup extends rtrBgpParam {
     public tabRoute<addrIP>[] willing;
 
     /**
-     * changed unicast prefixes
+     * changed prefixes
      */
-    public tabRoute<addrIP> chgUni = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed multicast prefixes
-     */
-    public tabRoute<addrIP> chgMlt = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed other unicast prefixes
-     */
-    public tabRoute<addrIP> chgOuni = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed other multicast prefixes
-     */
-    public tabRoute<addrIP> chgOmlt = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed other flowspec prefixes
-     */
-    public tabRoute<addrIP> chgOflw = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed other srte prefixes
-     */
-    public tabRoute<addrIP> chgOsrt = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed flowspec prefixes
-     */
-    public tabRoute<addrIP> chgFlw = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed vpnuni prefixes
-     */
-    public tabRoute<addrIP> chgVpnU = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed vpnmulti prefixes
-     */
-    public tabRoute<addrIP> chgVpnM = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed vpnflow prefixes
-     */
-    public tabRoute<addrIP> chgVpnF = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed other vpnuni prefixes
-     */
-    public tabRoute<addrIP> chgVpoU = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed other vpnmulti prefixes
-     */
-    public tabRoute<addrIP> chgVpoM = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed other vpnflow prefixes
-     */
-    public tabRoute<addrIP> chgVpoF = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed vpls prefixes
-     */
-    public tabRoute<addrIP> chgVpls = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed mspw prefixes
-     */
-    public tabRoute<addrIP> chgMspw = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed evpn prefixes
-     */
-    public tabRoute<addrIP> chgEvpn = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed mdt prefixes
-     */
-    public tabRoute<addrIP> chgMdt = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed nsh prefixes
-     */
-    public tabRoute<addrIP> chgNsh = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed rpd prefixes
-     */
-    public tabRoute<addrIP> chgRpd = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed sdwan prefixes
-     */
-    public tabRoute<addrIP> chgSdw = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed spf prefixes
-     */
-    public tabRoute<addrIP> chgSpf = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed rtfilter prefixes
-     */
-    public tabRoute<addrIP> chgRtf = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed srte prefixes
-     */
-    public tabRoute<addrIP> chgSrte = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed linkstate prefixes
-     */
-    public tabRoute<addrIP> chgLnks = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed mvpn prefixes
-     */
-    public tabRoute<addrIP> chgMvpn = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed other mvpn prefixes
-     */
-    public tabRoute<addrIP> chgMvpo = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed mtre prefixes
-     */
-    public tabRoute<addrIP> chgMtre = new tabRoute<addrIP>("chg");
-
-    /**
-     * changed other mtro prefixes
-     */
-    public tabRoute<addrIP> chgMtro = new tabRoute<addrIP>("chg");
+    public tabRoute<addrIP>[] changed;
 
     /**
      * local address
@@ -207,6 +71,7 @@ public class rtrBgpGroup extends rtrBgpParam {
     public rtrBgpGroup(rtrBgp parent, int num) {
         super(parent, false);
         willing = rtrBgpParam.freshTables();
+        changed = rtrBgpParam.freshTables();
         groupNum = num;
     }
 
@@ -246,38 +111,20 @@ public class rtrBgpGroup extends rtrBgpParam {
         l.add("safi|" + bools2string(addrFams));
         l.add("local|" + localAddr);
         l.add("other|" + localOddr);
-        /*
-        //////////
-        l.add("unicast advertise|" + wilUni.size() + ", list=" + chgUni.size());
-        l.add("multicast advertise|" + wilMlt.size() + ", list=" + chgMlt.size());
-        l.add("ouni advertise|" + wilOuni.size() + ", list=" + chgOuni.size());
-        l.add("omlt advertise|" + wilOmlt.size() + ", list=" + chgOmlt.size());
-        l.add("oflw advertise|" + wilOflw.size() + ", list=" + chgOflw.size());
-        l.add("osrt advertise|" + wilOsrt.size() + ", list=" + chgOsrt.size());
-        l.add("flowspec advertise|" + wilFlw.size() + ", list=" + chgFlw.size());
-        l.add("vpnuni advertise|" + wilVpnU.size() + ", list=" + chgVpnU.size());
-        l.add("vpnmlt advertise|" + wilVpnM.size() + ", list=" + chgVpnM.size());
-        l.add("vpnflw advertise|" + wilVpnF.size() + ", list=" + chgVpnF.size());
-        l.add("ovpnuni advertise|" + wilVpoU.size() + ", list=" + chgVpoU.size());
-        l.add("ovpnmlt advertise|" + wilVpoM.size() + ", list=" + chgVpoM.size());
-        l.add("ovpnflw advertise|" + wilVpoF.size() + ", list=" + chgVpoF.size());
-        l.add("vpls advertise|" + wilVpls.size() + ", list=" + chgVpls.size());
-        l.add("mspw advertise|" + wilMspw.size() + ", list=" + chgMspw.size());
-        l.add("evpn advertise|" + wilEvpn.size() + ", list=" + chgEvpn.size());
-        l.add("mdt advertise|" + wilMdt.size() + ", list=" + chgMdt.size());
-        l.add("nsh advertise|" + wilNsh.size() + ", list=" + chgNsh.size());
-        l.add("rpd advertise|" + wilRpd.size() + ", list=" + chgRpd.size());
-        l.add("sdwan advertise|" + wilSdw.size() + ", list=" + chgSdw.size());
-        l.add("spf advertise|" + wilSpf.size() + ", list=" + chgSpf.size());
-        l.add("rtfilter advertise|" + wilRtf.size() + ", list=" + chgRtf.size());
-        l.add("srte advertise|" + wilSrte.size() + ", list=" + chgSrte.size());
-        l.add("linkstate advertise|" + wilLnks.size() + ", list=" + chgLnks.size());
-        l.add("mvpn advertise|" + wilMvpn.size() + ", list=" + chgMvpn.size());
-        l.add("omvpn advertise|" + wilMvpo.size() + ", list=" + chgMvpo.size());
-        l.add("mtree advertise|" + wilMtre.size() + ", list=" + chgMtre.size());
-        l.add("omtree advertise|" + wilMtro.size() + ", list=" + chgMtro.size());
-         */
         l.add("version|" + minversion + " of " + lower.compRound);
+        return l;
+    }
+
+    /**
+     * get status of peer
+     *
+     * @return status
+     */
+    public userFormat getAfis() {
+        userFormat l = new userFormat("|", "afi|will|change");
+        for (int i = 0; i < addrFams.length; i++) {
+            l.add(rtrBgpParam.idx2string(i) + "|" + willing[i].size() + "|" + changed[i].size());
+        }
         return l;
     }
 
@@ -290,110 +137,26 @@ public class rtrBgpGroup extends rtrBgpParam {
      * @return table
      */
     public tabRoute<addrIP> getChanged(int idx, long mask, int safi) {
-        if (idx == rtrBgpParam.idxUni) {
-            return chgUni;
+        return changed[idx];
+    }
+
+    /**
+     * purge changed routes
+     */
+    protected void computeIncrPurge() {
+        for (int idx = 0; idx < addrFams.length; idx++) {
+            if (!addrFams[idx]) {
+                continue;
+            }
+            tabRoute<addrIP> chg = changed[idx];
+            for (int i = chg.size() - 1; i >= 0; i--) {
+                tabRouteEntry<addrIP> ntry = chg.get(i);
+                if (ntry.best.version >= minversion) {
+                    continue;
+                }
+                chg.del(ntry);
+            }
         }
-        if (idx == rtrBgpParam.idxLab) {
-            return chgUni;
-        }
-        if (idx == rtrBgpParam.idxCtp) {
-            return chgUni;
-        }
-        if (idx == rtrBgpParam.idxCar) {
-            return chgUni;
-        }
-        if (idx == rtrBgpParam.idxMlt) {
-            return chgMlt;
-        }
-        if (idx == rtrBgpParam.idxOlab) {
-            return chgOuni;
-        }
-        if (idx == rtrBgpParam.idxOctp) {
-            return chgOuni;
-        }
-        if (idx == rtrBgpParam.idxOcar) {
-            return chgOuni;
-        }
-        if (idx == rtrBgpParam.idxOuni) {
-            return chgOuni;
-        }
-        if (idx == rtrBgpParam.idxOmlt) {
-            return chgOmlt;
-        }
-        if (idx == rtrBgpParam.idxOflw) {
-            return chgOflw;
-        }
-        if (idx == rtrBgpParam.idxOsrt) {
-            return chgOsrt;
-        }
-        if (idx == rtrBgpParam.idxFlw) {
-            return chgFlw;
-        }
-        if (idx == rtrBgpParam.idxVpnU) {
-            return chgVpnU;
-        }
-        if (idx == rtrBgpParam.idxVpnM) {
-            return chgVpnM;
-        }
-        if (idx == rtrBgpParam.idxVpnF) {
-            return chgVpnF;
-        }
-        if (idx == rtrBgpParam.idxVpoU) {
-            return chgVpoU;
-        }
-        if (idx == rtrBgpParam.idxVpoM) {
-            return chgVpoM;
-        }
-        if (idx == rtrBgpParam.idxVpoF) {
-            return chgVpoF;
-        }
-        if (idx == rtrBgpParam.idxVpls) {
-            return chgVpls;
-        }
-        if (idx == rtrBgpParam.idxMspw) {
-            return chgMspw;
-        }
-        if (idx == rtrBgpParam.idxEvpn) {
-            return chgEvpn;
-        }
-        if (idx == rtrBgpParam.idxMdt) {
-            return chgMdt;
-        }
-        if (idx == rtrBgpParam.idxNsh) {
-            return chgNsh;
-        }
-        if (idx == rtrBgpParam.idxRpd) {
-            return chgRpd;
-        }
-        if (idx == rtrBgpParam.idxSdw) {
-            return chgSdw;
-        }
-        if (idx == rtrBgpParam.idxSpf) {
-            return chgSpf;
-        }
-        if (idx == rtrBgpParam.idxRtf) {
-            return chgRtf;
-        }
-        if (idx == rtrBgpParam.idxSrte) {
-            return chgSrte;
-        }
-        if (idx == rtrBgpParam.idxLnks) {
-            return chgLnks;
-        }
-        if (idx == rtrBgpParam.idxMvpn) {
-            return chgMvpn;
-        }
-        if (idx == rtrBgpParam.idxMvpo) {
-            return chgMvpo;
-        }
-        if (idx == rtrBgpParam.idxMtre) {
-            return chgMtre;
-        }
-        if (idx == rtrBgpParam.idxMtro) {
-            return chgMtro;
-        }
-        logger.info("unknown safi (" + safi + ") requested");
-        return null;
     }
 
     private ipFwd getForwarder(int afi, tabRouteAttr<addrIP> ntry) {
