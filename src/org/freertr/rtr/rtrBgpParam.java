@@ -1596,6 +1596,59 @@ public abstract class rtrBgpParam {
     }
 
     /**
+     * get output filters
+     *
+     * @param idx safi index
+     * @return array of route map, route policy, prefix list
+     */
+    @SuppressWarnings({"rawtypes"})
+    protected tabListing[] getOutFilters(int idx) {
+        switch (idx) {
+            case idxUni:
+            case idxLab:
+            case idxCtp:
+            case idxCar:
+            case idxMlt:
+                return new tabListing[]{roumapOut, roupolOut, prflstOut};
+            case idxOlab:
+            case idxOctp:
+            case idxOcar:
+            case idxOuni:
+            case idxOmlt:
+                return new tabListing[]{oroumapOut, oroupolOut, oprflstOut};
+            case idxVpls:
+            case idxMspw:
+            case idxEvpn:
+            case idxMdt:
+            case idxNsh:
+            case idxRpd:
+            case idxSdw:
+            case idxSpf:
+            case idxRtf:
+            case idxLnks:
+                return new tabListing[]{eroumapOut, eroupolOut, null};
+            case idxOflw:
+            case idxOsrt:
+            case idxVpoU:
+            case idxVpoM:
+            case idxVpoF:
+            case idxMvpo:
+            case idxMtro:
+                return new tabListing[]{wroumapOut, wroupolOut, null};
+            case idxFlw:
+            case idxSrte:
+            case idxVpnU:
+            case idxVpnM:
+            case idxVpnF:
+            case idxMvpn:
+            case idxMtre:
+                return new tabListing[]{vroumapOut, vroupolOut, null};
+            default:
+                return new tabListing[3];
+        }
+    }
+
+    /**
      * create routing tables
      *
      * @return array of tables
@@ -1603,8 +1656,6 @@ public abstract class rtrBgpParam {
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected final static tabRoute<addrIP>[] freshTables() {
         tabRoute<addrIP>[] res = new tabRoute[boolsMax];
-        res[idxUni] = new tabRoute<addrIP>("bgp");
-        res[idxOuni] = new tabRoute<addrIP>("bgp");
         for (int i = 0; i < res.length; i++) {
             int o = indexAlias(i);
             if (o >= 0) {
@@ -1627,12 +1678,10 @@ public abstract class rtrBgpParam {
             case idxLab:
             case idxCtp:
             case idxCar:
-            case idxUni:
                 return idxUni;
             case idxOlab:
             case idxOctp:
             case idxOcar:
-            case idxOuni:
                 return idxOuni;
             default:
                 return -1;
