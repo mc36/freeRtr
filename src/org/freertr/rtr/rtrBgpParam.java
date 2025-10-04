@@ -1517,7 +1517,7 @@ public abstract class rtrBgpParam {
      * @param idx safi index
      * @return display mode
      */
-    public static final int displayModel(int idx) {
+    public final static int displayModel(int idx) {
         switch (idx) {
             case idxEvpn:
             case idxMspw:

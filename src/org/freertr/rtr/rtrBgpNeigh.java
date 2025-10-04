@@ -1225,107 +1225,18 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
 
     private boolean advertIncr() {
         long tim = bits.getTime();
-        if (advertIncrTable(rtrBgpParam.idxUni, lower.afiUni, rtrBgpParam.mskUni, wilUni, chgUni, conn.advUni)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxLab, lower.afiLab, rtrBgpParam.mskLab, wilUni, chgUni, conn.advUni)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxCtp, lower.afiCtp, rtrBgpParam.mskCtp, wilUni, chgUni, conn.advUni)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxCar, lower.afiCar, rtrBgpParam.mskCar, wilUni, chgUni, conn.advUni)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxMlt, lower.afiMlt, rtrBgpParam.mskMlt, wilMlt, chgMlt, conn.advMlt)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxOlab, lower.afiOlab, rtrBgpParam.mskOlab, wilOuni, chgOuni, conn.advOuni)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxOctp, lower.afiOctp, rtrBgpParam.mskOctp, wilOuni, chgOuni, conn.advOuni)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxOcar, lower.afiOcar, rtrBgpParam.mskOcar, wilOuni, chgOuni, conn.advOuni)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxOuni, lower.afiOuni, rtrBgpParam.mskOuni, wilOuni, chgOuni, conn.advOuni)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxOmlt, lower.afiOmlt, rtrBgpParam.mskOmlt, wilOmlt, chgOmlt, conn.advOmlt)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxFlw, lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, chgFlw, conn.advFlw)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxOflw, lower.afiOflw, rtrBgpParam.mskOflw, wilOflw, chgOflw, conn.advOflw)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxSrte, lower.afiSrte, rtrBgpParam.mskSrte, wilSrte, chgSrte, conn.advSrte)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxOsrt, lower.afiOsrt, rtrBgpParam.mskOsrt, wilOsrt, chgOsrt, conn.advOsrt)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxVpnU, lower.afiVpnU, rtrBgpParam.mskVpnU, wilVpnU, chgVpnU, conn.advVpnU)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxVpnM, lower.afiVpnM, rtrBgpParam.mskVpnM, wilVpnM, chgVpnM, conn.advVpnM)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxVpnF, lower.afiVpnF, rtrBgpParam.mskVpnF, wilVpnF, chgVpnF, conn.advVpnF)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxVpoU, lower.afiVpoU, rtrBgpParam.mskVpoU, wilVpoU, chgVpoU, conn.advVpoU)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxVpoM, lower.afiVpoM, rtrBgpParam.mskVpoM, wilVpoM, chgVpoM, conn.advVpoM)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxVpoF, lower.afiVpoF, rtrBgpParam.mskVpoF, wilVpoF, chgVpoF, conn.advVpoF)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxVpls, lower.afiVpls, rtrBgpParam.mskVpls, wilVpls, chgVpls, conn.advVpls)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxMspw, lower.afiMspw, rtrBgpParam.mskMspw, wilMspw, chgMspw, conn.advMspw)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxEvpn, lower.afiEvpn, rtrBgpParam.mskEvpn, wilEvpn, chgEvpn, conn.advEvpn)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxMdt, lower.afiMdt, rtrBgpParam.mskMdt, wilMdt, chgMdt, conn.advMdt)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxNsh, lower.afiNsh, rtrBgpParam.mskNsh, wilNsh, chgNsh, conn.advNsh)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxRpd, lower.afiRpd, rtrBgpParam.mskRpd, wilRpd, chgRpd, conn.advRpd)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxSdw, lower.afiSdw, rtrBgpParam.mskSdw, wilSdw, chgSdw, conn.advSdw)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxSpf, lower.afiSpf, rtrBgpParam.mskSpf, wilSpf, chgSpf, conn.advSpf)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxRtf, lower.afiRtf, rtrBgpParam.mskRtf, wilRtf, chgRtf, conn.advRtf)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxMvpn, lower.afiMvpn, rtrBgpParam.mskMvpn, wilMvpn, chgMvpn, conn.advMvpn)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxMvpo, lower.afiMvpo, rtrBgpParam.mskMvpo, wilMvpo, chgMvpo, conn.advMvpo)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxMtre, lower.afiMtre, rtrBgpParam.mskMtre, wilMtre, chgMtre, conn.advMtre)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxMtro, lower.afiMtro, rtrBgpParam.mskMtro, wilMtro, chgMtro, conn.advMtro)) {
-            return true;
-        }
-        if (advertIncrTable(rtrBgpParam.idxLnks, lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, chgLnks, conn.advLnks)) {
-            return true;
+        for (int idx = 0; idx < addrFams.length; idx++) {
+            if (!conn.peerAfis[idx]) {
+                continue;
+            }
+            int afi = lower.idx2safi(idx);
+            long msk = 1L << idx;
+            tabRoute<addrIP> wll = getWilling(idx, msk, afi);
+            tabRoute<addrIP> chg = getChanged(idx, msk, afi);
+            tabRoute<addrIP> adv = conn.getAdverted(idx, msk, afi);
+            if (advertIncrTable(idx, afi, msk, wll, chg, adv)) {
+                return true;
+            }
         }
         incrLast = bits.getTime();
         incrTime = (int) (incrLast - tim);
@@ -1980,6 +1891,121 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         }
         if (idx == rtrBgpParam.idxMtro) {
             return accMtro;
+        }
+        logger.info("unknown safi (" + safi + ") requested");
+        return null;
+    }
+
+    /**
+     * get changed
+     *
+     * @param idx safi to query
+     * @param mask safi to query
+     * @param safi safi to query
+     * @return table
+     */
+    public tabRoute<addrIP> getChanged(int idx, long mask, int safi) {
+        if (idx == rtrBgpParam.idxUni) {
+            return chgUni;
+        }
+        if (idx == rtrBgpParam.idxLab) {
+            return chgUni;
+        }
+        if (idx == rtrBgpParam.idxCtp) {
+            return chgUni;
+        }
+        if (idx == rtrBgpParam.idxCar) {
+            return chgUni;
+        }
+        if (idx == rtrBgpParam.idxMlt) {
+            return chgMlt;
+        }
+        if (idx == rtrBgpParam.idxOlab) {
+            return chgOuni;
+        }
+        if (idx == rtrBgpParam.idxOctp) {
+            return chgOuni;
+        }
+        if (idx == rtrBgpParam.idxOcar) {
+            return chgOuni;
+        }
+        if (idx == rtrBgpParam.idxOuni) {
+            return chgOuni;
+        }
+        if (idx == rtrBgpParam.idxOmlt) {
+            return chgOmlt;
+        }
+        if (idx == rtrBgpParam.idxOflw) {
+            return chgOflw;
+        }
+        if (idx == rtrBgpParam.idxOsrt) {
+            return chgOsrt;
+        }
+        if (idx == rtrBgpParam.idxFlw) {
+            return chgFlw;
+        }
+        if (idx == rtrBgpParam.idxVpnU) {
+            return chgVpnU;
+        }
+        if (idx == rtrBgpParam.idxVpnM) {
+            return chgVpnM;
+        }
+        if (idx == rtrBgpParam.idxVpnF) {
+            return chgVpnF;
+        }
+        if (idx == rtrBgpParam.idxVpoU) {
+            return chgVpoU;
+        }
+        if (idx == rtrBgpParam.idxVpoM) {
+            return chgVpoM;
+        }
+        if (idx == rtrBgpParam.idxVpoF) {
+            return chgVpoF;
+        }
+        if (idx == rtrBgpParam.idxVpls) {
+            return chgVpls;
+        }
+        if (idx == rtrBgpParam.idxMspw) {
+            return chgMspw;
+        }
+        if (idx == rtrBgpParam.idxEvpn) {
+            return chgEvpn;
+        }
+        if (idx == rtrBgpParam.idxMdt) {
+            return chgMdt;
+        }
+        if (idx == rtrBgpParam.idxNsh) {
+            return chgNsh;
+        }
+        if (idx == rtrBgpParam.idxRpd) {
+            return chgRpd;
+        }
+        if (idx == rtrBgpParam.idxSdw) {
+            return chgSdw;
+        }
+        if (idx == rtrBgpParam.idxSpf) {
+            return chgSpf;
+        }
+        if (idx == rtrBgpParam.idxRtf) {
+            return chgRtf;
+        }
+        if (idx == rtrBgpParam.idxSrte) {
+            return chgSrte;
+        }
+        if (idx == rtrBgpParam.idxLnks) {
+            return chgLnks;
+        }
+        if (idx == rtrBgpParam.idxMvpn) {
+            return chgMvpn;
+        }
+        if (idx == rtrBgpParam.idxMvpo) {
+            return chgMvpo;
+        }
+        if (idx == rtrBgpParam.idxMtre) {
+            return chgMtre;
+        }
+        if (idx == rtrBgpParam.idxMtro) {
+            return chgMtro;
         }
         logger.info("unknown safi (" + safi + ") requested");
         return null;
