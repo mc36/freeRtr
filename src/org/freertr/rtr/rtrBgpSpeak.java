@@ -2564,13 +2564,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             currChg++;
             tabRoute<addrIP> changed = parent.getChanged(idx, mask, safi);
-            if (changed == null) {
-                if (debugger.rtrBgpFull) {
-                    logger.debug("table not found");
-                }
-                parent.needFull.add(1);
-                continue;
-            }
             changed.add(tabRoute.addType.always, res, true, false);
         }
         for (int i = 0; i < currAdd.size(); i++) {
@@ -2579,7 +2572,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             res.oldDst = 0;
             mask = 1L << idx;
             int safi = parent.idx2safi(idx);
-            addpath = addpathRx[idx];
             updateRchblCntr(0, pck);
             if (debugger.rtrBgpTraf) {
                 logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
@@ -2590,16 +2582,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 continue;
             }
-            tabRoute<addrIP> learned = getLearned(idx, mask, safi);
-            if (learned == null) {
-                continue;
-            }
-            tabRoute<addrIP> changed = parent.getChanged(idx, mask, safi);
-            if (changed == null) {
-                continue;
-            }
-            tabListing[] fltr = neigh.getInFilters(idx);
-            addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, fltr[0], fltr[1], fltr[2]);
+            addAttribedOne(res, ntry, idx, mask, safi);
         }
         if (neigh.rtfilterOut && (ortf != lrnRtf.size())) {
             if (debugger.rtrBgpFull) {
@@ -2623,7 +2606,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return false;
     }
 
-    private void addAttribedOne(tabRouteEntry<addrIP> cur, tabRouteEntry<addrIP> attr, boolean addpath, tabRoute<addrIP> learned, tabRoute<addrIP> changed, int idx, long mask, int safi, tabListing<tabRtrmapN, addrIP> roumap, tabListing<tabRtrplcN, addrIP> roupol, tabListing<tabPrfxlstN, addrIP> prflst) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void addAttribedOne(tabRouteEntry<addrIP> cur, tabRouteEntry<addrIP> attr, int idx, long mask, int safi) {
         if (cur.best.nextHop == null) {
             cur.best.nextHop = neigh.peerAddr.copyBytes();
         }
@@ -2648,8 +2632,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             neigh.prefixDampen(idx, mask, safi, cur.rouDst, cur.prefix, neigh.dampenAnno);
         }
         neigh.setValidity(safi, cur);
+        boolean addpath = addpathRx[idx];
+        tabRoute<addrIP> learned = getLearned(idx, mask, safi);
+        tabRoute<addrIP> changed = parent.getChanged(idx, mask, safi);
         if (!neigh.softReconfig) {
-            tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, neigh.remoteAs, cur, roumap, roupol, prflst);
+            tabListing[] fltr = neigh.getInFilters(idx);
+            tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, neigh.remoteAs, cur, fltr[0], fltr[1], fltr[2]);
             if (res == null) {
                 repPolRej++;
                 if (doPrefDel(learned, addpath, cur)) {
