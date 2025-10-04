@@ -1104,107 +1104,12 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
 
     private boolean advertFull() {
         long tim = bits.getTime();
-        if (advertFullTable(rtrBgpParam.idxUni, lower.afiUni, rtrBgpParam.mskUni, wilUni, conn.advUni)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxLab, lower.afiLab, rtrBgpParam.mskLab, wilUni, conn.advUni)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxCtp, lower.afiCtp, rtrBgpParam.mskCtp, wilUni, conn.advUni)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxCar, lower.afiCar, rtrBgpParam.mskCar, wilUni, conn.advUni)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxMlt, lower.afiMlt, rtrBgpParam.mskMlt, wilMlt, conn.advMlt)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxOlab, lower.afiOlab, rtrBgpParam.mskOlab, wilOuni, conn.advOuni)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxOctp, lower.afiOctp, rtrBgpParam.mskOctp, wilOuni, conn.advOuni)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxOcar, lower.afiOcar, rtrBgpParam.mskOcar, wilOuni, conn.advOuni)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxOuni, lower.afiOuni, rtrBgpParam.mskOuni, wilOuni, conn.advOuni)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxOmlt, lower.afiOmlt, rtrBgpParam.mskOmlt, wilOmlt, conn.advOmlt)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxFlw, lower.afiFlw, rtrBgpParam.mskFlw, wilFlw, conn.advFlw)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxOflw, lower.afiOflw, rtrBgpParam.mskOflw, wilOflw, conn.advOflw)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxSrte, lower.afiSrte, rtrBgpParam.mskSrte, wilSrte, conn.advSrte)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxOsrt, lower.afiOsrt, rtrBgpParam.mskOsrt, wilOsrt, conn.advOsrt)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxVpnU, lower.afiVpnU, rtrBgpParam.mskVpnU, wilVpnU, conn.advVpnU)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxVpnM, lower.afiVpnM, rtrBgpParam.mskVpnM, wilVpnM, conn.advVpnM)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxVpnF, lower.afiVpnF, rtrBgpParam.mskVpnF, wilVpnF, conn.advVpnF)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxVpoU, lower.afiVpoU, rtrBgpParam.mskVpoU, wilVpoU, conn.advVpoU)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxVpoM, lower.afiVpoM, rtrBgpParam.mskVpoM, wilVpoM, conn.advVpoM)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxVpoF, lower.afiVpoF, rtrBgpParam.mskVpoF, wilVpoF, conn.advVpoF)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxVpls, lower.afiVpls, rtrBgpParam.mskVpls, wilVpls, conn.advVpls)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxMspw, lower.afiMspw, rtrBgpParam.mskMspw, wilMspw, conn.advMspw)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxEvpn, lower.afiEvpn, rtrBgpParam.mskEvpn, wilEvpn, conn.advEvpn)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxMdt, lower.afiMdt, rtrBgpParam.mskMdt, wilMdt, conn.advMdt)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxNsh, lower.afiNsh, rtrBgpParam.mskNsh, wilNsh, conn.advNsh)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxRpd, lower.afiRpd, rtrBgpParam.mskRpd, wilRpd, conn.advRpd)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxSdw, lower.afiSdw, rtrBgpParam.mskSdw, wilSdw, conn.advSdw)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxSpf, lower.afiSpf, rtrBgpParam.mskSpf, wilSpf, conn.advSpf)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxRtf, lower.afiRtf, rtrBgpParam.mskRtf, wilRtf, conn.advRtf)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxMvpn, lower.afiMvpn, rtrBgpParam.mskMvpn, wilMvpn, conn.advMvpn)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxMvpo, lower.afiMvpo, rtrBgpParam.mskMvpo, wilMvpo, conn.advMvpo)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxMtre, lower.afiMtre, rtrBgpParam.mskMtre, wilMtre, conn.advMtre)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxMtro, lower.afiMtro, rtrBgpParam.mskMtro, wilMtro, conn.advMtro)) {
-            return true;
-        }
-        if (advertFullTable(rtrBgpParam.idxLnks, lower.afiLnks, rtrBgpParam.mskLnks, wilLnks, conn.advLnks)) {
-            return true;
+        for (int idx = 0; idx < addrFams.length; idx++) {
+            int safi = lower.idx2safi(idx);
+            long msk = 1L << idx;
+            if (advertFullTable(idx, safi, msk, getWilling(idx, msk, safi), conn.getAdverted(idx, msk, safi))) {
+                return true;
+            }
         }
         int ver = conn.needFull.ver();
         if (conn.needFull.get() == 1) {
