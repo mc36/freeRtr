@@ -375,10 +375,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         for (int i = 0; i < learnt.length; i++) {
             learnt[i].clear();
             advert[i].clear();
-            neigh.willing[i] = new tabRoute<addrIP>("tx");
-            neigh.changed[i] = new tabRoute<addrIP>("chg");
-            neigh.acceptd[i] = new tabRoute<addrIP>("rx");
         }
+        neigh.willing = rtrBgpParam.freshTables();
+        neigh.changed = rtrBgpParam.freshTables();
+        neigh.acceptd = rtrBgpParam.freshTables();
         if (!ready2adv) {
             return;
         }
@@ -521,8 +521,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         for (int i = 0; i < learnt.length; i++) {
             learnt[i].clear();
             advert[i].clear();
-            neigh.acceptd[i] = new tabRoute<addrIP>("rx");
         }
+        neigh.acceptd = rtrBgpParam.freshTables();
         if (neigh.dampenPfxs != null) {
             neigh.dampenPfxs = new tabGen<rtrBgpDamp>();
         }

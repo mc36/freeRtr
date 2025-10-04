@@ -72,17 +72,17 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     /**
      * willing prefixes
      */
-    public final tabRoute<addrIP>[] acceptd;
+    public tabRoute<addrIP>[] acceptd;
 
     /**
      * willing prefixes
      */
-    public final tabRoute<addrIP>[] willing;
+    public tabRoute<addrIP>[] willing;
 
     /**
      * changed prefixes
      */
-    public final tabRoute<addrIP>[] changed;
+    public tabRoute<addrIP>[] changed;
 
     /**
      * update group number
@@ -882,9 +882,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void setAccepted() {
-        for (int i = 0; i < acceptd.length; i++) {
-            acceptd[i] = new tabRoute<addrIP>("bgp");
-        }
+        acceptd = rtrBgpParam.freshTables();
         rtfilterUsed = null;
         reachable = false;
         if (sendingIfc != null) {
@@ -1046,10 +1044,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      */
     public void setNeeded() {
         if (groupMember < 0) {
-            for (int i = 0; i < willing.length; i++) {
-                willing[i] = new tabRoute<addrIP>("tx");
-                changed[i] = new tabRoute<addrIP>("chg");
-            }
+            willing = rtrBgpParam.freshTables();
+            changed = rtrBgpParam.freshTables();
         } else {
             rtrBgpGroup grp = lower.groups.get(groupMember);
             for (int i = 0; i < willing.length; i++) {

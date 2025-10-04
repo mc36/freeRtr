@@ -1423,7 +1423,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * convert safi to index
      *
      * @param safi safi
-     * @return mask
+     * @return index
      */
     public int safi2idx(int safi) {
         if (safi == afiUni) {
@@ -1535,7 +1535,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * convert index to safi
      *
-     * @param idx mask
+     * @param idx index
      * @return safi
      */
     public int idx2safi(int idx) {
