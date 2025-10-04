@@ -2598,27 +2598,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (changed == null) {
                 continue;
             }
-            if ((mask & rtrBgpParam.mskFltR) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, neigh.roumapIn, neigh.roupolIn, neigh.prflstIn);
-                continue;
-            }
-            if ((mask & rtrBgpParam.mskFltO) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, neigh.oroumapIn, neigh.oroupolIn, neigh.oprflstIn);
-                continue;
-            }
-            if ((mask & rtrBgpParam.mskFltE) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, neigh.eroumapIn, neigh.eroupolIn, null);
-                continue;
-            }
-            if ((mask & rtrBgpParam.mskFltW) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, neigh.wroumapIn, neigh.wroupolIn, null);
-                continue;
-            }
-            if ((mask & rtrBgpParam.mskFltV) != 0) {
-                addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, neigh.vroumapIn, neigh.vroupolIn, null);
-                continue;
-            }
-            addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, null, null, null);
+            tabListing[] fltr = neigh.getInFilters(idx);
+            addAttribedOne(res, ntry, addpath, learned, changed, idx, mask, safi, fltr[0], fltr[1], fltr[2]);
         }
         if (neigh.rtfilterOut && (ortf != lrnRtf.size())) {
             if (debugger.rtrBgpFull) {

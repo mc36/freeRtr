@@ -959,13 +959,18 @@ public abstract class rtrBgpParam {
     public final static int idxSdw = 33;
 
     /**
+     * maximum afis
+     */
+    public final static int boolsMax = 34;
+
+    /**
      * set value
      *
      * @param val value
      * @return result
      */
     public final static boolean[] boolsSet(boolean val) {
-        boolean[] res = new boolean[34];
+        boolean[] res = new boolean[boolsMax];
         for (int i = 0; i < res.length; i++) {
             res[i] = val;
         }
@@ -1564,6 +1569,85 @@ public abstract class rtrBgpParam {
         }
         hl.add(null, false, lev, nxt, "all", "all address family to " + end);
         hl.add(null, false, lev, nxt, "none", "no address family to " + end);
+    }
+
+    /**
+     * get input filters
+     *
+     * @param idx safi index
+     * @return array of route map, route policy, prefix list
+     */
+    @SuppressWarnings({"rawtypes"})
+    protected tabListing[] getInFilters(int idx) {
+        switch (idx) {
+            case idxUni:
+            case idxLab:
+            case idxCtp:
+            case idxCar:
+            case idxMlt:
+                return new tabListing[]{roumapIn, roupolIn, prflstIn};
+            case idxOlab:
+            case idxOctp:
+            case idxOcar:
+            case idxOuni:
+            case idxOmlt:
+                return new tabListing[]{oroumapIn, oroupolIn, oprflstIn};
+            case idxVpls:
+            case idxMspw:
+            case idxEvpn:
+            case idxMdt:
+            case idxNsh:
+            case idxRpd:
+            case idxSdw:
+            case idxSpf:
+            case idxRtf:
+            case idxLnks:
+                return new tabListing[]{eroumapIn, eroupolIn, null};
+            case idxOflw:
+            case idxOsrt:
+            case idxVpoU:
+            case idxVpoM:
+            case idxVpoF:
+            case idxMvpo:
+            case idxMtro:
+                return new tabListing[]{wroumapIn, wroupolIn, null};
+            case idxFlw:
+            case idxSrte:
+            case idxVpnU:
+            case idxVpnM:
+            case idxVpnF:
+            case idxMvpn:
+            case idxMtre:
+                return new tabListing[]{vroumapIn, vroupolIn, null};
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * create routing tables
+     *
+     * @return array of tables
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    protected final static tabRoute<addrIP>[] freshTables() {
+        tabRoute<addrIP>[] res = new tabRoute[boolsMax];
+        for (int i = 0; i < res.length; i++) {
+            switch (i) {
+                case idxLab:
+                case idxCtp:
+                case idxCar:
+                    res[i] = res[idxUni];
+                    continue;
+                case idxOlab:
+                case idxOctp:
+                case idxOcar:
+                    res[i] = res[idxOuni];
+                    continue;
+            }
+            res[i] = new tabRoute<addrIP>("bgp");
+        }
+        return res;
     }
 
     /**
