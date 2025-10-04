@@ -377,35 +377,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             advert[i].clear();
             neigh.willing[i] = new tabRoute<addrIP>("tx");
             neigh.changed[i] = new tabRoute<addrIP>("chg");
+            neigh.acceptd[i] = new tabRoute<addrIP>("rx");
         }
-        neigh.accUni = new tabRoute<addrIP>("rx");
-        neigh.accMlt = new tabRoute<addrIP>("rx");
-        neigh.accOuni = new tabRoute<addrIP>("rx");
-        neigh.accOmlt = new tabRoute<addrIP>("rx");
-        neigh.accOflw = new tabRoute<addrIP>("rx");
-        neigh.accOsrt = new tabRoute<addrIP>("rx");
-        neigh.accFlw = new tabRoute<addrIP>("rx");
-        neigh.accVpnU = new tabRoute<addrIP>("rx");
-        neigh.accVpnM = new tabRoute<addrIP>("rx");
-        neigh.accVpnF = new tabRoute<addrIP>("rx");
-        neigh.accVpoU = new tabRoute<addrIP>("rx");
-        neigh.accVpoM = new tabRoute<addrIP>("rx");
-        neigh.accVpoF = new tabRoute<addrIP>("rx");
-        neigh.accVpls = new tabRoute<addrIP>("rx");
-        neigh.accMspw = new tabRoute<addrIP>("rx");
-        neigh.accEvpn = new tabRoute<addrIP>("rx");
-        neigh.accMdt = new tabRoute<addrIP>("rx");
-        neigh.accNsh = new tabRoute<addrIP>("rx");
-        neigh.accRpd = new tabRoute<addrIP>("rx");
-        neigh.accSdw = new tabRoute<addrIP>("rx");
-        neigh.accSpf = new tabRoute<addrIP>("rx");
-        neigh.accRtf = new tabRoute<addrIP>("rx");
-        neigh.accSrte = new tabRoute<addrIP>("rx");
-        neigh.accLnks = new tabRoute<addrIP>("rx");
-        neigh.accMvpn = new tabRoute<addrIP>("rx");
-        neigh.accMvpo = new tabRoute<addrIP>("rx");
-        neigh.accMtre = new tabRoute<addrIP>("rx");
-        neigh.accMtro = new tabRoute<addrIP>("rx");
         if (!ready2adv) {
             return;
         }
@@ -548,35 +521,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         for (int i = 0; i < learnt.length; i++) {
             learnt[i].clear();
             advert[i].clear();
+            neigh.acceptd[i] = new tabRoute<addrIP>("rx");
         }
-        neigh.accUni = new tabRoute<addrIP>("rx");
-        neigh.accMlt = new tabRoute<addrIP>("rx");
-        neigh.accOuni = new tabRoute<addrIP>("rx");
-        neigh.accOmlt = new tabRoute<addrIP>("rx");
-        neigh.accOflw = new tabRoute<addrIP>("rx");
-        neigh.accOsrt = new tabRoute<addrIP>("rx");
-        neigh.accFlw = new tabRoute<addrIP>("rx");
-        neigh.accVpnU = new tabRoute<addrIP>("rx");
-        neigh.accVpnM = new tabRoute<addrIP>("rx");
-        neigh.accVpnF = new tabRoute<addrIP>("rx");
-        neigh.accVpoU = new tabRoute<addrIP>("rx");
-        neigh.accVpoM = new tabRoute<addrIP>("rx");
-        neigh.accVpoF = new tabRoute<addrIP>("rx");
-        neigh.accVpls = new tabRoute<addrIP>("rx");
-        neigh.accMspw = new tabRoute<addrIP>("rx");
-        neigh.accEvpn = new tabRoute<addrIP>("rx");
-        neigh.accMdt = new tabRoute<addrIP>("rx");
-        neigh.accNsh = new tabRoute<addrIP>("rx");
-        neigh.accRpd = new tabRoute<addrIP>("rx");
-        neigh.accSdw = new tabRoute<addrIP>("rx");
-        neigh.accSpf = new tabRoute<addrIP>("rx");
-        neigh.accRtf = new tabRoute<addrIP>("rx");
-        neigh.accSrte = new tabRoute<addrIP>("rx");
-        neigh.accLnks = new tabRoute<addrIP>("rx");
-        neigh.accMvpn = new tabRoute<addrIP>("rx");
-        neigh.accMvpo = new tabRoute<addrIP>("rx");
-        neigh.accMtre = new tabRoute<addrIP>("rx");
-        neigh.accMtro = new tabRoute<addrIP>("rx");
         if (neigh.dampenPfxs != null) {
             neigh.dampenPfxs = new tabGen<rtrBgpDamp>();
         }
@@ -1493,7 +1439,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         learnt[idx].clear();
         advert[idx].clear();
         neigh.willing[idx].clear();
-        neigh.getAccepted(idx, mask, safi).clear();
+        neigh.acceptd[idx].clear();
         needEorAfis[idx] = true;
         peerAfis[idx] = add;
         originalSafiList[idx] = add;

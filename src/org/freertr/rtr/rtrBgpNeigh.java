@@ -70,144 +70,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     public addrIP localOddr = new addrIP();
 
     /**
-     * accepted unicast prefixes
+     * willing prefixes
      */
-    public tabRoute<addrIP> accUni = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted multicast prefixes
-     */
-    public tabRoute<addrIP> accMlt = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted other unicast prefixes
-     */
-    public tabRoute<addrIP> accOuni = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted other multicast prefixes
-     */
-    public tabRoute<addrIP> accOmlt = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted other flowspec prefixes
-     */
-    public tabRoute<addrIP> accOflw = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted other srte prefixes
-     */
-    public tabRoute<addrIP> accOsrt = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted flowspec prefixes
-     */
-    public tabRoute<addrIP> accFlw = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted vpnuni prefixes
-     */
-    public tabRoute<addrIP> accVpnU = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted vpnmulti prefixes
-     */
-    public tabRoute<addrIP> accVpnM = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted vpnflow prefixes
-     */
-    public tabRoute<addrIP> accVpnF = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted other vpnuni prefixes
-     */
-    public tabRoute<addrIP> accVpoU = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted other vpnmulti prefixes
-     */
-    public tabRoute<addrIP> accVpoM = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted other vpnflow prefixes
-     */
-    public tabRoute<addrIP> accVpoF = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted vpls prefixes
-     */
-    public tabRoute<addrIP> accVpls = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted mspw prefixes
-     */
-    public tabRoute<addrIP> accMspw = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted evpn prefixes
-     */
-    public tabRoute<addrIP> accEvpn = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted mdt prefixes
-     */
-    public tabRoute<addrIP> accMdt = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted nsh prefixes
-     */
-    public tabRoute<addrIP> accNsh = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted rpd prefixes
-     */
-    public tabRoute<addrIP> accRpd = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted sdwan prefixes
-     */
-    public tabRoute<addrIP> accSdw = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted spf prefixes
-     */
-    public tabRoute<addrIP> accSpf = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted rtfilter prefixes
-     */
-    public tabRoute<addrIP> accRtf = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted srte prefixes
-     */
-    public tabRoute<addrIP> accSrte = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted linkstate prefixes
-     */
-    public tabRoute<addrIP> accLnks = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted mvpn prefixes
-     */
-    public tabRoute<addrIP> accMvpn = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted other mvpn prefixes
-     */
-    public tabRoute<addrIP> accMvpo = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted mtree prefixes
-     */
-    public tabRoute<addrIP> accMtre = new tabRoute<addrIP>("rx");
-
-    /**
-     * accepted other mtree prefixes
-     */
-    public tabRoute<addrIP> accMtro = new tabRoute<addrIP>("rx");
+    public final tabRoute<addrIP>[] acceptd;
 
     /**
      * willing prefixes
@@ -334,6 +199,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      */
     public rtrBgpNeigh(rtrBgp parent, addrIP addr) {
         super(parent, false);
+        acceptd = rtrBgpParam.freshTables();
         willing = rtrBgpParam.freshTables();
         changed = rtrBgpParam.freshTables();
         peerAddr = addr;
@@ -1016,34 +882,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void setAccepted() {
-        accUni = new tabRoute<addrIP>("bgp");
-        accMlt = new tabRoute<addrIP>("bgp");
-        accOuni = new tabRoute<addrIP>("bgp");
-        accOmlt = new tabRoute<addrIP>("bgp");
-        accOflw = new tabRoute<addrIP>("bgp");
-        accOsrt = new tabRoute<addrIP>("bgp");
-        accFlw = new tabRoute<addrIP>("bgp");
-        accVpnU = new tabRoute<addrIP>("bgp");
-        accVpnM = new tabRoute<addrIP>("bgp");
-        accVpnF = new tabRoute<addrIP>("bgp");
-        accVpoU = new tabRoute<addrIP>("bgp");
-        accVpoM = new tabRoute<addrIP>("bgp");
-        accVpoF = new tabRoute<addrIP>("bgp");
-        accVpls = new tabRoute<addrIP>("bgp");
-        accMspw = new tabRoute<addrIP>("bgp");
-        accEvpn = new tabRoute<addrIP>("bgp");
-        accMdt = new tabRoute<addrIP>("bgp");
-        accNsh = new tabRoute<addrIP>("bgp");
-        accRpd = new tabRoute<addrIP>("bgp");
-        accSdw = new tabRoute<addrIP>("bgp");
-        accSpf = new tabRoute<addrIP>("bgp");
-        accRtf = new tabRoute<addrIP>("bgp");
-        accSrte = new tabRoute<addrIP>("bgp");
-        accLnks = new tabRoute<addrIP>("bgp");
-        accMvpn = new tabRoute<addrIP>("bgp");
-        accMvpo = new tabRoute<addrIP>("bgp");
-        accMtre = new tabRoute<addrIP>("bgp");
-        accMtro = new tabRoute<addrIP>("bgp");
+        for (int i = 0; i < acceptd.length; i++) {
+            acceptd[i] = new tabRoute<addrIP>("bgp");
+        }
         rtfilterUsed = null;
         reachable = false;
         if (sendingIfc != null) {
@@ -1087,59 +928,32 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         }
         reachable = true;
         if (!softReconfig) {
-            accUni = conn.learnt[rtrBgpParam.idxUni];
-            accMlt = conn.learnt[rtrBgpParam.idxMlt];
-            accOuni = conn.learnt[rtrBgpParam.idxOuni];
-            accOmlt = conn.learnt[rtrBgpParam.idxOmlt];
-            accOflw = conn.learnt[rtrBgpParam.idxOflw];
-            accOsrt = conn.learnt[rtrBgpParam.idxOsrt];
-            accFlw = conn.learnt[rtrBgpParam.idxFlw];
-            accVpnU = conn.learnt[rtrBgpParam.idxVpnU];
-            accVpnM = conn.learnt[rtrBgpParam.idxVpnM];
-            accVpnF = conn.learnt[rtrBgpParam.idxVpnF];
-            accVpoU = conn.learnt[rtrBgpParam.idxVpoU];
-            accVpoM = conn.learnt[rtrBgpParam.idxVpoM];
-            accVpoF = conn.learnt[rtrBgpParam.idxVpoF];
-            accVpls = conn.learnt[rtrBgpParam.idxVpls];
-            accMspw = conn.learnt[rtrBgpParam.idxMspw];
-            accEvpn = conn.learnt[rtrBgpParam.idxEvpn];
-            accMdt = conn.learnt[rtrBgpParam.idxMdt];
-            accNsh = conn.learnt[rtrBgpParam.idxNsh];
-            accRpd = conn.learnt[rtrBgpParam.idxRpd];
-            accSdw = conn.learnt[rtrBgpParam.idxSdw];
-            accSpf = conn.learnt[rtrBgpParam.idxSpf];
-            accRtf = conn.learnt[rtrBgpParam.idxRtf];
-            accSrte = conn.learnt[rtrBgpParam.idxSrte];
-            accLnks = conn.learnt[rtrBgpParam.idxLnks];
-            accMvpn = conn.learnt[rtrBgpParam.idxMvpn];
-            accMvpo = conn.learnt[rtrBgpParam.idxMvpo];
-            accMtre = conn.learnt[rtrBgpParam.idxMtre];
-            accMtro = conn.learnt[rtrBgpParam.idxMtro];
+            for (int i = 0; i < acceptd.length; i++) {
+                acceptd[i] = conn.learnt[i];
+            }
             if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {
-                rtfilterUsed = accRtf;
+                rtfilterUsed = acceptd[rtrBgpParam.idxRtf];
             }
             return;
         }
-        setValidity(accUni, rpkiIn, lower.rpkiA);
-        setValidity(accMlt, rpkiIn, lower.rpkiA);
-        setValidity(accOuni, rpkiIn, lower.rpkiO);
-        setValidity(accOmlt, rpkiIn, lower.rpkiO);
-        setValidity(accVpnU, vpkiIn, lower.rpkiA);
-        setValidity(accVpnM, vpkiIn, lower.rpkiA);
-        setValidity(accVpoU, vpkiIn, lower.rpkiO);
-        setValidity(accVpoM, vpkiIn, lower.rpkiO);
+        setValidity(acceptd[rtrBgpParam.idxUni], rpkiIn, lower.rpkiA);
+        setValidity(acceptd[rtrBgpParam.idxMlt], rpkiIn, lower.rpkiA);
+        setValidity(acceptd[rtrBgpParam.idxOuni], rpkiIn, lower.rpkiO);
+        setValidity(acceptd[rtrBgpParam.idxOmlt], rpkiIn, lower.rpkiO);
+        setValidity(acceptd[rtrBgpParam.idxVpnU], vpkiIn, lower.rpkiA);
+        setValidity(acceptd[rtrBgpParam.idxVpnM], vpkiIn, lower.rpkiA);
+        setValidity(acceptd[rtrBgpParam.idxVpoU], vpkiIn, lower.rpkiO);
+        setValidity(acceptd[rtrBgpParam.idxVpoM], vpkiIn, lower.rpkiO);
         for (int idx = 0; idx < addrFams.length; idx++) {
             if (!conn.peerAfis[idx]) {
                 continue;
             }
             int afi = lower.idx2safi(idx);
-            long msk = 1L << idx;
-            tabRoute<addrIP> trg = getAccepted(idx, msk, afi);
             tabListing[] fltr = getInFilters(idx);
-            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, afi, remoteAs, trg, conn.learnt[idx], true, fltr[0], fltr[1], fltr[2]);
+            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, afi, remoteAs, acceptd[idx], conn.learnt[idx], true, fltr[0], fltr[1], fltr[2]);
         }
         if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {
-            rtfilterUsed = accRtf;
+            rtfilterUsed = acceptd[rtrBgpParam.idxRtf];
         }
         if (dampenPfxs == null) {
             return;
@@ -1152,14 +966,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             if (!ntry.dampened) {
                 continue;
             }
-            tabRoute<addrIP> lst = getAccepted(ntry.idx, ntry.mask, ntry.afi);
-            if (lst == null) {
-                continue;
-            }
             tabRouteEntry<addrIP> prf = new tabRouteEntry<addrIP>();
             prf.rouDst = ntry.rd;
             prf.prefix = ntry.prefix;
-            lst.del(prf);
+            acceptd[ntry.idx].del(prf);
         }
     }
 
@@ -1173,34 +983,11 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         } else {
             mod = tabRoute.addType.lnkBcmp;
         }
-        lower.newlyUni.mergeFrom(mod, new tabRoute<addrIP>(accUni), tabRouteAttr.distanLim);
-        lower.newlyMlt.mergeFrom(mod, new tabRoute<addrIP>(accMlt), tabRouteAttr.distanLim);
-        lower.newlyOuni.mergeFrom(mod, new tabRoute<addrIP>(accOuni), tabRouteAttr.distanLim);
-        lower.newlyOmlt.mergeFrom(mod, new tabRoute<addrIP>(accOmlt), tabRouteAttr.distanLim);
-        lower.newlyOflw.mergeFrom(mod, new tabRoute<addrIP>(accOflw), tabRouteAttr.distanLim);
-        lower.newlyOsrt.mergeFrom(mod, new tabRoute<addrIP>(accOsrt), tabRouteAttr.distanLim);
-        lower.newlyFlw.mergeFrom(mod, new tabRoute<addrIP>(accFlw), tabRouteAttr.distanLim);
-        lower.newlyVpnU.mergeFrom(mod, new tabRoute<addrIP>(accVpnU), tabRouteAttr.distanLim);
-        lower.newlyVpnM.mergeFrom(mod, new tabRoute<addrIP>(accVpnM), tabRouteAttr.distanLim);
-        lower.newlyVpnF.mergeFrom(mod, new tabRoute<addrIP>(accVpnF), tabRouteAttr.distanLim);
-        lower.newlyVpoU.mergeFrom(mod, new tabRoute<addrIP>(accVpoU), tabRouteAttr.distanLim);
-        lower.newlyVpoM.mergeFrom(mod, new tabRoute<addrIP>(accVpoM), tabRouteAttr.distanLim);
-        lower.newlyVpoF.mergeFrom(mod, new tabRoute<addrIP>(accVpoF), tabRouteAttr.distanLim);
-        lower.newlyVpls.mergeFrom(mod, new tabRoute<addrIP>(accVpls), tabRouteAttr.distanLim);
-        lower.newlyMspw.mergeFrom(mod, new tabRoute<addrIP>(accMspw), tabRouteAttr.distanLim);
-        lower.newlyEvpn.mergeFrom(mod, new tabRoute<addrIP>(accEvpn), tabRouteAttr.distanLim);
-        lower.newlyMdt.mergeFrom(mod, new tabRoute<addrIP>(accMdt), tabRouteAttr.distanLim);
-        lower.newlyNsh.mergeFrom(mod, new tabRoute<addrIP>(accNsh), tabRouteAttr.distanLim);
-        lower.newlyRpd.mergeFrom(mod, new tabRoute<addrIP>(accRpd), tabRouteAttr.distanLim);
-        lower.newlySdw.mergeFrom(mod, new tabRoute<addrIP>(accSdw), tabRouteAttr.distanLim);
-        lower.newlySpf.mergeFrom(mod, new tabRoute<addrIP>(accSpf), tabRouteAttr.distanLim);
-        lower.newlyRtf.mergeFrom(mod, new tabRoute<addrIP>(accRtf), tabRouteAttr.distanLim);
-        lower.newlySrte.mergeFrom(mod, new tabRoute<addrIP>(accSrte), tabRouteAttr.distanLim);
-        lower.newlyLnks.mergeFrom(mod, new tabRoute<addrIP>(accLnks), tabRouteAttr.distanLim);
-        lower.newlyMvpn.mergeFrom(mod, new tabRoute<addrIP>(accMvpn), tabRouteAttr.distanLim);
-        lower.newlyMvpo.mergeFrom(mod, new tabRoute<addrIP>(accMvpo), tabRouteAttr.distanLim);
-        lower.newlyMtre.mergeFrom(mod, new tabRoute<addrIP>(accMtre), tabRouteAttr.distanLim);
-        lower.newlyMtro.mergeFrom(mod, new tabRoute<addrIP>(accMtro), tabRouteAttr.distanLim);
+        for (int i = 0; i < acceptd.length; i++) {
+            tabRoute<addrIP> newly = lower.getNewly(i, 0, 0);
+            tabRoute<addrIP> acc = new tabRoute<addrIP>(acceptd[i]);
+            newly.mergeFrom(mod, acc, tabRouteAttr.distanLim);
+        }
     }
 
     /**
@@ -1391,121 +1178,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     }
 
     /**
-     * get accepted
-     *
-     * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
-     * @return table
-     */
-    public tabRoute<addrIP> getAccepted(int idx, long mask, int safi) {
-        if (idx == rtrBgpParam.idxUni) {
-            return accUni;
-        }
-        if (idx == rtrBgpParam.idxLab) {
-            return accUni;
-        }
-        if (idx == rtrBgpParam.idxCtp) {
-            return accUni;
-        }
-        if (idx == rtrBgpParam.idxCar) {
-            return accUni;
-        }
-        if (idx == rtrBgpParam.idxMlt) {
-            return accMlt;
-        }
-        if (idx == rtrBgpParam.idxOlab) {
-            return accOuni;
-        }
-        if (idx == rtrBgpParam.idxOctp) {
-            return accOuni;
-        }
-        if (idx == rtrBgpParam.idxOcar) {
-            return accOuni;
-        }
-        if (idx == rtrBgpParam.idxOuni) {
-            return accOuni;
-        }
-        if (idx == rtrBgpParam.idxOmlt) {
-            return accOmlt;
-        }
-        if (idx == rtrBgpParam.idxOflw) {
-            return accOflw;
-        }
-        if (idx == rtrBgpParam.idxOsrt) {
-            return accOsrt;
-        }
-        if (idx == rtrBgpParam.idxFlw) {
-            return accFlw;
-        }
-        if (idx == rtrBgpParam.idxVpnU) {
-            return accVpnU;
-        }
-        if (idx == rtrBgpParam.idxVpnM) {
-            return accVpnM;
-        }
-        if (idx == rtrBgpParam.idxVpnF) {
-            return accVpnF;
-        }
-        if (idx == rtrBgpParam.idxVpoU) {
-            return accVpoU;
-        }
-        if (idx == rtrBgpParam.idxVpoM) {
-            return accVpoM;
-        }
-        if (idx == rtrBgpParam.idxVpoF) {
-            return accVpoF;
-        }
-        if (idx == rtrBgpParam.idxVpls) {
-            return accVpls;
-        }
-        if (idx == rtrBgpParam.idxMspw) {
-            return accMspw;
-        }
-        if (idx == rtrBgpParam.idxEvpn) {
-            return accEvpn;
-        }
-        if (idx == rtrBgpParam.idxMdt) {
-            return accMdt;
-        }
-        if (idx == rtrBgpParam.idxNsh) {
-            return accNsh;
-        }
-        if (idx == rtrBgpParam.idxRpd) {
-            return accRpd;
-        }
-        if (idx == rtrBgpParam.idxSdw) {
-            return accSdw;
-        }
-        if (idx == rtrBgpParam.idxSpf) {
-            return accSpf;
-        }
-        if (idx == rtrBgpParam.idxRtf) {
-            return accRtf;
-        }
-        if (idx == rtrBgpParam.idxSrte) {
-            return accSrte;
-        }
-        if (idx == rtrBgpParam.idxLnks) {
-            return accLnks;
-        }
-        if (idx == rtrBgpParam.idxMvpn) {
-            return accMvpn;
-        }
-        if (idx == rtrBgpParam.idxMvpo) {
-            return accMvpo;
-        }
-        if (idx == rtrBgpParam.idxMtre) {
-            return accMtre;
-        }
-        if (idx == rtrBgpParam.idxMtro) {
-            return accMtro;
-        }
-        logger.info("unknown safi (" + safi + ") requested");
-        return null;
-    }
-
-    /**
      * neighbor list entry
      *
      * @param idx safi to query
@@ -1514,7 +1186,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @return line of string
      */
     public String showNeighs(int idx, long mask, int safi) {
-        return showSummry1() + "|" + conn.learnt[idx].size() + "|" + getAccepted(idx, mask, safi).size() + "|" + willing[idx].size() + "|" + conn.advert[idx].size() + "|" + bits.timePast(conn.upTime);
+        return showSummry1() + "|" + conn.learnt[idx].size() + "|" + acceptd[idx].size() + "|" + willing[idx].size() + "|" + conn.advert[idx].size() + "|" + bits.timePast(conn.upTime);
     }
 
     /**

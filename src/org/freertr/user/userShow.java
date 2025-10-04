@@ -4860,7 +4860,6 @@ public class userShow {
             if (idx < 0) {
                 return;
             }
-            long sfm = 1L << idx;
             int dsp = rtrBgpParam.displayModel(idx);
             int sfi = r.bgp.idx2safi(idx);
             if (sfi < 1) {
@@ -4872,7 +4871,7 @@ public class userShow {
                 return;
             }
             if (a.equals("accepted")) {
-                doShowRoutes(r.bgp.fwdCore, nei.getAccepted(idx, sfm, sfi), dsp);
+                doShowRoutes(r.bgp.fwdCore, nei.acceptd[idx], dsp);
                 return;
             }
             if (a.equals("willing")) {
@@ -5033,11 +5032,8 @@ public class userShow {
                 return;
             }
             ntry.rouDst = tabRouteUtil.string2rd(cmd.word());
-            tabRoute<addrIP> acc1 = nei1.getAccepted(idx, sfm, sfi);
-            tabRoute<addrIP> acc2 = nei2.getAccepted(idx, sfm, sfi);
-            if ((acc1 == null) || (acc2 == null)) {
-                return;
-            }
+            tabRoute<addrIP> acc1 = nei1.acceptd[idx];
+            tabRoute<addrIP> acc2 = nei2.acceptd[idx];
             tabRouteEntry<addrIP> ntry1 = acc1.find(ntry);
             tabRouteEntry<addrIP> ntry2 = acc2.find(ntry);
             if (ntry1 == null) {
@@ -5099,11 +5095,8 @@ public class userShow {
                 }
                 ign |= tabRouteAttr.string2ignore(a);
             }
-            tabRoute<addrIP> acc1 = nei1.getAccepted(idx, sfm, sfi);
-            tabRoute<addrIP> acc2 = nei2.getAccepted(idx, sfm, sfi);
-            if ((acc1 == null) || (acc2 == null)) {
-                return;
-            }
+            tabRoute<addrIP> acc1 = nei1.acceptd[idx];
+            tabRoute<addrIP> acc2 = nei2.acceptd[idx];
             tabRoute<addrIP> uni1 = new tabRoute<addrIP>("tab");
             tabRoute<addrIP> uni2 = new tabRoute<addrIP>("tab");
             tabRoute<addrIP> diff = new tabRoute<addrIP>("tab");
@@ -5163,11 +5156,8 @@ public class userShow {
                 }
                 ign |= tabRouteAttr.string2ignore(a);
             }
-            tabRoute<addrIP> acc1 = nei1.getAccepted(idx, sfm, sfi);
-            tabRoute<addrIP> acc2 = nei2.getAccepted(idx, sfm, sfi);
-            if ((acc1 == null) || (acc2 == null)) {
-                return;
-            }
+            tabRoute<addrIP> acc1 = nei1.acceptd[idx];
+            tabRoute<addrIP> acc2 = nei2.acceptd[idx];
             tabRoute<addrIP> dif1 = new tabRoute<addrIP>("tab");
             tabRouteUtil.compareTables(dif1, dif1, acc1, acc2, ign, flt, sfi, nei1.remoteAs, nei2.remoteAs, upd);
             tabRouteUtil.compareTables(dif1, dif1, acc2, acc1, ign, flt, sfi, nei2.remoteAs, nei1.remoteAs, upd);

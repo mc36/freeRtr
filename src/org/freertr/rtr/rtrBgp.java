@@ -2590,14 +2590,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (!nei.reachable) {
             return best;
         }
-        tabRoute<addrIP> acc = nei.getAccepted(idx, mask, afi);
-        if (acc == null) {
-            if (debugger.rtrBgpFull) {
-                logger.debug("table not found");
-            }
-            needFull.add(1);
-            return best;
-        }
+        tabRoute<addrIP> acc = nei.acceptd[idx];
         tabRouteEntry<addrIP> ntry = acc.find(curr);
         if (ntry == null) {
             return best;
