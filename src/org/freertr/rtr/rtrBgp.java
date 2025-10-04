@@ -4681,11 +4681,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
-        if (tab == null) {
-            return;
-        }
-        tabRouteEntry<addrIP> res = tab.find(prf);
+        tabRouteEntry<addrIP> res = nei.conn.learnt[idx].find(prf);
         if (res == null) {
             return;
         }

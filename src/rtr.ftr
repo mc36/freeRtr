@@ -2737,7 +2737,7 @@ qc pass: bgp change in bandwidth with soft-reconfig
 qc pass: bgp change in standard community with soft-reconfig
 qc pass: bgp change in extended community with soft-reconfig
 qc pass: bgp aggregation
-failed: bgp maximum prefix in
+qc pass: bgp maximum prefix in
 qc pass: evpn/pbb over ebgp
 qc pass: evpn/pbb over ibgp
 qc pass: evpn/pbb over bgp additional path

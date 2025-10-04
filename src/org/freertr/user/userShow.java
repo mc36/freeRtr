@@ -4868,7 +4868,7 @@ public class userShow {
             }
             a = cmd.word();
             if (a.equals("learned")) {
-                doShowRoutes(r.bgp.fwdCore, nei.conn.getLearned(idx, sfm, sfi), dsp);
+                doShowRoutes(r.bgp.fwdCore, nei.conn.learnt[idx], dsp);
                 return;
             }
             if (a.equals("accepted")) {

@@ -641,7 +641,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @param safi safi to refresh
      */
     public void saveTable(RandomAccessFile fil, int idx, long mask, int safi) {
-        rtrBgpMrt.dumpTable(fil, conn, safi, conn.getLearned(idx, mask, safi), false, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
+        rtrBgpMrt.dumpTable(fil, conn, safi, conn.learnt[idx], false, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
         rtrBgpMrt.dumpTable(fil, conn, safi, conn.getAdverted(idx, mask, safi), true, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
     }
 
@@ -1511,9 +1511,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             int afi = lower.idx2safi(idx);
             long msk = 1L << idx;
             tabRoute<addrIP> trg = getAccepted(idx, msk, afi);
-            tabRoute<addrIP> src = conn.getLearned(idx, msk, afi);
             tabListing[] fltr = getInFilters(idx);
-            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, afi, remoteAs, trg, src, true, fltr[0], fltr[1], fltr[2]);
+            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, afi, remoteAs, trg, conn.learnt[idx], true, fltr[0], fltr[1], fltr[2]);
         }
         if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {
             rtfilterUsed = accRtf;
@@ -2101,13 +2100,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         return null;
     }
 
-    private String tabSiz(tabRoute<addrIP> tab) {
-        if (tab == null) {
-            return "-";
-        }
-        return "" + tab.size();
-    }
-
     /**
      * neighbor list entry
      *
@@ -2117,7 +2109,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @return line of string
      */
     public String showNeighs(int idx, long mask, int safi) {
-        return showSummry1() + "|" + tabSiz(conn.getLearned(idx, mask, safi)) + "|" + tabSiz(getAccepted(idx, mask, safi)) + "|" + tabSiz(getWilling(idx, mask, safi)) + "|" + tabSiz(conn.getAdverted(idx, mask, safi)) + "|" + bits.timePast(conn.upTime);
+        return showSummry1() + "|" + conn.learnt[idx].size() + "|" + getAccepted(idx, mask, safi).size() + "|" + getWilling(idx, mask, safi).size() + "|" + conn.getAdverted(idx, mask, safi).size() + "|" + bits.timePast(conn.upTime);
     }
 
     /**

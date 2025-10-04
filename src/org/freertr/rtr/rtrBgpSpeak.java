@@ -496,18 +496,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     /**
-     * get learned
-     *
-     * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
-     * @return table
-     */
-    public tabRoute<addrIP> getLearned(int idx, long mask, int safi) {
-        return learnt[idx];
-    }
-
-    /**
      * get adverted
      *
      * @param idx safi to query
@@ -1786,11 +1774,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         if (mode == 1) {
-            tabRoute<addrIP> learned = getLearned(idx, mask, safi);
-            if (learned == null) {
-                return;
-            }
-            learned.clear();
+            learnt[idx].clear();
             if (debugger.rtrBgpFull) {
                 logger.debug("refresh begin");
             }
@@ -1867,7 +1851,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
 
     private void renegotiatingSafi(int idx, long mask, int safi, boolean add, boolean cfg) {
         sendEndOfRib(safi);
-        getLearned(idx, mask, safi).clear();
+        learnt[idx].clear();
         getAdverted(idx, mask, safi).clear();
         neigh.getWilling(idx, mask, safi).clear();
         neigh.getAccepted(idx, mask, safi).clear();
@@ -1901,11 +1885,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         refreshTx++;
-        tabRoute<addrIP> learned = getLearned(idx, mask, safi);
-        if (learned == null) {
-            return;
-        }
-        learned.clear();
+        learnt[idx].clear();
         if (debugger.rtrBgpFull) {
             logger.debug("refresh request");
         }
@@ -2209,11 +2189,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (neigh.dampenPfxs != null) {
                 neigh.prefixDampen(idx, mask, safi, res.rouDst, res.prefix, neigh.dampenWthd);
             }
-            tabRoute<addrIP> learned = getLearned(idx, mask, safi);
-            if (learned == null) {
-                continue;
-            }
-            if (doPrefDel(learned, addpath, res)) {
+            if (doPrefDel(learnt[idx], addpath, res)) {
                 continue;
             }
             currChg++;
@@ -2262,33 +2238,33 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             neigh.setValidity(safi, res);
             addpath = addpathRx[idx];
-            tabRoute<addrIP> learned = getLearned(idx, mask, safi);
-            tabRoute<addrIP> changed = parent.getChanged(idx, mask, safi);
+            tabRoute<addrIP> lrnt = learnt[idx];
+            tabRoute<addrIP> chgd = parent.getChanged(idx, mask, safi);
             if (!neigh.softReconfig) {
                 tabListing[] fltr = neigh.getInFilters(idx);
                 tabRouteEntry<addrIP> udp = tabRoute.doUpdateEntry(safi, neigh.remoteAs, res, fltr[0], fltr[1], fltr[2]);
                 if (udp == null) {
                     repPolRej++;
-                    if (doPrefDel(learned, addpath, res)) {
+                    if (doPrefDel(lrnt, addpath, res)) {
                         continue;
                     }
                     currChg++;
-                    changed.add(tabRoute.addType.always, res, false, false);
+                    chgd.add(tabRoute.addType.always, res, false, false);
                     continue;
                 }
                 res = udp;
             }
             if (prefixReachable(res, safi)) {
-                if (doPrefDel(learned, addpath, res)) {
+                if (doPrefDel(lrnt, addpath, res)) {
                     continue;
                 }
                 currChg++;
-                changed.add(tabRoute.addType.always, res, false, false);
+                chgd.add(tabRoute.addType.always, res, false, false);
                 continue;
             }
-            doPrefAdd(learned, addpath, res);
+            doPrefAdd(lrnt, addpath, res);
             currChg++;
-            changed.add(tabRoute.addType.always, res, false, false);
+            chgd.add(tabRoute.addType.always, res, false, false);
         }
         if (neigh.rtfilterOut && (ortf != learnt[rtrBgpParam.idxRtf].version)) {
             if (debugger.rtrBgpFull) {

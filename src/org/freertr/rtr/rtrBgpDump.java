@@ -68,10 +68,7 @@ public class rtrBgpDump {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
-        if (tab == null) {
-            return;
-        }
+        tabRoute<addrIP> tab = nei.conn.learnt[idx];
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> prf = tab.get(i);
             if (prf == null) {
@@ -105,10 +102,7 @@ public class rtrBgpDump {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
-        if (tab == null) {
-            return;
-        }
+        tabRoute<addrIP> tab = nei.conn.learnt[idx];
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> prf = tab.get(i);
             if (prf == null) {
@@ -157,10 +151,7 @@ public class rtrBgpDump {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
-        if (tab == null) {
-            return;
-        }
+        tabRoute<addrIP> tab = nei.conn.learnt[idx];
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> prf = tab.get(i);
             if (prf == null) {
@@ -230,10 +221,7 @@ public class rtrBgpDump {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
-        if (tab == null) {
-            return;
-        }
+        tabRoute<addrIP> tab = nei.conn.learnt[idx];
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> prf = tab.get(i);
             if (prf == null) {
@@ -263,10 +251,7 @@ public class rtrBgpDump {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
-        if (tab == null) {
-            return;
-        }
+        tabRoute<addrIP> tab = nei.conn.learnt[idx];
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> prf = tab.get(i);
             if (prf == null) {
@@ -294,10 +279,7 @@ public class rtrBgpDump {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
-        if (tab == null) {
-            return;
-        }
+        tabRoute<addrIP> tab = nei.conn.learnt[idx];
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> prf = tab.get(i);
             if (prf == null) {
@@ -327,10 +309,7 @@ public class rtrBgpDump {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
-        if (tab == null) {
-            return;
-        }
+        tabRoute<addrIP> tab = nei.conn.learnt[idx];
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> prf = tab.get(i);
             if (prf == null) {
@@ -360,10 +339,7 @@ public class rtrBgpDump {
         if (nei == null) {
             return;
         }
-        tabRoute<addrIP> tab = nei.conn.getLearned(idx, mask, safi);
-        if (tab == null) {
-            return;
-        }
+        tabRoute<addrIP> tab = nei.conn.learnt[idx];
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> prf = tab.get(i);
             if (prf == null) {
