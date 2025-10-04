@@ -1383,16 +1383,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         conn.adversion.set(doing);
     }
 
-    private void addUpdateTableUni(int idx, int afi, long mask, tabRoute<addrIP> trg, tabRoute<addrIP> src, tabListing<tabRtrmapN, addrIP> rouMap, tabListing<tabRtrplcN, addrIP> rouPlc, tabListing<tabPrfxlstN, addrIP> prfLst) {
-        if (!conn.peerAfis[idx]) {
-            return;
-        }
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, afi, remoteAs, trg, src, true, rouMap, rouPlc, prfLst);
-    }
-
     /**
      * set accepted list
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void setAccepted() {
         accUni = new tabRoute<addrIP>("bgp");
         accMlt = new tabRoute<addrIP>("bgp");
@@ -1506,40 +1500,17 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         setValidity(accVpnM, vpkiIn, lower.rpkiA);
         setValidity(accVpoU, vpkiIn, lower.rpkiO);
         setValidity(accVpoM, vpkiIn, lower.rpkiO);
-        addUpdateTableUni(rtrBgpParam.idxUni, lower.afiUni, rtrBgpParam.mskUni, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
-        addUpdateTableUni(rtrBgpParam.idxLab, lower.afiLab, rtrBgpParam.mskLab, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
-        addUpdateTableUni(rtrBgpParam.idxCtp, lower.afiCtp, rtrBgpParam.mskCtp, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
-        addUpdateTableUni(rtrBgpParam.idxCar, lower.afiCar, rtrBgpParam.mskCar, accUni, conn.lrnUni, roumapIn, roupolIn, prflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMlt, remoteAs, accMlt, conn.lrnMlt, true, roumapIn, roupolIn, prflstIn);
-        addUpdateTableUni(rtrBgpParam.idxOuni, lower.afiOuni, rtrBgpParam.mskOuni, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
-        addUpdateTableUni(rtrBgpParam.idxOlab, lower.afiOlab, rtrBgpParam.mskOlab, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
-        addUpdateTableUni(rtrBgpParam.idxOctp, lower.afiOctp, rtrBgpParam.mskOctp, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
-        addUpdateTableUni(rtrBgpParam.idxOcar, lower.afiOcar, rtrBgpParam.mskOcar, accOuni, conn.lrnOuni, oroumapIn, oroupolIn, oprflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOmlt, remoteAs, accOmlt, conn.lrnOmlt, true, oroumapIn, oroupolIn, oprflstIn);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOflw, remoteAs, accOflw, conn.lrnOflw, true, wroumapIn, wroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiOsrt, remoteAs, accOsrt, conn.lrnOsrt, true, wroumapIn, wroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiFlw, remoteAs, accFlw, conn.lrnFlw, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpnU, remoteAs, accVpnU, conn.lrnVpnU, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpnM, remoteAs, accVpnM, conn.lrnVpnM, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpnF, remoteAs, accVpnF, conn.lrnVpnF, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpoU, remoteAs, accVpoU, conn.lrnVpoU, true, wroumapIn, wroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpoM, remoteAs, accVpoM, conn.lrnVpoM, true, wroumapIn, wroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpoF, remoteAs, accVpoF, conn.lrnVpoF, true, wroumapIn, wroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiVpls, remoteAs, accVpls, conn.lrnVpls, true, eroumapIn, eroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMspw, remoteAs, accMspw, conn.lrnMspw, true, eroumapIn, eroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiEvpn, remoteAs, accEvpn, conn.lrnEvpn, true, eroumapIn, eroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMdt, remoteAs, accMdt, conn.lrnMdt, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiNsh, remoteAs, accNsh, conn.lrnNsh, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiRpd, remoteAs, accRpd, conn.lrnRpd, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiSdw, remoteAs, accSdw, conn.lrnSdw, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiSpf, remoteAs, accSpf, conn.lrnSpf, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiRtf, remoteAs, accRtf, conn.lrnRtf, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiSrte, remoteAs, accSrte, conn.lrnSrte, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiLnks, remoteAs, accLnks, conn.lrnLnks, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpn, remoteAs, accMvpn, conn.lrnMvpn, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMvpo, remoteAs, accMvpo, conn.lrnMvpo, true, wroumapIn, wroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMtre, remoteAs, accMtre, conn.lrnMtre, true, vroumapIn, vroupolIn, null);
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.afiMtro, remoteAs, accMtro, conn.lrnMtro, true, wroumapIn, wroupolIn, null);
+        for (int idx = 0; idx < addrFams.length; idx++) {
+            if (!conn.peerAfis[idx]) {
+                continue;
+            }
+            int afi = lower.idx2safi(idx);
+            long msk = 1L << idx;
+            tabRoute<addrIP> trg = getAccepted(idx, msk, afi);
+            tabRoute<addrIP> src = conn.getLearned(idx, msk, afi);
+            tabListing[] fltr = getInFilters(idx);
+            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, afi, remoteAs, trg, src, true, fltr[0], fltr[1], fltr[2]);
+        }
         if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {
             rtfilterUsed = accRtf;
         }

@@ -4735,7 +4735,7 @@ public class userShow {
                 return;
             }
             long sfm = 1L << idx;
-            int dsp = bgpMask2filter(sfm);
+            int dsp = rtrBgpParam.displayModel(idx);
             int sfi = r.bgp.idx2safi(idx);
             if (sfi < 1) {
                 return;
@@ -4861,7 +4861,7 @@ public class userShow {
                 return;
             }
             long sfm = 1L << idx;
-            int dsp = bgpMask2filter(sfm);
+            int dsp = rtrBgpParam.displayModel(idx);
             int sfi = r.bgp.idx2safi(idx);
             if (sfi < 1) {
                 return;
@@ -4892,7 +4892,7 @@ public class userShow {
             return;
         }
         long sfm = 1L << idx;
-        int dsp = bgpMask2filter(sfm);
+        int dsp = rtrBgpParam.displayModel(idx);
         int sfi = r.bgp.idx2safi(idx);
         if (sfi < 1) {
             return;
@@ -5526,14 +5526,6 @@ public class userShow {
         tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
         tabRoute.addUpdatedTable(tabRoute.addType.better, sfi, 0, res, tab, false, roumap, null, null);
         doShowRoutes(r.bgp.fwdCore, res, dsp);
-    }
-
-    private int bgpMask2filter(long mask) {
-        if ((mask & rtrBgpParam.mskDisplay) != 0) {
-            return 5;
-        } else {
-            return 2;
-        }
     }
 
     private void doShowIpXpbr(int ver) {

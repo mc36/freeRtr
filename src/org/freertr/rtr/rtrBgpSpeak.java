@@ -15,13 +15,10 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabLabel;
 import org.freertr.tab.tabListing;
-import org.freertr.tab.tabPrfxlstN;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteUtil;
-import org.freertr.tab.tabRtrmapN;
-import org.freertr.tab.tabRtrplcN;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -1444,7 +1441,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     sendNotify(1, 3);
                     break;
                 }
-                updateMsgCtr(pckRx, typ, false);
+                rtrBgpUtil.updtStatsArr(false, parent.msgStats, typ, pckRx);
+                rtrBgpUtil.updtStatsArr(false, neigh.msgStats, typ, pckRx);
                 if (parseUpdate(pckRx, pckRh)) {
                     logger.info("got malformed compressed update from " + neigh.peerAddr);
                     sendNotify(3, 1);
@@ -1465,74 +1463,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     /**
-     * update transmit message statistics
-     *
-     * @param pck packet to use
-     * @param typ type to use
-     * @param dir direction, true=tx, false=rx
-     */
-    protected void updateMsgCtr(packHolder pck, int typ, boolean dir) {
-        rtrBgpUtil.updtStatsArr(dir, parent.msgStats, typ, pck);
-        rtrBgpUtil.updtStatsArr(dir, neigh.msgStats, typ, pck);
-        if (!rtrBgpUtil.isUnknownMsg(typ)) {
-            return;
-        }
-        if (neigh.unknownsLog) {
-            logger.info((dir ? "sent" : "got") + " unknowns (" + typ + ") message " + neigh.peerAddr + " -> " + neigh.localAddr + " " + pck.dump());
-        }
-        if (neigh.unknownsColl == null) {
-            return;
-        }
-        packHolder cpy = new packHolder(true, true);
-        int ofs = cpy.dataSize() + cpy.dataOffset();
-        cpy.copyFrom(pck, true, true);
-        cpy.setDataSize(ofs);
-        cpy.getSkip(16);
-        neigh.unknownsColl.gotMessage(dir, rtrBgpUtil.msgUpdate, neigh, cpy.getCopy());
-    }
-
-    /**
-     * update transmit attribute statistics
-     *
-     * @param dir direction, true=tx, false=rx
-     * @param pck packet to use
-     * @param typ type to use
-     */
-    protected void updateAttrCtr(boolean dir, packHolder pck, int typ) {
-        rtrBgpUtil.updtStatsArr(dir, parent.attrStats, typ, pck);
-        rtrBgpUtil.updtStatsArr(dir, neigh.attrStats, typ, pck);
-        if (!rtrBgpUtil.isUnknownAttr(typ)) {
-            return;
-        }
-        if (neigh.unknownsLog) {
-            logger.info((dir ? "sent" : "got") + " unknowns (" + typ + ") attributes " + neigh.peerAddr + " -> " + neigh.localAddr + " " + pck.dump());
-        }
-    }
-
-    /**
-     * update prefix reachable statistics
-     *
-     * @param dir direction, 0=rx-reach, 1=tx-reach, 2=tx-unreach, 3=rx-unreach
-     * @param pck packet to use
-     */
-    protected void updateRchblCntr(int dir, packHolder pck) {
-        switch (dir) {
-            case 0:
-                break;
-            case 1:
-                parent.reachabStat.tx(pck);
-                neigh.reachabStat.tx(pck);
-                break;
-            case 2:
-                break;
-            case 3:
-                parent.unreachStat.tx(pck);
-                neigh.unreachStat.tx(pck);
-                break;
-        }
-    }
-
-    /**
      * send one packet
      *
      * @param pck packet to send
@@ -1542,7 +1472,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (pipe == null) {
             return;
         }
-        updateMsgCtr(pck, typ, true);
+        rtrBgpUtil.updtStatsArr(true, parent.msgStats, typ, pck);
+        rtrBgpUtil.updtStatsArr(true, neigh.msgStats, typ, pck);
         pck.merge2beg();
         if ((compressTx != null) && (typ == rtrBgpUtil.msgUpdate)) {
             if (debugger.rtrBgpEvnt) {
@@ -1568,7 +1499,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             pck.putSkip(i + 1);
             pck.merge2beg();
             typ = rtrBgpUtil.msgCompress;
-            updateMsgCtr(pck, typ, true);
+            rtrBgpUtil.updtStatsArr(true, parent.msgStats, typ, pck);
+            rtrBgpUtil.updtStatsArr(true, neigh.msgStats, typ, pck);
         }
         if (debugger.rtrBgpEvnt) {
             logger.debug("sending " + rtrBgpUtil.msgType2string(typ) + " to " + neigh.peerAddr);
@@ -1610,7 +1542,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         cntr.rx(pck);
-        updateMsgCtr(pck, typ, false);
+        rtrBgpUtil.updtStatsArr(false, parent.msgStats, typ, pck);
+        rtrBgpUtil.updtStatsArr(false, neigh.msgStats, typ, pck);
         if (debugger.rtrBgpEvnt) {
             logger.debug("got " + rtrBgpUtil.msgType2string(typ) + " from " + neigh.peerAddr);
         }
@@ -2354,8 +2287,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         pckTx.clear();
         if (!reach) {
             rtrBgpUtil.createWithdraw(this, pckTx, pckTh, safi, false, lst);
+            parent.unreachStat.tx(pckTx);
+            neigh.unreachStat.tx(pckTx);
         } else {
             rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, false, oneLab, lst);
+            parent.reachabStat.tx(pckTx);
+            neigh.reachabStat.tx(pckTx);
         }
         packSend(pckTx, rtrBgpUtil.msgUpdate);
     }
@@ -2391,6 +2328,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             pckTx.clear();
             rtrBgpUtil.createWithdraw(this, pckTx, pckTh, safi, true, lst);
+            parent.unreachStat.tx(pckTx);
+            neigh.unreachStat.tx(pckTx);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
             return;
         }
@@ -2403,6 +2342,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.add(ntry);
                 pckTx.clear();
                 rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, oneLab, lst);
+                parent.reachabStat.tx(pckTx);
+                neigh.reachabStat.tx(pckTx);
                 packSend(pckTx, rtrBgpUtil.msgUpdate);
             }
             return;
@@ -2421,6 +2362,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             lst.add(ntry);
             pckTx.clear();
             rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, oneLab, lst);
+            parent.reachabStat.tx(pckTx);
+            neigh.reachabStat.tx(pckTx);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
         }
         lst.clear();
@@ -2435,6 +2378,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         pckTx.clear();
         rtrBgpUtil.createWithdraw(this, pckTx, pckTh, safi, true, lst);
+        parent.unreachStat.tx(pckTx);
+        neigh.unreachStat.tx(pckTx);
         packSend(pckTx, rtrBgpUtil.msgUpdate);
     }
 
@@ -2445,6 +2390,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param hlp helper packet
      * @return false on success, true on error
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public boolean parseUpdate(packHolder pck, packHolder hlp) {
         if (debugger.rtrBgpTraf) {
             logger.debug("update from peer " + neigh.peerAddr);

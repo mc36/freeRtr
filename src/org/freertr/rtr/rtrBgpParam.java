@@ -1512,39 +1512,30 @@ public abstract class rtrBgpParam {
     public final static long mskSdw = 1L << idxSdw;
 
     /**
-     * all
+     * get display model
+     *
+     * @param idx safi index
+     * @return display mode
      */
-    public final static long mskAll = mskUni | mskLab | mskCtp | mskCar | mskMlt | mskVpnU | mskVpnM | mskVpls | mskEvpn | mskMdt | mskSrte | mskLnks | mskFlw | mskVpnF | mskVpoU | mskVpoM | mskVpoF | mskMvpn | mskMvpo | mskOlab | mskOctp | mskOcar | mskOuni | mskOmlt | mskOflw | mskOsrt | mskMspw | mskNsh | mskRpd | mskSpf | mskSdw | mskRtf | mskMtre | mskMtro;
-
-    /**
-     * display
-     */
-    public final static long mskDisplay = mskEvpn | mskMspw | mskMdt | mskMvpn | mskMvpo | mskMtre | mskMtro | mskFlw | mskOflw | mskVpnF | mskVpoF | mskNsh;
-
-    /**
-     * regular filter
-     */
-    public final static long mskFltR = mskUni | mskLab | mskCtp | mskCar | mskMlt;
-
-    /**
-     * other filter
-     */
-    public final static long mskFltO = mskOlab | mskOctp | mskOcar | mskOuni | mskOmlt;
-
-    /**
-     * ether filter
-     */
-    public final static long mskFltE = mskVpls | mskMspw | mskEvpn | mskMdt | mskNsh | mskRpd | mskSdw | mskSpf | mskRtf | mskLnks;
-
-    /**
-     * vpo filter
-     */
-    public final static long mskFltW = mskOflw | mskOsrt | mskVpoU | mskVpoM | mskVpoF | mskMvpo | mskMtro;
-
-    /**
-     * vpn filter
-     */
-    public final static long mskFltV = mskFlw | mskSrte | mskVpnU | mskVpnM | mskVpnF | mskMvpn | mskMtre;
+    public static final int displayModel(int idx) {
+        switch (idx) {
+            case idxEvpn:
+            case idxMspw:
+            case idxMdt:
+            case idxMvpn:
+            case idxMvpo:
+            case idxMtre:
+            case idxMtro:
+            case idxFlw:
+            case idxOflw:
+            case idxVpnF:
+            case idxVpoF:
+            case idxNsh:
+                return 5;
+            default:
+                return 2;
+        }
+    }
 
     /**
      * get list of address families
@@ -1620,7 +1611,7 @@ public abstract class rtrBgpParam {
             case idxMtre:
                 return new tabListing[]{vroumapIn, vroupolIn, null};
             default:
-                return null;
+                return new tabListing[3];
         }
     }
 

@@ -16,7 +16,6 @@ import org.freertr.tab.tabRouteBlob;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.util.bits;
-import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.enc.encTlv;
 import org.freertr.ip.ipCor4;
@@ -2938,8 +2937,9 @@ public class rtrBgpUtil {
      * @param attr attribute
      */
     public static void placeAttrib(rtrBgpSpeak spkr, int flg, int typ, packHolder trg, packHolder attr) {
-        spkr.updateAttrCtr(true, attr, typ);
         attr.merge2beg();
+        updtStatsArr(true, spkr.parent.attrStats, typ, attr);
+        updtStatsArr(true, spkr.neigh.attrStats, typ, attr);
         byte[] buf = attr.getCopy();
         if (buf.length > 0xff) {
             flg |= flagLength;
@@ -3011,7 +3011,8 @@ public class rtrBgpUtil {
      * @param pck packet to parse
      */
     public static void interpretAttribute(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, List<tabRouteEntry<addrIP>> add, List<tabRouteEntry<addrIP>> del, packHolder pck) {
-        spkr.updateAttrCtr(false, pck, pck.ETHtype);
+        updtStatsArr(false, spkr.parent.attrStats, pck.ETHtype, pck);
+        updtStatsArr(false, spkr.neigh.attrStats, pck.ETHtype, pck);
         if (spkr.neigh.attribFilter != null) {
             if (spkr.neigh.attribFilter.matches(pck.ETHtype)) {
                 logger.info("filtered attribute " + pck.ETHtype + " from " + spkr.neigh.peerAddr + " (" + pck.dump() + ")");
@@ -3113,10 +3114,10 @@ public class rtrBgpUtil {
                 parseOnlyCust(ntry, pck);
                 return;
             default:
-                parseUnknown(ntry, pck);
-                if (debugger.rtrBgpError) {
-                    logger.debug("unknown (" + pck.ETHtype + ") attrib " + pck.dump());
+                if (spkr.neigh.unknownsLog) {
+                    logger.info("got unknown (" + pck.ETHtype + ") attribute " + spkr.neigh.peerAddr + " -> " + spkr.neigh.localAddr + " " + pck.dump());
                 }
+                parseUnknown(ntry, pck);
                 return;
         }
     }
@@ -3148,7 +3149,6 @@ public class rtrBgpUtil {
             pck.msbPutW(0, 0);
             pck.putSkip(2);
             pck.merge2end();
-            spkr.updateRchblCntr(3, pck);
             return;
         }
         placeUnreach(spkr, safi, addpath, pck, hlp, lst);
@@ -3159,7 +3159,6 @@ public class rtrBgpUtil {
         pck.msbPutW(0, 0);
         pck.putSkip(2);
         pck.merge2beg();
-        spkr.updateRchblCntr(3, pck);
     }
 
     /**
@@ -3184,7 +3183,7 @@ public class rtrBgpUtil {
      * @return true if error, false if ok
      */
     public static boolean checkHeader(packHolder pck) {
-        if (rtrBgpUtil.checkMarker(pck)) {
+        if (checkMarker(pck)) {
             return true;
         }
         pck.IPsiz = pck.msbGetW(16) - sizeU;
@@ -3276,7 +3275,6 @@ public class rtrBgpUtil {
             pck.msbPutW(2, pck.dataSize());
             pck.putSkip(4);
             pck.merge2beg();
-            spkr.updateRchblCntr(1, pck);
             return;
         }
         if (!ntry.best.nextHop.isIPv4()) {
@@ -3286,7 +3284,6 @@ public class rtrBgpUtil {
             pck.msbPutW(2, pck.dataSize());
             pck.putSkip(4);
             pck.merge2beg();
-            spkr.updateRchblCntr(1, pck);
             return;
         }
         placeNextHop(spkr, pck, hlp, ntry);
@@ -3304,7 +3301,6 @@ public class rtrBgpUtil {
             writePrefix(safiIp4uni, oneLab, pck, ntry);
         }
         pck.merge2end();
-        spkr.updateRchblCntr(1, pck);
     }
 
     /**
@@ -3345,6 +3341,9 @@ public class rtrBgpUtil {
             hlp.clear();
             hlp.putCopy(blb.data, 0, 0, blb.data.length);
             hlp.putSkip(blb.data.length);
+            if (spkr.neigh.unknownsLog) {
+                logger.info("sent unknown (" + blb.type + ") attribute " + spkr.neigh.peerAddr + " -> " + spkr.neigh.localAddr + " " + hlp.dump());
+            }
             placeAttrib(spkr, blb.flag, blb.type, trg, hlp);
         }
     }
@@ -4124,10 +4123,10 @@ public class rtrBgpUtil {
      * @return ip version, -1 if nothing
      */
     public static int safi2ipVers(int sfi) {
-        switch (sfi & rtrBgpUtil.afiMask) {
-            case rtrBgpUtil.afiIpv4:
+        switch (sfi & afiMask) {
+            case afiIpv4:
                 return ipCor4.protocolVersion;
-            case rtrBgpUtil.afiIpv6:
+            case afiIpv6:
                 return ipCor6.protocolVersion;
             default:
                 return -1;
