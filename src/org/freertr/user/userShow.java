@@ -4734,16 +4734,12 @@ public class userShow {
             if (idx < 0) {
                 return;
             }
-            long sfm = 1L << idx;
             int dsp = rtrBgpParam.displayModel(idx);
             int sfi = r.bgp.idx2safi(idx);
             if (sfi < 1) {
                 return;
             }
-            tabRoute<addrIP> tab = grp.getWilling(idx, sfm, sfi);
-            if (tab == null) {
-                return;
-            }
+            tabRoute<addrIP> tab = grp.willing[idx];
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
         }

@@ -2636,7 +2636,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             computeIncrVersion(curr);
             for (int i = 0; i < groups.size(); i++) {
                 rtrBgpGroup grp = groups.get(i);
-                tabRoute<addrIP> wil = grp.getWilling(idx, mask, afi);
+                tabRoute<addrIP> wil = grp.willing[idx];
                 tabRoute<addrIP> chg = grp.getChanged(idx, mask, afi);
                 if ((wil == null) || (chg == null)) {
                     if (debugger.rtrBgpFull) {
@@ -2671,7 +2671,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < groups.size(); i++) {
             rtrBgpGroup grp = groups.get(i);
-            tabRoute<addrIP> wil = grp.getWilling(idx, mask, afi);
+            tabRoute<addrIP> wil = grp.willing[idx];
             tabRoute<addrIP> chg = grp.getChanged(idx, mask, afi);
             if ((wil == null) || (chg == null)) {
                 if (debugger.rtrBgpFull) {

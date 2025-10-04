@@ -1048,8 +1048,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             changed = rtrBgpParam.freshTables();
         } else {
             rtrBgpGroup grp = lower.groups.get(groupMember);
+            willing = grp.willing;
             for (int i = 0; i < willing.length; i++) {
-                willing[i] = grp.getWilling(i, 0, 0);
                 changed[i] = grp.getChanged(i, 0, 0);
             }
         }

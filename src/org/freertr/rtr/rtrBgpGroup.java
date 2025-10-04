@@ -39,144 +39,9 @@ public class rtrBgpGroup extends rtrBgpParam {
     public int minversion;
 
     /**
-     * willing unicast prefixes
+     * willing prefixes
      */
-    public tabRoute<addrIP> wilUni = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing multicast prefixes
-     */
-    public tabRoute<addrIP> wilMlt = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other unicast prefixes
-     */
-    public tabRoute<addrIP> wilOuni = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other multicast prefixes
-     */
-    public tabRoute<addrIP> wilOmlt = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other flowspec prefixes
-     */
-    public tabRoute<addrIP> wilOflw = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other srte prefixes
-     */
-    public tabRoute<addrIP> wilOsrt = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing flowspec prefixes
-     */
-    public tabRoute<addrIP> wilFlw = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing vpnuni prefixes
-     */
-    public tabRoute<addrIP> wilVpnU = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing vpnmulti prefixes
-     */
-    public tabRoute<addrIP> wilVpnM = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing vpnflow prefixes
-     */
-    public tabRoute<addrIP> wilVpnF = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other vpnuni prefixes
-     */
-    public tabRoute<addrIP> wilVpoU = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other vpnmulti prefixes
-     */
-    public tabRoute<addrIP> wilVpoM = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other vpnflow prefixes
-     */
-    public tabRoute<addrIP> wilVpoF = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing vpls prefixes
-     */
-    public tabRoute<addrIP> wilVpls = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing mspw prefixes
-     */
-    public tabRoute<addrIP> wilMspw = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing evpn prefixes
-     */
-    public tabRoute<addrIP> wilEvpn = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing mdt prefixes
-     */
-    public tabRoute<addrIP> wilMdt = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing nsh prefixes
-     */
-    public tabRoute<addrIP> wilNsh = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing rpd prefixes
-     */
-    public tabRoute<addrIP> wilRpd = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing sdwan prefixes
-     */
-    public tabRoute<addrIP> wilSdw = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing spf prefixes
-     */
-    public tabRoute<addrIP> wilSpf = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing rtfilter prefixes
-     */
-    public tabRoute<addrIP> wilRtf = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing srte prefixes
-     */
-    public tabRoute<addrIP> wilSrte = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing linkstate prefixes
-     */
-    public tabRoute<addrIP> wilLnks = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing mvpn prefixes
-     */
-    public tabRoute<addrIP> wilMvpn = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other mvpn prefixes
-     */
-    public tabRoute<addrIP> wilMvpo = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing mtree prefixes
-     */
-    public tabRoute<addrIP> wilMtre = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other mtree prefixes
-     */
-    public tabRoute<addrIP> wilMtro = new tabRoute<addrIP>("tx");
+    public tabRoute<addrIP>[] willing;
 
     /**
      * changed unicast prefixes
@@ -341,6 +206,7 @@ public class rtrBgpGroup extends rtrBgpParam {
      */
     public rtrBgpGroup(rtrBgp parent, int num) {
         super(parent, false);
+        willing = rtrBgpParam.freshTables();
         groupNum = num;
     }
 
@@ -380,6 +246,8 @@ public class rtrBgpGroup extends rtrBgpParam {
         l.add("safi|" + bools2string(addrFams));
         l.add("local|" + localAddr);
         l.add("other|" + localOddr);
+        /*
+        //////////
         l.add("unicast advertise|" + wilUni.size() + ", list=" + chgUni.size());
         l.add("multicast advertise|" + wilMlt.size() + ", list=" + chgMlt.size());
         l.add("ouni advertise|" + wilOuni.size() + ", list=" + chgOuni.size());
@@ -408,123 +276,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         l.add("omvpn advertise|" + wilMvpo.size() + ", list=" + chgMvpo.size());
         l.add("mtree advertise|" + wilMtre.size() + ", list=" + chgMtre.size());
         l.add("omtree advertise|" + wilMtro.size() + ", list=" + chgMtro.size());
+         */
         l.add("version|" + minversion + " of " + lower.compRound);
         return l;
-    }
-
-    /**
-     * get willing
-     *
-     * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
-     * @return table
-     */
-    public tabRoute<addrIP> getWilling(int idx, long mask, int safi) {
-        if (idx == rtrBgpParam.idxUni) {
-            return wilUni;
-        }
-        if (idx == rtrBgpParam.idxLab) {
-            return wilUni;
-        }
-        if (idx == rtrBgpParam.idxCtp) {
-            return wilUni;
-        }
-        if (idx == rtrBgpParam.idxCar) {
-            return wilUni;
-        }
-        if (idx == rtrBgpParam.idxMlt) {
-            return wilMlt;
-        }
-        if (idx == rtrBgpParam.idxOlab) {
-            return wilOuni;
-        }
-        if (idx == rtrBgpParam.idxOctp) {
-            return wilOuni;
-        }
-        if (idx == rtrBgpParam.idxOcar) {
-            return wilOuni;
-        }
-        if (idx == rtrBgpParam.idxOuni) {
-            return wilOuni;
-        }
-        if (idx == rtrBgpParam.idxOmlt) {
-            return wilOmlt;
-        }
-        if (idx == rtrBgpParam.idxOflw) {
-            return wilOflw;
-        }
-        if (idx == rtrBgpParam.idxOsrt) {
-            return wilOsrt;
-        }
-        if (idx == rtrBgpParam.idxFlw) {
-            return wilFlw;
-        }
-        if (idx == rtrBgpParam.idxVpnU) {
-            return wilVpnU;
-        }
-        if (idx == rtrBgpParam.idxVpnM) {
-            return wilVpnM;
-        }
-        if (idx == rtrBgpParam.idxVpnF) {
-            return wilVpnF;
-        }
-        if (idx == rtrBgpParam.idxVpoU) {
-            return wilVpoU;
-        }
-        if (idx == rtrBgpParam.idxVpoM) {
-            return wilVpoM;
-        }
-        if (idx == rtrBgpParam.idxVpoF) {
-            return wilVpoF;
-        }
-        if (idx == rtrBgpParam.idxVpls) {
-            return wilVpls;
-        }
-        if (idx == rtrBgpParam.idxMspw) {
-            return wilMspw;
-        }
-        if (idx == rtrBgpParam.idxEvpn) {
-            return wilEvpn;
-        }
-        if (idx == rtrBgpParam.idxMdt) {
-            return wilMdt;
-        }
-        if (idx == rtrBgpParam.idxNsh) {
-            return wilNsh;
-        }
-        if (idx == rtrBgpParam.idxRpd) {
-            return wilRpd;
-        }
-        if (idx == rtrBgpParam.idxSdw) {
-            return wilSdw;
-        }
-        if (idx == rtrBgpParam.idxSpf) {
-            return wilSpf;
-        }
-        if (idx == rtrBgpParam.idxRtf) {
-            return wilRtf;
-        }
-        if (idx == rtrBgpParam.idxSrte) {
-            return wilSrte;
-        }
-        if (idx == rtrBgpParam.idxLnks) {
-            return wilLnks;
-        }
-        if (idx == rtrBgpParam.idxMvpn) {
-            return wilMvpn;
-        }
-        if (idx == rtrBgpParam.idxMvpo) {
-            return wilMvpo;
-        }
-        if (idx == rtrBgpParam.idxMtre) {
-            return wilMtre;
-        }
-        if (idx == rtrBgpParam.idxMtro) {
-            return wilMtro;
-        }
-        logger.info("unknown safi (" + safi + ") requested");
-        return null;
     }
 
     /**
@@ -1296,34 +1050,41 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.prefix = new addrPrefix<addrIP>(new addrIP(), 0);
             nRtf.del(ntry);
         }
-        wilUni = nUni;
-        wilMlt = nMlt;
-        wilOuni = nOuni;
-        wilOmlt = nOmlt;
-        wilOflw = nOflw;
-        wilOsrt = nOsrt;
-        wilFlw = nFlw;
-        wilVpnU = nVpnU;
-        wilVpnM = nVpnM;
-        wilVpnF = nVpnF;
-        wilVpoU = nVpoU;
-        wilVpoM = nVpoM;
-        wilVpoF = nVpoF;
-        wilVpls = nVpls;
-        wilMspw = nMspw;
-        wilEvpn = nEvpn;
-        wilMdt = nMdt;
-        wilNsh = nNsh;
-        wilRpd = nRpd;
-        wilSdw = nSdw;
-        wilSpf = nSpf;
-        wilRtf = nRtf;
-        wilSrte = nSrte;
-        wilLnks = nLnks;
-        wilMvpn = nMvpn;
-        wilMvpo = nMvpo;
-        wilMtre = nMtre;
-        wilMtro = nMtro;
+        willing[rtrBgpParam.idxUni] = nUni;
+        willing[rtrBgpParam.idxMlt] = nMlt;
+        willing[rtrBgpParam.idxOuni] = nOuni;
+        willing[rtrBgpParam.idxOmlt] = nOmlt;
+        willing[rtrBgpParam.idxOflw] = nOflw;
+        willing[rtrBgpParam.idxOsrt] = nOsrt;
+        willing[rtrBgpParam.idxFlw] = nFlw;
+        willing[rtrBgpParam.idxVpnU] = nVpnU;
+        willing[rtrBgpParam.idxVpnM] = nVpnM;
+        willing[rtrBgpParam.idxVpnF] = nVpnF;
+        willing[rtrBgpParam.idxVpoU] = nVpoU;
+        willing[rtrBgpParam.idxVpoM] = nVpoM;
+        willing[rtrBgpParam.idxVpoF] = nVpoF;
+        willing[rtrBgpParam.idxVpls] = nVpls;
+        willing[rtrBgpParam.idxMspw] = nMspw;
+        willing[rtrBgpParam.idxEvpn] = nEvpn;
+        willing[rtrBgpParam.idxMdt] = nMdt;
+        willing[rtrBgpParam.idxNsh] = nNsh;
+        willing[rtrBgpParam.idxRpd] = nRpd;
+        willing[rtrBgpParam.idxSdw] = nSdw;
+        willing[rtrBgpParam.idxSpf] = nSpf;
+        willing[rtrBgpParam.idxRtf] = nRtf;
+        willing[rtrBgpParam.idxSrte] = nSrte;
+        willing[rtrBgpParam.idxLnks] = nLnks;
+        willing[rtrBgpParam.idxMvpn] = nMvpn;
+        willing[rtrBgpParam.idxMvpo] = nMvpo;
+        willing[rtrBgpParam.idxMtre] = nMtre;
+        willing[rtrBgpParam.idxMtro] = nMtro;
+        for (int i = 0; i < willing.length; i++) {
+            int o = rtrBgpParam.indexAlias(i);
+            if (o < 0) {
+                continue;
+            }
+            willing[i] = willing[o];
+        }
     }
 
 }

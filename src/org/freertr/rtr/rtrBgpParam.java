@@ -1623,22 +1623,40 @@ public abstract class rtrBgpParam {
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected final static tabRoute<addrIP>[] freshTables() {
         tabRoute<addrIP>[] res = new tabRoute[boolsMax];
+        res[idxUni] = new tabRoute<addrIP>("bgp");
+        res[idxOuni] = new tabRoute<addrIP>("bgp");
         for (int i = 0; i < res.length; i++) {
-            switch (i) {
-                case idxLab:
-                case idxCtp:
-                case idxCar:
-                    res[i] = res[idxUni];
-                    continue;
-                case idxOlab:
-                case idxOctp:
-                case idxOcar:
-                    res[i] = res[idxOuni];
-                    continue;
+            int o = indexAlias(i);
+            if (o >= 0) {
+                res[i] = res[o];
+            } else {
+                res[i] = new tabRoute<addrIP>("bgp");
             }
-            res[i] = new tabRoute<addrIP>("bgp");
         }
         return res;
+    }
+
+    /**
+     * get aliased index
+     *
+     * @param i index
+     * @return alias, -1 if none
+     */
+    protected final static int indexAlias(int i) {
+        switch (i) {
+            case idxLab:
+            case idxCtp:
+            case idxCar:
+            case idxUni:
+                return idxUni;
+            case idxOlab:
+            case idxOctp:
+            case idxOcar:
+            case idxOuni:
+                return idxOuni;
+            default:
+                return -1;
+        }
     }
 
     /**
