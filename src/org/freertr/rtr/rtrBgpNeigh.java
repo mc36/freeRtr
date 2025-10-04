@@ -642,7 +642,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      */
     public void saveTable(RandomAccessFile fil, int idx, long mask, int safi) {
         rtrBgpMrt.dumpTable(fil, conn, safi, conn.learnt[idx], false, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
-        rtrBgpMrt.dumpTable(fil, conn, safi, conn.getAdverted(idx, mask, safi), true, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
+        rtrBgpMrt.dumpTable(fil, conn, safi, conn.advert[idx], true, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
     }
 
     public void doTempCfg(String cmd, boolean negated) {
@@ -991,7 +991,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             int safi = lower.idx2safi(idx);
             long msk = 1L << idx;
             tabRoute<addrIP> will = getWilling(idx, msk, safi);
-            tabRoute<addrIP> done = conn.getAdverted(idx, msk, safi);
+            tabRoute<addrIP> done = conn.advert[idx];
             boolean oneLab = !conn.peerMltLab[idx];
             boolean needEor = false;
             boolean needEof = false;
@@ -1132,7 +1132,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             long msk = 1L << idx;
             tabRoute<addrIP> will = getWilling(idx, msk, safi);
             tabRoute<addrIP> chgd = getChanged(idx, msk, safi);
-            tabRoute<addrIP> done = conn.getAdverted(idx, msk, safi);
+            tabRoute<addrIP> done = conn.advert[idx];
             boolean oneLab = !conn.peerMltLab[idx];
             chgd = new tabRoute<addrIP>(chgd);
             if (conn.addpathTx[idx]) {
@@ -2120,7 +2120,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @return line of string
      */
     public String showNeighs(int idx, long mask, int safi) {
-        return showSummry1() + "|" + conn.learnt[idx].size() + "|" + getAccepted(idx, mask, safi).size() + "|" + getWilling(idx, mask, safi).size() + "|" + conn.getAdverted(idx, mask, safi).size() + "|" + bits.timePast(conn.upTime);
+        return showSummry1() + "|" + conn.learnt[idx].size() + "|" + getAccepted(idx, mask, safi).size() + "|" + getWilling(idx, mask, safi).size() + "|" + conn.advert[idx].size() + "|" + bits.timePast(conn.upTime);
     }
 
     /**

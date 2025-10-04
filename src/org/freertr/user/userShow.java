@@ -4880,7 +4880,7 @@ public class userShow {
                 return;
             }
             if (a.equals("advertised")) {
-                doShowRoutes(r.bgp.fwdCore, nei.conn.getAdverted(idx, sfm, sfi), dsp);
+                doShowRoutes(r.bgp.fwdCore, nei.conn.advert[idx], dsp);
                 return;
             }
             cmd.badCmd();
