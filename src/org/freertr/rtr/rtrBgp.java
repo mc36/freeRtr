@@ -1920,6 +1920,121 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         return null;
     }
 
+    /**
+     * get newly
+     *
+     * @param idx safi to query
+     * @param mask safi to query
+     * @param safi safi to query
+     * @return table
+     */
+    public tabRoute<addrIP> getNewly(int idx, long mask, int safi) {
+        if (idx == rtrBgpParam.idxUni) {
+            return newlyUni;
+        }
+        if (idx == rtrBgpParam.idxLab) {
+            return newlyUni;
+        }
+        if (idx == rtrBgpParam.idxCtp) {
+            return newlyUni;
+        }
+        if (idx == rtrBgpParam.idxCar) {
+            return newlyUni;
+        }
+        if (idx == rtrBgpParam.idxMlt) {
+            return newlyMlt;
+        }
+        if (idx == rtrBgpParam.idxOlab) {
+            return newlyOuni;
+        }
+        if (idx == rtrBgpParam.idxOctp) {
+            return newlyOuni;
+        }
+        if (idx == rtrBgpParam.idxOcar) {
+            return newlyOuni;
+        }
+        if (idx == rtrBgpParam.idxOuni) {
+            return newlyOuni;
+        }
+        if (idx == rtrBgpParam.idxOmlt) {
+            return newlyOmlt;
+        }
+        if (idx == rtrBgpParam.idxOflw) {
+            return newlyOflw;
+        }
+        if (idx == rtrBgpParam.idxOsrt) {
+            return newlyOsrt;
+        }
+        if (idx == rtrBgpParam.idxFlw) {
+            return newlyFlw;
+        }
+        if (idx == rtrBgpParam.idxVpnU) {
+            return newlyVpnU;
+        }
+        if (idx == rtrBgpParam.idxVpnM) {
+            return newlyVpnM;
+        }
+        if (idx == rtrBgpParam.idxVpnF) {
+            return newlyVpnF;
+        }
+        if (idx == rtrBgpParam.idxVpoU) {
+            return newlyVpoU;
+        }
+        if (idx == rtrBgpParam.idxVpoM) {
+            return newlyVpoM;
+        }
+        if (idx == rtrBgpParam.idxVpoF) {
+            return newlyVpoF;
+        }
+        if (idx == rtrBgpParam.idxVpls) {
+            return newlyVpls;
+        }
+        if (idx == rtrBgpParam.idxMspw) {
+            return newlyMspw;
+        }
+        if (idx == rtrBgpParam.idxEvpn) {
+            return newlyEvpn;
+        }
+        if (idx == rtrBgpParam.idxMdt) {
+            return newlyMdt;
+        }
+        if (idx == rtrBgpParam.idxNsh) {
+            return newlyNsh;
+        }
+        if (idx == rtrBgpParam.idxRpd) {
+            return newlyRpd;
+        }
+        if (idx == rtrBgpParam.idxSdw) {
+            return newlySdw;
+        }
+        if (idx == rtrBgpParam.idxSpf) {
+            return newlySpf;
+        }
+        if (idx == rtrBgpParam.idxRtf) {
+            return newlyRtf;
+        }
+        if (idx == rtrBgpParam.idxSrte) {
+            return newlySrte;
+        }
+        if (idx == rtrBgpParam.idxLnks) {
+            return newlyLnks;
+        }
+        if (idx == rtrBgpParam.idxMvpn) {
+            return newlyMvpn;
+        }
+        if (idx == rtrBgpParam.idxMvpo) {
+            return newlyMvpo;
+        }
+        if (idx == rtrBgpParam.idxMtre) {
+            return newlyMtre;
+        }
+        if (idx == rtrBgpParam.idxMtro) {
+            return newlyMtro;
+        }
+        logger.info("unknown safi (" + safi + ") requested");
+        return null;
+    }
+
     public void run() {
         for (;;) {
             if (!cfgInit.booting) {

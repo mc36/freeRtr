@@ -210,144 +210,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     public tabRoute<addrIP> accMtro = new tabRoute<addrIP>("rx");
 
     /**
-     * willing unicast prefixes
+     * willing prefixes
      */
-    public tabRoute<addrIP> wilUni = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing multicast prefixes
-     */
-    public tabRoute<addrIP> wilMlt = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other unicast prefixes
-     */
-    public tabRoute<addrIP> wilOuni = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other multicast prefixes
-     */
-    public tabRoute<addrIP> wilOmlt = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other flowspec prefixes
-     */
-    public tabRoute<addrIP> wilOflw = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other srte prefixes
-     */
-    public tabRoute<addrIP> wilOsrt = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing flowspec prefixes
-     */
-    public tabRoute<addrIP> wilFlw = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing vpnuni prefixes
-     */
-    public tabRoute<addrIP> wilVpnU = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing vpnmulti prefixes
-     */
-    public tabRoute<addrIP> wilVpnM = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing vpnflow prefixes
-     */
-    public tabRoute<addrIP> wilVpnF = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other vpnuni prefixes
-     */
-    public tabRoute<addrIP> wilVpoU = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other vpnmulti prefixes
-     */
-    public tabRoute<addrIP> wilVpoM = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other vpnflow prefixes
-     */
-    public tabRoute<addrIP> wilVpoF = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing vpls prefixes
-     */
-    public tabRoute<addrIP> wilVpls = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing mspw prefixes
-     */
-    public tabRoute<addrIP> wilMspw = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing evpn prefixes
-     */
-    public tabRoute<addrIP> wilEvpn = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing mdt prefixes
-     */
-    public tabRoute<addrIP> wilMdt = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing nsh prefixes
-     */
-    public tabRoute<addrIP> wilNsh = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing rpd prefixes
-     */
-    public tabRoute<addrIP> wilRpd = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing sdwan prefixes
-     */
-    public tabRoute<addrIP> wilSdw = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing spf prefixes
-     */
-    public tabRoute<addrIP> wilSpf = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing rtfilter prefixes
-     */
-    public tabRoute<addrIP> wilRtf = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing srte prefixes
-     */
-    public tabRoute<addrIP> wilSrte = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing linkstate prefixes
-     */
-    public tabRoute<addrIP> wilLnks = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing mvpn prefixes
-     */
-    public tabRoute<addrIP> wilMvpn = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other mvpn prefixes
-     */
-    public tabRoute<addrIP> wilMvpo = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing mtree prefixes
-     */
-    public tabRoute<addrIP> wilMtre = new tabRoute<addrIP>("tx");
-
-    /**
-     * willing other mtree prefixes
-     */
-    public tabRoute<addrIP> wilMtro = new tabRoute<addrIP>("tx");
+    public final tabRoute<addrIP>[] willing;
 
     /**
      * changed unicast prefixes
@@ -604,6 +469,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      */
     public rtrBgpNeigh(rtrBgp parent, addrIP addr) {
         super(parent, false);
+        willing = rtrBgpParam.freshTables();
         peerAddr = addr;
         for (int i = 0; i < msgStats.length; i++) {
             msgStats[i] = new counter();
@@ -987,7 +853,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             }
             int safi = lower.idx2safi(idx);
             long msk = 1L << idx;
-            tabRoute<addrIP> will = getWilling(idx, msk, safi);
+            tabRoute<addrIP> will = willing[idx];
             tabRoute<addrIP> done = conn.advert[idx];
             boolean oneLab = !conn.peerMltLab[idx];
             boolean needEor = false;
@@ -1127,7 +993,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             }
             int safi = lower.idx2safi(idx);
             long msk = 1L << idx;
-            tabRoute<addrIP> will = getWilling(idx, msk, safi);
+            tabRoute<addrIP> will = willing[idx];
             tabRoute<addrIP> chgd = getChanged(idx, msk, safi);
             tabRoute<addrIP> done = conn.advert[idx];
             boolean oneLab = !conn.peerMltLab[idx];
@@ -1528,34 +1394,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      */
     public void setNeeded() {
         if (groupMember < 0) {
-            wilUni = new tabRoute<addrIP>("tx");
-            wilMlt = new tabRoute<addrIP>("tx");
-            wilOuni = new tabRoute<addrIP>("tx");
-            wilOmlt = new tabRoute<addrIP>("tx");
-            wilOflw = new tabRoute<addrIP>("tx");
-            wilOsrt = new tabRoute<addrIP>("tx");
-            wilFlw = new tabRoute<addrIP>("tx");
-            wilVpnU = new tabRoute<addrIP>("tx");
-            wilVpnM = new tabRoute<addrIP>("tx");
-            wilVpnF = new tabRoute<addrIP>("tx");
-            wilVpoU = new tabRoute<addrIP>("tx");
-            wilVpoM = new tabRoute<addrIP>("tx");
-            wilVpoF = new tabRoute<addrIP>("tx");
-            wilVpls = new tabRoute<addrIP>("tx");
-            wilMspw = new tabRoute<addrIP>("tx");
-            wilEvpn = new tabRoute<addrIP>("tx");
-            wilMdt = new tabRoute<addrIP>("tx");
-            wilNsh = new tabRoute<addrIP>("tx");
-            wilRpd = new tabRoute<addrIP>("tx");
-            wilSdw = new tabRoute<addrIP>("tx");
-            wilSpf = new tabRoute<addrIP>("tx");
-            wilRtf = new tabRoute<addrIP>("tx");
-            wilSrte = new tabRoute<addrIP>("tx");
-            wilLnks = new tabRoute<addrIP>("tx");
-            wilMvpn = new tabRoute<addrIP>("tx");
-            wilMvpo = new tabRoute<addrIP>("tx");
-            wilMtre = new tabRoute<addrIP>("tx");
-            wilMtro = new tabRoute<addrIP>("tx");
+            for (int i = 0; i < willing.length; i++) {
+                willing[i] = new tabRoute<addrIP>("tx");
+            }
             chgUni = new tabRoute<addrIP>("chg");
             chgMlt = new tabRoute<addrIP>("chg");
             chgOuni = new tabRoute<addrIP>("chg");
@@ -1586,34 +1427,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             chgMtro = new tabRoute<addrIP>("chg");
         } else {
             rtrBgpGroup grp = lower.groups.get(groupMember);
-            wilUni = grp.wilUni;
-            wilMlt = grp.wilMlt;
-            wilOuni = grp.wilOuni;
-            wilOmlt = grp.wilOmlt;
-            wilOflw = grp.wilOflw;
-            wilOsrt = grp.wilOsrt;
-            wilFlw = grp.wilFlw;
-            wilVpnU = grp.wilVpnU;
-            wilVpnM = grp.wilVpnM;
-            wilVpnF = grp.wilVpnF;
-            wilVpoU = grp.wilVpoU;
-            wilVpoM = grp.wilVpoM;
-            wilVpoF = grp.wilVpoF;
-            wilVpls = grp.wilVpls;
-            wilMspw = grp.wilMspw;
-            wilEvpn = grp.wilEvpn;
-            wilMdt = grp.wilMdt;
-            wilNsh = grp.wilNsh;
-            wilRpd = grp.wilRpd;
-            wilSdw = grp.wilSdw;
-            wilSpf = grp.wilSpf;
-            wilRtf = grp.wilRtf;
-            wilSrte = grp.wilSrte;
-            wilLnks = grp.wilLnks;
-            wilMvpn = grp.wilMvpn;
-            wilMvpo = grp.wilMvpo;
-            wilMtre = grp.wilMtre;
-            wilMtro = grp.wilMtro;
+            for (int i = 0; i < willing.length; i++) {
+                willing[i] = grp.getWilling(i, 0, 0);
+            }
             chgUni = grp.chgUni;
             chgMlt = grp.chgMlt;
             chgOuni = grp.chgOuni;
@@ -1994,121 +1810,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     }
 
     /**
-     * get willing
-     *
-     * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
-     * @return table
-     */
-    public tabRoute<addrIP> getWilling(int idx, long mask, int safi) {
-        if (idx == rtrBgpParam.idxUni) {
-            return wilUni;
-        }
-        if (idx == rtrBgpParam.idxLab) {
-            return wilUni;
-        }
-        if (idx == rtrBgpParam.idxCtp) {
-            return wilUni;
-        }
-        if (idx == rtrBgpParam.idxCar) {
-            return wilUni;
-        }
-        if (idx == rtrBgpParam.idxMlt) {
-            return wilMlt;
-        }
-        if (idx == rtrBgpParam.idxOlab) {
-            return wilOuni;
-        }
-        if (idx == rtrBgpParam.idxOctp) {
-            return wilOuni;
-        }
-        if (idx == rtrBgpParam.idxOcar) {
-            return wilOuni;
-        }
-        if (idx == rtrBgpParam.idxOuni) {
-            return wilOuni;
-        }
-        if (idx == rtrBgpParam.idxOmlt) {
-            return wilOmlt;
-        }
-        if (idx == rtrBgpParam.idxOflw) {
-            return wilOflw;
-        }
-        if (idx == rtrBgpParam.idxOsrt) {
-            return wilOsrt;
-        }
-        if (idx == rtrBgpParam.idxFlw) {
-            return wilFlw;
-        }
-        if (idx == rtrBgpParam.idxVpnU) {
-            return wilVpnU;
-        }
-        if (idx == rtrBgpParam.idxVpnM) {
-            return wilVpnM;
-        }
-        if (idx == rtrBgpParam.idxVpnF) {
-            return wilVpnF;
-        }
-        if (idx == rtrBgpParam.idxVpoU) {
-            return wilVpoU;
-        }
-        if (idx == rtrBgpParam.idxVpoM) {
-            return wilVpoM;
-        }
-        if (idx == rtrBgpParam.idxVpoF) {
-            return wilVpoF;
-        }
-        if (idx == rtrBgpParam.idxVpls) {
-            return wilVpls;
-        }
-        if (idx == rtrBgpParam.idxMspw) {
-            return wilMspw;
-        }
-        if (idx == rtrBgpParam.idxEvpn) {
-            return wilEvpn;
-        }
-        if (idx == rtrBgpParam.idxMdt) {
-            return wilMdt;
-        }
-        if (idx == rtrBgpParam.idxNsh) {
-            return wilNsh;
-        }
-        if (idx == rtrBgpParam.idxRpd) {
-            return wilRpd;
-        }
-        if (idx == rtrBgpParam.idxSdw) {
-            return wilSdw;
-        }
-        if (idx == rtrBgpParam.idxSpf) {
-            return wilSpf;
-        }
-        if (idx == rtrBgpParam.idxRtf) {
-            return wilRtf;
-        }
-        if (idx == rtrBgpParam.idxSrte) {
-            return wilSrte;
-        }
-        if (idx == rtrBgpParam.idxLnks) {
-            return wilLnks;
-        }
-        if (idx == rtrBgpParam.idxMvpn) {
-            return wilMvpn;
-        }
-        if (idx == rtrBgpParam.idxMvpo) {
-            return wilMvpo;
-        }
-        if (idx == rtrBgpParam.idxMtre) {
-            return wilMtre;
-        }
-        if (idx == rtrBgpParam.idxMtro) {
-            return wilMtro;
-        }
-        logger.info("unknown safi (" + safi + ") requested");
-        return null;
-    }
-
-    /**
      * neighbor list entry
      *
      * @param idx safi to query
@@ -2117,7 +1818,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @return line of string
      */
     public String showNeighs(int idx, long mask, int safi) {
-        return showSummry1() + "|" + conn.learnt[idx].size() + "|" + getAccepted(idx, mask, safi).size() + "|" + getWilling(idx, mask, safi).size() + "|" + conn.advert[idx].size() + "|" + bits.timePast(conn.upTime);
+        return showSummry1() + "|" + conn.learnt[idx].size() + "|" + getAccepted(idx, mask, safi).size() + "|" + willing[idx].size() + "|" + conn.advert[idx].size() + "|" + bits.timePast(conn.upTime);
     }
 
     /**
