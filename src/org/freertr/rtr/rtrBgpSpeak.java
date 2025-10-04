@@ -1518,16 +1518,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     protected void updateRchblCntr(int dir, packHolder pck) {
         switch (dir) {
             case 0:
-                parent.reachabStat.rx(pck);
-                neigh.reachabStat.rx(pck);
                 break;
             case 1:
                 parent.reachabStat.tx(pck);
                 neigh.reachabStat.tx(pck);
                 break;
             case 2:
-                parent.unreachStat.rx(pck);
-                neigh.unreachStat.rx(pck);
                 break;
             case 3:
                 parent.unreachStat.tx(pck);
@@ -2539,7 +2535,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             mask = 1L << idx;
             int safi = parent.idx2safi(idx);
             addpath = addpathRx[idx];
-            updateRchblCntr(2, pck);
+            parent.unreachStat.rx(pck);
+            neigh.unreachStat.rx(pck);
             if (debugger.rtrBgpTraf) {
                 logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
             }
@@ -2572,7 +2569,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             res.oldDst = 0;
             mask = 1L << idx;
             int safi = parent.idx2safi(idx);
-            updateRchblCntr(0, pck);
+            parent.reachabStat.rx(pck);
+            neigh.reachabStat.rx(pck);
             if (debugger.rtrBgpTraf) {
                 logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
             }
@@ -2582,7 +2580,58 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 continue;
             }
-            addAttribedOne(res, ntry, idx, mask, safi);
+            if (res.best.nextHop == null) {
+                res.best.nextHop = neigh.peerAddr.copyBytes();
+            }
+            ntry.best.ident = res.best.ident;
+            ntry.best.nextHop = res.best.nextHop;
+            ntry.best.labelRem = res.best.labelRem;
+            ntry.best.evpnLab = res.best.evpnLab;
+            if ((ntry.best.segrouPrf != null) && (ntry.best.labelRem != null) && (ntry.best.segrouSiz > 0)) {
+                addrIPv6 adr6 = new addrIPv6();
+                int o = ntry.best.labelRem.get(0) >>> 4;
+                o &= (1 << ntry.best.segrouSiz) - 1;
+                bits.msbPutD(adr6.getBytes(), addrIPv6.size - 4, o);
+                adr6.setShl(adr6, 128 - ntry.best.segrouOfs - ntry.best.segrouSiz);
+                adr6.setOr(ntry.best.segrouPrf, adr6);
+                ntry.best.segrouPrf.fromIPv6addr(adr6);
+            }
+            ntry.best.copyBytes(res.best, false);
+            if (parent.flaps != null) {
+                parent.prefixFlapped(idx, mask, safi, res.rouDst, res.prefix, res.best.asPathInts(-1));
+            }
+            if (neigh.dampenPfxs != null) {
+                neigh.prefixDampen(idx, mask, safi, res.rouDst, res.prefix, neigh.dampenAnno);
+            }
+            neigh.setValidity(safi, res);
+            addpath = addpathRx[idx];
+            tabRoute<addrIP> learned = getLearned(idx, mask, safi);
+            tabRoute<addrIP> changed = parent.getChanged(idx, mask, safi);
+            if (!neigh.softReconfig) {
+                tabListing[] fltr = neigh.getInFilters(idx);
+                tabRouteEntry<addrIP> udp = tabRoute.doUpdateEntry(safi, neigh.remoteAs, res, fltr[0], fltr[1], fltr[2]);
+                if (udp == null) {
+                    repPolRej++;
+                    if (doPrefDel(learned, addpath, res)) {
+                        continue;
+                    }
+                    currChg++;
+                    changed.add(tabRoute.addType.always, res, false, false);
+                    continue;
+                }
+                res = udp;
+            }
+            if (prefixReachable(res, safi)) {
+                if (doPrefDel(learned, addpath, res)) {
+                    continue;
+                }
+                currChg++;
+                changed.add(tabRoute.addType.always, res, false, false);
+                continue;
+            }
+            doPrefAdd(learned, addpath, res);
+            currChg++;
+            changed.add(tabRoute.addType.always, res, false, false);
         }
         if (neigh.rtfilterOut && (ortf != lrnRtf.size())) {
             if (debugger.rtrBgpFull) {
@@ -2604,62 +2653,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             sendNotify(6, 1);
         }
         return false;
-    }
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    private void addAttribedOne(tabRouteEntry<addrIP> cur, tabRouteEntry<addrIP> attr, int idx, long mask, int safi) {
-        if (cur.best.nextHop == null) {
-            cur.best.nextHop = neigh.peerAddr.copyBytes();
-        }
-        attr.best.ident = cur.best.ident;
-        attr.best.nextHop = cur.best.nextHop;
-        attr.best.labelRem = cur.best.labelRem;
-        attr.best.evpnLab = cur.best.evpnLab;
-        if ((attr.best.segrouPrf != null) && (attr.best.labelRem != null) && (attr.best.segrouSiz > 0)) {
-            addrIPv6 adr6 = new addrIPv6();
-            int i = attr.best.labelRem.get(0) >>> 4;
-            i &= (1 << attr.best.segrouSiz) - 1;
-            bits.msbPutD(adr6.getBytes(), addrIPv6.size - 4, i);
-            adr6.setShl(adr6, 128 - attr.best.segrouOfs - attr.best.segrouSiz);
-            adr6.setOr(attr.best.segrouPrf, adr6);
-            attr.best.segrouPrf.fromIPv6addr(adr6);
-        }
-        attr.best.copyBytes(cur.best, false);
-        if (parent.flaps != null) {
-            parent.prefixFlapped(idx, mask, safi, cur.rouDst, cur.prefix, cur.best.asPathInts(-1));
-        }
-        if (neigh.dampenPfxs != null) {
-            neigh.prefixDampen(idx, mask, safi, cur.rouDst, cur.prefix, neigh.dampenAnno);
-        }
-        neigh.setValidity(safi, cur);
-        boolean addpath = addpathRx[idx];
-        tabRoute<addrIP> learned = getLearned(idx, mask, safi);
-        tabRoute<addrIP> changed = parent.getChanged(idx, mask, safi);
-        if (!neigh.softReconfig) {
-            tabListing[] fltr = neigh.getInFilters(idx);
-            tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(safi, neigh.remoteAs, cur, fltr[0], fltr[1], fltr[2]);
-            if (res == null) {
-                repPolRej++;
-                if (doPrefDel(learned, addpath, cur)) {
-                    return;
-                }
-                currChg++;
-                changed.add(tabRoute.addType.always, cur, false, false);
-                return;
-            }
-            cur = res;
-        }
-        if (prefixReachable(cur, safi)) {
-            if (doPrefDel(learned, addpath, cur)) {
-                return;
-            }
-            currChg++;
-            changed.add(tabRoute.addType.always, cur, false, false);
-            return;
-        }
-        doPrefAdd(learned, addpath, cur);
-        currChg++;
-        changed.add(tabRoute.addType.always, cur, false, false);
     }
 
     private void doPrefAdd(tabRoute<addrIP> tab, boolean addpath, tabRouteEntry<addrIP> ntry) {
