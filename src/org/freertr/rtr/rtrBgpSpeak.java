@@ -376,6 +376,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             learnt[i].clear();
             advert[i].clear();
             neigh.willing[i] = new tabRoute<addrIP>("tx");
+            neigh.changed[i] = new tabRoute<addrIP>("chg");
         }
         neigh.accUni = new tabRoute<addrIP>("rx");
         neigh.accMlt = new tabRoute<addrIP>("rx");
@@ -405,34 +406,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         neigh.accMvpo = new tabRoute<addrIP>("rx");
         neigh.accMtre = new tabRoute<addrIP>("rx");
         neigh.accMtro = new tabRoute<addrIP>("rx");
-        neigh.chgUni = new tabRoute<addrIP>("chg");
-        neigh.chgMlt = new tabRoute<addrIP>("chg");
-        neigh.chgOuni = new tabRoute<addrIP>("chg");
-        neigh.chgOmlt = new tabRoute<addrIP>("chg");
-        neigh.chgOflw = new tabRoute<addrIP>("chg");
-        neigh.chgOsrt = new tabRoute<addrIP>("chg");
-        neigh.chgFlw = new tabRoute<addrIP>("chg");
-        neigh.chgVpnU = new tabRoute<addrIP>("chg");
-        neigh.chgVpnM = new tabRoute<addrIP>("chg");
-        neigh.chgVpnF = new tabRoute<addrIP>("chg");
-        neigh.chgVpoU = new tabRoute<addrIP>("chg");
-        neigh.chgVpoM = new tabRoute<addrIP>("chg");
-        neigh.chgVpoF = new tabRoute<addrIP>("chg");
-        neigh.chgVpls = new tabRoute<addrIP>("chg");
-        neigh.chgMspw = new tabRoute<addrIP>("chg");
-        neigh.chgEvpn = new tabRoute<addrIP>("chg");
-        neigh.chgMdt = new tabRoute<addrIP>("chg");
-        neigh.chgNsh = new tabRoute<addrIP>("chg");
-        neigh.chgRpd = new tabRoute<addrIP>("chg");
-        neigh.chgSdw = new tabRoute<addrIP>("chg");
-        neigh.chgSpf = new tabRoute<addrIP>("chg");
-        neigh.chgRtf = new tabRoute<addrIP>("chg");
-        neigh.chgSrte = new tabRoute<addrIP>("chg");
-        neigh.chgLnks = new tabRoute<addrIP>("chg");
-        neigh.chgMvpn = new tabRoute<addrIP>("chg");
-        neigh.chgMvpo = new tabRoute<addrIP>("chg");
-        neigh.chgMtre = new tabRoute<addrIP>("chg");
-        neigh.chgMtro = new tabRoute<addrIP>("chg");
         if (!ready2adv) {
             return;
         }
