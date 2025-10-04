@@ -41,8 +41,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     protected pipeSide pipe;
 
-    private boolean resumed;
-
     /**
      * parent
      */
@@ -312,6 +310,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * addpath list sent by the peer
      */
     public boolean[] originalAddTlist;
+
+    private boolean resumed;
 
     private packHolder pckRx = new packHolder(true, true);
 
