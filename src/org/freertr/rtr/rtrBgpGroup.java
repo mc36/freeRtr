@@ -80,7 +80,7 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         boolean[] res = rtrBgpParam.boolsSet(false);
         for (int i = 0; i < res.length; i++) {
-            int o = rtrBgpParam.indexAlias(i);
+            int o = rtrBgpParam.indexAlias[i];
             if (o < 0) {
                 continue;
             }
