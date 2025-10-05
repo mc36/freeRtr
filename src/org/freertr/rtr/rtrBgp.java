@@ -1640,6 +1640,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             evpn.get(i).doAdvertise();
         }
         origntd = rtrBgpParam.freshTables();
+        for (int i = 0; i < origntd.length; i++) {
+            int o = rtrBgpParam.indexAlias[i];
+            if (o >= 0) {
+                origntd[i] = origntd[o];
+            } else {
+                origntd[i] = new tabRoute<addrIP>(freshly[i]);
+            }
+        }
         origntd[rtrBgpParam.idxUni] = routerRedistedU;
         origntd[rtrBgpParam.idxLab] = routerRedistedU;
         origntd[rtrBgpParam.idxCtp] = routerRedistedU;
