@@ -1188,7 +1188,6 @@ public class userClear {
         if (idx < 0) {
             return;
         }
-        long safi = 1L << idx;
         int sfi = r.bgp.idx2safi(idx);
         if (sfi < 1) {
             return;
@@ -1197,16 +1196,16 @@ public class userClear {
             rtrBgpNeigh nei = neis.get(i);
             switch (mod) {
                 case 1:
-                    nei.conn.sendRefresh(idx, safi, sfi);
+                    nei.conn.sendRefresh(idx, sfi);
                     break;
                 case 2:
-                    nei.conn.gotRefresh(idx, safi, sfi);
+                    nei.conn.gotRefresh(idx, sfi);
                     break;
                 case 3:
-                    nei.conn.sendDynamicCapa(true, true, idx, safi, sfi);
+                    nei.conn.sendDynamicCapa(true, true, idx, sfi);
                     break;
                 case 4:
-                    nei.conn.sendDynamicCapa(true, false, idx, safi, sfi);
+                    nei.conn.sendDynamicCapa(true, false, idx, sfi);
                     break;
             }
         }

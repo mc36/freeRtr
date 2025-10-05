@@ -469,9 +469,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 if (o < 0) {
                     continue;
                 }
-                long p = 1L << i;
-                sendRefresh(i, p, o);
-                gotRefresh(i, p, o);
+                sendRefresh(i, o);
+                gotRefresh(i, o);
             }
         } else {
             sendOpen();
@@ -557,8 +556,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 if (o < 0) {
                     continue;
                 }
-                long p = 1L << o;
-                gotRefresh(o, p, i);
+                gotRefresh(o, i);
                 continue;
             }
             if (typ == rtrBgpUtil.msgUpdate) {
@@ -601,7 +599,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 pckRh.putSkip(tlv.valSiz);
                 pckRh.merge2beg();
                 List<Integer> afiS = new ArrayList<Integer>();
-                List<Long> afiM = new ArrayList<Long>();
                 List<Integer> afiI = new ArrayList<Integer>();
                 for (;;) {
                     tlv = rtrBgpUtil.getCapabilityTlv(false);
@@ -612,20 +609,18 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         sendNotify(8, 4);
                         break;
                     }
-                    parseMultiProtoCapa(tlv, afiS, afiM, afiI);
+                    parseMultiProtoCapa(tlv, afiS, afiI);
                 }
                 for (i = afiS.size() - 1; i >= 0; i--) {
                     int o = afiS.get(i);
-                    long p = afiM.get(i);
-                    int q = afiI.get(i);
-                    if (peerAfis[q] == add) {
-                        renegotiatingSafi(q, p, o, add, false);
+                    int p = afiI.get(i);
+                    if (peerAfis[p] == add) {
+                        renegotiatingSafi(p, o, add, false);
                         continue;
                     }
                     afiS.remove(i);
-                    afiM.remove(i);
                     afiI.remove(i);
-                    renegotiatingSafi(q, p, o, add, false);
+                    renegotiatingSafi(p, o, add, false);
                 }
                 packHolder pck = new packHolder(true, true);
                 for (i = 0; i < afiS.size(); i++) {
@@ -639,9 +634,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 for (i = 0; i < afiS.size(); i++) {
                     int o = afiS.get(i);
-                    long p = afiM.get(i);
                     int q = afiI.get(i);
-                    renegotiatingSafi(q, p, o, add, false);
+                    renegotiatingSafi(q, o, add, false);
                 }
                 continue;
             }
@@ -722,8 +716,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     if (o < 0) {
                         continue;
                     }
-                    long p = 1L << o;
-                    gotRefresh(o, p, i);
+                    gotRefresh(o, i);
                     continue;
                 }
                 if (typ != rtrBgpUtil.msgUpdate) {
@@ -1057,7 +1050,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         packSend(pck, rtrBgpUtil.msgOpen);
     }
 
-    private boolean[] parseMultiProtoCapa(encTlv tlv, List<Integer> afi, List<Long> msk, List<Integer> idx) {
+    private boolean[] parseMultiProtoCapa(encTlv tlv, List<Integer> afi, List<Integer> idx) {
         boolean[] res = rtrBgpParam.boolsSet(false);
         for (int i = 0; i < tlv.valSiz; i += 4) {
             int p = bits.msbGetD(tlv.valDat, i);
@@ -1065,9 +1058,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (o < 0) {
                 continue;
             }
-            long q = 1L << o;
             afi.add(p);
-            msk.add(q);
             idx.add(o);
             res[o] = true;
         }
@@ -1188,7 +1179,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         break;
                     case rtrBgpUtil.capaMultiProto:
                         mpGot = true;
-                        peerAfis = rtrBgpParam.boolsOr(peerAfis, parseMultiProtoCapa(tlv, new ArrayList<Integer>(), new ArrayList<Long>(), new ArrayList<Integer>()));
+                        peerAfis = rtrBgpParam.boolsOr(peerAfis, parseMultiProtoCapa(tlv, new ArrayList<Integer>(), new ArrayList<Integer>()));
                         break;
                     case rtrBgpUtil.capaMultiLabel:
                         for (i = 0; i < tlv.valSiz; i += 4) {
@@ -1347,10 +1338,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * got route refresh request
      *
      * @param idx safi to refresh
-     * @param mask safi to refresh
      * @param safi safi to refresh
      */
-    public void gotRefresh(int idx, long mask, int safi) {
+    public void gotRefresh(int idx, int safi) {
         int mode = (safi >>> 8) & 0xff;
         safi &= rtrBgpUtil.frsMask;
         if (debugger.rtrBgpTraf) {
@@ -1394,10 +1384,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param init true to start the exchange, false to answer
      * @param add set true to add, false to remove
      * @param idx afi mask to configure
-     * @param msk afi mask to configure
      * @param safi safi to configure
      */
-    public void sendDynamicCapa(boolean init, boolean add, int idx, long msk, int safi) {
+    public void sendDynamicCapa(boolean init, boolean add, int idx, int safi) {
         if (!peerDynCap) {
             return;
         }
@@ -1410,7 +1399,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         rtrBgpUtil.placeCapability(pck, peerExtOpen, rtrBgpUtil.capaMultiProto, buf);
         dynCapaTx++;
         sendDynCapaMsg(init, true, add, dynCapaTx, pck);
-        renegotiatingSafi(idx, msk, safi, add, true);
+        renegotiatingSafi(idx, safi, add, true);
     }
 
     private void sendDynCapaMsg(boolean init, boolean ack, boolean add, int seq, packHolder pck) {
@@ -1434,7 +1423,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
     }
 
-    private void renegotiatingSafi(int idx, long mask, int safi, boolean add, boolean cfg) {
+    private void renegotiatingSafi(int idx, int safi, boolean add, boolean cfg) {
         sendEndOfRib(safi);
         learnt[idx].clear();
         advert[idx].clear();
@@ -1459,10 +1448,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * send route refresh request
      *
      * @param idx safi to refresh
-     * @param mask safi to refresh
      * @param safi safi to refresh
      */
-    public void sendRefresh(int idx, long mask, int safi) {
+    public void sendRefresh(int idx, int safi) {
         if ((peerRefreshOld == false) && (peerRefreshNew == false)) {
             return;
         }

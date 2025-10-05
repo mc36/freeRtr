@@ -565,7 +565,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 continue;
             }
             int safi = lower.idx2safi(idx);
-            long msk = 1L << idx;
             tabRoute<addrIP> will = willing[idx];
             tabRoute<addrIP> done = conn.advert[idx];
             boolean oneLab = !conn.peerMltLab[idx];

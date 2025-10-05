@@ -1728,7 +1728,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
     }
 
-    private int computeIncrUpdate(int idx, int afi, long msk, tabRoute<addrIP> don, tabRoute<addrIP> chg, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
+    private int computeIncrUpdate(int idx, int afi, tabRoute<addrIP> don, tabRoute<addrIP> chg, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
         int res = 0;
         if (don == null) {
             don = new tabRoute<addrIP>("chg");
@@ -1849,7 +1849,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (rtrBgpParam.indexAlias[i] >= 0) {
                 continue;
             }
-            computeIncrUpdate(i, idx2safi(i), 1L, chgd[i], changed[i], computd[i], origntd[i]);
+            computeIncrUpdate(i, idx2safi(i), chgd[i], changed[i], computd[i], origntd[i]);
         }
         routerChangedU = chgd[rtrBgpParam.idxUni];
         routerChangedM = chgd[rtrBgpParam.idxMlt];
