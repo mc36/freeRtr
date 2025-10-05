@@ -4950,7 +4950,7 @@ public class userShow {
             return;
         }
         if (a.equals("prefix-lengths")) {
-            rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.getDatabase(idx, sfm, sfi), rtrBgpUtil.safi2ipVers(sfi)));
+            rdr.putStrTab(rtrLogger.prefixLengths(r.bgp.computd[idx], rtrBgpUtil.safi2ipVers(sfi)));
             return;
         }
         if (a.equals("asinconsistent")) {
@@ -5181,10 +5181,7 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, dif3, dsp);
             return;
         }
-        tabRoute<addrIP> tab = r.bgp.getDatabase(idx, sfm, sfi);
-        if (tab == null) {
-            return;
-        }
+        tabRoute<addrIP> tab = r.bgp.computd[idx];
         if (a.equals("wireformat")) {
             a = cmd.word();
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();

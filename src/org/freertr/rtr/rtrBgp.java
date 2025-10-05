@@ -1179,36 +1179,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
     }
 
-    /**
-     * get database
-     *
-     * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
-     * @return table
-     */
-    public tabRoute<addrIP> getDatabase(int idx, long mask, int safi) {
-        if (idx == rtrBgpParam.idxUni) {
-            return routerComputedU;
-        }
-        if (idx == rtrBgpParam.idxLab) {
-            return routerComputedU;
-        }
-        if (idx == rtrBgpParam.idxCtp) {
-            return routerComputedU;
-        }
-        if (idx == rtrBgpParam.idxCar) {
-            return routerComputedU;
-        }
-        if (idx == rtrBgpParam.idxMlt) {
-            return routerComputedM;
-        }
-        if (idx == rtrBgpParam.idxFlw) {
-            return routerComputedF;
-        }
-        return computd[idx];
-    }
-
     public void run() {
         for (;;) {
             if (!cfgInit.booting) {
@@ -3895,9 +3865,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      */
     public userFormat getAsUplink(int idx, long mask, int safi) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
-        tabRoute<addrIP> rou = getDatabase(idx, mask, safi);
-        for (int i = 0; i < rou.size(); i++) {
-            tabRouteEntry<addrIP> ntry = rou.get(i);
+        for (int i = 0; i < computd[idx].size(); i++) {
+            tabRouteEntry<addrIP> ntry = computd[idx].get(i);
             if (ntry == null) {
                 continue;
             }
@@ -3926,9 +3895,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      */
     public userFormat getAsOrigin(int idx, long mask, int safi) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
-        tabRoute<addrIP> rou = getDatabase(idx, mask, safi);
-        for (int i = 0; i < rou.size(); i++) {
-            tabRouteEntry<addrIP> ntry = rou.get(i);
+        for (int i = 0; i < computd[idx].size(); i++) {
+            tabRouteEntry<addrIP> ntry = computd[idx].get(i);
             if (ntry == null) {
                 continue;
             }
@@ -3957,9 +3925,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      */
     public userFormat getAsTransit(int idx, long mask, int safi) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
-        tabRoute<addrIP> rou = getDatabase(idx, mask, safi);
-        for (int i = 0; i < rou.size(); i++) {
-            tabRouteEntry<addrIP> ntry = rou.get(i);
+        for (int i = 0; i < computd[idx].size(); i++) {
+            tabRouteEntry<addrIP> ntry = computd[idx].get(i);
             if (ntry == null) {
                 continue;
             }
@@ -4100,10 +4067,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getPathStat(int idx, long mask, int safi) {
-        tabRoute<addrIP> rou = getDatabase(idx, mask, safi);
         List<Integer> res = new ArrayList<Integer>();
-        for (int i = 0; i < rou.size(); i++) {
-            tabRouteEntry<addrIP> ntry = rou.get(i);
+        for (int i = 0; i < computd[idx].size(); i++) {
+            tabRouteEntry<addrIP> ntry = computd[idx].get(i);
             if (ntry == null) {
                 continue;
             }
@@ -4486,7 +4452,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public userFormat getTables() {
         userFormat l = new userFormat("|", "afi|compute|newly|origin|change");
         for (int i = 0; i < changed.length; i++) {
-            l.add(rtrBgpParam.idx2string(i) + "|" + getDatabase(i, 0, 0).size() + "|" + freshly[i].size() + "|" + origntd[i].size() + "|" + changed[i].size());
+            l.add(rtrBgpParam.idx2string(i) + "|" + computd[i].size() + "|" + freshly[i].size() + "|" + origntd[i].size() + "|" + changed[i].size());
         }
         return l;
     }
