@@ -1650,6 +1650,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private void computeIncrEntry(int idx, long mask, int afi, tabRouteEntry<addrIP> curr, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
         if (debugger.rtrBgpIncr) {
             logger.debug("bestpath for " + tabRouteUtil.rd2string(curr.rouDst) + " " + curr.prefix + " in " + rtrBgpUtil.safi2string(afi));
@@ -1707,17 +1708,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             } else {
                 ntry = grp.readvertPrefix(afi, best);
             }
-            if ((afi == afiUni) || (afi == afiMlt)) {
-                ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.roumapOut, grp.roupolOut, grp.prflstOut);
-            } else if ((afi == afiOuni) || (afi == afiOmlt)) {
-                ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.oroumapOut, grp.oroupolOut, grp.oprflstOut);
-            } else if ((afi == afiOflw) || (afi == afiOsrt) || (afi == afiMvpo) || (afi == afiVpoU) || (afi == afiVpoM) || (afi == afiVpoF)) {
-                ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.wroumapOut, grp.wroupolOut, null);
-            } else if ((afi == afiEvpn) || (afi == afiVpls)) {
-                ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.eroumapOut, grp.eroupolOut, null);
-            } else {
-                ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, grp.vroumapOut, grp.vroupolOut, null);
-            }
+            tabListing[] fltr = grp.getOutFilters(idx);
+            ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, fltr[0], fltr[1], fltr[2]);
             if ((ntry == null) && (old == null)) {
                 continue;
             }
