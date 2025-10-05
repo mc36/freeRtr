@@ -1942,8 +1942,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * update flap statistics
      *
      * @param idx afi
-     * @param mask afi
-     * @param afi afi
      * @param rd rd
      * @param prf prefix
      * @param pth path
@@ -3717,23 +3715,21 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * get all routes
      *
      * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
      * @param prf prefix to find
      * @return list of routes
      */
-    public userFormat getAllRoutes(int idx, long mask, int safi, tabRouteEntry<addrIP> prf) {
+    public userFormat getAllRoutes(int idx, tabRouteEntry<addrIP> prf) {
         userFormat lst = new userFormat("|", "id|category|value");
         for (int i = 0; i < neighs.size(); i++) {
-            getAllRoutes(lst, neighs.get(i), idx, mask, safi, prf);
+            getAllRoutes(lst, neighs.get(i), idx, prf);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            getAllRoutes(lst, lstnNei.get(i), idx, mask, safi, prf);
+            getAllRoutes(lst, lstnNei.get(i), idx, prf);
         }
         return lst;
     }
 
-    private void getAllRoutes(userFormat lst, rtrBgpNeigh nei, int idx, long mask, int safi, tabRouteEntry<addrIP> prf) {
+    private void getAllRoutes(userFormat lst, rtrBgpNeigh nei, int idx, tabRouteEntry<addrIP> prf) {
         if (nei == null) {
             return;
         }
@@ -3749,12 +3745,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * get flap stats
      *
      * @param idx afi
-     * @param mask afi
-     * @param afi afi
      * @param num minimum flap count
      * @return list of statistics
      */
-    public userFormat getFlapstat(int idx, long mask, int afi, int num) {
+    public userFormat getFlapstat(int idx, int num) {
         userFormat l = new userFormat("|", "prefix|count|paths|ago|last");
         if (flaps == null) {
             return l;
@@ -3779,8 +3773,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * get flap paths
      *
      * @param idx afi
-     * @param mask afi
-     * @param afi afi
      * @param rd rd
      * @param prf prefix
      * @param rev reverse path
@@ -3806,11 +3798,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * uplinking as
      *
      * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
      * @return text
      */
-    public userFormat getAsUplink(int idx, long mask, int safi) {
+    public userFormat getAsUplink(int idx) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < computd[idx].size(); i++) {
             tabRouteEntry<addrIP> ntry = computd[idx].get(i);
@@ -3836,11 +3826,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * originating as
      *
      * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
      * @return text
      */
-    public userFormat getAsOrigin(int idx, long mask, int safi) {
+    public userFormat getAsOrigin(int idx) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < computd[idx].size(); i++) {
             tabRouteEntry<addrIP> ntry = computd[idx].get(i);
@@ -3866,11 +3854,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * transiting as
      *
      * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
      * @return text
      */
-    public userFormat getAsTransit(int idx, long mask, int safi) {
+    public userFormat getAsTransit(int idx) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < computd[idx].size(); i++) {
             tabRouteEntry<addrIP> ntry = computd[idx].get(i);
@@ -3899,17 +3885,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * as path graph
      *
      * @param idx safi to refresh
-     * @param mask safi to query
-     * @param safi safi to query
      * @return text
      */
-    public List<String> getAsGraph(int idx, long mask, int safi) {
+    public List<String> getAsGraph(int idx) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpDump.updateAsGraph(localAs, lst, neighs.get(i), idx, mask, safi);
+            rtrBgpDump.updateAsGraph(localAs, lst, neighs.get(i), idx);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpDump.updateAsGraph(localAs, lst, lstnNei.get(i), idx, mask, safi);
+            rtrBgpDump.updateAsGraph(localAs, lst, lstnNei.get(i), idx);
         }
         int o = 0;
         for (int i = 0; i < lst.size(); i++) {
@@ -3936,18 +3920,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * as path tree
      *
      * @param idx safi to refresh
-     * @param mask safi to query
-     * @param safi safi to query
      * @param asn asn to start from
      * @return text
      */
-    public List<String> getAsTree(int idx, long mask, int safi, int asn) {
+    public List<String> getAsTree(int idx, int asn) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpDump.updateAsGraph(localAs, lst, neighs.get(i), idx, mask, safi);
+            rtrBgpDump.updateAsGraph(localAs, lst, neighs.get(i), idx);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpDump.updateAsGraph(localAs, lst, lstnNei.get(i), idx, mask, safi);
+            rtrBgpDump.updateAsGraph(localAs, lst, lstnNei.get(i), idx);
         }
         if (asn == 0) {
             asn = localAs;
@@ -3961,18 +3943,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * as path statistics
      *
      * @param idx safi to refresh
-     * @param mask safi to query
-     * @param safi safi to query
      * @param asn asn to query
      * @return text
      */
-    public userFormat getPathAround(int idx, long mask, int safi, int asn) {
+    public userFormat getPathAround(int idx, int asn) {
         tabGen<rtrBgpFlapAsn> res = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpDump.updatePathAround(localAs, asn, res, neighs.get(i), idx, mask, safi);
+            rtrBgpDump.updatePathAround(localAs, asn, res, neighs.get(i), idx);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpDump.updatePathAround(localAs, asn, res, lstnNei.get(i), idx, mask, safi);
+            rtrBgpDump.updatePathAround(localAs, asn, res, lstnNei.get(i), idx);
         }
         userFormat lst = new userFormat("|", "asnum|asnam|nets|asinfo");
         for (int i = 0; i < res.size(); i++) {
@@ -3985,18 +3965,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * as path statistics
      *
      * @param idx safi to refresh
-     * @param mask safi to query
-     * @param safi safi to query
      * @param asn asn to query
      * @return text
      */
-    public userFormat getPathContain(int idx, long mask, int safi, int asn) {
+    public userFormat getPathContain(int idx, int asn) {
         tabGen<rtrBgpFlapLst> res = new tabGen<rtrBgpFlapLst>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpDump.updatePathContain(asn, res, neighs.get(i), idx, mask, safi);
+            rtrBgpDump.updatePathContain(asn, res, neighs.get(i), idx);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpDump.updatePathContain(asn, res, lstnNei.get(i), idx, mask, safi);
+            rtrBgpDump.updatePathContain(asn, res, lstnNei.get(i), idx);
         }
         userFormat lst = new userFormat("|", "count|path");
         for (int i = 0; i < res.size(); i++) {
@@ -4009,11 +3987,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * as path statistics
      *
      * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
      * @return text
      */
-    public userFormat getPathStat(int idx, long mask, int safi) {
+    public userFormat getPathStat(int idx) {
         List<Integer> res = new ArrayList<Integer>();
         for (int i = 0; i < computd[idx].size(); i++) {
             tabRouteEntry<addrIP> ntry = computd[idx].get(i);
@@ -4039,17 +4015,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * as connections
      *
      * @param idx safi to refresh
-     * @param mask safi to query
-     * @param safi safi to query
      * @return text
      */
-    public userFormat getAsConns(int idx, long mask, int safi) {
+    public userFormat getAsConns(int idx) {
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpDump.updateAsGraph(localAs, lst, neighs.get(i), idx, mask, safi);
+            rtrBgpDump.updateAsGraph(localAs, lst, neighs.get(i), idx);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpDump.updateAsGraph(localAs, lst, lstnNei.get(i), idx, mask, safi);
+            rtrBgpDump.updateAsGraph(localAs, lst, lstnNei.get(i), idx);
         }
         userFormat res = new userFormat("|", "asnum|asnam|conn|net|peers");
         int conns = -1;
@@ -4082,17 +4056,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * usage of next hops
      *
      * @param idx safi to refresh
-     * @param mask safi to query
-     * @param safi safi to query
      * @return text
      */
-    public userFormat getNhPrfxes(int idx, long mask, int safi) {
+    public userFormat getNhPrfxes(int idx) {
         tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpDump.updateNhPrfxes(lst, neighs.get(i), idx, mask, safi);
+            rtrBgpDump.updateNhPrfxes(lst, neighs.get(i), idx);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpDump.updateNhPrfxes(lst, lstnNei.get(i), idx, mask, safi);
+            rtrBgpDump.updateNhPrfxes(lst, lstnNei.get(i), idx);
         }
         userFormat res = new userFormat("|", "nexthop|prefixes");
         for (int i = 0; i < lst.size(); i++) {
@@ -4106,17 +4078,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * usage of next hops
      *
      * @param idx safi to refresh
-     * @param mask safi to query
-     * @param safi safi to query
      * @return text
      */
-    public userFormat getNhTrnsit(int idx, long mask, int safi) {
+    public userFormat getNhTrnsit(int idx) {
         tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpDump.updateNhTrnsit(lst, neighs.get(i), idx, mask, safi);
+            rtrBgpDump.updateNhTrnsit(lst, neighs.get(i), idx);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpDump.updateNhTrnsit(lst, lstnNei.get(i), idx, mask, safi);
+            rtrBgpDump.updateNhTrnsit(lst, lstnNei.get(i), idx);
         }
         userFormat res = new userFormat("|", "nexthop|count|transits");
         for (int i = 0; i < lst.size(); i++) {
@@ -4130,17 +4100,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * usage of next hops
      *
      * @param idx safi to refresh
-     * @param mask safi to query
-     * @param safi safi to query
      * @return text
      */
-    public userFormat getNhOrigin(int idx, long mask, int safi) {
+    public userFormat getNhOrigin(int idx) {
         tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpDump.updateNhOrigin(lst, neighs.get(i), idx, mask, safi);
+            rtrBgpDump.updateNhOrigin(lst, neighs.get(i), idx);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpDump.updateNhOrigin(lst, lstnNei.get(i), idx, mask, safi);
+            rtrBgpDump.updateNhOrigin(lst, lstnNei.get(i), idx);
         }
         userFormat res = new userFormat("|", "nexthop|count|origins");
         for (int i = 0; i < lst.size(); i++) {
@@ -4154,18 +4122,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * inconsistent next hops
      *
      * @param idx safi to refresh
-     * @param mask safi to query
-     * @param safi safi to query
      * @param mtch matcher
      * @return text
      */
-    public userFormat getNhIncons(int idx, long mask, int safi, tabIntMatcher mtch) {
+    public userFormat getNhIncons(int idx, tabIntMatcher mtch) {
         tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpDump.updateNhIncons(lst, neighs.get(i), idx, mask, safi);
+            rtrBgpDump.updateNhIncons(lst, neighs.get(i), idx);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpDump.updateNhIncons(lst, lstnNei.get(i), idx, mask, safi);
+            rtrBgpDump.updateNhIncons(lst, lstnNei.get(i), idx);
         }
         userFormat res = new userFormat("|", "path|nexthops");
         for (int i = 0; i < lst.size(); i++) {
@@ -4182,18 +4148,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * inconsistent as paths
      *
      * @param idx safi to refresh
-     * @param mask safi to query
-     * @param safi safi to query
      * @param mtch matcher
      * @return text
      */
-    public userFormat getAsIncons(int idx, long mask, int safi, tabIntMatcher mtch) {
+    public userFormat getAsIncons(int idx, tabIntMatcher mtch) {
         tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
         for (int i = 0; i < neighs.size(); i++) {
-            rtrBgpDump.updateAsIncons(lst, neighs.get(i), idx, mask, safi);
+            rtrBgpDump.updateAsIncons(lst, neighs.get(i), idx);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            rtrBgpDump.updateAsIncons(lst, lstnNei.get(i), idx, mask, safi);
+            rtrBgpDump.updateAsIncons(lst, lstnNei.get(i), idx);
         }
         userFormat res = new userFormat("|", "path|ases");
         for (int i = 0; i < lst.size(); i++) {

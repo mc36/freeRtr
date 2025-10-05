@@ -4898,7 +4898,6 @@ public class userShow {
             cmd.badCmd();
             return;
         }
-        long sfm = 1L << idx;
         int dsp = rtrBgpParam.displayModel(idx);
         int sfi = r.bgp.idx2safi(idx);
         if (sfi < 1) {
@@ -4910,43 +4909,43 @@ public class userShow {
             return;
         }
         if (a.equals("asgraph")) {
-            rdr.putStrArr(r.bgp.getAsGraph(idx, sfm, sfi));
+            rdr.putStrArr(r.bgp.getAsGraph(idx));
             return;
         }
         if (a.equals("astree")) {
             a = cmd.word();
             int i = bits.str2num(a);
-            rdr.putStrArr(r.bgp.getAsTree(idx, sfm, sfi, i));
+            rdr.putStrArr(r.bgp.getAsTree(idx, i));
             return;
         }
         if (a.equals("asorigin")) {
-            rdr.putStrTab(r.bgp.getAsOrigin(idx, sfm, sfi));
+            rdr.putStrTab(r.bgp.getAsOrigin(idx));
             return;
         }
         if (a.equals("asuplink")) {
-            rdr.putStrTab(r.bgp.getAsUplink(idx, sfm, sfi));
+            rdr.putStrTab(r.bgp.getAsUplink(idx));
             return;
         }
         if (a.equals("astransit")) {
-            rdr.putStrTab(r.bgp.getAsTransit(idx, sfm, sfi));
+            rdr.putStrTab(r.bgp.getAsTransit(idx));
             return;
         }
         if (a.equals("asconn")) {
-            rdr.putStrTab(r.bgp.getAsConns(idx, sfm, sfi));
+            rdr.putStrTab(r.bgp.getAsConns(idx));
             return;
         }
         if (a.equals("pathsof")) {
             a = cmd.word();
-            rdr.putStrTab(r.bgp.getPathContain(idx, sfm, sfi, bits.str2num(a)));
+            rdr.putStrTab(r.bgp.getPathContain(idx, bits.str2num(a)));
             return;
         }
         if (a.equals("pathsat")) {
             a = cmd.word();
-            rdr.putStrTab(r.bgp.getPathAround(idx, sfm, sfi, bits.str2num(a)));
+            rdr.putStrTab(r.bgp.getPathAround(idx, bits.str2num(a)));
             return;
         }
         if (a.equals("pathstat")) {
-            rdr.putStrTab(r.bgp.getPathStat(idx, sfm, sfi));
+            rdr.putStrTab(r.bgp.getPathStat(idx));
             return;
         }
         if (a.equals("prefix-lengths")) {
@@ -4960,7 +4959,7 @@ public class userShow {
             }
             tabIntMatcher m = new tabIntMatcher();
             m.fromString(a);
-            rdr.putStrTab(r.bgp.getAsIncons(idx, sfm, sfi, m));
+            rdr.putStrTab(r.bgp.getAsIncons(idx, m));
             return;
         }
         if (a.equals("nhinconsistent")) {
@@ -4970,23 +4969,23 @@ public class userShow {
             }
             tabIntMatcher m = new tabIntMatcher();
             m.fromString(a);
-            rdr.putStrTab(r.bgp.getNhIncons(idx, sfm, sfi, m));
+            rdr.putStrTab(r.bgp.getNhIncons(idx, m));
             return;
         }
         if (a.equals("nhprefixes")) {
-            rdr.putStrTab(r.bgp.getNhPrfxes(idx, sfm, sfi));
+            rdr.putStrTab(r.bgp.getNhPrfxes(idx));
             return;
         }
         if (a.equals("nhtransit")) {
-            rdr.putStrTab(r.bgp.getNhTrnsit(idx, sfm, sfi));
+            rdr.putStrTab(r.bgp.getNhTrnsit(idx));
             return;
         }
         if (a.equals("nhorigin")) {
-            rdr.putStrTab(r.bgp.getNhOrigin(idx, sfm, sfi));
+            rdr.putStrTab(r.bgp.getNhOrigin(idx));
             return;
         }
         if (a.equals("flapstat")) {
-            rdr.putStrTab(r.bgp.getFlapstat(idx, sfm, sfi, bits.str2num(cmd.word())));
+            rdr.putStrTab(r.bgp.getFlapstat(idx, bits.str2num(cmd.word())));
             return;
         }
         if (a.equals("flappath")) {
@@ -5015,7 +5014,7 @@ public class userShow {
                 return;
             }
             ntry.rouDst = tabRouteUtil.string2rd(cmd.word());
-            rdr.putStrTab(r.bgp.getAllRoutes(idx, sfm, sfi, ntry));
+            rdr.putStrTab(r.bgp.getAllRoutes(idx, ntry));
             return;
         }
         if (a.equals("differ")) {

@@ -232,7 +232,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      *
      * @param fil file to use
      * @param idx safi to refresh
-     * @param mask safi to refresh
      * @param safi safi to refresh
      */
     public void saveTable(RandomAccessFile fil, int idx, int safi) {
@@ -1093,8 +1092,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * update dampening statistics
      *
      * @param idx afi
-     * @param mask afi
-     * @param afi afi
      * @param rd rd
      * @param prf prefix
      * @param pnlt penalty
