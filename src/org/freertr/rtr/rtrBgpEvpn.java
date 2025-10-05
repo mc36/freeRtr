@@ -371,8 +371,8 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
         }
         long rt = tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp);
         byte[] buf = new byte[addrIP.size];
-        for (int i = 0; i < parent.computedEvpn.size(); i++) {
-            tabRouteEntry<addrIP> ntry = parent.computedEvpn.get(i);
+        for (int i = 0; i < parent.computd[rtrBgpParam.idxEvpn].size(); i++) {
+            tabRouteEntry<addrIP> ntry = parent.computd[rtrBgpParam.idxEvpn].get(i);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 continue;
             }

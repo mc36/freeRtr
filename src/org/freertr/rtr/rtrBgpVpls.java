@@ -184,8 +184,8 @@ public class rtrBgpVpls implements Comparable<rtrBgpVpls> {
         }
         long rt = tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp);
         byte[] buf = new byte[addrIP.size];
-        for (int i = 0; i < parent.computedVpls.size(); i++) {
-            tabRouteEntry<addrIP> ntry = parent.computedVpls.get(i);
+        for (int i = 0; i < parent.computd[rtrBgpParam.idxVpls].size(); i++) {
+            tabRouteEntry<addrIP> ntry = parent.computd[rtrBgpParam.idxVpls].get(i);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 continue;
             }

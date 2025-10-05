@@ -165,7 +165,7 @@ public class rtrBgpSpf {
             tlv.valSiz = 1;
             tlv.putBytes(hlp, spfLnkst.typSpfStat);
         }
-        spfLnkst.createEntry(parent.freshly[rtrBgpParam.idxSpf], parent.computedSpf, tlv, pck, hlp, 4, nei.spfMetric);
+        spfLnkst.createEntry(parent.freshly[rtrBgpParam.idxSpf], parent.computd[rtrBgpParam.idxSpf], tlv, pck, hlp, 4, nei.spfMetric);
     }
 
     private void doAdvertPfx(encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> rou) {
@@ -174,7 +174,7 @@ public class rtrBgpSpf {
         }
         spfLnkst.createHeader(tlv, pck, spfLnkst.protoDirect, spfLnkst.getPrefixType(rou));
         spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, spfLnkst.typNodeLocal);
-        spfLnkst.createPrefix(parent.freshly[rtrBgpParam.idxSpf], parent.computedSpf, tlv, pck, hlp, rou);
+        spfLnkst.createPrefix(parent.freshly[rtrBgpParam.idxSpf], parent.computd[rtrBgpParam.idxSpf], tlv, pck, hlp, rou);
     }
 
     /**
@@ -205,7 +205,7 @@ public class rtrBgpSpf {
             tlv.valSiz = 8;
             tlv.putBytes(hlp, spfLnkst.typSrCapa);
         }
-        spfLnkst.createEntry(parent.freshly[rtrBgpParam.idxSpf], parent.computedSpf, tlv, pck, hlp, 0, 0);
+        spfLnkst.createEntry(parent.freshly[rtrBgpParam.idxSpf], parent.computd[rtrBgpParam.idxSpf], tlv, pck, hlp, 0, 0);
         for (int i = 0; i < parent.neighs.size(); i++) {
             doAdvertNei(tlv, pck, hlp, parent.neighs.get(i));
         }

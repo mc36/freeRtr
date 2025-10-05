@@ -475,129 +475,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected tabGen<tabRpkiAspa> rpkiP = new tabGen<tabRpkiAspa>();
 
     /**
-     * the computed other unicast routes
+     * computed prefixes
      */
-    public tabRoute<addrIP> computedOuni = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed other multicast routes
-     */
-    public tabRoute<addrIP> computedOmlt = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed other flowspec routes
-     */
-    public tabRoute<addrIP> computedOflw = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed other srte routes
-     */
-    public tabRoute<addrIP> computedOsrt = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed vpnuni routes
-     */
-    public tabRoute<addrIP> computedVpnU = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed vpnmlt routes
-     */
-    public tabRoute<addrIP> computedVpnM = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed vpnflw routes
-     */
-    public tabRoute<addrIP> computedVpnF = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed other vpnuni routes
-     */
-    public tabRoute<addrIP> computedVpoU = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed other vpnmlt routes
-     */
-    public tabRoute<addrIP> computedVpoM = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed other vpnflw routes
-     */
-    public tabRoute<addrIP> computedVpoF = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed vpls routes
-     */
-    public tabRoute<addrIP> computedVpls = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed mspw routes
-     */
-    public tabRoute<addrIP> computedMspw = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed evpn routes
-     */
-    public tabRoute<addrIP> computedEvpn = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed mdt routes
-     */
-    public tabRoute<addrIP> computedMdt = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed nsh routes
-     */
-    public tabRoute<addrIP> computedNsh = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed rpd routes
-     */
-    public tabRoute<addrIP> computedRpd = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed sdwan routes
-     */
-    public tabRoute<addrIP> computedSdw = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed spf routes
-     */
-    public tabRoute<addrIP> computedSpf = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed rtfilter routes
-     */
-    public tabRoute<addrIP> computedRtf = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed srte routes
-     */
-    public tabRoute<addrIP> computedSrte = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed linkstate routes
-     */
-    public tabRoute<addrIP> computedLnks = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed mvpn routes
-     */
-    public tabRoute<addrIP> computedMvpn = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed other mvpn routes
-     */
-    public tabRoute<addrIP> computedMvpo = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed mtree routes
-     */
-    public tabRoute<addrIP> computedMtre = new tabRoute<addrIP>("rx");
-
-    /**
-     * the computed other mtree routes
-     */
-    public tabRoute<addrIP> computedMtro = new tabRoute<addrIP>("rx");
+    public tabRoute<addrIP>[] computd;
 
     /**
      * changed prefixes
@@ -838,6 +718,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         vrfCore = vrfcfg;
         fwdCore = forwarder;
         tcpCore = protoT;
+        computd = rtrBgpParam.freshTables();
         changed = rtrBgpParam.freshTables();
         freshly = rtrBgpParam.freshTables();
         origntd = rtrBgpParam.freshTables();
@@ -1322,95 +1203,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (idx == rtrBgpParam.idxMlt) {
             return routerComputedM;
         }
-        if (idx == rtrBgpParam.idxOlab) {
-            return computedOuni;
-        }
-        if (idx == rtrBgpParam.idxOctp) {
-            return computedOuni;
-        }
-        if (idx == rtrBgpParam.idxOcar) {
-            return computedOuni;
-        }
-        if (idx == rtrBgpParam.idxOuni) {
-            return computedOuni;
-        }
-        if (idx == rtrBgpParam.idxOmlt) {
-            return computedOmlt;
-        }
-        if (idx == rtrBgpParam.idxOflw) {
-            return computedOflw;
-        }
-        if (idx == rtrBgpParam.idxOsrt) {
-            return computedOsrt;
-        }
         if (idx == rtrBgpParam.idxFlw) {
             return routerComputedF;
         }
-        if (idx == rtrBgpParam.idxVpnU) {
-            return computedVpnU;
-        }
-        if (idx == rtrBgpParam.idxVpnM) {
-            return computedVpnM;
-        }
-        if (idx == rtrBgpParam.idxVpnF) {
-            return computedVpnF;
-        }
-        if (idx == rtrBgpParam.idxVpoU) {
-            return computedVpoU;
-        }
-        if (idx == rtrBgpParam.idxVpoM) {
-            return computedVpoM;
-        }
-        if (idx == rtrBgpParam.idxVpoF) {
-            return computedVpoF;
-        }
-        if (idx == rtrBgpParam.idxVpls) {
-            return computedVpls;
-        }
-        if (idx == rtrBgpParam.idxMspw) {
-            return computedMspw;
-        }
-        if (idx == rtrBgpParam.idxEvpn) {
-            return computedEvpn;
-        }
-        if (idx == rtrBgpParam.idxMdt) {
-            return computedMdt;
-        }
-        if (idx == rtrBgpParam.idxNsh) {
-            return computedNsh;
-        }
-        if (idx == rtrBgpParam.idxRpd) {
-            return computedRpd;
-        }
-        if (idx == rtrBgpParam.idxSdw) {
-            return computedSdw;
-        }
-        if (idx == rtrBgpParam.idxSpf) {
-            return computedSpf;
-        }
-        if (idx == rtrBgpParam.idxRtf) {
-            return computedRtf;
-        }
-        if (idx == rtrBgpParam.idxSrte) {
-            return computedSrte;
-        }
-        if (idx == rtrBgpParam.idxLnks) {
-            return computedLnks;
-        }
-        if (idx == rtrBgpParam.idxMvpn) {
-            return computedMvpn;
-        }
-        if (idx == rtrBgpParam.idxMvpo) {
-            return computedMvpo;
-        }
-        if (idx == rtrBgpParam.idxMtre) {
-            return computedMtre;
-        }
-        if (idx == rtrBgpParam.idxMtro) {
-            return computedMtro;
-        }
-        logger.info("unknown safi (" + safi + ") requested");
-        return null;
+        return computd[idx];
     }
 
     public void run() {
@@ -1708,32 +1504,32 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             computeConquerTable(routerComputedU, freshly[rtrBgpParam.idxUni]);
             computeConquerTable(routerComputedM, freshly[rtrBgpParam.idxMlt]);
-            computeConquerTable(computedOuni, freshly[rtrBgpParam.idxOuni]);
-            computeConquerTable(computedOmlt, freshly[rtrBgpParam.idxOmlt]);
-            computeConquerTable(computedOflw, freshly[rtrBgpParam.idxOflw]);
-            computeConquerTable(computedOsrt, freshly[rtrBgpParam.idxOsrt]);
+            computeConquerTable(computd[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOuni]);
+            computeConquerTable(computd[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOmlt]);
+            computeConquerTable(computd[rtrBgpParam.idxOflw], freshly[rtrBgpParam.idxOflw]);
+            computeConquerTable(computd[rtrBgpParam.idxOsrt], freshly[rtrBgpParam.idxOsrt]);
             computeConquerTable(routerComputedF, freshly[rtrBgpParam.idxFlw]);
-            computeConquerTable(computedVpnU, freshly[rtrBgpParam.idxVpnU]);
-            computeConquerTable(computedVpnM, freshly[rtrBgpParam.idxVpnM]);
-            computeConquerTable(computedVpnF, freshly[rtrBgpParam.idxVpnF]);
-            computeConquerTable(computedVpoU, freshly[rtrBgpParam.idxVpoU]);
-            computeConquerTable(computedVpoM, freshly[rtrBgpParam.idxVpoM]);
-            computeConquerTable(computedVpoF, freshly[rtrBgpParam.idxVpoF]);
-            computeConquerTable(computedVpls, freshly[rtrBgpParam.idxVpls]);
-            computeConquerTable(computedMspw, freshly[rtrBgpParam.idxMspw]);
-            computeConquerTable(computedEvpn, freshly[rtrBgpParam.idxEvpn]);
-            computeConquerTable(computedMdt, freshly[rtrBgpParam.idxMdt]);
-            computeConquerTable(computedNsh, freshly[rtrBgpParam.idxNsh]);
-            computeConquerTable(computedRpd, freshly[rtrBgpParam.idxRpd]);
-            computeConquerTable(computedSdw, freshly[rtrBgpParam.idxSdw]);
-            computeConquerTable(computedSpf, freshly[rtrBgpParam.idxSpf]);
-            computeConquerTable(computedRtf, freshly[rtrBgpParam.idxRtf]);
-            computeConquerTable(computedSrte, freshly[rtrBgpParam.idxSrte]);
-            computeConquerTable(computedLnks, freshly[rtrBgpParam.idxLnks]);
-            computeConquerTable(computedMvpn, freshly[rtrBgpParam.idxMvpn]);
-            computeConquerTable(computedMvpo, freshly[rtrBgpParam.idxMvpo]);
-            computeConquerTable(computedMtre, freshly[rtrBgpParam.idxMtre]);
-            computeConquerTable(computedMtro, freshly[rtrBgpParam.idxMtro]);
+            computeConquerTable(computd[rtrBgpParam.idxVpnU], freshly[rtrBgpParam.idxVpnU]);
+            computeConquerTable(computd[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnM]);
+            computeConquerTable(computd[rtrBgpParam.idxVpnF], freshly[rtrBgpParam.idxVpnF]);
+            computeConquerTable(computd[rtrBgpParam.idxVpoU], freshly[rtrBgpParam.idxVpoU]);
+            computeConquerTable(computd[rtrBgpParam.idxVpoM], freshly[rtrBgpParam.idxVpoM]);
+            computeConquerTable(computd[rtrBgpParam.idxVpoF], freshly[rtrBgpParam.idxVpoF]);
+            computeConquerTable(computd[rtrBgpParam.idxVpls], freshly[rtrBgpParam.idxVpls]);
+            computeConquerTable(computd[rtrBgpParam.idxMspw], freshly[rtrBgpParam.idxMspw]);
+            computeConquerTable(computd[rtrBgpParam.idxEvpn], freshly[rtrBgpParam.idxEvpn]);
+            computeConquerTable(computd[rtrBgpParam.idxMdt], freshly[rtrBgpParam.idxMdt]);
+            computeConquerTable(computd[rtrBgpParam.idxNsh], freshly[rtrBgpParam.idxNsh]);
+            computeConquerTable(computd[rtrBgpParam.idxRpd], freshly[rtrBgpParam.idxRpd]);
+            computeConquerTable(computd[rtrBgpParam.idxSdw], freshly[rtrBgpParam.idxSdw]);
+            computeConquerTable(computd[rtrBgpParam.idxSpf], freshly[rtrBgpParam.idxSpf]);
+            computeConquerTable(computd[rtrBgpParam.idxRtf], freshly[rtrBgpParam.idxRtf]);
+            computeConquerTable(computd[rtrBgpParam.idxSrte], freshly[rtrBgpParam.idxSrte]);
+            computeConquerTable(computd[rtrBgpParam.idxLnks], freshly[rtrBgpParam.idxLnks]);
+            computeConquerTable(computd[rtrBgpParam.idxMvpn], freshly[rtrBgpParam.idxMvpn]);
+            computeConquerTable(computd[rtrBgpParam.idxMvpo], freshly[rtrBgpParam.idxMvpo]);
+            computeConquerTable(computd[rtrBgpParam.idxMtre], freshly[rtrBgpParam.idxMtre]);
+            computeConquerTable(computd[rtrBgpParam.idxMtro], freshly[rtrBgpParam.idxMtro]);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " groups");
@@ -1746,34 +1542,35 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         lspf.doPeersFull();
         boolean diffs = freshly[rtrBgpParam.idxUni].differs(tabRoute.addType.alters, routerComputedU) || freshly[rtrBgpParam.idxMlt].differs(tabRoute.addType.alters, routerComputedM) || freshly[rtrBgpParam.idxFlw].differs(tabRoute.addType.alters, routerComputedF);
+        computd = rtrBgpParam.freshTables();
         routerComputedU = freshly[rtrBgpParam.idxUni];
         routerComputedM = freshly[rtrBgpParam.idxMlt];
-        computedOuni = freshly[rtrBgpParam.idxOuni];
-        computedOmlt = freshly[rtrBgpParam.idxOmlt];
-        computedOflw = freshly[rtrBgpParam.idxOflw];
-        computedOsrt = freshly[rtrBgpParam.idxOsrt];
+        computd[rtrBgpParam.idxOuni] = freshly[rtrBgpParam.idxOuni];
+        computd[rtrBgpParam.idxOmlt] = freshly[rtrBgpParam.idxOmlt];
+        computd[rtrBgpParam.idxOflw] = freshly[rtrBgpParam.idxOflw];
+        computd[rtrBgpParam.idxOsrt] = freshly[rtrBgpParam.idxOsrt];
         routerComputedF = freshly[rtrBgpParam.idxFlw];
-        computedVpnU = freshly[rtrBgpParam.idxVpnU];
-        computedVpnM = freshly[rtrBgpParam.idxVpnM];
-        computedVpnF = freshly[rtrBgpParam.idxVpnF];
-        computedVpoU = freshly[rtrBgpParam.idxVpoU];
-        computedVpoM = freshly[rtrBgpParam.idxVpoM];
-        computedVpoF = freshly[rtrBgpParam.idxVpoF];
-        computedVpls = freshly[rtrBgpParam.idxVpls];
-        computedMspw = freshly[rtrBgpParam.idxMspw];
-        computedEvpn = freshly[rtrBgpParam.idxEvpn];
-        computedMdt = freshly[rtrBgpParam.idxMdt];
-        computedNsh = freshly[rtrBgpParam.idxNsh];
-        computedRpd = freshly[rtrBgpParam.idxRpd];
-        computedSdw = freshly[rtrBgpParam.idxSdw];
-        computedSpf = freshly[rtrBgpParam.idxSpf];
-        computedRtf = freshly[rtrBgpParam.idxRtf];
-        computedSrte = freshly[rtrBgpParam.idxSrte];
-        computedLnks = freshly[rtrBgpParam.idxLnks];
-        computedMvpn = freshly[rtrBgpParam.idxMvpn];
-        computedMvpo = freshly[rtrBgpParam.idxMvpo];
-        computedMtre = freshly[rtrBgpParam.idxMtre];
-        computedMtro = freshly[rtrBgpParam.idxMtro];
+        computd[rtrBgpParam.idxVpnU] = freshly[rtrBgpParam.idxVpnU];
+        computd[rtrBgpParam.idxVpnM] = freshly[rtrBgpParam.idxVpnM];
+        computd[rtrBgpParam.idxVpnF] = freshly[rtrBgpParam.idxVpnF];
+        computd[rtrBgpParam.idxVpoU] = freshly[rtrBgpParam.idxVpoU];
+        computd[rtrBgpParam.idxVpoM] = freshly[rtrBgpParam.idxVpoM];
+        computd[rtrBgpParam.idxVpoF] = freshly[rtrBgpParam.idxVpoF];
+        computd[rtrBgpParam.idxVpls] = freshly[rtrBgpParam.idxVpls];
+        computd[rtrBgpParam.idxMspw] = freshly[rtrBgpParam.idxMspw];
+        computd[rtrBgpParam.idxEvpn] = freshly[rtrBgpParam.idxEvpn];
+        computd[rtrBgpParam.idxMdt] = freshly[rtrBgpParam.idxMdt];
+        computd[rtrBgpParam.idxNsh] = freshly[rtrBgpParam.idxNsh];
+        computd[rtrBgpParam.idxRpd] = freshly[rtrBgpParam.idxRpd];
+        computd[rtrBgpParam.idxSdw] = freshly[rtrBgpParam.idxSdw];
+        computd[rtrBgpParam.idxSpf] = freshly[rtrBgpParam.idxSpf];
+        computd[rtrBgpParam.idxRtf] = freshly[rtrBgpParam.idxRtf];
+        computd[rtrBgpParam.idxSrte] = freshly[rtrBgpParam.idxSrte];
+        computd[rtrBgpParam.idxLnks] = freshly[rtrBgpParam.idxLnks];
+        computd[rtrBgpParam.idxMvpn] = freshly[rtrBgpParam.idxMvpn];
+        computd[rtrBgpParam.idxMvpo] = freshly[rtrBgpParam.idxMvpo];
+        computd[rtrBgpParam.idxMtre] = freshly[rtrBgpParam.idxMtre];
+        computd[rtrBgpParam.idxMtro] = freshly[rtrBgpParam.idxMtro];
         if (diffs) {
             fwdCore.routerChg(this, true);
         }
@@ -2145,32 +1942,32 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         tabRoute<addrIP> chgEvpn = new tabRoute<addrIP>("chg");
         int cntGlb = computeIncrUpdate(rtrBgpParam.idxUni, afiUni, rtrBgpParam.mskUni, routerChangedU, changed[rtrBgpParam.idxUni], routerComputedU, routerRedistedU);
         cntGlb += computeIncrUpdate(rtrBgpParam.idxMlt, afiMlt, rtrBgpParam.mskMlt, routerChangedM, changed[rtrBgpParam.idxMlt], routerComputedM, routerRedistedM);
-        computeIncrUpdate(rtrBgpParam.idxOuni, afiOuni, rtrBgpParam.mskOuni, other.routerChangedU, changed[rtrBgpParam.idxOuni], computedOuni, origntd[rtrBgpParam.idxOuni]);
-        computeIncrUpdate(rtrBgpParam.idxOmlt, afiOmlt, rtrBgpParam.mskOmlt, other.routerChangedM, changed[rtrBgpParam.idxOmlt], computedOmlt, origntd[rtrBgpParam.idxOmlt]);
-        computeIncrUpdate(rtrBgpParam.idxOflw, afiOflw, rtrBgpParam.mskOflw, other.routerChangedF, changed[rtrBgpParam.idxOflw], computedOflw, origntd[rtrBgpParam.idxOflw]);
-        computeIncrUpdate(rtrBgpParam.idxOsrt, afiOsrt, rtrBgpParam.mskOsrt, null, changed[rtrBgpParam.idxOsrt], computedOsrt, origntd[rtrBgpParam.idxOsrt]);
+        computeIncrUpdate(rtrBgpParam.idxOuni, afiOuni, rtrBgpParam.mskOuni, other.routerChangedU, changed[rtrBgpParam.idxOuni], computd[rtrBgpParam.idxOuni], origntd[rtrBgpParam.idxOuni]);
+        computeIncrUpdate(rtrBgpParam.idxOmlt, afiOmlt, rtrBgpParam.mskOmlt, other.routerChangedM, changed[rtrBgpParam.idxOmlt], computd[rtrBgpParam.idxOmlt], origntd[rtrBgpParam.idxOmlt]);
+        computeIncrUpdate(rtrBgpParam.idxOflw, afiOflw, rtrBgpParam.mskOflw, other.routerChangedF, changed[rtrBgpParam.idxOflw], computd[rtrBgpParam.idxOflw], origntd[rtrBgpParam.idxOflw]);
+        computeIncrUpdate(rtrBgpParam.idxOsrt, afiOsrt, rtrBgpParam.mskOsrt, null, changed[rtrBgpParam.idxOsrt], computd[rtrBgpParam.idxOsrt], origntd[rtrBgpParam.idxOsrt]);
         int cntFlw = computeIncrUpdate(rtrBgpParam.idxFlw, afiFlw, rtrBgpParam.mskFlw, routerChangedF, changed[rtrBgpParam.idxFlw], routerComputedF, origntd[rtrBgpParam.idxFlw]);
-        computeIncrUpdate(rtrBgpParam.idxVpnU, afiVpnU, rtrBgpParam.mskVpnU, chgVpnU, changed[rtrBgpParam.idxVpnU], computedVpnU, origntd[rtrBgpParam.idxVpnU]);
-        computeIncrUpdate(rtrBgpParam.idxVpnM, afiVpnM, rtrBgpParam.mskVpnM, chgVpnM, changed[rtrBgpParam.idxVpnM], computedVpnM, origntd[rtrBgpParam.idxVpnM]);
-        computeIncrUpdate(rtrBgpParam.idxVpnF, afiVpnF, rtrBgpParam.mskVpnF, chgVpnF, changed[rtrBgpParam.idxVpnF], computedVpnF, origntd[rtrBgpParam.idxVpnF]);
-        computeIncrUpdate(rtrBgpParam.idxVpoU, afiVpoU, rtrBgpParam.mskVpoU, chgVpoU, changed[rtrBgpParam.idxVpoU], computedVpoU, origntd[rtrBgpParam.idxVpoU]);
-        computeIncrUpdate(rtrBgpParam.idxVpoM, afiVpoM, rtrBgpParam.mskVpoM, chgVpoM, changed[rtrBgpParam.idxVpoM], computedVpoM, origntd[rtrBgpParam.idxVpoM]);
-        computeIncrUpdate(rtrBgpParam.idxVpoF, afiVpoF, rtrBgpParam.mskVpoF, chgVpoF, changed[rtrBgpParam.idxVpoF], computedVpoF, origntd[rtrBgpParam.idxVpoF]);
-        int cntVpls = computeIncrUpdate(rtrBgpParam.idxVpls, afiVpls, rtrBgpParam.mskVpls, null, changed[rtrBgpParam.idxVpls], computedVpls, origntd[rtrBgpParam.idxVpls]);
-        computeIncrUpdate(rtrBgpParam.idxMspw, afiMspw, rtrBgpParam.mskMspw, null, changed[rtrBgpParam.idxMspw], computedMspw, origntd[rtrBgpParam.idxMspw]);
-        int cntEvpn = computeIncrUpdate(rtrBgpParam.idxEvpn, afiEvpn, rtrBgpParam.mskEvpn, chgEvpn, changed[rtrBgpParam.idxEvpn], computedEvpn, origntd[rtrBgpParam.idxEvpn]);
-        computeIncrUpdate(rtrBgpParam.idxMdt, afiMdt, rtrBgpParam.mskMdt, null, changed[rtrBgpParam.idxMdt], computedMdt, origntd[rtrBgpParam.idxMdt]);
-        computeIncrUpdate(rtrBgpParam.idxNsh, afiNsh, rtrBgpParam.mskNsh, null, changed[rtrBgpParam.idxNsh], computedNsh, origntd[rtrBgpParam.idxNsh]);
-        computeIncrUpdate(rtrBgpParam.idxRpd, afiRpd, rtrBgpParam.mskRpd, null, changed[rtrBgpParam.idxRpd], computedRpd, origntd[rtrBgpParam.idxRpd]);
-        computeIncrUpdate(rtrBgpParam.idxSdw, afiSdw, rtrBgpParam.mskSdw, null, changed[rtrBgpParam.idxSdw], computedSdw, origntd[rtrBgpParam.idxSdw]);
-        computeIncrUpdate(rtrBgpParam.idxSpf, afiSpf, rtrBgpParam.mskSpf, null, changed[rtrBgpParam.idxSpf], computedSpf, origntd[rtrBgpParam.idxSpf]);
-        computeIncrUpdate(rtrBgpParam.idxRtf, afiRtf, rtrBgpParam.mskRtf, null, changed[rtrBgpParam.idxRtf], computedRtf, origntd[rtrBgpParam.idxRtf]);
-        computeIncrUpdate(rtrBgpParam.idxSrte, afiSrte, rtrBgpParam.mskSrte, null, changed[rtrBgpParam.idxSrte], computedSrte, origntd[rtrBgpParam.idxSrte]);
-        computeIncrUpdate(rtrBgpParam.idxLnks, afiLnks, rtrBgpParam.mskLnks, null, changed[rtrBgpParam.idxLnks], computedLnks, origntd[rtrBgpParam.idxLnks]);
-        computeIncrUpdate(rtrBgpParam.idxMvpn, afiMvpn, rtrBgpParam.mskMvpn, null, changed[rtrBgpParam.idxMvpn], computedMvpn, origntd[rtrBgpParam.idxMvpn]);
-        computeIncrUpdate(rtrBgpParam.idxMvpo, afiMvpo, rtrBgpParam.mskMvpo, null, changed[rtrBgpParam.idxMvpo], computedMvpo, origntd[rtrBgpParam.idxMvpo]);
-        computeIncrUpdate(rtrBgpParam.idxMtre, afiMtre, rtrBgpParam.mskMtre, null, changed[rtrBgpParam.idxMtre], computedMtre, origntd[rtrBgpParam.idxMtre]);
-        computeIncrUpdate(rtrBgpParam.idxMtro, afiMtro, rtrBgpParam.mskMtro, null, changed[rtrBgpParam.idxMtro], computedMtro, origntd[rtrBgpParam.idxMtro]);
+        computeIncrUpdate(rtrBgpParam.idxVpnU, afiVpnU, rtrBgpParam.mskVpnU, chgVpnU, changed[rtrBgpParam.idxVpnU], computd[rtrBgpParam.idxVpnU], origntd[rtrBgpParam.idxVpnU]);
+        computeIncrUpdate(rtrBgpParam.idxVpnM, afiVpnM, rtrBgpParam.mskVpnM, chgVpnM, changed[rtrBgpParam.idxVpnM], computd[rtrBgpParam.idxVpnM], origntd[rtrBgpParam.idxVpnM]);
+        computeIncrUpdate(rtrBgpParam.idxVpnF, afiVpnF, rtrBgpParam.mskVpnF, chgVpnF, changed[rtrBgpParam.idxVpnF], computd[rtrBgpParam.idxVpnF], origntd[rtrBgpParam.idxVpnF]);
+        computeIncrUpdate(rtrBgpParam.idxVpoU, afiVpoU, rtrBgpParam.mskVpoU, chgVpoU, changed[rtrBgpParam.idxVpoU], computd[rtrBgpParam.idxVpoU], origntd[rtrBgpParam.idxVpoU]);
+        computeIncrUpdate(rtrBgpParam.idxVpoM, afiVpoM, rtrBgpParam.mskVpoM, chgVpoM, changed[rtrBgpParam.idxVpoM], computd[rtrBgpParam.idxVpoM], origntd[rtrBgpParam.idxVpoM]);
+        computeIncrUpdate(rtrBgpParam.idxVpoF, afiVpoF, rtrBgpParam.mskVpoF, chgVpoF, changed[rtrBgpParam.idxVpoF], computd[rtrBgpParam.idxVpoF], origntd[rtrBgpParam.idxVpoF]);
+        int cntVpls = computeIncrUpdate(rtrBgpParam.idxVpls, afiVpls, rtrBgpParam.mskVpls, null, changed[rtrBgpParam.idxVpls], computd[rtrBgpParam.idxVpls], origntd[rtrBgpParam.idxVpls]);
+        computeIncrUpdate(rtrBgpParam.idxMspw, afiMspw, rtrBgpParam.mskMspw, null, changed[rtrBgpParam.idxMspw], computd[rtrBgpParam.idxMspw], origntd[rtrBgpParam.idxMspw]);
+        int cntEvpn = computeIncrUpdate(rtrBgpParam.idxEvpn, afiEvpn, rtrBgpParam.mskEvpn, chgEvpn, changed[rtrBgpParam.idxEvpn], computd[rtrBgpParam.idxEvpn], origntd[rtrBgpParam.idxEvpn]);
+        computeIncrUpdate(rtrBgpParam.idxMdt, afiMdt, rtrBgpParam.mskMdt, null, changed[rtrBgpParam.idxMdt], computd[rtrBgpParam.idxMdt], origntd[rtrBgpParam.idxMdt]);
+        computeIncrUpdate(rtrBgpParam.idxNsh, afiNsh, rtrBgpParam.mskNsh, null, changed[rtrBgpParam.idxNsh], computd[rtrBgpParam.idxNsh], origntd[rtrBgpParam.idxNsh]);
+        computeIncrUpdate(rtrBgpParam.idxRpd, afiRpd, rtrBgpParam.mskRpd, null, changed[rtrBgpParam.idxRpd], computd[rtrBgpParam.idxRpd], origntd[rtrBgpParam.idxRpd]);
+        computeIncrUpdate(rtrBgpParam.idxSdw, afiSdw, rtrBgpParam.mskSdw, null, changed[rtrBgpParam.idxSdw], computd[rtrBgpParam.idxSdw], origntd[rtrBgpParam.idxSdw]);
+        computeIncrUpdate(rtrBgpParam.idxSpf, afiSpf, rtrBgpParam.mskSpf, null, changed[rtrBgpParam.idxSpf], computd[rtrBgpParam.idxSpf], origntd[rtrBgpParam.idxSpf]);
+        computeIncrUpdate(rtrBgpParam.idxRtf, afiRtf, rtrBgpParam.mskRtf, null, changed[rtrBgpParam.idxRtf], computd[rtrBgpParam.idxRtf], origntd[rtrBgpParam.idxRtf]);
+        computeIncrUpdate(rtrBgpParam.idxSrte, afiSrte, rtrBgpParam.mskSrte, null, changed[rtrBgpParam.idxSrte], computd[rtrBgpParam.idxSrte], origntd[rtrBgpParam.idxSrte]);
+        computeIncrUpdate(rtrBgpParam.idxLnks, afiLnks, rtrBgpParam.mskLnks, null, changed[rtrBgpParam.idxLnks], computd[rtrBgpParam.idxLnks], origntd[rtrBgpParam.idxLnks]);
+        computeIncrUpdate(rtrBgpParam.idxMvpn, afiMvpn, rtrBgpParam.mskMvpn, null, changed[rtrBgpParam.idxMvpn], computd[rtrBgpParam.idxMvpn], origntd[rtrBgpParam.idxMvpn]);
+        computeIncrUpdate(rtrBgpParam.idxMvpo, afiMvpo, rtrBgpParam.mskMvpo, null, changed[rtrBgpParam.idxMvpo], computd[rtrBgpParam.idxMvpo], origntd[rtrBgpParam.idxMvpo]);
+        computeIncrUpdate(rtrBgpParam.idxMtre, afiMtre, rtrBgpParam.mskMtre, null, changed[rtrBgpParam.idxMtre], computd[rtrBgpParam.idxMtre], origntd[rtrBgpParam.idxMtre]);
+        computeIncrUpdate(rtrBgpParam.idxMtro, afiMtro, rtrBgpParam.mskMtro, null, changed[rtrBgpParam.idxMtro], computd[rtrBgpParam.idxMtro], origntd[rtrBgpParam.idxMtro]);
         lspf.doPeersIncr();
         if (labPer || ((cntGlb + cntFlw) > 0)) {
             fwdCore.routerChg(this, labPer);
@@ -2183,22 +1980,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         other.doPeersIncr();
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computedVpnU, computedVpnM, computedVpnF, chgVpnU, chgVpnM, chgVpnF);
+            vrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxVpnU], computd[rtrBgpParam.idxVpnM], computd[rtrBgpParam.idxVpnF], chgVpnU, chgVpnM, chgVpnF);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computedVpoU, computedVpoM, computedVpoF, chgVpoU, chgVpoM, chgVpoF);
+            ovrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxVpoU], computd[rtrBgpParam.idxVpoM], computd[rtrBgpParam.idxVpoF], chgVpoU, chgVpoM, chgVpoF);
         }
         for (int i = 0; i < clrs.size(); i++) {
             clrs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, routerComputedU, routerComputedM, routerComputedF, routerChangedU, routerChangedM, routerChangedF);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computedOuni, computedOmlt, computedOflw, other.routerChangedU, other.routerChangedM, other.routerChangedF);
+            oclrs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxOuni], computd[rtrBgpParam.idxOmlt], computd[rtrBgpParam.idxOflw], other.routerChangedU, other.routerChangedM, other.routerChangedF);
         }
         for (int i = 0; i < l3es.size(); i++) {
-            l3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computedEvpn, computedVpnM, computedVpnF, chgEvpn, chgVpnM, chgVpnF);
+            l3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computd[rtrBgpParam.idxEvpn], computd[rtrBgpParam.idxVpnM], computd[rtrBgpParam.idxVpnF], chgEvpn, chgVpnM, chgVpnF);
         }
         for (int i = 0; i < ol3es.size(); i++) {
-            ol3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computedEvpn, computedVpoM, computedVpoF, chgEvpn, chgVpoM, chgVpoF);
+            ol3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computd[rtrBgpParam.idxEvpn], computd[rtrBgpParam.idxVpoM], computd[rtrBgpParam.idxVpoF], chgEvpn, chgVpoM, chgVpoF);
         }
         if (cntVpls > 0) {
             for (int i = 0; i < vpls.size(); i++) {

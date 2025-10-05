@@ -273,13 +273,13 @@ public class rtrBgpOther extends ipRtr {
             chgF = new tabRoute<addrIP>("empty");
         }
         for (int i = 0; i < chgU.size(); i++) {
-            doUpdateRoute(rtrBgpUtil.sfiUnicast, chgU.get(i), routerComputedU, parent.computedOuni);
+            doUpdateRoute(rtrBgpUtil.sfiUnicast, chgU.get(i), routerComputedU, parent.computd[rtrBgpParam.idxOuni]);
         }
         for (int i = 0; i < chgM.size(); i++) {
-            doUpdateRoute(rtrBgpUtil.sfiMulticast, chgM.get(i), routerComputedM, parent.computedOmlt);
+            doUpdateRoute(rtrBgpUtil.sfiMulticast, chgM.get(i), routerComputedM, parent.computd[rtrBgpParam.idxOmlt]);
         }
         for (int i = 0; i < chgF.size(); i++) {
-            doUpdateRoute(rtrBgpUtil.sfiFlwSpc, chgF.get(i), routerComputedF, parent.computedOflw);
+            doUpdateRoute(rtrBgpUtil.sfiFlwSpc, chgF.get(i), routerComputedF, parent.computd[rtrBgpParam.idxOflw]);
         }
         fwd.routerChg(this, fwd.prefixMode != ipFwd.labelMode.common);
         if (flowInst && (chgF.size() > 0)) {
