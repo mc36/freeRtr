@@ -948,7 +948,7 @@ public class userExec {
         hl.add(null, false, 6, new int[]{7}, "<num>", "group number");
         hl.add(null, false, 7, new int[]{-1}, "config", "peer configuration");
         hl.add(null, false, 7, new int[]{-1}, "status", "group status");
-        hl.add(null, false, 7, new int[]{-1}, "afis", "afi status");
+        hl.add(null, false, 7, new int[]{-1}, "tables", "tables status");
         rtrBgpParam.getAfiList(hl, 7, new int[]{8, -1}, "show", false);
         hl.add(null, false, 8, new int[]{9, -1}, "[addr]", "prefix to view");
         hl.add(null, false, 9, new int[]{-1}, "[rd]", "route distinguisher");
@@ -1046,7 +1046,7 @@ public class userExec {
         hl.add(null, false, 7, new int[]{-1}, "statistics", "collected message statistics");
         hl.add(null, false, 7, new int[]{-1}, "config", "peer configuration");
         hl.add(null, false, 7, new int[]{-1}, "status", "peer status");
-        hl.add(null, false, 7, new int[]{-1}, "afis", "afi status");
+        hl.add(null, false, 7, new int[]{-1}, "tables", "tables status");
         rtrBgpParam.getAfiList(hl, 7, new int[]{8}, "show", false);
         hl.add(null, false, 8, new int[]{9, -1}, "learned", "routes learned from neighbor");
         hl.add(null, false, 9, new int[]{10, -1}, "[addr]", "prefix to view");

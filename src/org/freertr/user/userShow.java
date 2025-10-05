@@ -4730,7 +4730,7 @@ public class userShow {
                 rdr.putStrTab(grp.getStatus());
                 return;
             }
-            if (a.equals("afis")) {
+            if (a.equals("tables")) {
                 rdr.putStrTab(grp.getAfis());
                 return;
             }
@@ -4856,7 +4856,7 @@ public class userShow {
                 rdr.putStrTab(nei.getStatus());
                 return;
             }
-            if (a.equals("afis")) {
+            if (a.equals("tables")) {
                 rdr.putStrTab(nei.getAfis());
                 return;
             }
