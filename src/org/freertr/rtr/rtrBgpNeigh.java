@@ -965,7 +965,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 continue;
             }
             tabRoute<addrIP> acc = new tabRoute<addrIP>(acceptd[i]);
-            lower.newly[i].mergeFrom(mod, acc, tabRouteAttr.distanLim);
+            lower.freshly[i].mergeFrom(mod, acc, tabRouteAttr.distanLim);
         }
     }
 

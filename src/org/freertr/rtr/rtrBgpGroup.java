@@ -737,10 +737,10 @@ public class rtrBgpGroup extends rtrBgpParam {
         updateTable(lower.routerRedistedU, tabRoute.addType.altEcmp, newly[rtrBgpParam.idxUni], lower.afiUni, roumapOut, roupolOut, prflstOut);
         updateTable(lower.routerRedistedM, tabRoute.addType.altEcmp, newly[rtrBgpParam.idxMlt], lower.afiMlt, roumapOut, roupolOut, prflstOut);
         updateTable(lower.routerRedistedF, tabRoute.addType.altEcmp, newly[rtrBgpParam.idxFlw], lower.afiFlw, vroumapOut, vroupolOut, null);
-        readvertTable(lower.afiUni, newly[rtrBgpParam.idxUni], lower.newly[rtrBgpParam.idxUni], roumapOut, roupolOut, prflstOut);
-        readvertTable(lower.afiMlt, newly[rtrBgpParam.idxMlt], lower.newly[rtrBgpParam.idxMlt], roumapOut, roupolOut, prflstOut);
-        readvertTable(lower.afiOuni, newly[rtrBgpParam.idxOuni], lower.newly[rtrBgpParam.idxOuni], oroumapOut, oroupolOut, oprflstOut);
-        readvertTable(lower.afiOmlt, newly[rtrBgpParam.idxOmlt], lower.newly[rtrBgpParam.idxOmlt], oroumapOut, oroupolOut, oprflstOut);
+        readvertTable(lower.afiUni, newly[rtrBgpParam.idxUni], lower.freshly[rtrBgpParam.idxUni], roumapOut, roupolOut, prflstOut);
+        readvertTable(lower.afiMlt, newly[rtrBgpParam.idxMlt], lower.freshly[rtrBgpParam.idxMlt], roumapOut, roupolOut, prflstOut);
+        readvertTable(lower.afiOuni, newly[rtrBgpParam.idxOuni], lower.freshly[rtrBgpParam.idxOuni], oroumapOut, oroupolOut, oprflstOut);
+        readvertTable(lower.afiOmlt, newly[rtrBgpParam.idxOmlt], lower.freshly[rtrBgpParam.idxOmlt], oroumapOut, oroupolOut, oprflstOut);
         tabRoute<addrIP> tab = new tabRoute<addrIP>("agg");
         lower.routerDoAggregates(lower.afiUni, newly[rtrBgpParam.idxUni], tab, lower.fwdCore.commonLabel, lower.routerID, lower.localAs);
         updateTable(tab, tabRoute.addType.better, newly[rtrBgpParam.idxUni], lower.afiUni, roumapOut, roupolOut, prflstOut);
@@ -759,7 +759,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             }
             int afi = lower.idx2safi(i);
             tabListing[] fltr = getOutFilters(i);
-            importTable(afi, newly[i], lower.newly[i], fltr[0], fltr[1], fltr[2]);
+            importTable(afi, newly[i], lower.freshly[i], fltr[0], fltr[1], fltr[2]);
         }
         if (peerType != rtrBgpUtil.peerRflct) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();

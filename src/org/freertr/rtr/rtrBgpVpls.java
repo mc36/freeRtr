@@ -167,11 +167,11 @@ public class rtrBgpVpls implements Comparable<rtrBgpVpls> {
         ntry.best.extComm.add(tabRouteUtil.rt2comm(bridge.bridgeHed.rtExp));
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         ntry.rouDst = bridge.bridgeHed.rd;
-        parent.newly[rtrBgpParam.idxVpls].add(tabRoute.addType.better, ntry, true, true);
+        parent.freshly[rtrBgpParam.idxVpls].add(tabRoute.addType.better, ntry, true, true);
         ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp));
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-        parent.newly[rtrBgpParam.idxRtf].add(tabRoute.addType.always, ntry, false, true);
+        parent.freshly[rtrBgpParam.idxRtf].add(tabRoute.addType.always, ntry, false, true);
         adverted = true;
     }
 

@@ -255,7 +255,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, tabRouteUtil.rt2comm(fwd.rtImp.get(i)));
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-            parent.newly[rtrBgpParam.idxRtf].add(tabRoute.addType.always, ntry, false, true);
+            parent.freshly[rtrBgpParam.idxRtf].add(tabRoute.addType.always, ntry, false, true);
         }
         if (defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -315,7 +315,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.prefix.network.fromBuf(buf1, 0);
             ntry.prefix.broadcast.fromBuf(buf2, 0);
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, parent.newly[rtrBgpParam.idxMdt], parent.afiMdt, 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, parent.freshly[rtrBgpParam.idxMdt], parent.afiMdt, 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
         }
         if (mvpn == null) {
             return;
