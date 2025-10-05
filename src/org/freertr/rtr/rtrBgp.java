@@ -1472,34 +1472,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (debugger.rtrBgpComp) {
                 logger.debug("round " + compRound + " counquer");
             }
-            computeConquerTable(routerComputedU, freshly[rtrBgpParam.idxUni]);
-            computeConquerTable(routerComputedM, freshly[rtrBgpParam.idxMlt]);
-            computeConquerTable(computd[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOuni]);
-            computeConquerTable(computd[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOmlt]);
-            computeConquerTable(computd[rtrBgpParam.idxOflw], freshly[rtrBgpParam.idxOflw]);
-            computeConquerTable(computd[rtrBgpParam.idxOsrt], freshly[rtrBgpParam.idxOsrt]);
-            computeConquerTable(routerComputedF, freshly[rtrBgpParam.idxFlw]);
-            computeConquerTable(computd[rtrBgpParam.idxVpnU], freshly[rtrBgpParam.idxVpnU]);
-            computeConquerTable(computd[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnM]);
-            computeConquerTable(computd[rtrBgpParam.idxVpnF], freshly[rtrBgpParam.idxVpnF]);
-            computeConquerTable(computd[rtrBgpParam.idxVpoU], freshly[rtrBgpParam.idxVpoU]);
-            computeConquerTable(computd[rtrBgpParam.idxVpoM], freshly[rtrBgpParam.idxVpoM]);
-            computeConquerTable(computd[rtrBgpParam.idxVpoF], freshly[rtrBgpParam.idxVpoF]);
-            computeConquerTable(computd[rtrBgpParam.idxVpls], freshly[rtrBgpParam.idxVpls]);
-            computeConquerTable(computd[rtrBgpParam.idxMspw], freshly[rtrBgpParam.idxMspw]);
-            computeConquerTable(computd[rtrBgpParam.idxEvpn], freshly[rtrBgpParam.idxEvpn]);
-            computeConquerTable(computd[rtrBgpParam.idxMdt], freshly[rtrBgpParam.idxMdt]);
-            computeConquerTable(computd[rtrBgpParam.idxNsh], freshly[rtrBgpParam.idxNsh]);
-            computeConquerTable(computd[rtrBgpParam.idxRpd], freshly[rtrBgpParam.idxRpd]);
-            computeConquerTable(computd[rtrBgpParam.idxSdw], freshly[rtrBgpParam.idxSdw]);
-            computeConquerTable(computd[rtrBgpParam.idxSpf], freshly[rtrBgpParam.idxSpf]);
-            computeConquerTable(computd[rtrBgpParam.idxRtf], freshly[rtrBgpParam.idxRtf]);
-            computeConquerTable(computd[rtrBgpParam.idxSrte], freshly[rtrBgpParam.idxSrte]);
-            computeConquerTable(computd[rtrBgpParam.idxLnks], freshly[rtrBgpParam.idxLnks]);
-            computeConquerTable(computd[rtrBgpParam.idxMvpn], freshly[rtrBgpParam.idxMvpn]);
-            computeConquerTable(computd[rtrBgpParam.idxMvpo], freshly[rtrBgpParam.idxMvpo]);
-            computeConquerTable(computd[rtrBgpParam.idxMtre], freshly[rtrBgpParam.idxMtre]);
-            computeConquerTable(computd[rtrBgpParam.idxMtro], freshly[rtrBgpParam.idxMtro]);
+            for (int i = 0; i < computd.length; i++) {
+                if (rtrBgpParam.indexAlias[i] >= 0) {
+                    continue;
+                }
+                computeConquerTable(computd[i], freshly[i]);
+            }
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " groups");
