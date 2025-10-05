@@ -1672,6 +1672,121 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * get originated
+     *
+     * @param idx safi to query
+     * @param mask safi to query
+     * @param safi safi to query
+     * @return table
+     */
+    public tabRoute<addrIP> getOrignted(int idx, long mask, int safi) {
+        if (idx == rtrBgpParam.idxUni) {
+            return routerRedistedU;
+        }
+        if (idx == rtrBgpParam.idxLab) {
+            return routerRedistedU;
+        }
+        if (idx == rtrBgpParam.idxCtp) {
+            return routerRedistedU;
+        }
+        if (idx == rtrBgpParam.idxCar) {
+            return routerRedistedU;
+        }
+        if (idx == rtrBgpParam.idxMlt) {
+            return routerRedistedM;
+        }
+        if (idx == rtrBgpParam.idxOlab) {
+            return origntedOuni;
+        }
+        if (idx == rtrBgpParam.idxOctp) {
+            return origntedOuni;
+        }
+        if (idx == rtrBgpParam.idxOcar) {
+            return origntedOuni;
+        }
+        if (idx == rtrBgpParam.idxOuni) {
+            return origntedOuni;
+        }
+        if (idx == rtrBgpParam.idxOmlt) {
+            return origntedOmlt;
+        }
+        if (idx == rtrBgpParam.idxOflw) {
+            return origntedOflw;
+        }
+        if (idx == rtrBgpParam.idxOsrt) {
+            return origntedOsrt;
+        }
+        if (idx == rtrBgpParam.idxFlw) {
+            return origntedFlw;
+        }
+        if (idx == rtrBgpParam.idxVpnU) {
+            return origntedVpnU;
+        }
+        if (idx == rtrBgpParam.idxVpnM) {
+            return origntedVpnM;
+        }
+        if (idx == rtrBgpParam.idxVpnF) {
+            return origntedVpnF;
+        }
+        if (idx == rtrBgpParam.idxVpoU) {
+            return origntedVpoU;
+        }
+        if (idx == rtrBgpParam.idxVpoM) {
+            return origntedVpoM;
+        }
+        if (idx == rtrBgpParam.idxVpoF) {
+            return origntedVpoF;
+        }
+        if (idx == rtrBgpParam.idxVpls) {
+            return origntedVpls;
+        }
+        if (idx == rtrBgpParam.idxMspw) {
+            return origntedMspw;
+        }
+        if (idx == rtrBgpParam.idxEvpn) {
+            return origntedEvpn;
+        }
+        if (idx == rtrBgpParam.idxMdt) {
+            return origntedMdt;
+        }
+        if (idx == rtrBgpParam.idxNsh) {
+            return origntedNsh;
+        }
+        if (idx == rtrBgpParam.idxRpd) {
+            return origntedRpd;
+        }
+        if (idx == rtrBgpParam.idxSdw) {
+            return origntedSdw;
+        }
+        if (idx == rtrBgpParam.idxSpf) {
+            return origntedSpf;
+        }
+        if (idx == rtrBgpParam.idxRtf) {
+            return origntedRtf;
+        }
+        if (idx == rtrBgpParam.idxSrte) {
+            return origntedSrte;
+        }
+        if (idx == rtrBgpParam.idxLnks) {
+            return origntedLnks;
+        }
+        if (idx == rtrBgpParam.idxMvpn) {
+            return origntedMvpn;
+        }
+        if (idx == rtrBgpParam.idxMvpo) {
+            return origntedMvpo;
+        }
+        if (idx == rtrBgpParam.idxMtre) {
+            return origntedMtre;
+        }
+        if (idx == rtrBgpParam.idxMtro) {
+            return origntedMtro;
+        }
+        logger.info("unknown safi (" + safi + ") requested");
+        return null;
+    }
+
+    /**
      * get newly
      *
      * @param idx safi to query
@@ -5124,9 +5239,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return status
      */
     public userFormat getTables() {
-        userFormat l = new userFormat("|", "afi|compute|change");
+        userFormat l = new userFormat("|", "afi|compute|newly|origin|change");
         for (int i = 0; i < changed.length; i++) {
-            l.add(rtrBgpParam.idx2string(i) + "|" + getDatabase(i, 0, 0).size() + "|" + changed[i].size());
+            l.add(rtrBgpParam.idx2string(i) + "|" + getDatabase(i, 0, 0).size() + "|" + getNewly(i, fullLast, i).size() + "|" + getOrignted(i, 0, 0).size() + "|" + changed[i].size());
         }
         return l;
     }
