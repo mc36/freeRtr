@@ -907,9 +907,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         }
         reachable = true;
         if (!softReconfig) {
-            for (int i = 0; i < acceptd.length; i++) {
-                acceptd[i] = conn.learnt[i];
-            }
+            acceptd = conn.learnt;
             if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {
                 rtfilterUsed = acceptd[rtrBgpParam.idxRtf];
             }

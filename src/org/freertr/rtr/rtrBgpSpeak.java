@@ -1776,8 +1776,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 continue;
             }
             currChg++;
-            tabRoute<addrIP> changed = parent.getChanged(idx, mask, safi);
-            changed.add(tabRoute.addType.always, res, true, false);
+            parent.changed[idx].add(tabRoute.addType.always, res, true, false);
         }
         for (int i = 0; i < currAdd.size(); i++) {
             tabRouteEntry<addrIP> res = currAdd.get(i);
@@ -1822,7 +1821,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             neigh.setValidity(safi, res);
             addpath = addpathRx[idx];
             tabRoute<addrIP> lrnt = learnt[idx];
-            tabRoute<addrIP> chgd = parent.getChanged(idx, mask, safi);
+            tabRoute<addrIP> chgd = parent.changed[idx];
             if (!neigh.softReconfig) {
                 tabListing[] fltr = neigh.getInFilters(idx);
                 tabRouteEntry<addrIP> udp = tabRoute.doUpdateEntry(safi, neigh.remoteAs, res, fltr[0], fltr[1], fltr[2]);
