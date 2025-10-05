@@ -1675,7 +1675,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (idx < 0) {
             return true;
         }
-        long mask = 1L << idx;
         boolean addpath = addpathRx[idx];
         int ident = 0;
         for (;;) {
@@ -1740,7 +1739,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tabRouteEntry<addrIP> res = currDel.get(i);
             idx = (int) res.oldDst;
             res.oldDst = 0;
-            mask = 1L << idx;
             int safi = parent.idx2safi(idx);
             addpath = addpathRx[idx];
             parent.unreachStat.rx(pck);
@@ -1755,10 +1753,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 continue;
             }
             if (parent.flaps != null) {
-                parent.prefixFlapped(idx, mask, safi, res.rouDst, res.prefix, null);
+                parent.prefixFlapped(idx, res.rouDst, res.prefix, null);
             }
             if (neigh.dampenPfxs != null) {
-                neigh.prefixDampen(idx, mask, safi, res.rouDst, res.prefix, neigh.dampenWthd);
+                neigh.prefixDampen(idx, res.rouDst, res.prefix, neigh.dampenWthd);
             }
             if (doPrefDel(learnt[idx], addpath, res)) {
                 continue;
@@ -1770,7 +1768,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tabRouteEntry<addrIP> res = currAdd.get(i);
             idx = (int) res.oldDst;
             res.oldDst = 0;
-            mask = 1L << idx;
             int safi = parent.idx2safi(idx);
             parent.reachabStat.rx(pck);
             neigh.reachabStat.rx(pck);
@@ -1801,10 +1798,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
             ntry.best.copyBytes(res.best, false);
             if (parent.flaps != null) {
-                parent.prefixFlapped(idx, mask, safi, res.rouDst, res.prefix, res.best.asPathInts(-1));
+                parent.prefixFlapped(idx, res.rouDst, res.prefix, res.best.asPathInts(-1));
             }
             if (neigh.dampenPfxs != null) {
-                neigh.prefixDampen(idx, mask, safi, res.rouDst, res.prefix, neigh.dampenAnno);
+                neigh.prefixDampen(idx, res.rouDst, res.prefix, neigh.dampenAnno);
             }
             neigh.setValidity(safi, res);
             addpath = addpathRx[idx];

@@ -235,7 +235,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @param mask safi to refresh
      * @param safi safi to refresh
      */
-    public void saveTable(RandomAccessFile fil, int idx, long mask, int safi) {
+    public void saveTable(RandomAccessFile fil, int idx, int safi) {
         rtrBgpMrt.dumpTable(fil, conn, safi, conn.learnt[idx], false, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
         rtrBgpMrt.dumpTable(fil, conn, safi, conn.advert[idx], true, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
     }
@@ -1099,8 +1099,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @param prf prefix
      * @param pnlt penalty
      */
-    protected void prefixDampen(int idx, long mask, int afi, long rd, addrPrefix<addrIP> prf, int pnlt) {
-        rtrBgpDamp ntry = new rtrBgpDamp(idx, mask, afi, rd, prf);
+    protected void prefixDampen(int idx, long rd, addrPrefix<addrIP> prf, int pnlt) {
+        rtrBgpDamp ntry = new rtrBgpDamp(idx, rd, prf);
         rtrBgpDamp old = dampenPfxs.add(ntry);
         if (old != null) {
             ntry = old;
@@ -1155,11 +1155,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * neighbor list entry
      *
      * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
      * @return line of string
      */
-    public String showNeighs(int idx, long mask, int safi) {
+    public String showNeighs(int idx) {
         return showSummry1() + "|" + conn.learnt[idx].size() + "|" + acceptd[idx].size() + "|" + willing[idx].size() + "|" + conn.advert[idx].size() + "|" + bits.timePast(conn.upTime);
     }
 

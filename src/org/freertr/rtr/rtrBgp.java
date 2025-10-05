@@ -1948,11 +1948,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param prf prefix
      * @param pth path
      */
-    protected void prefixFlapped(int idx, long mask, int afi, long rd, addrPrefix<addrIP> prf, List<Integer> pth) {
+    protected void prefixFlapped(int idx, long rd, addrPrefix<addrIP> prf, List<Integer> pth) {
         if (pth == null) {
             pth = new ArrayList<Integer>();
         }
-        rtrBgpFlapStat ntry = new rtrBgpFlapStat(idx, mask, afi, rd, prf);
+        rtrBgpFlapStat ntry = new rtrBgpFlapStat(idx, rd, prf);
         rtrBgpFlapStat old = flaps.add(ntry);
         if (old != null) {
             ntry = old;
@@ -3365,25 +3365,23 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * list neighbor summary
      *
      * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
      * @return list of neighbors
      */
-    public userFormat showNeighs(int idx, long mask, int safi) {
+    public userFormat showNeighs(int idx) {
         userFormat l = new userFormat("|", "neighbor|as|learn|accept|will|done|uptime");
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.showNeighs(idx, mask, safi));
+            l.add(ntry.showNeighs(idx));
         }
         for (int i = 0; i < lstnNei.size(); i++) {
             rtrBgpNeigh ntry = lstnNei.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.showNeighs(idx, mask, safi));
+            l.add(ntry.showNeighs(idx));
         }
         return l;
     }
@@ -3750,12 +3748,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * get flap stats
      *
+     * @param idx afi
      * @param mask afi
      * @param afi afi
      * @param num minimum flap count
      * @return list of statistics
      */
-    public userFormat getFlapstat(long mask, int afi, int num) {
+    public userFormat getFlapstat(int idx, long mask, int afi, int num) {
         userFormat l = new userFormat("|", "prefix|count|paths|ago|last");
         if (flaps == null) {
             return l;
@@ -3765,7 +3764,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry == null) {
                 continue;
             }
-            if (ntry.mask != mask) {
+            if (ntry.idx != idx) {
                 continue;
             }
             if (ntry.count < num) {
@@ -3787,11 +3786,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param rev reverse path
      * @return list of paths
      */
-    public userFormat getFlappath(int idx, long mask, int afi, long rd, addrPrefix<addrIP> prf, boolean rev) {
+    public userFormat getFlappath(int idx, long rd, addrPrefix<addrIP> prf, boolean rev) {
         if (flaps == null) {
             return null;
         }
-        rtrBgpFlapStat ntry = new rtrBgpFlapStat(idx, mask, afi, rd, prf);
+        rtrBgpFlapStat ntry = new rtrBgpFlapStat(idx, rd, prf);
         ntry = flaps.find(ntry);
         if (ntry == null) {
             return null;

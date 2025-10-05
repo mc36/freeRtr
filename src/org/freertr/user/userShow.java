@@ -4906,7 +4906,7 @@ public class userShow {
         }
         a = cmd.word();
         if (a.equals("summary")) {
-            rdr.putStrTab(r.bgp.showNeighs(idx, sfm, sfi));
+            rdr.putStrTab(r.bgp.showNeighs(idx));
             return;
         }
         if (a.equals("asgraph")) {
@@ -4986,7 +4986,7 @@ public class userShow {
             return;
         }
         if (a.equals("flapstat")) {
-            rdr.putStrTab(r.bgp.getFlapstat(sfm, sfi, bits.str2num(cmd.word())));
+            rdr.putStrTab(r.bgp.getFlapstat(idx, sfm, sfi, bits.str2num(cmd.word())));
             return;
         }
         if (a.equals("flappath")) {
@@ -4995,7 +4995,7 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            rdr.putStrTab(r.bgp.getFlappath(idx, sfm, sfi, tabRouteUtil.string2rd(cmd.word()), ntry, false));
+            rdr.putStrTab(r.bgp.getFlappath(idx, tabRouteUtil.string2rd(cmd.word()), ntry, false));
             return;
         }
         if (a.equals("flaprevpath")) {
@@ -5004,7 +5004,7 @@ public class userShow {
                 cmd.error("bad prefix");
                 return;
             }
-            rdr.putStrTab(r.bgp.getFlappath(idx, sfm, sfi, tabRouteUtil.string2rd(cmd.word()), ntry, true));
+            rdr.putStrTab(r.bgp.getFlappath(idx, tabRouteUtil.string2rd(cmd.word()), ntry, true));
             return;
         }
         if (a.equals("allroute")) {

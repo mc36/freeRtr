@@ -1143,7 +1143,6 @@ public class userClear {
             if (idx < 0) {
                 return;
             }
-            long safi = 1L << idx;
             int sfi = r.bgp.idx2safi(idx);
             if (sfi < 1) {
                 return;
@@ -1160,7 +1159,7 @@ public class userClear {
             for (int i = 0; i < neis.size(); i++) {
                 rtrBgpNeigh nei = neis.get(i);
                 cmd.error("saving " + nei.peerAddr);
-                nei.saveTable(fs, idx, safi, sfi);
+                nei.saveTable(fs, idx, sfi);
             }
             try {
                 fs.close();

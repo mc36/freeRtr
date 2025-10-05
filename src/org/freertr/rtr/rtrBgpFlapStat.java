@@ -21,16 +21,6 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
     public final int idx;
 
     /**
-     * address family
-     */
-    public final long mask;
-
-    /**
-     * address family
-     */
-    public final int afi;
-
-    /**
      * route distinguisher
      */
     public final long rd;
@@ -64,15 +54,11 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
      * create instance
      *
      * @param i afi
-     * @param m afi
-     * @param a afi
      * @param r rd
      * @param p prefix
      */
-    public rtrBgpFlapStat(int i, long m, int a, long r, addrPrefix<addrIP> p) {
+    public rtrBgpFlapStat(int i, long r, addrPrefix<addrIP> p) {
         idx = i;
-        mask = m;
-        afi = a;
         rd = r;
         prefix = p.copyBytes();
     }
@@ -81,15 +67,11 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
      * create instance
      *
      * @param i afi
-     * @param m afi
-     * @param a afi
      * @param r rd
      * @param p prefix
      */
-    public rtrBgpFlapStat(int i, long m, int a, long r, addrIP p) {
+    public rtrBgpFlapStat(int i, long r, addrIP p) {
         idx = i;
-        mask = m;
-        afi = a;
         rd = r;
         prefix = new addrPrefix<addrIP>(p.copyBytes(), addrIP.size * 8);
     }

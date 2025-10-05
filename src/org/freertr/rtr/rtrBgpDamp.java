@@ -19,16 +19,6 @@ public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
     public final int idx;
 
     /**
-     * address family
-     */
-    public final long mask;
-
-    /**
-     * address family
-     */
-    public final int afi;
-
-    /**
      * route distinguisher
      */
     public final long rd;
@@ -56,16 +46,12 @@ public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
     /**
      * create instance
      *
-     * @param i idx
-     * @param m afi
-     * @param a afi
+     * @param i afi
      * @param r rd
      * @param p prefix
      */
-    public rtrBgpDamp(int i, long m, int a, long r, addrPrefix<addrIP> p) {
+    public rtrBgpDamp(int i, long r, addrPrefix<addrIP> p) {
         idx = i;
-        mask = m;
-        afi = a;
         rd = r;
         prefix = p.copyBytes();
     }
@@ -87,7 +73,7 @@ public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
     }
 
     public String toString() {
-        return rtrBgpUtil.safi2string(afi) + "|" + addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + penalty + "|" + dampened + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
+        return rtrBgpParam.idx2string(idx) + "|" + addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + penalty + "|" + dampened + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
     }
 
 }

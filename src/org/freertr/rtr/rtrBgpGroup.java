@@ -146,18 +146,6 @@ public class rtrBgpGroup extends rtrBgpParam {
     }
 
     /**
-     * get changed
-     *
-     * @param idx safi to query
-     * @param mask safi to query
-     * @param safi safi to query
-     * @return table
-     */
-    public tabRoute<addrIP> getChanged(int idx, long mask, int safi) {
-        return changed[idx];
-    }
-
-    /**
      * purge changed routes
      */
     protected void computeIncrPurge() {
