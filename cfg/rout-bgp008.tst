@@ -200,8 +200,10 @@ r1 output show ipv4 bgp 1 group
 r1 output show ipv6 bgp 1 group
 r1 output show ipv4 bgp 1 group 0 uni
 r1 output show ipv6 bgp 1 group 0 uni
-r1 output show ipv4 bgp 1 best
-r1 output show ipv6 bgp 1 best
+r1 output show ipv4 bgp 1 status
+r1 output show ipv6 bgp 1 status
+r1 output show ipv4 bgp 1 tables
+r1 output show ipv6 bgp 1 tables
 r1 output show ipv4 route v1
 r1 output show ipv6 route v1
 output ../binTmp/rout-bgp-grp.html
@@ -230,21 +232,29 @@ here is the ipv6 database:
 <pre>
 <!>show:5
 </pre>
-here are the ipv4 statistics:
+here are the ipv4 status:
 <pre>
 <!>show:6
 </pre>
-here are the ipv6 statistics:
+here are the ipv6 status:
 <pre>
 <!>show:7
 </pre>
-here are the ipv4 routes:
+here are the ipv4 tables:
 <pre>
 <!>show:8
 </pre>
-here are the ipv6 routes:
+here are the ipv6 tables:
 <pre>
 <!>show:9
+</pre>
+here are the ipv4 routes:
+<pre>
+<!>show:10
+</pre>
+here are the ipv6 routes:
+<pre>
+<!>show:11
 </pre>
 </body></html>
 !

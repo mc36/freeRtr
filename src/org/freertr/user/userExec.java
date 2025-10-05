@@ -953,7 +953,8 @@ public class userExec {
         hl.add(null, false, 8, new int[]{9, -1}, "[addr]", "prefix to view");
         hl.add(null, false, 9, new int[]{-1}, "[rd]", "route distinguisher");
         hl.add(null, false, 5, new int[]{-1}, "nexthop", "list of nexthops");
-        hl.add(null, false, 5, new int[]{-1}, "bestpath", "best path statistics");
+        hl.add(null, false, 5, new int[]{-1}, "status", "global status");
+        hl.add(null, false, 5, new int[]{-1}, "tables", "tables status");
         hl.add(null, false, 5, new int[]{6}, "lspf", "linkstate spf statistics");
         hl.add(null, false, 6, new int[]{-1}, "spf", "information about last spf");
         hl.add(null, false, 6, new int[]{7, -1}, "tree", "tree about last spf");

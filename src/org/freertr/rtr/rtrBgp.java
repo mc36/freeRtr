@@ -5343,11 +5343,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
-     * get bestpath stats
+     * get status
      *
      * @return list of statistics
      */
-    public userFormat getBestpath() {
+    public userFormat getStatus() {
         userFormat l = new userFormat("|", "category|value|addition");
         l.add("self|" + this);
         l.add("other|" + other);
@@ -5392,6 +5392,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("groups|" + groups.size() + "|" + groupMin + ".." + groupMax);
         l.add("roa table|" + rpkiA.size() + "|" + rpkiO.size());
         l.add("aspa table|" + rpkiP.size());
+        return l;
+    }
+
+    /**
+     * get status of peer
+     *
+     * @return status
+     */
+    public userFormat getTables() {
+        userFormat l = new userFormat("|", "afi|compute|change");
         l.add("unicast table|" + routerComputedU.size() + "|" + changedUni.size());
         l.add("multicast table|" + routerComputedM.size() + "|" + changedMlt.size());
         l.add("ouni table|" + computedOuni.size() + "|" + changedOuni.size());

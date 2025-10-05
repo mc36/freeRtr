@@ -4628,8 +4628,12 @@ public class userShow {
             return;
         }
         String a = cmd.word();
-        if (a.equals("bestpath")) {
-            rdr.putStrTab(r.bgp.getBestpath());
+        if (a.equals("status")) {
+            rdr.putStrTab(r.bgp.getStatus());
+            return;
+        }
+        if (a.equals("tables")) {
+            rdr.putStrTab(r.bgp.getTables());
             return;
         }
         if (a.equals("statistics")) {
@@ -4731,7 +4735,7 @@ public class userShow {
                 return;
             }
             if (a.equals("tables")) {
-                rdr.putStrTab(grp.getAfis());
+                rdr.putStrTab(grp.getTables());
                 return;
             }
             int idx = rtrBgpParam.string2idx(a);
@@ -4857,7 +4861,7 @@ public class userShow {
                 return;
             }
             if (a.equals("tables")) {
-                rdr.putStrTab(nei.getAfis());
+                rdr.putStrTab(nei.getTables());
                 return;
             }
             int idx = rtrBgpParam.string2idx(a);

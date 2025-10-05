@@ -137,7 +137,7 @@ public class rtrBgpGroup extends rtrBgpParam {
      *
      * @return status
      */
-    public userFormat getAfis() {
+    public userFormat getTables() {
         userFormat l = new userFormat("|", "afi|will|change");
         for (int i = 0; i < addrFams.length; i++) {
             l.add(rtrBgpParam.idx2string(i) + "|" + willing[i].size() + "|" + changed[i].size());

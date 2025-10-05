@@ -363,7 +363,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      *
      * @return status
      */
-    public userFormat getAfis() {
+    public userFormat getTables() {
         userFormat l = new userFormat("|", "afi|advert|will|change|accept|learn");
         for (int i = 0; i < addrFams.length; i++) {
             l.add(rtrBgpParam.idx2string(i) + "|" + conn.advert[i].size() + "|" + willing[i].size() + "|" + changed[i].size() + "|" + acceptd[i].size() + "|" + conn.learnt[i].size());
