@@ -1617,7 +1617,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         fullCount++;
     }
 
-    private tabRouteEntry<addrIP> computeIncrBest(int idx, long mask, int afi, rtrBgpNeigh nei, tabRouteEntry<addrIP> best, tabRouteEntry<addrIP> curr) {
+    private tabRouteEntry<addrIP> computeIncrBest(int idx, rtrBgpNeigh nei, tabRouteEntry<addrIP> best, tabRouteEntry<addrIP> curr) {
         if (nei == null) {
             return best;
         }
@@ -1651,7 +1651,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private void computeIncrEntry(int idx, long mask, int afi, tabRouteEntry<addrIP> curr, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
+    private void computeIncrEntry(int idx, int afi, tabRouteEntry<addrIP> curr, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
         if (debugger.rtrBgpIncr) {
             logger.debug("bestpath for " + tabRouteUtil.rd2string(curr.rouDst) + " " + curr.prefix + " in " + rtrBgpUtil.safi2string(afi));
         }
@@ -1661,10 +1661,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             best.best.rouSrc = rtrBgpUtil.peerOriginate;
         }
         for (int i = 0; i < lstnNei.size(); i++) {
-            best = computeIncrBest(idx, mask, afi, lstnNei.get(i), best, curr);
+            best = computeIncrBest(idx, lstnNei.get(i), best, curr);
         }
         for (int i = 0; i < neighs.size(); i++) {
-            best = computeIncrBest(idx, mask, afi, neighs.get(i), best, curr);
+            best = computeIncrBest(idx, neighs.get(i), best, curr);
         }
         if (best == null) {
             cmp.del(curr);
@@ -1700,19 +1700,21 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < groups.size(); i++) {
             rtrBgpGroup grp = groups.get(i);
             tabRoute<addrIP> wil = grp.willing[idx];
-            tabRoute<addrIP> chg = grp.changed[idx];
-            tabRouteEntry<addrIP> ntry = null;
             tabRouteEntry<addrIP> old = wil.find(best);
+            tabRouteEntry<addrIP> ntry;
             if (best.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 ntry = grp.originatePrefix(afi, best);
             } else {
                 ntry = grp.readvertPrefix(afi, best);
             }
-            tabListing[] fltr = grp.getOutFilters(idx);
-            ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, fltr[0], fltr[1], fltr[2]);
+            if (ntry != null) {
+                tabListing[] fltr = grp.getOutFilters(idx);
+                ntry = tabRoute.doUpdateEntry(afi, grp.remoteAs, ntry, fltr[0], fltr[1], fltr[2]);
+            }
             if ((ntry == null) && (old == null)) {
                 continue;
             }
+            tabRoute<addrIP> chg = grp.changed[idx];
             if (ntry == null) {
                 wil.del(best);
                 chg.add(tabRoute.addType.always, best, false, false);
@@ -1735,7 +1737,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             tabRouteEntry<addrIP> ntry = chg.get(i);
             chg.del(ntry);
             don.add(tabRoute.addType.always, ntry, false, false);
-            computeIncrEntry(idx, msk, afi, ntry, cmp, org);
+            computeIncrEntry(idx, afi, ntry, cmp, org);
             res++;
         }
         return res;
