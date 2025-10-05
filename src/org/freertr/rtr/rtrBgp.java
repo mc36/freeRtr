@@ -1653,32 +1653,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         origntd[rtrBgpParam.idxCtp] = routerRedistedU;
         origntd[rtrBgpParam.idxCar] = routerRedistedU;
         origntd[rtrBgpParam.idxMlt] = routerRedistedM;
-        origntd[rtrBgpParam.idxOuni] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxOuni]);
-        origntd[rtrBgpParam.idxOmlt] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxOmlt]);
-        origntd[rtrBgpParam.idxOflw] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxOflw]);
-        origntd[rtrBgpParam.idxOsrt] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxOsrt]);
-        origntd[rtrBgpParam.idxFlw] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxFlw]);
-        origntd[rtrBgpParam.idxVpnU] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxVpnU]);
-        origntd[rtrBgpParam.idxVpnM] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxVpnM]);
-        origntd[rtrBgpParam.idxVpnF] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxVpnF]);
-        origntd[rtrBgpParam.idxVpoU] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxVpoU]);
-        origntd[rtrBgpParam.idxVpoM] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxVpoM]);
-        origntd[rtrBgpParam.idxVpoF] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxVpoF]);
-        origntd[rtrBgpParam.idxVpls] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxVpls]);
-        origntd[rtrBgpParam.idxMspw] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxMspw]);
-        origntd[rtrBgpParam.idxEvpn] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxEvpn]);
-        origntd[rtrBgpParam.idxMdt] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxMdt]);
-        origntd[rtrBgpParam.idxNsh] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxNsh]);
-        origntd[rtrBgpParam.idxRpd] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxRpd]);
-        origntd[rtrBgpParam.idxSdw] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxSdw]);
-        origntd[rtrBgpParam.idxSpf] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxSpf]);
-        origntd[rtrBgpParam.idxRtf] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxRtf]);
-        origntd[rtrBgpParam.idxSrte] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxSrte]);
-        origntd[rtrBgpParam.idxLnks] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxLnks]);
-        origntd[rtrBgpParam.idxMvpn] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxMvpn]);
-        origntd[rtrBgpParam.idxMvpo] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxMvpo]);
-        origntd[rtrBgpParam.idxMtre] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxMtre]);
-        origntd[rtrBgpParam.idxMtro] = new tabRoute<addrIP>(freshly[rtrBgpParam.idxMtro]);
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " rpki");
         }
