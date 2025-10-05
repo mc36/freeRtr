@@ -1542,35 +1542,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         lspf.doPeersFull();
         boolean diffs = freshly[rtrBgpParam.idxUni].differs(tabRoute.addType.alters, routerComputedU) || freshly[rtrBgpParam.idxMlt].differs(tabRoute.addType.alters, routerComputedM) || freshly[rtrBgpParam.idxFlw].differs(tabRoute.addType.alters, routerComputedF);
-        computd = rtrBgpParam.freshTables();
+        computd = freshly;
         routerComputedU = freshly[rtrBgpParam.idxUni];
         routerComputedM = freshly[rtrBgpParam.idxMlt];
-        computd[rtrBgpParam.idxOuni] = freshly[rtrBgpParam.idxOuni];
-        computd[rtrBgpParam.idxOmlt] = freshly[rtrBgpParam.idxOmlt];
-        computd[rtrBgpParam.idxOflw] = freshly[rtrBgpParam.idxOflw];
-        computd[rtrBgpParam.idxOsrt] = freshly[rtrBgpParam.idxOsrt];
         routerComputedF = freshly[rtrBgpParam.idxFlw];
-        computd[rtrBgpParam.idxVpnU] = freshly[rtrBgpParam.idxVpnU];
-        computd[rtrBgpParam.idxVpnM] = freshly[rtrBgpParam.idxVpnM];
-        computd[rtrBgpParam.idxVpnF] = freshly[rtrBgpParam.idxVpnF];
-        computd[rtrBgpParam.idxVpoU] = freshly[rtrBgpParam.idxVpoU];
-        computd[rtrBgpParam.idxVpoM] = freshly[rtrBgpParam.idxVpoM];
-        computd[rtrBgpParam.idxVpoF] = freshly[rtrBgpParam.idxVpoF];
-        computd[rtrBgpParam.idxVpls] = freshly[rtrBgpParam.idxVpls];
-        computd[rtrBgpParam.idxMspw] = freshly[rtrBgpParam.idxMspw];
-        computd[rtrBgpParam.idxEvpn] = freshly[rtrBgpParam.idxEvpn];
-        computd[rtrBgpParam.idxMdt] = freshly[rtrBgpParam.idxMdt];
-        computd[rtrBgpParam.idxNsh] = freshly[rtrBgpParam.idxNsh];
-        computd[rtrBgpParam.idxRpd] = freshly[rtrBgpParam.idxRpd];
-        computd[rtrBgpParam.idxSdw] = freshly[rtrBgpParam.idxSdw];
-        computd[rtrBgpParam.idxSpf] = freshly[rtrBgpParam.idxSpf];
-        computd[rtrBgpParam.idxRtf] = freshly[rtrBgpParam.idxRtf];
-        computd[rtrBgpParam.idxSrte] = freshly[rtrBgpParam.idxSrte];
-        computd[rtrBgpParam.idxLnks] = freshly[rtrBgpParam.idxLnks];
-        computd[rtrBgpParam.idxMvpn] = freshly[rtrBgpParam.idxMvpn];
-        computd[rtrBgpParam.idxMvpo] = freshly[rtrBgpParam.idxMvpo];
-        computd[rtrBgpParam.idxMtre] = freshly[rtrBgpParam.idxMtre];
-        computd[rtrBgpParam.idxMtro] = freshly[rtrBgpParam.idxMtro];
         if (diffs) {
             fwdCore.routerChg(this, true);
         }
