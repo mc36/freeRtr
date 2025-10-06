@@ -102,6 +102,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public final tabRoute<addrIP>[] advert;
 
     /**
+     * continue position
+     */
+    public int[] contPos;
+
+    /**
      * currently changed prefixes
      */
     public int currChg;
@@ -332,6 +337,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public rtrBgpSpeak(rtrBgp protocol, rtrBgpNeigh neighbor, pipeSide socket, int res) {
         learnt = rtrBgpParam.freshTables();
         advert = rtrBgpParam.freshTables();
+        contPos = new int[advert.length];
         peerAfis = rtrBgpParam.boolsSet(false);
         originalSafiList = rtrBgpParam.boolsSet(false);
         peerGrace = rtrBgpParam.boolsSet(false);
