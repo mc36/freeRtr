@@ -17573,3 +17573,6 @@ qc pass: bgp maximum prefix in
 ---------------------------------- 2025-10-06 20:26:46 25.10.6
 no qc pass: wireguard over ipv6
 failed: wireguard over ipv6
+---------------------------------- 2025-10-06 21:03:10 25.10.6
+no failed: wireguard over ipv6
+qc pass: wireguard over ipv6
