@@ -957,18 +957,20 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         safis = mask2list(neigh.extNextCur);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 6];
+            int o = parent.afiUni >>> 16;
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
-                bits.msbPutW(buf, (i * 6) + 4, parent.afiUni >>> 16);
+                bits.msbPutW(buf, (i * 6) + 4, o);
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtNextHop, buf);
         }
         safis = mask2list(neigh.extNextOtr);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 6];
+            int o = parent.afiOuni >>> 16;
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
-                bits.msbPutW(buf, (i * 6) + 4, parent.afiOuni >>> 16);
+                bits.msbPutW(buf, (i * 6) + 4, o);
             }
             rtrBgpUtil.placeCapability(pck, neigh.extOpen, rtrBgpUtil.capaExtNextHop, buf);
         }
@@ -1222,6 +1224,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         }
                         break;
                     case rtrBgpUtil.capaExtNextHop:
+                        int valC = parent.afiUni >>> 16;
+                        int valO = parent.afiOuni >>> 16;
                         for (i = 0; i < tlv.valSiz; i += 6) {
                             int o = bits.msbGetD(tlv.valDat, i + 0);
                             int p = bits.msbGetW(tlv.valDat, i + 4);
@@ -1229,10 +1233,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                             if (q < 0) {
                                 continue;
                             }
-                            if (p == (parent.afiUni >>> 16)) {
+                            if (p == valC) {
                                 peerExtNextCur[q] = true;
                             }
-                            if (p == (parent.afiOuni >>> 16)) {
+                            if (p == valO) {
                                 peerExtNextOtr[q] = true;
                             }
                         }
@@ -1847,7 +1851,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 res = udp;
             }
-            if (prefixReachable(res, safi)) {
+            if (prefixReachable(res, idx, safi)) {
                 if (doPrefDel(lrnt, addpath, res)) {
                     continue;
                 }
@@ -1951,7 +1955,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return false;
     }
 
-    private boolean prefixReachable(tabRouteEntry<addrIP> ntry, int safi) {
+    private boolean prefixReachable(tabRouteEntry<addrIP> ntry, int idx, int safi) {
         if (debugger.rtrBgpTraf) {
             logger.debug("processing " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix);
         }
@@ -2077,14 +2081,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             default:
                 break;
         }
-        if (neigh.rtfilterIn && neigh.shouldRtfilter(safi)) {
+        if (neigh.rtfilterIn && neigh.shouldRtfilter(idx)) {
             if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, neigh.remoteAs, parent.computd[rtrBgpParam.idxRtf], true) && tabRouteUtil.findRtfilterTab(ntry.best.extComm, neigh.localAs, parent.computd[rtrBgpParam.idxRtf], true)) {
                 repPolRej++;
                 return true;
             }
         }
         if (neigh.nxtHopPeer) {
-            if ((neigh.otherAdr != null) && ((safi == parent.afiOuni) || (safi == parent.afiOmlt))) {
+            if ((neigh.otherAdr != null) && ((idx == rtrBgpParam.idxOuni) || (idx == rtrBgpParam.idxOmlt))) {
                 ntry.best.nextHop = neigh.otherAdr.copyBytes();
             } else {
                 ntry.best.nextHop = neigh.peerAddr.copyBytes();

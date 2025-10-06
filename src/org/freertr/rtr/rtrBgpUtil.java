@@ -2001,24 +2001,6 @@ public class rtrBgpUtil {
     }
 
     /**
-     * get default route
-     *
-     * @param safi safi to use
-     * @return default route prefix
-     */
-    public static addrPrefix<addrIP> defaultRoute(int safi) {
-        switch (safi & afiMask) {
-            case afiIpv4:
-                return addrPrefix.ip4toIP(addrPrefix.defaultRoute4());
-            case afiIpv6:
-                return addrPrefix.ip6toIP(addrPrefix.defaultRoute6());
-            default:
-                logger.info("unknown safi (" + safi + ") requested");
-                return null;
-        }
-    }
-
-    /**
      * convert leak to inverted leak
      *
      * @param old old role

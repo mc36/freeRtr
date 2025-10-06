@@ -4743,10 +4743,6 @@ public class userShow {
                 return;
             }
             int dsp = rtrBgpParam.displayModel(idx);
-            int sfi = r.bgp.idx2safi(idx);
-            if (sfi < 1) {
-                return;
-            }
             tabRoute<addrIP> tab = grp.willing[idx];
             doShowRoutes(r.bgp.fwdCore, tab, dsp);
             return;
@@ -4869,10 +4865,6 @@ public class userShow {
                 return;
             }
             int dsp = rtrBgpParam.displayModel(idx);
-            int sfi = r.bgp.idx2safi(idx);
-            if (sfi < 1) {
-                return;
-            }
             a = cmd.word();
             if (a.equals("learned")) {
                 doShowRoutes(r.bgp.fwdCore, nei.conn.learnt[idx], dsp);

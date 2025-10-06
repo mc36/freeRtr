@@ -259,13 +259,13 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         if (defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = rtrBgpUtil.defaultRoute(other ? parent.afiOuni : parent.afiUni);
+            ntry.prefix = parent.defaultRoute(other);
             ntry.best.aggrRtr = new addrIP();
             ntry.best.aggrRtr.fromIPv4addr(parent.routerID);
             ntry.best.aggrAs = parent.localAs;
             doExportRoute(afi, ntry, nUni, rt);
             ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = rtrBgpUtil.defaultRoute(other ? parent.afiOuni : parent.afiUni);
+            ntry.prefix = parent.defaultRoute(other);
             ntry.best.aggrRtr = new addrIP();
             ntry.best.aggrRtr.fromIPv4addr(parent.routerID);
             ntry.best.aggrAs = parent.localAs;
@@ -295,11 +295,11 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.best.extComm = new ArrayList<Long>();
             ntry.rouDst = fwd.rd;
             ntry.best.extComm.addAll(rt);
-            rtrBgpFlow.doAdvertise(nFlw, flowSpec, ntry, other ^ (parent.afiUni == rtrBgpUtil.safiIp6uni), parent.localAs);
+            rtrBgpFlow.doAdvertise(nFlw, flowSpec, ntry, other ^ parent.isIpv6, parent.localAs);
         }
         if (mdtI != null) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiUni);
+            ntry.prefix = parent.defaultRoute(false);
             ntry.best.extComm = new ArrayList<Long>();
             ntry.rouDst = fwd.rd;
             ntry.best.extComm.addAll(rt);
@@ -321,7 +321,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             return;
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiUni);
+        ntry.prefix = parent.defaultRoute(false);
         byte[] buf = new byte[128];
         if (ipv4) {
             addrIPv4 adr = mvpn.addr4;
@@ -452,7 +452,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             doImportRoute(rtrBgpUtil.sfiFlwSpc, cmpF.get(i), tabF, rt);
         }
         if (flowSpec != null) {
-            rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), other ^ (parent.afiUni == rtrBgpUtil.safiIp6uni), parent.localAs);
+            rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), other ^ parent.isIpv6, parent.localAs);
         }
         if ((!tabU.differs(tabRoute.addType.alters, routerComputedU)) && (!tabU.differs(tabRoute.addType.alters, routerComputedM)) && (!tabF.differs(tabRoute.addType.alters, routerComputedF))) {
             return fwd.prefixMode != ipFwd.labelMode.common;
@@ -463,7 +463,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         routerComputedI = new tabGen<tabIndex<addrIP>>();
         fwd.routerChg(this, true);
         if (flowInst) {
-            fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, other ^ (parent.afiUni == rtrBgpUtil.safiIp6uni)));
+            fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, other ^ parent.isIpv6));
         }
         return fwd.prefixMode != ipFwd.labelMode.common;
     }
@@ -549,7 +549,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         fwd.routerChg(this, fwd.prefixMode != ipFwd.labelMode.common);
         if (flowInst && (chgF.size() > 0)) {
             tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
-            fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, other ^ (parent.afiUni == rtrBgpUtil.safiIp6uni)));
+            fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, other ^ parent.isIpv6));
             routerComputedF = tabF;
         }
         return fwd.prefixMode != ipFwd.labelMode.common;

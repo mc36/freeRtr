@@ -214,7 +214,7 @@ public class rtrBgpSpf {
         }
         if (defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-            ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiUni);
+            ntry.prefix = parent.defaultRoute(false);
             doAdvertPfx(tlv, pck, hlp, ntry);
         }
         for (int i = 0; i < parent.routerRedistedU.size(); i++) {

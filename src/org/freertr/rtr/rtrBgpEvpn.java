@@ -233,10 +233,8 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
             return;
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiUni);
-        ntry.prefix.maskLen = addrIP.size * 8;
-        ntry.prefix.mask.fillBytes(0xff);
-        if (ntry.prefix.network.isIPv4()) {
+        ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
+        if (!parent.isIpv6) {
             addrIPv4 adr = iface.addr4;
             if (adr == null) {
                 return;

@@ -405,6 +405,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected final int rtrNum;
 
     /**
+     * is over ipv6
+     */
+    protected final boolean isIpv6;
+
+    /**
      * other changes trigger full computation
      */
     protected boolean otherTrigger;
@@ -745,6 +750,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
+                isIpv6 = false;
                 rouTyp = tabRouteAttr.routeType.bgp4;
                 afiUni = rtrBgpUtil.safiIp4uni;
                 afiLab = rtrBgpUtil.safiIp4lab;
@@ -784,6 +790,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 lspf = new rtrBgpSpf(this);
                 break;
             case ipCor6.protocolVersion:
+                isIpv6 = true;
                 rouTyp = tabRouteAttr.routeType.bgp6;
                 afiUni = rtrBgpUtil.safiIp6uni;
                 afiLab = rtrBgpUtil.safiIp6lab;
@@ -823,6 +830,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 lspf = new rtrBgpSpf(this);
                 break;
             default:
+                isIpv6 = false;
                 rouTyp = null;
                 afiUni = 0;
                 afiLab = 0;
@@ -906,6 +914,20 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      */
     public String toString() {
         return "bgp on " + fwdCore;
+    }
+
+    /**
+     * get default route
+     *
+     * @param other other safi
+     * @return default route prefix
+     */
+    public addrPrefix<addrIP> defaultRoute(boolean other) {
+        if ((isIpv6 ^ other)) {
+            return addrPrefix.ip6toIP(addrPrefix.defaultRoute6());
+        } else {
+            return addrPrefix.ip4toIP(addrPrefix.defaultRoute4());
+        }
     }
 
     /**
@@ -1362,7 +1384,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         freshly = rtrBgpParam.freshTables();
         if (flowSpec != null) {
-            rtrBgpFlow.doAdvertise(freshly[rtrBgpParam.idxFlw], flowSpec, new tabRouteEntry<addrIP>(), afiUni == rtrBgpUtil.safiIp6uni, localAs);
+            rtrBgpFlow.doAdvertise(freshly[rtrBgpParam.idxFlw], flowSpec, new tabRouteEntry<addrIP>(), isIpv6, localAs);
         }
         for (int i = 0; i < linkStates.size(); i++) {
             rtrBgpLnkst ls = linkStates.get(i);
@@ -1585,7 +1607,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         otherTrigger |= addrFams[rtrBgpParam.idxCar];
         otherTrigger |= linkStates.size() > 0;
         if (flowInst) {
-            fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
+            fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, isIpv6));
         }
         other.doPeersFull();
         for (int i = 0; i < vrfs.size(); i++) {
@@ -1692,7 +1714,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 best = res;
             }
         }
-        if ((best.best.rouSrc == rtrBgpUtil.peerOriginate) && ((afi == afiUni) || (afi == afiMlt))) {
+        if ((best.best.rouSrc == rtrBgpUtil.peerOriginate) && ((idx == rtrBgpParam.idxUni) || (idx == rtrBgpParam.idxMlt))) {
             cmp.del(best);
         } else {
             cmp.add(tabRoute.addType.always, best, false, false);
@@ -1703,9 +1725,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             tabRouteEntry<addrIP> old = wil.find(best);
             tabRouteEntry<addrIP> ntry;
             if (best.best.rouSrc == rtrBgpUtil.peerOriginate) {
-                ntry = grp.originatePrefix(afi, best);
+                ntry = grp.originatePrefix(idx, best);
             } else {
-                ntry = grp.readvertPrefix(afi, best);
+                ntry = grp.readvertPrefix(idx, best);
             }
             if (ntry != null) {
                 tabListing[] fltr = grp.getOutFilters(idx);
@@ -1726,21 +1748,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             wil.add(tabRoute.addType.always, ntry, false, false);
             chg.add(tabRoute.addType.always, ntry, false, false);
         }
-    }
-
-    private int computeIncrUpdate(int idx, int afi, tabRoute<addrIP> don, tabRoute<addrIP> chg, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
-        int res = 0;
-        if (don == null) {
-            don = new tabRoute<addrIP>("chg");
-        }
-        for (int i = chg.size() - 1; i >= 0; i--) {
-            tabRouteEntry<addrIP> ntry = chg.get(i);
-            chg.del(ntry);
-            don.add(tabRoute.addType.always, ntry, false, false);
-            computeIncrEntry(idx, afi, ntry, cmp, org);
-            res++;
-        }
-        return res;
     }
 
     private boolean computeIncr() {
@@ -1844,23 +1851,29 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " changes");
         }
-        tabRoute<addrIP>[] chgd = rtrBgpParam.freshTables();
-        for (int i = 0; i < chgd.length; i++) {
-            if (rtrBgpParam.indexAlias[i] >= 0) {
+        tabRoute<addrIP>[] done = rtrBgpParam.freshTables();
+        for (int idx = 0; idx < done.length; idx++) {
+            if (rtrBgpParam.indexAlias[idx] >= 0) {
                 continue;
             }
-            computeIncrUpdate(i, idx2safi(i), chgd[i], changed[i], computd[i], origntd[i]);
+            int afi = idx2safi(idx);
+            for (int i = changed[idx].size() - 1; i >= 0; i--) {
+                tabRouteEntry<addrIP> ntry = changed[idx].get(i);
+                changed[idx].del(ntry);
+                done[idx].add(tabRoute.addType.always, ntry, false, false);
+                computeIncrEntry(idx, afi, ntry, computd[idx], origntd[idx]);
+            }
         }
-        routerChangedU = chgd[rtrBgpParam.idxUni];
-        routerChangedM = chgd[rtrBgpParam.idxMlt];
-        routerChangedF = chgd[rtrBgpParam.idxFlw];
-        other.routerChangedU = chgd[rtrBgpParam.idxOuni];
-        other.routerChangedM = chgd[rtrBgpParam.idxOmlt];
-        other.routerChangedF = chgd[rtrBgpParam.idxOflw];
-        int cntGlb = chgd[rtrBgpParam.idxUni].size() + chgd[rtrBgpParam.idxMlt].size();
-        int cntFlw = chgd[rtrBgpParam.idxFlw].size();
-        int cntVpls = chgd[rtrBgpParam.idxVpls].size();
-        int cntEvpn = chgd[rtrBgpParam.idxEvpn].size();
+        routerChangedU = done[rtrBgpParam.idxUni];
+        routerChangedM = done[rtrBgpParam.idxMlt];
+        routerChangedF = done[rtrBgpParam.idxFlw];
+        other.routerChangedU = done[rtrBgpParam.idxOuni];
+        other.routerChangedM = done[rtrBgpParam.idxOmlt];
+        other.routerChangedF = done[rtrBgpParam.idxOflw];
+        int cntGlb = done[rtrBgpParam.idxUni].size() + done[rtrBgpParam.idxMlt].size();
+        int cntFlw = done[rtrBgpParam.idxFlw].size();
+        int cntVpls = done[rtrBgpParam.idxVpls].size();
+        int cntEvpn = done[rtrBgpParam.idxEvpn].size();
         lspf.doPeersIncr();
         if (labPer || ((cntGlb + cntFlw) > 0)) {
             fwdCore.routerChg(this, labPer);
@@ -1869,14 +1882,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " export");
         }
         if (flowInst && (cntFlw > 0)) {
-            fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, afiUni == rtrBgpUtil.safiIp6uni));
+            fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, isIpv6));
         }
         other.doPeersIncr();
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxVpnU], computd[rtrBgpParam.idxVpnM], computd[rtrBgpParam.idxVpnF], chgd[rtrBgpParam.idxVpnU], chgd[rtrBgpParam.idxVpnM], chgd[rtrBgpParam.idxVpnF]);
+            vrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxVpnU], computd[rtrBgpParam.idxVpnM], computd[rtrBgpParam.idxVpnF], done[rtrBgpParam.idxVpnU], done[rtrBgpParam.idxVpnM], done[rtrBgpParam.idxVpnF]);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxVpoU], computd[rtrBgpParam.idxVpoM], computd[rtrBgpParam.idxVpoF], chgd[rtrBgpParam.idxVpoU], chgd[rtrBgpParam.idxVpoM], chgd[rtrBgpParam.idxVpoF]);
+            ovrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxVpoU], computd[rtrBgpParam.idxVpoM], computd[rtrBgpParam.idxVpoF], done[rtrBgpParam.idxVpoU], done[rtrBgpParam.idxVpoM], done[rtrBgpParam.idxVpoF]);
         }
         for (int i = 0; i < clrs.size(); i++) {
             clrs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, routerComputedU, routerComputedM, routerComputedF, routerChangedU, routerChangedM, routerChangedF);
@@ -1885,10 +1898,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             oclrs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxOuni], computd[rtrBgpParam.idxOmlt], computd[rtrBgpParam.idxOflw], other.routerChangedU, other.routerChangedM, other.routerChangedF);
         }
         for (int i = 0; i < l3es.size(); i++) {
-            l3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computd[rtrBgpParam.idxEvpn], computd[rtrBgpParam.idxVpnM], computd[rtrBgpParam.idxVpnF], chgd[rtrBgpParam.idxEvpn], chgd[rtrBgpParam.idxVpnM], chgd[rtrBgpParam.idxVpnF]);
+            l3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computd[rtrBgpParam.idxEvpn], computd[rtrBgpParam.idxVpnM], computd[rtrBgpParam.idxVpnF], done[rtrBgpParam.idxEvpn], done[rtrBgpParam.idxVpnM], done[rtrBgpParam.idxVpnF]);
         }
         for (int i = 0; i < ol3es.size(); i++) {
-            ol3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computd[rtrBgpParam.idxEvpn], computd[rtrBgpParam.idxVpoM], computd[rtrBgpParam.idxVpoF], chgd[rtrBgpParam.idxEvpn], chgd[rtrBgpParam.idxVpoM], chgd[rtrBgpParam.idxVpoF]);
+            ol3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computd[rtrBgpParam.idxEvpn], computd[rtrBgpParam.idxVpoM], computd[rtrBgpParam.idxVpoF], done[rtrBgpParam.idxEvpn], done[rtrBgpParam.idxVpoM], done[rtrBgpParam.idxVpoF]);
         }
         if (cntVpls > 0) {
             for (int i = 0; i < vpls.size(); i++) {

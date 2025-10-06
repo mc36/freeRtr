@@ -1726,14 +1726,13 @@ public abstract class rtrBgpParam {
     /**
      * check if rtfilter needed
      *
-     * @param afi afi in question
+     * @param idx afi in question
      * @return true if yes, false if not
      */
-    public boolean shouldRtfilter(int afi) {
-        return (afi == lower.afiVpnU) || (afi == lower.afiVpoU)
-                || (afi == lower.afiVpnM) || (afi == lower.afiVpoM)
-                || (afi == lower.afiVpnF) || (afi == lower.afiVpoF)
-                || (afi == lower.afiVpls) || (afi == lower.afiEvpn);
+    public boolean shouldRtfilter(int idx) {
+        return (idx == idxVpnU) || (idx == idxVpoU) || (idx == idxVpnF)
+                || (idx == idxVpnM) || (idx == idxVpoM) || (idx == idxVpoF)
+                || (idx == idxVpls) || (idx == idxEvpn);
     }
 
     /**

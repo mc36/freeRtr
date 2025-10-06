@@ -166,7 +166,7 @@ public class rtrBgpOther extends ipRtr {
             doExportRoute(rtrBgpUtil.sfiFlwSpc, routerRedistedF.get(i), parent.freshly[rtrBgpParam.idxOflw]);
         }
         if (flowSpec != null) {
-            rtrBgpFlow.doAdvertise(parent.freshly[rtrBgpParam.idxOflw], flowSpec, new tabRouteEntry<addrIP>(), parent.afiUni != rtrBgpUtil.safiIp6uni, parent.localAs);
+            rtrBgpFlow.doAdvertise(parent.freshly[rtrBgpParam.idxOflw], flowSpec, new tabRouteEntry<addrIP>(), !parent.isIpv6, parent.localAs);
         }
     }
 
@@ -221,7 +221,7 @@ public class rtrBgpOther extends ipRtr {
             doImportRoute(rtrBgpUtil.sfiFlwSpc, parent.freshly[rtrBgpParam.idxOflw].get(i), tabF);
         }
         if (flowSpec != null) {
-            rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), parent.afiUni != rtrBgpUtil.safiIp6uni, parent.localAs);
+            rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), !parent.isIpv6, parent.localAs);
         }
         if ((!tabU.differs(tabRoute.addType.alters, routerComputedU)) && (!tabU.differs(tabRoute.addType.alters, routerComputedM)) && (!tabF.differs(tabRoute.addType.alters, routerComputedF))) {
             return fwd.prefixMode != ipFwd.labelMode.common;
@@ -232,7 +232,7 @@ public class rtrBgpOther extends ipRtr {
         routerComputedI = new tabGen<tabIndex<addrIP>>();
         fwd.routerChg(this, true);
         if (flowInst) {
-            fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, parent.afiUni != rtrBgpUtil.safiIp6uni));
+            fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, !parent.isIpv6));
         }
         return fwd.prefixMode != ipFwd.labelMode.common;
     }
@@ -284,7 +284,7 @@ public class rtrBgpOther extends ipRtr {
         fwd.routerChg(this, fwd.prefixMode != ipFwd.labelMode.common);
         if (flowInst && (chgF.size() > 0)) {
             tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
-            fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, parent.afiUni != rtrBgpUtil.safiIp6uni));
+            fwd.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(tabF, !parent.isIpv6));
             routerComputedF = tabF;
         }
         return fwd.prefixMode != ipFwd.labelMode.common;

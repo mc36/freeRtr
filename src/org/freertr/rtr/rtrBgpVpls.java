@@ -131,8 +131,7 @@ public class rtrBgpVpls implements Comparable<rtrBgpVpls> {
                 tabLabel.release(veLab, tabLabelEntry.owner.vplsVe);
                 veLab = null;
             }
-            ntry.prefix = rtrBgpUtil.defaultRoute(parent.afiUni);
-            if (ntry.prefix.network.isIPv4()) {
+            if (!parent.isIpv6) {
                 addrIPv4 adr = iface.addr4;
                 if (adr == null) {
                     return;
