@@ -596,6 +596,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 }
                 if (updtPos) {
                     conn.contPos[idx] = will.size();
+                    continue;
                 }
                 for (int i = done.size() - 1; i >= 0; i--) {
                     tabRouteEntry<addrIP> don = done.get(i);
@@ -659,6 +660,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             }
             if (updtPos) {
                 conn.contPos[idx] = will.size();
+                continue;
             }
             lst.clear();
             for (int i = done.size() - 1; i >= 0; i--) {
