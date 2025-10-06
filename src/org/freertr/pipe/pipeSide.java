@@ -237,29 +237,6 @@ public class pipeSide {
         return timeout;
     }
 
-    /**
-     * unget character if possible
-     *
-     * @param ch character to do
-     * @return one if one byte done, or negative if error code
-     */
-    public int byteUnGet(int ch) {
-        synchronized (lck) {
-            if (headSize > 0) {
-                return pipeLine.wontWork;
-            }
-            if (bufR >= bufS) {
-                return pipeLine.tryLater;
-            }
-            bufR = bufR - 1;
-            if (bufR < 0) {
-                bufR = bufS - 1;
-            }
-            bufD[bufR] = (byte) ch;
-        }
-        return 1;
-    }
-
     private void sizePut(int i) {
         bytePut(i >>> 8);
         bytePut(i & 0xff);

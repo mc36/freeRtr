@@ -17570,3 +17570,6 @@ failed: bgp maximum prefix in
 ---------------------------------- 2025-10-04 14:03:26 25.10.4
 no failed: bgp maximum prefix in
 qc pass: bgp maximum prefix in
+---------------------------------- 2025-10-06 20:26:46 25.10.6
+no qc pass: wireguard over ipv6
+failed: wireguard over ipv6
