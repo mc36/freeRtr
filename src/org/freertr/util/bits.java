@@ -771,7 +771,7 @@ public class bits {
      * @return current time
      */
     public static long getTime() {
-        return new Date().getTime();
+        return System.currentTimeMillis();
     }
 
     /**

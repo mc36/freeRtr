@@ -271,9 +271,6 @@ public class pipeSide {
         }
         int i = byteGet();
         int o = byteGet();
-        if ((i < 0) | (o < 0)) {
-            return pipeLine.tryLater;
-        }
         return (i << 8) | o;
     }
 
