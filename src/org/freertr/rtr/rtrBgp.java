@@ -1018,7 +1018,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < evpn.size(); i++) {
             evpn.get(i).doAdvertise();
         }
-        origntd = rtrBgpParam.freshTables();
         for (int i = 0; i < origntd.length; i++) {
             int o = rtrBgpParam.indexAlias[i];
             if (o >= 0) {
