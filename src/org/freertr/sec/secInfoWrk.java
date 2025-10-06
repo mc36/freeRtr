@@ -434,11 +434,13 @@ public class secInfoWrk implements Runnable {
         if (!hdr) {
             return "</" + tag + "></body></html>";
         }
-        String a = servHttp.htmlHead + "<title>ipinfo</title></head><body>";
+        String a = servHttp.htmlHead + "<title>ipinfo</title></head><body";
         if (style == null) {
-            return a + "<" + tag + ">";
+            a += ">";
+        } else {
+            a += " style=\"" + style + "\">";
         }
-        return a + "<" + tag + " style=\"" + style + "\">";
+        return a + "<" + tag + ">";
     }
 
     /**

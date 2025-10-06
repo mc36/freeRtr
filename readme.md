@@ -17,7 +17,6 @@ summary of features:
 more about the project at [www.freertr.org](http://www.freertr.org/)
 
 you can find the same source tree at various locations, normally all should be the same:
-* http://src.freertr.org/
 * http://sources.freertr.org/
 * http://codeberg.org/mc36/freeRtr
 * http://bitbucket.org/mc36mc/freeRtr
@@ -25,6 +24,7 @@ you can find the same source tree at various locations, normally all should be t
 * http://github.com/mc36/freeRtr
 * http://gitea.com/mc36/freeRtr
 * http://git.sr.ht/~mc36/freeRtr
+* http://src.freertr.org/
 
 part of the subdirectories under misc/ are somewhere else too:
 * p4bf at http://bitbucket.software.geant.org/projects/RARE/repos/rare/browse
