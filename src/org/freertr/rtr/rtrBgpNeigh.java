@@ -924,14 +924,16 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             }
             return;
         }
-        setValidity(acceptd[rtrBgpParam.idxUni], rpkiIn, lower.rpkiA);
-        setValidity(acceptd[rtrBgpParam.idxMlt], rpkiIn, lower.rpkiA);
-        setValidity(acceptd[rtrBgpParam.idxOuni], rpkiIn, lower.rpkiO);
-        setValidity(acceptd[rtrBgpParam.idxOmlt], rpkiIn, lower.rpkiO);
-        setValidity(acceptd[rtrBgpParam.idxVpnU], vpkiIn, lower.rpkiA);
-        setValidity(acceptd[rtrBgpParam.idxVpnM], vpkiIn, lower.rpkiA);
-        setValidity(acceptd[rtrBgpParam.idxVpoU], vpkiIn, lower.rpkiO);
-        setValidity(acceptd[rtrBgpParam.idxVpoM], vpkiIn, lower.rpkiO);
+        if (lower.rpkiR != null) {
+            tabRpkiUtil.setValidityTable(localAs, acceptd[rtrBgpParam.idxUni], lower.rpkiA, lower.rpkiP, rpkiIn);
+            tabRpkiUtil.setValidityTable(localAs, acceptd[rtrBgpParam.idxMlt], lower.rpkiA, lower.rpkiP, rpkiIn);
+            tabRpkiUtil.setValidityTable(localAs, acceptd[rtrBgpParam.idxOuni], lower.rpkiO, lower.rpkiP, rpkiIn);
+            tabRpkiUtil.setValidityTable(localAs, acceptd[rtrBgpParam.idxOmlt], lower.rpkiO, lower.rpkiP, rpkiIn);
+            tabRpkiUtil.setValidityTable(localAs, acceptd[rtrBgpParam.idxVpnU], lower.rpkiA, lower.rpkiP, vpkiIn);
+            tabRpkiUtil.setValidityTable(localAs, acceptd[rtrBgpParam.idxVpnM], lower.rpkiA, lower.rpkiP, vpkiIn);
+            tabRpkiUtil.setValidityTable(localAs, acceptd[rtrBgpParam.idxVpoU], lower.rpkiO, lower.rpkiP, vpkiIn);
+            tabRpkiUtil.setValidityTable(localAs, acceptd[rtrBgpParam.idxVpoM], lower.rpkiO, lower.rpkiP, vpkiIn);
+        }
         for (int idx = 0; idx < addrFams.length; idx++) {
             if (!conn.peerAfis[idx]) {
                 continue;
@@ -1044,44 +1046,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             changed = grp.changed;
         }
         conn.needFull.add(1);
-    }
-
-    /**
-     * validate a prefix
-     *
-     * @param afi address family
-     * @param ntry route entry
-     */
-    public void setValidity(int afi, tabRouteEntry<addrIP> ntry) {
-        if (lower.rpkiR == null) {
-            return;
-        }
-        if ((afi == lower.afiUni) || (afi == lower.afiMlt)) {
-            tabRpkiUtil.setValidityRoute(localAs, ntry, lower.rpkiA, lower.rpkiP, rpkiIn);
-        }
-        if ((afi == lower.afiOuni) || (afi == lower.afiOmlt)) {
-            tabRpkiUtil.setValidityRoute(localAs, ntry, lower.rpkiO, lower.rpkiP, rpkiIn);
-        }
-        if ((afi == lower.afiVpnU) || (afi == lower.afiVpnM)) {
-            tabRpkiUtil.setValidityRoute(localAs, ntry, lower.rpkiA, lower.rpkiP, vpkiIn);
-        }
-        if ((afi == lower.afiVpoU) || (afi == lower.afiVpoM)) {
-            tabRpkiUtil.setValidityRoute(localAs, ntry, lower.rpkiO, lower.rpkiP, vpkiIn);
-        }
-    }
-
-    /**
-     * set validity
-     *
-     * @param tab table to use
-     * @param mod mode to use
-     * @param roa roa to use
-     */
-    public void setValidity(tabRoute<addrIP> tab, int mod, tabGen<tabRpkiRoa> roa) {
-        if (lower.rpkiR == null) {
-            return;
-        }
-        tabRpkiUtil.setValidityTable(localAs, tab, roa, lower.rpkiP, mod);
     }
 
     /**

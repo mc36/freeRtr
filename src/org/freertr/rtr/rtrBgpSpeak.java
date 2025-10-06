@@ -28,6 +28,7 @@ import org.freertr.enc.encTlv;
 import org.freertr.prt.prtTcp;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoWrk;
+import org.freertr.tab.tabRpkiUtil;
 
 /**
  * bgp4 speaker
@@ -1809,7 +1810,26 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (neigh.dampenPfxs != null) {
                 neigh.prefixDampen(idx, res.rouDst, res.prefix, neigh.dampenAnno);
             }
-            neigh.setValidity(safi, res);
+            if (neigh.lower.rpkiR != null) {
+                switch (idx) {
+                    case rtrBgpParam.idxUni:
+                    case rtrBgpParam.idxMlt:
+                        tabRpkiUtil.setValidityRoute(neigh.localAs, res, neigh.lower.rpkiA, neigh.lower.rpkiP, neigh.rpkiIn);
+                        break;
+                    case rtrBgpParam.idxOuni:
+                    case rtrBgpParam.idxOmlt:
+                        tabRpkiUtil.setValidityRoute(neigh.localAs, res, neigh.lower.rpkiO, neigh.lower.rpkiP, neigh.rpkiIn);
+                        break;
+                    case rtrBgpParam.idxVpnU:
+                    case rtrBgpParam.idxVpnM:
+                        tabRpkiUtil.setValidityRoute(neigh.localAs, res, neigh.lower.rpkiA, neigh.lower.rpkiP, neigh.vpkiIn);
+                        break;
+                    case rtrBgpParam.idxVpoU:
+                    case rtrBgpParam.idxVpoM:
+                        tabRpkiUtil.setValidityRoute(neigh.localAs, res, neigh.lower.rpkiO, neigh.lower.rpkiP, neigh.vpkiIn);
+                        break;
+                }
+            }
             addpath = addpathRx[idx];
             tabRoute<addrIP> lrnt = learnt[idx];
             tabRoute<addrIP> chgd = parent.changed[idx];
