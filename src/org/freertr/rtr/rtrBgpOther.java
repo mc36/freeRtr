@@ -436,7 +436,7 @@ public class rtrBgpOther extends ipRtr {
             addrIP adr = peers.get(i);
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, parent.afiUni, 0, ntry, true, null, null, parent.routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, parent.idx2afi[rtrBgpParam.idxUni], 0, ntry, true, null, null, parent.routerAutoMesh);
         }
     }
 

@@ -230,174 +230,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected final tabRouteAttr.routeType rouTyp;
 
     /**
-     * unicast afi
+     * intex to safi map
      */
-    protected final int afiUni;
-
-    /**
-     * labeled unicast afi
-     */
-    protected final int afiLab;
-
-    /**
-     * classful transport plane afi
-     */
-    protected final int afiCtp;
-
-    /**
-     * color aware routing afi
-     */
-    protected final int afiCar;
-
-    /**
-     * multicast afi
-     */
-    protected final int afiMlt;
-
-    /**
-     * other labeled unicast afi
-     */
-    protected final int afiOlab;
-
-    /**
-     * other classful transport plane afi
-     */
-    protected final int afiOctp;
-
-    /**
-     * other color aware routing afi
-     */
-    protected final int afiOcar;
-
-    /**
-     * other unicast afi
-     */
-    protected final int afiOuni;
-
-    /**
-     * other multicast afi
-     */
-    protected final int afiOmlt;
-
-    /**
-     * other flowspec afi
-     */
-    protected final int afiOflw;
-
-    /**
-     * other srte afi
-     */
-    protected final int afiOsrt;
-
-    /**
-     * flow specification afi
-     */
-    protected final int afiFlw;
-
-    /**
-     * unicast vpn afi
-     */
-    protected final int afiVpnU;
-
-    /**
-     * multicast vpn afi
-     */
-    protected final int afiVpnM;
-
-    /**
-     * flowspec vpn afi
-     */
-    protected final int afiVpnF;
-
-    /**
-     * other unicast vpn afi
-     */
-    protected final int afiVpoU;
-
-    /**
-     * other multicast vpn afi
-     */
-    protected final int afiVpoM;
-
-    /**
-     * other flowspec vpn afi
-     */
-    protected final int afiVpoF;
-
-    /**
-     * vpls afi
-     */
-    protected final int afiVpls;
-
-    /**
-     * mspw afi
-     */
-    protected final int afiMspw;
-
-    /**
-     * evpn afi
-     */
-    protected final int afiEvpn;
-
-    /**
-     * mdt afi
-     */
-    protected final int afiMdt;
-
-    /**
-     * nsh afi
-     */
-    protected final int afiNsh;
-
-    /**
-     * rpd afi
-     */
-    protected final int afiRpd;
-
-    /**
-     * sdwan afi
-     */
-    protected final int afiSdw;
-
-    /**
-     * spf afi
-     */
-    protected final int afiSpf;
-
-    /**
-     * rtfilter afi
-     */
-    protected final int afiRtf;
-
-    /**
-     * srte afi
-     */
-    protected final int afiSrte;
-
-    /**
-     * linkstate afi
-     */
-    protected final int afiLnks;
-
-    /**
-     * mvpn afi
-     */
-    protected final int afiMvpn;
-
-    /**
-     * other mvpn afi
-     */
-    protected final int afiMvpo;
-
-    /**
-     * mtree afi
-     */
-    protected final int afiMtre;
-
-    /**
-     * other mtree afi
-     */
-    protected final int afiMtro;
+    protected final int idx2afi[];
 
     /**
      * router number
@@ -727,6 +562,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         changed = rtrBgpParam.freshTables();
         freshly = rtrBgpParam.freshTables();
         origntd = rtrBgpParam.freshTables();
+        idx2afi = new int[freshly.length];
         vrfs = new tabGen<rtrBgpVrf>();
         ovrfs = new tabGen<rtrBgpVrf>();
         clrs = new tabGen<rtrBgpVrf>();
@@ -752,120 +588,86 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             case ipCor4.protocolVersion:
                 isIpv6 = false;
                 rouTyp = tabRouteAttr.routeType.bgp4;
-                afiUni = rtrBgpUtil.safiIp4uni;
-                afiLab = rtrBgpUtil.safiIp4lab;
-                afiCtp = rtrBgpUtil.safiIp4ctp;
-                afiCar = rtrBgpUtil.safiIp4car;
-                afiMlt = rtrBgpUtil.safiIp4multi;
-                afiOlab = rtrBgpUtil.safiIp6lab;
-                afiOctp = rtrBgpUtil.safiIp6ctp;
-                afiOcar = rtrBgpUtil.safiIp6car;
-                afiOuni = rtrBgpUtil.safiIp6uni;
-                afiOmlt = rtrBgpUtil.safiIp6multi;
-                afiOflw = rtrBgpUtil.safiIp6flow;
-                afiOsrt = rtrBgpUtil.safiIp6srte;
-                afiFlw = rtrBgpUtil.safiIp4flow;
-                afiVpnU = rtrBgpUtil.safiIp4vpnU;
-                afiVpnM = rtrBgpUtil.safiIp4vpnM;
-                afiVpnF = rtrBgpUtil.safiIp4vpnF;
-                afiVpoU = rtrBgpUtil.safiIp6vpnU;
-                afiVpoM = rtrBgpUtil.safiIp6vpnM;
-                afiVpoF = rtrBgpUtil.safiIp6vpnF;
-                afiVpls = rtrBgpUtil.safiVpls46;
-                afiMspw = rtrBgpUtil.safiMspw46;
-                afiEvpn = rtrBgpUtil.safiEvpn46;
-                afiMdt = rtrBgpUtil.safiIp4mdt;
-                afiNsh = rtrBgpUtil.safiNsh46;
-                afiRpd = rtrBgpUtil.safiRpd46;
-                afiSdw = rtrBgpUtil.safiIp4sdwan;
-                afiSpf = rtrBgpUtil.safiIp46spf;
-                afiRtf = rtrBgpUtil.safiRtf46;
-                afiLnks = rtrBgpUtil.safiIp46lnks;
-                afiSrte = rtrBgpUtil.safiIp4srte;
-                afiMvpn = rtrBgpUtil.safiIp4mvpn;
-                afiMvpo = rtrBgpUtil.safiIp6mvpn;
-                afiMtre = rtrBgpUtil.safiIp4mtree;
-                afiMtro = rtrBgpUtil.safiIp6mtree;
+                idx2afi[rtrBgpParam.idxUni] = rtrBgpUtil.safiIp4uni;
+                idx2afi[rtrBgpParam.idxLab] = rtrBgpUtil.safiIp4lab;
+                idx2afi[rtrBgpParam.idxCtp] = rtrBgpUtil.safiIp4ctp;
+                idx2afi[rtrBgpParam.idxCar] = rtrBgpUtil.safiIp4car;
+                idx2afi[rtrBgpParam.idxMlt] = rtrBgpUtil.safiIp4multi;
+                idx2afi[rtrBgpParam.idxOlab] = rtrBgpUtil.safiIp6lab;
+                idx2afi[rtrBgpParam.idxOctp] = rtrBgpUtil.safiIp6ctp;
+                idx2afi[rtrBgpParam.idxOcar] = rtrBgpUtil.safiIp6car;
+                idx2afi[rtrBgpParam.idxOuni] = rtrBgpUtil.safiIp6uni;
+                idx2afi[rtrBgpParam.idxOmlt] = rtrBgpUtil.safiIp6multi;
+                idx2afi[rtrBgpParam.idxOflw] = rtrBgpUtil.safiIp6flow;
+                idx2afi[rtrBgpParam.idxOsrt] = rtrBgpUtil.safiIp6srte;
+                idx2afi[rtrBgpParam.idxFlw] = rtrBgpUtil.safiIp4flow;
+                idx2afi[rtrBgpParam.idxVpnU] = rtrBgpUtil.safiIp4vpnU;
+                idx2afi[rtrBgpParam.idxVpnM] = rtrBgpUtil.safiIp4vpnM;
+                idx2afi[rtrBgpParam.idxVpnF] = rtrBgpUtil.safiIp4vpnF;
+                idx2afi[rtrBgpParam.idxVpoU] = rtrBgpUtil.safiIp6vpnU;
+                idx2afi[rtrBgpParam.idxVpoM] = rtrBgpUtil.safiIp6vpnM;
+                idx2afi[rtrBgpParam.idxVpoF] = rtrBgpUtil.safiIp6vpnF;
+                idx2afi[rtrBgpParam.idxVpls] = rtrBgpUtil.safiVpls46;
+                idx2afi[rtrBgpParam.idxMspw] = rtrBgpUtil.safiMspw46;
+                idx2afi[rtrBgpParam.idxEvpn] = rtrBgpUtil.safiEvpn46;
+                idx2afi[rtrBgpParam.idxMdt] = rtrBgpUtil.safiIp4mdt;
+                idx2afi[rtrBgpParam.idxNsh] = rtrBgpUtil.safiNsh46;
+                idx2afi[rtrBgpParam.idxRpd] = rtrBgpUtil.safiRpd46;
+                idx2afi[rtrBgpParam.idxSdw] = rtrBgpUtil.safiIp4sdwan;
+                idx2afi[rtrBgpParam.idxSpf] = rtrBgpUtil.safiIp46spf;
+                idx2afi[rtrBgpParam.idxRtf] = rtrBgpUtil.safiRtf46;
+                idx2afi[rtrBgpParam.idxLnks] = rtrBgpUtil.safiIp46lnks;
+                idx2afi[rtrBgpParam.idxSrte] = rtrBgpUtil.safiIp4srte;
+                idx2afi[rtrBgpParam.idxMvpn] = rtrBgpUtil.safiIp4mvpn;
+                idx2afi[rtrBgpParam.idxMvpo] = rtrBgpUtil.safiIp6mvpn;
+                idx2afi[rtrBgpParam.idxMtre] = rtrBgpUtil.safiIp4mtree;
+                idx2afi[rtrBgpParam.idxMtro] = rtrBgpUtil.safiIp6mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd6);
                 lspf = new rtrBgpSpf(this);
                 break;
             case ipCor6.protocolVersion:
                 isIpv6 = true;
                 rouTyp = tabRouteAttr.routeType.bgp6;
-                afiUni = rtrBgpUtil.safiIp6uni;
-                afiLab = rtrBgpUtil.safiIp6lab;
-                afiCtp = rtrBgpUtil.safiIp6ctp;
-                afiCar = rtrBgpUtil.safiIp6car;
-                afiMlt = rtrBgpUtil.safiIp6multi;
-                afiOlab = rtrBgpUtil.safiIp4lab;
-                afiOctp = rtrBgpUtil.safiIp4ctp;
-                afiOcar = rtrBgpUtil.safiIp4car;
-                afiOuni = rtrBgpUtil.safiIp4uni;
-                afiOmlt = rtrBgpUtil.safiIp4multi;
-                afiOflw = rtrBgpUtil.safiIp4flow;
-                afiOsrt = rtrBgpUtil.safiIp4srte;
-                afiFlw = rtrBgpUtil.safiIp6flow;
-                afiVpnU = rtrBgpUtil.safiIp6vpnU;
-                afiVpnM = rtrBgpUtil.safiIp6vpnM;
-                afiVpnF = rtrBgpUtil.safiIp6vpnF;
-                afiVpoU = rtrBgpUtil.safiIp4vpnU;
-                afiVpoM = rtrBgpUtil.safiIp4vpnM;
-                afiVpoF = rtrBgpUtil.safiIp4vpnF;
-                afiVpls = rtrBgpUtil.safiVpls46;
-                afiMspw = rtrBgpUtil.safiMspw46;
-                afiEvpn = rtrBgpUtil.safiEvpn46;
-                afiMdt = rtrBgpUtil.safiIp6mdt;
-                afiNsh = rtrBgpUtil.safiNsh46;
-                afiRpd = rtrBgpUtil.safiRpd46;
-                afiSdw = rtrBgpUtil.safiIp6sdwan;
-                afiSpf = rtrBgpUtil.safiIp46spf;
-                afiRtf = rtrBgpUtil.safiRtf46;
-                afiLnks = rtrBgpUtil.safiIp46lnks;
-                afiSrte = rtrBgpUtil.safiIp6srte;
-                afiMvpn = rtrBgpUtil.safiIp6mvpn;
-                afiMvpo = rtrBgpUtil.safiIp4mvpn;
-                afiMtre = rtrBgpUtil.safiIp6mtree;
-                afiMtro = rtrBgpUtil.safiIp4mtree;
+                idx2afi[rtrBgpParam.idxUni] = rtrBgpUtil.safiIp6uni;
+                idx2afi[rtrBgpParam.idxLab] = rtrBgpUtil.safiIp6lab;
+                idx2afi[rtrBgpParam.idxCtp] = rtrBgpUtil.safiIp6ctp;
+                idx2afi[rtrBgpParam.idxCar] = rtrBgpUtil.safiIp6car;
+                idx2afi[rtrBgpParam.idxMlt] = rtrBgpUtil.safiIp6multi;
+                idx2afi[rtrBgpParam.idxOlab] = rtrBgpUtil.safiIp4lab;
+                idx2afi[rtrBgpParam.idxOctp] = rtrBgpUtil.safiIp4ctp;
+                idx2afi[rtrBgpParam.idxOcar] = rtrBgpUtil.safiIp4car;
+                idx2afi[rtrBgpParam.idxOuni] = rtrBgpUtil.safiIp4uni;
+                idx2afi[rtrBgpParam.idxOmlt] = rtrBgpUtil.safiIp4multi;
+                idx2afi[rtrBgpParam.idxOflw] = rtrBgpUtil.safiIp4flow;
+                idx2afi[rtrBgpParam.idxOsrt] = rtrBgpUtil.safiIp4srte;
+                idx2afi[rtrBgpParam.idxFlw] = rtrBgpUtil.safiIp6flow;
+                idx2afi[rtrBgpParam.idxVpnU] = rtrBgpUtil.safiIp6vpnU;
+                idx2afi[rtrBgpParam.idxVpnM] = rtrBgpUtil.safiIp6vpnM;
+                idx2afi[rtrBgpParam.idxVpnF] = rtrBgpUtil.safiIp6vpnF;
+                idx2afi[rtrBgpParam.idxVpoU] = rtrBgpUtil.safiIp4vpnU;
+                idx2afi[rtrBgpParam.idxVpoM] = rtrBgpUtil.safiIp4vpnM;
+                idx2afi[rtrBgpParam.idxVpoF] = rtrBgpUtil.safiIp4vpnF;
+                idx2afi[rtrBgpParam.idxVpls] = rtrBgpUtil.safiVpls46;
+                idx2afi[rtrBgpParam.idxMspw] = rtrBgpUtil.safiMspw46;
+                idx2afi[rtrBgpParam.idxEvpn] = rtrBgpUtil.safiEvpn46;
+                idx2afi[rtrBgpParam.idxMdt] = rtrBgpUtil.safiIp6mdt;
+                idx2afi[rtrBgpParam.idxNsh] = rtrBgpUtil.safiNsh46;
+                idx2afi[rtrBgpParam.idxRpd] = rtrBgpUtil.safiRpd46;
+                idx2afi[rtrBgpParam.idxSdw] = rtrBgpUtil.safiIp6sdwan;
+                idx2afi[rtrBgpParam.idxSpf] = rtrBgpUtil.safiIp46spf;
+                idx2afi[rtrBgpParam.idxRtf] = rtrBgpUtil.safiRtf46;
+                idx2afi[rtrBgpParam.idxLnks] = rtrBgpUtil.safiIp46lnks;
+                idx2afi[rtrBgpParam.idxSrte] = rtrBgpUtil.safiIp6srte;
+                idx2afi[rtrBgpParam.idxMvpn] = rtrBgpUtil.safiIp6mvpn;
+                idx2afi[rtrBgpParam.idxMvpo] = rtrBgpUtil.safiIp4mvpn;
+                idx2afi[rtrBgpParam.idxMtre] = rtrBgpUtil.safiIp6mtree;
+                idx2afi[rtrBgpParam.idxMtro] = rtrBgpUtil.safiIp4mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd4);
                 lspf = new rtrBgpSpf(this);
                 break;
             default:
                 isIpv6 = false;
                 rouTyp = null;
-                afiUni = 0;
-                afiLab = 0;
-                afiCtp = 0;
-                afiCar = 0;
-                afiMlt = 0;
-                afiOlab = 0;
-                afiOctp = 0;
-                afiOcar = 0;
-                afiOuni = 0;
-                afiOmlt = 0;
-                afiOflw = 0;
-                afiOsrt = 0;
-                afiFlw = 0;
-                afiVpnU = 0;
-                afiVpnM = 0;
-                afiVpnF = 0;
-                afiVpoU = 0;
-                afiVpoM = 0;
-                afiVpoF = 0;
-                afiVpls = 0;
-                afiMspw = 0;
-                afiEvpn = 0;
-                afiMdt = 0;
-                afiNsh = 0;
-                afiRpd = 0;
-                afiSdw = 0;
-                afiSpf = 0;
-                afiRtf = 0;
-                afiLnks = 0;
-                afiSrte = 0;
-                afiMvpn = 0;
-                afiMvpo = 0;
-                afiMtre = 0;
-                afiMtro = 0;
                 other = new rtrBgpOther(this, null);
                 lspf = new rtrBgpSpf(this);
                 break;
@@ -934,112 +736,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * convert safi to index
      *
      * @param safi safi
-     * @return index
+     * @return index, -1 if not found
      */
     public int safi2idx(int safi) {
-        if (safi == afiUni) {
-            return rtrBgpParam.idxUni;
-        }
-        if (safi == afiLab) {
-            return rtrBgpParam.idxLab;
-        }
-        if (safi == afiCtp) {
-            return rtrBgpParam.idxCtp;
-        }
-        if (safi == afiCar) {
-            return rtrBgpParam.idxCar;
-        }
-        if (safi == afiMlt) {
-            return rtrBgpParam.idxMlt;
-        }
-        if (safi == afiOlab) {
-            return rtrBgpParam.idxOlab;
-        }
-        if (safi == afiOctp) {
-            return rtrBgpParam.idxOctp;
-        }
-        if (safi == afiOcar) {
-            return rtrBgpParam.idxOcar;
-        }
-        if (safi == afiOuni) {
-            return rtrBgpParam.idxOuni;
-        }
-        if (safi == afiOmlt) {
-            return rtrBgpParam.idxOmlt;
-        }
-        if (safi == afiOflw) {
-            return rtrBgpParam.idxOflw;
-        }
-        if (safi == afiOsrt) {
-            return rtrBgpParam.idxOsrt;
-        }
-        if (safi == afiFlw) {
-            return rtrBgpParam.idxFlw;
-        }
-        if (safi == afiVpnU) {
-            return rtrBgpParam.idxVpnU;
-        }
-        if (safi == afiVpnM) {
-            return rtrBgpParam.idxVpnM;
-        }
-        if (safi == afiVpnF) {
-            return rtrBgpParam.idxVpnF;
-        }
-        if (safi == afiVpoU) {
-            return rtrBgpParam.idxVpoU;
-        }
-        if (safi == afiVpoM) {
-            return rtrBgpParam.idxVpoM;
-        }
-        if (safi == afiVpoF) {
-            return rtrBgpParam.idxVpoF;
-        }
-        if (safi == afiVpls) {
-            return rtrBgpParam.idxVpls;
-        }
-        if (safi == afiMspw) {
-            return rtrBgpParam.idxMspw;
-        }
-        if (safi == afiEvpn) {
-            return rtrBgpParam.idxEvpn;
-        }
-        if (safi == afiMdt) {
-            return rtrBgpParam.idxMdt;
-        }
-        if (safi == afiNsh) {
-            return rtrBgpParam.idxNsh;
-        }
-        if (safi == afiRpd) {
-            return rtrBgpParam.idxRpd;
-        }
-        if (safi == afiSdw) {
-            return rtrBgpParam.idxSdw;
-        }
-        if (safi == afiSpf) {
-            return rtrBgpParam.idxSpf;
-        }
-        if (safi == afiRtf) {
-            return rtrBgpParam.idxRtf;
-        }
-        if (safi == afiSrte) {
-            return rtrBgpParam.idxSrte;
-        }
-        if (safi == afiLnks) {
-            return rtrBgpParam.idxLnks;
-        }
-        if (safi == afiMvpn) {
-            return rtrBgpParam.idxMvpn;
-        }
-        if (safi == afiMvpo) {
-            return rtrBgpParam.idxMvpo;
-        }
-        if (safi == afiMtre) {
-            return rtrBgpParam.idxMtre;
-        }
-        if (safi == afiMtro) {
-            return rtrBgpParam.idxMtro;
-        }
-        logger.info("unknown safi (" + safi + ") requested");
+        for (int i=0;i<idx2afi.length;i++) if (idx2afi[i]==safi)return i;
         return -1;
     }
 
@@ -1050,110 +750,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return safi
      */
     public int idx2safi(int idx) {
-        if (idx == rtrBgpParam.idxUni) {
-            return afiUni;
-        }
-        if (idx == rtrBgpParam.idxLab) {
-            return afiLab;
-        }
-        if (idx == rtrBgpParam.idxCtp) {
-            return afiCtp;
-        }
-        if (idx == rtrBgpParam.idxCar) {
-            return afiCar;
-        }
-        if (idx == rtrBgpParam.idxMlt) {
-            return afiMlt;
-        }
-        if (idx == rtrBgpParam.idxOlab) {
-            return afiOlab;
-        }
-        if (idx == rtrBgpParam.idxOctp) {
-            return afiOctp;
-        }
-        if (idx == rtrBgpParam.idxOcar) {
-            return afiOcar;
-        }
-        if (idx == rtrBgpParam.idxOuni) {
-            return afiOuni;
-        }
-        if (idx == rtrBgpParam.idxOmlt) {
-            return afiOmlt;
-        }
-        if (idx == rtrBgpParam.idxOflw) {
-            return afiOflw;
-        }
-        if (idx == rtrBgpParam.idxOsrt) {
-            return afiOsrt;
-        }
-        if (idx == rtrBgpParam.idxFlw) {
-            return afiFlw;
-        }
-        if (idx == rtrBgpParam.idxVpnU) {
-            return afiVpnU;
-        }
-        if (idx == rtrBgpParam.idxVpnM) {
-            return afiVpnM;
-        }
-        if (idx == rtrBgpParam.idxVpnF) {
-            return afiVpnF;
-        }
-        if (idx == rtrBgpParam.idxVpoU) {
-            return afiVpoU;
-        }
-        if (idx == rtrBgpParam.idxVpoM) {
-            return afiVpoM;
-        }
-        if (idx == rtrBgpParam.idxVpoF) {
-            return afiVpoF;
-        }
-        if (idx == rtrBgpParam.idxVpls) {
-            return afiVpls;
-        }
-        if (idx == rtrBgpParam.idxMspw) {
-            return afiMspw;
-        }
-        if (idx == rtrBgpParam.idxEvpn) {
-            return afiEvpn;
-        }
-        if (idx == rtrBgpParam.idxMdt) {
-            return afiMdt;
-        }
-        if (idx == rtrBgpParam.idxNsh) {
-            return afiNsh;
-        }
-        if (idx == rtrBgpParam.idxRpd) {
-            return afiRpd;
-        }
-        if (idx == rtrBgpParam.idxSdw) {
-            return afiSdw;
-        }
-        if (idx == rtrBgpParam.idxSpf) {
-            return afiSpf;
-        }
-        if (idx == rtrBgpParam.idxRtf) {
-            return afiRtf;
-        }
-        if (idx == rtrBgpParam.idxSrte) {
-            return afiSrte;
-        }
-        if (idx == rtrBgpParam.idxLnks) {
-            return afiLnks;
-        }
-        if (idx == rtrBgpParam.idxMvpn) {
-            return afiMvpn;
-        }
-        if (idx == rtrBgpParam.idxMvpo) {
-            return afiMvpo;
-        }
-        if (idx == rtrBgpParam.idxMtre) {
-            return afiMtre;
-        }
-        if (idx == rtrBgpParam.idxMtro) {
-            return afiMtro;
-        }
-        logger.info("unknown safi (" + idx + ") requested");
-        return -1;
+        return idx2afi[idx];
     }
 
     /**
@@ -3283,7 +2880,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             ntry.iface = null;
             if (ntry.temp.srcIface != null) {
-                if (afiUni == rtrBgpUtil.safiIp4uni) {
+                if (!isIpv6) {
                     ntry.iface = ntry.temp.srcIface.fwdIf4;
                 } else {
                     ntry.iface = ntry.temp.srcIface.fwdIf6;
@@ -3590,7 +3187,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peerAddr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, 0, ntry, true, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, idx2afi[rtrBgpParam.idxUni], 0, ntry, true, null, null, routerAutoMesh);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
             rtrBgpNeigh nei = lstnNei.get(i);
@@ -3599,7 +3196,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peerAddr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, afiUni, 0, ntry, true, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, idx2afi[rtrBgpParam.idxUni], 0, ntry, true, null, null, routerAutoMesh);
         }
         other.getPeerList(tab);
         for (int i = 0; i < vrfs.size(); i++) {

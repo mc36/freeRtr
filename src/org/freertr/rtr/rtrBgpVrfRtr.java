@@ -281,12 +281,12 @@ public class rtrBgpVrfRtr extends ipRtr {
             doExportRoute(rtrBgpUtil.sfiFlwSpc, routerRedistedF.get(i), nFlw, rt);
         }
         tabRoute<addrIP> tab = new tabRoute<addrIP>("agg");
-        routerDoAggregates(parent.afiUni, nUni, tab, fwd.commonLabel, parent.routerID, parent.localAs);
+        routerDoAggregates(parent.idx2afi[rtrBgpParam.idxUni], nUni, tab, fwd.commonLabel, parent.routerID, parent.localAs);
         for (int i = 0; i < tab.size(); i++) {
             doExportRoute(afi, tab.get(i), nUni, rt);
         }
         tab = new tabRoute<addrIP>("agg");
-        routerDoAggregates(parent.afiMlt, nMlt, tab, fwd.commonLabel, parent.routerID, parent.localAs);
+        routerDoAggregates(parent.idx2afi[rtrBgpParam.idxMlt], nMlt, tab, fwd.commonLabel, parent.routerID, parent.localAs);
         for (int i = 0; i < tab.size(); i++) {
             doExportRoute(rtrBgpUtil.sfiMulticast, tab.get(i), nMlt, rt);
         }
@@ -315,7 +315,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.prefix.network.fromBuf(buf1, 0);
             ntry.prefix.broadcast.fromBuf(buf2, 0);
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, parent.freshly[rtrBgpParam.idxMdt], parent.afiMdt, 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, parent.freshly[rtrBgpParam.idxMdt], parent.idx2afi[rtrBgpParam.idxMdt], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
         }
         if (mvpn == null) {
             return;
@@ -346,7 +346,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         ntry.rouDst = fwd.rd;
         ntry.best.extComm.addAll(rt);
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-        tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, other ? parent.afiVpoM : parent.afiVpnM, 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
+        tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2afi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
     }
 
     private List<Long> getRtList() {
@@ -860,7 +860,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, parent.afiUni, 0, ntry, true, null, null, parent.routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, parent.idx2afi[rtrBgpParam.idxUni], 0, ntry, true, null, null, parent.routerAutoMesh);
         }
     }
 

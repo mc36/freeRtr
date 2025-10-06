@@ -957,7 +957,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         safis = mask2list(neigh.extNextCur);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 6];
-            int o = parent.afiUni >>> 16;
+            int o = parent.idx2afi[rtrBgpParam.idxUni] >>> 16;
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
                 bits.msbPutW(buf, (i * 6) + 4, o);
@@ -967,7 +967,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         safis = mask2list(neigh.extNextOtr);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 6];
-            int o = parent.afiOuni >>> 16;
+            int o = parent.idx2afi[rtrBgpParam.idxOuni] >>> 16;
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
                 bits.msbPutW(buf, (i * 6) + 4, o);
@@ -1224,8 +1224,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         }
                         break;
                     case rtrBgpUtil.capaExtNextHop:
-                        int valC = parent.afiUni >>> 16;
-                        int valO = parent.afiOuni >>> 16;
+                        int valC = parent.idx2afi[rtrBgpParam.idxUni] >>> 16;
+                        int valO = parent.idx2afi[rtrBgpParam.idxOuni] >>> 16;
                         for (i = 0; i < tlv.valSiz; i += 6) {
                             int o = bits.msbGetD(tlv.valDat, i + 0);
                             int p = bits.msbGetW(tlv.valDat, i + 4);

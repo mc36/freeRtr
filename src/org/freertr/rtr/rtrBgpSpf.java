@@ -278,10 +278,10 @@ public class rtrBgpSpf {
                     spfLnkst.readSpfLink(spf, tlv, pck, hlp);
                     break;
                 case spfLnkst.nlriTypIpv4:
-                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, parent.afiUni, distance);
+                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, rtrBgpUtil.afiIpv4, distance);
                     break;
                 case spfLnkst.nlriTypIpv6:
-                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, parent.afiUni, distance);
+                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, rtrBgpUtil.afiIpv6, distance);
                     break;
             }
         }

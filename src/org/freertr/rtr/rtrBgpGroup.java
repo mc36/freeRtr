@@ -685,14 +685,14 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.best.aggrRtr.fromIPv4addr(lower.routerID);
             ntry.best.aggrAs = localAs;
             ntry = originatePrefix(rtrBgpParam.idxUni, ntry);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, newly[rtrBgpParam.idxUni], lower.afiUni, remoteAs, ntry, true, roumapOut, roupolOut, prflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, newly[rtrBgpParam.idxUni], lower.idx2afi[rtrBgpParam.idxUni], remoteAs, ntry, true, roumapOut, roupolOut, prflstOut);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = lower.defaultRoute(false);
             ntry.best.aggrRtr = new addrIP();
             ntry.best.aggrRtr.fromIPv4addr(lower.routerID);
             ntry.best.aggrAs = localAs;
             ntry = originatePrefix(rtrBgpParam.idxMlt, ntry);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, newly[rtrBgpParam.idxMlt], lower.afiMlt, remoteAs, ntry, true, roumapOut, roupolOut, prflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, newly[rtrBgpParam.idxMlt], lower.idx2afi[rtrBgpParam.idxMlt], remoteAs, ntry, true, roumapOut, roupolOut, prflstOut);
         }
         if (sendOtrDefRou || lower.other.defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -701,14 +701,14 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.best.aggrRtr.fromIPv4addr(lower.routerID);
             ntry.best.aggrAs = localAs;
             ntry = originatePrefix(rtrBgpParam.idxOuni, ntry);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, newly[rtrBgpParam.idxOuni], lower.afiOuni, remoteAs, ntry, true, oroumapOut, oroupolOut, oprflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, newly[rtrBgpParam.idxOuni], lower.idx2afi[rtrBgpParam.idxOuni], remoteAs, ntry, true, oroumapOut, oroupolOut, oprflstOut);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = lower.defaultRoute(true);
             ntry.best.aggrRtr = new addrIP();
             ntry.best.aggrRtr.fromIPv4addr(lower.routerID);
             ntry.best.aggrAs = localAs;
             ntry = originatePrefix(rtrBgpParam.idxOmlt, ntry);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, newly[rtrBgpParam.idxOmlt], lower.afiOmlt, remoteAs, ntry, true, oroumapOut, oroupolOut, oprflstOut);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, newly[rtrBgpParam.idxOmlt], lower.idx2afi[rtrBgpParam.idxOmlt], remoteAs, ntry, true, oroumapOut, oroupolOut, oprflstOut);
         }
         updateTable(lower.routerRedistedU, tabRoute.addType.altEcmp, newly[rtrBgpParam.idxUni], rtrBgpParam.idxUni, roumapOut, roupolOut, prflstOut);
         updateTable(lower.routerRedistedM, tabRoute.addType.altEcmp, newly[rtrBgpParam.idxMlt], rtrBgpParam.idxMlt, roumapOut, roupolOut, prflstOut);
@@ -718,16 +718,16 @@ public class rtrBgpGroup extends rtrBgpParam {
         readvertTable(rtrBgpParam.idxOuni, newly[rtrBgpParam.idxOuni], lower.freshly[rtrBgpParam.idxOuni], oroumapOut, oroupolOut, oprflstOut);
         readvertTable(rtrBgpParam.idxOmlt, newly[rtrBgpParam.idxOmlt], lower.freshly[rtrBgpParam.idxOmlt], oroumapOut, oroupolOut, oprflstOut);
         tabRoute<addrIP> tab = new tabRoute<addrIP>("agg");
-        lower.routerDoAggregates(lower.afiUni, newly[rtrBgpParam.idxUni], tab, lower.fwdCore.commonLabel, lower.routerID, lower.localAs);
+        lower.routerDoAggregates(lower.idx2afi[rtrBgpParam.idxUni], newly[rtrBgpParam.idxUni], tab, lower.fwdCore.commonLabel, lower.routerID, lower.localAs);
         updateTable(tab, tabRoute.addType.better, newly[rtrBgpParam.idxUni], rtrBgpParam.idxUni, roumapOut, roupolOut, prflstOut);
         tab = new tabRoute<addrIP>("agg");
-        lower.routerDoAggregates(lower.afiMlt, newly[rtrBgpParam.idxMlt], tab, lower.fwdCore.commonLabel, lower.routerID, lower.localAs);
+        lower.routerDoAggregates(lower.idx2afi[rtrBgpParam.idxMlt], newly[rtrBgpParam.idxMlt], tab, lower.fwdCore.commonLabel, lower.routerID, lower.localAs);
         updateTable(tab, tabRoute.addType.better, newly[rtrBgpParam.idxMlt], rtrBgpParam.idxMlt, roumapOut, roupolOut, prflstOut);
         tab = new tabRoute<addrIP>("agg");
-        lower.other.routerDoAggregates(lower.afiOuni, newly[rtrBgpParam.idxOuni], tab, lower.other.fwd.commonLabel, lower.routerID, lower.localAs);
+        lower.other.routerDoAggregates(lower.idx2afi[rtrBgpParam.idxOuni], newly[rtrBgpParam.idxOuni], tab, lower.other.fwd.commonLabel, lower.routerID, lower.localAs);
         updateTable(tab, tabRoute.addType.better, newly[rtrBgpParam.idxOuni], rtrBgpParam.idxOuni, oroumapOut, oroupolOut, oprflstOut);
         tab = new tabRoute<addrIP>("agg");
-        lower.other.routerDoAggregates(lower.afiOmlt, newly[rtrBgpParam.idxOmlt], tab, lower.other.fwd.commonLabel, lower.routerID, lower.localAs);
+        lower.other.routerDoAggregates(lower.idx2afi[rtrBgpParam.idxOmlt], newly[rtrBgpParam.idxOmlt], tab, lower.other.fwd.commonLabel, lower.routerID, lower.localAs);
         updateTable(tab, tabRoute.addType.better, newly[rtrBgpParam.idxOmlt], rtrBgpParam.idxOmlt, oroumapOut, oroupolOut, oprflstOut);
         for (int i = 0; i < specials.length; i++) {
             if (specials[i]) {

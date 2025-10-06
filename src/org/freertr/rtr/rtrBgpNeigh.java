@@ -890,7 +890,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 if (rou == null) {
                     return;
                 }
-                if (!lower.nhtRoumap.matches(lower.afiUni, remoteAs, rou)) {
+                if (!lower.nhtRoumap.matches(lower.idx2afi[rtrBgpParam.idxUni], remoteAs, rou)) {
                     return;
                 }
             }
@@ -899,7 +899,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 if (rou == null) {
                     return;
                 }
-                rou = tabRtrplc.doRpl(lower.afiUni, remoteAs, rou, lower.nhtRouplc, true);
+                rou = tabRtrplc.doRpl(lower.idx2afi[rtrBgpParam.idxUni], remoteAs, rou, lower.nhtRouplc, true);
                 if (rou == null) {
                     return;
                 }
@@ -909,7 +909,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 if (rou == null) {
                     return;
                 }
-                if (!lower.nhtPfxlst.matches(lower.afiUni, remoteAs, rou)) {
+                if (!lower.nhtPfxlst.matches(lower.idx2afi[rtrBgpParam.idxUni], remoteAs, rou)) {
                     return;
                 }
             }
