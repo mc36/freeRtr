@@ -3487,7 +3487,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * as path graph
      *
-     * @param idx safi to refresh
+     * @param idx safi to query
      * @return text
      */
     public List<String> getAsGraph(int idx) {
@@ -3522,7 +3522,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * as path tree
      *
-     * @param idx safi to refresh
+     * @param idx safi to query
      * @param asn asn to start from
      * @return text
      */
@@ -3545,7 +3545,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * as path statistics
      *
-     * @param idx safi to refresh
+     * @param idx safi to query
      * @param asn asn to query
      * @return text
      */
@@ -3567,7 +3567,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * as path statistics
      *
-     * @param idx safi to refresh
+     * @param idx safi to query
      * @param asn asn to query
      * @return text
      */
@@ -3617,7 +3617,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * as connections
      *
-     * @param idx safi to refresh
+     * @param idx safi to query
      * @return text
      */
     public userFormat getAsConns(int idx) {
@@ -3658,7 +3658,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * usage of next hops
      *
-     * @param idx safi to refresh
+     * @param idx safi to query
      * @return text
      */
     public userFormat getNhPrfxes(int idx) {
@@ -3680,7 +3680,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * usage of next hops
      *
-     * @param idx safi to refresh
+     * @param idx safi to query
      * @return text
      */
     public userFormat getNhTrnsit(int idx) {
@@ -3702,7 +3702,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * usage of next hops
      *
-     * @param idx safi to refresh
+     * @param idx safi to query
      * @return text
      */
     public userFormat getNhOrigin(int idx) {
@@ -3724,7 +3724,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * inconsistent next hops
      *
-     * @param idx safi to refresh
+     * @param idx safi to query
      * @param mtch matcher
      * @return text
      */
@@ -3750,7 +3750,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * inconsistent as paths
      *
-     * @param idx safi to refresh
+     * @param idx safi to query
      * @param mtch matcher
      * @return text
      */
