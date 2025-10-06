@@ -230,11 +230,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected final tabRouteAttr.routeType rouTyp;
 
     /**
-     * intex to safi map
-     */
-    protected final int idx2afi[];
-
-    /**
      * router number
      */
     protected final int rtrNum;
@@ -313,6 +308,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * provider rpki table
      */
     protected tabGen<tabRpkiAspa> rpkiP = new tabGen<tabRpkiAspa>();
+
+    /**
+     * index to safi map
+     */
+    public final int[] idx2safi;
 
     /**
      * computed prefixes
@@ -562,7 +562,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         changed = rtrBgpParam.freshTables();
         freshly = rtrBgpParam.freshTables();
         origntd = rtrBgpParam.freshTables();
-        idx2afi = new int[freshly.length];
+        idx2safi = new int[freshly.length];
         vrfs = new tabGen<rtrBgpVrf>();
         ovrfs = new tabGen<rtrBgpVrf>();
         clrs = new tabGen<rtrBgpVrf>();
@@ -588,80 +588,80 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             case ipCor4.protocolVersion:
                 isIpv6 = false;
                 rouTyp = tabRouteAttr.routeType.bgp4;
-                idx2afi[rtrBgpParam.idxUni] = rtrBgpUtil.safiIp4uni;
-                idx2afi[rtrBgpParam.idxLab] = rtrBgpUtil.safiIp4lab;
-                idx2afi[rtrBgpParam.idxCtp] = rtrBgpUtil.safiIp4ctp;
-                idx2afi[rtrBgpParam.idxCar] = rtrBgpUtil.safiIp4car;
-                idx2afi[rtrBgpParam.idxMlt] = rtrBgpUtil.safiIp4multi;
-                idx2afi[rtrBgpParam.idxOlab] = rtrBgpUtil.safiIp6lab;
-                idx2afi[rtrBgpParam.idxOctp] = rtrBgpUtil.safiIp6ctp;
-                idx2afi[rtrBgpParam.idxOcar] = rtrBgpUtil.safiIp6car;
-                idx2afi[rtrBgpParam.idxOuni] = rtrBgpUtil.safiIp6uni;
-                idx2afi[rtrBgpParam.idxOmlt] = rtrBgpUtil.safiIp6multi;
-                idx2afi[rtrBgpParam.idxOflw] = rtrBgpUtil.safiIp6flow;
-                idx2afi[rtrBgpParam.idxOsrt] = rtrBgpUtil.safiIp6srte;
-                idx2afi[rtrBgpParam.idxFlw] = rtrBgpUtil.safiIp4flow;
-                idx2afi[rtrBgpParam.idxVpnU] = rtrBgpUtil.safiIp4vpnU;
-                idx2afi[rtrBgpParam.idxVpnM] = rtrBgpUtil.safiIp4vpnM;
-                idx2afi[rtrBgpParam.idxVpnF] = rtrBgpUtil.safiIp4vpnF;
-                idx2afi[rtrBgpParam.idxVpoU] = rtrBgpUtil.safiIp6vpnU;
-                idx2afi[rtrBgpParam.idxVpoM] = rtrBgpUtil.safiIp6vpnM;
-                idx2afi[rtrBgpParam.idxVpoF] = rtrBgpUtil.safiIp6vpnF;
-                idx2afi[rtrBgpParam.idxVpls] = rtrBgpUtil.safiVpls46;
-                idx2afi[rtrBgpParam.idxMspw] = rtrBgpUtil.safiMspw46;
-                idx2afi[rtrBgpParam.idxEvpn] = rtrBgpUtil.safiEvpn46;
-                idx2afi[rtrBgpParam.idxMdt] = rtrBgpUtil.safiIp4mdt;
-                idx2afi[rtrBgpParam.idxNsh] = rtrBgpUtil.safiNsh46;
-                idx2afi[rtrBgpParam.idxRpd] = rtrBgpUtil.safiRpd46;
-                idx2afi[rtrBgpParam.idxSdw] = rtrBgpUtil.safiIp4sdwan;
-                idx2afi[rtrBgpParam.idxSpf] = rtrBgpUtil.safiIp46spf;
-                idx2afi[rtrBgpParam.idxRtf] = rtrBgpUtil.safiRtf46;
-                idx2afi[rtrBgpParam.idxLnks] = rtrBgpUtil.safiIp46lnks;
-                idx2afi[rtrBgpParam.idxSrte] = rtrBgpUtil.safiIp4srte;
-                idx2afi[rtrBgpParam.idxMvpn] = rtrBgpUtil.safiIp4mvpn;
-                idx2afi[rtrBgpParam.idxMvpo] = rtrBgpUtil.safiIp6mvpn;
-                idx2afi[rtrBgpParam.idxMtre] = rtrBgpUtil.safiIp4mtree;
-                idx2afi[rtrBgpParam.idxMtro] = rtrBgpUtil.safiIp6mtree;
+                idx2safi[rtrBgpParam.idxUni] = rtrBgpUtil.safiIp4uni;
+                idx2safi[rtrBgpParam.idxLab] = rtrBgpUtil.safiIp4lab;
+                idx2safi[rtrBgpParam.idxCtp] = rtrBgpUtil.safiIp4ctp;
+                idx2safi[rtrBgpParam.idxCar] = rtrBgpUtil.safiIp4car;
+                idx2safi[rtrBgpParam.idxMlt] = rtrBgpUtil.safiIp4multi;
+                idx2safi[rtrBgpParam.idxOlab] = rtrBgpUtil.safiIp6lab;
+                idx2safi[rtrBgpParam.idxOctp] = rtrBgpUtil.safiIp6ctp;
+                idx2safi[rtrBgpParam.idxOcar] = rtrBgpUtil.safiIp6car;
+                idx2safi[rtrBgpParam.idxOuni] = rtrBgpUtil.safiIp6uni;
+                idx2safi[rtrBgpParam.idxOmlt] = rtrBgpUtil.safiIp6multi;
+                idx2safi[rtrBgpParam.idxOflw] = rtrBgpUtil.safiIp6flow;
+                idx2safi[rtrBgpParam.idxOsrt] = rtrBgpUtil.safiIp6srte;
+                idx2safi[rtrBgpParam.idxFlw] = rtrBgpUtil.safiIp4flow;
+                idx2safi[rtrBgpParam.idxVpnU] = rtrBgpUtil.safiIp4vpnU;
+                idx2safi[rtrBgpParam.idxVpnM] = rtrBgpUtil.safiIp4vpnM;
+                idx2safi[rtrBgpParam.idxVpnF] = rtrBgpUtil.safiIp4vpnF;
+                idx2safi[rtrBgpParam.idxVpoU] = rtrBgpUtil.safiIp6vpnU;
+                idx2safi[rtrBgpParam.idxVpoM] = rtrBgpUtil.safiIp6vpnM;
+                idx2safi[rtrBgpParam.idxVpoF] = rtrBgpUtil.safiIp6vpnF;
+                idx2safi[rtrBgpParam.idxVpls] = rtrBgpUtil.safiVpls46;
+                idx2safi[rtrBgpParam.idxMspw] = rtrBgpUtil.safiMspw46;
+                idx2safi[rtrBgpParam.idxEvpn] = rtrBgpUtil.safiEvpn46;
+                idx2safi[rtrBgpParam.idxMdt] = rtrBgpUtil.safiIp4mdt;
+                idx2safi[rtrBgpParam.idxNsh] = rtrBgpUtil.safiNsh46;
+                idx2safi[rtrBgpParam.idxRpd] = rtrBgpUtil.safiRpd46;
+                idx2safi[rtrBgpParam.idxSdw] = rtrBgpUtil.safiIp4sdwan;
+                idx2safi[rtrBgpParam.idxSpf] = rtrBgpUtil.safiIp46spf;
+                idx2safi[rtrBgpParam.idxRtf] = rtrBgpUtil.safiRtf46;
+                idx2safi[rtrBgpParam.idxLnks] = rtrBgpUtil.safiIp46lnks;
+                idx2safi[rtrBgpParam.idxSrte] = rtrBgpUtil.safiIp4srte;
+                idx2safi[rtrBgpParam.idxMvpn] = rtrBgpUtil.safiIp4mvpn;
+                idx2safi[rtrBgpParam.idxMvpo] = rtrBgpUtil.safiIp6mvpn;
+                idx2safi[rtrBgpParam.idxMtre] = rtrBgpUtil.safiIp4mtree;
+                idx2safi[rtrBgpParam.idxMtro] = rtrBgpUtil.safiIp6mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd6);
                 lspf = new rtrBgpSpf(this);
                 break;
             case ipCor6.protocolVersion:
                 isIpv6 = true;
                 rouTyp = tabRouteAttr.routeType.bgp6;
-                idx2afi[rtrBgpParam.idxUni] = rtrBgpUtil.safiIp6uni;
-                idx2afi[rtrBgpParam.idxLab] = rtrBgpUtil.safiIp6lab;
-                idx2afi[rtrBgpParam.idxCtp] = rtrBgpUtil.safiIp6ctp;
-                idx2afi[rtrBgpParam.idxCar] = rtrBgpUtil.safiIp6car;
-                idx2afi[rtrBgpParam.idxMlt] = rtrBgpUtil.safiIp6multi;
-                idx2afi[rtrBgpParam.idxOlab] = rtrBgpUtil.safiIp4lab;
-                idx2afi[rtrBgpParam.idxOctp] = rtrBgpUtil.safiIp4ctp;
-                idx2afi[rtrBgpParam.idxOcar] = rtrBgpUtil.safiIp4car;
-                idx2afi[rtrBgpParam.idxOuni] = rtrBgpUtil.safiIp4uni;
-                idx2afi[rtrBgpParam.idxOmlt] = rtrBgpUtil.safiIp4multi;
-                idx2afi[rtrBgpParam.idxOflw] = rtrBgpUtil.safiIp4flow;
-                idx2afi[rtrBgpParam.idxOsrt] = rtrBgpUtil.safiIp4srte;
-                idx2afi[rtrBgpParam.idxFlw] = rtrBgpUtil.safiIp6flow;
-                idx2afi[rtrBgpParam.idxVpnU] = rtrBgpUtil.safiIp6vpnU;
-                idx2afi[rtrBgpParam.idxVpnM] = rtrBgpUtil.safiIp6vpnM;
-                idx2afi[rtrBgpParam.idxVpnF] = rtrBgpUtil.safiIp6vpnF;
-                idx2afi[rtrBgpParam.idxVpoU] = rtrBgpUtil.safiIp4vpnU;
-                idx2afi[rtrBgpParam.idxVpoM] = rtrBgpUtil.safiIp4vpnM;
-                idx2afi[rtrBgpParam.idxVpoF] = rtrBgpUtil.safiIp4vpnF;
-                idx2afi[rtrBgpParam.idxVpls] = rtrBgpUtil.safiVpls46;
-                idx2afi[rtrBgpParam.idxMspw] = rtrBgpUtil.safiMspw46;
-                idx2afi[rtrBgpParam.idxEvpn] = rtrBgpUtil.safiEvpn46;
-                idx2afi[rtrBgpParam.idxMdt] = rtrBgpUtil.safiIp6mdt;
-                idx2afi[rtrBgpParam.idxNsh] = rtrBgpUtil.safiNsh46;
-                idx2afi[rtrBgpParam.idxRpd] = rtrBgpUtil.safiRpd46;
-                idx2afi[rtrBgpParam.idxSdw] = rtrBgpUtil.safiIp6sdwan;
-                idx2afi[rtrBgpParam.idxSpf] = rtrBgpUtil.safiIp46spf;
-                idx2afi[rtrBgpParam.idxRtf] = rtrBgpUtil.safiRtf46;
-                idx2afi[rtrBgpParam.idxLnks] = rtrBgpUtil.safiIp46lnks;
-                idx2afi[rtrBgpParam.idxSrte] = rtrBgpUtil.safiIp6srte;
-                idx2afi[rtrBgpParam.idxMvpn] = rtrBgpUtil.safiIp6mvpn;
-                idx2afi[rtrBgpParam.idxMvpo] = rtrBgpUtil.safiIp4mvpn;
-                idx2afi[rtrBgpParam.idxMtre] = rtrBgpUtil.safiIp6mtree;
-                idx2afi[rtrBgpParam.idxMtro] = rtrBgpUtil.safiIp4mtree;
+                idx2safi[rtrBgpParam.idxUni] = rtrBgpUtil.safiIp6uni;
+                idx2safi[rtrBgpParam.idxLab] = rtrBgpUtil.safiIp6lab;
+                idx2safi[rtrBgpParam.idxCtp] = rtrBgpUtil.safiIp6ctp;
+                idx2safi[rtrBgpParam.idxCar] = rtrBgpUtil.safiIp6car;
+                idx2safi[rtrBgpParam.idxMlt] = rtrBgpUtil.safiIp6multi;
+                idx2safi[rtrBgpParam.idxOlab] = rtrBgpUtil.safiIp4lab;
+                idx2safi[rtrBgpParam.idxOctp] = rtrBgpUtil.safiIp4ctp;
+                idx2safi[rtrBgpParam.idxOcar] = rtrBgpUtil.safiIp4car;
+                idx2safi[rtrBgpParam.idxOuni] = rtrBgpUtil.safiIp4uni;
+                idx2safi[rtrBgpParam.idxOmlt] = rtrBgpUtil.safiIp4multi;
+                idx2safi[rtrBgpParam.idxOflw] = rtrBgpUtil.safiIp4flow;
+                idx2safi[rtrBgpParam.idxOsrt] = rtrBgpUtil.safiIp4srte;
+                idx2safi[rtrBgpParam.idxFlw] = rtrBgpUtil.safiIp6flow;
+                idx2safi[rtrBgpParam.idxVpnU] = rtrBgpUtil.safiIp6vpnU;
+                idx2safi[rtrBgpParam.idxVpnM] = rtrBgpUtil.safiIp6vpnM;
+                idx2safi[rtrBgpParam.idxVpnF] = rtrBgpUtil.safiIp6vpnF;
+                idx2safi[rtrBgpParam.idxVpoU] = rtrBgpUtil.safiIp4vpnU;
+                idx2safi[rtrBgpParam.idxVpoM] = rtrBgpUtil.safiIp4vpnM;
+                idx2safi[rtrBgpParam.idxVpoF] = rtrBgpUtil.safiIp4vpnF;
+                idx2safi[rtrBgpParam.idxVpls] = rtrBgpUtil.safiVpls46;
+                idx2safi[rtrBgpParam.idxMspw] = rtrBgpUtil.safiMspw46;
+                idx2safi[rtrBgpParam.idxEvpn] = rtrBgpUtil.safiEvpn46;
+                idx2safi[rtrBgpParam.idxMdt] = rtrBgpUtil.safiIp6mdt;
+                idx2safi[rtrBgpParam.idxNsh] = rtrBgpUtil.safiNsh46;
+                idx2safi[rtrBgpParam.idxRpd] = rtrBgpUtil.safiRpd46;
+                idx2safi[rtrBgpParam.idxSdw] = rtrBgpUtil.safiIp6sdwan;
+                idx2safi[rtrBgpParam.idxSpf] = rtrBgpUtil.safiIp46spf;
+                idx2safi[rtrBgpParam.idxRtf] = rtrBgpUtil.safiRtf46;
+                idx2safi[rtrBgpParam.idxLnks] = rtrBgpUtil.safiIp46lnks;
+                idx2safi[rtrBgpParam.idxSrte] = rtrBgpUtil.safiIp6srte;
+                idx2safi[rtrBgpParam.idxMvpn] = rtrBgpUtil.safiIp6mvpn;
+                idx2safi[rtrBgpParam.idxMvpo] = rtrBgpUtil.safiIp4mvpn;
+                idx2safi[rtrBgpParam.idxMtre] = rtrBgpUtil.safiIp6mtree;
+                idx2safi[rtrBgpParam.idxMtro] = rtrBgpUtil.safiIp4mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd4);
                 lspf = new rtrBgpSpf(this);
                 break;
@@ -739,18 +739,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return index, -1 if not found
      */
     public int safi2idx(int safi) {
-        for (int i=0;i<idx2afi.length;i++) if (idx2afi[i]==safi)return i;
+        for (int i = 0; i < idx2safi.length; i++) {
+            if (idx2safi[i] == safi) {
+                return i;
+            }
+        }
         return -1;
-    }
-
-    /**
-     * convert index to safi
-     *
-     * @param idx index
-     * @return safi
-     */
-    public int idx2safi(int idx) {
-        return idx2afi[idx];
     }
 
     /**
@@ -1453,12 +1447,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (rtrBgpParam.indexAlias[idx] >= 0) {
                 continue;
             }
-            int afi = idx2safi(idx);
             for (int i = changed[idx].size() - 1; i >= 0; i--) {
                 tabRouteEntry<addrIP> ntry = changed[idx].get(i);
                 changed[idx].del(ntry);
                 done[idx].add(tabRoute.addType.always, ntry, false, false);
-                computeIncrEntry(idx, afi, ntry, computd[idx], origntd[idx]);
+                computeIncrEntry(idx, idx2safi[idx], ntry, computd[idx], origntd[idx]);
             }
         }
         routerChangedU = done[rtrBgpParam.idxUni];
@@ -3187,7 +3180,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peerAddr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, idx2afi[rtrBgpParam.idxUni], 0, ntry, true, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, idx2safi[rtrBgpParam.idxUni], 0, ntry, true, null, null, routerAutoMesh);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
             rtrBgpNeigh nei = lstnNei.get(i);
@@ -3196,7 +3189,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = new addrPrefix<addrIP>(nei.peerAddr, addrIP.size * 8);
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, idx2afi[rtrBgpParam.idxUni], 0, ntry, true, null, null, routerAutoMesh);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, idx2safi[rtrBgpParam.idxUni], 0, ntry, true, null, null, routerAutoMesh);
         }
         other.getPeerList(tab);
         for (int i = 0; i < vrfs.size(); i++) {

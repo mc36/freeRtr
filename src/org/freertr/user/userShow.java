@@ -4891,10 +4891,7 @@ public class userShow {
             return;
         }
         int dsp = rtrBgpParam.displayModel(idx);
-        int sfi = r.bgp.idx2safi(idx);
-        if (sfi < 1) {
-            return;
-        }
+        int sfi = r.bgp.idx2safi[idx];
         a = cmd.word();
         if (a.equals("summary")) {
             rdr.putStrTab(r.bgp.showNeighs(idx));

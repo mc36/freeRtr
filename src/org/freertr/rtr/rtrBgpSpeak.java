@@ -472,12 +472,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 if (!peerAfis[i]) {
                     continue;
                 }
-                int o = parent.idx2safi(i);
-                if (o < 0) {
-                    continue;
-                }
-                sendRefresh(i, o);
-                gotRefresh(i, o);
+                sendRefresh(i, parent.idx2safi[i]);
+                gotRefresh(i, parent.idx2safi[i]);
             }
         } else {
             sendOpen();
@@ -897,11 +893,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (!mask[i]) {
                 continue;
             }
-            int o = parent.idx2safi(i);
-            if (o < 0) {
-                continue;
-            }
-            safis.add(o);
+            safis.add(parent.idx2safi[i]);
         }
         return safis;
     }
@@ -957,7 +949,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         safis = mask2list(neigh.extNextCur);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 6];
-            int o = parent.idx2afi[rtrBgpParam.idxUni] >>> 16;
+            int o = parent.idx2safi[rtrBgpParam.idxUni] >>> 16;
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
                 bits.msbPutW(buf, (i * 6) + 4, o);
@@ -967,7 +959,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         safis = mask2list(neigh.extNextOtr);
         if (safis.size() > 0) {
             byte[] buf = new byte[safis.size() * 6];
-            int o = parent.idx2afi[rtrBgpParam.idxOuni] >>> 16;
+            int o = parent.idx2safi[rtrBgpParam.idxOuni] >>> 16;
             for (int i = 0; i < safis.size(); i++) {
                 bits.msbPutD(buf, (i * 6) + 0, safis.get(i));
                 bits.msbPutW(buf, (i * 6) + 4, o);
@@ -1224,8 +1216,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                         }
                         break;
                     case rtrBgpUtil.capaExtNextHop:
-                        int valC = parent.idx2afi[rtrBgpParam.idxUni] >>> 16;
-                        int valO = parent.idx2afi[rtrBgpParam.idxOuni] >>> 16;
+                        int valC = parent.idx2safi[rtrBgpParam.idxUni] >>> 16;
+                        int valO = parent.idx2safi[rtrBgpParam.idxOuni] >>> 16;
                         for (i = 0; i < tlv.valSiz; i += 6) {
                             int o = bits.msbGetD(tlv.valDat, i + 0);
                             int p = bits.msbGetW(tlv.valDat, i + 4);
@@ -1750,16 +1742,15 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tabRouteEntry<addrIP> res = currDel.get(i);
             idx = (int) res.oldDst;
             res.oldDst = 0;
-            int safi = parent.idx2safi(idx);
             addpath = addpathRx[idx];
             parent.unreachStat.rx(pck);
             neigh.unreachStat.rx(pck);
             if (debugger.rtrBgpTraf) {
-                logger.debug("withdraw " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
+                logger.debug("withdraw " + rtrBgpParam.idx2string(idx) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
             }
             if (!peerAfis[idx]) {
                 if (debugger.rtrBgpError) {
-                    logger.debug("got unknown withdraw from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+                    logger.debug("got unknown withdraw from peer " + neigh.peerAddr + " in " + rtrBgpParam.idx2string(idx));
                 }
                 continue;
             }
@@ -1779,15 +1770,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tabRouteEntry<addrIP> res = currAdd.get(i);
             idx = (int) res.oldDst;
             res.oldDst = 0;
-            int safi = parent.idx2safi(idx);
             parent.reachabStat.rx(pck);
             neigh.reachabStat.rx(pck);
             if (debugger.rtrBgpTraf) {
-                logger.debug("reachable " + rtrBgpUtil.safi2string(safi) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
+                logger.debug("reachable " + rtrBgpParam.idx2string(idx) + " " + tabRouteUtil.rd2string(res.rouDst) + " " + res.prefix + " " + res.best.ident);
             }
             if (!peerAfis[idx]) {
                 if (debugger.rtrBgpError) {
-                    logger.debug("got unknown reachable from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+                    logger.debug("got unknown reachable from peer " + neigh.peerAddr + " in " + rtrBgpParam.idx2string(idx));
                 }
                 continue;
             }
@@ -1839,7 +1829,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tabRoute<addrIP> chgd = parent.changed[idx];
             if (!neigh.softReconfig) {
                 tabListing[] fltr = neigh.getInFilters(idx);
-                tabRouteEntry<addrIP> udp = tabRoute.doUpdateEntry(safi, neigh.remoteAs, res, fltr[0], fltr[1], fltr[2]);
+                tabRouteEntry<addrIP> udp = tabRoute.doUpdateEntry(parent.idx2safi[idx], neigh.remoteAs, res, fltr[0], fltr[1], fltr[2]);
                 if (udp == null) {
                     repPolRej++;
                     if (doPrefDel(lrnt, addpath, res)) {
@@ -1851,7 +1841,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 res = udp;
             }
-            if (prefixReachable(res, idx, safi)) {
+            if (prefixReachable(res, idx, parent.idx2safi[idx])) {
                 if (doPrefDel(lrnt, addpath, res)) {
                     continue;
                 }

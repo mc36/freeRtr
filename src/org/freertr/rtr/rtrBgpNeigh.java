@@ -561,7 +561,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             if (!conn.peerAfis[idx]) {
                 continue;
             }
-            int safi = lower.idx2safi(idx);
+            int safi = lower.idx2safi[idx];
             tabRoute<addrIP> will = willing[idx];
             tabRoute<addrIP> done = conn.advert[idx];
             boolean oneLab = !conn.peerMltLab[idx];
@@ -713,7 +713,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             if (!conn.peerAfis[idx]) {
                 continue;
             }
-            int safi = lower.idx2safi(idx);
+            int safi = lower.idx2safi[idx];
             tabRoute<addrIP> will = willing[idx];
             tabRoute<addrIP> chgd = changed[idx];
             tabRoute<addrIP> done = conn.advert[idx];
@@ -890,7 +890,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 if (rou == null) {
                     return;
                 }
-                if (!lower.nhtRoumap.matches(lower.idx2afi[rtrBgpParam.idxUni], remoteAs, rou)) {
+                if (!lower.nhtRoumap.matches(lower.idx2safi[rtrBgpParam.idxUni], remoteAs, rou)) {
                     return;
                 }
             }
@@ -899,7 +899,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 if (rou == null) {
                     return;
                 }
-                rou = tabRtrplc.doRpl(lower.idx2afi[rtrBgpParam.idxUni], remoteAs, rou, lower.nhtRouplc, true);
+                rou = tabRtrplc.doRpl(lower.idx2safi[rtrBgpParam.idxUni], remoteAs, rou, lower.nhtRouplc, true);
                 if (rou == null) {
                     return;
                 }
@@ -909,7 +909,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 if (rou == null) {
                     return;
                 }
-                if (!lower.nhtPfxlst.matches(lower.idx2afi[rtrBgpParam.idxUni], remoteAs, rou)) {
+                if (!lower.nhtPfxlst.matches(lower.idx2safi[rtrBgpParam.idxUni], remoteAs, rou)) {
                     return;
                 }
             }
@@ -936,9 +936,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             if (!conn.peerAfis[idx]) {
                 continue;
             }
-            int afi = lower.idx2safi(idx);
             tabListing[] fltr = getInFilters(idx);
-            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, afi, remoteAs, acceptd[idx], conn.learnt[idx], true, fltr[0], fltr[1], fltr[2]);
+            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, lower.idx2safi[idx], remoteAs, acceptd[idx], conn.learnt[idx], true, fltr[0], fltr[1], fltr[2]);
         }
         if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {
             rtfilterUsed = acceptd[rtrBgpParam.idxRtf];

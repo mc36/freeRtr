@@ -1143,10 +1143,6 @@ public class userClear {
             if (idx < 0) {
                 return;
             }
-            int sfi = r.bgp.idx2safi(idx);
-            if (sfi < 1) {
-                return;
-            }
             a = cmd.word();
             cmd.error("opening " + a);
             RandomAccessFile fs = null;
@@ -1159,7 +1155,7 @@ public class userClear {
             for (int i = 0; i < neis.size(); i++) {
                 rtrBgpNeigh nei = neis.get(i);
                 cmd.error("saving " + nei.peerAddr);
-                nei.saveTable(fs, idx, sfi);
+                nei.saveTable(fs, idx, r.bgp.idx2safi[idx]);
             }
             try {
                 fs.close();
@@ -1187,10 +1183,7 @@ public class userClear {
         if (idx < 0) {
             return;
         }
-        int sfi = r.bgp.idx2safi(idx);
-        if (sfi < 1) {
-            return;
-        }
+        int sfi = r.bgp.idx2safi[idx];
         for (int i = 0; i < neis.size(); i++) {
             rtrBgpNeigh nei = neis.get(i);
             switch (mod) {
