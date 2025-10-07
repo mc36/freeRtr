@@ -1446,11 +1446,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (rtrBgpParam.indexAlias[idx] >= 0) {
                 continue;
             }
-            for (int i = changed[idx].size() - 1; i >= 0; i--) {
-                tabRouteEntry<addrIP> ntry = changed[idx].get(i);
-                changed[idx].del(ntry);
-                done[idx].add(tabRoute.addType.always, ntry, false, false);
-                computeIncrEntry(idx, idx2safi[idx], ntry, computd[idx], origntd[idx]);
+            tabRoute<addrIP> chg = changed[idx];
+            tabRoute<addrIP> don = done[idx];
+            tabRoute<addrIP> cmp = computd[idx];
+            tabRoute<addrIP> org = origntd[idx];
+            int afi = idx2safi[idx];
+            for (int i = chg.size() - 1; i >= 0; i--) {
+                tabRouteEntry<addrIP> ntry = chg.get(i);
+                chg.del(ntry);
+                don.add(tabRoute.addType.always, ntry, false, false);
+                computeIncrEntry(idx, afi, ntry, cmp, org);
             }
         }
         routerChangedU = done[rtrBgpParam.idxUni];
