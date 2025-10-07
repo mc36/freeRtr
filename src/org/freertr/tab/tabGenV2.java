@@ -249,7 +249,12 @@ public class tabGenV2<T extends Comparable<? super T>> {
         int rowB = begD[lstB];
         T[] rowD = valD[lstB];
         if (upper >= 0) {
-            int cmp = rowD[upper].compareTo(val);
+            int cmp = rowD[0].compareTo(val);
+            if (cmp > 0) {
+                lstI = 0;
+                return -rowB - 1;
+            }
+            cmp = rowD[upper].compareTo(val);
             if (cmp < 0) {
                 lstI = upper;
                 return -rowB - (upper + 1) - 1;
