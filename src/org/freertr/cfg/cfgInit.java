@@ -428,7 +428,7 @@ public class cfgInit implements Runnable {
         sa.add("pid: " + pipeShell.myProcessNum() + ", reload: " + bits.lst2str(bits.txt2buf(myReloadFile()), " "));
         sa.add("hwc: " + cfgFileHw + ", swc: " + cfgFileSw);
         sa.add("class: v" + getSysProp("java.class.version") + " @ " + getFileName() + ", rwp: " + getRWpath());
-        sa.add("cpu: " + getCPUname() + ", mem: free=" + bits.toUser(rt.freeMemory()) + ", max=" + bits.toUser(rt.maxMemory()) + ", used=" + bits.toUser(rt.totalMemory()));
+        sa.add("cpu: " + getCPUname() + ", mem: free=" + bits.toUser(rt.freeMemory()) + ", used=" + bits.toUser(rt.totalMemory()) + ", max=" + bits.toUser(rt.maxMemory()));
         long l = pipeShell.getKernelUptime();
         sa.add("host: " + getKernelName() + ", since " + bits.time2str(cfgAll.timeZoneName, l + cfgAll.timeServerOffset, 3) + ", for " + bits.timePast(l));
         sa.add("java: " + getJavaVer("java") + " @ " + getSysProp("java.home"));
