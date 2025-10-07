@@ -1520,7 +1520,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * send refresh marker
      *
      * @param safi safi to update
-     * @param mode mode to send
+     * @param mode mode to send, 0=request, 1=begin, 2=finish
      */
     public void sendFreshMark(int safi, int mode) {
         if (debugger.rtrBgpTraf) {
