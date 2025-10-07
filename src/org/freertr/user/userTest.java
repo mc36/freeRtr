@@ -117,6 +117,7 @@ import org.freertr.enc.encPrtbuf;
 import org.freertr.enc.encThrift;
 import org.freertr.enc.encUrl;
 import org.freertr.serv.servP4lang;
+import org.freertr.util.syncInt;
 
 /**
  * process test commands
@@ -512,6 +513,9 @@ public class userTest {
             doTestRouting(msk, new addrIPv4(), new tabRoute<addrIPv4>("test"), add, fnd, idx, dmp);
             doTestRouting(msk, new addrIPv6(), new tabRoute<addrIPv6>("test"), add, fnd, idx, dmp);
             doTestRouting(msk, new addrIP(), new tabRoute<addrIP>("test"), add, fnd, idx, dmp);
+            syncInt cnt = new syncInt(0);
+            doTestRouting(msk, new userTestCnt(cnt), new tabRoute<userTestCnt>("test"), add, fnd, idx, dmp);
+            cmd.error(cnt.get() + " compares");
             return null;
         }
         if (a.equals("pipeline")) {
@@ -1204,6 +1208,39 @@ class userTestRnd implements userTestIfc {
 
     public int forDel(int len) {
         return bits.random(0, len);
+    }
+
+}
+
+class userTestCnt extends addrType {
+
+    public final syncInt cnt;
+
+    public userTestCnt(syncInt c) {
+        cnt = c;
+    }
+
+    public int getSize() {
+        return addrIP.size;
+    }
+
+    public addrType copyBytes() {
+        userTestCnt o = new userTestCnt(cnt);
+        bits.byteCopy(getBytes(), 0, o.getBytes(), 0, addrIP.size);
+        return o;
+    }
+
+    public String toString() {
+        return bits.byteDump(addr, 0, addrIP.size);
+    }
+
+    public boolean fromString(String s) {
+        return false;
+    }
+
+    public int compareTo(addrType o) {
+        cnt.add(1);
+        return bits.byteComp(getBytes(), 0, o.getBytes(), 0, addrIP.size);
     }
 
 }
