@@ -210,18 +210,22 @@ public class tabGenV2<T extends Comparable<? super T>> {
     private int doFind(T val) {
         int lower = 0;
         int upper = blkN - 1;
-        boolean hit = false;
         if (upper > 0) {
-            if (lstB >= upper) {
-                int cmp = valD[lstB][0].compareTo(val);
-                if (cmp <= 0) {
-                    lower = lstB + 1;
-                    hit = true;
+            int cmp = valD[lstB][0].compareTo(val);
+            if (cmp >= 0) {
+                upper = lstB;
+            }
+            if (cmp <= 0) {
+                lower = lstB;
+                cmp = sizD[lstB] - 1;
+                cmp = valD[lstB][cmp].compareTo(val);
+                if (cmp >= 0) {
+                    upper = lstB;
                 }
             }
             while (lower <= upper) {
                 lstB = (lower + upper) >>> 1;
-                int cmp = valD[lstB][0].compareTo(val);
+                cmp = valD[lstB][0].compareTo(val);
                 if (cmp < 0) {
                     lower = lstB + 1;
                     continue;
@@ -244,7 +248,7 @@ public class tabGenV2<T extends Comparable<? super T>> {
         upper = sizD[lstB] - 1;
         int rowB = begD[lstB];
         T[] rowD = valD[lstB];
-        if (hit && (upper >= 0)) {
+        if (upper >= 0) {
             int cmp = rowD[upper].compareTo(val);
             if (cmp < 0) {
                 lstI = upper;
