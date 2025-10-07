@@ -205,19 +205,6 @@ public class pipeSide {
         notif = new notifier();
     }
 
-    private void bytePut(int b) {
-        bufD[bufW] = (byte) b;
-        bufU = bufU + 1;
-        bufW = (bufW + 1) % bufS;
-    }
-
-    private int byteGet() {
-        bufU = bufU - 1;
-        int i = bufD[bufR];
-        bufR = (bufR + 1) % bufS;
-        return i & 0xff;
-    }
-
     /**
      * set timeout
      *
@@ -235,6 +222,19 @@ public class pipeSide {
      */
     public int getTime() {
         return timeout;
+    }
+
+    private void bytePut(int b) {
+        bufD[bufW] = (byte) b;
+        bufU = bufU + 1;
+        bufW = (bufW + 1) % bufS;
+    }
+
+    private int byteGet() {
+        bufU = bufU - 1;
+        int i = bufD[bufR];
+        bufR = (bufR + 1) % bufS;
+        return i & 0xff;
     }
 
     private void sizePut(int i) {
@@ -271,8 +271,14 @@ public class pipeSide {
                 }
                 sizePut(len);
             }
-            for (int i = 0; i < len; i++) {
-                bytePut(buf[ofs + i]);
+            if ((bufW + len) < bufS) {
+                bits.byteCopy(buf, ofs, bufD, bufW, len);
+                bufW += len;
+                bufU += len;
+            } else {
+                for (int i = 0; i < len; i++) {
+                    bytePut(buf[ofs + i]);
+                }
             }
             return len;
         }
@@ -304,8 +310,14 @@ public class pipeSide {
                     len = bufU;
                 }
             }
-            for (int i = 0; i < len; i++) {
-                buf[ofs + i] = (byte) byteGet();
+            if ((bufR + len) < bufS) {
+                bits.byteCopy(bufD, bufR, buf, ofs, len);
+                bufR += len;
+                bufU -= len;
+            } else {
+                for (int i = 0; i < len; i++) {
+                    buf[ofs + i] = (byte) byteGet();
+                }
             }
             if (restorePos) {
                 bufU = ou;
