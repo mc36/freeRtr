@@ -29,7 +29,7 @@ public class addr {
         System.out.println(a);
     }
 
-    private static String style = null;
+    private static byte[] style = null;
 
     /**
      * do one request
@@ -53,13 +53,16 @@ public class addr {
                 byte[] red = new byte[(int) fr.length()];
                 fr.read(red, 0, red.length);
                 fr.close();
-                style = new String(red);
+                style = red;
             } catch (Exception e) {
-                style = "";
+                style = new byte[0];
             }
         }
-        String s = "<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><style>\n" + style + "</style><title>address</title></head><body>\n" + peer + "\n</body></html>\n";
-        buf.write(s.getBytes());
+        buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><style>\n".getBytes());
+        buf.write(style);
+        buf.write("</style><title>address</title></head><body>\n".getBytes());
+        buf.write(peer.getBytes());
+        buf.write("\n</body></html>\n".getBytes());
         return "html";
     }
 
