@@ -1386,8 +1386,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (nei.softReconfig) {
                 return true;
             }
-            nei.setAccepted();
-            if (nei.reachOld != nei.reachable) {
+            if (nei.calcReachable() != nei.reachable) {
                 return true;
             }
             labPer |= nei.conn.peerAfis[rtrBgpParam.idxLab] | nei.conn.peerAfis[rtrBgpParam.idxCtp] | nei.conn.peerAfis[rtrBgpParam.idxCar];
@@ -1400,8 +1399,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (nei.softReconfig) {
                 return true;
             }
-            nei.setAccepted();
-            if (nei.reachOld != nei.reachable) {
+            if (nei.calcReachable() != nei.reachable) {
                 return true;
             }
             labPer |= nei.conn.peerAfis[rtrBgpParam.idxLab] | nei.conn.peerAfis[rtrBgpParam.idxCtp] | nei.conn.peerAfis[rtrBgpParam.idxCar];

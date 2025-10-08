@@ -868,53 +868,64 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     }
 
     /**
-     * set accepted list
+     * calculate reachable state
+     *
+     * @return true if reachable, false if not
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public void setAccepted() {
-        acceptd = rtrBgpParam.freshTables();
-        rtfilterUsed = null;
-        reachable = false;
+    public boolean calcReachable() {
         if (sendingIfc != null) {
             ipFwdIface ifc = ipFwdTab.findSendingIface(lower.fwdCore, peerAddr);
             if (ifc == null) {
-                return;
+                return false;
             }
             if (ifc.ifwNum != sendingIfc.ifwNum) {
-                return;
+                return false;
             }
         }
         if (trackNxthop) {
             if (lower.nhtRoumap != null) {
                 tabRouteEntry<addrIP> rou = lower.fwdCore.actualU.route(peerAddr);
                 if (rou == null) {
-                    return;
+                    return false;
                 }
                 if (!lower.nhtRoumap.matches(lower.idx2safi[rtrBgpParam.idxUni], remoteAs, rou)) {
-                    return;
+                    return false;
                 }
             }
             if (lower.nhtRouplc != null) {
                 tabRouteEntry<addrIP> rou = lower.fwdCore.actualU.route(peerAddr);
                 if (rou == null) {
-                    return;
+                    return false;
                 }
                 rou = tabRtrplc.doRpl(lower.idx2safi[rtrBgpParam.idxUni], remoteAs, rou, lower.nhtRouplc, true);
                 if (rou == null) {
-                    return;
+                    return false;
                 }
             }
             if (lower.nhtPfxlst != null) {
                 tabRouteEntry<addrIP> rou = lower.fwdCore.actualU.route(peerAddr);
                 if (rou == null) {
-                    return;
+                    return false;
                 }
                 if (!lower.nhtPfxlst.matches(lower.idx2safi[rtrBgpParam.idxUni], remoteAs, rou)) {
-                    return;
+                    return false;
                 }
             }
         }
-        reachable = true;
+        return true;
+    }
+
+    /**
+     * set accepted list
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void setAccepted() {
+        acceptd = rtrBgpParam.freshTables();
+        rtfilterUsed = null;
+        reachable = calcReachable();
+        if (!reachable) {
+            return;
+        }
         if (!softReconfig) {
             acceptd = conn.learnt;
             if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {

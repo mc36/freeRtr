@@ -86,24 +86,20 @@ prefix-list def6
  sequence 10 permit ::/0 ge 0 le 0
  exit
 !
-route-policy nht4
- sequence 10 if network 0.0.0.0/0 ge 0 le 0
- sequence 20   drop
- sequence 30 elsif distance 70
- sequence 40   pass
- sequence 50 elsif distance 0
- sequence 60   pass
- sequence 70 enif
+prefix-list nht4
+ sequence 10 permit 100.100.0.0/16 ge 32 le 32
  exit
 !
-route-policy nht6
- sequence 10 if network ::/0 ge 0 le 0
- sequence 20   drop
- sequence 30 elsif distance 70
- sequence 40   pass
- sequence 50 elsif distance 0
- sequence 60   pass
- sequence 70 enif
+prefix-list nht6
+ sequence 10 permit 2001:db8::/32 ge 128 le 128
+ exit
+!
+route-policy nht
+ sequence 10 if distance 70
+ sequence 20   pass
+ sequence 30 else
+ sequence 40   drop
+ sequence 50 enif
  exit
 !
 bundle 1
@@ -525,6 +521,8 @@ router bgp4 65535 vrf v1
  router-id 100.100.3.227
  address-family unicast multicast vpnuni vpnmlt vpls evpn mdt flowspec vpnflw ovpnuni ovpnmlt ovpnflw mvpn omvpn mspw srte linkstate ouni omlt oflw osrt nsh rtfilter rpd mtree omtree spf sdwan
  flapstat
+ nexthop route-policy nht
+ nexthop prefix-list nht4
  monitor bmp p1 100.100.3.227 17971
  dump mrt bgp4.log
  !
@@ -612,6 +610,8 @@ router bgp6 65535 vrf v1
  router-id 100.100.3.227
  address-family unicast multicast vpnuni vpnmlt vpls evpn mdt flowspec vpnflw ovpnuni ovpnmlt ovpnflw mvpn omvpn mspw srte linkstate ouni omlt oflw osrt nsh rtfilter rpd mtree omtree spf sdwan
  flapstat
+ nexthop route-policy nht
+ nexthop prefix-list nht6
  monitor bmp p1 2001:db8:1101::227:227 17971
  dump mrt bgp6.log
  !
