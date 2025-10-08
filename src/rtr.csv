@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.10.8-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-10-08 07:37:24, took 00:19:20, with 50 workers, on 4054 cases, 1 failed, 0 traces, 9 retries
+-;-;-;2025-10-08 07:59:24, took 00:15:03, with 50 workers, on 4054 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1065,7 +1065,7 @@ http://sources.freertr.org/cfg/crypt-wireguard01.tst;crypt-wireguard01.tst;succe
 http://sources.freertr.org/cfg/crypt-wireguard02.tst;crypt-wireguard02.tst;success;wireguard over ipv6
 http://sources.freertr.org/cfg/crypt-wireguard03.tst;crypt-wireguard03.tst;success;wireguard over wireguard
 http://sources.freertr.org/cfg/crypt-wireguard04.tst;crypt-wireguard04.tst;success;wireguard over loopback
-http://sources.freertr.org/cfg/crypt-wireguard05.tst;crypt-wireguard05.tst;#6-run-r1 tping 100 10 2.2.2.2 vrf v1;wireguard over asymmetric ports
+http://sources.freertr.org/cfg/crypt-wireguard05.tst;crypt-wireguard05.tst;success;wireguard over asymmetric ports
 http://sources.freertr.org/cfg/demo01.tst;demo01.tst;success;empty demo network
 http://sources.freertr.org/cfg/demo02.tst;demo02.tst;success;addressed demo network
 http://sources.freertr.org/cfg/intop1-bgp01.tst;intop1-bgp01.tst;success;interop1: ebgp
