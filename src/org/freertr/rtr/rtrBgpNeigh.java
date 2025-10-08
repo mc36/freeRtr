@@ -103,11 +103,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     public boolean reachable = false;
 
     /**
-     * old reachable state
-     */
-    public boolean reachOld;
-
-    /**
      * neighbor reachable change time
      */
     public long reachTim;
@@ -920,19 +915,30 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void setAccepted() {
-        acceptd = rtrBgpParam.freshTables();
-        rtfilterUsed = null;
+        boolean reachOld = reachable;
         reachable = calcReachable();
+        if (reachable != reachOld) {
+            reachTim = bits.getTime();
+            reachNum++;
+            if (debugger.rtrBgpEvnt) {
+                logger.debug("reachable neighbor " + peerAddr + " " + reachable);
+            }
+        }
         if (!reachable) {
+            acceptd = rtrBgpParam.freshTables();
+            rtfilterUsed = null;
             return;
         }
         if (!softReconfig) {
             acceptd = conn.learnt;
             if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {
                 rtfilterUsed = acceptd[rtrBgpParam.idxRtf];
+            } else {
+                rtfilterUsed = null;
             }
             return;
         }
+        acceptd = rtrBgpParam.freshTables();
         if (lower.rpkiR != null) {
             tabRpkiUtil.setValidityTable(localAs, acceptd[rtrBgpParam.idxUni], lower.rpkiA, lower.rpkiP, rpkiIn);
             tabRpkiUtil.setValidityTable(localAs, acceptd[rtrBgpParam.idxMlt], lower.rpkiA, lower.rpkiP, rpkiIn);
@@ -952,6 +958,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         }
         if (rtfilterOut && conn.peerAfis[rtrBgpParam.idxRtf]) {
             rtfilterUsed = acceptd[rtrBgpParam.idxRtf];
+        } else {
+            rtfilterUsed = null;
         }
         if (dampenPfxs == null) {
             return;
@@ -995,14 +1003,6 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      */
     public void setGroup() {
         lower.have2reflect |= peerType == rtrBgpUtil.peerRflct;
-        if (reachable != reachOld) {
-            reachOld = reachable;
-            reachTim = bits.getTime();
-            reachNum++;
-            if (debugger.rtrBgpEvnt) {
-                logger.debug("reachable neighbor " + peerAddr + " " + reachable);
-            }
-        }
         groupMember = -1;
         if (checkShutdown()) {
             return;
