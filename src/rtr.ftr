@@ -1061,7 +1061,7 @@ qc pass: wireguard over ipv4
 qc pass: wireguard over ipv6
 qc pass: wireguard over wireguard
 qc pass: wireguard over loopback
-qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
 qc pass: empty demo network
 qc pass: addressed demo network
 qc pass: interop1: ebgp
