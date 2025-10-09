@@ -237,20 +237,6 @@ public class pipeSide {
         return i & 0xff;
     }
 
-    private void sizePut(int i) {
-        bytePut(i >>> 8);
-        bytePut(i & 0xff);
-    }
-
-    private int sizeGet() {
-        if (bufU < 2) {
-            return pipeLine.tryLater;
-        }
-        int i = byteGet();
-        int o = byteGet();
-        return (i << 8) | o;
-    }
-
     private int bufPut(byte[] buf, int ofs, int len) {
         synchronized (lck) {
             if (len < 0) {
@@ -269,7 +255,8 @@ public class pipeSide {
                 if (len > blockMaxSiz) {
                     return pipeLine.wontWork;
                 }
-                sizePut(len);
+                bytePut(len >>> 8);
+                bytePut(len & 0xff);
             }
             if ((bufW + len) < bufS) {
                 bits.byteCopy(buf, ofs, bufD, bufW, len);
@@ -298,13 +285,17 @@ public class pipeSide {
             int ou = bufU;
             int op = bufR;
             if (headSize > 0) {
-                int i = sizeGet();
-                if (i > len) {
-                    len = pipeLine.wontWork;
-                    restorePos = true;
-                } else {
-                    len = i;
+                if (bufU < 2) {
+                    return pipeLine.tryLater;
                 }
+                int i = byteGet() << 8;
+                i |= byteGet();
+                if (i > len) {
+                    bufU = ou;
+                    bufR = op;
+                    return pipeLine.wontWork;
+                }
+                len = i;
             } else {
                 if (len > bufU) {
                     len = bufU;
