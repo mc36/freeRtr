@@ -1242,6 +1242,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      *
      * @return list of statistics
      */
+    public userFormat getMsgDiffs() {
+        return rtrBgpDump.getMsgDiffs(msgStats);
+    }
+
+    /**
+     * get message statistics
+     *
+     * @return list of statistics
+     */
     public userFormat getAttrStats() {
         return rtrBgpDump.getAttrStats(attrStats);
     }

@@ -1017,6 +1017,7 @@ public class userExec {
         hl.add(null, false, 6, new int[]{7, -1}, "originate", "list of routes originated locally");
         hl.add(null, false, 7, new int[]{-1}, "[addr]", "prefix to view");
         hl.add(null, false, 5, new int[]{-1}, "statistics", "message statistics");
+        hl.add(null, false, 5, new int[]{-1}, "stat-diffs", "statistic differences");
         hl.add(null, false, 5, new int[]{-1}, "attributes", "attribute statistics");
         hl.add(null, false, 5, new int[]{-1}, "graceful-restart", "list of graceful restart");
         hl.add(null, false, 5, new int[]{-1}, "longlived-graceful", "list of long lived graceful restart");
@@ -1045,6 +1046,7 @@ public class userExec {
         hl.add(null, false, 8, new int[]{-1}, "<str>", "int matcher");
         hl.add(null, false, 7, new int[]{-1}, "attributes", "collected attributes statistics");
         hl.add(null, false, 7, new int[]{-1}, "statistics", "collected message statistics");
+        hl.add(null, false, 7, new int[]{-1}, "stat-diffs", "statistic differences");
         hl.add(null, false, 7, new int[]{-1}, "config", "peer configuration");
         hl.add(null, false, 7, new int[]{-1}, "status", "peer status");
         hl.add(null, false, 7, new int[]{-1}, "tables", "tables status");

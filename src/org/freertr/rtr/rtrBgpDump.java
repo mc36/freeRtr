@@ -429,7 +429,7 @@ public class rtrBgpDump {
      * @return list of statistics
      */
     public static userFormat getMsgStats(counter s[]) {
-        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2message|2pack|2byte|2ago|2last");
         for (int i = 0; i < s.length; i++) {
             l.add(i + "|" + rtrBgpUtil.msgType2string(i) + "|" + counter2stats(s[i]));
         }
@@ -442,8 +442,42 @@ public class rtrBgpDump {
      * @param s statistics
      * @return list of statistics
      */
+    public static userFormat getMsgDiffs(counter s[]) {
+        userFormat l = new userFormat("|", "typ|name|pack|byte|time|upd-tx|upd-tx");
+        for (int i = 0; i < s.length; i++) {
+            long pck = s[i].packRx - s[i].packTx;
+            long byt = s[i].byteRx - s[i].byteTx;
+            long tim = s[i].lastRx - s[i].lastTx;
+            long upt = s[rtrBgpUtil.msgUpdate].lastRx - s[i].lastTx;
+            long upr = s[rtrBgpUtil.msgUpdate].lastTx - s[i].lastRx;
+            if (pck < 0) {
+                pck = -pck;
+            }
+            if (byt < 0) {
+                byt = -byt;
+            }
+            if (tim < 0) {
+                tim = -tim;
+            }
+            if (upt < 0) {
+                upt = -upt;
+            }
+            if (upr < 0) {
+                upr = -upr;
+            }
+            l.add(i + "|" + rtrBgpUtil.msgType2string(i) + "|" + pck + "|" + byt + "|" + tim + "|" + upt + "|" + upr);
+        }
+        return l;
+    }
+
+    /**
+     * get message statistics
+     *
+     * @param s statistics
+     * @return list of statistics
+     */
     public static userFormat getAttrStats(counter s[]) {
-        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2attribute|2pack|2byte|2ago|2last");
         for (int i = 0; i < s.length; i++) {
             l.add(i + "|" + rtrBgpUtil.attrType2string(i) + "|" + counter2stats(s[i]));
         }

@@ -4640,6 +4640,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.getMsgStats());
             return;
         }
+        if (a.equals("stat-diffs")) {
+            rdr.putStrTab(r.bgp.getMsgDiffs());
+            return;
+        }
         if (a.equals("attributes")) {
             rdr.putStrTab(r.bgp.getAttrStats());
             return;
@@ -4838,6 +4842,10 @@ public class userShow {
             }
             if (a.equals("statistics")) {
                 rdr.putStrTab(nei.getMsgStats());
+                return;
+            }
+            if (a.equals("stat-diffs")) {
+                rdr.putStrTab(nei.getMsgDiffs());
                 return;
             }
             if (a.equals("config")) {

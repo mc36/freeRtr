@@ -3789,6 +3789,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      *
      * @return list of statistics
      */
+    public userFormat getMsgDiffs() {
+        return rtrBgpDump.getMsgDiffs(msgStats);
+    }
+
+    /**
+     * get message statistics
+     *
+     * @return list of statistics
+     */
     public userFormat getAttrStats() {
         return rtrBgpDump.getAttrStats(attrStats);
     }
