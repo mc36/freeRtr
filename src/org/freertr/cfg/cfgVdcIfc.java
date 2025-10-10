@@ -28,6 +28,11 @@ public class cfgVdcIfc implements Comparable<cfgVdcIfc> {
     public int portR;
 
     /**
+     * remote address
+     */
+    public String peer;
+
+    /**
      * redundancy interface
      */
     public boolean redundancy = false;

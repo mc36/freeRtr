@@ -1034,19 +1034,19 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             int vl = 1;
             for (int i = 0; i < ifaces.size(); i++) {
                 cfgVdcIfc ntry = ifaces.get(i);
-                cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.portL + ",localaddr=:" + ntry.portR + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
+                cmd += " -netdev socket,id=n" + vl + ",udp=" + ntry.peer + ":" + ntry.portR + ",localaddr=:" + ntry.portL + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
                 vl++;
                 mac.setAdd(mac, one);
             }
             for (int i = 0; i < locals.size(); i++) {
                 cfgVdcIfc ntry = locals.get(i);
-                cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.portL + ",localaddr=:" + ntry.portR + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
+                cmd += " -netdev socket,id=n" + vl + ",udp=127.0.0.1:" + ntry.portR + ",localaddr=:" + ntry.portL + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
                 vl++;
                 mac.setAdd(mac, one);
             }
             for (int i = 0; i < conns.size(); i++) {
                 cfgVdcConn ntry = conns.get(i);
-                cmd += " -netdev socket,id=n" + vl + ",udp=:" + ntry.conn.port + ",localaddr=:" + ntry.port + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
+                cmd += " -netdev socket,id=n" + vl + ",udp=127.0.0.1:" + ntry.port + ",localaddr=:" + ntry.conn.port + " -device " + nicType + ",netdev=n" + vl + ",mac=" + mac.toEmuStr();
                 vl++;
                 mac.setAdd(mac, one);
             }
