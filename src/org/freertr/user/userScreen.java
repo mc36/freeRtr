@@ -921,46 +921,6 @@ public class userScreen {
         return res;
     }
 
-    private void getAnsi(List<Byte> res, String s) {
-        byte[] buf = s.getBytes();
-        res.add((byte) 27);
-        for (int i = 0; i < buf.length; i++) {
-            res.add(buf[i]);
-        }
-    }
-
-    /**
-     * get current screen
-     *
-     * @return ansi text
-     */
-    public List<Byte> getAnsi() {
-        List<Byte> res = new ArrayList<Byte>();
-        getAnsi(res, "\033[0m\033[0;0H\033[2J");
-        int c = -1;
-        for (int y = 0; y < sizY; y++) {
-            for (int x = 0; x < sizX; x++) {
-                int o = atrs[y][x];
-                if (c != o) {
-                    c = o;
-                    int bg = (c >>> 16) & 0xf;
-                    int fg = c & 0xf;
-                    if ((bg & colBright) != 0) {
-                        bg = (bg & colMask) + 60;
-                    }
-                    if ((fg & colBright) != 0) {
-                        fg = (fg & colMask) + 60;
-                    }
-                    getAnsi(res, "\033[0;" + (bg + 40) + ";" + (fg + 30) + "m");
-                }
-                res.add((byte) chrs[y][x]);
-            }
-            res.add((byte) 13);
-            res.add((byte) 10);
-        }
-        return res;
-    }
-
     /**
      * refresh terminal
      */
