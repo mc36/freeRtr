@@ -717,7 +717,7 @@ public class userTester {
                 continue;
             }
             if (s.equals("runner")) {
-                runner = cmd.word();
+                runner = cmd.word() + " ";
                 continue;
             }
             if (s.equals("norunner")) {
@@ -1007,9 +1007,6 @@ public class userTester {
             remoteL = new addrIP();
             remoteL.fromString(remoteD.remove(0));
             remoteS = remoteD.remove(0);
-        }
-        if (runner.length() > 0) {
-            runner += " ";
         }
         rdr.debugStat("oobase=" + oobase);
         rdr.debugStat("slot=" + slot);
