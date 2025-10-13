@@ -55,7 +55,7 @@ public class servRexec extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.setTime(5000);
+        pipe.setTime(120000);
         new servRexecConn(this, pipe);
         return false;
     }
