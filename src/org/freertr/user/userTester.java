@@ -177,6 +177,11 @@ public class userTester {
     protected String cfgarch = "./";
 
     /**
+     * runner command
+     */
+    protected String runner = "";
+
+    /**
      * open a window
      */
     protected boolean window = false;
@@ -711,6 +716,14 @@ public class userTester {
                 cfgarch = "./";
                 continue;
             }
+            if (s.equals("runner")) {
+                runner = cmd.word();
+                continue;
+            }
+            if (s.equals("norunner")) {
+                runner = "";
+                continue;
+            }
             if (s.equals("temp")) {
                 temp = cmd.word();
                 continue;
@@ -995,6 +1008,9 @@ public class userTester {
             remoteL.fromString(remoteD.remove(0));
             remoteS = remoteD.remove(0);
         }
+        if (runner.length() > 0) {
+            runner += " ";
+        }
         rdr.debugStat("oobase=" + oobase);
         rdr.debugStat("slot=" + slot);
         rdr.debugStat("parallel=" + parallel);
@@ -1008,6 +1024,7 @@ public class userTester {
         rdr.debugStat("mdfile=" + mdfile);
         rdr.debugStat("summary=" + summary);
         rdr.debugStat("cfgarch=" + cfgarch);
+        rdr.debugStat("runner=" + runner);
         rdr.debugStat("window=" + window);
         rdr.debugStat("wait=" + wait);
         rdr.debugStat("config=" + config);
@@ -1040,7 +1057,7 @@ public class userTester {
                 s += " -netdev socket,id=n" + i + ",udp=127.0.0.1:" + rp + ",localaddr=:" + lp + " -device " + a + ",netdev=n" + i + ",mac=00:00:00:00:11:" + bits.toHexB(i);
             }
             persistP += (4 * bits.str2num(persistD.remove(0)));
-            persistC = new userTesterPrc(rdr, temp, slot, "persist", s);
+            persistC = new userTesterPrc(rdr, temp, slot, "persist", runner + s);
             persistC.persistent = true;
             bits.buf2txt(true, bits.str2lst(""), persistC.getLogName(4));
             s = persistD.remove(0);
@@ -1319,6 +1336,11 @@ class userTesterOne {
     protected final String cfgarch;
 
     /**
+     * runner command
+     */
+    protected final String runner;
+
+    /**
      * chattyness matcher
      */
     protected final tabIntMatcher chatty;
@@ -1469,6 +1491,7 @@ class userTesterOne {
         reapply = frm.reapply;
         restart = frm.restart;
         cfgarch = frm.cfgarch;
+        runner = frm.runner;
         chatty = frm.chatty;
         predelay = frm.predelay;
         postdelay = frm.postdelay;
@@ -1948,7 +1971,7 @@ class userTesterOne {
             s = "telnet " + remoteA + " " + remoteP;
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
-            userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, s);
+            userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, runner + s);
             p.syncr = remoteS;
             procs.add(p);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
@@ -2053,12 +2076,12 @@ class userTesterOne {
                 ctP.putLine("test hwcfg tcp2vrf " + ctL + " " + ctV);
                 ctP.doSync();
             }
-            pipeShell.exec(img.convert2udp(img.otherC1, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
-            pipeShell.exec(img.convert2udp(img.otherC2, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            pipeShell.exec(runner + img.convert2udp(img.otherC1, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            pipeShell.exec(runner + img.convert2udp(img.otherC2, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
             s = img.convert2udp(img.otherC3, prefix + slot + rn, ctL, lps, rps, mcs);
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
-            userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, s);
+            userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, runner + s);
             p.pipe.setTime(5 * 60000);
             p.syncr = img.otherS;
             procs.add(p);
@@ -2321,14 +2344,14 @@ class userTesterOne {
                     bits.buf2txt(true, cfg, extcfg);
                 }
             }
-            userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, s);
+            userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, runner + s);
             bits.buf2txt(true, bits.str2lst(""), p.getLogName(4));
             if (write) {
                 for (i = 0; i < restart; i++) {
                     p.putLine("write");
                     p.putLine("reload force");
                     p.waitFor();
-                    p = new userTesterPrc(rdr, prefix, slot, rn, s);
+                    p = new userTesterPrc(rdr, prefix, slot, rn, runner + s);
                 }
             }
             procs.add(p);
