@@ -35,21 +35,24 @@ public class secClient {
         if (proto == 0) {
             return stream;
         }
-        if (proto == servGeneric.protoSsh) {
-            if (user == null) {
-                console.strPut("username: ");
-                user = console.lineGet(50);
-            }
-            if (pass == null) {
-                console.strPut("password: ");
-                int red;
-                if (console.settingsGet(pipeSetting.passStar, false)) {
-                    red = 51;
-                } else {
-                    red = 49;
+        switch (proto) {
+            case servGeneric.protoSsh:
+            case servGeneric.protoRlogin:
+                if (user == null) {
+                    console.strPut("username: ");
+                    user = console.lineGet(50);
                 }
-                pass = console.lineGet(red);
-            }
+                if (pass == null) {
+                    console.strPut("password: ");
+                    int red;
+                    if (console.settingsGet(pipeSetting.passStar, false)) {
+                        red = 51;
+                    } else {
+                        red = 49;
+                    }
+                    pass = console.lineGet(red);
+                }
+                break;
         }
         console.strPut("securing connection");
         stream = openSec(stream, proto, pubkey, user, pass);
@@ -98,6 +101,11 @@ public class secClient {
                 }
                 tls.startClient(pubkey);
                 pipe = tls.getPipe();
+                break;
+            case servGeneric.protoRlogin:
+                secRlogin rlogin = new secRlogin(pipe, new pipeLine(65536, false));
+                rlogin.startClient(user, pass);
+                pipe = rlogin.getPipe();
                 break;
             case servGeneric.protoTelnet:
                 secTelnet telnet = new secTelnet(pipe, new pipeLine(65536, false));

@@ -239,6 +239,11 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
     public final static int protoTelnet = 0x800;
 
     /**
+     * use rlogin
+     */
+    public final static int protoRlogin = 0x1000;
+
+    /**
      * use all networks
      */
     public final static int protoNets = protoIp4 | protoIp6;
@@ -251,7 +256,7 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
     /**
      * use all security
      */
-    public final static int protoSec = protoSsh | protoTls | protoDtls | protoTelnet;
+    public final static int protoSec = protoSsh | protoTls | protoDtls | protoTelnet | protoRlogin;
 
     /**
      * use all stream
@@ -419,6 +424,9 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         if ((i & protoTelnet) != 0) {
             a += " telnet";
         }
+        if ((i & protoRlogin) != 0) {
+            a += " rlogin";
+        }
         return a.trim();
     }
 
@@ -461,6 +469,9 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         }
         if (a.equals("telnet")) {
             return protoTelnet;
+        }
+        if (a.equals("rlogin")) {
+            return protoRlogin;
         }
         return 0;
     }
@@ -1199,6 +1210,7 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         l.add(null, false, 3, new int[]{-1}, "tls", "select transport layer security");
         l.add(null, false, 3, new int[]{-1}, "dtls", "select datagram transport layer security");
         l.add(null, false, 3, new int[]{-1}, "telnet", "select telnet protocol");
+        l.add(null, false, 3, new int[]{-1}, "rlogin", "select rlogin protocol");
         l.add(null, false, 2, new int[]{3}, "authentication", "set authentication");
         l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authentication list");
         l.add(null, false, 2, new int[]{3}, "rsakey", "set rsa key");

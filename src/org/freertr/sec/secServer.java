@@ -61,6 +61,10 @@ public class secServer {
                 tls.maxVer = 0x300 + cfgAll.tlsVerMax;
                 tls.startServer(keyrsa, keydsa, keyecdsa, keymldsa, certrsa, certdsa, certecdsa, certmldsa);
                 return tls.getPipe();
+            case servGeneric.protoRlogin:
+                secRlogin rlogin = new secRlogin(pipe, pipeLine.doClone(sample, pipe.isBlockMode()));
+                rlogin.startServer(auther);
+                return rlogin.getPipe();
             case servGeneric.protoTelnet:
                 secTelnet telnet = new secTelnet(pipe, pipeLine.doClone(sample, pipe.isBlockMode()));
                 telnet.startServer();

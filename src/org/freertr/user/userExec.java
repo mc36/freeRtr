@@ -1962,6 +1962,7 @@ public class userExec {
         hl.add(null, false, 4, new int[]{4, -1}, "ssh", "specify secure shell");
         hl.add(null, false, 4, new int[]{4, -1}, "tls", "specify transport layer security");
         hl.add(null, false, 4, new int[]{4, -1}, "dtls", "specify datagram transport layer security");
+        hl.add(null, false, 4, new int[]{4, -1}, "rlogin", "specify rlogin protocol");
         hl.add(null, false, 4, new int[]{4, -1}, "telnet", "specify telnet protocol");
         hl.add(null, false, 4, new int[]{4, -1}, "ipv4", "specify ipv4 to use");
         hl.add(null, false, 4, new int[]{4, -1}, "ipv6", "specify ipv6 to use");
@@ -2294,6 +2295,8 @@ public class userExec {
         hl.add(null, false, 1, new int[]{2}, "tls", "start tls session");
         getHelpTelnet(hl);
         hl.add(null, false, 1, new int[]{2}, "dtls", "start dtls session");
+        getHelpTelnet(hl);
+        hl.add(null, false, 1, new int[]{2}, "rlogin", "start rlogin session");
         getHelpTelnet(hl);
         hl.add(null, false, 1, new int[]{2}, "ssl", "start ssl session");
         getHelpTelnet(hl);
@@ -3143,6 +3146,10 @@ public class userExec {
         }
         if (a.equals("dtls")) {
             doTelnet(servGeneric.protoDtls);
+            return cmdRes.command;
+        }
+        if (a.equals("rlogin")) {
+            doTelnet(servGeneric.protoRlogin);
             return cmdRes.command;
         }
         if (a.equals("traceroute")) {
@@ -4978,6 +4985,11 @@ public class userExec {
             if (a.equals("dtls")) {
                 secur = servGeneric.protoDtls;
                 dgrm = servGeneric.protoUdp;
+                continue;
+            }
+            if (a.equals("rlogin")) {
+                secur = servGeneric.protoRlogin;
+                dgrm = servGeneric.protoTcp;
                 continue;
             }
             if (a.equals("telnet")) {
