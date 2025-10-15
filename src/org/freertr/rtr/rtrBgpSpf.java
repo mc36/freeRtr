@@ -145,7 +145,7 @@ public class rtrBgpSpf {
         spf.addNextHop(nei.spfMetric, nei.conn.peerRouterID, nei.peerAddr, nei.localIfc, null, null);
     }
 
-    private void doAdvertNei(encTlv tlv, packHolder pck, packHolder hlp, rtrBgpNeigh nei) {
+    private void doAdvertNei(tabRoute<addrIP>[] freshly, encTlv tlv, packHolder pck, packHolder hlp, rtrBgpNeigh nei) {
         if (nei == null) {
             return;
         }
@@ -165,22 +165,24 @@ public class rtrBgpSpf {
             tlv.valSiz = 1;
             tlv.putBytes(hlp, spfLnkst.typSpfStat);
         }
-        spfLnkst.createEntry(parent.freshly[rtrBgpParam.idxSpf], parent.computd[rtrBgpParam.idxSpf], tlv, pck, hlp, 4, nei.spfMetric);
+        spfLnkst.createEntry(freshly[rtrBgpParam.idxSpf], parent.computd[rtrBgpParam.idxSpf], tlv, pck, hlp, 4, nei.spfMetric);
     }
 
-    private void doAdvertPfx(encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> rou) {
+    private void doAdvertPfx(tabRoute<addrIP>[] freshly, encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> rou) {
         if (rou == null) {
             return;
         }
         spfLnkst.createHeader(tlv, pck, spfLnkst.protoDirect, spfLnkst.getPrefixType(rou));
         spfLnkst.createSpfNode(tlv, pck, hlp, parent.localAs, parent.routerID, spfLnkst.typNodeLocal);
-        spfLnkst.createPrefix(parent.freshly[rtrBgpParam.idxSpf], parent.computd[rtrBgpParam.idxSpf], tlv, pck, hlp, rou);
+        spfLnkst.createPrefix(freshly[rtrBgpParam.idxSpf], parent.computd[rtrBgpParam.idxSpf], tlv, pck, hlp, rou);
     }
 
     /**
      * merge routes to table
+     *
+     * @param freshly currently computing
      */
-    public void doAdvertise() {
+    public void doAdvertise(tabRoute<addrIP>[] freshly) {
         if (!enabled) {
             return;
         }
@@ -205,17 +207,17 @@ public class rtrBgpSpf {
             tlv.valSiz = 8;
             tlv.putBytes(hlp, spfLnkst.typSrCapa);
         }
-        spfLnkst.createEntry(parent.freshly[rtrBgpParam.idxSpf], parent.computd[rtrBgpParam.idxSpf], tlv, pck, hlp, 0, 0);
+        spfLnkst.createEntry(freshly[rtrBgpParam.idxSpf], parent.computd[rtrBgpParam.idxSpf], tlv, pck, hlp, 0, 0);
         for (int i = 0; i < parent.neighs.size(); i++) {
-            doAdvertNei(tlv, pck, hlp, parent.neighs.get(i));
+            doAdvertNei(freshly, tlv, pck, hlp, parent.neighs.get(i));
         }
         for (int i = 0; i < parent.lstnNei.size(); i++) {
-            doAdvertNei(tlv, pck, hlp, parent.lstnNei.get(i));
+            doAdvertNei(freshly, tlv, pck, hlp, parent.lstnNei.get(i));
         }
         if (defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = parent.defaultRoute(false);
-            doAdvertPfx(tlv, pck, hlp, ntry);
+            doAdvertPfx(freshly, tlv, pck, hlp, ntry);
         }
         for (int i = 0; i < parent.routerRedistedU.size(); i++) {
             tabRouteEntry<addrIP> ntry = parent.routerRedistedU.get(i);
@@ -231,7 +233,7 @@ public class rtrBgpSpf {
                 ntry.best.bierHdr = tabLabelBier.num2bsl(parent.bierLen);
                 ntry.best.bierSiz = parent.bierLab.length;
             }
-            doAdvertPfx(tlv, pck, hlp, ntry);
+            doAdvertPfx(freshly, tlv, pck, hlp, ntry);
         }
     }
 
@@ -248,8 +250,8 @@ public class rtrBgpSpf {
         encTlv tlv = spfLnkst.getTlv();
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
-        for (int i = 0; i < parent.freshly[rtrBgpParam.idxSpf].size(); i++) {
-            tabRouteEntry<addrIP> rou = parent.freshly[rtrBgpParam.idxSpf].get(i);
+        for (int i = 0; i < parent.computd[rtrBgpParam.idxSpf].size(); i++) {
+            tabRouteEntry<addrIP> rou = parent.computd[rtrBgpParam.idxSpf].get(i);
             if (rou == null) {
                 continue;
             }
@@ -325,8 +327,8 @@ public class rtrBgpSpf {
         tab2.setProto(parent.rouTyp, parent.rtrNum);
         tab2.preserveTime(routes);
         routes = tab2;
-        parent.freshly[rtrBgpParam.idxUni].mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);
-        parent.freshly[rtrBgpParam.idxMlt].mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);
+        parent.computd[rtrBgpParam.idxUni].mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);
+        parent.computd[rtrBgpParam.idxMlt].mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);
         parent.routerComputedI = segrouUsd;
         return false;
     }

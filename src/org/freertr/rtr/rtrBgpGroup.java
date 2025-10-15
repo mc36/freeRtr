@@ -672,9 +672,11 @@ public class rtrBgpGroup extends rtrBgpParam {
 
     /**
      * create needed prefix list
+     *
+     * @param freshly currently computing
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void createNeeded() {
+    public void createNeeded(tabRoute<addrIP>[] freshly) {
         tabRoute<addrIP>[] newly = rtrBgpParam.freshTables();
         if (sendDefRou || lower.defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -711,10 +713,10 @@ public class rtrBgpGroup extends rtrBgpParam {
         updateTable(lower.routerRedistedU, tabRoute.addType.altEcmp, newly[rtrBgpParam.idxUni], rtrBgpParam.idxUni, roumapOut, roupolOut, prflstOut);
         updateTable(lower.routerRedistedM, tabRoute.addType.altEcmp, newly[rtrBgpParam.idxMlt], rtrBgpParam.idxMlt, roumapOut, roupolOut, prflstOut);
         updateTable(lower.routerRedistedF, tabRoute.addType.altEcmp, newly[rtrBgpParam.idxFlw], rtrBgpParam.idxFlw, vroumapOut, vroupolOut, null);
-        readvertTable(rtrBgpParam.idxUni, newly[rtrBgpParam.idxUni], lower.freshly[rtrBgpParam.idxUni], roumapOut, roupolOut, prflstOut);
-        readvertTable(rtrBgpParam.idxMlt, newly[rtrBgpParam.idxMlt], lower.freshly[rtrBgpParam.idxMlt], roumapOut, roupolOut, prflstOut);
-        readvertTable(rtrBgpParam.idxOuni, newly[rtrBgpParam.idxOuni], lower.freshly[rtrBgpParam.idxOuni], oroumapOut, oroupolOut, oprflstOut);
-        readvertTable(rtrBgpParam.idxOmlt, newly[rtrBgpParam.idxOmlt], lower.freshly[rtrBgpParam.idxOmlt], oroumapOut, oroupolOut, oprflstOut);
+        readvertTable(rtrBgpParam.idxUni, newly[rtrBgpParam.idxUni], freshly[rtrBgpParam.idxUni], roumapOut, roupolOut, prflstOut);
+        readvertTable(rtrBgpParam.idxMlt, newly[rtrBgpParam.idxMlt], freshly[rtrBgpParam.idxMlt], roumapOut, roupolOut, prflstOut);
+        readvertTable(rtrBgpParam.idxOuni, newly[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOuni], oroumapOut, oroupolOut, oprflstOut);
+        readvertTable(rtrBgpParam.idxOmlt, newly[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOmlt], oroumapOut, oroupolOut, oprflstOut);
         tabRoute<addrIP> tab = new tabRoute<addrIP>("agg");
         lower.routerDoAggregates(lower.idx2safi[rtrBgpParam.idxUni], newly[rtrBgpParam.idxUni], tab, lower.fwdCore.commonLabel, lower.routerID, lower.localAs);
         updateTable(tab, tabRoute.addType.better, newly[rtrBgpParam.idxUni], rtrBgpParam.idxUni, roumapOut, roupolOut, prflstOut);
@@ -732,7 +734,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 continue;
             }
             tabListing[] fltr = getOutFilters(i);
-            readvertTable(i, newly[i], lower.freshly[i], fltr[0], fltr[1], fltr[2]);
+            readvertTable(i, newly[i], freshly[i], fltr[0], fltr[1], fltr[2]);
         }
         if (peerType != rtrBgpUtil.peerRflct) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();

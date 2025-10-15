@@ -981,8 +981,10 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
 
     /**
      * set merged list
+     *
+     * @param freshly currently computing
      */
-    public void setMerge() {
+    public void setMerge(tabRoute<addrIP>[] freshly) {
         tabRoute.addType mod;
         if (lower.routerEcmp) {
             mod = tabRoute.addType.lnkEcmp;
@@ -994,7 +996,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 continue;
             }
             tabRoute<addrIP> acc = new tabRoute<addrIP>(acceptd[i]);
-            lower.freshly[i].mergeFrom(mod, acc, tabRouteAttr.distanLim);
+            freshly[i].mergeFrom(mod, acc, tabRouteAttr.distanLim);
         }
     }
 

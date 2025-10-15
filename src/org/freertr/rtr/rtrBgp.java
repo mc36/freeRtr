@@ -325,11 +325,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public tabRoute<addrIP>[] changed;
 
     /**
-     * freshly computed prefixes
-     */
-    public tabRoute<addrIP>[] freshly;
-
-    /**
      * originated prefixes
      */
     public tabRoute<addrIP>[] origntd;
@@ -560,9 +555,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         tcpCore = protoT;
         computd = rtrBgpParam.freshTables();
         changed = rtrBgpParam.freshTables();
-        freshly = rtrBgpParam.freshTables();
         origntd = rtrBgpParam.freshTables();
-        idx2safi = new int[freshly.length];
+        idx2safi = new int[origntd.length];
         vrfs = new tabGen<rtrBgpVrf>();
         ovrfs = new tabGen<rtrBgpVrf>();
         clrs = new tabGen<rtrBgpVrf>();
@@ -973,7 +967,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < changed.length; i++) {
             changed[i].clear();
         }
-        freshly = rtrBgpParam.freshTables();
+        tabRoute<addrIP>[] freshly = rtrBgpParam.freshTables();
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(freshly[rtrBgpParam.idxFlw], flowSpec, new tabRouteEntry<addrIP>(), isIpv6, localAs);
         }
@@ -992,31 +986,31 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry.best.distance = distantLoc;
             freshly[rtrBgpParam.idxFlw].add(tabRoute.addType.better, ntry, false, false);
         }
-        other.doAdvertise();
-        lspf.doAdvertise();
+        other.doAdvertise(freshly[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOflw]);
+        lspf.doAdvertise(freshly);
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxVpnU], freshly[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnF], freshly[rtrBgpParam.idxMvpn]);
+            vrfs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxVpnU], freshly[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnF], freshly[rtrBgpParam.idxMvpn], freshly[rtrBgpParam.idxRtf], freshly[rtrBgpParam.idxMdt]);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxVpoU], freshly[rtrBgpParam.idxVpoM], freshly[rtrBgpParam.idxVpoF], freshly[rtrBgpParam.idxMvpo]);
+            ovrfs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxVpoU], freshly[rtrBgpParam.idxVpoM], freshly[rtrBgpParam.idxVpoF], freshly[rtrBgpParam.idxMvpo], freshly[rtrBgpParam.idxRtf], freshly[rtrBgpParam.idxMdt]);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            clrs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxUni], freshly[rtrBgpParam.idxMlt], freshly[rtrBgpParam.idxFlw], freshly[rtrBgpParam.idxMvpn]);
+            clrs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxUni], freshly[rtrBgpParam.idxMlt], freshly[rtrBgpParam.idxFlw], freshly[rtrBgpParam.idxMvpn], freshly[rtrBgpParam.idxRtf], freshly[rtrBgpParam.idxMdt]);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOflw], freshly[rtrBgpParam.idxMvpo]);
+            oclrs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOflw], freshly[rtrBgpParam.idxMvpo], freshly[rtrBgpParam.idxRtf], freshly[rtrBgpParam.idxMdt]);
         }
         for (int i = 0; i < l3es.size(); i++) {
-            l3es.get(i).doer.doAdvertise(rtrBgpUtil.sfiEthVpn, freshly[rtrBgpParam.idxEvpn], freshly[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnF], freshly[rtrBgpParam.idxMvpn]);
+            l3es.get(i).doer.doAdvertise(rtrBgpUtil.sfiEthVpn, freshly[rtrBgpParam.idxEvpn], freshly[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnF], freshly[rtrBgpParam.idxMvpn], freshly[rtrBgpParam.idxRtf], freshly[rtrBgpParam.idxMdt]);
         }
         for (int i = 0; i < ol3es.size(); i++) {
-            ol3es.get(i).doer.doAdvertise(rtrBgpUtil.sfiEthVpn, freshly[rtrBgpParam.idxEvpn], freshly[rtrBgpParam.idxVpoM], freshly[rtrBgpParam.idxVpoF], freshly[rtrBgpParam.idxMvpo]);
+            ol3es.get(i).doer.doAdvertise(rtrBgpUtil.sfiEthVpn, freshly[rtrBgpParam.idxEvpn], freshly[rtrBgpParam.idxVpoM], freshly[rtrBgpParam.idxVpoF], freshly[rtrBgpParam.idxMvpo], freshly[rtrBgpParam.idxRtf], freshly[rtrBgpParam.idxMdt]);
         }
         for (int i = 0; i < vpls.size(); i++) {
-            vpls.get(i).doAdvertise();
+            vpls.get(i).doAdvertise(freshly);
         }
         for (int i = 0; i < evpn.size(); i++) {
-            evpn.get(i).doAdvertise();
+            evpn.get(i).doAdvertise(freshly);
         }
         for (int i = 0; i < origntd.length; i++) {
             int o = rtrBgpParam.indexAlias[i];
@@ -1062,7 +1056,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setAccepted();
             nei.setGroup();
-            nei.setMerge();
+            nei.setMerge(freshly);
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -1071,7 +1065,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.setAccepted();
             nei.setGroup();
-            nei.setMerge();
+            nei.setMerge(freshly);
         }
         if (have2reflect) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -1095,14 +1089,14 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " groups");
         }
         for (int i = 0; i < groups.size(); i++) {
-            groups.get(i).createNeeded();
+            groups.get(i).createNeeded(freshly);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " neigroups");
         }
+        computd = freshly;
         lspf.doPeersFull();
         boolean diffs = freshly[rtrBgpParam.idxUni].differs(tabRoute.addType.alters, routerComputedU) || freshly[rtrBgpParam.idxMlt].differs(tabRoute.addType.alters, routerComputedM) || freshly[rtrBgpParam.idxFlw].differs(tabRoute.addType.alters, routerComputedF);
-        computd = freshly;
         routerComputedU = freshly[rtrBgpParam.idxUni];
         routerComputedM = freshly[rtrBgpParam.idxMlt];
         routerComputedF = freshly[rtrBgpParam.idxFlw];
@@ -3975,9 +3969,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return status
      */
     public userFormat getTables() {
-        userFormat l = new userFormat("|", "afi|compute|newly|origin|change");
+        userFormat l = new userFormat("|", "afi|compute|origin|change");
         for (int i = 0; i < changed.length; i++) {
-            l.add(rtrBgpParam.idx2string(i) + "|" + computd[i].size() + "|" + freshly[i].size() + "|" + origntd[i].size() + "|" + changed[i].size());
+            l.add(rtrBgpParam.idx2string(i) + "|" + computd[i].size() + "|" + origntd[i].size() + "|" + changed[i].size());
         }
         return l;
     }

@@ -242,8 +242,10 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param nMlt multicast table to update
      * @param nFlw flowspec table to update
      * @param nMvpn mvpn table to update
+     * @param nRtf rtfilter table to update
+     * @param nMdt mdt table to update
      */
-    public void doAdvertise(int afi, tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn) {
+    public void doAdvertise(int afi, tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn, tabRoute<addrIP> nRtf, tabRoute<addrIP> nMdt) {
         final List<Long> rt = new ArrayList<Long>();
         for (int i = 0; i < fwd.rtExp.size(); i++) {
             rt.add(tabRouteUtil.rt2comm(fwd.rtExp.get(i)));
@@ -255,7 +257,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, tabRouteUtil.rt2comm(fwd.rtImp.get(i)));
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-            parent.freshly[rtrBgpParam.idxRtf].add(tabRoute.addType.always, ntry, false, true);
+            nRtf.add(tabRoute.addType.always, ntry, false, true);
         }
         if (defRou) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -315,7 +317,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.prefix.network.fromBuf(buf1, 0);
             ntry.prefix.broadcast.fromBuf(buf2, 0);
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-            tabRoute.addUpdatedEntry(tabRoute.addType.better, parent.freshly[rtrBgpParam.idxMdt], parent.idx2safi[rtrBgpParam.idxMdt], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nMdt, parent.idx2safi[rtrBgpParam.idxMdt], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
         }
         if (mvpn == null) {
             return;

@@ -151,22 +151,26 @@ public class rtrBgpOther extends ipRtr {
 
     /**
      * merge routes to table
+     *
+     * @param nUni unicast table to update
+     * @param nMlt multicast table to update
+     * @param nFlw flowspec table to update
      */
-    public void doAdvertise() {
+    public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw) {
         if (!enabled) {
             return;
         }
         for (int i = 0; i < routerRedistedU.size(); i++) {
-            doExportRoute(rtrBgpUtil.sfiUnicast, routerRedistedU.get(i), parent.freshly[rtrBgpParam.idxOuni]);
+            doExportRoute(rtrBgpUtil.sfiUnicast, routerRedistedU.get(i), nUni);
         }
         for (int i = 0; i < routerRedistedM.size(); i++) {
-            doExportRoute(rtrBgpUtil.sfiMulticast, routerRedistedM.get(i), parent.freshly[rtrBgpParam.idxOmlt]);
+            doExportRoute(rtrBgpUtil.sfiMulticast, routerRedistedM.get(i), nMlt);
         }
         for (int i = 0; i < routerRedistedF.size(); i++) {
-            doExportRoute(rtrBgpUtil.sfiFlwSpc, routerRedistedF.get(i), parent.freshly[rtrBgpParam.idxOflw]);
+            doExportRoute(rtrBgpUtil.sfiFlwSpc, routerRedistedF.get(i), nFlw);
         }
         if (flowSpec != null) {
-            rtrBgpFlow.doAdvertise(parent.freshly[rtrBgpParam.idxOflw], flowSpec, new tabRouteEntry<addrIP>(), !parent.isIpv6, parent.localAs);
+            rtrBgpFlow.doAdvertise(nFlw, flowSpec, new tabRouteEntry<addrIP>(), !parent.isIpv6, parent.localAs);
         }
     }
 
@@ -211,14 +215,14 @@ public class rtrBgpOther extends ipRtr {
         tabRoute<addrIP> tabM = new tabRoute<addrIP>("bgp");
         tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
         peers = new tabGen<addrIP>();
-        for (int i = 0; i < parent.freshly[rtrBgpParam.idxOuni].size(); i++) {
-            doImportRoute(rtrBgpUtil.sfiUnicast, parent.freshly[rtrBgpParam.idxOuni].get(i), tabU);
+        for (int i = 0; i < parent.computd[rtrBgpParam.idxOuni].size(); i++) {
+            doImportRoute(rtrBgpUtil.sfiUnicast, parent.computd[rtrBgpParam.idxOuni].get(i), tabU);
         }
-        for (int i = 0; i < parent.freshly[rtrBgpParam.idxOmlt].size(); i++) {
-            doImportRoute(rtrBgpUtil.sfiMulticast, parent.freshly[rtrBgpParam.idxOmlt].get(i), tabM);
+        for (int i = 0; i < parent.computd[rtrBgpParam.idxOmlt].size(); i++) {
+            doImportRoute(rtrBgpUtil.sfiMulticast, parent.computd[rtrBgpParam.idxOmlt].get(i), tabM);
         }
-        for (int i = 0; i < parent.freshly[rtrBgpParam.idxOflw].size(); i++) {
-            doImportRoute(rtrBgpUtil.sfiFlwSpc, parent.freshly[rtrBgpParam.idxOflw].get(i), tabF);
+        for (int i = 0; i < parent.computd[rtrBgpParam.idxOflw].size(); i++) {
+            doImportRoute(rtrBgpUtil.sfiFlwSpc, parent.computd[rtrBgpParam.idxOflw].get(i), tabF);
         }
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), !parent.isIpv6, parent.localAs);

@@ -217,8 +217,10 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
 
     /**
      * advertise this evpn
+     *
+     * @param freshly currently computing
      */
-    protected void doAdvertise() {
+    protected void doAdvertise(tabRoute<addrIP>[] freshly) {
         adverted = false;
         if (id == 0) {
             return;
@@ -266,7 +268,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 } else {
                     ntry.best.evpnLab = convLab(parent.evpnUni);
                 }
-                parent.freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
+                freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
                 bits.msbPutD(buf, 2, id);
@@ -277,7 +279,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 } else {
                     putPmsi(ntry, convLab(parent.evpnMul));
                 }
-                parent.freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
+                freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
             case vxlan:
@@ -288,14 +290,14 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 for (int i = 0; i < cmac.size(); i++) {
                     cmac.get(i).toBuffer(buf, 10);
                     ntry.prefix.network.fromBuf(buf, 0);
-                    parent.freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
+                    freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
                 }
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
                 ntry.prefix.network.fromBuf(buf, 0);
                 ntry.prefix.broadcast = ntry.best.nextHop.copyBytes();
                 putPmsi(ntry, id);
-                parent.freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
+                freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
             case cmac:
@@ -318,7 +320,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 for (int i = 0; i < cmac.size(); i++) {
                     cmac.get(i).toBuffer(buf, 10);
                     ntry.prefix.network.fromBuf(buf, 0);
-                    parent.freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
+                    freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
                 }
                 buf = new byte[addrIP.size];
                 buf[0] = 3; // inclusive multicast
@@ -330,7 +332,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 } else {
                     putPmsi(ntry, convLab(label));
                 }
-                parent.freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
+                freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
             case vpws:
@@ -350,14 +352,14 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 }
                 bits.msbPutD(buf, 12, id);
                 ntry.prefix.network.fromBuf(buf, 0);
-                parent.freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
+                freshly[rtrBgpParam.idxEvpn].add(tabRoute.addType.better, ntry, true, true);
                 adverted = true;
                 break;
         }
         ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = tabRouteUtil.extcomm2rtfilter(parent.localAs, tabRouteUtil.rt2comm(bridge.bridgeHed.rtImp));
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-        parent.freshly[rtrBgpParam.idxRtf].add(tabRoute.addType.always, ntry, false, true);
+        freshly[rtrBgpParam.idxRtf].add(tabRoute.addType.always, ntry, false, true);
     }
 
     /**
