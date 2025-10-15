@@ -10,6 +10,7 @@ binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/inst
 binary-down http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/pkg_summary.bz2 %dwn%/nbsd-%nbsd2%.pkgs
 
 exec guestfish -a %dwn%/nbsd-%nbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /etc /lib /libexec /sbin /stand /netbsd /usr %tmp%/
+exec find %tmp%/ -type d -exec chmod 777 {} \;
 exec mv %tmp%/usr/mdec/bootxx_cd9660 %tmp%/
 exec mv %tmp%/usr/lib/libintl.* %tmp%/lib/
 exec mv %tmp%/usr/lib/librt.* %tmp%/lib/

@@ -10,6 +10,7 @@ binary-down http://download.freebsd.org/releases/ISO-IMAGES/%vers1%.%vers2%/Free
 binary-down http://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/packagesite.pkg %dwn%/fbsd-%fbsd2%.prts
 
 exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /etc /lib /libexec /sbin /usr %tmp%/
+exec find %tmp%/ -type d -exec chmod 777 {} \;
 exec mv %tmp%/usr/lib/libdl.* %tmp%/lib/
 exec mv %tmp%/usr/lib/libpcap.* %tmp%/lib/
 exec mv %tmp%/usr/sbin/tcpdump %tmp%/sbin/
