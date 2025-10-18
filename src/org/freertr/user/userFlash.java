@@ -91,6 +91,19 @@ public class userFlash {
     }
 
     /**
+     * get ansi image from a file
+     *
+     * @param fn filename
+     * @param con console to draw
+     */
+    public static void ansiPix(String fn, pipeScreen con) {
+        File fil = new File(fn);
+        con.putCls();
+        con.putCur(0, 0);
+        pipeWindow.imageSixel(con, fil);
+    }
+
+    /**
      * play ansi animation from a file
      *
      * @param fn filename

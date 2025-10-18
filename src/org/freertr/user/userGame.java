@@ -1274,6 +1274,11 @@ public class userGame {
             pipeScreen.getKey(console.pipe);
             return;
         }
+        if (a.equals("sixel")) {
+            userFlash.ansiPix(cmd.getRemaining(), console);
+            pipeScreen.getKey(console.pipe);
+            return;
+        }
         if (a.equals("color")) {
             doPalette();
             return;

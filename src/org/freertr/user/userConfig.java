@@ -330,6 +330,8 @@ public class userConfig {
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "file name");
         l.add(null, false, 2, new int[]{3}, "movie", "add movie file");
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "file name");
+        l.add(null, false, 2, new int[]{3}, "pixel", "add movie file");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "file name");
         l.add(null, false, 1, new int[]{2}, "logging", "set logging parameters");
         l.add(null, false, 2, new int[]{3}, "debug", "always on debugging");
         debugger.getHelping(l, 3);
@@ -1490,6 +1492,10 @@ public class userConfig {
                 cfgAll.bannerTxt = cmd.getRemaining();
                 return;
             }
+            if (a.equals("pixel")) {
+                cfgAll.bannerPix = cmd.getRemaining();
+                return;
+            }
             if (a.equals("image")) {
                 cfgAll.bannerImg = cmd.getRemaining();
                 return;
@@ -1596,6 +1602,10 @@ public class userConfig {
             }
             if (a.equals("text")) {
                 cfgAll.bannerTxt = null;
+                return;
+            }
+            if (a.equals("pixel")) {
+                cfgAll.bannerPix = null;
                 return;
             }
             if (a.equals("image")) {

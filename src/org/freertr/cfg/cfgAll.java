@@ -804,6 +804,11 @@ public class cfgAll {
     /**
      * image banner of this host
      */
+    public static String bannerPix = null;
+
+    /**
+     * image banner of this host
+     */
     public static String bannerImg = null;
 
     /**
@@ -1418,6 +1423,7 @@ public class cfgAll {
         new userFilter("", cmds.negated + cmds.tabulator + "logging tracestop", null),
         new userFilter("", "banner encoded ", null),
         new userFilter("", cmds.negated + cmds.tabulator + "banner text", null),
+        new userFilter("", cmds.negated + cmds.tabulator + "banner pixel", null),
         new userFilter("", cmds.negated + cmds.tabulator + "banner image", null),
         new userFilter("", cmds.negated + cmds.tabulator + "banner movie", null),
         new userFilter("", cmds.negated + cmds.tabulator + "password-encrypt", null),
@@ -3811,6 +3817,7 @@ public class cfgAll {
         cmds.cfgLine(l, enaPass == null, "", "enable", authLocal.secretEncode(enaPass, (filter & 2) != 0));
         l.add("banner encoded " + encBase64.encodeBytes(bannerEnc));
         cmds.cfgLine(l, bannerTxt == null, "", "banner text", bannerTxt);
+        cmds.cfgLine(l, bannerPix == null, "", "banner pixel", bannerPix);
         cmds.cfgLine(l, bannerImg == null, "", "banner image", bannerImg);
         cmds.cfgLine(l, bannerMov == null, "", "banner movie", bannerMov);
         l.add(cmds.comment);

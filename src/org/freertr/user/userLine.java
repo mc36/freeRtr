@@ -1110,6 +1110,9 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
             if (cfgAll.bannerImg != null) {
                 userFlash.ansiArt(cfgAll.bannerImg, new pipeScreen(pipe));
             }
+            if (cfgAll.bannerPix != null) {
+                userFlash.ansiPix(cfgAll.bannerPix, new pipeScreen(pipe));
+            }
             if (cfgAll.bannerTxt != null) {
                 List<String> lst = bits.txt2buf(cfgAll.bannerTxt);
                 if (lst == null) {

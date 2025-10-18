@@ -730,6 +730,49 @@ public class pipeScreen {
     }
 
     /**
+     * send image in dec sixel format
+     *
+     * @param pip pipeline to use
+     * @param col palette to use
+     * @param chr dithering to use
+     * @param img image to send
+     * @param sx x size
+     * @param sy y size
+     */
+    public static void sendImageSixel(pipeSide pip, int[] col, char[] chr, byte[] img, int sx, int sy) {
+        pip.strPut("\033Pq");
+        for (int i = 0; i < col.length; i++) {
+            int c = col[i];
+            int r = (c >>> 16) & 0xff;
+            int g = (c >>> 8) & 0xff;
+            int b = c & 0xff;
+            pip.strPut("#" + i + ";2;" + ((r * 100) / 255) + ";" + ((g * 100) / 255) + ";" + ((b * 100) / 255));
+        }
+        int p = 0;
+        for (int y = 0; y < sy; y++) {
+            char b = (char) (1 << (y % 6));
+            b += 63;
+            int o = -1;
+            String a = "";
+            for (int x = 0; x < sx; x++) {
+                int c = (img[p] & 0xff) / chr.length;
+                p++;
+                if (o != c) {
+                    a += "#" + c;
+                }
+                o = c;
+                a += b;
+            }
+            a += "$";
+            if ((y % 6) == 5) {
+                a += "-";
+            }
+            pip.strPut(a);
+        }
+        pip.strPut("$-\033\\");
+    }
+
+    /**
      * send terminal music
      *
      * @param pip pipeline to use

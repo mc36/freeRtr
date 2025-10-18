@@ -18,6 +18,13 @@ public class pipeFonts {
     };
 
     /**
+     * monochrome dithering data
+     */
+    public final static char[] ditherMono = {
+        ' ', '#'
+    };
+
+    /**
      * color data
      */
     public final static int[] colorData = {
