@@ -181,10 +181,7 @@ public class pipeWindow extends JPanel {
         for (int y = 0; y < maxY; y++) {
             for (int x = 0; x < maxX; x++) {
                 int v = img3[p];
-                int c = v % chr.length;
-                v /= chr.length;
-                c = chr[c];
-                scr.putInt(x, y, pipeScreen.colBlack, v, false, c);
+                scr.putInt(x, y, pipeScreen.colBlack, v / chr.length, false, chr[v % chr.length]);
                 p++;
             }
         }
