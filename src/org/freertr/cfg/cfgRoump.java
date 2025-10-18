@@ -10,7 +10,7 @@ import org.freertr.tab.tabRtrmapN;
 import org.freertr.user.userEditor;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
-import org.freertr.user.userScreen;
+import org.freertr.pipe.pipeScreen;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -460,7 +460,7 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
             if (ntry.script != null) {
                 txt.addAll(ntry.script);
             }
-            userEditor e = new userEditor(new userScreen(cmd.pipe), txt, "route-map", false);
+            userEditor e = new userEditor(new pipeScreen(cmd.pipe), txt, "route-map", false);
             if (e.doEdit()) {
                 return;
             }

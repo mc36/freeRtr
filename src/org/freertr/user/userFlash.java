@@ -1,5 +1,6 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeScreen;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class userFlash {
      * @param con console to draw
      * @return converted ascii
      */
-    public static List<String> asciiArt(String fn, userScreen con) {
+    public static List<String> asciiArt(String fn, pipeScreen con) {
         File fil = new File(fn);
         pipeWindow.imageAscii(con, fil);
         return con.getAscii();
@@ -82,7 +83,7 @@ public class userFlash {
      * @param fn filename
      * @param con console to draw
      */
-    public static void ansiArt(String fn, userScreen con) {
+    public static void ansiArt(String fn, pipeScreen con) {
         File fil = new File(fn);
         con.putCls();
         con.putCur(0, 0);
@@ -95,7 +96,7 @@ public class userFlash {
      * @param fn filename
      * @param con console to draw
      */
-    public static void ansiAnim(String fn, userScreen con) {
+    public static void ansiAnim(String fn, pipeScreen con) {
         File fil = new File(fn);
         con.putCls();
         con.putCur(0, 0);
@@ -159,7 +160,7 @@ public class userFlash {
             if (b == null) {
                 b = new ArrayList<String>();
             }
-            userEditor e = new userEditor(new userScreen(pip), b, a, false);
+            userEditor e = new userEditor(new pipeScreen(pip), b, a, false);
             if (e.doEdit()) {
                 return null;
             }
@@ -169,21 +170,21 @@ public class userFlash {
         if (a.equals("view")) {
             a = cmd.getRemaining();
             List<String> b = bits.txt2buf(a);
-            userEditor v = new userEditor(new userScreen(pip), b, a, false);
+            userEditor v = new userEditor(new pipeScreen(pip), b, a, false);
             v.doView();
             return null;
         }
         if (a.equals("hexview")) {
             a = cmd.getRemaining();
             List<String> b = hexRead(a);
-            userEditor v = new userEditor(new userScreen(pip), b, a, false);
+            userEditor v = new userEditor(new pipeScreen(pip), b, a, false);
             v.doView();
             return null;
         }
         if (a.equals("binview")) {
             a = cmd.getRemaining();
             List<String> b = binRead(a);
-            userEditor v = new userEditor(new userScreen(pip), b, a, false);
+            userEditor v = new userEditor(new pipeScreen(pip), b, a, false);
             v.doView();
             return null;
         }
@@ -191,7 +192,7 @@ public class userFlash {
             a = cmd.getRemaining();
             List<String> l = bits.txt2buf(a);
             l = enc7bit.decodeExtLst(l);
-            userEditor v = new userEditor(new userScreen(pip), l, a, false);
+            userEditor v = new userEditor(new pipeScreen(pip), l, a, false);
             v.doView();
             return null;
         }
@@ -199,22 +200,22 @@ public class userFlash {
             a = cmd.getRemaining();
             List<String> l = bits.txt2buf(a);
             l = enc7bit.toHackedLst(l);
-            userEditor v = new userEditor(new userScreen(pip), l, a, false);
+            userEditor v = new userEditor(new pipeScreen(pip), l, a, false);
             v.doView();
             return null;
         }
         if (a.equals("commander")) {
-            userFilman f = new userFilman(new userScreen(pip));
+            userFilman f = new userFilman(new pipeScreen(pip));
             f.doWork();
             return null;
         }
         if (a.equals("browser")) {
-            userBrowser f = new userBrowser(new userScreen(pip), cmd.getRemaining());
+            userBrowser f = new userBrowser(new pipeScreen(pip), cmd.getRemaining());
             f.doWork();
             return null;
         }
         if (a.equals("mailer")) {
-            userMailer f = new userMailer(new userScreen(pip), cmd.getRemaining());
+            userMailer f = new userMailer(new pipeScreen(pip), cmd.getRemaining());
             f.doWork();
             return null;
         }

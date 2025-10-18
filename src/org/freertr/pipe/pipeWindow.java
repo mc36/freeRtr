@@ -17,8 +17,6 @@ import javax.imageio.stream.ImageInputStream;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.freertr.cfg.cfgInit;
-import org.freertr.user.userFonts;
-import org.freertr.user.userScreen;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
 
@@ -52,7 +50,7 @@ public class pipeWindow extends JPanel {
      * @param scr console to draw
      * @param fil file
      */
-    public static void imageAnim(userScreen scr, File fil) {
+    public static void imageAnim(pipeScreen scr, File fil) {
         String a = fil.getName();
         int i = a.lastIndexOf(".");
         if (i < 0) {
@@ -88,7 +86,7 @@ public class pipeWindow extends JPanel {
             } else {
                 img1.getGraphics().drawImage(img2, 0, 0, null);
             }
-            image2scr(img1, scr, userFonts.colorData, userFonts.ditherData);
+            image2scr(img1, scr, pipeFonts.colorData, pipeFonts.ditherData);
             scr.refresh();
             bits.sleep(500);
             if (scr.keyPress()) {
@@ -103,7 +101,7 @@ public class pipeWindow extends JPanel {
      * @param scr console to draw
      * @param fil file to convert
      */
-    public static void imageAnsi(userScreen scr, File fil) {
+    public static void imageAnsi(pipeScreen scr, File fil) {
         BufferedImage img1 = null;
         try {
             img1 = ImageIO.read(fil);
@@ -113,7 +111,7 @@ public class pipeWindow extends JPanel {
         if (img1 == null) {
             return;
         }
-        image2scr(img1, scr, userFonts.colorData, userFonts.ditherData);
+        image2scr(img1, scr, pipeFonts.colorData, pipeFonts.ditherData);
         scr.refresh();
     }
 
@@ -123,7 +121,7 @@ public class pipeWindow extends JPanel {
      * @param scr console to draw
      * @param fil file
      */
-    public static void imageAscii(userScreen scr, File fil) {
+    public static void imageAscii(pipeScreen scr, File fil) {
         BufferedImage img1 = null;
         try {
             img1 = ImageIO.read(fil);
@@ -133,10 +131,10 @@ public class pipeWindow extends JPanel {
         if (img1 == null) {
             return;
         }
-        image2scr(img1, scr, userFonts.colorMono, userFonts.ditherData);
+        image2scr(img1, scr, pipeFonts.colorMono, pipeFonts.ditherData);
     }
 
-    private static void image2scr(BufferedImage img1, userScreen scr, int[] col, char chr[]) {
+    private static byte[] image2idx(BufferedImage img1, int maxX, int maxY, int[] col, char chr[]) {
         byte[] cls = new byte[col.length * chr.length * 3];
         int p = 0;
         for (int i = 0; i < col.length; i++) {
@@ -152,16 +150,6 @@ public class pipeWindow extends JPanel {
             }
         }
         IndexColorModel icm = new IndexColorModel(8, cls.length / 3, cls, 0, false);
-        int maxX = scr.sizX;
-        int maxY = scr.sizY;
-        maxX = ((2 * img1.getWidth()) / maxX) + 1;
-        maxY = (img1.getHeight() / maxY) + 1;
-        p = maxX < maxY ? maxY : maxX;
-        if (p < 1) {
-            p = 1;
-        }
-        maxX = (2 * img1.getWidth()) / p;
-        maxY = img1.getHeight() / p;
         BufferedImage img2 = new BufferedImage(maxX, maxY, BufferedImage.TYPE_BYTE_INDEXED, icm);
         Graphics2D g2d = img2.createGraphics();
         g2d.drawImage(img1, 0, 0, maxX, maxY, null);
@@ -173,16 +161,30 @@ public class pipeWindow extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-        byte[] img3 = ((DataBufferByte) img2.getRaster().getDataBuffer()).getData();
+        return ((DataBufferByte) img2.getRaster().getDataBuffer()).getData();
+    }
+
+    private static void image2scr(BufferedImage img1, pipeScreen scr, int[] col, char chr[]) {
+        int maxX = scr.sizX;
+        int maxY = scr.sizY;
+        maxX = ((2 * img1.getWidth()) / maxX) + 1;
+        maxY = (img1.getHeight() / maxY) + 1;
+        int p = maxX < maxY ? maxY : maxX;
+        if (p < 1) {
+            p = 1;
+        }
+        maxX = (2 * img1.getWidth()) / p;
+        maxY = img1.getHeight() / p;
+        byte[] img3 = image2idx(img1, maxX, maxY, col, chr);
         p = 0;
         scr.doClear();
         for (int y = 0; y < maxY; y++) {
             for (int x = 0; x < maxX; x++) {
                 int v = img3[p];
-                int c = v % userFonts.ditherData.length;
-                v /= userFonts.ditherData.length;
-                c = userFonts.ditherData[c];
-                scr.putInt(x, y, userScreen.colBlack, v, false, c);
+                int c = v % chr.length;
+                v /= chr.length;
+                c = chr[c];
+                scr.putInt(x, y, pipeScreen.colBlack, v, false, c);
                 p++;
             }
         }

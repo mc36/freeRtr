@@ -1,237 +1,360 @@
 package org.freertr.pipe;
 
-import java.io.RandomAccessFile;
-import org.freertr.sec.secClient;
-import org.freertr.serv.servGeneric;
+import java.util.ArrayList;
+import java.util.List;
+import org.freertr.user.userRead;
 import org.freertr.util.bits;
-import org.freertr.util.logger;
+import org.freertr.util.cmds;
 
 /**
- * terminal emulator
+ * display pipeline to screen
  *
  * @author matecsaba
  */
 public class pipeTerm {
 
     /**
-     * escape character
+     * set true if changed
      */
-    protected final int escChr;
+    public boolean changed;
 
     /**
-     * stream handler
+     * screen to read
      */
-    protected pipeSide stream;
+    public final pipeScreen scr;
+
+    private final pipeSide pipe;
+
+    private int savX;
+
+    private int savY;
+
+    private List<Integer> escBuf = null;
 
     /**
-     * console handler
-     */
-    protected final pipeSide console;
-
-    /**
-     * record handler
-     */
-    protected final RandomAccessFile record;
-
-    /**
-     * rx thread running
-     */
-    protected boolean runningRx;
-
-    /**
-     * tx thread running
-     */
-    protected boolean runningTx;
-
-    /**
-     * threads needed
-     */
-    protected boolean runningNeed;
-
-    /**
-     * thread time in millisecs
-     */
-    protected final static int threadTime = 200;
-
-    /**
-     * thread buffer size
-     */
-    protected final static int threadBuf = 1024;
-
-    /**
-     * create one terminal
+     * create new screen
      *
-     * @param con console to use
-     * @param strm stream to use
-     * @param rec recording
+     * @param pip connection to use
+     * @param x x size
+     * @param y y size
      */
-    public pipeTerm(pipeSide con, pipeSide strm, RandomAccessFile rec) {
-        console = con;
-        stream = strm;
-        record = rec;
-        escChr = con.settingsGet(pipeSetting.escape, 65536);
+    public pipeTerm(pipeSide pip, int x, int y) {
+        pipe = pip;
+        pipeSide ps = pipeDiscard.needAny(pip);
+        userRead.setTermWdt(ps, x);
+        userRead.setTermLen(ps, y);
+        scr = new pipeScreen(ps);
+        scr.putCls();
+    }
+
+    private void putChar(int ch, boolean cr) {
+        scr.putInt(scr.curX, scr.curY, cr, scr.col, ch);
+    }
+
+    private static int getParam(cmds cmd) {
+        int i = bits.str2num(cmd.word(";"));
+        if (i < 1) {
+            i = 1;
+        }
+        return i;
+    }
+
+    private void doCtrl(int ch) {
+        byte[] buf = new byte[escBuf.size()];
+        for (int i = 0; i < buf.length; i++) {
+            int o = escBuf.get(i);
+            buf[i] = (byte) o;
+        }
+        escBuf = null;
+        String s = new String(buf);
+        if (s.startsWith("[")) {
+            s = s.substring(1, s.length());
+        }
+        cmds cmd = new cmds("", s);
+        switch (ch) {
+            case 65: // A
+                scr.curY -= getParam(cmd);
+                scr.curRange(-1);
+                return;
+            case 66: // B
+                scr.curY += getParam(cmd);
+                scr.curRange(-1);
+                return;
+            case 67: // C
+                scr.curX += getParam(cmd);
+                scr.curRange(-1);
+                return;
+            case 68: // D
+                scr.curX -= getParam(cmd);
+                scr.curRange(-1);
+                return;
+            case 69: // E
+                scr.curY += getParam(cmd);
+                scr.curX = 0;
+                scr.curRange(-1);
+                return;
+            case 70: // F
+                scr.curY -= getParam(cmd);
+                scr.curX = 0;
+                scr.curRange(-1);
+                return;
+            case 71: // G
+                scr.curX = getParam(cmd) - 1;
+                scr.curRange(-1);
+                return;
+            case 72: // H
+                scr.curY = getParam(cmd) - 1;
+                scr.curX = getParam(cmd) - 1;
+                scr.curRange(-1);
+                return;
+            case 74: // J
+                switch (bits.str2num(cmd.word(";"))) {
+                    case 0:
+                        scr.fillLine(scr.curY, scr.curX, scr.sizX, scr.col, 32);
+                        scr.fillLines(scr.curY + 1, scr.sizY, scr.col, 32);
+                        return;
+                    case 1:
+                        scr.fillLines(0, scr.curY - 1, scr.col, 32);
+                        scr.fillLine(scr.curY, 0, scr.curX, scr.col, 32);
+                        return;
+                    case 2:
+                        scr.fillLines(0, scr.sizY, scr.col, 32);
+                        scr.curY = 0;
+                        scr.curX = 0;
+                        scr.curRange(scr.col);
+                        return;
+                }
+                return;
+            case 75: // K
+                switch (bits.str2num(cmd.word(";"))) {
+                    case 0:
+                        scr.fillLine(scr.curY, scr.curX, scr.sizX, scr.col, 32);
+                        return;
+                    case 1:
+                        scr.fillLine(scr.curY, 0, scr.curX, scr.col, 32);
+                        return;
+                    case 2:
+                        scr.fillLine(scr.curY, 0, scr.sizX, scr.col, 32);
+                        return;
+                }
+                return;
+            case 83: // S
+                int o = getParam(cmd);
+                for (int i = 0; i < o; i++) {
+                    scr.scrollUp(scr.col);
+                }
+                return;
+            case 84: // T
+                o = getParam(cmd);
+                for (int i = 0; i < o; i++) {
+                    scr.scrollDn(scr.col);
+                }
+                return;
+            case 102: // f
+                scr.curY = getParam(cmd) - 1;
+                scr.curX = getParam(cmd) - 1;
+                scr.curRange(scr.col);
+                return;
+            case 109: // m
+                for (;;) {
+                    s = cmd.word(";");
+                    if (s.length() < 1) {
+                        break;
+                    }
+                    int i = bits.str2num(s);
+                    switch (i) {
+                        case 0:
+                            scr.col = pipeScreen.colWhite;
+                            break;
+                        case 1:
+                            scr.col |= pipeScreen.colBright;
+                            break;
+                        case 5:
+                            scr.col |= pipeScreen.colBright << 16;
+                            break;
+                        case 7:
+                            scr.col = (scr.col >>> 16) | (scr.col << 16);
+                            break;
+                        case 21:
+                            scr.col &= ~pipeScreen.colBright;
+                            break;
+                        case 25:
+                            scr.col &= ~(pipeScreen.colBright << 16);
+                            break;
+                        case 27:
+                            scr.col = (scr.col >>> 16) | (scr.col << 16);
+                            break;
+                        case 30:
+                        case 31:
+                        case 32:
+                        case 33:
+                        case 34:
+                        case 35:
+                        case 36:
+                        case 37:
+                            scr.col = (scr.col & 0xfffffff8) | (i % 10);
+                            break;
+                        case 38:
+                            cmd.word(";");
+                            s = cmd.word(";");
+                            i = bits.str2num(s);
+                            scr.col = (scr.col & 0xffffff00) | (i % 255);
+                            break;
+                        case 40:
+                        case 41:
+                        case 42:
+                        case 43:
+                        case 44:
+                        case 45:
+                        case 46:
+                        case 47:
+                            scr.col = (scr.col & 0xfff8ffff) | ((i % 10) << 16);
+                            break;
+                        case 48:
+                            cmd.word(";");
+                            s = cmd.word(";");
+                            i = bits.str2num(s);
+                            scr.col = (scr.col & 0xff00ffff) | ((i % 255) << 16);
+                            break;
+                        case 90:
+                        case 91:
+                        case 92:
+                        case 93:
+                        case 94:
+                        case 95:
+                        case 96:
+                        case 97:
+                            scr.col = (scr.col & 0xfffffff8) | (i % 10) | pipeScreen.colBright;
+                            break;
+                        case 100:
+                        case 101:
+                        case 102:
+                        case 103:
+                        case 104:
+                        case 105:
+                        case 106:
+                        case 107:
+                            scr.col = (scr.col & 0xfff8ffff) | ((i % 10) << 16) | (pipeScreen.colBright << 16);
+                            break;
+                    }
+                }
+                return;
+            case 110: // n
+                pipe.strPut("\033[" + (scr.curY + 1) + ";" + (scr.curX + 1) + "R");
+                return;
+            case 115: // s
+                savX = scr.curX;
+                savY = scr.curY;
+                return;
+            case 117: // u
+                scr.curX = savX;
+                scr.curY = savY;
+                scr.curRange(scr.col);
+                return;
+            default:
+                return;
+        }
     }
 
     /**
-     * get escape character name
+     * put out character
      *
-     * @return text
+     * @param ch character to write
      */
-    protected String getEscNam() {
-        return "ascii0x" + bits.toHexB(escChr);
-    }
-
-    /**
-     * terminal session
-     */
-    public void doTerm() {
-        if (stream == null) {
+    public void doChar(int ch) {
+        changed = true;
+        if (escBuf != null) {
+            switch (ch) {
+                case 0x30: // 0
+                case 0x31: // 1
+                case 0x32: // 2
+                case 0x33: // 3
+                case 0x34: // 4
+                case 0x35: // 5
+                case 0x36: // 6
+                case 0x37: // 7
+                case 0x38: // 8
+                case 0x39: // 9
+                case 0x3b: // ;
+                case 0x5b: // [
+                    escBuf.add(ch);
+                    return;
+            }
+            doCtrl(ch);
+            scr.curRange(scr.col);
             return;
         }
-        if (stream.isClosed() != 0) {
-            return;
+        switch (ch) {
+            case 7: // bell
+                return;
+            case 8: // backspace
+                scr.curX -= 1;
+                scr.curRange(scr.col);
+                putChar(32, false);
+                return;
+            case 9: // tab
+                scr.curX = (scr.curX + 8) & 0xfff8;
+                scr.curRange(scr.col);
+                return;
+            case 10: // lf
+                scr.curY++;
+                scr.curRange(scr.col);
+                return;
+            case 13: // cr
+                scr.curX = 0;
+                scr.curRange(scr.col);
+                return;
+            case 27: // esc
+                escBuf = new ArrayList<Integer>();
+                return;
         }
-        runningRx = true;
-        runningTx = true;
-        runningNeed = true;
-        console.linePut("");
-        console.linePut("escape character is " + getEscNam() + ".");
-        console.linePut("");
-        new Thread(new pipeTermRx(this)).start();
-        new Thread(new pipeTermTx(this)).start();
-        for (;;) {
-            bits.sleep(threadTime * 2);
-            if (stream.isClosed() != 0) {
-                break;
-            }
-            if (console.isClosed() != 0) {
-                break;
-            }
-        }
-        console.linePut("");
-        stream.setClose();
-        runningNeed = false;
-        for (; runningTx || runningRx;) {
-            bits.sleep(500);
-        }
-        console.linePut("connection closed");
+        scr.curRange(scr.col);
+        putChar(ch, true);
+        scr.curRange(scr.col);
     }
 
-}
-
-class pipeTermRx implements Runnable {
-
-    private final pipeTerm parent;
-
-    public pipeTermRx(pipeTerm prnt) {
-        parent = prnt;
-    }
-
-    public void run() {
-        try {
-            for (;;) {
-                if (!parent.runningNeed) {
-                    break;
-                }
-                byte[] buf = new byte[pipeTerm.threadBuf];
-                int siz = parent.stream.nonBlockGet(buf, 0, buf.length);
-                if (siz < 1) {
-                    bits.sleep(pipeTerm.threadTime);
-                    continue;
-                }
-                parent.console.blockingPut(buf, 0, siz);
-                if (parent.record == null) {
-                    continue;
-                }
-                parent.record.write(buf, 0, siz);
-            }
-        } catch (Exception e) {
-            logger.traceback(e);
+    /**
+     * put out characters
+     *
+     * @param buf characters to put
+     */
+    public void doChar(byte[] buf) {
+        for (int i = 0; i < buf.length; i++) {
+            doChar(buf[i]);
+            scr.curRange(scr.col);
         }
-        parent.runningRx = false;
     }
 
-}
-
-class pipeTermTx implements Runnable {
-
-    private final pipeTerm parent;
-
-    public pipeTermTx(pipeTerm prnt) {
-        parent = prnt;
+    /**
+     * put out characters
+     *
+     * @param str string to put
+     */
+    public void doChar(String str) {
+        doChar(str.getBytes());
     }
 
-    public void run() {
-        try {
-            for (;;) {
-                if (!parent.runningNeed) {
-                    break;
-                }
-                byte[] buf = new byte[pipeTerm.threadBuf];
-                int siz = parent.console.nonBlockGet(buf, 0, buf.length);
-                if (siz < 1) {
-                    bits.sleep(pipeTerm.threadTime);
-                    continue;
-                }
-                if ((siz > 1) || (buf[0] != parent.escChr)) {
-                    parent.stream.blockingPut(buf, 0, siz);
-                    continue;
-                }
-                siz = parent.console.blockingGet(buf, 0, 1);
-                if (siz != 1) {
-                    continue;
-                }
-                switch (buf[0]) {
-                    case 104: // h
-                    case 72: // H
-                    case 63: // ?
-                    case 8: // ctrl+h
-                        parent.console.linePut("");
-                        parent.console.linePut("^H - show this help message");
-                        parent.console.linePut("^T - start tls client");
-                        parent.console.linePut("^C - send one " + parent.getEscNam() + " character");
-                        parent.console.linePut("^V - send two " + parent.getEscNam() + " characters");
-                        parent.console.linePut("^X - close terminal session");
-                        break;
-                    case 116: // t
-                    case 84: // T
-                    case 20: // ctrl+t
-                        parent.console.strPut("tls negotiation");
-                        pipeSide res = secClient.openSec(parent.stream, servGeneric.protoTls, null, "", "");
-                        if (res == null) {
-                            parent.console.linePut(" failed!");
-                        } else {
-                            parent.console.linePut(" success!");
-                            parent.stream = res;
-                        }
-                        break;
-                    case 99: // c
-                    case 67: // C
-                    case 3: // ctrl+c
-                        buf[0] = 3;
-                        parent.stream.blockingPut(buf, 0, 1);
-                        break;
-                    case 118: // v
-                    case 86: // V
-                    case 22: // ctrl+v
-                        buf[0] = 3;
-                        buf[1] = 3;
-                        parent.stream.blockingPut(buf, 0, 2);
-                        break;
-                    case 120: // x
-                    case 88: // X
-                    case 24: // ctrl+x
-                        parent.stream.setClose();
-                        break;
-                    default:
-                        parent.stream.blockingPut(buf, 0, 1);
-                        break;
-                }
+    /**
+     * do one round
+     *
+     * @param wait set true to wait for input, false to fail otherwise
+     * @return true on error, false on success
+     */
+    public boolean doRound(boolean wait) {
+        int i = pipe.ready2rx();
+        if (i < 1) {
+            if (wait) {
+                i = 1;
+            } else {
+                return true;
             }
-        } catch (Exception e) {
-            logger.traceback(e);
         }
-        parent.runningTx = false;
+        byte[] buf = new byte[i];
+        if (pipe.moreGet(buf, 0, i) != i) {
+            return true;
+        }
+        doChar(buf);
+        return false;
     }
 
 }

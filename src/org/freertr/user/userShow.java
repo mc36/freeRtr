@@ -1,5 +1,7 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeFonts;
+import org.freertr.pipe.pipeScreen;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
@@ -240,7 +242,7 @@ public class userShow {
         if (a.equals("me-the")) {
             a = cmd.word();
             if (a.equals("ascii")) {
-                userScreen scr = new userScreen(cmd.pipe);
+                pipeScreen scr = new pipeScreen(cmd.pipe);
                 List<String> lst = userFlash.asciiArt(cmd.getRemaining(), scr);
                 rdr.putStrArr(lst);
                 return null;
@@ -278,15 +280,15 @@ public class userShow {
             }
             if (a.equals("time")) {
                 a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
-                List<String> l = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
+                List<String> l = pipeScreen.fontText(a, " ", pipeFonts.fontFiller, pipeFonts.font8x16());
                 rdr.putStrArr(l);
                 return null;
             }
             if (a.equals("clock")) {
-                userScreen scr = new userScreen(cmd.pipe);
+                pipeScreen scr = new pipeScreen(cmd.pipe);
                 a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
                 userGame t = new userGame(scr, rdr);
-                t.drawClock(a, userScreen.colBlack, userScreen.colWhite);
+                t.drawClock(a, pipeScreen.colBlack, pipeScreen.colWhite);
                 rdr.putStrArr(scr.getAscii());
                 return null;
             }
@@ -325,7 +327,7 @@ public class userShow {
             a = cmd.getRemaining();
             List<String> l;
             if (a.length() > 0) {
-                l = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
+                l = pipeScreen.fontText(a, " ", pipeFonts.fontFiller, pipeFonts.font8x16());
             } else {
                 l = cfgInit.getShLogo(0x0e);
             }
@@ -452,7 +454,7 @@ public class userShow {
             List<String> l = new ArrayList<String>();
             long tim = bits.getTime() + cfgAll.timeServerOffset;
             if (a.equals("big")) {
-                l = userScreen.fontText(bits.time2str(cfgAll.timeZoneName, tim, 2), " ", userFonts.fontFiller, userFonts.font8x16());
+                l = pipeScreen.fontText(bits.time2str(cfgAll.timeZoneName, tim, 2), " ", pipeFonts.fontFiller, pipeFonts.font8x16());
                 rdr.putStrArr(l);
                 return null;
             }
@@ -471,9 +473,9 @@ public class userShow {
             if (a.equals("analog")) {
                 a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
                 a = a.substring(0, a.length() - 3);
-                userScreen scr = new userScreen(cmd.pipe);
+                pipeScreen scr = new pipeScreen(cmd.pipe);
                 userGame t = new userGame(scr, rdr);
-                t.drawClock(a, userScreen.colBlack, userScreen.colWhite);
+                t.drawClock(a, pipeScreen.colBlack, pipeScreen.colWhite);
                 rdr.putStrArr(scr.getAscii());
                 return null;
             }
@@ -1265,14 +1267,14 @@ public class userShow {
             }
             if (a.equals("graph")) {
                 a = cmd.word();
-                userScreen scr = new userScreen(cmd.pipe);
+                pipeScreen scr = new pipeScreen(cmd.pipe);
                 exp.getShowGraph(bits.str2num(a), scr);
                 rdr.putStrArr(scr.getAscii());
                 return null;
             }
             if (a.equals("oldgraph")) {
                 a = cmd.word();
-                userScreen scr = new userScreen(cmd.pipe);
+                pipeScreen scr = new pipeScreen(cmd.pipe);
                 exp.getShowOldGraph(bits.str2num(a), scr);
                 rdr.putStrArr(scr.getAscii());
                 return null;

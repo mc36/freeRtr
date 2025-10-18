@@ -1,5 +1,6 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeScreen;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
@@ -231,7 +232,7 @@ public class userConfig {
             List<String> c1 = submode.getShRun(1);
             List<String> c2 = new ArrayList<String>();
             c2.addAll(c1);
-            userEditor edt = new userEditor(new userScreen(cmd.pipe), c2, "current", false);
+            userEditor edt = new userEditor(new pipeScreen(cmd.pipe), c2, "current", false);
             if (edt.doEdit()) {
                 return false;
             }
@@ -1323,7 +1324,7 @@ public class userConfig {
                     cryCertificate c = new cryCertificate();
                     c.crtName = nam;
                     List<String> txt = new ArrayList<String>();
-                    userEditor e = new userEditor(new userScreen(cmd.pipe), txt, "cert", false);
+                    userEditor e = new userEditor(new pipeScreen(cmd.pipe), txt, "cert", false);
                     if (e.doEdit()) {
                         return;
                     }
@@ -1516,7 +1517,7 @@ public class userConfig {
                 a = a + new String(buf);
             }
             txt.add(a);
-            userEditor e = new userEditor(new userScreen(pipe), txt, "banner", false);
+            userEditor e = new userEditor(new pipeScreen(pipe), txt, "banner", false);
             if (e.doEdit()) {
                 return;
             }
@@ -3530,7 +3531,7 @@ public class userConfig {
         }
         if (a.equals("editor")) {
             List<String> txt = new ArrayList<String>();
-            userEditor e = new userEditor(new userScreen(cmd.pipe), txt, "key", false);
+            userEditor e = new userEditor(new pipeScreen(cmd.pipe), txt, "key", false);
             if (e.doEdit()) {
                 return;
             }

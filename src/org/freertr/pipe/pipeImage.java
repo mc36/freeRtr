@@ -27,7 +27,7 @@ public class pipeImage {
     /**
      * current screen
      */
-    public final pipeScreen scr;
+    public final pipeTerm scr;
 
     /**
      * current pipe
@@ -58,7 +58,7 @@ public class pipeImage {
         pal = plt;
         fntY = font[0].length;
         fntX = font[0][0].length;
-        scr = new pipeScreen(pipe, x, y);
+        scr = new pipeTerm(pipe, x, y);
         x *= fntX;
         y *= fntY;
         img1 = new int[y][x];

@@ -3,7 +3,6 @@ package org.freertr.pipe;
 import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAll;
 import org.freertr.user.userFormat;
-import org.freertr.user.userScreen;
 
 /**
  * one setting of a pipeline
@@ -157,14 +156,14 @@ public class pipeSetting implements Comparable<pipeSetting> {
         l.add("monitor|" + pip.settingsGet(pipeSetting.logging, false));
         l.add("colorize|" + pip.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
         l.add("boxer|" + pip.settingsGet(pipeSetting.boxer, userFormat.boxerMode.normal));
-        l.add("background|" + userScreen.color2string(pip.settingsGet(pipeSetting.colNormal, userScreen.colWhite) >>> 16));
-        l.add("foreground|" + userScreen.color2string(pip.settingsGet(pipeSetting.colNormal, userScreen.colWhite)));
-        l.add("prompt|" + userScreen.color2string(pip.settingsGet(pipeSetting.colPrompt, userScreen.colBrGreen)));
-        l.add("header|" + userScreen.color2string(pip.settingsGet(pipeSetting.colHeader, userScreen.colBrYellow)));
+        l.add("background|" + pipeScreen.color2string(pip.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite) >>> 16));
+        l.add("foreground|" + pipeScreen.color2string(pip.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite)));
+        l.add("prompt|" + pipeScreen.color2string(pip.settingsGet(pipeSetting.colPrompt, pipeScreen.colBrGreen)));
+        l.add("header|" + pipeScreen.color2string(pip.settingsGet(pipeSetting.colHeader, pipeScreen.colBrYellow)));
         l.add("spacetab|" + pip.settingsGet(pipeSetting.spacTab, false));
         l.add("capslock|" + pip.settingsGet(pipeSetting.capsLock, false));
         l.add("bells|" + pip.settingsGet(pipeSetting.termBells, false));
-        l.add("ansimode|" + pip.settingsGet(pipeSetting.ansiMode, userScreen.ansiMode.normal));
+        l.add("ansimode|" + pip.settingsGet(pipeSetting.ansiMode, pipeScreen.ansiMode.normal));
         l.add("timestamps|" + pip.settingsGet(pipeSetting.times, false));
         l.add("passwdstar|" + pip.settingsGet(pipeSetting.passStar, false));
         l.add("deactivate|" + pip.settingsGet(pipeSetting.deactive, 65536));

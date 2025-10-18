@@ -1,5 +1,6 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeScreen;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class userBrowser {
 
     private final String tempFile;
 
-    private final userScreen console;
+    private final pipeScreen console;
 
     private String url;
 
@@ -43,7 +44,7 @@ public class userBrowser {
      * @param pip console
      * @param u url
      */
-    public userBrowser(userScreen pip, String u) {
+    public userBrowser(pipeScreen pip, String u) {
         console = pip;
         tempFile = cfgInit.getRWpath() + "web" + bits.randomD() + userUpgrade.tmpExt;
         if (u.length() < 1) {
@@ -81,7 +82,7 @@ public class userBrowser {
      */
     public void doClear() {
         console.refresh();
-        console.fillLines(0, console.sizY, userScreen.colBlack, 32);
+        console.fillLines(0, console.sizY, pipeScreen.colBlack, 32);
         console.refresh();
         console.putCls();
         console.putCur(0, 0);
@@ -89,7 +90,7 @@ public class userBrowser {
     }
 
     private boolean doKey() {
-        int i = userScreen.getKey(console.pipe);
+        int i = pipeScreen.getKey(console.pipe);
         switch (i) {
             case -1: // end
                 return true;
@@ -280,19 +281,19 @@ public class userBrowser {
 
     private void doDraw() {
         String a = bits.padEnd(url, console.sizX, " ").substring(0, console.sizX);
-        console.putStr(0, 0, userScreen.colGreen, userScreen.colBrYellow, false, a);
+        console.putStr(0, 0, pipeScreen.colGreen, pipeScreen.colBrYellow, false, a);
         console.putCur(curX, curY + 1);
         for (int lin = 0; lin < (console.sizY - 2); lin++) {
             List<Integer> col = getLnk(beg + lin);
             a = getTxt(beg + lin);
             a = bits.padEnd(a, console.sizX, " ").substring(0, console.sizX);
-            console.putStr(0, lin + 1, userScreen.colBlack, userScreen.colWhite, false, a);
+            console.putStr(0, lin + 1, pipeScreen.colBlack, pipeScreen.colWhite, false, a);
             for (int i = 0; i < col.size(); i++) {
                 if (i >= console.sizX) {
                     break;
                 }
                 if (col.get(i) > 0) {
-                    console.putCol(i, lin + 1, userScreen.colBlack, userScreen.colBrGreen);
+                    console.putCol(i, lin + 1, pipeScreen.colBlack, pipeScreen.colBrGreen);
                 }
             }
         }
@@ -301,8 +302,8 @@ public class userBrowser {
             a = "";
         }
         a = bits.padEnd(beg + "  " + a, console.sizX, " ").substring(0, console.sizX);
-        console.putStr(0, console.sizY - 1, userScreen.colBlue, userScreen.colBrCyan, false, a);
-        console.putStr(console.sizX - 8, console.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
+        console.putStr(0, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colBrCyan, false, a);
+        console.putStr(console.sizX - 8, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, false, "f1=help");
         console.refresh();
     }
 
@@ -334,7 +335,7 @@ public class userBrowser {
         l.add("ctrl+p - view color link");
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
-        console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
+        console.helpWin(pipeScreen.colBlue, pipeScreen.colWhite, pipeScreen.colBrWhite, -1, -1, -1, -1, l);
     }
 
     private void doKeyRead() {
@@ -344,7 +345,7 @@ public class userBrowser {
             return;
         }
         console.pipe.linePut(a);
-        userScreen.getKey(console.pipe);
+        pipeScreen.getKey(console.pipe);
         doClear();
     }
 
@@ -548,7 +549,7 @@ public class userBrowser {
         doChg2txt();
         if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(tempFile))) {
             console.pipe.linePut("error downloading");
-            userScreen.getKey(console.pipe);
+            pipeScreen.getKey(console.pipe);
             doClear();
             return;
         }
@@ -567,13 +568,13 @@ public class userBrowser {
         doChg2txt();
         if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(tempFile))) {
             console.pipe.linePut("error downloading");
-            userScreen.getKey(console.pipe);
+            pipeScreen.getKey(console.pipe);
             doClear();
             return;
         }
         doClear();
         userFlash.ansiArt(tempFile, console);
-        userScreen.getKey(console.pipe);
+        pipeScreen.getKey(console.pipe);
         doClear();
     }
 
@@ -585,18 +586,18 @@ public class userBrowser {
         doChg2txt();
         if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(tempFile))) {
             console.pipe.linePut("error downloading");
-            userScreen.getKey(console.pipe);
+            pipeScreen.getKey(console.pipe);
             doClear();
             return;
         }
         doClear();
         userFlash.ansiAnim(tempFile, console);
-        userScreen.getKey(console.pipe);
+        pipeScreen.getKey(console.pipe);
         doClear();
     }
 
     private void doKeyF2() {
-        String b = console.askUser("enter name of file to save:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        String b = console.askUser("enter name of file to save:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "");
         if (b.length() < 1) {
             return;
         }
@@ -610,20 +611,20 @@ public class userBrowser {
         if (s == null) {
             return;
         }
-        String b = console.askUser("enter name of file to download:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        String b = console.askUser("enter name of file to download:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "");
         if (b.length() < 1) {
             return;
         }
         doChg2txt();
         if (userFlash.doReceive(console.pipe, encUrl.parseOne(s), new File(b))) {
             console.pipe.linePut("error downloading");
-            userScreen.getKey(console.pipe);
+            pipeScreen.getKey(console.pipe);
         }
         doClear();
     }
 
     private void doKeyF7() {
-        String b = console.askUser("enter text to find:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        String b = console.askUser("enter text to find:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "");
         if (b.length() < 1) {
             return;
         }
@@ -641,7 +642,7 @@ public class userBrowser {
     }
 
     private void doKeyF5() {
-        String b = console.askUser("enter url to go to:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, url);
+        String b = console.askUser("enter url to go to:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, url);
         if (b.length() < 1) {
             return;
         }
@@ -679,7 +680,7 @@ public class userBrowser {
             } else {
                 a = lst.get(i).data;
             }
-            String b = console.askUser("enter value of " + a + ":", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, ntry.data);
+            String b = console.askUser("enter value of " + a + ":", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, ntry.data);
             if (b.length() < 1) {
                 return;
             }
@@ -713,7 +714,7 @@ public class userBrowser {
             } else {
                 rec = lst.get(i);
             }
-            b = console.askUser("enter value of " + a + ":", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, rec.data);
+            b = console.askUser("enter value of " + a + ":", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, rec.data);
             if (b.length() < 1) {
                 return;
             }

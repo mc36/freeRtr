@@ -1,9 +1,10 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeScreen;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.pipe.pipeLine;
-import org.freertr.pipe.pipeScreen;
+import org.freertr.pipe.pipeTerm;
 import org.freertr.pipe.pipeSide;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
@@ -15,7 +16,7 @@ import org.freertr.util.logger;
  */
 public class userTmux {
 
-    private final userScreen cons;
+    private final pipeScreen cons;
 
     private final userExec orig;
 
@@ -25,7 +26,7 @@ public class userTmux {
 
     private int cur;
 
-    private pipeScreen scr[];
+    private pipeTerm scr[];
 
     private userRead rdr[];
 
@@ -41,7 +42,7 @@ public class userTmux {
      * @param scr connection to use
      * @param exe exec to use
      */
-    public userTmux(userScreen scr, userExec exe) {
+    public userTmux(pipeScreen scr, userExec exe) {
         cons = scr;
         orig = exe;
     }
@@ -93,13 +94,13 @@ public class userTmux {
         if (sizY < 5) {
             return true;
         }
-        scr = new pipeScreen[begX.length];
+        scr = new pipeTerm[begX.length];
         exe = new userExec[begX.length];
         cfg = new userConfig[begX.length];
         for (int i = 0; i < begX.length; i++) {
             pipeLine pl = new pipeLine(32768, false);
             pipeSide pip = pl.getSide();
-            scr[i] = new pipeScreen(pip, sizX, sizY);
+            scr[i] = new pipeTerm(pip, sizX, sizY);
             scr[i].scr.putCls();
             pip.setTime(0);
             pip = pl.getSide();
@@ -191,7 +192,7 @@ public class userTmux {
                 l.add("ctrl+q - exit");
                 l.add("ctrl+x - exit");
                 l.add("ctrl+c - exit");
-                cons.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
+                cons.helpWin(pipeScreen.colBlue, pipeScreen.colWhite, pipeScreen.colBrWhite, -1, -1, -1, -1, l);
                 break;
             case 0x6c: // l
             case 0x4c: // L
@@ -225,7 +226,7 @@ public class userTmux {
     private void doRound() {
         for (int o = 0; o < cons.sizY; o++) {
             for (int i = 0; i < cons.sizX; i++) {
-                cons.putInt(i, o, userScreen.colWhite, userScreen.colBlack, false, 32);
+                cons.putInt(i, o, pipeScreen.colWhite, pipeScreen.colBlack, false, 32);
             }
         }
         for (int i = 0; i < scr.length; i++) {

@@ -25,7 +25,7 @@ import org.freertr.util.logFil;
 import org.freertr.util.logger;
 import org.freertr.enc.encPrtbuf;
 import org.freertr.enc.encPrtbufEntry;
-import org.freertr.user.userScreen;
+import org.freertr.pipe.pipeScreen;
 import org.freertr.util.version;
 
 /**
@@ -1231,7 +1231,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
      * @param col column
      * @param scr screen
      */
-    public void getShowGraph(int col, userScreen scr) {
+    public void getShowGraph(int col, pipeScreen scr) {
         if (locFil == null) {
             return;
         }
@@ -1244,14 +1244,14 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
      * @param col column
      * @param scr screen
      */
-    public void getShowOldGraph(int col, userScreen scr) {
+    public void getShowOldGraph(int col, pipeScreen scr) {
         if (locFil == null) {
             return;
         }
         getShowGraph(locFil.rotateN(), col, scr);
     }
 
-    private void getShowGraph(String a, int col, userScreen scr) {
+    private void getShowGraph(String a, int col, pipeScreen scr) {
         if (a == null) {
             return;
         }
@@ -1329,16 +1329,16 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             getShowGraph(scr, sizY, i, avg[i], cMin, cMax, "*");
         }
         for (int i = 0; i < sizY; i++) {
-            scr.putStr(sizX, i, userScreen.colBlack, userScreen.colWhite, false, "|" + bits.toUser(cMin + (cMax * (sizY - i))));
+            scr.putStr(sizX, i, pipeScreen.colBlack, pipeScreen.colWhite, false, "|" + bits.toUser(cMin + (cMax * (sizY - i))));
         }
-        scr.putStr(0, sizY, userScreen.colBlack, userScreen.colWhite, false, bits.padEnd("", sizX, "-") + "/");
+        scr.putStr(0, sizY, pipeScreen.colBlack, pipeScreen.colWhite, false, bits.padEnd("", sizX, "-") + "/");
         a = "";
         for (int i = 0; i <= sizX; i += 15) {
-            scr.putStr(i, sizY + 1, userScreen.colBlack, userScreen.colWhite, false, bits.time2str(cfgAll.timeZoneName, beg + (i * end), 1));
+            scr.putStr(i, sizY + 1, pipeScreen.colBlack, pipeScreen.colWhite, false, bits.time2str(cfgAll.timeZoneName, beg + (i * end), 1));
         }
     }
 
-    private void getShowGraph(userScreen scr, int max, int i, long v, long cMin, long cMax, String ch) {
+    private void getShowGraph(pipeScreen scr, int max, int i, long v, long cMin, long cMax, String ch) {
         v -= cMin;
         v /= cMax;
         int ln = max - (int) v;
@@ -1348,7 +1348,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         if (ln >= max) {
             ln = max - 1;
         }
-        scr.putStr(i, ln, userScreen.colBlack, userScreen.colWhite, false, ch);
+        scr.putStr(i, ln, pipeScreen.colBlack, pipeScreen.colWhite, false, ch);
     }
 
     /**

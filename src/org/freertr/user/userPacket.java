@@ -51,7 +51,7 @@ import org.freertr.pack.packWol;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeProgress;
 import org.freertr.pipe.pipeSide;
-import org.freertr.pipe.pipeTerm;
+import org.freertr.pipe.pipeRelay;
 import org.freertr.prt.prtDccp;
 import org.freertr.prt.prtLudp;
 import org.freertr.prt.prtSctp;
@@ -1748,7 +1748,7 @@ public class userPacket {
                 return null;
             }
             sv.prompt = true;
-            pipeTerm trm = new pipeTerm(pip, usr, null);
+            pipeRelay trm = new pipeRelay(pip, usr, null);
             trm.doTerm();
             usr.setClose();
             return null;
@@ -1769,7 +1769,7 @@ public class userPacket {
             List<String> l = bits.txt2buf(cmd.word());
             if (l == null) {
                 sv.setPrompt(true);
-                pipeTerm trm = new pipeTerm(pip, usr, null);
+                pipeRelay trm = new pipeRelay(pip, usr, null);
                 trm.doTerm();
             } else {
                 usr.setTime(120000);
@@ -1797,7 +1797,7 @@ public class userPacket {
                 cmd.error("failed to place call");
                 return null;
             }
-            pipeTerm trm = new pipeTerm(pip, sm.getPipe(), null);
+            pipeRelay trm = new pipeRelay(pip, sm.getPipe(), null);
             trm.doTerm();
             sm.callStop();
             return null;
@@ -1996,7 +1996,7 @@ public class userPacket {
                 cmd.error("error calling");
                 return null;
             }
-            pipeTerm trm = new pipeTerm(pip, pad.getPipe(), null);
+            pipeRelay trm = new pipeRelay(pip, pad.getPipe(), null);
             trm.doTerm();
             return null;
         }
@@ -2013,7 +2013,7 @@ public class userPacket {
             }
             secWebsock ws = new secWebsock(strm, new pipeLine(65536, false));
             ws.startClient();
-            pipeTerm trm = new pipeTerm(pip, ws.getPipe(), null);
+            pipeRelay trm = new pipeRelay(pip, ws.getPipe(), null);
             trm.doTerm();
             return null;
         }

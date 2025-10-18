@@ -1,5 +1,6 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeScreen;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cfg.cfgInit;
@@ -13,7 +14,7 @@ import org.freertr.util.logger;
  */
 public class userEditor {
 
-    private final userScreen console;
+    private final pipeScreen console;
 
     private final List<String> buffer;
 
@@ -47,7 +48,7 @@ public class userEditor {
      * @param tit title
      * @param clk clock
      */
-    public userEditor(userScreen pip, List<String> buf, String tit, boolean clk) {
+    public userEditor(pipeScreen pip, List<String> buf, String tit, boolean clk) {
         console = pip;
         title = tit;
         clock = clk;
@@ -153,7 +154,7 @@ public class userEditor {
         }
         boolean b = readOnly;
         if (changed) {
-            String a = console.askUser("save changes? (y/n)", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "n");
+            String a = console.askUser("save changes? (y/n)", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "n");
             a = a.trim().toLowerCase();
             b = !a.equals("y");
         }
@@ -162,7 +163,7 @@ public class userEditor {
     }
 
     private boolean doKey() {
-        int i = userScreen.getKey(console.pipe);
+        int i = pipeScreen.getKey(console.pipe);
         switch (i) {
             case -1: // end
                 return true;
@@ -514,7 +515,7 @@ public class userEditor {
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
         l.add("ctrl+c - exit");
-        console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
+        console.helpWin(pipeScreen.colBlue, pipeScreen.colWhite, pipeScreen.colBrWhite, -1, -1, -1, -1, l);
     }
 
     private void doKeyF2() {
@@ -561,12 +562,12 @@ public class userEditor {
 
     private void doKeyF4() {
         int i = console.sizY / 2;
-        String a = console.askUser("text to find:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, i - 3, -1, lastFind);
+        String a = console.askUser("text to find:", pipeScreen.colBlue, pipeScreen.colBrGreen, pipeScreen.colBrGreen, pipeScreen.colBrGreen, -1, i - 3, -1, lastFind);
         if (a.length() < 1) {
             return;
         }
         lastFind = a;
-        a = console.askUser("text to replace:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, i + 3, -1, lastRepl);
+        a = console.askUser("text to replace:", pipeScreen.colBlue, pipeScreen.colBrGreen, pipeScreen.colBrGreen, pipeScreen.colBrGreen, -1, i + 3, -1, lastRepl);
         if (a.length() < 1) {
             return;
         }
@@ -575,7 +576,7 @@ public class userEditor {
     }
 
     private void doKeyF6() {
-        String a = console.askUser("line number:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, -1, -1, "" + curY);
+        String a = console.askUser("line number:", pipeScreen.colBlue, pipeScreen.colBrGreen, pipeScreen.colBrGreen, pipeScreen.colBrGreen, -1, -1, -1, "" + curY);
         if (a.length() < 1) {
             return;
         }
@@ -583,7 +584,7 @@ public class userEditor {
     }
 
     private void doKeyF7() {
-        String a = console.askUser("text to find:", userScreen.colBlue, userScreen.colBrGreen, userScreen.colBrGreen, userScreen.colBrGreen, -1, -1, -1, lastFind);
+        String a = console.askUser("text to find:", pipeScreen.colBlue, pipeScreen.colBrGreen, pipeScreen.colBrGreen, pipeScreen.colBrGreen, -1, -1, -1, lastFind);
         if (a.length() < 1) {
             return;
         }
@@ -596,7 +597,7 @@ public class userEditor {
             console.putCls();
             console.refresh();
             for (int i = 0; i < console.sizY; i++) {
-                putFill(i, userScreen.colWhite, userScreen.colBlack, 32);
+                putFill(i, pipeScreen.colWhite, pipeScreen.colBlack, 32);
             }
             console.refresh();
         }
@@ -610,28 +611,28 @@ public class userEditor {
     }
 
     private void putHeader() {
-        putFill(0, userScreen.colGreen, userScreen.colWhite, 32);
-        console.putStr(0, 0, userScreen.colGreen, userScreen.colBrYellow, false, cfgInit.versionName);
+        putFill(0, pipeScreen.colGreen, pipeScreen.colWhite, 32);
+        console.putStr(0, 0, pipeScreen.colGreen, pipeScreen.colBrYellow, false, cfgInit.versionName);
         if (!clock) {
             return;
         }
         String a = logger.getTimestamp();
-        console.putStr(console.sizX - a.length() - 1, 0, userScreen.colGreen, userScreen.colBrYellow, false, a);
+        console.putStr(console.sizX - a.length() - 1, 0, pipeScreen.colGreen, pipeScreen.colBrYellow, false, a);
     }
 
     private void putFooter() {
-        putFill(console.sizY - 1, userScreen.colBlue, userScreen.colWhite, 32);
-        console.putStr(0, console.sizY - 1, userScreen.colBlue, userScreen.colBrWhite, false, curY + ":" + curX + " " + (insert ? "ins" : "ovr") + " (" + begY + ":" + begX + ")");
+        putFill(console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, 32);
+        console.putStr(0, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colBrWhite, false, curY + ":" + curX + " " + (insert ? "ins" : "ovr") + " (" + begY + ":" + begX + ")");
         String s = "";
         if (changed) {
             s = "* ";
         }
-        console.putStr(20, console.sizY - 1, userScreen.colBlue, userScreen.colBrCyan, false, s + title);
-        console.putStr(console.sizX - 8, console.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
+        console.putStr(20, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colBrCyan, false, s + title);
+        console.putStr(console.sizX - 8, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, false, "f1=help");
     }
 
     private void putLine(int ln) {
-        putFill(ln + 1, userScreen.colBlack, userScreen.colWhite, 32);
+        putFill(ln + 1, pipeScreen.colBlack, pipeScreen.colWhite, 32);
         int lin = ln + begY;
         if (lin < 0) {
             return;
@@ -644,7 +645,7 @@ public class userEditor {
             return;
         }
         s = s.substring(begX, s.length());
-        console.putStr(0, ln + 1, userScreen.colBlack, userScreen.colWhite, false, s);
+        console.putStr(0, ln + 1, pipeScreen.colBlack, pipeScreen.colWhite, false, s);
     }
 
     private void putFill(int ln, int bg, int fg, int ch) {

@@ -1,5 +1,6 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeScreen;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import org.freertr.util.bits;
  */
 public class userMailer {
 
-    private final userScreen console;
+    private final pipeScreen console;
 
     private String path;
 
@@ -30,7 +31,7 @@ public class userMailer {
      * @param pip console
      * @param pt path
      */
-    public userMailer(userScreen pip, String pt) {
+    public userMailer(pipeScreen pip, String pt) {
         console = pip;
         if (!pt.endsWith("/")) {
             pt += "/";
@@ -78,7 +79,7 @@ public class userMailer {
     }
 
     private boolean doKey() {
-        int i = userScreen.getKey(console.pipe);
+        int i = pipeScreen.getKey(console.pipe);
         switch (i) {
             case -1: // end
                 return true;
@@ -209,7 +210,7 @@ public class userMailer {
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
         l.add("ctrl+c - exit");
-        console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
+        console.helpWin(pipeScreen.colBlue, pipeScreen.colWhite, pipeScreen.colBrWhite, -1, -1, -1, -1, l);
     }
 
     private void doKeyF3() {
@@ -235,21 +236,21 @@ public class userMailer {
 
     private void doDraw() {
         String a = bits.padEnd(cfgInit.versionName, console.sizX, " ").substring(0, console.sizX);
-        console.putStr(0, 0, userScreen.colGreen, userScreen.colBrYellow, false, a);
+        console.putStr(0, 0, pipeScreen.colGreen, pipeScreen.colBrYellow, false, a);
         a = bits.padEnd((beg + cur + 1) + "/" + mails.size(), console.sizX, " ").substring(0, console.sizX);
-        console.putStr(0, console.sizY - 1, userScreen.colBlue, userScreen.colBrCyan, false, a);
-        console.putStr(15, console.sizY - 1, userScreen.colBlue, userScreen.colBrCyan, false, path);
-        console.putStr(console.sizX - 8, console.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
+        console.putStr(0, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colBrCyan, false, a);
+        console.putStr(15, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colBrCyan, false, path);
+        console.putStr(console.sizX - 8, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, false, "f1=help");
         int siz = (console.sizX - 22) / 2;
         for (int o = 0; o < console.sizY - 2; o++) {
             int bg;
             int fg;
             if (o == cur) {
-                bg = userScreen.colWhite;
-                fg = userScreen.colBlack;
+                bg = pipeScreen.colWhite;
+                fg = pipeScreen.colBlack;
             } else {
-                bg = userScreen.colBlack;
-                fg = userScreen.colWhite;
+                bg = pipeScreen.colBlack;
+                fg = pipeScreen.colWhite;
             }
             console.putStr(siz, o + 1, bg, fg, false, bits.padEnd("", console.sizX, " "));
             if ((beg + o) >= mails.size()) {

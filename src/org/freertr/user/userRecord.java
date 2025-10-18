@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
-import org.freertr.pipe.pipeTerm;
+import org.freertr.pipe.pipeRelay;
 import org.freertr.util.logger;
 
 /**
@@ -62,7 +62,7 @@ public class userRecord implements Runnable {
         pip = pl.getSide();
         pip.setTime(0);
         new Thread(this).start();
-        pipeTerm trm = new pipeTerm(orig.pipe, pip, recf);
+        pipeRelay trm = new pipeRelay(orig.pipe, pip, recf);
         trm.doTerm();
         exe.pipe.setClose();
         try {

@@ -1,5 +1,6 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeScreen;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
-import org.freertr.pipe.pipeTerm;
+import org.freertr.pipe.pipeRelay;
 import org.freertr.prt.prtAccept;
 import org.freertr.prt.prtGen;
 import org.freertr.prt.prtRedun;
@@ -3103,7 +3104,7 @@ public class userExec {
         }
         if (a.equals("telnet")) {
             doTelnet(0);
-            userScreen.sendTit(pipe, cfgAll.hostName);
+            pipeScreen.sendTit(pipe, cfgAll.hostName);
             return cmdRes.command;
         }
         if (a.equals("echo")) {
@@ -3161,7 +3162,7 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("send")) {
-            userGame t = new userGame(new userScreen(pipe), reader);
+            userGame t = new userGame(new pipeScreen(pipe), reader);
             a = t.doSend(cmd);
             cmd.error(a);
             return cmdRes.command;
@@ -3232,7 +3233,7 @@ public class userExec {
                 i = 3;
             }
             reader.keyFlush();
-            userTmux t = new userTmux(new userScreen(pipe), this);
+            userTmux t = new userTmux(new pipeScreen(pipe), this);
             if (t.doInit(i)) {
                 cmd.error("error initializing");
                 return cmdRes.command;
@@ -3243,7 +3244,7 @@ public class userExec {
         }
         if (a.equals("game")) {
             reader.keyFlush();
-            userGame t = new userGame(new userScreen(pipe), reader);
+            userGame t = new userGame(new pipeScreen(pipe), reader);
             t.doStart();
             t.doCommand(cmd);
             t.doFinish();
@@ -3471,7 +3472,7 @@ public class userExec {
                     return cmdRes.command;
                 }
                 c2.addAll(c1);
-                userEditor e = new userEditor(new userScreen(pipe), c2, "startup config", false);
+                userEditor e = new userEditor(new pipeScreen(pipe), c2, "startup config", false);
                 if (e.doEdit()) {
                     return cmdRes.command;
                 }
@@ -3491,7 +3492,7 @@ public class userExec {
                 }
                 List<String> c2 = new ArrayList<String>();
                 c2.addAll(c1);
-                userEditor e = new userEditor(new userScreen(pipe), c2, "running config", false);
+                userEditor e = new userEditor(new pipeScreen(pipe), c2, "running config", false);
                 if (e.doEdit()) {
                     return cmdRes.command;
                 }
@@ -3508,7 +3509,7 @@ public class userExec {
                 if (cmd.size() > 0) {
                     c1 = userFilter.getSection(c1, userRead.filter2reg(cmd.getRemaining()));
                 }
-                userEditor v = new userEditor(new userScreen(pipe), c1, "running config", false);
+                userEditor v = new userEditor(new pipeScreen(pipe), c1, "running config", false);
                 v.doView();
                 return cmdRes.command;
             }
@@ -4025,7 +4026,7 @@ public class userExec {
         mode = (mode * 6) + (counter * 3) + interval + 21;
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#bwmon", pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, cfgAll.hostName + "#bwmon", pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             lst.clear();
             lst.addAll(cfgAll.getShIntTxt(mode));
@@ -4149,7 +4150,7 @@ public class userExec {
         int ttl = 0;
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#trace " + trg, pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, cfgAll.hostName + "#trace " + trg, pipe.settingsGet(pipeSetting.times, false));
         int request[] = new int[256];
         int reply[] = new int[256];
         int timeCur[] = new int[256];
@@ -4888,7 +4889,7 @@ public class userExec {
             cmd.error("timed out");
             return;
         }
-        pipeTerm trm = new pipeTerm(pipe, conn, null);
+        pipeRelay trm = new pipeRelay(pipe, conn, null);
         trm.doTerm();
     }
 
@@ -5042,7 +5043,7 @@ public class userExec {
         if (cht != null) {
             cht.script.doScript(strm);
         }
-        pipeTerm trm = new pipeTerm(pipe, strm, recf);
+        pipeRelay trm = new pipeRelay(pipe, strm, recf);
         trm.doTerm();
         if (recf == null) {
             return;
@@ -5075,7 +5076,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), null);
+            pipeRelay trm = new pipeRelay(pipe, pl.getSide(), null);
             trm.doTerm();
             return;
         }
@@ -5090,7 +5091,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), null);
+            pipeRelay trm = new pipeRelay(pipe, pl.getSide(), null);
             trm.doTerm();
             return;
         }
@@ -5106,7 +5107,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), null);
+            pipeRelay trm = new pipeRelay(pipe, pl.getSide(), null);
             trm.doTerm();
             return;
         }
@@ -5121,7 +5122,7 @@ public class userExec {
             }
             pipeLine pl = new pipeLine(65536, false);
             ntry.con = pl.getSide();
-            pipeTerm trm = new pipeTerm(pipe, pl.getSide(), null);
+            pipeRelay trm = new pipeRelay(pipe, pl.getSide(), null);
             trm.doTerm();
             return;
         }
@@ -5159,7 +5160,7 @@ public class userExec {
                 cmd.error("no such line");
                 return;
             }
-            pipeTerm trm = new pipeTerm(pipe, lin.runner.doAttach(), null);
+            pipeRelay trm = new pipeRelay(pipe, lin.runner.doAttach(), null);
             trm.doTerm();
             return;
         }
@@ -5282,48 +5283,48 @@ public class userExec {
 
     private void setBackground(int col) {
         int[] idx = {pipeSetting.colNormal, pipeSetting.colHeader, pipeSetting.colPrompt};
-        int[] def = {userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrGreen};
+        int[] def = {pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrGreen};
         for (int i = 0; i < idx.length; i++) {
             int p = idx[i];
             int o = pipe.settingsGet(p, def[i]);
-            o = userScreen.setBackground(o, col);
+            o = pipeScreen.setBackground(o, col);
             pipe.settingsPut(p, o);
         }
     }
 
     private void setForeground(int idx, int def, int col) {
         int i = pipe.settingsGet(idx, def);
-        i = userScreen.setForeground(i, col);
+        i = pipeScreen.setForeground(i, col);
         pipe.settingsPut(idx, i);
     }
 
     private void setForeground(int idx, int def) {
         int i = pipe.settingsGet(idx, def);
-        i = userScreen.setForeground(i, def);
+        i = pipeScreen.setForeground(i, def);
         pipe.settingsPut(idx, i);
     }
 
     private void doTerminal() {
         String a = cmd.word();
         if (a.equals("clear")) {
-            userScreen scr = new userScreen(pipe);
+            pipeScreen scr = new pipeScreen(pipe);
             scr.putCls();
             return;
         }
         if (a.equals("detect")) {
-            cmd.error(cmds.doneFail(userScreen.updtSiz(pipe)));
+            cmd.error(cmds.doneFail(pipeScreen.updtSiz(pipe)));
             return;
         }
         if (a.equals("beep")) {
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         if (a.equals("title")) {
-            userScreen.sendTit(pipe, cfgAll.hostName);
+            pipeScreen.sendTit(pipe, cfgAll.hostName);
             return;
         }
         if (a.equals("clipboard")) {
-            userScreen.sendClp(pipe, cmd.getRemaining());
+            pipeScreen.sendClp(pipe, cmd.getRemaining());
             return;
         }
         if (a.equals("monitor")) {
@@ -5343,31 +5344,31 @@ public class userExec {
             return;
         }
         if (a.equals("foreground")) {
-            int i = userScreen.string2color(cmd.word());
+            int i = pipeScreen.string2color(cmd.word());
             if (i < 0) {
                 return;
             }
-            setForeground(pipeSetting.colNormal, userScreen.colWhite, i);
+            setForeground(pipeSetting.colNormal, pipeScreen.colWhite, i);
             return;
         }
         if (a.equals("header")) {
-            int i = userScreen.string2color(cmd.word());
+            int i = pipeScreen.string2color(cmd.word());
             if (i < 0) {
                 return;
             }
-            setForeground(pipeSetting.colHeader, userScreen.colBrYellow, i);
+            setForeground(pipeSetting.colHeader, pipeScreen.colBrYellow, i);
             return;
         }
         if (a.equals("prompt")) {
-            int i = userScreen.string2color(cmd.word());
+            int i = pipeScreen.string2color(cmd.word());
             if (i < 0) {
                 return;
             }
-            setForeground(pipeSetting.colPrompt, userScreen.colBrGreen, i);
+            setForeground(pipeSetting.colPrompt, pipeScreen.colBrGreen, i);
             return;
         }
         if (a.equals("background")) {
-            int i = userScreen.string2color(cmd.word());
+            int i = pipeScreen.string2color(cmd.word());
             if (i < 0) {
                 return;
             }
@@ -5391,7 +5392,7 @@ public class userExec {
             return;
         }
         if (a.equals("play")) {
-            userScreen.sendMusicAnsi(pipe, cmd.getRemaining());
+            pipeScreen.sendMusicAnsi(pipe, cmd.getRemaining());
             return;
         }
         if (a.equals("bells")) {
@@ -5400,7 +5401,7 @@ public class userExec {
         }
         if (a.equals("ansimode")) {
             a = cmd.word();
-            userScreen.ansiMode am = userScreen.string2mode(a);
+            pipeScreen.ansiMode am = pipeScreen.string2mode(a);
             pipe.settingsPut(pipeSetting.ansiMode, am);
             return;
         }
@@ -5450,19 +5451,19 @@ public class userExec {
             return;
         }
         if (a.equals("foreground")) {
-            setForeground(pipeSetting.colNormal, userScreen.colWhite);
+            setForeground(pipeSetting.colNormal, pipeScreen.colWhite);
             return;
         }
         if (a.equals("header")) {
-            setForeground(pipeSetting.colHeader, userScreen.colBrYellow);
+            setForeground(pipeSetting.colHeader, pipeScreen.colBrYellow);
             return;
         }
         if (a.equals("prompt")) {
-            setForeground(pipeSetting.colPrompt, userScreen.colBrGreen);
+            setForeground(pipeSetting.colPrompt, pipeScreen.colBrGreen);
             return;
         }
         if (a.equals("background")) {
-            setBackground(userScreen.colBlack);
+            setBackground(pipeScreen.colBlack);
             return;
         }
         if (a.equals("colorize")) {
@@ -5494,7 +5495,7 @@ public class userExec {
             return;
         }
         if (a.equals("ansimode")) {
-            pipe.settingsPut(pipeSetting.ansiMode, userScreen.ansiMode.normal);
+            pipe.settingsPut(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
             return;
         }
         if (a.equals("tablemode")) {
@@ -5602,7 +5603,7 @@ public class userExec {
         List<String> lst = new ArrayList<String>();
         packText pt = new packText(getShPipe(false));
         pt.recvAll(lst);
-        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#show " + cmd.getRemaining(), false);
+        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, cfgAll.hostName + "#show " + cmd.getRemaining(), false);
         edtr.doView();
     }
 
@@ -5614,14 +5615,14 @@ public class userExec {
                 break;
             }
             String a = getShPipe(true).strGet(1024 * 1024);
-            userScreen.sendCur(pipe, 0, 0);
-            userScreen.sendCls(pipe);
+            pipeScreen.sendCur(pipe, 0, 0);
+            pipeScreen.sendCls(pipe);
             if (color) {
-                userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colPrompt, userScreen.colBrGreen));
+                pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colPrompt, pipeScreen.colBrGreen));
             }
             pipe.linePut(cfgAll.hostName + "#show " + cmd.getRemaining());
             if (color) {
-                userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite));
+                pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite));
             }
             if (pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(logger.getTimestamp());
@@ -5638,7 +5639,7 @@ public class userExec {
     private void doDisplay() {
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             lst.clear();
             packText pt = new packText(getShPipe(false));
@@ -5664,7 +5665,7 @@ public class userExec {
         List<String> r1 = new packText(getShPipe(false)).recvAll();
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new userScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             List<String> r2 = new packText(getShPipe(false)).recvAll();
             differ df = new differ();

@@ -1,5 +1,6 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeScreen;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -270,15 +271,15 @@ public class userRead implements Comparator<String> {
             pipe.settingsAdd(pipeSetting.spacTab, false);
             pipe.settingsAdd(pipeSetting.capsLock, false);
             pipe.settingsAdd(pipeSetting.termBells, false);
-            pipe.settingsAdd(pipeSetting.ansiMode, userScreen.ansiMode.normal);
+            pipe.settingsAdd(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
             pipe.settingsAdd(pipeSetting.logging, false);
             pipe.settingsAdd(pipeSetting.times, false);
             pipe.settingsAdd(pipeSetting.passStar, false);
             pipe.settingsAdd(pipeSetting.colors, userFormat.colorMode.normal);
             pipe.settingsAdd(pipeSetting.boxer, userFormat.boxerMode.normal);
-            pipe.settingsAdd(pipeSetting.colNormal, userScreen.colWhite);
-            pipe.settingsAdd(pipeSetting.colPrompt, userScreen.colBrGreen);
-            pipe.settingsAdd(pipeSetting.colHeader, userScreen.colBrYellow);
+            pipe.settingsAdd(pipeSetting.colNormal, pipeScreen.colWhite);
+            pipe.settingsAdd(pipeSetting.colPrompt, pipeScreen.colBrGreen);
+            pipe.settingsAdd(pipeSetting.colHeader, pipeScreen.colBrYellow);
             pipe.settingsAdd(pipeSetting.riblines, 8192);
             pipe.settingsAdd(pipeSetting.width, 79);
             pipe.settingsAdd(pipeSetting.height, 24);
@@ -838,7 +839,7 @@ public class userRead implements Comparator<String> {
             case headers:
                 return userFilter.getSecList(userFilter.text2section(lst), null, null);
             case viewer:
-                userEditor edtr = new userEditor(new userScreen(pipe), lst, "result", false);
+                userEditor edtr = new userEditor(new pipeScreen(pipe), lst, "result", false);
                 edtr.doView();
                 return new ArrayList<String>();
             case xml:
@@ -944,7 +945,7 @@ public class userRead implements Comparator<String> {
             p++;
         }
         int o = p;
-        int[] rainc = {userScreen.colBrWhite, userScreen.colBrYellow, userScreen.colBrCyan, userScreen.colBrGreen, userScreen.colBrRed, userScreen.colBrMagenta};
+        int[] rainc = {pipeScreen.colBrWhite, pipeScreen.colBrYellow, pipeScreen.colBrCyan, pipeScreen.colBrGreen, pipeScreen.colBrRed, pipeScreen.colBrMagenta};
         for (int i = 0; i < lst.size(); i++) {
             String a = lst.get(i);
             switch (color) {
@@ -953,15 +954,15 @@ public class userRead implements Comparator<String> {
                     pipe.linePut(a);
                     break;
                 case header:
-                    userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colHeader, userScreen.colBrYellow));
+                    pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colHeader, pipeScreen.colBrYellow));
                     pipe.linePut(a);
-                    userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite));
+                    pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite));
                     if (i >= columnL) {
                         color = userFormat.colorMode.normal;
                     }
                     break;
                 case rainbow:
-                    int d = pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite);
+                    int d = pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite);
                     int r = a.length();
                     for (int q = 0;; q++) {
                         int s = q * rainc.length;
@@ -972,26 +973,26 @@ public class userRead implements Comparator<String> {
                         if (t > r) {
                             t = r;
                         }
-                        userScreen.sendAnsCol(pipe, userScreen.setForeground(d, rainc[(i + q) % rainc.length]));
+                        pipeScreen.sendAnsCol(pipe, pipeScreen.setForeground(d, rainc[(i + q) % rainc.length]));
                         pipe.strPut(a.substring(s, t));
                     }
-                    userScreen.sendAnsCol(pipe, d);
+                    pipeScreen.sendAnsCol(pipe, d);
                     pipe.linePut("");
                     break;
                 case zeroes:
-                    d = pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite);
+                    d = pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite);
                     r = d;
                     byte[] b = a.getBytes();
                     for (int q = 0; q < b.length; q++) {
                         int ch = b[q];
                         int s = userFormat.zeroesColor(ch, d, rainc);
                         if (s != r) {
-                            userScreen.sendAnsCol(pipe, userScreen.setForeground(d, s));
+                            pipeScreen.sendAnsCol(pipe, pipeScreen.setForeground(d, s));
                             r = s;
                         }
                         pipe.strPut("" + (char) ch);
                     }
-                    userScreen.sendAnsCol(pipe, d);
+                    pipeScreen.sendAnsCol(pipe, d);
                     pipe.linePut("");
                     break;
                 default:
@@ -1092,14 +1093,14 @@ public class userRead implements Comparator<String> {
         }
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
         if (color) {
-            userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colPrompt, userScreen.colBrGreen));
+            pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colPrompt, pipeScreen.colBrGreen));
         }
         if (crsr > s.length()) {
             crsr = s.length();
         }
         pipe.strPut(s.substring(0, crsr));
         if (color) {
-            userScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, userScreen.colWhite));
+            pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite));
         }
     }
 
@@ -1170,7 +1171,7 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         pos--;
@@ -1181,7 +1182,7 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         pos++;
@@ -1192,7 +1193,7 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         pos = 0;
@@ -1203,7 +1204,7 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         pos = len;
@@ -1254,7 +1255,7 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         curr = part(0, pos - 1) + part(pos, len);
@@ -1268,11 +1269,11 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         if (s.equals(curr)) {
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         curr = s;
@@ -1285,7 +1286,7 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         clip = part(pos, len);
@@ -1298,7 +1299,7 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         clip = part(0, pos);
@@ -1348,7 +1349,7 @@ public class userRead implements Comparator<String> {
         if (!bells) {
             return;
         }
-        userScreen.sendBeep(pipe);
+        pipeScreen.sendBeep(pipe);
     }
 
     private void cmdHistNext() {
@@ -1433,7 +1434,7 @@ public class userRead implements Comparator<String> {
             beg = 0;
             rangeCheck();
             putCurrLine(true);
-            int ch = userScreen.getKey(pipe);
+            int ch = pipeScreen.getKey(pipe);
             switch (ch) {
                 case -1:
                     if (debugger.userReaderEvnt) {
@@ -1449,7 +1450,7 @@ public class userRead implements Comparator<String> {
                         if (!bells) {
                             break;
                         }
-                        userScreen.sendBeep(pipe);
+                        pipeScreen.sendBeep(pipe);
                         break;
                     }
                     text = text.substring(0, text.length() - 1);
@@ -1513,7 +1514,7 @@ public class userRead implements Comparator<String> {
     }
 
     private void cmdSpecChr() {
-        int i = userScreen.getKey(pipe);
+        int i = pipeScreen.getKey(pipe);
         if ((i & 0x8000) != 0) { // special
             return;
         }
@@ -1528,7 +1529,7 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         int i = cmds.wordBound(curr, pos - 1, -1);
@@ -1546,7 +1547,7 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         int i = cmds.wordBound(curr, pos, +1);
@@ -1569,7 +1570,7 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         pos = cmds.wordBound(curr, pos - 1, -1);
@@ -1583,7 +1584,7 @@ public class userRead implements Comparator<String> {
             if (!bells) {
                 return;
             }
-            userScreen.sendBeep(pipe);
+            pipeScreen.sendBeep(pipe);
             return;
         }
         pos = cmds.wordBound(curr, pos, +1);
@@ -1635,7 +1636,7 @@ public class userRead implements Comparator<String> {
             int oldP = pos;
             for (;;) {
                 len = curr.length();
-                int ch = userScreen.getKey(pipe);
+                int ch = pipeScreen.getKey(pipe);
                 if (ch == deactivate) {
                     return null;
                 }

@@ -1,5 +1,7 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeFonts;
+import org.freertr.pipe.pipeScreen;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +21,7 @@ import org.freertr.util.logger;
  */
 public class userGame {
 
-    private final userScreen console;
+    private final pipeScreen console;
 
     private final userRead reader;
 
@@ -29,7 +31,7 @@ public class userGame {
      * @param conn connection to use
      * @param rdr reader to use
      */
-    public userGame(userScreen conn, userRead rdr) {
+    public userGame(pipeScreen conn, userRead rdr) {
         console = conn;
         if (rdr == null) {
             rdr = new userRead(conn.pipe, null);
@@ -93,7 +95,7 @@ public class userGame {
         }
         console.putCur(0, 0);
         console.refresh();
-        userScreen.getKey(console.pipe);
+        pipeScreen.getKey(console.pipe);
     }
 
     /**
@@ -102,15 +104,15 @@ public class userGame {
     public void doAscTab() {
         console.doClear();
         for (int o = 0; o < 16; o++) {
-            console.putStr(7, 2 + o, userScreen.colBlack, userScreen.colGreen, true, "" + o);
-            console.putStr(10 + (o * 3), 1, userScreen.colBlack, userScreen.colGreen, true, "" + o);
+            console.putStr(7, 2 + o, pipeScreen.colBlack, pipeScreen.colGreen, true, "" + o);
+            console.putStr(10 + (o * 3), 1, pipeScreen.colBlack, pipeScreen.colGreen, true, "" + o);
             for (int i = 0; i < 16; i++) {
-                console.putInt(10 + (i * 3), 2 + o, userScreen.colBlack, userScreen.colWhite, true, (o * 16) + i);
+                console.putInt(10 + (i * 3), 2 + o, pipeScreen.colBlack, pipeScreen.colWhite, true, (o * 16) + i);
             }
         }
         console.putCur(0, 0);
         console.refresh();
-        userScreen.getKey(console.pipe);
+        pipeScreen.getKey(console.pipe);
     }
 
     /**
@@ -121,8 +123,8 @@ public class userGame {
         console.putCur(0, 0);
         console.refresh();
         for (;;) {
-            int i = userScreen.getKey(console.pipe);
-            console.putStr(console.sizX / 2, console.sizY / 2, userScreen.colBlack, userScreen.colWhite, false, bits.toHexW(i) + " " + (i & 0xff) + "       ");
+            int i = pipeScreen.getKey(console.pipe);
+            console.putStr(console.sizX / 2, console.sizY / 2, pipeScreen.colBlack, pipeScreen.colWhite, false, bits.toHexW(i) + " " + (i & 0xff) + "       ");
             console.putCur(0, 0);
             console.refresh();
             switch (i) {
@@ -152,7 +154,7 @@ public class userGame {
                 break;
             }
             console.doClear();
-            console.putStr(bits.random(0, maxX), bits.random(0, console.sizY), userScreen.colBlack, bits.random(1, 15), false, s);
+            console.putStr(bits.random(0, maxX), bits.random(0, console.sizY), pipeScreen.colBlack, bits.random(1, 15), false, s);
             console.refresh();
             bits.sleep(5000);
         }
@@ -184,7 +186,7 @@ public class userGame {
                 break;
             }
             console.doClear();
-            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, s);
+            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), pipeScreen.colBlack, bits.random(1, 15), false, s);
             console.refresh();
             bits.sleep(5000);
         }
@@ -233,7 +235,7 @@ public class userGame {
                 break;
             }
             console.doClear();
-            drawClock(bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2), userScreen.colBlack, bits.random(1, 15));
+            drawClock(bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2), pipeScreen.colBlack, bits.random(1, 15));
             console.refresh();
             bits.sleep(5000);
         }
@@ -254,7 +256,7 @@ public class userGame {
             String s = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 2);
             s = s.substring(0, 5);
             console.doClear();
-            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), userScreen.colBlack, bits.random(1, 15), false, userScreen.fontText(s, " ", userFonts.fontFiller, font));
+            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), pipeScreen.colBlack, bits.random(1, 15), false, pipeScreen.fontText(s, " ", pipeFonts.fontFiller, font));
             console.refresh();
             bits.sleep(5000);
         }
@@ -278,14 +280,14 @@ public class userGame {
             if (i >= len) {
                 continue;
             }
-            int c = userScreen.colGreen;
+            int c = pipeScreen.colGreen;
             if (i >= (len - 2)) {
-                c = userScreen.colBrGreen;
+                c = pipeScreen.colBrGreen;
             }
             if (i >= (len - 1)) {
-                c = userScreen.colBrWhite;
+                c = pipeScreen.colBrWhite;
             }
-            console.putInt(x, o, userScreen.colBlack, c, false, str[i]);
+            console.putInt(x, o, pipeScreen.colBlack, c, false, str[i]);
         }
         return pos > -len;
     }
@@ -403,9 +405,9 @@ public class userGame {
                         v2 = v * v;
                     }
                     if (k < iter) {
-                        console.putInt(i, j, false, userScreen.colWhite, ' ');
+                        console.putInt(i, j, false, pipeScreen.colWhite, ' ');
                     } else {
-                        console.putInt(i, j, false, userScreen.colWhite, '*');
+                        console.putInt(i, j, false, pipeScreen.colWhite, '*');
                     }
                 }
             }
@@ -454,8 +456,8 @@ public class userGame {
     public void doDonut() {
         userGameZbuf gfx = new userGameZbuf(console);
         int[] chrs = new int[]{'@', '#', '$', '%', '&', '*', '!'};
-        int[] cols = new int[]{userScreen.colBrWhite, userScreen.colBrMagenta, userScreen.colBrCyan,
-            userScreen.colBrGreen, userScreen.colBrRed, userScreen.colBrYellow, userScreen.colBrBlue};
+        int[] cols = new int[]{pipeScreen.colBrWhite, pipeScreen.colBrMagenta, pipeScreen.colBrCyan,
+            pipeScreen.colBrGreen, pipeScreen.colBrRed, pipeScreen.colBrYellow, pipeScreen.colBrBlue};
         double r1 = 2;
         double r2 = 1;
         double tau = 2.0 * Math.PI;
@@ -472,7 +474,7 @@ public class userGame {
                     double y = (r1 + r2 * Math.cos(v)) * Math.sin(u) * mul;
                     double z = r2 * Math.sin(v) * mul;
                     int p = (int) (cols.length * u / tau);
-                    gfx.pixelR(x, y, z, userScreen.colBlack, cols[p], chrs[p]);
+                    gfx.pixelR(x, y, z, pipeScreen.colBlack, cols[p], chrs[p]);
                 }
             }
             gfx.refresh();
@@ -493,12 +495,12 @@ public class userGame {
             gfx.rotate();
             for (int x = -gfx.max; x < gfx.max; x += 1) {
                 for (int y = -gfx.max; y < gfx.max; y += 1) {
-                    gfx.pixelR(x, y, -gfx.max, userScreen.colBlack, userScreen.colBrBlue, '@');
-                    gfx.pixelR(gfx.max, y, x, userScreen.colBlack, userScreen.colBrCyan, '#');
-                    gfx.pixelR(-gfx.max, y, -x, userScreen.colBlack, userScreen.colBrGreen, '$');
-                    gfx.pixelR(-x, y, gfx.max, userScreen.colBlack, userScreen.colBrMagenta, '%');
-                    gfx.pixelR(x, -gfx.max, -y, userScreen.colBlack, userScreen.colBrRed, '&');
-                    gfx.pixelR(x, gfx.max, y, userScreen.colBlack, userScreen.colBrYellow, '*');
+                    gfx.pixelR(x, y, -gfx.max, pipeScreen.colBlack, pipeScreen.colBrBlue, '@');
+                    gfx.pixelR(gfx.max, y, x, pipeScreen.colBlack, pipeScreen.colBrCyan, '#');
+                    gfx.pixelR(-gfx.max, y, -x, pipeScreen.colBlack, pipeScreen.colBrGreen, '$');
+                    gfx.pixelR(-x, y, gfx.max, pipeScreen.colBlack, pipeScreen.colBrMagenta, '%');
+                    gfx.pixelR(x, -gfx.max, -y, pipeScreen.colBlack, pipeScreen.colBrRed, '&');
+                    gfx.pixelR(x, gfx.max, y, pipeScreen.colBlack, pipeScreen.colBrYellow, '*');
                 }
             }
             gfx.refresh();
@@ -539,7 +541,7 @@ public class userGame {
             for (int y = 0; y < console.sizY; y++) {
                 for (int x = 0; x < console.sizX; x++) {
                     i = (plasma1[src1++] + plasma2[src2++] + plasma2[src3++]) & 0xFF;
-                    console.putInt(x, y, userScreen.colBlack, i >>> 4, false, 88);
+                    console.putInt(x, y, pipeScreen.colBlack, i >>> 4, false, 88);
                 }
                 src1 += console.sizX;
                 src2 += console.sizX;
@@ -575,23 +577,23 @@ public class userGame {
             for (int y = 0; y < console.sizY; y++) {
                 for (int x = 0; x < console.sizX; x++) {
                     int i = buf[y + 4][x + 4];
-                    int o = userScreen.colBlack;
+                    int o = pipeScreen.colBlack;
                     if (i > 3) {
-                        o = userScreen.colBlue;
+                        o = pipeScreen.colBlue;
                     }
                     if (i > 11) {
-                        o = userScreen.colRed;
+                        o = pipeScreen.colRed;
                     }
                     if (i > 24) {
-                        o = userScreen.colBrRed;
+                        o = pipeScreen.colBrRed;
                     }
                     if (i > 45) {
-                        o = userScreen.colBrYellow;
+                        o = pipeScreen.colBrYellow;
                     }
                     if (i > 70) {
-                        o = userScreen.colBrWhite;
+                        o = pipeScreen.colBrWhite;
                     }
-                    console.putInt(x, y, userScreen.colBlack, o, false, 88);
+                    console.putInt(x, y, pipeScreen.colBlack, o, false, 88);
                 }
             }
             console.refresh();
@@ -643,7 +645,7 @@ public class userGame {
                     } else {
                         i = 88;
                     }
-                    console.putInt(x, y, userScreen.colBlack, userScreen.colWhite, false, i);
+                    console.putInt(x, y, pipeScreen.colBlack, pipeScreen.colWhite, false, i);
                 }
             }
             console.refresh();
@@ -661,9 +663,9 @@ public class userGame {
                 for (int i = 0; i < console.sizX; i++) {
                     int p;
                     if ((bits.randomB() & 1) == 0) {
-                        p = userScreen.colBlack;
+                        p = pipeScreen.colBlack;
                     } else {
-                        p = userScreen.colWhite;
+                        p = pipeScreen.colWhite;
                     }
                     console.putStr(i, o, p, 0, false, " ");
                 }
@@ -708,7 +710,7 @@ public class userGame {
      * breakout
      */
     public void doBreakout() {
-        int cols[] = new int[]{userScreen.colBrBlack, userScreen.colBrRed, userScreen.colBrYellow, userScreen.colBrBlue, userScreen.colBrMagenta, userScreen.colBrGreen};
+        int cols[] = new int[]{pipeScreen.colBrBlack, pipeScreen.colBrRed, pipeScreen.colBrYellow, pipeScreen.colBrBlue, pipeScreen.colBrMagenta, pipeScreen.colBrGreen};
         boolean[][] del = new boolean[6][console.sizX / 4];
         int px = console.sizX / 2;
         int pm = 3;
@@ -723,14 +725,14 @@ public class userGame {
                     if (del[y][x]) {
                         continue;
                     }
-                    console.putStr(x * 4, y, userScreen.colBlack, cols[y], false, "###");
+                    console.putStr(x * 4, y, pipeScreen.colBlack, cols[y], false, "###");
                 }
             }
-            console.putStr(px, console.sizY - 1, userScreen.colBlack, userScreen.colBrWhite, false, "^^^^^^^");
-            console.putInt(bx, by, userScreen.colBlack, userScreen.colBrCyan, false, '@');
+            console.putStr(px, console.sizY - 1, pipeScreen.colBlack, pipeScreen.colBrWhite, false, "^^^^^^^");
+            console.putInt(bx, by, pipeScreen.colBlack, pipeScreen.colBrCyan, false, '@');
             console.refresh();
             for (; console.keyPress();) {
-                int i = userScreen.getKey(console.pipe);
+                int i = pipeScreen.getKey(console.pipe);
                 switch (i) {
                     case -1: // end
                         return;
@@ -822,13 +824,13 @@ public class userGame {
         for (;;) {
             console.doClear();
             for (int i = 0; i < px.size(); i++) {
-                console.putStr(px.get(i) * 2, py.get(i), userScreen.colBlack, userScreen.colBrGreen, false, "##");
+                console.putStr(px.get(i) * 2, py.get(i), pipeScreen.colBlack, pipeScreen.colBrGreen, false, "##");
             }
-            console.putStr(fx * 2, fy, userScreen.colBlack, userScreen.colBrMagenta, false, "$$");
-            console.putStr(cx * 2, cy, userScreen.colBlack, userScreen.colBrCyan, true, "@@");
+            console.putStr(fx * 2, fy, pipeScreen.colBlack, pipeScreen.colBrMagenta, false, "$$");
+            console.putStr(cx * 2, cy, pipeScreen.colBlack, pipeScreen.colBrCyan, true, "@@");
             console.refresh();
             for (; console.keyPress();) {
-                int i = userScreen.getKey(console.pipe);
+                int i = pipeScreen.getKey(console.pipe);
                 switch (i) {
                     case -1: // end
                         return;
@@ -923,18 +925,18 @@ public class userGame {
                     int p = tw.get(o);
                     int r = console.sizY - o - 1;
                     for (int q = 0; q <= p; q++) {
-                        console.putInt(towerX[i] - q, r, false, userScreen.colBrGreen, 'X');
-                        console.putInt(towerX[i] + q, r, false, userScreen.colBrGreen, 'X');
+                        console.putInt(towerX[i] - q, r, false, pipeScreen.colBrGreen, 'X');
+                        console.putInt(towerX[i] + q, r, false, pipeScreen.colBrGreen, 'X');
                     }
                 }
             }
             for (int i = 0; i < towerX.length; i++) {
-                int p = userScreen.colWhite;
+                int p = pipeScreen.colWhite;
                 if (selX == i) {
-                    p = userScreen.colBrCyan;
+                    p = pipeScreen.colBrCyan;
                 }
                 if (curX == i) {
-                    p = userScreen.colBrYellow;
+                    p = pipeScreen.colBrYellow;
                 }
                 for (int o = 0; o < console.sizY; o++) {
                     console.putInt(towerX[i], o, false, p, '|');
@@ -942,7 +944,7 @@ public class userGame {
             }
             console.putCur(towerX[curX], 0);
             console.refresh();
-            int i = userScreen.getKey(console.pipe);
+            int i = pipeScreen.getKey(console.pipe);
             switch (i) {
                 case -1: // end
                     return;
@@ -1097,26 +1099,26 @@ public class userGame {
                 int pszx = (step + 1) * dszx;
                 int pszy = (step + 1) * dszy;
                 if (maze[posy + rgty][posx + rgtx] != 0) {
-                    console.drawLine(console.sizX - sszx, sszy, console.sizX - pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    console.drawLine(console.sizX - sszx, console.sizY - sszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - sszx, sszy, console.sizX - pszx, pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - sszx, console.sizY - sszy, console.sizX - pszx, console.sizY - pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
                 } else {
-                    console.drawLine(console.sizX - sszx, sszy, console.sizX - sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - sszx, sszy, console.sizX - sszx, console.sizY - sszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
                     if (maze[posy + advy][posx + advx] == 0) {
-                        console.drawLine(console.sizX - pszx, pszy, console.sizX - pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                        console.drawLine(console.sizX - pszx, pszy, console.sizX - pszx, console.sizY - pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
                     }
-                    console.drawLine(console.sizX - pszx, pszy, console.sizX - sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    console.drawLine(console.sizX - pszx, console.sizY - pszy, console.sizX - sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - pszx, pszy, console.sizX - sszx, pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
+                    console.drawLine(console.sizX - pszx, console.sizY - pszy, console.sizX - sszx, console.sizY - pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
                 }
                 if (maze[posy + lfty][posx + lftx] != 0) {
-                    console.drawLine(sszx, sszy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    console.drawLine(sszx, console.sizY - sszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(sszx, sszy, pszx, pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
+                    console.drawLine(sszx, console.sizY - sszy, pszx, console.sizY - pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
                 } else {
-                    console.drawLine(sszx, sszy, sszx, console.sizY - sszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(sszx, sszy, sszx, console.sizY - sszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
                     if (maze[posy + advy][posx + advx] == 0) {
-                        console.drawLine(pszx, pszy, pszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                        console.drawLine(pszx, pszy, pszx, console.sizY - pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
                     }
-                    console.drawLine(pszx, pszy, sszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                    console.drawLine(pszx, console.sizY - pszy, sszx, console.sizY - pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                    console.drawLine(pszx, pszy, sszx, pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
+                    console.drawLine(pszx, console.sizY - pszy, sszx, console.sizY - pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
                 }
                 posx += advx;
                 posy += advy;
@@ -1125,15 +1127,15 @@ public class userGame {
                 }
                 posx = console.sizX - pszx;
                 posy = console.sizY - pszy;
-                console.drawLine(posx, posy, pszx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                console.drawLine(pszx, posy, pszx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                console.drawLine(pszx, pszy, posx, pszy, userScreen.colBlack, userScreen.colBrWhite, '*');
-                console.drawLine(posx, pszy, posx, posy, userScreen.colBlack, userScreen.colBrWhite, '*');
+                console.drawLine(posx, posy, pszx, posy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
+                console.drawLine(pszx, posy, pszx, pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
+                console.drawLine(pszx, pszy, posx, pszy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
+                console.drawLine(posx, pszy, posx, posy, pipeScreen.colBlack, pipeScreen.colBrWhite, '*');
                 break;
             }
             console.refresh();
             boolean map = false;
-            int i = userScreen.getKey(console.pipe);
+            int i = pipeScreen.getKey(console.pipe);
             switch (i) {
                 case -1: // end
                     return;
@@ -1185,12 +1187,12 @@ public class userGame {
                     if (maze[y][x] == 0) {
                         continue;
                     }
-                    console.putStr(x, y, userScreen.colBlack, userScreen.colWhite, false, "#");
+                    console.putStr(x, y, pipeScreen.colBlack, pipeScreen.colWhite, false, "#");
                 }
             }
-            console.putStr(curx, cury, userScreen.colBlack, userScreen.colBrGreen, false, "@");
+            console.putStr(curx, cury, pipeScreen.colBlack, pipeScreen.colBrGreen, false, "@");
             console.refresh();
-            userScreen.getKey(console.pipe);
+            pipeScreen.getKey(console.pipe);
         }
     }
 
@@ -1249,7 +1251,7 @@ public class userGame {
             return;
         }
         if (a.equals("clear")) {
-            userScreen.sendTit(console.pipe, cfgAll.hostName);
+            pipeScreen.sendTit(console.pipe, cfgAll.hostName);
             return;
         }
         if (a.equals("chat")) {
@@ -1264,12 +1266,12 @@ public class userGame {
         }
         if (a.equals("ansi")) {
             userFlash.ansiArt(cmd.getRemaining(), console);
-            userScreen.getKey(console.pipe);
+            pipeScreen.getKey(console.pipe);
             return;
         }
         if (a.equals("movie")) {
             userFlash.ansiAnim(cmd.getRemaining(), console);
-            userScreen.getKey(console.pipe);
+            pipeScreen.getKey(console.pipe);
             return;
         }
         if (a.equals("color")) {
@@ -1289,7 +1291,7 @@ public class userGame {
             if (a.length() < 1) {
                 a = cfgAll.hostName;
             }
-            userScreen.sendTit(console.pipe, a);
+            pipeScreen.sendTit(console.pipe, a);
             return;
         }
         if (a.equals("text")) {
@@ -1306,13 +1308,13 @@ public class userGame {
             if (a.length() < 1) {
                 txt = cfgInit.getShLogo(0x08);
             } else {
-                txt = userScreen.fontText(a, " ", userFonts.fontFiller, userFonts.font8x16());
+                txt = pipeScreen.fontText(a, " ", pipeFonts.fontFiller, pipeFonts.font8x16());
             }
             doLogo(txt);
             return;
         }
         if (a.equals("time")) {
-            doClock(userFonts.font8x16());
+            doClock(pipeFonts.font8x16());
             return;
         }
         if (a.equals("clock")) {
@@ -1368,27 +1370,27 @@ public class userGame {
             cmd.badCmd();
             return;
         }
-        int[] god = new int[]{userScreen.colBrCyan, userScreen.colBrWhite, userScreen.colBrYellow,
-            userScreen.colBrGreen, userScreen.colBrBlue, userScreen.colBrRed};
+        int[] god = new int[]{pipeScreen.colBrCyan, pipeScreen.colBrWhite, pipeScreen.colBrYellow,
+            pipeScreen.colBrGreen, pipeScreen.colBrBlue, pipeScreen.colBrRed};
         console.doClear();
         for (int o = 0; o < lst.size(); o++) {
             String s = lst.get(o);
             byte[] b = s.getBytes();
             for (int i = 0; i < b.length; i++) {
                 int ch = b[i];
-                int cl = userFormat.zeroesColor(ch, userScreen.colBrGreen, god);
+                int cl = userFormat.zeroesColor(ch, pipeScreen.colBrGreen, god);
                 console.putInt(i, o, false, cl, ch);
             }
         }
         console.refresh();
-        userScreen.getKey(console.pipe);
+        pipeScreen.getKey(console.pipe);
     }
 
 }
 
 class userGameZbuf {
 
-    public final userScreen scr;
+    public final pipeScreen scr;
 
     public final double[][] dep;
 
@@ -1405,7 +1407,7 @@ class userGameZbuf {
      *
      * @param s screen to use
      */
-    public userGameZbuf(userScreen s) {
+    public userGameZbuf(pipeScreen s) {
         scr = s;
         dep = new double[scr.sizY][scr.sizX];
         if (scr.sizX > scr.sizY) {
@@ -1493,7 +1495,7 @@ class userGameGomoku {
 
     private int curY;
 
-    private userScreen scr;
+    private pipeScreen scr;
 
     private final static int sizeX = 30;
 
@@ -1504,7 +1506,7 @@ class userGameGomoku {
      *
      * @param screen screen to use
      */
-    public userGameGomoku(userScreen screen) {
+    public userGameGomoku(pipeScreen screen) {
         scr = screen;
     }
 
@@ -1530,18 +1532,18 @@ class userGameGomoku {
                 switch (store[o][i]) {
                     case 1:
                         s = "X";
-                        p = userScreen.colGreen;
+                        p = pipeScreen.colGreen;
                         break;
                     case 2:
                         s = "O";
-                        p = userScreen.colRed;
+                        p = pipeScreen.colRed;
                         break;
                     default:
                         s = ".";
-                        p = userScreen.colWhite;
+                        p = pipeScreen.colWhite;
                         break;
                 }
-                scr.putStr(o * 2, i, userScreen.colBlack, p, false, s);
+                scr.putStr(o * 2, i, pipeScreen.colBlack, p, false, s);
             }
         }
         scr.putCur(curX * 2, curY);
@@ -1554,7 +1556,7 @@ class userGameGomoku {
     public void doGame() {
         for (;;) {
             doPrint();
-            int i = userScreen.getKey(scr.pipe);
+            int i = pipeScreen.getKey(scr.pipe);
             switch (i) {
                 case -1: // end
                     return;
@@ -1709,7 +1711,7 @@ class userGameMines {
 
     private int curY;
 
-    private userScreen scr;
+    private pipeScreen scr;
 
     private final static int sizeX = 60;
 
@@ -1720,7 +1722,7 @@ class userGameMines {
      *
      * @param screen screen to use
      */
-    public userGameMines(userScreen screen) {
+    public userGameMines(pipeScreen screen) {
         scr = screen;
     }
 
@@ -1750,16 +1752,16 @@ class userGameMines {
                 int p;
                 if (show[o][i]) {
                     s = "" + bombs(o, i);
-                    p = userScreen.colGreen;
+                    p = pipeScreen.colGreen;
                 } else {
                     s = ".";
-                    p = userScreen.colWhite;
+                    p = pipeScreen.colWhite;
                 }
                 if (mark[o][i]) {
                     s = "*";
-                    p = userScreen.colRed;
+                    p = pipeScreen.colRed;
                 }
-                scr.putStr(i, o, userScreen.colBlack, p, false, s);
+                scr.putStr(i, o, pipeScreen.colBlack, p, false, s);
             }
         }
         scr.putCur(curX, curY);
@@ -1772,7 +1774,7 @@ class userGameMines {
     public void doGame() {
         for (;;) {
             doPrint();
-            int i = userScreen.getKey(scr.pipe);
+            int i = pipeScreen.getKey(scr.pipe);
             switch (i) {
                 case -1: // end
                     return;
@@ -1891,7 +1893,7 @@ class userGameMines {
 
 class userGameTetris implements Runnable {
 
-    private userScreen scr;
+    private pipeScreen scr;
 
     private List<userGameTetrisThing> things;
 
@@ -1918,40 +1920,40 @@ class userGameTetris implements Runnable {
      *
      * @param screen screen to use
      */
-    public userGameTetris(userScreen screen) {
+    public userGameTetris(pipeScreen screen) {
         scr = screen;
         things = new ArrayList<userGameTetrisThing>();
         String[] lst = new String[3];
         lst[0] = " X";
         lst[1] = "XX";
         lst[2] = "X ";
-        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrBlue));
+        things.add(userGameTetrisThing.fromString(lst, pipeScreen.colBrBlue));
         lst[0] = "X ";
         lst[1] = "XX";
         lst[2] = " X";
-        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrGreen));
+        things.add(userGameTetrisThing.fromString(lst, pipeScreen.colBrGreen));
         lst[0] = "X ";
         lst[1] = "XX";
         lst[2] = "X ";
-        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrCyan));
+        things.add(userGameTetrisThing.fromString(lst, pipeScreen.colBrCyan));
         lst[0] = "X ";
         lst[1] = "X ";
         lst[2] = "XX";
-        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrYellow));
+        things.add(userGameTetrisThing.fromString(lst, pipeScreen.colBrYellow));
         lst[0] = " X";
         lst[1] = " X";
         lst[2] = "XX";
-        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrWhite));
+        things.add(userGameTetrisThing.fromString(lst, pipeScreen.colBrWhite));
         lst = new String[4];
         lst[0] = "X";
         lst[1] = "X";
         lst[2] = "X";
         lst[3] = "X";
-        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrMagenta));
+        things.add(userGameTetrisThing.fromString(lst, pipeScreen.colBrMagenta));
         lst = new String[2];
         lst[0] = "XX";
         lst[1] = "XX";
-        things.add(userGameTetrisThing.fromString(lst, userScreen.colBrRed));
+        things.add(userGameTetrisThing.fromString(lst, pipeScreen.colBrRed));
     }
 
     /**
@@ -1968,7 +1970,7 @@ class userGameTetris implements Runnable {
         for (int o = 0; o < sizeY; o++) {
             tab[o] = new int[sizeX];
             for (int i = 0; i < sizeX; i++) {
-                tab[o][i] = userScreen.colBlack;
+                tab[o][i] = pipeScreen.colBlack;
             }
         }
         lines = 0;
@@ -1981,17 +1983,17 @@ class userGameTetris implements Runnable {
     public synchronized void doPrint() {
         scr.doClear();
         for (int o = 0; o < sizeY; o++) {
-            scr.putStr(19, o + 1, userScreen.colBlack, userScreen.colWhite, false, "|");
-            scr.putStr(20 + (sizeX * 2), o + 1, userScreen.colBlack, userScreen.colWhite, false, "|");
+            scr.putStr(19, o + 1, pipeScreen.colBlack, pipeScreen.colWhite, false, "|");
+            scr.putStr(20 + (sizeX * 2), o + 1, pipeScreen.colBlack, pipeScreen.colWhite, false, "|");
             for (int i = 0; i < sizeX; i++) {
-                if (tab[o][i] == userScreen.colBlack) {
+                if (tab[o][i] == pipeScreen.colBlack) {
                     continue;
                 }
                 scr.putStr((i * 2) + 20, o + 1, tab[o][i], tab[o][i], false, "XX");
             }
         }
         nxt.doPrint(2, 2, scr);
-        scr.putStr(2, 10, userScreen.colBlack, userScreen.colWhite, false, "lines=" + lines);
+        scr.putStr(2, 10, pipeScreen.colBlack, pipeScreen.colWhite, false, "lines=" + lines);
         thg.doPrint((curX * 2) + 20, curY + 1, scr);
         scr.putCur(0, 0);
         scr.refresh();
@@ -2012,7 +2014,7 @@ class userGameTetris implements Runnable {
     public void doGame() {
         for (;;) {
             doPrint();
-            int i = userScreen.getKey(scr.pipe);
+            int i = pipeScreen.getKey(scr.pipe);
             if (!need2run) {
                 return;
             }
@@ -2060,7 +2062,7 @@ class userGameTetris implements Runnable {
         for (int o = sizeY - 1; o >= 0; o--) {
             int p = 0;
             for (int i = 0; i < sizeX; i++) {
-                if (tab[o][i] == userScreen.colBlack) {
+                if (tab[o][i] == pipeScreen.colBlack) {
                     continue;
                 }
                 p++;
@@ -2073,7 +2075,7 @@ class userGameTetris implements Runnable {
             }
             tab[0] = new int[sizeX];
             for (int i = 0; i < sizeX; i++) {
-                tab[0][i] = userScreen.colBlack;
+                tab[0][i] = pipeScreen.colBlack;
             }
             lines++;
             o++;
@@ -2126,7 +2128,7 @@ class userGameTetrisThing {
         for (int o = 0; o < sizeY; o++) {
             tab[o] = new byte[sizeX];
             for (int i = 0; i < sizeX; i++) {
-                tab[o][i] = userScreen.colBlack;
+                tab[o][i] = pipeScreen.colBlack;
             }
         }
     }
@@ -2136,7 +2138,7 @@ class userGameTetrisThing {
         for (int o = 0; o < t.sizeY; o++) {
             String a = lst[o];
             for (int i = 0; i < t.sizeX; i++) {
-                t.tab[o][i] = a.substring(i, i + 1).equals("X") ? (byte) col : userScreen.colBlack;
+                t.tab[o][i] = a.substring(i, i + 1).equals("X") ? (byte) col : pipeScreen.colBlack;
             }
         }
         return t;
@@ -2160,10 +2162,10 @@ class userGameTetrisThing {
         return t;
     }
 
-    public void doPrint(int x, int y, userScreen scr) {
+    public void doPrint(int x, int y, pipeScreen scr) {
         for (int o = 0; o < sizeY; o++) {
             for (int i = 0; i < sizeX; i++) {
-                if (tab[o][i] == userScreen.colBlack) {
+                if (tab[o][i] == pipeScreen.colBlack) {
                     continue;
                 }
                 scr.putStr((i * 2) + x, o + y, tab[o][i], tab[o][i], false, "XX");
@@ -2183,10 +2185,10 @@ class userGameTetrisThing {
         }
         for (int o = 0; o < sizeY; o++) {
             for (int i = 0; i < sizeX; i++) {
-                if (tab[o][i] == userScreen.colBlack) {
+                if (tab[o][i] == pipeScreen.colBlack) {
                     continue;
                 }
-                if (t[o + y][i + x] != userScreen.colBlack) {
+                if (t[o + y][i + x] != pipeScreen.colBlack) {
                     return false;
                 }
             }
@@ -2197,7 +2199,7 @@ class userGameTetrisThing {
     public void putThing(int[][] t, int x, int y) {
         for (int o = 0; o < sizeY; o++) {
             for (int i = 0; i < sizeX; i++) {
-                if (tab[o][i] == userScreen.colBlack) {
+                if (tab[o][i] == pipeScreen.colBlack) {
                     continue;
                 }
                 t[o + y][i + x] = tab[o][i];
@@ -2209,7 +2211,7 @@ class userGameTetrisThing {
 
 class userGameChess {
 
-    private userScreen scr;
+    private pipeScreen scr;
 
     private byte[] tab = new byte[]{
         // 0x10=black, 0x20=white, 1=pawn, 2=knight, 3=bishop, 4=rook, 5=queen, 6=king
@@ -2340,7 +2342,7 @@ class userGameChess {
      *
      * @param screen screen to use
      */
-    public userGameChess(userScreen screen) {
+    public userGameChess(pipeScreen screen) {
         scr = screen;
     }
 
@@ -2349,13 +2351,13 @@ class userGameChess {
         int f;
         switch (v >>> 4) {
             case 0: // empty
-                f = userScreen.colBlack;
+                f = pipeScreen.colBlack;
                 break;
             case 1: // black
-                f = userScreen.colBrRed;
+                f = pipeScreen.colBrRed;
                 break;
             case 2: // white
-                f = userScreen.colBrGreen;
+                f = pipeScreen.colBrGreen;
                 break;
             default:
                 return;
@@ -2552,7 +2554,7 @@ class userGameChess {
     private void doPrint() {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
-                doPrint(x, y, (((x + y) & 1) == 0) ? userScreen.colBrBlack : userScreen.colBlack);
+                doPrint(x, y, (((x + y) & 1) == 0) ? pipeScreen.colBrBlack : pipeScreen.colBlack);
             }
         }
     }
@@ -2574,12 +2576,12 @@ class userGameChess {
         int selY = -1;
         for (;;) {
             doPrint();
-            doPrint(curX, curY, userScreen.colBlue);
+            doPrint(curX, curY, pipeScreen.colBlue);
             if (selX >= 0) {
-                doPrint(selX, selY, userScreen.colGreen);
+                doPrint(selX, selY, pipeScreen.colGreen);
             }
             scr.refresh();
-            int i = userScreen.getKey(scr.pipe);
+            int i = pipeScreen.getKey(scr.pipe);
             boolean moved = false;
             switch (i) {
                 case -1: // end
@@ -2717,7 +2719,7 @@ class userGameRacerOpp implements Comparable<userGameRacerOpp> {
         spd = bits.random(90, 130);
         lne = bits.random(-1, 2);
         dst = bits.random(0, 2) * 100;
-        clr = userScreen.colBright + bits.random(1, 8);
+        clr = pipeScreen.colBright + bits.random(1, 8);
     }
 
     public int compareTo(userGameRacerOpp o) {
@@ -2730,7 +2732,7 @@ class userGameRacerOpp implements Comparable<userGameRacerOpp> {
         return 0;
     }
 
-    public void draw(userScreen scr, int dir, int bx, int by, int max) {
+    public void draw(pipeScreen scr, int dir, int bx, int by, int max) {
         if (max < 1) {
             return;
         }
@@ -2790,13 +2792,13 @@ class userGameRacerOpp implements Comparable<userGameRacerOpp> {
                     continue;
                 }
                 int px = bx + (x * max) / tot;
-                scr.putInt(px, py, userScreen.colBlack, clr, false, ch);
+                scr.putInt(px, py, pipeScreen.colBlack, clr, false, ch);
                 if (max <= tot) {
                     continue;
                 }
-                scr.putInt(1 + px, py, userScreen.colBlack, clr, false, ch);
-                scr.putInt(px, py + 1, userScreen.colBlack, clr, false, ch);
-                scr.putInt(px + 1, py + 1, userScreen.colBlack, clr, false, ch);
+                scr.putInt(1 + px, py, pipeScreen.colBlack, clr, false, ch);
+                scr.putInt(px, py + 1, pipeScreen.colBlack, clr, false, ch);
+                scr.putInt(px + 1, py + 1, pipeScreen.colBlack, clr, false, ch);
             }
         }
     }
@@ -2805,7 +2807,7 @@ class userGameRacerOpp implements Comparable<userGameRacerOpp> {
 
 class userGameRacer {
 
-    private userScreen scr;
+    private pipeScreen scr;
 
     private List<userGameRacerOpp> ops;
 
@@ -2824,7 +2826,7 @@ class userGameRacer {
      *
      * @param screen screen to use
      */
-    public userGameRacer(userScreen screen) {
+    public userGameRacer(pipeScreen screen) {
         scr = screen;
     }
 
@@ -2910,7 +2912,7 @@ class userGameRacer {
             for (int i = 1; i < 5; i++) {
                 int[] a = coords(lanep[i - lane], 1);
                 int[] b = coords(lanep[i - lane], 100);
-                scr.drawLine(a[0], a[1], b[0], b[1], userScreen.colBlack, userScreen.colWhite, lanes[i - lane]);
+                scr.drawLine(a[0], a[1], b[0], b[1], pipeScreen.colBlack, pipeScreen.colWhite, lanes[i - lane]);
             }
             for (int i = 0; i < ops.size(); i++) {
                 userGameRacerOpp op = ops.get(i);
@@ -2918,14 +2920,14 @@ class userGameRacer {
                 int[] b = coords(lanep[op.lne + 3 - lane], op.dst);
                 op.draw(scr, -lane, a[0] + 1, a[1], b[0] - a[0] - 2);
             }
-            scr.putStr(0, 0, userScreen.colBlack, userScreen.colGreen, false, grs);
+            scr.putStr(0, 0, pipeScreen.colBlack, pipeScreen.colGreen, false, grs);
             scr.putStr(0, 0, 0, 7, false, sped + " km/h, score=" + opd);
             scr.refresh();
             if (crs) {
                 return;
             }
             for (; scr.keyPress();) {
-                int i = userScreen.getKey(scr.pipe);
+                int i = pipeScreen.getKey(scr.pipe);
                 switch (i) {
                     case -1: // end
                         return;

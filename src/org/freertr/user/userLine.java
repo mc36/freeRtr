@@ -1,5 +1,6 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeScreen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -80,22 +81,22 @@ public class userLine {
     /**
      * normal color
      */
-    public int execColNrm = userScreen.colWhite;
+    public int execColNrm = pipeScreen.colWhite;
 
     /**
      * prompt color
      */
-    public int execColPrm = userScreen.colBrGreen;
+    public int execColPrm = pipeScreen.colBrGreen;
 
     /**
      * header color
      */
-    public int execColHdr = userScreen.colBrYellow;
+    public int execColHdr = pipeScreen.colBrYellow;
 
     /**
      * colorize
      */
-    public userScreen.ansiMode ansiMode = userScreen.ansiMode.normal;
+    public pipeScreen.ansiMode ansiMode = pipeScreen.ansiMode.normal;
 
     /**
      * space as tab
@@ -435,13 +436,13 @@ public class userLine {
         cmds.cfgLine(lst, !execSpace, beg, "exec spacetab", "");
         cmds.cfgLine(lst, !execCaps, beg, "exec capslock", "");
         cmds.cfgLine(lst, !execBells, beg, "exec bells", "");
-        lst.add(beg + "exec background " + userScreen.color2string(execColNrm >>> 16));
-        lst.add(beg + "exec foreground " + userScreen.color2string(execColNrm));
-        lst.add(beg + "exec prompt " + userScreen.color2string(execColPrm));
-        lst.add(beg + "exec header " + userScreen.color2string(execColHdr));
+        lst.add(beg + "exec background " + pipeScreen.color2string(execColNrm >>> 16));
+        lst.add(beg + "exec foreground " + pipeScreen.color2string(execColNrm));
+        lst.add(beg + "exec prompt " + pipeScreen.color2string(execColPrm));
+        lst.add(beg + "exec header " + pipeScreen.color2string(execColHdr));
         lst.add(beg + "exec colorize " + userFormat.colmod2str(execColor));
         lst.add(beg + "exec boxer " + userFormat.boxmod2str(execBoxer));
-        lst.add(beg + "exec ansimode " + userScreen.ansimod2str(ansiMode));
+        lst.add(beg + "exec ansimode " + pipeScreen.ansimod2str(ansiMode));
         lst.add(beg + "exec tablemode " + userFormat.tabmod2str(execTables));
         lst.add(beg + "exec welcome " + promptWelcome);
         lst.add(beg + "exec ready " + promptSuccess);
@@ -554,37 +555,37 @@ public class userLine {
                 return false;
             }
             if (s.equals("background")) {
-                int i = userScreen.string2color(cmd.word());
+                int i = pipeScreen.string2color(cmd.word());
                 if (i < 0) {
                     return false;
                 }
-                execColNrm = userScreen.setBackground(execColNrm, i);
-                execColHdr = userScreen.setBackground(execColHdr, i);
-                execColPrm = userScreen.setBackground(execColPrm, i);
+                execColNrm = pipeScreen.setBackground(execColNrm, i);
+                execColHdr = pipeScreen.setBackground(execColHdr, i);
+                execColPrm = pipeScreen.setBackground(execColPrm, i);
                 return false;
             }
             if (s.equals("foreground")) {
-                int i = userScreen.string2color(cmd.word());
+                int i = pipeScreen.string2color(cmd.word());
                 if (i < 0) {
                     return false;
                 }
-                execColNrm = userScreen.setForeground(execColNrm, i);
+                execColNrm = pipeScreen.setForeground(execColNrm, i);
                 return false;
             }
             if (s.equals("header")) {
-                int i = userScreen.string2color(cmd.word());
+                int i = pipeScreen.string2color(cmd.word());
                 if (i < 0) {
                     return false;
                 }
-                execColHdr = userScreen.setForeground(execColHdr, i);
+                execColHdr = pipeScreen.setForeground(execColHdr, i);
                 return false;
             }
             if (s.equals("prompt")) {
-                int i = userScreen.string2color(cmd.word());
+                int i = pipeScreen.string2color(cmd.word());
                 if (i < 0) {
                     return false;
                 }
-                execColPrm = userScreen.setForeground(execColPrm, i);
+                execColPrm = pipeScreen.setForeground(execColPrm, i);
                 return false;
             }
             if (s.equals("colorize")) {
@@ -1097,17 +1098,17 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         }
         pipe.setTime(parent.promptTimeout);
         if (parent.title) {
-            userScreen.sendTit(pipe, cfgAll.hostName);
+            pipeScreen.sendTit(pipe, cfgAll.hostName);
         }
         if (parent.detect) {
-            userScreen.updtSiz(pipe);
+            pipeScreen.updtSiz(pipe);
         }
         if (parent.banner) {
             if (cfgAll.bannerMov != null) {
-                userFlash.ansiAnim(cfgAll.bannerMov, new userScreen(pipe));
+                userFlash.ansiAnim(cfgAll.bannerMov, new pipeScreen(pipe));
             }
             if (cfgAll.bannerImg != null) {
-                userFlash.ansiArt(cfgAll.bannerImg, new userScreen(pipe));
+                userFlash.ansiArt(cfgAll.bannerImg, new pipeScreen(pipe));
             }
             if (cfgAll.bannerTxt != null) {
                 List<String> lst = bits.txt2buf(cfgAll.bannerTxt);

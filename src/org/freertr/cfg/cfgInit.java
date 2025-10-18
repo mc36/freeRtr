@@ -38,12 +38,12 @@ import org.freertr.user.userConfig;
 import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFlash;
-import org.freertr.user.userFonts;
+import org.freertr.pipe.pipeFonts;
 import org.freertr.user.userHelp;
 import org.freertr.user.userHwdet;
 import org.freertr.user.userNetconf;
 import org.freertr.user.userRead;
-import org.freertr.user.userScreen;
+import org.freertr.pipe.pipeScreen;
 import org.freertr.user.userUpgrade;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -1447,7 +1447,7 @@ public class cfgInit implements Runnable {
      */
     public final static pipeImage doApplet(String url) {
         pipeLine pl = new pipeLine(65536, false);
-        pipeImage img = new pipeImage(pl.getSide(), 80, 25, userFonts.font8x16(), userFonts.colorData);
+        pipeImage img = new pipeImage(pl.getSide(), 80, 25, pipeFonts.font8x16(), pipeFonts.colorData);
         pipeSide ps = pl.getSide();
         ps.lineTx = pipeSide.modTyp.modeCRLF;
         ps.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -1512,7 +1512,7 @@ public class cfgInit implements Runnable {
                 logger.pipeStart(pipCon);
             }
             if (win) {
-                pipWin = pipeWindow.createOne(80, 25, userFonts.font8x16(), userFonts.colorData);
+                pipWin = pipeWindow.createOne(80, 25, pipeFonts.font8x16(), pipeFonts.colorData);
                 logger.pipeStart(pipWin);
             }
             if (swN == null) {
@@ -1535,7 +1535,7 @@ public class cfgInit implements Runnable {
             doInit(hwT, swT, pipCon);
             if (pipCon != null) {
                 if (det) {
-                    userScreen.updtSiz(pipCon);
+                    pipeScreen.updtSiz(pipCon);
                 }
                 cfgAll.con0.line.createHandler(pipCon, "console", 2);
             }
@@ -1571,7 +1571,7 @@ public class cfgInit implements Runnable {
             userRead rdr = new userRead(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             if (det) {
-                userScreen.updtSiz(pip);
+                pipeScreen.updtSiz(pip);
             }
             userExec exe = new userExec(pip, rdr);
             exe.privileged = true;
@@ -1635,7 +1635,7 @@ public class cfgInit implements Runnable {
             userRead rdr = new userRead(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             if (det) {
-                userScreen.updtSiz(pip);
+                pipeScreen.updtSiz(pip);
             }
             userExec exe = new userExec(pip, rdr);
             exe.privileged = true;

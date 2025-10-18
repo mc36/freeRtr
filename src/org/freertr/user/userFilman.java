@@ -1,5 +1,6 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeScreen;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import org.freertr.util.bits;
  */
 public class userFilman {
 
-    private final userScreen console;
+    private final pipeScreen console;
 
     private final userFilmanPanel[] pan;
 
@@ -25,7 +26,7 @@ public class userFilman {
      *
      * @param pip console
      */
-    public userFilman(userScreen pip) {
+    public userFilman(pipeScreen pip) {
         console = pip;
         pan = new userFilmanPanel[2];
         int siz = console.sizX / 2;
@@ -62,14 +63,14 @@ public class userFilman {
      */
     public void doClear() {
         console.refresh();
-        console.fillLines(0, console.sizY, userScreen.colBlack, 32);
+        console.fillLines(0, console.sizY, pipeScreen.colBlack, 32);
         console.refresh();
         console.putCls();
         console.refresh();
     }
 
     private boolean doKey() {
-        int i = userScreen.getKey(console.pipe);
+        int i = pipeScreen.getKey(console.pipe);
         switch (i) {
             case -1: // end
                 return true;
@@ -209,12 +210,12 @@ public class userFilman {
     }
 
     private void doKeyPls() {
-        String b = console.askUser("enter regexp to select:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        String b = console.askUser("enter regexp to select:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "");
         pan[act].doSelection(b, true);
     }
 
     private void doKeyMns() {
-        String b = console.askUser("enter regexp to deselect:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        String b = console.askUser("enter regexp to deselect:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "");
         pan[act].doSelection(b, false);
     }
 
@@ -265,7 +266,7 @@ public class userFilman {
     }
 
     private void doKeyFind() {
-        String b = console.askUser("enter name to find:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "");
+        String b = console.askUser("enter name to find:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "");
         pan[act].doSearch(b);
     }
 
@@ -306,8 +307,8 @@ public class userFilman {
         l.add("ctrl+d - erase entry");
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
-        console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
-        console.putStr(console.sizX - 8, console.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
+        console.helpWin(pipeScreen.colBlue, pipeScreen.colWhite, pipeScreen.colBrWhite, -1, -1, -1, -1, l);
+        console.putStr(console.sizX - 8, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, false, "f1=help");
     }
 
     private void doKeyF2() {
@@ -361,13 +362,13 @@ public class userFilman {
     private void doKeyCol() {
         String a = pan[act].getFn();
         userFlash.ansiArt(a, console);
-        userScreen.getKey(console.pipe);
+        pipeScreen.getKey(console.pipe);
     }
 
     private void doKeyMov() {
         String a = pan[act].getFn();
         userFlash.ansiAnim(a, console);
-        userScreen.getKey(console.pipe);
+        pipeScreen.getKey(console.pipe);
     }
 
     private void doKeyF3() {
@@ -393,7 +394,7 @@ public class userFilman {
             String a = pan[act].getFn();
             i = a.lastIndexOf("/");
             String b = pan[1 - act].path + a.substring(i + 1, a.length());
-            b = console.askUser("enter target name:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, b);
+            b = console.askUser("enter target name:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, b);
             if (b.length() < 1) {
                 return;
             }
@@ -403,7 +404,7 @@ public class userFilman {
             return;
         }
         String a = pan[1 - act].path;
-        String b = console.askUser("copy " + i + " files to new place:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, a);
+        String b = console.askUser("copy " + i + " files to new place:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, a);
         if (b.length() < 1) {
             return;
         }
@@ -421,7 +422,7 @@ public class userFilman {
         int i = pan[act].cntSel(true);
         if (i < 1) {
             String a = pan[act].getFn();
-            String b = console.askUser("enter new name:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, a);
+            String b = console.askUser("enter new name:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, a);
             if (b.length() < 1) {
                 return;
             }
@@ -431,7 +432,7 @@ public class userFilman {
             return;
         }
         String a = pan[1 - act].path;
-        String b = console.askUser("move " + i + " files to new place:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, a);
+        String b = console.askUser("move " + i + " files to new place:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, a);
         if (b.length() < 1) {
             return;
         }
@@ -447,7 +448,7 @@ public class userFilman {
     }
 
     private void doKeyF7() {
-        String b = console.askUser("enter name of new directory:", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, pan[act].path);
+        String b = console.askUser("enter name of new directory:", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, pan[act].path);
         if (b.length() < 1) {
             return;
         }
@@ -467,7 +468,7 @@ public class userFilman {
         if (a.endsWith("/")) {
             a = a.substring(0, a.length() - 1);
         }
-        String b = console.askUser("really delete " + a + "? (y/n)", userScreen.colRed, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, "n");
+        String b = console.askUser("really delete " + a + "? (y/n)", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "n");
         b = b.trim().toLowerCase();
         if (!b.equals("y")) {
             return;
@@ -493,7 +494,7 @@ class userFilmanPanel {
     /**
      * the screen
      */
-    protected final userScreen con;
+    protected final pipeScreen con;
 
     /**
      * beginning of screen
@@ -549,7 +550,7 @@ class userFilmanPanel {
      * @param sx size on screen
      * @param sy size on screen
      */
-    protected userFilmanPanel(userScreen scr, int bx, int by, int sx, int sy) {
+    protected userFilmanPanel(pipeScreen scr, int bx, int by, int sx, int sy) {
         con = scr;
         scrX = bx;
         scrY = by;
@@ -691,7 +692,7 @@ class userFilmanPanel {
      */
     protected void doCurs() {
         int ln = scrY + curL - begL + 1;
-        con.putCols(scrX, ln, userScreen.colWhite, userScreen.colBlack, sizX);
+        con.putCols(scrX, ln, pipeScreen.colWhite, pipeScreen.colBlack, sizX);
     }
 
     /**
@@ -699,14 +700,14 @@ class userFilmanPanel {
      */
     protected void doDraw() {
         String a = bits.padEnd(path, sizX, " ").substring(0, sizX);
-        con.putStr(scrX, scrY, userScreen.colGreen, userScreen.colBrYellow, false, a);
+        con.putStr(scrX, scrY, pipeScreen.colGreen, pipeScreen.colBrYellow, false, a);
         for (int i = 0; i < sizY; i++) {
-            int o = userScreen.colWhite;
+            int o = pipeScreen.colWhite;
             if ((begL + i) >= fil.size()) {
                 a = "";
             } else {
                 if (sel.get(begL + i)) {
-                    o = userScreen.colBrYellow;
+                    o = pipeScreen.colBrYellow;
                 }
                 a = fil.get(begL + i);
             }
@@ -714,11 +715,11 @@ class userFilmanPanel {
                 a = a.substring(path.length(), a.length());
             }
             a = bits.padEnd(a, sizX, " ").substring(0, sizX);
-            con.putStr(scrX, scrY + i + 1, userScreen.colBlack, o, false, a);
+            con.putStr(scrX, scrY + i + 1, pipeScreen.colBlack, o, false, a);
         }
         a = bits.padEnd(cntSel(true) + "/" + (curL + 1) + "/" + fil.size(), sizX, " ");
-        con.putStr(scrX, scrY + sizY + 1, userScreen.colBlue, userScreen.colBrCyan, false, a);
-        con.putStr(con.sizX - 8, con.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
+        con.putStr(scrX, scrY + sizY + 1, pipeScreen.colBlue, pipeScreen.colBrCyan, false, a);
+        con.putStr(con.sizX - 8, con.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, false, "f1=help");
     }
 
     /**

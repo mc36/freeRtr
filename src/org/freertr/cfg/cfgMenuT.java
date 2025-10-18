@@ -9,7 +9,7 @@ import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.user.userRead;
-import org.freertr.user.userScreen;
+import org.freertr.pipe.pipeScreen;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
 
@@ -163,7 +163,7 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
      * @param prv privileged
      */
     public void doMenu(pipeSide pipe, userRead rdr, boolean prv) {
-        cfgMenuTdoer d = new cfgMenuTdoer(this, new userScreen(pipe), rdr, prv);
+        cfgMenuTdoer d = new cfgMenuTdoer(this, new pipeScreen(pipe), rdr, prv);
         d.doWork();
     }
 
@@ -211,7 +211,7 @@ class cfgMenuTdoer {
 
     private final cfgMenuT lower;
 
-    private final userScreen console;
+    private final pipeScreen console;
 
     private final userRead reader;
 
@@ -227,7 +227,7 @@ class cfgMenuTdoer {
 
     private int max;
 
-    public cfgMenuTdoer(cfgMenuT prn, userScreen pip, userRead rdr, boolean prv) {
+    public cfgMenuTdoer(cfgMenuT prn, pipeScreen pip, userRead rdr, boolean prv) {
         lower = prn;
         console = pip;
         reader = rdr;
@@ -249,7 +249,7 @@ class cfgMenuTdoer {
     }
 
     private boolean doKey() {
-        int i = userScreen.getKey(console.pipe);
+        int i = pipeScreen.getKey(console.pipe);
         switch (i) {
             case -1: // end
                 return true;
@@ -353,9 +353,9 @@ class cfgMenuTdoer {
     }
 
     private void doExecOne(cfgMenuTentry ent) {
-        userScreen.sendAnsCol(console.pipe, userScreen.colBrGreen);
+        pipeScreen.sendAnsCol(console.pipe, pipeScreen.colBrGreen);
         console.pipe.linePut(ent.group + " - " + ent.name);
-        userScreen.sendAnsCol(console.pipe, userScreen.colWhite);
+        pipeScreen.sendAnsCol(console.pipe, pipeScreen.colWhite);
         userExec exe = new userExec(console.pipe, reader);
         exe.privileged = privileged;
         String s = exe.repairCommand(ent.exec);
@@ -384,7 +384,7 @@ class cfgMenuTdoer {
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
         l.add("ctrl+c - exit");
-        console.helpWin(userScreen.colBlue, userScreen.colWhite, userScreen.colBrWhite, -1, -1, -1, -1, l);
+        console.helpWin(pipeScreen.colBlue, pipeScreen.colWhite, pipeScreen.colBrWhite, -1, -1, -1, -1, l);
     }
 
     private void doKeyF3() {
@@ -395,7 +395,7 @@ class cfgMenuTdoer {
             return;
         }
         cfgMenuTentry ent = buf.get(cur);
-        console.askUser("command to execute", userScreen.colBlue, userScreen.colWhite, userScreen.colBrYellow, userScreen.colBrWhite, -1, -1, -1, ent.exec);
+        console.askUser("command to execute", pipeScreen.colBlue, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, ent.exec);
     }
 
     private void doKeyUp() {
@@ -529,7 +529,7 @@ class cfgMenuTdoer {
             console.putCls();
             console.refresh();
             for (int i = 0; i < console.sizY; i++) {
-                putFill(i, userScreen.colWhite, userScreen.colBlack, 32);
+                putFill(i, pipeScreen.colWhite, pipeScreen.colBlack, 32);
             }
             console.refresh();
         }
@@ -543,15 +543,15 @@ class cfgMenuTdoer {
     }
 
     private void putHeader() {
-        putFill(0, userScreen.colGreen, userScreen.colWhite, 32);
-        console.putStr(0, 0, userScreen.colGreen, userScreen.colBrYellow, false, cfgInit.versionName);
+        putFill(0, pipeScreen.colGreen, pipeScreen.colWhite, 32);
+        console.putStr(0, 0, pipeScreen.colGreen, pipeScreen.colBrYellow, false, cfgInit.versionName);
     }
 
     private void putFooter() {
-        putFill(console.sizY - 1, userScreen.colBlue, userScreen.colWhite, 32);
-        console.putStr(0, console.sizY - 1, userScreen.colBlue, userScreen.colBrWhite, false, (cur + 1) + "/" + buf.size());
-        console.putStr(8, console.sizY - 1, userScreen.colBlue, userScreen.colBrWhite, false, flt);
-        console.putStr(console.sizX - 8, console.sizY - 1, userScreen.colBlue, userScreen.colWhite, false, "f1=help");
+        putFill(console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, 32);
+        console.putStr(0, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colBrWhite, false, (cur + 1) + "/" + buf.size());
+        console.putStr(8, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colBrWhite, false, flt);
+        console.putStr(console.sizX - 8, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, false, "f1=help");
     }
 
     private void putLine(int ln) {
@@ -559,11 +559,11 @@ class cfgMenuTdoer {
         int bg;
         int fg;
         if (lin == cur) {
-            bg = userScreen.colMagenta;
-            fg = userScreen.colBrYellow;
+            bg = pipeScreen.colMagenta;
+            fg = pipeScreen.colBrYellow;
         } else {
-            bg = userScreen.colBlack;
-            fg = userScreen.colWhite;
+            bg = pipeScreen.colBlack;
+            fg = pipeScreen.colWhite;
         }
         putFill(ln + 1, bg, fg, 32);
         if (lin < 0) {

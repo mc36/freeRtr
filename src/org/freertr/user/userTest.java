@@ -1,5 +1,6 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeFonts;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrClns;
@@ -288,7 +289,7 @@ public class userTest {
             if (y < 1) {
                 y = 25;
             }
-            pipeSide pipWin = pipeWindow.createOne(x, y, userFonts.font8x16(), userFonts.colorData);
+            pipeSide pipWin = pipeWindow.createOne(x, y, pipeFonts.font8x16(), pipeFonts.colorData);
             if (pipWin == null) {
                 cmd.error("failed");
                 return null;
