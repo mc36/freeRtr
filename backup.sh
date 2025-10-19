@@ -1,5 +1,6 @@
 #!/bin/sh
 chmod -x `find . -executable -name "*.java"` 2> /dev/null
+chmod -x `find . -executable -name "*.html"` 2> /dev/null
 chmod -x `find . -executable -name "*.tmpl"` 2> /dev/null
 chmod -x `find . -executable -name "*.tcl"` 2> /dev/null
 chmod -x `find . -executable -name "*.tst"` 2> /dev/null
