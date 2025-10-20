@@ -366,7 +366,7 @@ public class ifcLldp implements ifcUp {
         tlv.putBytes(pck, ttypTime, 2, tlv.valDat);
         tlv.putStr(pck, ttypPrtDesc, cfg.name);
         tlv.putStr(pck, ttypSysName, cfgAll.hostName);
-        tlv.putStr(pck, ttypSysDesc, cfgInit.versionFull);
+        tlv.putStr(pck, ttypSysDesc, cfgInit.versionFull + " " + cfgInit.getHWfwd1liner() + " " + cfgInit.getVMname() + " " + cfgInit.getKernelName());
         bits.msbPutW(tlv.valDat, 0, capaRouter | capaBridge); // capabilities
         bits.msbPutW(tlv.valDat, 2, capaRouter | capaBridge); // capabilities
         tlv.putBytes(pck, ttypSysCapa, 4, tlv.valDat);
