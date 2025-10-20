@@ -17600,3 +17600,6 @@ failed: wireguard over asymmetric ports
 ---------------------------------- 2025-10-16 10:39:58 25.10.16
 no failed: wireguard over asymmetric ports
 qc pass: wireguard over asymmetric ports
+---------------------------------- 2025-10-20 08:48:05 25.10.20
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address

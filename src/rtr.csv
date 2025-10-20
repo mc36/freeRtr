@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.10.20-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-10-20 08:27:56, took 00:13:42, with 50 workers, on 4054 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2025-10-20 09:05:29, took 00:17:23, with 50 workers, on 4054 cases, 1 failed, 0 traces, 8 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -71,7 +71,7 @@ http://sources.freertr.org/cfg/conn-capwap13.tst;conn-capwap13.tst;success;tunne
 http://sources.freertr.org/cfg/conn-dhcp01.tst;conn-dhcp01.tst;success;dhcp
 http://sources.freertr.org/cfg/conn-dhcp02.tst;conn-dhcp02.tst;success;dhcp with arp/nd security
 http://sources.freertr.org/cfg/conn-dhcp03.tst;conn-dhcp03.tst;success;dhcp with static allocation
-http://sources.freertr.org/cfg/conn-dhcp04.tst;conn-dhcp04.tst;success;dhcp with excluded address
+http://sources.freertr.org/cfg/conn-dhcp04.tst;conn-dhcp04.tst;#6-run-r3 tping 100 20 1234::1 vrf v1;dhcp with excluded address
 http://sources.freertr.org/cfg/conn-dhcp05.tst;conn-dhcp05.tst;success;dhcp with upgraded server
 http://sources.freertr.org/cfg/conn-dhcp06.tst;conn-dhcp06.tst;success;dhcp with interface server
 http://sources.freertr.org/cfg/conn-dhcp07.tst;conn-dhcp07.tst;success;dhcp relay
