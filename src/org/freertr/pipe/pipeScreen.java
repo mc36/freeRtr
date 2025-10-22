@@ -631,8 +631,8 @@ public class pipeScreen {
         if (res == null) {
             return true;
         }
-        userRead.setTermWdt(pip, res[0]);
-        userRead.setTermLen(pip, res[1]);
+        pipeTerm.setTermWdt(pip, res[0]);
+        pipeTerm.setTermLen(pip, res[1]);
         return false;
     }
 

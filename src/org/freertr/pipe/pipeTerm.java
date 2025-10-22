@@ -2,7 +2,6 @@ package org.freertr.pipe;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.freertr.user.userRead;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -41,10 +40,39 @@ public class pipeTerm {
     public pipeTerm(pipeSide pip, int x, int y) {
         pipe = pip;
         pipeSide ps = pipeDiscard.needAny(pip);
-        userRead.setTermWdt(ps, x);
-        userRead.setTermLen(ps, y);
+        setTermWdt(ps, x);
+        setTermLen(ps, y);
         scr = new pipeScreen(ps);
         scr.putCls();
+    }
+
+    /**
+     * set width of screen
+     *
+     * @param pip pipe to set
+     * @param siz size
+     */
+    public static void setTermWdt(pipeSide pip, int siz) {
+        if (siz < 1) {
+            return;
+        }
+        if (siz < 20) {
+            siz = 20;
+        }
+        pip.settingsPut(pipeSetting.width, siz);
+    }
+
+    /**
+     * set height of screen
+     *
+     * @param pip pipe to set
+     * @param siz size
+     */
+    public static void setTermLen(pipeSide pip, int siz) {
+        if (siz < 0) {
+            siz = 0;
+        }
+        pip.settingsPut(pipeSetting.height, siz);
     }
 
     private void putChar(int ch, boolean cr) {

@@ -52,8 +52,8 @@ public class pipeImage {
     public pipeImage(pipeSide pip, int x, int y, byte[][][] fnt, int[] plt) {
         pipe = pip;
         pipe.setReady();
-        userRead.setTermWdt(pipe, x);
-        userRead.setTermLen(pipe, y);
+        pipeTerm.setTermWdt(pipe, x);
+        pipeTerm.setTermLen(pipe, y);
         font = fnt;
         pal = plt;
         fntY = font[0].length;

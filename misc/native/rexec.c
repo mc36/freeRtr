@@ -18,7 +18,7 @@ void err(char*buf) {
 
 
 int main(int argc, char **argv) {
-    if (argc < 5) err("using: re <addr> <port> <user> <pass> <cmd> [cmd]");
+    if (argc < 6) err("using: re <addr> <port> <user> <pass> <cmd> [cmd]");
     int port = atoi(argv[2]);
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof (addr));

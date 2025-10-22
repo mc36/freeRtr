@@ -108,8 +108,8 @@ public class userTmux {
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
             rdr[i] = new userRead(pip, null);
             pip.settingsCopy(cons.pipe);
-            userRead.setTermWdt(pip, sizX);
-            userRead.setTermLen(pip, sizY);
+            pipeTerm.setTermWdt(pip, sizX);
+            pipeTerm.setTermLen(pip, sizY);
             pip.setTime(0);
             exe[i] = new userExec(pip, rdr[i]);
             cfg[i] = new userConfig(pip, rdr[i]);

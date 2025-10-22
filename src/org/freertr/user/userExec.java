@@ -55,6 +55,7 @@ import org.freertr.rtr.rtrBgpParam;
 import org.freertr.serv.servGenList;
 import org.freertr.serv.servGeneric;
 import org.freertr.enc.encUrl;
+import org.freertr.pipe.pipeTerm;
 import org.freertr.prt.prtIcmptun;
 import org.freertr.sec.secClient;
 import org.freertr.tab.tabRouteAttr;
@@ -5334,7 +5335,7 @@ public class userExec {
             return;
         }
         if (a.equals("width")) {
-            userRead.setTermWdt(pipe, bits.str2num(cmd.word()));
+            pipeTerm.setTermWdt(pipe, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("timestamps")) {
@@ -5412,7 +5413,7 @@ public class userExec {
             return;
         }
         if (a.equals("length")) {
-            userRead.setTermLen(pipe, bits.str2num(cmd.word()));
+            pipeTerm.setTermLen(pipe, bits.str2num(cmd.word()));
             return;
         }
         if (a.equals("escape")) {
@@ -5420,7 +5421,11 @@ public class userExec {
             return;
         }
         if (a.equals("riblines")) {
-            userRead.setRibLin(pipe, bits.str2num(cmd.word()));
+            int i = bits.str2num(cmd.word());
+            if (i < 5) {
+                i = 5;
+            }
+            pipe.settingsPut(pipeSetting.riblines, i);
             return;
         }
         if (a.equals("deactivate")) {
@@ -5441,7 +5446,7 @@ public class userExec {
             return;
         }
         if (a.equals("width")) {
-            userRead.setTermWdt(pipe, 80);
+            pipeTerm.setTermWdt(pipe, 80);
             return;
         }
         if (a.equals("timestamps")) {
@@ -5489,11 +5494,11 @@ public class userExec {
             return;
         }
         if (a.equals("length")) {
-            userRead.setTermLen(pipe, 25);
+            pipeTerm.setTermLen(pipe, 25);
             return;
         }
         if (a.equals("riblines")) {
-            userRead.setRibLin(pipe, 8192);
+            pipe.settingsPut(pipeSetting.riblines, 8192);
             return;
         }
         if (a.equals("ansimode")) {
@@ -5578,8 +5583,8 @@ public class userExec {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userRead rdr = new userRead(pip, null);
-        userRead.setTermWdt(pip, pipe.settingsGet(pipeSetting.width, 80));
-        userRead.setTermLen(pip, 0);
+        pipeTerm.setTermWdt(pip, pipe.settingsGet(pipeSetting.width, 80));
+        pipeTerm.setTermLen(pip, 0);
         pip.settingsPut(pipeSetting.tabMod, pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
         pip.settingsPut(pipeSetting.boxer, pipe.settingsGet(pipeSetting.boxer, userFormat.boxerMode.normal));
         pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));

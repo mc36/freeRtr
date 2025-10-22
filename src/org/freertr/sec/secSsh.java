@@ -17,6 +17,7 @@ import org.freertr.pack.packSshKex;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
+import org.freertr.pipe.pipeTerm;
 import org.freertr.user.userRead;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
@@ -438,8 +439,8 @@ public class secSsh implements Runnable {
             return true;
         }
         if (pc.type.equals(packSshChan.reqWindow)) {
-            userRead.setTermWdt(userS, p.pckDat.msbGetD(0));
-            userRead.setTermLen(userS, p.pckDat.msbGetD(4));
+            pipeTerm.setTermWdt(userS, p.pckDat.msbGetD(0));
+            pipeTerm.setTermLen(userS, p.pckDat.msbGetD(4));
             return true;
         }
         return false;
@@ -598,8 +599,8 @@ public class secSsh implements Runnable {
             }
             if (pc.type.equals(packSshChan.reqPtyReq)) {
                 p.stringRead();
-                userRead.setTermWdt(userS, p.pckDat.msbGetD(0));
-                userRead.setTermLen(userS, p.pckDat.msbGetD(4));
+                pipeTerm.setTermWdt(userS, p.pckDat.msbGetD(0));
+                pipeTerm.setTermLen(userS, p.pckDat.msbGetD(4));
                 if (pc.needReply) {
                     pc.chanSuccCreate();
                     p.packSend();

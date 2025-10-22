@@ -310,48 +310,6 @@ public class userRead implements Comparator<String> {
     }
 
     /**
-     * set width of screen
-     *
-     * @param pip pipe to set
-     * @param siz size
-     */
-    public static void setTermWdt(pipeSide pip, int siz) {
-        if (siz < 1) {
-            return;
-        }
-        if (siz < 20) {
-            siz = 20;
-        }
-        pip.settingsPut(pipeSetting.width, siz);
-    }
-
-    /**
-     * set length of route listing
-     *
-     * @param pip pipe to set
-     * @param siz size
-     */
-    public static void setRibLin(pipeSide pip, int siz) {
-        if (siz < 5) {
-            siz = 5;
-        }
-        pip.settingsPut(pipeSetting.riblines, siz);
-    }
-
-    /**
-     * set height of screen
-     *
-     * @param pip pipe to set
-     * @param siz size
-     */
-    public static void setTermLen(pipeSide pip, int siz) {
-        if (siz < 0) {
-            siz = 0;
-        }
-        pip.settingsPut(pipeSetting.height, siz);
-    }
-
-    /**
      * set context in which input will be processed
      *
      * @param hlp helper instance
