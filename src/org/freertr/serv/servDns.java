@@ -762,7 +762,7 @@ class servDnsDoer implements Runnable {
         }
         pckD.result = packDns.resultSuccess;
         int typ = req.typ;
-        for (;;) {
+        for (int o = 0; o < 16; o++) {
             int p = pckD.answers.size();
             req = pckD.answers.get(p - 1);
             if (req.typ != packDnsRec.typeCNAME) {
