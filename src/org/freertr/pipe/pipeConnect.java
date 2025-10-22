@@ -2,6 +2,7 @@ package org.freertr.pipe;
 
 import org.freertr.util.bits;
 import org.freertr.util.logger;
+import org.freertr.util.syncInt;
 
 /**
  * pipeline connector
@@ -18,8 +19,12 @@ public class pipeConnect {
      * @param close true to close both sides after, false to not
      */
     public static void connect(pipeSide side1, pipeSide side2, boolean close) {
-        new pipeConnectDoer(side1, side2, close, 0);
-        new pipeConnectDoer(side2, side1, close, 0);
+        syncInt cls = null;
+        if (!close) {
+            cls = new syncInt(0);
+        }
+        new pipeConnectDoer(side1, side2, cls, 0);
+        new pipeConnectDoer(side2, side1, cls, 0);
     }
 
     /**
@@ -29,7 +34,7 @@ public class pipeConnect {
      * @param delay delay in ms
      */
     public static void loopback(pipeSide side, int delay) {
-        new pipeConnectDoer(side, side, true, delay);
+        new pipeConnectDoer(side, side, null, delay);
     }
 
     /**
@@ -66,11 +71,11 @@ class pipeConnectDoer implements Runnable {
 
     private int siz;
 
-    private boolean cls;
+    private syncInt cls;
 
     private int del;
 
-    public pipeConnectDoer(pipeSide recv, pipeSide send, boolean close, int delay) {
+    public pipeConnectDoer(pipeSide recv, pipeSide send, syncInt close, int delay) {
         rx = recv;
         tx = send;
         cls = close;
@@ -84,6 +89,11 @@ class pipeConnectDoer implements Runnable {
         try {
             rx.setReady();
             for (;;) {
+                if (cls != null) {
+                    if (cls.get() != 0) {
+                        break;
+                    }
+                }
                 byte[] buf = new byte[siz];
                 int i = rx.blockingGet(buf, 0, buf.length);
                 if (i < 0) {
@@ -97,9 +107,11 @@ class pipeConnectDoer implements Runnable {
         } catch (Exception e) {
             logger.traceback(e);
         }
-        if (cls) {
+        if (cls == null) {
             rx.setClose();
             tx.setClose();
+        } else {
+            cls.set(1);
         }
     }
 
