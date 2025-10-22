@@ -4648,8 +4648,8 @@ public class userExec {
         }
         ipFwd fwd = vrf.getFwd(trg);
         if (!privileged) {
-            if (timeout < 10) {
-                timeout = 10;
+            if (timeout < 100) {
+                timeout = 100;
             }
             if (repeat > 100) {
                 repeat = 100;
