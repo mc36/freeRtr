@@ -4647,6 +4647,15 @@ public class userExec {
             src = ifc.getLocAddr(trg);
         }
         ipFwd fwd = vrf.getFwd(trg);
+        if (!privileged) {
+            if (timeout < 10) {
+                timeout = 10;
+            }
+            if (repeat > 100) {
+                repeat = 100;
+            }
+            alrt = -1;
+        }
         if (repeat < 1) {
             repeat = 1;
         }
