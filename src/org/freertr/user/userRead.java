@@ -238,6 +238,7 @@ public class userRead implements Comparator<String> {
         new userFilter(".*", cmds.tabulator + "exec autocommand ", null),
         new userFilter(".*", cmds.tabulator + "exec banner", null),
         new userFilter(".*", cmds.tabulator + "exec title", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec fakeprompt", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec detect", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec expirity", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec monitor", null),

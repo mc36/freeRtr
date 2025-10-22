@@ -99,6 +99,11 @@ public class userExec {
     public boolean privileged;
 
     /**
+     * fake hostname prompt
+     */
+    public String fakePrompt = null;
+
+    /**
      * authenticated username
      */
     public String username = "<nobody>";
@@ -3016,8 +3021,13 @@ public class userExec {
     public cmdRes doCommand() {
         rollback = false;
         committed = false;
-        reader.setContext(getHelping(), cfgAll.hostName + (privileged ? "#" : ">"));
-        String s = reader.readLine(null);
+        String s = fakePrompt;
+        if (s == null) {
+            s = cfgAll.hostName;
+            s += privileged ? "#" : ">";
+        }
+        reader.setContext(getHelping(), s);
+        s = reader.readLine(null);
         if (s == null) {
             return cmdRes.logout;
         }

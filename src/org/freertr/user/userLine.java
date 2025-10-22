@@ -134,6 +134,11 @@ public class userLine {
     public int loginLast = 0;
 
     /**
+     * fake prompt
+     */
+    public String fakePrompt;
+
+    /**
      * password stars
      */
     public boolean passStars = false;
@@ -456,6 +461,7 @@ public class userLine {
         cmds.cfgLine(lst, !title, beg, "exec title", "");
         cmds.cfgLine(lst, !expirity, beg, "exec expirity", "");
         cmds.cfgLine(lst, !monitor, beg, "exec monitor", "");
+        cmds.cfgLine(lst, fakePrompt == null, beg, "exec fakeprompt", fakePrompt);
         lst.add(beg + "exec privilege " + promptPrivilege);
         if (authorizeList == null) {
             lst.add(beg + "no exec authorization");
@@ -652,6 +658,10 @@ public class userLine {
                 autoHangup = true;
                 return false;
             }
+            if (s.equals("fakeprompt")) {
+                fakePrompt = cmd.getRemaining();
+                return false;
+            }
             if (s.equals("autocommand")) {
                 autoCommand = cmd.getRemaining();
                 return false;
@@ -808,6 +818,10 @@ public class userLine {
                 autoHangup = false;
                 return false;
             }
+            if (s.equals("fakeprompt")) {
+                fakePrompt = null;
+                return false;
+            }
             if (s.equals("autocommand")) {
                 autoCommand = "";
                 return false;
@@ -919,6 +933,8 @@ public class userLine {
         l.add(null, false, 3, new int[]{3, -1}, "<text>", "text to display");
         l.add(null, false, 2, new int[]{3}, "autocommand", "set automatic command");
         l.add(null, false, 3, new int[]{3, -1}, "<text>", "autocommand of user");
+        l.add(null, false, 2, new int[]{3}, "fakeprompt", "set fake prompt");
+        l.add(null, false, 3, new int[]{3, -1}, "<text>", "prompt to use");
         l.add(null, false, 2, new int[]{-1}, "banner", "display banner");
         l.add(null, false, 2, new int[]{-1}, "detect", "detect terminal size");
         l.add(null, false, 2, new int[]{-1}, "title", "send hostname");
@@ -1209,6 +1225,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         pipe.settingsPut(pipeSetting.origin, remote);
         pipe.settingsPut(pipeSetting.authed, user);
         exe = new userExec(pipe, rdr);
+        exe.fakePrompt = parent.fakePrompt;
         exe.privileged = user.privilege >= 15;
         exe.framedIface = parent.execIface;
         exe.physicalLin = physical != 0;
