@@ -17614,3 +17614,6 @@ no failed: wireguard over ipv6
 qc pass: wireguard over ipv6
 ---------------------------------- 2025-10-23 09:31:09 25.10.23
 no todo: tcp selective ack
+---------------------------------- 2025-10-23 11:44:27 25.10.23
+qc pass: ppp over rlogin
+qc pass: ppp over tcp without sack

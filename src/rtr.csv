@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.10.23-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-10-23 11:06:47, took 00:15:11, with 50 workers, on 4054 cases, 0 failed, 0 traces, 6 retries
+-;-;-;2025-10-23 12:01:37, took 00:17:10, with 50 workers, on 4056 cases, 0 failed, 0 traces, 7 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -410,6 +410,7 @@ http://sources.freertr.org/cfg/conn-redun02.tst;conn-redun02.tst;success;lsrp wi
 http://sources.freertr.org/cfg/conn-redun03.tst;conn-redun03.tst;success;ospf with process redundancy
 http://sources.freertr.org/cfg/conn-redun04.tst;conn-redun04.tst;success;isis with process redundancy
 http://sources.freertr.org/cfg/conn-redun05.tst;conn-redun05.tst;success;bgp with process redundancy
+http://sources.freertr.org/cfg/conn-rlogin.tst;conn-rlogin.tst;success;ppp over rlogin
 http://sources.freertr.org/cfg/conn-sep.tst;conn-sep.tst;success;sep
 http://sources.freertr.org/cfg/conn-slaac.tst;conn-slaac.tst;success;slaac
 http://sources.freertr.org/cfg/conn-sreth01.tst;conn-sreth01.tst;success;sreth over ipv4
@@ -429,7 +430,8 @@ http://sources.freertr.org/cfg/conn-ssh.tst;conn-ssh.tst;success;ppp over ssh
 http://sources.freertr.org/cfg/conn-sstp.tst;conn-sstp.tst;success;ppp over sstp
 http://sources.freertr.org/cfg/conn-stp.tst;conn-stp.tst;success;spantree over ethernet
 http://sources.freertr.org/cfg/conn-stun.tst;conn-stun.tst;success;ppp over stun
-http://sources.freertr.org/cfg/conn-tcp.tst;conn-tcp.tst;success;ppp over tcp
+http://sources.freertr.org/cfg/conn-tcp01.tst;conn-tcp01.tst;success;ppp over tcp
+http://sources.freertr.org/cfg/conn-tcp02.tst;conn-tcp02.tst;success;ppp over tcp without sack
 http://sources.freertr.org/cfg/conn-tdmou01.tst;conn-tdmou01.tst;success;tdmoudp with middle channels
 http://sources.freertr.org/cfg/conn-tdmou02.tst;conn-tdmou02.tst;success;ppp with tdmoudp
 http://sources.freertr.org/cfg/conn-tdmou03.tst;conn-tdmou03.tst;success;hdlc with tdmoudp

@@ -406,6 +406,7 @@ qc pass: lsrp with process redundancy
 qc pass: ospf with process redundancy
 qc pass: isis with process redundancy
 qc pass: bgp with process redundancy
+qc pass: ppp over rlogin
 qc pass: sep
 qc pass: slaac
 qc pass: sreth over ipv4
@@ -426,6 +427,7 @@ qc pass: ppp over sstp
 qc pass: spantree over ethernet
 qc pass: ppp over stun
 qc pass: ppp over tcp
+qc pass: ppp over tcp without sack
 qc pass: tdmoudp with middle channels
 qc pass: ppp with tdmoudp
 qc pass: hdlc with tdmoudp
