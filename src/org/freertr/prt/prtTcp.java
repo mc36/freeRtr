@@ -729,6 +729,7 @@ public class prtTcp extends prtGen {
         pr.staTim = bits.getTime();
         if (pck == null) {
             if (res) {
+                pr.sackTx = cfgAll.tcpSack;
                 pr.state = prtTcpConn.stResReq;
                 clnt.timeout = cfgAll.tcpTimeOpen;
                 return false;

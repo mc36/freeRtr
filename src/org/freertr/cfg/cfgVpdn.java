@@ -211,6 +211,10 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
          */
         prTdm,
         /**
+         * rlogin
+         */
+        prRlogin,
+        /**
          * telnet
          */
         prTelnet,
@@ -473,6 +477,8 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
                 return "stun";
             case prTdm:
                 return "tdmoudp";
+            case prRlogin:
+                return "rlogin";
             case prTelnet:
                 return "telnet";
             case prTls:
@@ -571,6 +577,9 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("tdmoudp")) {
             return protocolType.prTdm;
+        }
+        if (s.equals("rlogin")) {
+            return protocolType.prRlogin;
         }
         if (s.equals("telnet")) {
             return protocolType.prTelnet;
@@ -746,6 +755,7 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "stun", "select stun");
         l.add(null, false, 2, new int[]{-1}, "bstun", "select bstun");
         l.add(null, false, 2, new int[]{-1}, "tdmoudp", "select tdm over udp");
+        l.add(null, false, 2, new int[]{-1}, "rlogin", "select rlogin");
         l.add(null, false, 2, new int[]{-1}, "telnet", "select telnet");
         l.add(null, false, 2, new int[]{-1}, "tls", "select tls");
         l.add(null, false, 2, new int[]{-1}, "ssh", "select ssh");
@@ -1470,6 +1480,25 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
                 tdm.setUpper(ifaceDialer.getEncapProto());
                 tdm.workStart();
                 lower = tdm;
+                break;
+            case prRlogin:
+                if (ifaceDialer == null) {
+                    return;
+                }
+                if (script.script == null) {
+                    return;
+                }
+                telnet = new clntTelnet();
+                telnet.target = target;
+                telnet.proxy = proxy;
+                telnet.port = vcid;
+                telnet.username = username;
+                telnet.password = password;
+                telnet.security = servGeneric.protoRlogin;
+                telnet.script = script.script;
+                telnet.setUpper(ifaceDialer.getEncapProto());
+                telnet.workStart();
+                lower = telnet;
                 break;
             case prTelnet:
                 if (ifaceDialer == null) {
