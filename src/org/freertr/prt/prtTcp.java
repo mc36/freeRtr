@@ -209,7 +209,7 @@ public class prtTcp extends prtGen {
                     pck.TCPsak = -1;
                     continue;
                 case 0x05: // sack option
-                    pck.TCPsak = bits.msbGetD(tlv.valDat, 0);
+                    pck.TCPsak = bits.msbGetD(tlv.valDat, 0) - pck.TCPack;
                     continue;
                 case 0x08: // timestamps
                     pck.TCPtsV = bits.msbGetD(tlv.valDat, 0);
@@ -493,11 +493,11 @@ public class prtTcp extends prtGen {
             pck.putByte(1, 1); // nop
             pck.putSkip(2);
             encTlv tlv = getTCPoption(null);
-            bits.msbPutD(tlv.valDat, 0, pck.TCPsak);
-            bits.msbPutD(tlv.valDat, 4, pck.TCPsak);
             if (pck.TCPsak == -1) {
                 tlv.putBytes(pck, 4, 0, tlv.valDat);
             } else {
+                bits.msbPutD(tlv.valDat, 0, pck.TCPsak + pck.TCPack);
+                bits.msbPutD(tlv.valDat, 4, pck.TCPsak + pck.TCPack);
                 tlv.putBytes(pck, 5, 8, tlv.valDat);
             }
         }
@@ -973,6 +973,12 @@ public class prtTcp extends prtGen {
                         pr.netMax = maxSegMax;
                     }
                 }
+                if (pck.TCPsak > 0) {
+                    pr.sackTx = true;
+                    pr.netMax = pr.segSiz;
+                    pr.netOut = 0;
+                    pr.activFrcd = true;
+                }
                 if (pr.state == prtTcpConn.stGotSyn) {
                     if (debugger.prtTcpTraf) {
                         logger.debug("opened");
@@ -990,6 +996,11 @@ public class prtTcp extends prtGen {
                     logger.debug("got future sequence number");
                 }
                 pr.activWait = cfgAll.tcpTimeLater;
+                if (!pr.sackTx) {
+                    return;
+                }
+                pr.activFrcd = true;
+                pr.sackRx = -oldBytes;
                 return;
             }
             if (newBytes > 0) {
@@ -1038,10 +1049,17 @@ public class prtTcp extends prtGen {
                     if (debugger.prtTcpTraf) {
                         logger.debug("upper don't need data");
                     }
+                    if (!pr.sackTx) {
+                        return;
+                    }
+                    pr.activWait = cfgAll.tcpTimeNow;
+                    pr.activFrcd = true;
+                    pr.sackRx = newBytes;
                     return;
                 }
                 pr.seqRem += newBytes;
                 pr.activFrcd = true;
+                pr.sackRx = 0;
                 return;
             }
             if (flg == flagSYN) {
@@ -1140,14 +1158,14 @@ public class prtTcp extends prtGen {
             if (snd < 1) {
                 break;
             }
-            snd = sendMyPacket(clnt, flg, snd, 0);
+            snd = sendMyPacket(clnt, flg, snd, pr.sackRx);
             if (snd < 1) {
                 break;
             }
             sent++;
         }
         if (sent < 0) {
-            sendMyPacket(clnt, flagACK, 0, 0);
+            sendMyPacket(clnt, flagACK, 0, pr.sackRx);
         }
         return true;
     }
@@ -1197,7 +1215,7 @@ public class prtTcp extends prtGen {
                 }
                 break;
             case prtTcpConn.stOpened:
-                sendMyPacket(clnt, flagACK, cfgAll.tcpKeepalive ? -1 : 0, 0);
+                sendMyPacket(clnt, flagACK, cfgAll.tcpKeepalive ? -1 : 0, pr.sackRx);
                 pr.netMax = pr.segSiz;
                 pr.netOut = 0;
                 break;
@@ -1395,6 +1413,11 @@ class prtTcpConn {
      * sack base
      */
     protected boolean sackTx;
+
+    /**
+     * sack value
+     */
+    protected int sackRx;
 
     /**
      * receive traffic key

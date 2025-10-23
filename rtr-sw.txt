@@ -1002,6 +1002,18 @@ server rfb vnc vrf v1 interface loopback0
  login logging
  exit
 !
+server echo e
+ vrf v1
+ exit
+!
+server discard d
+ vrf v1
+ exit
+!
+server chargen c
+ vrf v1
+ exit
+!
 server http web vrf v1 interface loopback0
  security rsakey rsa
  security dsakey dsa

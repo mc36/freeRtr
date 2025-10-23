@@ -4134,7 +4134,6 @@ todo: tester to have dynamips support with the proper image and magic
 todo: tester to have followtracker knob
 todo: tester to have support chatscript and have followtracker knob
 todo: tester to have support for the hw-cfg stuff
-todo: tcp selective ack
 todo: ilnp (rfc6740)
 todo: lisp4, lisp6
 todo: l2vpn for isis

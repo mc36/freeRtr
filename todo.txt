@@ -157,7 +157,6 @@ tester to have dynamips support with the proper image and magic
 tester to have followtracker knob
 tester to have support chatscript and have followtracker knob
 tester to have support for the hw-cfg stuff
-tcp selective ack
 ilnp (rfc6740)
 lisp4, lisp6
 l2vpn for isis

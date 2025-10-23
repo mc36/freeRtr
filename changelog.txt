@@ -17612,3 +17612,5 @@ failed: wireguard over ipv6
 ---------------------------------- 2025-10-22 13:52:26 25.10.22
 no failed: wireguard over ipv6
 qc pass: wireguard over ipv6
+---------------------------------- 2025-10-23 09:31:09 25.10.23
+no todo: tcp selective ack
