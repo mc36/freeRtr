@@ -17617,3 +17617,10 @@ no todo: tcp selective ack
 ---------------------------------- 2025-10-23 11:44:27 25.10.23
 qc pass: ppp over rlogin
 qc pass: ppp over tcp without sack
+---------------------------------- 2025-10-23 12:19:25 25.10.23
+qc pass: ppp over tcp with sack
+qc pass: ppp over tcp with asymmetric sack
+qc pass: ppp over tcp with ecn
+qc pass: ppp over tcp without ecn
+qc pass: ppp over tcp with timestamp
+qc pass: ppp over tcp without timestamp
