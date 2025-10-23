@@ -561,6 +561,7 @@ public class userConfig {
         l.add(null, true, 3, new int[]{-1}, "none", "nor generate nor check");
         l.add(null, false, 2, new int[]{-1}, "tcp-timestamp", "set tcp timestamping");
         l.add(null, false, 2, new int[]{-1}, "tcp-ecn", "set tcp ecn");
+        l.add(null, false, 2, new int[]{-1}, "tcp-sack", "set tcp sack");
         l.add(null, false, 2, new int[]{-1}, "tcp-keepalive", "set tcp keepalive");
         l.add(null, false, 2, new int[]{3}, "tcp-timer", "set tcp timestamping");
         l.add(null, false, 3, new int[]{4}, "work", "set tcp work");
@@ -2855,6 +2856,10 @@ public class userConfig {
             cfgAll.tcpEcn = false;
             return;
         }
+        if (s.equals("tcp-sack")) {
+            cfgAll.tcpSack = false;
+            return;
+        }
         if (s.equals("tcp-keepalive")) {
             cfgAll.tcpKeepalive = false;
             return;
@@ -3245,6 +3250,10 @@ public class userConfig {
         }
         if (a.equals("tcp-ecn")) {
             cfgAll.tcpEcn = true;
+            return;
+        }
+        if (a.equals("tcp-sack")) {
+            cfgAll.tcpSack = true;
             return;
         }
         if (a.equals("tcp-keepalive")) {

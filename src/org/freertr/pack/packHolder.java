@@ -325,6 +325,11 @@ public class packHolder {
     public int TCPmss;
 
     /**
+     * tcp sack value
+     */
+    public int TCPsak;
+
+    /**
      * tcp timestamp value
      */
     public int TCPtsV;
@@ -405,6 +410,7 @@ public class packHolder {
         TCPwin = 0;
         TCPurg = 0;
         TCPmss = 0;
+        TCPsak = 0;
         TCPtsV = 0;
         TCPtsE = 0;
         TCPwsc = 0;
@@ -482,6 +488,7 @@ public class packHolder {
         TCPwin = src.TCPwin;
         TCPurg = src.TCPurg;
         TCPmss = src.TCPmss;
+        TCPsak = src.TCPsak;
         TCPtsV = src.TCPtsV;
         TCPtsE = src.TCPtsE;
         TCPwsc = src.TCPwsc;

@@ -306,6 +306,7 @@ public class ipProxy implements ifcUp {
                     pck.putStart();
                     pck.TCPmss = 1024;
                     pck.TCPwsc = 0;
+                    pck.TCPsak = 0;
                     pck.TCPtsV = 0;
                     pck.TCPtsE = 0;
                     pck.TCPseq--;

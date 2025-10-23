@@ -1202,6 +1202,11 @@ public class cfgAll {
     public static boolean tcpEcn = false;
 
     /**
+     * tcp sack
+     */
+    public static boolean tcpSack = false;
+
+    /**
      * tcp checksum tx
      */
     public static boolean tcpChecksumTx = true;
@@ -1502,6 +1507,7 @@ public class cfgAll {
         new userFilter("", "client tcp-winscale 1", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client tcp-timestamp", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client tcp-ecn", null),
+        new userFilter("", cmds.negated + cmds.tabulator + "client tcp-sack", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client tcp-keepalive", null),
         new userFilter("", "client tcp-timer work 1000", null),
         new userFilter("", "client tcp-timer alive 60000", null),
@@ -3915,6 +3921,7 @@ public class cfgAll {
         l.add("client tcp-winscale " + tcpWinScale);
         cmds.cfgLine(l, !tcpTimStmp, "", "client tcp-timestamp", "");
         cmds.cfgLine(l, !tcpEcn, "", "client tcp-ecn", "");
+        cmds.cfgLine(l, !tcpSack, "", "client tcp-sack", "");
         cmds.cfgLine(l, !tcpKeepalive, "", "client tcp-keepalive", "");
         cmds.cfgLine(l, capturePath == null, "", "client capture-path", capturePath);
         cmds.cfgLine(l, pasteBin == null, "", "client pastebin", pasteBin);

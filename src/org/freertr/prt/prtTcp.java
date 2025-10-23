@@ -205,6 +205,12 @@ public class prtTcp extends prtGen {
                 case 0x03: // window scale
                     pck.TCPwsc = tlv.valDat[0] & 0xff;
                     continue;
+                case 0x04: // sack permitted
+                    pck.TCPsak = -1;
+                    continue;
+                case 0x05: // sack option
+                    pck.TCPsak = bits.msbGetD(tlv.valDat, 0);
+                    continue;
                 case 0x08: // timestamps
                     pck.TCPtsV = bits.msbGetD(tlv.valDat, 0);
                     pck.TCPtsE = bits.msbGetD(tlv.valDat, 4);
@@ -482,6 +488,19 @@ public class prtTcp extends prtGen {
             bits.msbPutD(tlv.valDat, 4, pck.TCPtsE);
             tlv.putBytes(pck, 8, 8, tlv.valDat); // timestamp
         }
+        if (pck.TCPsak != 0) {
+            pck.putByte(0, 1); // nop
+            pck.putByte(1, 1); // nop
+            pck.putSkip(2);
+            encTlv tlv = getTCPoption(null);
+            bits.msbPutD(tlv.valDat, 0, pck.TCPsak);
+            bits.msbPutD(tlv.valDat, 4, pck.TCPsak);
+            if (pck.TCPsak == -1) {
+                tlv.putBytes(pck, 4, 0, tlv.valDat);
+            } else {
+                tlv.putBytes(pck, 5, 8, tlv.valDat);
+            }
+        }
         if (pck.TCPwsc > 0) {
             encTlv tlv = getTCPoption(null);
             tlv.valDat[0] = (byte) pck.TCPwsc;
@@ -557,6 +576,7 @@ public class prtTcp extends prtGen {
         pck.TCPwsc = 0;
         pck.TCPtsE = 0;
         pck.TCPtsV = 0;
+        pck.TCPsak = 0;
         pck.UDPsrc = src.UDPtrg;
         pck.UDPtrg = src.UDPsrc;
         pck.TCPseq = src.TCPack;
@@ -582,7 +602,7 @@ public class prtTcp extends prtGen {
         fwdCore.protoPack(ifc, null, pck);
     }
 
-    private int sendMyPacket(prtGenConn clnt, int flg, int datSiz) {
+    private int sendMyPacket(prtGenConn clnt, int flg, int datSiz, int sack) {
         prtTcpConn pr = (prtTcpConn) clnt.protoDat;
         packHolder pck = new packHolder(true, true);
         synchronized (pr.lck) {
@@ -604,6 +624,7 @@ public class prtTcp extends prtGen {
             pck.TCPseq = pr.seqLoc + pr.netOut;
             pck.TCPack = pr.seqRem;
             pck.TCPflg = flg;
+            pck.TCPsak = sack;
             if (datSiz < 0) {
                 pck.TCPseq--;
                 datSiz = 0;
@@ -725,6 +746,7 @@ public class prtTcp extends prtGen {
         pr.segSiz = regulateMss(pck.TCPmss);
         pr.netMax = pr.segSiz;
         pr.ecnTx = cfgAll.tcpEcn && ((pck.TCPflg & flagECE) != 0);
+        pr.sackTx = cfgAll.tcpSack && (pck.TCPsak == -1);
         pr.state = prtTcpConn.stGotSyn;
         pr.seqRem = pck.TCPseq + 1;
         if ((pck.TCPflg & flagSynFinRst) == flagSYN) {
@@ -894,6 +916,7 @@ public class prtTcp extends prtGen {
                     pr.tmstmpTx = 0;
                 }
                 pr.ecnTx = cfgAll.tcpEcn && ((pck.TCPflg & flagECE) != 0);
+                pr.sackTx = cfgAll.tcpSack && (pck.TCPsak == -1);
                 pr.segSiz = regulateMss(pck.TCPmss);
                 pr.state = prtTcpConn.stOpened;
                 pr.trfKtx = pr.trfKfx;
@@ -1047,7 +1070,7 @@ public class prtTcp extends prtGen {
                 if (pr.state == prtTcpConn.stClrReq) {
                     pr.state = prtTcpConn.stDelete;
                     pr.seqRem++;
-                    sendMyPacket(clnt, flagACK, 0);
+                    sendMyPacket(clnt, flagACK, 0, 0);
                     clnt.setClosing();
                     clnt.deleteImmediately();
                     return;
@@ -1117,14 +1140,14 @@ public class prtTcp extends prtGen {
             if (snd < 1) {
                 break;
             }
-            snd = sendMyPacket(clnt, flg, snd);
+            snd = sendMyPacket(clnt, flg, snd, 0);
             if (snd < 1) {
                 break;
             }
             sent++;
         }
         if (sent < 0) {
-            sendMyPacket(clnt, flagACK, 0);
+            sendMyPacket(clnt, flagACK, 0, 0);
         }
         return true;
     }
@@ -1154,35 +1177,27 @@ public class prtTcp extends prtGen {
         pr.activFrcd = false;
         switch (pr.state) {
             case prtTcpConn.stGotSyn:
-                if (pr.ecnTx) {
-                    sendMyPacket(clnt, flagSynAck | flagECE, 0);
-                } else {
-                    sendMyPacket(clnt, flagSynAck, 0);
-                }
+                sendMyPacket(clnt, flagSynAck | (pr.ecnTx ? flagECE : 0), 0, pr.sackTx ? -1 : 0);
                 break;
             case prtTcpConn.stConReq:
-                if (cfgAll.tcpEcn) {
-                    sendMyPacket(clnt, flagSYN | flagECE | flagCWR, 0);
-                } else {
-                    sendMyPacket(clnt, flagSYN, 0);
-                }
+                sendMyPacket(clnt, flagSYN | (cfgAll.tcpEcn ? flagECE | flagCWR : 0), 0, cfgAll.tcpSack ? -1 : 0);
                 break;
             case prtTcpConn.stResReq:
                 break;
             case prtTcpConn.stClrReq:
-                sendMyPacket(clnt, flagFinAck, 0);
+                sendMyPacket(clnt, flagFinAck, 0, 0);
                 if ((curTim - pr.staTim) > cfgAll.tcpTimeAlive) {
                     pr.state = prtTcpConn.stDelete;
                 }
                 break;
             case prtTcpConn.stGotFin:
-                sendMyPacket(clnt, flagFinAck, 0);
+                sendMyPacket(clnt, flagFinAck, 0, 0);
                 if ((curTim - pr.staTim) > cfgAll.tcpTimeAlive) {
                     pr.state = prtTcpConn.stDelete;
                 }
                 break;
             case prtTcpConn.stOpened:
-                sendMyPacket(clnt, flagACK, cfgAll.tcpKeepalive ? -1 : 0);
+                sendMyPacket(clnt, flagACK, cfgAll.tcpKeepalive ? -1 : 0, 0);
                 pr.netMax = pr.segSiz;
                 pr.netOut = 0;
                 break;
@@ -1375,6 +1390,11 @@ class prtTcpConn {
      * ece received
      */
     protected boolean ecnRe;
+
+    /**
+     * sack base
+     */
+    protected boolean sackTx;
 
     /**
      * receive traffic key
