@@ -308,7 +308,7 @@ public class prtTcp extends prtGen {
         int hdrSiz = pck.UDPsiz - size;
         if (debugger.prtTcpTraf) {
             logger.debug("rx " + pck.UDPsrc + " -> " + pck.UDPtrg + " " + decodeFlags(pck.TCPflg) + " seq=" + pck.TCPseq
-                    + " data=" + (pck.dataSize() - hdrSiz) + " ack=" + pck.TCPack);
+                    + " data=" + (pck.dataSize() - hdrSiz) + " ack=" + pck.TCPack + " sack=" + pck.TCPsak);
         }
         if (hdrSiz < 1) {
             return false;
@@ -472,7 +472,7 @@ public class prtTcp extends prtGen {
         pck.IPprt = protoNum;
         if (debugger.prtTcpTraf) {
             logger.debug("tx " + pck.UDPsrc + " -> " + pck.UDPtrg + " " + decodeFlags(pck.TCPflg) + " seq=" + pck.TCPseq
-                    + " data=" + pck.dataSize() + " ack=" + pck.TCPack + " pwd=" + pwd);
+                    + " data=" + pck.dataSize() + " ack=" + pck.TCPack + " sack=" + pck.TCPsak + " pwd=" + pwd);
         }
         if (pck.TCPmss > 0) {
             encTlv tlv = getTCPoption(null);

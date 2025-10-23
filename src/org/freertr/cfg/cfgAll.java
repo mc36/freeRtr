@@ -1507,7 +1507,7 @@ public class cfgAll {
         new userFilter("", "client tcp-winscale 1", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client tcp-timestamp", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client tcp-ecn", null),
-        new userFilter("", cmds.negated + cmds.tabulator + "client tcp-sack", null),
+        new userFilter("", "client tcp-sack", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client tcp-keepalive", null),
         new userFilter("", "client tcp-timer work 1000", null),
         new userFilter("", "client tcp-timer alive 60000", null),
