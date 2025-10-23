@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.10.23-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-10-23 14:06:34, took 00:13:36, with 50 workers, on 4062 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2025-10-23 15:04:30, took 00:14:29, with 50 workers, on 4064 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -438,6 +438,8 @@ http://sources.freertr.org/cfg/conn-tcp05.tst;conn-tcp05.tst;success;ppp over tc
 http://sources.freertr.org/cfg/conn-tcp06.tst;conn-tcp06.tst;success;ppp over tcp without ecn
 http://sources.freertr.org/cfg/conn-tcp07.tst;conn-tcp07.tst;success;ppp over tcp with timestamp
 http://sources.freertr.org/cfg/conn-tcp08.tst;conn-tcp08.tst;success;ppp over tcp without timestamp
+http://sources.freertr.org/cfg/conn-tcp09.tst;conn-tcp09.tst;success;ppp over tcp with winscale
+http://sources.freertr.org/cfg/conn-tcp10.tst;conn-tcp10.tst;success;ppp over tcp without winscale
 http://sources.freertr.org/cfg/conn-tdmou01.tst;conn-tdmou01.tst;success;tdmoudp with middle channels
 http://sources.freertr.org/cfg/conn-tdmou02.tst;conn-tdmou02.tst;success;ppp with tdmoudp
 http://sources.freertr.org/cfg/conn-tdmou03.tst;conn-tdmou03.tst;success;hdlc with tdmoudp

@@ -434,6 +434,8 @@ qc pass: ppp over tcp with ecn
 qc pass: ppp over tcp without ecn
 qc pass: ppp over tcp with timestamp
 qc pass: ppp over tcp without timestamp
+qc pass: ppp over tcp with winscale
+qc pass: ppp over tcp without winscale
 qc pass: tdmoudp with middle channels
 qc pass: ppp with tdmoudp
 qc pass: hdlc with tdmoudp

@@ -17624,3 +17624,6 @@ qc pass: ppp over tcp with ecn
 qc pass: ppp over tcp without ecn
 qc pass: ppp over tcp with timestamp
 qc pass: ppp over tcp without timestamp
+---------------------------------- 2025-10-23 14:50:01 25.10.23
+qc pass: ppp over tcp with winscale
+qc pass: ppp over tcp without winscale
