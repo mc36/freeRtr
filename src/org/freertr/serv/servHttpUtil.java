@@ -10,7 +10,6 @@ import org.freertr.addr.addrIP;
 import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
-import org.freertr.cfg.cfgProxy;
 import org.freertr.cfg.cfgScrpt;
 import org.freertr.cfg.cfgTrnsltn;
 import org.freertr.clnt.clntDns;
@@ -301,40 +300,36 @@ public class servHttpUtil {
     protected final static boolean sendOneWebSck(servHttpConn cn, String pn) {
         pn = cn.gotHost.path + pn + ".websock";
         if (!new File(pn).exists()) {
+            cn.sendRespError(404, "not found");
             return true;
         }
         List<String> l = bits.txt2buf(pn);
         if (l == null) {
+            cn.sendRespError(404, "error reading");
             return true;
         }
-        if (l.size() < 5) {
+        if (l.size() < 3) {
+            cn.sendRespError(502, "bad description");
             return true;
         }
-        cfgProxy prx = cfgAll.proxyFind(l.get(0), false);
-        if (prx == null) {
-            cn.sendRespError(502, "bad proxy profile");
+        servGeneric ntry = servGenList.srvFind(l.get(0), l.get(1), false);
+        if (ntry == null) {
+            cn.sendRespError(502, "bad server");
             return false;
         }
-        addrIP adr = clntDns.justResolv(l.get(1), prx.proxy.prefer);
-        if (adr == null) {
-            cn.sendRespError(502, "bad target hostname");
-            return false;
-        }
-        pipeSide pip = prx.proxy.doConnect(servGeneric.protoTcp, adr, bits.str2num(l.get(2)), "websock");
-        if (pip == null) {
-            cn.sendRespError(502, "failed to connect");
+        secWebsock wsk = new secWebsock(cn.pipe, new pipeLine(cn.lower.bufSiz, false));
+        wsk.binary = l.get(2).equals("binary");
+        if (ntry.srvAccept(wsk.getPipe(), cn.conn)) {
+            cn.sendRespError(502, "server refused");
             return false;
         }
         cn.sendLn("HTTP/1.1 101 switching protocol");
         cn.sendLn("Upgrade: websocket");
         cn.sendLn("Connection: Upgrade");
         cn.sendLn("Sec-WebSocket-Accept: " + secWebsock.calcHash(cn.gotWebsock));
-        cn.sendLn("Sec-WebSocket-Protocol: " + l.get(3));
+        cn.sendLn("Sec-WebSocket-Protocol: " + l.get(2));
         cn.sendLn("");
-        secWebsock wsk = new secWebsock(cn.pipe, new pipeLine(cn.lower.bufSiz, false));
-        wsk.binary = l.get(4).equals("bin");
         wsk.startServer();
-        pipeConnect.connect(pip, wsk.getPipe(), true);
         cn.gotKeep = false;
         cn.pipe = null;
         return false;

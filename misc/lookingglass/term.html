@@ -27,6 +27,7 @@ window.onload = function () {
   if (o > i) { i = o; }
   o = url.indexOf("/");
   url = "ws:" + url.substring(o, i);
+  ///console.log(url);
   var websock = new WebSocket(url, ['binary']);
   var term = new Terminal();
   var attach = new AttachAddon.AttachAddon(websock);
