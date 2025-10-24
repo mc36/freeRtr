@@ -3,7 +3,6 @@ package org.freertr.pipe;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.enc.encBase64;
-import org.freertr.user.userRead;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -655,38 +654,44 @@ public class pipeScreen {
 
     private static int[] readRep(pipeSide pip) {
         pip.strPut("\033[6n");
-        bits.sleep(100);
-        byte[] buf = new byte[512];
-        int i = pip.nonDestructiveGet(buf, 0, buf.length);
-        if (i < 1) {
-            return null;
+        for (int r = 0; r < 10; r++) {
+            pip.notif.misleep(100);
+            byte[] buf = new byte[512];
+            int i = pip.nonDestructiveGet(buf, 0, buf.length);
+            if (i == pipeLine.tryLater) {
+                continue;
+            }
+            if (i < 1) {
+                return null;
+            }
+            String a = new String(buf, 0, i);
+            int p = a.indexOf("\033[");
+            if (p < 0) {
+                continue;
+            }
+            a = a.substring(p + 2, a.length());
+            i = a.indexOf("R");
+            if (i < 0) {
+                continue;
+            }
+            a = a.substring(0, i);
+            i = a.indexOf(";");
+            if (i < 0) {
+                return null;
+            }
+            int res[] = new int[2];
+            res[1] = bits.str2num(a.substring(0, i));
+            res[0] = bits.str2num(a.substring(i + 1, a.length()));
+            pip.nonBlockSkip(a.length() + p + 3);
+            if (res[0] < 1) {
+                return null;
+            }
+            if (res[1] < 1) {
+                return null;
+            }
+            return res;
         }
-        String a = new String(buf, 0, i);
-        int p = a.indexOf("\033[");
-        if (p < 0) {
-            return null;
-        }
-        a = a.substring(p + 2, a.length());
-        i = a.indexOf("R");
-        if (i < 0) {
-            return null;
-        }
-        a = a.substring(0, i);
-        i = a.indexOf(";");
-        if (i < 0) {
-            return null;
-        }
-        int res[] = new int[2];
-        res[1] = bits.str2num(a.substring(0, i));
-        res[0] = bits.str2num(a.substring(i + 1, a.length()));
-        pip.nonBlockSkip(a.length() + p + 3);
-        if (res[0] < 1) {
-            return null;
-        }
-        if (res[1] < 1) {
-            return null;
-        }
-        return res;
+        return null;
     }
 
     /**

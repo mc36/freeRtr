@@ -414,7 +414,7 @@ class pipeShellOutput implements Runnable {
                 if (!prnt.isRunning()) {
                     break;
                 }
-                prnt.console.notif.sleep(100);
+                prnt.console.notif.misleep(100);
                 continue;
             }
             try {

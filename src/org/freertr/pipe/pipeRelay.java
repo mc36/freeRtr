@@ -112,7 +112,7 @@ public class pipeRelay {
         stream.setClose();
         runningNeed = false;
         for (; runningTx || runningRx;) {
-            bits.sleep(threadTime * 2);
+            bits.sleep(threadTime * 4);
         }
         console.linePut("connection closed");
     }
