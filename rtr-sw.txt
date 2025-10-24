@@ -987,6 +987,7 @@ server telnet tel vrf v1 interface loopback0
  login stars
  login logging
  login last global
+ location
  second-port 22
  exit
 !

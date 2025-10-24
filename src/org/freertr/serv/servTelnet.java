@@ -5,7 +5,7 @@ import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
-import org.freertr.tab.tabGen;
+import org.freertr.sec.secTelnet;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
@@ -37,6 +37,11 @@ public class servTelnet extends servGeneric implements prtServS {
     protected int secondPort = -1;
 
     /**
+     * location
+     */
+    public boolean location = false;
+
+    /**
      * line handler
      */
     protected userLine lin = new userLine();
@@ -47,6 +52,7 @@ public class servTelnet extends servGeneric implements prtServS {
     public final static userFilter[] defaultF = {
         new userFilter("server telnet .*", cmds.tabulator + "port " + port, null),
         new userFilter("server telnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "second-port", null),
+        new userFilter("server telnet .*", cmds.tabulator + cmds.negated + cmds.tabulator + "location", null),
         new userFilter("server telnet .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
 
@@ -65,12 +71,17 @@ public class servTelnet extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> l, int filter) {
         lin.getShRun(beg, l, filter);
+        cmds.cfgLine(l, !location, beg, "location", "");
         cmds.cfgLine(l, secondPort < 0, beg, "second-port", "" + secondPort);
     }
 
     public boolean srvCfgStr(cmds cmd) {
         cmds old = cmd.copyBytes(false);
         String a = cmd.word();
+        if (a.equals("location")) {
+            location = true;
+            return false;
+        }
         if (a.equals("second-port")) {
             srvDeinit();
             secondPort = bits.str2num(cmd.word());
@@ -79,6 +90,10 @@ public class servTelnet extends servGeneric implements prtServS {
         }
         if (a.equals(cmds.negated)) {
             a = cmd.word();
+            if (a.equals("location")) {
+                location = false;
+                return false;
+            }
             if (a.equals("second-port")) {
                 srvDeinit();
                 secondPort = -1;
@@ -90,6 +105,7 @@ public class servTelnet extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelp l) {
+        l.add(null, false, 1, new int[]{-1}, "location", "receive source in telnet location");
         l.add(null, false, 1, new int[]{2}, "second-port", "enable dual binding");
         l.add(null, false, 2, new int[]{-1}, "<num>", "secure port");
         lin.getHelp(l);
@@ -144,6 +160,13 @@ class servTelnetConn implements Runnable {
 
     public void run() {
         try {
+            String a = "" + id;
+            if (lower.location) {
+                String b = secTelnet.recvLocation(pipe);
+                if (b != null) {
+                    a = b + " via " + a;
+                }
+            }
             pipeSide res = null;
             if (id.portLoc == lower.secondPort) {
                 res = lower.negoSecSess(pipe, servGeneric.protoSsh, new pipeLine(32768, false), lower.srvAuther);
@@ -154,7 +177,7 @@ class servTelnetConn implements Runnable {
                 pipe.setClose();
                 return;
             }
-            lower.lin.createHandler(res, "" + id, 0);
+            lower.lin.createHandler(res, a, 0);
             return;
         } catch (Exception e) {
             logger.traceback(e);

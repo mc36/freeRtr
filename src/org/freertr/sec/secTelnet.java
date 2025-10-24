@@ -3,7 +3,6 @@ package org.freertr.sec;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.pipe.pipeLine;
-import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
 import org.freertr.pipe.pipeTerm;
 import org.freertr.util.bits;
@@ -159,17 +158,61 @@ public class secTelnet {
      * @param loc location to send
      */
     public static void sendLocation(pipeSide pip, String loc) {
-        byte[] buf = new byte[3];
-        buf[0] = (byte) secTelnet.cmdIAC;
-        buf[1] = (byte) secTelnet.cmdSB;
-        buf[2] = (byte) secTelnet.optTerLoc;
+        byte[] buf = loc.getBytes();
+        buf = bits.byteConcat(sndLocBeg, buf);
+        buf = bits.byteConcat(buf, sndLocEnd);
         pip.blockingPut(buf, 0, buf.length);
-        buf = loc.getBytes();
-        pip.blockingPut(buf, 0, buf.length);
-        buf = new byte[2];
-        buf[0] = (byte) secTelnet.cmdIAC;
-        buf[1] = (byte) secTelnet.cmdSE;
-        pip.blockingPut(buf, 0, buf.length);
+    }
+
+    private final static byte[] sndLocBeg = new byte[]{(byte) cmdIAC, (byte) cmdSB, (byte) optTerLoc};
+
+    private final static byte[] sndLocEnd = new byte[]{(byte) cmdIAC, (byte) cmdSE};
+
+    /**
+     * receive location
+     *
+     * @param pip pipe to use
+     * @return location got, null if nothing
+     */
+    public static String recvLocation(pipeSide pip) {
+        byte[] buf = new byte[128];
+        for (int r = 0; r < 10; r++) {
+            pip.notif.misleep(500);
+            int o = pip.nonDestructiveGet(buf, 0, buf.length);
+            if (o == pipeLine.tryLater) {
+                continue;
+            }
+            if (o < 0) {
+                return null;
+            }
+            if (o < 5) {
+                continue;
+            }
+            if (bits.byteComp(buf, 0, sndLocBeg, 0, sndLocBeg.length) != 0) {
+                return null;
+            }
+            int p = -1;
+            for (int i = 0; i < o; i++) {
+                if (buf[i] == (byte) cmdSE) {
+                    p = i + 1;
+                    break;
+                }
+            }
+            if (p < 0) {
+                continue;
+            }
+            p -= sndLocEnd.length;
+            if (bits.byteComp(buf, p, sndLocEnd, 0, sndLocEnd.length) != 0) {
+                return null;
+            }
+            String a = "";
+            for (int i = sndLocBeg.length; i < p; i++) {
+                a += (char) buf[i];
+            }
+            pip.blockingGet(buf, 0, p + sndLocEnd.length);
+            return a;
+        }
+        return null;
     }
 
     /**
@@ -401,7 +444,6 @@ public class secTelnet {
             i = cmdWILL;
             o = cmdDONT;
             netTx(cmdDO, optWinSiz);
-            netTx(cmdDO, optTerLoc);
         }
         netTx(i, optEcho);
         netTx(o, optEcho);
@@ -461,14 +503,6 @@ public class secTelnet {
                             buf = "\000ansi".getBytes();
                             netTx(optTerTyp, buf);
                             break;
-                        case optTerLoc:
-                            String a = "";
-                            for (i = 0; i < lst.size(); i++) {
-                                a += (char) ((int) lst.get(i));
-                            }
-                            a += " via " + userS.settingsGet(pipeSetting.origin, "?");
-                            userS.settingsPut(pipeSetting.origin, a);
-                            break;
                         case optWinSiz:
                             if (lst.size() < 4) {
                                 break;
@@ -509,11 +543,6 @@ public class secTelnet {
                     }
                     continue;
                 case optWinSiz:
-                    if (client) {
-                        break;
-                    }
-                    continue;
-                case optTerLoc:
                     if (client) {
                         break;
                     }
