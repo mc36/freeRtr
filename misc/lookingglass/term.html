@@ -21,23 +21,23 @@
 }
 </style><script>
 window.onload = function () {
+  var term = new Terminal();
+  var image = new ImageAddon.ImageAddon();
+  var fit = new FitAddon.FitAddon();
+  term.loadAddon(image);
+  term.loadAddon(fit);
+  fit.fit();
   var url = document.URL;
   var i = url.lastIndexOf(".");
   var o = url.lastIndexOf("/");
   if (o > i) { i = o; }
   o = url.indexOf("/");
   url = "ws:" + url.substring(o, i);
-  ///console.log(url);
+  term.write("connecting " + url + " ...\r\n\r\n");
   var websock = new WebSocket(url, ['binary']);
-  var term = new Terminal();
   var attach = new AttachAddon.AttachAddon(websock);
-  var image = new ImageAddon.ImageAddon();
-  var fit = new FitAddon.FitAddon();
-  term.loadAddon(fit);
   term.loadAddon(attach);
-  term.loadAddon(image);
   term.open(document.getElementById('terminal'));
-  fit.fit();
   window.addEventListener('resize', function () { fit.fit(); });
 };
 </script>
