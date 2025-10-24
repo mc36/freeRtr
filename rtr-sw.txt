@@ -1015,14 +1015,13 @@ server chargen c
  vrf v1
  exit
 !
-server forwarder tel
+server forwarder tel vrf v1 interface loopback0
  port 2323
  location
  target vrf v1
  target interface loopback0
  target address 100.100.3.227
  target port 23
- vrf v1
  exit
 !
 server http web vrf v1 interface loopback0

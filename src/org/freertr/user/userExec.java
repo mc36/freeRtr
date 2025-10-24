@@ -3017,11 +3017,8 @@ public class userExec {
     public cmdRes doCommand() {
         rollback = false;
         committed = false;
-        String s = fakePrompt;
-        if (s == null) {
-            s = cfgAll.hostName;
-            s += privileged ? "#" : ">";
-        }
+        String s = fakePrompt == null ? cfgAll.hostName : fakePrompt;
+        s += privileged ? "#" : ">";
         reader.setContext(getHelping(), s);
         s = reader.readLine(null);
         if (s == null) {
