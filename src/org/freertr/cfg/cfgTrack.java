@@ -131,10 +131,7 @@ public class cfgTrack implements Comparable<cfgTrack>, cfgGeneric {
         l.add(null, false, 1, new int[]{2}, "pubkey", "specify public key");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "public key");
         l.add(null, false, 1, new int[]{2}, "security", "select security protocol");
-        l.add(null, false, 2, new int[]{-1}, "ssh", "use secure shell");
-        l.add(null, false, 2, new int[]{-1}, "tls", "use transport layer security");
-        l.add(null, false, 2, new int[]{-1}, "dtls", "use datagram transport layer security");
-        l.add(null, false, 2, new int[]{-1}, "telnet", "use telnet protocol");
+        servGeneric.getSecProts(l, 2, new int[]{-1});
         l.add(null, false, 1, new int[]{2}, "chat-script", "specify script to use");
         l.add(null, false, 2, new int[]{-1}, "<name:cht>", "chatter to use");
         l.add(null, false, 1, new int[]{2}, "source", "specify source of test");

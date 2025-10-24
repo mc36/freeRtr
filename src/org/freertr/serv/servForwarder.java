@@ -321,10 +321,7 @@ public class servForwarder extends servGeneric implements prtServS {
         l.add(null, false, 3, new int[]{-1}, "dccp", "use dccp transport");
         l.add(null, false, 3, new int[]{-1}, "sctp", "use sctp transport");
         l.add(null, false, 2, new int[]{3}, "security", "set security protocol");
-        l.add(null, false, 3, new int[]{-1}, "ssh", "use secure shell");
-        l.add(null, false, 3, new int[]{-1}, "tls", "use transport layer security");
-        l.add(null, false, 3, new int[]{-1}, "dtls", "use datagram transport layer security");
-        l.add(null, false, 3, new int[]{-1}, "telnet", "use telnet protocol");
+        servGeneric.getSecProts(l, 3, new int[]{-1});
         l.add(null, false, 2, new int[]{3}, "username", "set username");
         l.add(null, false, 3, new int[]{-1}, "<text>", "username");
         l.add(null, false, 2, new int[]{3}, "password", "set password");

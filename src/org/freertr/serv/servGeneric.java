@@ -1169,6 +1169,21 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
     }
 
     /**
+     * get security protocols
+     *
+     * @param hlp list to append
+     * @param cur current level
+     * @param nxt next levels
+     */
+    public static void getSecProts(userHelp hlp, int cur, int[] nxt) {
+        hlp.add(null, false, cur, nxt, "ssh", "select secure shell");
+        hlp.add(null, false, cur, nxt, "tls", "select transport layer security");
+        hlp.add(null, false, cur, nxt, "dtls", "select datagram transport layer security");
+        hlp.add(null, false, cur, nxt, "telnet", "select telnet protocol");
+        hlp.add(null, false, cur, nxt, "rlogin", "select rlogin protocol");
+    }
+
+    /**
      * get help text
      *
      * @param l help text
@@ -1206,11 +1221,7 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         l.add(null, false, 2, new int[]{-1}, "<name:ifc>", "name of interface");
         l.add(null, false, 1, new int[]{2}, "security", "set security parameters");
         l.add(null, false, 2, new int[]{3}, "protocol", "set lower protocol to use");
-        l.add(null, false, 3, new int[]{-1}, "ssh", "select secure shell");
-        l.add(null, false, 3, new int[]{-1}, "tls", "select transport layer security");
-        l.add(null, false, 3, new int[]{-1}, "dtls", "select datagram transport layer security");
-        l.add(null, false, 3, new int[]{-1}, "telnet", "select telnet protocol");
-        l.add(null, false, 3, new int[]{-1}, "rlogin", "select rlogin protocol");
+        getSecProts(l, 3, new int[]{-1});
         l.add(null, false, 2, new int[]{3}, "authentication", "set authentication");
         l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authentication list");
         l.add(null, false, 2, new int[]{3}, "rsakey", "set rsa key");

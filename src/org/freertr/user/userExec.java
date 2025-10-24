@@ -1966,11 +1966,7 @@ public class userExec {
         hl.add(null, false, 4, new int[]{4, -1}, "ludp", "lightweight user datagram protocol");
         hl.add(null, false, 4, new int[]{4, -1}, "dccp", "user datagram congestion control protocol");
         hl.add(null, false, 4, new int[]{4, -1}, "sctp", "stream control transmission protocol");
-        hl.add(null, false, 4, new int[]{4, -1}, "ssh", "specify secure shell");
-        hl.add(null, false, 4, new int[]{4, -1}, "tls", "specify transport layer security");
-        hl.add(null, false, 4, new int[]{4, -1}, "dtls", "specify datagram transport layer security");
-        hl.add(null, false, 4, new int[]{4, -1}, "rlogin", "specify rlogin protocol");
-        hl.add(null, false, 4, new int[]{4, -1}, "telnet", "specify telnet protocol");
+        servGeneric.getSecProts(hl, 4, new int[]{4, -1});
         hl.add(null, false, 4, new int[]{4, -1}, "ipv4", "specify ipv4 to use");
         hl.add(null, false, 4, new int[]{4, -1}, "ipv6", "specify ipv6 to use");
         if (privileged) {

@@ -85,10 +85,7 @@ public class cfgProxy implements Comparable<cfgProxy>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "http", "select http connect");
         l.add(null, false, 2, new int[]{-1}, "hostos", "select host os stack");
         l.add(null, false, 1, new int[]{2}, "security", "select security protocol");
-        l.add(null, false, 2, new int[]{-1}, "ssh", "use secure shell");
-        l.add(null, false, 2, new int[]{-1}, "tls", "use transport layer security");
-        l.add(null, false, 2, new int[]{-1}, "dtls", "use datagram transport layer security");
-        l.add(null, false, 2, new int[]{-1}, "telnet", "use telnet protocol");
+        servGeneric.getSecProts(l, 2, new int[]{-1});
         l.add(null, false, 1, new int[]{2}, "pubkey", "public key to expect");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "public key");
         l.add(null, false, 1, new int[]{2}, "username", "username to send");
