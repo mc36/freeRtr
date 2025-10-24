@@ -8,39 +8,8 @@
 <script src="http://cdn.jsdelivr.net/npm/@xterm/addon-fit/lib/addon-fit.min.js"></script>
 <script src="http://cdn.jsdelivr.net/npm/@xterm/addon-attach/lib/addon-attach.min.js"></script>
 <script src="http://cdn.jsdelivr.net/npm/@xterm/addon-image/lib/addon-image.min.js"></script>
-<style>
-#terminal {
-  background-color: black;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: 0;
-  padding: 5px;
-}
-</style><script>
-window.onload = function () {
-  var term = new Terminal();
-  var image = new ImageAddon.ImageAddon();
-  var fit = new FitAddon.FitAddon();
-  term.loadAddon(image);
-  term.loadAddon(fit);
-  fit.fit();
-  var url = document.URL;
-  var i = url.lastIndexOf(".");
-  var o = url.lastIndexOf("/");
-  if (o > i) { i = o; }
-  o = url.indexOf("/");
-  url = "ws:" + url.substring(o, i);
-  term.write("connecting " + url + " ...\r\n\r\n");
-  var websock = new WebSocket(url, ['binary']);
-  var attach = new AttachAddon.AttachAddon(websock);
-  term.loadAddon(attach);
-  term.open(document.getElementById('terminal'));
-  window.addEventListener('resize', function () { fit.fit(); });
-};
-</script>
+<link rel="stylesheet" href="term.css"/>
+<script src="term.js"></script>
 </head>
 <body><div id="terminal"></div>
 </body>
