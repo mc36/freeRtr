@@ -175,7 +175,7 @@ public class secTelnet {
      * @return location got, null if nothing
      */
     public static String recvLocation(pipeSide pip) {
-        byte[] buf = new byte[128];
+        byte[] buf = new byte[512];
         for (int r = 0; r < 10; r++) {
             pip.notif.misleep(500);
             int o = pip.nonDestructiveGet(buf, 0, buf.length);

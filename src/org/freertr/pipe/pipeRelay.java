@@ -112,7 +112,7 @@ public class pipeRelay {
         stream.setClose();
         runningNeed = false;
         for (; runningTx || runningRx;) {
-            bits.sleep(500);
+            bits.sleep(threadTime * 2);
         }
         console.linePut("connection closed");
     }
@@ -136,7 +136,7 @@ class pipeRelayRx implements Runnable {
                 byte[] buf = new byte[pipeRelay.threadBuf];
                 int siz = parent.stream.nonBlockGet(buf, 0, buf.length);
                 if (siz < 1) {
-                    bits.sleep(pipeRelay.threadTime);
+                    parent.stream.notif.misleep(pipeRelay.threadTime);
                     continue;
                 }
                 parent.console.blockingPut(buf, 0, siz);
@@ -170,7 +170,7 @@ class pipeRelayTx implements Runnable {
                 byte[] buf = new byte[pipeRelay.threadBuf];
                 int siz = parent.console.nonBlockGet(buf, 0, buf.length);
                 if (siz < 1) {
-                    bits.sleep(pipeRelay.threadTime);
+                    parent.console.notif.misleep(pipeRelay.threadTime);
                     continue;
                 }
                 if ((siz > 1) || (buf[0] != parent.escChr)) {
