@@ -17,6 +17,7 @@ import org.freertr.prt.prtGen;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.sec.secClient;
+import org.freertr.sec.secTelnet;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
@@ -103,6 +104,11 @@ public class servForwarder extends servGeneric implements prtServS {
     public boolean logging = false;
 
     /**
+     * location
+     */
+    public boolean location = false;
+
+    /**
      * public key
      */
     public byte[] trgKey = null;
@@ -123,6 +129,7 @@ public class servForwarder extends servGeneric implements prtServS {
         new userFilter("server forwarder .*", cmds.tabulator + "target protocol tcp", null),
         new userFilter("server forwarder .*", cmds.tabulator + "timeout 300000", null),
         new userFilter("server forwarder .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server forwarder .*", cmds.tabulator + cmds.negated + cmds.tabulator + "location", null),
         new userFilter("server forwarder .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
     };
 
@@ -131,6 +138,7 @@ public class servForwarder extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> l, int filter) {
+        cmds.cfgLine(l, !location, beg, "location", "");
         cmds.cfgLine(l, !logging, beg, "logging", "");
         if (trgPrx == null) {
             l.add(beg + "no target proxy");
@@ -164,6 +172,10 @@ public class servForwarder extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("location")) {
+            location = true;
+            return false;
+        }
         if (a.equals("logging")) {
             logging = true;
             return false;
@@ -244,6 +256,10 @@ public class servForwarder extends servGeneric implements prtServS {
             return true;
         }
         a = cmd.word();
+        if (a.equals("location")) {
+            location = false;
+            return false;
+        }
         if (a.equals("logging")) {
             logging = false;
             return false;
@@ -296,6 +312,7 @@ public class servForwarder extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelp l) {
+        l.add(null, false, 1, new int[]{-1}, "location", "send source in telnet location");
         l.add(null, false, 1, new int[]{-1}, "logging", "set logging");
         l.add(null, false, 1, new int[]{2}, "timeout", "set timeout on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");
@@ -354,7 +371,7 @@ public class servForwarder extends servGeneric implements prtServS {
             logger.info("connection from " + id.peerAddr);
         }
         pipe.setTime(timeOut);
-        new servForwarderDoer(this, pipe);
+        new servForwarderDoer(this, pipe, id);
         return false;
     }
 
@@ -362,9 +379,10 @@ public class servForwarder extends servGeneric implements prtServS {
      * start connection
      *
      * @param con1 pipeline side
+     * @param id connection
      * @return false on success, true on error
      */
-    public boolean doConnStart(pipeSide con1) {
+    public boolean doConnStart(pipeSide con1, prtGenConn id) {
         con1.setTime(timeOut);
         if (con1.wait4ready(timeOut)) {
             return true;
@@ -407,9 +425,11 @@ public class servForwarder extends servGeneric implements prtServS {
             con3.setClose();
             return true;
         }
+        if (location) {
+            secTelnet.sendLocation(con3, "" + id.peerAddr);
+        }
         pipeConnect.connect(con1, con3, true);
         return false;
-
     }
 
 }
@@ -420,15 +440,18 @@ class servForwarderDoer implements Runnable {
 
     private servForwarder parent;
 
-    public servForwarderDoer(servForwarder prnt, pipeSide stream) {
+    private prtGenConn conn;
+
+    public servForwarderDoer(servForwarder prnt, pipeSide stream, prtGenConn id) {
         parent = prnt;
         pipe = stream;
+        conn = id;
         new Thread(this).start();
     }
 
     public void run() {
         try {
-            if (parent.doConnStart(pipe)) {
+            if (parent.doConnStart(pipe, conn)) {
                 pipe.setClose();
             }
         } catch (Exception e) {

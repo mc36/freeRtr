@@ -1014,6 +1014,16 @@ server chargen c
  vrf v1
  exit
 !
+server forwarder tel
+ port 2323
+ location
+ target vrf v1
+ target interface loopback0
+ target address 100.100.3.227
+ target port 23
+ vrf v1
+ exit
+!
 server http web vrf v1 interface loopback0
  security rsakey rsa
  security dsakey dsa

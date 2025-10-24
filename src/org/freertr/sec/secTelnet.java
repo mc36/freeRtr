@@ -153,6 +153,26 @@ public class secTelnet {
     public final static int optWinSiz = 31;
 
     /**
+     * send location
+     *
+     * @param pip pipe to use
+     * @param loc location to send
+     */
+    public static void sendLocation(pipeSide pip, String loc) {
+        byte[] buf = new byte[3];
+        buf[0] = (byte) secTelnet.cmdIAC;
+        buf[1] = (byte) secTelnet.cmdSB;
+        buf[2] = (byte) secTelnet.optTerLoc;
+        pip.blockingPut(buf, 0, buf.length);
+        buf = loc.getBytes();
+        pip.blockingPut(buf, 0, buf.length);
+        buf = new byte[2];
+        buf[0] = (byte) secTelnet.cmdIAC;
+        buf[1] = (byte) secTelnet.cmdSE;
+        pip.blockingPut(buf, 0, buf.length);
+    }
+
+    /**
      * convert command to string
      *
      * @param i command
