@@ -3,6 +3,7 @@ package org.freertr.sec;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.pipe.pipeLine;
+import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
 import org.freertr.pipe.pipeTerm;
 import org.freertr.util.bits;
@@ -137,6 +138,11 @@ public class secTelnet {
     public final static int optSuppGA = 3;
 
     /**
+     * terminal location
+     */
+    public final static int optTerLoc = 23;
+
+    /**
      * terminal type
      */
     public final static int optTerTyp = 24;
@@ -205,6 +211,8 @@ public class secTelnet {
                 return "echo";
             case optSuppGA:
                 return "suppGa";
+            case optTerLoc:
+                return "termLoc";
             case optTerTyp:
                 return "termTyp";
             case optWinSiz:
@@ -373,6 +381,7 @@ public class secTelnet {
             i = cmdWILL;
             o = cmdDONT;
             netTx(cmdDO, optWinSiz);
+            netTx(cmdDO, optTerLoc);
         }
         netTx(i, optEcho);
         netTx(o, optEcho);
@@ -432,6 +441,14 @@ public class secTelnet {
                             buf = "\000ansi".getBytes();
                             netTx(optTerTyp, buf);
                             break;
+                        case optTerLoc:
+                            String a = "";
+                            for (i = 0; i < lst.size(); i++) {
+                                a += (char) ((int) lst.get(i));
+                            }
+                            a += " via " + userS.settingsGet(pipeSetting.origin, "?");
+                            userS.settingsPut(pipeSetting.origin, a);
+                            break;
                         case optWinSiz:
                             if (lst.size() < 4) {
                                 break;
@@ -472,6 +489,11 @@ public class secTelnet {
                     }
                     continue;
                 case optWinSiz:
+                    if (client) {
+                        break;
+                    }
+                    continue;
+                case optTerLoc:
                     if (client) {
                         break;
                     }

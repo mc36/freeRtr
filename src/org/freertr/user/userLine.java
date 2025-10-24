@@ -996,8 +996,6 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
 
     public final userLine parent;
 
-    public final String remote;
-
     public final int physical;
 
     public final long since;
@@ -1015,8 +1013,8 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
     public userLineHandler(userLine prnt, pipeSide pip, String rem, int phys) {
         parent = prnt;
         pipe = pip;
-        remote = rem;
         physical = phys;
+        pipe.settingsAdd(pipeSetting.origin, rem);
         pipe.setTime(parent.execTimeOut);
         pipe.lineRx = pipeSide.modTyp.modeCRtorLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
@@ -1082,7 +1080,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
     }
 
     public String toString() {
-        return user.user + "|" + state2str(getState()) + "|" + bits.timePast(getIdle()) + "|" + remote + "|" + bits.timePast(since);
+        return user.user + "|" + state2str(getState()) + "|" + bits.timePast(getIdle()) + "|" + pipe.settingsGet(pipeSetting.origin, "?") + "|" + bits.timePast(since);
     }
 
     /**
@@ -1095,7 +1093,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         if (user != null) {
             s = "" + user.user;
         }
-        return "user=" + s + " rem=" + remote + " after " + bits.timePast(since);
+        return "user=" + s + " rem=" + pipe.settingsGet(pipeSetting.origin, "?") + " after " + bits.timePast(since);
     }
 
     private void doInit() {
@@ -1174,7 +1172,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
                 break;
             }
             if (parent.loginLogging) {
-                logger.info("login failed (" + usr + ") from " + remote);
+                logger.info("login failed (" + usr + ") from " + pipe.settingsGet(pipeSetting.origin, "?"));
             }
             bits.sleep(parent.promptDelay);
             pipe.linePut(parent.promptFailed);
@@ -1193,6 +1191,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         if (user.privilege > parent.promptPrivilege) {
             user.privilege = parent.promptPrivilege;
         }
+        String remote = pipe.settingsGet(pipeSetting.origin, "?");
         if (parent.loginLogging) {
             logger.info(user.user + " logged in from " + remote);
         }
@@ -1222,7 +1221,6 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         parent.prevUserLoc = s;
         pipe.setTime(parent.execTimeOut);
         userRead rdr = new userRead(pipe, parent);
-        pipe.settingsPut(pipeSetting.origin, remote);
         pipe.settingsPut(pipeSetting.authed, user);
         exe = new userExec(pipe, rdr);
         exe.fakePrompt = parent.fakePrompt;
@@ -1274,6 +1272,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
             }
         }
         userLine.doCommands(rdr, exe, cfg);
+        remote = pipe.settingsGet(pipeSetting.origin, "?");
         if (parent.loginLogging) {
             logger.info(user.user + " logged out from " + remote);
         }
