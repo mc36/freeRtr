@@ -983,7 +983,8 @@ public class userLine {
      * @param phys physical lines, 0=no, 1=yes, 2=console
      */
     public void createHandler(pipeSide pip, String nam, int phys) {
-        new userLineHandler(this, pip, nam, phys);
+        pip.settingsAdd(pipeSetting.origin, nam);
+        new userLineHandler(this, pip, phys);
     }
 
 }
@@ -1010,11 +1011,10 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
 
     public userConfig cfg;
 
-    public userLineHandler(userLine prnt, pipeSide pip, String rem, int phys) {
+    public userLineHandler(userLine prnt, pipeSide pip, int phys) {
         parent = prnt;
         pipe = pip;
         physical = phys;
-        pipe.settingsAdd(pipeSetting.origin, rem);
         pipe.setTime(parent.execTimeOut);
         pipe.lineRx = pipeSide.modTyp.modeCRtorLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
