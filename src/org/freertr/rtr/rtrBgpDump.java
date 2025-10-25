@@ -443,7 +443,7 @@ public class rtrBgpDump {
      * @return list of statistics
      */
     public static userFormat getMsgDiffs(counter s[]) {
-        userFormat l = new userFormat("|", "typ|name|pack|byte|time|upd-tx|upd-tx");
+        userFormat l = new userFormat("|", "typ|name|pack|byte|time|upd-tx|upd-rx");
         for (int i = 0; i < s.length; i++) {
             long pck = s[i].packRx - s[i].packTx;
             long byt = s[i].byteRx - s[i].byteTx;

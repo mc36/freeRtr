@@ -199,7 +199,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             ntry = old;
         }
         ntry.register2udp();
-        routerCreateComputed();
+        notif.wakeup();
         return ntry;
     }
 
@@ -222,7 +222,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
         ntry.unregister2udp();
         ntry.closeNeighbors();
-        routerCreateComputed();
+        notif.wakeup();
     }
 
     /**
@@ -548,7 +548,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * redistribution changed
      */
     public void routerRedistChanged() {
-        routerCreateComputed();
+        notif.wakeup();
     }
 
     /**
@@ -556,7 +556,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
      */
     public void routerOthersChanged() {
         if (labels) {
-            routerCreateComputed();
+            notif.wakeup();
             return;
         }
     }
