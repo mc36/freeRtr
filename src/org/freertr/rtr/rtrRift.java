@@ -218,7 +218,7 @@ public class rtrRift extends ipRtr implements Runnable {
             ntry = old;
         }
         ntry.register2udp();
-        routerCreateComputed();
+        notif.wakeup();
         return ntry;
     }
 
@@ -260,7 +260,7 @@ public class rtrRift extends ipRtr implements Runnable {
             return;
         }
         ntry.unregister2udp();
-        routerCreateComputed();
+        notif.wakeup();
     }
 
     /**
@@ -594,6 +594,13 @@ public class rtrRift extends ipRtr implements Runnable {
             tie.expire = tim + 30000;
             advertTie(tie, true);
         }
+        for (int o = 0; o < ifaces.size(); o++) {
+            rtrRiftIface ifc = ifaces.get(o);
+            if (ifc == null) {
+                continue;
+            }
+            ifc.notif.wakeup();
+        }
         rou = calcSpf(1);
         rou.mergeFrom(tabRoute.addType.ecmp, calcSpf(2), tabRouteAttr.distanLim);
         rou.setProto(routerProtoTyp, routerProcNum);
@@ -877,7 +884,7 @@ public class rtrRift extends ipRtr implements Runnable {
      * redistribution changed
      */
     public void routerRedistChanged() {
-        routerCreateComputed();
+        notif.wakeup();
     }
 
     /**

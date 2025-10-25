@@ -181,7 +181,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
         }
         ntry.register2ip();
         ntry.restartTimer(false);
-        routerCreateComputed();
+        notif.wakeup();
         return ntry;
     }
 
@@ -205,7 +205,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
         ntry.restartTimer(true);
         ntry.unregister2ip();
         ntry.closeNeighbors();
-        routerCreateComputed();
+        notif.wakeup();
     }
 
     /**
@@ -336,7 +336,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
      * redistribution changed
      */
     public void routerRedistChanged() {
-        routerCreateComputed();
+        notif.wakeup();
     }
 
     /**
