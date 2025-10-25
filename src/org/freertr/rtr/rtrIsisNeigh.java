@@ -870,6 +870,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparable<rtrIsisNei
             if (lsp == null) {
                 continue;
             }
+            pending.del(lsp);
             rtrIsisLsp old = level.lsps.find(lsp);
             if (old == null) {
                 if (lsp.getTimeRemain(true) < 1) {

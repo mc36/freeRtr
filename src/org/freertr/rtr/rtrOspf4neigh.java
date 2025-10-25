@@ -686,6 +686,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparable<rtrOspf4n
             if (debugger.rtrOspf4traf) {
                 logger.debug("lsa " + lsa);
             }
+            pending.del(lsa);
             advert.put(lsa);
         }
         doRetrans();
