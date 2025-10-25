@@ -839,7 +839,7 @@ qc pass: p4lang: mgre routing over hairpin qinq
 qc pass: p4lang: mgre routing over qinq bridge
 qc pass: p4lang: mgre mpls over qinq
 qc pass: p4lang: ldp te over mpls tail+head
-failed: p4lang: ldp te over mpls mid
+qc pass: p4lang: ldp te over mpls mid
 qc pass: p4lang: ouni with bgp
 qc pass: p4lang: ouni with bgp over vlan
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes

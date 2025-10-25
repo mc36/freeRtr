@@ -841,6 +841,6 @@ http://sources.freertr.org/cfg/p4lang-rout489.tst;p4lang-rout489.tst;ok;ok;not o
 http://sources.freertr.org/cfg/p4lang-rout490.tst;p4lang-rout490.tst;ok;ok;not ok;ok;not ok;p4lang: mgre routing over qinq bridge
 http://sources.freertr.org/cfg/p4lang-rout491.tst;p4lang-rout491.tst;ok;ok;not ok;ok;not ok;p4lang: mgre mpls over qinq
 http://sources.freertr.org/cfg/p4lang-rout492.tst;p4lang-rout492.tst;ok;ok;ok;ok;ok;p4lang: ldp te over mpls tail+head
-http://sources.freertr.org/cfg/p4lang-rout493.tst;p4lang-rout493.tst;not ok;ok;ok;ok;ok;p4lang: ldp te over mpls mid
+http://sources.freertr.org/cfg/p4lang-rout493.tst;p4lang-rout493.tst;ok;ok;ok;ok;ok;p4lang: ldp te over mpls mid
 http://sources.freertr.org/cfg/p4lang-rout494.tst;p4lang-rout494.tst;ok;ok;ok;ok;ok;p4lang: ouni with bgp
 http://sources.freertr.org/cfg/p4lang-rout495.tst;p4lang-rout495.tst;ok;ok;ok;ok;ok;p4lang: ouni with bgp over vlan
