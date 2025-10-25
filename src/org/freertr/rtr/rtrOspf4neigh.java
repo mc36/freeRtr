@@ -995,7 +995,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparable<rtrOspf4n
             if (!need2run) {
                 break;
             }
-            notif.sleep(iface.retransTimer);
+            notif.misleep(iface.retransTimer);
             long tim = bits.getTime();
             if ((tim - last) >= iface.retransTimer) {
                 pending.clear();

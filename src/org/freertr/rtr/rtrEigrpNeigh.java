@@ -443,7 +443,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
                 }
                 doAdvert();
                 doTransmit();
-                notif.sleep(iface.deadTimer);
+                notif.misleep(iface.deadTimer);
             }
         } catch (Exception e) {
             logger.traceback(e);

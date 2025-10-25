@@ -958,7 +958,7 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
             if (!need2run) {
                 return;
             }
-            notif.sleep(helloTimer);
+            notif.misleep(helloTimer);
             if (ipInfoRes != null) {
                 if (ipInfoRes.need2drop()) {
                     iface.bfdDel(peer, this);

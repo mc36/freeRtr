@@ -1012,7 +1012,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparable<rtrIsisNei
             if (!need2run) {
                 break;
             }
-            notif.sleep(iface.retransTimer);
+            notif.misleep(iface.retransTimer);
             long tim = bits.getTime();
             if ((tim - last) >= iface.retransTimer) {
                 pending.clear();
