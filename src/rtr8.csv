@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.10.25-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-10-25 06:26:08, took 00:12:12, with 50 workers, on 844 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2025-10-25 08:27:42, took 00:11:55, with 50 workers, on 844 cases, 1 failed, 0 traces, 6 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -843,6 +843,6 @@ http://sources.freertr.org/cfg/p4lang-rout489.tst;p4lang-rout489.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout490.tst;p4lang-rout490.tst;success;p4lang: mgre routing over qinq bridge
 http://sources.freertr.org/cfg/p4lang-rout491.tst;p4lang-rout491.tst;success;p4lang: mgre mpls over qinq
 http://sources.freertr.org/cfg/p4lang-rout492.tst;p4lang-rout492.tst;success;p4lang: ldp te over mpls tail+head
-http://sources.freertr.org/cfg/p4lang-rout493.tst;p4lang-rout493.tst;success;p4lang: ldp te over mpls mid
+http://sources.freertr.org/cfg/p4lang-rout493.tst;p4lang-rout493.tst;#6-run-r1 tping 100 10 2.2.2.203 vrf v1 sou lo1;p4lang: ldp te over mpls mid
 http://sources.freertr.org/cfg/p4lang-rout494.tst;p4lang-rout494.tst;success;p4lang: ouni with bgp
 http://sources.freertr.org/cfg/p4lang-rout495.tst;p4lang-rout495.tst;success;p4lang: ouni with bgp over vlan
