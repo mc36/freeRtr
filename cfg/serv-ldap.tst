@@ -52,8 +52,8 @@ server ldap lda
 !
 
 
-r2 tping 100 15 1.1.1.1 vrf v1
+r2 tping 100 30 1.1.1.1 vrf v1
 r2 send telnet 1.1.1.1 666 vrf v1
 r2 send c
 r2 send c
-r2 tping 100 15 2.2.2.2 vrf v1
+r2 tping 100 30 2.2.2.2 vrf v1

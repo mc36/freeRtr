@@ -64,11 +64,11 @@ server telnet telnet
 !
 
 
-r2 tping 100 15 1.1.1.1 vrf v1
-r2 tping 100 15 2.2.2.3 vrf v1
-r2 tping 100 15 1234::1 vrf v1
-r2 tping 100 15 4321::3 vrf v1
+r2 tping 100 30 1.1.1.1 vrf v1
+r2 tping 100 30 2.2.2.3 vrf v1
+r2 tping 100 30 1234::1 vrf v1
+r2 tping 100 30 4321::3 vrf v1
 
 r1 tping 0 5 3.3.3.3 vrf v1
 r1 send telnet 2.2.2.3 prox p1
-r1 tping 100 15 3.3.3.3 vrf v1
+r1 tping 100 30 3.3.3.3 vrf v1

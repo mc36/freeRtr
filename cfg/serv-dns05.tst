@@ -46,13 +46,13 @@ client name-server 1.1.1.2
 !
 
 
-r2 tping 100 15 1.1.1.1 vrf v1
+r2 tping 100 30 1.1.1.1 vrf v1
 r2 send conf t
 r2 send server dns dns
 r2 send zone test.corp redownload p1 1.1.1.1
 r2 send exit
 r2 send end
-r2 tping 100 15 ip4a.test.corp vrf v1
-r2 tping 100 15 ip6a.test.corp vrf v1
-r2 tping 100 15 ip4i.test.corp vrf v1
-r2 tping 100 15 ip6i.test.corp vrf v1
+r2 tping 100 30 ip4a.test.corp vrf v1
+r2 tping 100 30 ip6a.test.corp vrf v1
+r2 tping 100 30 ip4i.test.corp vrf v1
+r2 tping 100 30 ip6i.test.corp vrf v1

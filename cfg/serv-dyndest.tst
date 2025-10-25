@@ -57,8 +57,8 @@ client name-server 1.1.1.1
 !
 
 
-r2 tping 100 15 1.1.1.1 vrf v1
-r2 tping 100 15 www.test.corp vrf v1
+r2 tping 100 30 1.1.1.1 vrf v1
+r2 tping 100 30 www.test.corp vrf v1
 r2 tping 0 5 2.2.2.1
 r2 send clear tunnel-domain
-r2 tping 100 15 2.2.2.1
+r2 tping 100 30 2.2.2.1

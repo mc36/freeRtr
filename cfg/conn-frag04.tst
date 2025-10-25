@@ -30,12 +30,12 @@ int ser1
  exit
 !
 
-r1 tping 100 15 1.1.1.2 vrf v1 siz 1400
-r2 tping 100 15 1.1.1.1 vrf v1 siz 1400
-r1 tping 100 15 1234::2 vrf v1 siz 1400
-r2 tping 100 15 1234::1 vrf v1 siz 1400
+r1 tping 100 30 1.1.1.2 vrf v1 siz 1400
+r2 tping 100 30 1.1.1.1 vrf v1 siz 1400
+r1 tping 100 30 1234::2 vrf v1 siz 1400
+r2 tping 100 30 1234::1 vrf v1 siz 1400
 
-r1 tping -100 15 1.1.1.2 vrf v1 siz 1401 error
-r2 tping -100 15 1.1.1.1 vrf v1 siz 1401 error
-r1 tping -100 15 1234::2 vrf v1 siz 1401 error
-r2 tping -100 15 1234::1 vrf v1 siz 1401 error
+r1 tping -100 30 1.1.1.2 vrf v1 siz 1401 error
+r2 tping -100 30 1.1.1.1 vrf v1 siz 1401 error
+r1 tping -100 30 1234::2 vrf v1 siz 1401 error
+r2 tping -100 30 1234::1 vrf v1 siz 1401 error
