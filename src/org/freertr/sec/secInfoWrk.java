@@ -490,6 +490,15 @@ public class secInfoWrk implements Runnable {
     }
 
     /**
+     * get address
+     *
+     * @return
+     */
+    public addrIP getAddr() {
+        return addr.copyBytes();
+    }
+
+    /**
      * print out results
      *
      * @param pipe pipeline to use

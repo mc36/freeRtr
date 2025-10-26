@@ -4,7 +4,6 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgInit;
 import org.freertr.enc.encUrl;
-import org.freertr.ip.ipFwd;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
@@ -14,7 +13,6 @@ import org.freertr.sec.secInfoCfg;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoUtl;
 import org.freertr.sec.secInfoWrk;
-import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
@@ -44,6 +42,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     public final static userFilter[] defaultF = {
         new userFilter("server honeypot .*", cmds.tabulator + "port " + port, null),
         new userFilter("server honeypot .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server honeypot .*", cmds.tabulator + "logging", null),
         new userFilter("server honeypot .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tiny-http", null),
         new userFilter("server honeypot .*", cmds.tabulator + cmds.negated + cmds.tabulator + "blackhole", null),
         new userFilter("server honeypot .*", cmds.tabulator + cmds.negated + cmds.tabulator + "closed", null)
@@ -58,6 +57,11 @@ public class servHoneyPot extends servGeneric implements prtServS {
      * pretend a http server
      */
     public boolean tinyHttp;
+
+    /**
+     * enable logging
+     */
+    public boolean logging = true;
 
     /**
      * pretend closed port
@@ -95,6 +99,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst, int filter) {
         cmds.cfgLine(lst, !tinyHttp, beg, "tiny-http", "");
+        cmds.cfgLine(lst, !logging, beg, "logging", "");
         cmds.cfgLine(lst, !closed, beg, "closed", "");
         cmds.cfgLine(lst, !blackhole, beg, "blackhole", "");
         secInfoUtl.getConfig(lst, ipInfo, beg + "info ");
@@ -108,6 +113,10 @@ public class servHoneyPot extends servGeneric implements prtServS {
         }
         if (a.equals("tiny-http")) {
             tinyHttp = !neg;
+            return false;
+        }
+        if (a.equals("logging")) {
+            logging = !neg;
             return false;
         }
         if (a.equals("blackhole")) {
@@ -128,23 +137,26 @@ public class servHoneyPot extends servGeneric implements prtServS {
 
     public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "tiny-http", "pretend http server");
+        l.add(null, false, 1, new int[]{-1}, "logging", "log the hits");
         l.add(null, false, 1, new int[]{-1}, "closed", "pretend closed port");
         l.add(null, false, 1, new int[]{-1}, "blackhole", "blackhole immediately");
         secInfoUtl.getHelp(l, 1, "info", "report parameters");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        logger.info("honeypot hit from " + id.peerAddr);
         if (blackhole) {
             srvBlackholePeer(id.peerAddr.isIPv4(), id.peerAddr);
         }
         if (closed) {
+            if (logging) {
+                logger.info("honeypot hit from " + id.peerAddr);
+            }
+            pipe.setClose();
             return true;
         }
         pipe.setTime(60000);
         pipe.setReady();
-        servHoneyPotConn ntry = new servHoneyPotConn(this, pipe, id.peerAddr, id.iface.addr);
-        ntry.doStart();
+        new servHoneyPotConn(this, pipe, id.peerAddr, id.iface.addr);
         return false;
     }
 
@@ -164,8 +176,6 @@ class servHoneyPotConn implements Runnable {
 
     private final addrIP local;
 
-    private final ipFwd fwdr;
-
     /**
      * create one connection
      *
@@ -179,15 +189,8 @@ class servHoneyPotConn implements Runnable {
         pipe = conn;
         remote = rem;
         local = loc;
-        fwdr = lower.srvVrf.getFwd(rem);
         cls = new secInfoCls(null, null, null, lower.srvVrf.getFwd(remote), remote, prtTcp.protoNum, local);
         ipi = new secInfoWrk(lower.ipInfo, cls);
-    }
-
-    /**
-     * do startup
-     */
-    public void doStart() {
         new Thread(this).start();
     }
 
@@ -197,6 +200,9 @@ class servHoneyPotConn implements Runnable {
             pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
             pipe.setReady();
             if (!lower.tinyHttp) {
+                if (lower.logging) {
+                    logger.info("honeypot hit from " + remote);
+                }
                 ipi.doWork(false);
                 ipi.need2drop();
                 ipi.putResult(pipe);
@@ -232,6 +238,9 @@ class servHoneyPotConn implements Runnable {
                     s = s.substring(0, i);
                 }
                 ipi.setAddr(s);
+            }
+            if (lower.logging) {
+                logger.info("honeypot hit from " + ipi.getAddr() + " via " + remote);
             }
             ipi.doWork(false);
             ipi.need2drop();
