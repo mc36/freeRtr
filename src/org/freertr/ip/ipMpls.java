@@ -106,6 +106,21 @@ public class ipMpls implements ifcUp {
     public final static int labelExt = 15;
 
     /**
+     * metadata label indicator
+     */
+    public final static int labelMli = 16;
+
+    /**
+     * metadata present indicator
+     */
+    public final static int labelMlp = 17;
+
+    /**
+     * flow label indicator
+     */
+    public final static int labelFli = 18;
+
+    /**
      * bier downstream label
      */
     public final static int bierLabD = 1;
