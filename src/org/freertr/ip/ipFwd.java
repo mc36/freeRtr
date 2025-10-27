@@ -2475,7 +2475,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      *
      * @param src source address, null if nearest
      * @param trg target address
-     * @param mpls mpls mode, 0=icmp, 1=mpls, 2=bier
+     * @param mpls mpls mode, bit0=reverse, 0=icmp, 2=mpls, 4=bier
      * @param hop forced nexthop address
      * @param size size of payload
      * @param df dont fragment
@@ -2528,7 +2528,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
             }
         }
         echoSent++;
-        if (mpls <= 0) {
+        if ((mpls & 1) == 0) {
             icmpCore.createEcho(pck, src, trg, ntry.echoNum, false);
         } else {
             icmpCore.createEcho(pck, trg, src, ntry.echoNum, true);
@@ -2546,13 +2546,13 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
                 return null;
             }
         }
-        if (mpls <= 0) {
+        if (mpls < 2) {
             protoPack(ifc, hop, pck);
             return ntry;
         }
         ipCore.createIPheader(pck);
         ipMpls.beginMPLSfields(pck, false);
-        if (mpls <= 1) {
+        if (mpls < 4) {
             mplsTxPack(trg, pck, true);
             return ntry;
         }

@@ -2190,8 +2190,12 @@ public class userExec {
         hl.add(null, false, 2, new int[]{2, -1}, "[str]", "string to send");
         hl.add(null, false, 1, new int[]{2}, "ping", "send echo request");
         hl.add(null, false, 2, new int[]{3, -1}, "<host>", "name of host");
-        hl.add(null, false, 3, new int[]{3, -1}, "mpls", "specify mpls mode");
-        hl.add(null, false, 3, new int[]{3, -1}, "bier", "specify bier mode");
+        hl.add(null, false, 3, new int[]{3, -1}, "mpls-forward", "specify mpls forward addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "mpls-reverse", "specify mpls reverse addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "bier-forward", "specify bier forward addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "bier-reverse", "specify bier reverse addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "icmp-forward", "specify icmp forward addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "icmp-reverse", "specify icmp reverse addressed");
         hl.add(null, false, 3, new int[]{3, -1}, "dontfrag", "specify dont fragment");
         hl.add(null, false, 3, new int[]{3, -1}, "multi", "wait for multiple responses");
         hl.add(null, false, 3, new int[]{3, -1}, "error", "consider errors in result");
@@ -4547,12 +4551,28 @@ public class userExec {
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("mpls")) {
+            if (a.equals("icmp-forward")) {
+                mpls = 0;
+                continue;
+            }
+            if (a.equals("icmp-reverse")) {
                 mpls = 1;
                 continue;
             }
-            if (a.equals("bier")) {
+            if (a.equals("mpls-forward")) {
                 mpls = 2;
+                continue;
+            }
+            if (a.equals("mpls-reverse")) {
+                mpls = 3;
+                continue;
+            }
+            if (a.equals("bier-forward")) {
+                mpls = 4;
+                continue;
+            }
+            if (a.equals("bier-reverse")) {
+                mpls = 5;
                 continue;
             }
             if (a.equals("dontfrag")) {
