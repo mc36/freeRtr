@@ -501,7 +501,7 @@ public class userPacket {
                     mpls = 0;
                     continue;
                 }
-                if (a.equals("rev-icmp")) {
+                if (a.equals("bck-icmp")) {
                     mpls = 1;
                     continue;
                 }
@@ -509,7 +509,7 @@ public class userPacket {
                     mpls = 2;
                     continue;
                 }
-                if (a.equals("rev-mpls")) {
+                if (a.equals("bck-mpls")) {
                     mpls = 3;
                     continue;
                 }
@@ -517,7 +517,7 @@ public class userPacket {
                     mpls = 4;
                     continue;
                 }
-                if (a.equals("rev-bier")) {
+                if (a.equals("bck-bier")) {
                     mpls = 5;
                     continue;
                 }

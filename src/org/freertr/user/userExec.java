@@ -2190,12 +2190,12 @@ public class userExec {
         hl.add(null, false, 2, new int[]{2, -1}, "[str]", "string to send");
         hl.add(null, false, 1, new int[]{2}, "ping", "send echo request");
         hl.add(null, false, 2, new int[]{3, -1}, "<host>", "name of host");
-        hl.add(null, false, 3, new int[]{3, -1}, "icmp", "specify icmp forward addressed");
-        hl.add(null, false, 3, new int[]{3, -1}, "rev-icmp", "specify icmp reverse addressed");
-        hl.add(null, false, 3, new int[]{3, -1}, "mpls", "specify mpls forward addressed");
-        hl.add(null, false, 3, new int[]{3, -1}, "rev-mpls", "specify mpls reverse addressed");
-        hl.add(null, false, 3, new int[]{3, -1}, "bier", "specify bier forward addressed");
-        hl.add(null, false, 3, new int[]{3, -1}, "rev-bier", "specify bier reverse addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "icmp", "specify icmp");
+        hl.add(null, false, 3, new int[]{3, -1}, "mpls", "specify mpls");
+        hl.add(null, false, 3, new int[]{3, -1}, "bier", "specify bier");
+        hl.add(null, false, 3, new int[]{3, -1}, "bck-icmp", "specify backward addressed icmp");
+        hl.add(null, false, 3, new int[]{3, -1}, "bck-mpls", "specify backward addressed mpls");
+        hl.add(null, false, 3, new int[]{3, -1}, "bck-bier", "specify backward addressed bier");
         hl.add(null, false, 3, new int[]{3, -1}, "dontfrag", "specify dont fragment");
         hl.add(null, false, 3, new int[]{3, -1}, "multi", "wait for multiple responses");
         hl.add(null, false, 3, new int[]{3, -1}, "error", "consider errors in result");
@@ -2643,12 +2643,12 @@ public class userExec {
         hl.add(null, false, 6, new int[]{5, -1}, "<num>", "tos number");
         hl.add(null, false, 2, new int[]{3}, "pmtud", "discover available mtu");
         hl.add(null, false, 3, new int[]{4, -1}, "<host>", "name of host");
-        hl.add(null, false, 4, new int[]{4, -1}, "icmp", "specify icmp forward addressed");
-        hl.add(null, false, 4, new int[]{4, -1}, "rev-icmp", "specify icmp reverse addressed");
-        hl.add(null, false, 4, new int[]{4, -1}, "mpls", "specify mpls forward addressed");
-        hl.add(null, false, 4, new int[]{4, -1}, "rev-mpls", "specify mpls reverse addressed");
-        hl.add(null, false, 4, new int[]{4, -1}, "bier", "specify bier forward addressed");
-        hl.add(null, false, 4, new int[]{4, -1}, "rev-bier", "specify bier reverse addressed");
+        hl.add(null, false, 4, new int[]{4, -1}, "icmp", "specify icmp");
+        hl.add(null, false, 4, new int[]{4, -1}, "mpls", "specify mpls");
+        hl.add(null, false, 4, new int[]{4, -1}, "bier", "specify bier");
+        hl.add(null, false, 4, new int[]{4, -1}, "bck-icmp", "specify backward addressed icmp");
+        hl.add(null, false, 4, new int[]{4, -1}, "bck-mpls", "specify backward addressed mpls");
+        hl.add(null, false, 4, new int[]{4, -1}, "bck-bier", "specify backward addressed bier");
         hl.add(null, false, 4, new int[]{4, -1}, "ipv4", "specify ipv4 to use");
         hl.add(null, false, 4, new int[]{4, -1}, "ipv6", "specify ipv6 to use");
         hl.add(null, false, 4, new int[]{5}, "vrf", "specify vrf to use");
@@ -4561,7 +4561,7 @@ public class userExec {
                 mpls = 0;
                 continue;
             }
-            if (a.equals("rev-icmp")) {
+            if (a.equals("bck-icmp")) {
                 mpls = 1;
                 continue;
             }
@@ -4569,7 +4569,7 @@ public class userExec {
                 mpls = 2;
                 continue;
             }
-            if (a.equals("rev-mpls")) {
+            if (a.equals("bck-mpls")) {
                 mpls = 3;
                 continue;
             }
@@ -4577,7 +4577,7 @@ public class userExec {
                 mpls = 4;
                 continue;
             }
-            if (a.equals("rev-bier")) {
+            if (a.equals("bck-bier")) {
                 mpls = 5;
                 continue;
             }

@@ -61,6 +61,26 @@ public class clntTrack implements Runnable, rtrBfdClnt {
          */
         icmp,
         /**
+         * mpls echo request tester
+         */
+        mpls,
+        /**
+         * bier echo request tester
+         */
+        bier,
+        /**
+         * icmp echo request tester
+         */
+        icmpBck,
+        /**
+         * mpls echo request tester
+         */
+        mplsBck,
+        /**
+         * bier echo request tester
+         */
+        bierBck,
+        /**
          * tcp connect tester
          */
         tcp,
@@ -348,8 +368,8 @@ public class clntTrack implements Runnable, rtrBfdClnt {
     public void getConfig(List<String> l, int filter) {
         cmds.cfgLine(l, !hidden, cmds.tabulator, "hidden", "");
         cmds.cfgLine(l, !logging, cmds.tabulator, "log", "");
-        l.add(cmds.tabulator + "mode " + clntTrack.mode2string(mode));
-        l.add(cmds.tabulator + "force " + clntTrack.force2string(force));
+        l.add(cmds.tabulator + "mode " + mode2string(mode));
+        l.add(cmds.tabulator + "force " + force2string(force));
         cmds.cfgLine(l, script == null, cmds.tabulator, "script", script);
         cmds.cfgLine(l, target == null, cmds.tabulator, "target", target);
         if (hidden) {
@@ -434,18 +454,18 @@ public class clntTrack implements Runnable, rtrBfdClnt {
      */
     public static forMode string2force(String a) {
         if (a.equals("up")) {
-            return clntTrack.forMode.up;
+            return forMode.up;
         }
         if (a.equals("down")) {
-            return clntTrack.forMode.down;
+            return forMode.down;
         }
         if (a.equals("negate")) {
-            return clntTrack.forMode.neg;
+            return forMode.neg;
         }
         if (a.equals("normal")) {
-            return clntTrack.forMode.norm;
+            return forMode.norm;
         }
-        return clntTrack.forMode.norm;
+        return forMode.norm;
     }
 
     /**
@@ -456,40 +476,55 @@ public class clntTrack implements Runnable, rtrBfdClnt {
      */
     public static operMod string2mode(String a) {
         if (a.equals("icmp")) {
-            return clntTrack.operMod.icmp;
+            return operMod.icmp;
+        }
+        if (a.equals("mpls")) {
+            return operMod.mpls;
+        }
+        if (a.equals("bier")) {
+            return operMod.bier;
+        }
+        if (a.equals("bck-icmp")) {
+            return operMod.icmpBck;
+        }
+        if (a.equals("bck-mpls")) {
+            return operMod.mplsBck;
+        }
+        if (a.equals("bck-bier")) {
+            return operMod.bierBck;
         }
         if (a.equals("tcp")) {
-            return clntTrack.operMod.tcp;
+            return operMod.tcp;
         }
         if (a.equals("udp")) {
-            return clntTrack.operMod.udp;
+            return operMod.udp;
         }
         if (a.equals("twamp")) {
-            return clntTrack.operMod.twamp;
+            return operMod.twamp;
         }
         if (a.equals("bfd")) {
-            return clntTrack.operMod.bfd;
+            return operMod.bfd;
         }
         if (a.equals("interface")) {
-            return clntTrack.operMod.iface;
+            return operMod.iface;
         }
         if (a.equals("route")) {
-            return clntTrack.operMod.route;
+            return operMod.route;
         }
         if (a.equals("prefix")) {
-            return clntTrack.operMod.prefix;
+            return operMod.prefix;
         }
         if (a.equals("script")) {
-            return clntTrack.operMod.script;
+            return operMod.script;
         }
         if (a.equals("nrpe")) {
-            return clntTrack.operMod.nrpe;
+            return operMod.nrpe;
         }
         if (a.equals("other")) {
-            return clntTrack.operMod.other;
+            return operMod.other;
         }
         if (a.equals("check")) {
-            return clntTrack.operMod.check;
+            return operMod.check;
         }
         return null;
     }
@@ -507,6 +542,16 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         switch (m) {
             case icmp:
                 return "icmp";
+            case mpls:
+                return "mpls";
+            case bier:
+                return "bier";
+            case icmpBck:
+                return "bck-icmp";
+            case mplsBck:
+                return "bck-mpls";
+            case bierBck:
+                return "bck-bier";
             case nrpe:
                 return "nrpe";
             case other:
@@ -840,21 +885,22 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         }
         switch (mode) {
             case icmp:
-                ipFwdEcho ping = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, 0, null, size, false, -1, tim2liv, secGrp, typOsrv, flowLab, 0, false);
-                if (ping == null) {
-                    haveResult(false);
-                    break;
-                }
-                ping.notif.sleep(timeout);
-                if (ping.notif.totalNotifies() < 1) {
-                    haveResult(false);
-                    break;
-                }
-                if (ping.res.size() < 1) {
-                    haveResult(false);
-                    break;
-                }
-                haveResult(ping.res.get(0).err == null);
+                processIcmp(fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, 0, null, size, false, -1, tim2liv, secGrp, typOsrv, flowLab, 0, false));
+                break;
+            case mpls:
+                processIcmp(fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, 2, null, size, false, -1, tim2liv, secGrp, typOsrv, flowLab, 0, false));
+                break;
+            case bier:
+                processIcmp(fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, 4, null, size, false, -1, tim2liv, secGrp, typOsrv, flowLab, 0, false));
+                break;
+            case icmpBck:
+                processIcmp(fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, 2, null, size, false, -1, tim2liv, secGrp, typOsrv, flowLab, 0, false));
+                break;
+            case mplsBck:
+                processIcmp(fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, 3, null, size, false, -1, tim2liv, secGrp, typOsrv, flowLab, 0, false));
+                break;
+            case bierBck:
+                processIcmp(fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, 5, null, size, false, -1, tim2liv, secGrp, typOsrv, flowLab, 0, false));
                 break;
             case tcp:
                 prtGen tcp = vrf.getTcp(fwdTrg);
@@ -933,6 +979,23 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         if (logging) {
             logger.info("stopped action " + name);
         }
+    }
+
+    private void processIcmp(ipFwdEcho ping) {
+        if (ping == null) {
+            haveResult(false);
+            return;
+        }
+        ping.notif.sleep(timeout);
+        if (ping.notif.totalNotifies() < 1) {
+            haveResult(false);
+            return;
+        }
+        if (ping.res.size() < 1) {
+            haveResult(false);
+            return;
+        }
+        haveResult(ping.res.get(0).err == null);
     }
 
     /**
