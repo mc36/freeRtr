@@ -772,7 +772,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         }
         switch (mode) {
             case icmp:
-                ipFwdEcho ping = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, null, size, false, -1, tim2liv, secGrp, typOsrv, flowLab, 0, false);
+                ipFwdEcho ping = fwdCor.echoSendReq(fwdIfc.addr, fwdTrg, null, false, size, false, -1, tim2liv, secGrp, typOsrv, flowLab, 0, false);
                 if (ping == null) {
                     haveResult(false);
                     break;

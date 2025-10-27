@@ -2476,6 +2476,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      * @param src source address, null if nearest
      * @param trg target address
      * @param hop forced nexthop address
+     * @param mpls mpls mode
      * @param size size of payload
      * @param df dont fragment
      * @param alrt alert to use
@@ -2487,7 +2488,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      * @param mul multiple responses
      * @return notifier notified on reply
      */
-    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, addrIP hop, int size, boolean df, int alrt, int ttl, int sgt, int tos, int id, int dat, boolean mul) {
+    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, addrIP hop, boolean mpls, int size, boolean df, int alrt, int ttl, int sgt, int tos, int id, int dat, boolean mul) {
         final int maxSize = 8192;
         final int minSize = 16;
         if (size < minSize) {
@@ -2527,7 +2528,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
             }
         }
         echoSent++;
-        if (icmpCore.createEcho(pck, src, trg, ntry.echoNum, false)) {
+        if (icmpCore.createEcho(pck, src, trg, ntry.echoNum, mpls)) {
             return null;
         }
         pck.IPttl = ttl;
@@ -2543,7 +2544,13 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
                 return null;
             }
         }
-        protoPack(ifc, hop, pck);
+        if (!mpls) {
+            protoPack(ifc, hop, pck);
+            return ntry;
+        }
+        ipCore.createIPheader(pck);
+        ipMpls.beginMPLSfields(pck, false);
+        mplsTxPack(trg, pck, true);
         return ntry;
     }
 
