@@ -73,9 +73,10 @@ public interface ipIcmp {
      * @param src source ip
      * @param trg target ip
      * @param id sending id
+     * @param rep create reply
      * @return false if successful, true on error
      */
-    public boolean createEcho(packHolder pck, addrIP src, addrIP trg, int id);
+    public boolean createEcho(packHolder pck, addrIP src, addrIP trg, int id, boolean rep);
 
     /**
      * convert icmp type code to string

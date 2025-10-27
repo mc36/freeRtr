@@ -492,7 +492,7 @@ public class secInfoWrk implements Runnable {
     /**
      * get address
      *
-     * @return
+     * @return address in use
      */
     public addrIP getAddr() {
         return addr.copyBytes();

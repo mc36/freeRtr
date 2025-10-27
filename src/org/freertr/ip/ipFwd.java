@@ -2527,7 +2527,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
             }
         }
         echoSent++;
-        if (icmpCore.createEcho(pck, src, trg, ntry.echoNum)) {
+        if (icmpCore.createEcho(pck, src, trg, ntry.echoNum, false)) {
             return null;
         }
         pck.IPttl = ttl;
