@@ -491,10 +491,35 @@ public class userPacket {
             int delay = 1000;
             int min = 1400;
             int max = 1600;
+            int mpls = 0;
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
                     break;
+                }
+                if (a.equals("icmp-forward")) {
+                    mpls = 0;
+                    continue;
+                }
+                if (a.equals("icmp-reverse")) {
+                    mpls = 1;
+                    continue;
+                }
+                if (a.equals("mpls-forward")) {
+                    mpls = 2;
+                    continue;
+                }
+                if (a.equals("mpls-reverse")) {
+                    mpls = 3;
+                    continue;
+                }
+                if (a.equals("bier-forward")) {
+                    mpls = 4;
+                    continue;
+                }
+                if (a.equals("bier-reverse")) {
+                    mpls = 5;
+                    continue;
                 }
                 if (a.equals("data")) {
                     data = bits.str2num(cmd.word());
@@ -580,6 +605,7 @@ public class userPacket {
                 timeout = 1;
             }
             clntPmtud pm = new clntPmtud(cmd.pipe, trg, fwd, src);
+            pm.mpls = mpls;
             pm.hop = via;
             pm.data = data;
             pm.timeout = timeout;

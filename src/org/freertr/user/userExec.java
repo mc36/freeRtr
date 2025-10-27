@@ -2673,6 +2673,12 @@ public class userExec {
         hl.add(null, false, 5, new int[]{4, -1}, "<num>", "sgt");
         hl.add(null, false, 4, new int[]{5}, "flow", "specify flow value");
         hl.add(null, false, 5, new int[]{4, -1}, "<num>", "flow");
+        hl.add(null, false, 4, new int[]{4, -1}, "mpls-forward", "specify mpls forward addressed");
+        hl.add(null, false, 4, new int[]{4, -1}, "mpls-reverse", "specify mpls reverse addressed");
+        hl.add(null, false, 4, new int[]{4, -1}, "bier-forward", "specify bier forward addressed");
+        hl.add(null, false, 4, new int[]{4, -1}, "bier-reverse", "specify bier reverse addressed");
+        hl.add(null, false, 4, new int[]{4, -1}, "icmp-forward", "specify icmp forward addressed");
+        hl.add(null, false, 4, new int[]{4, -1}, "icmp-reverse", "specify icmp reverse addressed");
         hl.add(null, true, 2, new int[]{3}, "arping", "send arp request");
         hl.add(null, true, 3, new int[]{4}, "<host>", "name of host");
         hl.add(null, true, 4, new int[]{5, -1}, "<name:ifc>", "name of interface");
