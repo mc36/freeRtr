@@ -53,23 +53,19 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
      * @param trg target
      * @param id id
      * @param rep create reply packet
-     * @return false on success, true on error
      */
-    public boolean createEcho(packHolder pck, addrIP src, addrIP trg, int id, boolean rep) {
+    public void createEcho(packHolder pck, addrIP src, addrIP trg, int id, boolean rep) {
         pck.putDefaults();
         pck.putStart();
+        pck.IPsrc.setAddr(src);
+        pck.IPtrg.setAddr(trg);
         if (rep) {
-            pck.IPsrc.setAddr(trg);
-            pck.IPtrg.setAddr(src);
             pck.ICMPtc = icmpEchoRep;
         } else {
-            pck.IPsrc.setAddr(src);
-            pck.IPtrg.setAddr(trg);
             pck.ICMPtc = icmpEchoReq;
         }
         pck.msbPutD(4, id); // id
         createICMPheader(pck);
-        return false;
     }
 
     /**

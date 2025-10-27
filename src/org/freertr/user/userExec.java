@@ -2191,6 +2191,7 @@ public class userExec {
         hl.add(null, false, 1, new int[]{2}, "ping", "send echo request");
         hl.add(null, false, 2, new int[]{3, -1}, "<host>", "name of host");
         hl.add(null, false, 3, new int[]{3, -1}, "mpls", "specify mpls mode");
+        hl.add(null, false, 3, new int[]{3, -1}, "bier", "specify bier mode");
         hl.add(null, false, 3, new int[]{3, -1}, "dontfrag", "specify dont fragment");
         hl.add(null, false, 3, new int[]{3, -1}, "multi", "wait for multiple responses");
         hl.add(null, false, 3, new int[]{3, -1}, "error", "consider errors in result");
@@ -4499,7 +4500,7 @@ public class userExec {
                 continue;
             }
             ipFwd fwd = vrf.getFwd(strt);
-            ipFwdEcho ping = fwd.echoSendReq(src, strt, null, false, len, dntfrg, alrt, ttl, sgt, tos, flow, data, false);
+            ipFwdEcho ping = fwd.echoSendReq(src, strt, 0, null, len, dntfrg, alrt, ttl, sgt, tos, flow, data, false);
             if (ping == null) {
                 continue;
             }
@@ -4535,19 +4536,23 @@ public class userExec {
         int ttl = 255;
         int proto = 0;
         int delay = 0;
+        int mpls = 0;
         boolean detail = false;
         boolean sweep = false;
         boolean multi = false;
         boolean error = false;
         boolean dntfrg = false;
-        boolean mpls = false;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
                 break;
             }
             if (a.equals("mpls")) {
-                mpls = true;
+                mpls = 1;
+                continue;
+            }
+            if (a.equals("bier")) {
+                mpls = 2;
                 continue;
             }
             if (a.equals("dontfrag")) {
@@ -4684,7 +4689,7 @@ public class userExec {
                 break;
             }
             sent++;
-            ipFwdEcho ping = fwd.echoSendReq(src, trg, via, mpls, size, dntfrg, alrt, ttl, sgt, tos, flow, data, multi);
+            ipFwdEcho ping = fwd.echoSendReq(src, trg, mpls, via, size, dntfrg, alrt, ttl, sgt, tos, flow, data, multi);
             if (ping == null) {
                 lost++;
                 if (detail) {

@@ -2475,8 +2475,8 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      *
      * @param src source address, null if nearest
      * @param trg target address
+     * @param mpls mpls mode, 0=icmp, 1=mpls, 2=bier
      * @param hop forced nexthop address
-     * @param mpls mpls mode
      * @param size size of payload
      * @param df dont fragment
      * @param alrt alert to use
@@ -2488,7 +2488,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      * @param mul multiple responses
      * @return notifier notified on reply
      */
-    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, addrIP hop, boolean mpls, int size, boolean df, int alrt, int ttl, int sgt, int tos, int id, int dat, boolean mul) {
+    public ipFwdEcho echoSendReq(addrIP src, addrIP trg, int mpls, addrIP hop, int size, boolean df, int alrt, int ttl, int sgt, int tos, int id, int dat, boolean mul) {
         final int maxSize = 8192;
         final int minSize = 16;
         if (size < minSize) {
@@ -2528,8 +2528,10 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
             }
         }
         echoSent++;
-        if (icmpCore.createEcho(pck, src, trg, ntry.echoNum, mpls)) {
-            return null;
+        if (mpls <= 0) {
+            icmpCore.createEcho(pck, src, trg, ntry.echoNum, false);
+        } else {
+            icmpCore.createEcho(pck, trg, src, ntry.echoNum, true);
         }
         pck.IPttl = ttl;
         pck.IPtos = tos;
@@ -2544,13 +2546,21 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
                 return null;
             }
         }
-        if (!mpls) {
+        if (mpls <= 0) {
             protoPack(ifc, hop, pck);
             return ntry;
         }
         ipCore.createIPheader(pck);
         ipMpls.beginMPLSfields(pck, false);
-        mplsTxPack(trg, pck, true);
+        if (mpls <= 1) {
+            mplsTxPack(trg, pck, true);
+            return ntry;
+        }
+        pck.ETHtype = ifc.lower.getEthtyp();
+        ipFwdBier clnt = new ipFwdBier(0);
+        clnt.addPeer(this, trg, 0, -1);
+        clnt.updatePeers();
+        clnt.sendPack(pck);
         return ntry;
     }
 
