@@ -427,6 +427,74 @@ public class clntTrack implements Runnable, rtrBfdClnt {
     }
 
     /**
+     * string to force
+     *
+     * @param a string
+     * @return force
+     */
+    public static forMode string2force(String a) {
+        if (a.equals("up")) {
+            return clntTrack.forMode.up;
+        }
+        if (a.equals("down")) {
+            return clntTrack.forMode.down;
+        }
+        if (a.equals("negate")) {
+            return clntTrack.forMode.neg;
+        }
+        if (a.equals("normal")) {
+            return clntTrack.forMode.norm;
+        }
+        return clntTrack.forMode.norm;
+    }
+
+    /**
+     * string to mode
+     *
+     * @param a string
+     * @return mode, null on error
+     */
+    public static operMod string2mode(String a) {
+        if (a.equals("icmp")) {
+            return clntTrack.operMod.icmp;
+        }
+        if (a.equals("tcp")) {
+            return clntTrack.operMod.tcp;
+        }
+        if (a.equals("udp")) {
+            return clntTrack.operMod.udp;
+        }
+        if (a.equals("twamp")) {
+            return clntTrack.operMod.twamp;
+        }
+        if (a.equals("bfd")) {
+            return clntTrack.operMod.bfd;
+        }
+        if (a.equals("interface")) {
+            return clntTrack.operMod.iface;
+        }
+        if (a.equals("route")) {
+            return clntTrack.operMod.route;
+        }
+        if (a.equals("prefix")) {
+            return clntTrack.operMod.prefix;
+        }
+        if (a.equals("script")) {
+            return clntTrack.operMod.script;
+        }
+        if (a.equals("nrpe")) {
+            return clntTrack.operMod.nrpe;
+        }
+        if (a.equals("other")) {
+            return clntTrack.operMod.other;
+        }
+        if (a.equals("check")) {
+            return clntTrack.operMod.check;
+        }
+        return null;
+    }
+
+    /**
      * mode to string
      *
      * @param m mode

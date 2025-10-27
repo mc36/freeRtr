@@ -227,79 +227,11 @@ public class cfgTrack implements Comparable<cfgTrack>, cfgGeneric {
             return;
         }
         if (a.equals("mode")) {
-            a = cmd.word();
-            worker.mode = null;
-            if (a.equals("icmp")) {
-                worker.mode = clntTrack.operMod.icmp;
-                return;
-            }
-            if (a.equals("tcp")) {
-                worker.mode = clntTrack.operMod.tcp;
-                return;
-            }
-            if (a.equals("udp")) {
-                worker.mode = clntTrack.operMod.udp;
-                return;
-            }
-            if (a.equals("twamp")) {
-                worker.mode = clntTrack.operMod.twamp;
-                return;
-            }
-            if (a.equals("bfd")) {
-                worker.mode = clntTrack.operMod.bfd;
-                return;
-            }
-            if (a.equals("interface")) {
-                worker.mode = clntTrack.operMod.iface;
-                return;
-            }
-            if (a.equals("route")) {
-                worker.mode = clntTrack.operMod.route;
-                return;
-            }
-            if (a.equals("prefix")) {
-                worker.mode = clntTrack.operMod.prefix;
-                return;
-            }
-            if (a.equals("script")) {
-                worker.mode = clntTrack.operMod.script;
-                return;
-            }
-            if (a.equals("nrpe")) {
-                worker.mode = clntTrack.operMod.nrpe;
-                return;
-            }
-            if (a.equals("other")) {
-                worker.mode = clntTrack.operMod.other;
-                return;
-            }
-            if (a.equals("check")) {
-                worker.mode = clntTrack.operMod.check;
-                return;
-            }
-            cmd.badCmd();
+            worker.mode = clntTrack.string2mode(cmd.word());
             return;
         }
         if (a.equals("force")) {
-            a = cmd.word();
-            worker.force = clntTrack.forMode.norm;
-            if (a.equals("up")) {
-                worker.force = clntTrack.forMode.up;
-                return;
-            }
-            if (a.equals("down")) {
-                worker.force = clntTrack.forMode.down;
-                return;
-            }
-            if (a.equals("negate")) {
-                worker.force = clntTrack.forMode.neg;
-                return;
-            }
-            if (a.equals("normal")) {
-                worker.force = clntTrack.forMode.norm;
-                return;
-            }
-            cmd.badCmd();
+            worker.force = clntTrack.string2force(cmd.word());
             return;
         }
         if (a.equals("target")) {

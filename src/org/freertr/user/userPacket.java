@@ -497,27 +497,27 @@ public class userPacket {
                 if (a.length() < 1) {
                     break;
                 }
-                if (a.equals("icmp-forward")) {
+                if (a.equals("icmp")) {
                     mpls = 0;
                     continue;
                 }
-                if (a.equals("icmp-reverse")) {
+                if (a.equals("rev-icmp")) {
                     mpls = 1;
                     continue;
                 }
-                if (a.equals("mpls-forward")) {
+                if (a.equals("mpls")) {
                     mpls = 2;
                     continue;
                 }
-                if (a.equals("mpls-reverse")) {
+                if (a.equals("rev-mpls")) {
                     mpls = 3;
                     continue;
                 }
-                if (a.equals("bier-forward")) {
+                if (a.equals("bier")) {
                     mpls = 4;
                     continue;
                 }
-                if (a.equals("bier-reverse")) {
+                if (a.equals("rev-bier")) {
                     mpls = 5;
                     continue;
                 }

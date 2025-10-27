@@ -2190,12 +2190,12 @@ public class userExec {
         hl.add(null, false, 2, new int[]{2, -1}, "[str]", "string to send");
         hl.add(null, false, 1, new int[]{2}, "ping", "send echo request");
         hl.add(null, false, 2, new int[]{3, -1}, "<host>", "name of host");
-        hl.add(null, false, 3, new int[]{3, -1}, "mpls-forward", "specify mpls forward addressed");
-        hl.add(null, false, 3, new int[]{3, -1}, "mpls-reverse", "specify mpls reverse addressed");
-        hl.add(null, false, 3, new int[]{3, -1}, "bier-forward", "specify bier forward addressed");
-        hl.add(null, false, 3, new int[]{3, -1}, "bier-reverse", "specify bier reverse addressed");
-        hl.add(null, false, 3, new int[]{3, -1}, "icmp-forward", "specify icmp forward addressed");
-        hl.add(null, false, 3, new int[]{3, -1}, "icmp-reverse", "specify icmp reverse addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "icmp", "specify icmp forward addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "rev-icmp", "specify icmp reverse addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "mpls", "specify mpls forward addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "rev-mpls", "specify mpls reverse addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "bier", "specify bier forward addressed");
+        hl.add(null, false, 3, new int[]{3, -1}, "rev-bier", "specify bier reverse addressed");
         hl.add(null, false, 3, new int[]{3, -1}, "dontfrag", "specify dont fragment");
         hl.add(null, false, 3, new int[]{3, -1}, "multi", "wait for multiple responses");
         hl.add(null, false, 3, new int[]{3, -1}, "error", "consider errors in result");
@@ -2643,6 +2643,12 @@ public class userExec {
         hl.add(null, false, 6, new int[]{5, -1}, "<num>", "tos number");
         hl.add(null, false, 2, new int[]{3}, "pmtud", "discover available mtu");
         hl.add(null, false, 3, new int[]{4, -1}, "<host>", "name of host");
+        hl.add(null, false, 4, new int[]{4, -1}, "icmp", "specify icmp forward addressed");
+        hl.add(null, false, 4, new int[]{4, -1}, "rev-icmp", "specify icmp reverse addressed");
+        hl.add(null, false, 4, new int[]{4, -1}, "mpls", "specify mpls forward addressed");
+        hl.add(null, false, 4, new int[]{4, -1}, "rev-mpls", "specify mpls reverse addressed");
+        hl.add(null, false, 4, new int[]{4, -1}, "bier", "specify bier forward addressed");
+        hl.add(null, false, 4, new int[]{4, -1}, "rev-bier", "specify bier reverse addressed");
         hl.add(null, false, 4, new int[]{4, -1}, "ipv4", "specify ipv4 to use");
         hl.add(null, false, 4, new int[]{4, -1}, "ipv6", "specify ipv6 to use");
         hl.add(null, false, 4, new int[]{5}, "vrf", "specify vrf to use");
@@ -2673,12 +2679,6 @@ public class userExec {
         hl.add(null, false, 5, new int[]{4, -1}, "<num>", "sgt");
         hl.add(null, false, 4, new int[]{5}, "flow", "specify flow value");
         hl.add(null, false, 5, new int[]{4, -1}, "<num>", "flow");
-        hl.add(null, false, 4, new int[]{4, -1}, "mpls-forward", "specify mpls forward addressed");
-        hl.add(null, false, 4, new int[]{4, -1}, "mpls-reverse", "specify mpls reverse addressed");
-        hl.add(null, false, 4, new int[]{4, -1}, "bier-forward", "specify bier forward addressed");
-        hl.add(null, false, 4, new int[]{4, -1}, "bier-reverse", "specify bier reverse addressed");
-        hl.add(null, false, 4, new int[]{4, -1}, "icmp-forward", "specify icmp forward addressed");
-        hl.add(null, false, 4, new int[]{4, -1}, "icmp-reverse", "specify icmp reverse addressed");
         hl.add(null, true, 2, new int[]{3}, "arping", "send arp request");
         hl.add(null, true, 3, new int[]{4}, "<host>", "name of host");
         hl.add(null, true, 4, new int[]{5, -1}, "<name:ifc>", "name of interface");
@@ -4557,27 +4557,27 @@ public class userExec {
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("icmp-forward")) {
+            if (a.equals("icmp")) {
                 mpls = 0;
                 continue;
             }
-            if (a.equals("icmp-reverse")) {
+            if (a.equals("rev-icmp")) {
                 mpls = 1;
                 continue;
             }
-            if (a.equals("mpls-forward")) {
+            if (a.equals("mpls")) {
                 mpls = 2;
                 continue;
             }
-            if (a.equals("mpls-reverse")) {
+            if (a.equals("rev-mpls")) {
                 mpls = 3;
                 continue;
             }
-            if (a.equals("bier-forward")) {
+            if (a.equals("bier")) {
                 mpls = 4;
                 continue;
             }
-            if (a.equals("bier-reverse")) {
+            if (a.equals("rev-bier")) {
                 mpls = 5;
                 continue;
             }
