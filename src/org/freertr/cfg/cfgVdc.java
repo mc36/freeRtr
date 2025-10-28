@@ -106,6 +106,11 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
     public String biosName = null;
 
     /**
+     * uefi to use
+     */
+    public String uefiName = null;
+
+    /**
      * boot to use
      */
     public String bootName = null;
@@ -268,6 +273,7 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
         new userFilter("vdc definition .*", cmds.tabulator + "disk4 null", null),
         new userFilter("vdc definition .*", cmds.tabulator + "cdrom null", null),
         new userFilter("vdc definition .*", cmds.tabulator + "bios null", null),
+        new userFilter("vdc definition .*", cmds.tabulator + "uefi null", null),
         new userFilter("vdc definition .*", cmds.tabulator + "vga2vnc null", null),
         new userFilter("vdc definition .*", cmds.tabulator + "boot null", null),
         new userFilter("vdc definition .*", cmds.tabulator + "pinning null", null),
@@ -340,6 +346,7 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
         n.imageCpu = imageCpu;
         n.nicType = nicType;
         n.biosName = biosName;
+        n.uefiName = uefiName;
         n.bootName = bootName;
         n.vga2vnc = vga2vnc;
         n.cdromName = cdromName;
@@ -401,6 +408,8 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
         l.add(null, false, 1, new int[]{2}, "config", "set config file to use");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "name of image");
         l.add(null, false, 1, new int[]{2}, "bios", "set bios image to use");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "name of image");
+        l.add(null, false, 1, new int[]{2}, "uefi", "set uefi image to use");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "name of image");
         l.add(null, false, 1, new int[]{2}, "boot", "set boot arguments to use");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "parameters");
@@ -486,6 +495,7 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
         l.add(cmds.tabulator + "cpu " + cpuType);
         l.add(cmds.tabulator + "vga2vnc " + vga2vnc);
         l.add(cmds.tabulator + "bios " + biosName);
+        l.add(cmds.tabulator + "uefi " + uefiName);
         l.add(cmds.tabulator + "boot " + bootName);
         l.add(cmds.tabulator + "config " + configFile);
         l.add(cmds.tabulator + "image " + image1name);
@@ -557,6 +567,10 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
         }
         if (a.equals("bios")) {
             biosName = cmd.getRemaining();
+            return;
+        }
+        if (a.equals("uefi")) {
+            uefiName = cmd.getRemaining();
             return;
         }
         if (a.equals("boot")) {
@@ -804,6 +818,10 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             biosName = null;
             return;
         }
+        if (a.equals("uefi")) {
+            uefiName = null;
+            return;
+        }
         if (a.equals("boot")) {
             bootName = null;
             return;
@@ -1006,6 +1024,9 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             }
             if (biosName != null) {
                 cmd += " -bios " + biosName;
+            }
+            if (uefiName != null) {
+                cmd += " -drive if=pflash,format=raw,readonly,file=" + uefiName;
             }
             if (bootName != null) {
                 cmd += " -boot " + bootName;
