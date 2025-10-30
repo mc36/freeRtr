@@ -425,7 +425,7 @@ public class servForwarder extends servGeneric implements prtServS {
             return true;
         }
         if (location) {
-            secTelnet.sendLocation(con3, "" + id.peerAddr);
+            secTelnet.sendLocation(con3, "" + id);
         }
         pipeConnect.connect(con1, con3, true);
         return false;

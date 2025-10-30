@@ -60,6 +60,7 @@ aaa userlist access
  allowed configure terminal
  allowed interface .*
  allowed description .*
+ allowed telnet .*
  exit
 !
 aaa radius rad

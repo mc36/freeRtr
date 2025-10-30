@@ -58,6 +58,7 @@ import org.freertr.enc.encUrl;
 import org.freertr.pipe.pipeTerm;
 import org.freertr.prt.prtIcmptun;
 import org.freertr.sec.secClient;
+import org.freertr.sec.secTelnet;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -1961,6 +1962,7 @@ public class userExec {
     private void getHelpTelnet(userHelp hl) {
         hl.add(null, false, 2, new int[]{3, 4, -1}, "<host>", "name of host");
         hl.add(null, false, 3, new int[]{4, -1}, "[port]", "port on host");
+        hl.add(null, false, 4, new int[]{4, -1}, "location", "send source in telnet location");
         hl.add(null, false, 4, new int[]{4, -1}, "tcp", "transmission control protocol");
         hl.add(null, false, 4, new int[]{4, -1}, "udp", "user datagram protocol");
         hl.add(null, false, 4, new int[]{4, -1}, "ludp", "lightweight user datagram protocol");
@@ -4959,6 +4961,7 @@ public class userExec {
         cfgChat cht = null;
         String user = null;
         String pass = null;
+        boolean locat = false;
         byte[] pubkey = null;
         int proto = 0;
         int dgrm = servGeneric.protoTcp;
@@ -5025,6 +5028,10 @@ public class userExec {
                 dgrm = servGeneric.protoSctp;
                 continue;
             }
+            if (a.equals("location")) {
+                locat = true;
+                continue;
+            }
             if (a.equals("ssh")) {
                 secur = servGeneric.protoSsh;
                 dgrm = servGeneric.protoTcp;
@@ -5088,6 +5095,10 @@ public class userExec {
             return;
         }
         pipe.linePut(" ok!");
+        if (locat) {
+            a = pipe.settingsGet(pipeSetting.origin, "?");
+            secTelnet.sendLocation(strm, a);
+        }
         strm = secClient.startSecurity(pipe, strm, secur, pubkey, user, pass);
         if (strm == null) {
             return;
