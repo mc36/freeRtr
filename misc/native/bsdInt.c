@@ -8,9 +8,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <net/if.h>
-#ifndef __linux__
 #include <net/bpf.h>
-#endif
 #include <sys/ioctl.h>
 
 

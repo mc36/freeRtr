@@ -400,8 +400,8 @@ int main(int argc, char **argv) {
 
         struct rte_eth_conf port_conf;
         memset(&port_conf, 0, sizeof(port_conf));
-        uint16_t nb_rxd = desc_rx;
-        uint16_t nb_txd = desc_tx;
+        unsigned short nb_rxd = desc_rx;
+        unsigned short nb_txd = desc_tx;
         struct rte_eth_dev_info dev_info;
         memset(&dev_info, 0, sizeof(dev_info));
         struct rte_eth_txconf txconf;
