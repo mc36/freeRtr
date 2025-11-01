@@ -83,11 +83,11 @@ int dummy_profile_get_next_value(_In_ sai_switch_profile_id_t profile_id, _Out_ 
 
 const sai_service_method_table_t dummy_services = { dummy_profile_get_value, dummy_profile_get_next_value };
 
-void dummy_port_state_change(_In_ uint32_t count, _In_ sai_port_oper_status_notification_t *data) {
+void dummy_port_state_change(_In_ unsigned int count, _In_ sai_port_oper_status_notification_t *data) {
     printf("port state change\n");
 }
 
-void dummy_packet_event(_In_ sai_object_id_t switch_id, _In_ const void *buffer, _In_ sai_size_t buffer_size, _In_ uint32_t attr_count, _In_ const sai_attribute_t *attr_list) {
+void dummy_packet_event(_In_ sai_object_id_t switch_id, _In_ const void *buffer, _In_ sai_size_t buffer_size, _In_ unsigned int attr_count, _In_ const sai_attribute_t *attr_list) {
     printf("packet in\n");
 }
 

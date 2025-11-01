@@ -74,8 +74,8 @@ void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
     *len += snprintf((char*)&buf[*len], 128, "%s oerrors %li\r\n", (char*)pre, (long)stat.oerrors);
     *len += snprintf((char*)&buf[*len], 128, "%s nombuf %li\r\n", (char*)pre, (long)stat.rx_nombuf);
     for (int i = 0;; i++) {
-        uint64_t xstat_id;
-        uint64_t xstat_val;
+        unsigned long xstat_id;
+        unsigned long xstat_val;
         struct rte_eth_xstat_name xstat_nam;
         xstat_id = i;
         if (rte_eth_xstats_get_by_id(port, &xstat_id, &xstat_val, 1) != 1) return;
