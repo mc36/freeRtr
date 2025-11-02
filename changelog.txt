@@ -17627,3 +17627,6 @@ qc pass: ppp over tcp without timestamp
 ---------------------------------- 2025-10-23 14:50:01 25.10.23
 qc pass: ppp over tcp with winscale
 qc pass: ppp over tcp without winscale
+---------------------------------- 2025-11-02 11:34:59 25.11.2
+no todo: mpls inband performance measurement
+no todo: ioam as rfc9452

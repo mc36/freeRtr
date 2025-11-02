@@ -7,9 +7,6 @@ inspection dropped sessions do be able to close the sessions properly at layer4
 consider draft-ietf-idr-performance-routing
 
 
-ioam as rfc9452
-
-
 
 bridge and router have renumber knob
 
@@ -136,7 +133,6 @@ interface lo0 as lo-core, persistently
 
 bgp to have xr-alike neighbor/template statements with upgrade-cli
 rework snmp to use sensors
-mpls inband performance measurement
 backup path support to the spf class
 wcmp support to the spf class
 allow command to be a substring of an other
