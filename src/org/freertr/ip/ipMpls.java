@@ -161,6 +161,16 @@ public class ipMpls implements ifcUp {
     public int ethtyp = ipMpls.typeU;
 
     /**
+     * entropy marking
+     */
+    public int flow;
+
+    /**
+     * alternate marking
+     */
+    public int mark;
+
+    /**
      * ingress acl
      */
     public tabListing<tabAceslstN<addrIP>, addrIP> filterIn;
@@ -267,6 +277,19 @@ public class ipMpls implements ifcUp {
      * @param pck packet to send
      */
     public void send2eth(packHolder pck) {
+        if ((flow > 0) || (mark > 0)) {
+            int typ = pck.msbGetW(0);
+            pck.getSkip(2);
+            pck.MPLSntr = flow;
+            pck.MPLSmrkV = mark;
+            int old = pck.MPLSlabel;
+            pck.MPLSlabel = labelImp;
+            createMPLSheader(pck);
+            pck.MPLSlabel = old;
+            pck.msbPutW(0, typ);
+            pck.putSkip(2);
+            pck.merge2beg();
+        }
         if (cfilterOut != null) {
             pck.getSkip(2);
             if (filterPacket(pck, cfilterOut)) {
@@ -409,13 +432,14 @@ public class ipMpls implements ifcUp {
         if (debugger.ipMPLStrafL) {
             logger.debug("tx label=" + pck.MPLSlabel + " exp=" + pck.MPLSexp + " ttl=" + pck.MPLSttl + " bottom=" + pck.MPLSbottom);
         }
-        if (pck.MPLSmrk > 0) {
+        if (pck.MPLSmrkV > 0) {
             int old = pck.MPLSexp;
             pck.MPLSexp = (((int) bits.getTime() / 60000) & 1) << 2;
-            createMPLSheader(pck, pck.MPLSmrk, pck.MPLSbottom);
+            pck.MPLSmrkC = pck.MPLSexp;
+            createMPLSheader(pck, pck.MPLSmrkV, pck.MPLSbottom);
             createMPLSheader(pck, labelAltMark, false);
             pck.MPLSexp = old;
-            pck.MPLSmrk = 0;
+            pck.MPLSmrkV = 0;
             pck.MPLSbottom = false;
         }
         if (pck.MPLSntr > 0) {
@@ -604,7 +628,8 @@ public class ipMpls implements ifcUp {
             pck.MPLSttl = 255;
         }
         pck.MPLSntr = 0;
-        pck.MPLSmrk = 0;
+        pck.MPLSmrkV = 0;
+        pck.MPLSmrkC = 0;
     }
 
     /**
@@ -972,11 +997,8 @@ public class ipMpls implements ifcUp {
                     if (parseMPLSheader(pck)) {
                         return;
                     }
-                    if ((pck.MPLSexp & 4) == 0) {
-                        pck.MPLSmrk = pck.MPLSlabel;
-                    } else {
-                        pck.MPLSmrk = -pck.MPLSlabel;
-                    }
+                    pck.MPLSmrkC = pck.MPLSexp;
+                    pck.MPLSmrkV = pck.MPLSlabel;
                     if (!pck.MPLSbottom) {
                         continue;
                     }

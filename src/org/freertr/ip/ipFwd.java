@@ -1332,23 +1332,6 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         lower.lower.sendProto(pck, hop);
     }
 
-    private void ifaceMpls(ipFwdIface lower, packHolder pck, addrIP hop) {
-        cntrT.tx(pck);
-        if (!lower.ready) {
-            lower.cntr.drop(pck, counter.reasons.notUp);
-            return;
-        }
-        pck.putStart();
-        if (hop == null) {
-            lower.cntr.drop(pck, counter.reasons.badAddr);
-            return;
-        }
-        if (debugger.ipFwdTraf) {
-            logger.debug("tx label=" + hop);
-        }
-        lower.lower.sendMpls(pck, hop);
-    }
-
     private void ifaceAdjustMss(packHolder pck, int mss) {
         if (pck.IPprt != prtTcp.protoNum) {
             return;
@@ -1899,7 +1882,20 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
             ifaceProto(ifc, pck, hop);
             return;
         }
-        ifaceMpls(ifc, pck, hop);
+        cntrT.tx(pck);
+        if (!ifc.ready) {
+            ifc.cntr.drop(pck, counter.reasons.notUp);
+            return;
+        }
+        pck.putStart();
+        if (hop == null) {
+            ifc.cntr.drop(pck, counter.reasons.badAddr);
+            return;
+        }
+        if (debugger.ipFwdTraf) {
+            logger.debug("tx label=" + hop);
+        }
+        ifc.lower.sendMpls(pck, hop);
     }
 
     /**

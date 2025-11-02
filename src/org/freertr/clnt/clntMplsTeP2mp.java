@@ -239,7 +239,7 @@ public class clntMplsTeP2mp implements Runnable, ifcDn {
                 pck.MPLSntr = entr;
             }
             if (mark > 0) {
-                pck.MPLSmrk = mark;
+                pck.MPLSmrkV = mark;
             }
             if (ttl >= 0) {
                 pck.MPLSttl = ttl;

@@ -1552,6 +1552,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls access-group-common-out", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls inspect", null),
         new userFilter("interface .*", cmds.tabulator + "mpls ethertype unicast", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls flow 0", null),
+        new userFilter("interface .*", cmds.tabulator + "mpls mark 0", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls label-security", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls srv6-security", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "mpls netflow-rx", null),
@@ -6620,6 +6622,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                     break;
             }
             l.add(cmds.tabulator + "mpls ethertype " + a);
+            l.add(cmds.tabulator + "mpls flow " + mplsPack.flow);
+            l.add(cmds.tabulator + "mpls mark " + mplsPack.mark);
             cmds.cfgLine(l, !mplsPack.security, cmds.tabulator, "mpls label-security", "");
             cmds.cfgLine(l, !getSRv6sec(), cmds.tabulator, "mpls srv6-security", "");
             cmds.cfgLine(l, !mplsPack.netflowRx, cmds.tabulator, "mpls netflow-rx", "");
@@ -7165,6 +7169,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "unicast", "use the boring one");
         l.add(null, true, 3, new int[]{-1}, "multicast", "use the old one");
         l.add(null, true, 3, new int[]{-1}, "bier", "use the new one");
+        l.add(null, false, 2, new int[]{3}, "flow", "set flow label, -1 to map out");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "value of flow label");
+        l.add(null, false, 2, new int[]{3}, "mark", "set alternate marking label, -1 to map out");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "value of flow label");
         l.add(null, false, 2, new int[]{-1}, "label-security", "enable/disable security checks");
         l.add(null, false, 2, new int[]{-1}, "srv6-security", "enable/disable ip security checks");
         l.add(null, false, 2, new int[]{-1}, "netflow-rx", "netflow received packets");
@@ -10116,6 +10124,20 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             setup2mpls();
             return;
         }
+        if (s.equals("flow")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.flow = bits.str2num(cmd.word());
+            return;
+        }
+        if (s.equals("mark")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.mark = bits.str2num(cmd.word());
+            return;
+        }
         if (s.equals("access-group-in")) {
             if (mplsPack == null) {
                 return;
@@ -10285,6 +10307,20 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         String s = cmd.word();
         if (s.equals("enable")) {
             clear2mpls();
+            return;
+        }
+        if (s.equals("flow")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.flow = 0;
+            return;
+        }
+        if (s.equals("mark")) {
+            if (mplsPack == null) {
+                return;
+            }
+            mplsPack.mark = 0;
             return;
         }
         if (s.equals("access-group-in")) {

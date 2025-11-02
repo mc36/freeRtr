@@ -135,9 +135,14 @@ public class packHolder {
     public int MPLSntr;
 
     /**
-     * mpls alternate marking
+     * mpls alternate marking value
      */
-    public int MPLSmrk;
+    public int MPLSmrkV;
+
+    /**
+     * mpls alternate marking color
+     */
+    public int MPLSmrkC;
 
     /**
      * bier bitstring
@@ -376,7 +381,8 @@ public class packHolder {
         MPLSexp = 0;
         MPLSttl = 0;
         MPLSntr = 0;
-        MPLSmrk = 0;
+        MPLSmrkV = 0;
+        MPLSmrkC = 0;
         MPLSbottom = false;
         BIERbs = null;
         BIERoam = 0;
@@ -451,7 +457,8 @@ public class packHolder {
         MPLSexp = src.MPLSexp;
         MPLSttl = src.MPLSttl;
         MPLSntr = src.MPLSntr;
-        MPLSmrk = src.MPLSmrk;
+        MPLSmrkV = src.MPLSmrkV;
+        MPLSmrkC = src.MPLSmrkC;
         MPLSbottom = src.MPLSbottom;
         if (src.BIERbs == null) {
             BIERbs = null;
