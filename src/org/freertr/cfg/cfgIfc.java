@@ -2053,6 +2053,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel shutdown", null),
         new userFilter("interface .*", cmds.tabulator + "tunnel key 0", null),
         new userFilter("interface .*", cmds.tabulator + "tunnel flow -1", null),
+        new userFilter("interface .*", cmds.tabulator + "tunnel mark -1", null),
         new userFilter("interface .*", cmds.tabulator + "tunnel tos -1", null),
         new userFilter("interface .*", cmds.tabulator + "tunnel dontfrag -1", null),
         new userFilter("interface .*", cmds.tabulator + "tunnel ttl 255", null),
