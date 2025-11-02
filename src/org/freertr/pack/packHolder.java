@@ -132,7 +132,12 @@ public class packHolder {
     /**
      * mpls entropy
      */
-    public int MPLSrnd;
+    public int MPLSntr;
+
+    /**
+     * mpls alternate marking
+     */
+    public int MPLSmrk;
 
     /**
      * bier bitstring
@@ -370,7 +375,8 @@ public class packHolder {
         MPLSlabel = 0;
         MPLSexp = 0;
         MPLSttl = 0;
-        MPLSrnd = 0;
+        MPLSntr = 0;
+        MPLSmrk = 0;
         MPLSbottom = false;
         BIERbs = null;
         BIERoam = 0;
@@ -444,7 +450,8 @@ public class packHolder {
         MPLSlabel = src.MPLSlabel;
         MPLSexp = src.MPLSexp;
         MPLSttl = src.MPLSttl;
-        MPLSrnd = src.MPLSrnd;
+        MPLSntr = src.MPLSntr;
+        MPLSmrk = src.MPLSmrk;
         MPLSbottom = src.MPLSbottom;
         if (src.BIERbs == null) {
             BIERbs = null;

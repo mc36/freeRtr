@@ -108,17 +108,17 @@ public class ipMpls implements ifcUp {
     /**
      * metadata label indicator
      */
-    public final static int labelMli = 16;
+    public final static int labelMetaInd = 16;
 
     /**
      * metadata present indicator
      */
-    public final static int labelMlp = 17;
+    public final static int labelMetaPrs = 17;
 
     /**
-     * flow label indicator
+     * alternate marking label indicator
      */
-    public final static int labelFli = 18;
+    public final static int labelAltMark = 18;
 
     /**
      * bier downstream label
@@ -409,10 +409,19 @@ public class ipMpls implements ifcUp {
         if (debugger.ipMPLStrafL) {
             logger.debug("tx label=" + pck.MPLSlabel + " exp=" + pck.MPLSexp + " ttl=" + pck.MPLSttl + " bottom=" + pck.MPLSbottom);
         }
-        if (pck.MPLSrnd > 0) {
-            createMPLSheader(pck, pck.MPLSrnd, pck.MPLSbottom);
+        if (pck.MPLSmrk > 0) {
+            int old = pck.MPLSexp;
+            pck.MPLSexp = (((int) bits.getTime() / 60000) & 1) << 2;
+            createMPLSheader(pck, pck.MPLSmrk, pck.MPLSbottom);
+            createMPLSheader(pck, labelAltMark, false);
+            pck.MPLSexp = old;
+            pck.MPLSmrk = 0;
+            pck.MPLSbottom = false;
+        }
+        if (pck.MPLSntr > 0) {
+            createMPLSheader(pck, pck.MPLSntr, pck.MPLSbottom);
             createMPLSheader(pck, labelEntropy, false);
-            pck.MPLSrnd = 0;
+            pck.MPLSntr = 0;
             pck.MPLSbottom = false;
         }
         if (pck.MPLSlabel == labelImp) {
@@ -452,7 +461,7 @@ public class ipMpls implements ifcUp {
         if (((i >>> 20) & 0x7) != pck.BIERbsl) { // bsl
             return true;
         }
-        pck.MPLSrnd = i & 0xfffff; // entropy
+        pck.MPLSntr = i & 0xfffff; // entropy
         i = pck.msbGetD(4);
         pck.BIERid = i & 0xffff; // bfir id
         pck.IPprt = (i >>> 16) & 0x3f; // proto
@@ -483,7 +492,7 @@ public class ipMpls implements ifcUp {
         if (debugger.ipMPLStrafB) {
             logger.debug("tx bfir=" + pck.BIERid + " si=" + pck.BIERsi + " prt=" + pck.IPprt + " bs=" + bits.byteDump(pck.BIERbs, 0, -1));
         }
-        int i = pck.MPLSrnd & 0xfffff; // entropy
+        int i = pck.MPLSntr & 0xfffff; // entropy
         i |= (pck.BIERbsl & 0x7) << 20; // bsl
         i |= bierV << 24; // nibble, version
         pck.msbPutD(0, i);
@@ -504,7 +513,7 @@ public class ipMpls implements ifcUp {
         }
         pck.putSkip(i);
         pck.merge2beg();
-        pck.MPLSrnd = 0;
+        pck.MPLSntr = 0;
         pck.MPLSbottom = true;
     }
 
@@ -594,7 +603,8 @@ public class ipMpls implements ifcUp {
         } else {
             pck.MPLSttl = 255;
         }
-        pck.MPLSrnd = 0;
+        pck.MPLSntr = 0;
+        pck.MPLSmrk = 0;
     }
 
     /**
@@ -949,7 +959,24 @@ public class ipMpls implements ifcUp {
                     if (parseMPLSheader(pck)) {
                         return;
                     }
-                    pck.MPLSrnd = pck.MPLSlabel;
+                    pck.MPLSntr = pck.MPLSlabel;
+                    if (!pck.MPLSbottom) {
+                        continue;
+                    }
+                    if (fwd4 == null) {
+                        return;
+                    }
+                    fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwd4.commonLabel, pck);
+                    return;
+                case labelAltMark:
+                    if (parseMPLSheader(pck)) {
+                        return;
+                    }
+                    if ((pck.MPLSexp & 4) == 0) {
+                        pck.MPLSmrk = pck.MPLSlabel;
+                    } else {
+                        pck.MPLSmrk = -pck.MPLSlabel;
+                    }
                     if (!pck.MPLSbottom) {
                         continue;
                     }

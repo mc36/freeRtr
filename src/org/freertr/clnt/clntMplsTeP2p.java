@@ -118,9 +118,14 @@ public class clntMplsTeP2p implements Comparable<clntMplsTeP2p>, Runnable, ifcDn
     public int expr = -1;
 
     /**
-     * entrp[y value, -1 means maps out
+     * entropy value, -1 means maps out
      */
     public int entr = -1;
+
+    /**
+     * marking value, -1 means maps out
+     */
+    public int mark = -1;
 
     /**
      * ttl value
@@ -297,7 +302,10 @@ public class clntMplsTeP2p implements Comparable<clntMplsTeP2p>, Runnable, ifcDn
             pck.MPLSexp = expr;
         }
         if (entr > 0) {
-            pck.MPLSrnd = entr;
+            pck.MPLSntr = entr;
+        }
+        if (mark > 0) {
+            pck.MPLSmrk = mark;
         }
         if (ttl >= 0) {
             pck.MPLSttl = ttl;

@@ -587,6 +587,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public int tunFLW;
 
     /**
+     * sending mark value, -1 means maps out
+     */
+    public int tunMRK;
+
+    /**
      * sending ttl value, -1 means maps out
      */
     public int tunTTL;
@@ -4215,6 +4220,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         tunTOS = -1;
         tunDFN = -1;
         tunFLW = -1;
+        tunMRK = -1;
         tunTTL = 255;
         tunKey = 0;
         tunKey2 = 0;
@@ -4738,6 +4744,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunFQDN = tunExpBun.getTargets();
                 tunExpBun.expr = tunTOS;
                 tunExpBun.entr = tunFLW;
+                tunExpBun.mark = tunMRK;
                 tunExpBun.ttl = tunTTL;
                 tunExpBun.setUpper(ethtyp);
                 tunExpBun.workStart();
@@ -4755,6 +4762,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunFQDN = tunSrMpls.getTargets();
                 tunSrMpls.expr = tunTOS;
                 tunSrMpls.entr = tunFLW;
+                tunSrMpls.mark = tunMRK;
                 tunSrMpls.ttl = tunTTL;
                 tunSrMpls.prioS = tunPriS;
                 tunSrMpls.prioH = tunPriH;
@@ -4792,6 +4800,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunSrMpls.pcep = tunFQDN;
                 tunSrMpls.expr = tunTOS;
                 tunSrMpls.entr = tunFLW;
+                tunSrMpls.mark = tunMRK;
                 tunSrMpls.ttl = tunTTL;
                 tunSrMpls.prioS = tunPriS;
                 tunSrMpls.prioH = tunPriH;
@@ -4812,6 +4821,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunTeP2p.pcep = tunFQDN;
                 tunTeP2p.expr = tunTOS;
                 tunTeP2p.entr = tunFLW;
+                tunTeP2p.mark = tunMRK;
                 tunTeP2p.ttl = tunTTL;
                 tunTeP2p.ascId = tunAscId;
                 tunTeP2p.ascId2 = tunAscId2;
@@ -4836,6 +4846,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunTeP2p.descr = cfgAll.hostName + ":" + name;
                 tunTeP2p.expr = tunTOS;
                 tunTeP2p.entr = tunFLW;
+                tunTeP2p.mark = tunMRK;
                 tunTeP2p.ttl = tunTTL;
                 tunTeP2p.ascId = tunAscId;
                 tunTeP2p.ascId2 = tunAscId2;
@@ -4864,6 +4875,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunTeP2mp.descr = cfgAll.hostName + ":" + name;
                 tunTeP2mp.expr = tunTOS;
                 tunTeP2mp.entr = tunFLW;
+                tunTeP2mp.mark = tunMRK;
                 tunTeP2mp.ttl = tunTTL;
                 tunTeP2mp.prioS = tunPriS;
                 tunTeP2mp.prioH = tunPriH;
@@ -4887,6 +4899,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunFQDN = tunBier.getTargets();
                 tunBier.expr = tunTOS;
                 tunBier.entr = tunFLW;
+                tunBier.mark = tunMRK;
                 tunBier.ttl = tunTTL;
                 tunBier.setUpper(ethtyp);
                 tunBier.workStart();
@@ -4899,6 +4912,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunLdpP2p.target = tunTrg.copyBytes();
                 tunLdpP2p.expr = tunTOS;
                 tunLdpP2p.entr = tunFLW;
+                tunLdpP2p.mark = tunMRK;
                 tunLdpP2p.ttl = tunTTL;
                 tunLdpP2p.setUpper(ethtyp);
                 tunLdpP2p.workStart();
@@ -4914,6 +4928,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunFQDN = tunLdpTe.getTargets();
                 tunLdpTe.expr = tunTOS;
                 tunLdpTe.entr = tunFLW;
+                tunLdpTe.mark = tunMRK;
                 tunLdpTe.ttl = tunTTL;
                 tunLdpTe.setUpper(ethtyp);
                 tunLdpTe.workStart();
@@ -4927,6 +4942,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunLdpP2mp.target = "" + tunTrg;
                 tunLdpP2mp.expr = tunTOS;
                 tunLdpP2mp.entr = tunFLW;
+                tunLdpP2mp.mark = tunMRK;
                 tunLdpP2mp.ttl = tunTTL;
                 tunLdpP2mp.setUpper(ethtyp);
                 tunLdpP2mp.workStart();
@@ -4940,6 +4956,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunLdpP2mp.target = "" + tunTrg;
                 tunLdpP2mp.expr = tunTOS;
                 tunLdpP2mp.entr = tunFLW;
+                tunLdpP2mp.mark = tunMRK;
                 tunLdpP2mp.ttl = tunTTL;
                 tunLdpP2mp.setUpper(ethtyp);
                 tunLdpP2mp.workStart();
@@ -6319,6 +6336,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 l.add(cmds.tabulator + "tunnel tos " + tunTOS);
                 l.add(cmds.tabulator + "tunnel dontfrag " + tunDFN);
                 l.add(cmds.tabulator + "tunnel flow " + tunFLW);
+                l.add(cmds.tabulator + "tunnel mark " + tunMRK);
                 l.add(cmds.tabulator + "tunnel ttl " + tunTTL);
                 l.add(cmds.tabulator + "tunnel priority " + tunPriS + " " + tunPriH);
                 l.add(cmds.tabulator + "tunnel affinity " + tunAffE + " " + tunAffI + " " + tunAffM);
@@ -7064,6 +7082,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 4, new int[]{5, -1}, "<num>", "unique id");
         l.add(null, false, 5, new int[]{-1}, "<num>", "global id");
         l.add(null, false, 2, new int[]{3}, "flow", "set flow label, -1 to map out");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "value of flow label");
+        l.add(null, false, 2, new int[]{3}, "mark", "set alternate marking label, -1 to map out");
         l.add(null, false, 3, new int[]{-1}, "<num>", "value of flow label");
         l.add(null, false, 2, new int[]{3}, "key", "set security key, 0 to disable");
         l.add(null, false, 3, new int[]{4, -1}, "<num>", "value of key field");
@@ -9432,6 +9452,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             setup2tunnel();
             return;
         }
+        if (a.equals("mark")) {
+            tunMRK = bits.str2num(cmd.word());
+            setup2tunnel();
+            return;
+        }
         if (a.equals("sequence-datagrams")) {
             tunSeq = true;
             setup2tunnel();
@@ -9554,6 +9579,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (a.equals("flow")) {
             tunFLW = -1;
+            setup2tunnel();
+            return;
+        }
+        if (a.equals("mark")) {
+            tunMRK = -1;
             setup2tunnel();
             return;
         }
