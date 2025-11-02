@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.11.2-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-11-02 11:50:55, took 00:15:55, with 50 workers, on 4064 cases, 0 failed, 0 traces, 10 retries
+-;-;-;2025-11-02 12:22:43, took 00:12:43, with 50 workers, on 4066 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1497,6 +1497,8 @@ http://sources.freertr.org/cfg/mpls-ldp29.tst;mpls-ldp29.tst;success;static labe
 http://sources.freertr.org/cfg/mpls-ldp30.tst;mpls-ldp30.tst;success;static labels with ldp
 http://sources.freertr.org/cfg/mpls-ldp31.tst;mpls-ldp31.tst;success;labels from peer
 http://sources.freertr.org/cfg/mpls-ldp32.tst;mpls-ldp32.tst;success;ldp te
+http://sources.freertr.org/cfg/mpls-ldp33.tst;mpls-ldp33.tst;success;ldp with entropy label
+http://sources.freertr.org/cfg/mpls-ldp34.tst;mpls-ldp34.tst;success;ldp with alternate marking
 http://sources.freertr.org/cfg/mpls-nsh01.tst;mpls-nsh01.tst;success;nsh over ethernet
 http://sources.freertr.org/cfg/mpls-nsh02.tst;mpls-nsh02.tst;success;nsh over ethernet vlan
 http://sources.freertr.org/cfg/mpls-nsh03.tst;mpls-nsh03.tst;success;nsh over ethernet bridge

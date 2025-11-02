@@ -1493,6 +1493,8 @@ qc pass: static labels
 qc pass: static labels with ldp
 qc pass: labels from peer
 qc pass: ldp te
+qc pass: ldp with entropy label
+qc pass: ldp with alternate marking
 qc pass: nsh over ethernet
 qc pass: nsh over ethernet vlan
 qc pass: nsh over ethernet bridge

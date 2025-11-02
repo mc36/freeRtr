@@ -17630,3 +17630,6 @@ qc pass: ppp over tcp without winscale
 ---------------------------------- 2025-11-02 11:34:59 25.11.2
 no todo: mpls inband performance measurement
 no todo: ioam as rfc9452
+---------------------------------- 2025-11-02 12:10:00 25.11.2
+qc pass: ldp with entropy label
+qc pass: ldp with alternate marking
