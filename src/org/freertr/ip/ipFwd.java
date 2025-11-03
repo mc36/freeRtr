@@ -7,6 +7,7 @@ import org.freertr.addr.addrPrefix;
 import org.freertr.clnt.clntMplsTeP2p;
 import org.freertr.clnt.clntNetflow;
 import org.freertr.ifc.ifcEthTyp;
+import org.freertr.ifc.ifcEther;
 import org.freertr.ifc.ifcNshFwd;
 import org.freertr.pack.packHolder;
 import org.freertr.prt.prtTcp;
@@ -1904,10 +1905,11 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      * @param fwd4 ipv4 forwarder
      * @param fwd6 ipv6 forwarder
      * @param fwdE ethernet forwarder
+     * @param fwdM mpls forwarder
      * @param lab local label
      * @param pck packet to process
      */
-    protected void mplsRxPack(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, tabLabelEntry lab, packHolder pck) {
+    protected void mplsRxPack(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, ipMpls fwdM, tabLabelEntry lab, packHolder pck) {
         if (debugger.ipFwdTraf) {
             logger.debug("rx label=" + lab.label);
         }
@@ -1980,11 +1982,35 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
                 ipMpls.createMPLSheader(p);
                 doMpls(ntry.iface, ntry.hop, null, p);
             }
-            if (nedLoc) {
-                if (ipMpls.gotBierPck(fwd4, fwd6, fwdE, pck)) {
-                    logger.info("received invalid bier protocol on label " + lab.label);
-                }
+            if (!nedLoc) {
+                return;
             }
+            switch (pck.IPprt) {
+                case ipMpls.bierLabD:
+                case ipMpls.bierLabU:
+                    ipMpls.gotMplsPack(fwd4, fwd6, fwdE, fwdM, pck);
+                    return;
+                case ipMpls.bierIp4:
+                    if (fwd4 == null) {
+                        break;
+                    }
+                    fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwdM, fwd4.commonLabel, pck);
+                    return;
+                case ipMpls.bierIp6:
+                    if (fwd6 == null) {
+                        break;
+                    }
+                    fwd6.mplsRxPack(fwd4, fwd6, fwdE, fwdM, fwd6.commonLabel, pck);
+                    return;
+                case ipMpls.bierEth:
+                    if (fwdE == null) {
+                        break;
+                    }
+                    ifcEther.parseETHheader(pck, false);
+                    fwdE.recvPack(pck);
+                    return;
+            }
+            logger.info("received invalid bier protocol on label " + lab.label);
             return;
         }
         if (!pck.MPLSbottom) {

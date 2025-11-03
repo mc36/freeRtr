@@ -4605,7 +4605,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 lower = tunAplusP;
                 break;
             case srv6:
-                tunSrv6 = new prtSrv6(tunTrg, ethtyp, tunVrf.fwd4, tunVrf.fwd6);
+                tunSrv6 = new prtSrv6(tunTrg, ethtyp, tunVrf.fwd4, tunVrf.fwd6, mplsPack);
                 tunSrv6.setUpper(ethtyp);
                 lower = tunSrv6;
                 break;
@@ -5524,9 +5524,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (ipIf6 != null) {
             ipIf6.setPolka(polkaPack);
         }
-        if (polkaPack != null) {
+        if ((polkaPack != null) && (vrfFor != null)) {
             polkaPack.fwd4 = vrfFor.fwd4;
             polkaPack.fwd6 = vrfFor.fwd6;
+            polkaPack.fwdM = mplsPack;
         }
     }
 
@@ -5542,7 +5543,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             return;
         }
         clear2polka();
-        polkaPack = new ifcPolka(id, bas, max);
+        polkaPack = new ifcPolka(ethtyp, id, bas, max);
         ethtyp.addET(ifcPolka.type, "polka", polkaPack);
         ethtyp.updateET(ifcPolka.type, polkaPack);
         update2polka();

@@ -171,6 +171,16 @@ public class ipMpls implements ifcUp {
     public int mark;
 
     /**
+     * color 0 counter
+     */
+    public counter color0 = new counter();
+
+    /**
+     * color 1 counter
+     */
+    public counter color1 = new counter();
+
+    /**
      * ingress acl
      */
     public tabListing<tabAceslstN<addrIP>, addrIP> filterIn;
@@ -285,6 +295,11 @@ public class ipMpls implements ifcUp {
             int old = pck.MPLSlabel;
             pck.MPLSlabel = labelImp;
             createMPLSheader(pck);
+            if (pck.MPLSmrkC == 0) {
+                color0.tx(pck);
+            } else {
+                color1.tx(pck);
+            }
             pck.MPLSlabel = old;
             pck.msbPutW(0, typ);
             pck.putSkip(2);
@@ -702,7 +717,7 @@ public class ipMpls implements ifcUp {
                 return;
             }
         }
-        gotMplsPack(fwd4, fwd6, fwdE, security, pck);
+        gotMplsPack(fwd4, fwd6, fwdE, this, pck);
     }
 
     /**
@@ -711,9 +726,11 @@ public class ipMpls implements ifcUp {
      * @param fwdP polka forwarder
      * @param fwd4 ipv4 forwarder
      * @param fwd6 ipv6 forwarder
+     * @param fwdE ethtyp forwarder
+     * @param fwdM mpls forwarder
      * @param pck packet to read
      */
-    public static void gotPolkaPack(ifcPolka fwdP, ipFwd fwd4, ipFwd fwd6, packHolder pck) {
+    public static void gotPolkaPack(ifcPolka fwdP, ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, ipMpls fwdM, packHolder pck) {
         int id = fwdP.decodeRouteId(pck);
         if (debugger.ifcPolkaEvnt) {
             logger.debug("fwd to=" + id + " at=" + fwdP.localId + " route=" + bits.byteDump(pck.NSHmdv, 0, -1));
@@ -734,7 +751,7 @@ public class ipMpls implements ifcUp {
                         fwd = fwd6;
                         break;
                     case ipMpls.typeU:
-                        gotMplsPack(fwd4, fwd6, null, false, pck);
+                        gotMplsPack(fwd4, fwd6, fwdE, fwdM, pck);
                         return;
                     default:
                         return;
@@ -743,7 +760,7 @@ public class ipMpls implements ifcUp {
                 if (fwd.mplsPropTtl) {
                     pck.MPLSttl = pck.NSHttl;
                 }
-                fwd.mplsRxPack(fwd4, fwd6, null, fwd.commonLabel, pck);
+                fwd.mplsRxPack(fwd4, fwd6, fwdE, fwdM, fwd.commonLabel, pck);
                 return;
             }
             tabIndex<addrIP> idx = new tabIndex<addrIP>(id, null);
@@ -826,7 +843,7 @@ public class ipMpls implements ifcUp {
                 fwd = fwd6;
                 break;
             case ipMpls.typeU:
-                gotMplsPack(fwd4, fwd6, null, false, pck);
+                gotMplsPack(fwd4, fwd6, fwdE, fwdM, pck);
                 return;
             default:
                 return;
@@ -835,7 +852,7 @@ public class ipMpls implements ifcUp {
         if (fwd.mplsPropTtl) {
             pck.MPLSttl = pck.NSHttl;
         }
-        fwd.mplsRxPack(fwd4, fwd6, null, fwd.commonLabel, pck);
+        fwd.mplsRxPack(fwd4, fwd6, fwdE, fwdM, fwd.commonLabel, pck);
     }
 
     /**
@@ -912,7 +929,7 @@ public class ipMpls implements ifcUp {
                 fwd = ntry.route6;
                 break;
             case ipMpls.typeU:
-                gotMplsPack(ntry.route4, ntry.route6, null, false, pck);
+                gotMplsPack(ntry.route4, ntry.route6, null, null, pck);
                 return;
             case ifcNshFwd.type:
                 if (ifcNshFwd.parseNSHheader(pck)) {
@@ -938,7 +955,7 @@ public class ipMpls implements ifcUp {
         if (fwd.mplsPropTtl) {
             pck.MPLSttl = pck.NSHttl;
         }
-        fwd.mplsRxPack(ntry.route4, ntry.route6, null, fwd.commonLabel, pck);
+        fwd.mplsRxPack(ntry.route4, ntry.route6, null, null, fwd.commonLabel, pck);
     }
 
     /**
@@ -948,9 +965,9 @@ public class ipMpls implements ifcUp {
      * @param fwd4 ipv4 forwarder
      * @param fwd6 ipv6 forwarder
      * @param fwdE ethernet forwarder
-     * @param secure secure configuration
+     * @param fwdM mpls forwarder
      */
-    public static void gotMplsPack(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, boolean secure, packHolder pck) {
+    public static void gotMplsPack(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, ipMpls fwdM, packHolder pck) {
         int ttl = -1;
         for (;;) {
             if (parseMPLSheader(pck)) {
@@ -969,7 +986,7 @@ public class ipMpls implements ifcUp {
                     if (fwd4 == null) {
                         return;
                     }
-                    fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwd4.commonLabel, pck);
+                    fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwdM, fwd4.commonLabel, pck);
                     return;
                 case labelExp6:
                     if (!pck.MPLSbottom) {
@@ -978,7 +995,7 @@ public class ipMpls implements ifcUp {
                     if (fwd6 == null) {
                         return;
                     }
-                    fwd6.mplsRxPack(fwd4, fwd6, fwdE, fwd6.commonLabel, pck);
+                    fwd6.mplsRxPack(fwd4, fwd6, fwdE, fwdM, fwd6.commonLabel, pck);
                     return;
                 case labelEntropy:
                     if (parseMPLSheader(pck)) {
@@ -991,7 +1008,7 @@ public class ipMpls implements ifcUp {
                     if (fwd4 == null) {
                         return;
                     }
-                    fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwd4.commonLabel, pck);
+                    fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwdM, fwd4.commonLabel, pck);
                     return;
                 case labelAltMark:
                     if (parseMPLSheader(pck)) {
@@ -999,13 +1016,20 @@ public class ipMpls implements ifcUp {
                     }
                     pck.MPLSmrkC = pck.MPLSexp;
                     pck.MPLSmrkV = pck.MPLSlabel;
+                    if (fwdM != null) {
+                        if (pck.MPLSmrkC == 0) {
+                            fwdM.color0.rx(pck);
+                        } else {
+                            fwdM.color1.rx(pck);
+                        }
+                    }
                     if (!pck.MPLSbottom) {
                         continue;
                     }
                     if (fwd4 == null) {
                         return;
                     }
-                    fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwd4.commonLabel, pck);
+                    fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwdM, fwd4.commonLabel, pck);
                     return;
                 case labelAlert:
                     continue;
@@ -1026,60 +1050,23 @@ public class ipMpls implements ifcUp {
             if (fwd.mplsPropTtl) {
                 ttl = pck.MPLSttl;
             }
-            if (secure) {
-                if ((fwd != fwd4) && (fwd != fwd6)) {
-                    logger.info("received violating label " + pck.MPLSlabel + " on " + fwdE);
-                    ntry.cntr.drop(pck, counter.reasons.denied);
-                    return;
+            if (fwdM != null) {
+                if (fwdM.security) {
+                    if ((fwd != fwd4) && (fwd != fwd6)) {
+                        logger.info("received violating label " + pck.MPLSlabel + " on " + fwdE);
+                        ntry.cntr.drop(pck, counter.reasons.denied);
+                        return;
+                    }
                 }
             }
             if (ntry.nextHop != null) {
-                fwd.mplsRxPack(fwd4, fwd6, fwdE, ntry, pck);
+                fwd.mplsRxPack(fwd4, fwd6, fwdE, fwdM, ntry, pck);
                 return;
             }
             if (pck.MPLSbottom) {
-                fwd.mplsRxPack(fwd4, fwd6, fwdE, ntry, pck);
+                fwd.mplsRxPack(fwd4, fwd6, fwdE, fwdM, ntry, pck);
                 return;
             }
-        }
-    }
-
-    /**
-     * do one bier packet
-     *
-     * @param pck packet to read
-     * @param fwd4 ipv4 forwarder
-     * @param fwd6 ipv6 forwarder
-     * @param fwdE ethernet forwarder
-     * @return false on success, true on error
-     */
-    public static boolean gotBierPck(ipFwd fwd4, ipFwd fwd6, ifcEthTyp fwdE, packHolder pck) {
-        switch (pck.IPprt) {
-            case bierLabD:
-            case bierLabU:
-                gotMplsPack(fwd4, fwd6, fwdE, false, pck);
-                return false;
-            case bierIp4:
-                if (fwd4 == null) {
-                    return true;
-                }
-                fwd4.mplsRxPack(fwd4, fwd6, fwdE, fwd4.commonLabel, pck);
-                return false;
-            case bierIp6:
-                if (fwd6 == null) {
-                    return true;
-                }
-                fwd6.mplsRxPack(fwd4, fwd6, fwdE, fwd6.commonLabel, pck);
-                return false;
-            case bierEth:
-                if (fwdE == null) {
-                    return true;
-                }
-                ifcEther.parseETHheader(pck, false);
-                fwdE.recvPack(pck);
-                return false;
-            default:
-                return true;
         }
     }
 

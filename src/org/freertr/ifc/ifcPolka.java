@@ -79,13 +79,25 @@ public class ifcPolka implements ifcUp {
     public ipFwd fwd6;
 
     /**
+     * ethtyp forwarder
+     */
+    public final ifcEthTyp fwdE;
+
+    /**
+     * mpls forwarder
+     */
+    public ipMpls fwdM;
+
+    /**
      * create instance
      *
+     * @param e ethtyp
      * @param id local id
      * @param bas crc base
      * @param max crc max
      */
-    public ifcPolka(int id, int bas, int max) {
+    public ifcPolka(ifcEthTyp e, int id, int bas, int max) {
+        fwdE = e;
         localId = id;
         crcBase = bas;
         crcMax = max;
@@ -320,7 +332,7 @@ public class ifcPolka implements ifcUp {
         if (debugger.ifcPolkaEvnt) {
             logger.debug("rx ttl=" + pck.NSHttl + " proto=" + pck.IPprt + " route=" + bits.byteDump(pck.NSHmdv, 0, -1));
         }
-        ipMpls.gotPolkaPack(this, fwd4, fwd6, pck);
+        ipMpls.gotPolkaPack(this, fwd4, fwd6, fwdE, fwdM, pck);
     }
 
     /**

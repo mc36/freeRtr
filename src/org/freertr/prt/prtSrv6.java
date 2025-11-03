@@ -36,6 +36,8 @@ public class prtSrv6 implements ifcDn {
 
     private ipFwd fwd6;
 
+    private ipMpls fwdM;
+
     private addrPrefix<addrIP> prf;
 
     /**
@@ -54,12 +56,14 @@ public class prtSrv6 implements ifcDn {
      * @param et forwarder
      * @param f4 forwarder
      * @param f6 forwarder
+     * @param fm forwarder
      */
-    public prtSrv6(addrIP adr, ifcEthTyp et, ipFwd f4, ipFwd f6) {
+    public prtSrv6(addrIP adr, ifcEthTyp et, ipFwd f4, ipFwd f6, ipMpls fm) {
         prf = new addrPrefix<addrIP>(adr, addrIP.size * 4);
         ethtyp = et;
         fwd4 = f4;
         fwd6 = f6;
+        fwdM = fm;
         ip6 = new ipCor6();
     }
 
@@ -153,7 +157,7 @@ public class prtSrv6 implements ifcDn {
         ipMpls.beginMPLSfields(pck, true);
         pck.MPLSlabel = bits.msbGetD(pck.IPtrg.getBytes(), 12);
         ipMpls.createMPLSheader(pck);
-        ipMpls.gotMplsPack(fwd4, fwd6, ethtyp, false, pck);
+        ipMpls.gotMplsPack(fwd4, fwd6, ethtyp, fwdM, pck);
     }
 
 }
