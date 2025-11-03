@@ -181,6 +181,16 @@ public class ipMpls implements ifcUp {
     public counter color1 = new counter();
 
     /**
+     * last color received
+     */
+    public int colorR;
+
+    /**
+     * last color transmitted
+     */
+    public int colorT;
+
+    /**
      * ingress acl
      */
     public tabListing<tabAceslstN<addrIP>, addrIP> filterIn;
@@ -295,6 +305,14 @@ public class ipMpls implements ifcUp {
             int old = pck.MPLSlabel;
             pck.MPLSlabel = labelImp;
             createMPLSheader(pck);
+            if (colorT != pck.MPLSmrkC) {
+                colorT = pck.MPLSmrkC;
+                if (pck.MPLSmrkC == 0) {
+                    color0.clear();
+                } else {
+                    color1.clear();
+                }
+            }
             if (pck.MPLSmrkC == 0) {
                 color0.tx(pck);
             } else {
@@ -1017,6 +1035,14 @@ public class ipMpls implements ifcUp {
                     pck.MPLSmrkC = pck.MPLSexp;
                     pck.MPLSmrkV = pck.MPLSlabel;
                     if (fwdM != null) {
+                        if (fwdM.colorR != pck.MPLSmrkC) {
+                            fwdM.colorR = pck.MPLSmrkC;
+                            if (pck.MPLSmrkC == 0) {
+                                fwdM.color0.clear();
+                            } else {
+                                fwdM.color1.clear();
+                            }
+                        }
                         if (pck.MPLSmrkC == 0) {
                             fwdM.color0.rx(pck);
                         } else {

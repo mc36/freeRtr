@@ -2360,6 +2360,24 @@ public class userShow {
                 rdr.putStrTab(ntry.getShow());
                 return null;
             }
+            if (a.equals("marking")) {
+                cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+                if (ifc == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                if (ifc.mplsPack == null) {
+                    cmd.error("not enabled");
+                    return null;
+                }
+                List<String> l = new ArrayList<String>();
+                l.add("color0:");
+                l.addAll(ifc.mplsPack.color0.getShFull(false, false));
+                l.add("color1:");
+                l.addAll(ifc.mplsPack.color1.getShFull(false, false));
+                rdr.putStrArr(l);
+                return null;
+            }
             if (a.equals("inspect")) {
                 cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
                 if (ifc == null) {

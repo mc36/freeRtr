@@ -1898,6 +1898,8 @@ public class userExec {
         hl.add(null, false, 3, new int[]{4, -1}, "forwarding", "mpls forwarding table");
         hl.add(null, false, 4, new int[]{-1}, "[num]", "label to view");
         hl.add(null, false, 3, new int[]{-1}, "interfaces", "mpls interface table");
+        hl.add(null, false, 3, new int[]{4}, "marking", "mpls marking counters");
+        hl.add(null, false, 4, new int[]{-1}, "<name:ifc>", "interface to see");
         hl.add(null, false, 3, new int[]{4}, "inspect", "mpls session table");
         hl.add(null, false, 4, new int[]{5}, "<name:ifc>", "interface to see");
         hl.add(null, false, 5, new int[]{-1}, "session", "list of sessions");
