@@ -25,6 +25,17 @@ column 1 name val
 .
 exit
 
+sensor bgp4pref
+path bgp4/pref/pref
+prefix freertr-bgp4pref
+key name bgp4/pref
+command sho ipv4 bgp 65535 tables
+prepend bgp4_pref_
+replace \s _
+column 1 name val
+.
+exit
+
 sensor bgp6peer
 path bgp6/peer/peer
 prefix freertr-bgp6peer
@@ -47,6 +58,17 @@ prefix freertr-bgp6perf
 key name bgp6/perf
 command sho ipv6 bgp 65535 best | exc last
 prepend bgp6_perf_
+replace \s _
+column 1 name val
+.
+exit
+
+sensor bgp6pref
+path bgp6/pref/pref
+prefix freertr-bgp6pref
+key name bgp6/pref
+command sho ipv6 bgp 65535 tables
+prepend bgp6_pref_
 replace \s _
 column 1 name val
 .
