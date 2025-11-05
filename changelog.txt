@@ -17633,3 +17633,6 @@ no todo: ioam as rfc9452
 ---------------------------------- 2025-11-02 12:10:00 25.11.2
 qc pass: ldp with entropy label
 qc pass: ldp with alternate marking
+---------------------------------- 2025-11-05 16:12:20 25.11.5
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
