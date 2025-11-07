@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.11.7-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-11-07 11:55:48, took 00:12:32, with 50 workers, on 4066 cases, 0 failed, 0 traces, 3 retries
+-;-;-;2025-11-07 13:24:23, took 00:22:14, with 50 workers, on 4066 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
