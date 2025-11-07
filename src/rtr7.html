@@ -9,8 +9,8 @@
 .bad { color: red }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v25.11.6-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-11-07 01:52:05, took 01:13:57, with 10 workers, on 844 cases, 28 failed, 0 traces, 196 retries<br/>
+release: freeRouter v25.11.7-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2025-11-07 11:23:19, took 00:42:04, with 10 workers, on 844 cases, 6 failed, 0 traces, 42 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar, other: xdp<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -400,9 +400,9 @@ jvm: java -Xmx256m -jar rtr.jar, other: xdp<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout035.tst">p4lang-rout035.tst</a></td><td>success</td><td>p4lang: hairpin vlan bridging</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout036.tst">p4lang-rout036.tst</a></td><td>success</td><td>p4lang: hairpin vlan mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout037.tst">p4lang-rout037.tst</a></td><td>success</td><td>p4lang: hairpin pppoe routing</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout038.tst">p4lang-rout038.tst</a></td><td>#6-run-r3 tping 100 10 1.1.4.2 vrf v1</td><td>p4lang: hairpin vlan pppoe routing</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout038.tst">p4lang-rout038.tst</a></td><td>success</td><td>p4lang: hairpin vlan pppoe routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout039.tst">p4lang-rout039.tst</a></td><td>success</td><td>p4lang: hairpin pppoe mpls</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout040.tst">p4lang-rout040.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.106 vrf v1 sou lo0</td><td>p4lang: hairpin vlan pppoe mpls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout040.tst">p4lang-rout040.tst</a></td><td>success</td><td>p4lang: hairpin vlan pppoe mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout041.tst">p4lang-rout041.tst</a></td><td>success</td><td>p4lang: hairpin vpls/ldp with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout042.tst">p4lang-rout042.tst</a></td><td>#6-run-r5 tping 100 10 3.3.3.106 vrf v1 sou lo0</td><td>p4lang: hairpin vlan vpls/ldp with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout043.tst">p4lang-rout043.tst</a></td><td>success</td><td>p4lang: hairpin eompls</td></tr>
@@ -419,7 +419,7 @@ jvm: java -Xmx256m -jar rtr.jar, other: xdp<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout054.tst">p4lang-rout054.tst</a></td><td>success</td><td>p4lang: gre routing over bundle</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout055.tst">p4lang-rout055.tst</a></td><td>success</td><td>p4lang: gre routing over bundle vlan</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout056.tst">p4lang-rout056.tst</a></td><td>success</td><td>p4lang: gre routing over hairpin</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout057.tst">p4lang-rout057.tst</a></td><td>#6-run-r1 tping 100 10 1.1.1.2 vrf v1</td><td>p4lang: gre routing over hairpin vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout057.tst">p4lang-rout057.tst</a></td><td>success</td><td>p4lang: gre routing over hairpin vlan</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout058.tst">p4lang-rout058.tst</a></td><td>success</td><td>p4lang: gre routing over bridge</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout059.tst">p4lang-rout059.tst</a></td><td>success</td><td>p4lang: gre routing over vlan bridge</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout060.tst">p4lang-rout060.tst</a></td><td>success</td><td>p4lang: gre mpls over ipv4</td></tr>
@@ -430,7 +430,7 @@ jvm: java -Xmx256m -jar rtr.jar, other: xdp<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout065.tst">p4lang-rout065.tst</a></td><td>success</td><td>p4lang: gre mpls over bundle</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout066.tst">p4lang-rout066.tst</a></td><td>success</td><td>p4lang: gre mpls over bundle vlan</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout067.tst">p4lang-rout067.tst</a></td><td>success</td><td>p4lang: gre mpls over hairpin</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout068.tst">p4lang-rout068.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.103 vrf v1 sou lo0</td><td>p4lang: gre mpls over hairpin vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout068.tst">p4lang-rout068.tst</a></td><td>success</td><td>p4lang: gre mpls over hairpin vlan</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout069.tst">p4lang-rout069.tst</a></td><td>success</td><td>p4lang: gre mpls over bridge</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout070.tst">p4lang-rout070.tst</a></td><td>success</td><td>p4lang: gre mpls over vlan bridge</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout071.tst">p4lang-rout071.tst</a></td><td>success</td><td>p4lang: l2tp routing over ipv4</td></tr>
@@ -690,26 +690,26 @@ jvm: java -Xmx256m -jar rtr.jar, other: xdp<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout325.tst">p4lang-rout325.tst</a></td><td>success</td><td>p4lang: qinq eompls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout326.tst">p4lang-rout326.tst</a></td><td>success</td><td>p4lang: bundle qinq vpls/ldp with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout327.tst">p4lang-rout327.tst</a></td><td>success</td><td>p4lang: bundle qinq eompls</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout328.tst">p4lang-rout328.tst</a></td><td>#6-run-r1 tping 100 30 1.1.2.2 vrf v1</td><td>p4lang: qinq pppoe routing</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout329.tst">p4lang-rout329.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.104 vrf v1 sou lo0</td><td>p4lang: qinq pppoe mpls</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout330.tst">p4lang-rout330.tst</a></td><td>#6-run-r1 tping 100 10 1.1.4.2 vrf v1</td><td>p4lang: hairpin qinq routing</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout331.tst">p4lang-rout331.tst</a></td><td>#6-run-r4 tping 100 10 1.1.2.6 vrf v1</td><td>p4lang: hairpin qinq bridging</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout332.tst">p4lang-rout332.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.106 vrf v1 sou lo0</td><td>p4lang: hairpin qinq mpls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout328.tst">p4lang-rout328.tst</a></td><td>success</td><td>p4lang: qinq pppoe routing</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout329.tst">p4lang-rout329.tst</a></td><td>success</td><td>p4lang: qinq pppoe mpls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout330.tst">p4lang-rout330.tst</a></td><td>success</td><td>p4lang: hairpin qinq routing</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout331.tst">p4lang-rout331.tst</a></td><td>success</td><td>p4lang: hairpin qinq bridging</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout332.tst">p4lang-rout332.tst</a></td><td>success</td><td>p4lang: hairpin qinq mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout333.tst">p4lang-rout333.tst</a></td><td>#6-run-r3 tping 100 10 1.1.4.2 vrf v1</td><td>p4lang: hairpin qinq pppoe routing</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout334.tst">p4lang-rout334.tst</a></td><td>#6-run-r5 tping 100 10 3.3.3.103 vrf v1 sou lo0</td><td>p4lang: hairpin qinq vpls/ldp with bgp</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout335.tst">p4lang-rout335.tst</a></td><td>#6-run-r5 tping 100 10 3.3.3.103 vrf v1 sou lo0</td><td>p4lang: hairpin qinq eompls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout334.tst">p4lang-rout334.tst</a></td><td>#6-run-r5 tping 100 10 3.3.3.106 vrf v1 sou lo0</td><td>p4lang: hairpin qinq vpls/ldp with bgp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout335.tst">p4lang-rout335.tst</a></td><td>success</td><td>p4lang: hairpin qinq eompls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout336.tst">p4lang-rout336.tst</a></td><td>success</td><td>p4lang: qinq evpn/cmac with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout337.tst">p4lang-rout337.tst</a></td><td>success</td><td>p4lang: bundle qinq evpn/cmac with bgp</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout338.tst">p4lang-rout338.tst</a></td><td>#6-run-r5 tping 100 10 3.3.3.103 vrf v1 sou lo0</td><td>p4lang: hairpin qinq evpn/cmac with bgp</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout339.tst">p4lang-rout339.tst</a></td><td>#6-run-r1 tping 100 10 1.1.1.2 vrf v1</td><td>p4lang: gre routing over qinq</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout340.tst">p4lang-rout340.tst</a></td><td>#6-run-r1 tping 100 10 1.1.3.2 vrf v1</td><td>p4lang: gre routing over bundle qinq</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout341.tst">p4lang-rout341.tst</a></td><td>#6-run-r3 tping 100 10 9.9.9.1 vrf v2</td><td>p4lang: gre routing over hairpin qinq</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout342.tst">p4lang-rout342.tst</a></td><td>#6-run-r1 tping 100 10 1.1.1.2 vrf v1</td><td>p4lang: gre routing over qinq bridge</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout343.tst">p4lang-rout343.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.103 vrf v1 sou lo0</td><td>p4lang: gre mpls over qinq</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout344.tst">p4lang-rout344.tst</a></td><td>#6-run-r1 tping 100 30 1.1.1.2 vrf v1</td><td>p4lang: l2tp routing over qinq</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout345.tst">p4lang-rout345.tst</a></td><td>#6-run-r1 tping 100 30 2.2.2.103 vrf v1 sou lo0</td><td>p4lang: l2tp mpls over qinq</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout346.tst">p4lang-rout346.tst</a></td><td>#6-run-r4 tping 100 10 1.1.2.5 vrf v1</td><td>p4lang: vxlan over qinq</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout347.tst">p4lang-rout347.tst</a></td><td>#6-run-r4 tping 100 10 1.1.2.5 vrf v1</td><td>p4lang: pckoudp over qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout338.tst">p4lang-rout338.tst</a></td><td>#6-run-r5 tping 100 10 3.3.3.106 vrf v1 sou lo0</td><td>p4lang: hairpin qinq evpn/cmac with bgp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout339.tst">p4lang-rout339.tst</a></td><td>success</td><td>p4lang: gre routing over qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout340.tst">p4lang-rout340.tst</a></td><td>success</td><td>p4lang: gre routing over bundle qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout341.tst">p4lang-rout341.tst</a></td><td>#6-run-r1 tping 100 10 1.1.1.2 vrf v1</td><td>p4lang: gre routing over hairpin qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout342.tst">p4lang-rout342.tst</a></td><td>success</td><td>p4lang: gre routing over qinq bridge</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout343.tst">p4lang-rout343.tst</a></td><td>success</td><td>p4lang: gre mpls over qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout344.tst">p4lang-rout344.tst</a></td><td>success</td><td>p4lang: l2tp routing over qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout345.tst">p4lang-rout345.tst</a></td><td>success</td><td>p4lang: l2tp mpls over qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout346.tst">p4lang-rout346.tst</a></td><td>success</td><td>p4lang: vxlan over qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout347.tst">p4lang-rout347.tst</a></td><td>success</td><td>p4lang: pckoudp over qinq</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout348.tst">p4lang-rout348.tst</a></td><td>not applicable</td><td>p4lang: multicast qinq routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout349.tst">p4lang-rout349.tst</a></td><td>not applicable</td><td>p4lang: multicast bundle qinq routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout350.tst">p4lang-rout350.tst</a></td><td>not applicable</td><td>p4lang: mldp qinq core</td></tr>
@@ -718,8 +718,8 @@ jvm: java -Xmx256m -jar rtr.jar, other: xdp<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout353.tst">p4lang-rout353.tst</a></td><td>not applicable</td><td>p4lang: mldp qinq ingress edge</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout354.tst">p4lang-rout354.tst</a></td><td>not applicable</td><td>p4lang: bier qinq core</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout355.tst">p4lang-rout355.tst</a></td><td>not applicable</td><td>p4lang: bier bundle qinq core</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout356.tst">p4lang-rout356.tst</a></td><td>#6-run-r3 tping 100 10 2.2.2.101 vrf v1 sou eth1.111.222</td><td>p4lang: qinq nsh</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout357.tst">p4lang-rout357.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.203 vrf v1 sou lo1</td><td>p4lang: qinq polka</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout356.tst">p4lang-rout356.tst</a></td><td>success</td><td>p4lang: qinq nsh</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout357.tst">p4lang-rout357.tst</a></td><td>success</td><td>p4lang: qinq polka</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout358.tst">p4lang-rout358.tst</a></td><td>success</td><td>p4lang: l2vpn over bundle qinq mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout359.tst">p4lang-rout359.tst</a></td><td>success</td><td>p4lang: l3vpn over bundle qinq mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout360.tst">p4lang-rout360.tst</a></td><td>success</td><td>p4lang: qinq local connect</td></tr>
@@ -755,8 +755,8 @@ jvm: java -Xmx256m -jar rtr.jar, other: xdp<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout390.tst">p4lang-rout390.tst</a></td><td>success</td><td>p4lang: pwhe mpls push</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout391.tst">p4lang-rout391.tst</a></td><td>success</td><td>p4lang: l2vpn over pwhe mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout392.tst">p4lang-rout392.tst</a></td><td>success</td><td>p4lang: l3vpn over pwhe mpls</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout393.tst">p4lang-rout393.tst</a></td><td>#6-run-r1 tping 100 10 1.1.1.2 vrf v1</td><td>p4lang: pwhe routing over qinq</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout394.tst">p4lang-rout394.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.103 vrf v1 sou lo0</td><td>p4lang: pwhe mpls over qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout393.tst">p4lang-rout393.tst</a></td><td>success</td><td>p4lang: pwhe routing over qinq</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout394.tst">p4lang-rout394.tst</a></td><td>success</td><td>p4lang: pwhe mpls over qinq</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout395.tst">p4lang-rout395.tst</a></td><td>success</td><td>p4lang: bridge routing over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout396.tst">p4lang-rout396.tst</a></td><td>success</td><td>p4lang: mixed bridge routing over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout397.tst">p4lang-rout397.tst</a></td><td>success</td><td>p4lang: routed vpls/ldp with bgp</td></tr>
