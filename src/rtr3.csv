@@ -1,5 +1,5 @@
 url;file;udp;dpdk;xdp;bmv2;tofino;test
--;-;-;-;-;-;-;freeRouter v25.11.6-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v25.11.7-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;not ok;ok;ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;not ok;ok;ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;not ok;ok;ok;p4lang: egress access list
@@ -744,7 +744,7 @@ http://sources.freertr.org/cfg/p4lang-rout392.tst;p4lang-rout392.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout393.tst;p4lang-rout393.tst;ok;ok;not ok;ok;ok;p4lang: pwhe routing over qinq
 http://sources.freertr.org/cfg/p4lang-rout394.tst;p4lang-rout394.tst;ok;ok;not ok;ok;ok;p4lang: pwhe mpls over qinq
 http://sources.freertr.org/cfg/p4lang-rout395.tst;p4lang-rout395.tst;ok;ok;ok;not ok;ok;p4lang: bridge routing over backplane
-http://sources.freertr.org/cfg/p4lang-rout396.tst;p4lang-rout396.tst;ok;ok;ok;not ok;ok;p4lang: mixed bridge routing over backplane
+http://sources.freertr.org/cfg/p4lang-rout396.tst;p4lang-rout396.tst;ok;ok;ok;ok;ok;p4lang: mixed bridge routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout397.tst;p4lang-rout397.tst;ok;ok;ok;ok;ok;p4lang: routed vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout398.tst;p4lang-rout398.tst;ok;ok;ok;ok;ok;p4lang: routed vlan vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout399.tst;p4lang-rout399.tst;ok;ok;ok;ok;ok;p4lang: routed qinq vpls/ldp with bgp
