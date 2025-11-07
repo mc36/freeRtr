@@ -386,9 +386,9 @@ http://sources.freertr.org/cfg/p4lang-rout034.tst;p4lang-rout034.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout035.tst;p4lang-rout035.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan bridging
 http://sources.freertr.org/cfg/p4lang-rout036.tst;p4lang-rout036.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan mpls
 http://sources.freertr.org/cfg/p4lang-rout037.tst;p4lang-rout037.tst;ok;ok;ok;ok;ok;p4lang: hairpin pppoe routing
-http://sources.freertr.org/cfg/p4lang-rout038.tst;p4lang-rout038.tst;ok;ok;not ok;ok;ok;p4lang: hairpin vlan pppoe routing
+http://sources.freertr.org/cfg/p4lang-rout038.tst;p4lang-rout038.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan pppoe routing
 http://sources.freertr.org/cfg/p4lang-rout039.tst;p4lang-rout039.tst;ok;ok;ok;ok;ok;p4lang: hairpin pppoe mpls
-http://sources.freertr.org/cfg/p4lang-rout040.tst;p4lang-rout040.tst;ok;ok;not ok;ok;ok;p4lang: hairpin vlan pppoe mpls
+http://sources.freertr.org/cfg/p4lang-rout040.tst;p4lang-rout040.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan pppoe mpls
 http://sources.freertr.org/cfg/p4lang-rout041.tst;p4lang-rout041.tst;ok;ok;ok;ok;ok;p4lang: hairpin vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout042.tst;p4lang-rout042.tst;ok;ok;not ok;ok;ok;p4lang: hairpin vlan vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout043.tst;p4lang-rout043.tst;ok;ok;ok;ok;ok;p4lang: hairpin eompls
@@ -405,7 +405,7 @@ http://sources.freertr.org/cfg/p4lang-rout053.tst;p4lang-rout053.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout054.tst;p4lang-rout054.tst;ok;ok;ok;ok;ok;p4lang: gre routing over bundle
 http://sources.freertr.org/cfg/p4lang-rout055.tst;p4lang-rout055.tst;ok;ok;ok;ok;ok;p4lang: gre routing over bundle vlan
 http://sources.freertr.org/cfg/p4lang-rout056.tst;p4lang-rout056.tst;ok;ok;ok;ok;ok;p4lang: gre routing over hairpin
-http://sources.freertr.org/cfg/p4lang-rout057.tst;p4lang-rout057.tst;ok;ok;not ok;ok;ok;p4lang: gre routing over hairpin vlan
+http://sources.freertr.org/cfg/p4lang-rout057.tst;p4lang-rout057.tst;ok;ok;ok;ok;ok;p4lang: gre routing over hairpin vlan
 http://sources.freertr.org/cfg/p4lang-rout058.tst;p4lang-rout058.tst;ok;ok;ok;ok;ok;p4lang: gre routing over bridge
 http://sources.freertr.org/cfg/p4lang-rout059.tst;p4lang-rout059.tst;ok;ok;ok;ok;ok;p4lang: gre routing over vlan bridge
 http://sources.freertr.org/cfg/p4lang-rout060.tst;p4lang-rout060.tst;ok;ok;ok;ok;ok;p4lang: gre mpls over ipv4
@@ -416,7 +416,7 @@ http://sources.freertr.org/cfg/p4lang-rout064.tst;p4lang-rout064.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout065.tst;p4lang-rout065.tst;ok;ok;ok;ok;ok;p4lang: gre mpls over bundle
 http://sources.freertr.org/cfg/p4lang-rout066.tst;p4lang-rout066.tst;ok;ok;ok;ok;ok;p4lang: gre mpls over bundle vlan
 http://sources.freertr.org/cfg/p4lang-rout067.tst;p4lang-rout067.tst;ok;ok;ok;ok;ok;p4lang: gre mpls over hairpin
-http://sources.freertr.org/cfg/p4lang-rout068.tst;p4lang-rout068.tst;ok;ok;not ok;ok;ok;p4lang: gre mpls over hairpin vlan
+http://sources.freertr.org/cfg/p4lang-rout068.tst;p4lang-rout068.tst;ok;ok;ok;ok;ok;p4lang: gre mpls over hairpin vlan
 http://sources.freertr.org/cfg/p4lang-rout069.tst;p4lang-rout069.tst;ok;ok;ok;ok;ok;p4lang: gre mpls over bridge
 http://sources.freertr.org/cfg/p4lang-rout070.tst;p4lang-rout070.tst;ok;ok;ok;ok;ok;p4lang: gre mpls over vlan bridge
 http://sources.freertr.org/cfg/p4lang-rout071.tst;p4lang-rout071.tst;ok;ok;ok;ok;ok;p4lang: l2tp routing over ipv4
@@ -676,26 +676,26 @@ http://sources.freertr.org/cfg/p4lang-rout324.tst;p4lang-rout324.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout325.tst;p4lang-rout325.tst;ok;ok;ok;ok;ok;p4lang: qinq eompls
 http://sources.freertr.org/cfg/p4lang-rout326.tst;p4lang-rout326.tst;ok;ok;ok;ok;ok;p4lang: bundle qinq vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout327.tst;p4lang-rout327.tst;ok;ok;ok;ok;ok;p4lang: bundle qinq eompls
-http://sources.freertr.org/cfg/p4lang-rout328.tst;p4lang-rout328.tst;ok;ok;not ok;ok;ok;p4lang: qinq pppoe routing
-http://sources.freertr.org/cfg/p4lang-rout329.tst;p4lang-rout329.tst;ok;ok;not ok;ok;ok;p4lang: qinq pppoe mpls
-http://sources.freertr.org/cfg/p4lang-rout330.tst;p4lang-rout330.tst;ok;ok;not ok;ok;ok;p4lang: hairpin qinq routing
-http://sources.freertr.org/cfg/p4lang-rout331.tst;p4lang-rout331.tst;ok;ok;not ok;ok;ok;p4lang: hairpin qinq bridging
-http://sources.freertr.org/cfg/p4lang-rout332.tst;p4lang-rout332.tst;ok;ok;not ok;ok;ok;p4lang: hairpin qinq mpls
+http://sources.freertr.org/cfg/p4lang-rout328.tst;p4lang-rout328.tst;ok;ok;ok;ok;ok;p4lang: qinq pppoe routing
+http://sources.freertr.org/cfg/p4lang-rout329.tst;p4lang-rout329.tst;ok;ok;ok;ok;ok;p4lang: qinq pppoe mpls
+http://sources.freertr.org/cfg/p4lang-rout330.tst;p4lang-rout330.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq routing
+http://sources.freertr.org/cfg/p4lang-rout331.tst;p4lang-rout331.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq bridging
+http://sources.freertr.org/cfg/p4lang-rout332.tst;p4lang-rout332.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq mpls
 http://sources.freertr.org/cfg/p4lang-rout333.tst;p4lang-rout333.tst;ok;ok;not ok;ok;ok;p4lang: hairpin qinq pppoe routing
 http://sources.freertr.org/cfg/p4lang-rout334.tst;p4lang-rout334.tst;ok;ok;not ok;ok;ok;p4lang: hairpin qinq vpls/ldp with bgp
-http://sources.freertr.org/cfg/p4lang-rout335.tst;p4lang-rout335.tst;ok;ok;not ok;ok;ok;p4lang: hairpin qinq eompls
+http://sources.freertr.org/cfg/p4lang-rout335.tst;p4lang-rout335.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq eompls
 http://sources.freertr.org/cfg/p4lang-rout336.tst;p4lang-rout336.tst;ok;ok;ok;ok;ok;p4lang: qinq evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout337.tst;p4lang-rout337.tst;ok;ok;ok;ok;ok;p4lang: bundle qinq evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout338.tst;p4lang-rout338.tst;ok;ok;not ok;ok;ok;p4lang: hairpin qinq evpn/cmac with bgp
-http://sources.freertr.org/cfg/p4lang-rout339.tst;p4lang-rout339.tst;ok;ok;not ok;ok;ok;p4lang: gre routing over qinq
-http://sources.freertr.org/cfg/p4lang-rout340.tst;p4lang-rout340.tst;ok;ok;not ok;ok;ok;p4lang: gre routing over bundle qinq
+http://sources.freertr.org/cfg/p4lang-rout339.tst;p4lang-rout339.tst;ok;ok;ok;ok;ok;p4lang: gre routing over qinq
+http://sources.freertr.org/cfg/p4lang-rout340.tst;p4lang-rout340.tst;ok;ok;ok;ok;ok;p4lang: gre routing over bundle qinq
 http://sources.freertr.org/cfg/p4lang-rout341.tst;p4lang-rout341.tst;ok;ok;not ok;ok;ok;p4lang: gre routing over hairpin qinq
-http://sources.freertr.org/cfg/p4lang-rout342.tst;p4lang-rout342.tst;ok;ok;not ok;ok;ok;p4lang: gre routing over qinq bridge
-http://sources.freertr.org/cfg/p4lang-rout343.tst;p4lang-rout343.tst;ok;ok;not ok;ok;ok;p4lang: gre mpls over qinq
-http://sources.freertr.org/cfg/p4lang-rout344.tst;p4lang-rout344.tst;ok;ok;not ok;ok;ok;p4lang: l2tp routing over qinq
-http://sources.freertr.org/cfg/p4lang-rout345.tst;p4lang-rout345.tst;ok;ok;not ok;ok;ok;p4lang: l2tp mpls over qinq
-http://sources.freertr.org/cfg/p4lang-rout346.tst;p4lang-rout346.tst;ok;ok;not ok;ok;ok;p4lang: vxlan over qinq
-http://sources.freertr.org/cfg/p4lang-rout347.tst;p4lang-rout347.tst;ok;ok;not ok;ok;ok;p4lang: pckoudp over qinq
+http://sources.freertr.org/cfg/p4lang-rout342.tst;p4lang-rout342.tst;ok;ok;ok;ok;ok;p4lang: gre routing over qinq bridge
+http://sources.freertr.org/cfg/p4lang-rout343.tst;p4lang-rout343.tst;ok;ok;ok;ok;ok;p4lang: gre mpls over qinq
+http://sources.freertr.org/cfg/p4lang-rout344.tst;p4lang-rout344.tst;ok;ok;ok;ok;ok;p4lang: l2tp routing over qinq
+http://sources.freertr.org/cfg/p4lang-rout345.tst;p4lang-rout345.tst;ok;ok;ok;ok;ok;p4lang: l2tp mpls over qinq
+http://sources.freertr.org/cfg/p4lang-rout346.tst;p4lang-rout346.tst;ok;ok;ok;ok;ok;p4lang: vxlan over qinq
+http://sources.freertr.org/cfg/p4lang-rout347.tst;p4lang-rout347.tst;ok;ok;ok;ok;ok;p4lang: pckoudp over qinq
 http://sources.freertr.org/cfg/p4lang-rout348.tst;p4lang-rout348.tst;ok;ok;not ok;ok;ok;p4lang: multicast qinq routing
 http://sources.freertr.org/cfg/p4lang-rout349.tst;p4lang-rout349.tst;ok;ok;not ok;ok;ok;p4lang: multicast bundle qinq routing
 http://sources.freertr.org/cfg/p4lang-rout350.tst;p4lang-rout350.tst;ok;ok;not ok;ok;ok;p4lang: mldp qinq core
@@ -704,8 +704,8 @@ http://sources.freertr.org/cfg/p4lang-rout352.tst;p4lang-rout352.tst;ok;ok;not o
 http://sources.freertr.org/cfg/p4lang-rout353.tst;p4lang-rout353.tst;ok;ok;not ok;ok;ok;p4lang: mldp qinq ingress edge
 http://sources.freertr.org/cfg/p4lang-rout354.tst;p4lang-rout354.tst;ok;ok;not ok;ok;ok;p4lang: bier qinq core
 http://sources.freertr.org/cfg/p4lang-rout355.tst;p4lang-rout355.tst;ok;ok;not ok;ok;ok;p4lang: bier bundle qinq core
-http://sources.freertr.org/cfg/p4lang-rout356.tst;p4lang-rout356.tst;ok;ok;not ok;ok;ok;p4lang: qinq nsh
-http://sources.freertr.org/cfg/p4lang-rout357.tst;p4lang-rout357.tst;ok;ok;not ok;not ok;ok;p4lang: qinq polka
+http://sources.freertr.org/cfg/p4lang-rout356.tst;p4lang-rout356.tst;ok;ok;ok;ok;ok;p4lang: qinq nsh
+http://sources.freertr.org/cfg/p4lang-rout357.tst;p4lang-rout357.tst;ok;ok;ok;not ok;ok;p4lang: qinq polka
 http://sources.freertr.org/cfg/p4lang-rout358.tst;p4lang-rout358.tst;ok;ok;ok;ok;ok;p4lang: l2vpn over bundle qinq mpls
 http://sources.freertr.org/cfg/p4lang-rout359.tst;p4lang-rout359.tst;ok;ok;ok;ok;ok;p4lang: l3vpn over bundle qinq mpls
 http://sources.freertr.org/cfg/p4lang-rout360.tst;p4lang-rout360.tst;ok;ok;ok;ok;ok;p4lang: qinq local connect
@@ -741,8 +741,8 @@ http://sources.freertr.org/cfg/p4lang-rout389.tst;p4lang-rout389.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout390.tst;p4lang-rout390.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls push
 http://sources.freertr.org/cfg/p4lang-rout391.tst;p4lang-rout391.tst;ok;ok;ok;ok;ok;p4lang: l2vpn over pwhe mpls
 http://sources.freertr.org/cfg/p4lang-rout392.tst;p4lang-rout392.tst;ok;ok;ok;ok;ok;p4lang: l3vpn over pwhe mpls
-http://sources.freertr.org/cfg/p4lang-rout393.tst;p4lang-rout393.tst;ok;ok;not ok;ok;ok;p4lang: pwhe routing over qinq
-http://sources.freertr.org/cfg/p4lang-rout394.tst;p4lang-rout394.tst;ok;ok;not ok;ok;ok;p4lang: pwhe mpls over qinq
+http://sources.freertr.org/cfg/p4lang-rout393.tst;p4lang-rout393.tst;ok;ok;ok;ok;ok;p4lang: pwhe routing over qinq
+http://sources.freertr.org/cfg/p4lang-rout394.tst;p4lang-rout394.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls over qinq
 http://sources.freertr.org/cfg/p4lang-rout395.tst;p4lang-rout395.tst;ok;ok;ok;not ok;ok;p4lang: bridge routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout396.tst;p4lang-rout396.tst;ok;ok;ok;ok;ok;p4lang: mixed bridge routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout397.tst;p4lang-rout397.tst;ok;ok;ok;ok;ok;p4lang: routed vpls/ldp with bgp
