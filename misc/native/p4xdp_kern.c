@@ -616,7 +616,7 @@ __u32 xdp_router(struct xdp_md *ctx) {
     hash ^= get32msb(macaddr, 8);
     __u32 sgt = 0;
 
-    for (__u32 rounds = 0; rounds < 3; rounds++) {
+    for (__u32 rounds = 0; rounds < 4; rounds++) {
 
         __u64 bufP = sizeof(macaddr) + 2;
         revalidatePacket(bufP);
@@ -1303,59 +1303,7 @@ subif_tx:
         hash = ((hash >> 16) ^ hash) & 0xffff;
         hash = ((hash >> 8) ^ hash) & 0xff;
         hash = ((hash >> 4) ^ hash) & 0xf;
-        switch (hash) {
-        case 0:
-            prt = bunr->out[0];
-            break;
-        case 1:
-            prt = bunr->out[1];
-            break;
-        case 2:
-            prt = bunr->out[2];
-            break;
-        case 3:
-            prt = bunr->out[3];
-            break;
-        case 4:
-            prt = bunr->out[4];
-            break;
-        case 5:
-            prt = bunr->out[5];
-            break;
-        case 6:
-            prt = bunr->out[6];
-            break;
-        case 7:
-            prt = bunr->out[7];
-            break;
-        case 8:
-            prt = bunr->out[8];
-            break;
-        case 9:
-            prt = bunr->out[9];
-            break;
-        case 10:
-            prt = bunr->out[10];
-            break;
-        case 11:
-            prt = bunr->out[11];
-            break;
-        case 12:
-            prt = bunr->out[12];
-            break;
-        case 13:
-            prt = bunr->out[13];
-            break;
-        case 14:
-            prt = bunr->out[14];
-            break;
-        case 15:
-            prt = bunr->out[15];
-            break;
-        default:
-            prt = bunr->out[0];
-            break;
-        }
+        prt = bunr->out[hash];
         if (bunr->cmd != 2) goto done;
 
     }
