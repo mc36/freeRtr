@@ -64,6 +64,7 @@ qc pass: sep tunneling with capwap
 qc pass: ethernet tunneling with capwap
 qc pass: vlan tunneling with capwap
 qc pass: tunnel interface with capwap
+qc pass: capwap server
 qc pass: dhcp
 qc pass: dhcp with arp/nd security
 qc pass: dhcp with static allocation
@@ -298,6 +299,7 @@ qc pass: sep tunneling with lwapp
 qc pass: ethernet tunneling with lwapp
 qc pass: vlan tunneling with lwapp
 qc pass: tunnel interface with lwapp
+qc pass: lwapp server
 qc pass: minenc over ipv4
 qc pass: minenc over ipv6
 qc pass: minenc over minenc

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.11.9-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-11-09 09:33:21, took 00:13:39, with 50 workers, on 4068 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2025-11-09 10:15:08, took 00:13:14, with 50 workers, on 4070 cases, 0 failed, 0 traces, 3 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -68,6 +68,7 @@ http://sources.freertr.org/cfg/conn-capwap10.tst;conn-capwap10.tst;success;sep t
 http://sources.freertr.org/cfg/conn-capwap11.tst;conn-capwap11.tst;success;ethernet tunneling with capwap
 http://sources.freertr.org/cfg/conn-capwap12.tst;conn-capwap12.tst;success;vlan tunneling with capwap
 http://sources.freertr.org/cfg/conn-capwap13.tst;conn-capwap13.tst;success;tunnel interface with capwap
+http://sources.freertr.org/cfg/conn-capwap14.tst;conn-capwap14.tst;success;capwap server
 http://sources.freertr.org/cfg/conn-dhcp01.tst;conn-dhcp01.tst;success;dhcp
 http://sources.freertr.org/cfg/conn-dhcp02.tst;conn-dhcp02.tst;success;dhcp with arp/nd security
 http://sources.freertr.org/cfg/conn-dhcp03.tst;conn-dhcp03.tst;success;dhcp with static allocation
@@ -302,6 +303,7 @@ http://sources.freertr.org/cfg/conn-lwapp10.tst;conn-lwapp10.tst;success;sep tun
 http://sources.freertr.org/cfg/conn-lwapp11.tst;conn-lwapp11.tst;success;ethernet tunneling with lwapp
 http://sources.freertr.org/cfg/conn-lwapp12.tst;conn-lwapp12.tst;success;vlan tunneling with lwapp
 http://sources.freertr.org/cfg/conn-lwapp13.tst;conn-lwapp13.tst;success;tunnel interface with lwapp
+http://sources.freertr.org/cfg/conn-lwapp14.tst;conn-lwapp14.tst;success;lwapp server
 http://sources.freertr.org/cfg/conn-minenc01.tst;conn-minenc01.tst;success;minenc over ipv4
 http://sources.freertr.org/cfg/conn-minenc02.tst;conn-minenc02.tst;success;minenc over ipv6
 http://sources.freertr.org/cfg/conn-minenc03.tst;conn-minenc03.tst;success;minenc over minenc
