@@ -114,6 +114,7 @@ import org.freertr.rtr.rtrRpki;
 import org.freertr.rtr.rtrRpkiNeigh;
 import org.freertr.serv.servCapwap;
 import org.freertr.serv.servErspan;
+import org.freertr.serv.servLwapp;
 import org.freertr.serv.servNrpe;
 import org.freertr.serv.servOpenflow;
 import org.freertr.serv.servRpki;
@@ -1147,6 +1148,15 @@ public class userShow {
         }
         if (a.equals("capwap")) {
             servCapwap srv = cfgAll.srvrFind(new servCapwap(), cfgAll.dmnCapwap, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("lwapp")) {
+            servLwapp srv = cfgAll.srvrFind(new servLwapp(), cfgAll.dmnLwapp, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;

@@ -1795,6 +1795,8 @@ public class userExec {
         hl.add(cfgAll.dmnPckOudp.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "capwap", "capwap protocol information");
         hl.add(cfgAll.dmnCapwap.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
+        hl.add(null, false, 2, new int[]{3}, "lwapp", "lwapp protocol information");
+        hl.add(cfgAll.dmnLwapp.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "vxlan", "vxlan protocol information");
         hl.add(cfgAll.dmnVxlan.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "sdwan", "sdwan protocol information");
@@ -2424,6 +2426,9 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "<addr>", "peer address");
         hl.add(null, false, 2, new int[]{3}, "capwap", "capwap protocol client");
         hl.add(cfgAll.dmnCapwap.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
+        hl.add(null, false, 4, new int[]{-1}, "<addr>", "peer address");
+        hl.add(null, false, 2, new int[]{3}, "lwapp", "lwapp protocol client");
+        hl.add(cfgAll.dmnLwapp.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
         hl.add(null, false, 4, new int[]{-1}, "<addr>", "peer address");
         hl.add(null, false, 2, new int[]{3}, "vxlan", "vxlan protocol client");
         hl.add(cfgAll.dmnVxlan.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");

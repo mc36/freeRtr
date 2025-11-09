@@ -53,6 +53,7 @@ import org.freertr.serv.servL2tp3;
 import org.freertr.serv.servLdap;
 import org.freertr.serv.servLoadBalancer;
 import org.freertr.serv.servLpd;
+import org.freertr.serv.servLwapp;
 import org.freertr.serv.servModem;
 import org.freertr.serv.servMplsIp;
 import org.freertr.serv.servMplsOam;
@@ -668,6 +669,11 @@ public class cfgAll {
      * capwap daemons
      */
     public final static servGenList<servCapwap> dmnCapwap = new servGenList<servCapwap>();
+
+    /**
+     * lwapp daemons
+     */
+    public final static servGenList<servLwapp> dmnLwapp = new servGenList<servLwapp>();
 
     /**
      * vxlan daemons
@@ -4151,6 +4157,7 @@ public class cfgAll {
         dmnPckOtcp.getShRun(l, filter);
         dmnPckOtxt.getShRun(l, filter);
         dmnCapwap.getShRun(l, filter);
+        dmnLwapp.getShRun(l, filter);
         dmnVxlan.getShRun(l, filter);
         dmnGeneve.getShRun(l, filter);
         dmnL2f.getShRun(l, filter);
