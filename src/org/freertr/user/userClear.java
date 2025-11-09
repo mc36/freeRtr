@@ -69,6 +69,7 @@ import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.rtr.rtrRiftIface;
 import org.freertr.rtr.rtrRpkiNeigh;
 import org.freertr.serv.servAmt;
+import org.freertr.serv.servCapwap;
 import org.freertr.serv.servErspan;
 import org.freertr.serv.servEtherIp;
 import org.freertr.serv.servGre;
@@ -383,6 +384,20 @@ public class userClear {
         }
         if (a.equals("pckoudp")) {
             servPckOudp srv = cfgAll.srvrFind(new servPckOudp(), cfgAll.dmnPckOudp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return null;
+            }
+            srv.doClear(adr);
+            return null;
+        }
+        if (a.equals("capwap")) {
+            servCapwap srv = cfgAll.srvrFind(new servCapwap(), cfgAll.dmnCapwap, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;

@@ -23,6 +23,7 @@ import org.freertr.line.lineThread;
 import org.freertr.serv.servAmt;
 import org.freertr.serv.servBmp2mrt;
 import org.freertr.serv.servBstun;
+import org.freertr.serv.servCapwap;
 import org.freertr.serv.servCharGen;
 import org.freertr.serv.servDaytime;
 import org.freertr.serv.servDcp;
@@ -662,6 +663,11 @@ public class cfgAll {
      * pckotxt daemons
      */
     public final static servGenList<servPckOtxt> dmnPckOtxt = new servGenList<servPckOtxt>();
+
+    /**
+     * capwap daemons
+     */
+    public final static servGenList<servCapwap> dmnCapwap = new servGenList<servCapwap>();
 
     /**
      * vxlan daemons
@@ -4144,6 +4150,7 @@ public class cfgAll {
         dmnPckOdtls.getShRun(l, filter);
         dmnPckOtcp.getShRun(l, filter);
         dmnPckOtxt.getShRun(l, filter);
+        dmnCapwap.getShRun(l, filter);
         dmnVxlan.getShRun(l, filter);
         dmnGeneve.getShRun(l, filter);
         dmnL2f.getShRun(l, filter);

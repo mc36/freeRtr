@@ -250,6 +250,7 @@ public class servGenList<T extends servGeneric> {
         srvHelp(l, p, n, e, o, "bstun", cfgAll.dmnBStun.listServers());
         srvHelp(l, p, n, e, o, "mrt2bgp", cfgAll.dmnMrt2bgp.listServers());
         srvHelp(l, p, n, e, o, "stun", cfgAll.dmnStun.listServers());
+        srvHelp(l, p, n, e, o, "capwap", cfgAll.dmnCapwap.listServers());
         srvHelp(l, p, n, e, o, "vxlan", cfgAll.dmnVxlan.listServers());
         srvHelp(l, p, n, e, o, "geneve", cfgAll.dmnGeneve.listServers());
         srvHelp(l, p, n, e, o, "l2f", cfgAll.dmnL2f.listServers());
@@ -480,6 +481,9 @@ class servGenEntry {
         }
         if (typ.equals("pckotxt")) {
             return new servGenEntry(new servPckOtxt(), cfgAll.dmnPckOtxt);
+        }
+        if (typ.equals("capwap")) {
+            return new servGenEntry(new servCapwap(), cfgAll.dmnCapwap);
         }
         if (typ.equals("vxlan")) {
             return new servGenEntry(new servVxlan(), cfgAll.dmnVxlan);
