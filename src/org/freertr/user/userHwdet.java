@@ -49,6 +49,10 @@ public class userHwdet {
          */
         xsk,
         /**
+         * bsd
+         */
+        bsd,
+        /**
          * cmp1
          */
         cmp1,
@@ -169,6 +173,9 @@ public class userHwdet {
         if (s.equals("xsk")) {
             return ifcTyp.xsk;
         }
+        if (s.equals("bsd")) {
+            return ifcTyp.bsd;
+        }
         if (s.equals("cmp1")) {
             return ifcTyp.cmp1;
         }
@@ -223,6 +230,7 @@ public class userHwdet {
      */
     public static void setupIface(List<String> lst, String pth, ifcTyp typ, String nam, int mtu, String mac) {
         switch (typ) {
+            case bsd:
             case cmp1:
             case cmp2:
                 if (mac == null) {
@@ -287,6 +295,8 @@ public class userHwdet {
                 return path + "mapInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             case xsk:
                 return path + "xskInt.bin " + nam + " skb " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
+            case bsd:
+                return path + "bsdInt.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             case cmp1:
                 return path + "cmp1int.bin " + nam + " " + pb + " 127.0.0.1 " + ps + " 127.0.0.1";
             case cmp2:
@@ -502,6 +512,7 @@ public class userHwdet {
         lst.add("if [ $? -eq " + cod + " ] ; then");
         lst.add("  sync");
         switch (ifaceType) {
+            case bsd:
             case cmp1:
             case cmp2:
                 lst.add("  reboot");
@@ -652,6 +663,7 @@ public class userHwdet {
         starter.add("");
         starter.add("cd " + path);
         switch (ifaceType) {
+            case bsd:
             case cmp1:
             case cmp2:
                 starter.add("ifconfig -a > " + lstEth);
@@ -663,6 +675,7 @@ public class userHwdet {
         starter.add(rtr + " test hwred path " + path + " eth " + lstEth);
         doReboot(starter, 20);
         switch (ifaceType) {
+            case bsd:
             case cmp1:
             case cmp2:
                 starter.add("ifconfig lo0 127.0.0.1 mtu 65535 up");
