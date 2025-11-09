@@ -14,7 +14,7 @@ cd /rtr/
 ifconfig -a > /rtr/hwdet.eth
 echo "/dev/ttyu0: " > /rtr/hwdet.ser
 
-/java/bin/java -jar /rtr/rtr.jar test hwdet path /rtr/ iface cmp1 line raw busywait java /java/bin/
+/java/bin/java -jar /rtr/rtr.jar test hwdet path /rtr/ iface bsd line raw busywait java /java/bin/
 chmod 755 /rtr/*.sh
 /rtr/hwdet-all.sh
 

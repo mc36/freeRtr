@@ -1,21 +1,18 @@
 download 3
 reget-time 168
-vers 14 3
 
 mkdir %dwn%
 del-alw %tmp%
 mkdir %tmp%
 
-binary-down http://download.freebsd.org/releases/%fbsd1%/%vers1%.%vers2%-RELEASE/base.txz %dwn%/fbsd-%fbsd2%-base.txz
-binary-down http://download.freebsd.org/releases/%fbsd1%/%vers1%.%vers2%-RELEASE/kernel.txz %dwn%/fbsd-%fbsd2%-kern.txz
+binary-down %fbsd%/base.txz %dwn%/fbsd-%arch%-base.txz
+binary-down %fbsd%/kernel.txz %dwn%/fbsd-%arch%-kern.txz
 
-exec tar xf %dwn%/fbsd-%fbsd2%-base.txz -C %tmp%/
-exec tar xf %dwn%/fbsd-%fbsd2%-kern.txz -C %tmp%/
+exec tar xf %dwn%/fbsd-%arch%-base.txz -C %tmp%/
+exec tar xf %dwn%/fbsd-%arch%-kern.txz -C %tmp%/
 exec find %tmp%/ -type d -exec chmod 777 {} \;
 
 exec mv %tmp%/usr/lib/libdl.* %tmp%/lib/
-exec mv %tmp%/usr/lib/libpcap.* %tmp%/lib/
-exec mv %tmp%/usr/sbin/tcpdump %tmp%/sbin/
 exec mv %tmp%/usr/sbin/ndp %tmp%/sbin/
 del-alw %tmp%/usr
 
@@ -31,27 +28,9 @@ mkdir %tmp%/sys
 mkdir %tmp%/usr
 mkdir %tmp%/var
 mkdir %tmp%/tmp
-mkdir %tmp%/var/tcpdump
-mkdir %tmp%/var/chroot
-mkdir %tmp%/var/chroot/tcpdump
 exec ln -s ../lib %tmp%/usr/lib
 exec ln -s ../libexec %tmp%/usr/libexec
-exec tar xf %dwn%/fbsd-%fbsd2%.prts -C %tmp%/tmp/
-distinfo-ports %tmp%/tmp/packagesite.yaml fbsd-%fbsd2% http://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/
-catalog-sum
 
-select-one libdnet
-select-one libpfctl
-select-one tcpreplay
-select-one autogen
-
-select-lst
-select-sum
-distinfo-down
-distinfo-inst %tmp%/tmp/
-exec mv %tmp%/tmp/usr/local/sbin/* %tmp%/sbin/
-exec mv %tmp%/tmp/usr/local/bin/* %tmp%/bin/
-exec mv %tmp%/tmp/usr/local/lib/* %tmp%/lib/
 exec cpio --quiet -H newc -i -D %tmp%/tmp/ < %img%.cpio
 find-clear
 find-file %tmp%/tmp/usr/lib/ .*-linux-gnu.*
@@ -62,6 +41,7 @@ exec ln -s ./lib %tmp%/compat/linux/lib32
 exec ln -s ./lib %tmp%/compat/linux/lib64
 exec mv %tmp%/tmp/java %tmp%/
 exec mv %tmp%/tmp/rtr %tmp%/
+exec cp %img%.fbsd %tmp%/rtr/bsdInt.bin
 del-alw %tmp%/tmp
 mkdir %tmp%/tmp
 

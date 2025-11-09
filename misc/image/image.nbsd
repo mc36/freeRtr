@@ -6,24 +6,22 @@ mkdir %dwn%
 del-alw %tmp%
 mkdir %tmp%
 
-binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/binary/sets/base.tar.xz %dwn%/nbsd-%nbsd2%-base.txz
-binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/binary/sets/comp.tar.xz %dwn%/nbsd-%nbsd2%-comp.txz
-binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/binary/sets/etc.tar.xz %dwn%/nbsd-%nbsd2%-etc.txz
-binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/binary/sets/kern-GENERIC.tar.xz %dwn%/nbsd-%nbsd2%-kern.txz
-binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/binary/sets/modules.tar.xz %dwn%/nbsd-%nbsd2%-mods.txz
+binary-down %nbsd%/base.tar.xz %dwn%/nbsd-%arch%-base.txz
+binary-down %nbsd%/comp.tar.xz %dwn%/nbsd-%arch%-comp.txz
+binary-down %nbsd%/etc.tar.xz %dwn%/nbsd-%arch%-etc.txz
+binary-down %nbsd%/kern-GENERIC.tar.xz %dwn%/nbsd-%arch%-kern.txz
+binary-down %nbsd%/modules.tar.xz %dwn%/nbsd-%arch%-mods.txz
 
-exec tar xf %dwn%/nbsd-%nbsd2%-base.txz -C %tmp%/
-exec tar xf %dwn%/nbsd-%nbsd2%-etc.txz -C %tmp%/
-exec tar xf %dwn%/nbsd-%nbsd2%-kern.txz -C %tmp%/
-exec tar xf %dwn%/nbsd-%nbsd2%-mods.txz -C %tmp%/
+exec tar xf %dwn%/nbsd-%arch%-base.txz -C %tmp%/
+exec tar xf %dwn%/nbsd-%arch%-etc.txz -C %tmp%/
+exec tar xf %dwn%/nbsd-%arch%-kern.txz -C %tmp%/
+exec tar xf %dwn%/nbsd-%arch%-mods.txz -C %tmp%/
 exec find %tmp%/ -type d -exec chmod 777 {} \;
 
 exec mv %tmp%/usr/mdec/bootxx_cd9660 %tmp%/
 exec mv %tmp%/usr/mdec/boot %tmp%/
 exec mv %tmp%/usr/lib/libintl.* %tmp%/lib/
 exec mv %tmp%/usr/lib/librt.* %tmp%/lib/
-exec mv %tmp%/usr/lib/libpcap.* %tmp%/lib/
-exec mv %tmp%/usr/sbin/tcpdump %tmp%/sbin/
 exec mv %tmp%/usr/sbin/ndp %tmp%/sbin/
 del-alw %tmp%/usr
 
@@ -39,27 +37,9 @@ mkdir %tmp%/sys
 mkdir %tmp%/usr
 mkdir %tmp%/var
 mkdir %tmp%/tmp
-mkdir %tmp%/var/tcpdump
-mkdir %tmp%/var/chroot
-mkdir %tmp%/var/chroot/tcpdump
 exec ln -s ../lib %tmp%/usr/lib
 exec ln -s ../libexec %tmp%/usr/libexec
-exec bunzip2 -k -d -c %dwn%/nbsd-%nbsd2%.pkgs > %tmp%/tmp/data
-distinfo-pkgsrc %tmp%/tmp/data nbsd-%nbsd2% http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/
-catalog-sum
 
-select-one libdnet
-select-one libpfctl
-select-one tcpreplay
-select-one autogen
-
-select-lst
-select-sum
-distinfo-down
-distinfo-inst %tmp%/tmp/
-exec mv %tmp%/tmp/sbin/* %tmp%/sbin/
-exec mv %tmp%/tmp/bin/* %tmp%/bin/
-exec mv %tmp%/tmp/lib/* %tmp%/lib/
 exec cpio --quiet -H newc -i -D %tmp%/tmp/ < %img%.cpio
 find-clear
 find-file %tmp%/tmp/usr/lib/ .*-linux-gnu.*
@@ -70,6 +50,7 @@ exec ln -s ./lib %tmp%/emul/linux/lib32
 exec ln -s ./lib %tmp%/emul/linux/lib64
 exec mv %tmp%/tmp/java %tmp%/
 exec mv %tmp%/tmp/rtr %tmp%/
+exec cp %img%.nbsd %tmp%/rtr/bsdInt.bin
 del-alw %tmp%/tmp
 mkdir %tmp%/tmp
 
