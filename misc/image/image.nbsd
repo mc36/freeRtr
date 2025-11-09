@@ -6,12 +6,20 @@ mkdir %dwn%
 del-alw %tmp%
 mkdir %tmp%
 
-binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/installation/cdrom/boot.iso %dwn%/nbsd-%nbsd2%.iso
-binary-down http://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/%nbsd2%/%vers1%.%vers2%/All/pkg_summary.bz2 %dwn%/nbsd-%nbsd2%.pkgs
+binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/binary/sets/base.tar.xz %dwn%/nbsd-%nbsd2%-base.txz
+binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/binary/sets/comp.tar.xz %dwn%/nbsd-%nbsd2%-comp.txz
+binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/binary/sets/etc.tar.xz %dwn%/nbsd-%nbsd2%-etc.txz
+binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/binary/sets/kern-GENERIC.tar.xz %dwn%/nbsd-%nbsd2%-kern.txz
+binary-down http://cdn.netbsd.org/pub/NetBSD/NetBSD-%vers1%.%vers2%/%nbsd1%/binary/sets/modules.tar.xz %dwn%/nbsd-%nbsd2%-mods.txz
 
-exec guestfish -a %dwn%/nbsd-%nbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /etc /lib /libexec /sbin /stand /netbsd /usr %tmp%/
+exec tar xf %dwn%/nbsd-%nbsd2%-base.txz -C %tmp%/
+exec tar xf %dwn%/nbsd-%nbsd2%-etc.txz -C %tmp%/
+exec tar xf %dwn%/nbsd-%nbsd2%-kern.txz -C %tmp%/
+exec tar xf %dwn%/nbsd-%nbsd2%-mods.txz -C %tmp%/
 exec find %tmp%/ -type d -exec chmod 777 {} \;
+
 exec mv %tmp%/usr/mdec/bootxx_cd9660 %tmp%/
+exec mv %tmp%/usr/mdec/boot %tmp%/
 exec mv %tmp%/usr/lib/libintl.* %tmp%/lib/
 exec mv %tmp%/usr/lib/librt.* %tmp%/lib/
 exec mv %tmp%/usr/lib/libpcap.* %tmp%/lib/

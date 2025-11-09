@@ -6,11 +6,13 @@ mkdir %dwn%
 del-alw %tmp%
 mkdir %tmp%
 
-binary-down http://download.freebsd.org/releases/ISO-IMAGES/%vers1%.%vers2%/FreeBSD-%vers1%.%vers2%-RELEASE-%fbsd1%-bootonly.iso %dwn%/fbsd-%fbsd2%.iso
-binary-down http://pkg.freebsd.org/FreeBSD:%vers1%:%fbsd2%/latest/packagesite.pkg %dwn%/fbsd-%fbsd2%.prts
+binary-down http://download.freebsd.org/releases/%fbsd1%/%vers1%.%vers2%-RELEASE/base.txz %dwn%/fbsd-%fbsd2%-base.txz
+binary-down http://download.freebsd.org/releases/%fbsd1%/%vers1%.%vers2%-RELEASE/kernel.txz %dwn%/fbsd-%fbsd2%-kern.txz
 
-exec guestfish -a %dwn%/fbsd-%fbsd2%.iso -m /dev/sda copy-out /bin /boot /dev /etc /lib /libexec /sbin /usr %tmp%/
+exec tar xf %dwn%/fbsd-%fbsd2%-base.txz -C %tmp%/
+exec tar xf %dwn%/fbsd-%fbsd2%-kern.txz -C %tmp%/
 exec find %tmp%/ -type d -exec chmod 777 {} \;
+
 exec mv %tmp%/usr/lib/libdl.* %tmp%/lib/
 exec mv %tmp%/usr/lib/libpcap.* %tmp%/lib/
 exec mv %tmp%/usr/sbin/tcpdump %tmp%/sbin/
