@@ -121,6 +121,7 @@ public class servGreConn implements Runnable, Comparable<servGreConn> {
 
     public void run() {
         if (lower.srvCheckAcceptIp(iface, peer, worker)) {
+            doStop();
             return;
         }
         for (;;) {

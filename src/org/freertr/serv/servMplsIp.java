@@ -313,8 +313,15 @@ class servMplsIpConn implements Runnable, Comparable<servMplsIpConn> {
         worker.recvPack(iface, pck);
     }
 
+    public void doStop() {
+        acesIfc.cloneStop();
+        worker.closeDn();
+        lower.conns.del(this);
+    }
+
     public void run() {
         if (lower.srvCheckAcceptIp(iface, peer, worker)) {
+            doStop();
             return;
         }
         for (;;) {
@@ -324,9 +331,7 @@ class servMplsIpConn implements Runnable, Comparable<servMplsIpConn> {
             }
             seenPack = false;
         }
-        acesIfc.cloneStop();
-        worker.closeDn();
-        lower.conns.del(this);
+        doStop();
     }
 
 }

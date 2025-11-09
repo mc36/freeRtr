@@ -144,6 +144,7 @@ public class servL2tp3conn implements Runnable, Comparable<servL2tp3conn> {
 
     public void run() {
         if (lower.srvCheckAcceptIp(iface, peer, lower)) {
+            setClosed();
             return;
         }
         try {

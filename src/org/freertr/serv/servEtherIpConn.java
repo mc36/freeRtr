@@ -142,6 +142,7 @@ public class servEtherIpConn implements Runnable, Comparable<servEtherIpConn> {
 
     public void run() {
         if (lower.srvCheckAcceptIp(iface, peer, worker)) {
+            doStop();
             return;
         }
         for (;;) {
