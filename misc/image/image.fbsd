@@ -12,8 +12,8 @@ exec tar xf %dwn%/fbsd-%arch%-base.txz -C %tmp%/
 exec tar xf %dwn%/fbsd-%arch%-kern.txz -C %tmp%/
 exec find %tmp%/ -type d -exec chmod 777 {} \;
 
-exec mv %tmp%/usr/lib/libdl.* %tmp%/lib/
 exec mv %tmp%/usr/sbin/ndp %tmp%/sbin/
+exec clang --sysroot %tmp% -I =/usr/include/ -target freebsd-unknown-%unam% ../misc/native/bsdInt.c -lpthread -o %tmp%/z
 del-alw %tmp%/usr
 
 exec cp ../misc/image/boot.fbsd %tmp%/boot/loader.conf
@@ -41,7 +41,7 @@ exec ln -s ./lib %tmp%/compat/linux/lib32
 exec ln -s ./lib %tmp%/compat/linux/lib64
 exec mv %tmp%/tmp/java %tmp%/
 exec mv %tmp%/tmp/rtr %tmp%/
-exec cp %img%.fbsd %tmp%/rtr/bsdInt.bin
+exec mv %tmp%/z %tmp%/rtr/bsdInt.bin
 del-alw %tmp%/tmp
 mkdir %tmp%/tmp
 

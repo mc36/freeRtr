@@ -301,85 +301,6 @@ public class userImage {
         return false;
     }
 
-    private void distInfoPkgsrc(userImageCat cat, List<String> lst) {
-        userImagePkg pkg = new userImagePkg("");
-        for (int o = 0; o < lst.size(); o++) {
-            String a = lst.get(o).trim();
-            int i = a.indexOf("=");
-            if (i < 1) {
-                continue;
-            }
-            String b = a.substring(i + 1, a.length()).trim();
-            a = a.substring(0, i).trim().toLowerCase();
-            if (a.equals("pkgpath")) {
-                pkg.cat = cat;
-                allPkgs.put(pkg);
-                i = b.lastIndexOf("/");
-                if (i > 0) {
-                    b = b.substring(i + 1, b.length());
-                }
-                pkg = new userImagePkg(b);
-                continue;
-            }
-            if (a.equals("file_name")) {
-                pkg.file = b;
-                continue;
-            }
-            if (a.equals("file_size")) {
-                pkg.size = bits.str2num(b);
-                continue;
-            }
-        }
-    }
-
-    private void distInfoPorts(userImageCat cat, List<String> lst) {
-        encJson j = new encJson();
-        for (int o = 0; o < lst.size(); o++) {
-            j.clear();
-            if (j.fromString(lst.get(o))) {
-                continue;
-            }
-            int i = j.findValue("name");
-            if (i < 0) {
-                continue;
-            }
-            String a = j.getValue(i + 1);
-            if (a == null) {
-                continue;
-            }
-            userImagePkg pkg = new userImagePkg(a);
-            i = j.findValue("repopath");
-            if (i < 0) {
-                continue;
-            }
-            a = j.getValue(i + 1);
-            if (a == null) {
-                continue;
-            }
-            pkg.file = a;
-            i = j.findValue("version");
-            if (i < 0) {
-                continue;
-            }
-            a = j.getValue(i + 1);
-            if (a == null) {
-                continue;
-            }
-            pkg.vers = a;
-            i = j.findValue("pkgsize");
-            if (i < 0) {
-                continue;
-            }
-            a = j.getValue(i + 1);
-            if (a == null) {
-                continue;
-            }
-            pkg.size = bits.str2num(a);
-            pkg.cat = cat;
-            allPkgs.put(pkg);
-        }
-    }
-
     private boolean selectOnePackage(int level, String nam, String by) {
         nam = nam.trim();
         if (nam.length() < 1) {
@@ -411,17 +332,6 @@ public class userImage {
             selectOnePackage(level + 1, pkt.depend.get(i), nam);
         }
         return true;
-    }
-
-    private boolean downOneDist(userImagePkg pkg) {
-        if (pkg.done) {
-            return false;
-        }
-        String name = getDistinfoName(pkg);
-        if (downloadFile(pkg.cat.url + pkg.file, name, pkg.size)) {
-            return true;
-        }
-        return false;
     }
 
     private boolean downOneFile(userImagePkg pkg) {
@@ -459,16 +369,6 @@ public class userImage {
         }
         pkg.done = true;
         return instOneFile(true, name);
-    }
-
-    private boolean instOneDist(userImagePkg pkg, String trg) {
-        String name = getDistinfoName(pkg);
-        if (pkg.done) {
-            pip.linePut("skipping " + name);
-            return false;
-        }
-        pkg.done = true;
-        return execCmd("tar -x -f " + name + " " + "--keep-directory-symlink -C " + trg) != 0;
     }
 
     private boolean doIncludeAll(cmds c) {
@@ -709,40 +609,6 @@ public class userImage {
                     }
                     cmd.error("renaming legacy " + a);
                     userFlash.rename(a, a + userUpgrade.bakExt, true, true);
-                }
-                continue;
-            }
-            if (a.equals("distinfo-ports")) {
-                userImageCat cat = new userImageCat("distinfo");
-                distInfoPorts(cat, bits.txt2buf(cmd.word()));
-                cat.arch = cmd.word();
-                cat.url = cmd.word();
-                catalogs.add(cat);
-                continue;
-            }
-            if (a.equals("distinfo-pkgsrc")) {
-                userImageCat cat = new userImageCat("distinfo");
-                distInfoPkgsrc(cat, bits.txt2buf(cmd.word()));
-                cat.arch = cmd.word();
-                cat.url = cmd.word();
-                catalogs.add(cat);
-                continue;
-            }
-            if (a.equals("distinfo-down")) {
-                for (i = 0; i < selected.size(); i++) {
-                    userImagePkg pkg = selected.get(i);
-                    if (downOneDist(pkg)) {
-                        return true;
-                    }
-                }
-                continue;
-            }
-            if (a.equals("distinfo-inst")) {
-                for (i = 0; i < selected.size(); i++) {
-                    userImagePkg pkg = selected.get(i);
-                    if (instOneDist(pkg, s)) {
-                        return true;
-                    }
                 }
                 continue;
             }
