@@ -17645,3 +17645,5 @@ failed: wireguard over wireguard
 ---------------------------------- 2025-11-06 19:17:04 25.11.6
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
+---------------------------------- 2025-11-09 08:42:27 25.11.9
+qc pass: erspan server
