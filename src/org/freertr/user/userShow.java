@@ -112,6 +112,7 @@ import org.freertr.rtr.rtrBgpDump;
 import org.freertr.rtr.rtrBgpSpeak;
 import org.freertr.rtr.rtrRpki;
 import org.freertr.rtr.rtrRpkiNeigh;
+import org.freertr.serv.servErspan;
 import org.freertr.serv.servNrpe;
 import org.freertr.serv.servOpenflow;
 import org.freertr.serv.servRpki;
@@ -1063,6 +1064,15 @@ public class userShow {
         }
         if (a.equals("etherip")) {
             servEtherIp srv = cfgAll.srvrFind(new servEtherIp(), cfgAll.dmnEtherIp, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("erspan")) {
+            servErspan srv = cfgAll.srvrFind(new servErspan(), cfgAll.dmnErspan, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;

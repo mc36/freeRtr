@@ -31,6 +31,7 @@ import org.freertr.serv.servDhcp6;
 import org.freertr.serv.servDiscard;
 import org.freertr.serv.servDns;
 import org.freertr.serv.servEchoS;
+import org.freertr.serv.servErspan;
 import org.freertr.serv.servEtherIp;
 import org.freertr.serv.servForwarder;
 import org.freertr.serv.servFtp;
@@ -695,6 +696,11 @@ public class cfgAll {
      * gre daemons
      */
     public final static servGenList<servGre> dmnGre = new servGenList<servGre>();
+
+    /**
+     * erspan daemons
+     */
+    public final static servGenList<servErspan> dmnErspan = new servGenList<servErspan>();
 
     /**
      * mplsip daemons
@@ -4139,6 +4145,7 @@ public class cfgAll {
         dmnL2tp3.getShRun(l, filter);
         dmnEtherIp.getShRun(l, filter);
         dmnGre.getShRun(l, filter);
+        dmnErspan.getShRun(l, filter);
         dmnMplsIp.getShRun(l, filter);
         dmnMplsUdp.getShRun(l, filter);
         dmnMplsOam.getShRun(l, filter);

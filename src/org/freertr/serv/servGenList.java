@@ -257,6 +257,7 @@ public class servGenList<T extends servGeneric> {
         srvHelp(l, p, n, e, o, "l2tp3", cfgAll.dmnL2tp3.listServers());
         srvHelp(l, p, n, e, o, "etherip", cfgAll.dmnEtherIp.listServers());
         srvHelp(l, p, n, e, o, "gre", cfgAll.dmnGre.listServers());
+        srvHelp(l, p, n, e, o, "erspan", cfgAll.dmnErspan.listServers());
         srvHelp(l, p, n, e, o, "mplsip", cfgAll.dmnMplsIp.listServers());
         srvHelp(l, p, n, e, o, "mplsudp", cfgAll.dmnMplsUdp.listServers());
         srvHelp(l, p, n, e, o, "mplsoam", cfgAll.dmnMplsOam.listServers());
@@ -499,6 +500,9 @@ class servGenEntry {
         }
         if (typ.equals("gre")) {
             return new servGenEntry(new servGre(), cfgAll.dmnGre);
+        }
+        if (typ.equals("erspan")) {
+            return new servGenEntry(new servErspan(), cfgAll.dmnErspan);
         }
         if (typ.equals("mplsip")) {
             return new servGenEntry(new servMplsIp(), cfgAll.dmnMplsIp);
