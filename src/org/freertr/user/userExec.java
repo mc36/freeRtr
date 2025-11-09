@@ -1777,6 +1777,8 @@ public class userExec {
         hl.add(cfgAll.dmnAmt.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "erspan", "erspan protocol information");
         hl.add(cfgAll.dmnErspan.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
+        hl.add(null, false, 2, new int[]{3}, "sreth", "sreth protocol information");
+        hl.add(cfgAll.dmnSrEth.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "etherip", "etherip protocol information");
         hl.add(cfgAll.dmnEtherIp.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "gre", "gre protocol information");
@@ -2393,6 +2395,9 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "<addr>", "peer address");
         hl.add(null, false, 2, new int[]{3}, "erspan", "erspan protocol client");
         hl.add(cfgAll.dmnErspan.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
+        hl.add(null, false, 4, new int[]{-1}, "<addr>", "peer address");
+        hl.add(null, false, 2, new int[]{3}, "sreth", "sreth protocol client");
+        hl.add(cfgAll.dmnSrEth.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
         hl.add(null, false, 4, new int[]{-1}, "<addr>", "peer address");
         hl.add(null, false, 2, new int[]{3}, "etherip", "etherip protocol client");
         hl.add(cfgAll.dmnEtherIp.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");

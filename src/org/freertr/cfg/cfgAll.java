@@ -84,6 +84,7 @@ import org.freertr.serv.servSip;
 import org.freertr.serv.servSmtp;
 import org.freertr.serv.servSnmp;
 import org.freertr.serv.servSocks;
+import org.freertr.serv.servSrEth;
 import org.freertr.serv.servStack;
 import org.freertr.serv.servStreamingMdt;
 import org.freertr.serv.servStun;
@@ -701,6 +702,11 @@ public class cfgAll {
      * erspan daemons
      */
     public final static servGenList<servErspan> dmnErspan = new servGenList<servErspan>();
+
+    /**
+     * sreth daemons
+     */
+    public final static servGenList<servSrEth> dmnSrEth = new servGenList<servSrEth>();
 
     /**
      * mplsip daemons
@@ -4146,6 +4152,7 @@ public class cfgAll {
         dmnEtherIp.getShRun(l, filter);
         dmnGre.getShRun(l, filter);
         dmnErspan.getShRun(l, filter);
+        dmnSrEth.getShRun(l, filter);
         dmnMplsIp.getShRun(l, filter);
         dmnMplsUdp.getShRun(l, filter);
         dmnMplsOam.getShRun(l, filter);

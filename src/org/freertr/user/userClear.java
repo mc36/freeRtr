@@ -78,6 +78,7 @@ import org.freertr.serv.servL2tp2;
 import org.freertr.serv.servL2tp3;
 import org.freertr.serv.servPckOudp;
 import org.freertr.serv.servSdwan;
+import org.freertr.serv.servSrEth;
 import org.freertr.serv.servVxlan;
 import org.freertr.util.logger;
 
@@ -270,6 +271,20 @@ public class userClear {
         }
         if (a.equals("erspan")) {
             servErspan srv = cfgAll.srvrFind(new servErspan(), cfgAll.dmnErspan, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            addrIP adr = new addrIP();
+            if (adr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return null;
+            }
+            srv.doClear(adr);
+            return null;
+        }
+        if (a.equals("sreth")) {
+            servSrEth srv = cfgAll.srvrFind(new servSrEth(), cfgAll.dmnSrEth, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;

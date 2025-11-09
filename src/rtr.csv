@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.11.9-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-11-09 08:58:12, took 00:15:45, with 50 workers, on 4067 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2025-11-09 09:33:21, took 00:13:39, with 50 workers, on 4068 cases, 0 failed, 0 traces, 5 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -427,6 +427,7 @@ http://sources.freertr.org/cfg/conn-sreth10.tst;conn-sreth10.tst;success;sep tun
 http://sources.freertr.org/cfg/conn-sreth11.tst;conn-sreth11.tst;success;ethernet tunneling with sreth
 http://sources.freertr.org/cfg/conn-sreth12.tst;conn-sreth12.tst;success;vlan tunneling with sreth
 http://sources.freertr.org/cfg/conn-sreth13.tst;conn-sreth13.tst;success;tunnel interface with sreth
+http://sources.freertr.org/cfg/conn-sreth14.tst;conn-sreth14.tst;success;sreth server
 http://sources.freertr.org/cfg/conn-ssh.tst;conn-ssh.tst;success;ppp over ssh
 http://sources.freertr.org/cfg/conn-sstp.tst;conn-sstp.tst;success;ppp over sstp
 http://sources.freertr.org/cfg/conn-stp.tst;conn-stp.tst;success;spantree over ethernet

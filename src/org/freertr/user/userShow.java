@@ -117,6 +117,7 @@ import org.freertr.serv.servNrpe;
 import org.freertr.serv.servOpenflow;
 import org.freertr.serv.servRpki;
 import org.freertr.serv.servRtpStat;
+import org.freertr.serv.servSrEth;
 import org.freertr.serv.servStack;
 import org.freertr.tab.tabAceslstN;
 import org.freertr.tab.tabGen;
@@ -1073,6 +1074,15 @@ public class userShow {
         }
         if (a.equals("erspan")) {
             servErspan srv = cfgAll.srvrFind(new servErspan(), cfgAll.dmnErspan, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
+            return null;
+        }
+        if (a.equals("sreth")) {
+            servSrEth srv = cfgAll.srvrFind(new servSrEth(), cfgAll.dmnSrEth, cmd.word());
             if (srv == null) {
                 cmd.error("no such server");
                 return null;

@@ -423,6 +423,7 @@ qc pass: sep tunneling with sreth
 qc pass: ethernet tunneling with sreth
 qc pass: vlan tunneling with sreth
 qc pass: tunnel interface with sreth
+qc pass: sreth server
 qc pass: ppp over ssh
 qc pass: ppp over sstp
 qc pass: spantree over ethernet
