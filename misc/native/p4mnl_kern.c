@@ -6,11 +6,6 @@
 #include "p4mnl_tab.h"
 
 
-// hack
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
-
 
 struct {
     __uint(type, BPF_MAP_TYPE_ARRAY);
