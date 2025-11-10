@@ -41,7 +41,10 @@ package-xtra
 package-inst
 
 find-file %tmp%/usr/lib/jvm/ java-[0-9]+-openjdk-%arch%
-exec /usr/lib/jvm/`echo %find% | sed 's\-%arch%\-\g'`*/bin/jlink --module-path %tmp%/usr/lib/jvm/%find%/jmods --output %tmp%/java --strip-debug --no-man-pages --no-header-files --add-modules java.base,java.management
+find-result
+find-remove -%arch%
+find-result
+exec /usr/lib/jvm/%find%-*/bin/jlink --module-path %tmp%/usr/lib/jvm/%find%-%arch%/jmods --output %tmp%/java --strip-debug --no-man-pages --no-header-files --add-modules java.base,java.management
 del-alw %tmp%/usr/lib/jvm %tmp%/etc/java-* %tmp%/java/bin/keytool %tmp%/java/docs %tmp%/java/demo %tmp%/java/man %tmp%/java/legal %tmp%/java/lib/security %tmp%/java/lib/jrt-fs.jar %tmp%/java/lib/libsimdsort.so
 
 include ../misc/image/image.end

@@ -541,6 +541,17 @@ public class userImage {
                 cmd.error("result='" + found + "'");
                 continue;
             }
+            if (a.equals("find-replace")) {
+                i = s.indexOf(" ");
+                a = s.substring(0, i);
+                s = s.substring(i + 1, s.length());
+                found = found.replaceAll(a, s);
+                continue;
+            }
+            if (a.equals("find-remove")) {
+                found = found.replaceAll(s, "");
+                continue;
+            }
             if (a.equals("find-file")) {
                 i = s.indexOf(" ");
                 a = s.substring(0, i);
