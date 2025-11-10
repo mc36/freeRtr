@@ -8,25 +8,23 @@ exec dd bs=1 conv=notrunc if=/usr/lib/syslinux/mbr/mbr.bin of=%img%.dsk
 exec dd bs=1K seek=1024 conv=notrunc if=%img%.flp of=%img%.dsk
 
 exec cp %img%.krn %tmp%/rtr.krn
-exec cd %tmp%/;cpio --quiet -H newc -i < %img%.cpio
-exec cd %tmp%/;csplit -s init /^###rootfs###$/
+exec cd %tmp%/ ; cpio --quiet -H newc -i < %img%.cpio
+exec cd %tmp%/ ; csplit -s init /^###rootfs###$/
 exec mv %tmp%/xx00 %tmp%/init
 
 file-text %tmp%/init
 mount -t ext4 /dev/disk/by-uuid/999dff7c-0eed-48a5-b605-bb7d675a49ab /mnt
 exec switch_root /mnt /init2
 .
-
 file-text %tmp%/init2
 #!/bin/sh
 sh /init.sys
 .
-
 exec cat %tmp%/xx01 >> %tmp%/init2
 exec chmod 755 %tmp%/init*
 del-alw %tmp%/xx0*
 
-exec cd %tmp%/;find init* dev/ sys/ proc/ mnt/ run/ usr/ > filist
+exec cd %tmp%/ ; find init* dev/ sys/ proc/ mnt/ run/ usr/ > filist
 file-text %tmp%/filist
 lib
 lib32
@@ -34,7 +32,8 @@ lib64
 bin
 sbin
 .
-exec cd %tmp%/;cpio --quiet -H newc -O cpio -o <filist
+
+exec cd %tmp%/ ; cpio --quiet -H newc -O cpio -o <filist
 del-alw %tmp%/filist
 exec zstd -9 %tmp%/cpio
 exec mv %tmp%/cpio.zst %tmp%/rtr.ird
@@ -42,8 +41,5 @@ del-alw %tmp%/cpio
 del-alw %tmp%/lib/modules
 exec cp ../misc/image/boot.sys %tmp%/syslinux.cfg
 exec guestfish -a %img%.dsk -m /dev/sda2 extlinux / : copy-in %tmp%/* /
-
-exec qemu-img convert -O qcow2 -c %img%.dsk %img%.qcow2
-exec qemu-img convert -O vmdk -o subformat=streamOptimized %img%.dsk %img%.vmdk
 
 del-alw %tmp%

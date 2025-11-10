@@ -397,26 +397,31 @@ public class userImage {
         return c;
     }
 
+    private String doFixups(String s) {
+        s = s.replaceAll("%tmp%", tempDir);
+        s = s.replaceAll("%dwn%", downDir);
+        s = s.replaceAll("%img%", imgName);
+        s = s.replaceAll("%mirr%", miro);
+        s = s.replaceAll("%qemu%", qemu);
+        s = s.replaceAll("%arch%", arch);
+        s = s.replaceAll("%boot%", boot);
+        s = s.replaceAll("%kern%", kern);
+        s = s.replaceAll("%unam%", unam);
+        s = s.replaceAll("%comp%", comp);
+        s = s.replaceAll("%cabi%", cabi);
+        s = s.replaceAll("%ctrg%", ctrg);
+        s = s.replaceAll("%carc%", carc);
+        s = s.replaceAll("%grub%", grub);
+        s = s.replaceAll("%uefi%", uefi);
+        s = s.replaceAll("%find%", found);
+        s = s.replaceAll("%%", "%");
+        return s;
+    }
+
     private boolean doOneFile(List<String> res) {
         for (int cnt = 0; cnt < res.size(); cnt++) {
             String s = res.get(cnt);
-            s = s.replaceAll("%tmp%", tempDir);
-            s = s.replaceAll("%dwn%", downDir);
-            s = s.replaceAll("%img%", imgName);
-            s = s.replaceAll("%mirr%", miro);
-            s = s.replaceAll("%qemu%", qemu);
-            s = s.replaceAll("%arch%", arch);
-            s = s.replaceAll("%boot%", boot);
-            s = s.replaceAll("%kern%", kern);
-            s = s.replaceAll("%unam%", unam);
-            s = s.replaceAll("%comp%", comp);
-            s = s.replaceAll("%cabi%", cabi);
-            s = s.replaceAll("%ctrg%", ctrg);
-            s = s.replaceAll("%carc%", carc);
-            s = s.replaceAll("%grub%", grub);
-            s = s.replaceAll("%uefi%", uefi);
-            s = s.replaceAll("%find%", found);
-            s = s.replaceAll("%%", "%");
+            s = doFixups(s);
             int i = s.indexOf(" #");
             if (i >= 0) {
                 s = s.substring(0, i);
@@ -581,6 +586,7 @@ public class userImage {
                     if (a.equals(".")) {
                         break;
                     }
+                    a = doFixups(a);
                     lst.add(a);
                 }
                 bits.buf2txt(false, lst, s);

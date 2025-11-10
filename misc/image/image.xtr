@@ -12,5 +12,5 @@ package-inst
 include ../misc/image/image.cln
 
 exec du -sh %tmp%
-exec cd %tmp%;tar cf %img%.extra *
+exec cd %tmp% ; tar cf %img%.extra *
 del-alw %tmp%

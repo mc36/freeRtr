@@ -1,7 +1,219 @@
+del-alw %tmp%
+mkdir %tmp%
+
+exec qemu-img convert -O qcow2 -c %img%.dsk %img%.qcow2
+exec qemu-img convert -O vmdk -o subformat=streamOptimized %img%.dsk %img%.vmdk
+
+del-alw %img%.gns3a
+
+file-text %img%.gns3a
+{
+    "name": "freeRouter",
+    "category": "router",
+    "description": "networking swiss army knife - it speaks routing protocols, and (re)encapsulates packets on interfaces",
+    "vendor_name": "freeRouter",
+    "vendor_url": "http://www.freertr.org/",
+    "documentation_url": "http://www.freertr.org/",
+    "product_name": "freeRouter",
+    "product_url": "http://www.freertr.org/",
+    "registry_version": 3,
+    "status": "stable",
+    "maintainer": "GNS3 Team",
+    "maintainer_email": "developers@gns3.net",
+    "usage": "there is no default password. a default configuration is present.",
+    "port_name_format": "ethernet{port1}",
+    "qemu": {
+        "adapter_type": "virtio-net-pci",
+        "adapters": 8,
+        "ram": 1024,
+        "hda_disk_interface": "ide",
+        "arch": "%unam%",
+        "console_type": "telnet",
+        "kvm": "require"
+    },
+    "images": [
+        {
+            "filename": "rtr-%unam%.qcow2",
+            "version": "1.0",
+.
+
+file-hash md5 %img%.qcow2
+file-line %img%.gns3a             "md5sum": "%find%",
+file-size %img%.qcow2
+file-line %img%.gns3a             "filesize": %find%,
+
+file-text %img%.gns3a
+            "download_url": "http://www.freertr.org/",
+            "direct_download_url": "http://dl.nop.hu/rtr-%unam%.qcow2"
+        }
+    ],
+    "versions": [
+        {
+            "name": "1.0",
+            "images": {
+                "hda_disk_image": "rtr-%unam%.qcow2"
+            }
+        }
+    ]
+}
+.
+
+file-line %tmp%/package.ver 1.0
+
+file-text %tmp%/package.vsh
+<domain type='kvm'>
+  <name>rtr-dsk</name>
+  <uuid>41bffa92-a072-44ca-8073-455b82c990b5</uuid>
+  <title>freeRouter</title>
+  <description>http://www.freertr.org/</description>
+  <memory unit='KiB'>1048576</memory>
+  <currentMemory unit='KiB'>1048576</currentMemory>
+  <vcpu placement='static'>1</vcpu>
+  <os>
+    <type arch='%unam%' machine='pc-i440fx-2.11'>hvm</type>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <vmport state='off'/>
+  </features>
+  <cpu mode='host-model' check='partial'>
+    <model fallback='allow'/>
+  </cpu>
+  <clock offset='utc'>
+    <timer name='rtc' tickpolicy='catchup'/>
+    <timer name='pit' tickpolicy='delay'/>
+    <timer name='hpet' present='no'/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <pm>
+    <suspend-to-mem enabled='no'/>
+    <suspend-to-disk enabled='no'/>
+  </pm>
+  <devices>
+    <emulator>/usr/bin/kvm</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='rtr-%unam%.qcow2'/>
+      <target dev='vda' bus='virtio'/>
+      <boot order='1'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
+    </disk>
+    <controller type='usb' index='0' model='ich9-ehci1'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x7'/>
+    </controller>
+    <controller type='usb' index='0' model='ich9-uhci1'>
+      <master startport='0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0' multifunction='on'/>
+    </controller>
+    <controller type='usb' index='0' model='ich9-uhci2'>
+      <master startport='2'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x1'/>
+    </controller>
+    <controller type='usb' index='0' model='ich9-uhci3'>
+      <master startport='4'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x2'/>
+    </controller>
+    <controller type='pci' index='0' model='pci-root'/>
+    <controller type='virtio-serial' index='0'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+    </controller>
+    <interface type='direct'>
+      <mac address='52:54:00:97:12:a0'/>
+      <source dev='eth0' mode='passthrough'/>
+      <model type='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+    </interface>
+    <serial type='tcp'>
+      <source mode='bind' host='0.0.0.0' service='4555'/>
+      <protocol type='raw'/>
+      <target type='isa-serial' port='0'>
+        <model name='isa-serial'/>
+      </target>
+    </serial>
+    <channel type='unix'>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
+      <address type='virtio-serial' controller='0' bus='0' port='1'/>
+    </channel>
+    <channel type='spicevmc'>
+      <target type='virtio' name='com.redhat.spice.0'/>
+      <address type='virtio-serial' controller='0' bus='0' port='2'/>
+    </channel>
+    <input type='tablet' bus='usb'>
+      <address type='usb' bus='0' port='1'/>
+    </input>
+    <input type='mouse' bus='ps2'/>
+    <input type='keyboard' bus='ps2'/>
+    <graphics type='spice' autoport='yes'>
+      <listen type='address'/>
+      <image compression='off'/>
+    </graphics>
+    <sound model='ich6'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+    </sound>
+    <video>
+      <model type='qxl' ram='65536' vram='65536' vgamem='16384' heads='1' primary='yes'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+    </video>
+    <redirdev bus='usb' type='spicevmc'>
+      <address type='usb' bus='0' port='2'/>
+    </redirdev>
+    <redirdev bus='usb' type='spicevmc'>
+      <address type='usb' bus='0' port='3'/>
+    </redirdev>
+    <memballoon model='virtio'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
+    </memballoon>
+    <rng model='virtio'>
+      <backend model='random'>/dev/urandom</backend>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0'/>
+    </rng>
+  </devices>
+</domain>
+.
+
+file-text %tmp%/package.yaml
+manifest-version: 1.0
+
+info:
+  name: freeRouter
+  description: "freeRouter"
+  version: 1.1
+
+app:
+  apptype: vm
+
+  resources:
+   cpu: 30
+   memory: 1024000
+   vcpu: 1
+
+   disk:
+    - target-dev: hdc
+      file: rtr-%unam%.qcow2
+
+   interfaces:
+    - target-dev: net1
+    - target-dev: net2
+    - target-dev: net3
+    - target-dev: net4
+
+   serial:
+    - console
+    - aux
+
+  startup:
+    runtime: kvm
+    boot-dev: hd
+.
+
+file-text %tmp%/package.ovf
 <?xml version="1.0"?>
 <Envelope ovf:version="1.0" xml:lang="en-US" xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vbox="http://www.virtualbox.org/ovf/machine">
   <References>
-    <File ovf:id="file1" ovf:href="rtr-x86_64.vmdk"/>
+    <File ovf:id="file1" ovf:href="rtr-%unam%.vmdk"/>
   </References>
   <DiskSection>
     <Info>List of the virtual disks used in the package</Info>
@@ -224,7 +436,7 @@ more info at http://www.freertr.org/
           <GuestProperty name="/VirtualBox/GuestInfo/Net/0/V4/Netmask" value="255.255.255.0" timestamp="1395308999152588000" flags=""/>
           <GuestProperty name="/VirtualBox/GuestInfo/Net/Count" value="1" timestamp="1395311614456867000" flags=""/>
           <GuestProperty name="/VirtualBox/GuestInfo/OS/Product" value="Linux" timestamp="1395308999144084000" flags=""/>
-          <GuestProperty name="/VirtualBox/GuestInfo/OS/Release" value="3.2.0-4-amd64" timestamp="1395308999144785000" flags=""/>
+          <GuestProperty name="/VirtualBox/GuestInfo/OS/Release" value="3.2.0-4-%arch%" timestamp="1395308999144785000" flags=""/>
           <GuestProperty name="/VirtualBox/GuestInfo/OS/Version" value="#1 SMP Debian 3.2.54-2" timestamp="1395308999145392000" flags=""/>
           <GuestProperty name="/VirtualBox/HostInfo/GUI/LanguageID" value="en_US" timestamp="1519970436009989000" flags=""/>
         </GuestProperties>
@@ -239,3 +451,22 @@ more info at http://www.freertr.org/
     </vbox:Machine>
   </VirtualSystem>
 </Envelope>
+.
+
+file-hash sha1 %img%.qcow2
+file-line %tmp%/package.mf SHA1(rtr-%unam%.qcow2)= %find%
+file-hash sha1 %img%.vmdk
+file-line %tmp%/package.mf SHA1(rtr-%unam%.vmdk)= %find%
+file-hash sha1 %tmp%/package.ovf
+file-line %tmp%/package.mf SHA1(package.ovf)= %find%
+file-hash sha1 %tmp%/package.ver
+file-line %tmp%/package.mf SHA1(package.ver)= %find%
+file-hash sha1 %tmp%/package.vsh
+file-line %tmp%/package.mf SHA1(package.vsh)= %find%
+file-hash sha1 %tmp%/package.yaml
+file-line %tmp%/package.mf SHA1(package.yaml)= %find%
+
+exec cd ../binImg/ ; tar cf %img%.ova rtr-%unam%.qcow2 rtr-%unam%.vmdk
+exec cd %tmp% ; tar rf %img%.ova package.yaml package.ovf package.vsh package.ver package.mf
+
+del-alw %tmp%
