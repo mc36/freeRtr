@@ -3,6 +3,7 @@ package org.freertr.user;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.cfg.cfgAll;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashSha2256;
 import org.freertr.cry.cryUtils;
@@ -561,6 +562,14 @@ public class userImage {
             }
             if (a.equals("file-size")) {
                 found = "" + new File(s).length();
+                continue;
+            }
+            if (a.equals("file-date")) {
+                found = "" + new File(s).lastModified();
+                continue;
+            }
+            if (a.equals("file-vers")) {
+                found = bits.time2str(cfgAll.timeZoneName, new File(s).lastModified(), 1).replaceAll("-", ".");
                 continue;
             }
             if (a.equals("file-hash")) {

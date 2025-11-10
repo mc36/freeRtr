@@ -34,9 +34,10 @@ file-text %img%.gns3a
     "images": [
         {
             "filename": "rtr-%unam%.qcow2",
-            "version": "1.0",
 .
 
+file-vers %img%.qcow2
+file-line %img%.gns3a             "version": "%find%",
 file-hash md5 %img%.qcow2
 file-line %img%.gns3a             "md5sum": "%find%",
 file-size %img%.qcow2
@@ -49,7 +50,11 @@ file-text %img%.gns3a
     ],
     "versions": [
         {
-            "name": "1.0",
+.
+
+file-vers %img%.qcow2
+file-line %img%.gns3a             "name": "%find%",
+file-text %img%.gns3a
             "images": {
                 "hda_disk_image": "rtr-%unam%.qcow2"
             }
@@ -174,13 +179,14 @@ file-text %tmp%/package.vsh
 </domain>
 .
 
+file-vers %img%.qcow2
 file-text %tmp%/package.yaml
 manifest-version: 1.0
 
 info:
   name: freeRouter
   description: "freeRouter"
-  version: 1.1
+  version: %find%
 
 app:
   apptype: vm
