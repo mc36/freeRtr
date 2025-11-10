@@ -1,49 +1,26 @@
 download 3
 reget-time 168
+kern http://download.freebsd.org/snapshots/%arch%/15.0-STABLE/
 
 mkdir %dwn%
 del-alw %tmp%
 mkdir %tmp%
 
-binary-down %fbsd%/base.txz %dwn%/fbsd-%arch%-base.txz
-binary-down %fbsd%/kernel.txz %dwn%/fbsd-%arch%-kern.txz
+
+binary-down %kern%/base.txz %dwn%/fbsd-%arch%-base.txz
+binary-down %kern%/kernel.txz %dwn%/fbsd-%arch%-kern.txz
 
 exec tar xf %dwn%/fbsd-%arch%-base.txz -C %tmp%/
 exec tar xf %dwn%/fbsd-%arch%-kern.txz -C %tmp%/
-exec find %tmp%/ -type d -exec chmod 777 {} \;
 
 exec mv %tmp%/usr/sbin/ndp %tmp%/sbin/
-exec clang --sysroot %tmp% -I =/usr/include/ -target freebsd-unknown-%unam% ../misc/native/bsdInt.c -lpthread -o %tmp%/z
-del-alw %tmp%/usr
-
 exec cp ../misc/image/boot.fbsd %tmp%/boot/loader.conf
 exec cp ../misc/image/init.fbsd %tmp%/etc/rc
 mkdir %tmp%/compat
-mkdir %tmp%/compat/linux
+kern freebsd
+boot compat/linux
 
-mkdir %tmp%/mnt
-mkdir %tmp%/proc
-mkdir %tmp%/run
-mkdir %tmp%/sys
-mkdir %tmp%/usr
-mkdir %tmp%/var
-mkdir %tmp%/tmp
-exec ln -s ../lib %tmp%/usr/lib
-exec ln -s ../libexec %tmp%/usr/libexec
-
-exec cpio --quiet -H newc -i -D %tmp%/tmp/ < %img%.cpio
-find-clear
-find-file %tmp%/tmp/usr/lib/ .*-linux-gnu.*
-find-result
-del-alw %tmp%/tmp/usr/lib/%find%/systemd
-exec mv %tmp%/tmp/usr/lib/%find% %tmp%/compat/linux/lib
-exec ln -s ./lib %tmp%/compat/linux/lib32
-exec ln -s ./lib %tmp%/compat/linux/lib64
-exec mv %tmp%/tmp/java %tmp%/
-exec mv %tmp%/tmp/rtr %tmp%/
-exec mv %tmp%/z %tmp%/rtr/bsdInt.bin
-del-alw %tmp%/tmp
-mkdir %tmp%/tmp
+include ../misc/image/image.xbsd
 
 exec xorriso -as mkisofs -o %img%-fbsd.iso -r -J -l -b boot/cdboot -no-emul-boot -c isolinux.cat %tmp%/
 

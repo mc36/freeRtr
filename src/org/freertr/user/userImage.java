@@ -6,7 +6,6 @@ import java.util.List;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashSha2256;
 import org.freertr.cry.cryUtils;
-import org.freertr.enc.encJson;
 import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
@@ -45,10 +44,6 @@ public class userImage {
     private String miro = "http://deb.debian.org/debian/";
 
     private String qemu = "x86_64";
-
-    private String fbsd = "";
-
-    private String nbsd = "";
 
     private String arch = "amd64";
 
@@ -409,8 +404,6 @@ public class userImage {
             s = s.replaceAll("%img%", imgName);
             s = s.replaceAll("%mirr%", miro);
             s = s.replaceAll("%qemu%", qemu);
-            s = s.replaceAll("%fbsd%", fbsd);
-            s = s.replaceAll("%nbsd%", nbsd);
             s = s.replaceAll("%arch%", arch);
             s = s.replaceAll("%boot%", boot);
             s = s.replaceAll("%kern%", kern);
@@ -470,14 +463,6 @@ public class userImage {
             }
             if (a.equals("qemu")) {
                 qemu = s;
-                continue;
-            }
-            if (a.equals("fbsd")) {
-                fbsd = s;
-                continue;
-            }
-            if (a.equals("nbsd")) {
-                nbsd = s;
                 continue;
             }
             if (a.equals("arch")) {

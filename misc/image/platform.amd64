@@ -1,8 +1,8 @@
 arch amd64
 unam x86_64
 qemu x86_64
-fbsd http://download.freebsd.org/snapshots/amd64/15.0-STABLE/
-nbsd http://nycdn.netbsd.org/pub/NetBSD-daily/netbsd-11/latest/amd64/binary/sets/
+fbsd amd64 amd64
+nbsd amd64 amd64
 ctrg x86_64
 kern cloud-amd64
 grub efi-amd64-bin
