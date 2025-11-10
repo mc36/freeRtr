@@ -572,6 +572,15 @@ public class userImage {
                 found = bits.time2str(cfgAll.timeZoneName, new File(s).lastModified(), 1).replaceAll("-", ".");
                 continue;
             }
+            if (a.equals("file-path")) {
+                i = s.lastIndexOf("/");
+                if (i < 0) {
+                    found = s;
+                    continue;
+                }
+                found = s.substring(0, i);
+                continue;
+            }
             if (a.equals("file-hash")) {
                 i = s.indexOf(" ");
                 a = s.substring(0, i);
