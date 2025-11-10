@@ -1,5 +1,5 @@
 exec find %tmp%/ -type d -exec chmod 777 {} \;
-exec clang --sysroot %tmp% -I =/usr/include/ -target %kern%-unknown-%unam% ../misc/native/bsdInt.c -lpthread -o %tmp%/z
+exec clang --sysroot %tmp% -I =/usr/include/ -target %kern%-unknown-%unam% -lpthread -o %tmp%/bsdInt.bin ../misc/native/bsdInt.c
 del-alw %tmp%/usr
 mkdir %tmp%/%boot%
 mkdir %tmp%/mnt
@@ -22,6 +22,6 @@ exec ln -s ./lib %tmp%/%boot%/lib32
 exec ln -s ./lib %tmp%/%boot%/lib64
 exec mv %tmp%/tmp/java %tmp%/
 exec mv %tmp%/tmp/rtr %tmp%/
-exec mv %tmp%/z %tmp%/rtr/bsdInt.bin
+exec mv %tmp%/bsdInt.bin %tmp%/rtr/
 del-alw %tmp%/tmp
 mkdir %tmp%/tmp
