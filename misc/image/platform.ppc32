@@ -1,8 +1,6 @@
 arch powerpc
 unam ppc
 qemu ppc
-fbsd powerpc powerpc
-nbsd evbppc evbppc
 ctrg powerpc
 carc big-endian
 kern powerpc

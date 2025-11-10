@@ -1,7 +1,6 @@
 arch alpha
 unam alpha
 qemu alpha
-nbsd alpha alpha
 ctrg alpha
 comp gcc
 kern alpha-generic

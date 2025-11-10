@@ -1,7 +1,6 @@
 arch sparc64
 unam sparc64
 qemu sparc64
-nbsd sparc64 sparc64
 ctrg sparc64
 carc big-endian
 kern sparc64

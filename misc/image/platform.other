@@ -4,7 +4,7 @@
 #select-dis linux-image-virtual            #ubuntu virtual kernel
 #select-dis linux-image-kvm                #ubuntu kvm kernel
 
-#catalog-read liq gz http://liquorix.net/debian/ sid main
+#catalog-read liq gz https://liquorix.net/debian/ sid main
 #select-dis linux-image-liquorix-%kern%    #liquorix kernel
 
 #catalog-read xan gz http://deb.xanmod.org/ releases main

@@ -1,8 +1,6 @@
 arch amd64
 unam x86_64
 qemu x86_64
-fbsd amd64 amd64
-nbsd amd64 amd64
 ctrg x86_64
 kern cloud-amd64
 grub efi-amd64-bin

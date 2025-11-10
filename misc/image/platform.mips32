@@ -1,7 +1,6 @@
 arch mipsel
 unam mips
 qemu mipsel
-nbsd evbmips-mipsel mipsel
 ctrg mipsel
 cabi gnuabi
 kern mips32r2el

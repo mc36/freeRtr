@@ -1,7 +1,6 @@
 arch ppc64
 unam ppc64
 qemu ppc64
-fbsd powerpc-powerpc64 powerpc64
 ctrg powerpc64
 carc big-endian
 kern powerpc64

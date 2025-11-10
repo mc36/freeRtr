@@ -1,8 +1,6 @@
 arch arm64
 unam aarch64
 qemu aarch64
-fbsd arm64-aarch64 aarch64
-nbsd evbarm-aarch64 aarch64
 ctrg aarch64
 kern cloud-arm64
 grub efi-arm64-bin

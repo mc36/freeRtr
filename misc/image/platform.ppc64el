@@ -1,7 +1,6 @@
 arch ppc64el
 unam ppc64le
 qemu ppc64el
-fbsd powerpc-powerpc64le powerpc64le
 ctrg powerpc64le
 kern powerpc64le
 grub ieee1275-bin

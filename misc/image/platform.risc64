@@ -1,8 +1,6 @@
 arch riscv64
 unam riscv64
 qemu riscv64
-fbsd riscv-riscv64 riscv64
-nbsd riscv-riscv64 riscv64
 ctrg riscv64
 kern riscv64
 grub efi-riscv64-bin
