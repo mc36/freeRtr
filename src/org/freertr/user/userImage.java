@@ -417,9 +417,11 @@ public class userImage {
             s = s.replaceAll("%uefi%", uefi);
             s = s.replaceAll("%find%", found);
             s = s.replaceAll("%%", "%");
-            s += "#";
-            int i = s.indexOf("#");
-            s = s.substring(0, i).trim();
+            int i = s.indexOf(" #");
+            if (i >= 0) {
+                s = s.substring(0, i);
+            }
+            s = s.trim();
             s += " ";
             i = s.indexOf(" ");
             String a = s.substring(0, i).trim().toLowerCase();
@@ -572,7 +574,8 @@ public class userImage {
                 continue;
             }
             if (a.equals("file-text")) {
-                List<String> lst = new ArrayList();
+                cnt++;
+                List<String> lst = new ArrayList<String>();
                 for (;; cnt++) {
                     a = res.get(cnt);
                     if (a.equals(".")) {
