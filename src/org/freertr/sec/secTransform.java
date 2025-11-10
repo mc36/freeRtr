@@ -180,6 +180,115 @@ public class secTransform {
     }
 
     /**
+     * encode encryption algorithm
+     *
+     * @param s string
+     */
+    public void str2encr(String s) {
+        encrAlg = 0;
+        encrKey = 0;
+        if (s.equals("des")) {
+            encrAlg = 1;
+        }
+        if (s.equals("blowfish")) {
+            encrAlg = 2;
+        }
+        if (s.equals("3des")) {
+            encrAlg = 3;
+        }
+        if (s.equals("aes128cbc")) {
+            encrAlg = 4;
+            encrKey = 128;
+        }
+        if (s.equals("aes192cbc")) {
+            encrAlg = 4;
+            encrKey = 192;
+        }
+        if (s.equals("aes256cbc")) {
+            encrAlg = 4;
+            encrKey = 256;
+        }
+        if (s.equals("aes128cfb")) {
+            encrAlg = 5;
+            encrKey = 128;
+        }
+        if (s.equals("aes192cfb")) {
+            encrAlg = 5;
+            encrKey = 192;
+        }
+        if (s.equals("aes256cfb")) {
+            encrAlg = 5;
+            encrKey = 256;
+        }
+        if (s.equals("aes128ecb")) {
+            encrAlg = 6;
+            encrKey = 128;
+        }
+        if (s.equals("aes192ecb")) {
+            encrAlg = 6;
+            encrKey = 192;
+        }
+        if (s.equals("aes256ecb")) {
+            encrAlg = 6;
+            encrKey = 256;
+        }
+        if (s.equals("none")) {
+            encrAlg = 7;
+        }
+        if (s.equals("aes128gcm")) {
+            encrAlg = 8;
+            encrKey = 128;
+        }
+        if (s.equals("aes192gcm")) {
+            encrAlg = 8;
+            encrKey = 192;
+        }
+        if (s.equals("aes256gcm")) {
+            encrAlg = 8;
+            encrKey = 256;
+        }
+        if (s.equals("rc2")) {
+            encrAlg = 9;
+        }
+        if (s.equals("aes128ctr")) {
+            encrAlg = 10;
+            encrKey = 128;
+        }
+        if (s.equals("aes192ctr")) {
+            encrAlg = 10;
+            encrKey = 192;
+        }
+        if (s.equals("aes256ctr")) {
+            encrAlg = 10;
+            encrKey = 256;
+        }
+        if (s.equals("aes128ofb")) {
+            encrAlg = 11;
+            encrKey = 128;
+        }
+        if (s.equals("aes192ofb")) {
+            encrAlg = 11;
+            encrKey = 192;
+        }
+        if (s.equals("aes256ofb")) {
+            encrAlg = 11;
+            encrKey = 256;
+        }
+        if (s.equals("aes128pcbc")) {
+            encrAlg = 12;
+            encrKey = 128;
+        }
+        if (s.equals("aes192pcbc")) {
+            encrAlg = 12;
+            encrKey = 192;
+        }
+        if (s.equals("aes256pcbc")) {
+            encrAlg = 12;
+            encrKey = 256;
+        }
+    }
+
+    /**
      * check if aead mode
      *
      * @return true if yes, false if no
@@ -188,7 +297,13 @@ public class secTransform {
         return encrAlg == 8;
     }
 
-    private static int str2hash(String s) {
+    /**
+     * encode hash algorithm
+     *
+     * @param s string
+     * @return value
+     */
+    public static int str2hash(String s) {
         if (s.equals("md5")) {
             return 1;
         }
@@ -225,7 +340,13 @@ public class secTransform {
         return 0;
     }
 
-    private static String hash2str(int i) {
+    /**
+     * decode hash algorithm
+     *
+     * @param i value
+     * @return string
+     */
+    public static String hash2str(int i) {
         switch (i) {
             case 1:
                 return "md5";
@@ -967,7 +1088,13 @@ public class secTransform {
         }
     }
 
-    private static cryHashGeneric getHash(int i) {
+    /**
+     * get hash algorithm
+     *
+     * @param i value
+     * @return hash, null on error
+     */
+    public static cryHashGeneric getHash(int i) {
         cryHashGeneric h = null;
         switch (i) {
             case 1:
@@ -1251,107 +1378,7 @@ public class secTransform {
         }
         if (s.equals("cipher")) {
             s = cmd.word();
-            encrAlg = 0;
-            encrKey = 0;
-            if (s.equals("des")) {
-                encrAlg = 1;
-            }
-            if (s.equals("blowfish")) {
-                encrAlg = 2;
-            }
-            if (s.equals("3des")) {
-                encrAlg = 3;
-            }
-            if (s.equals("aes128cbc")) {
-                encrAlg = 4;
-                encrKey = 128;
-            }
-            if (s.equals("aes192cbc")) {
-                encrAlg = 4;
-                encrKey = 192;
-            }
-            if (s.equals("aes256cbc")) {
-                encrAlg = 4;
-                encrKey = 256;
-            }
-            if (s.equals("aes128cfb")) {
-                encrAlg = 5;
-                encrKey = 128;
-            }
-            if (s.equals("aes192cfb")) {
-                encrAlg = 5;
-                encrKey = 192;
-            }
-            if (s.equals("aes256cfb")) {
-                encrAlg = 5;
-                encrKey = 256;
-            }
-            if (s.equals("aes128ecb")) {
-                encrAlg = 6;
-                encrKey = 128;
-            }
-            if (s.equals("aes192ecb")) {
-                encrAlg = 6;
-                encrKey = 192;
-            }
-            if (s.equals("aes256ecb")) {
-                encrAlg = 6;
-                encrKey = 256;
-            }
-            if (s.equals("none")) {
-                encrAlg = 7;
-            }
-            if (s.equals("aes128gcm")) {
-                encrAlg = 8;
-                encrKey = 128;
-            }
-            if (s.equals("aes192gcm")) {
-                encrAlg = 8;
-                encrKey = 192;
-            }
-            if (s.equals("aes256gcm")) {
-                encrAlg = 8;
-                encrKey = 256;
-            }
-            if (s.equals("rc2")) {
-                encrAlg = 9;
-            }
-            if (s.equals("aes128ctr")) {
-                encrAlg = 10;
-                encrKey = 128;
-            }
-            if (s.equals("aes192ctr")) {
-                encrAlg = 10;
-                encrKey = 192;
-            }
-            if (s.equals("aes256ctr")) {
-                encrAlg = 10;
-                encrKey = 256;
-            }
-            if (s.equals("aes128ofb")) {
-                encrAlg = 11;
-                encrKey = 128;
-            }
-            if (s.equals("aes192ofb")) {
-                encrAlg = 11;
-                encrKey = 192;
-            }
-            if (s.equals("aes256ofb")) {
-                encrAlg = 11;
-                encrKey = 256;
-            }
-            if (s.equals("aes128pcbc")) {
-                encrAlg = 12;
-                encrKey = 128;
-            }
-            if (s.equals("aes192pcbc")) {
-                encrAlg = 12;
-                encrKey = 192;
-            }
-            if (s.equals("aes256pcbc")) {
-                encrAlg = 12;
-                encrKey = 256;
-            }
+            str2encr(s);
             return false;
         }
         if (s.equals("hash")) {

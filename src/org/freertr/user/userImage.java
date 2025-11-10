@@ -8,6 +8,7 @@ import org.freertr.cry.cryHashSha2256;
 import org.freertr.cry.cryUtils;
 import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
+import org.freertr.sec.secTransform;
 import org.freertr.tab.tabGen;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -549,6 +550,37 @@ public class userImage {
                     found = a;
                     break;
                 }
+                continue;
+            }
+            if (a.equals("file-size")) {
+                found = "" + new File(s).length();
+                continue;
+            }
+            if (a.equals("file-hash")) {
+                i = s.indexOf(" ");
+                a = s.substring(0, i);
+                s = s.substring(i + 1, s.length());
+                i = secTransform.str2hash(a);
+                found = userFlash.calcFileHash(secTransform.getHash(i), s);
+                continue;
+            }
+            if (a.equals("file-line")) {
+                i = s.indexOf(" ");
+                a = s.substring(0, i);
+                s = s.substring(i + 1, s.length());
+                bits.buf2txt(false, bits.str2lst(s), a);
+                continue;
+            }
+            if (a.equals("file-text")) {
+                List<String> lst = new ArrayList();
+                for (;; cnt++) {
+                    a = res.get(cnt);
+                    if (a.equals(".")) {
+                        break;
+                    }
+                    lst.add(a);
+                }
+                bits.buf2txt(false, lst, s);
                 continue;
             }
             if (a.equals("catalog-sum")) {
