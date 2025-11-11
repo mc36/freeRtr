@@ -163,7 +163,7 @@ public class userHwext {
             a = cmd.word();
             boolean sck = a.endsWith("socat");
             boolean tap = a.endsWith("tapInt.bin");
-            if (!a.endsWith("pcapInt.bin") && !a.endsWith("rawInt.bin") && !a.endsWith("mapInt.bin") && !a.endsWith("xskInt.bin") && !a.endsWith("urngInt.bin") && !a.endsWith("cmp1int.bin") && !a.endsWith("cmp2int.bin") && !tap && !sck) {
+            if (!a.endsWith("pcapInt.bin") && !a.endsWith("rawInt.bin") && !a.endsWith("mapInt.bin") && !a.endsWith("xskInt.bin") && !a.endsWith("urngInt.bin") && !a.endsWith("bsdInt.bin") && !a.endsWith("cmp1int.bin") && !a.endsWith("cmp2int.bin") && !tap && !sck) {
                 continue;
             }
             String s = cmd.word();

@@ -126,7 +126,9 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "raw", "use rawint");
         l.add(null, false, 3, new int[]{-1}, "map", "use mapint");
         l.add(null, false, 3, new int[]{-1}, "xsk", "use xskint");
-        l.add(null, false, 3, new int[]{-1}, "cmp", "use cmpint");
+        l.add(null, false, 3, new int[]{-1}, "bsd", "use bsdint");
+        l.add(null, false, 3, new int[]{-1}, "cmp1", "use cmp1int");
+        l.add(null, false, 3, new int[]{-1}, "cmp2", "use cmp2int");
         l.add(null, false, 3, new int[]{-1}, "urng", "use urngint");
         l.add(null, false, 2, new int[]{3}, "local", "name of local interface");
         l.add(null, false, 3, new int[]{-1}, "<str>", "name");
