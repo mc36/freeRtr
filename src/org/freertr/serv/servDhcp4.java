@@ -1297,6 +1297,14 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         servDhcp4bind ntry;
         packDhcp4 rep = new packDhcp4();
         switch (req.dhcpOp) {
+            case packDhcp4.dhcpOpAbsent:
+                ntry = findBinding(req.bootpChaddr, 1, req.bootpCiaddr);
+                if (ntry == null) {
+                    return null;
+                }
+                rep.dhcpOp = packDhcp4.dhcpOpAbsent;
+                updatePack(req, rep, ntry);
+                return rep; // Always return response, let worker handle routing
             case packDhcp4.dhcpOpDiscover:
                 ntry = findBinding(req.bootpChaddr, 1, req.bootpCiaddr);
                 if (ntry == null) {
@@ -1427,194 +1435,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         }
     }
 
-}
-
-/**
- * DHCP Relay Statistics Class Comprehensive statistics for DHCP relay
- * operations
- */
-class servDhcp4RelayStats {
-
-    // Packet flow statistics
-    public long packetsClientToServer = 0;
-    public long packetsServerToClient = 0;
-    public long packetsDropped = 0;
-    public long packetsInvalid = 0;
-    public long packetsForwarded = 0;
-    public long packetsForwardedToServers = 0;
-
-    // Agent Options statistics
-    public long agentOptionsAdded = 0;
-    public long agentOptionsReplaced = 0;
-    public long agentOptionsAppended = 0;
-    public long agentOptionsForwarded = 0;
-    public long agentOptionsDiscarded = 0;
-
-    // Multi-hop relay statistics
-    public long multiHopPackets = 0;
-    public long maxHopCountExceeded = 0;
-    public long hopCountTotal = 0;
-    public long totalPacketsProcessed = 0;
-
-    // Performance metrics (in microseconds)
-    public long totalProcessingTime = 0;
-    public long packetProcessingCount = 0;
-    public long maxProcessingTime = 0;
-    public long minProcessingTime = Long.MAX_VALUE;
-    public long errorProcessingTime = 0;
-    public long errorProcessingCount = 0;
-
-    // Per sub-option statistics
-    public long circuitIdAdded = 0;
-    public long remoteIdAdded = 0;
-    public long linkSelectionAdded = 0;
-    public long subscriberIdAdded = 0;
-
-    // Error statistics
-    public long invalidGiaddrErrors = 0;
-    public long routingErrors = 0;
-    public long optionParsingErrors = 0;
-    public long bufferOverflowErrors = 0;
-    public long forwardingErrors = 0;
-
-    // Relay mode statistics
-    public long replaceOperations = 0;
-    public long appendOperations = 0;
-    public long forwardOperations = 0;
-    public long discardOperations = 0;
-
-    /**
-     * Reset all statistics to zero
-     */
-    public void reset() {
-        packetsClientToServer = 0;
-        packetsServerToClient = 0;
-        packetsDropped = 0;
-        packetsInvalid = 0;
-        packetsForwarded = 0;
-        packetsForwardedToServers = 0;
-
-        agentOptionsAdded = 0;
-        agentOptionsReplaced = 0;
-        agentOptionsAppended = 0;
-        agentOptionsForwarded = 0;
-        agentOptionsDiscarded = 0;
-
-        multiHopPackets = 0;
-        maxHopCountExceeded = 0;
-        hopCountTotal = 0;
-        totalPacketsProcessed = 0;
-
-        totalProcessingTime = 0;
-        packetProcessingCount = 0;
-        maxProcessingTime = 0;
-        minProcessingTime = Long.MAX_VALUE;
-        errorProcessingTime = 0;
-        errorProcessingCount = 0;
-
-        circuitIdAdded = 0;
-        remoteIdAdded = 0;
-        linkSelectionAdded = 0;
-        subscriberIdAdded = 0;
-
-        invalidGiaddrErrors = 0;
-        routingErrors = 0;
-        optionParsingErrors = 0;
-        bufferOverflowErrors = 0;
-        forwardingErrors = 0;
-
-        replaceOperations = 0;
-        appendOperations = 0;
-        forwardOperations = 0;
-        discardOperations = 0;
-    }
-
-    /**
-     * Update processing time statistics for successful packets
-     */
-    public void updateProcessingTime(long processingTime) {
-        totalProcessingTime += processingTime;
-        packetProcessingCount++;
-        if (processingTime > maxProcessingTime) {
-            maxProcessingTime = processingTime;
-        }
-        if (processingTime < minProcessingTime) {
-            minProcessingTime = processingTime;
-        }
-    }
-
-    /**
-     * Update processing time statistics for error packets
-     */
-    public void updateErrorProcessingTime(long processingTime) {
-        errorProcessingTime += processingTime;
-        errorProcessingCount++;
-        if (processingTime > maxProcessingTime) {
-            maxProcessingTime = processingTime;
-        }
-        if (processingTime < minProcessingTime) {
-            minProcessingTime = processingTime;
-        }
-    }
-
-    /**
-     * Get average processing time in microseconds (successful packets only)
-     */
-    public long getAverageProcessingTime() {
-        if (packetProcessingCount == 0) {
-            return 0;
-        }
-        return totalProcessingTime / packetProcessingCount;
-    }
-
-    /**
-     * Get average error processing time in microseconds
-     */
-    public long getAverageErrorProcessingTime() {
-        if (errorProcessingCount == 0) {
-            return 0;
-        }
-        return errorProcessingTime / errorProcessingCount;
-    }
-
-    /**
-     * Get average hop count (FIXED: now correctly calculated)
-     */
-    public double getAverageHopCount() {
-        if (totalPacketsProcessed == 0) {
-            return 0.0;
-        }
-        return (double) hopCountTotal / totalPacketsProcessed;
-    }
-
-    /**
-     * Get total packets processed
-     */
-    public long getTotalPacketsProcessed() {
-        return packetsClientToServer + packetsServerToClient;
-    }
-
-    /**
-     * Get success rate percentage
-     */
-    public double getSuccessRate() {
-        long totalPackets = getTotalPacketsProcessed();
-        if (totalPackets == 0) {
-            return 0.0;
-        }
-        return (double) packetsForwarded * 100.0 / totalPackets;
-    }
-
-    /**
-     * Get drop rate percentage
-     */
-    public double getDropRate() {
-        long totalPackets = getTotalPacketsProcessed();
-        if (totalPackets == 0) {
-            return 0.0;
-        }
-        return (double) packetsDropped * 100.0 / totalPackets;
-    }
 }
 
 class servDhcp4bindIp implements Comparator<servDhcp4bind> {

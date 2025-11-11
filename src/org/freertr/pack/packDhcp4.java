@@ -55,6 +55,11 @@ public class packDhcp4 {
     public final static int bootpOpReply = 2;
 
     /**
+     * bootp mode
+     */
+    public final static int dhcpOpAbsent = -1;
+
+    /**
      * dhcp discover
      */
     public final static int dhcpOpDiscover = 1;
@@ -157,7 +162,7 @@ public class packDhcp4 {
     /**
      * message op code
      */
-    public int dhcpOp;
+    public int dhcpOp = dhcpOpAbsent;
 
     /**
      * dhcp server identifier
@@ -255,6 +260,8 @@ public class packDhcp4 {
      */
     public static String dhcpOp2str(int i) {
         switch (i) {
+            case dhcpOpAbsent:
+                return "bootp";
             case dhcpOpDiscover:
                 return "discover";
             case dhcpOpOffer:
@@ -432,8 +439,10 @@ public class packDhcp4 {
         pck.putSkip(size1);
         pck.msbPutD(0, magic);
         pck.putSkip(4);
-        bits.putByte(tlv.valDat, 0, dhcpOp);
-        tlv.putBytes(pck, 53, 1, tlv.valDat);
+        if (dhcpOp != dhcpOpAbsent) {
+            bits.putByte(tlv.valDat, 0, dhcpOp);
+            tlv.putBytes(pck, 53, 1, tlv.valDat);
+        }
         if (dhcpClientId) {
             bootpChaddr.toBuffer(tlv.valDat, 1);
             tlv.valDat[0] = 1;
