@@ -1,5 +1,7 @@
 package org.freertr.pack;
 
+import org.freertr.util.bits;
+
 /**
  * trivial file transfer protocol (rfc1350) packet
  *
@@ -42,6 +44,21 @@ public class packTftp {
      * mode of file
      */
     public String mod;
+
+    /**
+     * saw options
+     */
+    public boolean opts;
+
+    /**
+     * total size
+     */
+    public long tSiz;
+
+    /**
+     * block size
+     */
+    public int bSiz;
 
     /**
      * data of packet
@@ -96,6 +113,8 @@ public class packTftp {
                 return "ack";
             case msgError:
                 return "error";
+            case msgOAck:
+                return "oack";
             default:
                 return "unknown=" + i;
         }
@@ -113,7 +132,7 @@ public class packTftp {
         } else {
             i = dat.length;
         }
-        return "typ=" + type2string(typ) + " blk=" + blk + " fil=" + nam + " mod=" + mod + " dat=" + i;
+        return "typ=" + type2string(typ) + " blk=" + blk + " fil=" + nam + " mod=" + mod + " ts=" + tSiz + " bs=" + bSiz + " dat=" + i;
     }
 
     /**
@@ -125,13 +144,17 @@ public class packTftp {
     public boolean parsePacket(packHolder pck) {
         typ = pck.msbGetW(0); // message type
         pck.getSkip(2);
+        opts = false;
+        tSiz = -1;
+        bSiz = -1;
         switch (typ) {
             case msgRead:
             case msgWrite:
                 nam = pck.getAsciiZ(0, pck.dataSize(), 0);
                 pck.getSkip(nam.length() + 1);
                 mod = pck.getAsciiZ(0, pck.dataSize(), 0);
-                return false;
+                pck.getSkip(mod.length() + 1);
+                break;
             case msgData:
                 blk = pck.msbGetW(0); // block number
                 pck.getSkip(2);
@@ -144,9 +167,39 @@ public class packTftp {
                 blk = pck.msbGetW(0); // error code
                 nam = pck.getAsciiZ(2, pck.dataSize(), 0);
                 return false;
+            case msgOAck:
+                break;
             default:
                 return true;
         }
+        for (;;) {
+            String t = pck.getAsciiZ(0, pck.dataSize(), 0);
+            pck.getSkip(t.length() + 1);
+            if (t.length() < 1) {
+                break;
+            }
+            String v = pck.getAsciiZ(0, pck.dataSize(), 0);
+            pck.getSkip(v.length() + 1);
+            if (v.length() < 1) {
+                break;
+            }
+            if (t.equals("tsize")) {
+                tSiz = bits.str2long(v);
+                opts = true;
+                continue;
+            }
+            if (t.equals("blksize")) {
+                bSiz = bits.str2num(v);
+                opts = true;
+                continue;
+            }
+        }
+        return false;
+    }
+
+    private void putStr(packHolder pck, String t) {
+        pck.putAsciiZ(0, t.length() + 1, t, 0);
+        pck.putSkip(t.length() + 1);
     }
 
     /**
@@ -161,17 +214,15 @@ public class packTftp {
         switch (typ) {
             case msgRead:
             case msgWrite:
-                pck.putAsciiZ(0, nam.length() + 1, nam, 0);
-                pck.putSkip(nam.length() + 1);
-                pck.putAsciiZ(0, mod.length() + 1, mod, 0);
-                pck.putSkip(mod.length() + 1);
-                return pck;
+                putStr(pck, nam);
+                putStr(pck, mod);
+                break;
             case msgData:
                 pck.msbPutW(0, blk);
                 pck.putSkip(2);
                 pck.putCopy(dat, 0, 0, dat.length);
                 pck.putSkip(dat.length);
-                return pck;
+                break;
             case msgAck:
                 pck.msbPutW(0, blk);
                 pck.putSkip(2);
@@ -179,12 +230,25 @@ public class packTftp {
             case msgError:
                 pck.msbPutW(0, blk);
                 pck.putSkip(2);
-                pck.putAsciiZ(0, nam.length() + 1, nam, 0);
-                pck.putSkip(nam.length() + 1);
+                putStr(pck, nam);
                 return pck;
+            case msgOAck:
+                break;
             default:
                 return null;
         }
+        if (!opts) {
+            return pck;
+        }
+        if (tSiz >= 0) {
+            putStr(pck, "tsize");
+            putStr(pck, "" + tSiz);
+        }
+        if (bSiz >= 0) {
+            putStr(pck, "blksize");
+            putStr(pck, "" + bSiz);
+        }
+        return pck;
     }
 
 }
