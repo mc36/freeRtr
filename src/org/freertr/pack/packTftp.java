@@ -74,6 +74,11 @@ public class packTftp {
     public final static int msgError = 5;
 
     /**
+     * option acknowledgement
+     */
+    public final static int msgOAck = 6;
+
+    /**
      * convert message type to string
      *
      * @param i message type

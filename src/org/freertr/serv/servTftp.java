@@ -186,6 +186,10 @@ class servTftpConn implements Runnable {
                 }
                 break;
             case packTftp.msgWrite:
+                if (lower.readOnly) {
+                    sendError(3, "not allowed");
+                    return;
+                }
                 red = false;
                 userFlash.mkfile(a);
                 if (!fh.exists()) {
