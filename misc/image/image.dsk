@@ -9,20 +9,9 @@ exec dd bs=1K seek=1024 conv=notrunc if=%img%.flp of=%img%.dsk
 
 exec cp %img%.krn %tmp%/rtr.krn
 exec cd %tmp%/ ; cpio --quiet -H newc -i < %img%.cpio
-exec cd %tmp%/ ; csplit -s init /^###rootfs###$/
-exec mv %tmp%/xx00 %tmp%/init
-
-file-text %tmp%/init
-mount -t ext4 /dev/disk/by-uuid/999dff7c-0eed-48a5-b605-bb7d675a49ab /mnt
-exec switch_root /mnt /init2
-.
-file-text %tmp%/init2
-#!/bin/sh
-sh /init.sys
-.
-exec cat %tmp%/xx01 >> %tmp%/init2
+exec cp ../misc/image/init.dsk1 %tmp%/init
+exec cp ../misc/image/init.dsk2 %tmp%/init2
 exec chmod 755 %tmp%/init*
-del-alw %tmp%/xx0*
 
 exec cd %tmp%/ ; find init* dev/ sys/ proc/ mnt/ run/ usr/ > filist
 file-text %tmp%/filist

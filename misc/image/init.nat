@@ -1,7 +1,4 @@
 #!/bin/sh
-sh /init.sys
-sh /init.dev
-###rootfs###
 cd /rtr
 grep "rx:" /proc/tty/driver/serial | sed "s/^/\/dev\/ttyS/" > hwdet.ser
 ip link show > hwdet.eth

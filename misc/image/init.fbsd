@@ -17,4 +17,7 @@ echo "/dev/ttyu0: " > /rtr/hwdet.ser
 /java/bin/java -jar /rtr/rtr.jar test hwdet path /rtr/ iface bsd line raw busywait java /java/bin/
 chmod 755 /rtr/*.sh
 /rtr/hwdet-all.sh
-
+while (true); do
+  sleep 1
+  done
+exit 0

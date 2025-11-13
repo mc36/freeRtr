@@ -1,3 +1,4 @@
+exec cp ../misc/image/init.lin %tmp%/init
 exec cp ../misc/image/init.dev %tmp%/init.dev
 exec cp ../misc/image/init.sys %tmp%/init.sys
 exec mv %tmp%/boot/vmlinu* %img%.krn

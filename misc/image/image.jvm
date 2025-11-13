@@ -31,7 +31,7 @@ select-dis openjdk-25-.*                 #old jvm
 select-any openjdk-26-jdk-headless       #new jdk
 select-dep yes
 
-exec cp ../misc/image/init.jvm %tmp%/init
+exec cp ../misc/image/init.jvm %tmp%/init.run
 exec cp rtr.jar %tmp%/rtr/
 
 select-lst
