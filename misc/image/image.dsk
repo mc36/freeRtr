@@ -9,8 +9,8 @@ exec dd bs=1K seek=1024 conv=notrunc if=%img%.flp of=%img%.img
 
 exec cp %img%.krn %tmp%/rtr.krn
 exec cd %tmp%/ ; cpio --quiet -H newc -i < %img%.cpio
-exec cp ../misc/image/init.dsk1 %tmp%/init
-exec cp ../misc/image/init.dsk2 %tmp%/init2
+exec cp ../misc/image/init.dsk %tmp%/init
+exec cp ../misc/image/init.chr %tmp%/
 exec chmod 755 %tmp%/init*
 
 exec cd %tmp%/ ; find init* dev/ sys/ proc/ mnt/ run/ usr/ > filist

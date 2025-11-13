@@ -2,4 +2,4 @@
 sh /init.sys
 sh /init.dev
 mount -t ext4 /dev/disk/by-uuid/999dff7c-0eed-48a5-b605-bb7d675a49ab /mnt
-exec switch_root /mnt /init2
+exec switch_root /mnt /init.chr
