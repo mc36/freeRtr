@@ -17652,3 +17652,6 @@ qc pass: sreth server
 ---------------------------------- 2025-11-09 10:01:54 25.11.9
 qc pass: capwap server
 qc pass: lwapp server
+---------------------------------- 2025-11-13 06:03:31 25.11.13
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
