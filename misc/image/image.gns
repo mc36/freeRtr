@@ -1,8 +1,8 @@
 del-alw %tmp%
 mkdir %tmp%
 
-exec qemu-img convert -O qcow2 -c %img%.dsk %img%.qcow2
-exec qemu-img convert -O vmdk -o subformat=streamOptimized %img%.dsk %img%.vmdk
+exec qemu-img convert -O qcow2 -c %img%.img %img%.qcow2
+exec qemu-img convert -O vmdk -o subformat=streamOptimized %img%.img %img%.vmdk
 
 del-alw %img%.gns3a
 
