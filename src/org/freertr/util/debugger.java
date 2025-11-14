@@ -70,6 +70,11 @@ public class debugger {
     public static boolean prtScsiTraf = false;
 
     /**
+     * prtScsi traffic
+     */
+    public static boolean prtAtaTraf = false;
+
+    /**
      * lineScript commands
      */
     public static boolean lineScript = false;
@@ -1150,6 +1155,7 @@ public class debugger {
         l.add(null, false, b + 1, new int[]{-1}, "ldap", "ldap protocol");
         l.add(null, false, b + 1, new int[]{-1}, "tacacs", "tacacs protocol");
         l.add(null, false, b, new int[]{b + 1}, "proto", "transport protocols");
+        l.add(null, false, b + 1, new int[]{-1}, "ata", "ata protocol");
         l.add(null, false, b + 1, new int[]{-1}, "scsi", "scsi protocol");
         l.add(null, false, b + 1, new int[]{b + 2}, "babel", "babel routing protocol");
         l.add(null, false, b + 2, new int[]{-1}, "event", "table events");
@@ -1598,6 +1604,10 @@ public class debugger {
         }
         if (s.equals("proto")) {
             s = cmd.word();
+            if (s.equals("ata")) {
+                prtAtaTraf = v;
+                return false;
+            }
             if (s.equals("scsi")) {
                 prtScsiTraf = v;
                 return false;
