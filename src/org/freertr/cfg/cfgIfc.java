@@ -49,6 +49,7 @@ import org.freertr.clnt.clntUti;
 import org.freertr.clnt.clntVxlan;
 import org.freertr.clnt.clntWireguard;
 import org.freertr.ifc.ifcArcnet;
+import org.freertr.ifc.ifcAtaOE;
 import org.freertr.ifc.ifcAtmDxi;
 import org.freertr.ifc.ifcAtmSar;
 import org.freertr.ifc.ifcBridgeIfc;
@@ -1147,6 +1148,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public ifcP2pOErely pppoeR;
 
     /**
+     * ataoe server handler
+     */
+    public ifcAtaOE ataoeS;
+
+    /**
      * eapol client handler
      */
     public ifcEapOLclnt eapolC;
@@ -1534,6 +1540,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "service-policy-out", null),
         // forwarding
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "transproxy", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ataoe server", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "p2poe client", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "p2poe server", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "p2poe relay", null),
@@ -6449,6 +6456,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         } else {
             l.add(cmds.tabulator + "p2poe client " + pppoeC.clnIfc.name);
         }
+        if (ataoeS == null) {
+            l.add(cmds.tabulator + "no ataoe server");
+        } else {
+            l.add(cmds.tabulator + "ataoe server");
+        }
         cmds.cfgLine(l, pppoeS == null, cmds.tabulator, "p2poe server", "" + pppoeS);
         cmds.cfgLine(l, pppoeR == null, cmds.tabulator, "p2poe relay", "" + pppoeR);
         if (eapolC == null) {
@@ -6867,6 +6879,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         ifcQinqX.getHelp(l);
         l.add(null, false, 1, new int[]{2}, "vlan", "vlan parameters on the interface");
         ifcVlan.vlnGetHelp(l);
+        l.add(null, false, 1, new int[]{2}, "ataoe", "ataoe parameters on the interface");
+        l.add(null, false, 2, new int[]{-1}, "server", "start ataoe server");
         l.add(null, false, 1, new int[]{2}, "p2poe", "pppoe parameters on the interface");
         l.add(null, false, 2, new int[]{3}, "client", "start pppoe client");
         l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of dialer interface");
@@ -7574,6 +7588,23 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (a.equals("carrier-delay")) {
             carrierDelay = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("ataoe")) {
+            a = cmd.word();
+            if (a.equals("server")) {
+                ataoeS = new ifcAtaOE();
+                ethtyp.addET(ifcAtaOE.ethTyp, "ataoe", ataoeS);
+                ethtyp.updateET(ifcAtaOE.ethTyp, ataoeS);
+                return;
+            }
+            if (ataoeS == null) {
+                cmd.error("protocol not enabled");
+                return;
+            }
+            ////////////////
+
+            cmd.badCmd();
             return;
         }
         if (a.equals("p2poe")) {
@@ -8524,6 +8555,21 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (a.equals("carrier-delay")) {
             carrierDelay = 0;
+            return;
+        }
+        if (a.equals("ataoe")) {
+            a = cmd.word();
+            if (ataoeS == null) {
+                cmd.error("protocol not enabled");
+                return;
+            }
+            if (a.equals("server")) {
+                ethtyp.delET(ifcAtaOE.ethTyp);
+                ataoeS = null;
+                return;
+            }
+
+            cmd.badCmd();
             return;
         }
         if (a.equals("p2poe")) {
