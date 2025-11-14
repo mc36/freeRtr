@@ -29,6 +29,8 @@ public class encIde implements Comparable<encIde> {
 
     /**
      * create new handler
+     *
+     * @param n name of file
      */
     public encIde(String n) {
         name = "" + n;
@@ -116,42 +118,44 @@ public class encIde implements Comparable<encIde> {
         }
         byte[] res = null;
         switch (cmd[3] & 0xff) {
-            case 0x24: // read48
-                long sec = bits.lsbGetQ(cmd, 4) & 0xffffffffffffffL;
+            case 0x24: // read ext
+                long sec = bits.lsbGetQ(cmd, 4) & 0xffffffffffffL;
                 int len = cmd[2] & 0xff;
                 if (debugger.prtAtaTraf) {
-                    logger.debug("read48 sec=" + sec + " len=" + len);
+                    logger.debug("read ext sec=" + sec + " len=" + len);
                 }
                 res = doRead(sec, len);
                 cmd[1] = 0; // ok
                 cmd[3] = 0x40; // ready
                 break;
-            case 0x34: // write48
-                sec = bits.lsbGetQ(cmd, 4) & 0xffffffffffffffL;
+            case 0x34: // write ext
+                sec = bits.lsbGetQ(cmd, 4) & 0xffffffffffffL;
                 len = cmd[2] & 0xff;
                 if (debugger.prtAtaTraf) {
-                    logger.debug("write48 sec=" + sec + " len=" + len);
+                    logger.debug("write ext sec=" + sec + " len=" + len);
                 }
                 doWrite(sec, dat);
                 res = new byte[0];
                 cmd[1] = 0; // ok
                 cmd[3] = 0x40; // ready
                 break;
-            case 0x20: // read28
-                sec = bits.lsbGetD(cmd, 4) & 0xfffffff;
+            case 0x20: // read
+            case 0x21: // read ret
+                sec = bits.lsbGetD(cmd, 4) & 0xffffff;
                 len = cmd[2] & 0xff;
                 if (debugger.prtAtaTraf) {
-                    logger.debug("read28 sec=" + sec + " len=" + len);
+                    logger.debug("read sec=" + sec + " len=" + len);
                 }
                 res = doRead(sec, len);
                 cmd[1] = 0; // ok
                 cmd[3] = 0x40; // ready
                 break;
-            case 0x30: // write28
-                sec = bits.lsbGetD(cmd, 4) & 0xfffffff;
+            case 0x30: // write
+            case 0x31: // write ret
+                sec = bits.lsbGetD(cmd, 4) & 0xffffff;
                 len = cmd[2] & 0xff;
                 if (debugger.prtAtaTraf) {
-                    logger.debug("write28 sec=" + sec + " len=" + len);
+                    logger.debug("write sec=" + sec + " len=" + len);
                 }
                 doWrite(sec, dat);
                 res = new byte[0];
@@ -203,6 +207,8 @@ public class encIde implements Comparable<encIde> {
                 bits.lsbPutW(res, 172, 0x1400); // feature enabled
                 bits.lsbPutW(res, 174, 0x4000); // feature enabled
                 bits.lsbPutQ(res, 200, (int) filSiz); // user addressable
+                bits.lsbPutW(res, 212, 0x5000); // logical sectors
+                bits.lsbPutW(res, 234, (int) (blkSiz >>> 1)); // words per sector
                 break;
             default:
                 if (debugger.prtAtaTraf) {

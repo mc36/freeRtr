@@ -1,6 +1,5 @@
 package org.freertr.ifc;
 
-import java.util.List;
 import org.freertr.addr.addrMac;
 import org.freertr.enc.encIde;
 import org.freertr.pack.packHolder;

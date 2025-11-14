@@ -10,7 +10,6 @@ import org.freertr.user.userHelp;
  */
 public class debugger {
 
-
     private debugger() {
     }
 
@@ -1018,7 +1017,7 @@ public class debugger {
      * ifcAtaOE events
      */
     public static boolean ifcAtaOE = false;
-    
+
     /**
      * ifcP2pOEclnt events
      */
