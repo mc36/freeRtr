@@ -1,5 +1,6 @@
 package org.freertr.serv;
 
+import org.freertr.enc.encScsi;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.pack.packHolder;
@@ -31,7 +32,7 @@ public class servIscsi extends servGeneric implements prtServS {
     /**
      * list of files
      */
-    public tabGen<servScsi> files = new tabGen<servScsi>();
+    public tabGen<encScsi> files = new tabGen<encScsi>();
 
     /**
      * defaults text
@@ -54,7 +55,7 @@ public class servIscsi extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> l, int filter) {
         for (int i = 0; i < files.size(); i++) {
-            servScsi ntry = files.get(i);
+            encScsi ntry = files.get(i);
             ntry.getCfg(l, beg + "target " + ntry.name + " ");
         }
     }
@@ -69,8 +70,8 @@ public class servIscsi extends servGeneric implements prtServS {
         if (!s.equals("target")) {
             return true;
         }
-        servScsi ntry = new servScsi(cmd.word());
-        servScsi old = files.add(ntry);
+        encScsi ntry = new encScsi(cmd.word());
+        encScsi old = files.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -119,7 +120,7 @@ class servIscsiConn implements Runnable {
 
     public pipeSide pipe;
 
-    public servScsi file;
+    public encScsi file;
 
     public prtGenConn mySide;
 
@@ -259,7 +260,7 @@ class servIscsiConn implements Runnable {
                         if (i > 0) {
                             s = s.substring(i + 1, s.length());
                         }
-                        file = new servScsi(s);
+                        file = new encScsi(s);
                         file = lower.files.find(file);
                         if (debugger.servIscsiTraf) {
                             logger.debug("opened " + file);

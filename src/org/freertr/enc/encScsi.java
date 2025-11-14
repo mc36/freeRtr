@@ -1,4 +1,4 @@
-package org.freertr.serv;
+package org.freertr.enc;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -13,7 +13,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class servScsi implements Comparable<servScsi> {
+public class encScsi implements Comparable<encScsi> {
 
     /**
      * name of this file
@@ -33,12 +33,12 @@ public class servScsi implements Comparable<servScsi> {
      *
      * @param n name of handler
      */
-    public servScsi(String n) {
+    public encScsi(String n) {
         name = "" + n;
         blkSiz = 512;
     }
 
-    public int compareTo(servScsi o) {
+    public int compareTo(encScsi o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
     }
 
@@ -150,7 +150,7 @@ public class servScsi implements Comparable<servScsi> {
             case 0x28: // read10
                 int sec = bits.msbGetD(cmd, 2);
                 int len = bits.msbGetW(cmd, 7);
-                if (debugger.servScsiTraf) {
+                if (debugger.prtScsiTraf) {
                     logger.debug("read10 sec=" + sec + " len=" + len);
                 }
                 res = doRead(sec, len);
@@ -158,7 +158,7 @@ public class servScsi implements Comparable<servScsi> {
             case 0x2a: // write10
                 sec = bits.msbGetD(cmd, 2);
                 len = bits.msbGetW(cmd, 7);
-                if (debugger.servScsiTraf) {
+                if (debugger.prtScsiTraf) {
                     logger.debug("write10 sec=" + sec + " len=" + len);
                 }
                 doWrite(sec, dat);
@@ -167,7 +167,7 @@ public class servScsi implements Comparable<servScsi> {
             case 0x08: // read6
                 sec = bits.msbGetD(cmd, 0) & 0x1fffff;
                 len = bits.getByte(cmd, 4);
-                if (debugger.servScsiTraf) {
+                if (debugger.prtScsiTraf) {
                     logger.debug("read6 sec=" + sec + " len=" + len);
                 }
                 res = doRead(sec, len);
@@ -175,14 +175,14 @@ public class servScsi implements Comparable<servScsi> {
             case 0x0a: // write6
                 sec = bits.msbGetD(cmd, 0) & 0x1fffff;
                 len = bits.getByte(cmd, 4);
-                if (debugger.servScsiTraf) {
+                if (debugger.prtScsiTraf) {
                     logger.debug("write6 sec=" + sec + " len=" + len);
                 }
                 doWrite(sec, dat);
                 res = new byte[0];
                 break;
             case 0x1a: // mode sense6
-                if (debugger.servScsiTraf) {
+                if (debugger.prtScsiTraf) {
                     logger.debug("mode sense6");
                 }
                 res = new byte[cmd[4] & 0xff];
@@ -194,13 +194,13 @@ public class servScsi implements Comparable<servScsi> {
                 res[5] = 0; // page length
                 break;
             case 0x00: // test unit ready
-                if (debugger.servScsiTraf) {
+                if (debugger.prtScsiTraf) {
                     logger.debug("test unit ready");
                 }
                 res = new byte[0];
                 break;
             case 0x25: // read capacity10
-                if (debugger.servScsiTraf) {
+                if (debugger.prtScsiTraf) {
                     logger.debug("read capacity10");
                 }
                 res = new byte[8];
@@ -208,7 +208,7 @@ public class servScsi implements Comparable<servScsi> {
                 bits.msbPutD(res, 4, (int) blkSiz);
                 break;
             case 0xa0: // report luns
-                if (debugger.servScsiTraf) {
+                if (debugger.prtScsiTraf) {
                     logger.debug("report luns");
                 }
                 res = new byte[16];
@@ -217,7 +217,7 @@ public class servScsi implements Comparable<servScsi> {
                 bits.msbPutQ(res, 8, 0); // lun id
                 break;
             case 0x12: // inquiry
-                if (debugger.servScsiTraf) {
+                if (debugger.prtScsiTraf) {
                     logger.debug("inquiry");
                 }
                 res = new byte[cmd[4] & 0xff];
@@ -235,7 +235,7 @@ public class servScsi implements Comparable<servScsi> {
                 res[32] = 0x63; // revision
                 break;
             default:
-                if (debugger.servScsiTraf) {
+                if (debugger.prtScsiTraf) {
                     logger.debug("unknown=" + (cmd[0] & 0xff));
                 }
                 break;

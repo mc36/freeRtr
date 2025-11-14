@@ -64,6 +64,11 @@ public class debugger {
     public static boolean prtWatchEvnt = false;
 
     /**
+     * prtScsi traffic
+     */
+    public static boolean prtScsiTraf = false;
+
+    /**
      * lineScript commands
      */
     public static boolean lineScript = false;
@@ -132,11 +137,6 @@ public class debugger {
      * servSnmp traffic
      */
     public static boolean servSnmpTraf = false;
-
-    /**
-     * servScsi traffic
-     */
-    public static boolean servScsiTraf = false;
 
     /**
      * servHttp traffic
@@ -1127,7 +1127,6 @@ public class debugger {
         l.add(null, false, b + 1, new int[]{-1}, "snmp", "simple network management protocol");
         l.add(null, false, b + 1, new int[]{-1}, "iscsi", "iscsi protocol");
         l.add(null, false, b + 1, new int[]{-1}, "rfb", "remote frame buffer protocol");
-        l.add(null, false, b + 1, new int[]{-1}, "scsi", "scsi protocol");
         l.add(null, false, b + 1, new int[]{-1}, "http", "hypertext transfer protocol");
         l.add(null, false, b + 1, new int[]{-1}, "lpd", "line printer daemon protocol");
         l.add(null, false, b + 1, new int[]{-1}, "pop3", "post office protocol");
@@ -1145,6 +1144,7 @@ public class debugger {
         l.add(null, false, b + 1, new int[]{-1}, "ldap", "ldap protocol");
         l.add(null, false, b + 1, new int[]{-1}, "tacacs", "tacacs protocol");
         l.add(null, false, b, new int[]{b + 1}, "proto", "transport protocols");
+        l.add(null, false, b + 1, new int[]{-1}, "scsi", "scsi protocol");
         l.add(null, false, b + 1, new int[]{b + 2}, "babel", "babel routing protocol");
         l.add(null, false, b + 2, new int[]{-1}, "event", "table events");
         l.add(null, false, b + 2, new int[]{-1}, "traffic", "interface packets");
@@ -1463,10 +1463,6 @@ public class debugger {
                 servRfbTraf = v;
                 return false;
             }
-            if (s.equals("scsi")) {
-                servScsiTraf = v;
-                return false;
-            }
             if (s.equals("http")) {
                 servHttpTraf = v;
                 return false;
@@ -1595,6 +1591,10 @@ public class debugger {
         }
         if (s.equals("proto")) {
             s = cmd.word();
+            if (s.equals("scsi")) {
+                prtScsiTraf = v;
+                return false;
+            }
             if (s.equals("dlep")) {
                 ipDlepEvnt = v;
                 return false;
