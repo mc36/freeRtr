@@ -185,6 +185,7 @@ public class renamer {
         s = s.replaceAll("\\.", " ");
         s = s.replaceAll("'", "");
         s = s.replaceAll("`", "");
+        s = s.replaceAll("‘", "");
         s = s.replaceAll("\"", "");
         s = s.replaceAll("  ", " ");
         s = s.trim();
