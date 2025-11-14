@@ -10,6 +10,7 @@ import org.freertr.user.userHelp;
  */
 public class debugger {
 
+
     private debugger() {
     }
 
@@ -1009,6 +1010,11 @@ public class debugger {
     public static boolean ifcThread = false;
 
     /**
+     * ifcAtaOE events
+     */
+    public static boolean ifcAtaOE = false;
+    
+    /**
      * ifcP2pOEclnt events
      */
     public static boolean ifcP2pOEclnt = false;
@@ -1324,6 +1330,7 @@ public class debugger {
         l.add(null, false, b + 1, new int[]{-1}, "ptp", "precision time protocol");
         l.add(null, false, b + 1, new int[]{-1}, "lacp", "lacp");
         l.add(null, false, b + 1, new int[]{-1}, "thread", "interface thread");
+        l.add(null, false, b + 1, new int[]{-1}, "ataoe", "ata over ethernet server");
         l.add(null, false, b + 1, new int[]{-1}, "p2poec", "ppp over ethernet client");
         l.add(null, false, b + 1, new int[]{-1}, "p2poes", "ppp over ethernet server");
         l.add(null, false, b + 1, new int[]{-1}, "p2poer", "ppp over ethernet relay");
@@ -2309,6 +2316,10 @@ public class debugger {
             }
             if (s.equals("thread")) {
                 ifcThread = v;
+                return false;
+            }
+            if (s.equals("ataoe")) {
+                ifcAtaOE = v;
                 return false;
             }
             if (s.equals("p2poec")) {
