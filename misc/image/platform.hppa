@@ -1,5 +1,5 @@
 arch hppa
-unam parisc64
+unam parisc
 qemu hppa
 ctrg hppa
 comp gcc
