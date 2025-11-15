@@ -35,9 +35,7 @@ public class ifcAtaOE implements ifcUp {
     public ifcAtaOE(cmds cmd) {
         shlfId = bits.str2num(cmd.word());
         slotId = bits.str2num(cmd.word());
-        int i = bits.str2num(cmd.word());
         file = new encIde(cmd.word());
-        file.blkSiz = i;
         file.doUpdate(false);
     }
 
@@ -77,7 +75,7 @@ public class ifcAtaOE implements ifcUp {
     public encIde file;
 
     public String toString() {
-        return shlfId + " " + slotId + " " + file.blkSiz + " " + file.name;
+        return shlfId + " " + slotId + " " + file.name;
     }
 
     public void recvPack(packHolder pck) {

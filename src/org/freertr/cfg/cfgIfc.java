@@ -6882,8 +6882,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 1, new int[]{2}, "ataoe", "ataoe parameters on the interface");
         l.add(null, false, 2, new int[]{3}, "<num>", "shelf id");
         l.add(null, false, 3, new int[]{4}, "<num>", "slot id");
-        l.add(null, false, 4, new int[]{5}, "<num>", "block size");
-        l.add(null, false, 5, new int[]{-1}, "<str>", "file name");
+        l.add(null, false, 4, new int[]{-1}, "<str>", "file name");
         l.add(null, false, 1, new int[]{2}, "p2poe", "pppoe parameters on the interface");
         l.add(null, false, 2, new int[]{3}, "client", "start pppoe client");
         l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of dialer interface");
