@@ -1,12 +1,6 @@
 del-alw %tmp%
 mkdir %tmp%
 
-exec qemu-img create %img%.img 2G
-exec /sbin/sfdisk -q %img%.img < ../misc/image/native.sfdsk
-exec /sbin/mkfs.ext4 -q -U 999dff7c-0eed-48a5-b605-bb7d675a49ab -b 4096 -E offset=4194304 -F %img%.img 475000
-exec dd bs=1 conv=notrunc if=/usr/lib/syslinux/mbr/mbr.bin of=%img%.img
-exec dd bs=1K seek=1024 conv=notrunc if=%img%.flp of=%img%.img
-
 exec cp %img%.krn %tmp%/rtr.krn
 exec cd %tmp%/ ; cpio --quiet -H newc -i < %img%.cpio
 exec cp ../misc/image/init.dsk %tmp%/init
@@ -29,6 +23,12 @@ exec mv %tmp%/cpio.zst %tmp%/rtr.ird
 del-alw %tmp%/cpio
 del-alw %tmp%/lib/modules
 exec cp ../misc/image/boot.sys %tmp%/syslinux.cfg
-exec guestfish -a %img%.img -m /dev/sda2 extlinux / : copy-in %tmp%/* /
+
+exec qemu-img create %img%.img 2G
+exec /sbin/sfdisk -q %img%.img < ../misc/image/native.sfdsk
+exec /sbin/mkfs.ext3 -q -d %tmp%/ -U 999dff7c-0eed-48a5-b605-bb7d675a49ab -b 4096 -E offset=4194304 -F %img%.img 475000
+exec dd bs=1 conv=notrunc if=/usr/lib/syslinux/mbr/mbr.bin of=%img%.img
+exec dd bs=1K seek=1024 conv=notrunc if=%img%.flp of=%img%.img
+exec guestfish -a %img%.img -m /dev/sda2 extlinux /
 
 del-alw %tmp%
