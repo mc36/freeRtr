@@ -1216,7 +1216,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
             }
             bits.sleep(100);
         }
-        res.add("fastpath rtt|" + (cpuLast - tim));
+        res.add("rtt|" + (cpuLast - tim));
         return res;
     }
 
