@@ -55,7 +55,6 @@ int LLVMFuzzerInitialize(int *argc, char ***argv) {
     cpuPort = 1;
     initIface(0, "bench");
     initTables();
-    ctx.port = 0;
     ctx.stat = ifaceStat[0];
     if (initContext(&ctx) != 0) err("error initializing context");
     FILE* fil = fopen(&(*argv)[1][2], "r");

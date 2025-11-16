@@ -90,7 +90,6 @@ int main(int argc, char **argv) {
     fclose(fil);
     hexdump(origD, 0, origS);
     printf("input=%i, rounds=%i", origS, count);
-    ctx.port = 0;
     ctx.stat = ifaceStat[0];
     sleep(1);
     clock_t beg = clock();

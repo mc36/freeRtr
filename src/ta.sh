@@ -11,3 +11,6 @@
 ./ti2.sh $@
 ./ti8.sh $@
 ./ti9.sh $@
+cd ../misc/native
+./p4emu_fuzzer.sh
+./p4emu_bench.sh

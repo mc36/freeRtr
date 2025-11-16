@@ -124,7 +124,6 @@ void doIfaceLoop(int * param) {
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
     unsigned char *bufD = ctx.bufD;
-    ctx.port = port;
     ctx.stat = ifaceStat[port];
     for (;;) {
         if (io_uring_wait_cqe(&ifaceRingRx[port], &cqe) != 0) break;

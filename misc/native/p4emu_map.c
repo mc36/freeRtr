@@ -88,7 +88,6 @@ void doIfaceLoop(int * param) {
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
     unsigned char *bufD = ctx.bufD;
-    ctx.port = port;
     ctx.stat = ifaceStat[port];
     for (;;) {
         ppd = (struct tpacket2_hdr *) ifaceRiv[port][blockNum].iov_base;

@@ -24,7 +24,6 @@ struct ifaceStat_entry {
 };
 
 struct packetContext {
-    int port;
     struct ifaceStat_entry *stat;
     int hash;
     int sgt;
