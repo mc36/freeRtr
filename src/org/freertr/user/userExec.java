@@ -1863,6 +1863,7 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "status", "current status");
         hl.add(null, false, 4, new int[]{-1}, "api-tx", "transmitted api message statistics");
         hl.add(null, false, 4, new int[]{-1}, "api-rx", "received api message statistics");
+        hl.add(null, false, 4, new int[]{-1}, "port-cpu", "cpu port test");
         hl.add(null, false, 4, new int[]{-1}, "port-names", "front panel information");
         hl.add(null, false, 4, new int[]{-1}, "port-magics", "front port magic values");
         hl.add(null, false, 4, new int[]{-1}, "done-interface", "exported interfaces");

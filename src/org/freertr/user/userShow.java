@@ -1523,6 +1523,10 @@ public class userShow {
                 rdr.putStrTab(srv.getShowApiRx());
                 return null;
             }
+            if (a.equals("port-cpu")) {
+                rdr.putStrTab(srv.getShowCpuprt());
+                return null;
+            }
             if (a.equals("port-names")) {
                 rdr.putStrTab(srv.getShowFront());
                 return null;

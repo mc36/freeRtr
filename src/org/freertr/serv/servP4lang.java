@@ -21,6 +21,8 @@ import org.freertr.ifc.ifcEther;
 import org.freertr.ifc.ifcPolka;
 import org.freertr.ifc.ifcUp;
 import org.freertr.ip.ipFwd;
+import org.freertr.ip.ipIfc4;
+import org.freertr.ip.ipIfc4arp;
 import org.freertr.ip.ipMpls;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
@@ -51,6 +53,10 @@ import org.freertr.util.state;
  * @author matecsaba
  */
 public class servP4lang extends servGeneric implements prtServS, servGenFwdr, ifcUp {
+
+    private final static int magic1 = 0x00010000 | ipIfc4.type;
+
+    private final static int magic2 = 0x0604beef;
 
     /**
      * create instance
@@ -165,6 +171,11 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
      * last cpuport
      */
     protected int cpuPort;
+
+    /**
+     * last activity
+     */
+    protected long cpuLast;
 
     /**
      * first dynamic range
@@ -1145,6 +1156,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         res.add("capability|" + capability);
         res.add("platform|" + platform);
         res.add("cpuport|" + cpuPort);
+        res.add("intercon|" + intercon);
         res.add("dynamic ifc|" + ifcRngBeg + " " + ifcRngEnd);
         res.add("dynamic vrf|" + vrfRngBeg + " " + vrfRngEnd);
         res.add("dynamic nei|" + neiRngBeg + " " + neiRngEnd);
@@ -1158,6 +1170,53 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         res.add("interfaces|" + expIfc.size());
         res.add("bridges|" + expBr.size());
         res.add("vrfs|" + expVrf.size());
+        return res;
+    }
+
+    /**
+     * get cpuport show
+     *
+     * @return show
+     */
+    public userFormat getShowCpuprt() {
+        userFormat res = new userFormat("|", "category|value");
+        res.add("cpuport|" + cpuPort);
+        res.add("intercon|" + intercon);
+        res.add("available|" + (intercon != null));
+        res.add("unexported|" + (expIfc.find(new servP4langIfc(this, cpuPort)) == null));
+        if (intercon == null) {
+            return res;
+        }
+        if (cpuPort < 0) {
+            return res;
+        }
+        long tim = bits.getTime();
+        cpuLast = 0;
+        packHolder pck = new packHolder(true, true);
+        pck.msbPutW(0, ipIfc4arp.type);
+        pck.putSkip(2);
+        pck.putFill(0, ipIfc4arp.size, 0);
+        pck.msbPutD(0, magic1);
+        pck.msbPutD(4, magic2);
+        pck.putSkip(ipIfc4arp.size);
+        pck.merge2beg();
+        pck.ETHsrc.setAddr(intercon.getHwAddr());
+        pck.ETHtrg.setAddr(addrMac.getBroadcast());
+        pck.ETHtype = ipIfc4arp.type;
+        ifcEther.createETHheader(pck, false);
+        pck.msbPutD(0, cpuPort);
+        pck.msbPutD(4, cpuPort);
+        pck.putSkip(8);
+        pck.merge2beg();
+        ifcEther.parseETHheader(pck, false);
+        intercon.sendPack(pck);
+        for (int i = 0; i < 10; i++) {
+            if (cpuLast > 0) {
+                break;
+            }
+            bits.sleep(100);
+        }
+        res.add("fastpath rtt|" + (cpuLast - tim));
         return res;
     }
 
@@ -1429,6 +1488,11 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         servP4langIfc ntry = new servP4langIfc(this, i);
         ntry = expIfc.find(ntry);
         if (ntry == null) {
+            if ((i == cpuPort) && (pck.msbGetW(0) == ipIfc4arp.type)) {
+                if ((pck.msbGetD(2) == magic1) && (pck.msbGetD(6) == magic2)) {
+                    cpuLast = bits.getTime();
+                }
+            }
             if (debugger.servP4langErr) {
                 logger.debug("got unneeded target: " + i);
             }
