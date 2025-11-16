@@ -1,8 +1,8 @@
 #/bin/sh
 echo compiling
-TR=../../binFuz/
+CO=../../binFuz/
 FN=../../binTmp/p4fuzz.tmp
-mkdir $TR
+mkdir -p $CO
 clang -fsanitize=fuzzer -O -lcrypto -o $FN p4emu_fuzzer.c
-$FN --p4emu_bench_cmds.txt -max_len=2048 -max_total_time=120 $TR
+$FN --p4emu_bench_cmds.txt -max_len=1500 -max_total_time=180 $CO
 rm $FN
