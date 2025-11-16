@@ -75,18 +75,6 @@ int ifaceId[maxPorts];
 
 
 
-#define packGet                                                                                     \
-    poll(&ifacePfd[port], 1, 1);                                                                    \
-    unsigned int idx;                                                                               \
-    if (xsk_ring_cons__peek(&ifaceRx[port], 1, &idx) < 1) continue;                                 \
-    const struct xdp_desc *dsc = xsk_ring_cons__rx_desc(&ifaceRx[port], idx);                       \
-    char *dat = xsk_umem__get_data(ifaceBuf[port], dsc->addr);                                      \
-    bufS = dsc->len;                                                                                \
-    memcpy(&bufD[preBuff], dat, bufS);                                                              \
-    xsk_ring_prod__reserve(&ifaceFq[port], 1, &idx);                                                \
-    *xsk_ring_prod__fill_addr(&ifaceFq[port], idx) = dsc->addr;                                     \
-    xsk_ring_prod__submit(&ifaceFq[port], 1);                                                       \
-    xsk_ring_cons__release(&ifaceRx[port], 1);                                                      \
 
 
 
@@ -99,16 +87,19 @@ void doIfaceLoop(int * param) {
     unsigned char *bufD = ctx.bufD;
     ctx.port = port;
     ctx.stat = ifaceStat[port];
-    if (port == cpuPort) {
-        for (;;) {
-            packGet;
-            processCpuPack(&ctx, bufS);
-        }
-    } else {
-        for (;;) {
-            packGet;
-            processDataPacket(&ctx, bufS, port);
-        }
+    for (;;) {
+        poll(&ifacePfd[port], 1, 1);
+        unsigned int idx;
+        if (xsk_ring_cons__peek(&ifaceRx[port], 1, &idx) < 1) continue;
+        const struct xdp_desc *dsc = xsk_ring_cons__rx_desc(&ifaceRx[port], idx);
+        char *dat = xsk_umem__get_data(ifaceBuf[port], dsc->addr);
+        bufS = dsc->len;
+        memcpy(&bufD[preBuff], dat, bufS);
+        xsk_ring_prod__reserve(&ifaceFq[port], 1, &idx);
+        *xsk_ring_prod__fill_addr(&ifaceFq[port], idx) = dsc->addr;
+        xsk_ring_prod__submit(&ifaceFq[port], 1);
+        xsk_ring_cons__release(&ifaceRx[port], 1);
+        processDataPacket(&ctx, bufS, port);
     }
     err("port thread exited");
 }

@@ -79,26 +79,6 @@ int ifaceId[maxPorts];
 
 
 
-#define packGet                                                                                     \
-    ppd = (struct tpacket2_hdr *) ifaceRiv[port][blockNum].iov_base;                                \
-    if ((ppd->tp_status & TP_STATUS_USER) == 0) {                                                   \
-        poll(&ifacePfd[port], 1, 1);                                                                \
-        continue;                                                                                   \
-    }                                                                                               \
-    bufS = ppd->tp_snaplen;                                                                         \
-    pack = (unsigned char *) ppd + ppd->tp_mac;                                                     \
-    if ((ppd->tp_status & TP_STATUS_VLAN_VALID) == 0) memcpy(&bufD[preBuff], pack, bufS); else {    \
-        if ((ppd->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) ppd->tp_vlan_tpid = ETH_P_8021Q;     \
-        memcpy(&bufD[preBuff], pack, 12);                                                           \
-        put16msb(bufD, preBuff + 12, ppd->tp_vlan_tpid);                                            \
-        put16msb(bufD, preBuff + 14, ppd->tp_vlan_tci);                                             \
-        memcpy(&bufD[preBuff + 16], pack + 12, bufS - 12);                                          \
-        bufS += 4;                                                                                  \
-    }                                                                                               \
-    ppd->tp_status = TP_STATUS_KERNEL;                                                              \
-    blockNum = (blockNum + 1) % blocksMax;
-
-
 void doIfaceLoop(int * param) {
     int port = *param;
     const unsigned char *pack;
@@ -110,16 +90,26 @@ void doIfaceLoop(int * param) {
     unsigned char *bufD = ctx.bufD;
     ctx.port = port;
     ctx.stat = ifaceStat[port];
-    if (port == cpuPort) {
-        for (;;) {
-            packGet;
-            processCpuPack(&ctx, bufS);
+    for (;;) {
+        ppd = (struct tpacket2_hdr *) ifaceRiv[port][blockNum].iov_base;
+        if ((ppd->tp_status & TP_STATUS_USER) == 0) {
+            poll(&ifacePfd[port], 1, 1);
+            continue;
         }
-    } else {
-        for (;;) {
-            packGet;
-            processDataPacket(&ctx, bufS, port);
+        bufS = ppd->tp_snaplen;
+        pack = (unsigned char *) ppd + ppd->tp_mac;
+        if ((ppd->tp_status & TP_STATUS_VLAN_VALID) == 0) memcpy(&bufD[preBuff], pack, bufS);
+        else {
+            if ((ppd->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) ppd->tp_vlan_tpid = ETH_P_8021Q;
+            memcpy(&bufD[preBuff], pack, 12);
+            put16msb(bufD, preBuff + 12, ppd->tp_vlan_tpid);
+            put16msb(bufD, preBuff + 14, ppd->tp_vlan_tci);
+            memcpy(&bufD[preBuff + 16], pack + 12, bufS - 12);
+            bufS += 4;
         }
+        ppd->tp_status = TP_STATUS_KERNEL;
+        blockNum = (blockNum + 1) % blocksMax;
+        processDataPacket(&ctx, bufS, port);
     }
     err("port thread exited");
 }

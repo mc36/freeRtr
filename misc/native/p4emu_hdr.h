@@ -62,7 +62,6 @@ extern void initIface(int port, char *name);
 extern int initTables();
 extern int hashDataPacket(unsigned char *bufP);
 extern void processDataPacket(struct packetContext *ctx, int bufS, int prt);
-extern void processCpuPack(struct packetContext *ctx, int bufS);
 extern int doOneCommand(struct packetContext *ctx, unsigned char* buf);
 extern int initContext(struct packetContext *ctx);
 extern void doNegotiate(char*name);

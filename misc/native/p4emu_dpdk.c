@@ -172,13 +172,6 @@ static int doPacketLoop(__rte_unused void *arg) {
                 ctx.stat = ifaceStat[port];
                 num = rte_eth_rx_burst(port, 0, mbufs, burst_size);
                 pkts += num;
-                if (port == cpuPort) {
-                    for (i = 0; i < num; i++) {
-                        mbuf2mybuf(mbufs[i]);
-                        processCpuPack(&ctx, bufS);
-                    }
-                    continue;
-                }
                 for (i = 0; i < num; i++) {
                     mbuf2mybuf(mbufs[i]);
                     processDataPacket(&ctx, bufS, port);
@@ -220,13 +213,6 @@ static int doPacketLoop(__rte_unused void *arg) {
                 port = myconf->rx_list[seq];
                 num = rte_eth_rx_burst(port, 0, mbufs, burst_size);
                 pkts += num;
-                if (port == cpuPort) {
-                    for (i = 0; i < num; i++) {
-                        mbuf2mybuf(mbufs[i]);
-                        processCpuPack(&ctx, bufS);
-                    }
-                    continue;
-                }
                 for (i = 0; i < num; i++) {
                     bufP = rte_pktmbuf_mtod(mbufs[i], void *);
                     port = hashDataPacket(bufP) % lcore_procs;

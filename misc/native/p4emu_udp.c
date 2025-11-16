@@ -42,11 +42,6 @@ void err(char*buf) {
 
 
 
-#define packGet                                     \
-    addrLen = sizeof(addrTmp);                      \
-    bufS = totBuff - preBuff;                       \
-    bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen); \
-    if (bufS < 0) break;
 
 
 
@@ -61,16 +56,12 @@ void doIfaceLoop(int * param) {
     unsigned char *bufD = ctx.bufD;
     ctx.port = port;
     ctx.stat = ifaceStat[port];
-    if (port == cpuPort) {
-        for (;;) {
-            packGet;
-            processCpuPack(&ctx, bufS);
-        }
-    } else {
-        for (;;) {
-            packGet;
-            processDataPacket(&ctx, bufS, port);
-        }
+    for (;;) {
+        addrLen = sizeof(addrTmp);
+        bufS = totBuff - preBuff;
+        bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
+        if (bufS < 0) break;
+        processDataPacket(&ctx, bufS, port);
     }
     err("port thread exited");
 }

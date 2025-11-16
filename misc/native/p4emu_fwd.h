@@ -1327,8 +1327,20 @@ cpu:
 
 
 void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
+    ctx->stat->packRx++;
+    ctx->stat->byteRx += bufS;
     unsigned char *bufD = ctx->bufD;
     unsigned char *bufH = ctx->bufH;
+    if (prt == cpuPort) {
+        prt = get32msb(bufD, preBuff + 0);
+        ctx->hash = get32msb(bufD, preBuff + 4) ^ get32msb(bufD, preBuff + 8) ^ get32msb(bufD, preBuff + 12);
+        int ethtyp = get16msb(bufD, preBuff + 16);
+        int bufP = preBuff + 16;
+        ctx->sgt = -1;
+        memcpy(&bufH[0], &bufD[preBuff + 4], 12);
+        send2subif(ctx, prt, bufP, bufS, ethtyp);
+        return;
+    }
     struct nsh_entry nsh_ntry;
     struct polkaPoly_entry polkaPoly_ntry;
     struct polkaIdx_entry polkaIdx_ntry;
@@ -1385,8 +1397,6 @@ void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
     int ethtyp;
     int tmp;
     int ttl;
-    ctx->stat->packRx++;
-    ctx->stat->byteRx += bufS;
     bufP = preBuff;
     bufP += 6 * 2; // dmac, smac
 ethtyp_rx:
@@ -2491,21 +2501,4 @@ cpu:
         send2port(cpuPort);
         return;
     }
-}
-
-
-extern void processCpuPack(struct packetContext *ctx, int bufS) {
-    unsigned char *bufD = ctx->bufD;
-    unsigned char *bufH = ctx->bufH;
-    int prt = get32msb(bufD, preBuff + 0);
-    ctx->hash = get32msb(bufD, preBuff + 4) ^ get32msb(bufD, preBuff + 8) ^ get32msb(bufD, preBuff + 12);
-    int ethtyp = get16msb(bufD, preBuff + 16);
-    int bufP = preBuff + 16;
-    memcpy(&bufH[0], &bufD[preBuff + 4], 12);
-    ctx->sgt = -1;
-    ctx->port = cpuPort;
-    ctx->stat = ifaceStat[cpuPort];
-    ctx->stat->packRx++;
-    ctx->stat->byteRx += bufS;
-    send2subif(ctx, prt, bufP, bufS, ethtyp);
 }

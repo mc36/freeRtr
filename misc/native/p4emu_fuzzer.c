@@ -43,11 +43,14 @@ struct packetContext ctx;
 
 
 int LLVMFuzzerTestOneInput(unsigned char *data, size_t size) {
-    if (dataPorts > 0) {
-        memcpy(&ctx.bufD[preBuff], &data[0], size);
-        processDataPacket(&ctx, size, 0);
-        return 0;
-    }
+    memcpy(&ctx.bufD[preBuff], &data[0], size);
+    processDataPacket(&ctx, size, 0);
+    return 0;
+}
+
+
+int LLVMFuzzerInitialize(int *argc, char ***argv) {
+    if (*argc <= 1) err("usage: --<commands>");
     dataPorts = 1;
     cpuPort = 1;
     initIface(0, "bench");
@@ -55,7 +58,7 @@ int LLVMFuzzerTestOneInput(unsigned char *data, size_t size) {
     ctx.port = 0;
     ctx.stat = ifaceStat[0];
     if (initContext(&ctx) != 0) err("error initializing context");
-    FILE* fil = fopen("p4emu_bench_cmds.txt", "r");
+    FILE* fil = fopen(&(*argv)[1][2], "r");
     if (fil == NULL) err("error opening commands");
     for (;;) {
         char* lin = NULL;

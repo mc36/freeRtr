@@ -50,17 +50,6 @@ int ifaceId[maxPorts];
 
 
 
-#define packGet                                     \
-    if (fail++ > 1024) break;                       \
-    pack = pcap_next(ifacePcap[port], &head);       \
-    if (pack == NULL) continue;                     \
-    bufS = head.caplen;                             \
-    if (bufS < 1) continue;                         \
-    memcpy(&bufD[preBuff], pack, bufS);             \
-    fail = 0;
-
-
-
 void doIfaceLoop(int * param) {
     int port = *param;
     const unsigned char *pack;
@@ -72,16 +61,15 @@ void doIfaceLoop(int * param) {
     unsigned char *bufD = ctx.bufD;
     ctx.port = port;
     ctx.stat = ifaceStat[port];
-    if (port == cpuPort) {
-        for (;;) {
-            packGet;
-            processCpuPack(&ctx, bufS);
-        }
-    } else {
-        for (;;) {
-            packGet;
-            processDataPacket(&ctx, bufS, port);
-        }
+    for (;;) {
+        if (fail++ > 1024) break;
+        pack = pcap_next(ifacePcap[port], &head);
+        if (pack == NULL) continue;
+        bufS = head.caplen;
+        if (bufS < 1) continue;
+        memcpy(&bufD[preBuff], pack, bufS);
+        fail = 0;
+        processDataPacket(&ctx, bufS, port);
     }
     err("port thread exited");
 }

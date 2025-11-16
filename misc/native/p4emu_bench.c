@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     unsigned char origD[16384];
     uname(&unamei);
     *((int*)(&origD[0])) = 1;
-    printf("code=%i, int=%i, long=%i, ptr=%i, order=", (int)((char*)&processCpuPack - (char*)&hashDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
+    printf("code=%i, int=%i, long=%i, ptr=%i, order=", (int)((char*)&doOneCommand - (char*)&hashDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
     if (origD[0] == 1) printf("lsb");
     else printf("msb");
     printf(", arch=%s\n", unamei.machine);

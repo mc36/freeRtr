@@ -112,26 +112,6 @@ void prepReceive(struct io_uring_sqe *sqe, int prt, int idx) {
 }
 
 
-#define getPack()                                                       \
-    if (io_uring_wait_cqe(&ifaceRingRx[port], &cqe) != 0) break;        \
-    bufS = cqe->res;                                                    \
-    if (bufS < 0) break;                                                \
-    unsigned char *pack = io_uring_cqe_get_data(cqe);                   \
-    int idx = (pack - ifaceMemRx[port]) / totBuff;                      \
-    struct cmsghdr* cmsg = (struct cmsghdr*)(ifaceAuxRx[port] + (idx*cmsgLen)); \
-    struct tpacket_auxdata* aux = (struct tpacket_auxdata*)CMSG_DATA(cmsg);     \
-    if ((cmsg->cmsg_level == SOL_PACKET) && (cmsg->cmsg_type == PACKET_AUXDATA) && (aux->tp_status & TP_STATUS_VLAN_VALID)) {   \
-        if ((aux->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) aux->tp_vlan_tpid = ETH_P_8021Q;     \
-        memcpy(&bufD[preBuff], pack, 12);                                                           \
-        put16msb(bufD, preBuff + 12, aux->tp_vlan_tpid);                                            \
-        put16msb(bufD, preBuff + 14, aux->tp_vlan_tci);                                             \
-        memcpy(&bufD[preBuff + 16], pack + 12, bufS - 12);                                          \
-        bufS += 4;                                                                                  \
-    } else memcpy(&bufD[preBuff], pack, bufS);                                                      \
-    io_uring_cqe_seen(&ifaceRingRx[port], cqe);                                                     \
-    sqe = io_uring_get_sqe(&ifaceRingRx[port]);                                                     \
-    if (sqe == NULL) break;                                                                         \
-    prepReceive(sqe, port, idx);                                                                    \
 
 
 
@@ -146,16 +126,27 @@ void doIfaceLoop(int * param) {
     unsigned char *bufD = ctx.bufD;
     ctx.port = port;
     ctx.stat = ifaceStat[port];
-    if (port == cpuPort) {
-        for (;;) {
-            getPack();
-            processCpuPack(&ctx, bufS);
-        }
-    } else {
-        for (;;) {
-            getPack();
-            processDataPacket(&ctx, bufS, port);
-        }
+    for (;;) {
+        if (io_uring_wait_cqe(&ifaceRingRx[port], &cqe) != 0) break;
+        bufS = cqe->res;
+        if (bufS < 0) break;
+        unsigned char *pack = io_uring_cqe_get_data(cqe);
+        int idx = (pack - ifaceMemRx[port]) / totBuff;
+        struct cmsghdr* cmsg = (struct cmsghdr*)(ifaceAuxRx[port] + (idx*cmsgLen));
+        struct tpacket_auxdata* aux = (struct tpacket_auxdata*)CMSG_DATA(cmsg);
+        if ((cmsg->cmsg_level == SOL_PACKET) && (cmsg->cmsg_type == PACKET_AUXDATA) && (aux->tp_status & TP_STATUS_VLAN_VALID)) {
+            if ((aux->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) aux->tp_vlan_tpid = ETH_P_8021Q;
+            memcpy(&bufD[preBuff], pack, 12);
+            put16msb(bufD, preBuff + 12, aux->tp_vlan_tpid);
+            put16msb(bufD, preBuff + 14, aux->tp_vlan_tci);
+            memcpy(&bufD[preBuff + 16], pack + 12, bufS - 12);
+            bufS += 4;
+        } else memcpy(&bufD[preBuff], pack, bufS);
+        io_uring_cqe_seen(&ifaceRingRx[port], cqe);
+        sqe = io_uring_get_sqe(&ifaceRingRx[port]);
+        if (sqe == NULL) break;
+        prepReceive(sqe, port, idx);
+        processDataPacket(&ctx, bufS, port);
     }
     err("port thread exited");
 }

@@ -59,17 +59,6 @@ int ifaceId[maxPorts];
 
 
 
-#define getPack()                                                       \
-    aux->tp_status = 0;                                                 \
-    bufS = recvmsg(ifaceSock[port], &msg, 0);                           \
-    if (bufS < 0) break;                                                \
-    if ((cmsg->cmsg_level == SOL_PACKET) && (cmsg->cmsg_type == PACKET_AUXDATA) && (aux->tp_status & TP_STATUS_VLAN_VALID)) {   \
-        if ((aux->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) aux->tp_vlan_tpid = ETH_P_8021Q; \
-        bufS += 4;                                                      \
-        memmove(&bufD[preBuff + 16], &bufD[preBuff + 12], bufS - 12);   \
-        put16msb(bufD, preBuff + 12, aux->tp_vlan_tpid);                \
-        put16msb(bufD, preBuff + 14, aux->tp_vlan_tci);                 \
-    }
 
 
 
@@ -96,16 +85,18 @@ void doIfaceLoop(int * param) {
     msg.msg_flags = 0;
     struct cmsghdr* cmsg = (struct cmsghdr*)cbuf;
     struct tpacket_auxdata* aux = (struct tpacket_auxdata*)CMSG_DATA(cmsg);
-    if (port == cpuPort) {
-        for (;;) {
-            getPack();
-            processCpuPack(&ctx, bufS);
+    for (;;) {
+        aux->tp_status = 0;
+        bufS = recvmsg(ifaceSock[port], &msg, 0);
+        if (bufS < 0) break;
+        if ((cmsg->cmsg_level == SOL_PACKET) && (cmsg->cmsg_type == PACKET_AUXDATA) && (aux->tp_status & TP_STATUS_VLAN_VALID)) {
+            if ((aux->tp_status & TP_STATUS_VLAN_TPID_VALID) == 0) aux->tp_vlan_tpid = ETH_P_8021Q;
+            bufS += 4;
+            memmove(&bufD[preBuff + 16], &bufD[preBuff + 12], bufS - 12);
+            put16msb(bufD, preBuff + 12, aux->tp_vlan_tpid);
+            put16msb(bufD, preBuff + 14, aux->tp_vlan_tci);
         }
-    } else {
-        for (;;) {
-            getPack();
-            processDataPacket(&ctx, bufS, port);
-        }
+        processDataPacket(&ctx, bufS, port);
     }
     err("port thread exited");
 }
