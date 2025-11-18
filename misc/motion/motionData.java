@@ -263,7 +263,7 @@ public class motionData implements Runnable {
         } else {
             a = "<a href=\"" + parent.url + "?cmd=vid&nam=" + myNum + "\">" + motionUtil.timePast(tim, lastEvnt) + "</a>";
         }
-        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + needAlert(alarmMail) + "," + needAlert(alarmHttp) + "</td><td>" + events + "</td><td>" + a + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">pic</a> <a href=\"" + parent.url + "?cmd=liv&nam=" + myNum + "\">vid</a><a href=\"" + parent.url + "?cmd=sel&nam=" + myNum + "\">sel</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
+        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + needAlert(alarmMail) + "," + needAlert(alarmHttp) + "</td><td>" + events + "</td><td>" + a + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">pic</a> <a href=\"" + parent.url + "?cmd=liv&nam=" + myNum + "\">vid</a> <a href=\"" + parent.url + "?cmd=sel&nam=" + myNum + "\">sel</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
     }
 
     /**

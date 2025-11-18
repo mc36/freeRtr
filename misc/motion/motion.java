@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -303,16 +305,20 @@ public class motion {
         socket.close();
     }
 
-
     /**
      * do one request
      *
      * @throws java.lang.Exception
      */
     protected void httpAlert() throws Exception {
-        
+        URL testUrl = new URI(apiurl).toURL();
+        URLConnection testConn = testUrl.openConnection();
+        testConn.setConnectTimeout(5000);
+        testConn.setReadTimeout(5000);
+        BufferedReader testReader = new BufferedReader(new InputStreamReader(testConn.getInputStream()));
+        testReader.readLine();
     }
-    
+
     /**
      * do one request
      *
