@@ -1,4 +1,7 @@
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -83,7 +86,12 @@ public class motionData implements Runnable {
     /**
      * alarm mode
      */
-    protected int alarm;
+    protected int alarmMail;
+
+    /**
+     * alarm http
+     */
+    protected int alarmHttp;
 
     /**
      * exceptions happened
@@ -140,6 +148,26 @@ public class motionData implements Runnable {
      */
     protected int difAvg;
 
+    /**
+     * area beginning x
+     */
+    protected int areaBx;
+
+    /**
+     * area beginning y
+     */
+    protected int areaBy;
+
+    /**
+     * area ending x
+     */
+    protected int areaEx;
+
+    /**
+     * area ending y
+     */
+    protected int areaEy;
+
     private final static Object sleeper = new Object();
 
     private byte[][] imgDat;
@@ -164,13 +192,31 @@ public class motionData implements Runnable {
     }
 
     /**
-     * get last image
+     * get last image without area
      *
      * @param buf where to write
      * @throws java.lang.Exception on error
      */
     protected void getImage(ByteArrayOutputStream buf) throws Exception {
         buf.write(imgDat[imgPos]);
+    }
+
+    /**
+     * get last image with area
+     *
+     * @param buf where to write
+     * @throws java.lang.Exception on error
+     */
+    protected void getAread(ByteArrayOutputStream buf) throws Exception {
+        BufferedImage img = new BufferedImage(imgLst.getWidth(), imgLst.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = img.createGraphics();
+        g2d.drawRenderedImage(imgLst, new AffineTransform());
+        g2d.setPaint(Color.CYAN);
+        g2d.drawLine(areaBx, areaBy, areaEx, areaBy);
+        g2d.drawLine(areaEx, areaBy, areaEx, areaEy);
+        g2d.drawLine(areaEx, areaEy, areaBx, areaEy);
+        g2d.drawLine(areaBx, areaEy, areaBx, areaBy);
+        ImageIO.write(img, "jpeg", buf);
     }
 
     /**
@@ -191,8 +237,8 @@ public class motionData implements Runnable {
      *
      * @return true if yes, false if no
      */
-    protected boolean needAlert() {
-        switch (alarm) {
+    protected boolean needAlert(int a) {
+        switch (a) {
             case 0:
                 return false;
             case 1:
@@ -217,7 +263,7 @@ public class motionData implements Runnable {
         } else {
             a = "<a href=\"" + parent.url + "?cmd=vid&nam=" + myNum + "\">" + motionUtil.timePast(tim, lastEvnt) + "</a>";
         }
-        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + needAlert() + "</td><td>" + events + "</td><td>" + a + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">pic</a>/<a href=\"" + parent.url + "?cmd=liv&nam=" + myNum + "\">vid</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
+        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + needAlert(alarmMail) + "," + needAlert(alarmHttp) + "</td><td>" + events + "</td><td>" + a + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">pic</a> <a href=\"" + parent.url + "?cmd=liv&nam=" + myNum + "\">vid</a><a href=\"" + parent.url + "?cmd=sel&nam=" + myNum + "\">sel</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
     }
 
     /**
@@ -324,8 +370,16 @@ public class motionData implements Runnable {
         int res = 0;
         int tot = 0;
         int cnt = 0;
-        for (int y = i1.getHeight() - 1; y >= 0; y--) {
-            for (int x = i1.getWidth() - 1; x >= 0; x--) {
+        int maxX = i1.getWidth() - 1;
+        int maxY = i1.getHeight() - 1;
+        if (maxX > areaEx) {
+            maxX = areaEx;
+        }
+        if (maxY > areaEy) {
+            maxY = areaEy;
+        }
+        for (int y = maxY; y >= areaBy; y--) {
+            for (int x = maxX; x >= areaBx; x--) {
                 int p1 = i1.getRGB(x, y);
                 int p2 = i2.getRGB(x, y);
                 int dif = getDiff(p1, p2, 0);
@@ -373,14 +427,17 @@ public class motionData implements Runnable {
         new File(path).mkdir();
         path = path + "/" + myName + "-" + date + "-" + time + "-" + dif + ".mjpeg";
         lastPath = path;
-        if (needAlert()) {
-            motionSend snd = new motionSend(this);
-            new Thread(snd).start();
+        if (needAlert(alarmMail)) {
+            new motionMail(this);
+        }
+        if (needAlert(alarmHttp)) {
+            new motionHttp(this);
         }
         OutputStream output;
         try {
             output = new FileOutputStream(new File(path));
         } catch (Exception e) {
+            errors++;
             return;
         }
         for (int i = 0; i < imgDat.length; i++) {
@@ -414,17 +471,37 @@ public class motionData implements Runnable {
 
 }
 
-class motionSend implements Runnable {
+class motionMail implements Runnable {
 
     private motionData parent;
 
-    public motionSend(motionData lower) {
+    public motionMail(motionData lower) {
         parent = lower;
+        new Thread(this).start();
     }
 
     public void run() {
         try {
-            parent.parent.sendAlert(parent.myName, parent.lastPath);
+            parent.parent.mailAlert(parent.myName, parent.lastPath);
+        } catch (Exception e) {
+            parent.errors++;
+        }
+    }
+
+}
+
+class motionHttp implements Runnable {
+
+    private motionData parent;
+
+    public motionHttp(motionData lower) {
+        parent = lower;
+        new Thread(this).start();
+    }
+
+    public void run() {
+        try {
+            parent.parent.httpAlert();
         } catch (Exception e) {
             parent.errors++;
         }

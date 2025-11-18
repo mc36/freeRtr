@@ -103,6 +103,11 @@ public class motion {
     protected String address = "somebody@somewhere.org";
 
     /**
+     * address to use
+     */
+    protected String apiurl = "nothing.nowhere.org";
+
+    /**
      * alarmed
      */
     protected boolean alarmed = true;
@@ -138,7 +143,12 @@ public class motion {
         int post = 20;
         int ignor = 50;
         int trigr = 1000;
-        int alarm = 1;
+        int alarM = 1;
+        int alarH = 1;
+        int arBx = 0;
+        int arBy = 0;
+        int arEx = Integer.MAX_VALUE;
+        int arEy = Integer.MAX_VALUE;
         try {
             BufferedReader f = new BufferedReader(new FileReader(path + ".cfg"));
             for (;;) {
@@ -171,6 +181,10 @@ public class motion {
                     address = a;
                     continue;
                 }
+                if (s.equals("apiurl")) {
+                    apiurl = a;
+                    continue;
+                }
                 if (s.equals("sleep")) {
                     sleep = motionUtil.str2num(a);
                     continue;
@@ -191,8 +205,28 @@ public class motion {
                     trigr = motionUtil.str2num(a);
                     continue;
                 }
-                if (s.equals("alarm")) {
-                    alarm = motionUtil.str2num(a);
+                if (s.equals("alarm-mail")) {
+                    alarM = motionUtil.str2num(a);
+                    continue;
+                }
+                if (s.equals("alarm-http")) {
+                    alarH = motionUtil.str2num(a);
+                    continue;
+                }
+                if (s.equals("area-bx")) {
+                    arBx = motionUtil.str2num(a);
+                    continue;
+                }
+                if (s.equals("area-by")) {
+                    arBy = motionUtil.str2num(a);
+                    continue;
+                }
+                if (s.equals("area-ex")) {
+                    arEx = motionUtil.str2num(a);
+                    continue;
+                }
+                if (s.equals("area-ey")) {
+                    arEy = motionUtil.str2num(a);
                     continue;
                 }
                 if (s.equals("alarmed")) {
@@ -210,7 +244,12 @@ public class motion {
                     ntry.imgPost = post;
                     ntry.ignore = ignor;
                     ntry.trigger = trigr;
-                    ntry.alarm = alarm;
+                    ntry.alarmMail = alarM;
+                    ntry.alarmHttp = alarH;
+                    ntry.areaBx = arBx;
+                    ntry.areaBy = arBy;
+                    ntry.areaEx = arEx;
+                    ntry.areaEy = arEy;
                     new Thread(ntry).start();
                     lst.add(ntry);
                     continue;
@@ -232,7 +271,7 @@ public class motion {
      * @param pat path
      * @throws java.lang.Exception
      */
-    protected void sendAlert(String nam, String pat) throws Exception {
+    protected void mailAlert(String nam, String pat) throws Exception {
         Socket socket = new Socket(server, 25);
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -251,7 +290,7 @@ public class motion {
         a = reader.readLine();
         writer.print("From: <" + address + ">\r\n");
         writer.print("To: <" + address + ">\r\n");
-        writer.print("Subject: check recording of " + nam + "\r\n");
+        writer.print("Subject: check recording from " + nam + "\r\n");
         writer.print("\r\n");
         writer.print("motion detected in " + nam + ", check recording:\r\n");
         writer.print(pat + "\r\n");
@@ -264,6 +303,16 @@ public class motion {
         socket.close();
     }
 
+
+    /**
+     * do one request
+     *
+     * @throws java.lang.Exception
+     */
+    protected void httpAlert() throws Exception {
+        
+    }
+    
     /**
      * do one request
      *
@@ -298,6 +347,11 @@ public class motion {
             ntry.getImage(buf);
             return 1;
         }
+        if (cmd.equals("sel")) {
+            motionData ntry = cams[motionUtil.str2num(nam) - 1];
+            ntry.getAread(buf);
+            return 1;
+        }
         if (cmd.equals("vid")) {
             motionData ntry = cams[motionUtil.str2num(nam) - 1];
             ntry.getVideo(buf);
@@ -305,7 +359,7 @@ public class motion {
         }
         if (cmd.equals("liv")) {
             buf.write(("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"1;url=" + url + "?cmd=liv&nam=" + nam + "\"><title>motion</title></head><body>").getBytes());
-            buf.write(("<img src=\"" + url + "?cmd=img&nam=" + nam + "\">").getBytes());
+            buf.write(("<img src=\"" + url + "?cmd=img&nam=" + nam + "\" height=\"100%\" width=\"100%\">").getBytes());
             buf.write("</body></html>".getBytes());
             return 0;
         }
