@@ -250,6 +250,7 @@ public class secInfoWrk implements Runnable {
         doFindRoute();
         doCheckRpf();
         doCheckAcl();
+        doCheckTime();
         if (tracker) {
             return false;
         }
@@ -314,6 +315,20 @@ public class secInfoWrk implements Runnable {
             if (config.accessRate != null) {
                 tracker |= config.accessRate.check(1);
             }
+        } catch (Exception e) {
+            logger.traceback(e, addr + " " + proto);
+        }
+    }
+
+    /**
+     * check the time
+     */
+    protected void doCheckTime() {
+        try {
+            if (config.timeMap == null) {
+                return;
+            }
+            tracker |= config.timeMap.matches(bits.getTime());
         } catch (Exception e) {
             logger.traceback(e, addr + " " + proto);
         }

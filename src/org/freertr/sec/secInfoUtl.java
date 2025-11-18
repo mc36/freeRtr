@@ -10,6 +10,7 @@ import org.freertr.cfg.cfgPrfxlst;
 import org.freertr.cfg.cfgRoump;
 import org.freertr.cfg.cfgRouplc;
 import org.freertr.cfg.cfgRtr;
+import org.freertr.cfg.cfgTime;
 import org.freertr.cfg.cfgTrack;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.clnt.clntPmtud;
@@ -137,6 +138,21 @@ public class secInfoUtl {
                 return cfg;
             }
             cfg.script = cfgAll.scrptFind(cmd.word(), false);
+            doSanityChecks(cfg);
+            return cfg;
+        }
+        if (s.equals("time")) {
+            if (negated) {
+                cfg.timeMap = null;
+                doSanityChecks(cfg);
+                return cfg;
+            }
+            cfgTime ntry = cfgAll.timeFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such time map");
+                return cfg;
+            }
+            cfg.timeMap = ntry;
             doSanityChecks(cfg);
             return cfg;
         }
@@ -631,6 +647,9 @@ public class secInfoUtl {
         if (cfg.tracker != null) {
             lst.add(beg + "tracker " + cfg.tracker.name);
         }
+        if (cfg.timeMap != null) {
+            lst.add(beg + "time " + cfg.timeMap.name);
+        }
         if (cfg.accessRate != null) {
             lst.add(beg + "rate " + cfg.accessRate);
         }
@@ -704,6 +723,8 @@ public class secInfoUtl {
         userFormat.listBoxerModes(lst, tab + 2);
         lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "format", "format prefix details");
         userFormat.listTableModes(lst, tab + 2);
+        lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "time", "check time map");
+        lst.add(null, false, tab + 2, new int[]{-1}, "<name:tm>", "time map name");
         lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "tracker", "check tracker");
         lst.add(null, false, tab + 2, new int[]{-1}, "<name:trk>", "tracker name");
         lst.add(null, false, tab + 1, new int[]{tab + 2}, beg + "rate", "access rate");

@@ -2,6 +2,7 @@ package org.freertr.sec;
 
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgScrpt;
+import org.freertr.cfg.cfgTime;
 import org.freertr.clnt.clntTrack;
 import org.freertr.ip.ipFwd;
 import org.freertr.tab.tabAceslstN;
@@ -31,6 +32,11 @@ public class secInfoCfg {
      * script to run
      */
     public cfgScrpt script;
+
+    /**
+     * time map to use
+     */
+    public cfgTime timeMap;
 
     /**
      * tracker to use
