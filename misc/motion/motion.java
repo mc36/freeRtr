@@ -229,9 +229,10 @@ public class motion {
      * do one request
      *
      * @param nam name
+     * @param pat path
      * @throws java.lang.Exception
      */
-    protected void sendAlert(String nam) throws Exception {
+    protected void sendAlert(String nam, String pat) throws Exception {
         Socket socket = new Socket(server, 25);
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -250,9 +251,10 @@ public class motion {
         a = reader.readLine();
         writer.print("From: <" + address + ">\r\n");
         writer.print("To: <" + address + ">\r\n");
-        writer.print("Subject: check recording\r\n");
+        writer.print("Subject: check recording of " + nam + "\r\n");
         writer.print("\r\n");
-        writer.print("motion detected in " + nam + ", check recording\r\n");
+        writer.print("motion detected in " + nam + ", check recording:\r\n");
+        writer.print(pat + "\r\n");
         writer.print(".\r\n");
         writer.flush();
         a = reader.readLine();

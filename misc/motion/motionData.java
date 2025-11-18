@@ -365,10 +365,6 @@ public class motionData implements Runnable {
         }
         events++;
         lastEvnt = motionUtil.getTime();
-        if (needAlert()) {
-            motionSend snd = new motionSend(this);
-            new Thread(snd).start();
-        }
         Calendar cal = new GregorianCalendar(TimeZone.getTimeZone(parent.tzdata));
         cal.setTime(new Date());
         String date = cal.get(Calendar.YEAR) + motionUtil.padBeg("" + (cal.get(Calendar.MONTH) + 1), 2, "0") + motionUtil.padBeg("" + cal.get(Calendar.DAY_OF_MONTH), 2, "0");
@@ -376,8 +372,17 @@ public class motionData implements Runnable {
         String path = parent.target + date;
         new File(path).mkdir();
         path = path + "/" + myName + "-" + date + "-" + time + "-" + dif + ".mjpeg";
-        OutputStream output = new FileOutputStream(new File(path));
         lastPath = path;
+        if (needAlert()) {
+            motionSend snd = new motionSend(this);
+            new Thread(snd).start();
+        }
+        OutputStream output;
+        try {
+            output = new FileOutputStream(new File(path));
+        } catch (Exception e) {
+            return;
+        }
         for (int i = 0; i < imgDat.length; i++) {
             saveImage((imgPos + 1 + i) % imgDat.length, output);
         }
@@ -419,7 +424,7 @@ class motionSend implements Runnable {
 
     public void run() {
         try {
-            parent.parent.sendAlert(parent.myName);
+            parent.parent.sendAlert(parent.myName, parent.lastPath);
         } catch (Exception e) {
             parent.errors++;
         }
