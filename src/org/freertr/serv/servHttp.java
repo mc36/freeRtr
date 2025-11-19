@@ -360,6 +360,9 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, false, 3, new int[]{4}, "reconn", "reconnect to server");
         l.add(null, false, 4, new int[]{5}, "<name:prx>", "proxy profile");
         l.add(null, false, 5, new int[]{-1}, "<str>", "server to redirect to");
+        l.add(null, false, 3, new int[]{4}, "cache", "cache a server");
+        l.add(null, false, 4, new int[]{5}, "<name:prx>", "proxy profile");
+        l.add(null, false, 5, new int[]{-1}, "<str>", "server to cache from");
         l.add(null, false, 3, new int[]{4}, "translate", "translate the url");
         l.add(null, false, 4, new int[]{4, -1}, "<num:trn>", "translation rule to use");
         l.add(null, false, 3, new int[]{4}, "subconn", "reconnect only to the url");

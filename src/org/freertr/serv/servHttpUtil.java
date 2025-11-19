@@ -13,11 +13,13 @@ import org.freertr.cfg.cfgInit;
 import org.freertr.cfg.cfgScrpt;
 import org.freertr.cfg.cfgTrnsltn;
 import org.freertr.clnt.clntDns;
+import org.freertr.clnt.clntHttp;
 import org.freertr.enc.encBase64;
 import org.freertr.enc.encMarkDown;
 import org.freertr.enc.encUrl;
 import org.freertr.enc.encXml;
 import org.freertr.pipe.pipeConnect;
+import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
@@ -760,6 +762,40 @@ public class servHttpUtil {
         }
         pipeConnect.connect(cn.pipe, fin, true);
         cn.pipe = null;
+    }
+
+    /**
+     * do reconnect access
+     *
+     * @param cn connection to use
+     */
+    protected final static void doCache(servHttpConn cn) {
+        encUrl srvUrl = encUrl.parseOne(cn.gotHost.cacheT);
+        doTranslate(cn, srvUrl);
+        doSubconn(cn, srvUrl);
+        String fn = srvUrl.toURL(false, false, true, true);
+        fn = fn.replaceAll("/", "-");
+        fn = cn.gotHost.path + fn;
+        File f = new File(fn);
+        if (f.exists()) {
+            if (sendBinFile(cn, fn, srvUrl.filExt, 0)) {
+                return;
+            }
+            cn.sendRespError(404, "not found");
+            return;
+        }
+        clntHttp c = new clntHttp(pipeDiscard.needAny(null), cn.gotHost.cacheP, null, false);
+        boolean b = c.download(srvUrl, f, cn.gotCook);
+        c.cleanUp();
+        if (b) {
+            userFlash.delete(fn);
+            cn.sendRespError(404, "not found");
+            return;
+        }
+        if (sendBinFile(cn, fn, cn.gotUrl.filExt, 0)) {
+            return;
+        }
+        cn.sendRespError(404, "not found");
     }
 
     /**

@@ -1316,7 +1316,7 @@ public class userFlash {
         }
         if (a.startsWith("http")) {
             clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
-            boolean b = c.download(url, f);
+            boolean b = c.download(url, f, new ArrayList<String>());
             c.cleanUp();
             return b;
         }
@@ -1456,7 +1456,7 @@ public class userFlash {
         }
         if (a.startsWith("http")) {
             clntHttp c = new clntHttp(pipe, cfgAll.getClntPrx(cfgAll.httpProxy), null, false);
-            c.upload(url, f);
+            c.upload(url, f, new ArrayList<String>());
             c.cleanUp();
             return;
         }

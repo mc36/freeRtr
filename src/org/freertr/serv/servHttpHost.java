@@ -91,6 +91,16 @@ public class servHttpHost implements Comparable<servHttpHost> {
     public String reconnT;
 
     /**
+     * url to cache to
+     */
+    public String cacheT;
+
+    /**
+     * path to cache to
+     */
+    public clntProxy cacheP;
+
+    /**
      * restrict url
      */
     public int subconn;
@@ -291,6 +301,9 @@ public class servHttpHost implements Comparable<servHttpHost> {
         if (reconnT != null) {
             l.add(a + " reconn " + reconnP.name + " " + reconnT);
         }
+        if (cacheT != null) {
+            l.add(a + " cache " + cacheP.name + " " + cacheT);
+        }
         if (translate != null) {
             String s = "";
             for (int i = 0; i < translate.size(); i++) {
@@ -453,6 +466,21 @@ public class servHttpHost implements Comparable<servHttpHost> {
             }
             reconnP = prx.proxy;
             reconnT = cmd.word();
+            return false;
+        }
+        if (a.equals("cache")) {
+            if (negated) {
+                cacheP = null;
+                cacheT = null;
+                return false;
+            }
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return false;
+            }
+            cacheP = prx.proxy;
+            cacheT = cmd.word();
             return false;
         }
         if (a.equals("translate")) {
@@ -832,6 +860,10 @@ public class servHttpHost implements Comparable<servHttpHost> {
         }
         if (reconnT != null) {
             servHttpUtil.doReconn(cn);
+            return;
+        }
+        if (cacheT != null) {
+            servHttpUtil.doCache(cn);
             return;
         }
         if (redir != null) {
