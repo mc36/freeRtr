@@ -23,8 +23,8 @@ you can find the same source tree at various locations, normally all should be t
 * http://gitlab.com/mc36mc/freeRtr
 * http://github.com/mc36/freeRtr
 * http://gitea.com/mc36/freeRtr
-* http://sourceforge.net/p/freertr/code/
-* http://git.sr.ht/~mc36/freeRtr/tree/
+* http://sourceforge.net/p/freertr/code
+* http://git.sr.ht/~mc36/freeRtr/tree
 * http://src.freertr.org/
 
 part of the subdirectories under misc/ are somewhere else too:
