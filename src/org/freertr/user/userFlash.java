@@ -291,9 +291,23 @@ public class userFlash {
             rdr.putStrArr(getFileInfo(a));
             return null;
         }
-        if (a.equals("cleanup")) {
+        if (a.equals("cleanbak")) {
             a = cmd.getRemaining();
-            List<String> lst = userUpgrade.cleanBackups(a);
+            List<String> lst = cleanBackups(a);
+            rdr.putStrArr(lst);
+            return null;
+        }
+        if (a.equals("cleanold")) {
+            long v = bits.str2long(cmd.word());
+            a = cmd.getRemaining();
+            List<String> lst = cleanOlder(v, a);
+            rdr.putStrArr(lst);
+            return null;
+        }
+        if (a.equals("cleansml")) {
+            long v = bits.str2long(cmd.word());
+            a = cmd.getRemaining();
+            List<String> lst = cleanSmaller(v, a);
             rdr.putStrArr(lst);
             return null;
         }
@@ -407,6 +421,142 @@ public class userFlash {
             return null;
         }
         return cryUtils.hash2hex(h);
+    }
+
+    /**
+     * cleanup backups and temporary files
+     *
+     * @param t seconds
+     * @param p directory to clean up
+     * @return work done
+     */
+    public static List<String> cleanOlder(long t, String p) {
+        p = p.trim();
+        List<String> l = new ArrayList<String>();
+        l.add(cmds.errbeg + "cleanup " + p);
+        File[] fl = userFlash.dirList(p);
+        if (fl == null) {
+            l.add(cmds.errbeg + "unable to read filelist");
+            return l;
+        }
+        List<File> fn = new ArrayList<File>();
+        t = bits.getTime() - (t * 1000);
+        for (int i = 0; i < fl.length; i++) {
+            File fc = fl[i];
+            if (fc.isDirectory()) {
+                continue;
+            }
+            if (fc.lastModified() > t) {
+                continue;
+            }
+            fn.add(fc);
+        }
+        doCleanUpDir(l, p, fn);
+        return l;
+    }
+
+    /**
+     * cleanup backups and temporary files
+     *
+     * @param s bytes
+     * @param p directory to clean up
+     * @return work done
+     */
+    public static List<String> cleanSmaller(long s, String p) {
+        p = p.trim();
+        List<String> l = new ArrayList<String>();
+        l.add(cmds.errbeg + "cleanup " + p);
+        File[] fl = userFlash.dirList(p);
+        if (fl == null) {
+            l.add(cmds.errbeg + "unable to read filelist");
+            return l;
+        }
+        List<File> fn = new ArrayList<File>();
+        for (int i = 0; i < fl.length; i++) {
+            File fc = fl[i];
+            if (fc.isDirectory()) {
+                continue;
+            }
+            if (fc.length() > s) {
+                continue;
+            }
+            fn.add(fc);
+        }
+        doCleanUpDir(l, p, fn);
+        return l;
+    }
+
+    /**
+     * cleanup backups and temporary files
+     *
+     * @param a directory to clean up
+     * @return work done
+     */
+    public static List<String> cleanBackups(String a) {
+        a = a.trim();
+        List<String> l = new ArrayList<String>();
+        l.add("got " + a + " as directory");
+        if (a.length() > 0) {
+            doCleanUpDir(l, a);
+            return l;
+        }
+        doCleanUpDir(l, "./");
+        doCleanUpDir(l, cfgInit.getFileName());
+        doCleanUpDir(l, cfgInit.getRWpath());
+        return l;
+    }
+
+    private final static int doCleanUpDir(List<String> l, String p) {
+        final String neededExts = ".bak.tmp.old.";
+        int i = p.lastIndexOf("/");
+        if (i >= 0) {
+            p = p.substring(0, i + 1);
+        }
+        l.add(cmds.errbeg + "cleanup " + p);
+        File[] fl = userFlash.dirList(p);
+        if (fl == null) {
+            l.add(cmds.errbeg + "unable to read filelist");
+            return -1;
+        }
+        List<File> fn = new ArrayList<File>();
+        for (i = 0; i < fl.length; i++) {
+            File fc = fl[i];
+            if (fc.isDirectory()) {
+                continue;
+            }
+            String a = fc.getName();
+            int o = a.lastIndexOf(".");
+            if (o < 0) {
+                continue;
+            }
+            String b = a.substring(o, a.length());
+            o = neededExts.indexOf(b);
+            if (o < 0) {
+                continue;
+            }
+            fn.add(fc);
+        }
+        return doCleanUpDir(l, p, fn);
+    }
+
+    private final static int doCleanUpDir(List<String> l, String p, List<File> fn) {
+        int fr = 0;
+        int ff = 0;
+        int fs = fn.size();
+        for (int i = 0; i < fs; i++) {
+            File fc = fn.get(i);
+            String a = p + fc.getName();
+            boolean b = userFlash.delete(a);
+            if (b) {
+                l.add(cmds.errbeg + "remained " + a);
+                ff++;
+                continue;
+            }
+            l.add("removed " + a);
+            fr++;
+        }
+        l.add(cmds.errbeg + fr + " removed, " + ff + " remained");
+        return fr;
     }
 
     /**

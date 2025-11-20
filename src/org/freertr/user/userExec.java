@@ -2588,8 +2588,14 @@ public class userExec {
         hl.add(null, false, 2, new int[]{-1}, "peer", "upgrade redundancy peers");
         hl.add(null, false, 2, new int[]{-1}, "revert", "revert routing software");
         hl.add(null, false, 2, new int[]{-1}, "backup", "backup routing software");
-        hl.add(null, false, 2, new int[]{3, -1}, "cleanup", "clear routing software backup");
+        hl.add(null, false, 2, new int[]{3, -1}, "cleanbak", "clear routing software backup");
         hl.add(null, false, 3, new int[]{-1}, "[str]", "path to clean");
+        hl.add(null, false, 2, new int[]{3}, "cleanold", "clear older files");
+        hl.add(null, false, 3, new int[]{4}, "<num>", "seconds");
+        hl.add(null, false, 4, new int[]{-1}, "<str>", "path to clean");
+        hl.add(null, false, 2, new int[]{3}, "cleansml", "clear small files");
+        hl.add(null, false, 3, new int[]{4}, "<num>", "bytes");
+        hl.add(null, false, 4, new int[]{-1}, "<str>", "path to clean");
         hl.add(null, false, 2, new int[]{-1}, "cancel", "cancel auto-revert process");
         hl.add(null, false, 2, new int[]{-1}, "toggle-boot", "toggle upgrade reboot mode");
         hl.add(null, false, 2, new int[]{3, -1}, "upgrade", "upgrade routing software");

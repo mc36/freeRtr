@@ -135,7 +135,7 @@ public class userClear {
         }
         if (a.equals("flash")) {
             a = cmd.getRemaining();
-            List<String> lst = userUpgrade.cleanBackups(a);
+            List<String> lst = userFlash.cleanBackups(a);
             rdr.putStrArr(lst);
             return null;
         }
