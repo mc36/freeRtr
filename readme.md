@@ -23,6 +23,7 @@ you can find the same source tree at various locations, normally all should be t
 * http://gitlab.com/mc36mc/freeRtr
 * http://github.com/mc36/freeRtr
 * http://gitea.com/mc36/freeRtr
+* http://freertr.sourceforge.io
 * http://git.sr.ht/~mc36/freeRtr
 * http://src.freertr.org/
 
