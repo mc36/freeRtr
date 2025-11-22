@@ -297,16 +297,36 @@ public class motionData implements Runnable {
     }
 
     private BufferedImage fetchImage() throws Exception {
-        URL testUrl = new URI(myUrl).toURL();
-        URLConnection testConn = testUrl.openConnection();
-        testConn.setConnectTimeout(5000);
-        testConn.setReadTimeout(5000);
-        String userpass = testUrl.getUserInfo();
-        if (userpass != null) {
-            String auth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
-            testConn.setRequestProperty("Authorization", auth);
+        InputStream testStream;
+        if (myUrl.startsWith("http")) {
+            URL testUrl = new URI(myUrl).toURL();
+            URLConnection testConn = testUrl.openConnection();
+            testConn.setConnectTimeout(5000);
+            testConn.setReadTimeout(5000);
+            String userpass = testUrl.getUserInfo();
+            if (userpass != null) {
+                String auth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
+                testConn.setRequestProperty("Authorization", auth);
+            }
+            testStream = testConn.getInputStream();
+        } else {
+            String[] cmd = new String[12];
+            cmd[0] = "ffmpeg";
+            cmd[1] = "-timeout";
+            cmd[2] = "5000000";
+            cmd[3] = "-rtsp_transport";
+            cmd[4] = "tcp";
+            cmd[5] = "-i";
+            cmd[6] = myUrl;
+            cmd[7] = "-vframes";
+            cmd[8] = "1";
+            cmd[9] = "-f";
+            cmd[10] = "mjpeg";
+            cmd[11] = "-";
+            Runtime rtm = Runtime.getRuntime();
+            Process prc = rtm.exec(cmd);
+            testStream = prc.getInputStream();
         }
-        InputStream testStream = testConn.getInputStream();
         List<Byte> buf1 = new ArrayList<Byte>();
         for (;;) {
             byte[] buf0 = new byte[4096];
