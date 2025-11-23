@@ -22,7 +22,6 @@ pthread_t threadAcc;
 struct sockaddr_in addrLoc;
 long byteRx;
 long byteTx;
-int lastVal;
 
 void err(char*buf) {
     printf("%s\n", buf);
@@ -38,7 +37,6 @@ void doAccLoop() {
         }
         if (commSock < 0) err("error accepting socket");
         printf("accepted connection\n");
-        lastVal = -1;
     }
 }
 
@@ -72,21 +70,17 @@ void doTxLoop() {
 
 void doRxLoop() {
     unsigned char buf[1024];
-    int i;
+    int i, o;
     while (1) {
-        ioctl(addrTty, TIOCMGET, &i);
-        if (i == lastVal) {
-            sleep(1);
-            continue;
-        }
-        lastVal = i;
+        sleep(1);
+        ioctl(addrTty, TIOCMGET, &o);
         i = 0;
-        if ((lastVal & TIOCM_DTR) != 0) i |= 0x1;
-        if ((lastVal & TIOCM_RTS) != 0) i |= 0x2;
-        if ((lastVal & TIOCM_DSR) != 0) i |= 0x4;
-        if ((lastVal & TIOCM_CTS) != 0) i |= 0x8;
-        if ((lastVal & TIOCM_CD) != 0) i |= 0x10;
-        if ((lastVal & TIOCM_RI) != 0) i |= 0x20;
+        if ((o & TIOCM_DTR) != 0) i |= 0x1;
+        if ((o & TIOCM_RTS) != 0) i |= 0x2;
+        if ((o & TIOCM_DSR) != 0) i |= 0x4;
+        if ((o & TIOCM_CTS) != 0) i |= 0x8;
+        if ((o & TIOCM_CD) != 0) i |= 0x10;
+        if ((o & TIOCM_RI) != 0) i |= 0x20;
         buf[0] = 0x30 + i;
         send(commSock, &buf, 1, 0);
         byteRx++;
@@ -192,7 +186,6 @@ help :
     printf("serving others\n");
 
     commSock = -1;
-    lastVal = -1;
     byteRx = 0;
     byteTx = 0;
 
