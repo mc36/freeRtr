@@ -875,6 +875,8 @@ qc pass: source interface translation to address
 qc pass: target interface translation to address
 qc pass: ipv4 target port selection
 qc pass: ipv6 target port selection
+qc pass: ipv4-ipv6 unicast translation
+qc pass: ipv4-ipv6 multicast translation
 qc pass: openvpn over ipv4
 qc pass: openvpn over ipv6
 qc pass: openvpn over openvpn

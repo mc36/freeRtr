@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.11.24-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-11-24 19:08:53, took 00:16:37, with 50 workers, on 4070 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2025-11-24 20:13:36, took 00:12:50, with 50 workers, on 4072 cases, 0 failed, 0 traces, 5 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -879,6 +879,8 @@ http://sources.freertr.org/cfg/crypt-nat14.tst;crypt-nat14.tst;success;source in
 http://sources.freertr.org/cfg/crypt-nat15.tst;crypt-nat15.tst;success;target interface translation to address
 http://sources.freertr.org/cfg/crypt-nat16.tst;crypt-nat16.tst;success;ipv4 target port selection
 http://sources.freertr.org/cfg/crypt-nat17.tst;crypt-nat17.tst;success;ipv6 target port selection
+http://sources.freertr.org/cfg/crypt-nat18.tst;crypt-nat18.tst;success;ipv4-ipv6 unicast translation
+http://sources.freertr.org/cfg/crypt-nat19.tst;crypt-nat19.tst;success;ipv4-ipv6 multicast translation
 http://sources.freertr.org/cfg/crypt-openvpn01.tst;crypt-openvpn01.tst;success;openvpn over ipv4
 http://sources.freertr.org/cfg/crypt-openvpn02.tst;crypt-openvpn02.tst;success;openvpn over ipv6
 http://sources.freertr.org/cfg/crypt-openvpn03.tst;crypt-openvpn03.tst;success;openvpn over openvpn
