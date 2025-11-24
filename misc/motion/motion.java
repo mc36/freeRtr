@@ -317,6 +317,7 @@ public class motion {
         testConn.setReadTimeout(5000);
         BufferedReader testReader = new BufferedReader(new InputStreamReader(testConn.getInputStream()));
         testReader.readLine();
+        testReader.close();
     }
 
     /**

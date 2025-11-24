@@ -21,22 +21,23 @@ public class motionSens {
      */
     public static void main(String[] args) throws Exception {
         if (args.length < 4) {
-            System.out.println("usage: sensor <host> <port> <bit> <reget> <url>");
+            System.out.println("usage: sensor <host> <port> <bit> <need> <reget> <url>");
             return;
         }
         System.out.println("connecting");
         Socket sck = new Socket(args[0], motionUtil.str2num(args[1]));
         System.out.println("connected");
         int bit = motionUtil.str2num(args[2]);
-        int reg = motionUtil.str2num(args[3]);
-        String trg = args[4];
+        int ned = motionUtil.str2num(args[3]);
+        int reg = motionUtil.str2num(args[4]);
+        String trg = args[5];
         sck.setSoTimeout(60000);
         InputStream in = sck.getInputStream();
         long lst = 0;
         for (;;) {
             int i = in.read();
             System.out.println("got " + i);
-            if ((i & bit) == 0) {
+            if ((i & bit) == ned) {
                 continue;
             }
             if ((motionUtil.getTime() - lst) < reg) {
@@ -45,12 +46,16 @@ public class motionSens {
             }
             lst = motionUtil.getTime();
             System.out.println("calling api");
-            URL testUrl = new URI(trg).toURL();
-            URLConnection testConn = testUrl.openConnection();
-            testConn.setConnectTimeout(5000);
-            testConn.setReadTimeout(5000);
-            BufferedReader testReader = new BufferedReader(new InputStreamReader(testConn.getInputStream()));
-            testReader.readLine();
+            try {
+                URL testUrl = new URI(trg).toURL();
+                URLConnection testConn = testUrl.openConnection();
+                testConn.setConnectTimeout(5000);
+                testConn.setReadTimeout(5000);
+                BufferedReader testReader = new BufferedReader(new InputStreamReader(testConn.getInputStream()));
+                testReader.readLine();
+                testReader.close();
+            } catch (Exception e) {
+            }
         }
     }
 
