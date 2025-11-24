@@ -37,6 +37,9 @@ public class motionSens {
         for (;;) {
             int i = in.read();
             System.out.println("got " + i);
+            if (i < 0) {
+                break;
+            }
             if ((i & bit) == ned) {
                 continue;
             }
