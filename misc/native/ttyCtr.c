@@ -73,7 +73,7 @@ void doRxLoop() {
     int i, o;
     while (1) {
         sleep(1);
-        ioctl(addrTty, TIOCMGET, &o);
+        if (ioctl(addrTty, TIOCMGET, &o)  < 0) err("error writing socket");
         i = 0;
         if ((o & TIOCM_DTR) != 0) i |= 0x1;
         if ((o & TIOCM_RTS) != 0) i |= 0x2;
