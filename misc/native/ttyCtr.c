@@ -59,11 +59,11 @@ void doTxLoop() {
             continue;
         }
         o = buf[i - 1] - 0x30;
-        ioctl(addrTty, TIOCMGET, &i);
+        if (ioctl(addrTty, TIOCMGET, &i) < 0) err("error getting state");
         i &= ~(TIOCM_DTR | TIOCM_RTS);
         if (o & 1) i |= TIOCM_DTR;
         if (o & 2) i |= TIOCM_RTS;
-        ioctl(addrTty, TIOCMSET, &i);
+        if (ioctl(addrTty, TIOCMSET, &i) < 0) err("error setting state");
         byteTx += i;
     }
 }
@@ -73,7 +73,7 @@ void doRxLoop() {
     int i, o;
     while (1) {
         sleep(1);
-        if (ioctl(addrTty, TIOCMGET, &o)  < 0) err("error writing socket");
+        if (ioctl(addrTty, TIOCMGET, &o) < 0) err("error getting state");
         i = 0;
         if ((o & TIOCM_DTR) != 0) i |= 0x1;
         if ((o & TIOCM_RTS) != 0) i |= 0x2;
