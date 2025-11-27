@@ -130,6 +130,11 @@ public class motion {
     protected motionData[] cams;
 
     /**
+     * cameras
+     */
+    protected motionSens[] sens;
+
+    /**
      * initialize
      */
     public void doInit() {
@@ -139,7 +144,8 @@ public class motion {
     private void readConfig() {
         lastSetter = "boot";
         timeNeeded = motionUtil.getTime();
-        List<motionData> lst = new ArrayList<motionData>();
+        List<motionData> lstC = new ArrayList<motionData>();
+        List<motionSens> lstS = new ArrayList<motionSens>();
         int sleep = 100;
         int pre = 10;
         int post = 20;
@@ -147,6 +153,9 @@ public class motion {
         int trigr = 1000;
         int alarM = 1;
         int alarH = 1;
+        int reget = 30000;
+        int bitA = 16;
+        int bitN = 0;
         int arBx = 0;
         int arBy = 0;
         int arEx = Integer.MAX_VALUE;
@@ -189,6 +198,16 @@ public class motion {
                 }
                 if (s.equals("sleep")) {
                     sleep = motionUtil.str2num(a);
+                    continue;
+                }
+                if (s.equals("reget")) {
+                    reget = motionUtil.str2num(a);
+                    continue;
+                }
+                if (s.equals("bits")) {
+                    i = a.indexOf(" ");
+                    bitA = motionUtil.str2num(a.substring(0, i));
+                    bitN = motionUtil.str2num(a.substring(i + 1, a.length()));
                     continue;
                 }
                 if (s.equals("before")) {
@@ -238,7 +257,7 @@ public class motion {
                 if (s.equals("camera")) {
                     motionData ntry = new motionData(this);
                     i = a.indexOf(" ");
-                    ntry.myNum = lst.size() + 1;
+                    ntry.myNum = lstC.size() + 1;
                     ntry.myName = a.substring(0, i);
                     ntry.myUrl = a.substring(i + 1, a.length());
                     ntry.sleep = sleep;
@@ -253,16 +272,38 @@ public class motion {
                     ntry.areaEx = arEx;
                     ntry.areaEy = arEy;
                     new Thread(ntry).start();
-                    lst.add(ntry);
+                    lstC.add(ntry);
+                    continue;
+                }
+                if (s.equals("sensor")) {
+                    motionSens ntry = new motionSens(this);
+                    i = a.indexOf(" ");
+                    ntry.myNum = lstS.size() + 1;
+                    ntry.myName = a.substring(0, i);
+                    a = a.substring(i + 1, a.length());
+                    i = a.indexOf(" ");
+                    ntry.myHost = a.substring(0, i);
+                    ntry.myPort = motionUtil.str2num(a.substring(i + 1, a.length()));
+                    ntry.myBit = bitA;
+                    ntry.myNed = bitN;
+                    ntry.alarmMail = alarM;
+                    ntry.alarmHttp = alarH;
+                    ntry.reget = reget;
+                    new Thread(ntry).start();
+                    lstS.add(ntry);
                     continue;
                 }
             }
             f.close();
         } catch (Exception e) {
         }
-        cams = new motionData[lst.size()];
+        cams = new motionData[lstC.size()];
         for (int i = 0; i < cams.length; i++) {
-            cams[i] = lst.get(i);
+            cams[i] = lstC.get(i);
+        }
+        sens = new motionSens[lstS.size()];
+        for (int i = 0; i < cams.length; i++) {
+            sens[i] = lstS.get(i);
         }
     }
 
@@ -318,6 +359,25 @@ public class motion {
         BufferedReader testReader = new BufferedReader(new InputStreamReader(testConn.getInputStream()));
         testReader.readLine();
         testReader.close();
+    }
+
+    /**
+     * get alert needed
+     *
+     * @param a alarmed
+     * @return true if yes, false if no
+     */
+    protected boolean needAlert(int a) {
+        switch (a) {
+            case 0:
+                return false;
+            case 1:
+                return true;
+            case 2:
+                return alarmed;
+            default:
+                return false;
+        }
     }
 
     /**
@@ -383,6 +443,9 @@ public class motion {
             for (int i = 0; i < cams.length; i++) {
                 cams[i].doClear();
             }
+            for (int i = 0; i < sens.length; i++) {
+                sens[i].doClear();
+            }
             buf.write("<!DOCTYPE html><html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /><link rel=\"stylesheet\" type=\"text/css\" href=\"index.css\" /><meta http-equiv=refresh content=\"3;url=/index.html\"><title>motion</title></head><body>".getBytes());
             buf.write(("statistics cleared<br/>").getBytes());
             buf.write("</body></html>".getBytes());
@@ -393,6 +456,10 @@ public class motion {
         long tim = motionUtil.getTime();
         for (int i = 0; i < cams.length; i++) {
             String a = cams[i].getMeas(tim);
+            buf.write(a.getBytes());
+        }
+        for (int i = 0; i < sens.length; i++) {
+            String a = sens[i].getMeas(tim);
             buf.write(a.getBytes());
         }
         buf.write(("</tbody></table><br/>armed: " + alarmed + ", " + motionUtil.timePast(tim, timeNeeded) + " ago by " + lastSetter + "<br/>((<a href=\"" + url + "?cmd=arm&nam=1\">arm</a>))((<a href=\"" + url + "?cmd=arm&nam=0\">unarm</a>))((<a href=\"" + url + "?cmd=clear\">clear</a>))<br/></body></html>").getBytes());

@@ -233,24 +233,6 @@ public class motionData implements Runnable {
     }
 
     /**
-     * get alert needed
-     *
-     * @return true if yes, false if no
-     */
-    protected boolean needAlert(int a) {
-        switch (a) {
-            case 0:
-                return false;
-            case 1:
-                return true;
-            case 2:
-                return parent.alarmed;
-            default:
-                return false;
-        }
-    }
-
-    /**
      * get web line
      *
      * @param tim current time
@@ -263,7 +245,7 @@ public class motionData implements Runnable {
         } else {
             a = "<a href=\"" + parent.url + "?cmd=vid&nam=" + myNum + "\">" + motionUtil.timePast(tim, lastEvnt) + "</a>";
         }
-        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + needAlert(alarmMail) + "," + needAlert(alarmHttp) + "</td><td>" + events + "</td><td>" + a + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">pic</a> <a href=\"" + parent.url + "?cmd=liv&nam=" + myNum + "\">vid</a> <a href=\"" + parent.url + "?cmd=sel&nam=" + myNum + "\">sel</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
+        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + parent.needAlert(alarmMail) + "," + parent.needAlert(alarmHttp) + "</td><td>" + events + "</td><td>" + a + "</td><td>" + errors + "</td><td>" + fetches + "</td><td>" + saved + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">pic</a> <a href=\"" + parent.url + "?cmd=liv&nam=" + myNum + "\">vid</a> <a href=\"" + parent.url + "?cmd=sel&nam=" + myNum + "\">sel</a></td><td>" + difMin + "</td><td>" + difLst + "</td><td>" + difMax + "</td><td>" + difAvg + "</td></tr>";
     }
 
     /**
@@ -447,11 +429,11 @@ public class motionData implements Runnable {
         new File(path).mkdir();
         path = path + "/" + myName + "-" + date + "-" + time + "-" + dif + ".mjpeg";
         lastPath = path;
-        if (needAlert(alarmMail)) {
-            new motionMail(this);
+        if (parent.needAlert(alarmMail)) {
+            new motionMail(parent, myName, lastPath);
         }
-        if (needAlert(alarmHttp)) {
-            new motionHttp(this);
+        if (parent.needAlert(alarmHttp)) {
+            new motionHttp(parent);
         }
         OutputStream output;
         try {
@@ -487,44 +469,6 @@ public class motionData implements Runnable {
         output.flush();
         output.close();
         lastBps = sav / (int) ((motionUtil.getTime() - lastEvnt) / 1000);
-    }
-
-}
-
-class motionMail implements Runnable {
-
-    private motionData parent;
-
-    public motionMail(motionData lower) {
-        parent = lower;
-        new Thread(this).start();
-    }
-
-    public void run() {
-        try {
-            parent.parent.mailAlert(parent.myName, parent.lastPath);
-        } catch (Exception e) {
-            parent.errors++;
-        }
-    }
-
-}
-
-class motionHttp implements Runnable {
-
-    private motionData parent;
-
-    public motionHttp(motionData lower) {
-        parent = lower;
-        new Thread(this).start();
-    }
-
-    public void run() {
-        try {
-            parent.parent.httpAlert();
-        } catch (Exception e) {
-            parent.errors++;
-        }
     }
 
 }
