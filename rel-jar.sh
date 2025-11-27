@@ -1,5 +1,5 @@
 #!/bin/sh
-./backup.sh
+./rel-zip.sh
 cd src
 ./c.sh
 ./cb.sh
