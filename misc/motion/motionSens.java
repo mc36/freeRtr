@@ -1,11 +1,6 @@
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.Socket;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * motion sensor handler
@@ -55,6 +50,11 @@ public class motionSens implements Runnable {
     protected int reget;
 
     /**
+     * inter image sleep
+     */
+    protected int sleep;
+
+    /**
      * alarm mode
      */
     protected int alarmMail;
@@ -82,12 +82,14 @@ public class motionSens implements Runnable {
     /**
      * exceptions happened
      */
-    protected int calls;
+    protected int detects;
 
     /**
      * exceptions happened
      */
     protected int errors;
+
+    private final static Object sleeper = new Object();
 
     /**
      * create instance
@@ -117,7 +119,13 @@ public class motionSens implements Runnable {
         } else {
             a = motionUtil.timePast(tim, lastEvnt);
         }
-        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + parent.needAlert(alarmMail) + "," + parent.needAlert(alarmHttp) + "</td><td>" + events + "</td><td>" + a + "</td><td>" + errors + "</td><td>" + reads + "</td><td>" + calls + "</td><td><a href=\"" + parent.url + "?cmd=img&nam=" + myNum + "\">pic</a> <a href=\"" + parent.url + "?cmd=liv&nam=" + myNum + "\">vid</a> <a href=\"" + parent.url + "?cmd=sel&nam=" + myNum + "\">sel</a></td><td>-</td><td>-</td><td>-</td><td>-</td></tr>";
+        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + parent.needAlert(alarmMail) + "," + parent.needAlert(alarmHttp) + "</td><td>" + events + "</td><td>" + a + "</td><td>" + errors + "</td><td>" + reads + "</td><td>" + detects + "</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>";
+    }
+
+    private void sleep() throws Exception {
+        synchronized (sleeper) {
+            sleeper.wait(sleep);
+        }
     }
 
     /**
@@ -126,6 +134,7 @@ public class motionSens implements Runnable {
      * @param args command line parameters
      */
     private void doRound() throws Exception {
+        sleep();
         Socket sck = new Socket(myHost, myPort);
         sck.setSoTimeout(30000);
         InputStream in = sck.getInputStream();
@@ -147,10 +156,10 @@ public class motionSens implements Runnable {
             if (cur) {
                 continue;
             }
+            detects++;
             if ((motionUtil.getTime() - lst) < reget) {
                 continue;
             }
-            calls++;
             lst = motionUtil.getTime();
             if (parent.needAlert(alarmMail)) {
                 new motionMail(parent, myName, "");

@@ -284,6 +284,7 @@ public class motion {
                     i = a.indexOf(" ");
                     ntry.myHost = a.substring(0, i);
                     ntry.myPort = motionUtil.str2num(a.substring(i + 1, a.length()));
+                    ntry.sleep = sleep;
                     ntry.myBit = bitA;
                     ntry.myNed = bitN;
                     ntry.alarmMail = alarM;
@@ -302,7 +303,7 @@ public class motion {
             cams[i] = lstC.get(i);
         }
         sens = new motionSens[lstS.size()];
-        for (int i = 0; i < cams.length; i++) {
+        for (int i = 0; i < sens.length; i++) {
             sens[i] = lstS.get(i);
         }
     }
