@@ -6,6 +6,3 @@ cd src
 cd ../misc/native/
 ./c.sh
 ./p.sh
-cd ../image/
-./cj.sh
-./ci.sh
