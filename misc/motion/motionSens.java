@@ -34,19 +34,34 @@ public class motionSens {
         sck.setSoTimeout(60000);
         InputStream in = sck.getInputStream();
         long lst = 0;
+        int ups = 0;
+        int dns = 0;
+        int chg = 0;
+        int cal = 0;
+        int skp = 0;
+        boolean old = true;
         for (;;) {
             int i = in.read();
-            System.out.println("got " + i);
+            System.out.println("ups=" + ups + ", downs=" + dns + ", changes=" + chg + ", calls=" + cal + ", skips=" + skp + ", now=0x" + Integer.toString(i, 16));
             if (i < 0) {
                 break;
             }
-            if ((i & bit) == ned) {
+            boolean cur = (i & bit) == ned;
+            if (old != cur) {
+                chg++;
+            }
+            old = cur;
+            if (cur) {
+                dns++;
                 continue;
             }
+            ups++;
             if ((motionUtil.getTime() - lst) < reg) {
                 System.out.println("skipping api");
+                skp++;
                 continue;
             }
+            cal++;
             lst = motionUtil.getTime();
             System.out.println("calling api");
             try {
