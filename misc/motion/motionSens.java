@@ -119,7 +119,7 @@ public class motionSens implements Runnable {
         } else {
             a = motionUtil.timePast(tim, lastEvnt);
         }
-        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + parent.needAlert(alarmMail) + "," + parent.needAlert(alarmHttp) + "</td><td>" + events + "</td><td>" + a + "</td><td>" + errors + "</td><td>" + reads + "</td><td>" + detects + "</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>";
+        return "<tr><td>" + myNum + "</td><td>" + myName + "</td><td>" + parent.needAlert(alarmMail) + " " + parent.needAlert(alarmHttp) + "</td><td>" + events + "</td><td>" + a + "</td><td>" + errors + "</td><td>" + reads + "</td><td>" + detects + "</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>";
     }
 
     private void sleep() throws Exception {
