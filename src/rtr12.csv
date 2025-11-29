@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v25.11.21-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-11-21 17:01:19, took 00:39:08, with 1 workers, on 66 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v25.11.28-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-11-29 05:07:48, took 00:38:54, with 1 workers, on 66 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar, null
 http://sources.freertr.org/cfg/intop9-bgp01.tst;intop9-bgp01.tst;success;interop9: ebgp
 http://sources.freertr.org/cfg/intop9-bgp02.tst;intop9-bgp02.tst;success;interop9: ibgp
