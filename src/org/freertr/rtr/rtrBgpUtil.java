@@ -2883,8 +2883,9 @@ public class rtrBgpUtil {
      *
      * @param src source where from read
      * @param attr attribute read to
+     * @return false on success, true on error
      */
-    public static void parseAttrib(packHolder src, packHolder attr) {
+    public static boolean parseAttrib(packHolder src, packHolder attr) {
         int flg = src.getByte(0); // flags
         int typ = src.getByte(1); // type
         int len = 0;
@@ -2895,8 +2896,8 @@ public class rtrBgpUtil {
             len = src.msbGetW(2);
             src.getSkip(4); // length
         }
-        if (len > packHolder.maxHead) {
-            len = packHolder.maxHead;
+        if (len > src.dataSize()) {
+            return true;
         }
         byte[] buf = new byte[len];
         src.getCopy(buf, 0, 0, len);
@@ -2907,6 +2908,7 @@ public class rtrBgpUtil {
         attr.putCopy(buf, 0, 0, buf.length);
         attr.putSkip(buf.length);
         attr.merge2beg();
+        return false;
     }
 
     /**
@@ -2962,7 +2964,9 @@ public class rtrBgpUtil {
             if (pck.dataSize() < 1) {
                 break;
             }
-            parseAttrib(pck, cur);
+            if (parseAttrib(pck, cur)) {
+                break;
+            }
             interpretAttribute(spkr, ntry, add, del, cur);
         }
     }

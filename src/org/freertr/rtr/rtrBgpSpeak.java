@@ -1665,6 +1665,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         int prt = pck.msbGetW(0);
         pck.getSkip(2);
         prt = pck.dataSize() - prt;
+        if (prt < 0) {
+            return true;
+        }
         List<tabRouteEntry<addrIP>> currAdd = new ArrayList<tabRouteEntry<addrIP>>();
         List<tabRouteEntry<addrIP>> currDel = new ArrayList<tabRouteEntry<addrIP>>();
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -1700,11 +1703,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         prt = pck.msbGetW(0);
         pck.getSkip(2);
         prt = pck.dataSize() - prt;
+        if (prt < 0) {
+            return true;
+        }
         for (;;) {
             if (pck.dataSize() <= prt) {
                 break;
             }
-            rtrBgpUtil.parseAttrib(pck, hlp);
+            if (rtrBgpUtil.parseAttrib(pck, hlp)) {
+                return true;
+            }
             rtrBgpUtil.interpretAttribute(this, ntry, currAdd, currDel, hlp);
         }
         pck.setBytesLeft(prt);

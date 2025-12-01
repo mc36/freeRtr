@@ -288,7 +288,9 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                     if (tmp.dataSize() < 1) {
                         break;
                     }
-                    rtrBgpUtil.parseAttrib(tmp, hlp);
+                    if (rtrBgpUtil.parseAttrib(tmp, hlp)) {
+                        break;
+                    }
                     if (hlp.ETHtype == rtrBgpUtil.attrReachable) {
                         hlp.getSkip(1);
                         if (hlp.dataSize() == addrIPv4.size) {

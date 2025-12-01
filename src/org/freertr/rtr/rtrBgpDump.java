@@ -692,7 +692,9 @@ public class rtrBgpDump {
             if (pck.dataSize() <= prt) {
                 break;
             }
-            rtrBgpUtil.parseAttrib(pck, hlp);
+            if (rtrBgpUtil.parseAttrib(pck, hlp)) {
+                break;
+            }
             res.add("  attrib typ=" + hlp.ETHtype + " len=" + hlp.dataSize() + " " + rtrBgpUtil.attrType2string(hlp.ETHtype));
             ntry = new tabRouteEntry<addrIP>();
             List<tabRouteEntry<addrIP>> add = new ArrayList<tabRouteEntry<addrIP>>();
@@ -808,7 +810,9 @@ public class rtrBgpDump {
             if (pck.dataSize() <= prt) {
                 break;
             }
-            rtrBgpUtil.parseAttrib(pck, hlp);
+            if (rtrBgpUtil.parseAttrib(pck, hlp)) {
+                break;
+            }
             List<tabRouteEntry<addrIP>> add = new ArrayList<tabRouteEntry<addrIP>>();
             List<tabRouteEntry<addrIP>> del = new ArrayList<tabRouteEntry<addrIP>>();
             rtrBgpUtil.interpretAttribute(spkr, ntry, add, del, hlp.copyBytes(true, true));
@@ -878,7 +882,9 @@ public class rtrBgpDump {
             if (pck.dataSize() <= prt) {
                 break;
             }
-            rtrBgpUtil.parseAttrib(pck, hlp);
+            if (rtrBgpUtil.parseAttrib(pck, hlp)) {
+                break;
+            }
             atr[hlp.ETHtype]++;
         }
     }
