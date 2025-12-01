@@ -38,12 +38,12 @@ public class version {
     /**
      * compile month
      */
-    public final static int month = 11;
+    public final static int month = 12;
 
     /**
      * compile day
      */
-    public final static int day = 30;
+    public final static int day = 1;
 
     /**
      * statement of release
