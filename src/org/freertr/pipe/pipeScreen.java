@@ -735,6 +735,32 @@ public class pipeScreen {
     }
 
     /**
+     * send image in html table format
+     *
+     * @param pip pipeline to use
+     * @param col palette to use
+     * @param chr dithering to use
+     * @param img image to send
+     * @param sx x size
+     * @param sy y size
+     */
+    public static void sendImageTable(pipeSide pip, int[] col, char[] chr, byte[] img, int sx, int sy) {
+        pip.strPut("<table>");
+        int p = 0;
+        for (int y = 0; y < sy; y++) {
+            pip.strPut("<tr>");
+            for (int x = 0; x < sx; x++) {
+                int c = (img[p] & 0xff) / chr.length;
+                p++;
+                int v = col[c];
+                pip.strPut("<td style=background:#" + bits.toHexB(v >>> 16) + bits.toHexB(v >>> 8) + bits.toHexB(v) + ">&nbsp;</td>");
+            }
+            pip.strPut("</tr>");
+        }
+        pip.strPut("</table>");
+    }
+
+    /**
      * send image in dec sixel format
      *
      * @param pip pipeline to use

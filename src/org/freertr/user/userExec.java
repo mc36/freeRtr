@@ -2611,6 +2611,8 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "<file>", "filename");
         hl.add(null, false, 2, new int[]{3}, "binview", "view one binary file");
         hl.add(null, false, 3, new int[]{-1}, "<file>", "filename");
+        hl.add(null, false, 2, new int[]{3}, "coltab", "view one image file");
+        hl.add(null, false, 3, new int[]{-1}, "<file>", "filename");
         hl.add(null, false, 2, new int[]{3}, "7bitview", "view one binary file");
         hl.add(null, false, 3, new int[]{-1}, "<file>", "filename");
         hl.add(null, false, 2, new int[]{3}, "hackview", "view one binary file");

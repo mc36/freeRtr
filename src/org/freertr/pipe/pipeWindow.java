@@ -135,6 +135,36 @@ public class pipeWindow extends JPanel {
     }
 
     /**
+     * convert image to string
+     *
+     * @param scr console to draw
+     * @param fil file
+     */
+    public static void imageTable(pipeScreen scr, File fil) {
+        BufferedImage img1 = null;
+        try {
+            img1 = ImageIO.read(fil);
+        } catch (Exception e) {
+            logger.traceback(e, "while converting");
+        }
+        if (img1 == null) {
+            return;
+        }
+        int maxX = scr.sizX;
+        int maxY = scr.sizY;
+        maxX = (img1.getWidth() / maxX) + 1;
+        maxY = (img1.getHeight() / maxY) + 1;
+        int p = maxX < maxY ? maxY : maxX;
+        if (p < 1) {
+            p = 1;
+        }
+        maxX = img1.getWidth() / p;
+        maxY = img1.getHeight() / p;
+        byte[] img3 = image2idx(img1, maxX, maxY, pipeFonts.colorData, pipeFonts.ditherMono);
+        pipeScreen.sendImageTable(scr.pipe, pipeFonts.colorData, pipeFonts.ditherMono, img3, maxX, maxY);
+    }
+
+    /**
      * send image in dec-sixel format
      *
      * @param scr console to draw

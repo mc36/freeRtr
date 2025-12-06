@@ -65,6 +65,17 @@ public class userFlash {
     public userRead rdr;
 
     /**
+     * get table art from a file
+     *
+     * @param fn filename
+     * @param con console to draw
+     */
+    public static void tableArt(String fn, pipeScreen con) {
+        File fil = new File(fn);
+        pipeWindow.imageTable(con, fil);
+    }
+
+    /**
      * get ascii art from a file
      *
      * @param fn filename
@@ -199,6 +210,11 @@ public class userFlash {
             List<String> b = binRead(a);
             userEditor v = new userEditor(new pipeScreen(pip), b, a, false);
             v.doView();
+            return null;
+        }
+        if (a.equals("coltab")) {
+            a = cmd.getRemaining();
+            tableArt(a, new pipeScreen(pip));
             return null;
         }
         if (a.equals("7bitview")) {

@@ -17670,3 +17670,6 @@ qc pass: wireguard over asymmetric ports
 ---------------------------------- 2025-12-05 22:23:34 25.12.5
 no qc pass: wireguard over ipv6
 failed: wireguard over ipv6
+---------------------------------- 2025-12-06 05:44:58 25.12.6
+no failed: wireguard over ipv6
+qc pass: wireguard over ipv6
