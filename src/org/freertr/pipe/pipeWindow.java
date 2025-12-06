@@ -161,7 +161,7 @@ public class pipeWindow extends JPanel {
         maxX = img1.getWidth() / p;
         maxY = img1.getHeight() / p;
         byte[] img3 = image2idx(img1, maxX, maxY, pipeFonts.colorData, pipeFonts.ditherMono);
-        pipeScreen.sendImageTable(scr.pipe, pipeFonts.colorData, pipeFonts.ditherMono, img3, maxX, maxY);
+        pipeScreen.sendImageTable(scr.pipe, pipeFonts.colorIdxd, pipeFonts.ditherMono, img3, maxX, maxY);
     }
 
     /**
@@ -191,7 +191,7 @@ public class pipeWindow extends JPanel {
         maxX = img1.getWidth() / p;
         maxY = img1.getHeight() / p;
         byte[] img3 = image2idx(img1, maxX, maxY, pipeFonts.colorData, pipeFonts.ditherMono);
-        pipeScreen.sendImageSixel(scr.pipe, pipeFonts.colorData, pipeFonts.ditherMono, img3, maxX, maxY);
+        pipeScreen.sendImageSixel(scr.pipe, pipeFonts.colorIdxd, pipeFonts.ditherMono, img3, maxX, maxY);
     }
 
     private static byte[] image2idx(BufferedImage img1, int maxX, int maxY, int[] col, char chr[]) {
