@@ -17667,3 +17667,6 @@ failed: wireguard over asymmetric ports
 ---------------------------------- 2025-12-04 15:13:40 25.12.4
 no failed: wireguard over asymmetric ports
 qc pass: wireguard over asymmetric ports
+---------------------------------- 2025-12-05 22:23:34 25.12.5
+no qc pass: wireguard over ipv6
+failed: wireguard over ipv6
