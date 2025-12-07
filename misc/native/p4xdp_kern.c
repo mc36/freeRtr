@@ -610,9 +610,20 @@ __u32 xdp_router(struct xdp_md *ctx) {
     hash ^= get32msb(macaddr, 4);
     hash ^= get32msb(macaddr, 8);
     __u32 sgt = 0;
+    union {
+        struct route4_key rou4;
+        struct tunnel4_key tun4;
+        struct route6_key rou6;
+        struct tunnel6_key tun6;
+        struct vlan_key vlnk;
+        struct pppoe_key pppk;
+        struct nsh_key nshk;
+        struct polidx_key polk;
+        struct bridge_key brdk;
+    } u;
 
 #pragma unroll
-    for (__u32 rounds = 0; rounds < 3; rounds++) {
+    for (__u32 rounds = 0; rounds < 4; rounds++) {
 
         __u64 bufP = sizeof(macaddr) + 2;
         revalidatePacket(bufP);
@@ -740,12 +751,11 @@ ipv4_rx:
             bufD[bufP + 8] = ttl;
             update_chksum(bufP + 10, -1);
             ttl |= vrfp->pttl4;
-            struct route4_key rou4;
-            rou4.bits = (sizeof(rou4) * 8) - routes_bits;
-            rou4.vrf = vrfp->vrf;
+            u.rou4.bits = (sizeof(u.rou4) * 8) - routes_bits;
+            u.rou4.vrf = vrfp->vrf;
             if (vrfp->verify4 > 0) {
-                __builtin_memcpy(rou4.addr, &bufD[bufP + 12], sizeof(rou4.addr));
-                struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &rou4);
+                __builtin_memcpy(u.rou4.addr, &bufD[bufP + 12], sizeof(u.rou4.addr));
+                struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &u.rou4);
                 if (res4 == NULL) goto punt;
                 if (vrfp->verify4 > 1) {
                     neik = res4->nexthop;
@@ -754,20 +764,19 @@ ipv4_rx:
                     if (neir->aclport != prt) goto punt;
                 }
             }
-            __builtin_memcpy(rou4.addr, &bufD[bufP + 16], sizeof(rou4.addr));
-            struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &rou4);
+            __builtin_memcpy(u.rou4.addr, &bufD[bufP + 16], sizeof(u.rou4.addr));
+            struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &u.rou4);
             if (res4 == NULL) goto punt;
             hash ^= get32msb(bufD, bufP + 12);
             hash ^= get32msb(bufD, bufP + 16);
             doRouted(res4);
-            struct tunnel4_key tun4;
-            tun4.vrf = vrfp->vrf;
-            tun4.prot = bufD[bufP + 9];
-            __builtin_memcpy(tun4.srcAddr, &bufD[bufP + 12], sizeof(tun4.srcAddr));
-            __builtin_memcpy(tun4.trgAddr, &bufD[bufP + 16], sizeof(tun4.trgAddr));
+            u.tun4.vrf = vrfp->vrf;
+            u.tun4.prot = bufD[bufP + 9];
+            __builtin_memcpy(u.tun4.srcAddr, &bufD[bufP + 12], sizeof(u.tun4.srcAddr));
+            __builtin_memcpy(u.tun4.trgAddr, &bufD[bufP + 16], sizeof(u.tun4.trgAddr));
             bufP += 20;
-            extract_layer4(tun4);
-            struct tunnel_res* tunr = bpf_map_lookup_elem(&tunnels4, &tun4);
+            extract_layer4(u.tun4);
+            struct tunnel_res* tunr = bpf_map_lookup_elem(&tunnels4, &u.tun4);
             doTunnel();
         case ETHERTYPE_IPV6:
             if (vrfp == NULL) goto drop;
@@ -782,12 +791,11 @@ ipv6_rx:
             if (bufD[bufP + 6] == 0) goto cpu;
             bufD[bufP + 7] = ttl;
             ttl |= vrfp->pttl6;
-            struct route6_key rou6;
-            rou6.bits = (sizeof(rou6) * 8) - routes_bits;
-            rou6.vrf = vrfp->vrf;
+            u.rou6.bits = (sizeof(u.rou6) * 8) - routes_bits;
+            u.rou6.vrf = vrfp->vrf;
             if (vrfp->verify6 > 0) {
-                __builtin_memcpy(rou6.addr, &bufD[bufP + 8], sizeof(rou6.addr));
-                struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &rou6);
+                __builtin_memcpy(u.rou6.addr, &bufD[bufP + 8], sizeof(u.rou6.addr));
+                struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &u.rou6);
                 if (res6 == NULL) goto punt;
                 if (vrfp->verify6 > 1) {
                     neik = res6->nexthop;
@@ -796,8 +804,8 @@ ipv6_rx:
                     if (neir->aclport != prt) goto punt;
                 }
             }
-            __builtin_memcpy(rou6.addr, &bufD[bufP + 24], sizeof(rou6.addr));
-            struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &rou6);
+            __builtin_memcpy(u.rou6.addr, &bufD[bufP + 24], sizeof(u.rou6.addr));
+            struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &u.rou6);
             if (res6 == NULL) goto punt;
             hash ^= get32msb(bufD, bufP + 8);
             hash ^= get32msb(bufD, bufP + 12);
@@ -808,32 +816,29 @@ ipv6_rx:
             hash ^= get32msb(bufD, bufP + 32);
             hash ^= get32msb(bufD, bufP + 36);
             doRouted(res6);
-            struct tunnel6_key tun6;
-            tun6.vrf = vrfp->vrf;
-            tun6.prot = bufD[bufP + 6];
-            __builtin_memcpy(tun6.srcAddr, &bufD[bufP + 8], sizeof(tun6.srcAddr));
-            __builtin_memcpy(tun6.trgAddr, &bufD[bufP + 24], sizeof(tun6.trgAddr));
+            u.tun6.vrf = vrfp->vrf;
+            u.tun6.prot = bufD[bufP + 6];
+            __builtin_memcpy(u.tun6.srcAddr, &bufD[bufP + 8], sizeof(u.tun6.srcAddr));
+            __builtin_memcpy(u.tun6.trgAddr, &bufD[bufP + 24], sizeof(u.tun6.trgAddr));
             bufP += 40;
-            extract_layer4(tun6);
-            tunr = bpf_map_lookup_elem(&tunnels6, &tun6);
+            extract_layer4(u.tun6);
+            tunr = bpf_map_lookup_elem(&tunnels6, &u.tun6);
             doTunnel();
         case ETHERTYPE_VLAN:
             revalidatePacket(bufP + 4);
-            struct vlan_key vlnk;
-            vlnk.port = prt;
-            vlnk.vlan = get16msb(bufD, bufP) & 0xfff;
+            u.vlnk.port = prt;
+            u.vlnk.vlan = get16msb(bufD, bufP) & 0xfff;
             bufP += 4;
-            __u32* res = bpf_map_lookup_elem(&vlan_in, &vlnk);
+            __u32* res = bpf_map_lookup_elem(&vlan_in, &u.vlnk);
             if (res == NULL) goto drop;
             prt = *res;
             if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr) - 2) != 0) goto drop;
             continue;
         case ETHERTYPE_PPPOE_DATA:
             revalidatePacket(bufP + 12);
-            struct pppoe_key pppk;
-            pppk.port = prt;
-            pppk.sess = get16msb(bufD, bufP + 2);
-            res = bpf_map_lookup_elem(&pppoes, &pppk);
+            u.pppk.port = prt;
+            u.pppk.sess = get16msb(bufD, bufP + 2);
+            res = bpf_map_lookup_elem(&pppoes, &u.pppk);
             if (res == NULL) goto drop;
             ethtyp = get16msb(bufD, bufP + 6);
             bufP += 8;
@@ -852,11 +857,10 @@ nsh_rx:
             if (((ttl >> 6) & 0x3f) <= 1) goto punt;
             tmp = get32msb(bufD, bufP + 4);
             ethtyp = bufD[bufP + 3];
-            struct nsh_key nshk;
-            nshk.sp = tmp >> 8;
-            nshk.si = tmp & 0xff;
+            u.nshk.sp = tmp >> 8;
+            u.nshk.si = tmp & 0xff;
             hash ^= tmp;
-            struct nsh_res *nshr = bpf_map_lookup_elem(&nshs, &nshk);
+            struct nsh_res *nshr = bpf_map_lookup_elem(&nshs, &u.nshk);
             if (nshr == NULL) goto drop;
             nshr->pack++;
             nshr->byte += bufE - bufD;
@@ -926,10 +930,9 @@ nsh_rx:
                 if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
                 continue;
             }
-            struct polidx_key polk;
-            polk.vrf = vrfp->vrf;
-            polk.idx = tmp;
-            res = bpf_map_lookup_elem(&polidxs, &polk);
+            u.polk.vrf = vrfp->vrf;
+            u.polk.idx = tmp;
+            res = bpf_map_lookup_elem(&polidxs, &u.polk);
             if (res == NULL) goto drop;
             ethtyp = ETHERTYPE_POLKA;
             neik = *res;
@@ -944,18 +947,16 @@ nsh_rx:
             bufP += 2;
             tmp = vrfp->bridge;
 bridge_rx:
-            {}
-            struct bridge_key brdk;
-            __builtin_memcpy(brdk.mac, &macaddr[6], 6);
-            brdk.id = tmp;
-            brdk.mac[6] = 0;
-            brdk.mac[7] = 0;
-            struct bridge_res* brdr = bpf_map_lookup_elem(&bridges, &brdk);
+            __builtin_memcpy(u.brdk.mac, &macaddr[6], 6);
+            u.brdk.id = tmp;
+            u.brdk.mac[6] = 0;
+            u.brdk.mac[7] = 0;
+            struct bridge_res* brdr = bpf_map_lookup_elem(&bridges, &u.brdk);
             if (brdr == NULL) goto cpu;
             brdr->packRx++;
             brdr->byteRx += bufE - bufD;
-            __builtin_memcpy(brdk.mac, &macaddr[0], 6);
-            brdr = bpf_map_lookup_elem(&bridges, &brdk);
+            __builtin_memcpy(u.brdk.mac, &macaddr[0], 6);
+            brdr = bpf_map_lookup_elem(&bridges, &u.brdk);
             if (brdr == NULL) goto cpu;
             brdr->packTx++;
             brdr->byteTx += bufE - bufD;
