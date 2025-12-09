@@ -751,7 +751,7 @@ qc pass: p4lang: routed vlan evpn/cmac with bgp
 qc pass: p4lang: routed qinq evpn/cmac with bgp
 qc pass: p4lang: vpls/ldp over backplane
 qc pass: p4lang: evpn/cmac over backplane
-failed: p4lang: routed vpls/ldp over backplane
+qc pass: p4lang: routed vpls/ldp over backplane
 failed: p4lang: routed evpn/cmac over backplane
 qc pass: p4lang: vpn mldp egress edge
 qc pass: p4lang: vpn mldp ingress edge
@@ -842,6 +842,17 @@ qc pass: p4lang: ldp te over mpls tail+head
 qc pass: p4lang: ldp te over mpls mid
 qc pass: p4lang: ouni with bgp
 qc pass: p4lang: ouni with bgp over vlan
+qc pass: p4lang: eoip over ipv4
+qc pass: p4lang: eoip over ipv6
+qc pass: p4lang: eoip over ipv4 loopback
+qc pass: p4lang: eoip over ipv6 loopback
+qc pass: p4lang: eoip over vlan
+qc pass: p4lang: eoip over bundle
+qc pass: p4lang: eoip over bundle vlan
+qc pass: p4lang: eoip server over ipv4
+qc pass: p4lang: eoip server over ipv6
+qc pass: p4lang: eoip server over ipv4 loopback
+qc pass: p4lang: eoip server over ipv6 loopback
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

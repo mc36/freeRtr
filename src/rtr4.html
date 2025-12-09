@@ -9,8 +9,8 @@
 .bad { color: red }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v25.12.4-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2025-12-04 21:04:36, took 01:16:07, with 10 workers, on 844 cases, 4 failed, 0 traces, 28 retries<br/>
+release: freeRouter v25.12.9-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2025-12-09 11:59:12, took 01:19:01, with 10 workers, on 855 cases, 3 failed, 0 traces, 25 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar, other: bmv2<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -767,7 +767,7 @@ jvm: java -Xmx256m -jar rtr.jar, other: bmv2<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout402.tst">p4lang-rout402.tst</a></td><td>success</td><td>p4lang: routed qinq evpn/cmac with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout403.tst">p4lang-rout403.tst</a></td><td>success</td><td>p4lang: vpls/ldp over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout404.tst">p4lang-rout404.tst</a></td><td>success</td><td>p4lang: evpn/cmac over backplane</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout405.tst">p4lang-rout405.tst</a></td><td>#6-run-r5 tping 100 10 3.3.3.104 vrf v1 sou lo1</td><td>p4lang: routed vpls/ldp over backplane</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout405.tst">p4lang-rout405.tst</a></td><td>success</td><td>p4lang: routed vpls/ldp over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout406.tst">p4lang-rout406.tst</a></td><td>#6-run-r5 tping 100 10 3.3.3.104 vrf v1 sou lo1</td><td>p4lang: routed evpn/cmac over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout407.tst">p4lang-rout407.tst</a></td><td>success</td><td>p4lang: vpn mldp egress edge</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout408.tst">p4lang-rout408.tst</a></td><td>success</td><td>p4lang: vpn mldp ingress edge</td></tr>
@@ -858,4 +858,15 @@ jvm: java -Xmx256m -jar rtr.jar, other: bmv2<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout493.tst">p4lang-rout493.tst</a></td><td>success</td><td>p4lang: ldp te over mpls mid</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout494.tst">p4lang-rout494.tst</a></td><td>success</td><td>p4lang: ouni with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout495.tst">p4lang-rout495.tst</a></td><td>success</td><td>p4lang: ouni with bgp over vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout496.tst">p4lang-rout496.tst</a></td><td>success</td><td>p4lang: eoip over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout497.tst">p4lang-rout497.tst</a></td><td>success</td><td>p4lang: eoip over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout498.tst">p4lang-rout498.tst</a></td><td>success</td><td>p4lang: eoip over ipv4 loopback</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout499.tst">p4lang-rout499.tst</a></td><td>success</td><td>p4lang: eoip over ipv6 loopback</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout500.tst">p4lang-rout500.tst</a></td><td>success</td><td>p4lang: eoip over vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout501.tst">p4lang-rout501.tst</a></td><td>success</td><td>p4lang: eoip over bundle</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout502.tst">p4lang-rout502.tst</a></td><td>success</td><td>p4lang: eoip over bundle vlan</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout503.tst">p4lang-rout503.tst</a></td><td>success</td><td>p4lang: eoip server over ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout504.tst">p4lang-rout504.tst</a></td><td>success</td><td>p4lang: eoip server over ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout505.tst">p4lang-rout505.tst</a></td><td>success</td><td>p4lang: eoip server over ipv4 loopback</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout506.tst">p4lang-rout506.tst</a></td><td>success</td><td>p4lang: eoip server over ipv6 loopback</td></tr>
 </tbody></table></body></html>
