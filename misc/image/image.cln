@@ -1,1 +1,0 @@
-del-alw %tmp%/usr/src %tmp%/usr/include %tmp%/usr/share/man %tmp%/usr/share/doc %tmp%/usr/share/bug %tmp%/usr/share/gcc %tmp%/usr/share/gdb %tmp%/usr/share/zsh %tmp%/usr/share/info %tmp%/usr/share/locale %tmp%/usr/share/lintian %tmp%/usr/share/bash-completion %tmp%/usr/share/initramfs-tools

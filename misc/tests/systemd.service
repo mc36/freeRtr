@@ -1,9 +1,0 @@
-RuntimeMaxUSec=infinity
-MemoryMax=infinity
-TasksMax=infinity
-CPUAccounting=no
-IOAccounting=no
-BlockIOAccounting=no
-MemoryAccounting=no
-TasksAccounting=no
-IPAccounting=no

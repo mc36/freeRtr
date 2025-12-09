@@ -1,8 +1,0 @@
-config iface-eth1
-config/interface/ethernet1
-freertr-iface-eth1
-interface eth187156390
-!
- exit
-no interface eth187156390
-.
