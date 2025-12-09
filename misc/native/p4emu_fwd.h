@@ -421,6 +421,17 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     put16msb(bufD, bufP + 0, 0x300);
 
 
+#define putEoipHeader                                           \
+    bufP -= 12;                                                 \
+    memcpy(&bufD[bufP], &bufH[0], 12);                          \
+    tmp = bufS - bufP + preBuff;                                \
+    bufP -= 8;                                                  \
+    put16msb(bufD, bufP + 0, 0x2001);                           \
+    put16msb(bufD, bufP + 2, 0x6400);                           \
+    put16msb(bufD, bufP + 4, tmp);                              \
+    put16lsb(bufD, bufP + 6, bridge_res->instance);
+
+
 #define putPckoudpHeader                                        \
     bufP -= 12;                                                 \
     memcpy(&bufD[bufP], &bufH[0], 12);
@@ -1254,6 +1265,15 @@ int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, i
         ethtyp = bufD[*bufP];
         iproto2ethtyp;
         put16msb(bufD, *bufP, ethtyp);
+        return 0;
+    case 14: // eoip
+        *bufP = bufT + 8;
+        if (get16msb(bufD, bufT + 2) != 0x6400) doDropper;
+        ethtyp = get16msb(bufD, bufT + 4);
+        if (ethtyp > (*bufS - *bufP + preBuff)) doDropper;
+        *bufS = ethtyp + *bufP - preBuff;
+        *bufP -= 2;
+        put16msb(bufD, *bufP, ETHERTYPE_ROUTEDMAC);
         return 0;
     }
 drop:
@@ -2348,6 +2368,16 @@ bridgevpls_rx:
         case 11: // etherip6
             putEtheripHeader;
             putIpv6header(IP_PROTOCOL_ETHERIP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            neigh_ntry.id = bridge_res->nexthop;
+            goto nethtyp_tx;
+        case 12: // eoip4
+            putEoipHeader;
+            putIpv4header(IP_PROTOCOL_GRE, bridge_res->srcAddr1, bridge_res->trgAddr1);
+            neigh_ntry.id = bridge_res->nexthop;
+            goto nethtyp_tx;
+        case 13: // eoip6
+            putEoipHeader;
+            putIpv6header(IP_PROTOCOL_GRE, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
             neigh_ntry.id = bridge_res->nexthop;
             goto nethtyp_tx;
         }

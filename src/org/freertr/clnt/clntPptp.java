@@ -15,6 +15,7 @@ import org.freertr.ip.ipPrt;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packPptp;
 import org.freertr.pipe.pipeSide;
+import org.freertr.prt.prtGre;
 import org.freertr.serv.servGeneric;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
@@ -232,7 +233,7 @@ public class clntPptp implements Runnable, ipPrt, ifcDn {
         if (sendingFLW >= 0) {
             pckBin.IPid = sendingFLW;
         }
-        pckBin.IPprt = packPptp.prot;
+        pckBin.IPprt = prtGre.protoNum;
         pckBin.IPsrc.setAddr(fwdIfc.addr);
         pckBin.IPtrg.setAddr(fwdTrg);
         fwdCor.protoPack(fwdIfc, null, pckBin);
@@ -441,7 +442,7 @@ public class clntPptp implements Runnable, ipPrt, ifcDn {
      * @return number
      */
     public int getProtoNum() {
-        return packPptp.prot;
+        return prtGre.protoNum;
     }
 
     /**

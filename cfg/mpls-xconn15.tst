@@ -1,4 +1,4 @@
-description cross connect interworking with etherip
+description cross connect interworking with erspan
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -44,7 +44,7 @@ int eth2
  exit
 xconnect con
  side1 v1 eth1 pweompls 1.1.1.1 123
- side2 v1 eth2 etherip 1234:2::2 123
+ side2 v1 eth2 erspan 1234:2::2 123
  exit
 !
 
@@ -61,7 +61,7 @@ int eth1
  exit
 int tun1
  tunnel vrf v1
- tunnel mode etherip
+ tunnel mode erspan
  tunnel key 123
  tunnel source ethernet1
  tunnel destination 1234:2::1

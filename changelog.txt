@@ -17673,3 +17673,44 @@ failed: wireguard over ipv6
 ---------------------------------- 2025-12-06 05:44:58 25.12.6
 no failed: wireguard over ipv6
 qc pass: wireguard over ipv6
+---------------------------------- 2025-12-09 03:42:41 25.12.9
+no qc pass: sep with gre
+no qc pass: isdn with gre
+no qc pass: atmdxi with gre
+no qc pass: framerelay with gre
+no qc pass: lapb with gre
+no qc pass: hdlc with gre
+no qc pass: ppp with gre
+qc pass: ppp with greppp
+qc pass: hdlc with greppp
+qc pass: lapb with greppp
+qc pass: framerelay with greppp
+qc pass: atmdxi with greppp
+qc pass: isdn with greppp
+qc pass: sep with greppp
+qc pass: ppp with grefr
+qc pass: hdlc with grefr
+qc pass: lapb with grefr
+qc pass: framerelay with grefr
+qc pass: atmdxi with grefr
+qc pass: isdn with grefr
+qc pass: sep with grefr
+qc pass: framerelay over grefr pwhe
+---------------------------------- 2025-12-09 05:45:52 25.12.9
+qc pass: eoip over ipv4
+qc pass: eoip over ipv6
+qc pass: eoip over loopback
+qc pass: hdlc tunneling with eoip
+qc pass: ppp tunneling with eoip
+qc pass: lapb tunneling with eoip
+qc pass: framerelay tunneling with eoip
+qc pass: atmdxi tunneling with eoip
+qc pass: isdn tunneling with eoip
+qc pass: sep tunneling with eoip
+qc pass: ethernet tunneling with eoip
+qc pass: vlan tunneling with eoip
+qc pass: tunnel interface with eoip
+qc pass: eoip server
+qc pass: ethernet over eoip pwhe
+qc pass: cross connect with eoip
+qc pass: cross connect interworking with eoip

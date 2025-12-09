@@ -10,6 +10,7 @@ import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.clnt.clntAmt;
+import org.freertr.clnt.clntEoIp;
 import org.freertr.clnt.clntEtherIp;
 import org.freertr.clnt.clntGtp;
 import org.freertr.clnt.clntL2tp2;
@@ -1716,6 +1717,12 @@ public class servP4langConn implements Runnable {
             } catch (Exception e) {
             }
             try {
+                clntEoIp ifc = (clntEoIp) ntry.lowerIf;
+                addDynBr(br, ntry, ifc);
+                continue;
+            } catch (Exception e) {
+            }
+            try {
                 clntPckOudp ifc = (clntPckOudp) ntry.lowerIf;
                 addDynBr(br, ntry, ifc);
                 continue;
@@ -1914,6 +1921,36 @@ public class servP4langConn implements Runnable {
                     continue;
                 }
                 a = "bridgeetherip" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + ovrf.id + " " + brif.id;
+                brif.sentBrTun = a;
+                lower.sendLine(a);
+                continue;
+            } catch (Exception e) {
+            }
+            try {
+                clntEoIp iface = (clntEoIp) ntry.ifc.lowerIf;
+                servP4langIfc brif = lower.findDynBr(ntry.ifc);
+                if (brif == null) {
+                    continue;
+                }
+                adr = iface.getRemAddr();
+                if (adr == null) {
+                    continue;
+                }
+                addrIP src = iface.getLocAddr();
+                if (src == null) {
+                    continue;
+                }
+                ipFwd ofwd = iface.getFwder();
+                servP4langVrf ovrf = lower.findVrf(ofwd);
+                if (ovrf == null) {
+                    continue;
+                }
+                servP4langNei hop = lower.findHop(ofwd, adr);
+                if (hop == null) {
+                    br.macs.del(ntry);
+                    continue;
+                }
+                a = "bridgeeoip" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.tunId + " " + ovrf.id + " " + brif.id;
                 brif.sentBrTun = a;
                 lower.sendLine(a);
                 continue;

@@ -314,7 +314,7 @@ struct bridge_entry {
     int id;
     int mac2;
     int mac1;
-    int command;    // 1=port, 2=vpls, 3=route, 4=vxlan4, 5=vxlan6, 6=pckoudp4, 7=pckoudp6, 8=srv4, 9=srv6, 10=etherip4, 11=etherip6
+    int command;    // 1=port, 2=vpls, 3=route, 4=vxlan4, 5=vxlan6, 6=pckoudp4, 7=pckoudp6, 8=srv4, 9=srv6, 10=etherip4, 11=etherip6, 12=eoip4, 13=eoip6
     long packRx;
     long byteRx;
     long packTx;
@@ -614,7 +614,7 @@ struct tun4_entry {
     int srcAddr;
     int trgAddr;
     int prot;
-    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ipip, 5=etherip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux
+    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ipip, 5=etherip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux, 14=eoip
     long pack;
     long byte;
     int aclport;
@@ -645,7 +645,7 @@ struct tun6_entry {
     int trgAddr3;
     int trgAddr4;
     int prot;
-    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ipip, 5=etherip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux
+    int command;    // 1=gre, 2=l2tp, 3=vxlan, 4=ipip, 5=etherip, 6=pckoudp, 7=esp, 8=openvpn, 9=wireguard, 10=amt, 11=gtp, 12=l3tp, 13=tmux, 14=eoip
     long pack;
     long byte;
     int aclport;

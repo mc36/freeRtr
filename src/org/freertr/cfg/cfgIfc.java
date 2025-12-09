@@ -14,6 +14,7 @@ import org.freertr.clnt.clntDhcp4;
 import org.freertr.clnt.clntDhcp6;
 import org.freertr.clnt.clntDlsw;
 import org.freertr.clnt.clntDns;
+import org.freertr.clnt.clntEoIp;
 import org.freertr.clnt.clntErspan;
 import org.freertr.clnt.clntEtherIp;
 import org.freertr.clnt.clntGeneve;
@@ -894,6 +895,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public clntEtherIp tunEtherip;
 
     /**
+     * eoip tunnel handler
+     */
+    public clntEoIp tunEoip;
+
+    /**
      * sreth tunnel handler
      */
     public clntSrEth tunSreth;
@@ -1425,6 +1431,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
          * etherip tunnel interface
          */
         etherip,
+        /**
+         * eoip tunnel interface
+         */
+        eoip,
         /**
          * sreth tunnel interface
          */
@@ -2489,6 +2499,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 return "dlsw";
             case etherip:
                 return "etherip";
+            case eoip:
+                return "eoip";
             case sreth:
                 return "sreth";
             case uti:
@@ -2666,6 +2678,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (s.equals("etherip")) {
             return tunnelType.etherip;
+        }
+        if (s.equals("eoip")) {
+            return tunnelType.eoip;
         }
         if (s.equals("sreth")) {
             return tunnelType.sreth;
@@ -4231,6 +4246,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             tunEtherip.workStop();
             tunEtherip = null;
         }
+        if (tunEoip != null) {
+            tunEoip.workStop();
+            tunEoip = null;
+        }
         if (tunSreth != null) {
             tunSreth.workStop();
             tunSreth = null;
@@ -5130,6 +5149,20 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunEtherip.setUpper(ethtyp);
                 tunEtherip.workStart();
                 lower = tunEtherip;
+                break;
+            case eoip:
+                tunEoip = new clntEoIp();
+                tunEoip.target = "" + tunTrg;
+                tunEoip.vrf = tunVrf;
+                tunEoip.srcIfc = tunSrc;
+                tunEoip.tunId = tunKey;
+                tunEoip.sendingTOS = tunTOS;
+                tunEoip.sendingDFN = tunDFN;
+                tunEoip.sendingFLW = tunFLW;
+                tunEoip.sendingTTL = tunTTL;
+                tunEoip.setUpper(ethtyp);
+                tunEoip.workStart();
+                lower = tunEoip;
                 break;
             case sreth:
                 tunSreth = new clntSrEth();
@@ -7082,6 +7115,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "erspan", "erspan encapsulation");
         l.add(null, false, 3, new int[]{-1}, "dlsw", "dlsw encapsulation");
         l.add(null, false, 3, new int[]{-1}, "etherip", "etherip encapsulation");
+        l.add(null, false, 3, new int[]{-1}, "eoip", "eoip encapsulation");
         l.add(null, false, 3, new int[]{-1}, "sreth", "segment routing ethernet encapsulation");
         l.add(null, false, 3, new int[]{-1}, "uti", "universal transport interface");
         l.add(null, false, 3, new int[]{-1}, "nvgre", "nvgre encapsulation");

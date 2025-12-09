@@ -88,6 +88,20 @@ qc pass: sep tunneling with dlsw
 qc pass: ethernet tunneling with dlsw
 qc pass: vlan tunneling with dlsw
 qc pass: tunnel interface with dlsw
+qc pass: eoip over ipv4
+qc pass: eoip over ipv6
+qc pass: eoip over loopback
+qc pass: hdlc tunneling with eoip
+qc pass: ppp tunneling with eoip
+qc pass: lapb tunneling with eoip
+qc pass: framerelay tunneling with eoip
+qc pass: atmdxi tunneling with eoip
+qc pass: isdn tunneling with eoip
+qc pass: sep tunneling with eoip
+qc pass: ethernet tunneling with eoip
+qc pass: vlan tunneling with eoip
+qc pass: tunnel interface with eoip
+qc pass: eoip server
 qc pass: erspan over ipv4
 qc pass: erspan over ipv6
 qc pass: erspan over loopback
@@ -190,19 +204,26 @@ qc pass: gre over ipv4
 qc pass: gre over ipv6
 qc pass: gre over gre
 qc pass: gre over loopback
-qc pass: ppp with gre
-qc pass: hdlc with gre
-qc pass: lapb with gre
-qc pass: framerelay with gre
-qc pass: atmdxi with gre
-qc pass: isdn with gre
-qc pass: sep with gre
+qc pass: ppp with greppp
+qc pass: hdlc with greppp
+qc pass: lapb with greppp
+qc pass: framerelay with greppp
+qc pass: atmdxi with greppp
+qc pass: isdn with greppp
+qc pass: sep with greppp
 qc pass: gre server
 qc pass: gre with checksum
 qc pass: gre with sequence
 qc pass: gre with key
 qc pass: gre with everything
 qc pass: gre with asymmetric key
+qc pass: ppp with grefr
+qc pass: hdlc with grefr
+qc pass: lapb with grefr
+qc pass: framerelay with grefr
+qc pass: atmdxi with grefr
+qc pass: isdn with grefr
+qc pass: sep with grefr
 qc pass: ppp over gtp
 qc pass: ipv4 over gtp
 qc pass: ipv6 over gtp
@@ -1577,12 +1598,14 @@ qc pass: ppp over l2f pwhe
 qc pass: ppp over pptp pwhe
 qc pass: ppp over l2tp2 pwhe
 qc pass: ppp over l2tp3 pwhe
+qc pass: framerelay over grefr pwhe
 qc pass: ethernet over l2tp3 pwhe
 qc pass: ppp over mpls pwhe
 qc pass: ethernet over mpls pwhe
 qc pass: ethernet over mpls pwhe with cw
 qc pass: ethernet over gretap pwhe
 qc pass: ethernet over sreth pwhe
+qc pass: ethernet over eoip pwhe
 qc pass: sr in chain
 qc pass: sr in star
 qc pass: te over sr
@@ -1632,6 +1655,7 @@ qc pass: cross connect with sreth
 qc pass: cross connect with nvgre
 qc pass: cross connect with uti
 qc pass: cross connect with pwe over mpls with cw
+qc pass: cross connect with eoip
 qc pass: cross connect interworking with packet over udp
 qc pass: cross connect interworking with vxlan
 qc pass: cross connect interworking with geneve
@@ -1641,6 +1665,7 @@ qc pass: cross connect interworking with sreth
 qc pass: cross connect interworking with nvgre
 qc pass: cross connect interworking with uti
 qc pass: cross connect interworking with dlsw
+qc pass: cross connect interworking with eoip
 qc pass: cross connect with everything
 qc pass: openflow: software routing
 qc pass: openflow: bridging and routing

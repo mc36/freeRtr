@@ -1781,6 +1781,8 @@ public class userExec {
         hl.add(cfgAll.dmnSrEth.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "etherip", "etherip protocol information");
         hl.add(cfgAll.dmnEtherIp.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
+        hl.add(null, false, 2, new int[]{3}, "eoip", "eoip protocol information");
+        hl.add(cfgAll.dmnEoIp.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "gre", "gre protocol information");
         hl.add(cfgAll.dmnGre.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "gtp", "gtp protocol information");
@@ -2406,6 +2408,8 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "<addr>", "peer address");
         hl.add(null, false, 2, new int[]{3}, "etherip", "etherip protocol client");
         hl.add(cfgAll.dmnEtherIp.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
+        hl.add(null, false, 2, new int[]{3}, "eoip", "eoip protocol client");
+        hl.add(cfgAll.dmnEoIp.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
         hl.add(null, false, 4, new int[]{-1}, "<addr>", "peer address");
         hl.add(null, false, 2, new int[]{3}, "gre", "gre protocol client");
         hl.add(cfgAll.dmnGre.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");

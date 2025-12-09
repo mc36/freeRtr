@@ -4,9 +4,11 @@ import org.freertr.addr.addrIP;
 import org.freertr.clnt.clntAx25;
 import org.freertr.clnt.clntCapwap;
 import org.freertr.clnt.clntDlsw;
+import org.freertr.clnt.clntEoIp;
 import org.freertr.clnt.clntErspan;
 import org.freertr.clnt.clntEtherIp;
 import org.freertr.clnt.clntGeneve;
+import org.freertr.clnt.clntGreFr;
 import org.freertr.clnt.clntGrePpp;
 import org.freertr.clnt.clntGreTap;
 import org.freertr.clnt.clntL2f;
@@ -125,6 +127,11 @@ public class cfgXconnSide {
     public clntGrePpp pog;
 
     /**
+     * gre fr
+     */
+    public clntGreFr fog;
+
+    /**
      * ax25
      */
     public clntAx25 ax25;
@@ -200,6 +207,11 @@ public class cfgXconnSide {
     public clntEtherIp etherip;
 
     /**
+     * eoip
+     */
+    public clntEoIp eoip;
+
+    /**
      * sreth
      */
     public clntSrEth sreth;
@@ -231,6 +243,7 @@ public class cfgXconnSide {
         l.add(null, false, p + 2, new int[]{p + 3}, "pckoudp", "pckoudp encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "pptp", "pptp encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "greppp", "ppp over gre encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "grefr", "fr over gre encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "ax25", "ax25 encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "l2f", "l2f encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "l2tp2", "l2tp v2 encapsulation");
@@ -239,6 +252,7 @@ public class cfgXconnSide {
         l.add(null, false, p + 2, new int[]{p + 3}, "erspan", "erspan encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "dlsw", "dlsw encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "etherip", "etherip encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "eoip", "eoip encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "sreth", "sreth encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "gretap", "gretap encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "uti", "uti encapsulation");
@@ -277,6 +291,10 @@ public class cfgXconnSide {
         if (pog != null) {
             pog.workStop();
             pog = null;
+        }
+        if (fog != null) {
+            fog.workStop();
+            fog = null;
         }
         if (ax25 != null) {
             ax25.workStop();
@@ -329,6 +347,10 @@ public class cfgXconnSide {
         if (etherip != null) {
             etherip.workStop();
             etherip = null;
+        }
+        if (eoip != null) {
+            eoip.workStop();
+            eoip = null;
         }
         if (sreth != null) {
             sreth.workStop();
@@ -410,6 +432,16 @@ public class cfgXconnSide {
                 pog.setUpper(upper);
                 pog.workStart();
                 lower = pog;
+                break;
+            case prFog:
+                fog = new clntGreFr();
+                fog.target = "" + adr;
+                fog.vrf = vrf;
+                fog.srcIfc = ifc;
+                fog.vcid = vcid;
+                fog.setUpper(upper);
+                fog.workStart();
+                lower = fog;
                 break;
             case prAx25:
                 ax25 = new clntAx25();
@@ -564,6 +596,16 @@ public class cfgXconnSide {
                 etherip.setUpper(upper);
                 etherip.workStart();
                 lower = etherip;
+                break;
+            case prEoip:
+                eoip = new clntEoIp();
+                eoip.target = "" + adr;
+                eoip.vrf = vrf;
+                eoip.srcIfc = ifc;
+                eoip.tunId = vcid;
+                eoip.setUpper(upper);
+                eoip.workStart();
+                lower = eoip;
                 break;
             case prSreth:
                 sreth = new clntSrEth();

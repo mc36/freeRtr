@@ -8,10 +8,12 @@ import org.freertr.clnt.clntAx25;
 import org.freertr.clnt.clntBstun;
 import org.freertr.clnt.clntCapwap;
 import org.freertr.clnt.clntDlsw;
+import org.freertr.clnt.clntEoIp;
 import org.freertr.clnt.clntErspan;
 import org.freertr.clnt.clntEtherIp;
 import org.freertr.clnt.clntForti;
 import org.freertr.clnt.clntGeneve;
+import org.freertr.clnt.clntGreFr;
 import org.freertr.clnt.clntGrePpp;
 import org.freertr.clnt.clntGreTap;
 import org.freertr.clnt.clntGtp;
@@ -263,6 +265,10 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
          */
         prPog,
         /**
+         * frogre
+         */
+        prFog,
+        /**
          * tapogre
          */
         prTog,
@@ -286,6 +292,10 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
          * etherip
          */
         prEtherip,
+        /**
+         * eoip
+         */
+        prEoip,
         /**
          * sreth
          */
@@ -383,6 +393,8 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
 
     private clntGrePpp pog;
 
+    private clntGreFr fog;
+
     private clntGreTap tog;
 
     private clntAx25 ax25;
@@ -406,6 +418,8 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
     private clntDlsw dlsw;
 
     private clntEtherIp etherip;
+
+    private clntEoIp eoip;
 
     private clntSrEth sreth;
 
@@ -503,6 +517,8 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
                 return "pckotxt";
             case prPog:
                 return "greppp";
+            case prFog:
+                return "grefr";
             case prTog:
                 return "gretap";
             case prAx25:
@@ -515,6 +531,8 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
                 return "dlsw";
             case prEtherip:
                 return "etherip";
+            case prEoip:
+                return "eoip";
             case prSreth:
                 return "sreth";
             case prUti:
@@ -614,6 +632,9 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         if (s.equals("greppp")) {
             return protocolType.prPog;
         }
+        if (s.equals("grefr")) {
+            return protocolType.prFog;
+        }
         if (s.equals("gretap")) {
             return protocolType.prTog;
         }
@@ -631,6 +652,9 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("etherip")) {
             return protocolType.prEtherip;
+        }
+        if (s.equals("eoip")) {
+            return protocolType.prEoip;
         }
         if (s.equals("sreth")) {
             return protocolType.prSreth;
@@ -762,6 +786,7 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "tcp", "select tcp");
         l.add(null, false, 2, new int[]{-1}, "gtp", "select gtp");
         l.add(null, false, 2, new int[]{-1}, "greppp", "select ppp over gre");
+        l.add(null, false, 2, new int[]{-1}, "grefr", "select fr over gre");
         l.add(null, false, 2, new int[]{-1}, "gretap", "select tap over gre");
         l.add(null, false, 2, new int[]{-1}, "ax25", "select ax25");
         l.add(null, false, 2, new int[]{-1}, "pptp", "select pptp");
@@ -773,6 +798,7 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "erspan", "select erspan");
         l.add(null, false, 2, new int[]{-1}, "dlsw", "select dlsw");
         l.add(null, false, 2, new int[]{-1}, "etherip", "select etherip");
+        l.add(null, false, 2, new int[]{-1}, "eoip", "select eoip");
         l.add(null, false, 2, new int[]{-1}, "sreth", "select sreth");
         l.add(null, false, 2, new int[]{-1}, "uti", "select uti");
         l.add(null, false, 2, new int[]{-1}, "nvgre", "select nvgre");
@@ -1199,6 +1225,10 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
             pog.workStop();
             pog = null;
         }
+        if (fog != null) {
+            fog.workStop();
+            fog = null;
+        }
         if (tog != null) {
             tog.workStop();
             tog = null;
@@ -1222,6 +1252,10 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         if (etherip != null) {
             etherip.workStop();
             etherip = null;
+        }
+        if (eoip != null) {
+            eoip.workStop();
+            eoip = null;
         }
         if (sreth != null) {
             sreth.workStop();
@@ -1690,6 +1724,23 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
                 pog.workStart();
                 lower = pog;
                 break;
+            case prFog:
+                if (ifaceDialer == null) {
+                    return;
+                }
+                if (proxy.vrf == null) {
+                    return;
+                }
+                fog = new clntGreFr();
+                fog.target = target;
+                fog.prefer = prefer;
+                fog.vrf = proxy.vrf;
+                fog.srcIfc = proxy.srcIfc;
+                fog.vcid = vcid;
+                fog.setUpper(ifaceDialer.getEncapProto());
+                fog.workStart();
+                lower = fog;
+                break;
             case prTog:
                 if (ifaceBridge == null) {
                     return;
@@ -1802,6 +1853,24 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
                 etherip.setUpper(brdgIfc);
                 etherip.workStart();
                 lower = etherip;
+                break;
+            case prEoip:
+                if (ifaceBridge == null) {
+                    return;
+                }
+                if (proxy.vrf == null) {
+                    return;
+                }
+                eoip = new clntEoIp();
+                eoip.target = target;
+                eoip.prefer = prefer;
+                eoip.vrf = proxy.vrf;
+                eoip.srcIfc = proxy.srcIfc;
+                eoip.tunId = vcid;
+                brdgIfc = ifaceBridge.bridgeHed.newIface(physInt, true, false);
+                eoip.setUpper(brdgIfc);
+                eoip.workStart();
+                lower = eoip;
                 break;
             case prSreth:
                 if (ifaceBridge == null) {

@@ -17,6 +17,7 @@ import org.freertr.pack.packPptp;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
+import org.freertr.prt.prtGre;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRouteIface;
@@ -164,7 +165,7 @@ public class servPptp extends servGeneric implements ipPrt, prtServS {
      * @return number
      */
     public int getProtoNum() {
-        return packPptp.prot;
+        return prtGre.protoNum;
     }
 
     public String toString() {
@@ -495,7 +496,7 @@ class servPptpConn implements Runnable, Comparable<servPptpConn> {
         if (lower.sendingFLW >= 0) {
             pck.IPid = lower.sendingFLW;
         }
-        pck.IPprt = packPptp.prot;
+        pck.IPprt = prtGre.protoNum;
         pck.IPsrc.setAddr(iface.addr);
         pck.IPtrg.setAddr(peer);
         fwdCor.protoPack(iface, null, pck);

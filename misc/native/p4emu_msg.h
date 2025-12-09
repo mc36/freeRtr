@@ -763,6 +763,58 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "bridgeeoip4") == 0) {
+        bridge_ntry.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
+        inet_pton(AF_INET, arg[4], buf2);
+        tun4_ntry.trgAddr = bridge_ntry.srcAddr1 = get32msb(buf2, 0);
+        inet_pton(AF_INET, arg[5], buf2);
+        tun4_ntry.srcAddr = bridge_ntry.trgAddr1 = get32msb(buf2, 0);
+        bridge_ntry.nexthop = atoi(arg[6]);
+        bridge_ntry.instance = atoi(arg[7]);
+        bridge_ntry.command = 12;
+        vrf2rib_ntry.vrf = atoi(arg[8]);
+        vrf2rib_res = vrf2rib_init4;
+        tun4_ntry.aclport = atoi(arg[9]);
+        tun4_ntry.prot = IP_PROTOCOL_GRE;
+        tun4_ntry.command = 14;
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun4_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun4_ntry);
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgeeoip6") == 0) {
+        bridge_ntry.id = atoi(arg[2]);
+        str2mac(buf2, arg[3]);
+        bridge_ntry.mac1 = get16msb(buf2, 0);
+        bridge_ntry.mac2 = get32msb(buf2, 2);
+        inet_pton(AF_INET6, arg[4], buf2);
+        tun6_ntry.trgAddr1 = bridge_ntry.srcAddr1 = get32msb(buf2, 0);
+        tun6_ntry.trgAddr2 = bridge_ntry.srcAddr2 = get32msb(buf2, 4);
+        tun6_ntry.trgAddr3 = bridge_ntry.srcAddr3 = get32msb(buf2, 8);
+        tun6_ntry.trgAddr4 = bridge_ntry.srcAddr4 = get32msb(buf2, 12);
+        inet_pton(AF_INET6, arg[5], buf2);
+        tun6_ntry.srcAddr1 = bridge_ntry.trgAddr1 = get32msb(buf2, 0);
+        tun6_ntry.srcAddr2 = bridge_ntry.trgAddr2 = get32msb(buf2, 4);
+        tun6_ntry.srcAddr3 = bridge_ntry.trgAddr3 = get32msb(buf2, 8);
+        tun6_ntry.srcAddr4 = bridge_ntry.trgAddr4 = get32msb(buf2, 12);
+        bridge_ntry.nexthop = atoi(arg[6]);
+        bridge_ntry.instance = atoi(arg[7]);
+        bridge_ntry.command = 13;
+        vrf2rib_ntry.vrf = atoi(arg[8]);
+        vrf2rib_res = vrf2rib_init6;
+        tun6_ntry.aclport = atoi(arg[9]);
+        tun6_ntry.prot = IP_PROTOCOL_GRE;
+        tun6_ntry.command = 14;
+        if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
+        else hasht_add(&bridge_table, &bridge_ntry);
+        if (del == 0) hasht_del(&vrf2rib_res->tun, &tun6_ntry);
+        else hasht_add(&vrf2rib_res->tun, &tun6_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "bridgepckoudp4") == 0) {
         bridge_ntry.id = atoi(arg[2]);
         str2mac(buf2, arg[3]);
@@ -3198,7 +3250,7 @@ void doNegotiate(char*name) {
     if (commandTx == NULL) err("failed to open file");
     fprintf(commandTx, "platform p4emu/%s\r\n", name);
     fprintf(commandTx, "capabilities %s%s\r\n",
-            "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap ipsectap vxlan etherip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mpolka polka pwhe mgre",
+            "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap ipsectap vxlan etherip eoip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mpolka polka pwhe mgre",
 #ifdef HAVE_NOCRYPTO
             ""
 #else

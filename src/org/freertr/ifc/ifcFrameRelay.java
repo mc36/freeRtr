@@ -22,6 +22,11 @@ import org.freertr.util.state;
 public class ifcFrameRelay implements ifcUp, ifcDn {
 
     /**
+     * ethertype
+     */
+    public final static int ethtyp = 0x6559;
+
+    /**
      * terminal mode
      */
     public int dataMode = dataMoDTE;

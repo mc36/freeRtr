@@ -258,6 +258,7 @@ public class servGenList<T extends servGeneric> {
         srvHelp(l, p, n, e, o, "l2tp2", cfgAll.dmnL2tp2.listServers());
         srvHelp(l, p, n, e, o, "l2tp3", cfgAll.dmnL2tp3.listServers());
         srvHelp(l, p, n, e, o, "etherip", cfgAll.dmnEtherIp.listServers());
+        srvHelp(l, p, n, e, o, "eoip", cfgAll.dmnEoIp.listServers());
         srvHelp(l, p, n, e, o, "gre", cfgAll.dmnGre.listServers());
         srvHelp(l, p, n, e, o, "erspan", cfgAll.dmnErspan.listServers());
         srvHelp(l, p, n, e, o, "sreth", cfgAll.dmnSrEth.listServers());
@@ -506,6 +507,9 @@ class servGenEntry {
         }
         if (typ.equals("etherip")) {
             return new servGenEntry(new servEtherIp(), cfgAll.dmnEtherIp);
+        }
+        if (typ.equals("eoip")) {
+            return new servGenEntry(new servEoIp(), cfgAll.dmnEoIp);
         }
         if (typ.equals("gre")) {
             return new servGenEntry(new servGre(), cfgAll.dmnGre);

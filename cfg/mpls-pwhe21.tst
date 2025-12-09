@@ -1,4 +1,4 @@
-description ethernet over sreth pwhe
+description ethernet over gretap pwhe
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -21,7 +21,7 @@ ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::2
 int pweth1
  vrf for v1
  ipv4 addr 3.3.3.1 255.255.255.0
- pseudo v1 lo0 sreth 2.2.2.2 1234
+ pseudo v1 lo0 gretap 2.2.2.2 1234
  exit
 !
 
@@ -46,7 +46,7 @@ ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::1
 int pweth1
  vrf for v1
  ipv4 addr 3.3.3.2 255.255.255.0
- pseudo v1 lo0 sreth 2.2.2.1 1234
+ pseudo v1 lo0 gretap 2.2.2.1 1234
  exit
 !
 

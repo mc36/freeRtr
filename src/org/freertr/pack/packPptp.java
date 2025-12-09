@@ -2,6 +2,7 @@ package org.freertr.pack;
 
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
+import org.freertr.ifc.ifcPpp;
 import org.freertr.pipe.pipeSide;
 
 /**
@@ -18,19 +19,9 @@ public class packPptp {
     }
 
     /**
-     * protocol number
-     */
-    public final static int prot = 47;
-
-    /**
      * port number
      */
     public final static int port = 1723;
-
-    /**
-     * ethertype
-     */
-    public final static int ethtyp = 0x880b;
 
     /**
      * Start-Control-Connection-Request
@@ -292,7 +283,7 @@ public class packPptp {
             return true;
         }
         int len = pck.msbGetW(2); // ethertype
-        if (len != ethtyp) {
+        if (len != ifcPpp.ethtyp) {
             return true;
         }
         len = pck.msbGetW(4); // payload length
@@ -329,7 +320,7 @@ public class packPptp {
             i |= 0x80;
         }
         pck.msbPutW(0, i); // flags
-        pck.msbPutW(2, ethtyp); // ethertype
+        pck.msbPutW(2, ifcPpp.ethtyp); // ethertype
         pck.msbPutW(4, pck.dataSize()); // payload length
         pck.msbPutW(6, callRem); // call id
         pck.putSkip(8);

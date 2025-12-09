@@ -32,6 +32,7 @@ import org.freertr.serv.servDhcp6;
 import org.freertr.serv.servDiscard;
 import org.freertr.serv.servDns;
 import org.freertr.serv.servEchoS;
+import org.freertr.serv.servEoIp;
 import org.freertr.serv.servErspan;
 import org.freertr.serv.servEtherIp;
 import org.freertr.serv.servForwarder;
@@ -704,6 +705,11 @@ public class cfgAll {
      * etherip daemons
      */
     public final static servGenList<servEtherIp> dmnEtherIp = new servGenList<servEtherIp>();
+
+    /**
+     * eoip daemons
+     */
+    public final static servGenList<servEoIp> dmnEoIp = new servGenList<servEoIp>();
 
     /**
      * gre daemons
@@ -4164,6 +4170,7 @@ public class cfgAll {
         dmnL2tp2.getShRun(l, filter);
         dmnL2tp3.getShRun(l, filter);
         dmnEtherIp.getShRun(l, filter);
+        dmnEoIp.getShRun(l, filter);
         dmnGre.getShRun(l, filter);
         dmnErspan.getShRun(l, filter);
         dmnSrEth.getShRun(l, filter);

@@ -43,6 +43,11 @@ import org.freertr.util.state;
 public class ifcPpp implements ifcUp, ifcDn, authenDown {
 
     /**
+     * ethertype
+     */
+    public final static int ethtyp = 0x880b;
+
+    /**
      * sent username
      */
     public String sentUser = null;

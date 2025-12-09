@@ -7,12 +7,12 @@ import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcNull;
+import org.freertr.ifc.ifcPpp;
 import org.freertr.ifc.ifcUp;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdTab;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packPptp;
 import org.freertr.prt.prtGre;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
@@ -189,7 +189,7 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
         if (gre == null) {
             return;
         }
-        pck.msbPutW(0, packPptp.ethtyp);
+        pck.msbPutW(0, ifcPpp.ethtyp);
         pck.putSkip(2);
         pck.merge2beg();
         pck.putDefaults();
@@ -275,7 +275,7 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
      */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        if (pck.msbGetW(0) != packPptp.ethtyp) {
+        if (pck.msbGetW(0) != ifcPpp.ethtyp) {
             return;
         }
         pck.getSkip(2);
