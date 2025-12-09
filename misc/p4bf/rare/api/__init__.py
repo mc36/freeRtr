@@ -20,6 +20,8 @@ class RareApi(BfRtRare):
     from .bridgevxlan6 import writeVxlan6rules
     from .bridgeetherip4 import writeEtherip4rules
     from .bridgeetherip6 import writeEtherip6rules
+    from .bridgeeoip4 import writeEoip4rules
+    from .bridgeeoip6 import writeEoip6rules
     from .bundlelist import setBundleAdmStatus
     from .bundlevlan import writeBunVlanRules
     from .bundleqinq import writeBunQinqRules

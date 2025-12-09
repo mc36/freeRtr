@@ -1239,6 +1239,34 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "bridgeeoip4":
+            self.writeEoip4rules(
+                mode,
+                int(splt[1]),
+                splt[2],
+                splt[3],
+                splt[4],
+                int(splt[5]),
+                int(splt[6]),
+                int(splt[7]),
+                int(splt[8]),
+            )
+            continue
+
+        if cmds[0] == "bridgeeoip6":
+            self.writeEoip6rules(
+                mode,
+                int(splt[1]),
+                splt[2],
+                splt[3],
+                splt[4],
+                int(splt[5]),
+                int(splt[6]),
+                int(splt[7]),
+                int(splt[8]),
+            )
+            continue
+
         if cmds[0] == "bridgepckoudp4":
             self.writePckoudp4rules(
                 mode,

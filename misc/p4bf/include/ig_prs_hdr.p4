@@ -521,7 +521,16 @@ state prs_gre {
     pkt.extract(hdr.gre);
     ig_md.layer4_srcprt = 0;
     ig_md.layer4_dstprt = 0;
+#ifdef HAVE_EOIP
+    transition select(hdr.gre.gretyp) {
+0x6400:
+        prs_eoip;
+    default:
+        accept;
+    }
+#else
     transition accept;
+#endif
 }
 #endif
 
@@ -552,6 +561,15 @@ state prs_etherip {
 }
 #endif
 
+
+#ifdef HAVE_EOIP
+state prs_eoip {
+    pkt.extract(hdr.eoip);
+    ig_md.layer4_srcprt = 0;
+    ig_md.layer4_dstprt = 0;
+    transition accept;
+}
+#endif
 
 state prs_udp {
     pkt.extract(hdr.udp);

@@ -14,68 +14,12 @@
  * limitations under the License.
  */
 
+#ifndef _EOIP_P4_
+#define _EOIP_P4_
 
-#ifndef _NEEDS_P4_
-#define _NEEDS_P4_
+header eoip_t {
+    bit<16> length;
+    bit<16> tunid;
+}
 
-
-
-
-
-#ifdef HAVE_EOIP
-#define HAVE_GRE
-#endif
-
-
-#undef NEED_PKTLEN
-
-#ifdef HAVE_TUN
-#define NEED_PKTLEN
-#endif
-
-#ifdef HAVE_PPPOE
-#define NEED_PKTLEN
-#endif
-
-
-
-
-#undef NEED_UDP2
-
-#ifdef HAVE_L2TP
-#define NEED_UDP2
-#endif
-
-#ifdef HAVE_GTP
-#define NEED_UDP2
-#endif
-
-#ifdef HAVE_VXLAN
-#define NEED_UDP2
-#endif
-
-#ifdef HAVE_PCKOUDP
-#define NEED_UDP2
-#endif
-
-
-
-
-
-#undef NEED_REPLICA
-
-#ifdef HAVE_MCAST
-#define NEED_REPLICA
-#endif
-
-#ifdef HAVE_DUPLAB
-#define NEED_REPLICA
-#endif
-
-#ifdef HAVE_BIER
-#define NEED_REPLICA
-#endif
-
-
-
-#endif // _NEEDS_P4_
+#endif // _EOIP_P4_

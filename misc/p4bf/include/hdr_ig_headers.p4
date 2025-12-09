@@ -46,6 +46,9 @@ struct headers {
 #ifdef HAVE_ETHERIP
     etherip_t etherip2;
 #endif
+#ifdef HAVE_EOIP
+    eoip_t eoip2;
+#endif
 #ifdef NEED_UDP2
     udp_t udp2;
 #endif
@@ -117,6 +120,9 @@ struct headers {
 #endif
 #ifdef HAVE_ETHERIP
     etherip_t etherip;
+#endif
+#ifdef HAVE_EOIP
+    eoip_t eoip;
 #endif
     tcp_t tcp;
     udp_t udp;

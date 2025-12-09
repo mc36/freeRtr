@@ -298,6 +298,101 @@ ig_md.bridge_id:
 #endif
 
 
+#ifdef HAVE_EOIP
+    action act_set_bridge_eoip4(NextHopId_t nexthop, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, bit<16> instance) {
+        statsTx.count();
+        ig_md.bridge_trg = MAX_PORT;
+        ig_md.vrf = 0;
+#ifdef HAVE_NSH
+        ig_md.nsh_valid = 0;
+#endif
+#ifdef HAVE_POLKA
+        ig_md.polka_valid = 0;
+#endif
+#ifdef HAVE_MPLS
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+#endif
+        ig_md.arp_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
+        hdr.eth2.setValid();
+        hdr.eth2 = hdr.ethernet;
+        hdr.eth2.ethertype = ig_md.ethertype;
+        ig_md.nexthop_id = nexthop;
+
+        hdr.gre2.setValid();
+        hdr.gre2.flags = 0x2001;
+        hdr.gre2.gretyp = 0x6400;
+        hdr.eoip2.setValid();
+        hdr.eoip2.length = ig_md.pktlen + 14;
+        hdr.eoip2.tunid = instance;
+
+        hdr.ipv4d.setValid();
+        hdr.ipv4d.version = 4;
+        hdr.ipv4d.ihl = 5;
+        hdr.ipv4d.diffserv = 0;
+        hdr.ipv4d.total_len = ig_md.pktlen + 42;
+        hdr.ipv4d.identification = 0;
+        hdr.ipv4d.flags = 0;
+        hdr.ipv4d.frag_offset = 0;
+        hdr.ipv4d.ttl = 255;
+        hdr.ipv4d.protocol = IP_PROTOCOL_GRE;
+        hdr.ipv4d.hdr_checksum = 0;
+        hdr.ipv4d.src_addr = src_ip_addr;
+        hdr.ipv4d.dst_addr = dst_ip_addr;
+        ig_md.ethertype = ETHERTYPE_IPV4;
+    }
+#endif
+
+#ifdef HAVE_EOIP
+    action act_set_bridge_eoip6(NextHopId_t nexthop, ipv6_addr_t dst_ip_addr, ipv6_addr_t src_ip_addr, bit<16> instance) {
+        statsTx.count();
+        ig_md.bridge_trg = MAX_PORT;
+        ig_md.vrf = 0;
+#ifdef HAVE_NSH
+        ig_md.nsh_valid = 0;
+#endif
+#ifdef HAVE_POLKA
+        ig_md.polka_valid = 0;
+#endif
+#ifdef HAVE_MPLS
+        ig_md.mpls0_valid = 0;
+        ig_md.mpls1_valid = 0;
+#endif
+        ig_md.arp_valid = 0;
+        ig_md.ipv4_valid = 0;
+        ig_md.ipv6_valid = 0;
+        hdr.vlan.setInvalid();
+        hdr.vlanq.setInvalid();
+        hdr.eth2.setValid();
+        hdr.eth2 = hdr.ethernet;
+        hdr.eth2.ethertype = ig_md.ethertype;
+        ig_md.nexthop_id = nexthop;
+
+        hdr.gre2.setValid();
+        hdr.gre2.flags = 0x2001;
+        hdr.gre2.gretyp = 0x6400;
+        hdr.eoip2.setValid();
+        hdr.eoip2.length = ig_md.pktlen + 14;
+        hdr.eoip2.tunid = instance;
+
+        hdr.ipv6d.setValid();
+        hdr.ipv6d.version = 6;
+        hdr.ipv6d.traffic_class = 0;
+        hdr.ipv6d.flow_label = 0;
+        hdr.ipv6d.payload_len = ig_md.pktlen + 22;
+        hdr.ipv6d.next_hdr = IP_PROTOCOL_GRE;
+        hdr.ipv6d.hop_limit = 255;
+        hdr.ipv6d.src_addr = src_ip_addr;
+        hdr.ipv6d.dst_addr = dst_ip_addr;
+        ig_md.ethertype = ETHERTYPE_IPV6;
+    }
+#endif
+
+
 #ifdef HAVE_PCKOUDP
     action act_set_bridge_pckoudp4(NextHopId_t nexthop, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr, layer4_port_t src_port, layer4_port_t dst_port) {
         statsTx.count();
@@ -422,6 +517,10 @@ ig_md.bridge_id:
 #ifdef HAVE_ETHERIP
             act_set_bridge_etherip4;
             act_set_bridge_etherip6;
+#endif
+#ifdef HAVE_EOIP
+            act_set_bridge_eoip4;
+            act_set_bridge_eoip6;
 #endif
 #ifdef HAVE_PCKOUDP
             act_set_bridge_pckoudp4;
