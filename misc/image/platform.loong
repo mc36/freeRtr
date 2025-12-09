@@ -1,0 +1,10 @@
+arch loong64
+unam loongarch64
+qemu loong64
+ctrg loongarch64
+kern loong64
+grub efi-loong64-bin
+boot loongarch64-efi
+uefi bootx64.efi
+mirr http://deb.debian.org/debian-ports/
+image ../binImg/rtr-loong

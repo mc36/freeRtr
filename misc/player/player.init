@@ -1,0 +1,32 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          playerw
+# Required-Start:    $network $local_fs $remote_fs
+# Required-Stop:     $network $local_fs $remote_fs
+# X-Start-Before:
+# Default-Start:
+# Default-Stop:
+# Short-Description: music player worker
+### END INIT INFO
+
+
+case "$1" in
+  start)
+        cd /
+        mount -a
+        /nfs2/own/web/player/player.sh&
+        ;;
+  stop)
+        kill -9 `pidof java`
+        ;;
+  status)
+        echo java: `pidof java`
+        ;;
+  *)
+        echo "Usage: $N {start|stop|status}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

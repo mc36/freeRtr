@@ -1,0 +1,12 @@
+config rip4
+config/router/rip4/1
+freertr-rip4
+vrf def 187156390
+ exit
+router rip4 187156390
+ vrf 187156390
+!
+ exit
+no router rip4 187156390
+no vrf def 187156390
+.

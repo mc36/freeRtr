@@ -1,0 +1,10 @@
+sensor gc
+path gc/peer/peer
+prefix freertr-gc
+key name gc/peer
+command sho watchdog gc | exc name
+prepend system_gc_
+replace \s _
+column 1 name _val
+.
+exit

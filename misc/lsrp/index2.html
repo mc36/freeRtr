@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+        <title></title>
+    </head>
+    <body lang="en-US" dir="ltr">
+        <p align="center"><font size="7" style="font-size: 36pt">The Link
+                State Routing Protocol specification</font></p>
+        <p><br/>
+            <br/>
+
+        </p>
+        <p><font size="7" style="font-size: 36pt">there are some captures of
+                the protocol:<br/>
+                <a href="lsrp4.pcap">ipv4 capture</a><br/>
+                <a href="lsrp6.pcap">ipv6
+                    capture</a><br/>
+            </font><br/>
+            <br/>
+
+        </p>
+        <p><font size="7" style="font-size: 36pt">there are some text decodes
+                of the protocol:<br/>
+                <a href="lsrp4.txt">ipv4 decode</a><br/>
+                <a href="lsrp6.txt">ipv6
+                    decode</a><br/>
+            </font><br/>
+            <br/>
+
+        </p>
+        <p><font size="7" style="font-size: 36pt">this is a clear text
+                protocol.<br/>
+            </font><br/>
+            <br/>
+
+        </p>
+        <p><font size="7" style="font-size: 36pt">update
+                parameters:<br/>
+                -rtrid=&lt;addr&gt;<br/>
+                -ending=true<br/>
+                -stub=true/false<br/>
+                -toposum=&lt;value&gt;<br/>
+                -hostname=&lt;text&gt;<br/>
+                -domain=&lt;text&gt;<br/>
+                -mgmtaddr=&lt;addr&gt;<br/>
+                -software=&lt;text&gt;<br/>
+                -hardware=&lt;text&gt;<br/>
+                -forwarder=&lt;text&gt;<br/>
+                -middleware=&lt;text&gt;<br/>
+                -kernel=&lt;text&gt;<br/>
+                -kernup=&lt;text&gt;<br/>
+                -segroubeg=&lt;num&gt;<br/>
+                -segroumax=&lt;num&gt;<br/>
+                -segrouidx=&lt;num&gt;<br/>
+                -segrouadj=&lt;num&gt;<br/>
+                -segroupop=true/false<br/>
+                -flexalgo=&lt;num&gt,&lt;num&gt;...<br/>
+                -bierbeg=&lt;num&gt;<br/>
+                -biermax=&lt;num&gt;<br/>
+                -bieridx=&lt;num&gt;<br/>
+                -biersub=&lt;num&gt;<br/>
+                -bierlen=&lt;num&gt;<br/>
+                -sequence=&lt;num&gt;<br/>
+                -time=&lt;num&gt;<br/>
+                -uptime=&lt;num&gt;<br/>
+                -since=&lt;num&gt;<br/>
+                -changenum=&lt;num&gt;<br/>
+                -changetim=&lt;num&gt;<br/>
+                -metric=&lt;num&gt;<br/>
+                -bandwidth=&lt;num&gt;<br/>
+                -affinity=&lt;num&gt;<br/>
+                -srlg=&lt;num&gt;<br/>
+                -mtu=&lt;num&gt;<br/>
+                -external=true/false<br/>
+                -tag=&lt;num&gt;<br/>
+                -address=&lt;addr&gt;<br/>
+                -neighbor=&lt;addr&gt;<br/>
+                -interface=&lt;text&gt;<br/>
+                -peeraddr=&lt;addr&gt;<br/>
+                -peeriface=&lt;text&gt;<br/>
+                -network=&lt;prefix&gt;<br/>
+                -password=&lt;text&gt;<br/>
+        </font></p>
+        <p><font size="7" style="font-size: 36pt"><br/>
+                there are these types
+                of messages:<br/>
+                -open rtrid=&lt;addr&gt; mtu=&lt;num&gt; bfd=&lt;num&gt; iface=&lt;text&gt; name=&lt;text&gt;<br/>
+                -update &lt;parameters&gt;<br/>
+                -startEncrypt &lt;proto&gt;<br/>
+                -password-request &lt;base64channenge&gt;<br/>
+                -password-reply &lt;base64response&gt;<br/>
+                -signed &lt;base64sign&gt; &lt;text&gt;<br/>
+                -error &lt;text&gt;<br/>
+                -metric &lt;num&gt;<br/>
+                -measme true/false<br/>
+                -warning &lt;text&gt;<br/>
+                -discard &lt;text&gt;<br/>
+                -echo &lt;text&gt;<br/>
+                -echoed &lt;text&gt;<br/>
+                -close<br/>
+                -resend<br/>
+                -resending<br/>
+                -request &lt;addr&gt;<br/>
+                -nomore<br/>
+                -keepalive &lt;num&gt;<br/>
+            </font><br/>
+            <br/>
+
+        </p>
+    </body>
+</html>

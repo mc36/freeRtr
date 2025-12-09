@@ -1,0 +1,28 @@
+Prerequisites
+-------------
+
+Install Nix (as regular user, log out and back in afterwards)
+
+$ bash <(curl -L https://nixos.org/nix/install) --daemon </dev/null
+
+Add
+
+extra-experimental-features = nix-command
+extra-substituters = http://cache.nix.net.switch.ch
+trusted-substituters = http://cache.nix.net.switch.ch
+trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= cache.nix.net.switch.ch:rNtCetlML0Opg0HkYQQmtY0f0K3RZDnNw1SJkmvl7Cw=
+
+to /etc/nix/nix.conf
+
+Restart Nix daemon
+
+# systemctl restart nix-daemon
+
+Usage
+-----
+
+To run the optimizer for HEAD on the rare-nix repo, execute
+optimizer.sh from the profiles directory.
+
+Commit the optimized profiles, then create a new commit on rare-nix
+that includes this commit.

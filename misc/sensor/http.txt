@@ -1,0 +1,10 @@
+sensor http
+path http/domain/domain
+prefix freertr-http
+prepend http_
+command sho http inet
+name 0 name=
+key name http/domain
+column 1 name hit
+.
+exit

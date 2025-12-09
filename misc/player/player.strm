@@ -1,0 +1,6 @@
+#!/bin/sh
+sudo -u mc36 vlc -I dummy --mtu 1280 --sout "#transcode{vcodec=none,scodec=none,acodec=s16l,channels=2,samplerate=44100}:rtp{dst=232.2.3.2,port=1234,ttl=255}" --start-time $2 "file:///$1" "vlc://quit"
+#ffmpeg -re -i "$1" -ss $2 -vn -sn -ar 44100 -ac 2 -c:a pcm_s16le -f rtp "rtp://232.2.3.2:1234?ttl=255&pkt_size=1280"
+#sudo -u mc36 vlc -I dummy --mtu 1280 --sout "#transcode{vcodec=none,scodec=none,acodec=mp2,ab=320,channels=2,samplerate=44100}:rtp{mux=ts,dst=232.2.3.2,port=1234,ttl=255}" --start-time $2 "file:///$1" "vlc://quit"
+#ffmpeg -re -i "$1" -ss $2 -vn -sn -ar 44100 -ac 2 -c:a mp3 -b:a 320k -f rtp "rtp://232.2.3.2:1234?ttl=255&pkt_size=1280"
+#java sender "$1" $2 232.2.3.2 1234

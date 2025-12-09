@@ -1,0 +1,26 @@
+cross-compile:
+
+tar xvf openwrt-sdk*
+cd openwrt*
+./scripts/feeds update -a
+./scripts/feeds install -a
+mkdir package/p4emu
+ln -s ../../package/p4emu feeds/base/p4emu
+cp -r ../misc/native package/p4emu/
+cp ../misc/openwrt-p4emu/* package/p4emu/
+make package/p4emu/compile
+
+
+on the box:
+
+opkg install gre
+opkg install p4emu*
+
+
+/etc/config/network
+config interface 'cpuport'
+        option proto 'gretap'
+        option peeraddr '10.1.11.12'
+        option ipv6 '0'
+        option promisc '1'
+        option mtu '1450'

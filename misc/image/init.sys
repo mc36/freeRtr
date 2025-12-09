@@ -1,0 +1,18 @@
+#!/bin/sh
+cd /
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+echo "starting"
+depmod
+mount -t sysfs -o nodev,noexec,nosuid none /sys
+mount -t proc -o nodev,noexec,nosuid none /proc
+mount -t devtmpfs devtmpfs /dev
+mkdir /dev/net
+mkdir /dev/pts
+mkdir /dev/hugepages
+mount -t devpts devpts /dev/pts
+mount -t hugetlbfs hugetlbfs /dev/hugepages -o pagesize=2M
+mknod /dev/net/tun c 10 200
+mknod /dev/pts/ptmx c 5 2
+mknod /dev/ptmx c 5 2
+echo 7 4 1 7 > /proc/sys/kernel/printk
+echo 10 > /proc/sys/kernel/panic

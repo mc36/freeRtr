@@ -1,0 +1,2 @@
+all:
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -Wall -o p4emu.bin $^ $(LDLIBS) p4emu_raw.c p4emu_tiny.c -lpthread

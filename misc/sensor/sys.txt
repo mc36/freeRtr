@@ -1,0 +1,10 @@
+sensor sys
+path sys/peer/peer
+prefix freertr-sys
+key name sys/peer
+command sho watchdog sys | exc name
+prepend system_
+replace \s _
+column 1 name _val
+.
+exit

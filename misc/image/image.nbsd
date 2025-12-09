@@ -1,0 +1,34 @@
+download 3
+reget-time 168
+kern http://nycdn.netbsd.org/pub/NetBSD-daily/netbsd-11/latest/%arch%/binary/sets/
+
+mkdir %dwn%
+del-alw %tmp%
+mkdir %tmp%
+
+binary-down %kern%/base.tar.xz %dwn%/nbsd-%arch%-base.txz
+binary-down %kern%/comp.tar.xz %dwn%/nbsd-%arch%-comp.txz
+binary-down %kern%/etc.tar.xz %dwn%/nbsd-%arch%-etc.txz
+binary-down %kern%/kern-GENERIC.tar.xz %dwn%/nbsd-%arch%-kern.txz
+binary-down %kern%/modules.tar.xz %dwn%/nbsd-%arch%-mods.txz
+
+exec tar xf %dwn%/nbsd-%arch%-base.txz -C %tmp%/
+exec tar xf %dwn%/nbsd-%arch%-comp.txz -C %tmp%/
+exec tar xf %dwn%/nbsd-%arch%-etc.txz -C %tmp%/
+exec tar xf %dwn%/nbsd-%arch%-kern.txz -C %tmp%/
+exec tar xf %dwn%/nbsd-%arch%-mods.txz -C %tmp%/
+
+exec mv %tmp%/usr/mdec/bootxx_cd9660 %tmp%/cdboot
+exec mv %tmp%/usr/mdec/boot %tmp%/
+exec mv %tmp%/usr/sbin/ndp %tmp%/sbin/
+exec cp ../misc/image/boot.nbsd %tmp%/boot.cfg
+exec cp ../misc/image/init.nbsd %tmp%/etc/rc
+mkdir %tmp%/emul
+kern netbsd
+boot emul/linux
+
+include ../misc/image/image.xbsd
+
+exec xorriso -as mkisofs -o %img%-nbsd.iso -r -J -l -b cdboot -no-emul-boot -c isolinux.cat %tmp%/
+
+del-alw %tmp%

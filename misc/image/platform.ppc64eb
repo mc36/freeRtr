@@ -1,0 +1,11 @@
+arch ppc64
+unam ppc64
+qemu ppc64
+ctrg powerpc64
+carc big-endian
+kern powerpc64
+grub ieee1275-bin
+boot powerpc-ieee1275
+uefi bootieee.efi
+mirr http://deb.debian.org/debian-ports/
+image ../binImg/rtr-ppc64eb

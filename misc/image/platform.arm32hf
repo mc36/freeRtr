@@ -1,0 +1,10 @@
+arch armhf
+unam armv7l
+qemu armhf
+ctrg arm
+cabi gnueabihf
+kern armmp
+grub efi-arm-bin
+boot arm-efi
+uefi boota32.efi
+image ../binImg/rtr-arm32

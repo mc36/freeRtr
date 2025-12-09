@@ -1,0 +1,10 @@
+arch armel
+unam armv5tel
+qemu armel
+ctrg arm
+cabi gnueabi
+kern rpi
+grub efi-arm-bin
+boot arm-efi
+uefi boota32.efi
+image ../binImg/rtr-arm

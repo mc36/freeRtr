@@ -1,0 +1,51 @@
+url;file;result;test
+-;-;-;freeRouter v25.12.4-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-12-05 03:50:27, took 00:03:30, with 10 workers, on 47 cases, 0 failed, 0 traces, 0 retries
+-;-;-;java -Xmx256m -jar rtr.jar, frr
+http://sources.freertr.org/cfg/intop8-babel01.tst;intop8-babel01.tst;success;interop8: wired babel
+http://sources.freertr.org/cfg/intop8-bgp01.tst;intop8-bgp01.tst;success;interop8: ebgp
+http://sources.freertr.org/cfg/intop8-bgp02.tst;intop8-bgp02.tst;success;interop8: ibgp
+http://sources.freertr.org/cfg/intop8-bgp03.tst;intop8-bgp03.tst;success;interop8: bgp locpref
+http://sources.freertr.org/cfg/intop8-bgp04.tst;intop8-bgp04.tst;success;interop8: bgp origin
+http://sources.freertr.org/cfg/intop8-bgp05.tst;intop8-bgp05.tst;success;interop8: bgp metric
+http://sources.freertr.org/cfg/intop8-bgp06.tst;intop8-bgp06.tst;success;interop8: bgp community
+http://sources.freertr.org/cfg/intop8-bgp07.tst;intop8-bgp07.tst;success;interop8: bgp aspath
+http://sources.freertr.org/cfg/intop8-bgp08.tst;intop8-bgp08.tst;success;interop8: bgp with labels
+http://sources.freertr.org/cfg/intop8-bgp09.tst;intop8-bgp09.tst;success;interop8: bgp addpath
+http://sources.freertr.org/cfg/intop8-bgp10.tst;intop8-bgp10.tst;success;interop8: bgp prefix withdraw
+http://sources.freertr.org/cfg/intop8-bgp11.tst;intop8-bgp11.tst;success;interop8: bgp authentication
+http://sources.freertr.org/cfg/intop8-bgp12.tst;intop8-bgp12.tst;success;interop8: bgp extended community
+http://sources.freertr.org/cfg/intop8-bgp13.tst;intop8-bgp13.tst;success;interop8: bgp large community
+http://sources.freertr.org/cfg/intop8-bgp14.tst;intop8-bgp14.tst;success;interop8: bgp with php labels
+http://sources.freertr.org/cfg/intop8-bgp15.tst;intop8-bgp15.tst;success;interop8: ebgp peer role
+http://sources.freertr.org/cfg/intop8-bgp16.tst;intop8-bgp16.tst;success;interop8: ebgp ix role
+http://sources.freertr.org/cfg/intop8-bgp17.tst;intop8-bgp17.tst;success;interop8: bgp extended nexthop
+http://sources.freertr.org/cfg/intop8-eigrp01.tst;intop8-eigrp01.tst;success;interop8: eigrp
+http://sources.freertr.org/cfg/intop8-eth01.tst;intop8-eth01.tst;success;interop8: fragmentation and reassembly
+http://sources.freertr.org/cfg/intop8-eth02.tst;intop8-eth02.tst;success;interop8: verify source
+http://sources.freertr.org/cfg/intop8-isis01.tst;intop8-isis01.tst;success;interop8: point2point isis
+http://sources.freertr.org/cfg/intop8-isis02.tst;intop8-isis02.tst;success;interop8: isis dis
+http://sources.freertr.org/cfg/intop8-isis03.tst;intop8-isis03.tst;success;interop8: isis nondis
+http://sources.freertr.org/cfg/intop8-isis04.tst;intop8-isis04.tst;success;interop8: isis narrow metric
+http://sources.freertr.org/cfg/intop8-isis05.tst;intop8-isis05.tst;success;interop8: isis prefix withdraw
+http://sources.freertr.org/cfg/intop8-isis06.tst;intop8-isis06.tst;success;interop8: isis text authentication
+http://sources.freertr.org/cfg/intop8-isis07.tst;intop8-isis07.tst;success;interop8: integrated isis
+http://sources.freertr.org/cfg/intop8-isis08.tst;intop8-isis08.tst;success;interop8: isis lsp text authentication
+http://sources.freertr.org/cfg/intop8-isis09.tst;intop8-isis09.tst;success;interop8: isis lsp md5 authentication
+http://sources.freertr.org/cfg/intop8-isis10.tst;intop8-isis10.tst;success;interop8: isis md5 authentication
+http://sources.freertr.org/cfg/intop8-isis11.tst;intop8-isis11.tst;success;interop8: isis multi-topology
+http://sources.freertr.org/cfg/intop8-isis12.tst;intop8-isis12.tst;success;interop8: integrated isis multi-topology
+http://sources.freertr.org/cfg/intop8-ldp01.tst;intop8-ldp01.tst;success;interop8: ldp lsp
+http://sources.freertr.org/cfg/intop8-ldp02.tst;intop8-ldp02.tst;success;interop8: ldp php lsp
+http://sources.freertr.org/cfg/intop8-mcast01.tst;intop8-mcast01.tst;success;interop8: igmp3/mld2
+http://sources.freertr.org/cfg/intop8-mcast02.tst;intop8-mcast02.tst;success;interop8: pim
+http://sources.freertr.org/cfg/intop8-ospf01.tst;intop8-ospf01.tst;success;interop8: point2point ospf
+http://sources.freertr.org/cfg/intop8-ospf02.tst;intop8-ospf02.tst;success;interop8: ospf dr
+http://sources.freertr.org/cfg/intop8-ospf03.tst;intop8-ospf03.tst;success;interop8: ospf nondr
+http://sources.freertr.org/cfg/intop8-ospf04.tst;intop8-ospf04.tst;success;interop8: ospf transit area
+http://sources.freertr.org/cfg/intop8-ospf05.tst;intop8-ospf05.tst;success;interop8: ospf stub area
+http://sources.freertr.org/cfg/intop8-ospf06.tst;intop8-ospf06.tst;success;interop8: ospf nssa area
+http://sources.freertr.org/cfg/intop8-ospf07.tst;intop8-ospf07.tst;success;interop8: ospf prefix withdraw
+http://sources.freertr.org/cfg/intop8-ospf08.tst;intop8-ospf08.tst;success;interop8: ospf text authentication
+http://sources.freertr.org/cfg/intop8-ospf09.tst;intop8-ospf09.tst;success;interop8: ospf md5 authentication
+http://sources.freertr.org/cfg/intop8-rip01.tst;intop8-rip01.tst;success;interop8: rip

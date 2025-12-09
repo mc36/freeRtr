@@ -1,0 +1,12 @@
+config lsrp6
+config/router/lsrp6/1
+freertr-lsrp6
+vrf def 187156390
+ exit
+router lsrp6 187156390
+ vrf 187156390
+!
+ exit
+no router lsrp6 187156390
+no vrf def 187156390
+.
