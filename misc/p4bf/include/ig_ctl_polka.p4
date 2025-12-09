@@ -29,12 +29,12 @@ control IngressControlPOLKA(
 {
 
     CRCPolynomial<bit<16>>(
-                            coeff    = (65539 & 0xffff),
-                            reversed = false,
-                            msb      = false,
-                            extended = false,
-                            init     = 16w0x0000,
-                            xor      = 16w0x0000) poly;
+        coeff    = (65539 & 0xffff),
+        reversed = false,
+        msb      = false,
+        extended = false,
+        init     = 16w0x0000,
+        xor      = 16w0x0000) poly;
     Hash<bit<16>>(HashAlgorithm_t.CUSTOM, poly) hash;
 
     action act_forward(NextHopId_t nexthop_id) {

@@ -28,12 +28,12 @@ control calc_ipv4_hash(
     out   bit<32> hash)(bit<32> coeff)
 {
     CRCPolynomial<bit<32>>(
-                            coeff    = coeff,
-                            reversed = true,
-                            msb      = false,
-                            extended = false,
-                            init     = 0xFFFFFFFF,
-                            xor      = 0xFFFFFFFF) poly;
+        coeff    = coeff,
+        reversed = true,
+        msb      = false,
+        extended = false,
+        init     = 0xFFFFFFFF,
+        xor      = 0xFFFFFFFF) poly;
     Hash<bit<32>>(HashAlgorithm_t.CUSTOM, poly) hash_algo;
 
     action do_hash() {
@@ -81,12 +81,12 @@ control calc_ipv6_hash(
     out   bit<32> hash)(bit<32> coeff)
 {
     CRCPolynomial<bit<32>>(
-                            coeff    = coeff,
-                            reversed = true,
-                            msb      = false,
-                            extended = false,
-                            init     = 0xFFFFFFFF,
-                            xor      = 0xFFFFFFFF) poly;
+        coeff    = coeff,
+        reversed = true,
+        msb      = false,
+        extended = false,
+        init     = 0xFFFFFFFF,
+        xor      = 0xFFFFFFFF) poly;
     Hash<bit<32>>(HashAlgorithm_t.CUSTOM, poly) hash_algo;
 
     action do_hash() {

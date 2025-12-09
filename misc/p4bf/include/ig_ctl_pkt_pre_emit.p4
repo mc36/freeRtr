@@ -288,56 +288,56 @@ ig_md.nexthop_id:
         const entries = {
 #ifdef HAVE_MPLS
             (0, 1, 0, 0, 0, 0, 0, 4, _):act_pkt_mpls_rawip_ipv4_encap();
-            (0, 1, 0, 0, 0, 0, 0, 6, _):act_pkt_mpls_rawip_ipv6_encap();
-            (0, 1, 0, 0, 0, 0, 1, 4, _):act_pkt_mpls_rawip_ipv4_reencap();
-            (0, 1, 0, 0, 0, 0, 1, 6, _):act_pkt_mpls_rawip_ipv6_reencap();
-            (0, 0, 1, 0, 0, 0, 0, 4, _):act_pkt_mpls_l3vpn_ipv4_encap();
-            (0, 0, 1, 0, 0, 0, 0, 6, _):act_pkt_mpls_l3vpn_ipv6_encap();
+                (0, 1, 0, 0, 0, 0, 0, 6, _):act_pkt_mpls_rawip_ipv6_encap();
+                (0, 1, 0, 0, 0, 0, 1, 4, _):act_pkt_mpls_rawip_ipv4_reencap();
+                (0, 1, 0, 0, 0, 0, 1, 6, _):act_pkt_mpls_rawip_ipv6_reencap();
+                (0, 0, 1, 0, 0, 0, 0, 4, _):act_pkt_mpls_l3vpn_ipv4_encap();
+                (0, 0, 1, 0, 0, 0, 0, 6, _):act_pkt_mpls_l3vpn_ipv6_encap();
 #ifdef HAVE_BRIDGE
-            (0, 0, 0, 1, 0, 0, 0, 2, _):act_pkt_mpls_l2vpn_encap();
+                (0, 0, 0, 1, 0, 0, 0, 2, _):act_pkt_mpls_l2vpn_encap();
 #endif
 #endif
 #ifdef HAVE_SRV6
-            (1, 0, 0, 0, 0, 0, 0, 4, _):act_pkt_srv_l3vpn_ipv4_encap();
-            (1, 0, 0, 0, 0, 0, 0, 6, _):act_pkt_srv_l3vpn_ipv6_encap();
+                (1, 0, 0, 0, 0, 0, 0, 4, _):act_pkt_srv_l3vpn_ipv4_encap();
+                (1, 0, 0, 0, 0, 0, 0, 6, _):act_pkt_srv_l3vpn_ipv6_encap();
 #endif
-            (0, 0, 0, 0, 0, 0, 0, 0, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 0, 1, 0, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 1, 0, 0, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 1, 1, 0, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 0, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 0, 1, 4, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 1, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 1, 1, 4, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 0, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 0, 1, 6, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 1, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 0, 1, 1, 6, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 0, 0, 0, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 0, 1, 0, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 1, 0, 0, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 1, 1, 0, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 0, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 0, 1, 4, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 1, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 1, 1, 4, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 0, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 0, 1, 6, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 1, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 0, 1, 1, 6, CPU_PORT):act_pkt_send_to_cpu();
 #ifdef HAVE_SRV6
-            (1, 0, 0, 0, 0, 0, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 1, 0, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
-            (1, 0, 0, 0, 0, 0, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
-            (0, 0, 0, 0, 1, 0, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
+                (1, 0, 0, 0, 0, 0, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 1, 0, 0, 4, CPU_PORT):act_pkt_send_to_cpu();
+                (1, 0, 0, 0, 0, 0, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
+                (0, 0, 0, 0, 1, 0, 0, 6, CPU_PORT):act_pkt_send_to_cpu();
 #endif
 #ifdef HAVE_MPLS
-            (0, 0, 0, 0, 0, 1, 1, 4, _):act_pkt_mpls_ipv4_decap_0_1();
-            (0, 0, 0, 0, 0, 1, 0, 4, _):act_pkt_mpls_ipv4_decap_0();
-            (0, 0, 0, 0, 0, 0, 1, 4, _):act_pkt_mpls_ipv4_decap_1();
-            (0, 0, 0, 0, 0, 1, 1, 6, _):act_pkt_mpls_ipv6_decap_0_1();
-            (0, 0, 0, 0, 0, 1, 0, 6, _):act_pkt_mpls_ipv6_decap_0();
-            (0, 0, 0, 0, 0, 0, 1, 6, _):act_pkt_mpls_ipv6_decap_1();
+                (0, 0, 0, 0, 0, 1, 1, 4, _):act_pkt_mpls_ipv4_decap_0_1();
+                (0, 0, 0, 0, 0, 1, 0, 4, _):act_pkt_mpls_ipv4_decap_0();
+                (0, 0, 0, 0, 0, 0, 1, 4, _):act_pkt_mpls_ipv4_decap_1();
+                (0, 0, 0, 0, 0, 1, 1, 6, _):act_pkt_mpls_ipv6_decap_0_1();
+                (0, 0, 0, 0, 0, 1, 0, 6, _):act_pkt_mpls_ipv6_decap_0();
+                (0, 0, 0, 0, 0, 0, 1, 6, _):act_pkt_mpls_ipv6_decap_1();
 #endif
 #ifdef HAVE_SRV6
-            (0, 0, 0, 0, 1, 0, 0, 4, _):act_pkt_srv_ipv4_decap();
-            (0, 0, 0, 0, 1, 0, 0, 6, _):act_pkt_srv_ipv6_decap();
+                (0, 0, 0, 0, 1, 0, 0, 4, _):act_pkt_srv_ipv4_decap();
+                (0, 0, 0, 0, 1, 0, 0, 6, _):act_pkt_srv_ipv6_decap();
 #endif
 #ifdef HAVE_MPLS
-            (0, 0, 0, 0, 0, 0, 0, 1, _):act_pkt_mpls_swap_0();
-            (0, 0, 0, 0, 0, 1, 0, 1, _):act_pkt_mpls_swap_1();
+                (0, 0, 0, 0, 0, 0, 0, 1, _):act_pkt_mpls_swap_0();
+                (0, 0, 0, 0, 0, 1, 0, 1, _):act_pkt_mpls_swap_1();
 #endif
-        }
+            }
 
-        size = 32;
+            size = 32;
         default_action = NoAction();
 
     }

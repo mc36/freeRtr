@@ -96,6 +96,13 @@ control IngressControlTunnel(inout headers hdr,
         ig_md.source_id = port;
     }
 
+
+    action act_tunnel_eoip(SubIntId_t port) {
+        ig_intr_md.egress_spec = (PortId_t)port;
+        ig_md.need_recir = 1;
+        ig_md.source_id = port;
+    }
+
     action act_tunnel_pckoudp(SubIntId_t port) {
         ig_intr_md.egress_spec = (PortId_t)port;
         ig_md.need_recir = 1;
@@ -146,6 +153,7 @@ ig_md.layer4_dstprt:
             act_tunnel_l3tp;
             act_tunnel_vxlan;
             act_tunnel_etherip;
+            act_tunnel_eoip;
             act_tunnel_pckoudp;
             act_tunnel_amt;
             act_tunnel_gtp;
@@ -179,6 +187,7 @@ ig_md.layer4_dstprt:
             act_tunnel_l3tp;
             act_tunnel_vxlan;
             act_tunnel_etherip;
+            act_tunnel_eoip;
             act_tunnel_pckoudp;
             act_tunnel_amt;
             act_tunnel_gtp;
@@ -208,6 +217,7 @@ ig_md.layer4_dstprt:
 
         hdr.vxlan.setInvalid();
         hdr.etherip.setInvalid();
+        hdr.eoip.setInvalid();
         hdr.l2tp.setInvalid();
         hdr.l3tp.setInvalid();
         hdr.amt.setInvalid();

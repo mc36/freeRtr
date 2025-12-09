@@ -432,6 +432,8 @@ IP_PROTOCOL_SRL2:
         transition select(hdr.gre.gretyp) {
 ETHERTYPE_ROUTEDMAC:
             prs_eth5;
+0x6400:
+            prs_eoip;
         default:
             accept;
         }
@@ -453,6 +455,14 @@ IP_PROTOCOL_SRL2:
 
     state prs_etherip {
         pkt.extract(hdr.etherip);
+        ig_md.layer4_srcprt = 0;
+        ig_md.layer4_dstprt = 0;
+        transition prs_eth5;
+    }
+
+
+    state prs_eoip {
+        pkt.extract(hdr.eoip);
         ig_md.layer4_srcprt = 0;
         ig_md.layer4_dstprt = 0;
         transition prs_eth5;

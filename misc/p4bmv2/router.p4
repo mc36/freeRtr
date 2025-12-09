@@ -39,6 +39,7 @@
 #include "include/hdr_ipv6.p4"
 #include "include/hdr_gre.p4"
 #include "include/hdr_etherip.p4"
+#include "include/hdr_eoip.p4"
 #include "include/hdr_tmux.p4"
 #include "include/hdr_udp.p4"
 #include "include/hdr_tcp.p4"

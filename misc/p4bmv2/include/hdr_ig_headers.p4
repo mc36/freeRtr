@@ -32,6 +32,7 @@ struct headers {
     gre_t		gre2;
     tmux_t		tmux2;
     etherip_t		etherip2;
+    eoip_t		eoip2;
     udp_t		udp2;
     vxlan_t		vxlan2;
     mpls_t		mpls90;
@@ -74,6 +75,7 @@ struct headers {
     gre_t		gre;
     tmux_t		tmux;
     etherip_t		etherip;
+    eoip_t		eoip;
     udp_t		udp;
     l2tp_t		l2tp;
     amt_t		amt;

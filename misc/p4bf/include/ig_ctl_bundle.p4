@@ -97,9 +97,11 @@ hash:
     apply {
         if (ig_md.ipv4_valid==1) {
             calc_ipv4_hashes.apply(hdr, ig_md, hash);
-        } else if (ig_md.ipv6_valid==1) {
+        }
+        else if (ig_md.ipv6_valid==1) {
             calc_ipv6_hashes.apply(hdr, ig_md, hash);
-        } else {
+        }
+        else {
             calc_default_hashes.apply(hdr, ig_md, hash);
         }
         tbl_nexthop_bundle.apply();
