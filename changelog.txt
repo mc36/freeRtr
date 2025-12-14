@@ -17726,3 +17726,8 @@ qc pass: p4lang: eoip server over ipv4
 qc pass: p4lang: eoip server over ipv6
 qc pass: p4lang: eoip server over ipv4 loopback
 qc pass: p4lang: eoip server over ipv6 loopback
+---------------------------------- 2025-12-14 13:34:22 25.12.14
+no qc pass: proxy server
+qc pass: proxy over http
+qc pass: ssh over http
+qc pass: sdwan over http

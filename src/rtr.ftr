@@ -4085,9 +4085,11 @@ qc pass: secondary dns server
 qc pass: dynamic tunnel destination
 qc pass: event manager
 qc pass: forwarder server
+qc pass: proxy over http
+qc pass: ssh over http
+qc pass: sdwan over http
 qc pass: ldap server
 qc pass: load balancer server
-qc pass: proxy server
 qc pass: radius server
 qc pass: scheduler
 qc pass: sdwan over ipv4

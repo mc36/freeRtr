@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.12.14-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-12-14 12:58:55, took 00:31:00, with 50 workers, on 4108 cases, 0 failed, 0 traces, 6 retries
+-;-;-;2025-12-14 13:47:03, took 00:12:40, with 50 workers, on 4110 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -4089,9 +4089,11 @@ http://sources.freertr.org/cfg/serv-dns05.tst;serv-dns05.tst;success;secondary d
 http://sources.freertr.org/cfg/serv-dyndest.tst;serv-dyndest.tst;success;dynamic tunnel destination
 http://sources.freertr.org/cfg/serv-eventmgr.tst;serv-eventmgr.tst;success;event manager
 http://sources.freertr.org/cfg/serv-forward.tst;serv-forward.tst;success;forwarder server
+http://sources.freertr.org/cfg/serv-http01.tst;serv-http01.tst;success;proxy over http
+http://sources.freertr.org/cfg/serv-http02.tst;serv-http02.tst;success;ssh over http
+http://sources.freertr.org/cfg/serv-http03.tst;serv-http03.tst;success;sdwan over http
 http://sources.freertr.org/cfg/serv-ldap.tst;serv-ldap.tst;success;ldap server
 http://sources.freertr.org/cfg/serv-loadbal.tst;serv-loadbal.tst;success;load balancer server
-http://sources.freertr.org/cfg/serv-proxy.tst;serv-proxy.tst;success;proxy server
 http://sources.freertr.org/cfg/serv-radius.tst;serv-radius.tst;success;radius server
 http://sources.freertr.org/cfg/serv-scheduler.tst;serv-scheduler.tst;success;scheduler
 http://sources.freertr.org/cfg/serv-sdwan01.tst;serv-sdwan01.tst;success;sdwan over ipv4

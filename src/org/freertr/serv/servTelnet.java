@@ -63,9 +63,13 @@ public class servTelnet extends servGeneric implements prtServS {
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         if (secondPort > 0) {
             new servTelnetConn(this, pipe, id);
-        } else {
-            lin.createHandler(pipe, "" + id, 0);
+            return false;
         }
+        if (location) {
+            new servTelnetConn(this, pipe, id);
+            return false;
+        }
+        lin.createHandler(pipe, "" + id, 0);
         return false;
     }
 
