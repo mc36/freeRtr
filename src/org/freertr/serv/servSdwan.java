@@ -9,6 +9,7 @@ import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrPool;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgPool;
+import org.freertr.clnt.clntSdwan;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
@@ -346,11 +347,11 @@ class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
         connS.setTime(120000);
         connS.lineRx = pipeSide.modTyp.modeCRtryLF;
         connS.lineTx = pipeSide.modTyp.modeCRLF;
-        if (!readLn().equals("sdwan")) {
+        if (!readLn().equals(clntSdwan.magic1)) {
             logger.error("unable to validate " + connA);
             return true;
         }
-        sendLn("okay");
+        sendLn(clntSdwan.magic2);
         connS = lower.negoSecSess(connS, servGeneric.protoSsh, new pipeLine(65536, false), lower.srvAuther);
         if (connS == null) {
             logger.error("unable to authenticate " + connA);

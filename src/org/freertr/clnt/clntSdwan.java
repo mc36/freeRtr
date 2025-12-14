@@ -48,6 +48,16 @@ public class clntSdwan implements Runnable, ifcDn {
     }
 
     /**
+     * magic string
+     */
+    public final static String magic1 = "sdwan";
+
+    /**
+     * magic string
+     */
+    public final static String magic2 = "okay";
+
+    /**
      * protocol kinds
      */
     protected enum protoTyp {
@@ -522,8 +532,8 @@ public class clntSdwan implements Runnable, ifcDn {
             logger.error("failed to connect " + trg);
             return;
         }
-        sendLn("sdwan");
-        if (!readLn().equals("okay")) {
+        sendLn(magic1);
+        if (!readLn().equals(magic2)) {
             logger.error("unable to validate " + trg);
             return;
         }
