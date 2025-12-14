@@ -347,7 +347,7 @@ class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
         connS.setTime(120000);
         connS.lineRx = pipeSide.modTyp.modeCRtryLF;
         connS.lineTx = pipeSide.modTyp.modeCRLF;
-        if (!readLn().equals(clntSdwan.magic1)) {
+        if (!readLn().startsWith(clntSdwan.magic1)) {
             logger.error("unable to validate " + connA);
             return true;
         }

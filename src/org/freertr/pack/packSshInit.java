@@ -107,6 +107,11 @@ public class packSshInit {
     public boolean kexFirst;
 
     /**
+     * magic string
+     */
+    public final static String magic = "SSH-2.0-";
+
+    /**
      * encryption algorithms
      */
     public final static String[] cipherAlgs = {"aes256-ctr", "aes256-cbc", "3des-ctr", "3des-cbc", "blowfish-ctr", "blowfish-cbc", "rc2-ctr", "rc2-cbc", "des-ctr", "des-cbc"};
@@ -287,9 +292,9 @@ public class packSshInit {
      */
     public static String getLocalVersion() {
         if (cfgAll.sshAgent == null) {
-            return "SSH-2.0-" + cfgInit.versionAgent;
+            return magic + cfgInit.versionAgent;
         } else {
-            return "SSH-2.0-" + cfgAll.sshAgent;
+            return magic + cfgAll.sshAgent;
         }
     }
 
