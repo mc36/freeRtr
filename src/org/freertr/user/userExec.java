@@ -1802,7 +1802,8 @@ public class userExec {
         hl.add(null, false, 2, new int[]{3}, "vxlan", "vxlan protocol information");
         hl.add(cfgAll.dmnVxlan.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
         hl.add(null, false, 2, new int[]{3}, "sdwan", "sdwan protocol information");
-        hl.add(cfgAll.dmnSdwan.listServers(), false, 3, new int[]{-1}, "<name:loc>", "server name");
+        hl.add(cfgAll.dmnSdwan.listServers(), false, 3, new int[]{4, -1}, "<name:loc>", "server name");
+        hl.add(null, false, 4, new int[]{-1}, "<addr>", "peer address");
         hl.add(null, false, 2, new int[]{3}, "http", "http protocol information");
         hl.add(cfgAll.dmnHttp.listServers(), false, 3, new int[]{4, -1}, "<name:loc>", "server name");
         hl.add(null, false, 4, new int[]{-1}, "stat", "statistics");

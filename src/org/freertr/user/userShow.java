@@ -1189,7 +1189,14 @@ public class userShow {
                 cmd.error("no such server");
                 return null;
             }
-            rdr.putStrTab(srv.getShow());
+            a = cmd.word();
+            if (a.length() < 1) {
+                rdr.putStrTab(srv.getShow());
+                return null;
+            }
+            addrIP adr = new addrIP();
+            adr.fromString(a);
+            rdr.putStrTab(srv.getShow(adr));
             return null;
         }
         if (a.equals("http")) {

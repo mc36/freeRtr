@@ -9,7 +9,6 @@ import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrPool;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgPool;
-import org.freertr.clnt.clntSdwan;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
@@ -51,6 +50,16 @@ public class servSdwan extends servGeneric implements prtServS {
      * port number
      */
     public final static int port = 2554;
+
+    /**
+     * magic string
+     */
+    public final static String magic1 = "sdwan ";
+
+    /**
+     * magic string
+     */
+    public final static String magic2 = "okay";
 
     /**
      * list of users
@@ -218,6 +227,27 @@ public class servSdwan extends servGeneric implements prtServS {
     }
 
     /**
+     * get show
+     *
+     * @param peer peer ip
+     * @return result
+     */
+    public userFormat getShow(addrIP peer) {
+        userFormat res = new userFormat("|", "category|value");
+        for (int i = 0; i < conns.size(); i++) {
+            servSdwanConn ntry = conns.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (peer.compareTo(ntry.connA) != 0) {
+                continue;
+            }
+            ntry.getShow(res);
+        }
+        return res;
+    }
+
+    /**
      * do clear
      *
      * @param peer peer ip
@@ -248,6 +278,8 @@ class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
     public pipeSide connS;
 
     public String authed;
+
+    public String target = "unknown";
 
     public String username = "unknown";
 
@@ -288,6 +320,29 @@ class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
     public Timer keepTimer;
 
     public long created;
+
+    public void getShow(userFormat res) {
+        res.add("peer addr|" + connA);
+        res.add("peer port|" + connP);
+        res.add("target|" + target);
+        res.add("username|" + username);
+        res.add("hostname|" + hostname);
+        res.add("software|" + software);
+        res.add("middleware|" + middleware);
+        res.add("forwarder|" + forwarder);
+        res.add("hardware|" + hardware);
+        res.add("kernel|" + kernel);
+        res.add("hub|" + hub);
+        res.add("id|" + idNum);
+        res.add("proto|" + endptProto);
+        res.add("data addr|" + endptIp);
+        res.add("data port|" + endptPort);
+        res.add("params|" + endptPar);
+        res.add("inner ipv4|" + innerAdr4);
+        res.add("inner ipv6|" + innerAdr6);
+        res.add("created|" + bits.timePast(created));
+        res.add("since|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3));
+    }
 
     public servSdwanConn(servSdwan parent, pipeSide pipe, addrIP remA, int remP) {
         lower = parent;
@@ -347,11 +402,11 @@ class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
         connS.setTime(120000);
         connS.lineRx = pipeSide.modTyp.modeCRtryLF;
         connS.lineTx = pipeSide.modTyp.modeCRLF;
-        if (!readLn().startsWith(clntSdwan.magic1)) {
+        if (!readLn().startsWith(servSdwan.magic1)) {
             logger.error("unable to validate " + connA);
             return true;
         }
-        sendLn(clntSdwan.magic2);
+        sendLn(servSdwan.magic2);
         connS = lower.negoSecSess(connS, servGeneric.protoSsh, new pipeLine(65536, false), lower.srvAuther);
         if (connS == null) {
             logger.error("unable to authenticate " + connA);
@@ -385,6 +440,14 @@ class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
             }
             if (a.equals("username")) {
                 username = cmd.getRemaining().replaceAll(" ", "_");
+                continue;
+            }
+            if (a.equals("hostname")) {
+                hostname = cmd.getRemaining();
+                continue;
+            }
+            if (a.equals("target")) {
+                target = cmd.getRemaining();
                 continue;
             }
             if (a.equals("software")) {

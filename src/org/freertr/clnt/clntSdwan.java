@@ -48,16 +48,6 @@ public class clntSdwan implements Runnable, ifcDn {
     }
 
     /**
-     * magic string
-     */
-    public final static String magic1 = "sdwan";
-
-    /**
-     * magic string
-     */
-    public final static String magic2 = "okay";
-
-    /**
      * protocol kinds
      */
     protected enum protoTyp {
@@ -532,8 +522,8 @@ public class clntSdwan implements Runnable, ifcDn {
             logger.error("failed to connect " + trg);
             return;
         }
-        sendLn(magic1);
-        if (!readLn().equals(magic2)) {
+        sendLn(servSdwan.magic1 + ctrlAddr);
+        if (!readLn().equals(servSdwan.magic2)) {
             logger.error("unable to validate " + trg);
             return;
         }
@@ -546,7 +536,9 @@ public class clntSdwan implements Runnable, ifcDn {
         conn.lineRx = pipeSide.modTyp.modeCRtryLF;
         conn.lineTx = pipeSide.modTyp.modeCRLF;
         sendLn("hello");
+        sendLn("target " + ctrlAddr + " " + ctrlPort);
         sendLn("username " + username);
+        sendLn("hostname " + cfgAll.hostName);
         sendLn("software " + cfgInit.versionFull);
         sendLn("middleware " + cfgInit.getVMname());
         sendLn("kernel " + cfgInit.getKernelName());
