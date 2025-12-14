@@ -321,7 +321,7 @@ public class servHttpUtil {
         }
         secWebsock wsk = new secWebsock(cn.pipe, new pipeLine(cn.lower.bufSiz, false));
         wsk.binary = l.get(2).equals("binary");
-        if (ntry.srvAccept(wsk.getPipe(), cn.conn)) {
+        if (ntry.srvDoAcc(wsk.getPipe(), cn.conn)) {
             cn.sendRespError(502, "server refused");
             return false;
         }

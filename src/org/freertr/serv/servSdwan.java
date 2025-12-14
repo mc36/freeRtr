@@ -54,7 +54,7 @@ public class servSdwan extends servGeneric implements prtServS {
     /**
      * magic string
      */
-    public final static String magic1 = "sdwan ";
+    public final static String magic1 = "sdwan-1.0 ";
 
     /**
      * magic string

@@ -328,10 +328,10 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return true;
         }
         if (cur.p4 != null) {
-            return cur.p4.srvAccept(pipe, id);
+            return cur.p4.srvDoAcc(pipe, id);
         }
         if (cur.of != null) {
-            return cur.of.srvAccept(pipe, id);
+            return cur.of.srvDoAcc(pipe, id);
         }
         return true;
     }

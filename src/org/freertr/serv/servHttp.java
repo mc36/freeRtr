@@ -57,6 +57,16 @@ public class servHttp extends servGeneric implements prtServS {
     protected List<String> bots = new ArrayList<String>();
 
     /**
+     * ssh to use
+     */
+    protected servGeneric trkSsh;
+
+    /**
+     * sdwan to use
+     */
+    protected servGeneric trkSdwan;
+
+    /**
      * proxy to use
      */
     protected clntProxy proxy;
@@ -102,6 +112,8 @@ public class servHttp extends servGeneric implements prtServS {
     public final static userFilter[] defaultF = {
         new userFilter("server http .*", cmds.tabulator + "port " + clearPort, null),
         new userFilter("server http .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "trick-ssh", null),
+        new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "trick-sdwan", null),
         new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "proxy", null),
         new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "error", null),
         new userFilter("server http .*", cmds.tabulator + cmds.negated + cmds.tabulator + "single-request", null),
@@ -182,6 +194,16 @@ public class servHttp extends servGeneric implements prtServS {
      * @param filter default filter
      */
     public void srvShRun(String beg, List<String> l, int filter) {
+        if (trkSsh == null) {
+            l.add(beg + "no trick-ssh");
+        } else {
+            l.add(beg + "trick-ssh " + trkSsh.srvName() + " " + trkSsh.srvName);
+        }
+        if (trkSdwan == null) {
+            l.add(beg + "no trick-sdwan");
+        } else {
+            l.add(beg + "trick-sdwan " + trkSdwan.srvName() + " " + trkSdwan.srvName);
+        }
         if (proxy == null) {
             l.add(beg + "no proxy");
         } else {
@@ -265,6 +287,32 @@ public class servHttp extends servGeneric implements prtServS {
             defSubcon = servHttpUtil.string2subconn(negated, cmd);
             return false;
         }
+        if (a.equals("trick-ssh")) {
+            if (negated) {
+                trkSsh = null;
+                return false;
+            }
+            a = cmd.word();
+            trkSsh = servGenList.srvFind(a, cmd.word(), false);
+            if (trkSsh == null) {
+                cmd.error("invalid server");
+                return false;
+            }
+            return false;
+        }
+        if (a.equals("trick-sdwan")) {
+            if (negated) {
+                trkSdwan = null;
+                return false;
+            }
+            a = cmd.word();
+            trkSdwan = servGenList.srvFind(a, cmd.word(), false);
+            if (trkSdwan == null) {
+                cmd.error("invalid server");
+                return false;
+            }
+            return false;
+        }
         if (a.equals("proxy")) {
             if (negated) {
                 proxy = null;
@@ -332,6 +380,10 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, false, 1, new int[]{-1}, "single-request", "one request per connection");
         l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
+        l.add(null, false, 1, new int[]{2}, "trick-ssh", "handle ssh clients");
+        servGenList.srvHelp(l, 2, "to forward to", null);
+        l.add(null, false, 1, new int[]{2}, "trick-sdwan", "handle sdwan clients");
+        servGenList.srvHelp(l, 2, "to forward to", null);
         l.add(null, false, 1, new int[]{2}, "proxy", "enable proxy support");
         l.add(null, false, 2, new int[]{-1}, "<name:prx>", "proxy profile");
         l.add(null, false, 1, new int[]{2}, "second-port", "enable dual binding");

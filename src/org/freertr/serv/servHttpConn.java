@@ -12,6 +12,8 @@ import org.freertr.sec.secHttp2;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.enc.encUrl;
+import org.freertr.pack.packSshInit;
+import org.freertr.sec.secServer;
 import org.freertr.user.userFlash;
 import org.freertr.util.logger;
 
@@ -361,6 +363,36 @@ public class servHttpConn implements Runnable {
             if (debugger.servHttpTraf) {
                 logger.debug("rx '" + gotCmd + "'");
             }
+        }
+        if (gotCmd.startsWith(packSshInit.magic)) {
+            if (lower.trkSsh == null) {
+                sendRespError(502, "bad server");
+                return true;
+            }
+            byte[] buf = bits.byteConcat(gotCmd.getBytes(), new byte[]{13, 10});
+            pipe.ungetBuf(buf, 0, buf.length);
+            if (lower.trkSsh.srvDoAcc(pipe, conn)) {
+                sendRespError(502, "server refused");
+                return true;
+            }
+            gotKeep = false;
+            pipe = null;
+            return true;
+        }
+        if (gotCmd.startsWith(servSdwan.magic1)) {
+            if (lower.trkSdwan == null) {
+                sendRespError(502, "bad server");
+                return true;
+            }
+            byte[] buf = bits.byteConcat(gotCmd.getBytes(), new byte[]{13, 10});
+            pipe.ungetBuf(buf, 0, buf.length);
+            if (lower.trkSdwan.srvDoAcc(pipe, conn)) {
+                sendRespError(502, "server refused");
+                return true;
+            }
+            gotKeep = false;
+            pipe = null;
+            return true;
         }
         int i = gotCmd.toLowerCase().lastIndexOf(" http/");
         if (i > 0) {

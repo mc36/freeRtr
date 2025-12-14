@@ -1131,6 +1131,17 @@ public abstract class servGeneric implements cfgGeneric, Comparable<servGeneric>
         if (srvCheckAccept(id)) {
             return true;
         }
+        return srvDoAcc(pipe, id);
+    }
+
+    /**
+     * accept one connection
+     *
+     * @param pipe pipeline just accepted
+     * @param id connection just accepted
+     * @return false if successful, true if error happened
+     */
+    protected boolean srvDoAcc(pipeSide pipe, prtGenConn id) {
         pipe = secServer.openSec(pipe, secProto & protoSec, pipeSample, srvAuther, keyrsa, keydsa, keyecdsa, keymldsa, certrsa, certdsa, certecdsa, certmldsa);
         if (pipe == null) {
             return true;
