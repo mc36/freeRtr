@@ -237,6 +237,44 @@ public class pipeSide {
         return i & 0xff;
     }
 
+    private int byteUnGet(int ch) {
+        bufU = bufU + 1;
+        bufR = bufR - 1;
+        if (bufR < 0) {
+            bufR = bufS - 1;
+        }
+        bufD[bufR] = (byte) ch;
+        return 1;
+    }
+
+    /**
+     * nonblocking unget
+     *
+     * @param buf buffer to use
+     * @param ofs offset in buffer
+     * @param len bytes to do
+     * @return bytes done, or negative error code
+     */
+    public int ungetBuf(byte[] buf, int ofs, int len) {
+        synchronized (lck) {
+            if (len < 0) {
+                return pipeLine.wontWork;
+            }
+            if (headSize > 0) {
+                return pipeLine.wontWork;
+            }
+            if (len > bufS) {
+                return pipeLine.wontWork;
+            }
+            for (int i = len - 1; i >= 0; i--) {
+                byteUnGet(buf[ofs + i]);
+            }
+        }
+        doInact(true);
+        notif.wakeup();
+        return len;
+    }
+
     private int bufPut(byte[] buf, int ofs, int len) {
         synchronized (lck) {
             if (len < 0) {
