@@ -1345,6 +1345,23 @@ cpu:
 
 
 
+#define doSampler                                                   \
+    if (vrf2rib_res->samp > 0) {                                    \
+        if ((vrf2rib_res->pack%vrf2rib_res->samp) == 0) {           \
+            bufP -= 2;                                              \
+            put16msb(bufD, bufP, ethtyp);                           \
+            bufP -= 12;                                             \
+            memcpy(&bufD[bufP], &bufD[preBuff], 12);                \
+            bufP -= 4;                                              \
+            tmp = 0x80000000 | prt;                                 \
+            put32msb(bufD, bufP, tmp);                              \
+            send2port(cpuPort);                                     \
+            bufP += 18;                                             \
+        }                                                           \
+    }                                                               \
+
+
+
 
 void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
     ctx->stat->packRx++;
@@ -1501,13 +1518,11 @@ ethtyp_rx:
         if ((port2vrf_res->monPackets++%port2vrf_res->monSample) == 0) {
             struct packetContext ctx2;
             unsigned char *bufC = ctx->bufC;
-            int tmpS = bufS - bufP + preBuff + 2;
-            if (tmpS > port2vrf_res->monTruncate) tmpS = port2vrf_res->monTruncate;
-            memcpy(&bufC[preBuff], &bufD[bufP - 2], tmpS);
+            tmp = bufS - bufP + preBuff + 2;
+            if (tmp > port2vrf_res->monTruncate) tmp = port2vrf_res->monTruncate;
+            memcpy(&bufC[preBuff], &bufD[bufP - 2], tmp);
             memcpy(&bufH[0], &bufD[preBuff], 12);
-            int tmpP = preBuff;
-            int tmpE = ethtyp;
-            if (shiftContext(&ctx2, ctx, bufC) == 0) send2subif(&ctx2, port2vrf_res->monTarget, tmpP, tmpS, tmpE);
+            if (shiftContext(&ctx2, ctx, bufC) == 0) send2subif(&ctx2, port2vrf_res->monTarget, preBuff, tmp, ethtyp);
         }
     }
     switch (port2vrf_res->command) {
@@ -1858,6 +1873,7 @@ ipv4_nated:
         if (ttl <= 1) doPunting;
         bufD[bufP + 8] = ttl;
         update_chksum(bufP + 10, -1);
+        doSampler;
         ttl |= port2vrf_res->pttl4;
         if (table_nonexist(&vrf2rib_res->pbr)) goto ipv4_pbred;
         if (frag != 0) doPunting;
@@ -2124,6 +2140,7 @@ ipv6_nated:
         ttl = bufD[bufP + 7] - 1;
         if (ttl <= 1) doPunting;
         bufD[bufP + 7] = ttl;
+        doSampler;
         ttl |= port2vrf_res->pttl6;
         if (table_nonexist(&vrf2rib_res->pbr)) goto ipv6_pbred;
         if (frag != 0) doPunting;

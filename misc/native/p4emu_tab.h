@@ -199,9 +199,9 @@ void port2vrf_deinit(struct port2vrf_entry *ntry) {
 
 struct vrf2rib_entry {
     int vrf;
+    int samp;
     long pack;
     long byte;
-    int samp;
     struct tree_head rou;
     struct hasht_head natT;
     struct hasht_head tun;
