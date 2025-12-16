@@ -1,1 +1,0 @@
-exec cd %tmp%/misc/native/ ; ./c.sh sr ../../ um %ctrg% ab %cabi% cc %ctrg%-linux-%cabi%-gcc cs %ctrg%-linux-%cabi%-strip bc "bpf-gcc -m%carc%" bs bpf-strip     bc "clang -target bpf -m%carc%" bs llvm-strip

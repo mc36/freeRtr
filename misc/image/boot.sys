@@ -1,8 +1,0 @@
-default rtr
-serial 0
-label rtr
-  menu label router
-  kernel /rtr.krn
-  append initrd=/rtr.ird panic=10 consoleblank=60 nofb nomodeset console=ttyS0,9600n8
-timeout 1
-prompt 1
