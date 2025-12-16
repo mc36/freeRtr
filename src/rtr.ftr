@@ -3921,7 +3921,7 @@ qc pass: pvrp autoroute
 qc pass: pvrp default address suppression
 qc pass: pvrp address unsuppression
 qc pass: pvrp with php labels
-failed: ingress label filtering with pvrp
+qc pass: ingress label filtering with pvrp
 qc pass: egress label filtering with pvrp
 qc pass: pvrp stub node
 qc pass: pvrp stub interface

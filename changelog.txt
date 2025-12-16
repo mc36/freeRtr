@@ -17738,3 +17738,6 @@ qc pass: policed flow inspection
 ---------------------------------- 2025-12-16 19:02:52 25.12.16
 no qc pass: ingress label filtering with pvrp
 failed: ingress label filtering with pvrp
+---------------------------------- 2025-12-16 19:30:22 25.12.16
+no failed: ingress label filtering with pvrp
+qc pass: ingress label filtering with pvrp
