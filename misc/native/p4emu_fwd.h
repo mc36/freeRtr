@@ -1348,6 +1348,7 @@ cpu:
     if (vrf2rib_res->samp > 0) {                                    \
         if ((vrf2rib_res->pack%vrf2rib_res->samp) == 0) {           \
             bufP -= 2;                                              \
+            bufE = bufP;                                            \
             put16msb(bufD, bufP, ethtyp);                           \
             bufP -= 12;                                             \
             memcpy(&bufD[bufP], &bufD[preBuff], 12);                \
