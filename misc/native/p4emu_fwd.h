@@ -65,10 +65,9 @@ int hashDataPacket(unsigned char *bufP) {
 #define send2port(prt)                                          \
     if (prt < 0) return;                                        \
     if (prt >= dataPorts) return;                               \
-    bufS = bufS - bufP + preBuff;                               \
     ifaceStat[prt]->packTx++;                                   \
-    ifaceStat[prt]->byteTx += bufS;                             \
-    sendPack(&bufD[bufP], bufS, prt);
+    ifaceStat[prt]->byteTx += bufS - bufP + preBuff;            \
+    sendPack(&bufD[bufP], bufS - bufP + preBuff, prt);
 
 
 
@@ -1341,7 +1340,7 @@ cpu:
         ethtyp = ETHERTYPE_POLKA;                                   \
         goto ethtyp_tx;                                             \
     case 11:                                                        \
-        doDropper;                                                  \
+        doDropper;
 
 
 
@@ -1358,7 +1357,7 @@ cpu:
             send2port(cpuPort);                                     \
             bufP += 18;                                             \
         }                                                           \
-    }                                                               \
+    }
 
 
 
