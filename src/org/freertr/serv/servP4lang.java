@@ -23,6 +23,7 @@ import org.freertr.ifc.ifcUp;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipIfc4;
 import org.freertr.ip.ipIfc4arp;
+import org.freertr.ip.ipIfc6;
 import org.freertr.ip.ipMpls;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
@@ -40,7 +41,9 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
 import org.freertr.tab.tabNshEntry;
+import org.freertr.tab.tabQos;
 import org.freertr.tab.tabRouteEntry;
+import org.freertr.tab.tabSessionEntry;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.history;
@@ -1474,6 +1477,8 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         cntr.rx(pck);
         ifcEther.createETHheader(pck, false);
         int i = pck.msbGetD(0);
+        boolean smp = (i & 0x80000000) != 0;
+        i &= 0x7fffffff;
         pck.getSkip(4);
         ifcEther.parseETHheader(pck, false);
         servP4langDlnk dlnk = new servP4langDlnk(this, i);
@@ -1497,6 +1502,58 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
                 logger.debug("got unneeded target: " + i);
             }
             cntr.drop(pck, counter.reasons.noIface);
+            return;
+        }
+        if (smp) {
+            if (ntry.ifc.vrfFor == null) {
+                cntr.drop(pck, counter.reasons.notInTab);
+                if (debugger.servP4langErr) {
+                    logger.debug("got unneeded target: " + i);
+                }
+                return;
+            }
+            pck.ETHtype = pck.msbGetW(0);
+            pck.getSkip(2);
+            ipFwd fwd = null;
+            switch (pck.ETHtype) {
+                case ipIfc4.type:
+                    if (ntry.ifc.vrfFor.core4.parseIPheader(pck, true)) {
+                        cntr.drop(pck, counter.reasons.badHdr);
+                        return;
+                    }
+                    pck.getSkip(pck.IPsiz);
+                    fwd = ntry.ifc.vrfFor.fwd4;
+                    break;
+                case ipIfc6.type:
+                    if (ntry.ifc.vrfFor.core6.parseIPheader(pck, true)) {
+                        cntr.drop(pck, counter.reasons.badHdr);
+                        return;
+                    }
+                    pck.getSkip(pck.IPsiz);
+                    fwd = ntry.ifc.vrfFor.fwd6;
+                    break;
+                default:
+                    cntr.drop(pck, counter.reasons.badProto);
+                    return;
+            }
+            if (fwd.netflow == null) {
+                if (debugger.servP4langErr) {
+                    logger.debug("got unneeded target: " + i);
+                }
+                cntr.drop(pck, counter.reasons.noIface);
+                return;
+            }
+            tabQos.classifyLayer4(pck);
+            pck.getSkip(-pck.IPsiz);
+            tabSessionEntry ses = tabSessionEntry.fromPack(pck, fwd.netflow.session.logMacs);
+            tabSessionEntry old = fwd.netflow.session.doSess(ses, pck, true);
+            if (old == null) {
+                return;
+            }
+            if (old.hwCntr == null) {
+                old.hwCntr = new counter();
+            }
+            old.hwCntr.rx(pck);
             return;
         }
         if (ntry.brif == null) {

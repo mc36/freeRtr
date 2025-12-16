@@ -229,7 +229,7 @@ public class servPktmux extends servGeneric implements ifcUp, prtServS {
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
         ifcEther.createETHheader(pck, false);
-        int id = pck.msbGetD(0);
+        int id = pck.msbGetD(0) & 0x7fffffff;
         pck.getSkip(4);
         ifcEther.parseETHheader(pck, false);
         servPktmuxPort ntry = new servPktmuxPort(this, id);
