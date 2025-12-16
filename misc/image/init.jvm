@@ -1,0 +1,13 @@
+#!/bin/sh
+cd /rtr
+grep "rx:" /proc/tty/driver/serial | sed "s/^/\/dev\/ttyS/" > hwdet.ser
+ip link show > hwdet.eth
+if [ ! -f /rtr/hwdet-all.sh ] ; then
+  /java/bin/java -jar /rtr/rtr.jar test hwdet tuntap 10.255.255.1/24 10.255.255.254 tcpvrf 23 host 23 path /rtr/ java /java/bin/ iface map line raw inline
+  fi
+chmod 755 *.sh
+sh /rtr/hwdet-all.sh
+while (true); do
+  sleep 1
+  done
+exit 0

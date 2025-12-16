@@ -1,0 +1,45 @@
+description framerelay asymmetric fragmentation
+
+addrouter r1
+int ser1 ser - $1a$ $1b$
+!
+vrf def v1
+ rd 1:1
+ exit
+int ser1
+ enc frame
+ framerelay mode dce
+ framerelay lmi ansi
+ framerelay dlci 123
+ framerelay frag 256
+ vrf for v1
+ ipv4 addr 1.1.1.1 255.255.255.0
+ ipv6 addr 1234::1 ffff::
+ exit
+!
+
+addrouter r2
+int ser1 ser - $1b$ $1a$
+!
+vrf def v1
+ rd 1:1
+ exit
+int ser1
+ enc frame
+ framerelay lmi ansi
+ framerelay dlci 123
+ vrf for v1
+ ipv4 addr 1.1.1.2 255.255.255.0
+ ipv6 addr 1234::2 ffff::
+ exit
+!
+
+r1 tping 100 5 1.1.1.2 vrf v1 siz 128
+r2 tping 100 5 1.1.1.1 vrf v1 siz 128
+r1 tping 100 5 1234::2 vrf v1 siz 128
+r2 tping 100 5 1234::1 vrf v1 siz 128
+
+r1 tping 100 5 1.1.1.2 vrf v1 siz 1024
+r2 tping 100 5 1.1.1.1 vrf v1 siz 1024
+r1 tping 100 5 1234::2 vrf v1 siz 1024
+r2 tping 100 5 1234::1 vrf v1 siz 1024

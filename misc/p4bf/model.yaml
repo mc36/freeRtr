@@ -1,0 +1,4 @@
+global-options: {}
+features: {}
+architectures:
+- tofino

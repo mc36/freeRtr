@@ -1,0 +1,16 @@
+select-one libpcap0.8t64                  #dataplane requirement
+select-one libbpf1                        #dataplane requirement
+select-one libxdp1                        #dataplane requirement
+select-one liburing2                      #dataplane requirement
+select-one libmnl0                        #dataplane requirement
+select-one librte-meta-all                #dataplane requirement
+
+select-lst
+select-sum
+package-down
+package-inst
+include ../misc/image/image.cln
+
+exec du -sh %tmp%
+exec cd %tmp% ; tar cf %img%.extra *
+del-alw %tmp%

@@ -1,0 +1,3 @@
+all:
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -Wall -o p4xdp_user.bin $^ $(LDLIBS) p4xdp_user.c -lpthread -lbpf
+	echo $(CC)

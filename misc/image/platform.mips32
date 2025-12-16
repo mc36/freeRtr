@@ -1,0 +1,10 @@
+arch mipsel
+unam mips
+qemu mipsel
+ctrg mipsel
+cabi gnuabi
+kern mips32r2el
+grub ieee1275-bin
+boot mips-arc
+uefi bootx32.efi
+image ../binImg/rtr-mips32

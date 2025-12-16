@@ -1,0 +1,14 @@
+rectangle 200 130 250 160 http://ap.mchome.nop.hu/
+rectangle 140 16 180 54 http://mediapc.mchome.nop.hu/
+rectangle 86 16 120 54 http://packard.mchome.nop.hu:8080/
+rectangle 120 54 145 80 http://medal.mchome.nop.hu/
+rectangle 30 16 55 60 http://src.nop.hu/
+rectangle 14 86 63 115 /elo.html
+rectangle 19 210 87 251 http://10.10.10.2/show.tcl
+rectangle 165 210 229 251 http://www.nop.hu/show.tcl
+rectangle 367 210 432 251 http://www.lnx.nop.hu/show.tcl
+rectangle 315 105 383 145 http://10.10.10.33/show.tcl
+rectangle 415 105 475 145 http://10.10.10.32/show.tcl
+rectangle 390 29 470 60 http://10.10.10.34/show.tcl
+rectangle 495 105 560 140 http://10.10.10.35/show.tcl
+default /trackMap.tcl

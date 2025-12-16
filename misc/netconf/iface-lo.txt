@@ -1,0 +1,8 @@
+config iface-lo1
+config/interface/loopback1
+freertr-iface-lo1
+interface loopback187156390
+!
+ exit
+no interface loopback187156390
+.

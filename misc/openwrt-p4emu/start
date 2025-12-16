@@ -1,0 +1,7 @@
+#!/bin/sh
+export p4emuNOCMDS=1
+export p4emuNOCONS=1
+while (true); do
+  sleep 1
+  /usr/sbin/p4emu.bin $@
+  done
