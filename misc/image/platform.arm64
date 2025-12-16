@@ -1,9 +1,0 @@
-arch arm64
-unam aarch64
-qemu aarch64
-ctrg aarch64
-kern cloud-arm64
-grub efi-arm64-bin
-boot arm64-efi
-uefi bootx64.efi
-image ../binImg/rtr-arm64

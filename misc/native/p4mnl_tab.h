@@ -1,2 +1,0 @@
-#define maxPorts 128
-
