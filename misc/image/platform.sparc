@@ -1,0 +1,11 @@
+arch sparc64
+unam sparc64
+qemu sparc64
+ctrg sparc64
+carc big-endian
+kern sparc64
+grub ieee1275-bin
+boot sparc64-ieee1275-cdcore
+uefi bootx64.efi
+mirr http://deb.debian.org/debian-ports/
+image ../binImg/rtr-sparc

@@ -1,0 +1,16 @@
+open rtrid=6.6.6.2 name=r2
+open rtrid=6.6.6.1 name=r1
+keepalive 15000
+reachable prefix=1234:2::/32 metric=0 tag=0 path= 6.6.6.2 
+reachable prefix=4321::2/128 metric=0 tag=0 path= 6.6.6.2 
+keepalive 15000
+reachable prefix=4321::1/128 metric=0 tag=0 path= 6.6.6.1 
+keepalive 15000
+keepalive 15000
+reachable prefix=1234:3::/32 metric=10 tag=0 path= 6.6.6.2 6.6.6.3
+keepalive 15000
+keepalive 15000
+reachable prefix=4321::3/128 metric=10 tag=0 path= 6.6.6.2 6.6.6.3
+keepalive 15000
+keepalive 15000
+keepalive 15000

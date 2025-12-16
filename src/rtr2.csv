@@ -1,0 +1,13 @@
+url;file;result;test
+-;-;-;freeRouter v25.12.11-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-12-11 17:33:33, took 00:09:31, with 1 workers, on 9 cases, 0 failed, 0 traces, 0 retries
+-;-;-;java -Xmx256m -jar rtr.jar, openflow
+http://sources.freertr.org/cfg/opnflw-rout01.tst;opnflw-rout01.tst;success;openflow: software routing
+http://sources.freertr.org/cfg/opnflw-rout02.tst;opnflw-rout02.tst;success;openflow: bridging and routing
+http://sources.freertr.org/cfg/opnflw-rout03.tst;opnflw-rout03.tst;success;openflow: ip routing
+http://sources.freertr.org/cfg/opnflw-rout04.tst;opnflw-rout04.tst;success;openflow: mpls routing
+http://sources.freertr.org/cfg/opnflw-rout05.tst;opnflw-rout05.tst;success;openflow: multicast routing
+http://sources.freertr.org/cfg/opnflw-rout06.tst;opnflw-rout06.tst;success;openflow: mldp routing
+http://sources.freertr.org/cfg/opnflw-rout07.tst;opnflw-rout07.tst;success;openflow: ip routing over backplane
+http://sources.freertr.org/cfg/opnflw-rout08.tst;opnflw-rout08.tst;success;openflow: mpls routing over backplane
+http://sources.freertr.org/cfg/opnflw-rout09.tst;opnflw-rout09.tst;success;openflow: multicast routing over backplane

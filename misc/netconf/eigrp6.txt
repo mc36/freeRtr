@@ -1,0 +1,12 @@
+config eigrp6
+config/router/eigrp6/1
+freertr-eigrp6
+vrf def 187156390
+ exit
+router eigrp6 187156390
+ vrf 187156390
+!
+ exit
+no router eigrp6 187156390
+no vrf def 187156390
+.

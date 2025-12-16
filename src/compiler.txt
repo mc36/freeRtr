@@ -1,0 +1,11 @@
+--release 11
+
+-Xlint:all
+-deprecation
+
+-d ../binOut/
+
+-sourcepath ./
+
+module-info.java
+org/freertr/router.java

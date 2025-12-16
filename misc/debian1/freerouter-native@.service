@@ -1,0 +1,34 @@
+[Unit]
+Description=Interface specific process of freerouter for %i
+Wants=network.target
+After=network-pre.target
+Before=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/share/freerouter/interface.sh /etc/freerouter/interfaces/%i
+Restart=always
+WorkingDirectory=/var/lib/freerouter
+User=freerouter
+Group=freerouter
+CapabilityBoundingSet=CAP_NET_RAW CAP_NET_ADMIN CAP_IPC_LOCK
+AmbientCapabilities=CAP_NET_RAW CAP_NET_ADMIN CAP_IPC_LOCK
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/freerouter /etc/freerouter
+PrivateTmp=true
+# PrivateDevices is not possible because some types need access to a physical device.
+PrivateDevices=false
+PrivateNetwork=false
+# Private Users clears all capabilities.
+PrivateUsers=false
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+LockPersonality=true
+RemoveIPC=true
+
+[Install]
+WantedBy=multi-user.target

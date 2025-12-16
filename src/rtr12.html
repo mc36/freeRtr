@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+ body { background-color: black; color: white; }
+ table, th, td { border: 1px solid }
+ :link { color: white }
+ :visited { color: white }
+ :active { color: white }
+.good { color: green }
+.bad { color: red }
+</style>
+<title>tester</title></head><body>
+release: freeRouter v25.12.11-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2025-12-12 02:24:01, took 00:39:10, with 1 workers, on 66 cases, 0 failed, 0 traces, 0 retries<br/>
+jvm: java -Xmx256m -jar rtr.jar, other: null<br/>
+<br/>
+<table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp01.tst">intop9-bgp01.tst</a></td><td>success</td><td>interop9: ebgp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp02.tst">intop9-bgp02.tst</a></td><td>success</td><td>interop9: ibgp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp03.tst">intop9-bgp03.tst</a></td><td>success</td><td>interop9: bgp locpref</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp04.tst">intop9-bgp04.tst</a></td><td>success</td><td>interop9: bgp origin</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp05.tst">intop9-bgp05.tst</a></td><td>success</td><td>interop9: bgp metric</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp06.tst">intop9-bgp06.tst</a></td><td>success</td><td>interop9: bgp community</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp07.tst">intop9-bgp07.tst</a></td><td>success</td><td>interop9: bgp aspath</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp08.tst">intop9-bgp08.tst</a></td><td>success</td><td>interop9: bgp with labels</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp09.tst">intop9-bgp09.tst</a></td><td>success</td><td>interop9: bgp addpath</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp10.tst">intop9-bgp10.tst</a></td><td>success</td><td>interop9: bgp prefix withdraw</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp11.tst">intop9-bgp11.tst</a></td><td>success</td><td>interop9: bgp vpnv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp12.tst">intop9-bgp12.tst</a></td><td>success</td><td>interop9: bgp authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp13.tst">intop9-bgp13.tst</a></td><td>success</td><td>interop9: bgp vpnv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp14.tst">intop9-bgp14.tst</a></td><td>success</td><td>interop9: vpls/ldp over bgp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp15.tst">intop9-bgp15.tst</a></td><td>success</td><td>interop9: vpls/bgp over bgp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp16.tst">intop9-bgp16.tst</a></td><td>success</td><td>interop9: bgp extended community</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp17.tst">intop9-bgp17.tst</a></td><td>success</td><td>interop9: bgp large community</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp18.tst">intop9-bgp18.tst</a></td><td>success</td><td>interop9: bgp with php labels</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp19.tst">intop9-bgp19.tst</a></td><td>success</td><td>interop9: bgp ao authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp20.tst">intop9-bgp20.tst</a></td><td>success</td><td>interop9: bgp with ctp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-bgp21.tst">intop9-bgp21.tst</a></td><td>success</td><td>interop9: bgp with php ctp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-eth01.tst">intop9-eth01.tst</a></td><td>success</td><td>interop9: ethernet encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-eth02.tst">intop9-eth02.tst</a></td><td>success</td><td>interop9: dot1q encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-eth03.tst">intop9-eth03.tst</a></td><td>success</td><td>interop9: fragmentation and reassembly</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-eth04.tst">intop9-eth04.tst</a></td><td>success</td><td>interop9: verify source</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-eth05.tst">intop9-eth05.tst</a></td><td>success</td><td>interop9: qinq encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis01.tst">intop9-isis01.tst</a></td><td>success</td><td>interop9: point2point isis</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis02.tst">intop9-isis02.tst</a></td><td>success</td><td>interop9: isis dis</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis03.tst">intop9-isis03.tst</a></td><td>success</td><td>interop9: isis nondis</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis04.tst">intop9-isis04.tst</a></td><td>success</td><td>interop9: isis te</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis05.tst">intop9-isis05.tst</a></td><td>success</td><td>interop9: isis prefix withdraw</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis06.tst">intop9-isis06.tst</a></td><td>success</td><td>interop9: isis p2mp te</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis07.tst">intop9-isis07.tst</a></td><td>success</td><td>interop9: isis sr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis08.tst">intop9-isis08.tst</a></td><td>success</td><td>interop9: isis lsp text authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis09.tst">intop9-isis09.tst</a></td><td>success</td><td>interop9: isis php sr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis10.tst">intop9-isis10.tst</a></td><td>success</td><td>interop9: integrated isis</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis11.tst">intop9-isis11.tst</a></td><td>success</td><td>interop9: isis bier</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis12.tst">intop9-isis12.tst</a></td><td>success</td><td>interop9: isis lsp md5 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis13.tst">intop9-isis13.tst</a></td><td>success</td><td>interop9: isis text authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis14.tst">intop9-isis14.tst</a></td><td>success</td><td>interop9: isis md5 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis15.tst">intop9-isis15.tst</a></td><td>success</td><td>interop9: isis multi-topology</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-isis16.tst">intop9-isis16.tst</a></td><td>success</td><td>interop9: integrated isis multi-topology</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ldp01.tst">intop9-ldp01.tst</a></td><td>success</td><td>interop9: ldp lsp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ldp02.tst">intop9-ldp02.tst</a></td><td>success</td><td>interop9: ethernet over mpls</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ldp03.tst">intop9-ldp03.tst</a></td><td>success</td><td>interop9: ldp p2mp lsp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ldp04.tst">intop9-ldp04.tst</a></td><td>success</td><td>interop9: ldp mp2mp lsp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ldp05.tst">intop9-ldp05.tst</a></td><td>success</td><td>interop9: ldp php lsp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf01.tst">intop9-ospf01.tst</a></td><td>success</td><td>interop9: point2point ospf</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf02.tst">intop9-ospf02.tst</a></td><td>success</td><td>interop9: ospf dr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf03.tst">intop9-ospf03.tst</a></td><td>success</td><td>interop9: ospf nondr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf04.tst">intop9-ospf04.tst</a></td><td>success</td><td>interop9: ospf transit area</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf05.tst">intop9-ospf05.tst</a></td><td>success</td><td>interop9: ospf stub area</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf06.tst">intop9-ospf06.tst</a></td><td>success</td><td>interop9: ospf nssa area</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf07.tst">intop9-ospf07.tst</a></td><td>success</td><td>interop9: ospf te</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf08.tst">intop9-ospf08.tst</a></td><td>success</td><td>interop9: ospf prefix withdraw</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf09.tst">intop9-ospf09.tst</a></td><td>success</td><td>interop9: ospf p2mp te</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf10.tst">intop9-ospf10.tst</a></td><td>success</td><td>interop9: ospf sr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf11.tst">intop9-ospf11.tst</a></td><td>success</td><td>interop9: ospf php sr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf12.tst">intop9-ospf12.tst</a></td><td>success</td><td>interop9: ospf bier</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf13.tst">intop9-ospf13.tst</a></td><td>success</td><td>interop9: ospf text authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-ospf14.tst">intop9-ospf14.tst</a></td><td>success</td><td>interop9: ospf md5 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-pppoe01.tst">intop9-pppoe01.tst</a></td><td>success</td><td>interop9: pppoe client</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-pppoe02.tst">intop9-pppoe02.tst</a></td><td>success</td><td>interop9: pppoe server</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-pppoe03.tst">intop9-pppoe03.tst</a></td><td>success</td><td>interop9: mpls over pppoe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-rift01.tst">intop9-rift01.tst</a></td><td>success</td><td>interop9: point2point rift</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop9-rip01.tst">intop9-rip01.tst</a></td><td>success</td><td>interop9: rip</td></tr>
+</tbody></table></body></html>

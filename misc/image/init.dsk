@@ -1,0 +1,5 @@
+#!/bin/sh
+sh /init.sys
+sh /init.dev
+for a in /dev/disk/by-id/*-part2 ; do mount -t ext4 $a /mnt ; done
+exec switch_root /mnt /init.chr

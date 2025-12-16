@@ -1,0 +1,12 @@
+config bgp6
+config/router/bgp6/1
+freertr-bgp6
+vrf def 187156390
+ exit
+router bgp6 187156390
+ vrf 187156390
+!
+ exit
+no router bgp6 187156390
+no vrf def 187156390
+.

@@ -1,0 +1,10 @@
+arch mips64el
+unam mips64
+qemu mips64el
+ctrg mips64el
+cabi gnuabi64
+kern mips64r2el
+grub ieee1275-bin
+boot mips-arc
+uefi bootx64.efi
+image ../binImg/rtr-mips64

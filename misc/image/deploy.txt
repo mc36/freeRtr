@@ -1,0 +1,65 @@
+virtualbox:
+vboxmanage import rtr-x86_64.ova
+vboxmanage startvm rtr-dsk --type headless
+socat - unix-connect:/tmp/rtr-dsk
+vboxmanage controlvm rtr poweroff
+
+qemu:
+tar xvf rtr-x86_64.ova
+qemu-system-x86_64 -enable-kvm -m 1024 -netdev user,id=a1 -device virtio-net-pci,netdev=a1 -no-reboot -monitor none -serial stdio -nographic -hda rtr-x86_64.qcow2
+
+libvirt:
+tar xvf rtr-x86_64.ova
+virsh create package.vsh
+
+cisco:
+!!! set platform hardware rom-monitor virtualization rp active
+!!! set platform hardware rom-monitor virtualization rp standby
+copy http://dl.nop.hu/rtr-x86_64.ova harddisk:rtr-x86_64.ova
+conf t
+virtual-service
+signing level unsigned
+end
+virtual-service install name rtr package harddisk:rtr-x86_64.ova media harddisk:
+show virtual-service list
+!!! wait until status changes to installed
+conf t
+cdp run
+interface VirtualPortGroup1
+ description rtr eth1
+ cdp enable
+interface VirtualPortGroup2
+ description rtr eth2
+ cdp enable
+interface VirtualPortGroup3
+ description rtr eth3
+ cdp enable
+interface VirtualPortGroup4
+ description rtr eth4
+ cdp enable
+virtual-service rtr
+ vnic gateway VirtualPortGroup1
+ vnic gateway VirtualPortGroup2
+ vnic gateway VirtualPortGroup3
+ vnic gateway VirtualPortGroup4
+ activate
+end
+show virtual-service list
+!!! wait until status changes to activated
+virtual-service connect name rtr console
+!!! wait until the router boots up
+conf t
+hostname freertr
+interface ethernet1
+ cdp enable
+ exit
+interface ethernet2
+ cdp enable
+ exit
+interface ethernet3
+ cdp enable
+ exit
+interface ethernet4
+ cdp enable
+ exit
+end

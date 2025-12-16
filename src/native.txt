@@ -1,0 +1,11 @@
+-O3
+
+--no-fallback
+
+-jar rtr2.jar
+
+-o rtr.bin
+
+-H:+UnlockExperimentalVMOptions
+
+-H:-ReduceImplicitExceptionStackTraceInformation

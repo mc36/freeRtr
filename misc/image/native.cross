@@ -1,0 +1,38 @@
+include ../misc/image/image.bas
+
+mkdir %tmp%/binImg
+
+catalog-read exp xz %mirr% experimental main
+catalog-read sid xz %mirr% sid main
+catalog-sum
+
+select-dis librte-.*-.*
+select-one libc6-dev                      #library
+select-one gcc                            #compiler
+select-one gcc-multilib                   #compiler
+select-one dpdk-dev                       #dataplane
+select-one libpcap-dev                    #dataplane
+select-one libssl-dev                     #dataplane
+select-one libbpf-dev                     #dataplane
+select-one libxdp-dev                     #dataplane
+select-one liburing-dev                   #dataplane
+select-one libmnl-dev                     #dataplane
+
+select-lst
+select-sum
+package-down
+package-inst
+
+catalog-save cmp
+
+exec cp -r ../misc %tmp%/
+
+include ../misc/image/native.%comp%
+
+exec cd %tmp%/misc/native/ ; ./p.sh
+
+exec mv %tmp%/binImg/*.tgz ../binImg/rtr-%unam%.tgz
+
+exec /usr/bin/qemu-%qemu% -L %tmp%/ %tmp%/binTmp/p4bench.bin
+
+del-alw %tmp%

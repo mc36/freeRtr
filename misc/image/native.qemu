@@ -1,0 +1,39 @@
+include ../misc/image/image.bas
+
+mkdir %tmp%/binImg
+
+catalog-read exp xz %mirr% experimental main
+catalog-read sid xz %mirr% sid main
+catalog-sum
+
+select-dis librte-.*-.*
+select-one libc6-dev                      #library
+select-one gcc-multilib                   #compiler
+select-one gcc-bpf                        #compiler
+select-one clang                          #compiler
+select-one llvm                           #compiler
+select-one gcc                            #compiler
+select-one busybox                        #busybox
+select-one tar                            #archiver
+select-one dpdk-dev                       #dataplane
+select-one libpcap-dev                    #dataplane
+select-one libssl-dev                     #dataplane
+select-one libbpf-dev                     #dataplane
+select-one libxdp-dev                     #dataplane
+select-one liburing-dev                   #dataplane
+select-one libmnl-dev                     #dataplane
+
+select-lst
+select-sum
+package-down
+package-inst
+
+catalog-save cmp
+
+exec for a in `busybox --list`; do ln -s /usr/bin/busybox %tmp%/bin/$a; done
+
+exec cp -r ../misc %tmp%/
+
+exec unshare -r -R %tmp% /usr/bin/qemu-%qemu% /bin/sh /misc/image/native.qemush
+
+exec mv %tmp%/binImg/*.tgz ../binImg/rtr-%unam%.tgz

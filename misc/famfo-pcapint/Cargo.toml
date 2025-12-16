@@ -1,0 +1,16 @@
+[package]
+name = "pcap_int"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+libc = "0.2"
+pcap = "1.0"
+orion = { version = "0.17", features = ["safe_api"], optional = true }
+
+[features]
+crypto = ["orion"]
+
+[dev-dependencies]
+orion = { version = "0.17", features = ["safe_api"] }
+
