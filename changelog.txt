@@ -17741,3 +17741,6 @@ failed: ingress label filtering with pvrp
 ---------------------------------- 2025-12-16 19:30:22 25.12.16
 no failed: ingress label filtering with pvrp
 qc pass: ingress label filtering with pvrp
+---------------------------------- 2025-12-17 00:25:34 25.12.16
+qc pass: p4lang: monitor session
+qc pass: p4lang: flow inspection
