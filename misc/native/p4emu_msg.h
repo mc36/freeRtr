@@ -396,12 +396,14 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_ntry.vrf = atoi(arg[2]);
         vrf2rib_res = vrf2rib_init4;
         vrf2rib_res->samp = atoi(arg[3]);
+        if (del == 0) vrf2rib_res->samp = 0;
         return 0;
     }
     if (strcmp(arg[0], "sampler6") == 0) {
         vrf2rib_ntry.vrf = atoi(arg[2]);
         vrf2rib_res = vrf2rib_init6;
         vrf2rib_res->samp = atoi(arg[3]);
+        if (del == 0) vrf2rib_res->samp = 0;
         return 0;
     }
     if (strcmp(arg[0], "polkaidx") == 0) {
@@ -2529,8 +2531,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
         port2vrf_res->monTarget = atoi(arg[3]);
-        port2vrf_res->monSample = atoi(arg[5]);
-        port2vrf_res->monTruncate = atoi(arg[6]);
+        port2vrf_res->monSample = atoi(arg[6]);
+        port2vrf_res->monTruncate = atoi(arg[7]);
         if (del == 0) port2vrf_res->monTarget = -1;
         return 0;
     }

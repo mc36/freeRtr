@@ -2096,7 +2096,16 @@ public class servP4langConn implements Runnable {
             i = vrf.vrf.fwd4.netflow.session.maxSamp;
         }
         if (vrf.sentSample4 != i) {
-            lower.sendLine("sampler4_add " + vrf.id + " " + i);
+            String a;
+            if (vrf.sentSample4 < 1) {
+                a = "add";
+            } else {
+                a = "mod";
+            }
+            if (i < 1) {
+                a = "del";
+            }
+            lower.sendLine("sampler4_" + a + " " + vrf.id + " " + i);
         }
         vrf.sentSample4 = i;
         i = 0;
@@ -2104,7 +2113,16 @@ public class servP4langConn implements Runnable {
             i = vrf.vrf.fwd6.netflow.session.maxSamp;
         }
         if (vrf.sentSample6 != i) {
-            lower.sendLine("sampler6_add " + vrf.id + " " + i);
+            String a;
+            if (vrf.sentSample6 < 1) {
+                a = "add";
+            } else {
+                a = "mod";
+            }
+            if (i < 1) {
+                a = "del";
+            }
+            lower.sendLine("sampler6_" + a + " " + vrf.id + " " + i);
         }
         vrf.sentSample6 = i;
         if (vrf.sentMcast) {
@@ -2224,14 +2242,16 @@ public class servP4langConn implements Runnable {
             ifc.sentRatTout = o;
         }
         i = -1;
+        o = -1;
         if (ifc.ifc.ethtyp.monSes != null) {
             servP4langIfc res = lower.findIfc(ifc.ifc.ethtyp.monSes);
             if (res != null) {
                 i = res.id;
+                o = res.getUcast().id;
             }
         }
         if (i != ifc.sentMon) {
-            o = i;
+            int p = i;
             String a;
             if (ifc.sentMon < 0) {
                 a = "add";
@@ -2239,7 +2259,7 @@ public class servP4langConn implements Runnable {
                 a = "mod";
             }
             if (i < 0) {
-                o = ifc.sentMon;
+                p = ifc.sentMon;
                 a = "del";
             }
             int smp = ifc.ifc.ethtyp.monSmpN;
@@ -2250,7 +2270,7 @@ public class servP4langConn implements Runnable {
             if (trn < 1) {
                 trn = ifc.ifc.ethtyp.getMTUsize();
             }
-            lower.sendLine("monitor_" + a + " " + ifc.id + " " + o + " " + ifc.ifc.ethtyp.monDir + " " + smp + " " + trn);
+            lower.sendLine("monitor_" + a + " " + ifc.id + " " + p + " " + o + " " + ifc.ifc.ethtyp.monDir + " " + smp + " " + trn);
             ifc.sentMon = i;
         }
         sendQos("in", true, "4", ifc.id, ifc.ifc.ethtyp.qosIn, ifc.sentQos4in, ifc.sentQos4inF, ifc.sentQos4inB, ifc.sentQos4inI);
