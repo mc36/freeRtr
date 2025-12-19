@@ -19,6 +19,8 @@ import org.freertr.clnt.clntErspan;
 import org.freertr.clnt.clntEtherIp;
 import org.freertr.clnt.clntGeneve;
 import org.freertr.clnt.clntGtp;
+import org.freertr.clnt.clntGue0;
+import org.freertr.clnt.clntGue1;
 import org.freertr.clnt.clntL2tp3;
 import org.freertr.clnt.clntLisp;
 import org.freertr.clnt.clntLlcudp;
@@ -925,6 +927,16 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public clntMplsUdp tunMplsudp;
 
     /**
+     * gue0 tunnel handler
+     */
+    public clntGue0 tunGue0;
+
+    /**
+     * gue1 tunnel handler
+     */
+    public clntGue1 tunGue1;
+
+    /**
      * swipe tunnel handler
      */
     public prtSwipe tunSwipe;
@@ -1455,6 +1467,14 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
          * mplsudp tunnel interface
          */
         mplsudp,
+        /**
+         * gue0 tunnel interface
+         */
+        gue0,
+        /**
+         * gue1 tunnel interface
+         */
+        gue1,
         /**
          * swipe tunnel interface
          */
@@ -2511,6 +2531,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 return "mplsip";
             case mplsudp:
                 return "mplsudp";
+            case gue0:
+                return "gue0";
+            case gue1:
+                return "gue1";
             case swipe:
                 return "swipe";
             case openvpn:
@@ -2696,6 +2720,12 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (s.equals("mplsudp")) {
             return tunnelType.mplsudp;
+        }
+        if (s.equals("gue0")) {
+            return tunnelType.gue0;
+        }
+        if (s.equals("gue1")) {
+            return tunnelType.gue1;
         }
         if (s.equals("swipe")) {
             return tunnelType.swipe;
@@ -4094,6 +4124,14 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             tunMplsudp.workStop();
             tunMplsudp = null;
         }
+        if (tunGue0 != null) {
+            tunGue0.workStop();
+            tunGue0 = null;
+        }
+        if (tunGue1 != null) {
+            tunGue1.workStop();
+            tunGue1 = null;
+        }
         if (tunSwipe != null) {
             tunSwipe.closeDn();
             tunSwipe = null;
@@ -4518,6 +4556,36 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunMplsudp.setUpper(ethtyp);
                 tunMplsudp.workStart();
                 lower = tunMplsudp;
+                break;
+            case gue0:
+                tunGue0 = new clntGue0();
+                tunGue0.udp = tunVrf.getUdp(tunTrg);
+                tunGue0.fwdIfc = tunSrc.getFwdIfc(tunTrg);
+                tunGue0.target = tunTrg.copyBytes();
+                tunGue0.prtR = tunKey;
+                tunGue0.prtL = tunKey2;
+                tunGue0.sendingTOS = tunTOS;
+                tunGue0.sendingDFN = tunDFN;
+                tunGue0.sendingFLW = tunFLW;
+                tunGue0.sendingTTL = tunTTL;
+                tunGue0.setUpper(ethtyp);
+                tunGue0.workStart();
+                lower = tunGue0;
+                break;
+            case gue1:
+                tunGue1 = new clntGue1();
+                tunGue1.udp = tunVrf.getUdp(tunTrg);
+                tunGue1.fwdIfc = tunSrc.getFwdIfc(tunTrg);
+                tunGue1.target = tunTrg.copyBytes();
+                tunGue1.prtR = tunKey;
+                tunGue1.prtL = tunKey2;
+                tunGue1.sendingTOS = tunTOS;
+                tunGue1.sendingDFN = tunDFN;
+                tunGue1.sendingFLW = tunFLW;
+                tunGue1.sendingTTL = tunTTL;
+                tunGue1.setUpper(ethtyp);
+                tunGue1.workStart();
+                lower = tunGue1;
                 break;
             case swipe:
                 if (tunPrt == null) {
@@ -7121,6 +7189,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "nvgre", "nvgre encapsulation");
         l.add(null, false, 3, new int[]{-1}, "mplsip", "mplsip encapsulation");
         l.add(null, false, 3, new int[]{-1}, "mplsudp", "mplsudp encapsulation");
+        l.add(null, false, 3, new int[]{-1}, "gue0", "gue0 encapsulation");
+        l.add(null, false, 3, new int[]{-1}, "gue1", "gue1 encapsulation");
         l.add(null, false, 3, new int[]{-1}, "swipe", "swipe encapsulation");
         l.add(null, false, 3, new int[]{-1}, "openvpn", "openvpn encapsulation");
         l.add(null, false, 3, new int[]{-1}, "wireguard", "wireguard encapsulation");
