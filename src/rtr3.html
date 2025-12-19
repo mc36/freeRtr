@@ -9,7 +9,7 @@
 .bad { color: red }
 </style>
 <title>dataplanes</title></head><body>
-release: freeRouter v25.12.16-cur, done by sprscc13@mrn0b0dy.<br/>
+release: freeRouter v25.12.19-cur, done by sprscc13@mrn0b0dy.<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>udp</b></td><td><b>dpdk</b></td><td><b>xdp</b></td><td><b>bmv2</b></td><td><b>tofino</b></td><td><b>test</b></td></tr></thead><tbody>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl001.tst">p4lang-acl001.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: copp</td></tr>
@@ -361,6 +361,8 @@ release: freeRouter v25.12.16-cur, done by sprscc13@mrn0b0dy.<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt201.tst">p4lang-crypt201.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td>p4lang: macsec over mgre</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt202.tst">p4lang-crypt202.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=bad>not ok</td><td>p4lang: sgt over mgre</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt203.tst">p4lang-crypt203.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td>p4lang: mgre with packout</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt204.tst">p4lang-crypt204.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: monitor session</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt205.tst">p4lang-crypt205.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: flow inspection</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout001.tst">p4lang-rout001.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout002.tst">p4lang-rout002.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: bridging</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout003.tst">p4lang-rout003.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: mpls core</td></tr>
@@ -756,7 +758,7 @@ release: freeRouter v25.12.16-cur, done by sprscc13@mrn0b0dy.<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout393.tst">p4lang-rout393.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: pwhe routing over qinq</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout394.tst">p4lang-rout394.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: pwhe mpls over qinq</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout395.tst">p4lang-rout395.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td>p4lang: bridge routing over backplane</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout396.tst">p4lang-rout396.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: mixed bridge routing over backplane</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout396.tst">p4lang-rout396.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td>p4lang: mixed bridge routing over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout397.tst">p4lang-rout397.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: routed vpls/ldp with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout398.tst">p4lang-rout398.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: routed vlan vpls/ldp with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout399.tst">p4lang-rout399.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: routed qinq vpls/ldp with bgp</td></tr>
@@ -765,7 +767,7 @@ release: freeRouter v25.12.16-cur, done by sprscc13@mrn0b0dy.<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout402.tst">p4lang-rout402.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: routed qinq evpn/cmac with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout403.tst">p4lang-rout403.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: vpls/ldp over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout404.tst">p4lang-rout404.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: evpn/cmac over backplane</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout405.tst">p4lang-rout405.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: routed vpls/ldp over backplane</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout405.tst">p4lang-rout405.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td>p4lang: routed vpls/ldp over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout406.tst">p4lang-rout406.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td>p4lang: routed evpn/cmac over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout407.tst">p4lang-rout407.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: vpn mldp egress edge</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout408.tst">p4lang-rout408.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: vpn mldp ingress edge</td></tr>

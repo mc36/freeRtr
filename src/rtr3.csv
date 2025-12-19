@@ -1,5 +1,5 @@
 url;file;udp;dpdk;xdp;bmv2;tofino;test
--;-;-;-;-;-;-;freeRouter v25.12.16-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v25.12.19-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;not ok;ok;ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;not ok;ok;ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;not ok;ok;ok;p4lang: egress access list
@@ -349,6 +349,8 @@ http://sources.freertr.org/cfg/p4lang-crypt200.tst;p4lang-crypt200.tst;ok;ok;not
 http://sources.freertr.org/cfg/p4lang-crypt201.tst;p4lang-crypt201.tst;ok;ok;not ok;not ok;not ok;p4lang: macsec over mgre
 http://sources.freertr.org/cfg/p4lang-crypt202.tst;p4lang-crypt202.tst;ok;ok;not ok;ok;not ok;p4lang: sgt over mgre
 http://sources.freertr.org/cfg/p4lang-crypt203.tst;p4lang-crypt203.tst;ok;ok;not ok;not ok;not ok;p4lang: mgre with packout
+http://sources.freertr.org/cfg/p4lang-crypt204.tst;p4lang-crypt204.tst;ok;ok;ok;ok;ok;p4lang: monitor session
+http://sources.freertr.org/cfg/p4lang-crypt205.tst;p4lang-crypt205.tst;ok;ok;ok;ok;ok;p4lang: flow inspection
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;ok;ok;ok;ok;ok;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;ok;ok;ok;ok;ok;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;ok;ok;ok;ok;ok;p4lang: mpls core
@@ -744,7 +746,7 @@ http://sources.freertr.org/cfg/p4lang-rout392.tst;p4lang-rout392.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout393.tst;p4lang-rout393.tst;ok;ok;ok;ok;ok;p4lang: pwhe routing over qinq
 http://sources.freertr.org/cfg/p4lang-rout394.tst;p4lang-rout394.tst;ok;ok;ok;ok;ok;p4lang: pwhe mpls over qinq
 http://sources.freertr.org/cfg/p4lang-rout395.tst;p4lang-rout395.tst;ok;ok;ok;not ok;ok;p4lang: bridge routing over backplane
-http://sources.freertr.org/cfg/p4lang-rout396.tst;p4lang-rout396.tst;ok;ok;ok;ok;ok;p4lang: mixed bridge routing over backplane
+http://sources.freertr.org/cfg/p4lang-rout396.tst;p4lang-rout396.tst;ok;ok;ok;not ok;ok;p4lang: mixed bridge routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout397.tst;p4lang-rout397.tst;ok;ok;ok;ok;ok;p4lang: routed vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout398.tst;p4lang-rout398.tst;ok;ok;ok;ok;ok;p4lang: routed vlan vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout399.tst;p4lang-rout399.tst;ok;ok;ok;ok;ok;p4lang: routed qinq vpls/ldp with bgp
@@ -753,7 +755,7 @@ http://sources.freertr.org/cfg/p4lang-rout401.tst;p4lang-rout401.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout402.tst;p4lang-rout402.tst;ok;ok;ok;ok;ok;p4lang: routed qinq evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout403.tst;p4lang-rout403.tst;ok;ok;ok;ok;ok;p4lang: vpls/ldp over backplane
 http://sources.freertr.org/cfg/p4lang-rout404.tst;p4lang-rout404.tst;ok;ok;ok;ok;ok;p4lang: evpn/cmac over backplane
-http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;ok;ok;ok;ok;ok;p4lang: routed vpls/ldp over backplane
+http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;ok;ok;ok;not ok;ok;p4lang: routed vpls/ldp over backplane
 http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;ok;ok;ok;not ok;ok;p4lang: routed evpn/cmac over backplane
 http://sources.freertr.org/cfg/p4lang-rout407.tst;p4lang-rout407.tst;ok;ok;not ok;ok;ok;p4lang: vpn mldp egress edge
 http://sources.freertr.org/cfg/p4lang-rout408.tst;p4lang-rout408.tst;ok;ok;not ok;ok;ok;p4lang: vpn mldp ingress edge
