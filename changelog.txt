@@ -17753,3 +17753,6 @@ qc pass: gue1 over ipv4
 qc pass: gue1 over ipv6
 qc pass: gue1 over gue1
 qc pass: gue1 over loopback
+---------------------------------- 2025-12-19 12:34:20 25.12.19
+qc pass: gue0 over gue1
+qc pass: interop1: udp tunnel

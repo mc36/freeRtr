@@ -237,6 +237,7 @@ qc pass: gue1 over ipv4
 qc pass: gue1 over ipv6
 qc pass: gue1 over gue1
 qc pass: gue1 over loopback
+qc pass: gue0 over gue1
 qc pass: ethernet hairpin
 qc pass: serial hairpin
 qc pass: bundle hairpin
@@ -1265,6 +1266,7 @@ qc pass: interop1: tacacs
 qc pass: interop1: gre tunnel
 qc pass: interop1: ipip tunnel
 qc pass: interop1: vxlan tunnel
+qc pass: interop1: udp tunnel
 qc pass: interop2: ebgp
 qc pass: interop2: ibgp
 qc pass: interop2: bgp locpref

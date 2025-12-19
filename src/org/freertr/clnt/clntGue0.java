@@ -33,12 +33,12 @@ public class clntGue0 implements Comparable<clntGue0>, Runnable, prtServP, ifcDn
     /**
      * port number
      */
-    public static final int portNum = 6080;
+    public final static int portNum = 6080;
 
     /**
      * header size
      */
-    public static final int size = 4;
+    public final static int size = 4;
 
     /**
      * upper layer
