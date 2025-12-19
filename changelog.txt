@@ -17744,3 +17744,12 @@ qc pass: ingress label filtering with pvrp
 ---------------------------------- 2025-12-17 00:25:34 25.12.16
 qc pass: p4lang: monitor session
 qc pass: p4lang: flow inspection
+---------------------------------- 2025-12-19 12:03:18 25.12.19
+qc pass: gue0 over ipv4
+qc pass: gue0 over ipv6
+qc pass: gue0 over gue0
+qc pass: gue0 over loopback
+qc pass: gue1 over ipv4
+qc pass: gue1 over ipv6
+qc pass: gue1 over gue1
+qc pass: gue1 over loopback

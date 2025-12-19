@@ -229,6 +229,14 @@ qc pass: ipv4 over gtp
 qc pass: ipv6 over gtp
 qc pass: ipv4 and ipv6 over gtp
 qc pass: gtp tunnel
+qc pass: gue0 over ipv4
+qc pass: gue0 over ipv6
+qc pass: gue0 over gue0
+qc pass: gue0 over loopback
+qc pass: gue1 over ipv4
+qc pass: gue1 over ipv6
+qc pass: gue1 over gue1
+qc pass: gue1 over loopback
 qc pass: ethernet hairpin
 qc pass: serial hairpin
 qc pass: bundle hairpin

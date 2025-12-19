@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v25.12.19-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-12-19 10:50:27, took 00:13:24, with 50 workers, on 4114 cases, 0 failed, 0 traces, 6 retries
+-;-;-;2025-12-19 12:15:48, took 00:12:30, with 50 workers, on 4122 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -233,6 +233,14 @@ http://sources.freertr.org/cfg/conn-gtp02.tst;conn-gtp02.tst;success;ipv4 over g
 http://sources.freertr.org/cfg/conn-gtp03.tst;conn-gtp03.tst;success;ipv6 over gtp
 http://sources.freertr.org/cfg/conn-gtp04.tst;conn-gtp04.tst;success;ipv4 and ipv6 over gtp
 http://sources.freertr.org/cfg/conn-gtp05.tst;conn-gtp05.tst;success;gtp tunnel
+http://sources.freertr.org/cfg/conn-gue01.tst;conn-gue01.tst;success;gue0 over ipv4
+http://sources.freertr.org/cfg/conn-gue02.tst;conn-gue02.tst;success;gue0 over ipv6
+http://sources.freertr.org/cfg/conn-gue03.tst;conn-gue03.tst;success;gue0 over gue0
+http://sources.freertr.org/cfg/conn-gue04.tst;conn-gue04.tst;success;gue0 over loopback
+http://sources.freertr.org/cfg/conn-gue05.tst;conn-gue05.tst;success;gue1 over ipv4
+http://sources.freertr.org/cfg/conn-gue06.tst;conn-gue06.tst;success;gue1 over ipv6
+http://sources.freertr.org/cfg/conn-gue07.tst;conn-gue07.tst;success;gue1 over gue1
+http://sources.freertr.org/cfg/conn-gue08.tst;conn-gue08.tst;success;gue1 over loopback
 http://sources.freertr.org/cfg/conn-hairpin01.tst;conn-hairpin01.tst;success;ethernet hairpin
 http://sources.freertr.org/cfg/conn-hairpin02.tst;conn-hairpin02.tst;success;serial hairpin
 http://sources.freertr.org/cfg/conn-hairpin03.tst;conn-hairpin03.tst;success;bundle hairpin
