@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v25.12.11-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-12-11 22:35:54, took 02:38:44, with 10 workers, on 855 cases, 1 failed, 0 traces, 21 retries
+-;-;-;freeRouter v25.12.18-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-12-18 22:43:51, took 02:39:56, with 10 workers, on 857 cases, 1 failed, 0 traces, 24 retries
 -;-;-;java -Xmx256m -jar rtr.jar, tofino
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -351,6 +351,8 @@ http://sources.freertr.org/cfg/p4lang-crypt200.tst;p4lang-crypt200.tst;not appli
 http://sources.freertr.org/cfg/p4lang-crypt201.tst;p4lang-crypt201.tst;not applicable;p4lang: macsec over mgre
 http://sources.freertr.org/cfg/p4lang-crypt202.tst;p4lang-crypt202.tst;not applicable;p4lang: sgt over mgre
 http://sources.freertr.org/cfg/p4lang-crypt203.tst;p4lang-crypt203.tst;not applicable;p4lang: mgre with packout
+http://sources.freertr.org/cfg/p4lang-crypt204.tst;p4lang-crypt204.tst;success;p4lang: monitor session
+http://sources.freertr.org/cfg/p4lang-crypt205.tst;p4lang-crypt205.tst;success;p4lang: flow inspection
 http://sources.freertr.org/cfg/p4lang-rout001.tst;p4lang-rout001.tst;success;p4lang: routing
 http://sources.freertr.org/cfg/p4lang-rout002.tst;p4lang-rout002.tst;success;p4lang: bridging
 http://sources.freertr.org/cfg/p4lang-rout003.tst;p4lang-rout003.tst;success;p4lang: mpls core
