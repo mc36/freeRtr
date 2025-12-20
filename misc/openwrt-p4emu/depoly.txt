@@ -9,12 +9,14 @@ ln -s ../../package/p4emu feeds/base/p4emu
 cp -r ../misc/native package/p4emu/
 cp ../misc/openwrt-p4emu/* package/p4emu/
 make package/p4emu/compile
+ARCH=`ls bin/packages/`
+mv bin/packages/$ARCH/base/* ../$ARCH-
 
 
 on the box:
 
-opkg install gre
-opkg install p4emu*
+apk add gre
+apk add --allow-untrusted p4emu*
 
 
 /etc/config/network

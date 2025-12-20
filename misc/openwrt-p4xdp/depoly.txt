@@ -11,12 +11,14 @@ cp ../misc/openwrt-p4xdp/* package/p4xdp/
 cd package/p4xdp/native
 cd ../../..
 make package/p4xdp/compile
+ARCH=`ls bin/packages/`
+mv bin/packages/$ARCH/base/* ../$ARCH-
 
 
 on the box:
 
-opkg install gre
-opkg install p4xdp*
+apk add  gre
+apk add --allow-untrusted  p4xdp*
 
 
 /etc/config/network
