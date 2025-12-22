@@ -874,7 +874,7 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         break;
     case 23: // pwhe
         bufP -= 12;
-        memcpy(&bufD[bufP], &bufH[0], 12);
+        memcpy(&bufD[bufP], &neigh_res->mac2, 12);
         bufP -= 4;
         tmp = 0x1ff | (neigh_res->dprt << 12);
         put32msb(bufD, bufP, tmp);
@@ -884,7 +884,6 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         ethtyp = ETHERTYPE_MPLS_UCAST;
         bufP -= 2;
         put16msb(bufD, bufP, ethtyp);
-        memcpy(&bufH[0], &neigh_res->mac2, 12);
         break;
     case 24: // labels
         bufP += 2;
