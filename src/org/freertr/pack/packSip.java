@@ -189,6 +189,9 @@ public class packSip {
         headerUncompact("t", "To");
         headerUncompact("v", "Via");
         int i = bits.str2num(headerGet("Content-Length", 1));
+        if (i < 0) {
+            i = 0;
+        }
         byte[] buf = new byte[i];
         pipe.moreGet(buf, 0, buf.length);
         String a = "";
