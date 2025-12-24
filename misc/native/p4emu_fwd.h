@@ -426,74 +426,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-
-#ifndef HAVE_NOCRYPTO
-
-
-
-int putEspHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *bufP, int *bufS, int ethtyp) {
-    unsigned char *bufD = ctx->bufD;
-    int seq = neigh_res->seq;
-    neigh_res->seq++;
-    int tmp = *bufS - *bufP + preBuff;
-    int tmp2;
-    if (neigh_res->encrTagLen > 0) {
-        tmp2 = 4 - ((tmp + 2) & 3);
-    } else {
-        tmp2 = neigh_res->encrBlkLen - ((tmp + 2) % neigh_res->encrBlkLen);
-    }
-    for (int i=0; i<tmp2; i++) {
-        bufD[*bufP + tmp + i] = i+1;
-    }
-    tmp += tmp2;
-    *bufS += tmp2;
-    bufD[*bufP + tmp + 0] = tmp2;
-    bufD[*bufP + tmp + 1] = ethtyp;
-    tmp += 2;
-    *bufS += 2;
-    if (neigh_res->encrTagLen > 0) {
-        memcpy(&bufD[0], neigh_res->hashKeyDat, 4);
-        RAND_bytes(&bufD[4], 8);
-        put32msb(bufD, *bufP - 16, neigh_res->tid);
-        put32msb(bufD, *bufP - 12, seq);
-        memcpy(&bufD[*bufP - 8], &bufD[4], 8);
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
-        if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, bufD) != 1) doDropper;
-        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
-        if (EVP_EncryptUpdate(ctx->encr, NULL, &tmp2, &bufD[*bufP - 16], 8) != 1) doDropper;
-        if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
-        if (EVP_EncryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) doDropper;
-        if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_GCM_GET_TAG, neigh_res->encrTagLen, &bufD[*bufP + tmp]) != 1) doDropper;
-        *bufS += neigh_res->encrTagLen;
-        *bufP -= 16;
-        return 0;
-    }
-    RAND_bytes(&bufD[*bufP - neigh_res->encrBlkLen], neigh_res->encrBlkLen);
-    if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
-    if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, &bufD[*bufP - neigh_res->encrBlkLen]) != 1) doDropper;
-    if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
-    if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
-    tmp += neigh_res->encrBlkLen;
-    *bufP -= neigh_res->encrBlkLen;
-    *bufP -= 8;
-    put32msb(bufD, *bufP + 0, neigh_res->tid);
-    put32msb(bufD, *bufP + 4, seq);
-    if (neigh_res->hashBlkLen < 1) return 0;
-    tmp += 8;
-    if (myHmacInit(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen) != 1) doDropper;
-    if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) doDropper;
-    if (myHmacEnd(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen, &bufD[*bufP + tmp]) != 1) doDropper;
-    *bufS += neigh_res->hashBlkLen;
-    return 0;
-drop:
-    return 1;
-}
-
-
-#endif
-
-
-
 int macsec_apply(struct packetContext *ctx, int prt, int *bufP, int *bufS, int *ethtyp) {
     if (ctx->sgt < 0) return 0;
     unsigned char *bufD = ctx->bufD;
@@ -695,18 +627,74 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
 #ifndef HAVE_NOCRYPTO
     case 6: // esp
         ethtyp2iproto;
-        if (putEspHeader(ctx, neigh_res, &bufP, &bufS, tmp) != 0) doDropper;
+        ethtyp = tmp;
+        int seq = neigh_res->seq;
+        neigh_res->seq++;
+        tmp = bufS - bufP + preBuff;
+        int tmp2;
+        if (neigh_res->encrTagLen > 0) {
+            tmp2 = 4 - ((tmp + 2) & 3);
+        } else {
+            tmp2 = neigh_res->encrBlkLen - ((tmp + 2) % neigh_res->encrBlkLen);
+        }
+        for (int i=0; i<tmp2; i++) {
+            bufD[bufP + tmp + i] = i+1;
+        }
+        tmp += tmp2;
+        bufS += tmp2;
+        bufD[bufP + tmp + 0] = tmp2;
+        bufD[bufP + tmp + 1] = ethtyp;
+        tmp += 2;
+        bufS += 2;
+        if (neigh_res->encrTagLen > 0) {
+            memcpy(&bufD[0], neigh_res->hashKeyDat, 4);
+            RAND_bytes(&bufD[4], 8);
+            put32msb(bufD, bufP - 16, neigh_res->tid);
+            put32msb(bufD, bufP - 12, seq);
+            memcpy(&bufD[bufP - 8], &bufD[4], 8);
+            if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+            if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, bufD) != 1) doDropper;
+            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+            if (EVP_EncryptUpdate(ctx->encr, NULL, &tmp2, &bufD[bufP - 16], 8) != 1) doDropper;
+            if (EVP_EncryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+            if (EVP_EncryptFinal_ex(ctx->encr, &bufD[bufP + tmp], &tmp2) != 1) doDropper;
+            if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_GCM_GET_TAG, neigh_res->encrTagLen, &bufD[bufP + tmp]) != 1) doDropper;
+            bufS += neigh_res->encrTagLen;
+            bufP -= 16;
+            tmp = IP_PROTOCOL_ESP;
+            goto layer3;
+        }
+        tmp2 = bufP - neigh_res->encrBlkLen;
+        RAND_bytes(&bufD[tmp2], neigh_res->encrBlkLen);
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+        if (EVP_EncryptInit_ex(ctx->encr, neigh_res->encrAlg, NULL, neigh_res->encrKeyDat, &bufD[tmp2]) != 1) doDropper;
+        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+        if (EVP_EncryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+        tmp += neigh_res->encrBlkLen;
+        bufP -= neigh_res->encrBlkLen;
+        bufP -= 8;
+        put32msb(bufD, bufP + 0, neigh_res->tid);
+        put32msb(bufD, bufP + 4, seq);
+        if (neigh_res->hashBlkLen < 1) {
+            tmp = IP_PROTOCOL_ESP;
+            goto layer3;
+        }
+        tmp += 8;
+        if (myHmacInit(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen) != 1) doDropper;
+        if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;
+        if (myHmacEnd(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen, &bufD[bufP + tmp]) != 1) doDropper;
+        bufS += neigh_res->hashBlkLen;
         tmp = IP_PROTOCOL_ESP;
         goto layer3;
     case 7: // openvpn
-        int seq = neigh_res->seq;
+        seq = neigh_res->seq;
         neigh_res->seq++;
         bufP += 2;
         bufP -= 8;
         put32msb(bufD, bufP + 0, seq);
         put32msb(bufD, bufP + 4, neigh_res->tid);
         tmp = bufS - bufP + preBuff;
-        int tmp2 = neigh_res->encrBlkLen - (tmp % neigh_res->encrBlkLen);
+        tmp2 = neigh_res->encrBlkLen - (tmp % neigh_res->encrBlkLen);
         for (int i=0; i<tmp2; i++) {
             bufD[bufP + tmp + i] = tmp2;
         }
