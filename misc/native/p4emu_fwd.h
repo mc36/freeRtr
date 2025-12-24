@@ -780,14 +780,9 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         ethtyp2ppptyp;
         putL2tpHeader;
         goto layer3;
-    case 7: // ipip4
+    case 5: // ipip
         ethtyp2iproto;
-        putIpv4header(tmp, neigh_res->sip1, neigh_res->dip1);
-        break;
-    case 8: // ipip6
-        ethtyp2iproto;
-        putIpv6header(tmp, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        break;
+        goto layer3;
 #ifndef HAVE_NOCRYPTO
     case 9: // esp4
         ethtyp2iproto;

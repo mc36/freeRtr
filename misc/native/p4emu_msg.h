@@ -1904,7 +1904,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_res = vrf2rib_init4;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
-        neigh_ntry.command = 7;
+        neigh_ntry.command = 5;
+        neigh_ntry.layer3 = 1;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
         tun4_ntry.srcPort = 0;
@@ -1951,7 +1952,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_res = vrf2rib_init6;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
-        neigh_ntry.command = 8;
+        neigh_ntry.command = 5;
+        neigh_ntry.layer3 = 2;
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
         else hasht_add(&neigh_table, &neigh_ntry);
         tun6_ntry.srcPort = 0;
