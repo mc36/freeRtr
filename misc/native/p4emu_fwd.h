@@ -303,9 +303,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-
-
-
 #define putIpv4header(proto, sip, dip)                          \
     bufP -= 20;                                                 \
     put16msb(bufD, bufP + 0, 0x4500);                           \
@@ -355,9 +352,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-
-
-
 #define putUdpHeader(sprt, dprt)                                \
     bufP -= 8;                                                  \
     put16msb(bufD, bufP + 0, sprt);                             \
@@ -368,41 +362,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-
-
-
-
-#define putVxlanHeader                                          \
-    bufP -= 12;                                                 \
-    memcpy(&bufD[bufP], &bufH[0], 12);                          \
-    bufP -= 8;                                                  \
-    put16msb(bufD, bufP + 0, 0x800);                            \
-    put16msb(bufD, bufP + 2, 0);                                \
-    tmp = bridge_res->instance << 8;                            \
-    put32msb(bufD, bufP + 4, tmp);
-
-
-#define putEtheripHeader                                        \
-    bufP -= 12;                                                 \
-    memcpy(&bufD[bufP], &bufH[0], 12);                          \
-    bufP -= 2;                                                  \
-    put16msb(bufD, bufP + 0, 0x300);
-
-
-#define putEoipHeader                                           \
-    bufP -= 12;                                                 \
-    memcpy(&bufD[bufP], &bufH[0], 12);                          \
-    tmp = bufS - bufP + preBuff;                                \
-    bufP -= 8;                                                  \
-    put16msb(bufD, bufP + 0, 0x2001);                           \
-    put16msb(bufD, bufP + 2, 0x6400);                           \
-    put16msb(bufD, bufP + 4, tmp);                              \
-    put16lsb(bufD, bufP + 6, bridge_res->instance);
-
-
-#define putPckoudpHeader                                        \
-    bufP -= 12;                                                 \
-    memcpy(&bufD[bufP], &bufH[0], 12);
 
 
 
@@ -417,8 +376,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     default:                                                    \
         doDropper;                                              \
     }
-
-
 
 
 
@@ -513,9 +470,6 @@ drop:
 }
 
 
-#define putMacAddr                                  \
-    bufP -= 12;                                     \
-    memcpy(&bufD[bufP], &bufH[0], 12);
 
 
 
@@ -554,7 +508,8 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
     bundle_ntry.id = prt;
     bundle_res = hasht_find(&bundle_table, &bundle_ntry);
     if (bundle_res == NULL) {
-        putMacAddr;
+        bufP -= 12;
+        memcpy(&bufD[bufP], &bufH[0], 12);
         send2port(prt);
         return;
     }
@@ -566,7 +521,8 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
     bundle_res->pack++;
     bundle_res->byte += bufS;
     if (bundle_res->command == 2) {
-        putMacAddr;
+        bufP -= 12;
+        memcpy(&bufD[bufP], &bufH[0], 12);
         bufS = bufS - bufP + preBuff;
         struct packetContext ctx2;
         unsigned char *bufC = ctx->bufC;
@@ -576,7 +532,8 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
         return;
     }
     if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp) != 0) return;
-    putMacAddr;
+    bufP -= 12;
+    memcpy(&bufD[bufP], &bufH[0], 12);
     send2port(prt);
 }
 
@@ -725,9 +682,9 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         }
         tmp += tmp2;
         bufS += tmp2;
-        put32lsb(bufD, 0, 0);             
-        put32lsb(bufD, 4, seq);           
-        put32lsb(bufD, 8, 0);             
+        put32lsb(bufD, 0, 0);
+        put32lsb(bufD, 4, seq);
+        put32lsb(bufD, 8, 0);
         if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
         if (EVP_EncryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &bufD[0]) != 1) doDropper;
         if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
@@ -2258,21 +2215,39 @@ bridgevpls_rx:
             neigh_ntry.id = bridge_res->nexthop;
             goto ethtyp_tx;
         case 4: // vxlan
-            putVxlanHeader;
+            bufP -= 12;
+            memcpy(&bufD[bufP], &bufH[0], 12);
+            bufP -= 8;
+            put16msb(bufD, bufP + 0, 0x800);
+            put16msb(bufD, bufP + 2, 0);
+            tmp = bridge_res->instance << 8;
+            put32msb(bufD, bufP + 4, tmp);
             goto bridgelayer3;
         case 5: // pckoudp
-            putPckoudpHeader;
+            bufP -= 12;
+            memcpy(&bufD[bufP], &bufH[0], 12);
             goto bridgelayer3;
         case 6: // srv
-            putPckoudpHeader;
+            bufP -= 12;
+            memcpy(&bufD[bufP], &bufH[0], 12);
             tmp = IP_PROTOCOL_SRL2;
             goto bridgelayer3;
         case 7: // etherip
-            putEtheripHeader;
+            bufP -= 12;
+            memcpy(&bufD[bufP], &bufH[0], 12);
+            bufP -= 2;
+            put16msb(bufD, bufP + 0, 0x300);
             tmp = IP_PROTOCOL_ETHERIP;
             goto bridgelayer3;
         case 8: // eoip
-            putEoipHeader;
+            bufP -= 12;
+            memcpy(&bufD[bufP], &bufH[0], 12);
+            tmp = bufS - bufP + preBuff;
+            bufP -= 8;
+            put16msb(bufD, bufP + 0, 0x2001);
+            put16msb(bufD, bufP + 2, 0x6400);
+            put16msb(bufD, bufP + 4, tmp);
+            put16lsb(bufD, bufP + 6, bridge_res->instance);
             tmp = IP_PROTOCOL_GRE;
             goto bridgelayer3;
         }
