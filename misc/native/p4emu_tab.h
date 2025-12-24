@@ -316,7 +316,7 @@ struct bridge_entry {
     int id;
     int mac2;
     int mac1;
-    int command;    // 1=port, 2=vpls, 3=route, 4=vxlan, 6=pckoudp4, 7=pckoudp6, 8=srv4, 9=srv6, 10=etherip4, 11=etherip6, 12=eoip4, 13=eoip6
+    int command;    // 1=port, 2=vpls, 3=route, 4=vxlan, 5=pckoudp, 8=srv4, 9=srv6, 10=etherip4, 11=etherip6, 12=eoip4, 13=eoip6
     int layer3;     // 1=ipv4, 2=ipv6, 3=udp4, 4=udp6
     long packRx;
     long byteRx;

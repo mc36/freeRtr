@@ -843,7 +843,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.trgPort = bridge_ntry.srcPort = atoi(arg[6]);
         tun4_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[7]);
         bridge_ntry.nexthop = atoi(arg[8]);
-        bridge_ntry.command = 6;
+        bridge_ntry.command = 5;
+        bridge_ntry.layer3 = 3;
         vrf2rib_ntry.vrf = atoi(arg[9]);
         vrf2rib_res = vrf2rib_init4;
         tun4_ntry.aclport = atoi(arg[10]);
@@ -873,7 +874,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.trgPort = bridge_ntry.srcPort = atoi(arg[6]);
         tun6_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[7]);
         bridge_ntry.nexthop = atoi(arg[8]);
-        bridge_ntry.command = 7;
+        bridge_ntry.command = 5;
+        bridge_ntry.layer3 = 4;
         vrf2rib_ntry.vrf = atoi(arg[9]);
         vrf2rib_res = vrf2rib_init6;
         tun6_ntry.aclport = atoi(arg[10]);
