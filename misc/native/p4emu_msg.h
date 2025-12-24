@@ -1070,7 +1070,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.vrf = vrf2rib_ntry.vrf;
         neigh_ntry.port = atoi(arg[7]);
         neigh_ntry.aclport = atoi(arg[8]);
-        neigh_ntry.command = 23;
+        neigh_ntry.command = 13;
         str2mac(&neigh_ntry.macs[0], arg[4]);
         str2mac(&neigh_ntry.macs[6], arg[6]);
         str2mac(&neigh_ntry.mac2[0], arg[9]);
@@ -1249,7 +1249,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.vrf = vrf2rib_ntry.vrf;
         neigh_ntry.port = atoi(arg[7]);
         neigh_ntry.aclport = atoi(arg[8]);
-        neigh_ntry.command = 23;
+        neigh_ntry.command = 13;
         str2mac(&neigh_ntry.macs[0], arg[4]);
         str2mac(&neigh_ntry.macs[6], arg[6]);
         str2mac(&neigh_ntry.mac2[0], arg[9]);
@@ -1267,7 +1267,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_ntry.vrf = atoi(arg[4]);
         neigh_ntry.port = atoi(arg[6]);
         neigh_ntry.aclport = atoi(arg[7]);
-        neigh_ntry.command = 24;
+        neigh_ntry.command = 14;
         str2mac(&neigh_ntry.macs[0], arg[3]);
         str2mac(&neigh_ntry.macs[6], arg[5]);
         neigh_ntry.tid = atoi(arg[8]);

@@ -812,7 +812,7 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         putTmuxHeader;
         tmp = IP_PROTOCOL_TMUX;
         goto layer3;
-    case 23: // pwhe
+    case 13: // pwhe
         bufP -= 12;
         memcpy(&bufD[bufP], &bufH[0], 12);
         bufP -= 4;
@@ -825,8 +825,8 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         bufP -= 2;
         put16msb(bufD, bufP, ethtyp);
         memcpy(&bufH[0], &neigh_res->mac2, 12);
-        break;
-    case 24: // labels
+        goto send;
+    case 14: // labels
         bufP += 2;
         if (neigh_res->tid >= 1) {
             ethtyp = ETHERTYPE_MPLS_UCAST;
@@ -881,7 +881,7 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         }
         bufP -= 2;
         put16msb(bufD, bufP, ethtyp);
-        break;
+        goto send;
     default:
         doDropper;
     }
