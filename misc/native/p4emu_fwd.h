@@ -789,16 +789,9 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         if (putEspHeader(ctx, neigh_res, &bufP, &bufS, tmp) != 0) doDropper;
         tmp = IP_PROTOCOL_ESP;
         goto layer3;
-    case 11: // openvpn4
+    case 7: // openvpn
         if (putOpenvpnHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
-        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv4header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
-        break;
-    case 12: // openvpn6
-        if (putOpenvpnHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
-        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        break;
+        goto layer3;
     case 13: // wireguard4
         if (putWireguardHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
