@@ -799,16 +799,9 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
     case 9: // amt
         putAmtHeader;
         goto layer3;
-    case 17: // gtp4
+    case 10: // gtp
         putGtpHeader;
-        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv4header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
-        break;
-    case 18: // gtp6
-        putGtpHeader;
-        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        break;
+        goto layer3;
     case 19: // l3tp4
         ethtyp2ppptyp;
         putL3tpHeader;
