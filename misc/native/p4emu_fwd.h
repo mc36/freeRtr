@@ -2257,18 +2257,9 @@ bridgevpls_rx:
             ethtyp = ETHERTYPE_ROUTEDMAC;
             neigh_ntry.id = bridge_res->nexthop;
             goto ethtyp_tx;
-        case 4: // vxlan4
+        case 4: // vxlan
             putVxlanHeader;
-            putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
-            putIpv4header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->trgAddr1);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
-        case 5: // vxlan6
-            putVxlanHeader;
-            putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
-            putIpv6header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
+            goto bridgelayer3;
         case 6: // pckoudp4
             putPckoudpHeader;
             putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
@@ -2313,6 +2304,27 @@ bridgevpls_rx:
             goto nethtyp_tx;
         }
         doDropper;
+bridgelayer3:
+        switch (bridge_res->layer3) {
+        case 1: // ipv4
+            putIpv4header(tmp, bridge_res->srcAddr1, bridge_res->trgAddr1);
+            break;
+        case 2: // ipv6
+            putIpv6header(tmp, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            break;
+        case 3: // udp4
+            putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
+            putIpv4header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->trgAddr1);
+            break;
+        case 4: // udp6
+            putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
+            putIpv6header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
+            break;
+        default:
+            doDropper;
+        }
+        neigh_ntry.id = bridge_res->nexthop;
+        goto nethtyp_tx;
     case ETHERTYPE_POLKA: // polka
         if (port2vrf_res == NULL) doDropper;
         ctx->stat->packPolka++;
