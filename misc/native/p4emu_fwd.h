@@ -2263,16 +2263,10 @@ bridgevpls_rx:
         case 5: // pckoudp
             putPckoudpHeader;
             goto bridgelayer3;
-        case 8: // srv4
+        case 6: // srv
             putPckoudpHeader;
-            putIpv4header(IP_PROTOCOL_SRL2, bridge_res->srcAddr1, bridge_res->trgAddr1);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
-        case 9: // srv6
-            putPckoudpHeader;
-            putIpv6header(IP_PROTOCOL_SRL2, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
+            tmp = IP_PROTOCOL_SRL2;
+            goto bridgelayer3;
         case 10: // etherip4
             putEtheripHeader;
             putIpv4header(IP_PROTOCOL_ETHERIP, bridge_res->srcAddr1, bridge_res->trgAddr1);

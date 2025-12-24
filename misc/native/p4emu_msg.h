@@ -895,7 +895,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         inet_pton(AF_INET, arg[6], buf2);
         bridge_ntry.srcAddr1 = bridge_ntry.trgAddr1 = get32msb(buf2, 0);
         bridge_ntry.nexthop = atoi(arg[5]);
-        bridge_ntry.command = 8;
+        bridge_ntry.command = 6;
+        bridge_ntry.layer3 = 1;
         if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
         else hasht_add(&bridge_table, &bridge_ntry);
         return 0;
@@ -911,7 +912,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         bridge_ntry.srcAddr3 = bridge_ntry.trgAddr3 = get32msb(buf2, 8);
         bridge_ntry.srcAddr4 = bridge_ntry.trgAddr4 = get32msb(buf2, 12);
         bridge_ntry.nexthop = atoi(arg[5]);
-        bridge_ntry.command = 9;
+        bridge_ntry.command = 6;
+        bridge_ntry.layer3 = 2;
         if (del == 0) hasht_del(&bridge_table, &bridge_ntry);
         else hasht_add(&bridge_table, &bridge_ntry);
         return 0;
