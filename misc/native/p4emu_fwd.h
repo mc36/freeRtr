@@ -796,16 +796,9 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         if (putWireguardHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         goto layer3;
 #endif
-    case 15: // amt4
+    case 9: // amt
         putAmtHeader;
-        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv4header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
-        break;
-    case 16: // amt6
-        putAmtHeader;
-        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        break;
+        goto layer3;
     case 17: // gtp4
         putGtpHeader;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);

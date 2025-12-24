@@ -2154,7 +2154,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_res = vrf2rib_init4;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
-        neigh_ntry.command = 15;
+        neigh_ntry.command = 9;
+        neigh_ntry.layer3 = 3;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
         tun4_ntry.srcPort = neigh_ntry.dprt;
@@ -2185,7 +2186,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_res = vrf2rib_init6;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
-        neigh_ntry.command = 16;
+        neigh_ntry.command = 9;
+        neigh_ntry.layer3 = 4;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
         tun6_ntry.srcPort = neigh_ntry.dprt;
