@@ -2271,16 +2271,10 @@ bridgevpls_rx:
             putEtheripHeader;
             tmp = IP_PROTOCOL_ETHERIP;
             goto bridgelayer3;
-        case 12: // eoip4
+        case 8: // eoip
             putEoipHeader;
-            putIpv4header(IP_PROTOCOL_GRE, bridge_res->srcAddr1, bridge_res->trgAddr1);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
-        case 13: // eoip6
-            putEoipHeader;
-            putIpv6header(IP_PROTOCOL_GRE, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
-            neigh_ntry.id = bridge_res->nexthop;
-            goto nethtyp_tx;
+            tmp = IP_PROTOCOL_GRE;
+            goto bridgelayer3;
         }
         doDropper;
 bridgelayer3:
