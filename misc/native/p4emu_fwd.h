@@ -300,16 +300,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define putPppoeHeader                                          \
-    put16msb(bufD, bufP, ethtyp);                               \
-    tmp = bufS - bufP + preBuff;                                \
-    bufP -= 6;                                                  \
-    put16msb(bufD, bufP + 0, 0x1100);                           \
-    put16msb(bufD, bufP + 2, neigh_res->tid);                   \
-    put16msb(bufD, bufP + 4, tmp);                              \
-    ethtyp = ETHERTYPE_PPPOE_DATA;                              \
-    bufP -= 2;                                                  \
-    put16msb(bufD, bufP, ethtyp);
 
 
 
@@ -362,18 +352,8 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define putGreHeader                                            \
-    bufP -= 2;                                                  \
-    put16msb(bufD, bufP, 0x0000);
 
 
-
-#define putTmuxHeader                                           \
-    bufP -= 4;                                                  \
-    ethtyp = bufS - bufP + preBuff;                             \
-    put16msb(bufD, bufP, ethtyp);                               \
-    bufD[bufP + 2] = tmp;                                       \
-    bufD[bufP + 3] = tmp ^ (ethtyp & 0xff) ^ (ethtyp >> 8);
 
 
 
@@ -388,19 +368,8 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define putL2tpHeader                                           \
-    put16msb(bufD, bufP, ethtyp);                               \
-    bufP -= 10;                                                 \
-    put16msb(bufD, bufP + 0, 0x0202);                           \
-    put32msb(bufD, bufP + 2, neigh_res->tid);                   \
-    put16msb(bufD, bufP + 6, 0);                                \
-    put16msb(bufD, bufP + 8, 0xff03);
 
 
-#define putL3tpHeader                                           \
-    put16msb(bufD, bufP, ethtyp);                               \
-    bufP -= 4;                                                  \
-    put32msb(bufD, bufP + 0, neigh_res->tid);
 
 
 #define putVxlanHeader                                          \
@@ -451,17 +420,9 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 
-#define putAmtHeader                                            \
-    put16msb(bufD, bufP, 0x600);
 
 
 
-#define putGtpHeader                                            \
-    bufP -= 6;                                                  \
-    put16msb(bufD, bufP + 0, 0x30ff);                           \
-    tmp = bufS - bufP + preBuff - 8;                            \
-    put16msb(bufD, bufP + 2, tmp);                              \
-    put32msb(bufD, bufP + 4, neigh_res->tid);
 
 
 
@@ -770,15 +731,29 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         goto send;
     case 2: // pppoe
         ethtyp2ppptyp;
-        putPppoeHeader;
+        put16msb(bufD, bufP, ethtyp);
+        tmp = bufS - bufP + preBuff;
+        bufP -= 6;
+        put16msb(bufD, bufP + 0, 0x1100);
+        put16msb(bufD, bufP + 2, neigh_res->tid);
+        put16msb(bufD, bufP + 4, tmp);
+        ethtyp = ETHERTYPE_PPPOE_DATA;
+        bufP -= 2;
+        put16msb(bufD, bufP, ethtyp);
         goto send;
     case 3: // gre
-        putGreHeader;
+        bufP -= 2;
+        put16msb(bufD, bufP, 0x0000);
         tmp = IP_PROTOCOL_GRE;
         goto layer3;
     case 4: // l2tp
         ethtyp2ppptyp;
-        putL2tpHeader;
+        put16msb(bufD, bufP, ethtyp);
+        bufP -= 10;
+        put16msb(bufD, bufP + 0, 0x0202);
+        put32msb(bufD, bufP + 2, neigh_res->tid);
+        put16msb(bufD, bufP + 6, 0);
+        put16msb(bufD, bufP + 8, 0xff03);
         goto layer3;
     case 5: // ipip
         ethtyp2iproto;
@@ -797,19 +772,29 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         goto layer3;
 #endif
     case 9: // amt
-        putAmtHeader;
+        put16msb(bufD, bufP, 0x600);
         goto layer3;
     case 10: // gtp
-        putGtpHeader;
+        bufP -= 6;
+        put16msb(bufD, bufP + 0, 0x30ff);
+        tmp = bufS - bufP + preBuff - 8;
+        put16msb(bufD, bufP + 2, tmp);
+        put32msb(bufD, bufP + 4, neigh_res->tid);
         goto layer3;
     case 11: // l3tp
         ethtyp2ppptyp;
-        putL3tpHeader;
+        put16msb(bufD, bufP, ethtyp);
+        bufP -= 4;
+        put32msb(bufD, bufP + 0, neigh_res->tid);
         tmp = IP_PROTOCOL_L2TP;
         goto layer3;
     case 12: // tmux4
         ethtyp2iproto;
-        putTmuxHeader;
+        bufP -= 4;
+        ethtyp = bufS - bufP + preBuff;
+        put16msb(bufD, bufP, ethtyp);
+        bufD[bufP + 2] = tmp;
+        bufD[bufP + 3] = tmp ^ (ethtyp & 0xff) ^ (ethtyp >> 8);
         tmp = IP_PROTOCOL_TMUX;
         goto layer3;
     case 13: // pwhe
@@ -882,15 +867,8 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         bufP -= 2;
         put16msb(bufD, bufP, ethtyp);
         goto send;
-    default:
-        doDropper;
     }
-
-
-send:
-    send2subif(ctx, neigh_res->port, bufP, bufS, ethtyp);
-drop:
-    return;
+    doDropper;
 layer3:
     switch (neigh_res->layer3) {
     case 1: // ipv4
@@ -907,9 +885,12 @@ layer3:
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);
         putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         goto send;
-    default:
-        doDropper;
     }
+    doDropper;
+send:
+    send2subif(ctx, neigh_res->port, bufP, bufS, ethtyp);
+drop:
+    return;
 }
 
 
