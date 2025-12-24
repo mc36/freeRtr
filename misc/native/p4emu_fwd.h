@@ -767,19 +767,15 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
     }
     switch (neigh_res->command) {
     case 1: // raw ip
-        break;
+        goto send;
     case 2: // pppoe
         ethtyp2ppptyp;
         putPppoeHeader;
-        break;
-    case 3: // gre4
+        goto send;
+    case 3: // gre
         putGreHeader;
-        putIpv4header(IP_PROTOCOL_GRE, neigh_res->sip1, neigh_res->dip1);
-        break;
-    case 4: // gre6
-        putGreHeader;
-        putIpv6header(IP_PROTOCOL_GRE, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        break;
+        tmp = IP_PROTOCOL_GRE;
+        goto layer3;
     case 5: // l2tp4
         ethtyp2ppptyp;
         putL2tpHeader;
@@ -945,9 +941,23 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
     default:
         doDropper;
     }
+
+
+send:
     send2subif(ctx, neigh_res->port, bufP, bufS, ethtyp);
 drop:
     return;
+layer3:
+    switch (neigh_res->layer3) {
+    case 1: // ipv4
+        putIpv4header(tmp, neigh_res->sip1, neigh_res->dip1);
+        goto send;
+    case 2: // ipv6
+        putIpv6header(tmp, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        goto send;
+    default:
+        doDropper;
+    }
 }
 
 

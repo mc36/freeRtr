@@ -1790,6 +1790,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 3;
+        neigh_ntry.layer3 = 1;
         tun4_ntry.srcPort = 0;
         tun4_ntry.trgPort = 0;
         tun4_ntry.prot = IP_PROTOCOL_GRE;
@@ -1818,7 +1819,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_res = vrf2rib_init6;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
-        neigh_ntry.command = 4;
+        neigh_ntry.command = 3;
+        neigh_ntry.layer3 = 2;
         tun6_ntry.srcPort = 0;
         tun6_ntry.trgPort = 0;
         tun6_ntry.prot = IP_PROTOCOL_GRE;
