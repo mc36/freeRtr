@@ -776,18 +776,10 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         putGreHeader;
         tmp = IP_PROTOCOL_GRE;
         goto layer3;
-    case 5: // l2tp4
+    case 4: // l2tp
         ethtyp2ppptyp;
         putL2tpHeader;
-        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv4header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
-        break;
-    case 6: // l2tp6
-        ethtyp2ppptyp;
-        putL2tpHeader;
-        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        break;
+        goto layer3;
     case 7: // ipip4
         ethtyp2iproto;
         putIpv4header(tmp, neigh_res->sip1, neigh_res->dip1);
@@ -954,6 +946,14 @@ layer3:
         goto send;
     case 2: // ipv6
         putIpv6header(tmp, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
+        goto send;
+    case 3: // udp4
+        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
+        putIpv4header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
+        goto send;
+    case 4: // udp6
+        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
+        putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
         goto send;
     default:
         doDropper;
