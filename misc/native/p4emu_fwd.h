@@ -784,16 +784,11 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         ethtyp2iproto;
         goto layer3;
 #ifndef HAVE_NOCRYPTO
-    case 9: // esp4
+    case 6: // esp
         ethtyp2iproto;
         if (putEspHeader(ctx, neigh_res, &bufP, &bufS, tmp) != 0) doDropper;
-        putIpv4header(IP_PROTOCOL_ESP, neigh_res->sip1, neigh_res->dip1);
-        break;
-    case 10: // esp6
-        ethtyp2iproto;
-        if (putEspHeader(ctx, neigh_res, &bufP, &bufS, tmp) != 0) doDropper;
-        putIpv6header(IP_PROTOCOL_ESP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        break;
+        tmp = IP_PROTOCOL_ESP;
+        goto layer3;
     case 11: // openvpn4
         if (putOpenvpnHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         putUdpHeader(neigh_res->sprt, neigh_res->dprt);

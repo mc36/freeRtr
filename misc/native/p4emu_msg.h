@@ -2324,7 +2324,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_res = vrf2rib_init4;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
-        neigh_ntry.command = 9;
+        neigh_ntry.command = 6;
+        neigh_ntry.layer3 = 1;
         tun4_ntry.encrBlkLen = neigh_ntry.encrBlkLen = atoi(arg[10]);
         tun4_ntry.encrTagLen = neigh_ntry.encrTagLen = atoi(arg[11]);
         tun4_ntry.hashBlkLen = neigh_ntry.hashBlkLen = atoi(arg[12]);
@@ -2367,7 +2368,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_res = vrf2rib_init6;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
-        neigh_ntry.command = 10;
+        neigh_ntry.command = 6;
+        neigh_ntry.layer3 = 2;
         tun6_ntry.encrBlkLen = neigh_ntry.encrBlkLen = atoi(arg[10]);
         tun6_ntry.encrTagLen = neigh_ntry.encrTagLen = atoi(arg[11]);
         tun6_ntry.hashBlkLen = neigh_ntry.hashBlkLen = atoi(arg[12]);
