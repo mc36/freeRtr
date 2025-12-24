@@ -1994,7 +1994,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_res = vrf2rib_init4;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
-        neigh_ntry.command = 21;
+        neigh_ntry.command = 12;
+        neigh_ntry.layer3 = 1;
         neigh_ntry.tid = atoi(arg[10]);
         tun4_ntry.prot = IP_PROTOCOL_TMUX;
         tun4_ntry.command = 13;
@@ -2022,7 +2023,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         vrf2rib_res = vrf2rib_init6;
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
-        neigh_ntry.command = 22;
+        neigh_ntry.command = 12;
+        neigh_ntry.layer3 = 2;
         neigh_ntry.tid = atoi(arg[10]);
         tun6_ntry.prot = IP_PROTOCOL_TMUX;
         tun6_ntry.command = 13;

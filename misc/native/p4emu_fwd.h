@@ -807,16 +807,11 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         putL3tpHeader;
         tmp = IP_PROTOCOL_L2TP;
         goto layer3;
-    case 21: // tmux4
+    case 12: // tmux4
         ethtyp2iproto;
         putTmuxHeader;
-        putIpv4header(IP_PROTOCOL_TMUX, neigh_res->sip1, neigh_res->dip1);
-        break;
-    case 22: // tmux6
-        ethtyp2iproto;
-        putTmuxHeader;
-        putIpv6header(IP_PROTOCOL_TMUX, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        break;
+        tmp = IP_PROTOCOL_TMUX;
+        goto layer3;
     case 23: // pwhe
         bufP -= 12;
         memcpy(&bufD[bufP], &bufH[0], 12);
