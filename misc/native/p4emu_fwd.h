@@ -430,39 +430,6 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 #ifndef HAVE_NOCRYPTO
 
 
-int putWireguardHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *bufP, int *bufS) {
-    unsigned char *bufD = ctx->bufD;
-    int seq = neigh_res->seq;
-    neigh_res->seq++;
-    *bufP += 2;
-    int tmp = *bufS - *bufP + preBuff;
-    int tmp2 = 16 - (tmp % 16);
-    for (int i=0; i<tmp2; i++) {
-        bufD[*bufP + tmp + i] = 0;
-    }
-    tmp += tmp2;
-    *bufS += tmp2;
-    put32lsb(bufD, 0, 0);
-    put32lsb(bufD, 4, seq);
-    put32lsb(bufD, 8, 0);
-    if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
-    if (EVP_EncryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &bufD[0]) != 1) doDropper;
-    if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
-    if (EVP_EncryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
-    if (EVP_EncryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) doDropper;
-    if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_GET_TAG, 16, &bufD[*bufP + tmp]) != 1) doDropper;
-    *bufS += 16;
-    *bufP -= 16;
-    put32lsb(bufD, *bufP + 0, 4);
-    put32msb(bufD, *bufP + 4, neigh_res->tid);
-    put32lsb(bufD, *bufP + 8, seq);
-    put32lsb(bufD, *bufP + 12, 0);
-    return 0;
-drop:
-    return 1;
-}
-
-
 int putOpenvpnHeader(struct packetContext *ctx, struct neigh_entry *neigh_res, int *bufP, int *bufS) {
     unsigned char *bufD = ctx->bufD;
     int seq = neigh_res->seq;
@@ -768,7 +735,31 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         if (putOpenvpnHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
         goto layer3;
     case 8: // wireguard
-        if (putWireguardHeader(ctx, neigh_res, &bufP, &bufS) != 0) doDropper;
+        int seq = neigh_res->seq;
+        neigh_res->seq++;
+        bufP += 2;
+        tmp = bufS - bufP + preBuff;
+        int tmp2 = 16 - (tmp % 16);
+        for (int i=0; i<tmp2; i++) {
+            bufD[bufP + tmp + i] = 0;
+        }
+        tmp += tmp2;
+        bufS += tmp2;
+        put32lsb(bufD, 0, 0);             
+        put32lsb(bufD, 4, seq);           
+        put32lsb(bufD, 8, 0);             
+        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+        if (EVP_EncryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, neigh_res->encrKeyDat, &bufD[0]) != 1) doDropper;
+        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+        if (EVP_EncryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+        if (EVP_EncryptFinal_ex(ctx->encr, &bufD[bufP + tmp], &tmp2) != 1) doDropper;
+        if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_GET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper;
+        bufS += 16;
+        bufP -= 16;
+        put32lsb(bufD, bufP + 0, 4);
+        put32msb(bufD, bufP + 4, neigh_res->tid);
+        put32lsb(bufD, bufP + 8, seq);
+        put32lsb(bufD, bufP + 12, 0);
         goto layer3;
 #endif
     case 9: // amt
