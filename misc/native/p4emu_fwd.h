@@ -2253,26 +2253,24 @@ bridgevpls_rx:
         }
         doDropper;
 bridgelayer3:
+        neigh_ntry.id = bridge_res->nexthop;
         switch (bridge_res->layer3) {
         case 1: // ipv4
             putIpv4header(tmp, bridge_res->srcAddr1, bridge_res->trgAddr1);
-            break;
+            goto nethtyp_tx;
         case 2: // ipv6
             putIpv6header(tmp, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
-            break;
+            goto nethtyp_tx;
         case 3: // udp4
             putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
             putIpv4header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->trgAddr1);
-            break;
+            goto nethtyp_tx;
         case 4: // udp6
             putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
             putIpv6header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
-            break;
-        default:
-            doDropper;
+            goto nethtyp_tx;
         }
-        neigh_ntry.id = bridge_res->nexthop;
-        goto nethtyp_tx;
+        doDropper;
     case ETHERTYPE_POLKA: // polka
         if (port2vrf_res == NULL) doDropper;
         ctx->stat->packPolka++;

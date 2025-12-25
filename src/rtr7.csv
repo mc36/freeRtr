@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v25.12.18-cur, done by sprscc13@mrn0b0dy.
--;-;-;2025-12-18 23:24:30, took 00:40:36, with 10 workers, on 857 cases, 6 failed, 0 traces, 42 retries
+-;-;-;freeRouter v25.12.25-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2025-12-25 10:58:07, took 00:35:03, with 10 workers, on 857 cases, 6 failed, 0 traces, 42 retries
 -;-;-;java -Xmx256m -jar rtr.jar, xdp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;not applicable;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;not applicable;p4lang: ingress access list
@@ -394,13 +394,13 @@ http://sources.freertr.org/cfg/p4lang-rout038.tst;p4lang-rout038.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout039.tst;p4lang-rout039.tst;success;p4lang: hairpin pppoe mpls
 http://sources.freertr.org/cfg/p4lang-rout040.tst;p4lang-rout040.tst;success;p4lang: hairpin vlan pppoe mpls
 http://sources.freertr.org/cfg/p4lang-rout041.tst;p4lang-rout041.tst;success;p4lang: hairpin vpls/ldp with bgp
-http://sources.freertr.org/cfg/p4lang-rout042.tst;p4lang-rout042.tst;#6-run-r5 tping 100 10 3.3.3.106 vrf v1 sou lo0;p4lang: hairpin vlan vpls/ldp with bgp
+http://sources.freertr.org/cfg/p4lang-rout042.tst;p4lang-rout042.tst;#6-run-r1 tping 100 10 2.2.2.103 vrf v1 sou lo0;p4lang: hairpin vlan vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout043.tst;p4lang-rout043.tst;success;p4lang: hairpin eompls
 http://sources.freertr.org/cfg/p4lang-rout044.tst;p4lang-rout044.tst;success;p4lang: hairpin vlan eompls
 http://sources.freertr.org/cfg/p4lang-rout045.tst;p4lang-rout045.tst;success;p4lang: vlan evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout046.tst;p4lang-rout046.tst;success;p4lang: bundle vlan evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout047.tst;p4lang-rout047.tst;success;p4lang: hairpin evpn/cmac with bgp
-http://sources.freertr.org/cfg/p4lang-rout048.tst;p4lang-rout048.tst;#6-run-r5 tping 100 10 3.3.3.106 vrf v1 sou lo0;p4lang: hairpin vlan evpn/cmac with bgp
+http://sources.freertr.org/cfg/p4lang-rout048.tst;p4lang-rout048.tst;#6-run-r1 tping 100 10 2.2.2.103 vrf v1 sou lo0;p4lang: hairpin vlan evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout049.tst;p4lang-rout049.tst;success;p4lang: gre routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout050.tst;p4lang-rout050.tst;success;p4lang: gre routing over ipv6
 http://sources.freertr.org/cfg/p4lang-rout051.tst;p4lang-rout051.tst;success;p4lang: gre routing over ipv4 loopback
@@ -685,8 +685,8 @@ http://sources.freertr.org/cfg/p4lang-rout329.tst;p4lang-rout329.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout330.tst;p4lang-rout330.tst;success;p4lang: hairpin qinq routing
 http://sources.freertr.org/cfg/p4lang-rout331.tst;p4lang-rout331.tst;success;p4lang: hairpin qinq bridging
 http://sources.freertr.org/cfg/p4lang-rout332.tst;p4lang-rout332.tst;success;p4lang: hairpin qinq mpls
-http://sources.freertr.org/cfg/p4lang-rout333.tst;p4lang-rout333.tst;#6-run-r3 tping 100 10 1.1.4.2 vrf v1;p4lang: hairpin qinq pppoe routing
-http://sources.freertr.org/cfg/p4lang-rout334.tst;p4lang-rout334.tst;#6-run-r5 tping 100 10 3.3.3.106 vrf v1 sou lo0;p4lang: hairpin qinq vpls/ldp with bgp
+http://sources.freertr.org/cfg/p4lang-rout333.tst;p4lang-rout333.tst;#6-run-r1 tping 100 30 1.1.1.2 vrf v1;p4lang: hairpin qinq pppoe routing
+http://sources.freertr.org/cfg/p4lang-rout334.tst;p4lang-rout334.tst;#6-run-r1 tping 100 10 2.2.2.103 vrf v1 sou lo0;p4lang: hairpin qinq vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout335.tst;p4lang-rout335.tst;success;p4lang: hairpin qinq eompls
 http://sources.freertr.org/cfg/p4lang-rout336.tst;p4lang-rout336.tst;success;p4lang: qinq evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout337.tst;p4lang-rout337.tst;success;p4lang: bundle qinq evpn/cmac with bgp

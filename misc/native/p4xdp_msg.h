@@ -353,6 +353,7 @@ int doOneCommand(unsigned char* buf) {
         tun4.srcPort = brdr.trgPort = atoi(arg[7]);
         brdr.nexthop = atoi(arg[8]);
         brdr.cmd = 4;
+        brdr.cmd2 = 3;
         tun4.vrf = atoi(arg[9]);
         tunr.aclport = atoi(arg[10]);
         tun4.prot = IP_PROTOCOL_UDP;
@@ -378,7 +379,8 @@ int doOneCommand(unsigned char* buf) {
         tun6.trgPort = brdr.srcPort = atoi(arg[6]);
         tun6.srcPort = brdr.trgPort = atoi(arg[7]);
         brdr.nexthop = atoi(arg[8]);
-        brdr.cmd = 5;
+        brdr.cmd = 4;
+        brdr.cmd2 = 4;
         tun6.vrf = atoi(arg[9]);
         tunr.aclport = atoi(arg[10]);
         tun6.prot = IP_PROTOCOL_UDP;
@@ -407,7 +409,8 @@ int doOneCommand(unsigned char* buf) {
         tunr.aclport = atoi(arg[9]);
         tun4.trgPort = brdr.srcPort = atoi(arg[10]);
         tun4.srcPort = brdr.trgPort = atoi(arg[11]);
-        brdr.cmd = 6;
+        brdr.cmd = 5;
+        brdr.cmd2 = 3;
         tun4.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 6;
         if (del == 0) {
@@ -434,7 +437,8 @@ int doOneCommand(unsigned char* buf) {
         tunr.aclport = atoi(arg[9]);
         tun6.trgPort = brdr.srcPort = atoi(arg[10]);
         tun6.srcPort = brdr.trgPort = atoi(arg[11]);
-        brdr.cmd = 7;
+        brdr.cmd = 5;
+        brdr.cmd2 = 4;
         tun6.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 6;
         if (del == 0) {
@@ -526,7 +530,7 @@ int doOneCommand(unsigned char* buf) {
         str2mac(&neir.mac2[6], arg[10]);
         neir.srcPort = atoi(arg[11]);
         neir.trgPort = atoi(arg[12]);
-        neir.cmd = 11;
+        neir.cmd = 7;
         if (del == 0) {
             if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &i) != 0) warn("error removing entry");
@@ -551,7 +555,7 @@ int doOneCommand(unsigned char* buf) {
         str2mac(&neir.mac2[6], arg[10]);
         neir.srcPort = atoi(arg[11]);
         neir.trgPort = atoi(arg[12]);
-        neir.cmd = 11;
+        neir.cmd = 7;
         if (del == 0) {
             if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");
             if (bpf_map_delete_elem(neighs_fd, &i) != 0) warn("error removing entry");
@@ -578,7 +582,7 @@ int doOneCommand(unsigned char* buf) {
         *((int*)&neir.trgAddr[4]) = atoi(arg[16]);
         *((int*)&neir.trgAddr[8]) = atoi(arg[17]);
         *((int*)&neir.trgAddr[12]) = atoi(arg[18]);
-        neir.cmd = 12;
+        neir.cmd = 8;
         if (del == 0) {
             if (bpf_map_delete_elem(neighs_fd, &i) != 0) warn("error removing entry");
         } else {
@@ -1056,6 +1060,7 @@ int doOneCommand(unsigned char* buf) {
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 3;
+        neir.cmd2 = 1;
         tun4.srcPort = 0;
         tun4.trgPort = 0;
         tun4.prot = IP_PROTOCOL_GRE;
@@ -1082,7 +1087,8 @@ int doOneCommand(unsigned char* buf) {
         tun6.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
-        neir.cmd = 4;
+        neir.cmd = 3;
+        neir.cmd2 = 2;
         tun6.srcPort = 0;
         tun6.trgPort = 0;
         tun6.prot = IP_PROTOCOL_GRE;
@@ -1109,7 +1115,8 @@ int doOneCommand(unsigned char* buf) {
         tun4.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
-        neir.cmd = 5;
+        neir.cmd = 4;
+        neir.cmd2 = 3;
         neir.srcPort = tun4.trgPort = atoi(arg[10]);
         neir.trgPort = tun4.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);
@@ -1137,7 +1144,8 @@ int doOneCommand(unsigned char* buf) {
         tun6.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
-        neir.cmd = 6;
+        neir.cmd = 4;
+        neir.cmd2 = 4;
         neir.srcPort = tun6.trgPort = atoi(arg[10]);
         neir.trgPort = tun6.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);
@@ -1165,7 +1173,8 @@ int doOneCommand(unsigned char* buf) {
         tun4.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
-        neir.cmd = 7;
+        neir.cmd = 5;
+        neir.cmd2 = 1;
         tun4.trgPort = 0;
         tun4.srcPort = 0;
         neir.sess = atoi(arg[10]);
@@ -1193,7 +1202,8 @@ int doOneCommand(unsigned char* buf) {
         tun6.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
-        neir.cmd = 8;
+        neir.cmd = 5;
+        neir.cmd2 = 2;
         tun6.trgPort = 0;
         tun6.srcPort = 0;
         neir.sess = atoi(arg[10]);
@@ -1221,7 +1231,8 @@ int doOneCommand(unsigned char* buf) {
         tun4.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
-        neir.cmd = 9;
+        neir.cmd = 6;
+        neir.cmd2 = 3;
         neir.srcPort = tun4.trgPort = atoi(arg[10]);
         neir.trgPort = tun4.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);
@@ -1249,7 +1260,8 @@ int doOneCommand(unsigned char* buf) {
         tun6.vrf = atoi(arg[8]);
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
-        neir.cmd = 10;
+        neir.cmd = 6;
+        neir.cmd2 = 4;
         neir.srcPort = tun6.trgPort = atoi(arg[10]);
         neir.trgPort = tun6.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);
