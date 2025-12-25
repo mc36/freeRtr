@@ -683,7 +683,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         bridge_ntry.nexthop = atoi(arg[6]);
         bridge_ntry.instance = atoi(arg[7]);
         bridge_ntry.command = 4;
-        bridge_ntry.layer3 = 3;
+        bridge_ntry.layer3 = 1;
         vrf2rib_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init4;
         tun4_ntry.aclport = atoi(arg[9]);
@@ -715,7 +715,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         bridge_ntry.nexthop = atoi(arg[6]);
         bridge_ntry.instance = atoi(arg[7]);
         bridge_ntry.command = 4;
-        bridge_ntry.layer3 = 4;
+        bridge_ntry.layer3 = 2;
         vrf2rib_ntry.vrf = atoi(arg[8]);
         vrf2rib_res = vrf2rib_init6;
         tun6_ntry.aclport = atoi(arg[9]);
@@ -848,7 +848,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun4_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[7]);
         bridge_ntry.nexthop = atoi(arg[8]);
         bridge_ntry.command = 5;
-        bridge_ntry.layer3 = 3;
+        bridge_ntry.layer3 = 1;
         vrf2rib_ntry.vrf = atoi(arg[9]);
         vrf2rib_res = vrf2rib_init4;
         tun4_ntry.aclport = atoi(arg[10]);
@@ -879,7 +879,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         tun6_ntry.srcPort = bridge_ntry.trgPort = atoi(arg[7]);
         bridge_ntry.nexthop = atoi(arg[8]);
         bridge_ntry.command = 5;
-        bridge_ntry.layer3 = 4;
+        bridge_ntry.layer3 = 2;
         vrf2rib_ntry.vrf = atoi(arg[9]);
         vrf2rib_res = vrf2rib_init6;
         tun6_ntry.aclport = atoi(arg[10]);
@@ -2109,7 +2109,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 4;
-        neigh_ntry.layer3 = 3;
+        neigh_ntry.layer3 = 1;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
         neigh_ntry.tid = atoi(arg[12]);
@@ -2142,7 +2142,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 4;
-        neigh_ntry.layer3 = 4;
+        neigh_ntry.layer3 = 2;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
         neigh_ntry.tid = atoi(arg[12]);
@@ -2169,7 +2169,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 9;
-        neigh_ntry.layer3 = 3;
+        neigh_ntry.layer3 = 1;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
         tun4_ntry.srcPort = neigh_ntry.dprt;
@@ -2201,7 +2201,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 9;
-        neigh_ntry.layer3 = 4;
+        neigh_ntry.layer3 = 2;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
         tun6_ntry.srcPort = neigh_ntry.dprt;
@@ -2227,7 +2227,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 10;
-        neigh_ntry.layer3 = 3;
+        neigh_ntry.layer3 = 1;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
         neigh_ntry.tid = atoi(arg[12]);
@@ -2260,7 +2260,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 10;
-        neigh_ntry.layer3 = 4;
+        neigh_ntry.layer3 = 2;
         neigh_ntry.sprt = atoi(arg[10]);
         neigh_ntry.dprt = atoi(arg[11]);
         neigh_ntry.tid = atoi(arg[12]);
@@ -2425,7 +2425,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 7;
-        neigh_ntry.layer3 = 3;
+        neigh_ntry.layer3 = 1;
         tun4_ntry.trgPort = neigh_ntry.sprt = atoi(arg[10]);
         tun4_ntry.srcPort = neigh_ntry.dprt = atoi(arg[11]);
         neigh_ntry.tid = atoi(arg[12]);
@@ -2470,7 +2470,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 7;
-        neigh_ntry.layer3 = 4;
+        neigh_ntry.layer3 = 2;
         tun6_ntry.trgPort = neigh_ntry.sprt = atoi(arg[10]);
         tun6_ntry.srcPort = neigh_ntry.dprt = atoi(arg[11]);
         neigh_ntry.tid = atoi(arg[12]);
@@ -2509,7 +2509,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 8;
-        neigh_ntry.layer3 = 3;
+        neigh_ntry.layer3 = 1;
         tun4_ntry.trgPort = neigh_ntry.sprt = atoi(arg[10]);
         tun4_ntry.srcPort = neigh_ntry.dprt = atoi(arg[11]);
         neigh_ntry.tid = atoi(arg[12]);
@@ -2544,7 +2544,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2mac(&neigh_ntry.macs[0], arg[7]);
         str2mac(&neigh_ntry.macs[6], arg[9]);
         neigh_ntry.command = 8;
-        neigh_ntry.layer3 = 4;
+        neigh_ntry.layer3 = 2;
         tun6_ntry.trgPort = neigh_ntry.sprt = atoi(arg[10]);
         tun6_ntry.srcPort = neigh_ntry.dprt = atoi(arg[11]);
         neigh_ntry.tid = atoi(arg[12]);

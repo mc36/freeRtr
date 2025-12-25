@@ -277,7 +277,7 @@ struct neigh_entry {
     int id;
     int vrf;
     int command;    // 1=rawip, 2=pppoe, 3=gre, 4=l2tp, 5=ipip, 6=esp, 7=ovpn, 8=wg, 9=amt, 10=gtp, 11=l3tp, 12=tmux, 13=pwhe, 14=labels
-    int layer3;     // 1=ipv4, 2=ipv6, 3=udp4, 4=udp6
+    int layer3;     // 1=ipv4, 2=ipv6
     long pack;
     long byte;
     int port;
@@ -317,7 +317,7 @@ struct bridge_entry {
     int mac2;
     int mac1;
     int command;    // 1=port, 2=vpls, 3=route, 4=vxlan, 5=pckoudp, 6=srv, 7=etherip, 8=eoip
-    int layer3;     // 1=ipv4, 2=ipv6, 3=udp4, 4=udp6
+    int layer3;     // 1=ipv4, 2=ipv6
     long packRx;
     long byteRx;
     long packTx;

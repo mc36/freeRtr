@@ -577,7 +577,7 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         put32msb(bufD, bufP + 2, neigh_res->tid);
         put16msb(bufD, bufP + 6, 0);
         put16msb(bufD, bufP + 8, 0xff03);
-        goto layer3;
+        goto layer4;
     case 5: // ipip
         ethtyp2iproto;
         goto layer3;
@@ -665,12 +665,12 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         if (EVP_EncryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
         bufP -= neigh_res->encrBlkLen;
         tmp += neigh_res->encrBlkLen;
-        if (neigh_res->hashBlkLen < 1) goto layer3;
+        if (neigh_res->hashBlkLen < 1) goto layer4;
         if (myHmacInit(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen) != 1) doDropper;
         if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;
         bufP -= neigh_res->hashBlkLen;
         if (myHmacEnd(ctx->dgst, neigh_res->hashAlg, neigh_res->hashKeyDat, neigh_res->hashKeyLen, &bufD[bufP]) != 1) doDropper;
-        goto layer3;
+        goto layer4;
     case 8: // wireguard
         seq = neigh_res->seq;
         neigh_res->seq++;
@@ -697,18 +697,18 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         put32msb(bufD, bufP + 4, neigh_res->tid);
         put32lsb(bufD, bufP + 8, seq);
         put32lsb(bufD, bufP + 12, 0);
-        goto layer3;
+        goto layer4;
 #endif
     case 9: // amt
         put16msb(bufD, bufP, 0x600);
-        goto layer3;
+        goto layer4;
     case 10: // gtp
         bufP -= 6;
         put16msb(bufD, bufP + 0, 0x30ff);
         tmp = bufS - bufP + preBuff - 8;
         put16msb(bufD, bufP + 2, tmp);
         put32msb(bufD, bufP + 4, neigh_res->tid);
-        goto layer3;
+        goto layer4;
     case 11: // l3tp
         ethtyp2ppptyp;
         put16msb(bufD, bufP, ethtyp);
@@ -797,24 +797,15 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         goto send;
     }
     doDropper;
+layer4:
+    putUdpHeader(neigh_res->sprt, neigh_res->dprt);
+    tmp = IP_PROTOCOL_UDP;
 layer3:
-    switch (neigh_res->layer3) {
-    case 1: // ipv4
+    if (neigh_res->layer3 == 1) {
         putIpv4header(tmp, neigh_res->sip1, neigh_res->dip1);
-        goto send;
-    case 2: // ipv6
+    } else {
         putIpv6header(tmp, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        goto send;
-    case 3: // udp4
-        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv4header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->dip1);
-        goto send;
-    case 4: // udp6
-        putUdpHeader(neigh_res->sprt, neigh_res->dprt);
-        putIpv6header(IP_PROTOCOL_UDP, neigh_res->sip1, neigh_res->sip2, neigh_res->sip3, neigh_res->sip4, neigh_res->dip1, neigh_res->dip2, neigh_res->dip3, neigh_res->dip4);
-        goto send;
     }
-    doDropper;
 send:
     send2subif(ctx, neigh_res->port, bufP, bufS, ethtyp);
 drop:
@@ -2222,11 +2213,11 @@ bridgevpls_rx:
             put16msb(bufD, bufP + 2, 0);
             tmp = bridge_res->instance << 8;
             put32msb(bufD, bufP + 4, tmp);
-            goto bridgelayer3;
+            goto bridgelayer4;
         case 5: // pckoudp
             bufP -= 12;
             memcpy(&bufD[bufP], &bufH[0], 12);
-            goto bridgelayer3;
+            goto bridgelayer4;
         case 6: // srv
             bufP -= 12;
             memcpy(&bufD[bufP], &bufH[0], 12);
@@ -2252,25 +2243,18 @@ bridgevpls_rx:
             goto bridgelayer3;
         }
         doDropper;
+bridgelayer4:
+        putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
+        tmp = IP_PROTOCOL_UDP;
 bridgelayer3:
         neigh_ntry.id = bridge_res->nexthop;
-        switch (bridge_res->layer3) {
-        case 1: // ipv4
+        if (bridge_res->layer3 == 1) {
             putIpv4header(tmp, bridge_res->srcAddr1, bridge_res->trgAddr1);
             goto nethtyp_tx;
-        case 2: // ipv6
+        } else {
             putIpv6header(tmp, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
             goto nethtyp_tx;
-        case 3: // udp4
-            putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
-            putIpv4header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->trgAddr1);
-            goto nethtyp_tx;
-        case 4: // udp6
-            putUdpHeader(bridge_res->srcPort, bridge_res->trgPort);
-            putIpv6header(IP_PROTOCOL_UDP, bridge_res->srcAddr1, bridge_res->srcAddr2, bridge_res->srcAddr3, bridge_res->srcAddr4, bridge_res->trgAddr1, bridge_res->trgAddr2, bridge_res->trgAddr3, bridge_res->trgAddr4);
-            goto nethtyp_tx;
         }
-        doDropper;
     case ETHERTYPE_POLKA: // polka
         if (port2vrf_res == NULL) doDropper;
         ctx->stat->packPolka++;
