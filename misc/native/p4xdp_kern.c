@@ -960,17 +960,17 @@ bridge_rx:
                 neik = brdr->nexthop;
                 goto ethtyp_tx;
             case 4: // pckoudp
-                bufP -= sizeof(macaddr);
-                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-                bufP = sizeof(macaddr);
-                revalidatePacket(bufP);
-                bufP -= 12;
-                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
-                goto bridgelayer3;
-            case 5: // vxlan
                 bufP -= 2 * sizeof(macaddr);
                 if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
                 bufP = 2 * sizeof(macaddr);
+                revalidatePacket(3 * sizeof(macaddr));
+                bufP -= 12;
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                goto bridgelayer4;
+            case 5: // vxlan
+                bufP -= 3 * sizeof(macaddr);
+                if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
+                bufP = 3 * sizeof(macaddr);
                 revalidatePacket(3 * sizeof(macaddr));
                 bufP -= 12;
                 __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
@@ -979,32 +979,25 @@ bridge_rx:
                 put16msb(bufD, bufP + 2, 0);
                 tmp = brdr->label1 << 8;
                 put32msb(bufD, bufP + 4, tmp);
-                goto bridgelayer3;
+                goto bridgelayer4;
             }
             goto drop;
-bridgelayer3:
+bridgelayer4:
+            putUdpHeader(brdr);
+            tmp = IP_PROTOCOL_UDP;
+//bridgelayer3:
             bufP -= sizeof(macaddr) + 60;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
             bufP = sizeof(macaddr) + 60;
             revalidatePacket(bufP);
             neik = brdr->nexthop;
-            switch (brdr->cmd2) {
-            case 1: // ipv4
+            if (brdr->cmd2 == 1) {
                 putIpv4header(brdr, tmp);
                 goto nethtyp_tx;
-            case 2: // ipv6
+            } else {
                 putIpv6header(brdr, tmp);
                 goto nethtyp_tx;
-            case 3: // udp4
-                putUdpHeader(brdr);
-                putIpv4header(brdr, IP_PROTOCOL_UDP);
-                goto nethtyp_tx;
-            case 4: // udp6
-                putUdpHeader(brdr);
-                putIpv6header(brdr, IP_PROTOCOL_UDP);
-                goto nethtyp_tx;
             }
-            goto drop;
 
         case ETHERTYPE_PPPOE_CTRL:
             goto cpu;
@@ -1064,16 +1057,16 @@ nethtyp_tx:
         case 4: // l2tp
             ethtyp2ppptyp();
             put16msb(bufD, bufP, ethtyp);
-            bufP -= sizeof(macaddr);
+            bufP -= 2 * sizeof(macaddr);
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr);
-            revalidatePacket(sizeof(macaddr));
+            bufP = 2 * sizeof(macaddr);
+            revalidatePacket(3 * sizeof(macaddr));
             bufP -= 10;
             put16msb(bufD, bufP + 0, 0x0202);
             put32msb(bufD, bufP + 2, neir->sess);
             put16msb(bufD, bufP + 6, 0);
             put16msb(bufD, bufP + 8, 0xff03);
-            goto neighlayer3;
+            goto neighlayer4;
         case 5: // l3tp
             ethtyp2ppptyp();
             put16msb(bufD, bufP, ethtyp);
@@ -1082,16 +1075,16 @@ nethtyp_tx:
             tmp = IP_PROTOCOL_L2TP;
             goto neighlayer3;
         case 6: // gtp
-            bufP -= sizeof(macaddr);
+            bufP -= 2 * sizeof(macaddr);
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr);
-            revalidatePacket(sizeof(macaddr) + 2);
+            bufP = 2 * sizeof(macaddr);
+            revalidatePacket(3 * sizeof(macaddr));
             bufP -= 6;
             put16msb(bufD, bufP + 0, 0x30ff);
             ethtyp = bufE - bufD - bufP - 8;
             put16msb(bufD, bufP + 2, ethtyp);
             put32msb(bufD, bufP + 4, neir->sess);
-            goto neighlayer3;
+            goto neighlayer4;
         case 7: // pwhe
             bufP -= sizeof(macaddr) + 16;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
@@ -1173,28 +1166,19 @@ nethtyp_tx:
         }
         goto drop;
 
+neighlayer4:
+        putUdpHeader(neir);
+        tmp = IP_PROTOCOL_UDP;
 neighlayer3:
         bufP -= sizeof(macaddr) + 60;
         if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
         bufP = sizeof(macaddr) + 60;
         revalidatePacket(bufP);
-        switch (neir->cmd2) {
-        case 1: // ipv4
+        if (neir->cmd2 == 1) {
             putIpv4header(neir, tmp);
-            goto subif_tx;
-        case 2: // ipv6
+        } else {
             putIpv6header(neir, tmp);
-            goto subif_tx;
-        case 3: // udp4
-            putUdpHeader(neir);
-            putIpv4header(neir, IP_PROTOCOL_UDP);
-            goto subif_tx;
-        case 4: // udp6
-            putUdpHeader(neir);
-            putIpv6header(neir, IP_PROTOCOL_UDP);
-            goto subif_tx;
         }
-        goto drop;
 
 subif_tx:
         vrfp = bpf_map_lookup_elem(&vrf_port, &prt);

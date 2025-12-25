@@ -353,7 +353,7 @@ int doOneCommand(unsigned char* buf) {
         tun4.srcPort = brdr.trgPort = atoi(arg[7]);
         brdr.nexthop = atoi(arg[8]);
         brdr.cmd = 4;
-        brdr.cmd2 = 3;
+        brdr.cmd2 = 1;
         tun4.vrf = atoi(arg[9]);
         tunr.aclport = atoi(arg[10]);
         tun4.prot = IP_PROTOCOL_UDP;
@@ -380,7 +380,7 @@ int doOneCommand(unsigned char* buf) {
         tun6.srcPort = brdr.trgPort = atoi(arg[7]);
         brdr.nexthop = atoi(arg[8]);
         brdr.cmd = 4;
-        brdr.cmd2 = 4;
+        brdr.cmd2 = 2;
         tun6.vrf = atoi(arg[9]);
         tunr.aclport = atoi(arg[10]);
         tun6.prot = IP_PROTOCOL_UDP;
@@ -410,7 +410,7 @@ int doOneCommand(unsigned char* buf) {
         tun4.trgPort = brdr.srcPort = atoi(arg[10]);
         tun4.srcPort = brdr.trgPort = atoi(arg[11]);
         brdr.cmd = 5;
-        brdr.cmd2 = 3;
+        brdr.cmd2 = 1;
         tun4.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 6;
         if (del == 0) {
@@ -438,7 +438,7 @@ int doOneCommand(unsigned char* buf) {
         tun6.trgPort = brdr.srcPort = atoi(arg[10]);
         tun6.srcPort = brdr.trgPort = atoi(arg[11]);
         brdr.cmd = 5;
-        brdr.cmd2 = 4;
+        brdr.cmd2 = 2;
         tun6.prot = IP_PROTOCOL_UDP;
         tunr.cmd = 6;
         if (del == 0) {
@@ -1116,7 +1116,7 @@ int doOneCommand(unsigned char* buf) {
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 4;
-        neir.cmd2 = 3;
+        neir.cmd2 = 1;
         neir.srcPort = tun4.trgPort = atoi(arg[10]);
         neir.trgPort = tun4.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);
@@ -1145,7 +1145,7 @@ int doOneCommand(unsigned char* buf) {
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 4;
-        neir.cmd2 = 4;
+        neir.cmd2 = 2;
         neir.srcPort = tun6.trgPort = atoi(arg[10]);
         neir.trgPort = tun6.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);
@@ -1232,7 +1232,7 @@ int doOneCommand(unsigned char* buf) {
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 6;
-        neir.cmd2 = 3;
+        neir.cmd2 = 1;
         neir.srcPort = tun4.trgPort = atoi(arg[10]);
         neir.trgPort = tun4.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);
@@ -1261,7 +1261,7 @@ int doOneCommand(unsigned char* buf) {
         str2mac(&neir.macs[0], arg[7]);
         str2mac(&neir.macs[6], arg[9]);
         neir.cmd = 6;
-        neir.cmd2 = 4;
+        neir.cmd2 = 2;
         neir.srcPort = tun6.trgPort = atoi(arg[10]);
         neir.trgPort = tun6.srcPort = atoi(arg[11]);
         neir.sess = atoi(arg[12]);

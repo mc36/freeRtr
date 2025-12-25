@@ -55,7 +55,7 @@ struct routes_res {
 
 struct neigh_res {
     __u32 cmd; // 1=rawip, 2=pppoe, 3=gre, 4=l2tp, 5=l3tp, 6=gtp, 7=pwhe, 8=labels
-    __u32 cmd2; // 1=ipv4, 2=ipv6, 3=udp4, 4=udp6
+    __u32 cmd2; // 1=ipv4, 2=ipv6
     __u8 macs[12];
     __u8 mac2[12];
     __u32 port;
@@ -114,7 +114,7 @@ struct bridge_key {
 
 struct bridge_res {
     __u32 cmd; // 1=port, 2=vpls, 3=route, 4=pckoudp, 5=vxlan
-    __u32 cmd2; // 1=ipv4, 2=ipv6, 3=udp4, 4=udp6
+    __u32 cmd2; // 1=ipv4, 2=ipv6
     __u32 port;
     __u32 nexthop;
     __u32 label1;
