@@ -72,7 +72,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.mpls80.setValid();
         hdr.mpls80.label = lab0;
         hdr.mpls80.ttl = 255;
-        hdr.mpls80.bos = 1;
+        if (hdr.mpls0.isValid()) hdr.mpls80.bos = 0; else hdr.mpls80.bos = 1;
         hdr.mpls81.setValid();
         hdr.mpls81.label = lab1;
         hdr.mpls81.ttl = 255;
@@ -121,7 +121,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.mpls80.setValid();
         hdr.mpls80.label = lab0;
         hdr.mpls80.ttl = 255;
-        hdr.mpls80.bos = 1;
+        if (hdr.mpls0.isValid()) hdr.mpls80.bos = 0; else hdr.mpls80.bos = 1;
         hdr.mpls81.setValid();
         hdr.mpls81.label = lab1;
         hdr.mpls81.ttl = 255;
@@ -166,7 +166,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.mpls80.setValid();
         hdr.mpls80.label = lab0;
         hdr.mpls80.ttl = 255;
-        hdr.mpls80.bos = 1;
+        if (hdr.mpls0.isValid()) hdr.mpls80.bos = 0; else hdr.mpls80.bos = 1;
         hdr.mpls81.setValid();
         hdr.mpls81.label = lab1;
         hdr.mpls81.ttl = 255;
@@ -207,7 +207,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.mpls80.setValid();
         hdr.mpls80.label = lab0;
         hdr.mpls80.ttl = 255;
-        hdr.mpls80.bos = 1;
+        if (hdr.mpls0.isValid()) hdr.mpls80.bos = 0; else hdr.mpls80.bos = 1;
         hdr.mpls81.setValid();
         hdr.mpls81.label = lab1;
         hdr.mpls81.ttl = 255;
@@ -244,7 +244,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.mpls80.setValid();
         hdr.mpls80.label = lab0;
         hdr.mpls80.ttl = 255;
-        hdr.mpls80.bos = 1;
+        if (hdr.mpls0.isValid()) hdr.mpls80.bos = 0; else hdr.mpls80.bos = 1;
         hdr.mpls81.setValid();
         hdr.mpls81.label = lab1;
         hdr.mpls81.ttl = 255;
@@ -277,7 +277,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.mpls80.setValid();
         hdr.mpls80.label = lab0;
         hdr.mpls80.ttl = 255;
-        hdr.mpls80.bos = 1;
+        if (hdr.mpls0.isValid()) hdr.mpls80.bos = 0; else hdr.mpls80.bos = 1;
         hdr.mpls81.setValid();
         hdr.mpls81.label = lab1;
         hdr.mpls81.ttl = 255;
@@ -306,7 +306,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.mpls80.setValid();
         hdr.mpls80.label = lab0;
         hdr.mpls80.ttl = 255;
-        hdr.mpls80.bos = 1;
+        if (hdr.mpls0.isValid()) hdr.mpls80.bos = 0; else hdr.mpls80.bos = 1;
         hdr.mpls81.setValid();
         hdr.mpls81.label = lab1;
         hdr.mpls81.ttl = 255;
@@ -331,7 +331,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.mpls80.setValid();
         hdr.mpls80.label = lab0;
         hdr.mpls80.ttl = 255;
-        hdr.mpls80.bos = 1;
+        if (hdr.mpls0.isValid()) hdr.mpls80.bos = 0; else hdr.mpls80.bos = 1;
         hdr.mpls81.setValid();
         hdr.mpls81.label = lab1;
         hdr.mpls81.ttl = 255;
@@ -352,7 +352,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.mpls80.setValid();
         hdr.mpls80.label = lab0;
         hdr.mpls80.ttl = 255;
-        hdr.mpls80.bos = 1;
+        if (hdr.mpls0.isValid()) hdr.mpls80.bos = 0; else hdr.mpls80.bos = 1;
         hdr.mpls81.setValid();
         hdr.mpls81.label = lab1;
         hdr.mpls81.ttl = 255;
@@ -369,7 +369,7 @@ control EgressControlNexthop(inout headers hdr,
         hdr.mpls80.setValid();
         hdr.mpls80.label = lab0;
         hdr.mpls80.ttl = 255;
-        hdr.mpls80.bos = 1;
+        if (hdr.mpls0.isValid()) hdr.mpls80.bos = 0; else hdr.mpls80.bos = 1;
         eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
     }
 
