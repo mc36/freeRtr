@@ -1109,10 +1109,11 @@ nethtyp_tx:
             revalidatePacket(bufP + 2);
             bufP += 2;
             if (neir->sess >= 1) {
-                ethtyp = ETHERTYPE_MPLS_UCAST;
                 bufP -= 4;
-                tmp = 0x1ff | (neir->trgPort << 12);
+                tmp = 0xff | (neir->trgPort << 12);
+                if (ethtyp != ETHERTYPE_MPLS_UCAST) tmp |= 0x100;
                 put32msb(bufD, bufP, tmp);
+                ethtyp = ETHERTYPE_MPLS_UCAST;
             }
             if (neir->sess >= 2) {
                 bufP -= 4;

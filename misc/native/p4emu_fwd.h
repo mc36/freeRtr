@@ -742,10 +742,11 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
     case 14: // labels
         bufP += 2;
         if (neigh_res->tid >= 1) {
-            ethtyp = ETHERTYPE_MPLS_UCAST;
             bufP -= 4;
-            tmp = 0x1ff | (neigh_res->dprt << 12);
+            tmp = 0xff | (neigh_res->dprt << 12);
+            if (ethtyp != ETHERTYPE_MPLS_UCAST) tmp |= 0x100;
             put32msb(bufD, bufP, tmp);
+            ethtyp = ETHERTYPE_MPLS_UCAST;
         }
         if (neigh_res->tid >= 2) {
             bufP -= 4;
