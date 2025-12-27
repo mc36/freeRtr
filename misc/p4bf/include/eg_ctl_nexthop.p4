@@ -1110,6 +1110,11 @@ eg_md.nexthop_id:
                 else if (hdr.ipv6d.isValid()) eg_md.ethertype = ETHERTYPE_IPV6;
             }
 #endif
+#ifdef HAVE_MPLS
+            if (hdr.mpls80.isValid()) {
+                if (hdr.mpls0.isValid()) hdr.mpls80.bos = 0;
+            }
+#endif
         }
     }
 }
