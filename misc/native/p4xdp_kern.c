@@ -386,60 +386,6 @@ struct {
     }
 
 
-#define doTunnel(tun)                                           \
-    if (tunr == NULL) goto cpu;                                 \
-    tunr->pack++;                                               \
-    tunr->byte += bufE - bufD;                                  \
-    switch (tunr->cmd) {                                        \
-        case 1:                                                 \
-            bufP += 2;                                          \
-            break;                                              \
-        case 2:                                                 \
-            bufP += 8;                                          \
-            revalidatePacket(bufP + 14);                        \
-            if ((get16msb(bufD, bufP) & 0x8000) != 0) goto cpu; \
-            bufP += 8;                                          \
-            bufP += 2;                                          \
-            ethtyp = get16msb(bufD, bufP);                      \
-            ppptyp2ethtyp();                                    \
-            put16msb(bufD, bufP, ethtyp);                       \
-            break;                                              \
-        case 3:                                                 \
-            bufP += 4;                                          \
-            revalidatePacket(bufP + 4);                         \
-            ethtyp = get16msb(bufD, bufP);                      \
-            ppptyp2ethtyp();                                    \
-            put16msb(bufD, bufP, ethtyp);                       \
-            break;                                              \
-        case 4:                                                 \
-            bufP += 8;                                          \
-            bufP += 8;                                          \
-            revalidatePacket(bufP + 4);                         \
-            guessEthtyp();                                      \
-            bufP -= 2;                                          \
-            put16msb(bufD, bufP, ethtyp);                       \
-            break;                                              \
-        case 5:                                                 \
-            bufP += 8;                                          \
-            revalidatePacket(bufP + 4);                         \
-            bufP -= 2;                                          \
-            ethtyp = ETHERTYPE_ROUTEDMAC;                       \
-            put16msb(bufD, bufP, ethtyp);                       \
-            break;                                              \
-        case 6:                                                 \
-            bufP += 8;                                          \
-            bufP += 8;                                          \
-            revalidatePacket(bufP + 4);                         \
-            bufP -= 2;                                          \
-            ethtyp = ETHERTYPE_ROUTEDMAC;                       \
-            put16msb(bufD, bufP, ethtyp);                       \
-            break;                                              \
-        default:                                                \
-            goto drop;                                          \
-    }                                                           \
-    prt = tunr->aclport;                                        \
-    if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr)) != 0) goto drop;   \
-    continue;
 
 
 #define putSgt()                                                \
@@ -744,7 +690,7 @@ ipv4_rx:
             bufP += 20;
             extract_layer4(u.tun4);
             struct tunnel_res* tunr = bpf_map_lookup_elem(&tunnels4, &u.tun4);
-            doTunnel();
+            goto doTunnel;
         case ETHERTYPE_IPV6:
             if (vrfp == NULL) goto drop;
 ipv6_rx:
@@ -790,7 +736,60 @@ ipv6_rx:
             bufP += 40;
             extract_layer4(u.tun6);
             tunr = bpf_map_lookup_elem(&tunnels6, &u.tun6);
-            doTunnel();
+doTunnel:
+            if (tunr == NULL) goto cpu;
+            tunr->pack++;
+            tunr->byte += bufE - bufD;
+            switch (tunr->cmd) {
+            case 1: // gre
+                bufP += 2;
+                break;
+            case 2: // l2tp
+                bufP += 8;
+                revalidatePacket(bufP + 14);
+                if ((get16msb(bufD, bufP) & 0x8000) != 0) goto cpu;
+                bufP += 8;
+                bufP += 2;
+                ethtyp = get16msb(bufD, bufP);
+                ppptyp2ethtyp();
+                put16msb(bufD, bufP, ethtyp);
+                break;
+            case 3: // l3tp
+                bufP += 4;
+                revalidatePacket(bufP + 4);
+                ethtyp = get16msb(bufD, bufP);
+                ppptyp2ethtyp();
+                put16msb(bufD, bufP, ethtyp);
+                break;
+            case 4: // gtp
+                bufP += 8;
+                bufP += 8;
+                revalidatePacket(bufP + 4);
+                guessEthtyp();
+                bufP -= 2;
+                put16msb(bufD, bufP, ethtyp);
+                break;
+            case 5: // pckoudp
+                bufP += 8;
+                revalidatePacket(bufP + 4);
+                bufP -= 2;
+                ethtyp = ETHERTYPE_ROUTEDMAC;
+                put16msb(bufD, bufP, ethtyp);
+                break;
+            case 6: // vxlan
+                bufP += 8;
+                bufP += 8;
+                revalidatePacket(bufP + 4);
+                bufP -= 2;
+                ethtyp = ETHERTYPE_ROUTEDMAC;
+                put16msb(bufD, bufP, ethtyp);
+                break;
+            default:
+                goto drop;
+            }
+            prt = tunr->aclport;
+            if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr)) != 0) goto drop;
+            continue;
         case ETHERTYPE_VLAN:
             revalidatePacket(bufP + 4);
             u.vlnk.port = prt;

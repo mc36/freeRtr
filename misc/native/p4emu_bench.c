@@ -51,17 +51,18 @@ int main(int argc, char **argv) {
     printf("code=%i, int=%i, long=%i, ptr=%i, order=", (int)((char*)&doOneCommand - (char*)&hashDataPacket), (int)sizeof(int), (int)sizeof(long), (int)sizeof(int*));
     if (origD[0] == 1) printf("lsb");
     else printf("msb");
-    printf(", arch=%s\n", unamei.machine);
-    fflush(stdout);
-    int origS = 0;
-    if (argc < 3) err("usage: <commands> <count> <bytes>");
-    int count = atoi(argv[2]);
+    printf(", arch=%s, ", unamei.machine);
     dataPorts = 1;
     cpuPort = 1;
     initIface(0, "bench");
     initTables();
     struct packetContext ctx;
-    if (initContext(&ctx) != 0) err("error initializing context");
+    ctx.stat = ifaceStat[0];
+    initContext(&ctx);
+    fflush(stdout);
+    int origS = 0;
+    if (argc < 3) err("usage: <commands> <count> <bytes>");
+    int count = atoi(argv[2]);
     FILE* fil = fopen(argv[1], "r");
     if (fil == NULL) err("error opening commands");
     for (;;) {
@@ -90,7 +91,6 @@ int main(int argc, char **argv) {
     fclose(fil);
     hexdump(origD, 0, origS);
     printf("input=%i, rounds=%i", origS, count);
-    ctx.stat = ifaceStat[0];
     sleep(1);
     clock_t beg = clock();
     for (int i = 0; i < count; i++) {
@@ -100,11 +100,10 @@ int main(int argc, char **argv) {
     clock_t end = clock();
     double spent = (double)(end - beg) / (double)CLOCKS_PER_SEC;
     if (spent <= 0) spent = 1;
-    printf(", output=%i\n", lastS);
+    printf(", output=%i, packets=%li, bytes=%li, time=%f\n", lastS, packs, bytes, spent);
     hexdump(lastB, 0, lastS);
-    printf("packets=%li, bytes=%li, time=%f\n", packs, bytes, spent);
     double prn = (double)packs / spent;
-    printf("pps=%f, %f mpps\n", prn, prn / 1000000.0);
+    printf("pps=%f, %f mpps, ", prn, prn / 1000000.0);
     prn = (double)bytes * 8.0 / spent;
     printf("bps=%f, %f gbps\n", prn, prn / 1000000000.0);
 }

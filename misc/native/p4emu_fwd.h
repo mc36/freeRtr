@@ -366,7 +366,7 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
 
 
 #define guessEthtyp                                             \
-    switch (bufD[*bufP] & 0xf0) {                               \
+    switch (bufD[bufP] & 0xf0) {                                \
         case 0x40:                                              \
             ethtyp = ETHERTYPE_IPV4;                            \
             break;                                              \
@@ -973,175 +973,6 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
 }
 
 
-
-
-int doTunnel(struct packetContext *ctx, struct tun4_entry *tun_res, int *bufP, int *bufS, int bufT) {
-    unsigned char *bufD = ctx->bufD;
-    tun_res->pack++;
-    tun_res->byte += *bufS;
-    switch (tun_res->command) {
-    case 1: // gre
-        *bufP = bufT + 2;
-        return 0;
-    case 2: // l2tp
-        *bufP = bufT + 8;
-        if ((get16msb(bufD, *bufP) & 0x8000) != 0) doCpuing;
-        *bufP += 8;
-        *bufP += 2;
-        int ethtyp = get16msb(bufD, *bufP);
-        ppptyp2ethtyp(*bufP);
-        put16msb(bufD, *bufP, ethtyp);
-        return 0;
-    case 3: // vxlan
-        *bufP = bufT + 8;
-        *bufP += 8;
-        *bufP -= 2;
-        put16msb(bufD, *bufP, ETHERTYPE_ROUTEDMAC);
-        return 0;
-    case 4: // ipip
-        *bufP = bufT - 2;
-        ethtyp = tun_res->prot;
-        iproto2ethtyp;
-        put16msb(bufD, *bufP, ethtyp);
-        return 0;
-    case 5: // etherip
-        *bufP = bufT + 2;
-        *bufP -= 2;
-        put16msb(bufD, *bufP, ETHERTYPE_ROUTEDMAC);
-        return 0;
-    case 6: // pckoudp
-        *bufP = bufT + 8;
-        *bufP -= 2;
-        put16msb(bufD, *bufP, ETHERTYPE_ROUTEDMAC);
-        return 0;
-#ifndef HAVE_NOCRYPTO
-    case 7: // esp
-        *bufP = bufT;
-        int tmp = *bufS - *bufP + preBuff - tun_res->hashBlkLen;
-        if (tmp < 1) doDropper;
-        int tmp2;
-        if (tun_res->hashBlkLen > 0) {
-            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) doDropper;
-            if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) doDropper;
-            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) doDropper;
-            if (memcmp(&bufD[0], &bufD[*bufP + tmp], tun_res->hashBlkLen) !=0) doDropper;
-            *bufS -= tun_res->hashBlkLen;
-        }
-        *bufP += 8;
-        tmp -= 8;
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
-        if (tun_res->encrTagLen > 0) {
-            memcpy(&bufD[0], tun_res->hashKeyDat, 4);
-            memcpy(&bufD[4], &bufD[*bufP], 8);
-            *bufP += 8;
-            tmp -= 8;
-            if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, bufD) != 1) doDropper;
-            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
-            if (EVP_DecryptUpdate(ctx->encr, NULL, &tmp2, &bufD[*bufP - 16], 8) != 1) doDropper;
-            if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
-            *bufS -= tun_res->encrTagLen;
-            tmp -= tun_res->encrTagLen;
-        } else {
-            if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, &bufD[*bufP]) != 1) doDropper;
-            *bufP += tun_res->encrBlkLen;
-            tmp -= tun_res->encrBlkLen;
-            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
-            if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
-        }
-        ethtyp = bufD[*bufP + tmp - 1];
-        *bufS -= bufD[*bufP + tmp - 2] + 2;
-        iproto2ethtyp;
-        *bufP -= 2;
-        put16msb(bufD, *bufP, ethtyp);
-        return 0;
-    case 8: // openvpn
-        *bufP = bufT + 8;
-        *bufP += tun_res->hashBlkLen;
-        tmp = *bufS - *bufP + preBuff;
-        if (tmp < 1) doDropper;
-        if (tun_res->hashBlkLen > 0) {
-            if (myHmacInit(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen) != 1) doDropper;
-            if (EVP_DigestUpdate(ctx->dgst, &bufD[*bufP], tmp) != 1) doDropper;
-            if (myHmacEnd(ctx->dgst, tun_res->hashAlg, tun_res->hashKeyDat, tun_res->hashKeyLen, &bufD[0]) != 1) doDropper;
-            if (memcmp(&bufD[0], &bufD[*bufP - tun_res->hashBlkLen], tun_res->hashBlkLen) !=0) doDropper;
-        }
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
-        if (EVP_DecryptInit_ex(ctx->encr, tun_res->encrAlg, NULL, tun_res->encrKeyDat, &bufD[*bufP]) != 1) doDropper;
-        *bufP += tun_res->encrBlkLen;
-        tmp -= tun_res->encrBlkLen;
-        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
-        if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
-        *bufP += 8;
-        guessEthtyp;
-        *bufP -= 2;
-        put16msb(bufD, *bufP, ethtyp);
-        return 0;
-    case 9: // wireguard
-        *bufP = bufT + 8;
-        if (get32lsb(bufD, *bufP) != 4) doCpuing;
-        tmp = *bufS - *bufP + preBuff;
-        if (tmp < 32) doDropper;
-        put32msb(bufD, *bufP + 4, 0);
-        *bufP += 16;
-        *bufS -= 16;
-        tmp -= 32;
-        if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
-        if (EVP_DecryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, tun_res->encrKeyDat, &bufD[*bufP - 12]) != 1) doDropper;
-        if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
-        if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[*bufP + tmp]) != 1) doDropper;
-        if (EVP_DecryptUpdate(ctx->encr, &bufD[*bufP], &tmp2, &bufD[*bufP], tmp) != 1) doDropper;
-        if (EVP_DecryptFinal_ex(ctx->encr, &bufD[*bufP + tmp], &tmp2) != 1) doDropper;
-        guessEthtyp;
-        *bufP -= 2;
-        put16msb(bufD, *bufP, ethtyp);
-        return 0;
-#endif
-    case 10: // amt
-        *bufP = bufT + 8;
-        if (bufD[*bufP] != 6) doCpuing;
-        *bufP += 2;
-        guessEthtyp;
-        *bufP -= 2;
-        put16msb(bufD, *bufP, ethtyp);
-        return 0;
-    case 11: // gtp
-        *bufP = bufT + 8;
-        *bufP += 8;
-        guessEthtyp;
-        *bufP -= 2;
-        put16msb(bufD, *bufP, ethtyp);
-        return 0;
-    case 12: // l3tp
-        *bufP = bufT + 4;
-        ethtyp = get16msb(bufD, *bufP);
-        ppptyp2ethtyp(*bufP);
-        put16msb(bufD, *bufP, ethtyp);
-        return 0;
-    case 13: // tmux
-        *bufP = bufT + 2;
-        ethtyp = get16msb(bufD, bufT);
-        if (ethtyp < 4) doDropper;
-        if (ethtyp > (*bufS - bufT + preBuff)) doDropper;
-        *bufS = ethtyp + bufT - preBuff;
-        ethtyp = bufD[*bufP];
-        iproto2ethtyp;
-        put16msb(bufD, *bufP, ethtyp);
-        return 0;
-    case 14: // eoip
-        *bufP = bufT + 8;
-        if (get16msb(bufD, bufT + 2) != 0x6400) doDropper;
-        ethtyp = get16msb(bufD, bufT + 4);
-        if (ethtyp > (*bufS - *bufP + preBuff)) doDropper;
-        *bufS = ethtyp + *bufP - preBuff;
-        *bufP -= 2;
-        put16msb(bufD, *bufP, ETHERTYPE_ROUTEDMAC);
-        return 0;
-    }
-drop:
-    return 2;
-cpu:
-    return 1;
-}
 
 
 #define doRouted(route_res, proto)                                  \
@@ -1825,17 +1656,7 @@ ipv4_tx:
             tun4_ntry.srcPort = acl4_ntry.srcPortV;
             tun4_ntry.trgPort = acl4_ntry.trgPortV;
             tun4_res = hasht_find(&vrf2rib_res->tun, &tun4_ntry);
-            if (tun4_res != NULL) {
-                if (frag != 0) doPunting;
-                switch (doTunnel(ctx, tun4_res, &bufP, &bufS, bufT)) {
-                case 0:
-                    prt = tun4_res->aclport;
-                    goto ethtyp_rx;
-                case 1:
-                    doCpuing;
-                }
-                doDropper;
-            }
+            if (tun4_res != NULL) goto doTunnel;
             mroute4_ntry.src = acl4_ntry.srcAddr;
             mroute4_ntry.grp = acl4_ntry.trgAddr;
             mroute4_res = hasht_find(&vrf2rib_res->mcst, &mroute4_ntry);
@@ -2108,15 +1929,8 @@ ipv6_tx:
             tun6_ntry.trgPort = acl6_ntry.trgPortV;
             tun6_res = hasht_find(&vrf2rib_res->tun, &tun6_ntry);
             if (tun6_res != NULL) {
-                if (frag != 0) doPunting;
-                switch (doTunnel(ctx, (struct tun4_entry *)((char*)tun6_res+sizeof(tun6_ntry)-sizeof(tun4_ntry)), &bufP, &bufS, bufT)) {
-                case 0:
-                    prt = tun6_res->aclport;
-                    goto ethtyp_rx;
-                case 1:
-                    doCpuing;
-                }
-                doDropper;
+                tun4_res = (void*)tun6_res + sizeof(tun6_ntry) - sizeof(tun4_ntry);
+                goto doTunnel;
             }
             mroute6_ntry.src1 = acl6_ntry.srcAddr1;
             mroute6_ntry.src2 = acl6_ntry.srcAddr2;
@@ -2142,6 +1956,172 @@ ipv6_tx:
             doRouted(route6_res, IP_PROTOCOL_IPV6);
         }
         doDropper;
+doTunnel:
+        if (frag != 0) doPunting;
+        tun4_res->pack++;
+        tun4_res->byte += bufS;
+        switch (tun4_res->command) {
+        case 1: // gre
+            bufP = bufT + 2;
+            break;
+        case 2: // l2tp
+            bufP = bufT + 8;
+            if ((get16msb(bufD, bufP) & 0x8000) != 0) doCpuing;
+            bufP += 8;
+            bufP += 2;
+            int ethtyp = get16msb(bufD, bufP);
+            ppptyp2ethtyp(bufP);
+            put16msb(bufD, bufP, ethtyp);
+            break;
+        case 3: // vxlan
+            bufP = bufT + 8;
+            bufP += 8;
+            bufP -= 2;
+            put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+            break;
+        case 4: // ipip
+            bufP = bufT - 2;
+            ethtyp = tun4_res->prot;
+            iproto2ethtyp;
+            put16msb(bufD, bufP, ethtyp);
+            break;
+        case 5: // etherip
+            bufP = bufT + 2;
+            bufP -= 2;
+            put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+            break;
+        case 6: // pckoudp
+            bufP = bufT + 8;
+            bufP -= 2;
+            put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+            break;
+#ifndef HAVE_NOCRYPTO
+        case 7: // esp
+            bufP = bufT;
+            int tmp = bufS - bufP + preBuff - tun4_res->hashBlkLen;
+            if (tmp < 1) doDropper;
+            int tmp2;
+            if (tun4_res->hashBlkLen > 0) {
+                if (myHmacInit(ctx->dgst, tun4_res->hashAlg, tun4_res->hashKeyDat, tun4_res->hashKeyLen) != 1) doDropper;
+                if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;
+                if (myHmacEnd(ctx->dgst, tun4_res->hashAlg, tun4_res->hashKeyDat, tun4_res->hashKeyLen, &bufD[0]) != 1) doDropper;
+                if (memcmp(&bufD[0], &bufD[bufP + tmp], tun4_res->hashBlkLen) !=0) doDropper;
+                bufS -= tun4_res->hashBlkLen;
+            }
+            bufP += 8;
+            tmp -= 8;
+            if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+            if (tun4_res->encrTagLen > 0) {
+                memcpy(&bufD[0], tun4_res->hashKeyDat, 4);
+                memcpy(&bufD[4], &bufD[bufP], 8);
+                bufP += 8;
+                tmp -= 8;
+                if (EVP_DecryptInit_ex(ctx->encr, tun4_res->encrAlg, NULL, tun4_res->encrKeyDat, bufD) != 1) doDropper;
+                if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+                if (EVP_DecryptUpdate(ctx->encr, NULL, &tmp2, &bufD[bufP - 16], 8) != 1) doDropper;
+                if (EVP_DecryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+                bufS -= tun4_res->encrTagLen;
+                tmp -= tun4_res->encrTagLen;
+            } else {
+                if (EVP_DecryptInit_ex(ctx->encr, tun4_res->encrAlg, NULL, tun4_res->encrKeyDat, &bufD[bufP]) != 1) doDropper;
+                bufP += tun4_res->encrBlkLen;
+                tmp -= tun4_res->encrBlkLen;
+                if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+                if (EVP_DecryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+            }
+            ethtyp = bufD[bufP + tmp - 1];
+            bufS -= bufD[bufP + tmp - 2] + 2;
+            iproto2ethtyp;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            break;
+        case 8: // openvpn
+            bufP = bufT + 8;
+            bufP += tun4_res->hashBlkLen;
+            tmp = bufS - bufP + preBuff;
+            if (tmp < 1) doDropper;
+            if (tun4_res->hashBlkLen > 0) {
+                if (myHmacInit(ctx->dgst, tun4_res->hashAlg, tun4_res->hashKeyDat, tun4_res->hashKeyLen) != 1) doDropper;
+                if (EVP_DigestUpdate(ctx->dgst, &bufD[bufP], tmp) != 1) doDropper;
+                if (myHmacEnd(ctx->dgst, tun4_res->hashAlg, tun4_res->hashKeyDat, tun4_res->hashKeyLen, &bufD[0]) != 1) doDropper;
+                if (memcmp(&bufD[0], &bufD[bufP - tun4_res->hashBlkLen], tun4_res->hashBlkLen) !=0) doDropper;
+            }
+            if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+            if (EVP_DecryptInit_ex(ctx->encr, tun4_res->encrAlg, NULL, tun4_res->encrKeyDat, &bufD[bufP]) != 1) doDropper;
+            bufP += tun4_res->encrBlkLen;
+            tmp -= tun4_res->encrBlkLen;
+            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+            if (EVP_DecryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+            bufP += 8;
+            guessEthtyp;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            break;
+        case 9: // wireguard
+            bufP = bufT + 8;
+            if (get32lsb(bufD, bufP) != 4) doCpuing;
+            tmp = bufS - bufP + preBuff;
+            if (tmp < 32) doDropper;
+            put32msb(bufD, bufP + 4, 0);
+            bufP += 16;
+            bufS -= 16;
+            tmp -= 32;
+            if (EVP_CIPHER_CTX_reset(ctx->encr) != 1) doDropper;
+            if (EVP_DecryptInit_ex(ctx->encr, EVP_chacha20_poly1305(), NULL, tun4_res->encrKeyDat, &bufD[bufP - 12]) != 1) doDropper;
+            if (EVP_CIPHER_CTX_set_padding(ctx->encr, 0) != 1) doDropper;
+            if (EVP_CIPHER_CTX_ctrl(ctx->encr, EVP_CTRL_AEAD_SET_TAG, 16, &bufD[bufP + tmp]) != 1) doDropper;
+            if (EVP_DecryptUpdate(ctx->encr, &bufD[bufP], &tmp2, &bufD[bufP], tmp) != 1) doDropper;
+            if (EVP_DecryptFinal_ex(ctx->encr, &bufD[bufP + tmp], &tmp2) != 1) doDropper;
+            guessEthtyp;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            break;
+#endif
+        case 10: // amt
+            bufP = bufT + 8;
+            if (bufD[bufP] != 6) doCpuing;
+            bufP += 2;
+            guessEthtyp;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            break;
+        case 11: // gtp
+            bufP = bufT + 8;
+            bufP += 8;
+            guessEthtyp;
+            bufP -= 2;
+            put16msb(bufD, bufP, ethtyp);
+            break;
+        case 12: // l3tp
+            bufP = bufT + 4;
+            ethtyp = get16msb(bufD, bufP);
+            ppptyp2ethtyp(bufP);
+            put16msb(bufD, bufP, ethtyp);
+            break;
+        case 13: // tmux
+            bufP = bufT + 2;
+            ethtyp = get16msb(bufD, bufT);
+            if (ethtyp < 4) doDropper;
+            if (ethtyp > (bufS - bufT + preBuff)) doDropper;
+            bufS = ethtyp + bufT - preBuff;
+            ethtyp = bufD[bufP];
+            iproto2ethtyp;
+            put16msb(bufD, bufP, ethtyp);
+            break;
+        case 14: // eoip
+            bufP = bufT + 8;
+            if (get16msb(bufD, bufT + 2) != 0x6400) doDropper;
+            ethtyp = get16msb(bufD, bufT + 4);
+            if (ethtyp > (bufS - bufP + preBuff)) doDropper;
+            bufS = ethtyp + bufP - preBuff;
+            bufP -= 2;
+            put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+            break;
+        default:
+            doDropper;
+        }
+        prt = tun4_res->aclport;
+        goto ethtyp_rx;
     case ETHERTYPE_PPPOE_DATA: // pppoe
         ctx->stat->packPppoe++;
         ctx->stat->bytePppoe += bufS;

@@ -56,7 +56,7 @@ int LLVMFuzzerInitialize(int *argc, char ***argv) {
     initIface(0, "bench");
     initTables();
     ctx.stat = ifaceStat[0];
-    if (initContext(&ctx) != 0) err("error initializing context");
+    initContext(&ctx);
     FILE* fil = fopen(&(*argv)[1][2], "r");
     if (fil == NULL) err("error opening commands");
     for (;;) {
