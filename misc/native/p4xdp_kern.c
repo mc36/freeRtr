@@ -494,11 +494,11 @@ __u32 xdp_router(struct xdp_md *ctx) {
     revalidatePacket(sizeof(macaddr) + 8);
     __builtin_memcpy(macaddr, &bufD[0], sizeof(macaddr));
 
-    __u32 tmp = 0;
-    __u32* cpuPort = bpf_map_lookup_elem(&cpu_port, &tmp);
+    __u32 prt = 0;
+    __u32* cpuPort = bpf_map_lookup_elem(&cpu_port, &prt);
     if (cpuPort == NULL) goto drop;
 
-    __u32 prt = ctx->ingress_ifindex;
+    prt = ctx->ingress_ifindex;
     struct port_res* rxport = bpf_map_lookup_elem(&rx_ports, &prt);
     if (rxport == NULL) goto drop;
     rxport->pack++;
@@ -523,26 +523,26 @@ __u32 xdp_router(struct xdp_md *ctx) {
     hash ^= get32msb(macaddr, 4);
     hash ^= get32msb(macaddr, 8);
     __u32 sgt = 0;
-    union {
-        struct route4_key rou4;
-        struct tunnel4_key tun4;
-        struct route6_key rou6;
-        struct tunnel6_key tun6;
-        struct vlan_key vlnk;
-        struct pppoe_key pppk;
-        struct nsh_key nshk;
-        struct polidx_key polk;
-        struct bridge_key brdk;
-    } u;
 
-#pragma unroll
-    for (__u32 rounds = 0; rounds < 4; rounds++) {
+    for (__u32 rounds = 0; rounds < 6; rounds++) {
 
         __u64 bufP = sizeof(macaddr) + 2;
         revalidatePacket(bufP);
         __u32 ethtyp = get16msb(bufD, bufP - 2);
         __u32 neik = 0;
         __s32 ttl = 0;
+        __u32 tmp = 0;
+        union {
+            struct route4_key rou4;
+            struct tunnel4_key tun4;
+            struct route6_key rou6;
+            struct tunnel6_key tun6;
+            struct vlan_key vlnk;
+            struct pppoe_key pppk;
+            struct nsh_key nshk;
+            struct polidx_key polk;
+            struct bridge_key brdk;
+        } u = {};
 
         struct vrfp_res* vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
         if (vrfp == NULL) goto etyped_rx;
@@ -1249,7 +1249,8 @@ done:
     return bpf_redirect(txport->idx, 0);
 
 punt:
-    tmp = 1;
+    {}
+    __u32 tmp = 1;
     __u32* remain = bpf_map_lookup_elem(&cpu_port, &tmp);
     if (remain == NULL) goto drop;
     if (*remain < 1) goto drop;
