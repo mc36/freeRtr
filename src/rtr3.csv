@@ -392,13 +392,13 @@ http://sources.freertr.org/cfg/p4lang-rout038.tst;p4lang-rout038.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout039.tst;p4lang-rout039.tst;ok;ok;ok;ok;ok;p4lang: hairpin pppoe mpls
 http://sources.freertr.org/cfg/p4lang-rout040.tst;p4lang-rout040.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan pppoe mpls
 http://sources.freertr.org/cfg/p4lang-rout041.tst;p4lang-rout041.tst;ok;ok;ok;ok;ok;p4lang: hairpin vpls/ldp with bgp
-http://sources.freertr.org/cfg/p4lang-rout042.tst;p4lang-rout042.tst;ok;ok;not ok;ok;ok;p4lang: hairpin vlan vpls/ldp with bgp
+http://sources.freertr.org/cfg/p4lang-rout042.tst;p4lang-rout042.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout043.tst;p4lang-rout043.tst;ok;ok;ok;ok;ok;p4lang: hairpin eompls
 http://sources.freertr.org/cfg/p4lang-rout044.tst;p4lang-rout044.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan eompls
 http://sources.freertr.org/cfg/p4lang-rout045.tst;p4lang-rout045.tst;ok;ok;ok;ok;ok;p4lang: vlan evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout046.tst;p4lang-rout046.tst;ok;ok;ok;ok;ok;p4lang: bundle vlan evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout047.tst;p4lang-rout047.tst;ok;ok;ok;ok;ok;p4lang: hairpin evpn/cmac with bgp
-http://sources.freertr.org/cfg/p4lang-rout048.tst;p4lang-rout048.tst;ok;ok;not ok;ok;ok;p4lang: hairpin vlan evpn/cmac with bgp
+http://sources.freertr.org/cfg/p4lang-rout048.tst;p4lang-rout048.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout049.tst;p4lang-rout049.tst;ok;ok;ok;ok;ok;p4lang: gre routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout050.tst;p4lang-rout050.tst;ok;ok;ok;ok;ok;p4lang: gre routing over ipv6
 http://sources.freertr.org/cfg/p4lang-rout051.tst;p4lang-rout051.tst;ok;ok;ok;ok;ok;p4lang: gre routing over ipv4 loopback
@@ -683,7 +683,7 @@ http://sources.freertr.org/cfg/p4lang-rout329.tst;p4lang-rout329.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout330.tst;p4lang-rout330.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq routing
 http://sources.freertr.org/cfg/p4lang-rout331.tst;p4lang-rout331.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq bridging
 http://sources.freertr.org/cfg/p4lang-rout332.tst;p4lang-rout332.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq mpls
-http://sources.freertr.org/cfg/p4lang-rout333.tst;p4lang-rout333.tst;ok;ok;not ok;ok;ok;p4lang: hairpin qinq pppoe routing
+http://sources.freertr.org/cfg/p4lang-rout333.tst;p4lang-rout333.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq pppoe routing
 http://sources.freertr.org/cfg/p4lang-rout334.tst;p4lang-rout334.tst;ok;ok;not ok;ok;ok;p4lang: hairpin qinq vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout335.tst;p4lang-rout335.tst;ok;ok;ok;ok;ok;p4lang: hairpin qinq eompls
 http://sources.freertr.org/cfg/p4lang-rout336.tst;p4lang-rout336.tst;ok;ok;ok;ok;ok;p4lang: qinq evpn/cmac with bgp
@@ -691,7 +691,7 @@ http://sources.freertr.org/cfg/p4lang-rout337.tst;p4lang-rout337.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout338.tst;p4lang-rout338.tst;ok;ok;not ok;ok;ok;p4lang: hairpin qinq evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout339.tst;p4lang-rout339.tst;ok;ok;ok;ok;ok;p4lang: gre routing over qinq
 http://sources.freertr.org/cfg/p4lang-rout340.tst;p4lang-rout340.tst;ok;ok;ok;ok;ok;p4lang: gre routing over bundle qinq
-http://sources.freertr.org/cfg/p4lang-rout341.tst;p4lang-rout341.tst;ok;ok;not ok;ok;ok;p4lang: gre routing over hairpin qinq
+http://sources.freertr.org/cfg/p4lang-rout341.tst;p4lang-rout341.tst;ok;ok;ok;ok;ok;p4lang: gre routing over hairpin qinq
 http://sources.freertr.org/cfg/p4lang-rout342.tst;p4lang-rout342.tst;ok;ok;ok;ok;ok;p4lang: gre routing over qinq bridge
 http://sources.freertr.org/cfg/p4lang-rout343.tst;p4lang-rout343.tst;ok;ok;ok;ok;ok;p4lang: gre mpls over qinq
 http://sources.freertr.org/cfg/p4lang-rout344.tst;p4lang-rout344.tst;ok;ok;ok;ok;ok;p4lang: l2tp routing over qinq
