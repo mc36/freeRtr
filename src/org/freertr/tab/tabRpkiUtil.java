@@ -517,7 +517,7 @@ public class tabRpkiUtil {
     public final static userFormat convertAspaHead(int typ) {
         switch (typ) {
             case 1:
-                return new userFormat("|", "prefix|ases|ago");
+                return new userFormat("|", "asn|ases|ago");
             default:
                 return null;
         }
