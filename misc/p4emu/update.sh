@@ -1,7 +1,7 @@
 #!/bin/sh
 sudo apt-get update
 sudo apt-get dist-upgrade
-sudo apt-get -t experimental install dpdk dpdk-dev openssl libssl-dev libpcap-dev libbpf-dev libxdp-dev liburing-dev libmnl-dev
+sudo apt-get -t experimental install linux-image-cloud-`dpkg --print-architecture` dpdk dpdk-dev openssl libssl-dev libpcap-dev libbpf-dev libxdp-dev liburing-dev libmnl-dev
 sudo apt-get remove apparmor
 sudo apt-get autoremove
 sudo apt-get clean

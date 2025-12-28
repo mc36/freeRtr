@@ -390,13 +390,13 @@ qc pass: p4lang: hairpin vlan pppoe routing
 qc pass: p4lang: hairpin pppoe mpls
 qc pass: p4lang: hairpin vlan pppoe mpls
 qc pass: p4lang: hairpin vpls/ldp with bgp
-failed: p4lang: hairpin vlan vpls/ldp with bgp
+qc pass: p4lang: hairpin vlan vpls/ldp with bgp
 qc pass: p4lang: hairpin eompls
 qc pass: p4lang: hairpin vlan eompls
 qc pass: p4lang: vlan evpn/cmac with bgp
 qc pass: p4lang: bundle vlan evpn/cmac with bgp
 qc pass: p4lang: hairpin evpn/cmac with bgp
-failed: p4lang: hairpin vlan evpn/cmac with bgp
+qc pass: p4lang: hairpin vlan evpn/cmac with bgp
 qc pass: p4lang: gre routing over ipv4
 qc pass: p4lang: gre routing over ipv6
 qc pass: p4lang: gre routing over ipv4 loopback
@@ -681,7 +681,7 @@ qc pass: p4lang: qinq pppoe mpls
 qc pass: p4lang: hairpin qinq routing
 qc pass: p4lang: hairpin qinq bridging
 qc pass: p4lang: hairpin qinq mpls
-failed: p4lang: hairpin qinq pppoe routing
+qc pass: p4lang: hairpin qinq pppoe routing
 failed: p4lang: hairpin qinq vpls/ldp with bgp
 qc pass: p4lang: hairpin qinq eompls
 qc pass: p4lang: qinq evpn/cmac with bgp
@@ -689,7 +689,7 @@ qc pass: p4lang: bundle qinq evpn/cmac with bgp
 failed: p4lang: hairpin qinq evpn/cmac with bgp
 qc pass: p4lang: gre routing over qinq
 qc pass: p4lang: gre routing over bundle qinq
-failed: p4lang: gre routing over hairpin qinq
+qc pass: p4lang: gre routing over hairpin qinq
 qc pass: p4lang: gre routing over qinq bridge
 qc pass: p4lang: gre mpls over qinq
 qc pass: p4lang: l2tp routing over qinq
