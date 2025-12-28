@@ -50,7 +50,7 @@ public class ifcIou implements ifcUp, ifcDn {
         if (pck.getByte(6) != 1) { // type
             return;
         }
-        if (pck.getByte(6) != 0) { // channel
+        if (pck.getByte(7) != 0) { // channel
             return;
         }
         pck.getSkip(size);
