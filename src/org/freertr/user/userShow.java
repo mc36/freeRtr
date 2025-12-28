@@ -6085,6 +6085,7 @@ public class userShow {
             if (rdr.putStrTab(lst)) {
                 break;
             }
+            rdr.resetFilter();
         }
     }
 
@@ -6104,6 +6105,7 @@ public class userShow {
             if (rdr.putStrTab(lst)) {
                 break;
             }
+            rdr.resetFilter();
         }
     }
 
@@ -6123,6 +6125,7 @@ public class userShow {
             if (rdr.putStrTab(lst)) {
                 break;
             }
+            rdr.resetFilter();
         }
     }
 
@@ -6148,6 +6151,7 @@ public class userShow {
             if (rdr.putStrTab(lst)) {
                 break;
             }
+            rdr.resetFilter();
         }
     }
 

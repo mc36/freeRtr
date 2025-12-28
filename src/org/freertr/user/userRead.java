@@ -895,7 +895,7 @@ public class userRead implements Comparator<String> {
         }
         if (lst == null) {
             pipe.linePut("");
-            return true;
+            return false;
         }
         userFormat.applyBoxing(lst, pipe.settingsGet(pipeSetting.boxer, userFormat.boxerMode.normal), !boxed);
         final int height = pipe.settingsGet(pipeSetting.height, 25);
@@ -1827,6 +1827,13 @@ public class userRead implements Comparator<String> {
         filterN = a.substring(i + 3, a.length()).trim();
         setNfilter();
         return cmd;
+    }
+
+    /**
+     * reset filter string
+     */
+    public void resetFilter() {
+        setFilter(new cmds("exec", filterO));
     }
 
     private void setNfilter() {
