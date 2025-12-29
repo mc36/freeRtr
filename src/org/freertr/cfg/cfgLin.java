@@ -2,8 +2,8 @@ package org.freertr.cfg;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.freertr.line.lineRunner;
-import org.freertr.line.lineThread;
+import org.freertr.pipe.pipeRunner;
+import org.freertr.pipe.pipeThread;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
@@ -25,12 +25,12 @@ public class cfgLin implements Comparable<cfgLin>, cfgGeneric {
     /**
      * byte thread
      */
-    public lineThread thread;
+    public pipeThread thread;
 
     /**
      * runner thread
      */
-    public lineRunner runner;
+    public pipeRunner runner;
 
     /**
      * line handler
@@ -61,7 +61,7 @@ public class cfgLin implements Comparable<cfgLin>, cfgGeneric {
      * start this line
      */
     public void setup2run() {
-        runner = new lineRunner(thread, line, name);
+        runner = new pipeRunner(thread, line, name);
     }
 
     /**

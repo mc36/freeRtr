@@ -1,8 +1,6 @@
-package org.freertr.line;
+package org.freertr.pipe;
 
 import org.freertr.pack.packBstun;
-import org.freertr.pipe.pipeLine;
-import org.freertr.pipe.pipeSide;
 import org.freertr.util.logger;
 
 /**
@@ -10,7 +8,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class lineBstun {
+public class pipeBstun {
 
     /**
      * port number
@@ -27,15 +25,15 @@ public class lineBstun {
      * @param net where to send bstun packets
      * @param group group number to use
      */
-    public lineBstun(pipeSide net, int group) {
+    public pipeBstun(pipeSide net, int group) {
         lower = net;
         pipeLine pipC = new pipeLine(65536, false);
         pipeSide pipA = pipC.getSide();
         upper = pipC.getSide();
         pipA.setReady();
         upper.setReady();
-        new lineBstunTx(net, pipA, group);
-        new lineBstunRx(net, pipA, group);
+        new pipeBstunTx(net, pipA, group);
+        new pipeBstunRx(net, pipA, group);
     }
 
     /**
@@ -57,13 +55,13 @@ public class lineBstun {
 
 }
 
-class lineBstunRx implements Runnable {
+class pipeBstunRx implements Runnable {
 
     private packBstun pck;
 
     private pipeSide upper;
 
-    public lineBstunRx(pipeSide net, pipeSide usr, int grp) {
+    public pipeBstunRx(pipeSide net, pipeSide usr, int grp) {
         pck = new packBstun(net, grp);
         upper = usr;
         new Thread(this).start();
@@ -89,13 +87,13 @@ class lineBstunRx implements Runnable {
 
 }
 
-class lineBstunTx implements Runnable {
+class pipeBstunTx implements Runnable {
 
     private packBstun pck;
 
     private pipeSide upper;
 
-    public lineBstunTx(pipeSide net, pipeSide usr, int grp) {
+    public pipeBstunTx(pipeSide net, pipeSide usr, int grp) {
         pck = new packBstun(net, grp);
         upper = usr;
         new Thread(this).start();

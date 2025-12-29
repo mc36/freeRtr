@@ -1,23 +1,23 @@
-package org.freertr.line;
+package org.freertr.pipe;
 
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrType;
+import org.freertr.cry.cryHashFcs16;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcUp;
 import org.freertr.pack.packHolder;
-import org.freertr.pipe.pipeSide;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 
 /**
- * asynchronous slip (rfc1055) framer
+ * asynchronous hdlc (rfc1662) framer
  *
  * @author matecsaba
  */
-public class lineSlip implements Runnable, ifcDn {
+public class pipeHdlc implements Runnable, ifcDn {
 
     /**
      * counter of this interface
@@ -35,24 +35,29 @@ public class lineSlip implements Runnable, ifcDn {
     public pipeSide lower;
 
     /**
-     * end character
+     * async char map
      */
-    public final static int charEnd = 192;
+    public int asyncMask = 0xffffffff;
+
+    /**
+     * mask upper characters too
+     */
+    public boolean maskUpper = false;
+
+    /**
+     * flag character
+     */
+    public final static int charFlag = 0x7e;
 
     /**
      * escape character
      */
-    public final static int charEsc = 219;
+    public final static int charEsc = 0x7d;
 
     /**
-     * escaped end
+     * escape xorer
      */
-    public final static int escEnd = 220;
-
-    /**
-     * escaped end
-     */
-    public final static int escEsc = 221;
+    public final static int charXor = 0x20;
 
     /**
      * get counter
@@ -132,7 +137,7 @@ public class lineSlip implements Runnable, ifcDn {
     }
 
     public String toString() {
-        return "slip on async";
+        return "hdlc on async";
     }
 
     /**
@@ -140,7 +145,7 @@ public class lineSlip implements Runnable, ifcDn {
      *
      * @param pipe pipeline
      */
-    public lineSlip(pipeSide pipe) {
+    public pipeHdlc(pipeSide pipe) {
         lower = pipe;
         new Thread(this).start();
     }
@@ -172,32 +177,43 @@ public class lineSlip implements Runnable, ifcDn {
      * @param pck packet
      */
     public void sendPack(packHolder pck) {
+        cryHashFcs16 sum = new cryHashFcs16();
+        sum.init();
+        pck.hashData(sum, 0, pck.dataSize());
+        byte[] cb = sum.finish();
+        pck.putCopy(cb, 0, 0, cb.length);
+        pck.putSkip(cb.length);
+        pck.merge2end();
         cntr.tx(pck);
         byte[] bd = new byte[1024];
         int bs = 1;
-        bd[0] = (byte) charEnd;
+        bd[0] = charFlag;
         for (int p = 0; p < pck.dataSize(); p++) {
             if (bs >= (bd.length - 16)) {
                 lower.morePut(bd, 0, bs);
                 bs = 0;
             }
             int i = pck.getByte(p);
-            switch (i) {
-                case charEnd:
-                    bd[bs] = (byte) charEsc;
-                    bs++;
-                    i = escEnd;
-                    break;
-                case charEsc:
-                    bd[bs] = (byte) charEsc;
-                    bs++;
-                    i = escEsc;
-                    break;
+            int o = i;
+            if (maskUpper) {
+                o = o & 0x7f;
+            }
+            boolean esc = false;
+            if ((i == charFlag) || (i == charEsc)) {
+                esc = true;
+            }
+            if (o < 32) {
+                esc |= ((1 << o) & asyncMask) != 0;
+            }
+            if (esc) {
+                bd[bs] = charEsc;
+                bs++;
+                i = i ^ charXor;
             }
             bd[bs] = (byte) i;
             bs++;
         }
-        bd[bs] = (byte) charEnd;
+        bd[bs] = charFlag;
         bs++;
         lower.morePut(bd, 0, bs);
     }
@@ -221,21 +237,15 @@ public class lineSlip implements Runnable, ifcDn {
                     return;
                 }
                 int i = buf[0] & 0xff;
-                if (i == charEnd) {
+                if (i == charFlag) {
                     break;
                 }
                 if (i == charEsc) {
                     if (lower.moreGet(buf, 0, buf.length) != buf.length) {
                         return;
                     }
-                    switch (buf[0] & 0xff) {
-                        case escEnd:
-                            i = charEnd;
-                            break;
-                        case escEsc:
-                            i = charEsc;
-                            break;
-                    }
+                    i = buf[0] & 0xff;
+                    i = i ^ charXor;
                 }
                 pck.putByte(siz, i);
                 siz++;
@@ -246,6 +256,21 @@ public class lineSlip implements Runnable, ifcDn {
             if (siz < 1) {
                 continue;
             }
+            if (siz < 3) {
+                cntr.drop(pck, counter.reasons.tooSmall);
+                continue;
+            }
+            cryHashFcs16 sum = new cryHashFcs16();
+            sum.init();
+            pck.hashData(sum, 0, siz - 2);
+            byte[] cb = sum.finish();
+            byte[] cg = new byte[cb.length];
+            pck.getCopy(cg, 0, siz - cg.length, cg.length);
+            if (bits.byteComp(cg, 0, cb, 0, cg.length) != 0) {
+                cntr.drop(pck, counter.reasons.badSum);
+                continue;
+            }
+            pck.setDataSize(siz - cg.length);
             cntr.rx(pck);
             upper.recvPack(pck);
         }

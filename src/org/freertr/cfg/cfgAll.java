@@ -19,7 +19,7 @@ import org.freertr.ifc.ifcBridge;
 import org.freertr.ifc.ifcBundle;
 import org.freertr.ifc.ifcHairpin;
 import org.freertr.ifc.ifcThread;
-import org.freertr.line.lineThread;
+import org.freertr.pipe.pipeThread;
 import org.freertr.serv.servAmt;
 import org.freertr.serv.servBmp2mrt;
 import org.freertr.serv.servBstun;
@@ -2490,7 +2490,7 @@ public class cfgAll {
      * @param thrd line thread handler
      * @return descriptor
      */
-    public static cfgLin linAdd(String nam, lineThread thrd) {
+    public static cfgLin linAdd(String nam, pipeThread thrd) {
         cfgLin ntry = new cfgLin(nam);
         ntry.thread = thrd;
         lines.add(ntry);

@@ -1,7 +1,5 @@
-package org.freertr.line;
+package org.freertr.pipe;
 
-import org.freertr.pipe.pipeLine;
-import org.freertr.pipe.pipeSide;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 
@@ -10,12 +8,12 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public abstract class lineThread {
+public abstract class pipeThread {
 
     /**
      * create instance
      */
-    public lineThread() {
+    public pipeThread() {
     }
 
     /**

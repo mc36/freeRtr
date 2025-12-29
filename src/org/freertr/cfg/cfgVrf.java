@@ -14,7 +14,7 @@ import org.freertr.ip.ipIcmp4;
 import org.freertr.ip.ipIcmp6;
 import org.freertr.ip.ipMhost4;
 import org.freertr.ip.ipMhost6;
-import org.freertr.ipx.ipxFwd;
+import org.freertr.ip.ipxFwd;
 import org.freertr.prt.prtDccp;
 import org.freertr.prt.prtLudp;
 import org.freertr.prt.prtSctp;

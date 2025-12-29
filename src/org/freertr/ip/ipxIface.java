@@ -1,4 +1,4 @@
-package org.freertr.ipx;
+package org.freertr.ip;
 
 import org.freertr.addr.addrIpx;
 import org.freertr.addr.addrMac;

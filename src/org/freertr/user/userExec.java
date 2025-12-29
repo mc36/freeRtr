@@ -39,7 +39,7 @@ import org.freertr.ip.ipFwdEcho;
 import org.freertr.ip.ipFwdEchod;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipRtr;
-import org.freertr.line.lineHdlc;
+import org.freertr.pipe.pipeHdlc;
 import org.freertr.pack.packDnsRec;
 import org.freertr.pack.packDnsZone;
 import org.freertr.pack.packText;
@@ -5638,12 +5638,12 @@ public class userExec {
             return;
         }
         if (physicalLin) {
-            lineHdlc h = new lineHdlc(pipe);
+            pipeHdlc h = new pipeHdlc(pipe);
             framedIface.setLowerHandler(h);
             h.wait4working();
             framedIface.setLowerHandler(new ifcNull());
         } else {
-            lineHdlc h = new lineHdlc(pipe);
+            pipeHdlc h = new pipeHdlc(pipe);
             cfgIfc i = framedIface.cloneStart(h);
             h.wait4working();
             i.cloneStop();

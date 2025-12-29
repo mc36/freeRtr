@@ -1,7 +1,5 @@
-package org.freertr.line;
+package org.freertr.pipe;
 
-import org.freertr.pipe.pipeLine;
-import org.freertr.pipe.pipeSide;
 import org.freertr.user.userLine;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
@@ -12,22 +10,22 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class lineRunner implements Runnable {
+public class pipeRunner implements Runnable {
 
     /**
      * hangup script
      */
-    public lineScript scrptHangup;
+    public pipeChat scrptHangup;
 
     /**
      * init script
      */
-    public lineScript scrptInit;
+    public pipeChat scrptInit;
 
     /**
      * activate script
      */
-    public lineScript scrptActv;
+    public pipeChat scrptActv;
 
     /**
      * always monitors
@@ -46,7 +44,7 @@ public class lineRunner implements Runnable {
 
     private boolean needNewLine = true;
 
-    private lineThread thread;
+    private pipeThread thread;
 
     private userLine line;
 
@@ -128,7 +126,7 @@ public class lineRunner implements Runnable {
      * @param lin line to use
      * @param nam name to use
      */
-    public lineRunner(lineThread thrd, userLine lin, String nam) {
+    public pipeRunner(pipeThread thrd, userLine lin, String nam) {
         thread = thrd;
         line = lin;
         name = nam;
@@ -193,7 +191,7 @@ public class lineRunner implements Runnable {
         needNewLine = false;
     }
 
-    private boolean doScript(lineScript scr) {
+    private boolean doScript(pipeChat scr) {
         if (scr == null) {
             return false;
         }

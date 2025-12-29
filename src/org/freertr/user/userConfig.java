@@ -65,7 +65,7 @@ import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdRoute;
-import org.freertr.ipx.ipxFwd;
+import org.freertr.ip.ipxFwd;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGenList;

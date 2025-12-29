@@ -13,7 +13,7 @@ import org.freertr.clnt.clntDns;
 import org.freertr.ifc.ifcThread;
 import org.freertr.ifc.ifcUdpInt;
 import org.freertr.ip.ipFwdTab;
-import org.freertr.line.lineTcpLine;
+import org.freertr.pipe.pipeTcp;
 import org.freertr.pipe.pipeConnect;
 import org.freertr.pipe.pipeConsole;
 import org.freertr.pipe.pipeImage;
@@ -1004,7 +1004,7 @@ public class cfgInit implements Runnable {
                 int loc = bits.str2num(cmd.word());
                 String peer = cmd.word();
                 int rem = bits.str2num(cmd.word());
-                lineTcpLine hdr = new lineTcpLine(loop, loc, peer, rem);
+                pipeTcp hdr = new pipeTcp(loop, loc, peer, rem);
                 cfgLin lin = cfgAll.linAdd(nam, hdr);
                 if (debugger.cfgInitHw) {
                     logger.debug("line " + hdr);

@@ -1,4 +1,4 @@
-package org.freertr.ipx;
+package org.freertr.ip;
 
 import java.util.List;
 import org.freertr.addr.addrIpx;

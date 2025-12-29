@@ -9,7 +9,7 @@ import org.freertr.ifc.ifcUp;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipPrt;
-import org.freertr.ipx.ipxIface;
+import org.freertr.ip.ipxIface;
 import org.freertr.pack.packHolder;
 import org.freertr.util.counter;
 import org.freertr.util.state;

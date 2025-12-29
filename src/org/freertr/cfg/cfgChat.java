@@ -2,7 +2,7 @@ package org.freertr.cfg;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.freertr.line.lineScript;
+import org.freertr.pipe.pipeChat;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
@@ -24,7 +24,7 @@ public class cfgChat implements Comparable<cfgChat>, cfgGeneric {
     /**
      * the script
      */
-    public lineScript script;
+    public pipeChat script;
 
     public int compareTo(cfgChat o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
@@ -46,7 +46,7 @@ public class cfgChat implements Comparable<cfgChat>, cfgGeneric {
      */
     public cfgChat(String nam) {
         name = nam.trim();
-        script = new lineScript();
+        script = new pipeChat();
         script.scrName = name;
     }
 

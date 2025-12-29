@@ -6,8 +6,8 @@ import org.freertr.addr.addrType;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcUp;
-import org.freertr.line.lineHdlc;
-import org.freertr.line.lineScript;
+import org.freertr.pipe.pipeHdlc;
+import org.freertr.pipe.pipeChat;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.sec.secClient;
@@ -64,7 +64,7 @@ public class clntTelnet implements Runnable, ifcDn {
     /**
      * chat script to use
      */
-    public lineScript script;
+    public pipeChat script;
 
     /**
      * target of tunnel
@@ -83,7 +83,7 @@ public class clntTelnet implements Runnable, ifcDn {
 
     private boolean working = true;
 
-    private lineHdlc hdlc;
+    private pipeHdlc hdlc;
 
     /**
      * get hw address
@@ -237,7 +237,7 @@ public class clntTelnet implements Runnable, ifcDn {
             conn.setClose();
             return;
         }
-        hdlc = new lineHdlc(conn);
+        hdlc = new pipeHdlc(conn);
         hdlc.setUpper(upper);
         for (;;) {
             bits.sleep(1000);

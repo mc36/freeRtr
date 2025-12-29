@@ -2,7 +2,7 @@ package org.freertr.serv;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.freertr.line.lineBstun;
+import org.freertr.pipe.pipeBstun;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
@@ -39,7 +39,7 @@ public class servBstun extends servGeneric implements prtServS {
      * defaults text
      */
     public final static userFilter[] defaultF = {
-        new userFilter("server bstun .*", cmds.tabulator + "port " + lineBstun.port, null),
+        new userFilter("server bstun .*", cmds.tabulator + "port " + pipeBstun.port, null),
         new userFilter("server bstun .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
     };
 
@@ -48,7 +48,7 @@ public class servBstun extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        lineBstun bst = new lineBstun(pipe, grpNum);
+        pipeBstun bst = new pipeBstun(pipe, grpNum);
         lin.createHandler(bst.getPipe(), "" + id, 0);
         return false;
     }
@@ -79,7 +79,7 @@ public class servBstun extends servGeneric implements prtServS {
     }
 
     public int srvPort() {
-        return lineBstun.port;
+        return pipeBstun.port;
     }
 
     public int srvProto() {

@@ -117,7 +117,7 @@ import org.freertr.ip.ipIfc4arp;
 import org.freertr.ip.ipIfc6;
 import org.freertr.ip.ipMpls;
 import org.freertr.ip.ipProxy;
-import org.freertr.ipx.ipxIface;
+import org.freertr.ip.ipxIface;
 import org.freertr.pack.packEapOL;
 import org.freertr.pack.packLdpPwe;
 import org.freertr.pack.packPppOE;

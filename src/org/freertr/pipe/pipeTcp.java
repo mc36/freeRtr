@@ -1,4 +1,4 @@
-package org.freertr.line;
+package org.freertr.pipe;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -8,11 +8,11 @@ import org.freertr.prt.prtLocTcp;
 import org.freertr.util.logger;
 
 /**
- * external interface handler over tcp
+ * external line handler over tcp
  *
  * @author matecsaba
  */
-public class lineTcpLine extends lineThread {
+public class pipeTcp extends pipeThread {
 
     private final String rnam;
 
@@ -49,7 +49,7 @@ public class lineTcpLine extends lineThread {
      * @param rname name of remote
      * @param rport remote port to connect to
      */
-    public lineTcpLine(String lname, int lport, String rname, int rport) {
+    public pipeTcp(String lname, int lport, String rname, int rport) {
         lprt = lport;
         lnam = lname;
         rprt = rport;

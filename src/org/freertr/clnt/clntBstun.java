@@ -6,9 +6,9 @@ import org.freertr.addr.addrType;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcUp;
-import org.freertr.line.lineBstun;
-import org.freertr.line.lineHdlc;
-import org.freertr.line.lineScript;
+import org.freertr.pipe.pipeBstun;
+import org.freertr.pipe.pipeHdlc;
+import org.freertr.pipe.pipeChat;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servBstun;
@@ -39,7 +39,7 @@ public class clntBstun implements Runnable, ifcDn {
     /**
      * chat script to use
      */
-    public lineScript script;
+    public pipeChat script;
 
     /**
      * target of tunnel
@@ -63,9 +63,9 @@ public class clntBstun implements Runnable, ifcDn {
 
     private boolean working = true;
 
-    private lineBstun lower;
+    private pipeBstun lower;
 
-    private lineHdlc hdlc;
+    private pipeHdlc hdlc;
 
     public String toString() {
         return "bstun to " + target;
@@ -212,12 +212,12 @@ public class clntBstun implements Runnable, ifcDn {
             return;
         }
         conn.setTime(120000);
-        lower = new lineBstun(conn, group);
+        lower = new pipeBstun(conn, group);
         if (script.doScript(lower.getPipe())) {
             conn.setClose();
             return;
         }
-        hdlc = new lineHdlc(lower.getPipe());
+        hdlc = new pipeHdlc(lower.getPipe());
         hdlc.setUpper(upper);
         for (;;) {
             bits.sleep(1000);

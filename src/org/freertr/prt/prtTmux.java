@@ -19,7 +19,7 @@ import org.freertr.ip.ipIfc4;
 import org.freertr.ip.ipIfc6;
 import org.freertr.ip.ipMpls;
 import org.freertr.ip.ipPrt;
-import org.freertr.ipx.ipxIface;
+import org.freertr.ip.ipxIface;
 import org.freertr.pack.packHolder;
 import org.freertr.rtr.rtrIsis;
 import org.freertr.rtr.rtrNshIface;

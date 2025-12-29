@@ -17,7 +17,7 @@ import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdEcho;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdTab;
-import org.freertr.line.lineScript;
+import org.freertr.pipe.pipeChat;
 import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
@@ -204,7 +204,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
     /**
      * chat script
      */
-    public lineScript chats = null;
+    public pipeChat chats = null;
 
     /**
      * client pubkey

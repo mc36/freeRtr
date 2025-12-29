@@ -1,9 +1,8 @@
-package org.freertr.line;
+package org.freertr.pipe;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.auth.authLocal;
-import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userHelp;
 import org.freertr.user.userScript;
@@ -17,12 +16,12 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class lineScript {
+public class pipeChat {
 
     /**
      * create instance
      */
-    public lineScript() {
+    public pipeChat() {
     }
 
     /**
@@ -33,7 +32,7 @@ public class lineScript {
     /**
      * actions
      */
-    protected tabGen<lineScriptNtry> actions = new tabGen<lineScriptNtry>();
+    protected tabGen<pipeScriptNtry> actions = new tabGen<pipeScriptNtry>();
 
     /**
      * reindex script
@@ -49,7 +48,7 @@ public class lineScript {
             inc = 10;
         }
         for (int i = 0; i < actions.size(); i++) {
-            lineScriptNtry t = actions.get(i);
+            pipeScriptNtry t = actions.get(i);
             t.seq = (inc * i) + beg;
         }
     }
@@ -77,7 +76,7 @@ public class lineScript {
      * @return false on success, true on error
      */
     public boolean doCfg(cmds cmd, boolean negate) {
-        lineScriptNtry ntry = new lineScriptNtry();
+        pipeScriptNtry ntry = new pipeScriptNtry();
         if (ntry.fromString(cmd)) {
             return true;
         }
@@ -87,7 +86,7 @@ public class lineScript {
         }
         if (ntry.seq < 1) {
             ntry.seq = 0;
-            lineScriptNtry old = actions.get(actions.size() - 1);
+            pipeScriptNtry old = actions.get(actions.size() - 1);
             if (old == null) {
                 old = ntry;
             }
@@ -156,7 +155,7 @@ public class lineScript {
                 }
                 return false;
             }
-            lineScriptNtry ntry = actions.get(sq);
+            pipeScriptNtry ntry = actions.get(sq);
             if (ntry == null) {
                 sq++;
                 continue;
@@ -204,7 +203,7 @@ public class lineScript {
         }
     }
 
-    private int indexOf(lineScriptNtry ntry) {
+    private int indexOf(pipeScriptNtry ntry) {
         for (int i = 0; i < actions.size(); i++) {
             if (ntry.compareTo(actions.get(i)) == 0) {
                 return i;
@@ -215,7 +214,7 @@ public class lineScript {
 
 }
 
-class lineScriptNtry implements Comparable<lineScriptNtry> {
+class pipeScriptNtry implements Comparable<pipeScriptNtry> {
 
     public int seq;
 
@@ -233,7 +232,7 @@ class lineScriptNtry implements Comparable<lineScriptNtry> {
         success, failure, onerror, gotoo, disconn
     }
 
-    public int compareTo(lineScriptNtry o) {
+    public int compareTo(pipeScriptNtry o) {
         if (seq < o.seq) {
             return -1;
         }
