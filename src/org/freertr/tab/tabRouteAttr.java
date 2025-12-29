@@ -1459,16 +1459,18 @@ public class tabRouteAttr<T extends addrType> {
      * end of as path
      *
      * @param match matcher
+     * @param skbeg skip beginning
+     * @param skend skip ending
      * @return true on match, false if not
      */
-    public boolean asPathMid(tabIntMatcher match) {
+    public boolean asPathMid(tabIntMatcher match, int skbeg, int skend) {
         if (match.action == tabIntMatcher.actionType.always) {
             return true;
         }
         if (pathSeq == null) {
             return false;
         }
-        for (int i = 0; i < (pathSeq.size() - 1); i++) {
+        for (int i = skbeg; i < (pathSeq.size() - skend); i++) {
             if (match.matches(pathSeq.get(i))) {
                 return true;
             }

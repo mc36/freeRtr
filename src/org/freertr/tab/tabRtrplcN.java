@@ -891,7 +891,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case asbeg:
                 return intMatch.matches(net.best.asPathBeg());
             case asmid:
-                return net.best.asPathMid(intMatch);
+                return net.best.asPathMid(intMatch, 0, 1);
             case bandwidth:
                 return intMatch.matches(net.best.bandwidth);
             case tag:

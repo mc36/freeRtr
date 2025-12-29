@@ -1740,7 +1740,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (!asbegMatch.matches(net.best.asPathBeg())) {
             return false;
         }
-        if (!net.best.asPathMid(asmidMatch)) {
+        if (!net.best.asPathMid(asmidMatch, 0, 1)) {
             return false;
         }
         if (noStdComm) {
