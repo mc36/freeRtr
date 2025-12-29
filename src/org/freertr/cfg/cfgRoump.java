@@ -74,6 +74,7 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match asend all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match asbeg all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match asmid all", null),
+        new userFilter("route-map .*", cmds.tabulator + "sequence .* match asany all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match bandwidth all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match origin all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match metric all", null),
@@ -250,6 +251,9 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "<num>", "length");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "asmid", "match as path middle");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "all", "any value");
+        l.add(null, false, 2, new int[]{3}, "asany", "match as path anywhere");
         l.add(null, false, 3, new int[]{-1}, "<num>", "length");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "bandwidth", "match bandwidth");

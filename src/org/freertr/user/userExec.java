@@ -1226,6 +1226,8 @@ public class userExec {
         hl.add(null, false, 7, new int[]{-1}, "<str>", "int matcher");
         hl.add(null, false, 6, new int[]{7}, "asmid", "list of routes with path middle");
         hl.add(null, false, 7, new int[]{-1}, "<str>", "int matcher");
+        hl.add(null, false, 6, new int[]{7}, "asany", "list of routes with path anywhere");
+        hl.add(null, false, 7, new int[]{-1}, "<str>", "int matcher");
         hl.add(null, false, 6, new int[]{7}, "locpref", "list of routes with locpref");
         hl.add(null, false, 7, new int[]{-1}, "<str>", "int matcher");
         hl.add(null, false, 6, new int[]{7}, "validroa", "list of routes with validity");

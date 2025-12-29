@@ -170,6 +170,9 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         l.add(null, false, 2, new int[]{3}, "asmid", "match as path middle");
         l.add(null, false, 3, new int[]{-1}, "<num>", "length");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
+        l.add(null, false, 2, new int[]{3}, "asany", "match as path anywhere");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "bandwidth", "match bandwidth");
         l.add(null, false, 3, new int[]{-1}, "<num>", "bandwidth");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
@@ -571,6 +574,14 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("asmid")) {
             ntry.ifMode = tabRtrplcN.ifType.asmid;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("asany")) {
+            ntry.ifMode = tabRtrplcN.ifType.asany;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;

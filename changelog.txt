@@ -17756,3 +17756,8 @@ qc pass: gue1 over loopback
 ---------------------------------- 2025-12-19 12:34:20 25.12.19
 qc pass: gue0 over gue1
 qc pass: interop1: udp tunnel
+---------------------------------- 2025-12-29 16:41:06 25.12.29
+qc pass: bgp routemap filtering with asany
+qc pass: bgp routemap filtering with asany with soft-reconfig
+qc pass: bgp routepolicy filtering with asany
+qc pass: bgp routepolicy filtering with asany with soft-reconfig

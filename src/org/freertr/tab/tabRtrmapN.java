@@ -148,6 +148,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabIntMatcher asmidMatch = new tabIntMatcher();
 
     /**
+     * aspath any matched
+     */
+    public tabIntMatcher asanyMatch = new tabIntMatcher();
+
+    /**
      * aigp updater
      */
     public tabIntUpdater accIgpSet = new tabIntUpdater();
@@ -584,6 +589,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match asend " + asendMatch);
         l.add(beg + "match asbeg " + asbegMatch);
         l.add(beg + "match asmid " + asmidMatch);
+        l.add(beg + "match asany " + asanyMatch);
         l.add(beg + "match aigp " + accIgpMatch);
         l.add(beg + "match bandwidth " + bandwidthMatch);
         l.add(beg + "match origin " + originMatch);
@@ -1384,6 +1390,13 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             return false;
         }
+        if (a.equals("asany")) {
+            if (asanyMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
         if (a.equals("bandwidth")) {
             if (bandwidthMatch.fromString(cmd.word())) {
                 cmd.error("invalid action");
@@ -1609,6 +1622,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             asmidMatch.set2always();
             return false;
         }
+        if (a.equals("asany")) {
+            asanyMatch.set2always();
+            return false;
+        }
         if (a.equals("bandwidth")) {
             bandwidthMatch.set2always();
             return false;
@@ -1741,6 +1758,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (!net.best.asPathMid(asmidMatch, 0, 1)) {
+            return false;
+        }
+        if (!net.best.asPathMid(asanyMatch, 0, 0)) {
             return false;
         }
         if (noStdComm) {

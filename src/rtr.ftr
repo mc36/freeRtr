@@ -3578,6 +3578,10 @@ qc pass: l3otherevpns over srv6 over confed bgp
 qc pass: l3otherevpns over srv6 over bgp route server
 qc pass: l3otherevpns over srv6 over bgp with soft-reconfig
 qc pass: l3otherevpns over srv6 over bgp additional path
+qc pass: bgp routemap filtering with asany
+qc pass: bgp routemap filtering with asany with soft-reconfig
+qc pass: bgp routepolicy filtering with asany
+qc pass: bgp routepolicy filtering with asany with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
