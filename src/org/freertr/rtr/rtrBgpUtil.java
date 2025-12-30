@@ -2352,11 +2352,10 @@ public class rtrBgpUtil {
     /**
      * parse connector attribute
      *
-     * @param spkr where to signal
      * @param ntry table entry
      * @param pck packet to parse
      */
-    public static void parseConnector(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+    public static void parseConnector(tabRouteEntry<addrIP> ntry, packHolder pck) {
         addrIPv4 as = new addrIPv4();
         pck.getAddr(as, 4);
         addrIP ax = new addrIP();
@@ -2367,11 +2366,10 @@ public class rtrBgpUtil {
     /**
      * parse path limit attribute
      *
-     * @param spkr where to signal
      * @param ntry table entry
      * @param pck packet to parse
      */
-    public static void parsePathLimit(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+    public static void parsePathLimit(tabRouteEntry<addrIP> ntry, packHolder pck) {
         ntry.best.pathLim = pck.getByte(0);
         ntry.best.pathAsn = pck.msbGetD(1);
     }
@@ -2379,11 +2377,10 @@ public class rtrBgpUtil {
     /**
      * parse pe distinguisher attribute
      *
-     * @param spkr where to signal
      * @param ntry table entry
      * @param pck packet to parse
      */
-    public static void parsePeDistLab(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+    public static void parsePeDistLab(tabRouteEntry<addrIP> ntry, packHolder pck) {
         int i;
         if (pck.dataSize() > 8) {
             addrIPv4 as = new addrIPv4();
@@ -3037,13 +3034,13 @@ public class rtrBgpUtil {
                 parseAggregator(spkr, ntry, pck);
                 return;
             case attrConnector:
-                parseConnector(spkr, ntry, pck);
+                parseConnector(ntry, pck);
                 return;
             case attrPathLimit:
-                parsePathLimit(spkr, ntry, pck);
+                parsePathLimit(ntry, pck);
                 return;
             case attrPeDistLab:
-                parsePeDistLab(spkr, ntry, pck);
+                parsePeDistLab(ntry, pck);
                 return;
             case attrStdComm:
                 parseStdComm(ntry, pck);
