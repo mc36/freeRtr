@@ -580,8 +580,8 @@ public class userImage {
                 continue;
             }
             if (a.equals("file-vers")) {
-                found = bits.time2str(cfgAll.timeZoneName, new File(s).lastModified(), 1).replaceAll("-", ".");
-                found = found.substring(2, found.length());
+                found = bits.time2str(cfgAll.timeZoneName, new File(s).lastModified(), 1);
+                found = found.substring(2, found.length()).replaceAll("-", ".");
                 continue;
             }
             if (a.equals("file-path")) {
