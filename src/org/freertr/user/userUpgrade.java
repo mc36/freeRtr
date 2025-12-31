@@ -89,6 +89,7 @@ public class userUpgrade {
         if (cryUtils.hashFile(h, f)) {
             return null;
         }
+        ///// here prepend f.length() + "-" +
         return a + "-" + cryUtils.hash2hex(h);
     }
 
@@ -676,6 +677,11 @@ public class userUpgrade {
      * @return status; 0=not needed, 1=failed, 2=done
      */
     protected int upgradeFile(String sumN, String loc, String rem, String tmp) {
+        int i = sumN.indexOf("-");
+        if (i < 16) {
+            sumN = sumN.substring(i + 1, sumN.length());
+        }
+        ///// here remove above
         String sumO = calcFileHash(loc);
         if (sumO == null) {
             sumO = "doit";
