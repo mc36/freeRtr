@@ -63,6 +63,7 @@ import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcDot1ad;
 import org.freertr.ifc.ifcDot1ah;
 import org.freertr.ifc.ifcDot1q;
+import org.freertr.ifc.ifcDvbGse;
 import org.freertr.ifc.ifcEapOLclnt;
 import org.freertr.ifc.ifcEapOLserv;
 import org.freertr.ifc.ifcEthTyp;
@@ -295,6 +296,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      * raw handler
      */
     public ifcRaw raw;
+
+    /**
+     * dvbgse handler
+     */
+    public ifcDvbGse dvbgse;
 
     /**
      * sep handler
@@ -2096,6 +2102,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + "framerelay lmi ansi", null),
         new userFilter("interface .*", cmds.tabulator + "framerelay fragment 0", null),
         new userFilter("interface .*", cmds.tabulator + "framerelay frgap 0", null),
+        // dvbgse
+        new userFilter("interface .*", cmds.tabulator + "dvbgse fragment 0", null),
+        new userFilter("interface .*", cmds.tabulator + "dvbgse frgap 0", null),
         // tunnel
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel sequence-datagrams", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "tunnel checksum", null),
@@ -3565,6 +3574,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (a.equals("frrfc")) {
             enc = 11;
         }
+        if (a.equals("dvbgse")) {
+            enc = 12;
+        }
         if (ifaceNeedArp()) {
             enc = 0;
         }
@@ -3651,6 +3663,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (atmdxi != null) {
             atmdxi = null;
         }
+        if (dvbgse != null) {
+            dvbgse = null;
+        }
         switch (enc) {
             case 1:
                 hdlc = new ifcHdlc();
@@ -3715,6 +3730,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 lower.setUpper(frmrly);
                 frmrly.setUpper(frmrfc);
                 frmrfc.setUpper(ethtyp);
+                break;
+            case 12:
+                dvbgse = new ifcDvbGse();
+                lower.setUpper(dvbgse);
+                dvbgse.setUpper(ethtyp);
                 break;
             default:
                 ifcNull nul = new ifcNull();
@@ -5392,6 +5412,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (atmdxi != null) {
             return atmdxi;
         }
+        if (dvbgse != null) {
+            return dvbgse;
+        }
         if (atmsar != null) {
             return atmsar;
         }
@@ -6458,6 +6481,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 if (atmdxi != null) {
                     s = "atmdxi";
                 }
+                if (dvbgse != null) {
+                    s = "dvbgse";
+                }
                 l.add(cmds.tabulator + "encapsulation " + s);
                 break;
             case tunnel:
@@ -6540,6 +6566,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (lapb != null) {
             lapb.getConfig(l, cmds.tabulator + "lapb ");
+        }
+        if (dvbgse != null) {
+            dvbgse.getConfig(l, cmds.tabulator + "dvbgse ");
         }
         cmds.cfgLine(l, random == null, cmds.tabulator, "random", "" + ifcRandom.getCfg(random));
         cmds.cfgLine(l, !disableMacsec, cmds.tabulator, "disable-macsec", "");
@@ -6987,6 +7016,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "atmdxi", "set to atm dxi encapsulation");
         l.add(null, false, 2, new int[]{-1}, "raw", "set to raw encapsulation");
         l.add(null, false, 2, new int[]{-1}, "sep", "set to sep encapsulation");
+        l.add(null, false, 2, new int[]{-1}, "dvbgse", "set to dvb gse encapsulation");
         l.add(null, false, 2, new int[]{-1}, "isl", "set to isl encapsulation");
         l.add(null, false, 2, new int[]{-1}, "dot1q", "set to 802.1q encapsulation");
         l.add(null, false, 2, new int[]{-1}, "dot1ad", "set to 802.1ad encapsulation");
@@ -7044,6 +7074,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         ifcFrameRelay.getHelp(l);
         l.add(null, false, 1, new int[]{2}, "lapb", "lapb parameters on the interface");
         ifcLapb.getHelp(l);
+        l.add(null, false, 1, new int[]{2}, "dvbgse", "dvb gse parameters on the interface");
+        ifcDvbGse.getHelp(l);
         l.add(null, false, 1, new int[]{2}, "bundle-group", "bundling interface parameters");
         l.add(null, false, 2, new int[]{-1}, "<num>", "number of bundle group");
         l.add(null, false, 1, new int[]{2}, "bundle-priority", "bundling priority parameter");
@@ -7843,6 +7875,14 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 return;
             }
             atmdxi.doConfig(cmd);
+            return;
+        }
+        if (a.equals("dvbgse")) {
+            if (dvbgse == null) {
+                cmd.error("encapsulation not in effect");
+                return;
+            }
+            dvbgse.doConfig(cmd);
             return;
         }
         if (a.equals("atmsar")) {

@@ -12,6 +12,11 @@ public class cryHashCrc8 extends cryHashGeneric {
      */
     public final static cryHashCrc8 polyCrc8c = new cryHashCrc8(0x107, 0x00, 0x55);
 
+    /**
+     * dvb-s2 polynominal: 8bits x**8 + x**7 + x**6 + x**4 + x**2 + 1
+     */
+    public final static cryHashCrc8 polyCrc8d = new cryHashCrc8(0xd5, 0x00, 0x00);
+
     private final int[] tab;
 
     private final int ini;
