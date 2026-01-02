@@ -17764,3 +17764,6 @@ qc pass: bgp routepolicy filtering with asany with soft-reconfig
 ---------------------------------- 2026-01-02 19:07:21 26.1.2
 qc pass: dvbgse without fragmentation
 qc pass: dvbgse with fragmentation
+---------------------------------- 2026-01-02 20:51:44 26.1.2
+qc pass: dvbgse without baseband
+qc pass: dvbgse with baseband
