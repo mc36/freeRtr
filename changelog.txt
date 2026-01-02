@@ -17770,3 +17770,30 @@ qc pass: dvbgse with baseband
 ---------------------------------- 2026-01-02 21:18:20 26.1.2
 no qc pass: capwap server
 qc pass: vlan tunneling with capwap
+---------------------------------- 2026-01-02 21:47:33 26.1.2
+no qc pass: vlan tunneling with capwap
+qc pass: dvbgse with ax25
+qc pass: dvbgse tunneling with capwap
+qc pass: capwap server
+qc pass: dvbgse tunneling with dlsw
+qc pass: dvbgse tunneling with eoip
+qc pass: dvbgse tunneling with erspan
+qc pass: dvbgse tunneling with etherip
+qc pass: dvbgse tunneling with geneve
+qc pass: dvbgse with greppp
+qc pass: dvbgse with grefr
+qc pass: dvbgse over l2tp3
+qc pass: dvbgse tunneling with l2tp3
+qc pass: dvbgse tunneling with llcudp
+qc pass: dvbgse tunneling with lwapp
+qc pass: dvbgse tunneling with nvgre
+qc pass: dvbgse tunneling with packet over udp
+qc pass: dvbgse tunneling with sreth
+qc pass: dvbgse with tdmoudp
+qc pass: dvbgse tunneling with tzsp
+qc pass: dvbgse tunneling with uti
+qc pass: dvbgse tunneling with vxlan
+qc pass: cross connect dvbgse interfaces
+qc pass: sgt dvbgse encapsulation
+qc pass: dvbgse over mpls
+qc pass: dvbgse tunneling with mpls
