@@ -88,6 +88,8 @@ qc pass: sep tunneling with dlsw
 qc pass: ethernet tunneling with dlsw
 qc pass: vlan tunneling with dlsw
 qc pass: tunnel interface with dlsw
+qc pass: dvbgse without fragmentation
+qc pass: dvbgse with fragmentation
 qc pass: eoip over ipv4
 qc pass: eoip over ipv6
 qc pass: eoip over loopback
