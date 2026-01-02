@@ -37,3 +37,13 @@ r1 tping 100 5 1.1.1.2 vrf v1 siz 1024
 r2 tping 100 5 1.1.1.1 vrf v1 siz 1024
 r1 tping 100 5 1234::2 vrf v1 siz 1024
 r2 tping 100 5 1234::1 vrf v1 siz 1024
+
+r1 output show inter ser1 full
+output ../binTmp/conn-dvbgse.html
+<html><body bgcolor="#000000" text="#FFFFFF" link="#00FFFF" vlink="#00FFFF" alink="#00FFFF">
+here is the interface:
+<pre>
+<!>show:0
+</pre>
+</body></html>
+!

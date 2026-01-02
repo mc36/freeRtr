@@ -50,6 +50,11 @@ public class ifcDvbGse implements ifcUp, ifcDn {
     public int fragGap = 0;
 
     /**
+     * use baseband header
+     */
+    public boolean baseBand = true;
+
+    /**
      * tx sequence
      */
     public int fragSeqTx = 0;
@@ -151,6 +156,7 @@ public class ifcDvbGse implements ifcUp, ifcDn {
      * @param l storage
      */
     public static void getHelp(userHelp l) {
+        l.add(null, false, 2, new int[]{-1}, "baseband", "use baseband header");
         l.add(null, false, 2, new int[]{3}, "fragment", "set end2end payload size");
         l.add(null, false, 3, new int[]{-1}, "<num>", "number of bytes");
         l.add(null, false, 2, new int[]{3}, "frgap", "inter fragment gap");
@@ -164,6 +170,11 @@ public class ifcDvbGse implements ifcUp, ifcDn {
      * @param beg beginning
      */
     public void getConfig(List<String> l, String beg) {
+        if (baseBand) {
+            l.add(beg + "baseband");
+        } else {
+            l.add(cmds.tabulator + cmds.negated + beg + "baseband");
+        }
         l.add(beg + "fragment " + fragLen);
         l.add(beg + "frgap " + fragGap);
     }
@@ -183,32 +194,60 @@ public class ifcDvbGse implements ifcUp, ifcDn {
             fragGap = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("baseband")) {
+            baseBand = true;
+            return;
+        }
+        cmd.badCmd();
+    }
+
+    /**
+     * undo configuration
+     *
+     * @param cmd command
+     */
+    public void unConfig(cmds cmd) {
+        String a = cmd.word();
+        if (a.equals("fragment")) {
+            fragLen = 0;
+            return;
+        }
+        if (a.equals("frgap")) {
+            fragGap = 0;
+            return;
+        }
+        if (a.equals("baseband")) {
+            baseBand = false;
+            return;
+        }
         cmd.badCmd();
     }
 
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        if (pck.dataSize() < size) {
-            cntr.drop(pck, counter.reasons.tooSmall);
-            return;
+        if (baseBand) {
+            if (pck.dataSize() < size) {
+                cntr.drop(pck, counter.reasons.tooSmall);
+                return;
+            }
+            cryHashCrc8 sum = new cryHashCrc8(cryHashCrc8.polyCrc8d);
+            sum.init();
+            pck.hashData(sum, 0, size);
+            byte[] buf = new byte[sum.getHashSize()];
+            pck.getCopy(buf, 0, size, buf.length);
+            if (bits.byteComp(buf, 0, sum.finish(), 0, buf.length) != 0) {
+                cntr.drop(pck, counter.reasons.badSum);
+                return;
+            }
+            int i = pck.msbGetW(4) / 8; // length
+            pck.getSkip(size + buf.length);
+            if (i > pck.dataSize()) {
+                cntr.drop(pck, counter.reasons.badLen);
+                return;
+            }
+            pck.setDataSize(i);
         }
-        cryHashCrc8 sum = new cryHashCrc8(cryHashCrc8.polyCrc8d);
-        sum.init();
-        pck.hashData(sum, 0, size);
-        byte[] buf = new byte[sum.getHashSize()];
-        pck.getCopy(buf, 0, size, buf.length);
-        if (bits.byteComp(buf, 0, sum.finish(), 0, buf.length) != 0) {
-            cntr.drop(pck, counter.reasons.badSum);
-            return;
-        }
-        int i = pck.msbGetW(4) / 8; // length
-        pck.getSkip(size + buf.length);
-        if (i > pck.dataSize()) {
-            cntr.drop(pck, counter.reasons.badLen);
-            return;
-        }
-        pck.setDataSize(i);
-        i = pck.msbGetW(0); // gse
+        int i = pck.msbGetW(0); // gse
         pck.getSkip(2);
         boolean beg = (i & fragBeg) != 0;
         boolean end = (i & fragEnd) != 0;
@@ -230,7 +269,7 @@ public class ifcDvbGse implements ifcUp, ifcDn {
             cntr.drop(pck, counter.reasons.badRxSeq);
             return;
         }
-        buf = pck.getCopy();
+        byte[] buf = pck.getCopy();
         fragReasm.putCopy(buf, 0, 0, buf.length);
         fragReasm.putSkip(buf.length);
         fragReasm.merge2end();
@@ -258,6 +297,9 @@ public class ifcDvbGse implements ifcUp, ifcDn {
     }
 
     private void putBaseband(packHolder pck) {
+        if (!baseBand) {
+            return;
+        }
         pck.putByte(0, 0x72); // mtype: gse, sis, ccm
         pck.putByte(1, 0); // mtype2: none
         pck.msbPutW(2, 0); // upl
