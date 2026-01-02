@@ -2103,7 +2103,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + "framerelay fragment 0", null),
         new userFilter("interface .*", cmds.tabulator + "framerelay frgap 0", null),
         // dvbgse
-        new userFilter("interface .*", cmds.tabulator + "dvbgse baseband", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "dvbgse baseband", null),
         new userFilter("interface .*", cmds.tabulator + "dvbgse fragment 0", null),
         new userFilter("interface .*", cmds.tabulator + "dvbgse frgap 0", null),
         // tunnel

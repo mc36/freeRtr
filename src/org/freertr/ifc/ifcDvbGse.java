@@ -52,7 +52,7 @@ public class ifcDvbGse implements ifcUp, ifcDn {
     /**
      * use baseband header
      */
-    public boolean baseBand = true;
+    public boolean baseBand = false;
 
     /**
      * tx sequence
