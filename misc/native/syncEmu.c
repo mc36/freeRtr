@@ -25,7 +25,7 @@ int ioctl(int fd, unsigned long op, unsigned int*par) {
         sharedMem =  mmap(NULL, 2, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
         if (sharedMem == NULL) return -1;
         myVal = (sharedMem[1]++) & 3;
-        printf("syncemu initialized in slot %i - %s\n",myVal, nams[myVal]);
+        printf("hook initialized in slot %i as %s\n",myVal, nams[myVal]);
     }
     switch (op) {
     case TIOCMSET:

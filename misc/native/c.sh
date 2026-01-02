@@ -110,7 +110,7 @@ for fn in p4mnl_user; do
   compileFile $fn "" "-lpthread -lbpf -lmnl" ""
 done
 
-for fn in p4emu_full p4emu_tiny p4emu_huge p4emu_dbg p4emu_nocr p4emu_none p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_raw p4emu_xsk p4emu_urng; do
+for fn in p4emu_full p4emu_tiny p4emu_huge p4emu_dbg p4emu_nocr p4emu_none p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_raw p4emu_xsk p4emu_urng syncEmu; do
   compileLib $fn "" ""
 done
 
