@@ -21,7 +21,7 @@ void err(char*buf) {
 void doTxLoop() {
     int bit = 0;
     int cur;
-    if (ioctl(addrTty, TIOCMSET, &cur) < 0) err("error getting state");
+    if (ioctl(addrTty, TIOCMGET, &cur) < 0) err("error getting state");
     for (;;) {
         usleep(spedRx);
         bit ^= 1;
