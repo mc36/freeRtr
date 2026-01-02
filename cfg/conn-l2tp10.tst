@@ -1,4 +1,4 @@
-description port mode ppp over l2tp3
+description dvbgse over l2tp3
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -15,7 +15,7 @@ int eth1
  ipv6 addr 1234::1 ffff::
  exit
 int di1
- enc ppp
+ enc dvbgse
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.252
  exit
@@ -45,7 +45,7 @@ int eth1
  ipv6 addr 1234::2 ffff::
  exit
 int di1
- enc ppp
+ enc dvbgse
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.252
  exit

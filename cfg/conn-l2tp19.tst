@@ -1,4 +1,4 @@
-description isdn tunneling with l2tp3
+description atmdxi tunneling with l2tp3
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -7,8 +7,9 @@ vrf def v1
  rd 1:1
  exit
 int ser1
- enc isdn
- isdn mode dce
+ enc atmdxi
+ atmdxi vpi 1
+ atmdxi vci 2
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  ipv6 addr 4321::1 ffff::
@@ -58,7 +59,9 @@ vrf def v1
  rd 1:1
  exit
 int ser1
- enc isdn
+ enc atmdxi
+ atmdxi vpi 1
+ atmdxi vci 2
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  ipv6 addr 4321::2 ffff::

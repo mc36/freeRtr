@@ -63,8 +63,8 @@ qc pass: isdn tunneling with capwap
 qc pass: sep tunneling with capwap
 qc pass: ethernet tunneling with capwap
 qc pass: vlan tunneling with capwap
+qc pass: vlan tunneling with capwap
 qc pass: tunnel interface with capwap
-qc pass: capwap server
 qc pass: dhcp
 qc pass: dhcp with arp/nd security
 qc pass: dhcp with static allocation

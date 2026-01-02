@@ -17767,3 +17767,6 @@ qc pass: dvbgse with fragmentation
 ---------------------------------- 2026-01-02 20:51:44 26.1.2
 qc pass: dvbgse without baseband
 qc pass: dvbgse with baseband
+---------------------------------- 2026-01-02 21:18:20 26.1.2
+no qc pass: capwap server
+qc pass: vlan tunneling with capwap

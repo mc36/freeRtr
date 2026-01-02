@@ -1,4 +1,4 @@
-description interworking with ethernet over packet over udp
+description ethernet over packet over udp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -38,11 +38,18 @@ int eth1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
  exit
-int pweth1
+bridge 1
+ exit
+int bvi1
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  ipv6 addr 4321::2 ffff:ffff::
- pseudo v1 eth1 pckoudp 1.1.1.1 2554
+ exit
+vpdn pou
+ bridge-gr 1
+ proxy p1
+ tar 1.1.1.1
+ prot pckoudp
  exit
 !
 

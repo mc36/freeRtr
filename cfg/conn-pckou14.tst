@@ -1,4 +1,4 @@
-description ethernet over packet over udp
+description ppp over packet over udp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -11,15 +11,21 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
  exit
-bridge 1
- exit
-int bvi1
+int lo0
  vrf for v1
- ipv4 addr 2.2.2.1 255.255.255.0
- ipv6 addr 4321::1 ffff:ffff::
+ ipv4 addr 4.4.4.4 255.255.255.255
+ exit
+ipv4 pool p4 2.2.2.1 0.0.0.1 254
+int di1
+ enc ppp
+ vrf for v1
+ ipv4 addr 2.2.2.0 255.255.255.255
+ ppp ip4cp local 2.2.2.0
+ ipv4 pool p4
+ ppp ip4cp open
  exit
 server pckoudp pou
- bridge 1
+ clone di1
  vrf v1
  exit
 !
@@ -38,15 +44,19 @@ int eth1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
  exit
-bridge 1
+prefix-list p1
+ permit 0.0.0.0/0
  exit
-int bvi1
+int di1
+ enc ppp
  vrf for v1
- ipv4 addr 2.2.2.2 255.255.255.0
- ipv6 addr 4321::2 ffff:ffff::
+ ipv4 addr 3.3.3.3 255.255.255.128
+ ppp ip4cp open
+ ppp ip4cp local 0.0.0.0
+ ipv4 gateway-prefix p1
  exit
 vpdn pou
- bridge-gr 1
+ int di1
  proxy p1
  tar 1.1.1.1
  prot pckoudp
@@ -54,11 +64,5 @@ vpdn pou
 !
 
 
-r1 tping 100 10 1.1.1.2 vrf v1
-r2 tping 100 10 1.1.1.1 vrf v1
-
-r2 tping 100 60 2.2.2.1 vrf v1
-r2 tping 100 60 4321::1 vrf v1
-
-r1 tping 100 60 2.2.2.2 vrf v1
-r1 tping 100 60 4321::2 vrf v1
+r2 tping 100 60 2.2.2.0 vrf v1
+r2 tping 100 5 4.4.4.4 vrf v1
