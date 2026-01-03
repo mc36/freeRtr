@@ -17797,3 +17797,6 @@ qc pass: cross connect dvbgse interfaces
 qc pass: sgt dvbgse encapsulation
 qc pass: dvbgse over mpls
 qc pass: dvbgse tunneling with mpls
+---------------------------------- 2026-01-03 09:45:36 26.1.3
+qc pass: interop0: hdlc
+qc pass: interop0: ppp
