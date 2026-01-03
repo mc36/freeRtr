@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.1.3-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-01-03 13:40:03, took 00:12:45, with 50 workers, on 4168 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2026-01-03 15:07:42, took 00:12:32, with 50 workers, on 4173 cases, 0 failed, 0 traces, 5 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -11,8 +11,12 @@ http://sources.freertr.org/cfg/conn-amt03.tst;conn-amt03.tst;success;amt over am
 http://sources.freertr.org/cfg/conn-amt04.tst;conn-amt04.tst;success;amt over loopback
 http://sources.freertr.org/cfg/conn-anyconn.tst;conn-anyconn.tst;success;ip over anyconnect
 http://sources.freertr.org/cfg/conn-arcnet.tst;conn-arcnet.tst;success;arcnet encapsulation
-http://sources.freertr.org/cfg/conn-atmdxi.tst;conn-atmdxi.tst;success;atmdxi encapsulation
-http://sources.freertr.org/cfg/conn-atmsar.tst;conn-atmsar.tst;success;atmsar encapsulation
+http://sources.freertr.org/cfg/conn-atmdxi01.tst;conn-atmdxi01.tst;success;atmdxi snap encapsulation
+http://sources.freertr.org/cfg/conn-atmdxi02.tst;conn-atmdxi02.tst;success;atmdxi mux encapsulation
+http://sources.freertr.org/cfg/conn-atmdxi03.tst;conn-atmdxi03.tst;success;atmdxi nlpid encapsulation
+http://sources.freertr.org/cfg/conn-atmsar01.tst;conn-atmsar01.tst;success;atmsar snap encapsulation
+http://sources.freertr.org/cfg/conn-atmsar02.tst;conn-atmsar02.tst;success;atmsar mux encapsulation
+http://sources.freertr.org/cfg/conn-atmsar03.tst;conn-atmsar03.tst;success;atmsar nlpid encapsulation
 http://sources.freertr.org/cfg/conn-ax2501.tst;conn-ax2501.tst;success;ppp with ax25
 http://sources.freertr.org/cfg/conn-ax2502.tst;conn-ax2502.tst;success;hdlc with ax25
 http://sources.freertr.org/cfg/conn-ax2503.tst;conn-ax2503.tst;success;lapb with ax25
@@ -1142,7 +1146,8 @@ http://sources.freertr.org/cfg/crypt-wireguard04.tst;crypt-wireguard04.tst;succe
 http://sources.freertr.org/cfg/crypt-wireguard05.tst;crypt-wireguard05.tst;success;wireguard over asymmetric ports
 http://sources.freertr.org/cfg/demo01.tst;demo01.tst;success;empty demo network
 http://sources.freertr.org/cfg/demo02.tst;demo02.tst;success;addressed demo network
-http://sources.freertr.org/cfg/intop0-atmdxi.tst;intop0-atmdxi.tst;success;interop0: atmdxi
+http://sources.freertr.org/cfg/intop0-atmdxi01.tst;intop0-atmdxi01.tst;success;interop0: atmdxi snap
+http://sources.freertr.org/cfg/intop0-atmdxi02.tst;intop0-atmdxi02.tst;success;interop0: atmdxi nlpid
 http://sources.freertr.org/cfg/intop0-fr01.tst;intop0-fr01.tst;success;interop0: framerelay ansi
 http://sources.freertr.org/cfg/intop0-fr02.tst;intop0-fr02.tst;success;interop0: framerelay cisco
 http://sources.freertr.org/cfg/intop0-fr03.tst;intop0-fr03.tst;success;interop0: framerelay q933a

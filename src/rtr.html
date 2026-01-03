@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v26.1.3-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2026-01-03 13:40:03, took 00:12:45, with 50 workers, on 4168 cases, 0 failed, 0 traces, 1 retries<br/>
+tested: 2026-01-03 15:07:42, took 00:12:32, with 50 workers, on 4173 cases, 0 failed, 0 traces, 5 retries<br/>
 jvm: ./rtr.bin, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -23,8 +23,12 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-amt04.tst">conn-amt04.tst</a></td><td>success</td><td>amt over loopback</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-anyconn.tst">conn-anyconn.tst</a></td><td>success</td><td>ip over anyconnect</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-arcnet.tst">conn-arcnet.tst</a></td><td>success</td><td>arcnet encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-atmdxi.tst">conn-atmdxi.tst</a></td><td>success</td><td>atmdxi encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-atmsar.tst">conn-atmsar.tst</a></td><td>success</td><td>atmsar encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-atmdxi01.tst">conn-atmdxi01.tst</a></td><td>success</td><td>atmdxi snap encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-atmdxi02.tst">conn-atmdxi02.tst</a></td><td>success</td><td>atmdxi mux encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-atmdxi03.tst">conn-atmdxi03.tst</a></td><td>success</td><td>atmdxi nlpid encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-atmsar01.tst">conn-atmsar01.tst</a></td><td>success</td><td>atmsar snap encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-atmsar02.tst">conn-atmsar02.tst</a></td><td>success</td><td>atmsar mux encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-atmsar03.tst">conn-atmsar03.tst</a></td><td>success</td><td>atmsar nlpid encapsulation</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-ax2501.tst">conn-ax2501.tst</a></td><td>success</td><td>ppp with ax25</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-ax2502.tst">conn-ax2502.tst</a></td><td>success</td><td>hdlc with ax25</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-ax2503.tst">conn-ax2503.tst</a></td><td>success</td><td>lapb with ax25</td></tr>
@@ -1154,7 +1158,8 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-wireguard05.tst">crypt-wireguard05.tst</a></td><td>success</td><td>wireguard over asymmetric ports</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/demo01.tst">demo01.tst</a></td><td>success</td><td>empty demo network</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/demo02.tst">demo02.tst</a></td><td>success</td><td>addressed demo network</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop0-atmdxi.tst">intop0-atmdxi.tst</a></td><td>success</td><td>interop0: atmdxi</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop0-atmdxi01.tst">intop0-atmdxi01.tst</a></td><td>success</td><td>interop0: atmdxi snap</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop0-atmdxi02.tst">intop0-atmdxi02.tst</a></td><td>success</td><td>interop0: atmdxi nlpid</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop0-fr01.tst">intop0-fr01.tst</a></td><td>success</td><td>interop0: framerelay ansi</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop0-fr02.tst">intop0-fr02.tst</a></td><td>success</td><td>interop0: framerelay cisco</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop0-fr03.tst">intop0-fr03.tst</a></td><td>success</td><td>interop0: framerelay q933a</td></tr>

@@ -1,4 +1,4 @@
-description atmdxi encapsulation
+description atmdxi snap encapsulation
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -10,6 +10,7 @@ int ser1
  enc atmdxi
  atmdxi vpi 1
  atmdxi vci 2
+ atmdxi payload snap
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
@@ -26,6 +27,7 @@ int ser1
  enc atmdxi
  atmdxi vpi 1
  atmdxi vci 2
+ atmdxi payload snap
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::

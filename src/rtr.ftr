@@ -7,8 +7,12 @@ qc pass: amt over amt
 qc pass: amt over loopback
 qc pass: ip over anyconnect
 qc pass: arcnet encapsulation
-qc pass: atmdxi encapsulation
-qc pass: atmsar encapsulation
+qc pass: atmdxi snap encapsulation
+qc pass: atmdxi mux encapsulation
+qc pass: atmdxi nlpid encapsulation
+qc pass: atmsar snap encapsulation
+qc pass: atmsar mux encapsulation
+qc pass: atmsar nlpid encapsulation
 qc pass: ppp with ax25
 qc pass: hdlc with ax25
 qc pass: lapb with ax25
@@ -1138,7 +1142,8 @@ qc pass: wireguard over loopback
 qc pass: wireguard over asymmetric ports
 qc pass: empty demo network
 qc pass: addressed demo network
-qc pass: interop0: atmdxi
+qc pass: interop0: atmdxi snap
+qc pass: interop0: atmdxi nlpid
 qc pass: interop0: framerelay ansi
 qc pass: interop0: framerelay cisco
 qc pass: interop0: framerelay q933a

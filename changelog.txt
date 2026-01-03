@@ -17816,3 +17816,15 @@ qc pass: interop0: framerelay ietf
 qc pass: interop0: lapb dte
 qc pass: interop0: lapb dce
 qc pass: interop0: lapb mod128
+---------------------------------- 2026-01-03 14:55:10 26.1.3
+no qc pass: interop0: atmdxi
+no qc pass: atmsar encapsulation
+no qc pass: atmdxi encapsulation
+qc pass: atmdxi snap encapsulation
+qc pass: atmdxi mux encapsulation
+qc pass: atmdxi nlpid encapsulation
+qc pass: atmsar snap encapsulation
+qc pass: atmsar mux encapsulation
+qc pass: atmsar nlpid encapsulation
+qc pass: interop0: atmdxi snap
+qc pass: interop0: atmdxi nlpid

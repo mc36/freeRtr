@@ -165,14 +165,66 @@ public class ifcFrameRfc implements ifcUp, ifcDn {
      */
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        if (pck.dataSize() < size) {
-            cntr.drop(pck, counter.reasons.tooSmall);
+        if (nlpid2ethtyp(pck)) {
+            cntr.drop(pck, counter.reasons.badHdr);
             return;
+        }
+        upper.recvPack(pck);
+    }
+
+    /**
+     * send packet
+     *
+     * @param pck packet
+     */
+    public void sendPack(packHolder pck) {
+        cntr.tx(pck);
+        if (ethtyp2nlpid(pck)) {
+            cntr.drop(pck, counter.reasons.badTyp);
+            return;
+        }
+        lower.sendPack(pck);
+    }
+
+    /**
+     * convert to nlpid format
+     *
+     * @param pck packet to convert
+     * @return true on error, false on success
+     */
+    public static boolean ethtyp2nlpid(packHolder pck) {
+        int i = pck.msbGetW(0);
+        switch (i) {
+            case ipIfc4.type:
+                i = ipCor4.protocolNLPID;
+                break;
+            case ipIfc6.type:
+                i = ipCor6.protocolNLPID;
+                break;
+            default:
+                return true;
+        }
+        pck.getSkip(size);
+        pck.putByte(0, frmType);
+        pck.putByte(1, i);
+        pck.putSkip(size);
+        pck.merge2beg();
+        return false;
+    }
+
+    /**
+     * convert from nlpid format
+     *
+     * @param pck packet to convert
+     * @return true on error, false on success
+     */
+    public static boolean nlpid2ethtyp(packHolder pck) {
+        if (pck.dataSize() < size) {
+            return true;
         }
         int i = pck.getByte(0);
         if (i != frmType) {
-            cntr.drop(pck, counter.reasons.badHdr);
-            return;
+            return true;
         }
         i = pck.getByte(1);
         pck.getSkip(size);
@@ -184,40 +236,12 @@ public class ifcFrameRfc implements ifcUp, ifcDn {
                 i = ipIfc6.type;
                 break;
             default:
-                cntr.drop(pck, counter.reasons.badTyp);
-                return;
+                return true;
         }
         pck.msbPutW(0, i);
         pck.putSkip(size);
         pck.merge2beg();
-        upper.recvPack(pck);
-    }
-
-    /**
-     * send packet
-     *
-     * @param pck packet
-     */
-    public void sendPack(packHolder pck) {
-        cntr.tx(pck);
-        int i = pck.msbGetW(0);
-        switch (i) {
-            case ipIfc4.type:
-                i = ipCor4.protocolNLPID;
-                break;
-            case ipIfc6.type:
-                i = ipCor6.protocolNLPID;
-                break;
-            default:
-                cntr.drop(pck, counter.reasons.badTyp);
-                return;
-        }
-        pck.getSkip(size);
-        pck.putByte(0, frmType);
-        pck.putByte(1, i);
-        pck.putSkip(size);
-        pck.merge2beg();
-        lower.sendPack(pck);
+        return false;
     }
 
 }

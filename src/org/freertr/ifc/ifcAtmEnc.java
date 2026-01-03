@@ -111,15 +111,12 @@ public class ifcAtmEnc {
     public boolean ancSend(packHolder pck) {
         switch (ancMode) {
             case ancSnap:
-                pck.putByte(0, 0xaa);
-                pck.putByte(1, 0xaa);
-                pck.putByte(2, 0x03);
-                pck.putByte(3, 0);
-                pck.putByte(4, 0);
-                pck.putByte(5, 0);
-                pck.putSkip(6);
-                pck.merge2beg();
+                ethtyp2snap(pck);
                 return false;
+            case ancMux:
+                return ifcEther.stripEtherType(pck);
+            case ancNlpid:
+                return ifcFrameRfc.ethtyp2nlpid(pck);
             default:
                 return true;
         }
@@ -134,11 +131,47 @@ public class ifcAtmEnc {
     public boolean ancRecv(packHolder pck) {
         switch (ancMode) {
             case ancSnap:
-                pck.getSkip(6);
+                snap2ethtyp(pck);
                 return false;
+            case ancMux:
+                int i = ifcEther.guessEtherType(pck);
+                if (i < 0) {
+                    return true;
+                }
+                pck.msbPutW(0, i);
+                pck.putSkip(2);
+                pck.merge2beg();
+                return false;
+            case ancNlpid:
+                return ifcFrameRfc.nlpid2ethtyp(pck);
             default:
                 return true;
         }
+    }
+
+    /**
+     * convert to snap format
+     *
+     * @param pck packet to convert
+     */
+    public static void ethtyp2snap(packHolder pck) {
+        pck.putByte(0, 0xaa);
+        pck.putByte(1, 0xaa);
+        pck.putByte(2, 0x03);
+        pck.putByte(3, 0);
+        pck.putByte(4, 0);
+        pck.putByte(5, 0);
+        pck.putSkip(6);
+        pck.merge2beg();
+    }
+
+    /**
+     * convert from snap format
+     *
+     * @param pck packet to convert
+     */
+    public static void snap2ethtyp(packHolder pck) {
+        pck.getSkip(6);
     }
 
 }
