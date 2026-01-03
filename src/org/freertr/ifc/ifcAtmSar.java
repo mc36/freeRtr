@@ -19,7 +19,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class ifcAtmSar implements ifcUp, ifcDn {
+public class ifcAtmSar extends ifcAtmEnc implements ifcUp, ifcDn {
 
     /**
      * vpi number
@@ -136,6 +136,7 @@ public class ifcAtmSar implements ifcUp, ifcDn {
         l.add(null, false, 3, new int[]{-1}, "<num>", "vpi number");
         l.add(null, false, 2, new int[]{3}, "vci", "set vci number");
         l.add(null, false, 3, new int[]{-1}, "<num>", "vci number");
+        ancHelp(l);
     }
 
     /**
@@ -147,6 +148,7 @@ public class ifcAtmSar implements ifcUp, ifcDn {
     public void getConfig(List<String> l, String beg) {
         l.add(beg + "vpi " + vpiNum);
         l.add(beg + "vci " + vciNum);
+        ancConfig(l, beg);
     }
 
     /**
@@ -164,7 +166,7 @@ public class ifcAtmSar implements ifcUp, ifcDn {
             vciNum = bits.str2num(cmd.word());
             return;
         }
-        cmd.badCmd();
+        ancConfig(a, cmd);
     }
 
     /**
@@ -195,14 +197,9 @@ public class ifcAtmSar implements ifcUp, ifcDn {
     }
 
     public void sendPack(packHolder pck) {
-        pck.putByte(0, 0xaa);
-        pck.putByte(1, 0xaa);
-        pck.putByte(2, 0x03);
-        pck.putByte(3, 0);
-        pck.putByte(4, 0);
-        pck.putByte(5, 0);
-        pck.putSkip(6);
-        pck.merge2beg();
+        if (ancSend(pck)) {
+            return;
+        }
         int o = pck.dataSize();
         int i = paySize - (o % paySize);
         if (i < 8) {
@@ -283,7 +280,9 @@ public class ifcAtmSar implements ifcUp, ifcDn {
             return;
         }
         assem.setDataSize(i);
-        assem.getSkip(6);
+        if (ancRecv(assem)) {
+            return;
+        }
         upper.recvPack(assem);
         assem.clear();
     }

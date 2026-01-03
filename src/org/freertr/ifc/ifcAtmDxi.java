@@ -17,7 +17,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class ifcAtmDxi implements ifcUp, ifcDn {
+public class ifcAtmDxi extends ifcAtmEnc implements ifcUp, ifcDn {
 
     /**
      * vpi number
@@ -32,7 +32,7 @@ public class ifcAtmDxi implements ifcUp, ifcDn {
     /**
      * size of header
      */
-    public final static int size = 8;
+    public final static int size = 2;
 
     /**
      * counter of this interface
@@ -171,6 +171,7 @@ public class ifcAtmDxi implements ifcUp, ifcDn {
         l.add(null, false, 3, new int[]{-1}, "<num>", "vpi number");
         l.add(null, false, 2, new int[]{3}, "vci", "set vci number");
         l.add(null, false, 3, new int[]{-1}, "<num>", "vci number");
+        ancHelp(l);
     }
 
     /**
@@ -182,6 +183,7 @@ public class ifcAtmDxi implements ifcUp, ifcDn {
     public void getConfig(List<String> l, String beg) {
         l.add(beg + "vpi " + vpiNum);
         l.add(beg + "vci " + vciNum);
+        ancConfig(l, beg);
     }
 
     /**
@@ -199,7 +201,7 @@ public class ifcAtmDxi implements ifcUp, ifcDn {
             vciNum = bits.str2num(cmd.word());
             return;
         }
-        cmd.badCmd();
+        ancConfig(a, cmd);
     }
 
     /**
@@ -234,6 +236,9 @@ public class ifcAtmDxi implements ifcUp, ifcDn {
             cntr.drop(pck, counter.reasons.badVlan);
             return;
         }
+        if (ancRecv(pck)) {
+            return;
+        }
         upper.recvPack(pck);
     }
 
@@ -243,15 +248,12 @@ public class ifcAtmDxi implements ifcUp, ifcDn {
      * @param pck packet
      */
     public void sendPack(packHolder pck) {
+        if (ancSend(pck)) {
+            return;
+        }
         cntr.tx(pck);
         pck.putByte(0, ((vciNum & 0x30) << 6) | ((vpiNum & 0xf) << 2));
         pck.putByte(1, (vciNum << 4) | 1);
-        pck.putByte(2, 0xaa);
-        pck.putByte(3, 0xaa);
-        pck.putByte(4, 0x03);
-        pck.putByte(5, 0);
-        pck.putByte(6, 0);
-        pck.putByte(7, 0);
         pck.putSkip(size);
         pck.merge2beg();
         lower.sendPack(pck);
