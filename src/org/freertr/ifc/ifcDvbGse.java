@@ -258,10 +258,6 @@ public class ifcDvbGse implements ifcUp, ifcDn {
         i = pck.getByte(0); // frag id
         pck.getSkip(1);
         if (beg) {
-            fragReasm.clear();
-            fragSeqRx = i;
-        }
-        if ((i & fragBeg) != 0) {
             fragSeqRx = i;
             fragReasm.clear();
         }

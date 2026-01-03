@@ -15,17 +15,17 @@ public class ifcAtmEnc {
     /**
      * snap mode
      */
-    public static final int ancSnap = 1;
+    public final static int ancSnap = 1;
 
     /**
      * mux mode
      */
-    public static final int ancMux = 2;
+    public final static int ancMux = 2;
 
     /**
      * nlpid mode
      */
-    public static final int ancNlpid = 3;
+    public final static int ancNlpid = 3;
 
     /**
      * create instance
