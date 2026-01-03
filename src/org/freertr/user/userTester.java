@@ -2073,9 +2073,9 @@ class userTesterOne {
                 ctP.putLine("test hwcfg tcp2vrf " + ctL + " " + ctV);
                 ctP.doSync();
             }
-            pipeShell.exec(runner + img.convert2udp(img.otherC1, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
-            pipeShell.exec(runner + img.convert2udp(img.otherC2, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
-            s = img.convert2udp(img.otherC3, prefix + slot + rn, ctL, lps, rps, mcs);
+            pipeShell.exec(runner + img.convert2udp(img.otherC1, slot, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            pipeShell.exec(runner + img.convert2udp(img.otherC2, slot, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            s = img.convert2udp(img.otherC3, slot, prefix + slot + rn, ctL, lps, rps, mcs);
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, runner + s);
@@ -2988,13 +2988,14 @@ class userTesterImg {
      *
      * @param cmd command to update
      * @param fn filename
+     * @param cp sl slot
      * @param cp control port
      * @param lp local port
      * @param rp remote port
      * @param ad mac address
      * @return hwcfg string
      */
-    protected String convert2udp(String cmd, String fn, int cp, List<Integer> lp, List<Integer> rp, List<addrMac> ad) {
+    protected String convert2udp(String cmd, int sl, String fn, int cp, List<Integer> lp, List<Integer> rp, List<addrMac> ad) {
         String nc = "";
         for (int i = otherNS; i < lp.size(); i++) {
             String a = "" + otherNC;
@@ -3007,6 +3008,7 @@ class userTesterImg {
         cmd = cmd.replaceAll("\\$nc\\$", nc);
         cmd = cmd.replaceAll("\\$fn\\$", fn);
         cmd = cmd.replaceAll("\\$cp\\$", "" + cp);
+        cmd = cmd.replaceAll("\\$sl\\$", "" + sl);
         return cmd;
     }
 
