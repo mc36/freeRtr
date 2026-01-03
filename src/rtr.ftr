@@ -1150,6 +1150,7 @@ qc pass: interop0: framerelay q933a
 qc pass: interop0: framerelay dce
 qc pass: interop0: framerelay ppp
 qc pass: interop0: framerelay ietf
+qc pass: interop0: framerelay gre
 qc pass: interop0: hdlc
 qc pass: interop0: lapb dte
 qc pass: interop0: lapb dce
