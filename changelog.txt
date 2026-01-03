@@ -17807,3 +17807,12 @@ qc pass: interop0: framerelay ansi
 qc pass: interop0: framerelay cisco
 qc pass: interop0: framerelay q933a
 qc pass: interop0: framerelay dce
+---------------------------------- 2026-01-03 12:10:13 26.1.3
+no failed: wireguard over wireguard
+qc pass: wireguard over wireguard
+qc pass: interop0: atmdxi
+qc pass: interop0: framerelay ppp
+qc pass: interop0: framerelay ietf
+qc pass: interop0: lapb dte
+qc pass: interop0: lapb dce
+qc pass: interop0: lapb mod128
