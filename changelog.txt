@@ -17865,3 +17865,6 @@ qc pass: smds tunneling with mpls
 ---------------------------------- 2026-01-04 11:30:52 26.1.4
 qc pass: framerelay nni
 qc pass: interop0: framerelay nni
+---------------------------------- 2026-01-04 18:02:37 26.1.4
+qc pass: iou ethernet demultiplexer
+qc pass: iou serial demultiplexer

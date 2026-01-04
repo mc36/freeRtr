@@ -280,6 +280,8 @@ qc pass: icmptunnel over ipv6
 qc pass: icmptunnel over icmptunnel
 qc pass: icmptunnel over loopback
 qc pass: infini encapsulation
+qc pass: iou ethernet demultiplexer
+qc pass: iou serial demultiplexer
 qc pass: ipcomp over ipv4
 qc pass: ipcomp over ipv6
 qc pass: ipcomp over ipcomp
