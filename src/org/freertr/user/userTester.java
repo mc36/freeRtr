@@ -1042,20 +1042,27 @@ public class userTester {
             parallel = 0;
             persistD = bits.txt2buf(path + persistF);
             persistP = portBase + (portSlot / 2) + (slot * portSlot);
-            String a = persistD.remove(0);
-            String b = persistD.remove(0);
-            int i = bits.str2num(persistD.remove(0));
+            s = persistD.remove(0);
+            s = persistD.remove(0);
+            s = persistD.remove(0);
             int o = bits.str2num(persistD.remove(0));
-            s = "qemu-system-x86_64 " + b + " -monitor none -serial stdio -nographic -no-reboot -enable-kvm -cpu host -smp cores=" + o + ",threads=1,sockets=1 -drive file=" + a + ",format=raw,cache=unsafe -m " + i;
-            a = persistD.remove(0);
-            for (i = 0; i < 8; i++) {
+            addrMac adr = new addrMac();
+            adr.fromString(persistD.remove(0));
+            List<addrMac> mcs = new ArrayList<addrMac>();
+            List<Integer> lps = new ArrayList<Integer>();
+            List<Integer> rps = new ArrayList<Integer>();
+            for (int i = 0; i < o; i++) {
                 int rp = persistP + ((i + 1) * 4);
-                int lp = rp + 1;
-                s += " -netdev socket,id=n" + i + ",udp=127.0.0.1:" + rp + ",localaddr=:" + lp + " -device " + a + ",netdev=n" + i + ",mac=00:00:00:00:11:" + bits.toHexB(i);
+                rps.add(rp);
+                lps.add(rp + 1);
+                adr.getBytes()[adr.getSize() - 1] = (byte) i;
+                mcs.add(adr.copyBytes());
             }
-            persistP += (4 * bits.str2num(persistD.remove(0)));
+            String a = persistD.remove(0);
+            s = userTester.convert2udp(s, 0, a, slot, temp + slot + "persist.img", 30001 + (slot * userTester.portSlot), lps, rps, mcs);
             persistC = new userTesterPrc(rdr, temp, slot, "persist", runner + s);
             persistC.persistent = true;
+            persistP += (4 * bits.str2num(persistD.remove(0)));
             bits.buf2txt(true, bits.str2lst(""), persistC.getLogName(4));
             s = persistD.remove(0);
             int round = 5000;
