@@ -1219,7 +1219,7 @@ public class userTester {
      * @param skp intrefaces to skip
      * @param ifc interface string
      * @param fn filename
-     * @param cp sl slot
+     * @param sl sl slot
      * @param cp control port
      * @param lp local port
      * @param rp remote port
@@ -2135,9 +2135,9 @@ class userTesterOne {
                 ctP.putLine("test hwcfg tcp2vrf " + ctL + " " + ctV);
                 ctP.doSync();
             }
-            pipeShell.exec(runner + userTester.convert2udp(img.otherC1, img.otherNS,img.otherNC, slot, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
-            pipeShell.exec(runner + userTester.convert2udp(img.otherC2, img.otherNS,img.otherNC, slot, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
-            s = userTester.convert2udp(img.otherC3, img.otherNS,img.otherNC, slot, prefix + slot + rn, ctL, lps, rps, mcs);
+            pipeShell.exec(runner + userTester.convert2udp(img.otherC1, img.otherNS, img.otherNC, slot, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            pipeShell.exec(runner + userTester.convert2udp(img.otherC2, img.otherNS, img.otherNC, slot, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            s = userTester.convert2udp(img.otherC3, img.otherNS, img.otherNC, slot, prefix + slot + rn, ctL, lps, rps, mcs);
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, runner + s);

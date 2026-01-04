@@ -92,6 +92,11 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
     public final static int dataMoDCE = 2;
 
     /**
+     * nni terminal
+     */
+    public final static int dataMoNNI = 3;
+
+    /**
      * size of header
      */
     public final static int size = 2;
@@ -265,6 +270,7 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
         l.add(null, false, 2, new int[]{3}, "mode", "my line mode");
         l.add(null, false, 3, new int[]{-1}, "dce", "this side is dce");
         l.add(null, false, 3, new int[]{-1}, "dte", "this side is dte");
+        l.add(null, false, 3, new int[]{-1}, "nni", "both sides are nni");
         l.add(null, false, 2, new int[]{3}, "lmi", "lmi type");
         l.add(null, false, 3, new int[]{-1}, "ansi", "set to ansi");
         l.add(null, false, 3, new int[]{-1}, "cisco", "set to cisco");
@@ -292,6 +298,9 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
                 break;
             case dataMoDTE:
                 a = "dte";
+                break;
+            case dataMoNNI:
+                a = "nni";
                 break;
             default:
                 a = "unknown=" + dataMode;
@@ -338,6 +347,9 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
             }
             if (a.equals("dte")) {
                 i = dataMoDTE;
+            }
+            if (a.equals("nni")) {
+                i = dataMoNNI;
             }
             dataMode = i;
             return;
@@ -629,10 +641,22 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
         int i;
         pck.msbPutW(0, getNLPIDvalue()); // nlpid value
         pck.putByte(2, 0); // call reference
-        if (dataMode == dataMoDTE) {
-            i = opcodeEnquery;
-        } else {
-            i = opcodeStatus;
+        switch (dataMode) {
+            case dataMoDTE:
+                i = opcodeEnquery;
+                break;
+            case dataMoDCE:
+                i = opcodeStatus;
+                break;
+            case dataMoNNI:
+                if ((sequenceTx & 1) == 0) {
+                    i = opcodeEnquery;
+                } else {
+                    i = opcodeStatus;
+                }
+                break;
+            default:
+                return;
         }
         pck.putByte(3, i); // opcode
         pck.putSkip(4);
