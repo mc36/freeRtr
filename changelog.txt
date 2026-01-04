@@ -17830,3 +17830,10 @@ qc pass: interop0: atmdxi snap
 qc pass: interop0: atmdxi nlpid
 ---------------------------------- 2026-01-03 16:32:22 26.1.3
 qc pass: interop0: framerelay gre
+---------------------------------- 2026-01-03 23:37:20 26.1.3
+qc pass: smds encapsulation
+qc pass: smds dxi encapsulation
+qc pass: smds nec encapsulation
+qc pass: smds nec dxi encapsulation
+qc pass: interop0: smds
+qc pass: interop0: smds dxi

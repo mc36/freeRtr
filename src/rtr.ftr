@@ -465,6 +465,10 @@ qc pass: bgp with process redundancy
 qc pass: ppp over rlogin
 qc pass: sep
 qc pass: slaac
+qc pass: smds encapsulation
+qc pass: smds dxi encapsulation
+qc pass: smds nec encapsulation
+qc pass: smds nec dxi encapsulation
 qc pass: sreth over ipv4
 qc pass: sreth over ipv6
 qc pass: sreth over loopback
@@ -1156,6 +1160,8 @@ qc pass: interop0: lapb dte
 qc pass: interop0: lapb dce
 qc pass: interop0: lapb mod128
 qc pass: interop0: ppp
+qc pass: interop0: smds
+qc pass: interop0: smds dxi
 qc pass: interop1: ebgp
 qc pass: interop1: ibgp
 qc pass: interop1: bgp locpref
