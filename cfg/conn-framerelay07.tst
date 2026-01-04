@@ -1,4 +1,4 @@
-description ip over framerelay
+description ppp over framerelay
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -7,7 +7,7 @@ vrf def v1
  rd 1:1
  exit
 int ser1
- enc frrfc
+ enc frppp
  framerelay mode dce
  framerelay dlci 123
  vrf for v1
@@ -23,7 +23,7 @@ vrf def v1
  rd 1:1
  exit
 int ser1
- enc frrfc
+ enc frppp
  framerelay dlci 123
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0

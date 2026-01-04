@@ -1,4 +1,4 @@
-description framerelay asymmetric fragmentation
+description framerelay fragmentation
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -28,6 +28,7 @@ int ser1
  enc frame
  framerelay lmi ansi
  framerelay dlci 123
+ framerelay frag 256
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::

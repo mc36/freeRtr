@@ -1,4 +1,4 @@
-description interop0: framerelay ppp
+description interop0: framerelay nni
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -7,8 +7,8 @@ vrf def v1
  rd 1:1
  exit
 int ser1
- encap frppp
- framerelay mode dte
+ encap framerelay
+ framerelay mode nni
  framerelay lmi ansi
  framerelay dlci 321
  vrf for v1
@@ -25,13 +25,11 @@ ipv6 unicast-routing
 interface serial1/0
  encap frame-relay
  frame-relay lmi-type ansi
- frame-relay intf-type dce
+ frame-relay intf-type nni
  no shutdown
  exit
 interface Serial1/0.1 point-to-point
- frame-relay interface-dlci 321 ppp Virtual-Template1
- exit
-interface Virtual-Template1
+ frame-relay interface-dlci 321
  ip address 1.1.1.2 255.255.255.0
  ipv6 address 1234::2/64
  exit
@@ -39,4 +37,4 @@ interface Virtual-Template1
 
 
 r1 tping 100 30 1.1.1.2 vrf v1
-!r1 tping 100 30 1234::2 vrf v1
+r1 tping 100 30 1234::2 vrf v1
