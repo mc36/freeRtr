@@ -1,4 +1,4 @@
-description dvbgse with grefr
+description sep with grefr
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -15,7 +15,7 @@ int eth1
  ipv6 addr 1234::1 ffff::
  exit
 int di1
- enc dvbgse
+ enc sep
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  ipv6 addr 4321::1 ffff::
@@ -44,7 +44,7 @@ int eth1
  ipv6 addr 1234::2 ffff::
  exit
 int di1
- enc dvbgse
+ enc sep
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  ipv6 addr 4321::2 ffff::

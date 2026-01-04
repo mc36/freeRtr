@@ -1,4 +1,4 @@
-description port mode ppp over mpls
+description smds over mpls
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -27,7 +27,9 @@ int eth1
 ipv4 route v1 2.2.2.2 255.255.255.255 1.1.1.2
 ipv6 route v1 4321::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::2
 int di1
- enc ppp
+ enc smds
+ smds source c333-2222-1111-ffff
+ smds target c111-2222-3333-ffff
  vrf for v1
  ipv4 addr 3.3.3.1 255.255.255.0
  exit
@@ -70,7 +72,9 @@ int eth1
 ipv4 route v1 2.2.2.1 255.255.255.255 1.1.1.1
 ipv6 route v1 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234::1
 int di1
- enc ppp
+ enc smds
+ smds target c333-2222-1111-ffff
+ smds source c111-2222-3333-ffff
  vrf for v1
  ipv4 addr 3.3.3.2 255.255.255.0
  exit

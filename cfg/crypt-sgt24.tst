@@ -1,4 +1,4 @@
-description sgt encapsulation with egress allow
+description sgt encapsulation with ingress allow
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -8,6 +8,7 @@ vrf def v1
  exit
 int eth1
  sgt ena
+ sgt allow-in 0 2
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
@@ -25,7 +26,6 @@ vrf def v1
  exit
 int eth1
  sgt ena
- sgt allow-out 0 2
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::

@@ -1,4 +1,4 @@
-description port mode ppp over l2tp3
+description smds over l2tp3
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -15,7 +15,9 @@ int eth1
  ipv6 addr 1234::1 ffff::
  exit
 int di1
- enc ppp
+ enc smds
+ smds source c333-2222-1111-ffff
+ smds target c111-2222-3333-ffff
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.252
  exit
@@ -45,7 +47,9 @@ int eth1
  ipv6 addr 1234::2 ffff::
  exit
 int di1
- enc ppp
+ enc smds
+ smds target c333-2222-1111-ffff
+ smds source c111-2222-3333-ffff
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.252
  exit

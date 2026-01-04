@@ -1,4 +1,4 @@
-description ppp over authenticated l2tp3 server
+description tunnel interface with l2tp3
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -11,23 +11,15 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
  exit
-int lo0
+int tun1
+ tun vrf v1
+ tun sou eth1
+ tun dest 1.1.1.2
+ tun key 1234
+ tun mod l2tp3
  vrf for v1
- ipv4 addr 4.4.4.4 255.255.255.255
- exit
-ipv4 pool p4 2.2.2.1 0.0.0.1 254
-int di1
- enc ppp
- vrf for v1
- ipv4 addr 2.2.2.0 255.255.255.255
- ppp ip4cp local 2.2.2.0
- ipv4 pool p4
- ppp ip4cp open
- exit
-server l2tp3 l2tp
- clone di1
- password tester
- vrf v1
+ ipv4 addr 2.2.2.1 255.255.255.0
+ ipv6 addr 4321::1 ffff::
  exit
 !
 
@@ -37,38 +29,29 @@ int eth1 eth 0000.0000.2222 $1b$ $1a$
 vrf def v1
  rd 1:1
  exit
-proxy-profile p1
- vrf v1
- exit
 int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
- ipv6 addr 1234::2 ffff::
+ ipv6 addr 1234::2 ffff:ffff::
  exit
-prefix-list p1
- permit 0.0.0.0/0
- exit
-int di1
+int tun1
+ tun vrf v1
+ tun sou eth1
+ tun dest 1.1.1.1
+ tun key 1234
+ tun mod l2tp3
  vrf for v1
- ipv4 addr 3.3.3.3 255.255.255.128
- ppp ip4cp open
- ppp ip4cp local 0.0.0.0
- ipv4 gateway-prefix p1
- exit
-vpdn l2tp
- int di1
- proxy p1
- tar 1.1.1.1
- called 1234
- calling 4321
- vcid 1234
- dir out
- password tester
- pwt ppp
- prot l2tp3
+ ipv4 addr 2.2.2.2 255.255.255.0
+ ipv6 addr 4321::2 ffff::
  exit
 !
 
 
-r2 tping 100 60 2.2.2.0 vrf v1
-r2 tping 100 60 4.4.4.4 vrf v1
+
+r1 tping 100 60 1.1.1.2 vrf v1
+r2 tping 100 60 1.1.1.1 vrf v1
+
+r1 tping 100 60 2.2.2.2 vrf v1
+r1 tping 100 60 4321::2 vrf v1
+r2 tping 100 60 2.2.2.1 vrf v1
+r2 tping 100 60 4321::1 vrf v1

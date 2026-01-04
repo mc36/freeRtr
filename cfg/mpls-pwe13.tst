@@ -1,4 +1,4 @@
-description interworking between l2tp3 and ethernet over mpls
+description multipoint ethernet over mpls
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -48,7 +48,7 @@ int bvi1
  vrf for v1
  ipv4 addr 3.3.3.1 255.255.255.0
  exit
-vpdn eompls
+vpdn eompls1
  bridge-gr 1
  proxy p1
  target 2.2.2.2
@@ -57,14 +57,14 @@ vpdn eompls
  pwtype eth
  protocol pweompls
  exit
-vpdn l2tp
+vpdn eompls2
  bridge-gr 1
  proxy p1
- target 2.2.2.3
+ target 4321::3
+ mtu 1500
  vcid 1234
  pwtype eth
- dir in
- protocol l2tp3
+ protocol pweompls
  exit
 !
 
@@ -143,14 +143,14 @@ int bvi1
  vrf for v1
  ipv4 addr 3.3.3.3 255.255.255.0
  exit
-vpdn l2tp
+vpdn eompls
  bridge-gr 1
  proxy p1
- target 2.2.2.1
+ target 4321::1
+ mtu 1500
  vcid 1234
  pwtype eth
- dir out
- protocol l2tp3
+ protocol pweompls
  exit
 !
 

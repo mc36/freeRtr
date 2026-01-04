@@ -1,4 +1,4 @@
-description cross connect different tunnel interfaces
+description cross connect tunnel interfaces
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -47,7 +47,7 @@ int tun1
  exit
 int tun2
  tunnel vrf v1
- tunnel mode ipip
+ tunnel mode gre
  tunnel source ser2
  tunnel destination 1.1.2.1
  connect tun1
@@ -67,7 +67,7 @@ int ser1
  exit
 int tun1
  tunnel vrf v1
- tunnel mode ipip
+ tunnel mode gre
  tunnel source ser1
  tunnel destination 1.1.2.2
  vrf for v1
