@@ -17837,3 +17837,28 @@ qc pass: smds nec encapsulation
 qc pass: smds nec dxi encapsulation
 qc pass: interop0: smds
 qc pass: interop0: smds dxi
+---------------------------------- 2026-01-04 07:08:11 26.1.4
+qc pass: smds with ax25
+qc pass: smds tunneling with capwap
+qc pass: smds tunneling with dlsw
+qc pass: smds tunneling with eoip
+qc pass: smds tunneling with erspan
+qc pass: smds tunneling with etherip
+qc pass: smds tunneling with geneve
+qc pass: smds with greppp
+qc pass: smds with grefr
+qc pass: smds over l2tp3
+qc pass: smds tunneling with l2tp3
+qc pass: smds tunneling with llcudp
+qc pass: smds tunneling with lwapp
+qc pass: smds tunneling with nvgre
+qc pass: smds tunneling with packet over udp
+qc pass: smds tunneling with sreth
+qc pass: smds with tdmoudp
+qc pass: smds tunneling with tzsp
+qc pass: smds tunneling with uti
+qc pass: smds tunneling with vxlan
+qc pass: cross connect smds interfaces
+qc pass: sgt smds encapsulation
+qc pass: smds over mpls
+qc pass: smds tunneling with mpls

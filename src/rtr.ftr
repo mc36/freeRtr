@@ -21,6 +21,7 @@ qc pass: atmdxi with ax25
 qc pass: isdn with ax25
 qc pass: sep with ax25
 qc pass: dvbgse with ax25
+qc pass: smds with ax25
 qc pass: chain bridged ethernet
 qc pass: chain bridged ethernet vlan
 qc pass: star bridged ethernet
@@ -67,6 +68,7 @@ qc pass: atmdxi tunneling with capwap
 qc pass: isdn tunneling with capwap
 qc pass: sep tunneling with capwap
 qc pass: dvbgse tunneling with capwap
+qc pass: smds tunneling with capwap
 qc pass: ethernet tunneling with capwap
 qc pass: vlan tunneling with capwap
 qc pass: tunnel interface with capwap
@@ -92,6 +94,7 @@ qc pass: atmdxi tunneling with dlsw
 qc pass: isdn tunneling with dlsw
 qc pass: sep tunneling with dlsw
 qc pass: dvbgse tunneling with dlsw
+qc pass: smds tunneling with dlsw
 qc pass: ethernet tunneling with dlsw
 qc pass: vlan tunneling with dlsw
 qc pass: tunnel interface with dlsw
@@ -110,6 +113,7 @@ qc pass: atmdxi tunneling with eoip
 qc pass: isdn tunneling with eoip
 qc pass: sep tunneling with eoip
 qc pass: dvbgse tunneling with eoip
+qc pass: smds tunneling with eoip
 qc pass: ethernet tunneling with eoip
 qc pass: vlan tunneling with eoip
 qc pass: tunnel interface with eoip
@@ -125,6 +129,7 @@ qc pass: atmdxi tunneling with erspan
 qc pass: isdn tunneling with erspan
 qc pass: sep tunneling with erspan
 qc pass: dvbgse tunneling with erspan
+qc pass: smds tunneling with erspan
 qc pass: ethernet tunneling with erspan
 qc pass: vlan tunneling with erspan
 qc pass: tunnel interface with erspan
@@ -173,6 +178,7 @@ qc pass: atmdxi tunneling with etherip
 qc pass: isdn tunneling with etherip
 qc pass: sep tunneling with etherip
 qc pass: dvbgse tunneling with etherip
+qc pass: smds tunneling with etherip
 qc pass: ethernet tunneling with etherip
 qc pass: vlan tunneling with etherip
 qc pass: tunnel interface with etherip
@@ -211,6 +217,7 @@ qc pass: atmdxi tunneling with geneve
 qc pass: isdn tunneling with geneve
 qc pass: sep tunneling with geneve
 qc pass: dvbgse tunneling with geneve
+qc pass: smds tunneling with geneve
 qc pass: ethernet tunneling with geneve
 qc pass: vlan tunneling with geneve
 qc pass: tunnel interface with geneve
@@ -227,6 +234,7 @@ qc pass: atmdxi with greppp
 qc pass: isdn with greppp
 qc pass: sep with greppp
 qc pass: dvbgse with greppp
+qc pass: smds with greppp
 qc pass: gre server
 qc pass: gre with checksum
 qc pass: gre with sequence
@@ -241,6 +249,7 @@ qc pass: atmdxi with grefr
 qc pass: isdn with grefr
 qc pass: sep with grefr
 qc pass: dvbgse with grefr
+qc pass: smds with grefr
 qc pass: ppp over gtp
 qc pass: ipv4 over gtp
 qc pass: ipv6 over gtp
@@ -296,6 +305,7 @@ qc pass: atmdxi over l2tp3
 qc pass: isdn over l2tp3
 qc pass: sep over l2tp3
 qc pass: dvbgse over l2tp3
+qc pass: smds over l2tp3
 qc pass: port mode ppp over l2tp3
 qc pass: ethernet over l2tp3
 qc pass: vlan over l2tp3
@@ -308,6 +318,7 @@ qc pass: atmdxi tunneling with l2tp3
 qc pass: isdn tunneling with l2tp3
 qc pass: sep tunneling with l2tp3
 qc pass: dvbgse tunneling with l2tp3
+qc pass: smds tunneling with l2tp3
 qc pass: ethernet tunneling with l2tp3
 qc pass: vlan tunneling with l2tp3
 qc pass: tunnel interface with l2tp3
@@ -333,6 +344,7 @@ qc pass: atmdxi tunneling with llcudp
 qc pass: isdn tunneling with llcudp
 qc pass: sep tunneling with llcudp
 qc pass: dvbgse tunneling with llcudp
+qc pass: smds tunneling with llcudp
 qc pass: ethernet tunneling with llcudp
 qc pass: vlan tunneling with llcudp
 qc pass: tunnel interface with llcudp
@@ -347,6 +359,7 @@ qc pass: atmdxi tunneling with lwapp
 qc pass: isdn tunneling with lwapp
 qc pass: sep tunneling with lwapp
 qc pass: dvbgse tunneling with lwapp
+qc pass: smds tunneling with lwapp
 qc pass: ethernet tunneling with lwapp
 qc pass: vlan tunneling with lwapp
 qc pass: tunnel interface with lwapp
@@ -392,6 +405,7 @@ qc pass: atmdxi tunneling with nvgre
 qc pass: isdn tunneling with nvgre
 qc pass: sep tunneling with nvgre
 qc pass: dvbgse tunneling with nvgre
+qc pass: smds tunneling with nvgre
 qc pass: ethernet tunneling with nvgre
 qc pass: vlan tunneling with nvgre
 qc pass: tunnel interface with nvgre
@@ -415,6 +429,7 @@ qc pass: atmdxi tunneling with packet over udp
 qc pass: isdn tunneling with packet over udp
 qc pass: sep tunneling with packet over udp
 qc pass: dvbgse tunneling with packet over udp
+qc pass: smds tunneling with packet over udp
 qc pass: ethernet tunneling with packet over udp
 qc pass: vlan tunneling with packet over udp
 qc pass: tunnel interface with packet over udp
@@ -480,6 +495,7 @@ qc pass: atmdxi tunneling with sreth
 qc pass: isdn tunneling with sreth
 qc pass: sep tunneling with sreth
 qc pass: dvbgse tunneling with sreth
+qc pass: smds tunneling with sreth
 qc pass: ethernet tunneling with sreth
 qc pass: vlan tunneling with sreth
 qc pass: tunnel interface with sreth
@@ -507,6 +523,7 @@ qc pass: atmdxi with tdmoudp
 qc pass: isdn with tdmoudp
 qc pass: sep with tdmoudp
 qc pass: dvbgse with tdmoudp
+qc pass: smds with tdmoudp
 qc pass: ppp over telnet
 qc pass: ppp over tls
 qc pass: tmux over ipv4
@@ -524,6 +541,7 @@ qc pass: atmdxi tunneling with tzsp
 qc pass: isdn tunneling with tzsp
 qc pass: sep tunneling with tzsp
 qc pass: dvbgse tunneling with tzsp
+qc pass: smds tunneling with tzsp
 qc pass: ethernet tunneling with tzsp
 qc pass: vlan tunneling with tzsp
 qc pass: tunnel interface with tzsp
@@ -542,6 +560,7 @@ qc pass: atmdxi tunneling with uti
 qc pass: isdn tunneling with uti
 qc pass: sep tunneling with uti
 qc pass: dvbgse tunneling with uti
+qc pass: smds tunneling with uti
 qc pass: ethernet tunneling with uti
 qc pass: vlan tunneling with uti
 qc pass: tunnel interface with uti
@@ -560,6 +579,7 @@ qc pass: atmdxi tunneling with vxlan
 qc pass: isdn tunneling with vxlan
 qc pass: sep tunneling with vxlan
 qc pass: dvbgse tunneling with vxlan
+qc pass: smds tunneling with vxlan
 qc pass: ethernet tunneling with vxlan
 qc pass: vlan tunneling with vxlan
 qc pass: tunnel interface with vxlan
@@ -572,6 +592,7 @@ qc pass: cross connect atmdxi interfaces
 qc pass: cross connect isdn interfaces
 qc pass: cross connect sep interfaces
 qc pass: cross connect dvbgse interfaces
+qc pass: cross connect smds interfaces
 qc pass: cross connect ethernet interfaces
 qc pass: cross connect vlan subinterfaces
 qc pass: cross connect vlan subinterfaces of same interface
@@ -1032,6 +1053,7 @@ qc pass: sgt atmdxi encapsulation
 qc pass: sgt isdn encapsulation
 qc pass: sgt sep encapsulation
 qc pass: sgt dvbgse encapsulation
+qc pass: sgt smds encapsulation
 qc pass: sgt gre encapsulation
 qc pass: sgt ipip encapsulation
 qc pass: sgt ipsec encapsulation
@@ -1630,6 +1652,7 @@ qc pass: atmdxi over mpls
 qc pass: isdn over mpls
 qc pass: sep over mpls
 qc pass: dvbgse over mpls
+qc pass: smds over mpls
 qc pass: port mode ppp over mpls
 qc pass: ethernet over mpls
 qc pass: vlan over mpls
@@ -1643,6 +1666,7 @@ qc pass: atmdxi tunneling with mpls
 qc pass: isdn tunneling with mpls
 qc pass: sep tunneling with mpls
 qc pass: dvbgse tunneling with mpls
+qc pass: smds tunneling with mpls
 qc pass: ethernet tunneling with mpls
 qc pass: vlan tunneling with mpls
 qc pass: tunnel interface with mpls
