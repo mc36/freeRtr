@@ -46,6 +46,7 @@ import org.freertr.serv.servGtp;
 import org.freertr.serv.servHoneyPot;
 import org.freertr.serv.servHttp;
 import org.freertr.serv.servImap4;
+import org.freertr.serv.servIoumux;
 import org.freertr.serv.servIrc;
 import org.freertr.serv.servIscsi;
 import org.freertr.serv.servL2f;
@@ -410,6 +411,11 @@ public class cfgAll {
      * pktmux daemons
      */
     public final static servGenList<servPktmux> dmnPktmux = new servGenList<servPktmux>();
+
+    /**
+     * ioumux daemons
+     */
+    public final static servGenList<servIoumux> dmnIoumux = new servGenList<servIoumux>();
 
     /**
      * p4lang daemons
@@ -4115,6 +4121,7 @@ public class cfgAll {
         dmnUpnpHub.getShRun(l, filter);
         dmnOpenflow.getShRun(l, filter);
         dmnPktmux.getShRun(l, filter);
+        dmnIoumux.getShRun(l, filter);
         dmnP4lang.getShRun(l, filter);
         dmnStack.getShRun(l, filter);
         dmnForwarder.getShRun(l, filter);

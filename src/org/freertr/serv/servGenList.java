@@ -202,6 +202,7 @@ public class servGenList<T extends servGeneric> {
         srvHelp(l, p, n, e, o, "upnphub", cfgAll.dmnUpnpHub.listServers());
         srvHelp(l, p, n, e, o, "openflow", cfgAll.dmnOpenflow.listServers());
         srvHelp(l, p, n, e, o, "pktmux", cfgAll.dmnPktmux.listServers());
+        srvHelp(l, p, n, e, o, "ioumux", cfgAll.dmnIoumux.listServers());
         srvHelp(l, p, n, e, o, "p4lang", cfgAll.dmnP4lang.listServers());
         srvHelp(l, p, n, e, o, "stack", cfgAll.dmnStack.listServers());
         srvHelp(l, p, n, e, o, "quote", cfgAll.dmnQuote.listServers());
@@ -330,6 +331,9 @@ class servGenEntry {
         }
         if (typ.equals("pktmux")) {
             return new servGenEntry(new servPktmux(), cfgAll.dmnPktmux);
+        }
+        if (typ.equals("ioumux")) {
+            return new servGenEntry(new servIoumux(), cfgAll.dmnIoumux);
         }
         if (typ.equals("p4lang")) {
             return new servGenEntry(new servP4lang(), cfgAll.dmnP4lang);
