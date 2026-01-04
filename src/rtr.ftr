@@ -202,6 +202,7 @@ qc pass: bridge mac enforcement
 qc pass: framerelay ansi
 qc pass: framerelay cisco
 qc pass: framerelay q933
+qc pass: framerelay nni
 qc pass: framerelay fragmentation
 qc pass: framerelay asymmetric fragmentation
 qc pass: ppp over framerelay
@@ -1174,6 +1175,7 @@ qc pass: interop0: framerelay ansi
 qc pass: interop0: framerelay cisco
 qc pass: interop0: framerelay q933a
 qc pass: interop0: framerelay dce
+qc pass: interop0: framerelay nni
 qc pass: interop0: framerelay ppp
 qc pass: interop0: framerelay ietf
 qc pass: interop0: framerelay gre

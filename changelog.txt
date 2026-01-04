@@ -17862,3 +17862,6 @@ qc pass: cross connect smds interfaces
 qc pass: sgt smds encapsulation
 qc pass: smds over mpls
 qc pass: smds tunneling with mpls
+---------------------------------- 2026-01-04 11:30:52 26.1.4
+qc pass: framerelay nni
+qc pass: interop0: framerelay nni

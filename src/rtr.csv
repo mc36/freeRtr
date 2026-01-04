@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.1.4-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-01-04 11:17:04, took 00:22:14, with 50 workers, on 4204 cases, 0 failed, 0 traces, 5 retries
+-;-;-;2026-01-04 11:50:24, took 00:19:32, with 50 workers, on 4206 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -206,10 +206,11 @@ http://sources.freertr.org/cfg/conn-frag15.tst;conn-frag15.tst;success;bridge ma
 http://sources.freertr.org/cfg/conn-framerelay01.tst;conn-framerelay01.tst;success;framerelay ansi
 http://sources.freertr.org/cfg/conn-framerelay02.tst;conn-framerelay02.tst;success;framerelay cisco
 http://sources.freertr.org/cfg/conn-framerelay03.tst;conn-framerelay03.tst;success;framerelay q933
-http://sources.freertr.org/cfg/conn-framerelay04.tst;conn-framerelay04.tst;success;framerelay fragmentation
-http://sources.freertr.org/cfg/conn-framerelay05.tst;conn-framerelay05.tst;success;framerelay asymmetric fragmentation
-http://sources.freertr.org/cfg/conn-framerelay06.tst;conn-framerelay06.tst;success;ppp over framerelay
-http://sources.freertr.org/cfg/conn-framerelay07.tst;conn-framerelay07.tst;success;ip over framerelay
+http://sources.freertr.org/cfg/conn-framerelay04.tst;conn-framerelay04.tst;success;framerelay nni
+http://sources.freertr.org/cfg/conn-framerelay05.tst;conn-framerelay05.tst;success;framerelay fragmentation
+http://sources.freertr.org/cfg/conn-framerelay06.tst;conn-framerelay06.tst;success;framerelay asymmetric fragmentation
+http://sources.freertr.org/cfg/conn-framerelay07.tst;conn-framerelay07.tst;success;ppp over framerelay
+http://sources.freertr.org/cfg/conn-framerelay08.tst;conn-framerelay08.tst;success;ip over framerelay
 http://sources.freertr.org/cfg/conn-geneve01.tst;conn-geneve01.tst;success;geneve over ipv4
 http://sources.freertr.org/cfg/conn-geneve02.tst;conn-geneve02.tst;success;geneve over ipv6
 http://sources.freertr.org/cfg/conn-geneve03.tst;conn-geneve03.tst;success;geneve over loopback
@@ -1178,9 +1179,10 @@ http://sources.freertr.org/cfg/intop0-fr01.tst;intop0-fr01.tst;success;interop0:
 http://sources.freertr.org/cfg/intop0-fr02.tst;intop0-fr02.tst;success;interop0: framerelay cisco
 http://sources.freertr.org/cfg/intop0-fr03.tst;intop0-fr03.tst;success;interop0: framerelay q933a
 http://sources.freertr.org/cfg/intop0-fr04.tst;intop0-fr04.tst;success;interop0: framerelay dce
-http://sources.freertr.org/cfg/intop0-fr05.tst;intop0-fr05.tst;success;interop0: framerelay ppp
-http://sources.freertr.org/cfg/intop0-fr06.tst;intop0-fr06.tst;success;interop0: framerelay ietf
-http://sources.freertr.org/cfg/intop0-fr07.tst;intop0-fr07.tst;success;interop0: framerelay gre
+http://sources.freertr.org/cfg/intop0-fr05.tst;intop0-fr05.tst;success;interop0: framerelay nni
+http://sources.freertr.org/cfg/intop0-fr06.tst;intop0-fr06.tst;success;interop0: framerelay ppp
+http://sources.freertr.org/cfg/intop0-fr07.tst;intop0-fr07.tst;success;interop0: framerelay ietf
+http://sources.freertr.org/cfg/intop0-fr08.tst;intop0-fr08.tst;success;interop0: framerelay gre
 http://sources.freertr.org/cfg/intop0-hdlc.tst;intop0-hdlc.tst;success;interop0: hdlc
 http://sources.freertr.org/cfg/intop0-lapb01.tst;intop0-lapb01.tst;success;interop0: lapb dte
 http://sources.freertr.org/cfg/intop0-lapb02.tst;intop0-lapb02.tst;success;interop0: lapb dce

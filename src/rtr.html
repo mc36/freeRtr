@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v26.1.4-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2026-01-04 11:17:04, took 00:22:14, with 50 workers, on 4204 cases, 0 failed, 0 traces, 5 retries<br/>
+tested: 2026-01-04 11:50:24, took 00:19:32, with 50 workers, on 4206 cases, 0 failed, 0 traces, 2 retries<br/>
 jvm: ./rtr.bin, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -218,10 +218,11 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay01.tst">conn-framerelay01.tst</a></td><td>success</td><td>framerelay ansi</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay02.tst">conn-framerelay02.tst</a></td><td>success</td><td>framerelay cisco</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay03.tst">conn-framerelay03.tst</a></td><td>success</td><td>framerelay q933</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay04.tst">conn-framerelay04.tst</a></td><td>success</td><td>framerelay fragmentation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay05.tst">conn-framerelay05.tst</a></td><td>success</td><td>framerelay asymmetric fragmentation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay06.tst">conn-framerelay06.tst</a></td><td>success</td><td>ppp over framerelay</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay07.tst">conn-framerelay07.tst</a></td><td>success</td><td>ip over framerelay</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay04.tst">conn-framerelay04.tst</a></td><td>success</td><td>framerelay nni</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay05.tst">conn-framerelay05.tst</a></td><td>success</td><td>framerelay fragmentation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay06.tst">conn-framerelay06.tst</a></td><td>success</td><td>framerelay asymmetric fragmentation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay07.tst">conn-framerelay07.tst</a></td><td>success</td><td>ppp over framerelay</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-framerelay08.tst">conn-framerelay08.tst</a></td><td>success</td><td>ip over framerelay</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-geneve01.tst">conn-geneve01.tst</a></td><td>success</td><td>geneve over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-geneve02.tst">conn-geneve02.tst</a></td><td>success</td><td>geneve over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-geneve03.tst">conn-geneve03.tst</a></td><td>success</td><td>geneve over loopback</td></tr>
@@ -1190,9 +1191,10 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop0-fr02.tst">intop0-fr02.tst</a></td><td>success</td><td>interop0: framerelay cisco</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop0-fr03.tst">intop0-fr03.tst</a></td><td>success</td><td>interop0: framerelay q933a</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop0-fr04.tst">intop0-fr04.tst</a></td><td>success</td><td>interop0: framerelay dce</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop0-fr05.tst">intop0-fr05.tst</a></td><td>success</td><td>interop0: framerelay ppp</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop0-fr06.tst">intop0-fr06.tst</a></td><td>success</td><td>interop0: framerelay ietf</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop0-fr07.tst">intop0-fr07.tst</a></td><td>success</td><td>interop0: framerelay gre</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop0-fr05.tst">intop0-fr05.tst</a></td><td>success</td><td>interop0: framerelay nni</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop0-fr06.tst">intop0-fr06.tst</a></td><td>success</td><td>interop0: framerelay ppp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop0-fr07.tst">intop0-fr07.tst</a></td><td>success</td><td>interop0: framerelay ietf</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop0-fr08.tst">intop0-fr08.tst</a></td><td>success</td><td>interop0: framerelay gre</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop0-hdlc.tst">intop0-hdlc.tst</a></td><td>success</td><td>interop0: hdlc</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop0-lapb01.tst">intop0-lapb01.tst</a></td><td>success</td><td>interop0: lapb dte</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop0-lapb02.tst">intop0-lapb02.tst</a></td><td>success</td><td>interop0: lapb dce</td></tr>
