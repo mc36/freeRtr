@@ -129,7 +129,7 @@ public class servIoumux extends servGeneric implements ifcUp, prtServS {
             s = cmd.word();
             servIoumuxPort ntry = new servIoumuxPort(this, servIoumuxPort.slotPort2id(s, cmd.word()));
             ntry.eth = ifc.type == tabRouteIface.ifaceType.sdn;
-            ntry.ifc = ifc;
+            ntry.ifc = ifc.ethtyp;
             if (ntry.eth) {
                 ntry.setUpper(ifc.ethtyp);
             } else {
@@ -286,7 +286,7 @@ class servIoumuxPort implements Comparable<servIoumuxPort>, ifcDn {
 
     protected ifcUp upper = new ifcNull();
 
-    protected cfgIfc ifc;
+    protected ifcEthTyp ifc;
 
     public boolean eth;
 
