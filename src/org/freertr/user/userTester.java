@@ -1213,6 +1213,68 @@ public class userTester {
     }
 
     /**
+     * convert to udp endpoint
+     *
+     * @param cmd command to update
+     * @param skp intrefaces to skip
+     * @param ifc interface string
+     * @param fn filename
+     * @param cp sl slot
+     * @param cp control port
+     * @param lp local port
+     * @param rp remote port
+     * @param ad mac address
+     * @return hwcfg string
+     */
+    protected final static String convert2udp(String cmd, int skp, String ifc, int sl, String fn, int cp, List<Integer> lp, List<Integer> rp, List<addrMac> ad) {
+        String nc = "";
+        for (int i = skp; i < lp.size(); i++) {
+            String a = "" + ifc;
+            a = a.replaceAll("\\$id\\$", "" + i);
+            a = a.replaceAll("\\$lp\\$", "" + lp.get(i));
+            a = a.replaceAll("\\$rp\\$", "" + rp.get(i));
+            a = a.replaceAll("\\$ad\\$", "" + ad.get(i).toEmuStr());
+            nc += a;
+        }
+        cmd = cmd.replaceAll("\\$nc\\$", nc);
+        cmd = cmd.replaceAll("\\$fn\\$", fn);
+        cmd = cmd.replaceAll("\\$cp\\$", "" + cp);
+        cmd = cmd.replaceAll("\\$sl\\$", "" + sl);
+        return cmd;
+    }
+
+    /**
+     * get log name
+     *
+     * @param pfx prefix
+     * @param slt slot
+     * @param nam router name
+     * @param mod log to get
+     * @return log file name
+     */
+    protected final static String getLogName(String pfx, int slt, String nam, int mod) {
+        String s;
+        switch (mod) {
+            case 1:
+                s = "run";
+                break;
+            case 2:
+                s = "all";
+                break;
+            case 3:
+                s = "err";
+                break;
+            case 4:
+                s = "con";
+                break;
+            default:
+                s = "log";
+                break;
+        }
+        return pfx + slt + nam + "-log." + s;
+    }
+
+    /**
      * do worker round
      *
      * @param slt worker
@@ -2073,9 +2135,9 @@ class userTesterOne {
                 ctP.putLine("test hwcfg tcp2vrf " + ctL + " " + ctV);
                 ctP.doSync();
             }
-            pipeShell.exec(runner + img.convert2udp(img.otherC1, slot, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
-            pipeShell.exec(runner + img.convert2udp(img.otherC2, slot, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
-            s = img.convert2udp(img.otherC3, slot, prefix + slot + rn, ctL, lps, rps, mcs);
+            pipeShell.exec(runner + userTester.convert2udp(img.otherC1, img.otherNS,img.otherNC, slot, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            pipeShell.exec(runner + userTester.convert2udp(img.otherC2, img.otherNS,img.otherNC, slot, prefix + slot + rn, ctL, lps, rps, mcs), null, true, false, true);
+            s = userTester.convert2udp(img.otherC3, img.otherNS,img.otherNC, slot, prefix + slot + rn, ctL, lps, rps, mcs);
             cfg.add("!" + s);
             bits.buf2txt(true, cfg, prefix + slot + rn + "-" + cfgInit.hwCfgEnd);
             userTesterPrc p = new userTesterPrc(rdr, prefix, slot, rn, runner + s);
@@ -2266,11 +2328,11 @@ class userTesterOne {
             cfg.add("");
             cfg.add("");
             cfg.add(fileName + " - " + rn + " - " + testName + ":");
-            bits.buf2txt(true, cfg, userTesterPrc.getLogName(prefix, slot, rn, 1));
+            bits.buf2txt(true, cfg, userTester.getLogName(prefix, slot, rn, 1));
             cfg = new ArrayList<String>();
             cfg.add("hostname " + rn);
             cfg.add("logging milliseconds");
-            cfg.add("logging file debug " + userTesterPrc.getLogName(prefix, slot, rn, 1));
+            cfg.add("logging file debug " + userTester.getLogName(prefix, slot, rn, 1));
             if (telnet) {
                 cfg.add("vrf definition tester");
                 cfg.add(" exit");
@@ -2633,42 +2695,11 @@ class userTesterPrc implements Comparable<userTesterPrc> {
     /**
      * get log name
      *
-     * @param pfx prefix
-     * @param slt slot
-     * @param nam router name
-     * @param mod log to get
-     * @return log file name
-     */
-    protected static String getLogName(String pfx, int slt, String nam, int mod) {
-        String s;
-        switch (mod) {
-            case 1:
-                s = "run";
-                break;
-            case 2:
-                s = "all";
-                break;
-            case 3:
-                s = "err";
-                break;
-            case 4:
-                s = "con";
-                break;
-            default:
-                s = "log";
-                break;
-        }
-        return pfx + slt + nam + "-log." + s;
-    }
-
-    /**
-     * get log name
-     *
      * @param mod log to get
      * @return log file name
      */
     protected String getLogName(int mod) {
-        return getLogName(prefix, slot, name, mod);
+        return userTester.getLogName(prefix, slot, name, mod);
     }
 
     /**
@@ -2981,35 +3012,6 @@ class userTesterImg {
      */
     protected userTesterImg(String s) {
         otherF = s;
-    }
-
-    /**
-     * convert to udp endpoint
-     *
-     * @param cmd command to update
-     * @param fn filename
-     * @param cp sl slot
-     * @param cp control port
-     * @param lp local port
-     * @param rp remote port
-     * @param ad mac address
-     * @return hwcfg string
-     */
-    protected String convert2udp(String cmd, int sl, String fn, int cp, List<Integer> lp, List<Integer> rp, List<addrMac> ad) {
-        String nc = "";
-        for (int i = otherNS; i < lp.size(); i++) {
-            String a = "" + otherNC;
-            a = a.replaceAll("\\$id\\$", "" + i);
-            a = a.replaceAll("\\$lp\\$", "" + lp.get(i));
-            a = a.replaceAll("\\$rp\\$", "" + rp.get(i));
-            a = a.replaceAll("\\$ad\\$", "" + ad.get(i).toEmuStr());
-            nc += a;
-        }
-        cmd = cmd.replaceAll("\\$nc\\$", nc);
-        cmd = cmd.replaceAll("\\$fn\\$", fn);
-        cmd = cmd.replaceAll("\\$cp\\$", "" + cp);
-        cmd = cmd.replaceAll("\\$sl\\$", "" + sl);
-        return cmd;
     }
 
 }
