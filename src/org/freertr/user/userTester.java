@@ -1042,12 +1042,10 @@ public class userTester {
             parallel = 0;
             persistD = bits.txt2buf(path + persistF);
             persistP = portBase + (portSlot / 2) + (slot * portSlot);
-            s = persistD.remove(0);
-            s = persistD.remove(0);
-            s = persistD.remove(0);
-            int o = bits.str2num(persistD.remove(0));
             addrMac adr = new addrMac();
-            adr.fromString(persistD.remove(0));
+            int o = bits.str2num(persistD.remove(3));
+            adr.fromString(persistD.remove(3));
+            String a = persistD.remove(3);
             List<addrMac> mcs = new ArrayList<addrMac>();
             List<Integer> lps = new ArrayList<Integer>();
             List<Integer> rps = new ArrayList<Integer>();
@@ -1058,8 +1056,13 @@ public class userTester {
                 adr.getBytes()[adr.getSize() - 1] = (byte) i;
                 mcs.add(adr.copyBytes());
             }
-            String a = persistD.remove(0);
-            s = userTester.convert2udp(s, 0, a, slot, temp + slot + "persist.img", 30001 + (slot * userTester.portSlot), lps, rps, mcs);
+            o = 30001 + (slot * userTester.portSlot);
+            s = persistD.remove(0);
+            pipeShell.exec(runner + userTester.convert2udp(s, 0, a, slot, temp + slot + "persist.img", o, lps, rps, mcs), null, true, false, true);
+            s = persistD.remove(0);
+            pipeShell.exec(runner + userTester.convert2udp(s, 0, a, slot, temp + slot + "persist.img", o, lps, rps, mcs), null, true, false, true);
+            s = persistD.remove(0);
+            s = userTester.convert2udp(s, 0, a, slot, temp + slot + "persist.img", o, lps, rps, mcs);
             persistC = new userTesterPrc(rdr, temp, slot, "persist", runner + s);
             persistC.persistent = true;
             persistP += (4 * bits.str2num(persistD.remove(0)));
