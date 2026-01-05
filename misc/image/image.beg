@@ -20,6 +20,7 @@ select-dis sysvinit.*
 select-dis startpar.*
 select-dis initscript.*
 select-dis perl.*
+select-dis python.*
 select-dis gcc.*
 select-dis init-system-helper.*
 select-dis initramfs-tool.*
