@@ -12,6 +12,13 @@ select-dis passwd.*
 select-dis opensysuser.*
 select-dis util-linux.*
 select-dis dpkg.*
+select-dis login.*
+select-dis insserv.*
+select-dis dracut.*
+select-dis openrc.*
+select-dis sysvinit.*
+select-dis startpar.*
+select-dis initscript.*
 select-dis perl.*
 select-dis gcc.*
 select-dis init-system-helper.*
