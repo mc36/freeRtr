@@ -342,7 +342,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * flap statistics
      */
-    public tabGen<rtrBgpFlapStat> flaps;
+    public tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>> flaps;
 
     /**
      * list of monitors
@@ -1549,8 +1549,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (pth == null) {
             pth = new ArrayList<Integer>();
         }
-        rtrBgpFlapStat ntry = new rtrBgpFlapStat(idx, rd, prf);
-        rtrBgpFlapStat old = flaps.add(ntry);
+        rtrBgpFlapPfx<rtrBgpFlapLst> ntry = new rtrBgpFlapPfx<rtrBgpFlapLst>(idx, rd, prf);
+        rtrBgpFlapPfx<rtrBgpFlapLst> old = flaps.add(ntry);
         if (old != null) {
             ntry = old;
         }
@@ -2021,7 +2021,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (negated) {
                 flaps = null;
             } else {
-                flaps = new tabGen<rtrBgpFlapStat>();
+                flaps = new tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>>();
             }
             return false;
         }
@@ -3353,7 +3353,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return l;
         }
         for (int i = 0; i < flaps.size(); i++) {
-            rtrBgpFlapStat ntry = flaps.get(i);
+            rtrBgpFlapPfx<rtrBgpFlapLst> ntry = flaps.get(i);
             if (ntry == null) {
                 continue;
             }
@@ -3381,7 +3381,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (flaps == null) {
             return null;
         }
-        rtrBgpFlapStat ntry = new rtrBgpFlapStat(idx, rd, prf);
+        rtrBgpFlapPfx<rtrBgpFlapLst> ntry = new rtrBgpFlapPfx<rtrBgpFlapLst>(idx, rd, prf);
         ntry = flaps.find(ntry);
         if (ntry == null) {
             return null;
@@ -3658,7 +3658,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getNhPrfxes(int idx) {
-        tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
+        tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>> lst = new tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpDump.updateNhPrfxes(lst, neighs.get(i), idx);
         }
@@ -3667,7 +3667,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         userFormat res = new userFormat("|", "nexthop|prefixes");
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapStat ntry = lst.get(i);
+            rtrBgpFlapPfx<rtrBgpFlapLst> ntry = lst.get(i);
             res.add(ntry.toNhPrfxes());
         }
         return res;
@@ -3680,7 +3680,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getNhTrnsit(int idx) {
-        tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
+        tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>> lst = new tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpDump.updateNhTrnsit(lst, neighs.get(i), idx);
         }
@@ -3689,8 +3689,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         userFormat res = new userFormat("|", "nexthop|count|transits");
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapStat ntry = lst.get(i);
-            res.add(ntry.toNhTrnsit());
+            rtrBgpFlapPfx<rtrBgpFlapLst> ntry = lst.get(i);
+            res.add(rtrBgpFlapPfx.toNhTrnsit(ntry));
         }
         return res;
     }
@@ -3702,7 +3702,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getNhOrigin(int idx) {
-        tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
+        tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>> lst = new tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpDump.updateNhOrigin(lst, neighs.get(i), idx);
         }
@@ -3711,8 +3711,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         userFormat res = new userFormat("|", "nexthop|count|origins");
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapStat ntry = lst.get(i);
-            res.add(ntry.toNhTrnsit());
+            rtrBgpFlapPfx<rtrBgpFlapLst> ntry = lst.get(i);
+            res.add(rtrBgpFlapPfx.toNhTrnsit(ntry));
         }
         return res;
     }
@@ -3725,7 +3725,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getNhIncons(int idx, tabIntMatcher mtch) {
-        tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
+        tabGen<rtrBgpFlapPfx<addrIP>> lst = new tabGen<rtrBgpFlapPfx<addrIP>>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpDump.updateNhIncons(lst, neighs.get(i), idx);
         }
@@ -3734,11 +3734,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         userFormat res = new userFormat("|", "path|nexthops");
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapStat ntry = lst.get(i);
-            if (!mtch.matches(ntry.infos.size())) {
+            rtrBgpFlapPfx<addrIP> ntry = lst.get(i);
+            if (!mtch.matches(ntry.paths.size())) {
                 continue;
             }
-            res.add(ntry.toInconsStr());
+            res.add(rtrBgpFlapPfx.toInconsStr(ntry));
         }
         return res;
     }
@@ -3751,7 +3751,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public userFormat getAsIncons(int idx, tabIntMatcher mtch) {
-        tabGen<rtrBgpFlapStat> lst = new tabGen<rtrBgpFlapStat>();
+        tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>> lst = new tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpDump.updateAsIncons(lst, neighs.get(i), idx);
         }
@@ -3760,11 +3760,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         userFormat res = new userFormat("|", "path|ases");
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpFlapStat ntry = lst.get(i);
+            rtrBgpFlapPfx<rtrBgpFlapLst> ntry = lst.get(i);
             if (!mtch.matches(ntry.paths.size())) {
                 continue;
             }
-            res.add(ntry.toInconsPth());
+            res.add(rtrBgpFlapPfx.toInconsPth(ntry));
         }
         return res;
     }

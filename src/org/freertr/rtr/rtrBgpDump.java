@@ -209,7 +209,7 @@ public class rtrBgpDump {
      * @param nei neighbor to read
      * @param idx safi to use
      */
-    public static void updateAsIncons(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int idx) {
+    public static void updateAsIncons(tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>> lst, rtrBgpNeigh nei, int idx) {
         if (nei == null) {
             return;
         }
@@ -219,8 +219,8 @@ public class rtrBgpDump {
             if (prf == null) {
                 continue;
             }
-            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, prf.rouDst, prf.prefix);
-            rtrBgpFlapStat old = lst.add(ntry);
+            rtrBgpFlapPfx<rtrBgpFlapLst> ntry = new rtrBgpFlapPfx<rtrBgpFlapLst>(0, prf.rouDst, prf.prefix);
+            rtrBgpFlapPfx<rtrBgpFlapLst> old = lst.add(ntry);
             if (old != null) {
                 ntry = old;
             }
@@ -237,7 +237,7 @@ public class rtrBgpDump {
      * @param nei neighbor to read
      * @param idx safi to use
      */
-    public static void updateNhPrfxes(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int idx) {
+    public static void updateNhPrfxes(tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>> lst, rtrBgpNeigh nei, int idx) {
         if (nei == null) {
             return;
         }
@@ -247,8 +247,8 @@ public class rtrBgpDump {
             if (prf == null) {
                 continue;
             }
-            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, prf.best.nextHop);
-            rtrBgpFlapStat old = lst.add(ntry);
+            rtrBgpFlapPfx<rtrBgpFlapLst> ntry = new rtrBgpFlapPfx<rtrBgpFlapLst>(0, 0, prf.best.nextHop);
+            rtrBgpFlapPfx<rtrBgpFlapLst> old = lst.add(ntry);
             if (old != null) {
                 ntry = old;
             }
@@ -263,7 +263,7 @@ public class rtrBgpDump {
      * @param nei neighbor to read
      * @param idx safi to use
      */
-    public static void updateNhTrnsit(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int idx) {
+    public static void updateNhTrnsit(tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>> lst, rtrBgpNeigh nei, int idx) {
         if (nei == null) {
             return;
         }
@@ -273,8 +273,8 @@ public class rtrBgpDump {
             if (prf == null) {
                 continue;
             }
-            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, prf.best.nextHop);
-            rtrBgpFlapStat old = lst.add(ntry);
+            rtrBgpFlapPfx<rtrBgpFlapLst> ntry = new rtrBgpFlapPfx<rtrBgpFlapLst>(0, 0, prf.best.nextHop);
+            rtrBgpFlapPfx<rtrBgpFlapLst> old = lst.add(ntry);
             if (old != null) {
                 ntry = old;
             }
@@ -291,7 +291,7 @@ public class rtrBgpDump {
      * @param nei neighbor to read
      * @param idx safi to use
      */
-    public static void updateNhOrigin(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int idx) {
+    public static void updateNhOrigin(tabGen<rtrBgpFlapPfx<rtrBgpFlapLst>> lst, rtrBgpNeigh nei, int idx) {
         if (nei == null) {
             return;
         }
@@ -301,8 +301,8 @@ public class rtrBgpDump {
             if (prf == null) {
                 continue;
             }
-            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, 0, prf.best.nextHop);
-            rtrBgpFlapStat old = lst.add(ntry);
+            rtrBgpFlapPfx<rtrBgpFlapLst> ntry = new rtrBgpFlapPfx<rtrBgpFlapLst>(0, 0, prf.best.nextHop);
+            rtrBgpFlapPfx<rtrBgpFlapLst> old = lst.add(ntry);
             if (old != null) {
                 ntry = old;
             }
@@ -319,7 +319,7 @@ public class rtrBgpDump {
      * @param nei neighbor to read
      * @param idx safi to use
      */
-    public static void updateNhIncons(tabGen<rtrBgpFlapStat> lst, rtrBgpNeigh nei, int idx) {
+    public static void updateNhIncons(tabGen<rtrBgpFlapPfx<addrIP>> lst, rtrBgpNeigh nei, int idx) {
         if (nei == null) {
             return;
         }
@@ -329,14 +329,12 @@ public class rtrBgpDump {
             if (prf == null) {
                 continue;
             }
-            rtrBgpFlapStat ntry = new rtrBgpFlapStat(0, prf.rouDst, prf.prefix);
-            rtrBgpFlapStat old = lst.add(ntry);
+            rtrBgpFlapPfx<addrIP> ntry = new rtrBgpFlapPfx<addrIP>(0, prf.rouDst, prf.prefix);
+            rtrBgpFlapPfx<addrIP> old = lst.add(ntry);
             if (old != null) {
                 ntry = old;
             }
-            String a = "" + prf.best.nextHop;
-            rtrBgpFlapStr pth = new rtrBgpFlapStr(a);
-            ntry.infos.add(pth);
+            ntry.paths.add(prf.best.nextHop.copyBytes());
         }
     }
 

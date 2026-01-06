@@ -9,11 +9,12 @@ import org.freertr.tab.tabRouteUtil;
 import org.freertr.util.bits;
 
 /**
- * bgp4 flap statistic
+ * bgp4 flap prefix
  *
+ * @param <T> type of elements in the list
  * @author matecsaba
  */
-public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
+public class rtrBgpFlapPfx<T extends Comparable<? super T>> implements Comparable<rtrBgpFlapPfx<T>> {
 
     /**
      * address family
@@ -43,12 +44,7 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
     /**
      * paths seen
      */
-    public tabGen<rtrBgpFlapLst> paths = new tabGen<rtrBgpFlapLst>();
-
-    /**
-     * paths seen
-     */
-    public tabGen<rtrBgpFlapStr> infos = new tabGen<rtrBgpFlapStr>();
+    public tabGen<T> paths = new tabGen<T>();
 
     /**
      * create instance
@@ -57,7 +53,7 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
      * @param r rd
      * @param p prefix
      */
-    public rtrBgpFlapStat(int i, long r, addrPrefix<addrIP> p) {
+    public rtrBgpFlapPfx(int i, long r, addrPrefix<addrIP> p) {
         idx = i;
         rd = r;
         prefix = p.copyBytes();
@@ -70,13 +66,13 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
      * @param r rd
      * @param p prefix
      */
-    public rtrBgpFlapStat(int i, long r, addrIP p) {
+    public rtrBgpFlapPfx(int i, long r, addrIP p) {
         idx = i;
         rd = r;
         prefix = new addrPrefix<addrIP>(p.copyBytes(), addrIP.size * 8);
     }
 
-    public int compareTo(rtrBgpFlapStat o) {
+    public int compareTo(rtrBgpFlapPfx<T> o) {
         if (idx < o.idx) {
             return -1;
         }
@@ -104,31 +100,33 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
     /**
      * get inconsistency paths
      *
+     * @param stat entry
      * @return paths
      */
-    public String toInconsStr() {
+    public static String toInconsStr(rtrBgpFlapPfx<addrIP> stat) {
         String s = "";
-        for (int i = 0; i < infos.size(); i++) {
-            s += " " + infos.get(i).info;
+        for (int i = 0; i < stat.paths.size(); i++) {
+            s += " " + stat.paths.get(i);
         }
-        return addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + s.trim();
+        return addrPrefix.ip2str(stat.prefix) + " " + tabRouteUtil.rd2string(stat.rd) + "|" + s.trim();
     }
 
     /**
      * get inconsistency paths
      *
+     * @param stat entry
      * @return paths
      */
-    public String toInconsPth() {
+    public static String toInconsPth(rtrBgpFlapPfx<rtrBgpFlapLst> stat) {
         String s = "";
-        for (int i = 0; i < paths.size(); i++) {
-            rtrBgpFlapLst ntry = paths.get(i);
+        for (int i = 0; i < stat.paths.size(); i++) {
+            rtrBgpFlapLst ntry = stat.paths.get(i);
             for (int o = 0; o < ntry.lst.size(); o++) {
                 int p = ntry.lst.get(o);
                 s += " " + clntWhois.asn2mixed(p, true);
             }
         }
-        return addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + s.trim();
+        return addrPrefix.ip2str(stat.prefix) + " " + tabRouteUtil.rd2string(stat.rd) + "|" + s.trim();
     }
 
     /**
@@ -143,18 +141,19 @@ public class rtrBgpFlapStat implements Comparable<rtrBgpFlapStat> {
     /**
      * get usage of next hops
      *
+     * @param stat entry
      * @return paths
      */
-    public String toNhTrnsit() {
+    public static String toNhTrnsit(rtrBgpFlapPfx<rtrBgpFlapLst> stat) {
         String s = "";
-        for (int i = 0; i < paths.size(); i++) {
-            rtrBgpFlapLst ntry = paths.get(i);
+        for (int i = 0; i < stat.paths.size(); i++) {
+            rtrBgpFlapLst ntry = stat.paths.get(i);
             for (int o = 0; o < ntry.lst.size(); o++) {
                 int p = ntry.lst.get(o);
                 s += " " + clntWhois.asn2mixed(p, true);
             }
         }
-        return prefix.network + "|" + paths.size() + "|" + s.trim();
+        return stat.prefix.network + "|" + stat.paths.size() + "|" + s.trim();
     }
 
 }

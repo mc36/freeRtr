@@ -4,7 +4,7 @@ import org.freertr.clnt.clntWhois;
 import org.freertr.util.bits;
 
 /**
- * bgp4 flap statistic
+ * bgp4 flap asn
  *
  * @author matecsaba
  */
