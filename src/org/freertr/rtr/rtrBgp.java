@@ -1546,9 +1546,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param pth path
      */
     protected void prefixFlapped(int idx, long rd, addrPrefix<addrIP> prf, List<Integer> pth) {
-        if (pth == null) {
-            pth = new ArrayList<Integer>();
-        }
         rtrBgpFlapPfx<rtrBgpFlapLst> ntry = new rtrBgpFlapPfx<rtrBgpFlapLst>(idx, rd, prf);
         rtrBgpFlapPfx<rtrBgpFlapLst> old = flaps.add(ntry);
         if (old != null) {

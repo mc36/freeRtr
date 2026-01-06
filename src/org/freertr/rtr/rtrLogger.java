@@ -4,7 +4,6 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
-import org.freertr.cfg.cfgAll;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
@@ -61,7 +60,7 @@ public class rtrLogger extends ipRtr {
     /**
      * flaps
      */
-    protected tabGen<rtrLoggerFlap> flaps;
+    protected tabGen<rtrBgpDamp> flaps;
 
     /**
      * logging
@@ -280,7 +279,7 @@ public class rtrLogger extends ipRtr {
      * clear flap stats
      */
     public void clearFlapstat() {
-        flaps = new tabGen<rtrLoggerFlap>();
+        flaps = new tabGen<rtrBgpDamp>();
     }
 
     /**
@@ -295,14 +294,14 @@ public class rtrLogger extends ipRtr {
             return l;
         }
         for (int i = 0; i < flaps.size(); i++) {
-            rtrLoggerFlap ntry = flaps.get(i);
+            rtrBgpDamp ntry = flaps.get(i);
             if (ntry == null) {
                 continue;
             }
-            if (ntry.count < cnt) {
+            if (ntry.penalty < cnt) {
                 continue;
             }
-            l.add(flaps.get(i) + "");
+            l.add(ntry.toLogRes());
         }
         return l;
     }
@@ -350,12 +349,12 @@ public class rtrLogger extends ipRtr {
         if (flaps == null) {
             return;
         }
-        rtrLoggerFlap stat = new rtrLoggerFlap(afi, ntry.prefix);
-        rtrLoggerFlap old = flaps.add(stat);
+        rtrBgpDamp stat = new rtrBgpDamp(afi, 0, ntry.prefix);
+        rtrBgpDamp old = flaps.add(stat);
         if (old != null) {
             stat = old;
         }
-        stat.count++;
+        stat.penalty++;
         stat.last = bits.getTime();
     }
 
@@ -476,7 +475,7 @@ public class rtrLogger extends ipRtr {
             if (negated) {
                 flaps = null;
             } else {
-                flaps = new tabGen<rtrLoggerFlap>();
+                flaps = new tabGen<rtrBgpDamp>();
             }
             return false;
         }
@@ -551,37 +550,6 @@ public class rtrLogger extends ipRtr {
      */
     public boolean routerStateSet(cmds cmd) {
         return true;
-    }
-
-}
-
-class rtrLoggerFlap implements Comparable<rtrLoggerFlap> {
-
-    public final int afi;
-
-    public final addrPrefix<addrIP> prefix;
-
-    public long count;
-
-    public long last;
-
-    public rtrLoggerFlap(int a, addrPrefix<addrIP> p) {
-        afi = a;
-        prefix = p.copyBytes();
-    }
-
-    public int compareTo(rtrLoggerFlap o) {
-        if (afi < o.afi) {
-            return -1;
-        }
-        if (afi > o.afi) {
-            return +1;
-        }
-        return prefix.compareTo(o.prefix);
-    }
-
-    public String toString() {
-        return rtrLogger.afi2str(afi) + "|" + rtrLogger.prf2str(afi, prefix) + "|" + count + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
     }
 
 }

@@ -561,6 +561,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router ghosthunt[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "recv-policy", null),
         new userFilter("router ghosthunt[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ignore", null),
         new userFilter("router ghosthunt[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null),
+        new userFilter("router ghosthunt[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "pathstat", null),
         // router uni2multi
         new userFilter("router uni2multi[46] .*", cmds.tabulator + "distance 254", null),
         // router deaggr

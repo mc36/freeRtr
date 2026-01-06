@@ -58,6 +58,11 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
     protected final boolean ipv6;
 
     /**
+     * flaps
+     */
+    protected tabGen<rtrBgpFlapLst> paths;
+
+    /**
      * logging
      */
     protected boolean logging;
@@ -422,6 +427,15 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 break;
         }
         if (rcvd != null) {
+            if (paths != null) {
+                rtrBgpFlapLst pe = new rtrBgpFlapLst(rcvd.best.asPathInts(-1));
+                rtrBgpFlapLst op = paths.add(pe);
+                if (op != null) {
+                    pe = op;
+                }
+                pe.count++;
+                pe.last = timExec;
+            }
             lastFond = rcvd.copyBytes(tabRoute.addType.alters);
             rcvd = rcvd.copyBytes(tabRoute.addType.notyet);
             rcvd = tabRoute.doUpdateEntry(rtrBgpUtil.sfiUnicast, 0, rcvd, rcvMap, rcvPlc, null);
@@ -497,6 +511,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      * @param l list
      */
     public void routerGetHelp(userHelp l) {
+        l.add(null, false, 1, new int[]{-1}, "pathstat", "count ghost statistics");
         l.add(null, false, 1, new int[]{-1}, "logging", "log events");
         l.add(null, false, 1, new int[]{-1}, "start", "start running");
         l.add(null, false, 1, new int[]{-1}, "stop", "stop running");
@@ -544,6 +559,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      * @param filter filter
      */
     public void routerGetConfig(List<String> l, String beg, int filter) {
+        cmds.cfgLine(l, paths == null, beg, "pathstat", "");
         cmds.cfgLine(l, !logging, beg, "logging", "");
         l.add(beg + "distance " + distance);
         if (prefix == null) {
@@ -608,6 +624,14 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         }
         if (s.equals("logging")) {
             logging = !negated;
+            return false;
+        }
+        if (s.equals("pathstat")) {
+            if (negated) {
+                paths = null;
+            } else {
+                paths = new tabGen<rtrBgpFlapLst>();
+            }
             return false;
         }
         if (s.equals("stop")) {
@@ -984,6 +1008,34 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      */
     public void setPaused(boolean need) {
         stopped = need;
+    }
+
+    /**
+     * clear flap stats
+     */
+    public void clearPaths() {
+        paths = new tabGen<rtrBgpFlapLst>();
+    }
+
+    /**
+     * get flap stats
+     *
+     * @param rev reverse path
+     * @return list of statistics
+     */
+    public userFormat getPaths(boolean rev) {
+        userFormat l = new userFormat("|", "count|ago|last|path");
+        if (paths == null) {
+            return l;
+        }
+        for (int i = 0; i < paths.size(); i++) {
+            rtrBgpFlapLst ntry = paths.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            l.add(ntry.dumpFlap(rev));
+        }
+        return l;
     }
 
 }

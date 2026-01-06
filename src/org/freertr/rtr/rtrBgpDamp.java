@@ -76,4 +76,13 @@ public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
         return rtrBgpParam.idx2string(idx) + "|" + addrPrefix.ip2str(prefix) + " " + tabRouteUtil.rd2string(rd) + "|" + penalty + "|" + dampened + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
     }
 
+    /**
+     * logger result
+     *
+     * @return string
+     */
+    public String toLogRes() {
+        return rtrLogger.afi2str(idx) + "|" + rtrLogger.prf2str(idx, prefix) + "|" + penalty + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
+    }
+
 }

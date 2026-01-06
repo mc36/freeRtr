@@ -329,6 +329,7 @@ public class userExec {
         hl.add(null, false, 4, new int[]{5}, "<num:rtr>", "process id");
         hl.add(null, false, 5, new int[]{-1}, "stop", "stop processing");
         hl.add(null, false, 5, new int[]{-1}, "start", "start processing");
+        hl.add(null, false, 5, new int[]{-1}, "paths", "ghost path statistics");
     }
 
     private static void getHelpShowIpX(userHelp hl) {
@@ -1268,6 +1269,8 @@ public class userExec {
         hl.add(null, false, 5, new int[]{-1}, "found", "last found entry");
         hl.add(null, false, 5, new int[]{-1}, "attrib", "last attribute difference");
         hl.add(null, false, 5, new int[]{-1}, "ghost", "last recorded ghost");
+        hl.add(null, false, 5, new int[]{-1}, "paths", "ghost path statistics");
+        hl.add(null, false, 5, new int[]{-1}, "revpaths", "ghost reversed aspath statistics");
         hl.add(null, false, 5, new int[]{6, -1}, "differ", "test difference");
         tabRouteAttr.ignoreHelp(hl, 6);
     }

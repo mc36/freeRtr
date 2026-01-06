@@ -1,5 +1,6 @@
 package org.freertr.rtr;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.clnt.clntWhois;
@@ -33,7 +34,11 @@ public class rtrBgpFlapLst implements Comparable<rtrBgpFlapLst> {
      * @param l list of numbers
      */
     public rtrBgpFlapLst(List<Integer> l) {
-        lst = l;
+        if (l == null) {
+            lst = new ArrayList<Integer>();
+        } else {
+            lst = l;
+        }
     }
 
     public int compareTo(rtrBgpFlapLst o) {

@@ -1592,7 +1592,12 @@ public class userClear {
             cmd.error("no such process");
             return;
         }
-        r.ghosthunt.setPaused(cmd.word().equals("stop"));
+        String a = cmd.word();
+        if (a.equals("paths")) {
+            r.ghosthunt.clearPaths();
+            return;
+        }
+        r.ghosthunt.setPaused(a.equals("stop"));
     }
 
 }

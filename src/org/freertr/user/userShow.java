@@ -3408,6 +3408,14 @@ public class userShow {
             rdr.putStrArr(r.ghosthunt.getFound());
             return;
         }
+        if (a.equals("paths")) {
+            rdr.putStrTab(r.ghosthunt.getPaths(false));
+            return;
+        }
+        if (a.equals("revpaths")) {
+            rdr.putStrTab(r.ghosthunt.getPaths(true));
+            return;
+        }
         cmd.badCmd();
     }
 
