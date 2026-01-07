@@ -426,16 +426,20 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 }
                 break;
         }
-        if (rcvd != null) {
-            if (paths != null) {
-                rtrBgpFlapLst pe = new rtrBgpFlapLst(rcvd.best.asPathInts(-1));
-                rtrBgpFlapLst op = paths.add(pe);
-                if (op != null) {
-                    pe = op;
-                }
-                pe.count++;
-                pe.last = timExec;
+        if (paths != null) {
+            List<Integer> pl = null;
+            if (rcvd != null) {
+                pl = rcvd.best.asPathInts(-1);
             }
+            rtrBgpFlapLst pe = new rtrBgpFlapLst(pl);
+            rtrBgpFlapLst op = paths.add(pe);
+            if (op != null) {
+                pe = op;
+            }
+            pe.count++;
+            pe.last = timExec;
+        }
+        if (rcvd != null) {
             lastFond = rcvd.copyBytes(tabRoute.addType.alters);
             rcvd = rcvd.copyBytes(tabRoute.addType.notyet);
             rcvd = tabRoute.doUpdateEntry(rtrBgpUtil.sfiUnicast, 0, rcvd, rcvMap, rcvPlc, null);
