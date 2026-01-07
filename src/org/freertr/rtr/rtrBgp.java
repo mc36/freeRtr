@@ -873,7 +873,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         return false;
     }
 
-    private final int countClones(tabGen<rtrBgpNeigh> lst, rtrBgpTemp tmp) {
+    private int countClones(tabGen<rtrBgpNeigh> lst, rtrBgpTemp tmp) {
         int o = 0;
         for (int i = lst.size() - 1; i >= 0; i--) {
             rtrBgpNeigh ntry = lst.get(i);
