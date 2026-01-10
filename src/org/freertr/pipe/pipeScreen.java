@@ -715,6 +715,15 @@ public class pipeScreen {
     }
 
     /**
+     * send no operation
+     *
+     * @param pip pipeline to use
+     */
+    public static void sendNop(pipeSide pip) {
+        pip.strPut("\033[25m");
+    }
+
+    /**
      * send clear screen
      *
      * @param pip pipeline to use

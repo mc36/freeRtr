@@ -1291,7 +1291,12 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         if (tim < 60000) {
             return;
         }
-        pipe.linePut("% session is about to expire in " + bits.timeDump((parent.execTimeOut - tim) / 1000));
+        tim = parent.execTimeOut - tim;
+        if (tim > 300000) {
+            pipeScreen.sendNop(pipe);
+            return;
+        }
+        pipe.linePut("% session is about to expire in " + bits.timeDump(tim / 1000));
     }
 
     public void run() {
