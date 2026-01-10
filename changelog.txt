@@ -17868,3 +17868,6 @@ qc pass: interop0: framerelay nni
 ---------------------------------- 2026-01-04 18:02:37 26.1.4
 qc pass: iou ethernet demultiplexer
 qc pass: iou serial demultiplexer
+---------------------------------- 2026-01-10 16:30:35 26.1.10
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
