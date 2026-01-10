@@ -95,6 +95,7 @@ public class userTmux {
             return true;
         }
         scr = new pipeTerm[begX.length];
+        rdr = new userRead[begX.length];
         exe = new userExec[begX.length];
         cfg = new userConfig[begX.length];
         for (int i = 0; i < begX.length; i++) {
