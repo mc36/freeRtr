@@ -1309,7 +1309,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
                 pipe.linePut(parent.promptGoodbye);
             }
         } catch (Exception e) {
-            logger.traceback(e, toUserStr() + " commands");
+            logger.traceback(e);
         }
         try {
             expTim.cancel();

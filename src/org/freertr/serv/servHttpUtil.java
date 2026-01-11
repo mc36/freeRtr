@@ -867,7 +867,7 @@ public class servHttpUtil {
             s = (String) obj;
             res = buf.toByteArray();
         } catch (Exception e) {
-            logger.traceback(e, cn.gotUrl.dump() + " peer=" + cn.peer);
+            logger.traceback(e);
             return true;
         }
         if (debugger.servHttpTraf) {

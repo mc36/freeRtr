@@ -258,7 +258,7 @@ class servHoneyPotConn implements Runnable {
             pipe.morePut(b, 0, b.length);
             pipe.setClose();
         } catch (Exception e) {
-            logger.traceback(e, "" + remote);
+            logger.traceback(e);
         }
     }
 

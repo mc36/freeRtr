@@ -67,7 +67,7 @@ public class pipeWindow extends JPanel {
             ir.setInput(is, false);
             n = ir.getNumImages(true);
         } catch (Exception e) {
-            logger.traceback(e, "error converting");
+            logger.traceback(e);
             return;
         }
         BufferedImage img1 = null;
@@ -76,7 +76,7 @@ public class pipeWindow extends JPanel {
             try {
                 img2 = ir.read(i);
             } catch (Exception e) {
-                logger.traceback(e, "error converting");
+                logger.traceback(e);
             }
             if (img2 == null) {
                 continue;
@@ -106,7 +106,7 @@ public class pipeWindow extends JPanel {
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
-            logger.traceback(e, "error converting");
+            logger.traceback(e);
         }
         if (img1 == null) {
             return;
@@ -126,7 +126,7 @@ public class pipeWindow extends JPanel {
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
-            logger.traceback(e, "while converting");
+            logger.traceback(e);
         }
         if (img1 == null) {
             return;
@@ -145,7 +145,7 @@ public class pipeWindow extends JPanel {
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
-            logger.traceback(e, "while converting");
+            logger.traceback(e);
         }
         if (img1 == null) {
             return;
@@ -175,7 +175,7 @@ public class pipeWindow extends JPanel {
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
-            logger.traceback(e, "while converting");
+            logger.traceback(e);
         }
         if (img1 == null) {
             return;
@@ -298,7 +298,7 @@ public class pipeWindow extends JPanel {
         try {
             win = new pipeWindow(pip.getSide(), x, y, fnt, plt);
         } catch (Exception e) {
-            logger.traceback(e, "while converting");
+            logger.traceback(e);
             return null;
         }
         win.startWindow();

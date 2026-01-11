@@ -296,7 +296,7 @@ public class secInfoWrk implements Runnable {
                 closer.closeC.setClosing();
             }
         } catch (Exception e) {
-            logger.traceback(e, addr + " " + proto);
+            logger.traceback(e);
         }
     }
 
@@ -316,7 +316,7 @@ public class secInfoWrk implements Runnable {
                 tracker |= config.accessRate.check(1);
             }
         } catch (Exception e) {
-            logger.traceback(e, addr + " " + proto);
+            logger.traceback(e);
         }
     }
 
@@ -330,7 +330,7 @@ public class secInfoWrk implements Runnable {
             }
             tracker |= config.timeMap.matches(bits.getTime());
         } catch (Exception e) {
-            logger.traceback(e, addr + " " + proto);
+            logger.traceback(e);
         }
     }
 
@@ -352,7 +352,7 @@ public class secInfoWrk implements Runnable {
             pck.IPprt = proto;
             tracker |= !config.accessList.matches(false, false, pck);
         } catch (Exception e) {
-            logger.traceback(e, addr + " " + proto);
+            logger.traceback(e);
         }
     }
 
@@ -379,7 +379,7 @@ public class secInfoWrk implements Runnable {
                 tracker |= tabRtrplc.doRpl(rtrBgpUtil.sfiUnicast, 0, n, config.routePolicy, true) == null;
             }
         } catch (Exception e) {
-            logger.traceback(e, addr + " " + proto);
+            logger.traceback(e);
         }
     }
 
@@ -410,7 +410,7 @@ public class secInfoWrk implements Runnable {
             rpkiR = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rpkiV);
             rpkiA = tabRpkiUtil.calcValidityAspa(ntry.best, secInfoUtl.findOneValidAspa(vldIp, fwd), 0);
         } catch (Exception e) {
-            logger.traceback(e, addr + " " + proto);
+            logger.traceback(e);
         }
     }
 
@@ -426,7 +426,7 @@ public class secInfoWrk implements Runnable {
             doResolve();
             doScript();
         } catch (Exception e) {
-            logger.traceback(e, addr + " " + proto);
+            logger.traceback(e);
         }
     }
 

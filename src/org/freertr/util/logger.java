@@ -405,17 +405,7 @@ public class logger {
      * @param e exception
      */
     public static void exception(Throwable e) {
-        exception(e, null);
-    }
-
-    /**
-     * exception detected
-     *
-     * @param e exception
-     * @param m message to pass or null
-     */
-    public static void exception(Throwable e, String m) {
-        m = "exception " + dumpException(e, m);
+        String m = "exception " + dumpException(e);
         try {
             bits.buf2txt(false, bits.str2lst(m), cfgInit.myErrorFile());
         } catch (Exception ee) {
@@ -433,17 +423,7 @@ public class logger {
      * @param e exception
      */
     public static void traceback(Throwable e) {
-        traceback(e, null);
-    }
-
-    /**
-     * not so critical exception detected
-     *
-     * @param e exception
-     * @param m message to pass or null
-     */
-    public static void traceback(Throwable e, String m) {
-        m = "traceback " + dumpException(e, m);
+        String m = "traceback " + dumpException(e);
         try {
             bits.buf2txt(false, bits.str2lst(m), cfgInit.myErrorFile());
         } catch (Exception ee) {
@@ -462,16 +442,10 @@ public class logger {
      * dump one exception
      *
      * @param e exception
-     * @param m message to pass or null
      * @return dumped
      */
-    public static String dumpException(Throwable e, String m) {
-        if (m == null) {
-            m = "";
-        } else {
-            m += " when ";
-        }
-        return m + e + " at " + dumpStackTrace(e.getStackTrace());
+    public static String dumpException(Throwable e) {
+        return e + " at " + dumpStackTrace(e.getStackTrace());
     }
 
     /**
