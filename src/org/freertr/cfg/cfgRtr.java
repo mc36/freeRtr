@@ -233,12 +233,6 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router pvrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "stub", null),
         new userFilter("router pvrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "segrout", null),
         new userFilter("router pvrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bier", null),
-        new userFilter("router pvrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other enable", null),
-        new userFilter("router pvrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other suppress-prefix", null),
-        new userFilter("router pvrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other labels", null),
-        new userFilter("router pvrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other stub", null),
-        new userFilter("router pvrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other segrout", null),
-        new userFilter("router pvrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other bier", null),
         // router lsrp
         new userFilter("router lsrp[46] .*", cmds.tabulator + "spf-log 0", null),
         new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "spf-topolog", null),
@@ -1837,11 +1831,11 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
                 break;
             case pvrp4:
                 fwd = vrf.fwd4;
-                pvrp = new rtrPvrp(vrf.fwd4, vrf.fwd6, vrf.udp4, vrf.tcp4, number);
+                pvrp = new rtrPvrp(vrf.fwd4, vrf.udp4, vrf.tcp4, number);
                 break;
             case pvrp6:
                 fwd = vrf.fwd6;
-                pvrp = new rtrPvrp(vrf.fwd6, vrf.fwd4, vrf.udp6, vrf.tcp6, number);
+                pvrp = new rtrPvrp(vrf.fwd6, vrf.udp6, vrf.tcp6, number);
                 break;
             case lsrp4:
                 fwd = vrf.fwd4;

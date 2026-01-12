@@ -1885,7 +1885,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + "router rift[46] .* dynamic-metric algo minimum", null),
         // pvrp
         new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* split-horizon", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-enable", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* passive", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* dump", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* accept-metric", null),
@@ -1901,20 +1900,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* unstub", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* suppress-prefix", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* unsuppress-prefix", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-default-originate", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-label-pop", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-segrout", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-bier", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-stub", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-unstub", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-suppress-prefix", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-unsuppress-prefix", null),
         new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* verify-source", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* password", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* disable-password", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* encryption", null),
         new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* distance 80", null),
-        new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* other-distance 80", null),
         new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* metric-in 10", null),
         new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* metric-out 0", null),
         new userFilter("interface .*", cmds.tabulator + "router pvrp[46] .* hello-time 5000", null),
@@ -1940,14 +1930,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* route-map-out", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* route-policy-in", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* route-policy-out", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-label-in", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-label-out", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-prefix-list-in", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-prefix-list-out", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-route-map-in", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-route-map-out", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-route-policy-in", null),
-        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router pvrp[46] .* other-route-policy-out", null),
         // lsrp
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* passive", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* dump", null),
@@ -3254,7 +3236,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 if (rtrPvrp4ifc != null) {
                     break;
                 }
-                rtrPvrp4ifc = rtr.pvrp.addInterface(fwdIf4, fwdIf6);
+                rtrPvrp4ifc = rtr.pvrp.addInterface(fwdIf4);
                 if (rtrPvrp4ifc == null) {
                     break;
                 }
@@ -3264,7 +3246,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 if (rtrPvrp6ifc != null) {
                     break;
                 }
-                rtrPvrp6ifc = rtr.pvrp.addInterface(fwdIf6, fwdIf4);
+                rtrPvrp6ifc = rtr.pvrp.addInterface(fwdIf6);
                 if (rtrPvrp6ifc == null) {
                     break;
                 }
@@ -3487,7 +3469,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 }
                 rtrPvrp4hnd = null;
                 rtrPvrp4ifc = null;
-                rtr.pvrp.delInterface(fwdIf4, fwdIf6);
+                rtr.pvrp.delInterface(fwdIf4);
                 return;
             case pvrp6:
                 if (rtrPvrp6hnd == null) {
@@ -3495,7 +3477,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 }
                 rtrPvrp6hnd = null;
                 rtrPvrp6ifc = null;
-                rtr.pvrp.delInterface(fwdIf6, fwdIf4);
+                rtr.pvrp.delInterface(fwdIf6);
                 return;
             case lsrp4:
                 if (rtrLsrp4hnd == null) {

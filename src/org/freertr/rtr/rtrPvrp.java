@@ -6,7 +6,6 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
-import org.freertr.cfg.cfgRtr;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
@@ -61,21 +60,6 @@ public class rtrPvrp extends ipRtr implements Runnable {
     protected final prtTcp tcpCore;
 
     /**
-     * other afi router
-     */
-    public final rtrPvrpOther other;
-
-    /**
-     * route type
-     */
-    protected final tabRouteAttr.routeType rouTyp;
-
-    /**
-     * router number
-     */
-    protected final int rtrNum;
-
-    /**
      * router id
      */
     public addrIPv4 routerID;
@@ -89,11 +73,6 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * routes needed to advertise
      */
     public tabRoute<addrIP> need2adv;
-
-    /**
-     * other routes needed to advertise
-     */
-    public tabRoute<addrIP> oth2adv;
 
     /**
      * list of interfaces
@@ -166,18 +145,17 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * create one pvrp process
      *
      * @param forwarder the ip protocol
-     * @param otherfwd the other ip protocol
      * @param udp the udp protocol
      * @param tcp the tcp protocol
      * @param id process id
      */
-    public rtrPvrp(ipFwd forwarder, ipFwd otherfwd, prtUdp udp, prtTcp tcp, int id) {
+    public rtrPvrp(ipFwd forwarder, prtUdp udp, prtTcp tcp, int id) {
         fwdCore = forwarder;
         udpCore = udp;
         tcpCore = tcp;
         routerID = new addrIPv4();
         ifaces = new tabGen<rtrPvrpIface>();
-        rtrNum = id;
+        tabRouteAttr.routeType rouTyp = null;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
                 rouTyp = tabRouteAttr.routeType.pvrp4;
@@ -186,10 +164,8 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 rouTyp = tabRouteAttr.routeType.pvrp6;
                 break;
             default:
-                rouTyp = null;
                 break;
         }
-        other = new rtrPvrpOther(this, otherfwd);
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
         new Thread(this).start();
@@ -208,17 +184,16 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * add one interface to work on
      *
      * @param ifc ip forwarder interface
-     * @param otherifc other forwarding interface
      * @return false if successful, true if error happened
      */
-    public rtrPvrpIface addInterface(ipFwdIface ifc, ipFwdIface otherifc) {
+    public rtrPvrpIface addInterface(ipFwdIface ifc) {
         if (debugger.rtrPvrpEvnt) {
             logger.debug("add iface " + ifc);
         }
         if (ifc == null) {
             return null;
         }
-        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc, otherifc);
+        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc);
         rtrPvrpIface old = ifaces.add(ntry);
         if (old != null) {
             ntry = old;
@@ -232,16 +207,15 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * delete one interface
      *
      * @param ifc interface to delete
-     * @param otherifc other forwarding interface
      */
-    public void delInterface(ipFwdIface ifc, ipFwdIface otherifc) {
+    public void delInterface(ipFwdIface ifc) {
         if (debugger.rtrPvrpEvnt) {
             logger.debug("del iface " + ifc);
         }
         if (ifc == null) {
             return;
         }
-        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc, otherifc);
+        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc);
         ntry = ifaces.del(ntry);
         if (ntry == null) {
             return;
@@ -315,7 +289,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
         if (iface == null) {
             return null;
         }
-        rtrPvrpIface ifc = new rtrPvrpIface(this, iface, null);
+        rtrPvrpIface ifc = new rtrPvrpIface(this, iface);
         ifc = ifaces.find(ifc);
         if (ifc == null) {
             return null;
@@ -615,17 +589,6 @@ public class rtrPvrp extends ipRtr implements Runnable {
     public void routerGetHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "router-id", "specify router id");
         l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
-        l.add(null, false, 1, new int[]{2}, "afi-other", "select other to advertise");
-        l.add(null, false, 2, new int[]{-1}, "enable", "enable processing");
-        l.add(null, false, 2, new int[]{-1}, "labels", "specify label mode");
-        l.add(null, false, 2, new int[]{-1}, "stub", "stub router");
-        l.add(null, false, 2, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
-        l.add(null, false, 2, new int[]{3}, "segrout", "segment routing parameters");
-        l.add(null, false, 3, new int[]{4, -1}, "<num>", "this node index");
-        l.add(null, false, 2, new int[]{3}, "bier", "bier parameters");
-        l.add(null, false, 3, new int[]{4, -1}, "<num>", "node index");
-        l.add(null, false, 4, new int[]{-1}, "<num>", "node subdomain");
-        cfgRtr.getRedistHelp(l, 1);
         l.add(null, false, 1, new int[]{-1}, "labels", "specify label mode");
         l.add(null, false, 1, new int[]{-1}, "stub", "stub router");
         l.add(null, false, 1, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
@@ -659,7 +622,6 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx + " " + bierSub);
-        other.getConfig(l, beg, "afi-other ");
     }
 
     /**
@@ -749,60 +711,6 @@ public class rtrPvrp extends ipRtr implements Runnable {
             bierLab = tabLabel.allocate(tabLabelEntry.owner.pvrpBier, (bierMax + bierLen - 1) / bierLen);
             notif.wakeup();
             return false;
-        }
-        if (s.equals("afi-other")) {
-            s = cmd.word();
-            if (s.equals("enable")) {
-                if (negated) {
-                    other.unregister2ip();
-                } else {
-                    other.register2ip();
-                }
-                notif.wakeup();
-                return false;
-            }
-            if (s.equals("labels")) {
-                other.labels = !negated;
-                notif.wakeup();
-                return false;
-            }
-            if (s.equals("stub")) {
-                other.stub = !negated;
-                notif.wakeup();
-                return false;
-            }
-            if (s.equals("suppress-prefix")) {
-                other.suppressAddr = !negated;
-                notif.wakeup();
-                return false;
-            }
-            if (s.equals("segrout")) {
-                if (negated) {
-                    other.segrouIdx = 0;
-                    notif.wakeup();
-                    return false;
-                }
-                other.segrouIdx = bits.str2num(cmd.word());
-                notif.wakeup();
-                return false;
-            }
-            if (s.equals("bier")) {
-                if (negated) {
-                    other.bierIdx = 0;
-                    other.bierSub = 0;
-                    notif.wakeup();
-                    return false;
-                }
-                other.bierIdx = bits.str2num(cmd.word());
-                other.bierSub = bits.str2num(cmd.word());
-                notif.wakeup();
-                return false;
-            }
-            if (cfgRtr.doCfgRedist(other, other.fwd, negated, s, cmd)) {
-                return true;
-            }
-            notif.wakeup();
-            return true;
         }
         return true;
     }
