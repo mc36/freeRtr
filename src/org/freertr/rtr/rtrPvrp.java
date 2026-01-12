@@ -91,6 +91,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
     public tabRoute<addrIP> need2adv;
 
     /**
+     * other routes needed to advertise
+     */
+    public tabRoute<addrIP> oth2adv;
+
+    /**
      * list of interfaces
      */
     protected tabGen<rtrPvrpIface> ifaces;
@@ -203,16 +208,17 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * add one interface to work on
      *
      * @param ifc ip forwarder interface
+     * @param otherifc other forwarding interface
      * @return false if successful, true if error happened
      */
-    public rtrPvrpIface addInterface(ipFwdIface ifc) {
+    public rtrPvrpIface addInterface(ipFwdIface ifc, ipFwdIface otherifc) {
         if (debugger.rtrPvrpEvnt) {
             logger.debug("add iface " + ifc);
         }
         if (ifc == null) {
             return null;
         }
-        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc);
+        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc, otherifc);
         rtrPvrpIface old = ifaces.add(ntry);
         if (old != null) {
             ntry = old;
@@ -226,15 +232,16 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * delete one interface
      *
      * @param ifc interface to delete
+     * @param otherifc other forwarding interface
      */
-    public void delInterface(ipFwdIface ifc) {
+    public void delInterface(ipFwdIface ifc, ipFwdIface otherifc) {
         if (debugger.rtrPvrpEvnt) {
             logger.debug("del iface " + ifc);
         }
         if (ifc == null) {
             return;
         }
-        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc);
+        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc, otherifc);
         ntry = ifaces.del(ntry);
         if (ntry == null) {
             return;
@@ -308,7 +315,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
         if (iface == null) {
             return null;
         }
-        rtrPvrpIface ifc = new rtrPvrpIface(this, iface);
+        rtrPvrpIface ifc = new rtrPvrpIface(this, iface, null);
         ifc = ifaces.find(ifc);
         if (ifc == null) {
             return null;
