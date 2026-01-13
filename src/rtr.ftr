@@ -4018,7 +4018,7 @@ qc pass: pvrp default address suppression
 qc pass: pvrp address unsuppression
 qc pass: pvrp with php labels
 qc pass: ingress label filtering with pvrp
-failed: egress label filtering with pvrp
+qc pass: egress label filtering with pvrp
 qc pass: pvrp stub node
 qc pass: pvrp stub interface
 qc pass: pvrp unstub interface

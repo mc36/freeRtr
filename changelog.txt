@@ -17877,3 +17877,6 @@ qc pass: wireguard over asymmetric ports
 ---------------------------------- 2026-01-13 00:05:54 26.1.13
 no qc pass: egress label filtering with pvrp
 failed: egress label filtering with pvrp
+---------------------------------- 2026-01-13 00:36:11 26.1.13
+no failed: egress label filtering with pvrp
+qc pass: egress label filtering with pvrp
