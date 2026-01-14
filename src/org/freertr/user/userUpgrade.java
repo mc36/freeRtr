@@ -89,8 +89,7 @@ public class userUpgrade {
         if (cryUtils.hashFile(h, f)) {
             return null;
         }
-        ///// here prepend f.length() + "-" +
-        return a + "-" + cryUtils.hash2hex(h);
+        return f.length() + "-" + a + "-" + cryUtils.hash2hex(h);
     }
 
     /**
@@ -265,6 +264,7 @@ public class userUpgrade {
         cmd.error("release: " + blb.head);
         cmd.error("files: " + blb.getFilelist(true));
         cmd.error("time: " + blb.getTime());
+        cmd.error("size: " + blb.getSize());
         cmd.error("sign: " + blb.keyed + " key");
         cmd.error("hash: " + blb.getSum(2));
         err += verifyFile(cfgInit.getFileName(), blb.jars);
@@ -479,9 +479,8 @@ public class userUpgrade {
         }
         cons.debugRes("old release: " + old.head);
         cons.debugRes("new release: " + blb.head);
-        cons.debugRes("old time: " + old.getTime());
-        cons.debugRes("new time: " + blb.getTime());
-        cons.debugRes("diff: " + bits.timeDump((blb.time - old.time) / 1000));
+        cons.debugRes("old time: " + old.getTime() + ", new time: " + blb.getTime() + ", diff: " + bits.timeDump((blb.time - old.time) / 1000));
+        cons.debugRes("old size: " + old.getSize() + ", new size: " + blb.getSize() + ", diff: " + (blb.getSize() - old.getSize()));
         cons.debugRes("old files:" + old.getFilelist(true));
         cons.debugRes("new files:" + blb.getFilelist(true));
         userUpgradeBlob diff = blb.copyBytes();
@@ -677,11 +676,6 @@ public class userUpgrade {
      * @return status; 0=not needed, 1=failed, 2=done
      */
     protected int upgradeFile(String sumN, String loc, String rem, String tmp) {
-        int i = sumN.indexOf("-");
-        if (i < 16) {
-            sumN = sumN.substring(i + 1, sumN.length());
-        }
-        ///// here remove above
         String sumO = calcFileHash(loc);
         if (sumO == null) {
             sumO = "doit";
@@ -888,6 +882,25 @@ class userUpgradeBlob {
 
     public String getTime() {
         return bits.time2str(cfgAll.timeZoneName, time, 3);
+    }
+
+    private static long getSize(String a) {
+        if (a == null) {
+            return 0;
+        }
+        int i = a.indexOf("-");
+        if (i < 0) {
+            return 0;
+        }
+        return bits.str2long(a.substring(0, i));
+    }
+
+    public long getSize() {
+        long o = getSize(jars);
+        for (int i = 0; i < files.size(); i++) {
+            o += getSize(files.get(i).chk);
+        }
+        return o;
     }
 
     public List<String> getText(int level) {
