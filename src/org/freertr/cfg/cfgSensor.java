@@ -447,7 +447,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
                     locFil.rotate(locFil.rotateN(), 0, locFil.rotateT(), locFil.rotateL());
                     return;
                 }
-                locFil.rotate(locFil.rotateN(), bits.str2num(cmd.word()), locFil.rotateT(), locFil.rotateL());
+                locFil.rotate(locFil.rotateN(), bits.str2long(cmd.word()), locFil.rotateT(), locFil.rotateL());
                 return;
             }
             if (s.equals("max-time")) {

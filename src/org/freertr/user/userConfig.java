@@ -2770,7 +2770,7 @@ public class userConfig {
             return;
         }
         if (s.equals("rotate")) {
-            int siz = bits.str2num(cmd.word());
+            long siz = bits.str2num(cmd.word());
             s = cmd.word();
             int tim = bits.str2num(cmd.word());
             logger.fileRotate(s, siz, tim);

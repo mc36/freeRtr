@@ -2797,7 +2797,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             dmp.fileHandle = new logFil(cmd.word());
             int tim = bits.str2num(cmd.word());
             String bck = cmd.word();
-            int siz = bits.str2num(cmd.word());
+            long siz = bits.str2num(cmd.word());
             dmp.fileHandle.rotate(bck, siz, tim, 0);
             dmp.fileHandle.open(true);
             return false;

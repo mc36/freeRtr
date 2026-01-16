@@ -141,7 +141,7 @@ public class servSyslog extends servGeneric implements prtServS {
             if (log2file == null) {
                 return false;
             }
-            int siz = bits.str2num(cmd.word());
+            long siz = bits.str2num(cmd.word());
             s = cmd.word();
             int tim = bits.str2num(cmd.word());
             log2file.rotate(s, siz, tim, 0);

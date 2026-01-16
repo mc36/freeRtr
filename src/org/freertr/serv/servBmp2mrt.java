@@ -259,7 +259,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             if (fileHandle == null) {
                 return false;
             }
-            fileHandle.rotate(fileHandle.rotateN(), bits.str2num(cmd.word()), fileHandle.rotateT(), fileHandle.rotateL());
+            fileHandle.rotate(fileHandle.rotateN(), bits.str2long(cmd.word()), fileHandle.rotateT(), fileHandle.rotateL());
             return false;
         }
         if (s.equals("backup")) {

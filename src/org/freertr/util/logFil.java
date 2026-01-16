@@ -16,7 +16,7 @@ public class logFil {
 
     private final String logFilNam;
 
-    private int logRotSiz;
+    private long logRotSiz;
 
     private int logRotTim;
 
@@ -26,7 +26,7 @@ public class logFil {
 
     private PrintStream logFilHnd;
 
-    private int logFilSiz;
+    private long logFilSiz;
 
     private int logFilLin;
 
@@ -62,7 +62,7 @@ public class logFil {
      * @param tim age of file
      * @param lin line of file
      */
-    public void rotate(String fn, int siz, int tim, int lin) {
+    public void rotate(String fn, long siz, int tim, int lin) {
         logRotNam = fn;
         logRotSiz = siz;
         logRotTim = tim;
@@ -133,7 +133,7 @@ public class logFil {
      *
      * @return configuration
      */
-    public int rotateS() {
+    public long rotateS() {
         return logRotSiz;
     }
 
@@ -160,8 +160,8 @@ public class logFil {
         }
         try {
             logFilHnd = new PrintStream(new FileOutputStream(logFilNam, true));
-            logFilSiz = (int) new File(logFilNam).length();
-            logFilLin = logFilSiz / 80;
+            logFilSiz = new File(logFilNam).length();
+            logFilLin = (int) (logFilSiz / 80);
         } catch (Exception e) {
             return true;
         }

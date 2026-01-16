@@ -493,7 +493,7 @@ public class logger {
      * @param siz size of file
      * @param tim age of file
      */
-    public static void fileRotate(String fn, int siz, int tim) {
+    public static void fileRotate(String fn, long siz, int tim) {
         if (logFilHnd == null) {
             return;
         }

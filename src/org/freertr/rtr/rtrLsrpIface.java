@@ -596,7 +596,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
             dumpFile = new logFil(cmd.word());
             int tim = bits.str2num(cmd.word());
             String bck = cmd.word();
-            int siz = bits.str2num(cmd.word());
+            long siz = bits.str2num(cmd.word());
             dumpFile.rotate(bck, siz, tim, 0);
             dumpFile.open(true);
             return;
