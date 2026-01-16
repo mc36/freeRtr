@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v26.1.9-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-01-09 15:05:36, took 01:14:55, with 10 workers, on 857 cases, 3 failed, 0 traces, 22 retries
+-;-;-;freeRouter v26.1.15-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2026-01-15 19:06:38, took 01:20:41, with 10 workers, on 857 cases, 4 failed, 0 traces, 30 retries
 -;-;-;java -Xmx256m -jar rtr.jar, bmv2
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -748,7 +748,7 @@ http://sources.freertr.org/cfg/p4lang-rout392.tst;p4lang-rout392.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout393.tst;p4lang-rout393.tst;success;p4lang: pwhe routing over qinq
 http://sources.freertr.org/cfg/p4lang-rout394.tst;p4lang-rout394.tst;success;p4lang: pwhe mpls over qinq
 http://sources.freertr.org/cfg/p4lang-rout395.tst;p4lang-rout395.tst;#6-run-r5 tping 100 10 1.1.1.5 vrf v1;p4lang: bridge routing over backplane
-http://sources.freertr.org/cfg/p4lang-rout396.tst;p4lang-rout396.tst;success;p4lang: mixed bridge routing over backplane
+http://sources.freertr.org/cfg/p4lang-rout396.tst;p4lang-rout396.tst;#6-run-r5 tping 100 10 1.1.1.5 vrf v1;p4lang: mixed bridge routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout397.tst;p4lang-rout397.tst;success;p4lang: routed vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout398.tst;p4lang-rout398.tst;success;p4lang: routed vlan vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout399.tst;p4lang-rout399.tst;success;p4lang: routed qinq vpls/ldp with bgp
