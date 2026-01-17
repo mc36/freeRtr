@@ -199,6 +199,8 @@ qc pass: bridge pmtud in
 qc pass: bridge pmtud out
 qc pass: precise mac enforcement
 qc pass: bridge mac enforcement
+qc pass: ttl set in
+qc pass: ttl set out
 qc pass: framerelay ansi
 qc pass: framerelay cisco
 qc pass: framerelay q933

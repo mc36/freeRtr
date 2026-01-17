@@ -17880,3 +17880,6 @@ failed: egress label filtering with pvrp
 ---------------------------------- 2026-01-13 00:36:11 26.1.13
 no failed: egress label filtering with pvrp
 qc pass: egress label filtering with pvrp
+---------------------------------- 2026-01-17 10:16:51 26.1.17
+qc pass: ttl set in
+qc pass: ttl set out
