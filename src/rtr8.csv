@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.1.17-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-01-17 13:45:29, took 00:12:29, with 50 workers, on 857 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2026-01-17 14:15:24, took 00:11:02, with 50 workers, on 859 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -859,3 +859,5 @@ http://sources.freertr.org/cfg/p4lang-rout503.tst;p4lang-rout503.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout504.tst;p4lang-rout504.tst;success;p4lang: eoip server over ipv6
 http://sources.freertr.org/cfg/p4lang-rout505.tst;p4lang-rout505.tst;success;p4lang: eoip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout506.tst;p4lang-rout506.tst;success;p4lang: eoip server over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout507.tst;p4lang-rout507.tst;success;p4lang: ttl set
+http://sources.freertr.org/cfg/p4lang-rout508.tst;p4lang-rout508.tst;success;p4lang: vlan ttl set

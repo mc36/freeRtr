@@ -855,6 +855,8 @@ qc pass: p4lang: eoip server over ipv4
 qc pass: p4lang: eoip server over ipv6
 qc pass: p4lang: eoip server over ipv4 loopback
 qc pass: p4lang: eoip server over ipv6 loopback
+qc pass: p4lang: ttl set
+qc pass: p4lang: vlan ttl set
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
