@@ -300,6 +300,16 @@ public class ipFwdIface extends tabRouteIface {
     public int tcpMssOut;
 
     /**
+     * ingress ttl value
+     */
+    public int ttlSetIn;
+
+    /**
+     * egress ttl value
+     */
+    public int ttlSetOut;
+
+    /**
      * bfd config
      */
     public rtrBfdIface bfdCfg;
@@ -679,6 +689,10 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, false, 3, new int[]{-1}, "<num>", "value");
         l.add(null, false, 2, new int[]{3}, "tcp-mss-out", "rewrite tcp mss in egress packets");
         l.add(null, false, 3, new int[]{-1}, "<num>", "value");
+        l.add(null, false, 2, new int[]{3}, "ttl-set-in", "rewrite ip ttl in ingress packets");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "value");
+        l.add(null, false, 2, new int[]{3}, "ttl-set-out", "rewrite ip ttl in egress packets");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "value");
         l.add(null, false, 2, new int[]{3}, "host-reach", "set next hop cache timeout");
         l.add(null, false, 3, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 2, new int[]{3}, "host-retry", "set next hop cache retry");
@@ -955,6 +969,8 @@ public class ipFwdIface extends tabRouteIface {
         }
         cmds.cfgLine(l, tcpMssIn < 1, cmds.tabulator, beg + "tcp-mss-in", "" + tcpMssIn);
         cmds.cfgLine(l, tcpMssOut < 1, cmds.tabulator, beg + "tcp-mss-out", "" + tcpMssOut);
+        cmds.cfgLine(l, ttlSetIn < 1, cmds.tabulator, beg + "ttl-set-in", "" + ttlSetIn);
+        cmds.cfgLine(l, ttlSetOut < 1, cmds.tabulator, beg + "ttl-set-out", "" + ttlSetOut);
         cmds.cfgLine(l, !mcastAsBcast, cmds.tabulator, beg + "multicast broadcast", "");
         cmds.cfgLine(l, !mcastAsUcast, cmds.tabulator, beg + "multicast unicast", "");
         for (int o = 0; o < f.groups.size(); o++) {
@@ -1420,6 +1436,14 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("tcp-mss-out")) {
             tcpMssOut = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("ttl-set-in")) {
+            ttlSetIn = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("ttl-set-out")) {
+            ttlSetOut = bits.str2num(cmd.word());
             return false;
         }
         if (a.equals("pbr")) {
@@ -1987,6 +2011,14 @@ public class ipFwdIface extends tabRouteIface {
         }
         if (a.equals("tcp-mss-out")) {
             tcpMssOut = 0;
+            return false;
+        }
+        if (a.equals("ttl-set-in")) {
+            ttlSetIn = 0;
+            return false;
+        }
+        if (a.equals("ttl-set-out")) {
+            ttlSetOut = 0;
             return false;
         }
         if (a.equals("pbr")) {

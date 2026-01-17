@@ -1327,6 +1327,9 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         if (lower.tcpMssOut > 0) {
             ifaceAdjustMss(pck, lower.tcpMssOut);
         }
+        if (lower.ttlSetOut > 0) {
+            ipCore.updateIPheader(pck, null, null, -1, lower.ttlSetOut, -1, -1, -1);
+        }
         if (debugger.ipFwdTraf) {
             logger.debug("tx " + pck.IPsrc + " -> " + pck.IPtrg + " hop=" + hop + " pr=" + pck.IPprt + " tos=" + pck.IPtos);
         }
@@ -1343,9 +1346,9 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
             pck.getSkip(-pck.IPsiz);
             return;
         }
-        prtTcp.updateTCPheader(pck, pck.UDPsrc, pck.UDPtrg, -1, -1, mss);
+        prtTcp.updateTCPheader(pck, -1, -1, -1, -1, mss);
         pck.getSkip(-pck.IPsiz);
-        ipCore.updateIPheader(pck, pck.IPsrc, pck.IPtrg, -1, -1, -1, -1, pck.UDPsiz);
+        ipCore.updateIPheader(pck, null, null, -1, -1, -1, -1, -1);
     }
 
     /**
@@ -1419,6 +1422,9 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         }
         if (lower.tcpMssIn > 0) {
             ifaceAdjustMss(pck, lower.tcpMssIn);
+        }
+        if (lower.ttlSetIn > 0) {
+            ipCore.updateIPheader(pck, null, null, -1, lower.ttlSetIn, -1, -1, -1);
         }
         pck.INTupper = 0;
         ipMpls.beginMPLSfields(pck, (mplsPropTtl | lower.mplsPropTtlAlways) & lower.mplsPropTtlAllow);

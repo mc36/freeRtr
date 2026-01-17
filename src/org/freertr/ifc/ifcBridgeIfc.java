@@ -419,9 +419,9 @@ public class ifcBridgeIfc implements ifcUp, ipMhostHndl, Comparable<ifcBridgeIfc
             pck.getSkip(-pck.IPsiz);
             return false;
         }
-        prtTcp.updateTCPheader(pck, pck.UDPsrc, pck.UDPtrg, -1, -1, mss);
+        prtTcp.updateTCPheader(pck, -1, -1, -1, -1, mss);
         pck.getSkip(-pck.IPsiz);
-        ipCore.updateIPheader(pck, pck.IPsrc, pck.IPtrg, -1, -1, -1, -1, pck.UDPsiz);
+        ipCore.updateIPheader(pck, null, null, -1, -1, -1, -1, -1);
         pck.getSkip(-2);
         return false;
     }
