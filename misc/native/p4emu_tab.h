@@ -115,6 +115,8 @@ struct port2vrf_entry {
     int nflw6;
     int pttl4;
     int pttl6;
+    int sttl4;
+    int sttl6;
     int rateIn;
     int rateOut;
     int mpls;

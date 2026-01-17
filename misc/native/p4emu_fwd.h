@@ -1565,8 +1565,14 @@ ipv4_flwed:
 ipv4_nated:
         ttl = bufD[bufP + 8] - 1;
         if (ttl <= 1) doPunting;
+        tmp = 1;
+        if (port2vrf_res->sttl4 > 0) {
+            tmp = ttl + 1;
+            ttl = port2vrf_res->sttl4;
+            tmp -= ttl;
+        }
         bufD[bufP + 8] = ttl;
-        update_chksum(bufP + 10, -1);
+        update_chksum(bufP + 10, -tmp);
         doSampler;
         ttl |= port2vrf_res->pttl4;
         if (table_nonexist(&vrf2rib_res->pbr)) goto ipv4_pbred;
@@ -1823,6 +1829,7 @@ ipv6_flwed:
 ipv6_nated:
         ttl = bufD[bufP + 7] - 1;
         if (ttl <= 1) doPunting;
+        if (port2vrf_res->sttl6 > 0) ttl = port2vrf_res->sttl6;
         bufD[bufP + 7] = ttl;
         doSampler;
         ttl |= port2vrf_res->pttl6;

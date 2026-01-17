@@ -495,6 +495,18 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         port2vrf_res->tcpmss6 = atoi(arg[3]);
         return 0;
     }
+    if (strcmp(arg[0], "ttlset4in") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->sttl4 = atoi(arg[3]);
+        return 0;
+    }
+    if (strcmp(arg[0], "ttlset6in") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->sttl6 = atoi(arg[3]);
+        return 0;
+    }
     if (strcmp(arg[0], "verify4") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
@@ -3296,7 +3308,7 @@ void doNegotiate(char*name) {
     if (commandTx == NULL) err("failed to open file");
     fprintf(commandTx, "platform p4emu/%s\r\n", name);
     fprintf(commandTx, "capabilities %s%s\r\n",
-            "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap ipsectap vxlan etherip eoip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss pmtud mpolka polka pwhe mgre",
+            "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap ipsectap vxlan etherip eoip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss ttlset pmtud mpolka polka pwhe mgre",
 #ifdef HAVE_NOCRYPTO
             ""
 #else
