@@ -2718,13 +2718,9 @@ public class servP4langConn implements Runnable {
         }
         i = 0;
         o = 0;
-        int p = 0;
-        int q = 0;
         if (mstr.ifc.fwdIf4 != null) {
             i = mstr.ifc.fwdIf4.tcpMssIn;
             o = mstr.ifc.fwdIf4.tcpMssOut;
-            p = mstr.ifc.fwdIf4.pmtudIn;
-            q = mstr.ifc.fwdIf4.pmtudOut;
         }
         if (i != ifc.sentMss4in) {
             lower.sendLine("tcpmss4in_" + a + " " + ifc.id + " " + i);
@@ -2734,23 +2730,11 @@ public class servP4langConn implements Runnable {
             lower.sendLine("tcpmss4out_" + a + " " + ifc.id + " " + o);
             ifc.sentMss4out = o;
         }
-        if (p != ifc.sentPmtud4in) {
-            lower.sendLine("pmtud4in_" + a + " " + ifc.id + " " + p);
-            ifc.sentPmtud4in = p;
-        }
-        if (q != ifc.sentPmtud4out) {
-            lower.sendLine("pmtud4out_" + a + " " + ifc.id + " " + q);
-            ifc.sentPmtud4out = q;
-        }
         i = 0;
         o = 0;
-        p = 0;
-        q = 0;
         if (mstr.ifc.fwdIf6 != null) {
             i = mstr.ifc.fwdIf6.tcpMssIn;
             o = mstr.ifc.fwdIf6.tcpMssOut;
-            p = mstr.ifc.fwdIf6.pmtudIn;
-            q = mstr.ifc.fwdIf6.pmtudOut;
         }
         if (i != ifc.sentMss6in) {
             lower.sendLine("tcpmss6in_" + a + " " + ifc.id + " " + i);
@@ -2760,13 +2744,61 @@ public class servP4langConn implements Runnable {
             lower.sendLine("tcpmss6out_" + a + " " + ifc.id + " " + o);
             ifc.sentMss6out = o;
         }
-        if (p != ifc.sentPmtud6in) {
-            lower.sendLine("pmtud6in_" + a + " " + ifc.id + " " + p);
-            ifc.sentPmtud6in = p;
+        i = 0;
+        o = 0;
+        if (mstr.ifc.fwdIf4 != null) {
+            i = mstr.ifc.fwdIf4.ttlSetIn;
+            o = mstr.ifc.fwdIf4.ttlSetOut;
         }
-        if (q != ifc.sentPmtud6out) {
-            lower.sendLine("pmtud6out_" + a + " " + ifc.id + " " + q);
-            ifc.sentPmtud6out = q;
+        if (i != ifc.sentTtl4in) {
+            lower.sendLine("ttlset4in_" + a + " " + ifc.id + " " + i);
+            ifc.sentTtl4in = i;
+        }
+        if (o != ifc.sentTtl4out) {
+            lower.sendLine("ttlset4out_" + a + " " + ifc.id + " " + o);
+            ifc.sentTtl4out = o;
+        }
+        i = 0;
+        o = 0;
+        if (mstr.ifc.fwdIf6 != null) {
+            i = mstr.ifc.fwdIf6.ttlSetIn;
+            o = mstr.ifc.fwdIf6.ttlSetOut;
+        }
+        if (i != ifc.sentTtl6in) {
+            lower.sendLine("ttlset6in_" + a + " " + ifc.id + " " + i);
+            ifc.sentTtl6in = i;
+        }
+        if (o != ifc.sentTtl6out) {
+            lower.sendLine("ttlset6out_" + a + " " + ifc.id + " " + o);
+            ifc.sentTtl6out = o;
+        }
+        i = 0;
+        o = 0;
+        if (mstr.ifc.fwdIf4 != null) {
+            i = mstr.ifc.fwdIf4.pmtudIn;
+            o = mstr.ifc.fwdIf4.pmtudOut;
+        }
+        if (i != ifc.sentPmtud4in) {
+            lower.sendLine("pmtud4in_" + a + " " + ifc.id + " " + i);
+            ifc.sentPmtud4in = i;
+        }
+        if (o != ifc.sentPmtud4out) {
+            lower.sendLine("pmtud4out_" + a + " " + ifc.id + " " + o);
+            ifc.sentPmtud4out = o;
+        }
+        i = 0;
+        o = 0;
+        if (mstr.ifc.fwdIf6 != null) {
+            i = mstr.ifc.fwdIf6.pmtudIn;
+            o = mstr.ifc.fwdIf6.pmtudOut;
+        }
+        if (i != ifc.sentPmtud6in) {
+            lower.sendLine("pmtud6in_" + a + " " + ifc.id + " " + i);
+            ifc.sentPmtud6in = i;
+        }
+        if (o != ifc.sentPmtud6out) {
+            lower.sendLine("pmtud6out_" + a + " " + ifc.id + " " + o);
+            ifc.sentPmtud6out = o;
         }
         i = servP4langUtil.getVerifySource(mstr.ifc.fwdIf4);
         if (i != ifc.sentVerify4) {

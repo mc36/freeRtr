@@ -203,6 +203,26 @@ public class servP4langIfc implements ifcDn, Comparable<servP4langIfc> {
     protected int sentMss6out;
 
     /**
+     * sent ttl
+     */
+    protected int sentTtl4in;
+
+    /**
+     * sent ttl
+     */
+    protected int sentTtl4out;
+
+    /**
+     * sent ttl
+     */
+    protected int sentTtl6in;
+
+    /**
+     * sent ttl
+     */
+    protected int sentTtl6out;
+
+    /**
      * sent verify
      */
     protected int sentVerify4;
@@ -621,6 +641,10 @@ public class servP4langIfc implements ifcDn, Comparable<servP4langIfc> {
         sentMss4out = 0;
         sentMss6in = 0;
         sentMss6out = 0;
+        sentTtl4in = 0;
+        sentTtl4out = 0;
+        sentTtl6in = 0;
+        sentTtl6out = 0;
         sentPmtud4in = 0;
         sentPmtud6in = 0;
         sentPmtud4out = 0;
