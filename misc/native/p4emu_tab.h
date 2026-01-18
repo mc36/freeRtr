@@ -105,8 +105,10 @@ struct port2vrf_entry {
     int nexthop;
     int label1;
     int label2;
-    int tcpmss4;
-    int tcpmss6;
+    int tcpmss4in;
+    int tcpmss6in;
+    int tcpmss4out;
+    int tcpmss6out;
     int verify4;
     int verify6;
     int pmtud4;
@@ -115,8 +117,10 @@ struct port2vrf_entry {
     int nflw6;
     int pttl4;
     int pttl6;
-    int sttl4;
-    int sttl6;
+    int sttl4in;
+    int sttl6in;
+    int sttl4out;
+    int sttl6out;
     int rateIn;
     int rateOut;
     int mpls;

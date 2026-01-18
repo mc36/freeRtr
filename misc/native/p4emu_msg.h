@@ -486,25 +486,49 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     if (strcmp(arg[0], "tcpmss4in") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->tcpmss4 = atoi(arg[3]);
+        port2vrf_res->tcpmss4in = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "tcpmss6in") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->tcpmss6 = atoi(arg[3]);
+        port2vrf_res->tcpmss6in = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "ttlset4in") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->sttl4 = atoi(arg[3]);
+        port2vrf_res->sttl4in = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "ttlset6in") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->sttl6 = atoi(arg[3]);
+        port2vrf_res->sttl6in = atoi(arg[3]);
+        return 0;
+    }
+    if (strcmp(arg[0], "tcpmss4out") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->tcpmss4out = atoi(arg[3]);
+        return 0;
+    }
+    if (strcmp(arg[0], "tcpmss6out") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->tcpmss6out = atoi(arg[3]);
+        return 0;
+    }                         
+    if (strcmp(arg[0], "ttlset4out") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->sttl4out = atoi(arg[3]);
+        return 0;             
+    }                         
+    if (strcmp(arg[0], "ttlset6out") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->sttl6out = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "verify4") == 0) {
