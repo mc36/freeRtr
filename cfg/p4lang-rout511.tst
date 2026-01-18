@@ -1,4 +1,4 @@
-description p4lang: ttlset in
+description p4lang: ttlset out
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -40,8 +40,6 @@ int sdn1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
- ipv4 ttl-set-in 123
- ipv6 ttl-set-in 123
  exit
 int sdn2
  vrf for v1
@@ -60,6 +58,8 @@ int sdn4
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::
  ipv6 ena
+ ipv4 ttl-set-out 123
+ ipv6 ttl-set-out 123
  exit
 server p4lang p4
  interconnect eth2
@@ -403,16 +403,16 @@ r3 tping 100 10 2.2.2.101 vrf v1 sou lo0 ttl 1
 r3 tping 100 10 4321::101 vrf v1 sou lo0 ttl 1
 r3 tping 100 10 2.2.2.103 vrf v1 sou lo0 ttl 1
 r3 tping 100 10 4321::103 vrf v1 sou lo0 ttl 1
-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0 ttl 1
-r3 tping 100 10 4321::104 vrf v1 sou lo0 ttl 1
-r3 tping 100 10 2.2.2.105 vrf v1 sou lo0 ttl 1
-r3 tping 100 10 4321::105 vrf v1 sou lo0 ttl 1
-r3 tping 100 10 2.2.2.106 vrf v1 sou lo0 ttl 1
-r3 tping 100 10 4321::106 vrf v1 sou lo0 ttl 1
-r3 tping 100 10 2.2.2.107 vrf v1 sou lo0 ttl 1
-r3 tping 100 10 4321::107 vrf v1 sou lo0 ttl 1
-r3 tping 100 10 2.2.2.108 vrf v1 sou lo0 ttl 1
-r3 tping 100 10 4321::108 vrf v1 sou lo0 ttl 1
+r3 tping 0 10 2.2.2.104 vrf v1 sou lo0 ttl 1
+r3 tping 0 10 4321::104 vrf v1 sou lo0 ttl 1
+r3 tping 0 10 2.2.2.105 vrf v1 sou lo0 ttl 1
+r3 tping 0 10 4321::105 vrf v1 sou lo0 ttl 1
+r3 tping 0 10 2.2.2.106 vrf v1 sou lo0 ttl 1
+r3 tping 0 10 4321::106 vrf v1 sou lo0 ttl 1
+r3 tping 0 10 2.2.2.107 vrf v1 sou lo0 ttl 1
+r3 tping 0 10 4321::107 vrf v1 sou lo0 ttl 1
+r3 tping 0 10 2.2.2.108 vrf v1 sou lo0 ttl 1
+r3 tping 0 10 4321::108 vrf v1 sou lo0 ttl 1
 
 r3 tping 100 10 2.2.2.101 vrf v1 sou lo0 ttl 2
 r3 tping 100 10 4321::101 vrf v1 sou lo0 ttl 2

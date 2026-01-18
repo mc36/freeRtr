@@ -1,4 +1,4 @@
-description p4lang: qinq tcpmss in
+description p4lang: vlan tcpmss out
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -38,20 +38,16 @@ int lo0
 int sdn1
  exit
 int sdn1.111
- exit
-int sdn1.111.222
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  ipv6 ena
- ipv4 tcp-mss-in 1280
- ipv6 tcp-mss-in 1280
+ ipv4 tcp-mss-out 1280
+ ipv6 tcp-mss-out 1280
  exit
 int sdn2
  exit
 int sdn2.111
- exit
-int sdn2.111.222
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
@@ -60,8 +56,6 @@ int sdn2.111.222
 int sdn3
  exit
 int sdn3.111
- exit
-int sdn3.111.222
  vrf for v1
  ipv4 addr 1.1.3.1 255.255.255.0
  ipv6 addr 1234:3::1 ffff:ffff::
@@ -70,14 +64,12 @@ int sdn3.111.222
 int sdn4
  exit
 int sdn4.111
- exit
-int sdn4.111.222
  vrf for v1
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::
  ipv6 ena
- ipv4 tcp-mss-in 1280
- ipv6 tcp-mss-in 1280
+ ipv4 tcp-mss-out 1280
+ ipv6 tcp-mss-out 1280
  exit
 server p4lang p4
  interconnect eth2
@@ -136,8 +128,6 @@ bridge 1
  block-unicast
  exit
 int eth1.111
- exit
-int eth1.111.222
  bridge-gr 1
  exit
 int bvi1
@@ -178,8 +168,6 @@ int lo0
  ipv6 addr 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int eth1.111
- exit
-int eth1.111.222
  vrf for v1
  ipv4 addr 1.1.2.2 255.255.255.0
  ipv6 addr 1234:2::2 ffff:ffff::
@@ -212,8 +200,6 @@ int lo0
  ipv6 addr 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int eth1.111
- exit
-int eth1.111.222
  vrf for v1
  ipv4 addr 1.1.3.2 255.255.255.0
  ipv6 addr 1234:3::2 ffff:ffff::
@@ -258,8 +244,6 @@ int lo0
  ipv6 addr 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int eth1.111
- exit
-int eth1.111.222
  vrf for v1
  ipv4 addr 1.1.4.2 255.255.255.0
  ipv6 addr 1234:4::2 ffff:ffff::

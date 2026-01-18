@@ -567,10 +567,10 @@ qc pass: p4lang: local connect
 qc pass: p4lang: vlan local connect
 qc pass: p4lang: pmtud
 qc pass: p4lang: vlan pmtud
-qc pass: p4lang: tcpmss
-qc pass: p4lang: vlan tcpmss
-qc pass: p4lang: bridge tcpmss
-qc pass: p4lang: vlan bridge tcpmss
+qc pass: p4lang: tcpmss in
+qc pass: p4lang: vlan tcpmss in
+qc pass: p4lang: bridge tcpmss in
+qc pass: p4lang: vlan bridge tcpmss in
 qc pass: p4lang: bridge pmtud
 qc pass: p4lang: vlan bridge pmtud
 qc pass: p4lang: ip ttl exceed
@@ -855,8 +855,8 @@ qc pass: p4lang: eoip server over ipv4
 qc pass: p4lang: eoip server over ipv6
 qc pass: p4lang: eoip server over ipv4 loopback
 qc pass: p4lang: eoip server over ipv6 loopback
-qc pass: p4lang: ttl set
-qc pass: p4lang: vlan ttl set
+qc pass: p4lang: ttlset in
+qc pass: p4lang: vlan ttlset in
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

@@ -1,4 +1,4 @@
-description p4lang: vlan bridge tcpmss
+description p4lang: vlan bridge tcpmss in
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

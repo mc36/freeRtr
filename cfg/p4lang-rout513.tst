@@ -1,4 +1,4 @@
-description p4lang: ttlset in
+description p4lang: qinq ttlset in
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -36,6 +36,10 @@ int lo0
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int sdn1
+ exit
+int sdn1.123
+ exit
+int sdn1.123.321
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
@@ -84,7 +88,7 @@ ipv6 route v1 4321::107 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 ipv6 route v1 4321::108 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 !
 
-addother r2 controller r1 v9 9080 - feature route ttlset
+addother r2 controller r1 v9 9080 - feature vlan route ttlset
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -109,7 +113,9 @@ bridge 1
  mac-learn
  block-unicast
  exit
-int eth1
+int eth1.123
+ exit
+int eth1.123.321
  bridge-gr 1
  exit
 int bvi1

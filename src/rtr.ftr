@@ -2339,10 +2339,10 @@ qc pass: p4lang: local connect
 qc pass: p4lang: vlan local connect
 qc pass: p4lang: pmtud
 qc pass: p4lang: vlan pmtud
-qc pass: p4lang: tcpmss
-qc pass: p4lang: vlan tcpmss
-qc pass: p4lang: bridge tcpmss
-qc pass: p4lang: vlan bridge tcpmss
+qc pass: p4lang: tcpmss in
+qc pass: p4lang: vlan tcpmss in
+qc pass: p4lang: bridge tcpmss in
+qc pass: p4lang: vlan bridge tcpmss in
 qc pass: p4lang: bridge pmtud
 qc pass: p4lang: vlan bridge pmtud
 qc pass: p4lang: ip ttl exceed
@@ -2627,8 +2627,8 @@ qc pass: p4lang: eoip server over ipv4
 qc pass: p4lang: eoip server over ipv6
 qc pass: p4lang: eoip server over ipv4 loopback
 qc pass: p4lang: eoip server over ipv6 loopback
-qc pass: p4lang: ttl set
-qc pass: p4lang: vlan ttl set
+qc pass: p4lang: ttlset in
+qc pass: p4lang: vlan ttlset in
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

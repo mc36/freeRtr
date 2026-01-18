@@ -518,13 +518,13 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
         port2vrf_res->tcpmss6out = atoi(arg[3]);
         return 0;
-    }                         
+    }
     if (strcmp(arg[0], "ttlset4out") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
         port2vrf_res->sttl4out = atoi(arg[3]);
-        return 0;             
-    }                         
+        return 0;
+    }
     if (strcmp(arg[0], "ttlset6out") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
