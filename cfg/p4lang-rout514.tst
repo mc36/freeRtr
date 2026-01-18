@@ -55,9 +55,9 @@ int sdn3
  exit
 int sdn4
  exit
-int sdn4.123
+int sdn4.111
  exit
-int sdn4.123.321
+int sdn4.111.222
  vrf for v1
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::
@@ -207,9 +207,9 @@ int lo0
  ipv4 addr 2.2.2.106 255.255.255.255
  ipv6 addr 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int eth1.123
+int eth1.111
  exit
-int eth1.123.321
+int eth1.111.222
  vrf for v1
  ipv4 addr 1.1.4.2 255.255.255.0
  ipv6 addr 1234:4::2 ffff:ffff::

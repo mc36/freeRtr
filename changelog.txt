@@ -17899,3 +17899,14 @@ qc pass: p4lang: bridge tcpmss in
 qc pass: p4lang: vlan bridge tcpmss in
 qc pass: p4lang: ttlset in
 qc pass: p4lang: vlan ttlset in
+---------------------------------- 2026-01-18 12:29:52 26.1.18
+no qc pass: p4lang: qinq bridge tcpmss
+no qc pass: p4lang: qinq tcpmss
+qc pass: p4lang: qinq tcpmss in
+qc pass: p4lang: qinq bridge tcpmss in
+qc pass: p4lang: tcpmss out
+qc pass: p4lang: vlan tcpmss out
+qc pass: p4lang: ttlset out
+qc pass: p4lang: vlan ttlset out
+qc pass: p4lang: qinq ttlset in
+qc pass: p4lang: qinq ttlset out

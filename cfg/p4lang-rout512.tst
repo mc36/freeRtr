@@ -1,4 +1,4 @@
-description p4lang: vlan ttlset out
+description p4lang: ttlset out
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -54,8 +54,6 @@ int sdn3
  ipv6 ena
  exit
 int sdn4
- exit
-int sdn4.123
  vrf for v1
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::
@@ -86,7 +84,7 @@ ipv6 route v1 4321::107 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 ipv6 route v1 4321::108 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 !
 
-addother r2 controller r1 v9 9080 - feature vlan route ttlset
+addother r2 controller r1 v9 9080 - feature route ttlset
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -205,7 +203,7 @@ int lo0
  ipv4 addr 2.2.2.106 255.255.255.255
  ipv6 addr 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int eth1.123
+int eth1
  vrf for v1
  ipv4 addr 1.1.4.2 255.255.255.0
  ipv6 addr 1234:4::2 ffff:ffff::

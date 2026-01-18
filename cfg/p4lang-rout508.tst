@@ -37,7 +37,7 @@ int lo0
  exit
 int sdn1
  exit
-int sdn1.123
+int sdn1.111
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
@@ -111,7 +111,7 @@ bridge 1
  mac-learn
  block-unicast
  exit
-int eth1.123
+int eth1.111
  bridge-gr 1
  exit
 int bvi1
