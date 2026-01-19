@@ -574,6 +574,8 @@ public class userConfig {
         l.add(null, false, 4, new int[]{-1}, "<num>", "ms");
         l.add(null, false, 3, new int[]{4}, "open", "set tcp inactivity");
         l.add(null, false, 4, new int[]{-1}, "<num>", "ms");
+        l.add(null, false, 3, new int[]{4}, "stuck", "set tcp inactivity");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "ms");
         l.add(null, false, 3, new int[]{4}, "close", "set tcp inactivity");
         l.add(null, false, 4, new int[]{-1}, "<num>", "ms");
         l.add(null, false, 3, new int[]{4}, "later", "set tcp retransmit");
@@ -3229,6 +3231,10 @@ public class userConfig {
             }
             if (a.equals("open")) {
                 cfgAll.tcpTimeOpen = bits.str2num(cmd.word());
+                return;
+            }
+            if (a.equals("stuck")) {
+                cfgAll.tcpTimeStuck = bits.str2num(cmd.word());
                 return;
             }
             if (a.equals("close")) {

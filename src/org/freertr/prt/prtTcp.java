@@ -973,6 +973,7 @@ public class prtTcp extends prtGen {
                     if (pr.netMax > maxSegMax) {
                         pr.netMax = maxSegMax;
                     }
+                    pr.ackedLast = bits.getTime();
                 }
                 if (pck.TCPsak > 0) {
                     pr.sackTx = true;
@@ -1121,19 +1122,18 @@ public class prtTcp extends prtGen {
     private boolean flush2net(prtGenConn clnt) {
         prtTcpConn pr = (prtTcpConn) clnt.protoDat;
         int bufSiz = clnt.pipeNetwork.ready2rx();
+        if (bufSiz < 1) {
+            pr.ackedLast = bits.getTime();
+        }
+        if ((bufSiz > pshNetOut) && ((bits.getTime() - pr.ackedLast) > cfgAll.tcpTimeStuck)) {
+            logger.debug("stuck");//////////////        
+            return false;
+        }
         if ((!pr.activFrcd) && (bufSiz < 1)) {
             if (clnt.pipeNetwork.isClosed() == 0) {
                 pr.activWait = cfgAll.tcpTimeAlive;
                 return true;
             }
-            if (debugger.prtTcpTraf) {
-                logger.debug("closing");
-            }
-            clnt.timeout = cfgAll.tcpTimeFin;
-            pr.activWait = cfgAll.tcpTimeNow;
-            pr.activFrcd = true;
-            pr.state = prtTcpConn.stClrReq;
-            pr.staTim = bits.getTime();
             return false;
         }
         int sent = 0;
@@ -1181,6 +1181,14 @@ public class prtTcp extends prtGen {
         long curTim = bits.getTime();
         if (pr.state == prtTcpConn.stOpened) {
             if (!flush2net(clnt)) {
+                if (debugger.prtTcpTraf) {
+                    logger.debug("closing");
+                }
+                clnt.timeout = cfgAll.tcpTimeFin;
+                pr.activWait = cfgAll.tcpTimeNow;
+                pr.activFrcd = true;
+                pr.state = prtTcpConn.stClrReq;
+                pr.staTim = curTim;
                 pr.activLast = curTim;
                 return;
             }
@@ -1344,6 +1352,11 @@ class prtTcpConn {
      * last tx time
      */
     protected long activLast;
+
+    /**
+     * last tx time
+     */
+    protected long ackedLast;
 
     /**
      * timeout to wait

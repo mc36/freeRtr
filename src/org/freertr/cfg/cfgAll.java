@@ -1293,6 +1293,11 @@ public class cfgAll {
     public static int tcpTimeOpen = 300 * 1000;
 
     /**
+     * timeout while resending
+     */
+    public static int tcpTimeStuck = 600 * 1000;
+
+    /**
      * timeout while closing with data
      */
     public static int tcpTimeClose = 120 * 1000;
@@ -1550,6 +1555,7 @@ public class cfgAll {
         new userFilter("", "client tcp-timer fin 45000", null),
         new userFilter("", "client tcp-timer syn 30000", null),
         new userFilter("", "client tcp-timer open 300000", null),
+        new userFilter("", "client tcp-timer stuck 600000", null),
         new userFilter("", "client tcp-timer close 120000", null),
         new userFilter("", "client tcp-timer later 3000", null),
         new userFilter("", "client tcp-timer now 100", null),
@@ -3966,6 +3972,7 @@ public class cfgAll {
         l.add("client tcp-timer fin " + tcpTimeFin);
         l.add("client tcp-timer syn " + tcpTimeSyn);
         l.add("client tcp-timer open " + tcpTimeOpen);
+        l.add("client tcp-timer stuck " + tcpTimeStuck);
         l.add("client tcp-timer close " + tcpTimeClose);
         l.add("client tcp-timer later " + tcpTimeLater);
         l.add("client tcp-timer now " + tcpTimeNow);
