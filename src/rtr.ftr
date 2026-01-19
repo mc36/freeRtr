@@ -3317,7 +3317,7 @@ qc pass: ouni ibgp rr prefix movement
 qc pass: olab bgp change in metric
 qc pass: olab ibgp rr prefix movement
 qc pass: bgp vpns change in metric
-failed: ibgp rr vpns prefix movement
+qc pass: ibgp rr vpns prefix movement
 qc pass: bgp othervpns change in metric
 qc pass: ibgp rr othervpns prefix movement
 qc pass: ibgp rr prefix withdraw with labels

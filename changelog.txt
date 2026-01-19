@@ -17913,3 +17913,6 @@ qc pass: p4lang: qinq ttlset out
 ---------------------------------- 2026-01-19 19:54:09 26.1.19
 no qc pass: ibgp rr vpns prefix movement
 failed: ibgp rr vpns prefix movement
+---------------------------------- 2026-01-19 21:49:47 26.1.19
+no failed: ibgp rr vpns prefix movement
+qc pass: ibgp rr vpns prefix movement
