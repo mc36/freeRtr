@@ -841,6 +841,7 @@ public class prtTcp extends prtGen {
                 pr.staTim = bits.getTime();
                 pr.activWait = cfgAll.tcpTimeNow;
                 pr.activFrcd = true;
+                pr.ackedLast = pr.staTim;
                 clnt.setReady();
                 clnt.timeout = cfgAll.tcpTimeOpen;
             }
@@ -924,6 +925,7 @@ public class prtTcp extends prtGen {
                 pr.staTim = bits.getTime();
                 pr.activWait = cfgAll.tcpTimeNow;
                 pr.activFrcd = true;
+                pr.ackedLast = pr.staTim;
                 clnt.setReady();
                 clnt.timeout = cfgAll.tcpTimeOpen;
                 return;
@@ -989,6 +991,7 @@ public class prtTcp extends prtGen {
                     pr.staTim = bits.getTime();
                     pr.activWait = cfgAll.tcpTimeNow;
                     pr.activFrcd = true;
+                    pr.ackedLast = pr.staTim;
                     clnt.setReady();
                     clnt.timeout = cfgAll.tcpTimeOpen;
                 }
