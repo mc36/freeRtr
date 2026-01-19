@@ -1126,7 +1126,6 @@ public class prtTcp extends prtGen {
             pr.ackedLast = bits.getTime();
         }
         if ((bufSiz > pshNetOut) && ((bits.getTime() - pr.ackedLast) > cfgAll.tcpTimeStuck)) {
-            logger.debug("stuck");//////////////        
             return false;
         }
         if ((!pr.activFrcd) && (bufSiz < 1)) {
