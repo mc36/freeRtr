@@ -1122,57 +1122,6 @@ public class prtTcp extends prtGen {
         clnt.error2server(pck, rtr, err, lab);
     }
 
-    private boolean flush2net(prtGenConn clnt) {
-        prtTcpConn pr = (prtTcpConn) clnt.protoDat;
-        int bufSiz = clnt.pipeNetwork.ready2rx();
-        if (bufSiz < 1) {
-            pr.ackedLast = bits.getTime();
-        }
-        if ((bufSiz > pshNetOut) && ((bits.getTime() - pr.ackedLast) > cfgAll.tcpTimeStuck)) {
-            return false;
-        }
-        if ((!pr.activFrcd) && (bufSiz < 1)) {
-            if (clnt.pipeNetwork.isClosed() == 0) {
-                pr.activWait = cfgAll.tcpTimeAlive;
-                return true;
-            }
-            return false;
-        }
-        int sent = 0;
-        if (pr.activFrcd) {
-            sent = -1;
-        }
-        pr.activFrcd = false;
-        pr.activWait = cfgAll.tcpTimeLater;
-        for (;;) {
-            int flg = flagPshAck;
-            int snd = bufSiz - pr.netOut;
-            int i = pr.netMax - pr.netOut;
-            if (snd > i) {
-                snd = i;
-            }
-            if (snd > pr.segSiz) {
-                snd = pr.segSiz;
-                flg = flagACK;
-            }
-            if (pr.netOut > pshNetOut) {
-                flg = flagPshAck;
-            }
-            if (snd < 1) {
-                break;
-            }
-            snd = sendMyPacket(clnt, flg, snd, pr.sackRx);
-            if (snd < 1) {
-                break;
-            }
-            sent++;
-        }
-        if (sent < 0) {
-            sendMyPacket(clnt, flagACK, 0, pr.sackRx);
-        }
-        return true;
-    }
-
     /**
      * work connection
      *
@@ -1182,7 +1131,18 @@ public class prtTcp extends prtGen {
         prtTcpConn pr = (prtTcpConn) clnt.protoDat;
         long curTim = bits.getTime();
         if (pr.state == prtTcpConn.stOpened) {
-            if (!flush2net(clnt)) {
+            int bufSiz = clnt.pipeNetwork.ready2rx();
+            if (bufSiz < 1) {
+                pr.ackedLast = curTim;
+            }
+            boolean need = (bufSiz > pshNetOut) && ((curTim - pr.ackedLast) > cfgAll.tcpTimeStuck);
+            if ((!pr.activFrcd) && (bufSiz < 1)) {
+                pr.activWait = cfgAll.tcpTimeAlive;
+                need |= clnt.pipeNetwork.isClosed() != 0;
+            } else {
+                pr.activWait = cfgAll.tcpTimeLater;
+            }
+            if (need) {
                 if (debugger.prtTcpTraf) {
                     logger.debug("closing");
                 }
@@ -1193,6 +1153,34 @@ public class prtTcp extends prtGen {
                 pr.staTim = curTim;
                 pr.activLast = curTim;
                 return;
+            }
+            need = pr.activFrcd;
+            pr.activFrcd = false;
+            for (;;) {
+                int flg = flagPshAck;
+                int snd = bufSiz - pr.netOut;
+                int i = pr.netMax - pr.netOut;
+                if (snd > i) {
+                    snd = i;
+                }
+                if (snd > pr.segSiz) {
+                    snd = pr.segSiz;
+                    flg = flagACK;
+                }
+                if (pr.netOut > pshNetOut) {
+                    flg = flagPshAck;
+                }
+                if (snd < 1) {
+                    break;
+                }
+                snd = sendMyPacket(clnt, flg, snd, pr.sackRx);
+                if (snd < 1) {
+                    break;
+                }
+                need = false;
+            }
+            if (need) {
+                sendMyPacket(clnt, flagACK, 0, pr.sackRx);
             }
         }
         if ((!pr.activFrcd) && ((curTim - pr.activLast) < pr.activWait)) {
