@@ -959,9 +959,19 @@ public abstract class rtrBgpParam {
     public final static int idxSdw = 33;
 
     /**
+     * mup
+     */
+    public final static int idxMup = 34;
+
+    /**
+     * omup
+     */
+    public final static int idxOmup = 35;
+
+    /**
      * maximum afis
      */
-    public final static int boolsMax = 34;
+    public final static int boolsMax = 36;
 
     /**
      * set value
@@ -1110,6 +1120,12 @@ public abstract class rtrBgpParam {
         if (a.equals("sdwan")) {
             return idxSdw;
         }
+        if (a.equals("mup")) {
+            return idxMup;
+        }
+        if (a.equals("omup")) {
+            return idxOmup;
+        }
         if (a.equals("rtfilter")) {
             return idxRtf;
         }
@@ -1224,6 +1240,10 @@ public abstract class rtrBgpParam {
                 return "spf";
             case idxSdw:
                 return "sdwan";
+            case idxMup:
+                return "mup";
+            case idxOmup:
+                return "omup";
             case idxRtf:
                 return "rtfilter";
             case idxSrte:
@@ -1400,6 +1420,8 @@ public abstract class rtrBgpParam {
             case idxNsh:
             case idxRpd:
             case idxSdw:
+            case idxMup:
+            case idxOmup:
             case idxSpf:
             case idxRtf:
             case idxLnks:
@@ -1453,6 +1475,8 @@ public abstract class rtrBgpParam {
             case idxNsh:
             case idxRpd:
             case idxSdw:
+            case idxMup:
+            case idxOmup:
             case idxSpf:
             case idxRtf:
             case idxLnks:

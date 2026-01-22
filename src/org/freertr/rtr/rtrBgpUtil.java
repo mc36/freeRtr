@@ -271,7 +271,7 @@ public class rtrBgpUtil {
     /**
      * mobile user plane address family
      */
-    public final static int sfiMobPln = 0x55;
+    public final static int sfiMobUsrPln = 0x55;
 
     /**
      * vpn unicast address family
@@ -432,6 +432,16 @@ public class rtrBgpUtil {
      * ipv6 sdwan address family
      */
     public final static int safiIp6sdwan = afiIpv6 | sfiSdwan;
+
+    /**
+     * ipv4 mup address family
+     */
+    public final static int safiIp4mup = afiIpv4 | sfiMobUsrPln;
+
+    /**
+     * ipv6 mup address family
+     */
+    public final static int safiIp6mup = afiIpv6 | sfiMobUsrPln;
 
     /**
      * ipv4/ipv6 link state address family
@@ -1508,6 +1518,7 @@ public class rtrBgpUtil {
                     if (readPrefix(safi, ntry, pck.getByte(3), buf)) {
                         return null;
                     }
+                    pck.getSkip(p + 3);
                     return ntry;
                 }
                 if (i != 1) {
@@ -1554,6 +1565,23 @@ public class rtrBgpUtil {
                     pck.getSkip(16);
                 }
                 return ntry;
+            case sfiMobUsrPln:
+                if (pck.getByte(0) != 1) {
+                    return null;
+                }
+                ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
+                p = pck.msbGetW(1);
+                i = pck.getByte(3);
+                ntry.rouDst = pck.msbGetQ(4);
+                pck.getSkip(12);
+                ntry.nlri = new byte[i + 2];
+                bits.msbPutW(ntry.nlri, 0, p);
+                pck.getCopy(ntry.nlri, 2, 0, i);
+                pck.getSkip(i);
+                addrIP adr = new addrIP();
+                adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), ntry.nlri), 0);
+                ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+                return ntry;
             case sfiSpf:
             case sfiVpnLnkSt:
             case sfiLnkSt:
@@ -1564,7 +1592,7 @@ public class rtrBgpUtil {
                 bits.msbPutW(ntry.nlri, 0, p);
                 pck.getCopy(ntry.nlri, 2, 0, i);
                 pck.getSkip(i);
-                addrIP adr = new addrIP();
+                adr = new addrIP();
                 adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), ntry.nlri), 0);
                 ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
                 return ntry;
@@ -1868,6 +1896,16 @@ public class rtrBgpUtil {
                     pck.putAddr(12, ntry.prefix.network.toIPv6());
                     pck.putSkip(28);
                 }
+                return;
+            case sfiMobUsrPln:
+                o = ntry.nlri.length - 2;
+                pck.putByte(0, 1);
+                pck.putCopy(ntry.nlri, 0, 1, 2);
+                pck.putByte(3, o);
+                pck.msbPutQ(4, ntry.rouDst);
+                pck.putSkip(12);
+                pck.putCopy(ntry.nlri, 2, 0, o);
+                pck.putSkip(o);
                 return;
             case sfiSpf:
             case sfiVpnLnkSt:

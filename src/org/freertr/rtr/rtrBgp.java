@@ -608,6 +608,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 idx2safi[rtrBgpParam.idxNsh] = rtrBgpUtil.safiNsh46;
                 idx2safi[rtrBgpParam.idxRpd] = rtrBgpUtil.safiRpd46;
                 idx2safi[rtrBgpParam.idxSdw] = rtrBgpUtil.safiIp4sdwan;
+                idx2safi[rtrBgpParam.idxMup] = rtrBgpUtil.safiIp4mup;
+                idx2safi[rtrBgpParam.idxOmup] = rtrBgpUtil.safiIp6mup;
                 idx2safi[rtrBgpParam.idxSpf] = rtrBgpUtil.safiIp46spf;
                 idx2safi[rtrBgpParam.idxRtf] = rtrBgpUtil.safiRtf46;
                 idx2safi[rtrBgpParam.idxLnks] = rtrBgpUtil.safiIp46lnks;
@@ -648,6 +650,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 idx2safi[rtrBgpParam.idxNsh] = rtrBgpUtil.safiNsh46;
                 idx2safi[rtrBgpParam.idxRpd] = rtrBgpUtil.safiRpd46;
                 idx2safi[rtrBgpParam.idxSdw] = rtrBgpUtil.safiIp6sdwan;
+                idx2safi[rtrBgpParam.idxMup] = rtrBgpUtil.safiIp6mup;
+                idx2safi[rtrBgpParam.idxOmup] = rtrBgpUtil.safiIp4mup;
                 idx2safi[rtrBgpParam.idxSpf] = rtrBgpUtil.safiIp46spf;
                 idx2safi[rtrBgpParam.idxRtf] = rtrBgpUtil.safiRtf46;
                 idx2safi[rtrBgpParam.idxLnks] = rtrBgpUtil.safiIp46lnks;
