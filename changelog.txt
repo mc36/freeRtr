@@ -17916,3 +17916,10 @@ failed: ibgp rr vpns prefix movement
 ---------------------------------- 2026-01-19 21:49:47 26.1.19
 no failed: ibgp rr vpns prefix movement
 qc pass: ibgp rr vpns prefix movement
+---------------------------------- 2026-01-22 10:42:29 26.1.22
+qc pass: unicast+mup over bgp
+qc pass: unicast+mup over bgp with soft-reconfig
+qc pass: unicast+mup over bgp with additional path
+qc pass: unicast+omup over bgp
+qc pass: unicast+omup over bgp with soft-reconfig
+qc pass: unicast+omup over bgp with additional path

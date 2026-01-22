@@ -3672,6 +3672,12 @@ qc pass: bgp routemap filtering with asany
 qc pass: bgp routemap filtering with asany with soft-reconfig
 qc pass: bgp routepolicy filtering with asany
 qc pass: bgp routepolicy filtering with asany with soft-reconfig
+qc pass: unicast+mup over bgp
+qc pass: unicast+mup over bgp with soft-reconfig
+qc pass: unicast+mup over bgp with additional path
+qc pass: unicast+omup over bgp
+qc pass: unicast+omup over bgp with soft-reconfig
+qc pass: unicast+omup over bgp with additional path
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
