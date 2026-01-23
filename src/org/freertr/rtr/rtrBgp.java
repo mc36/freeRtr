@@ -652,9 +652,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 ////safi2rdr[rtrBgpParam.idxMdt] = addrSafi.safiIp4mdt;
                 ////safi2rdr[rtrBgpParam.idxNsh] = addrSafi.safiNsh46;
                 ////safi2rdr[rtrBgpParam.idxRpd] = addrSafi.safiRpd46;
-                ////safi2rdr[rtrBgpParam.idxSdw] = addrSafi.safiIp4sdwan;
-                ////safi2rdr[rtrBgpParam.idxMup] = addrSafi.safiIp4mup;
-                ////safi2rdr[rtrBgpParam.idxOmup] = addrSafi.safiIp6mup;
+                safi2rdr[rtrBgpParam.idxSdw] = addrSafi.sdWan;
+                safi2rdr[rtrBgpParam.idxMup] = addrSafi.mup;
+                safi2rdr[rtrBgpParam.idxOmup] = addrSafi.mup;
                 safi2rdr[rtrBgpParam.idxSpf] = addrSafi.linkState;
                 ////safi2rdr[rtrBgpParam.idxRtf] = addrSafi.safiRtf46;
                 safi2rdr[rtrBgpParam.idxLnks] = addrSafi.linkState;
@@ -730,9 +730,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 ////safi2rdr[rtrBgpParam.idxMdt] = addrSafi.safiIp6mdt;
                 ////safi2rdr[rtrBgpParam.idxNsh] = addrSafi.safiNsh46;
                 ////safi2rdr[rtrBgpParam.idxRpd] = addrSafi.safiRpd46;
-                ////safi2rdr[rtrBgpParam.idxSdw] = addrSafi.safiIp6sdwan;
-                ////safi2rdr[rtrBgpParam.idxMup] = addrSafi.safiIp6mup;
-                ////safi2rdr[rtrBgpParam.idxOmup] = addrSafi.safiIp4mup;
+                safi2rdr[rtrBgpParam.idxSdw] = addrSafi.sdWan;
+                safi2rdr[rtrBgpParam.idxMup] = addrSafi.mup;
+                safi2rdr[rtrBgpParam.idxOmup] = addrSafi.mup;
                 safi2rdr[rtrBgpParam.idxSpf] = addrSafi.linkState;
                 ////safi2rdr[rtrBgpParam.idxRtf] = addrSafi.safiRtf46;
                 safi2rdr[rtrBgpParam.idxLnks] = addrSafi.linkState;

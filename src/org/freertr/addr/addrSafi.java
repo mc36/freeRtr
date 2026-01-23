@@ -71,6 +71,16 @@ public interface addrSafi {
     public addrSafi linkState = new addrSafiLnkSt();
 
     /**
+     * sdwan
+     */
+    public addrSafi sdWan = new addrSafiSdwan();
+
+    /**
+     * sdwan
+     */
+    public addrSafi mup = new addrSafiMup();
+
+    /**
      * read address from packet
      *
      * @param oneLab just one label
@@ -409,6 +419,65 @@ class addrSafiLnkSt implements addrSafi {
         int p = pck.msbGetW(0);
         int i = pck.msbGetW(2);
         pck.getSkip(4);
+        ntry.nlri = new byte[i + 2];
+        bits.msbPutW(ntry.nlri, 0, p);
+        pck.getCopy(ntry.nlri, 2, 0, i);
+        pck.getSkip(i);
+        addrIP adr = new addrIP();
+        adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), ntry.nlri), 0);
+        ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiSdwan implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        if (pck.msbGetW(0) != 1) {
+            pck.getSkip(1);
+            return null;
+        }
+        ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
+        pck.getCopy(ntry.prefix.broadcast.getBytes(), 0, 4, 8);
+        if (pck.msbGetW(2) > (8 * 12)) {
+            addrIPv6 a6 = new addrIPv6();
+            pck.getAddr(a6, 12);
+            ntry.prefix.network.fromIPv6addr(a6);
+            pck.getSkip(28);
+        } else {
+            addrIPv4 a4 = new addrIPv4();
+            pck.getAddr(a4, 12);
+            ntry.prefix.network.fromIPv4addr(a4);
+            pck.getSkip(16);
+        }
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiMup implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        if (pck.getByte(0) != 1) {
+            pck.getSkip(1);
+            return null;
+        }
+        ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
+        int p = pck.msbGetW(1);
+        int i = pck.getByte(3);
+        ntry.rouDst = pck.msbGetQ(4);
+        pck.getSkip(12);
         ntry.nlri = new byte[i + 2];
         bits.msbPutW(ntry.nlri, 0, p);
         pck.getCopy(ntry.nlri, 2, 0, i);
