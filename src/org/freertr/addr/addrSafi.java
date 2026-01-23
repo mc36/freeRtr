@@ -111,9 +111,19 @@ public interface addrSafi {
     public addrSafi mdt = new addrSafiMdt();
 
     /**
-     * rtf
+     * rtfilter
      */
     public addrSafi rtf = new addrSafiRtf();
+
+    /**
+     * flowspec
+     */
+    public addrSafi flow = new addrSafiFlowspec();
+
+    /**
+     * vpn flowspec
+     */
+    public addrSafi vpnFlw = new addrSafiVpnFlow();
 
     /**
      * read address from packet
@@ -283,6 +293,45 @@ public interface addrSafi {
         pck.getAddr(adr, 0);
         pck.getSkip((i + 7) / 8);
         return new addrPrefix<T>(adr, i);
+    }
+
+    /**
+     * read one flowspec
+     *
+     * @param pck packet to use
+     * @return bytes to read
+     */
+    public static int sizeFlowspec(packHolder pck) {
+        int i = pck.getByte(0);
+        if (i >= 0xf0) {
+            i = pck.msbGetW(0) & 0xfff;
+            pck.getSkip(2);
+        } else {
+            pck.getSkip(1);
+        }
+        return i;
+    }
+
+    /**
+     * read one flowspec
+     *
+     * @param ntry route entry
+     * @param pck packet to use
+     * @param len length in bits
+     */
+    public static void readFlowspec(tabRouteEntry<addrIP> ntry, packHolder pck, int len) {
+        byte[] adr = new byte[addrIP.size];
+        ntry.prefix = new addrPrefix<addrIP>(new addrIP(), adr.length * 8);
+        adr[0] = (byte) len;
+        pck.getCopy(adr, 1, 0, 15);
+        ntry.prefix.network.fromBuf(adr, 0);
+        pck.getCopy(adr, 0, 15, 16);
+        ntry.prefix.broadcast.fromBuf(adr, 0);
+        pck.getCopy(adr, 0, 31, 16);
+        ntry.prefix.wildcard.fromBuf(adr, 0);
+        pck.getCopy(adr, 0, 47, 16);
+        ntry.prefix.mask.fromBuf(adr, 0);
+        pck.getSkip(len);
     }
 
     /**
@@ -745,18 +794,7 @@ class addrSafiMspw implements addrSafi {
         pck.getSkip(8);
         i -= 64;
         i = (i + 7) / 8;
-        byte[] adr = new byte[addrIP.size];
-        ntry.prefix = new addrPrefix<addrIP>(new addrIP(), adr.length * 8);
-        adr[0] = (byte) i;
-        pck.getCopy(adr, 1, 0, 15);
-        ntry.prefix.network.fromBuf(adr, 0);
-        pck.getCopy(adr, 0, 15, 16);
-        ntry.prefix.broadcast.fromBuf(adr, 0);
-        pck.getCopy(adr, 0, 31, 16);
-        ntry.prefix.wildcard.fromBuf(adr, 0);
-        pck.getCopy(adr, 0, 47, 16);
-        ntry.prefix.mask.fromBuf(adr, 0);
-        pck.getSkip(i);
+        addrSafi.readFlowspec(ntry, pck, i);
         return ntry;
     }
 
@@ -804,6 +842,39 @@ class addrSafiRtf implements addrSafi {
         pck.getAddr(adr, 0);
         ntry.prefix = new addrPrefix<addrIP>(adr, i);
         pck.getSkip(o);
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiFlowspec implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        int i = addrSafi.sizeFlowspec(pck);
+        addrSafi.readFlowspec(ntry, pck, i);
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiVpnFlow implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        int i = addrSafi.sizeFlowspec(pck);
+        ntry.rouDst = pck.msbGetQ(0);
+        pck.getSkip(8);
+        i -= 8;
+        addrSafi.readFlowspec(ntry, pck, i);
         return ntry;
     }
 
