@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
+import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -1691,7 +1692,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
+            tabRouteEntry<addrIP> res = addrAfi.ipv4uni.readPrefix(true, pck);
             if (res == null) {
                 continue;
             }
@@ -1724,7 +1725,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(rtrBgpUtil.safiIp4uni, true, pck);
+            tabRouteEntry<addrIP> res = addrAfi.ipv4uni.readPrefix(true, pck);
             if (res == null) {
                 continue;
             }
