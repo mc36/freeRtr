@@ -630,11 +630,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 safi2rdr[rtrBgpParam.idxUni] = addrSafi.ipv4uni;
                 safi2rdr[rtrBgpParam.idxLab] = addrSafi.ipv4lab;
                 safi2rdr[rtrBgpParam.idxCtp] = addrSafi.vpnv4uni;
-                ////safi2rdr[rtrBgpParam.idxCar] = addrSafi.safiIp4car;
+                safi2rdr[rtrBgpParam.idxCar] = addrSafi.ipv4car;
                 safi2rdr[rtrBgpParam.idxMlt] = addrSafi.ipv4uni;
                 safi2rdr[rtrBgpParam.idxOlab] = addrSafi.ipv6lab;
                 safi2rdr[rtrBgpParam.idxOctp] = addrSafi.vpnv6uni;
-                ////safi2rdr[rtrBgpParam.idxOcar] = addrSafi.safiIp6car;
+                safi2rdr[rtrBgpParam.idxOcar] = addrSafi.ipv6car;
                 safi2rdr[rtrBgpParam.idxOuni] = addrSafi.ipv6uni;
                 safi2rdr[rtrBgpParam.idxOmlt] = addrSafi.ipv6uni;
                 ////safi2rdr[rtrBgpParam.idxOflw] = addrSafi.safiIp6flow;
@@ -708,11 +708,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 safi2rdr[rtrBgpParam.idxUni] = addrSafi.ipv6uni;
                 safi2rdr[rtrBgpParam.idxLab] = addrSafi.ipv6lab;
                 safi2rdr[rtrBgpParam.idxCtp] = addrSafi.vpnv6uni;
-                ////safi2rdr[rtrBgpParam.idxCar] = addrSafi.safiIp6car;
+                safi2rdr[rtrBgpParam.idxCar] = addrSafi.ipv6car;
                 safi2rdr[rtrBgpParam.idxMlt] = addrSafi.ipv6uni;
                 safi2rdr[rtrBgpParam.idxOlab] = addrSafi.ipv4lab;
                 safi2rdr[rtrBgpParam.idxOctp] = addrSafi.vpnv4uni;
-                ////safi2rdr[rtrBgpParam.idxOcar] = addrSafi.safiIp4car;
+                safi2rdr[rtrBgpParam.idxOcar] = addrSafi.ipv4car;
                 safi2rdr[rtrBgpParam.idxOuni] = addrSafi.ipv4uni;
                 safi2rdr[rtrBgpParam.idxOmlt] = addrSafi.ipv4uni;
                 ////safi2rdr[rtrBgpParam.idxOflw] = addrSafi.safiIp4flow;
