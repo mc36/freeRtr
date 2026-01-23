@@ -1,9 +1,11 @@
 package org.freertr.addr;
 
 import java.util.ArrayList;
+import org.freertr.cry.cryHashMd5;
 import org.freertr.pack.packHolder;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabRouteEntry;
+import org.freertr.util.bits;
 import org.freertr.util.logger;
 
 /**
@@ -62,6 +64,11 @@ public interface addrSafi {
      * vpnv6 multicast
      */
     public addrSafi vpnv6mul = new addrSafiVpnv6mul();
+
+    /**
+     * link state
+     */
+    public addrSafi linkState = new addrSafiLnkSt();
 
     /**
      * read address from packet
@@ -386,6 +393,29 @@ class addrSafiVpnv6mul implements addrSafi {
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = addrPrefix.ip6toIP(addrSafi.readVpnvXmul(new addrIPv6(), ntry, pck));
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiLnkSt implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        int p = pck.msbGetW(0);
+        int i = pck.msbGetW(2);
+        pck.getSkip(4);
+        ntry.nlri = new byte[i + 2];
+        bits.msbPutW(ntry.nlri, 0, p);
+        pck.getCopy(ntry.nlri, 2, 0, i);
+        pck.getSkip(i);
+        addrIP adr = new addrIP();
+        adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), ntry.nlri), 0);
+        ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
         return ntry;
     }
 
