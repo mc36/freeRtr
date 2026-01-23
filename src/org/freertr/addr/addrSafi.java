@@ -76,9 +76,14 @@ public interface addrSafi {
     public addrSafi sdWan = new addrSafiSdwan();
 
     /**
-     * sdwan
+     * mup
      */
     public addrSafi mup = new addrSafiMup();
+
+    /**
+     * evpn
+     */
+    public addrSafi evpn = new addrSafiEvpn();
 
     /**
      * read address from packet
@@ -485,6 +490,132 @@ class addrSafiMup implements addrSafi {
         addrIP adr = new addrIP();
         adr.fromBuf(cryHashMd5.compute(new cryHashMd5(), ntry.nlri), 0);
         ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiEvpn implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
+        int typ = pck.getByte(0);
+        int len = pck.getByte(1);
+        pck.getSkip(2);
+        len = pck.dataSize() - len;
+        ntry.rouDst = pck.msbGetQ(0);
+        pck.getSkip(8);
+        byte[] buf;
+        switch (typ) {
+            case 1: // ethernet auto discovery
+                buf = new byte[addrIP.size];
+                pck.getCopy(buf, 2, 0, 14); // esi + eti
+                ntry.prefix.network.fromBuf(buf, 0);
+                ntry.best.evpnLab = pck.msbGetD(14) >>> 8;
+                break;
+            case 2: // mac ip advertisement
+                buf = new byte[addrIP.size];
+                pck.getCopy(buf, 0, 0, 10); // esi
+                ntry.prefix.wildcard.fromBuf(buf, 0);
+                buf = new byte[addrIP.size];
+                pck.getCopy(buf, 2, 10, 4); // eti
+                pck.getSkip(14);
+                addrMac mac = new addrMac();
+                if (pck.getByte(0) != mac.maxBits()) {
+                    return null;
+                }
+                pck.getSkip(1);
+                pck.getAddr(mac, 0);
+                pck.getSkip(addrMac.size);
+                mac.toBuffer(buf, 10);
+                ntry.prefix.network.fromBuf(buf, 0);
+                int i = pck.getByte(0);
+                pck.getSkip(1);
+                switch (i) {
+                    case 0:
+                        ntry.prefix.broadcast = new addrIP();
+                        break;
+                    case addrIPv4.size * 8:
+                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        break;
+                    case addrIPv6.size * 8:
+                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        break;
+                    default:
+                        return null;
+                }
+                ntry.best.evpnLab = pck.msbGetD(0) >>> 8;
+                break;
+            case 3: // inclusive multicast ethernet tag
+                buf = new byte[addrIP.size];
+                pck.getCopy(buf, 2, 0, 4); // eti
+                pck.getSkip(4);
+                ntry.prefix.network.fromBuf(buf, 0);
+                i = pck.getByte(0);
+                pck.getSkip(1);
+                switch (i) {
+                    case addrIPv4.size * 8:
+                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        break;
+                    case addrIPv6.size * 8:
+                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        break;
+                    default:
+                        return null;
+                }
+                break;
+            case 4: // ethernet segment
+                buf = new byte[addrIP.size];
+                pck.getCopy(buf, 2, 0, 10); // esi
+                pck.getSkip(10);
+                ntry.prefix.network.fromBuf(buf, 0);
+                i = pck.getByte(0);
+                pck.getSkip(1);
+                switch (i) {
+                    case addrIPv4.size * 8:
+                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        break;
+                    case addrIPv6.size * 8:
+                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        break;
+                    default:
+                        return null;
+                }
+                break;
+            case 5: // ip prefix
+                buf = new byte[addrIP.size];
+                pck.getCopy(buf, 0, 0, 10); // esi
+                ntry.prefix.wildcard.fromBuf(buf, 0);
+                buf = new byte[addrIP.size];
+                pck.getCopy(buf, 2, 10, 4); // eti
+                pck.getSkip(14);
+                ntry.prefix.network.fromBuf(buf, 0);
+                i = pck.getByte(0);
+                pck.getSkip(1);
+                switch (i) {
+                    case addrIPv4.size * 8:
+                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        ntry.prefix.mask = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        break;
+                    case addrIPv6.size * 8:
+                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        ntry.prefix.mask = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        break;
+                    default:
+                        return null;
+                }
+                ntry.best.evpnLab = pck.msbGetD(0) >>> 8;
+                break;
+            default:
+                return null;
+        }
+        ntry.prefix.network.getBytes()[0] = (byte) typ;
+        pck.setBytesLeft(len);
         return ntry;
     }
 
