@@ -1,5 +1,6 @@
 package org.freertr.addr;
 
+import java.util.ArrayList;
 import org.freertr.pack.packHolder;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabRouteEntry;
@@ -21,6 +22,16 @@ public interface addrSafi {
      * ipv6 unicast
      */
     public addrSafi ipv6uni = new addrSafiIpv6uni();
+
+    /**
+     * vpnv4 unicast
+     */
+    public addrSafi vpnv4uni = new addrSafiVpnv4uni();
+
+    /**
+     * vpnv6 unicast
+     */
+    public addrSafi vpnv6uni = new addrSafiVpnv6uni();
 
     /**
      * read address from packet
@@ -51,6 +62,43 @@ public interface addrSafi {
     public static <T extends addrType> addrPrefix<T> readIpvXuni(T adr, packHolder pck) {
         int len = pck.getByte(0);
         pck.getSkip(1);
+        pck.getAddr(adr, 0);
+        pck.getSkip((len + 7) / 8);
+        return new addrPrefix<T>(adr, len);
+    }
+
+    /**
+     * read one vpnvX unicast
+     *
+     * @param <T> address kind
+     * @param adr dummy address
+     * @param oneLab just one label
+     * @param ntry route entry
+     * @param pck packet to use
+     * @return address read
+     */
+    public static <T extends addrType> addrPrefix<T> readVpnvXuni(T adr, boolean oneLab, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        int len = pck.getByte(0);
+        pck.getSkip(1);
+        ntry.best.labelRem = new ArrayList<Integer>();
+        for (;;) {
+            if (len < 24) {
+                return null;
+            }
+            int lab = pck.msbGetD(0) >>> 8;
+            pck.getSkip(3);
+            len -= 24;
+            ntry.best.labelRem.add(lab >>> 4);
+            if (oneLab) {
+                break;
+            }
+            if ((lab & 1) != 0) {
+                break;
+            }
+        }
+        ntry.rouDst = pck.msbGetQ(0);
+        pck.getSkip(8);
+        len -= 64;
         pck.getAddr(adr, 0);
         pck.getSkip((len + 7) / 8);
         return new addrPrefix<T>(adr, len);
@@ -97,6 +145,34 @@ class addrSafiIpv6uni implements addrSafi {
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = addrPrefix.ip6toIP(addrSafi.readIpvXuni(new addrIPv6(), pck));
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiVpnv4uni implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = addrPrefix.ip4toIP(addrSafi.readVpnvXuni(new addrIPv4(), oneLab, ntry, pck));
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiVpnv6uni implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = addrPrefix.ip6toIP(addrSafi.readVpnvXuni(new addrIPv6(), oneLab, ntry, pck));
         return ntry;
     }
 
