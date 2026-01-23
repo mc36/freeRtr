@@ -2,6 +2,7 @@ package org.freertr.pack;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -296,13 +297,13 @@ public class packPim {
         // int flg = pck.getByte(2); // flags
         pck.getSkip(3);
         if (enc == 0) {
-            tabRouteEntry<addrIP> prf = rtrBgpUtil.readPrefix(afi, true, pck);
+            tabRouteEntry<addrIP> prf = addrAfi.readPrefix(afi, true, pck);
             return prf.prefix;
         }
         if (enc != 1) {
             return null;
         }
-        tabRouteEntry<addrIP> prf = rtrBgpUtil.readPrefix(afi, true, pck);
+        tabRouteEntry<addrIP> prf = addrAfi.readPrefix(afi, true, pck);
         for (;;) {
             afi = pck.getByte(0);
             enc = pck.getByte(1);

@@ -2,6 +2,7 @@ package org.freertr.rtr;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -2769,6 +2770,7 @@ public class rtrBgpUtil {
         }
         int sfi = safi & sfiMask;
         int len = pck.getByte(3);
+        addrAfi rdr = spkr.parent.safi2rdr[idx];
         boolean addpath = spkr.addpathRx[idx];
         boolean oneLab = !spkr.peerMltLab[idx];
         boolean v6nh = len >= addrIPv6.size;
@@ -2820,7 +2822,12 @@ public class rtrBgpUtil {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = readPrefix(safi, oneLab, pck);
+            tabRouteEntry<addrIP> res;
+            if (rdr != null) {
+                res = rdr.readPrefix(oneLab, pck);
+            } else {
+                res = readPrefix(safi, oneLab, pck);//////////
+            }
             if (res == null) {
                 continue;
             }

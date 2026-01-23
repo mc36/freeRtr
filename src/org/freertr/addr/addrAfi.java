@@ -1,7 +1,9 @@
 package org.freertr.addr;
 
 import org.freertr.pack.packHolder;
+import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabRouteEntry;
+import org.freertr.util.logger;
 
 /**
  * one address family
@@ -52,6 +54,26 @@ public interface addrAfi {
         pck.getAddr(adr, 0);
         pck.getSkip((len + 7) / 8);
         return new addrPrefix<T>(adr, len);
+    }
+
+    /**
+     * read address from packet
+     *
+     * @param safi safi to read
+     * @param oneLab just one label
+     * @param pck packet to use
+     * @return address read, null if nothing
+     */
+    public static tabRouteEntry<addrIP> readPrefix(int safi, boolean oneLab, packHolder pck) {
+        switch (safi & rtrBgpUtil.afiMask) {
+            case rtrBgpUtil.afiIpv4:
+                return ipv4uni.readPrefix(oneLab, pck);
+            case rtrBgpUtil.afiIpv6:
+                return ipv6uni.readPrefix(oneLab, pck);
+            default:
+                logger.info("unknown safi (" + safi + ") requested");
+                return null;
+        }
     }
 
 }

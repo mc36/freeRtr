@@ -1,6 +1,7 @@
 package org.freertr.rtr;
 
 import java.util.List;
+import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
@@ -280,10 +281,10 @@ public class rtrBgpSpf {
                     spfLnkst.readSpfLink(spf, tlv, pck, hlp);
                     break;
                 case spfLnkst.nlriTypIpv4:
-                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, rtrBgpUtil.afiIpv4, distance);
+                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, addrAfi.ipv4uni, distance);
                     break;
                 case spfLnkst.nlriTypIpv6:
-                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, rtrBgpUtil.afiIpv6, distance);
+                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, addrAfi.ipv6uni, distance);
                     break;
             }
         }

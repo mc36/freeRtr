@@ -2,6 +2,7 @@ package org.freertr.pack;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -799,7 +800,7 @@ public class packLdp {
     private addrPrefix<addrIP> getFECaddr(packHolder pck) {
         int i = pck.msbGetW(0) << 16; // afi
         pck.getSkip(2);
-        tabRouteEntry<addrIP> res = rtrBgpUtil.readPrefix(i, true, pck);
+        tabRouteEntry<addrIP> res = addrAfi.readPrefix(i, true, pck);
         return res.prefix;
     }
 
