@@ -86,6 +86,16 @@ public interface addrSafi {
     public addrSafi evpn = new addrSafiEvpn();
 
     /**
+     * nsh
+     */
+    public addrSafi nsh = new addrSafiNsh();
+
+    /**
+     * rpd
+     */
+    public addrSafi rpd = new addrSafiRpd();
+
+    /**
      * read address from packet
      *
      * @param oneLab just one label
@@ -450,16 +460,12 @@ class addrSafiSdwan implements addrSafi {
         }
         ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
         pck.getCopy(ntry.prefix.broadcast.getBytes(), 0, 4, 8);
-        if (pck.msbGetW(2) > (8 * 12)) {
-            addrIPv6 a6 = new addrIPv6();
-            pck.getAddr(a6, 12);
-            ntry.prefix.network.fromIPv6addr(a6);
-            pck.getSkip(28);
+        int i = pck.msbGetW(2);
+        pck.getSkip(12);
+        if (i > (8 * 12)) {
+            ntry.prefix.network = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
         } else {
-            addrIPv4 a4 = new addrIPv4();
-            pck.getAddr(a4, 12);
-            ntry.prefix.network.fromIPv4addr(a4);
-            pck.getSkip(16);
+            ntry.prefix.network = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
         }
         return ntry;
     }
@@ -616,6 +622,50 @@ class addrSafiEvpn implements addrSafi {
         }
         ntry.prefix.network.getBytes()[0] = (byte) typ;
         pck.setBytesLeft(len);
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiNsh implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
+        int p = pck.msbGetW(0);
+        int i = pck.msbGetW(2);
+        pck.getSkip(4);
+        ntry.prefix.network.getBytes()[0] = (byte) p;
+        ntry.prefix.network.getBytes()[1] = (byte) i;
+        pck.getCopy(ntry.prefix.network.getBytes(), 2, 0, i);
+        pck.getSkip(i);
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiRpd implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = new addrPrefix<addrIP>(new addrIP(), addrIP.size * 8);
+        int i = pck.getByte(0);
+        ntry.prefix.wildcard.getBytes()[0] = (byte) pck.getByte(1);
+        ntry.rouDst = pck.msbGetD(2);
+        pck.getSkip(6);
+        if (i > 9) {
+            ntry.prefix.network = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+        } else {
+            ntry.prefix.network = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+        }
         return ntry;
     }
 

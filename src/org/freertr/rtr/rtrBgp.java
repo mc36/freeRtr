@@ -650,8 +650,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 ////safi2rdr[rtrBgpParam.idxMspw] = addrSafi.safiMspw46;
                 safi2rdr[rtrBgpParam.idxEvpn] = addrSafi.evpn;
                 ////safi2rdr[rtrBgpParam.idxMdt] = addrSafi.safiIp4mdt;
-                ////safi2rdr[rtrBgpParam.idxNsh] = addrSafi.safiNsh46;
-                ////safi2rdr[rtrBgpParam.idxRpd] = addrSafi.safiRpd46;
+                safi2rdr[rtrBgpParam.idxNsh] = addrSafi.nsh;
+                safi2rdr[rtrBgpParam.idxRpd] = addrSafi.rpd;
                 safi2rdr[rtrBgpParam.idxSdw] = addrSafi.sdWan;
                 safi2rdr[rtrBgpParam.idxMup] = addrSafi.mup;
                 safi2rdr[rtrBgpParam.idxOmup] = addrSafi.mup;
@@ -728,8 +728,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 ////safi2rdr[rtrBgpParam.idxMspw] = addrSafi.safiMspw46;
                 safi2rdr[rtrBgpParam.idxEvpn] = addrSafi.evpn;
                 ////safi2rdr[rtrBgpParam.idxMdt] = addrSafi.safiIp6mdt;
-                ////safi2rdr[rtrBgpParam.idxNsh] = addrSafi.safiNsh46;
-                ////safi2rdr[rtrBgpParam.idxRpd] = addrSafi.safiRpd46;
+                safi2rdr[rtrBgpParam.idxNsh] = addrSafi.nsh;
+                safi2rdr[rtrBgpParam.idxRpd] = addrSafi.rpd;
                 safi2rdr[rtrBgpParam.idxSdw] = addrSafi.sdWan;
                 safi2rdr[rtrBgpParam.idxMup] = addrSafi.mup;
                 safi2rdr[rtrBgpParam.idxOmup] = addrSafi.mup;
