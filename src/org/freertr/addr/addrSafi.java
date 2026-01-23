@@ -96,6 +96,11 @@ public interface addrSafi {
     public addrSafi rpd = new addrSafiRpd();
 
     /**
+     * vpls
+     */
+    public addrSafi vpls = new addrSafiVpls();
+
+    /**
      * read address from packet
      *
      * @param oneLab just one label
@@ -666,6 +671,46 @@ class addrSafiRpd implements addrSafi {
         } else {
             ntry.prefix.network = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
         }
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiVpls implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        int i = pck.msbGetW(0) * 8;
+        pck.getSkip(2);
+        ntry.rouDst = pck.msbGetQ(0);
+        pck.getSkip(8);
+        i -= 64;
+        int o = (i + 7) / 8;
+        if (o == 9) {
+            byte[] adr = new byte[addrIP.size];
+            ntry.prefix = new addrPrefix<addrIP>(new addrIP(), adr.length * 8);
+            pck.getCopy(adr, 0, 0, 4);
+            ntry.prefix.network.fromBuf(adr, 0);
+            adr[0] = 5;
+            pck.getCopy(adr, 1, 4, 5);
+            ntry.prefix.wildcard.fromBuf(adr, 0);
+            pck.getSkip(o);
+            return ntry;
+        }
+        if (o >= addrIPv6.size) {
+            addrIPv6 a6 = new addrIPv6();
+            pck.getAddr(a6, 0);
+            ntry.prefix = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a6, i));
+        } else {
+            addrIPv4 a4 = new addrIPv4();
+            pck.getAddr(a4, 0);
+            ntry.prefix = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(a4, i));
+        }
+        pck.getSkip(o);
         return ntry;
     }
 
