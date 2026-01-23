@@ -1,6 +1,5 @@
 package org.freertr.spf;
 
-import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
@@ -12,6 +11,7 @@ import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
+import org.freertr.addr.addrSafi;
 
 /**
  * link state encoder
@@ -903,7 +903,7 @@ public class spfLnkst {
      * @param safi safi to use
      * @param dist distance to use
      */
-    public static void readSpfPref(spfCalc<addrIPv4> spf, encTlv tlv, packHolder pck, packHolder hlp, addrAfi safi, int dist) {
+    public static void readSpfPref(spfCalc<addrIPv4> spf, encTlv tlv, packHolder pck, packHolder hlp, addrSafi safi, int dist) {
         addrIPv4 loc = findNode(tlv, pck, hlp, typNodeLocal);
         if (loc == null) {
             return;

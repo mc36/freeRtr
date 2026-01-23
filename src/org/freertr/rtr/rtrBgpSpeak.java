@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
-import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -30,6 +29,7 @@ import org.freertr.prt.prtTcp;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoWrk;
 import org.freertr.tab.tabRpkiUtil;
+import org.freertr.addr.addrSafi;
 
 /**
  * bgp4 speaker
@@ -1692,7 +1692,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = addrAfi.ipv4uni.readPrefix(true, pck);
+            tabRouteEntry<addrIP> res = addrSafi.ipv4uni.readPrefix(true, pck);
             if (res == null) {
                 continue;
             }
@@ -1725,7 +1725,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = addrAfi.ipv4uni.readPrefix(true, pck);
+            tabRouteEntry<addrIP> res = addrSafi.ipv4uni.readPrefix(true, pck);
             if (res == null) {
                 continue;
             }

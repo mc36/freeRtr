@@ -2,7 +2,6 @@ package org.freertr.rtr;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -23,6 +22,7 @@ import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.tab.tabGen;
 import org.freertr.util.counter;
+import org.freertr.addr.addrSafi;
 
 /**
  * bgp4 utilities
@@ -2770,7 +2770,7 @@ public class rtrBgpUtil {
         }
         int sfi = safi & sfiMask;
         int len = pck.getByte(3);
-        addrAfi rdr = spkr.parent.safi2rdr[idx];
+        addrSafi rdr = spkr.parent.safi2rdr[idx];
         boolean addpath = spkr.addpathRx[idx];
         boolean oneLab = !spkr.peerMltLab[idx];
         boolean v6nh = len >= addrIPv6.size;

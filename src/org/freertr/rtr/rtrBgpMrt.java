@@ -3,7 +3,6 @@ package org.freertr.rtr;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
-import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -12,6 +11,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.logFil;
+import org.freertr.addr.addrSafi;
 
 /**
  * multi-threaded routing toolkit
@@ -239,23 +239,23 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
         pck.merge2end();
         switch (typ) {
             case typRib:
-                addrAfi rdr;
+                addrSafi rdr;
                 switch (cls) {
                     case ribIp4uni:
                         typ = rtrBgpUtil.safiIp4uni;
-                        rdr = addrAfi.ipv4uni;
+                        rdr = addrSafi.ipv4uni;
                         break;
                     case ribIp4mul:
                         typ = rtrBgpUtil.safiIp4multi;
-                        rdr = addrAfi.ipv4uni;
+                        rdr = addrSafi.ipv4uni;
                         break;
                     case ribIp6uni:
                         typ = rtrBgpUtil.safiIp6uni;
-                        rdr = addrAfi.ipv6uni;
+                        rdr = addrSafi.ipv6uni;
                         break;
                     case ribIp6mul:
                         typ = rtrBgpUtil.safiIp6multi;
-                        rdr = addrAfi.ipv6uni;
+                        rdr = addrSafi.ipv6uni;
                         break;
                     default:
                         return 2;

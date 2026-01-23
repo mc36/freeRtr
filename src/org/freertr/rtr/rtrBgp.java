@@ -2,7 +2,6 @@ package org.freertr.rtr;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrMac;
@@ -62,6 +61,7 @@ import org.freertr.tab.tabRpkiAspa;
 import org.freertr.tab.tabRpkiRoa;
 import org.freertr.util.counter;
 import org.freertr.util.syncInt;
+import org.freertr.addr.addrSafi;
 
 /**
  * border gateway protocol (rfc4271) version 4
@@ -318,7 +318,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * safi readers
      */
-    public final addrAfi[] safi2rdr;
+    public final addrSafi[] safi2rdr;
 
     /**
      * computed prefixes
@@ -563,7 +563,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         changed = rtrBgpParam.freshTables();
         origntd = rtrBgpParam.freshTables();
         idx2safi = new int[origntd.length];
-        safi2rdr = new addrAfi[origntd.length];
+        safi2rdr = new addrSafi[origntd.length];
         vrfs = new tabGen<rtrBgpVrf>();
         ovrfs = new tabGen<rtrBgpVrf>();
         clrs = new tabGen<rtrBgpVrf>();
@@ -627,16 +627,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 idx2safi[rtrBgpParam.idxMtro] = rtrBgpUtil.safiIp6mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd6);
                 lspf = new rtrBgpSpf(this);
-                safi2rdr[rtrBgpParam.idxUni] = addrAfi.ipv4uni;
+                safi2rdr[rtrBgpParam.idxUni] = addrSafi.ipv4uni;
                 ////safi2rdr[rtrBgpParam.idxLab] = addrAfi.safiIp4lab;
                 ////safi2rdr[rtrBgpParam.idxCtp] = addrAfi.safiIp4ctp;
                 ////safi2rdr[rtrBgpParam.idxCar] = addrAfi.safiIp4car;
-                safi2rdr[rtrBgpParam.idxMlt] = addrAfi.ipv4uni;
+                safi2rdr[rtrBgpParam.idxMlt] = addrSafi.ipv4uni;
                 ////safi2rdr[rtrBgpParam.idxOlab] = addrAfi.safiIp6lab;
                 ////safi2rdr[rtrBgpParam.idxOctp] = addrAfi.safiIp6ctp;
                 ////safi2rdr[rtrBgpParam.idxOcar] = addrAfi.safiIp6car;
-                ////safi2rdr[rtrBgpParam.idxOuni] = addrAfi.safiIp6uni;
-                ////safi2rdr[rtrBgpParam.idxOmlt] = addrAfi.safiIp6multi;
+                safi2rdr[rtrBgpParam.idxOuni] = addrSafi.ipv6uni;
+                safi2rdr[rtrBgpParam.idxOmlt] = addrSafi.ipv6uni;
                 ////safi2rdr[rtrBgpParam.idxOflw] = addrAfi.safiIp6flow;
                 ////safi2rdr[rtrBgpParam.idxOsrt] = addrAfi.safiIp6srte;
                 ////safi2rdr[rtrBgpParam.idxFlw] = addrAfi.safiIp4flow;
@@ -705,16 +705,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 idx2safi[rtrBgpParam.idxMtro] = rtrBgpUtil.safiIp4mtree;
                 other = new rtrBgpOther(this, vrfCore.fwd4);
                 lspf = new rtrBgpSpf(this);
-                safi2rdr[rtrBgpParam.idxUni] = addrAfi.ipv6uni;
+                safi2rdr[rtrBgpParam.idxUni] = addrSafi.ipv6uni;
                 ////safi2rdr[rtrBgpParam.idxLab] = addrAfi.safiIp6lab;
                 ////safi2rdr[rtrBgpParam.idxCtp] = addrAfi.safiIp6ctp;
                 ////safi2rdr[rtrBgpParam.idxCar] = addrAfi.safiIp6car;
-                safi2rdr[rtrBgpParam.idxMlt] = addrAfi.ipv6uni;
+                safi2rdr[rtrBgpParam.idxMlt] = addrSafi.ipv6uni;
                 ////safi2rdr[rtrBgpParam.idxOlab] = addrAfi.safiIp4lab;
                 ////safi2rdr[rtrBgpParam.idxOctp] = addrAfi.safiIp4ctp;
                 ////safi2rdr[rtrBgpParam.idxOcar] = addrAfi.safiIp4car;
-                ////safi2rdr[rtrBgpParam.idxOuni] = addrAfi.safiIp4uni;
-                ////safi2rdr[rtrBgpParam.idxOmlt] = addrAfi.safiIp4multi;
+                safi2rdr[rtrBgpParam.idxOuni] = addrSafi.ipv4uni;
+                safi2rdr[rtrBgpParam.idxOmlt] = addrSafi.ipv4uni;
                 ////safi2rdr[rtrBgpParam.idxOflw] = addrAfi.safiIp4flow;
                 ////safi2rdr[rtrBgpParam.idxOsrt] = addrAfi.safiIp4srte;
                 ////safi2rdr[rtrBgpParam.idxFlw] = addrAfi.safiIp6flow;

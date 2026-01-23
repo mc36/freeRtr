@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.List;
-import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
@@ -25,6 +24,7 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
+import org.freertr.addr.addrSafi;
 
 /**
  * bgp4 shortest path first
@@ -281,10 +281,10 @@ public class rtrBgpSpf {
                     spfLnkst.readSpfLink(spf, tlv, pck, hlp);
                     break;
                 case spfLnkst.nlriTypIpv4:
-                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, addrAfi.ipv4uni, distance);
+                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, addrSafi.ipv4uni, distance);
                     break;
                 case spfLnkst.nlriTypIpv6:
-                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, addrAfi.ipv6uni, distance);
+                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, addrSafi.ipv6uni, distance);
                     break;
             }
         }

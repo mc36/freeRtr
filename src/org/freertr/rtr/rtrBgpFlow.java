@@ -1,7 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.ArrayList;
-import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -19,6 +18,7 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.util.bits;
+import org.freertr.addr.addrSafi;
 
 /**
  * bgp4 flowspec
@@ -420,9 +420,9 @@ public class rtrBgpFlow {
             pck.getSkip(2);
             pck.putSkip(1);
             pck.merge2beg();
-            return addrAfi.ipv6uni.readPrefix(true, pck);
+            return addrSafi.ipv6uni.readPrefix(true, pck);
         } else {
-            return addrAfi.ipv4uni.readPrefix(true, pck);
+            return addrSafi.ipv4uni.readPrefix(true, pck);
         }
     }
 

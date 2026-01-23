@@ -2,7 +2,6 @@ package org.freertr.rtr;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -28,6 +27,7 @@ import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.differ;
+import org.freertr.addr.addrSafi;
 
 /**
  * bgp message dumper
@@ -679,7 +679,7 @@ public class rtrBgpDump {
             if (pck.dataSize() <= prt) {
                 break;
             }
-            ntry = addrAfi.ipv4uni.readPrefix(true, pck);
+            ntry = addrSafi.ipv4uni.readPrefix(true, pck);
             res.add("withdrawn " + addrPrefix.ip2str(ntry.prefix));
         }
         pck.setBytesLeft(prt);
@@ -719,7 +719,7 @@ public class rtrBgpDump {
             if (pck.dataSize() < 1) {
                 break;
             }
-            ntry = addrAfi.ipv4uni.readPrefix(true, pck);
+            ntry = addrSafi.ipv4uni.readPrefix(true, pck);
             res.add("  reachable " + addrPrefix.ip2str(ntry.prefix));
         }
         return res;
@@ -793,7 +793,7 @@ public class rtrBgpDump {
             if (pck.dataSize() <= prt) {
                 break;
             }
-            ntry = addrAfi.ipv4uni.readPrefix(true, pck);
+            ntry = addrSafi.ipv4uni.readPrefix(true, pck);
             if (target != null) {
                 if (!ntry.prefix.matches(target)) {
                     continue;
@@ -827,7 +827,7 @@ public class rtrBgpDump {
             if (pck.dataSize() < 1) {
                 break;
             }
-            ntry = addrAfi.ipv4uni.readPrefix(true, pck);
+            ntry = addrSafi.ipv4uni.readPrefix(true, pck);
             if (target != null) {
                 if (!ntry.prefix.matches(target)) {
                     continue;

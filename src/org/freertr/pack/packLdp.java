@@ -2,7 +2,6 @@ package org.freertr.pack;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -13,6 +12,7 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.enc.encTlv;
+import org.freertr.addr.addrSafi;
 
 /**
  * label distribution protocol (rfc5036) packet
@@ -800,7 +800,7 @@ public class packLdp {
     private addrPrefix<addrIP> getFECaddr(packHolder pck) {
         int i = pck.msbGetW(0) << 16; // afi
         pck.getSkip(2);
-        tabRouteEntry<addrIP> res = addrAfi.readPrefix(i, true, pck);
+        tabRouteEntry<addrIP> res = addrSafi.readPrefix(i, true, pck);
         return res.prefix;
     }
 

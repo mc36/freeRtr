@@ -6,21 +6,21 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.logger;
 
 /**
- * one address family
+ * one sub address family
  *
  * @author matecsaba
  */
-public interface addrAfi {
+public interface addrSafi {
 
     /**
      * ipv4 unicast
      */
-    public addrAfi ipv4uni = new addrAfiIpv4uni();
+    public addrSafi ipv4uni = new addrSafiIpv4uni();
 
     /**
      * ipv6 unicast
      */
-    public addrAfi ipv6uni = new addrAfiIpv6uni();
+    public addrSafi ipv6uni = new addrSafiIpv6uni();
 
     /**
      * read address from packet
@@ -78,11 +78,11 @@ public interface addrAfi {
 
 }
 
-class addrAfiIpv4uni implements addrAfi {
+class addrSafiIpv4uni implements addrSafi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip4toIP(addrAfi.readIpvXuni(new addrIPv4(), pck));
+        ntry.prefix = addrPrefix.ip4toIP(addrSafi.readIpvXuni(new addrIPv4(), pck));
         return ntry;
     }
 
@@ -92,11 +92,11 @@ class addrAfiIpv4uni implements addrAfi {
 
 }
 
-class addrAfiIpv6uni implements addrAfi {
+class addrSafiIpv6uni implements addrSafi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip6toIP(addrAfi.readIpvXuni(new addrIPv6(), pck));
+        ntry.prefix = addrPrefix.ip6toIP(addrSafi.readIpvXuni(new addrIPv6(), pck));
         return ntry;
     }
 

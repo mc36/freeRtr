@@ -1,6 +1,5 @@
 package org.freertr.rtr;
 
-import org.freertr.addr.addrAfi;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -15,6 +14,7 @@ import org.freertr.util.notifier;
 import org.freertr.enc.encTlv;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoWrk;
+import org.freertr.addr.addrSafi;
 
 /**
  * eigrp neighbor
@@ -313,7 +313,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
             switch (tlv.valTyp) {
                 case 0x102: // ipv4 int
                     pck2.getSkip(20);
-                    ntry = addrAfi.ipv4uni.readPrefix(true, pck2);
+                    ntry = addrSafi.ipv4uni.readPrefix(true, pck2);
                     if (ntry == null) {
                         continue;
                     }
@@ -321,7 +321,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
                     break;
                 case 0x103: // ipv4 ext
                     pck2.getSkip(40);
-                    ntry = addrAfi.ipv4uni.readPrefix(true, pck2);
+                    ntry = addrSafi.ipv4uni.readPrefix(true, pck2);
                     if (ntry == null) {
                         continue;
                     }
@@ -330,7 +330,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
                     break;
                 case 0x402: // ipv6 int
                     pck2.getSkip(32);
-                    ntry = addrAfi.ipv6uni.readPrefix(true, pck2);
+                    ntry = addrSafi.ipv6uni.readPrefix(true, pck2);
                     if (ntry == null) {
                         continue;
                     }
@@ -338,7 +338,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
                     break;
                 case 0x403: // ipv6 ext
                     pck2.getSkip(52);
-                    ntry = addrAfi.ipv6uni.readPrefix(true, pck2);
+                    ntry = addrSafi.ipv6uni.readPrefix(true, pck2);
                     if (ntry == null) {
                         continue;
                     }
