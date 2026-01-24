@@ -459,6 +459,22 @@ public interface addrSafi {
     }
 
     /**
+     * write one flowspec
+     *
+     * @param ntry route entry
+     * @param pck packet to use
+     * @param ofs offset to use
+     * @return length in bytes
+     */
+    public static int writeFlowspec(tabRouteEntry<addrIP> ntry, packHolder pck, int ofs) {
+        pck.putCopy(ntry.prefix.network.getBytes(), 1, ofs + 0, 15);
+        pck.putCopy(ntry.prefix.broadcast.getBytes(), 0, ofs + 15, 16);
+        pck.putCopy(ntry.prefix.wildcard.getBytes(), 0, ofs + 31, 16);
+        pck.putCopy(ntry.prefix.mask.getBytes(), 0, ofs + 47, 16);
+        return ntry.prefix.network.getBytes()[0] & 0xff;
+    }
+
+    /**
      * read address from packet
      *
      * @param safi safi to read
@@ -731,11 +747,17 @@ class addrSafiSdwan implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        pck.msbPutW(0, 1);
+        pck.putCopy(ntry.prefix.broadcast.getBytes(), 0, 4, 8);
+        if (ntry.prefix.network.isIPv4()) {
+            pck.msbPutW(2, 8 * 12);
+            pck.putAddr(12, ntry.prefix.network.toIPv4());
+            pck.putSkip(16);
+        } else {
+            pck.msbPutW(2, 8 * 24);
+            pck.putAddr(12, ntry.prefix.network.toIPv6());
+            pck.putSkip(28);
+        }
     }
 
 }
@@ -1085,11 +1107,9 @@ class addrSafiFlowspec implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        int i = addrSafi.writeFlowspec(ntry, pck, 1);
+        pck.putByte(0, i);
+        pck.putSkip(1 + i);
     }
 
 }
@@ -1107,11 +1127,11 @@ class addrSafiVpnFlow implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        pck.msbPutQ(1, ntry.rouDst);
+        int i = addrSafi.writeFlowspec(ntry, pck, 9);
+        i += 8;
+        pck.putByte(0, i);
+        pck.putSkip(1 + i);
     }
 
 }
