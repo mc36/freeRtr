@@ -1249,10 +1249,14 @@ class addrSafiMvpn implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-////////////
+        int i = addrSafi.writeFlowspec(ntry, pck, 9);
+        int o = pck.getHeadArray()[pck.headSize() + 9];
+        i--;
+        pck.msbPutQ(2, ntry.rouDst);
+        i += 8;
+        pck.putByte(0, o);
+        pck.putByte(1, i);
+        pck.putSkip(2 + i);
     }
 
 }
