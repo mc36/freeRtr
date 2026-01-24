@@ -3656,10 +3656,10 @@ public class rtrBgpUtil {
                 hlp.msbPutD(0, ntry.best.ident);
                 hlp.putSkip(4);
             }
-            int qqqqq = hlp.headSize();
+            int heree = hlp.headSize();
             ///////////////
             rdr.writePrefix(oneLab, hlp, ntry);
-            if (qqqqq != hlp.headSize()) {
+            if (heree != hlp.headSize()) {
                 continue;
             }
             writePrefix(safi, oneLab, hlp, ntry);
@@ -3689,10 +3689,10 @@ public class rtrBgpUtil {
                 hlp.msbPutD(0, ntry.best.ident);
                 hlp.putSkip(4);
             }
-            int qqqqq = hlp.headSize();
+            int heree = hlp.headSize();
             ///////////////
             rdr.writePrefix(true, hlp, ntry);
-            if (qqqqq != hlp.headSize()) {
+            if (heree != hlp.headSize()) {
                 continue;
             }
             writePrefix(safi, true, hlp, ntry);

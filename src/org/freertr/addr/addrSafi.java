@@ -237,6 +237,7 @@ public interface addrSafi {
     public static <T extends addrType> void writeVpnvXuni(addrPrefix<T> pfx, boolean oneLab, tabRouteEntry<addrIP> ntry, packHolder pck) {
 
 
+
     /////////////
     }
 
@@ -294,7 +295,7 @@ public interface addrSafi {
                 break;
             }
         }
-        pck.getHeadArray()[p - 1] |= 1;
+        pck.getHeadArray()[pck.headSize() + p - 1] |= 1;
         pck.putByte(0, i + pfx.maskLen);
         pck.putSkip(p);
         pck.putAddr(0, pfx.network);
@@ -357,6 +358,7 @@ public interface addrSafi {
     public static <T extends addrType> void writeIpvXcar(addrPrefix<T> pfx, tabRouteEntry<addrIP> ntry, packHolder pck) {
 
 
+
     //////////////
     }
 
@@ -389,6 +391,7 @@ public interface addrSafi {
      * @param pck packet to use
      */
     public static <T extends addrType> void writeVpnvXmul(addrPrefix<T> pfx, tabRouteEntry<addrIP> ntry, packHolder pck) {
+
 
 
     //////////////
@@ -426,6 +429,7 @@ public interface addrSafi {
      * @param pck packet to use
      */
     public static <T extends addrType> void writeIpvXsrte(addrPrefix<T> pfx, tabRouteEntry<addrIP> ntry, packHolder pck) {
+
 
 
     //////////////
@@ -745,6 +749,7 @@ class addrSafiLnkSt implements addrSafi {
 
 
 
+
 ////////////
     }
 
@@ -771,6 +776,7 @@ class addrSafiSdwan implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+
 
 
 
@@ -801,6 +807,7 @@ class addrSafiMup implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+
 
 
 
@@ -933,6 +940,7 @@ class addrSafiEvpn implements addrSafi {
 
 
 
+
 ////////////
     }
 
@@ -954,6 +962,7 @@ class addrSafiNsh implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+
 
 
 
@@ -980,6 +989,7 @@ class addrSafiRpd implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+
 
 
 
@@ -1026,6 +1036,7 @@ class addrSafiVpls implements addrSafi {
 
 
 
+
 ////////////
     }
 
@@ -1046,6 +1057,7 @@ class addrSafiMspw implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+
 
 
 
@@ -1078,6 +1090,7 @@ class addrSafiMdt implements addrSafi {
 
 
 
+
 ////////////
     }
 
@@ -1101,6 +1114,7 @@ class addrSafiRtf implements addrSafi {
 
 
 
+
 ////////////
     }
 
@@ -1116,6 +1130,7 @@ class addrSafiFlowspec implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+
 
 
 
@@ -1137,6 +1152,7 @@ class addrSafiVpnFlow implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+
 
 
 
@@ -1164,6 +1180,7 @@ class addrSafiMvpn implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+
 
 
 ////////////
