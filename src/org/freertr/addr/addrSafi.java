@@ -914,11 +914,105 @@ class addrSafiEvpn implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        int typ = ntry.prefix.network.getBytes()[0];
+        pck.msbPutQ(2, ntry.rouDst);
+        int pos = 10;
+        byte[] buf = new byte[addrIP.size];
+        switch (typ) {
+            case 1: // ethernet auto discovery
+                ntry.prefix.network.toBuffer(buf, 0);
+                pck.putCopy(buf, 2, pos, 14); // esi + eti
+                pos += 14;
+                pck.msbPutD(pos, ntry.best.evpnLab << 8);
+                pos += 3;
+                break;
+            case 2: // mac ip advertisement
+                ntry.prefix.wildcard.toBuffer(buf, 0);
+                pck.putCopy(buf, 0, pos, 10); // esi
+                pos += 10;
+                ntry.prefix.network.toBuffer(buf, 0);
+                pck.putCopy(buf, 2, pos, 4); // eti
+                pos += 4;
+                pck.putByte(pos, addrMac.size * 8); // size;
+                pos++;
+                pck.putCopy(buf, 10, pos, addrMac.size); // eti
+                pos += addrMac.size;
+                addrType adr;
+                if (ntry.prefix.broadcast.isIPv4()) {
+                    adr = ntry.prefix.broadcast.toIPv4();
+                } else {
+                    adr = ntry.prefix.broadcast.toIPv6();
+                }
+                if (ntry.prefix.broadcast.isEmpty()) {
+                    adr = new addrEmpty();
+                }
+                pck.putByte(pos, adr.maxBits());
+                pos++;
+                pck.putAddr(pos, adr);
+                pos += adr.getSize();
+                pck.msbPutD(pos, ntry.best.evpnLab << 8);
+                pos += 3;
+                break;
+            case 3: // inclusive multicast ethernet tag
+                ntry.prefix.network.toBuffer(buf, 0);
+                pck.putCopy(buf, 2, pos, 4); // eti
+                pos += 4;
+                if (ntry.prefix.broadcast.isIPv4()) {
+                    adr = ntry.prefix.broadcast.toIPv4();
+                } else {
+                    adr = ntry.prefix.broadcast.toIPv6();
+                }
+                pck.putByte(pos, adr.maxBits());
+                pos++;
+                pck.putAddr(pos, adr);
+                pos += adr.getSize();
+                break;
+            case 4: // ethernet segment
+                ntry.prefix.network.toBuffer(buf, 0);
+                pck.putCopy(buf, 2, pos, 10); // esi
+                pos += 10;
+                if (ntry.prefix.broadcast.isIPv4()) {
+                    adr = ntry.prefix.broadcast.toIPv4();
+                } else {
+                    adr = ntry.prefix.broadcast.toIPv6();
+                }
+                pck.putByte(pos, adr.maxBits());
+                pos++;
+                pck.putAddr(pos, adr);
+                pos += adr.getSize();
+                break;
+            case 5: // ip prefix
+                ntry.prefix.wildcard.toBuffer(buf, 0);
+                pck.putCopy(buf, 0, pos, 10); // esi
+                pos += 10;
+                ntry.prefix.network.toBuffer(buf, 0);
+                pck.putCopy(buf, 2, pos, 4); // eti
+                pos += 4;
+                if (ntry.prefix.broadcast.isIPv4()) {
+                    adr = ntry.prefix.broadcast.toIPv4();
+                } else {
+                    adr = ntry.prefix.broadcast.toIPv6();
+                }
+                pck.putByte(pos, adr.maxBits());
+                pos++;
+                pck.putAddr(pos, adr);
+                pos += adr.getSize();
+                if (ntry.prefix.broadcast.isIPv4()) {
+                    adr = ntry.prefix.mask.toIPv4();
+                } else {
+                    adr = ntry.prefix.mask.toIPv6();
+                }
+                pck.putAddr(pos, adr);
+                pos += adr.getSize();
+                pck.msbPutD(pos, ntry.best.evpnLab << 8);
+                pos += 3;
+                break;
+            default:
+                return;
+        }
+        pck.putByte(0, typ);
+        pck.putByte(1, pos - 2);
+        pck.putSkip(pos);
     }
 
 }
