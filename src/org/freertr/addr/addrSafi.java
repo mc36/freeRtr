@@ -1192,8 +1192,8 @@ class addrSafiMdt implements addrSafi {
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         pck.putByte(0, 128); // length
         pck.msbPutQ(1, ntry.rouDst);
-        pck.putAddr(9, ntry.prefix.network.toIPv4());
-        pck.putAddr(13, ntry.prefix.broadcast.toIPv4());
+        pck.putAddr(9, ntry.prefix.network);
+        pck.putAddr(13, ntry.prefix.broadcast);
         pck.putSkip(17);
     }
 
