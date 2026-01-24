@@ -2594,7 +2594,7 @@ public class rtrBgpUtil {
         placeTunEnc(spkr, pck, hlp, ntry);
         placeLnkSta(spkr, pck, hlp, ntry);
         placeOnlyCust(spkr, pck, hlp, ntry);
-        placePrefSid(spkr, idx, spkr.parent.idx2safi[idx], pck, hlp, ntry);
+        placePrefSid(spkr, idx, pck, hlp, ntry);
         placeBier(spkr, pck, hlp, ntry);
         placeNshChain(spkr, pck, hlp, ntry);
         placeDomainPath(spkr, pck, hlp, ntry);
@@ -2738,8 +2738,7 @@ public class rtrBgpUtil {
      * @param lst list of prefixes to withdraw
      */
     public static void createWithdraw(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
-        int safi = spkr.parent.idx2safi[idx];
-        if (safi == safiIp4uni) {
+        if (spkr.parent.idx2safi[idx] == safiIp4uni) {
             for (int i = 0; i < lst.size(); i++) {
                 tabRouteEntry<addrIP> ntry = lst.get(i);
                 if (addpath) {
@@ -2757,7 +2756,7 @@ public class rtrBgpUtil {
             pck.merge2end();
             return;
         }
-        placeUnreach(spkr, idx, safi, addpath, pck, hlp, lst);
+        placeUnreach(spkr, idx, addpath, pck, hlp, lst);
         pck.merge2beg();
         pck.msbPutW(0, pck.dataSize());
         pck.putSkip(2);
@@ -2839,8 +2838,6 @@ public class rtrBgpUtil {
      * @param lst list of prefixes to advertise
      */
     public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
-        int safi = spkr.parent.idx2safi[idx];
-        boolean oneLab = !spkr.peerMltLab[idx];
         tabRouteEntry<addrIP> ntry = lst.get(0);
         placeUnknown(spkr, pck, hlp, ntry);
         placeOrigin(spkr, pck, hlp, ntry);
@@ -2864,15 +2861,15 @@ public class rtrBgpUtil {
         placeTunEnc(spkr, pck, hlp, ntry);
         placeLnkSta(spkr, pck, hlp, ntry);
         placeOnlyCust(spkr, pck, hlp, ntry);
-        placePrefSid(spkr, idx, safi, pck, hlp, ntry);
+        placePrefSid(spkr, idx, pck, hlp, ntry);
         placeBier(spkr, pck, hlp, ntry);
         placeNshChain(spkr, pck, hlp, ntry);
         placeDomainPath(spkr, pck, hlp, ntry);
         placeBfdDiscr(spkr, pck, hlp, ntry);
         placeHopCapa(spkr, pck, hlp, ntry);
         placeAttribSet(spkr, pck, hlp, ntry);
-        if (safi != safiIp4uni) {
-            placeReachable(spkr, idx, safi, addpath, oneLab, pck, hlp, lst);
+        if (spkr.parent.idx2safi[idx] != safiIp4uni) {
+            placeReachable(spkr, idx, addpath, pck, hlp, lst);
             pck.merge2beg();
             pck.msbPutW(0, 0);
             pck.msbPutW(2, pck.dataSize());
@@ -2881,7 +2878,7 @@ public class rtrBgpUtil {
             return;
         }
         if (!ntry.best.nextHop.isIPv4()) {
-            placeReachable(spkr, idx, safi, addpath, oneLab, pck, hlp, lst);
+            placeReachable(spkr, idx, addpath, pck, hlp, lst);
             pck.merge2beg();
             pck.msbPutW(0, 0);
             pck.msbPutW(2, pck.dataSize());
@@ -2901,7 +2898,7 @@ public class rtrBgpUtil {
                 pck.msbPutD(0, ntry.best.ident);
                 pck.putSkip(4);
             }
-            addrSafi.ipv4uni.writePrefix(oneLab, pck, ntry);
+            addrSafi.ipv4uni.writePrefix(false, pck, ntry);
         }
         pck.merge2end();
     }
@@ -2913,11 +2910,10 @@ public class rtrBgpUtil {
      * @param pck packet to update
      * @param hlp helper packet
      * @param idx address family
-     * @param safi address family
      */
-    public static void createEndOfRib(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, int safi) {
-        if (safi != safiIp4uni) {
-            placeUnreach(spkr, idx, safi, false, pck, hlp, new ArrayList<tabRouteEntry<addrIP>>());
+    public static void createEndOfRib(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx) {
+        if (spkr.parent.idx2safi[idx] != safiIp4uni) {
+            placeUnreach(spkr, idx, false, pck, hlp, new ArrayList<tabRouteEntry<addrIP>>());
         }
         pck.merge2beg();
         pck.msbPutW(0, pck.dataSize());
@@ -3485,13 +3481,12 @@ public class rtrBgpUtil {
      *
      * @param spkr where to signal
      * @param idx sub address family
-     * @param safi sub address family
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placePrefSid(rtrBgpSpeak spkr, int idx, int safi, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        int afi = safi & afiMask;
+    public static void placePrefSid(rtrBgpSpeak spkr, int idx, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        int afi = spkr.parent.idx2safi[idx] & afiMask;
         hlp.clear();
         encTlv tlv = getPrefSidTlv();
         if (ntry.best.segrouIdx != 0) {
@@ -3620,14 +3615,14 @@ public class rtrBgpUtil {
      *
      * @param spkr where to signal
      * @param idx sub address family
-     * @param safi sub address family
      * @param addpath additional path
-     * @param oneLab just one label
      * @param trg target packet
      * @param hlp helper packet
      * @param lst list of table entries
      */
-    public static void placeReachable(rtrBgpSpeak spkr, int idx, int safi, boolean addpath, boolean oneLab, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
+    public static void placeReachable(rtrBgpSpeak spkr, int idx, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
+        int safi = spkr.parent.idx2safi[idx];
+        boolean oneLab = !spkr.peerMltLab[idx];
         int afi = safi & afiMask;
         int sfi = safi & sfiMask;
         addrIP nextHop = lst.get(0).best.nextHop;
@@ -3670,13 +3665,13 @@ public class rtrBgpUtil {
      *
      * @param spkr where to signal
      * @param idx sub address family
-     * @param safi sub address family
      * @param addpath additional path
      * @param trg target packet
      * @param hlp helper packet
      * @param lst list of table entries
      */
-    public static void placeUnreach(rtrBgpSpeak spkr, int idx, int safi, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
+    public static void placeUnreach(rtrBgpSpeak spkr, int idx, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
+        int safi = spkr.parent.idx2safi[idx];
         hlp.clear();
         hlp.msbPutD(0, safi2triplet(safi));
         hlp.putSkip(3);

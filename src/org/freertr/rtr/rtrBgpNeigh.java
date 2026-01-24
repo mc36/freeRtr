@@ -604,7 +604,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                     }
                 }
                 if (needEor) {
-                    conn.sendEndOfRib(idx, lower.idx2safi[idx]);
+                    conn.sendEndOfRib(idx);
                     conn.needEorAfis[idx] = false;
                 }
                 if (needEof) {
@@ -680,7 +680,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 }
             }
             if (needEor) {
-                conn.sendEndOfRib(idx, lower.idx2safi[idx]);
+                conn.sendEndOfRib(idx);
                 conn.needEorAfis[idx] = false;
             }
             if (needEof) {

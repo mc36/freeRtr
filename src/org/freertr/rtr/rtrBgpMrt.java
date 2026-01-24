@@ -322,7 +322,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                     List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
                     lst.add(pfx);
                     int idx = spk.parent.safi2idx(typ);
-                    rtrBgpUtil.placeReachable(spk, idx, typ, false, true, pck, hlp, lst);
+                    rtrBgpUtil.placeReachable(spk, idx, false, pck, hlp, lst);
                     pck.merge2end();
                 }
                 pck.msbPutW(0, 0);

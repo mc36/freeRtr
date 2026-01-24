@@ -619,12 +619,12 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                     int o = afiS.get(i);
                     int p = afiI.get(i);
                     if (peerAfis[p] == add) {
-                        renegotiatingSafi(p, o, add, false);
+                        renegotiatingSafi(p, add, false);
                         continue;
                     }
                     afiS.remove(i);
                     afiI.remove(i);
-                    renegotiatingSafi(p, o, add, false);
+                    renegotiatingSafi(p, add, false);
                 }
                 packHolder pck = new packHolder(true, true);
                 for (i = 0; i < afiS.size(); i++) {
@@ -639,7 +639,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 for (i = 0; i < afiS.size(); i++) {
                     int o = afiS.get(i);
                     int q = afiI.get(i);
-                    renegotiatingSafi(q, o, add, false);
+                    renegotiatingSafi(q, add, false);
                 }
                 continue;
             }
@@ -1403,7 +1403,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         rtrBgpUtil.placeCapability(pck, peerExtOpen, rtrBgpUtil.capaMultiProto, buf);
         dynCapaTx++;
         sendDynCapaMsg(init, true, add, dynCapaTx, pck);
-        renegotiatingSafi(idx, safi, add, true);
+        renegotiatingSafi(idx, add, true);
     }
 
     private void sendDynCapaMsg(boolean init, boolean ack, boolean add, int seq, packHolder pck) {
@@ -1427,8 +1427,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
     }
 
-    private void renegotiatingSafi(int idx, int safi, boolean add, boolean cfg) {
-        sendEndOfRib(idx, safi);
+    private void renegotiatingSafi(int idx, boolean add, boolean cfg) {
+        sendEndOfRib(idx);
         learnt[idx].clear();
         advert[idx].clear();
         neigh.willing[idx].clear();
@@ -1445,7 +1445,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         needFull.set(3);
         parent.needFull.add(1);
         parent.compute.wakeup();
-        sendEndOfRib(idx, safi);
+        sendEndOfRib(idx);
     }
 
     /**
@@ -1507,14 +1507,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * send update packet
      *
      * @param idx safi to update
-     * @param safi safi to update
      */
-    public void sendEndOfRib(int idx, int safi) {
+    public void sendEndOfRib(int idx) {
         if (debugger.rtrBgpTraf) {
-            logger.debug("eor to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+            logger.debug("eor to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(parent.idx2safi[idx]));
         }
         packHolder pck = new packHolder(true, true);
-        rtrBgpUtil.createEndOfRib(this, pck, new packHolder(true, true), idx, safi);
+        rtrBgpUtil.createEndOfRib(this, pck, new packHolder(true, true), idx);
         packSend(pck, rtrBgpUtil.msgUpdate);
     }
 
