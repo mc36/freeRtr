@@ -226,6 +226,21 @@ public interface addrSafi {
     }
 
     /**
+     * write one vpnvX unicast
+     *
+     * @param <T> address kind
+     * @param pfx address to write
+     * @param oneLab just one label
+     * @param ntry route entry
+     * @param pck packet to use
+     */
+    public static <T extends addrType> void writeVpnvXuni(addrPrefix<T> pfx, boolean oneLab, tabRouteEntry<addrIP> ntry, packHolder pck) {
+
+
+    /////////////
+    }
+
+    /**
      * read one ipvX labeled
      *
      * @param <T> address kind
@@ -332,6 +347,20 @@ public interface addrSafi {
     }
 
     /**
+     * write one ipvX colored
+     *
+     * @param <T> address kind
+     * @param pfx address to write
+     * @param ntry route entry
+     * @param pck packet to use
+     */
+    public static <T extends addrType> void writeIpvXcar(addrPrefix<T> pfx, tabRouteEntry<addrIP> ntry, packHolder pck) {
+
+
+    //////////////
+    }
+
+    /**
      * read one vpnvX multicast
      *
      * @param <T> address kind
@@ -352,6 +381,23 @@ public interface addrSafi {
     }
 
     /**
+     * write one vpnvX multicast
+     *
+     * @param <T> address kind
+     * @param pfx address to write
+     * @param ntry route entry
+     * @param pck packet to use
+     */
+    public static <T extends addrType> void writeVpnvXmul(addrPrefix<T> pfx, tabRouteEntry<addrIP> ntry, packHolder pck) {
+
+
+    //////////////
+    }
+
+
+
+
+    /**
      * read one ipvX srte
      *
      * @param <T> address kind
@@ -369,6 +415,20 @@ public interface addrSafi {
         pck.getAddr(adr, 0);
         pck.getSkip((i + 7) / 8);
         return new addrPrefix<T>(adr, i);
+    }
+
+    /**
+     * write one ipvX srte
+     *
+     * @param <T> address kind
+     * @param pfx address to write
+     * @param ntry route entry
+     * @param pck packet to use
+     */
+    public static <T extends addrType> void writeIpvXsrte(addrPrefix<T> pfx, tabRouteEntry<addrIP> ntry, packHolder pck) {
+
+
+    //////////////
     }
 
     /**
@@ -553,11 +613,8 @@ class addrSafiIpv4car implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-    
-
-
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
+        addrSafi.writeIpvXcar(a4, ntry, pck);
     }
 
 }
@@ -571,11 +628,8 @@ class addrSafiIpv6car implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-    
-
-
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
+        addrSafi.writeIpvXcar(a6, ntry, pck);
     }
 
 }
@@ -589,11 +643,8 @@ class addrSafiIpv4srte implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-    
-
-
-//////////// Generated from nbfs://nbhost/SystemFileSystem
+        addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
+        addrSafi.writeIpvXsrte(a4, ntry, pck);
     }
 
 }
@@ -607,11 +658,8 @@ class addrSafiIpv6srte implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-    
-
-
-//////////// Generated from nbfs://nbhost/SystemFileSystem
+        addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
+        addrSafi.writeIpvXsrte(a6, ntry, pck);
     }
 
 }
@@ -625,11 +673,8 @@ class addrSafiVpnv4uni implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-    
-
-
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
+        addrSafi.writeVpnvXuni(a4, oneLab, ntry, pck);
     }
 
 }
@@ -643,11 +688,8 @@ class addrSafiVpnv6uni implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-    
-
-
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
+        addrSafi.writeVpnvXuni(a6, oneLab, ntry, pck);
     }
 
 }
@@ -661,11 +703,8 @@ class addrSafiVpnv4mul implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-    
-
-
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
+        addrSafi.writeVpnvXmul(a4, ntry, pck);
     }
 
 }
@@ -679,11 +718,8 @@ class addrSafiVpnv6mul implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-    
-
-
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
+        addrSafi.writeVpnvXmul(a6, ntry, pck);
     }
 
 }
@@ -707,10 +743,9 @@ class addrSafiLnkSt implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -737,10 +772,9 @@ class addrSafiSdwan implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -768,10 +802,9 @@ class addrSafiMup implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -898,10 +931,9 @@ class addrSafiEvpn implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -923,10 +955,9 @@ class addrSafiNsh implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -950,10 +981,9 @@ class addrSafiRpd implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -994,10 +1024,9 @@ class addrSafiVpls implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -1018,10 +1047,9 @@ class addrSafiMspw implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -1048,10 +1076,9 @@ class addrSafiMdt implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -1072,10 +1099,9 @@ class addrSafiRtf implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -1091,10 +1117,9 @@ class addrSafiFlowspec implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -1113,10 +1138,9 @@ class addrSafiVpnFlow implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }
@@ -1141,9 +1165,8 @@ class addrSafiMvpn implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
 
-    
 
-//////////// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+////////////
     }
 
 }

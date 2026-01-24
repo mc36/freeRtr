@@ -2898,7 +2898,7 @@ public class rtrBgpUtil {
                 pck.msbPutD(0, ntry.best.ident);
                 pck.putSkip(4);
             }
-            addrSafi.ipv4uni.writePrefix(false, pck, ntry);
+            addrSafi.ipv4uni.writePrefix(true, pck, ntry);
         }
         pck.merge2end();
     }
@@ -3622,6 +3622,7 @@ public class rtrBgpUtil {
      */
     public static void placeReachable(rtrBgpSpeak spkr, int idx, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
         int safi = spkr.parent.idx2safi[idx];
+        addrSafi rdr = spkr.parent.safi2rdr[idx];
         boolean oneLab = !spkr.peerMltLab[idx];
         int afi = safi & afiMask;
         int sfi = safi & sfiMask;
@@ -3655,6 +3656,12 @@ public class rtrBgpUtil {
                 hlp.msbPutD(0, ntry.best.ident);
                 hlp.putSkip(4);
             }
+            int qqqqq = hlp.headSize();
+            ///////////////
+            rdr.writePrefix(oneLab, hlp, ntry);
+            if (qqqqq != hlp.headSize()) {
+                continue;
+            }
             writePrefix(safi, oneLab, hlp, ntry);
         }
         placeAttrib(spkr, flagOptional, attrReachable, trg, hlp);
@@ -3672,6 +3679,7 @@ public class rtrBgpUtil {
      */
     public static void placeUnreach(rtrBgpSpeak spkr, int idx, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
         int safi = spkr.parent.idx2safi[idx];
+        addrSafi rdr = spkr.parent.safi2rdr[idx];
         hlp.clear();
         hlp.msbPutD(0, safi2triplet(safi));
         hlp.putSkip(3);
@@ -3680,6 +3688,12 @@ public class rtrBgpUtil {
             if (addpath) {
                 hlp.msbPutD(0, ntry.best.ident);
                 hlp.putSkip(4);
+            }
+            int qqqqq = hlp.headSize();
+            ///////////////
+            rdr.writePrefix(true, hlp, ntry);
+            if (qqqqq != hlp.headSize()) {
+                continue;
             }
             writePrefix(safi, true, hlp, ntry);
         }
