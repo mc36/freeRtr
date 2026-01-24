@@ -46,6 +46,16 @@ public interface addrSafi {
     public addrSafi ipv6car = new addrSafiIpv6car();
 
     /**
+     * ipv4 sr te
+     */
+    public addrSafi ipv4srte = new addrSafiIpv4srte();
+
+    /**
+     * ipv6 sr te
+     */
+    public addrSafi ipv6srte = new addrSafiIpv6srte();
+
+    /**
      * vpnv4 unicast
      */
     public addrSafi vpnv4uni = new addrSafiVpnv4uni();
@@ -124,6 +134,11 @@ public interface addrSafi {
      * vpn flowspec
      */
     public addrSafi vpnFlw = new addrSafiVpnFlow();
+
+    /**
+     * mvpn
+     */
+    public addrSafi mvpn = new addrSafiMvpn();
 
     /**
      * read address from packet
@@ -296,6 +311,26 @@ public interface addrSafi {
     }
 
     /**
+     * read one ipvX srte
+     *
+     * @param <T> address kind
+     * @param adr dummy address
+     * @param ntry route entry
+     * @param pck packet to use
+     * @return address read
+     */
+    public static <T extends addrType> addrPrefix<T> readIpvXsrte(T adr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        int i = pck.getByte(0);
+        pck.getSkip(1);
+        ntry.rouDst = pck.msbGetQ(0);
+        pck.getSkip(8);
+        i -= 64;
+        pck.getAddr(adr, 0);
+        pck.getSkip((i + 7) / 8);
+        return new addrPrefix<T>(adr, i);
+    }
+
+    /**
      * read one flowspec
      *
      * @param pck packet to use
@@ -436,6 +471,34 @@ class addrSafiIpv6car implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiIpv4srte implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = addrPrefix.ip4toIP(addrSafi.readIpvXsrte(new addrIPv4(), ntry, pck));
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem
+    }
+
+}
+
+class addrSafiIpv6srte implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = addrPrefix.ip6toIP(addrSafi.readIpvXsrte(new addrIPv6(), ntry, pck));
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem
     }
 
 }
@@ -874,6 +937,30 @@ class addrSafiVpnFlow implements addrSafi {
         ntry.rouDst = pck.msbGetQ(0);
         pck.getSkip(8);
         i -= 8;
+        addrSafi.readFlowspec(ntry, pck, i);
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+}
+
+class addrSafiMvpn implements addrSafi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        int p = pck.getByte(0);
+        int i = pck.getByte(1);
+        pck.getSkip(2);
+        ntry.rouDst = pck.msbGetQ(0);
+        pck.getSkip(8);
+        i -= 8;
+        pck.putByte(0, p);
+        pck.putSkip(1);
+        pck.merge2beg();
+        i++;
         addrSafi.readFlowspec(ntry, pck, i);
         return ntry;
     }

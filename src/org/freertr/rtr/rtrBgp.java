@@ -638,7 +638,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 safi2rdr[rtrBgpParam.idxOuni] = addrSafi.ipv6uni;
                 safi2rdr[rtrBgpParam.idxOmlt] = addrSafi.ipv6uni;
                 safi2rdr[rtrBgpParam.idxOflw] = addrSafi.flow;
-                ////safi2rdr[rtrBgpParam.idxOsrt] = addrSafi.safiIp6srte;
+                safi2rdr[rtrBgpParam.idxOsrt] = addrSafi.ipv6srte;
                 safi2rdr[rtrBgpParam.idxFlw] = addrSafi.flow;
                 safi2rdr[rtrBgpParam.idxVpnU] = addrSafi.vpnv4uni;
                 safi2rdr[rtrBgpParam.idxVpnM] = addrSafi.vpnv4mul;
@@ -658,11 +658,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 safi2rdr[rtrBgpParam.idxSpf] = addrSafi.linkState;
                 safi2rdr[rtrBgpParam.idxRtf] = addrSafi.rtf;
                 safi2rdr[rtrBgpParam.idxLnks] = addrSafi.linkState;
-                ////safi2rdr[rtrBgpParam.idxSrte] = addrSafi.safiIp4srte;
-                ////safi2rdr[rtrBgpParam.idxMvpn] = addrSafi.safiIp4mvpn;
-                ////safi2rdr[rtrBgpParam.idxMvpo] = addrSafi.safiIp6mvpn;
-                ////safi2rdr[rtrBgpParam.idxMtre] = addrSafi.safiIp4mtree;
-                ////safi2rdr[rtrBgpParam.idxMtro] = addrSafi.safiIp6mtree;
+                safi2rdr[rtrBgpParam.idxSrte] = addrSafi.ipv4srte;
+                safi2rdr[rtrBgpParam.idxMvpn] = addrSafi.mvpn;
+                safi2rdr[rtrBgpParam.idxMvpo] = addrSafi.mvpn;
+                safi2rdr[rtrBgpParam.idxMtre] = addrSafi.mvpn;
+                safi2rdr[rtrBgpParam.idxMtro] = addrSafi.mvpn;
                 break;
             case ipCor6.protocolVersion:
                 isIpv6 = true;
@@ -716,7 +716,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 safi2rdr[rtrBgpParam.idxOuni] = addrSafi.ipv4uni;
                 safi2rdr[rtrBgpParam.idxOmlt] = addrSafi.ipv4uni;
                 safi2rdr[rtrBgpParam.idxOflw] = addrSafi.flow;
-                ////safi2rdr[rtrBgpParam.idxOsrt] = addrSafi.safiIp4srte;
+                safi2rdr[rtrBgpParam.idxOsrt] = addrSafi.ipv4srte;
                 safi2rdr[rtrBgpParam.idxFlw] = addrSafi.flow;
                 safi2rdr[rtrBgpParam.idxVpnU] = addrSafi.vpnv6uni;
                 safi2rdr[rtrBgpParam.idxVpnM] = addrSafi.vpnv6mul;
@@ -736,11 +736,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 safi2rdr[rtrBgpParam.idxSpf] = addrSafi.linkState;
                 safi2rdr[rtrBgpParam.idxRtf] = addrSafi.rtf;
                 safi2rdr[rtrBgpParam.idxLnks] = addrSafi.linkState;
-                ////safi2rdr[rtrBgpParam.idxSrte] = addrSafi.safiIp6srte;
-                ////safi2rdr[rtrBgpParam.idxMvpn] = addrSafi.safiIp6mvpn;
-                ////safi2rdr[rtrBgpParam.idxMvpo] = addrSafi.safiIp4mvpn;
-                ////safi2rdr[rtrBgpParam.idxMtre] = addrSafi.safiIp6mtree;
-                ////safi2rdr[rtrBgpParam.idxMtro] = addrSafi.safiIp4mtree;
+                safi2rdr[rtrBgpParam.idxSrte] = addrSafi.ipv6srte;
+                safi2rdr[rtrBgpParam.idxMvpn] = addrSafi.mvpn;
+                safi2rdr[rtrBgpParam.idxMvpo] = addrSafi.mvpn;
+                safi2rdr[rtrBgpParam.idxMtre] = addrSafi.mvpn;
+                safi2rdr[rtrBgpParam.idxMtro] = addrSafi.mvpn;
                 break;
             default:
                 isIpv6 = false;
