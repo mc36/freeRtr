@@ -774,6 +774,7 @@ class addrSafiMup implements addrSafi {
         int p = pck.msbGetW(1);
         int i = pck.getByte(3);
         ntry.rouDst = pck.msbGetQ(4);
+        i -= 8;
         pck.getSkip(12);
         pck.putByte(0, p);
         pck.putSkip(1);
@@ -784,11 +785,15 @@ class addrSafiMup implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        pck.putByte(0, 1); // arch
+        int i = addrSafi.writeFlowspec(ntry, pck, 11);
+        int o = pck.getHeadArray()[pck.headSize() + 11];
+        i--;
+        pck.msbPutQ(4, ntry.rouDst);
+        i += 8;
+        pck.msbPutW(1, o); // type
+        pck.putByte(3, i); // size
+        pck.putSkip(4 + i);
     }
 
 }
@@ -1033,11 +1038,13 @@ class addrSafiNsh implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        int o = ntry.prefix.network.getBytes()[0];
+        int i = ntry.prefix.network.getBytes()[1];
+        pck.msbPutW(0, o); // type
+        pck.msbPutW(2, i); // size
+        pck.putSkip(4);
+        pck.putCopy(ntry.prefix.network.getBytes(), 2, 0, i);
+        pck.putSkip(i);
     }
 
 }
@@ -1060,11 +1067,18 @@ class addrSafiRpd implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        int i;
+        pck.putByte(1, ntry.prefix.wildcard.getBytes()[0]);
+        pck.msbPutD(2, (int) ntry.rouDst);
+        if (ntry.prefix.network.isIPv4()) {
+            pck.putAddr(6, ntry.prefix.network.toIPv4());
+            i = addrIPv4.size;
+        } else {
+            pck.putAddr(6, ntry.prefix.network.toIPv6());
+            i = addrIPv6.size;
+        }
+        pck.putByte(0, i + 5);
+        pck.putSkip(i + 6);
     }
 
 }
@@ -1104,11 +1118,29 @@ class addrSafiVpls implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        pck.msbPutQ(2, ntry.rouDst);
+        int i;
+        if (ntry.prefix.wildcard.getBytes()[0] == 5) {
+            pck.putCopy(ntry.prefix.network.getBytes(), 0, 10, 4);
+            pck.putCopy(ntry.prefix.wildcard.getBytes(), 1, 14, 5);
+            i = 17;
+            pck.msbPutW(0, i);
+            pck.putSkip(i + 2);
+            return;
+        }
+        if (ntry.prefix.network.isIPv4()) {
+            addrPrefix<addrIPv4> a4 = a4 = addrPrefix.ip2ip4(ntry.prefix);
+            i = a4.maskLen;
+            pck.putAddr(10, a4.network);
+        } else {
+            addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
+            i = a6.maskLen;
+            pck.putAddr(10, a6.network);
+        }
+        i = (i + 7) / 8;
+        i += 8;
+        pck.msbPutW(0, i);
+        pck.putSkip(i + 2);
     }
 
 }
@@ -1182,11 +1214,10 @@ class addrSafiRtf implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        pck.putByte(0, ntry.prefix.maskLen);
+        pck.putSkip(1);
+        pck.putAddr(0, ntry.prefix.network);
+        pck.putSkip((ntry.prefix.maskLen + 7) / 8);
     }
 
 }
