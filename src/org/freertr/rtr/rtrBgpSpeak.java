@@ -1541,23 +1541,21 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param reach true to reachable, false to withdraw
      */
     public void sendUpdateSP(int idx, List<tabRouteEntry<addrIP>> lst, boolean reach) {
-        int safi = parent.idx2safi[idx];
-        boolean oneLab = !peerMltLab[idx];
         if (debugger.rtrBgpTraf) {
             String s = "";
             for (int i = 0; i < lst.size(); i++) {
                 tabRouteEntry<addrIP> ntry = lst.get(i);
                 s += " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix;
             }
-            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + ": " + (reach ? "reachable" : "withdraw") + s);
+            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(parent.idx2safi[idx]) + ": " + (reach ? "reachable" : "withdraw") + s);
         }
         pckTx.clear();
         if (!reach) {
-            rtrBgpUtil.createWithdraw(this, pckTx, pckTh, idx, safi, false, lst);
+            rtrBgpUtil.createWithdraw(this, pckTx, pckTh, idx, false, lst);
             parent.unreachStat.tx(pckTx);
             neigh.unreachStat.tx(pckTx);
         } else {
-            rtrBgpUtil.createReachable(this, pckTx, pckTh, idx, safi, false, oneLab, lst);
+            rtrBgpUtil.createReachable(this, pckTx, pckTh, idx, false, lst);
             parent.reachabStat.tx(pckTx);
             neigh.reachabStat.tx(pckTx);
         }
@@ -1572,8 +1570,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param don old already advertised data
      */
     public void sendUpdateAP(int idx, tabRouteEntry<addrIP> wil, tabRouteEntry<addrIP> don) {
-        int safi = parent.idx2safi[idx];
-        boolean oneLab = !peerMltLab[idx];
         if (debugger.rtrBgpTraf) {
             String a;
             String s;
@@ -1584,7 +1580,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 a = "reachable";
                 s = tabRouteUtil.rd2string(wil.rouDst) + " " + wil.prefix;
             }
-            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi) + ": " + a + " " + s);
+            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(parent.idx2safi[idx]) + ": " + a + " " + s);
         }
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         if (wil == null) {
@@ -1595,7 +1591,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.add(ntry);
             }
             pckTx.clear();
-            rtrBgpUtil.createWithdraw(this, pckTx, pckTh, idx, safi, true, lst);
+            rtrBgpUtil.createWithdraw(this, pckTx, pckTh, idx, true, lst);
             parent.unreachStat.tx(pckTx);
             neigh.unreachStat.tx(pckTx);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
@@ -1609,7 +1605,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.clear();
                 lst.add(ntry);
                 pckTx.clear();
-                rtrBgpUtil.createReachable(this, pckTx, pckTh, idx, safi, true, oneLab, lst);
+                rtrBgpUtil.createReachable(this, pckTx, pckTh, idx, true, lst);
                 parent.reachabStat.tx(pckTx);
                 neigh.reachabStat.tx(pckTx);
                 packSend(pckTx, rtrBgpUtil.msgUpdate);
@@ -1629,7 +1625,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             lst.clear();
             lst.add(ntry);
             pckTx.clear();
-            rtrBgpUtil.createReachable(this, pckTx, pckTh, idx, safi, true, oneLab, lst);
+            rtrBgpUtil.createReachable(this, pckTx, pckTh, idx, true, lst);
             parent.reachabStat.tx(pckTx);
             neigh.reachabStat.tx(pckTx);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
@@ -1645,7 +1641,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         pckTx.clear();
-        rtrBgpUtil.createWithdraw(this, pckTx, pckTh, idx, safi, true, lst);
+        rtrBgpUtil.createWithdraw(this, pckTx, pckTh, idx, true, lst);
         parent.unreachStat.tx(pckTx);
         neigh.unreachStat.tx(pckTx);
         packSend(pckTx, rtrBgpUtil.msgUpdate);
@@ -1852,7 +1848,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 }
                 res = udp;
             }
-            if (prefixReachable(res, idx, parent.idx2safi[idx])) {
+            if (prefixReachable(res, idx)) {
                 if (doPrefDel(lrnt, addpath, res)) {
                     continue;
                 }
@@ -1956,7 +1952,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         return false;
     }
 
-    private boolean prefixReachable(tabRouteEntry<addrIP> ntry, int idx, int safi) {
+    private boolean prefixReachable(tabRouteEntry<addrIP> ntry, int idx) {
         if (debugger.rtrBgpTraf) {
             logger.debug("processing " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix);
         }

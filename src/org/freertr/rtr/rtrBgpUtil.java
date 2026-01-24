@@ -2594,7 +2594,7 @@ public class rtrBgpUtil {
         placeTunEnc(spkr, pck, hlp, ntry);
         placeLnkSta(spkr, pck, hlp, ntry);
         placeOnlyCust(spkr, pck, hlp, ntry);
-        placePrefSid(spkr, spkr.parent.idx2safi[idx], pck, hlp, ntry);
+        placePrefSid(spkr, idx, spkr.parent.idx2safi[idx], pck, hlp, ntry);
         placeBier(spkr, pck, hlp, ntry);
         placeNshChain(spkr, pck, hlp, ntry);
         placeDomainPath(spkr, pck, hlp, ntry);
@@ -2734,11 +2734,11 @@ public class rtrBgpUtil {
      * @param pck packet to update
      * @param hlp helper packet
      * @param idx address family
-     * @param safi address family
      * @param addpath additional path
      * @param lst list of prefixes to withdraw
      */
-    public static void createWithdraw(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, int safi, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
+    public static void createWithdraw(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
+        int safi = spkr.parent.idx2safi[idx];
         if (safi == safiIp4uni) {
             for (int i = 0; i < lst.size(); i++) {
                 tabRouteEntry<addrIP> ntry = lst.get(i);
@@ -2835,12 +2835,12 @@ public class rtrBgpUtil {
      * @param pck packet to update
      * @param hlp helper packet
      * @param idx address family
-     * @param safi address family
      * @param addpath additional path
-     * @param oneLab just one label
      * @param lst list of prefixes to advertise
      */
-    public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, int safi, boolean addpath, boolean oneLab, List<tabRouteEntry<addrIP>> lst) {
+    public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
+        int safi = spkr.parent.idx2safi[idx];
+        boolean oneLab = !spkr.peerMltLab[idx];
         tabRouteEntry<addrIP> ntry = lst.get(0);
         placeUnknown(spkr, pck, hlp, ntry);
         placeOrigin(spkr, pck, hlp, ntry);
@@ -2864,7 +2864,7 @@ public class rtrBgpUtil {
         placeTunEnc(spkr, pck, hlp, ntry);
         placeLnkSta(spkr, pck, hlp, ntry);
         placeOnlyCust(spkr, pck, hlp, ntry);
-        placePrefSid(spkr, safi, pck, hlp, ntry);
+        placePrefSid(spkr, idx, safi, pck, hlp, ntry);
         placeBier(spkr, pck, hlp, ntry);
         placeNshChain(spkr, pck, hlp, ntry);
         placeDomainPath(spkr, pck, hlp, ntry);
@@ -3483,12 +3483,13 @@ public class rtrBgpUtil {
      * place prefix sid attribute
      *
      * @param spkr where to signal
+     * @param idx sub address family
      * @param safi sub address family
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placePrefSid(rtrBgpSpeak spkr, int safi, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    public static void placePrefSid(rtrBgpSpeak spkr, int idx, int safi, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         int afi = safi & afiMask;
         hlp.clear();
         encTlv tlv = getPrefSidTlv();
