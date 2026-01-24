@@ -389,6 +389,59 @@ public interface addrSafi {
         }
     }
 
+    /**
+     * read address from packet
+     *
+     * @param safi safi to read
+     * @param pck packet to use
+     * @return address read, null if nothing
+     */
+    public static addrIP readAddress(int safi, packHolder pck) {
+        addrIP ax = new addrIP();
+        switch (safi & rtrBgpUtil.afiMask) {
+            case rtrBgpUtil.afiIpv4:
+                addrIPv4 a4 = new addrIPv4();
+                pck.getAddr(a4, 0);
+                pck.getSkip(addrIPv4.size);
+                ax.fromIPv4addr(a4);
+                return ax;
+            case rtrBgpUtil.afiIpv6:
+                addrIPv6 a6 = new addrIPv6();
+                pck.getAddr(a6, 0);
+                pck.getSkip(addrIPv6.size);
+                ax.fromIPv6addr(a6);
+                return ax;
+            default:
+                logger.info("unknown safi (" + safi + ") requested");
+                return null;
+        }
+    }
+
+    /**
+     * write address to packet
+     *
+     * @param safi safi to write
+     * @param pck packet to use
+     * @param addr address to write
+     */
+    public static void writeAddress(int safi, packHolder pck, addrIP addr) {
+        switch (safi & rtrBgpUtil.afiMask) {
+            case rtrBgpUtil.afiIpv4:
+                addrIPv4 a4 = addr.toIPv4();
+                pck.putAddr(0, a4);
+                pck.putSkip(addrIPv4.size);
+                break;
+            case rtrBgpUtil.afiIpv6:
+                addrIPv6 a6 = addr.toIPv6();
+                pck.putAddr(0, a6);
+                pck.putSkip(addrIPv6.size);
+                break;
+            default:
+                logger.info("unknown safi (" + safi + ") requested");
+                break;
+        }
+    }
+
 }
 
 class addrSafiIpv4uni implements addrSafi {
@@ -595,9 +648,9 @@ class addrSafiSdwan implements addrSafi {
         int i = pck.msbGetW(2);
         pck.getSkip(12);
         if (i > (8 * 12)) {
-            ntry.prefix.network = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+            ntry.prefix.network = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
         } else {
-            ntry.prefix.network = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+            ntry.prefix.network = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
         }
         return ntry;
     }
@@ -679,10 +732,10 @@ class addrSafiEvpn implements addrSafi {
                         ntry.prefix.broadcast = new addrIP();
                         break;
                     case addrIPv4.size * 8:
-                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
                         break;
                     case addrIPv6.size * 8:
-                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
                         break;
                     default:
                         return null;
@@ -698,10 +751,10 @@ class addrSafiEvpn implements addrSafi {
                 pck.getSkip(1);
                 switch (i) {
                     case addrIPv4.size * 8:
-                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
                         break;
                     case addrIPv6.size * 8:
-                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
                         break;
                     default:
                         return null;
@@ -716,10 +769,10 @@ class addrSafiEvpn implements addrSafi {
                 pck.getSkip(1);
                 switch (i) {
                     case addrIPv4.size * 8:
-                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
                         break;
                     case addrIPv6.size * 8:
-                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
                         break;
                     default:
                         return null;
@@ -737,12 +790,12 @@ class addrSafiEvpn implements addrSafi {
                 pck.getSkip(1);
                 switch (i) {
                     case addrIPv4.size * 8:
-                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
-                        ntry.prefix.mask = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        ntry.prefix.mask = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
                         break;
                     case addrIPv6.size * 8:
-                        ntry.prefix.broadcast = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
-                        ntry.prefix.mask = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        ntry.prefix.mask = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
                         break;
                     default:
                         return null;
@@ -794,9 +847,9 @@ class addrSafiRpd implements addrSafi {
         ntry.rouDst = pck.msbGetD(2);
         pck.getSkip(6);
         if (i > 9) {
-            ntry.prefix.network = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv6, pck);
+            ntry.prefix.network = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
         } else {
-            ntry.prefix.network = rtrBgpUtil.readAddress(rtrBgpUtil.afiIpv4, pck);
+            ntry.prefix.network = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
         }
         return ntry;
     }
@@ -871,8 +924,7 @@ class addrSafiMdt implements addrSafi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        int i = pck.getByte(0);
-        pck.getSkip(1);
+        int i = addrSafi.sizeFlowspec(pck);
         ntry.rouDst = pck.msbGetQ(0);
         pck.getSkip(8);
         i -= 64;

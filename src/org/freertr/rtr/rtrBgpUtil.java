@@ -9,7 +9,6 @@ import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
-import org.freertr.cry.cryHashMd5;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabLargeComm;
 import org.freertr.tab.tabRouteBlob;
@@ -1598,59 +1597,6 @@ public class rtrBgpUtil {
     }
 
     /**
-     * read address from packet
-     *
-     * @param safi safi to read
-     * @param pck packet to use
-     * @return address read, null if nothing
-     */
-    public static addrIP readAddress(int safi, packHolder pck) {
-        addrIP ax = new addrIP();
-        switch (safi & afiMask) {
-            case afiIpv4:
-                addrIPv4 a4 = new addrIPv4();
-                pck.getAddr(a4, 0);
-                pck.getSkip(addrIPv4.size);
-                ax.fromIPv4addr(a4);
-                return ax;
-            case afiIpv6:
-                addrIPv6 a6 = new addrIPv6();
-                pck.getAddr(a6, 0);
-                pck.getSkip(addrIPv6.size);
-                ax.fromIPv6addr(a6);
-                return ax;
-            default:
-                logger.info("unknown safi (" + safi + ") requested");
-                return null;
-        }
-    }
-
-    /**
-     * write address to packet
-     *
-     * @param safi safi to write
-     * @param pck packet to use
-     * @param addr address to write
-     */
-    public static void writeAddress(int safi, packHolder pck, addrIP addr) {
-        switch (safi & afiMask) {
-            case afiIpv4:
-                addrIPv4 a4 = addr.toIPv4();
-                pck.putAddr(0, a4);
-                pck.putSkip(addrIPv4.size);
-                break;
-            case afiIpv6:
-                addrIPv6 a6 = addr.toIPv6();
-                pck.putAddr(0, a6);
-                pck.putSkip(addrIPv6.size);
-                break;
-            default:
-                logger.info("unknown safi (" + safi + ") requested");
-                break;
-        }
-    }
-
-    /**
      * convert leak to inverted leak
      *
      * @param old old role
@@ -2394,9 +2340,9 @@ public class rtrBgpUtil {
             }
             addrIP adr;
             if (v6nh) {
-                adr = readAddress(afiIpv6, pck);
+                adr = addrSafi.readAddress(afiIpv6, pck);
             } else {
-                adr = readAddress(afiIpv4, pck);
+                adr = addrSafi.readAddress(afiIpv4, pck);
             }
             if (adr == null) {
                 continue;
@@ -3677,9 +3623,9 @@ public class rtrBgpUtil {
             hlp.putSkip(8);
         }
         if (v6nh) {
-            writeAddress(afiIpv6, hlp, nextHop);
+            addrSafi.writeAddress(afiIpv6, hlp, nextHop);
         } else {
-            writeAddress(afiIpv4, hlp, nextHop);
+            addrSafi.writeAddress(afiIpv4, hlp, nextHop);
         }
         hlp.putByte(0, 0);
         hlp.putSkip(1);
