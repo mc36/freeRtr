@@ -2709,11 +2709,12 @@ public class rtrBgpUtil {
      * @param spkr where to signal
      * @param pck packet to update
      * @param hlp helper packet
+     * @param idx address family
      * @param safi address family
      * @param addpath additional path
      * @param lst list of prefixes to withdraw
      */
-    public static void createWithdraw(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int safi, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
+    public static void createWithdraw(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, int safi, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
         if (safi == safiIp4uni) {
             for (int i = 0; i < lst.size(); i++) {
                 tabRouteEntry<addrIP> ntry = lst.get(i);

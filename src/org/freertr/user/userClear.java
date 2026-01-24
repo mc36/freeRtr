@@ -883,8 +883,8 @@ public class userClear {
             rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
             rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
-            rtrBgpMrt.dumpTable(fs, spk, rtrBgpUtil.safiIp4uni, vrf.fwd4.actualU, false, 4, 0, 0, new addrIP(), new addrIP());
-            rtrBgpMrt.dumpTable(fs, spk, rtrBgpUtil.safiIp6uni, vrf.fwd6.actualU, false, 6, 0, 0, new addrIP(), new addrIP());
+            rtrBgpMrt.dumpTable(fs, spk, rtrBgpParam.idxUni, rtrBgpUtil.safiIp4uni, vrf.fwd4.actualU, false, 4, 0, 0, new addrIP(), new addrIP());
+            rtrBgpMrt.dumpTable(fs, spk, rtrBgpParam.idxOuni, rtrBgpUtil.safiIp6uni, vrf.fwd6.actualU, false, 6, 0, 0, new addrIP(), new addrIP());
             try {
                 fs.close();
             } catch (Exception e) {
@@ -947,7 +947,7 @@ public class userClear {
                 rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
                 rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
                 rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
-                rtrBgpMrt.dumpTable(fs, spk, rtrBgpUtil.safiIp4uni, vrf.fwd4.actualU, false, 4, 0, 0, new addrIP(), new addrIP());
+                rtrBgpMrt.dumpTable(fs, spk, rtrBgpParam.idxUni, rtrBgpUtil.safiIp4uni, vrf.fwd4.actualU, false, 4, 0, 0, new addrIP(), new addrIP());
                 try {
                     fs.close();
                 } catch (Exception e) {
@@ -1077,7 +1077,7 @@ public class userClear {
                 rtrBgp bgp = new rtrBgp(vrf.fwd6, vrf, null, 0);
                 rtrBgpNeigh nei = new rtrBgpNeigh(bgp, new addrIP());
                 rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, null, 0);
-                rtrBgpMrt.dumpTable(fs, spk, rtrBgpUtil.safiIp6uni, vrf.fwd6.actualU, false, 6, 0, 0, new addrIP(), new addrIP());
+                rtrBgpMrt.dumpTable(fs, spk, rtrBgpParam.idxUni, rtrBgpUtil.safiIp6uni, vrf.fwd6.actualU, false, 6, 0, 0, new addrIP(), new addrIP());
                 try {
                     fs.close();
                 } catch (Exception e) {

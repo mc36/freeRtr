@@ -228,8 +228,8 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
      * @param safi safi to save
      */
     public void saveTable(RandomAccessFile fil, int idx, int safi) {
-        rtrBgpMrt.dumpTable(fil, conn, safi, conn.learnt[idx], false, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
-        rtrBgpMrt.dumpTable(fil, conn, safi, conn.advert[idx], true, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
+        rtrBgpMrt.dumpTable(fil, conn, idx, safi, conn.learnt[idx], false, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
+        rtrBgpMrt.dumpTable(fil, conn, idx, safi, conn.advert[idx], true, lower.fwdCore.ipVersion, remoteAs, localAs, peerAddr, localAddr);
     }
 
     public void doTempCfg(String cmd, boolean negated) {

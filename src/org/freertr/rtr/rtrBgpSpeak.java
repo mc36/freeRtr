@@ -1553,7 +1553,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         pckTx.clear();
         if (!reach) {
-            rtrBgpUtil.createWithdraw(this, pckTx, pckTh, safi, false, lst);
+            rtrBgpUtil.createWithdraw(this, pckTx, pckTh, idx, safi, false, lst);
             parent.unreachStat.tx(pckTx);
             neigh.unreachStat.tx(pckTx);
         } else {
@@ -1595,7 +1595,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.add(ntry);
             }
             pckTx.clear();
-            rtrBgpUtil.createWithdraw(this, pckTx, pckTh, safi, true, lst);
+            rtrBgpUtil.createWithdraw(this, pckTx, pckTh, idx, safi, true, lst);
             parent.unreachStat.tx(pckTx);
             neigh.unreachStat.tx(pckTx);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
@@ -1645,7 +1645,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         pckTx.clear();
-        rtrBgpUtil.createWithdraw(this, pckTx, pckTh, safi, true, lst);
+        rtrBgpUtil.createWithdraw(this, pckTx, pckTh, idx, safi, true, lst);
         parent.unreachStat.tx(pckTx);
         neigh.unreachStat.tx(pckTx);
         packSend(pckTx, rtrBgpUtil.msgUpdate);
