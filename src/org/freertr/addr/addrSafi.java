@@ -46,16 +46,6 @@ public interface addrSafi {
     public addrSafi ipv6car = new addrSafiIpv6car();
 
     /**
-     * ipv4 sr te
-     */
-    public addrSafi ipv4srte = new addrSafiIpv4srte();
-
-    /**
-     * ipv6 sr te
-     */
-    public addrSafi ipv6srte = new addrSafiIpv6srte();
-
-    /**
      * vpnv4 unicast
      */
     public addrSafi vpnv4uni = new addrSafiVpnv4uni();
@@ -235,10 +225,24 @@ public interface addrSafi {
      * @param pck packet to use
      */
     public static <T extends addrType> void writeVpnvXuni(addrPrefix<T> pfx, boolean oneLab, tabRouteEntry<addrIP> ntry, packHolder pck) {
-
-
-
-    /////////////
+        int p = 1;
+        int i = 0;
+        for (int q = 0; q < ntry.best.labelRem.size(); q++) {
+            pck.msbPutD(p, ntry.best.labelRem.get(q) << 12);
+            p += 3;
+            i += 24;
+            if (oneLab) {
+                break;
+            }
+        }
+        pck.getHeadArray()[pck.headSize() + p - 1] |= 1;
+        pck.msbPutQ(p, ntry.rouDst);
+        p += 8;
+        i += 64;
+        pck.putByte(0, i + pfx.maskLen);
+        pck.putSkip(p);
+        pck.putAddr(0, pfx.network);
+        pck.putSkip((pfx.maskLen + 7) / 8);
     }
 
     /**
@@ -391,48 +395,11 @@ public interface addrSafi {
      * @param pck packet to use
      */
     public static <T extends addrType> void writeVpnvXmul(addrPrefix<T> pfx, tabRouteEntry<addrIP> ntry, packHolder pck) {
-
-
-
-    //////////////
-    }
-
-
-
-
-    /**
-     * read one ipvX srte
-     *
-     * @param <T> address kind
-     * @param adr dummy address
-     * @param ntry route entry
-     * @param pck packet to use
-     * @return address read
-     */
-    public static <T extends addrType> addrPrefix<T> readIpvXsrte(T adr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        int i = pck.getByte(0);
-        pck.getSkip(1);
-        ntry.rouDst = pck.msbGetQ(0);
-        pck.getSkip(8);
-        i -= 64;
-        pck.getAddr(adr, 0);
-        pck.getSkip((i + 7) / 8);
-        return new addrPrefix<T>(adr, i);
-    }
-
-    /**
-     * write one ipvX srte
-     *
-     * @param <T> address kind
-     * @param pfx address to write
-     * @param ntry route entry
-     * @param pck packet to use
-     */
-    public static <T extends addrType> void writeIpvXsrte(addrPrefix<T> pfx, tabRouteEntry<addrIP> ntry, packHolder pck) {
-
-
-
-    //////////////
+        pck.msbPutQ(1, ntry.rouDst);
+        pck.putByte(0, 64 + pfx.maskLen);
+        pck.putSkip(9);
+        pck.putAddr(0, pfx.network);
+        pck.putSkip((pfx.maskLen + 7) / 8);
     }
 
     /**
@@ -634,36 +601,6 @@ class addrSafiIpv6car implements addrSafi {
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
         addrSafi.writeIpvXcar(a6, ntry, pck);
-    }
-
-}
-
-class addrSafiIpv4srte implements addrSafi {
-
-    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
-        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip4toIP(addrSafi.readIpvXsrte(new addrIPv4(), ntry, pck));
-        return ntry;
-    }
-
-    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-        addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
-        addrSafi.writeIpvXsrte(a4, ntry, pck);
-    }
-
-}
-
-class addrSafiIpv6srte implements addrSafi {
-
-    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
-        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip6toIP(addrSafi.readIpvXsrte(new addrIPv6(), ntry, pck));
-        return ntry;
-    }
-
-    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-        addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
-        addrSafi.writeIpvXsrte(a6, ntry, pck);
     }
 
 }

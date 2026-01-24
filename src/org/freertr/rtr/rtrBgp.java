@@ -638,7 +638,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 safi2rdr[rtrBgpParam.idxOuni] = addrSafi.ipv6uni;
                 safi2rdr[rtrBgpParam.idxOmlt] = addrSafi.ipv6uni;
                 safi2rdr[rtrBgpParam.idxOflw] = addrSafi.flow;
-                safi2rdr[rtrBgpParam.idxOsrt] = addrSafi.ipv6srte;
+                safi2rdr[rtrBgpParam.idxOsrt] = addrSafi.vpnv6mul;
                 safi2rdr[rtrBgpParam.idxFlw] = addrSafi.flow;
                 safi2rdr[rtrBgpParam.idxVpnU] = addrSafi.vpnv4uni;
                 safi2rdr[rtrBgpParam.idxVpnM] = addrSafi.vpnv4mul;
@@ -658,7 +658,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 safi2rdr[rtrBgpParam.idxSpf] = addrSafi.linkState;
                 safi2rdr[rtrBgpParam.idxRtf] = addrSafi.rtf;
                 safi2rdr[rtrBgpParam.idxLnks] = addrSafi.linkState;
-                safi2rdr[rtrBgpParam.idxSrte] = addrSafi.ipv4srte;
+                safi2rdr[rtrBgpParam.idxSrte] = addrSafi.vpnv4mul;
                 safi2rdr[rtrBgpParam.idxMvpn] = addrSafi.mvpn;
                 safi2rdr[rtrBgpParam.idxMvpo] = addrSafi.mvpn;
                 safi2rdr[rtrBgpParam.idxMtre] = addrSafi.mvpn;
@@ -716,7 +716,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 safi2rdr[rtrBgpParam.idxOuni] = addrSafi.ipv4uni;
                 safi2rdr[rtrBgpParam.idxOmlt] = addrSafi.ipv4uni;
                 safi2rdr[rtrBgpParam.idxOflw] = addrSafi.flow;
-                safi2rdr[rtrBgpParam.idxOsrt] = addrSafi.ipv4srte;
+                safi2rdr[rtrBgpParam.idxOsrt] = addrSafi.vpnv4mul;
                 safi2rdr[rtrBgpParam.idxFlw] = addrSafi.flow;
                 safi2rdr[rtrBgpParam.idxVpnU] = addrSafi.vpnv6uni;
                 safi2rdr[rtrBgpParam.idxVpnM] = addrSafi.vpnv6mul;
@@ -736,7 +736,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 safi2rdr[rtrBgpParam.idxSpf] = addrSafi.linkState;
                 safi2rdr[rtrBgpParam.idxRtf] = addrSafi.rtf;
                 safi2rdr[rtrBgpParam.idxLnks] = addrSafi.linkState;
-                safi2rdr[rtrBgpParam.idxSrte] = addrSafi.ipv6srte;
+                safi2rdr[rtrBgpParam.idxSrte] = addrSafi.vpnv6mul;
                 safi2rdr[rtrBgpParam.idxMvpn] = addrSafi.mvpn;
                 safi2rdr[rtrBgpParam.idxMvpo] = addrSafi.mvpn;
                 safi2rdr[rtrBgpParam.idxMtre] = addrSafi.mvpn;
