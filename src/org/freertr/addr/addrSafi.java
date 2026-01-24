@@ -360,10 +360,27 @@ public interface addrSafi {
      * @param pck packet to use
      */
     public static <T extends addrType> void writeIpvXcar(addrPrefix<T> pfx, tabRouteEntry<addrIP> ntry, packHolder pck) {
-
-
-
-    //////////////
+        int i = (pfx.maskLen + 7) / 8;
+        int o = ntry.best.labelRem.size() * 3;
+        pck.putByte(0, i + o + 9); // nlri length
+        pck.putByte(1, i + 5); // key length
+        pck.putByte(2, 1); // nlri type
+        pck.putByte(3, pfx.maskLen); // mask length
+        pck.putSkip(4);
+        pck.putAddr(0, pfx.network); // mask
+        pck.putSkip(i);
+        pck.msbPutD(0, (int) ntry.rouDst);
+        pck.putSkip(4);
+        pck.putByte(0, 1); // tlv type
+        pck.putByte(1, o); // tlv length
+        pck.putSkip(2);
+        o = 0;
+        for (i = 0; i < ntry.best.labelRem.size(); i++) {
+            pck.msbPutD(o, ntry.best.labelRem.get(i) << 12);
+            o += 3;
+        }
+        pck.getHeadArray()[pck.headSize() + o - 1] |= 1;
+        pck.putSkip(o);
     }
 
     /**
