@@ -700,11 +700,12 @@ class addrSafiLnkSt implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        int i = ntry.nlri.length - 2;
+        pck.putCopy(ntry.nlri, 0, 0, 2);
+        pck.msbPutW(2, i);
+        pck.putSkip(4);
+        pck.putCopy(ntry.nlri, 2, 0, i);
+        pck.putSkip(i);
     }
 
 }
