@@ -1428,7 +1428,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     }
 
     private void renegotiatingSafi(int idx, int safi, boolean add, boolean cfg) {
-        sendEndOfRib(safi);
+        sendEndOfRib(idx, safi);
         learnt[idx].clear();
         advert[idx].clear();
         neigh.willing[idx].clear();
@@ -1445,7 +1445,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         needFull.set(3);
         parent.needFull.add(1);
         parent.compute.wakeup();
-        sendEndOfRib(safi);
+        sendEndOfRib(idx, safi);
     }
 
     /**
@@ -1506,14 +1506,15 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * send update packet
      *
+     * @param idx safi to update
      * @param safi safi to update
      */
-    public void sendEndOfRib(int safi) {
+    public void sendEndOfRib(int idx, int safi) {
         if (debugger.rtrBgpTraf) {
             logger.debug("eor to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
         }
         packHolder pck = new packHolder(true, true);
-        rtrBgpUtil.createEndOfRib(this, pck, new packHolder(true, true), safi);
+        rtrBgpUtil.createEndOfRib(this, pck, new packHolder(true, true), idx, safi);
         packSend(pck, rtrBgpUtil.msgUpdate);
     }
 

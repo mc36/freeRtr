@@ -132,6 +132,8 @@ class servMrt2bgpConn implements Runnable {
 
     private addrIP peer;
 
+    private int idx;
+
     private int safi;
 
     public servMrt2bgpConn(servMrt2bgp parent, pipeSide stream, addrIP remote) {
@@ -173,7 +175,7 @@ class servMrt2bgpConn implements Runnable {
             fs.close();
         } catch (Exception e) {
         }
-        spk.sendEndOfRib(safi);
+        spk.sendEndOfRib(idx, safi);
     }
 
     public void run() {
@@ -188,7 +190,8 @@ class servMrt2bgpConn implements Runnable {
             rtrBgpNeigh nei = new rtrBgpNeigh(bgp, peer);
             nei.localAs = lower.localAs;
             nei.addrFams = rtrBgpParam.boolsSet(false);
-            nei.addrFams[bgp.safi2idx(safi)] = true;
+            idx = bgp.safi2idx(safi);
+            nei.addrFams[idx] = true;
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, pipe, 0);
             packHolder pck = new packHolder(true, true);
             spk.sendOpen();
