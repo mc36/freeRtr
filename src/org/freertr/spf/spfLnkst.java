@@ -702,9 +702,9 @@ public class spfLnkst {
     public static void createPrefix(tabRoute<addrIP> tab, tabRoute<addrIP> old, encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
         if (ntry.prefix.network.isIPv4()) {
-            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp4uni, true, hlp, ntry);
+            addrSafi.ipv4uni.writePrefix(true, hlp, ntry);
         } else {
-            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp6uni, true, hlp, ntry);
+            addrSafi.ipv6uni.writePrefix(true, hlp, ntry);
         }
         hlp.merge2end();
         tlv.putBytes(pck, typIpReachInfo, hlp.getCopy());

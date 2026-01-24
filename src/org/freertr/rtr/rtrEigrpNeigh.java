@@ -603,9 +603,9 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
         pck.putAddr(0, ntry.best.originator);
         pck.putSkip(ntry.best.originator.getSize());
         if (ipv4) {
-            rtrBgpUtil.writePrefix(rtrBgpUtil.afiIpv4, true, pck, ntry);
+            addrSafi.ipv4uni.writePrefix(true, pck, ntry);
         } else {
-            rtrBgpUtil.writePrefix(rtrBgpUtil.afiIpv6, true, pck, ntry);
+            addrSafi.ipv6uni.writePrefix(true, pck, ntry);
         }
         pck.merge2end();
         byte[] buf = pck.getCopy();

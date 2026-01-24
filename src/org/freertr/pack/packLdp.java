@@ -740,11 +740,11 @@ public class packLdp {
         if (prf.network.isIPv4()) {
             p.msbPutW(1, rtrBgpUtil.afiIpv4 >>> 16);
             p.putSkip(3);
-            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp4uni, true, p, pref);
+            addrSafi.ipv4uni.writePrefix(true, p, pref);
         } else {
             p.msbPutW(1, rtrBgpUtil.afiIpv6 >>> 16);
             p.putSkip(3);
-            rtrBgpUtil.writePrefix(rtrBgpUtil.safiIp6uni, true, p, pref);
+            addrSafi.ipv6uni.writePrefix(true, p, pref);
         }
         p.merge2beg();
         byte[] buf = p.getCopy();

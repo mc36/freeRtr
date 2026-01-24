@@ -329,7 +329,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                 pck.putSkip(4);
                 pck.merge2beg();
                 if (typ == rtrBgpUtil.safiIp4uni) {
-                    rtrBgpUtil.writePrefix(typ, true, pck, pfx);
+                    addrSafi.ipv4uni.writePrefix(true, pck, pfx);
                     pck.merge2end();
                 }
                 pck.ETHtype = typ;

@@ -2721,7 +2721,7 @@ public class rtrBgpUtil {
                     pck.msbPutD(0, ntry.best.ident);
                     pck.putSkip(4);
                 }
-                writePrefix(safiIp4uni, true, pck, ntry);
+                addrSafi.ipv4uni.writePrefix(true, pck, ntry);
             }
             pck.merge2beg();
             pck.msbPutW(0, pck.dataSize());
@@ -2879,7 +2879,7 @@ public class rtrBgpUtil {
                 pck.msbPutD(0, ntry.best.ident);
                 pck.putSkip(4);
             }
-            writePrefix(safiIp4uni, oneLab, pck, ntry);
+            addrSafi.ipv4uni.writePrefix(oneLab, pck, ntry);
         }
         pck.merge2end();
     }
