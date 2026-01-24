@@ -800,7 +800,7 @@ public class packLdp {
     private addrPrefix<addrIP> getFECaddr(packHolder pck) {
         int i = pck.msbGetW(0) << 16; // afi
         pck.getSkip(2);
-        tabRouteEntry<addrIP> res = addrSafi.readPrefix(i, true, pck);
+        tabRouteEntry<addrIP> res = addrSafi.readPrefix(i, pck);
         return res.prefix;
     }
 

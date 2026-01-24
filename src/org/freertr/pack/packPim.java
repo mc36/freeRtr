@@ -297,13 +297,13 @@ public class packPim {
         // int flg = pck.getByte(2); // flags
         pck.getSkip(3);
         if (enc == 0) {
-            tabRouteEntry<addrIP> prf = addrSafi.readPrefix(afi, true, pck);
+            tabRouteEntry<addrIP> prf = addrSafi.readPrefix(afi, pck);
             return prf.prefix;
         }
         if (enc != 1) {
             return null;
         }
-        tabRouteEntry<addrIP> prf = addrSafi.readPrefix(afi, true, pck);
+        tabRouteEntry<addrIP> prf = addrSafi.readPrefix(afi, pck);
         for (;;) {
             afi = pck.getByte(0);
             enc = pck.getByte(1);

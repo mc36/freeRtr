@@ -1536,12 +1536,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * send update packet without addpath
      *
-     * @param safi safi to update
-     * @param oneLab just one label
+     * @param idx safi to update
      * @param lst list of prefixes to advertise
      * @param reach true to reachable, false to withdraw
      */
-    public void sendUpdateSP(int safi, boolean oneLab, List<tabRouteEntry<addrIP>> lst, boolean reach) {
+    public void sendUpdateSP(int idx, List<tabRouteEntry<addrIP>> lst, boolean reach) {
+        int safi = parent.idx2safi[idx];
+        boolean oneLab = !peerMltLab[idx];
         if (debugger.rtrBgpTraf) {
             String s = "";
             for (int i = 0; i < lst.size(); i++) {
@@ -1566,12 +1567,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * send update packet with addpath
      *
-     * @param safi safi to update
-     * @param oneLab just one label
+     * @param idx safi to update
      * @param wil prefix to advertise, null to withdraw
      * @param don old already advertised data
      */
-    public void sendUpdateAP(int safi, boolean oneLab, tabRouteEntry<addrIP> wil, tabRouteEntry<addrIP> don) {
+    public void sendUpdateAP(int idx, tabRouteEntry<addrIP> wil, tabRouteEntry<addrIP> don) {
+        int safi = parent.idx2safi[idx];
+        boolean oneLab = !peerMltLab[idx];
         if (debugger.rtrBgpTraf) {
             String a;
             String s;

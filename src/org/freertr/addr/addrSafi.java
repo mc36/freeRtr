@@ -414,16 +414,15 @@ public interface addrSafi {
      * read address from packet
      *
      * @param safi safi to read
-     * @param oneLab just one label
      * @param pck packet to use
      * @return address read, null if nothing
      */
-    public static tabRouteEntry<addrIP> readPrefix(int safi, boolean oneLab, packHolder pck) {
+    public static tabRouteEntry<addrIP> readPrefix(int safi, packHolder pck) {
         switch (safi & rtrBgpUtil.afiMask) {
             case rtrBgpUtil.afiIpv4:
-                return ipv4uni.readPrefix(oneLab, pck);
+                return ipv4uni.readPrefix(true, pck);
             case rtrBgpUtil.afiIpv6:
-                return ipv6uni.readPrefix(oneLab, pck);
+                return ipv6uni.readPrefix(true, pck);
             default:
                 logger.info("unknown safi (" + safi + ") requested");
                 return null;
