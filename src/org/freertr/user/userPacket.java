@@ -1418,7 +1418,8 @@ public class userPacket {
                 safi = rtrBgpUtil.safiIp6uni;
             }
             nei.addrFams = rtrBgpParam.boolsSet(false);
-            nei.addrFams[bgp.safi2idx(safi)] = true;
+            int idx = bgp.safi2idx(safi);
+            nei.addrFams[idx] = true;
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, strm, 0);
             packHolder pck = new packHolder(true, true);
             spk.sendOpen();
@@ -1434,7 +1435,7 @@ public class userPacket {
             pck.clear();
             List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
             lst.add(ntry);
-            rtrBgpUtil.createReachable(spk, pck, tmp, safi, false, false, lst);
+            rtrBgpUtil.createReachable(spk, pck, tmp, idx, safi, false, false, lst);
             spk.packSend(pck, rtrBgpUtil.msgUpdate);
             cmd.error("waiting");
             for (int o = 1000;; o++) {
@@ -1515,7 +1516,8 @@ public class userPacket {
                 safi = rtrBgpUtil.safiIp6uni;
             }
             nei.addrFams = rtrBgpParam.boolsSet(false);
-            nei.addrFams[bgp.safi2idx(safi)] = true;
+            int idx = bgp.safi2idx(safi);
+            nei.addrFams[idx] = true;
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, strm, 0);
             packHolder pck = new packHolder(true, true);
             spk.sendOpen();
@@ -1549,7 +1551,7 @@ public class userPacket {
                     ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
                     lst.add(ntry.copyBytes(tabRoute.addType.ecmp));
                 }
-                rtrBgpUtil.createReachable(spk, pck, tmp, safi, false, false, lst);
+                rtrBgpUtil.createReachable(spk, pck, tmp, idx, safi, false, false, lst);
                 spk.packSend(pck, rtrBgpUtil.msgUpdate);
                 cmd.pipe.strPut(".");
                 if (need2stop()) {

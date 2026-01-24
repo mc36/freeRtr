@@ -304,11 +304,6 @@ public class rtrBgpUtil {
     public final static int sfiAutDsc = 0x8c;
 
     /**
-     * attributes dump
-     */
-    public final static int safiAttrib = -1;
-
-    /**
      * ipv4 unicast address family
      */
     public final static int safiIp4uni = afiIpv4 | sfiUnicast;
@@ -2570,14 +2565,43 @@ public class rtrBgpUtil {
      * encode attribute set
      *
      * @param spkr where to signal
+     * @param idx address family
      * @param as as number
      * @param ntry table entry
      */
-    public static void encodeAttribSet(rtrBgpSpeak spkr, int as, tabRouteEntry<addrIP> ntry) {
-        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
-        lst.add(ntry);
+    public static void encodeAttribSet(rtrBgpSpeak spkr, int idx, int as, tabRouteEntry<addrIP> ntry) {
         packHolder pck = new packHolder(true, true);
-        createReachable(spkr, pck, new packHolder(true, true), safiAttrib, false, false, lst);
+        packHolder hlp = new packHolder(true, true);
+        placeUnknown(spkr, pck, hlp, ntry);
+        placeOrigin(spkr, pck, hlp, ntry);
+        placeAsPath(spkr, pck, hlp, ntry);
+        placeMetric(spkr, pck, hlp, ntry);
+        placeLocPref(spkr, pck, hlp, ntry);
+        placeEntropyLab(spkr, pck, hlp, ntry);
+        placeAtomicAggr(spkr, pck, hlp, ntry);
+        placeAggregator(spkr, pck, hlp, ntry);
+        placeConnector(spkr, pck, hlp, ntry);
+        placePathLimit(spkr, pck, hlp, ntry);
+        placePeDistLab(spkr, pck, hlp, ntry);
+        placeStdComm(spkr, pck, hlp, ntry);
+        placeExtComm(spkr, pck, hlp, ntry);
+        placeLrgComm(spkr, pck, hlp, ntry);
+        placeOriginator(spkr, pck, hlp, ntry);
+        placeClustList(spkr, pck, hlp, ntry);
+        placeTraffEng(spkr, pck, hlp, ntry);
+        placeAccIgp(spkr, pck, hlp, ntry);
+        placePmsiTun(spkr, pck, hlp, ntry);
+        placeTunEnc(spkr, pck, hlp, ntry);
+        placeLnkSta(spkr, pck, hlp, ntry);
+        placeOnlyCust(spkr, pck, hlp, ntry);
+        placePrefSid(spkr, spkr.parent.idx2safi[idx], pck, hlp, ntry);
+        placeBier(spkr, pck, hlp, ntry);
+        placeNshChain(spkr, pck, hlp, ntry);
+        placeDomainPath(spkr, pck, hlp, ntry);
+        placeBfdDiscr(spkr, pck, hlp, ntry);
+        placeHopCapa(spkr, pck, hlp, ntry);
+        placeAttribSet(spkr, pck, hlp, ntry);
+        pck.merge2beg();
         ntry.best.attribAs = as;
         ntry.best.attribVal = pck.getCopy();
     }
@@ -2810,12 +2834,13 @@ public class rtrBgpUtil {
      * @param spkr where to signal
      * @param pck packet to update
      * @param hlp helper packet
+     * @param idx address family
      * @param safi address family
      * @param addpath additional path
      * @param oneLab just one label
      * @param lst list of prefixes to advertise
      */
-    public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int safi, boolean addpath, boolean oneLab, List<tabRouteEntry<addrIP>> lst) {
+    public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, int safi, boolean addpath, boolean oneLab, List<tabRouteEntry<addrIP>> lst) {
         tabRouteEntry<addrIP> ntry = lst.get(0);
         placeUnknown(spkr, pck, hlp, ntry);
         placeOrigin(spkr, pck, hlp, ntry);
@@ -2846,10 +2871,6 @@ public class rtrBgpUtil {
         placeBfdDiscr(spkr, pck, hlp, ntry);
         placeHopCapa(spkr, pck, hlp, ntry);
         placeAttribSet(spkr, pck, hlp, ntry);
-        if (safi == safiAttrib) {
-            pck.merge2beg();
-            return;
-        }
         if (safi != safiIp4uni) {
             placeReachable(spkr, safi, addpath, oneLab, pck, hlp, lst);
             pck.merge2beg();

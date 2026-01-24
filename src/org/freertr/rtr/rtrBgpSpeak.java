@@ -1557,7 +1557,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             parent.unreachStat.tx(pckTx);
             neigh.unreachStat.tx(pckTx);
         } else {
-            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, false, oneLab, lst);
+            rtrBgpUtil.createReachable(this, pckTx, pckTh, idx, safi, false, oneLab, lst);
             parent.reachabStat.tx(pckTx);
             neigh.reachabStat.tx(pckTx);
         }
@@ -1609,7 +1609,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 lst.clear();
                 lst.add(ntry);
                 pckTx.clear();
-                rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, oneLab, lst);
+                rtrBgpUtil.createReachable(this, pckTx, pckTh, idx, safi, true, oneLab, lst);
                 parent.reachabStat.tx(pckTx);
                 neigh.reachabStat.tx(pckTx);
                 packSend(pckTx, rtrBgpUtil.msgUpdate);
@@ -1629,7 +1629,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             lst.clear();
             lst.add(ntry);
             pckTx.clear();
-            rtrBgpUtil.createReachable(this, pckTx, pckTh, safi, true, oneLab, lst);
+            rtrBgpUtil.createReachable(this, pckTx, pckTh, idx, safi, true, oneLab, lst);
             parent.reachabStat.tx(pckTx);
             neigh.reachabStat.tx(pckTx);
             packSend(pckTx, rtrBgpUtil.msgUpdate);
@@ -2116,7 +2116,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tabRouteUtil.replaceIntList(ntry.best.pathSet, neigh.remoteAs, neigh.localAs);
         }
         if (neigh.intVpnClnt) {
-            rtrBgpUtil.encodeAttribSet(this, neigh.localAs, ntry);
+            rtrBgpUtil.encodeAttribSet(this, idx, neigh.localAs, ntry);
         }
         return false;
     }
