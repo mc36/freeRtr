@@ -1034,11 +1034,11 @@ class addrSafiMspw implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        pck.msbPutQ(1, ntry.rouDst);
+        int i = addrSafi.writeFlowspec(ntry, pck, 9);
+        i += 8;
+        pck.putByte(0, i * 8);
+        pck.putSkip(1 + i);
     }
 
 }
@@ -1064,11 +1064,11 @@ class addrSafiMdt implements addrSafi {
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-
-
-
-
-////////////
+        pck.putByte(0, 128); // length
+        pck.msbPutQ(1, ntry.rouDst);
+        pck.putAddr(9, ntry.prefix.network.toIPv4());
+        pck.putAddr(13, ntry.prefix.broadcast.toIPv4());
+        pck.putSkip(17);
     }
 
 }
