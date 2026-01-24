@@ -190,12 +190,11 @@ public class rtrBgpFlow {
             addrIPv6 a6 = addr.toIPv6();
             addrIPv6 m6 = mask.toIPv6();
             ntry.prefix = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a6, m6.toNetmask()));
-            addrSafi.ipv6uni.writePrefix(true, pck, ntry);
-            int i = pck.headSize();
-            byte[] buf = pck.getHeadArray();
-            bits.byteCopy(buf, 2, buf, 3, i - 2);
-            buf[2] = 0;
             pck.putSkip(1);
+            addrSafi.ipv6uni.writePrefix(true, pck, ntry);
+            byte[] buf = pck.getHeadArray();
+            buf[1] = buf[2];
+            buf[2] = 0;
         } else {
             addrIPv4 a4 = addr.toIPv4();
             addrIPv4 m4 = mask.toIPv4();
