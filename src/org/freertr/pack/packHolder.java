@@ -746,6 +746,27 @@ public class packHolder {
     }
 
     /**
+     * read u8 from header buffer
+     *
+     * @param rofs offset where to write
+     * @return value read
+     */
+    public int headByte(int rofs) {
+        return bits.getByte(headD, headS + rofs);
+    }
+
+    /**
+     * read a bit from header buffer
+     *
+     * @param rofs byte offset where to write
+     * @param bit bit offset where to write
+     * @return value read
+     */
+    public boolean headBit(int rofs, int bit) {
+        return bits.bitGet(headD, headS + rofs, bit);
+    }
+
+    /**
      * write u8 to header buffer
      *
      * @param rofs offset where to write
