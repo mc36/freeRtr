@@ -1208,7 +1208,7 @@ public class packHolder {
      *
      * @return byte array of head buffer
      */
-    public byte[] getHeadArray() {
+    protected byte[] getHeadArray() {
         return headD;
     }
 
