@@ -444,17 +444,14 @@ public interface addrSafi {
      * @param len length in bytes
      */
     public static void readFlowspec(tabRouteEntry<addrIP> ntry, packHolder pck, int len) {
-        byte[] adr = new byte[addrIP.size];
+        byte[] adr = new byte[addrIP.size * 4];
         ntry.prefix = new addrPrefix<addrIP>(new addrIP(), adr.length * 8);
         adr[0] = (byte) len;
-        pck.getCopy(adr, 1, 0, 15);
+        pck.getCopy(adr, 1, 0, len);
         ntry.prefix.network.fromBuf(adr, 0);
-        pck.getCopy(adr, 0, 15, 16);
-        ntry.prefix.broadcast.fromBuf(adr, 0);
-        pck.getCopy(adr, 0, 31, 16);
-        ntry.prefix.wildcard.fromBuf(adr, 0);
-        pck.getCopy(adr, 0, 47, 16);
-        ntry.prefix.mask.fromBuf(adr, 0);
+        ntry.prefix.broadcast.fromBuf(adr, 16);
+        ntry.prefix.wildcard.fromBuf(adr, 32);
+        ntry.prefix.mask.fromBuf(adr, 48);
         pck.getSkip(len);
     }
 
