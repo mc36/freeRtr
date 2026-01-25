@@ -235,7 +235,7 @@ public interface addrSafi {
                 break;
             }
         }
-        pck.getHeadArray()[pck.headSize() + p - 1] |= 1;
+        pck.putBit(p - 1, 0, true);
         pck.msbPutQ(p, ntry.rouDst);
         p += 8;
         i += 64;
@@ -299,7 +299,7 @@ public interface addrSafi {
                 break;
             }
         }
-        pck.getHeadArray()[pck.headSize() + p - 1] |= 1;
+        pck.putBit(p - 1, 0, true);
         pck.putByte(0, i + pfx.maskLen);
         pck.putSkip(p);
         pck.putAddr(0, pfx.network);
@@ -379,7 +379,7 @@ public interface addrSafi {
             pck.msbPutD(o, ntry.best.labelRem.get(i) << 12);
             o += 3;
         }
-        pck.getHeadArray()[pck.headSize() + o - 1] |= 1;
+        pck.putBit(o - 1, 0, true);
         pck.putSkip(o);
     }
 
@@ -787,7 +787,7 @@ class addrSafiMup implements addrSafi {
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         pck.putByte(0, 1); // arch
         int i = addrSafi.writeFlowspec(ntry, pck, 11);
-        int o = pck.getHeadArray()[pck.headSize() + 11];
+        int o = pck.headByte(11);
         i--;
         pck.msbPutQ(4, ntry.rouDst);
         i += 8;
@@ -1281,7 +1281,7 @@ class addrSafiMvpn implements addrSafi {
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         int i = addrSafi.writeFlowspec(ntry, pck, 9);
-        int o = pck.getHeadArray()[pck.headSize() + 9];
+        int o = pck.headByte(9);
         i--;
         pck.msbPutQ(2, ntry.rouDst);
         i += 8;
