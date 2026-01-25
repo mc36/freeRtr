@@ -463,6 +463,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* unknowns-log", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* unknowns-collect", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* log-end-changes", null),
+        new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* log-begin-changes", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* log-nexthop-changes", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* log-length-changes", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* dampening", null),

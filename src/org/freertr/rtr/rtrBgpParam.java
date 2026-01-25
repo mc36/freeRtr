@@ -199,6 +199,11 @@ public abstract class rtrBgpParam {
     public boolean endChanges;
 
     /**
+     * log begin changes
+     */
+    public boolean begChanges;
+
+    /**
      * log hop changes
      */
     public boolean hopChanges;
@@ -1630,6 +1635,7 @@ public abstract class rtrBgpParam {
         lnkSta = src.lnkSta;
         attribSet = src.attribSet;
         endChanges = src.endChanges;
+        begChanges = src.begChanges;
         hopChanges = src.hopChanges;
         unknownsColl = src.unknownsColl;
         unknownsLog = src.unknownsLog;
@@ -2186,6 +2192,7 @@ public abstract class rtrBgpParam {
         l.add(null, false, 4, new int[]{-1}, "<num>", "allowed attributes");
         l.add(null, false, 3, new int[]{-1}, "unknowns-log", "log received unknown attributes");
         l.add(null, false, 3, new int[]{-1}, "log-end-changes", "log received origin asn changes");
+        l.add(null, false, 3, new int[]{-1}, "log-begin-changes", "log received uplink asn changes");
         l.add(null, false, 3, new int[]{-1}, "log-nexthop-changes", "log received origin hop changes");
         l.add(null, false, 3, new int[]{4}, "log-length-changes", "log received aspath length changes");
         l.add(null, false, 4, new int[]{-1}, "<num>", "path length");
@@ -2494,6 +2501,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, unknownsIn == null, beg, nei + "unknowns-in", "" + unknownsIn);
         cmds.cfgLine(l, !unknownsLog, beg, nei + "unknowns-log", "");
         cmds.cfgLine(l, !endChanges, beg, nei + "log-end-changes", "");
+        cmds.cfgLine(l, !begChanges, beg, nei + "log-begin-changes", "");
         cmds.cfgLine(l, !hopChanges, beg, nei + "log-nexthop-changes", "");
         cmds.cfgLine(l, lengthChanges == null, beg, nei + "log-length-changes", "" + lengthChanges);
         cmds.cfgLine(l, !segRout, beg, nei + "segrout", "");
@@ -3183,6 +3191,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("log-end-changes")) {
             endChanges = !negated;
+            return false;
+        }
+        if (s.equals("log-begin-changes")) {
+            begChanges = !negated;
             return false;
         }
         if (s.equals("log-nexthop-changes")) {

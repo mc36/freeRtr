@@ -1896,7 +1896,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (neigh.hopChanges) {
             if ((old.best.nextHop != null) && (ntry.best.nextHop != null)) {
                 if (old.best.nextHop.compareTo(ntry.best.nextHop) != 0) {
-                    logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from nexthop " + old.best.nextHop + " to " + ntry.best.nextHop);
+                    logger.info("prefix " + addrPrefix.ip2str(ntry.prefix) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " from " + neigh.peerAddr + " changed from nexthop " + old.best.nextHop + " to " + ntry.best.nextHop);
                 }
             }
         }
@@ -1904,7 +1904,14 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             int o = old.best.asPathEnd();
             int c = ntry.best.asPathEnd();
             if (o != c) {
-                logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from lastasn " + o + " to " + c);
+                logger.info("prefix " + addrPrefix.ip2str(ntry.prefix) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " from " + neigh.peerAddr + " changed from lastasn " + bits.num2str(o) + " to " + bits.num2str(c));
+            }
+        }
+        if (neigh.begChanges) {
+            int o = old.best.asPathBeg();
+            int c = ntry.best.asPathBeg();
+            if (o != c) {
+                logger.info("prefix " + addrPrefix.ip2str(ntry.prefix) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " from " + neigh.peerAddr + " changed from firstasn " + bits.num2str(o) + " to " + bits.num2str(c));
             }
         }
         if (neigh.lengthChanges != null) {
@@ -1915,7 +1922,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 d = -d;
             }
             if (neigh.lengthChanges.matches(d)) {
-                logger.info("prefix " + tabRouteUtil.rd2string(ntry.rouDst) + " " + addrPrefix.ip2str(ntry.prefix) + " from " + neigh.peerAddr + " changed from pathlen " + o + " to " + c);
+                logger.info("prefix " + addrPrefix.ip2str(ntry.prefix) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " from " + neigh.peerAddr + " changed from pathlen " + o + " to " + c);
             }
         }
         old = old.copyBytes(tabRoute.addType.lnkAlters);
