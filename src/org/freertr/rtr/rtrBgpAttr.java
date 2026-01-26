@@ -24,7 +24,7 @@ public class rtrBgpAttr {
     /**
      * create instance
      */
-    private void rtrBgpAttr() {
+    private rtrBgpAttr() {
     }
 
     /**

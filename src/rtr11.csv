@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v26.1.25-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-01-25 16:36:08, took 00:03:25, with 10 workers, on 47 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v26.1.26-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2026-01-26 14:03:48, took 00:03:25, with 10 workers, on 47 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar, frr
 http://sources.freertr.org/cfg/intop8-babel01.tst;intop8-babel01.tst;success;interop8: wired babel
 http://sources.freertr.org/cfg/intop8-bgp01.tst;intop8-bgp01.tst;success;interop8: ebgp
