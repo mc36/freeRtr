@@ -293,7 +293,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                     if (tmp.dataSize() < 1) {
                         break;
                     }
-                    if (rtrBgpUtil.parseAttrib(tmp, hlp)) {
+                    if (rtrBgpAttr.parseAttrib(tmp, hlp)) {
                         break;
                     }
                     if (hlp.ETHtype == rtrBgpUtil.attrReachable) {
@@ -311,7 +311,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                         }
                         continue;
                     }
-                    rtrBgpUtil.placeAttrib(spk, hlp.ETHcos, hlp.ETHtype, pck, hlp);
+                    rtrBgpAttr.placeAttrib(spk, hlp.ETHcos, hlp.ETHtype, pck, hlp);
                     pck.merge2end();
                 }
                 if (typ != rtrBgpUtil.safiIp4uni) {
@@ -324,7 +324,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                     if (idx < 0) {
                         return 2;
                     }
-                    rtrBgpUtil.placeReachable(spk, idx, false, pck, hlp, lst);
+                    rtrBgpAttr.placeReachable(spk, idx, false, pck, hlp, lst);
                     pck.merge2end();
                 }
                 pck.msbPutW(0, 0);

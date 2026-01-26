@@ -1708,10 +1708,10 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (pck.dataSize() <= prt) {
                 break;
             }
-            if (rtrBgpUtil.parseAttrib(pck, hlp)) {
+            if (rtrBgpAttr.parseAttrib(pck, hlp)) {
                 return true;
             }
-            rtrBgpUtil.interpretAttribute(this, ntry, currAdd, currDel, hlp);
+            rtrBgpAttr.interpretAttribute(this, ntry, currAdd, currDel, hlp);
         }
         pck.setBytesLeft(prt);
         for (;;) {
