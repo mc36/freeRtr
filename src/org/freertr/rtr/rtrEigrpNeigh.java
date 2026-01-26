@@ -14,7 +14,6 @@ import org.freertr.util.notifier;
 import org.freertr.enc.encTlv;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoWrk;
-import org.freertr.addr.addrSafi;
 
 /**
  * eigrp neighbor
@@ -313,7 +312,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
             switch (tlv.valTyp) {
                 case 0x102: // ipv4 int
                     pck2.getSkip(20);
-                    ntry = addrSafi.ipv4uni.readPrefix(true, pck2);
+                    ntry = rtrBgpAfi.ipv4uni.readPrefix(true, pck2);
                     if (ntry == null) {
                         continue;
                     }
@@ -321,7 +320,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
                     break;
                 case 0x103: // ipv4 ext
                     pck2.getSkip(40);
-                    ntry = addrSafi.ipv4uni.readPrefix(true, pck2);
+                    ntry = rtrBgpAfi.ipv4uni.readPrefix(true, pck2);
                     if (ntry == null) {
                         continue;
                     }
@@ -330,7 +329,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
                     break;
                 case 0x402: // ipv6 int
                     pck2.getSkip(32);
-                    ntry = addrSafi.ipv6uni.readPrefix(true, pck2);
+                    ntry = rtrBgpAfi.ipv6uni.readPrefix(true, pck2);
                     if (ntry == null) {
                         continue;
                     }
@@ -338,7 +337,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
                     break;
                 case 0x403: // ipv6 ext
                     pck2.getSkip(52);
-                    ntry = addrSafi.ipv6uni.readPrefix(true, pck2);
+                    ntry = rtrBgpAfi.ipv6uni.readPrefix(true, pck2);
                     if (ntry == null) {
                         continue;
                     }
@@ -603,9 +602,9 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
         pck.putAddr(0, ntry.best.originator);
         pck.putSkip(ntry.best.originator.getSize());
         if (ipv4) {
-            addrSafi.ipv4uni.writePrefix(true, pck, ntry);
+            rtrBgpAfi.ipv4uni.writePrefix(true, pck, ntry);
         } else {
-            addrSafi.ipv6uni.writePrefix(true, pck, ntry);
+            rtrBgpAfi.ipv6uni.writePrefix(true, pck, ntry);
         }
         pck.merge2end();
         byte[] buf = pck.getCopy();

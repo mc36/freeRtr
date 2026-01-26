@@ -29,7 +29,6 @@ import org.freertr.prt.prtTcp;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoWrk;
 import org.freertr.tab.tabRpkiUtil;
-import org.freertr.addr.addrSafi;
 
 /**
  * bgp4 speaker
@@ -1690,7 +1689,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = addrSafi.ipv4uni.readPrefix(true, pck);
+            tabRouteEntry<addrIP> res = rtrBgpAfi.ipv4uni.readPrefix(true, pck);
             if (res == null) {
                 continue;
             }
@@ -1723,7 +1722,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 ident = pck.msbGetD(0);
                 pck.getSkip(4);
             }
-            tabRouteEntry<addrIP> res = addrSafi.ipv4uni.readPrefix(true, pck);
+            tabRouteEntry<addrIP> res = rtrBgpAfi.ipv4uni.readPrefix(true, pck);
             if (res == null) {
                 continue;
             }

@@ -11,7 +11,6 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.logFil;
-import org.freertr.addr.addrSafi;
 
 /**
  * multi-threaded routing toolkit
@@ -239,23 +238,23 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
         pck.merge2end();
         switch (typ) {
             case typRib:
-                addrSafi rdr;
+                rtrBgpAfi rdr;
                 switch (cls) {
                     case ribIp4uni:
                         typ = rtrBgpUtil.safiIp4uni;
-                        rdr = addrSafi.ipv4uni;
+                        rdr = rtrBgpAfi.ipv4uni;
                         break;
                     case ribIp4mul:
                         typ = rtrBgpUtil.safiIp4multi;
-                        rdr = addrSafi.ipv4uni;
+                        rdr = rtrBgpAfi.ipv4uni;
                         break;
                     case ribIp6uni:
                         typ = rtrBgpUtil.safiIp6uni;
-                        rdr = addrSafi.ipv6uni;
+                        rdr = rtrBgpAfi.ipv6uni;
                         break;
                     case ribIp6mul:
                         typ = rtrBgpUtil.safiIp6multi;
-                        rdr = addrSafi.ipv6uni;
+                        rdr = rtrBgpAfi.ipv6uni;
                         break;
                     default:
                         return 2;
@@ -333,7 +332,7 @@ public class rtrBgpMrt implements Comparable<rtrBgpMrt> {
                 pck.putSkip(4);
                 pck.merge2beg();
                 if (typ == rtrBgpUtil.safiIp4uni) {
-                    addrSafi.ipv4uni.writePrefix(true, pck, pfx);
+                    rtrBgpAfi.ipv4uni.writePrefix(true, pck, pfx);
                     pck.merge2end();
                 }
                 pck.ETHtype = typ;

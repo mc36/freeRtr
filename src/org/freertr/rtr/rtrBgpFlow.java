@@ -18,7 +18,6 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.util.bits;
-import org.freertr.addr.addrSafi;
 
 /**
  * bgp4 flowspec
@@ -191,7 +190,7 @@ public class rtrBgpFlow {
             addrIPv6 m6 = mask.toIPv6();
             ntry.prefix = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(a6, m6.toNetmask()));
             pck.putSkip(1);
-            addrSafi.ipv6uni.writePrefix(true, pck, ntry);
+            rtrBgpAfi.ipv6uni.writePrefix(true, pck, ntry);
             int i = pck.headSize();
             pck.putByte(1 - i, pck.headByte(2 - i));
             pck.putByte(2 - i, 0);
@@ -199,7 +198,7 @@ public class rtrBgpFlow {
             addrIPv4 a4 = addr.toIPv4();
             addrIPv4 m4 = mask.toIPv4();
             ntry.prefix = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(a4, m4.toNetmask()));
-            addrSafi.ipv4uni.writePrefix(true, pck, ntry);
+            rtrBgpAfi.ipv4uni.writePrefix(true, pck, ntry);
         }
         pck.merge2end();
     }
@@ -411,9 +410,9 @@ public class rtrBgpFlow {
             pck.getSkip(2);
             pck.putSkip(1);
             pck.merge2beg();
-            return addrSafi.ipv6uni.readPrefix(true, pck);
+            return rtrBgpAfi.ipv6uni.readPrefix(true, pck);
         } else {
-            return addrSafi.ipv4uni.readPrefix(true, pck);
+            return rtrBgpAfi.ipv4uni.readPrefix(true, pck);
         }
     }
 

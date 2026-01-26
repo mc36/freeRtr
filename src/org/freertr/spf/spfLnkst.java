@@ -11,7 +11,7 @@ import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
-import org.freertr.addr.addrSafi;
+import org.freertr.rtr.rtrBgpAfi;
 
 /**
  * link state encoder
@@ -702,9 +702,9 @@ public class spfLnkst {
     public static void createPrefix(tabRoute<addrIP> tab, tabRoute<addrIP> old, encTlv tlv, packHolder pck, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
         if (ntry.prefix.network.isIPv4()) {
-            addrSafi.ipv4uni.writePrefix(true, hlp, ntry);
+            rtrBgpAfi.ipv4uni.writePrefix(true, hlp, ntry);
         } else {
-            addrSafi.ipv6uni.writePrefix(true, hlp, ntry);
+            rtrBgpAfi.ipv6uni.writePrefix(true, hlp, ntry);
         }
         hlp.merge2end();
         tlv.putBytes(pck, typIpReachInfo, hlp.getCopy());
@@ -903,7 +903,7 @@ public class spfLnkst {
      * @param safi safi to use
      * @param dist distance to use
      */
-    public static void readSpfPref(spfCalc<addrIPv4> spf, encTlv tlv, packHolder pck, packHolder hlp, addrSafi safi, int dist) {
+    public static void readSpfPref(spfCalc<addrIPv4> spf, encTlv tlv, packHolder pck, packHolder hlp, rtrBgpAfi safi, int dist) {
         addrIPv4 loc = findNode(tlv, pck, hlp, typNodeLocal);
         if (loc == null) {
             return;

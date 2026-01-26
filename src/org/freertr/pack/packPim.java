@@ -11,7 +11,7 @@ import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.enc.encTlv;
-import org.freertr.addr.addrSafi;
+import org.freertr.rtr.rtrBgpAfi;
 
 /**
  * protocol independent multicast (rfc4601) packet
@@ -266,11 +266,11 @@ public class packPim {
         if (prf.network.isIPv4()) {
             pck.putByte(0, rtrBgpUtil.afiIpv4 >>> 16);
             pck.putSkip(3);
-            addrSafi.ipv4uni.writePrefix(true, pck, pref);
+            rtrBgpAfi.ipv4uni.writePrefix(true, pck, pref);
         } else {
             pck.putByte(0, rtrBgpUtil.afiIpv6 >>> 16);
             pck.putSkip(3);
-            addrSafi.ipv6uni.writePrefix(true, pck, pref);
+            rtrBgpAfi.ipv6uni.writePrefix(true, pck, pref);
         }
         if (rd == 0) {
             return;
@@ -297,13 +297,13 @@ public class packPim {
         // int flg = pck.getByte(2); // flags
         pck.getSkip(3);
         if (enc == 0) {
-            tabRouteEntry<addrIP> prf = addrSafi.readPrefix(afi, pck);
+            tabRouteEntry<addrIP> prf = rtrBgpAfi.readPrefix(afi, pck);
             return prf.prefix;
         }
         if (enc != 1) {
             return null;
         }
-        tabRouteEntry<addrIP> prf = addrSafi.readPrefix(afi, pck);
+        tabRouteEntry<addrIP> prf = rtrBgpAfi.readPrefix(afi, pck);
         for (;;) {
             afi = pck.getByte(0);
             enc = pck.getByte(1);

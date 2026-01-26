@@ -1,134 +1,140 @@
-package org.freertr.addr;
+package org.freertr.rtr;
 
 import java.util.ArrayList;
+import org.freertr.addr.addrEmpty;
+import org.freertr.addr.addrIP;
+import org.freertr.addr.addrIPv4;
+import org.freertr.addr.addrIPv6;
+import org.freertr.addr.addrMac;
+import org.freertr.addr.addrPrefix;
+import org.freertr.addr.addrType;
 import org.freertr.cry.cryHashMd5;
 import org.freertr.pack.packHolder;
-import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
 
 /**
- * one sub address family
+ * one bgp4 address family
  *
  * @author matecsaba
  */
-public interface addrSafi {
+public interface rtrBgpAfi {
 
     /**
      * ipv4 unicast
      */
-    public addrSafi ipv4uni = new addrSafiIpv4uni();
+    public rtrBgpAfi ipv4uni = new rtrBgpAfiIpv4uni();
 
     /**
      * ipv6 unicast
      */
-    public addrSafi ipv6uni = new addrSafiIpv6uni();
+    public rtrBgpAfi ipv6uni = new rtrBgpAfiIpv6uni();
 
     /**
      * ipv4 labeled
      */
-    public addrSafi ipv4lab = new addrSafiIpv4lab();
+    public rtrBgpAfi ipv4lab = new rtrBgpAfiIpv4lab();
 
     /**
      * ipv6 labeled
      */
-    public addrSafi ipv6lab = new addrSafiIpv6lab();
+    public rtrBgpAfi ipv6lab = new rtrBgpAfiIpv6lab();
 
     /**
      * ipv4 colored
      */
-    public addrSafi ipv4car = new addrSafiIpv4car();
+    public rtrBgpAfi ipv4car = new rtrBgpAfiIpv4car();
 
     /**
      * ipv6 colored
      */
-    public addrSafi ipv6car = new addrSafiIpv6car();
+    public rtrBgpAfi ipv6car = new rtrBgpAfiIpv6car();
 
     /**
      * vpnv4 unicast
      */
-    public addrSafi vpnv4uni = new addrSafiVpnv4uni();
+    public rtrBgpAfi vpnv4uni = new rtrBgpAfiVpnv4uni();
 
     /**
      * vpnv6 unicast
      */
-    public addrSafi vpnv6uni = new addrSafiVpnv6uni();
+    public rtrBgpAfi vpnv6uni = new rtrBgpAfiVpnv6uni();
 
     /**
      * vpnv4 multicast
      */
-    public addrSafi vpnv4mul = new addrSafiVpnv4mul();
+    public rtrBgpAfi vpnv4mul = new rtrBgpAfiVpnv4mul();
 
     /**
      * vpnv6 multicast
      */
-    public addrSafi vpnv6mul = new addrSafiVpnv6mul();
+    public rtrBgpAfi vpnv6mul = new rtrBgpAfiVpnv6mul();
 
     /**
      * link state
      */
-    public addrSafi linkState = new addrSafiLnkSt();
+    public rtrBgpAfi linkState = new rtrBgpAfiLnkSt();
 
     /**
      * sdwan
      */
-    public addrSafi sdWan = new addrSafiSdwan();
+    public rtrBgpAfi sdWan = new rtrBgpAfiSdwan();
 
     /**
      * mup
      */
-    public addrSafi mup = new addrSafiMup();
+    public rtrBgpAfi mup = new rtrBgpAfiMup();
 
     /**
      * evpn
      */
-    public addrSafi evpn = new addrSafiEvpn();
+    public rtrBgpAfi evpn = new rtrBgpAfiEvpn();
 
     /**
      * nsh
      */
-    public addrSafi nsh = new addrSafiNsh();
+    public rtrBgpAfi nsh = new rtrBgpAfiNsh();
 
     /**
      * rpd
      */
-    public addrSafi rpd = new addrSafiRpd();
+    public rtrBgpAfi rpd = new rtrBgpAfiRpd();
 
     /**
      * vpls
      */
-    public addrSafi vpls = new addrSafiVpls();
+    public rtrBgpAfi vpls = new rtrBgpAfiVpls();
 
     /**
      * mspw
      */
-    public addrSafi mspw = new addrSafiMspw();
+    public rtrBgpAfi mspw = new rtrBgpAfiMspw();
 
     /**
      * mdt
      */
-    public addrSafi mdt = new addrSafiMdt();
+    public rtrBgpAfi mdt = new rtrBgpAfiMdt();
 
     /**
      * rtfilter
      */
-    public addrSafi rtf = new addrSafiRtf();
+    public rtrBgpAfi rtf = new rtrBgpAfiRtf();
 
     /**
      * flowspec
      */
-    public addrSafi flow = new addrSafiFlowspec();
+    public rtrBgpAfi flow = new rtrBgpAfiFlowspec();
 
     /**
      * vpn flowspec
      */
-    public addrSafi vpnFlw = new addrSafiVpnFlow();
+    public rtrBgpAfi vpnFlw = new rtrBgpAfiVpnFlow();
 
     /**
      * mvpn
      */
-    public addrSafi mvpn = new addrSafiMvpn();
+    public rtrBgpAfi mvpn = new rtrBgpAfiMvpn();
 
     /**
      * read address from packet
@@ -545,157 +551,157 @@ public interface addrSafi {
 
 }
 
-class addrSafiIpv4uni implements addrSafi {
+class rtrBgpAfiIpv4uni implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip4toIP(addrSafi.readIpvXuni(new addrIPv4(), pck));
+        ntry.prefix = addrPrefix.ip4toIP(rtrBgpAfi.readIpvXuni(new addrIPv4(), pck));
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
-        addrSafi.writeIpvXuni(a4, pck);
+        rtrBgpAfi.writeIpvXuni(a4, pck);
     }
 
 }
 
-class addrSafiIpv6uni implements addrSafi {
+class rtrBgpAfiIpv6uni implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip6toIP(addrSafi.readIpvXuni(new addrIPv6(), pck));
+        ntry.prefix = addrPrefix.ip6toIP(rtrBgpAfi.readIpvXuni(new addrIPv6(), pck));
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
-        addrSafi.writeIpvXuni(a6, pck);
+        rtrBgpAfi.writeIpvXuni(a6, pck);
     }
 
 }
 
-class addrSafiIpv4lab implements addrSafi {
+class rtrBgpAfiIpv4lab implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip4toIP(addrSafi.readIpvXlab(new addrIPv4(), oneLab, ntry, pck));
+        ntry.prefix = addrPrefix.ip4toIP(rtrBgpAfi.readIpvXlab(new addrIPv4(), oneLab, ntry, pck));
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
-        addrSafi.writeIpvXlab(a4, oneLab, ntry, pck);
+        rtrBgpAfi.writeIpvXlab(a4, oneLab, ntry, pck);
     }
 
 }
 
-class addrSafiIpv6lab implements addrSafi {
+class rtrBgpAfiIpv6lab implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip6toIP(addrSafi.readIpvXlab(new addrIPv6(), oneLab, ntry, pck));
+        ntry.prefix = addrPrefix.ip6toIP(rtrBgpAfi.readIpvXlab(new addrIPv6(), oneLab, ntry, pck));
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
-        addrSafi.writeIpvXlab(a6, oneLab, ntry, pck);
+        rtrBgpAfi.writeIpvXlab(a6, oneLab, ntry, pck);
     }
 
 }
 
-class addrSafiIpv4car implements addrSafi {
+class rtrBgpAfiIpv4car implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip4toIP(addrSafi.readIpvXcar(new addrIPv4(), ntry, pck));
+        ntry.prefix = addrPrefix.ip4toIP(rtrBgpAfi.readIpvXcar(new addrIPv4(), ntry, pck));
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
-        addrSafi.writeIpvXcar(a4, ntry, pck);
+        rtrBgpAfi.writeIpvXcar(a4, ntry, pck);
     }
 
 }
 
-class addrSafiIpv6car implements addrSafi {
+class rtrBgpAfiIpv6car implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip6toIP(addrSafi.readIpvXcar(new addrIPv6(), ntry, pck));
+        ntry.prefix = addrPrefix.ip6toIP(rtrBgpAfi.readIpvXcar(new addrIPv6(), ntry, pck));
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
-        addrSafi.writeIpvXcar(a6, ntry, pck);
+        rtrBgpAfi.writeIpvXcar(a6, ntry, pck);
     }
 
 }
 
-class addrSafiVpnv4uni implements addrSafi {
+class rtrBgpAfiVpnv4uni implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip4toIP(addrSafi.readVpnvXuni(new addrIPv4(), oneLab, ntry, pck));
+        ntry.prefix = addrPrefix.ip4toIP(rtrBgpAfi.readVpnvXuni(new addrIPv4(), oneLab, ntry, pck));
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
-        addrSafi.writeVpnvXuni(a4, oneLab, ntry, pck);
+        rtrBgpAfi.writeVpnvXuni(a4, oneLab, ntry, pck);
     }
 
 }
 
-class addrSafiVpnv6uni implements addrSafi {
+class rtrBgpAfiVpnv6uni implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip6toIP(addrSafi.readVpnvXuni(new addrIPv6(), oneLab, ntry, pck));
+        ntry.prefix = addrPrefix.ip6toIP(rtrBgpAfi.readVpnvXuni(new addrIPv6(), oneLab, ntry, pck));
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
-        addrSafi.writeVpnvXuni(a6, oneLab, ntry, pck);
+        rtrBgpAfi.writeVpnvXuni(a6, oneLab, ntry, pck);
     }
 
 }
 
-class addrSafiVpnv4mul implements addrSafi {
+class rtrBgpAfiVpnv4mul implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip4toIP(addrSafi.readVpnvXmul(new addrIPv4(), ntry, pck));
+        ntry.prefix = addrPrefix.ip4toIP(rtrBgpAfi.readVpnvXmul(new addrIPv4(), ntry, pck));
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
-        addrSafi.writeVpnvXmul(a4, ntry, pck);
+        rtrBgpAfi.writeVpnvXmul(a4, ntry, pck);
     }
 
 }
 
-class addrSafiVpnv6mul implements addrSafi {
+class rtrBgpAfiVpnv6mul implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = addrPrefix.ip6toIP(addrSafi.readVpnvXmul(new addrIPv6(), ntry, pck));
+        ntry.prefix = addrPrefix.ip6toIP(rtrBgpAfi.readVpnvXmul(new addrIPv6(), ntry, pck));
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
-        addrSafi.writeVpnvXmul(a6, ntry, pck);
+        rtrBgpAfi.writeVpnvXmul(a6, ntry, pck);
     }
 
 }
 
-class addrSafiLnkSt implements addrSafi {
+class rtrBgpAfiLnkSt implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -723,7 +729,7 @@ class addrSafiLnkSt implements addrSafi {
 
 }
 
-class addrSafiSdwan implements addrSafi {
+class rtrBgpAfiSdwan implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -736,9 +742,9 @@ class addrSafiSdwan implements addrSafi {
         int i = pck.msbGetW(2);
         pck.getSkip(12);
         if (i > (8 * 12)) {
-            ntry.prefix.network = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
+            ntry.prefix.network = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv6, pck);
         } else {
-            ntry.prefix.network = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
+            ntry.prefix.network = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv4, pck);
         }
         return ntry;
     }
@@ -759,7 +765,7 @@ class addrSafiSdwan implements addrSafi {
 
 }
 
-class addrSafiMup implements addrSafi {
+class rtrBgpAfiMup implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -777,13 +783,13 @@ class addrSafiMup implements addrSafi {
         pck.putSkip(1);
         pck.merge2beg();
         i++;
-        addrSafi.readFlowspec(ntry, pck, i);
+        rtrBgpAfi.readFlowspec(ntry, pck, i);
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         pck.putByte(0, 1); // arch
-        int i = addrSafi.writeFlowspec(ntry, pck, 11);
+        int i = rtrBgpAfi.writeFlowspec(ntry, pck, 11);
         int o = pck.headByte(11);
         i--;
         pck.msbPutQ(4, ntry.rouDst);
@@ -795,7 +801,7 @@ class addrSafiMup implements addrSafi {
 
 }
 
-class addrSafiEvpn implements addrSafi {
+class rtrBgpAfiEvpn implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -837,10 +843,10 @@ class addrSafiEvpn implements addrSafi {
                         ntry.prefix.broadcast = new addrIP();
                         break;
                     case addrIPv4.size * 8:
-                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        ntry.prefix.broadcast = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv4, pck);
                         break;
                     case addrIPv6.size * 8:
-                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        ntry.prefix.broadcast = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv6, pck);
                         break;
                     default:
                         return null;
@@ -856,10 +862,10 @@ class addrSafiEvpn implements addrSafi {
                 pck.getSkip(1);
                 switch (i) {
                     case addrIPv4.size * 8:
-                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        ntry.prefix.broadcast = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv4, pck);
                         break;
                     case addrIPv6.size * 8:
-                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        ntry.prefix.broadcast = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv6, pck);
                         break;
                     default:
                         return null;
@@ -874,10 +880,10 @@ class addrSafiEvpn implements addrSafi {
                 pck.getSkip(1);
                 switch (i) {
                     case addrIPv4.size * 8:
-                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        ntry.prefix.broadcast = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv4, pck);
                         break;
                     case addrIPv6.size * 8:
-                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        ntry.prefix.broadcast = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv6, pck);
                         break;
                     default:
                         return null;
@@ -895,12 +901,12 @@ class addrSafiEvpn implements addrSafi {
                 pck.getSkip(1);
                 switch (i) {
                     case addrIPv4.size * 8:
-                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
-                        ntry.prefix.mask = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        ntry.prefix.broadcast = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv4, pck);
+                        ntry.prefix.mask = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv4, pck);
                         break;
                     case addrIPv6.size * 8:
-                        ntry.prefix.broadcast = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
-                        ntry.prefix.mask = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        ntry.prefix.broadcast = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv6, pck);
+                        ntry.prefix.mask = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv6, pck);
                         break;
                     default:
                         return null;
@@ -1019,7 +1025,7 @@ class addrSafiEvpn implements addrSafi {
 
 }
 
-class addrSafiNsh implements addrSafi {
+class rtrBgpAfiNsh implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -1046,7 +1052,7 @@ class addrSafiNsh implements addrSafi {
 
 }
 
-class addrSafiRpd implements addrSafi {
+class rtrBgpAfiRpd implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -1056,9 +1062,9 @@ class addrSafiRpd implements addrSafi {
         ntry.rouDst = pck.msbGetD(2);
         pck.getSkip(6);
         if (i > 9) {
-            ntry.prefix.network = addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
+            ntry.prefix.network = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv6, pck);
         } else {
-            ntry.prefix.network = addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
+            ntry.prefix.network = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv4, pck);
         }
         return ntry;
     }
@@ -1080,7 +1086,7 @@ class addrSafiRpd implements addrSafi {
 
 }
 
-class addrSafiVpls implements addrSafi {
+class rtrBgpAfiVpls implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -1142,7 +1148,7 @@ class addrSafiVpls implements addrSafi {
 
 }
 
-class addrSafiMspw implements addrSafi {
+class rtrBgpAfiMspw implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -1152,13 +1158,13 @@ class addrSafiMspw implements addrSafi {
         pck.getSkip(8);
         i -= 64;
         i = (i + 7) / 8;
-        addrSafi.readFlowspec(ntry, pck, i);
+        rtrBgpAfi.readFlowspec(ntry, pck, i);
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         pck.msbPutQ(1, ntry.rouDst);
-        int i = addrSafi.writeFlowspec(ntry, pck, 9);
+        int i = rtrBgpAfi.writeFlowspec(ntry, pck, 9);
         i += 8;
         pck.putByte(0, i * 8);
         pck.putSkip(1 + i);
@@ -1166,11 +1172,11 @@ class addrSafiMspw implements addrSafi {
 
 }
 
-class addrSafiMdt implements addrSafi {
+class rtrBgpAfiMdt implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        int i = addrSafi.sizeFlowspec(pck);
+        int i = rtrBgpAfi.sizeFlowspec(pck);
         ntry.rouDst = pck.msbGetQ(0);
         pck.getSkip(8);
         i -= 64;
@@ -1196,7 +1202,7 @@ class addrSafiMdt implements addrSafi {
 
 }
 
-class addrSafiRtf implements addrSafi {
+class rtrBgpAfiRtf implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -1219,38 +1225,38 @@ class addrSafiRtf implements addrSafi {
 
 }
 
-class addrSafiFlowspec implements addrSafi {
+class rtrBgpAfiFlowspec implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        int i = addrSafi.sizeFlowspec(pck);
-        addrSafi.readFlowspec(ntry, pck, i);
+        int i = rtrBgpAfi.sizeFlowspec(pck);
+        rtrBgpAfi.readFlowspec(ntry, pck, i);
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-        int i = addrSafi.writeFlowspec(ntry, pck, 1);
+        int i = rtrBgpAfi.writeFlowspec(ntry, pck, 1);
         pck.putByte(0, i);
         pck.putSkip(1 + i);
     }
 
 }
 
-class addrSafiVpnFlow implements addrSafi {
+class rtrBgpAfiVpnFlow implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        int i = addrSafi.sizeFlowspec(pck);
+        int i = rtrBgpAfi.sizeFlowspec(pck);
         ntry.rouDst = pck.msbGetQ(0);
         pck.getSkip(8);
         i -= 8;
-        addrSafi.readFlowspec(ntry, pck, i);
+        rtrBgpAfi.readFlowspec(ntry, pck, i);
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         pck.msbPutQ(1, ntry.rouDst);
-        int i = addrSafi.writeFlowspec(ntry, pck, 9);
+        int i = rtrBgpAfi.writeFlowspec(ntry, pck, 9);
         i += 8;
         pck.putByte(0, i);
         pck.putSkip(1 + i);
@@ -1258,7 +1264,7 @@ class addrSafiVpnFlow implements addrSafi {
 
 }
 
-class addrSafiMvpn implements addrSafi {
+class rtrBgpAfiMvpn implements rtrBgpAfi {
 
     public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -1272,12 +1278,12 @@ class addrSafiMvpn implements addrSafi {
         pck.putSkip(1);
         pck.merge2beg();
         i++;
-        addrSafi.readFlowspec(ntry, pck, i);
+        rtrBgpAfi.readFlowspec(ntry, pck, i);
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
-        int i = addrSafi.writeFlowspec(ntry, pck, 9);
+        int i = rtrBgpAfi.writeFlowspec(ntry, pck, 9);
         int o = pck.headByte(9);
         i--;
         pck.msbPutQ(2, ntry.rouDst);

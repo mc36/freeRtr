@@ -3,9 +3,9 @@ package org.freertr.pack;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
-import org.freertr.addr.addrSafi;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.util.bits;
+import org.freertr.rtr.rtrBgpAfi;
 
 /**
  * (multi)point to multipoint (rfc6388) fec
@@ -89,7 +89,7 @@ public class packLdpMp implements Comparable<packLdpMp> {
     public void parseFEC(packHolder pck) {
         int i = pck.msbGetW(0) << 16; // afi
         pck.getSkip(3);
-        root = addrSafi.readAddress(i, pck);
+        root = rtrBgpAfi.readAddress(i, pck);
         i = pck.msbGetW(0); // opaque length
         pck.getSkip(2);
         if (i > pck.dataSize()) {

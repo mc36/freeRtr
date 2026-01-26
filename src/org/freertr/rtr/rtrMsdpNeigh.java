@@ -4,7 +4,6 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
-import org.freertr.addr.addrSafi;
 import org.freertr.auth.authLocal;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.ip.ipFwdIface;
@@ -267,17 +266,17 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrMsdpNei
 
     private addrIP getAddr(packHolder pck) {
         if (peer.isIPv4()) {
-            return addrSafi.readAddress(rtrBgpUtil.afiIpv4, pck);
+            return rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv4, pck);
         } else {
-            return addrSafi.readAddress(rtrBgpUtil.afiIpv6, pck);
+            return rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv6, pck);
         }
     }
 
     private void putAddr(packHolder pck, addrIP adr) {
         if (peer.isIPv4()) {
-            addrSafi.writeAddress(rtrBgpUtil.afiIpv4, pck, adr);
+            rtrBgpAfi.writeAddress(rtrBgpUtil.afiIpv4, pck, adr);
         } else {
-            addrSafi.writeAddress(rtrBgpUtil.afiIpv6, pck, adr);
+            rtrBgpAfi.writeAddress(rtrBgpUtil.afiIpv6, pck, adr);
         }
     }
 

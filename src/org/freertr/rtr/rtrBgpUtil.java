@@ -21,7 +21,6 @@ import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.tab.tabGen;
 import org.freertr.util.counter;
-import org.freertr.addr.addrSafi;
 
 /**
  * bgp4 utilities
@@ -2013,7 +2012,7 @@ public class rtrBgpUtil {
         }
         int sfi = safi & sfiMask;
         int len = pck.getByte(3);
-        addrSafi rdr = spkr.parent.safi2rdr[idx];
+        rtrBgpAfi rdr = spkr.parent.safi2rdr[idx];
         boolean addpath = spkr.addpathRx[idx];
         boolean oneLab = !spkr.peerMltLab[idx];
         boolean v6nh = len >= addrIPv6.size;
@@ -2026,9 +2025,9 @@ public class rtrBgpUtil {
             }
             addrIP adr;
             if (v6nh) {
-                adr = addrSafi.readAddress(afiIpv6, pck);
+                adr = rtrBgpAfi.readAddress(afiIpv6, pck);
             } else {
-                adr = addrSafi.readAddress(afiIpv4, pck);
+                adr = rtrBgpAfi.readAddress(afiIpv4, pck);
             }
             if (adr == null) {
                 continue;
@@ -2092,7 +2091,7 @@ public class rtrBgpUtil {
             return;
         }
         boolean addpath = spkr.addpathRx[idx];
-        addrSafi rdr = spkr.parent.safi2rdr[idx];
+        rtrBgpAfi rdr = spkr.parent.safi2rdr[idx];
         int ident = 0;
         for (; pck.dataSize() > 0;) {
             if (addpath) {
@@ -2436,7 +2435,7 @@ public class rtrBgpUtil {
                     pck.msbPutD(0, ntry.best.ident);
                     pck.putSkip(4);
                 }
-                addrSafi.ipv4uni.writePrefix(true, pck, ntry);
+                rtrBgpAfi.ipv4uni.writePrefix(true, pck, ntry);
             }
             pck.merge2beg();
             pck.msbPutW(0, pck.dataSize());
@@ -2589,7 +2588,7 @@ public class rtrBgpUtil {
                 pck.msbPutD(0, ntry.best.ident);
                 pck.putSkip(4);
             }
-            addrSafi.ipv4uni.writePrefix(true, pck, ntry);
+            rtrBgpAfi.ipv4uni.writePrefix(true, pck, ntry);
         }
         pck.merge2end();
     }
@@ -3313,7 +3312,7 @@ public class rtrBgpUtil {
      */
     public static void placeReachable(rtrBgpSpeak spkr, int idx, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
         int safi = spkr.parent.idx2safi[idx];
-        addrSafi rdr = spkr.parent.safi2rdr[idx];
+        rtrBgpAfi rdr = spkr.parent.safi2rdr[idx];
         boolean oneLab = !spkr.peerMltLab[idx];
         int afi = safi & afiMask;
         int sfi = safi & sfiMask;
@@ -3335,9 +3334,9 @@ public class rtrBgpUtil {
             hlp.putSkip(8);
         }
         if (v6nh) {
-            addrSafi.writeAddress(afiIpv6, hlp, nextHop);
+            rtrBgpAfi.writeAddress(afiIpv6, hlp, nextHop);
         } else {
-            addrSafi.writeAddress(afiIpv4, hlp, nextHop);
+            rtrBgpAfi.writeAddress(afiIpv4, hlp, nextHop);
         }
         hlp.putByte(0, 0);
         hlp.putSkip(1);
@@ -3364,7 +3363,7 @@ public class rtrBgpUtil {
      */
     public static void placeUnreach(rtrBgpSpeak spkr, int idx, boolean addpath, packHolder trg, packHolder hlp, List<tabRouteEntry<addrIP>> lst) {
         int safi = spkr.parent.idx2safi[idx];
-        addrSafi rdr = spkr.parent.safi2rdr[idx];
+        rtrBgpAfi rdr = spkr.parent.safi2rdr[idx];
         hlp.clear();
         hlp.msbPutD(0, safi2triplet(safi));
         hlp.putSkip(3);

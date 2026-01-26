@@ -24,7 +24,6 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.addr.addrSafi;
 
 /**
  * bgp4 shortest path first
@@ -281,10 +280,10 @@ public class rtrBgpSpf {
                     spfLnkst.readSpfLink(spf, tlv, pck, hlp);
                     break;
                 case spfLnkst.nlriTypIpv4:
-                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, addrSafi.ipv4uni, distance);
+                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, rtrBgpAfi.ipv4uni, distance);
                     break;
                 case spfLnkst.nlriTypIpv6:
-                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, addrSafi.ipv6uni, distance);
+                    spfLnkst.readSpfPref(spf, tlv, pck, hlp, rtrBgpAfi.ipv6uni, distance);
                     break;
             }
         }

@@ -12,7 +12,7 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.enc.encTlv;
-import org.freertr.addr.addrSafi;
+import org.freertr.rtr.rtrBgpAfi;
 
 /**
  * label distribution protocol (rfc5036) packet
@@ -740,11 +740,11 @@ public class packLdp {
         if (prf.network.isIPv4()) {
             p.msbPutW(1, rtrBgpUtil.afiIpv4 >>> 16);
             p.putSkip(3);
-            addrSafi.ipv4uni.writePrefix(true, p, pref);
+            rtrBgpAfi.ipv4uni.writePrefix(true, p, pref);
         } else {
             p.msbPutW(1, rtrBgpUtil.afiIpv6 >>> 16);
             p.putSkip(3);
-            addrSafi.ipv6uni.writePrefix(true, p, pref);
+            rtrBgpAfi.ipv6uni.writePrefix(true, p, pref);
         }
         p.merge2beg();
         byte[] buf = p.getCopy();
@@ -800,7 +800,7 @@ public class packLdp {
     private addrPrefix<addrIP> getFECaddr(packHolder pck) {
         int i = pck.msbGetW(0) << 16; // afi
         pck.getSkip(2);
-        tabRouteEntry<addrIP> res = addrSafi.readPrefix(i, pck);
+        tabRouteEntry<addrIP> res = rtrBgpAfi.readPrefix(i, pck);
         return res.prefix;
     }
 
