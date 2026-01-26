@@ -13,6 +13,7 @@ rm -f rtr*-.html 2> /dev/null
 rm -f javac.*.args 2> /dev/null
 rm -f ../changelog*-.txt 2> /dev/null
 rm -f core 2> /dev/null
+rm -f svm_err_*.md  2> /dev/null
 rm -rf ../binTmp/* 2> /dev/null
 rm -rf ../binOut/* 2> /dev/null
 mkdir -p ../binTmp
