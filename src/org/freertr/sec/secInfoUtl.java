@@ -80,7 +80,7 @@ public class secInfoUtl {
      * @param fwd forwarder to use
      * @return route entry, null if nothing
      */
-    public final static tabRpkiRoa findOneValidRoa(tabRouteEntry<addrIP> pfx, ipRtr rtr, ipFwd fwd) {
+    public final static tabGen<tabRpkiRoa> findOneValidRoa(tabRouteEntry<addrIP> pfx, ipRtr rtr, ipFwd fwd) {
         if (pfx == null) {
             return null;
         }
@@ -91,13 +91,7 @@ public class secInfoUtl {
             return null;
         }
         rtrRpki rpki = (rtrRpki) rtr;
-        tabGen<tabRpkiRoa> tab = rpki.getFinalTabRoa(fwd.ipVersion);
-        tabRpkiRoa ntry = tabRpkiUtil.lookupRoa(tab, pfx.prefix);
-        if (ntry == null) {
-            return null;
-        }
-        ntry = ntry.copyBytes();
-        return ntry;
+        return rpki.getFinalTabRoa(fwd.ipVersion);
     }
 
     /**
@@ -509,18 +503,17 @@ public class secInfoUtl {
         if (wrk.fwd != null) {
             s += " vrf=" + wrk.fwd.vrfName;
         }
-        if (wrk.rtrIp != null) {
-            s += " len=" + wrk.rtrIp.routerComputedU.size();
-        }
         if (wrk.ntry == null) {
-            return bits.str2lst(s + " " + noRoute);
-        }
-        s += " pfx=" + addrPrefix.ip2str(wrk.ntry.prefix);
-        if (wrk.vldIp != null) {
-            s += " roa=" + tabRpkiUtil.validity2string(wrk.rpkiR) + " aspa=" + tabRpkiUtil.validity2string(wrk.rpkiA);
+            return bits.str2lst(s + " " + noRoute + " of " + wrk.sizeF);
         }
         List<String> res = new ArrayList<String>();
+        s += " bgp=" + addrPrefix.ip2str(wrk.ntry.prefix) + " of " + wrk.sizeF;
         res.add(s.trim());
+        if (wrk.vldIp != null) {
+            s = " roa=" + tabRpkiUtil.validity2string(wrk.rpkiR) + " of " + wrk.sizeR;
+            s += " aspa=" + tabRpkiUtil.validity2string(wrk.rpkiA) + " of " + wrk.sizeA;
+            res.add(s.trim());
+        }
         res.add("pth=" + wrk.ntry.best.asPathStr());
         res.add("nam=" + wrk.ntry.best.asNameStr());
         res.add("inf=" + wrk.ntry.best.asInfoStr());

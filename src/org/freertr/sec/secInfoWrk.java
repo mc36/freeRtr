@@ -16,9 +16,11 @@ import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeSide;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.serv.servHttp;
+import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRpkiRoa;
 import org.freertr.tab.tabRpkiUtil;
 import org.freertr.tab.tabRouteEntry;
+import org.freertr.tab.tabRpkiAspa;
 import org.freertr.tab.tabRtrplc;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
@@ -167,6 +169,21 @@ public class secInfoWrk implements Runnable {
      * aspa result got
      */
     protected int rpkiA = 0;
+
+    /**
+     * fib size got
+     */
+    protected int sizeF = 0;
+
+    /**
+     * roa size got
+     */
+    protected int sizeR = 0;
+
+    /**
+     * aspa size got
+     */
+    protected int sizeA = 0;
 
     /**
      * pmtud result
@@ -397,6 +414,7 @@ public class secInfoWrk implements Runnable {
             if (fwd == null) {
                 fwd = rtrCfg.fwd;
             }
+            sizeF = rtrIp.routerComputedU.size();
             ntry = secInfoUtl.findOneRoute(addr, rtrIp, fwd);
             if (ntry == null) {
                 return;
@@ -406,9 +424,12 @@ public class secInfoWrk implements Runnable {
                 return;
             }
             vldIp = vldCfg.getRouter();
-            tabRpkiRoa rpkiV = secInfoUtl.findOneValidRoa(ntry, vldIp, fwd);
-            rpkiR = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, rpkiV);
-            rpkiA = tabRpkiUtil.calcValidityAspa(ntry.best, secInfoUtl.findOneValidAspa(vldIp, fwd), 0);
+            tabGen<tabRpkiRoa> rpkiV = secInfoUtl.findOneValidRoa(ntry, vldIp, fwd);
+            tabGen<tabRpkiAspa> aspaV = secInfoUtl.findOneValidAspa(vldIp, fwd);
+            sizeR = rpkiV.size();
+            sizeA = aspaV.size();
+            rpkiR = tabRpkiUtil.calcValidityRoa(ntry.prefix, ntry.best, tabRpkiUtil.lookupRoa(rpkiV, ntry.prefix));
+            rpkiA = tabRpkiUtil.calcValidityAspa(ntry.best, aspaV, 0);
         } catch (Exception e) {
             logger.traceback(e);
         }
