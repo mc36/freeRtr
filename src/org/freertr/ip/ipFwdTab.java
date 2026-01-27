@@ -490,6 +490,9 @@ public class ipFwdTab {
             if (ntry.newSrcIface != null) {
                 addrIP adr = new addrIP();
                 updateTableNat(lower, ntry.newSrcIface, adr);
+                if (ntry.mask != null) {
+                    adr.setAnd(adr, ntry.mask);
+                }
                 ntry.newSrcAddr = adr;
             }
             if (ntry.newSrcPool4 != null) {
@@ -513,6 +516,9 @@ public class ipFwdTab {
             if (ntry.origTrgIface != null) {
                 addrIP adr = new addrIP();
                 updateTableNat(lower, ntry.origTrgIface, adr);
+                if (ntry.mask != null) {
+                    adr.setAnd(adr, ntry.mask);
+                }
                 ntry.origTrgAddr = adr;
             }
         }
