@@ -454,31 +454,6 @@ public class bits {
     }
 
     /**
-     * copy objects from one buffer to another
-     *
-     * @param srcB source buffer
-     * @param srcO source offset
-     * @param trgB target buffer
-     * @param trgO target offset
-     * @param len bytes to copy
-     */
-    public static void objCopy(Object[] srcB, int srcO, Object[] trgB, int trgO, int len) {
-        if (len > 128) {
-            System.arraycopy(srcB, srcO, trgB, trgO, len);
-            return;
-        }
-        if (srcO >= trgO) {
-            for (int i = 0; i < len; i++) {
-                trgB[trgO + i] = srcB[srcO + i];
-            }
-        } else {
-            for (int i = len - 1; i >= 0; i--) {
-                trgB[trgO + i] = srcB[srcO + i];
-            }
-        }
-    }
-
-    /**
      * copy bytes from one buffer to another
      *
      * @param srcB source buffer

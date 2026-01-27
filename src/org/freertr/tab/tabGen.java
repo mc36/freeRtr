@@ -1,7 +1,5 @@
 package org.freertr.tab;
 
-import org.freertr.util.bits;
-
 /**
  * one sorted, synchronized list
  *
@@ -57,7 +55,7 @@ public class tabGen<T extends Comparable<? super T>> {
             for (int o = 0; o < blkN; o++) {
                 T[] rowO = valD[o];
                 T[] rowN = (T[]) new Comparable[rowO.length];
-                bits.objCopy(rowO, 0, rowN, 0, sizD[o]);
+                System.arraycopy(rowO, 0, rowN, 0, sizD[o]);
                 valD[o] = rowN;
             }
         }
@@ -326,7 +324,7 @@ public class tabGen<T extends Comparable<? super T>> {
     private void doDel() {
         T[] rowD = valD[lstB];
         int siz = sizD[lstB] - 1;
-        bits.objCopy(rowD, lstI + 1, rowD, lstI, siz - lstI);
+        System.arraycopy(rowD, lstI + 1, rowD, lstI, siz - lstI);
         rowD[siz] = null;
         sizD[lstB] = siz;
         valN--;
@@ -358,7 +356,7 @@ public class tabGen<T extends Comparable<? super T>> {
         }
         int siz = sizD[lstB];
         T[] row = valD[lstB];
-        bits.objCopy(row, lstI, row, lstI + 1, siz - lstI);
+        System.arraycopy(row, lstI, row, lstI + 1, siz - lstI);
         siz++;
         row[lstI] = val;
         sizD[lstB] = siz;
@@ -379,12 +377,12 @@ public class tabGen<T extends Comparable<? super T>> {
         T[] rowO = valD[lstB];
         int mid = siz / 2;
         T[] rowN = (T[]) new Comparable[rowO.length];
-        bits.objCopy(rowO, 0, rowN, 0, mid);
+        System.arraycopy(rowO, 0, rowN, 0, mid);
         valD[lstB] = rowN;
         sizD[lstB] = mid;
         rowN = (T[]) new Comparable[rowO.length];
         siz -= mid;
-        bits.objCopy(rowO, mid, rowN, 0, siz);
+        System.arraycopy(rowO, mid, rowN, 0, siz);
         lstB++;
         valD[lstB] = rowN;
         sizD[lstB] = siz;
@@ -402,11 +400,16 @@ public class tabGen<T extends Comparable<? super T>> {
         int[] begF = new int[siz];
         int[] sizF = new int[siz];
         T[][] valF = (T[][]) new Comparable[siz][];
+        System.arraycopy(begD, 0, begF, 0, blkN);
+        System.arraycopy(sizD, 0, sizF, 0, blkN);
+        System.arraycopy(valD, 0, valF, 0, blkN);
+        /*
         for (int i = 0; i < blkN; i++) {
             sizF[i] = sizD[i];
             valF[i] = valD[i];
             begF[i] = begD[i];
         }
+         */
         begD = begF;
         sizD = sizF;
         valD = valF;
