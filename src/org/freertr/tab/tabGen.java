@@ -336,11 +336,9 @@ public class tabGen<T extends Comparable<? super T>> {
             return;
         }
         blkN--;
-        for (int i = lstB; i < blkN; i++) {
-            valD[i] = valD[i + 1];
-            sizD[i] = sizD[i + 1];
-            begD[i] = begD[i + 1];
-        }
+        System.arraycopy(valD, lstB + 1, valD, lstB, blkN - lstB);
+        System.arraycopy(sizD, lstB + 1, sizD, lstB, blkN - lstB);
+        System.arraycopy(begD, lstB + 1, begD, lstB, blkN - lstB);
         valD[blkN] = null;
         lstB = 0;
         if (blkN > (valD.length - thrsBlkD)) {
@@ -368,11 +366,9 @@ public class tabGen<T extends Comparable<? super T>> {
         if (blkN >= valD.length) {
             doArrays(blkN + thrsBlkA);
         }
-        for (int i = blkN; i > lstB; i--) {
-            valD[i] = valD[i - 1];
-            begD[i] = begD[i - 1];
-            sizD[i] = sizD[i - 1];
-        }
+        System.arraycopy(valD, lstB, valD, lstB + 1, blkN - lstB);
+        System.arraycopy(sizD, lstB, sizD, lstB + 1, blkN - lstB);
+        System.arraycopy(begD, lstB, begD, lstB + 1, blkN - lstB);
         blkN++;
         T[] rowO = valD[lstB];
         int mid = siz / 2;
@@ -400,16 +396,9 @@ public class tabGen<T extends Comparable<? super T>> {
         int[] begF = new int[siz];
         int[] sizF = new int[siz];
         T[][] valF = (T[][]) new Comparable[siz][];
-        System.arraycopy(begD, 0, begF, 0, blkN);
-        System.arraycopy(sizD, 0, sizF, 0, blkN);
         System.arraycopy(valD, 0, valF, 0, blkN);
-        /*
-        for (int i = 0; i < blkN; i++) {
-            sizF[i] = sizD[i];
-            valF[i] = valD[i];
-            begF[i] = begD[i];
-        }
-         */
+        System.arraycopy(sizD, 0, sizF, 0, blkN);
+        System.arraycopy(begD, 0, begF, 0, blkN);
         begD = begF;
         sizD = sizF;
         valD = valF;
