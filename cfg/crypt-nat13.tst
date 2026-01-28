@@ -1,4 +1,4 @@
-description source port randomization
+description target prefix translation to interface
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -11,10 +11,8 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
-server telnet tel
- vrf v1
- port 666
- exit
+ipv4 route v1 7.7.7.0 255.255.255.0 1.1.1.2
+ipv6 route v1 7777:: ffff:ffff:: 1234:1::2
 !
 
 addrouter r2
@@ -34,16 +32,21 @@ int eth2
  ipv4 addr 1.1.1.5 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
+int lo1
+ vrf for v1
+ ipv4 addr 7.7.7.222 255.255.255.252
+ ipv6 addr 7777::8888 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffc
+ exit
 access-list test4
  permit all 1.1.1.4 255.255.255.252 all 1.1.1.0 255.255.255.252 all
  exit
 access-list test6
  permit all 1234:2:: ffff:ffff:: all 1234:1:: ffff:ffff:: all
  exit
-ipv4 nat v1 seq 10 srclist test4 interface ethernet1
-ipv4 nat v1 seq 10 random 1024 2048
-ipv6 nat v1 seq 10 srclist test6 interface ethernet1
-ipv6 nat v1 seq 10 random 1024 2048
+ipv4 route v1 8.8.8.8 255.255.255.255 1.1.1.6
+ipv6 route v1 8888::8 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::2
+ipv4 nat v1 trgpref int lo1 8.8.8.8 255.255.255.0
+ipv6 nat v1 trgpref int lo1 8888::8 ffff:ffff::
 !
 
 addrouter r3
@@ -57,24 +60,19 @@ int eth1
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
+int lo1
+ vrf for v1
+ ipv4 addr 8.8.8.8 255.255.255.255
+ ipv6 addr 8888::8 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.5
 ipv6 route v1 :: :: 1234:2::1
 !
 
-r2 tping 100 5 1.1.1.1 vrf v1
-r2 tping 100 5 1234:1::1 vrf v1
-r2 tping 100 5 1.1.1.6 vrf v1
-r2 tping 100 5 1234:2::2 vrf v1
 
-r3 send telnet 1.1.1.1 666 vrf v1
-r3 tping 100 5 1.1.1.1 vrf v1
-r3 send exit
-r3 read closed
 
-r3 send telnet 1234:1::1 666 vrf v1
-r3 tping 100 5 1234:1::1 vrf v1
-r3 send exit
-r3 read closed
+r1 tping 100 5 7.7.7.8 vrf v1
+r1 tping 100 5 7777::8 vrf v1
 
 r2 output show ipv4 nat v1 tran
 r2 output show ipv6 nat v1 tran
