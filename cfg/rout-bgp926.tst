@@ -1,4 +1,4 @@
-description bgp with a lot prefix
+description bgp route server with a lot peer
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -43,34 +43,43 @@ int bvi1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
+ipv4 route v1 1.1.1.128 255.255.255.128 1.1.1.5
+ipv6 route v1 1234:1::1111 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ff00 1234:1::6
+access-list a
+ permit all any all any all
+ exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 1
  router-id 4.4.4.1
- neigh 1.1.1.2 remote-as 1
- neigh 1.1.1.2 route-reflect
- neigh 1.1.1.3 remote-as 1
- neigh 1.1.1.3 route-reflect
- neigh 1.1.1.4 remote-as 1
- neigh 1.1.1.4 route-reflect
- neigh 1.1.1.5 remote-as 1
- neigh 1.1.1.5 route-reflect
+ neigh 1.1.1.2 remote-as 2
+ neigh 1.1.1.2 route-server
+ neigh 1.1.1.3 remote-as 3
+ neigh 1.1.1.3 route-server
+ neigh 1.1.1.4 remote-as 4
+ neigh 1.1.1.4 route-server
+ temp p remote-as 5
+ temp p route-server
+ listen a p
  red conn
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
  local-as 1
  router-id 6.6.6.1
- neigh 1234:1::2 remote-as 1
- neigh 1234:1::2 route-reflect
- neigh 1234:1::3 remote-as 1
- neigh 1234:1::3 route-reflect
- neigh 1234:1::4 remote-as 1
- neigh 1234:1::4 route-reflect
- neigh 1234:1::6 remote-as 1
- neigh 1234:1::6 route-reflect
+ neigh 1234:1::2 remote-as 2
+ neigh 1234:1::2 route-server
+ neigh 1234:1::3 remote-as 3
+ neigh 1234:1::3 route-server
+ neigh 1234:1::4 remote-as 4
+ neigh 1234:1::4 route-server
+ temp p remote-as 6
+ temp p route-server
+ listen a p
  red conn
  exit
 !
@@ -98,16 +107,18 @@ int eth1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
- local-as 1
+ local-as 2
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  red conn
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
- local-as 1
+ local-as 2
  router-id 6.6.6.2
  neigh 1234:1::1 remote-as 1
  red conn
@@ -137,16 +148,18 @@ int eth1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
- local-as 1
+ local-as 3
  router-id 4.4.4.3
  neigh 1.1.1.1 remote-as 1
  red conn
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
- local-as 1
+ local-as 3
  router-id 6.6.6.3
  neigh 1234:1::1 remote-as 1
  red conn
@@ -176,16 +189,18 @@ int eth1
  exit
 router bgp4 1
  vrf v1
+ no safe-ebgp
  address uni
- local-as 1
+ local-as 4
  router-id 4.4.4.4
  neigh 1.1.1.1 remote-as 1
  red conn
  exit
 router bgp6 1
  vrf v1
+ no safe-ebgp
  address uni
- local-as 1
+ local-as 4
  router-id 6.6.6.4
  neigh 1234:1::1 remote-as 1
  red conn
@@ -197,9 +212,6 @@ int eth1 eth 0000.0000.5555 $4b$ $4a$
 !
 vrf def v1
  rd 1:1
- exit
-route-map all
- action permit
  exit
 int eth1
  vrf for v1
@@ -213,9 +225,6 @@ int eth1 eth 0000.0000.6666 $5b$ $5a$
 !
 vrf def v1
  rd 1:1
- exit
-route-map all
- action permit
  exit
 int eth1
  vrf for v1
@@ -283,11 +292,12 @@ r4 tping 100 60 4.4.4.3 vrf v1
 r4 tping 100 60 4444::3 vrf v1
 
 r5 tping 100 60 1.1.1.1 vrf v1
-r5 send pack bgpgen v1 eth1 1.1.1.1 1 3.0.0.0/8 all 10000
+r5 send pack bgpmass v1 eth1 1.1.1.1 5 1.1.1.128 1234 55
+
 r5 read sent
 
 r6 tping 100 60 1234:1::1 vrf v1
-r6 send pack bgpgen v1 eth1 1234:1::1 1 3333::/16 all 10000
+r6 send pack bgpmass v1 eth1 1234:1::1 6 1234:1::1111 1234 55
 r6 read sent
 
 sleep 3000

@@ -289,6 +289,8 @@ r6 tping 100 60 1234:1::1 vrf v1
 r6 send pack bgpgen v1 eth1 1234:1::1 1 3333::/120 all 100000
 r6 read sent
 
+sleep 3000
+
 r1 tping 100 60 2.2.2.2 vrf v1
 r1 tping 100 60 2222::2 vrf v1
 r1 tping 100 60 2.2.2.3 vrf v1

@@ -1608,6 +1608,19 @@ public class userPacket {
             int prt = bits.str2num(cmd.word());
             int max = bits.str2num(cmd.word());
             cmd.error("connecting " + trg);
+            rtrBgp bgp = new rtrBgp(fwd, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, trg);
+            nei.localAs = las;
+            int safi;
+            if (trg.isIPv4()) {
+                safi = rtrBgpUtil.safiIp4uni;
+            } else {
+                safi = rtrBgpUtil.safiIp6uni;
+            }
+            nei.addrFams = rtrBgpParam.boolsSet(false);
+            int idx = bgp.safi2idx(safi);
+            nei.addrFams[idx] = true;
+            List<rtrBgpSpeak> spkrs = new ArrayList<rtrBgpSpeak>();
             List<pipeSide> conns = new ArrayList<pipeSide>();
             for (int i = 0; i < max; i++) {
                 addrIP adr = new addrIP();
@@ -1634,39 +1647,23 @@ public class userPacket {
                     cmd.error("failed");
                     continue;
                 }
+                rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, strm, 0);
+                spk.sendOpen();
+                spk.sendKeepAlive();
+                spkrs.add(spk);
                 conns.add(strm);
                 cmd.pipe.strPut(".");
                 if (need2stop()) {
                     break;
                 }
             }
-            cmd.error("sending " + conns.size() + " opens");
-            rtrBgp bgp = new rtrBgp(fwd, vrf, null, 0);
-            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, trg);
-            nei.localAs = las;
-            int safi;
-            if (trg.isIPv4()) {
-                safi = rtrBgpUtil.safiIp4uni;
-            } else {
-                safi = rtrBgpUtil.safiIp6uni;
-            }
-            nei.addrFams = rtrBgpParam.boolsSet(false);
-            int idx = bgp.safi2idx(safi);
-            nei.addrFams[idx] = true;
-            List<rtrBgpSpeak> spkrs = new ArrayList<rtrBgpSpeak>();
-            for (int i = 0; i < conns.size(); i++) {
-                rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, conns.get(i), 0);
-                spk.sendOpen();
-                spk.sendKeepAlive();
-                spkrs.add(spk);
-                cmd.pipe.strPut(".");
-            }
+            cmd.error("sent " + conns.size() + " opens");
             cmd.error("waiting");
             for (int o = 1000;; o++) {
                 if (o > 30) {
                     cmd.pipe.strPut(".");
-                    for (int i = 0; i < spkrs.size(); i++) {
-                        spkrs.get(i).sendKeepAlive();
+                    for (int p = 0; p < spkrs.size(); p++) {
+                        spkrs.get(p).sendKeepAlive();
                     }
                     o = 0;
                 }
