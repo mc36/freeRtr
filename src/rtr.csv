@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.1.28-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-01-28 08:02:04, took 00:32:15, with 50 workers, on 4224 cases, 0 failed, 0 traces, 7 retries
+-;-;-;2026-01-28 08:33:59, took 00:17:07, with 50 workers, on 4226 cases, 0 failed, 0 traces, 2 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -962,16 +962,18 @@ http://sources.freertr.org/cfg/crypt-nat06.tst;crypt-nat06.tst;success;source ad
 http://sources.freertr.org/cfg/crypt-nat07.tst;crypt-nat07.tst;success;target address translation to address
 http://sources.freertr.org/cfg/crypt-nat08.tst;crypt-nat08.tst;success;more sources translation to interface
 http://sources.freertr.org/cfg/crypt-nat09.tst;crypt-nat09.tst;success;ipv4-ipv6 protocol translation
-http://sources.freertr.org/cfg/crypt-nat10.tst;crypt-nat10.tst;success;source prefix translation
-http://sources.freertr.org/cfg/crypt-nat11.tst;crypt-nat11.tst;success;target prefix translation
-http://sources.freertr.org/cfg/crypt-nat12.tst;crypt-nat12.tst;success;nat64 translation
-http://sources.freertr.org/cfg/crypt-nat13.tst;crypt-nat13.tst;success;source port randomization
-http://sources.freertr.org/cfg/crypt-nat14.tst;crypt-nat14.tst;success;source interface translation to address
-http://sources.freertr.org/cfg/crypt-nat15.tst;crypt-nat15.tst;success;target interface translation to address
-http://sources.freertr.org/cfg/crypt-nat16.tst;crypt-nat16.tst;success;ipv4 target port selection
-http://sources.freertr.org/cfg/crypt-nat17.tst;crypt-nat17.tst;success;ipv6 target port selection
-http://sources.freertr.org/cfg/crypt-nat18.tst;crypt-nat18.tst;success;ipv4-ipv6 unicast translation
-http://sources.freertr.org/cfg/crypt-nat19.tst;crypt-nat19.tst;success;ipv4-ipv6 multicast translation
+http://sources.freertr.org/cfg/crypt-nat10.tst;crypt-nat10.tst;success;source prefix translation to address
+http://sources.freertr.org/cfg/crypt-nat11.tst;crypt-nat11.tst;success;target prefix translation to address
+http://sources.freertr.org/cfg/crypt-nat12.tst;crypt-nat12.tst;success;source prefix translation to interface
+http://sources.freertr.org/cfg/crypt-nat13.tst;crypt-nat13.tst;success;target prefix translation to interface
+http://sources.freertr.org/cfg/crypt-nat14.tst;crypt-nat14.tst;success;nat64 translation
+http://sources.freertr.org/cfg/crypt-nat15.tst;crypt-nat15.tst;success;source port randomization
+http://sources.freertr.org/cfg/crypt-nat16.tst;crypt-nat16.tst;success;source interface translation to address
+http://sources.freertr.org/cfg/crypt-nat17.tst;crypt-nat17.tst;success;target interface translation to address
+http://sources.freertr.org/cfg/crypt-nat18.tst;crypt-nat18.tst;success;ipv4 target port selection
+http://sources.freertr.org/cfg/crypt-nat19.tst;crypt-nat19.tst;success;ipv6 target port selection
+http://sources.freertr.org/cfg/crypt-nat20.tst;crypt-nat20.tst;success;ipv4-ipv6 unicast translation
+http://sources.freertr.org/cfg/crypt-nat21.tst;crypt-nat21.tst;success;ipv4-ipv6 multicast translation
 http://sources.freertr.org/cfg/crypt-openvpn01.tst;crypt-openvpn01.tst;success;openvpn over ipv4
 http://sources.freertr.org/cfg/crypt-openvpn02.tst;crypt-openvpn02.tst;success;openvpn over ipv6
 http://sources.freertr.org/cfg/crypt-openvpn03.tst;crypt-openvpn03.tst;success;openvpn over openvpn

@@ -17923,3 +17923,10 @@ qc pass: unicast+mup over bgp with additional path
 qc pass: unicast+omup over bgp
 qc pass: unicast+omup over bgp with soft-reconfig
 qc pass: unicast+omup over bgp with additional path
+---------------------------------- 2026-01-28 08:16:52 26.1.28
+no qc pass: target prefix translation
+no qc pass: source prefix translation
+qc pass: source prefix translation to address
+qc pass: target prefix translation to address
+qc pass: source prefix translation to interface
+qc pass: target prefix translation to interface

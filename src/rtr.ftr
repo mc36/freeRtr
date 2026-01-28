@@ -958,8 +958,10 @@ qc pass: source address translation to pool
 qc pass: target address translation to address
 qc pass: more sources translation to interface
 qc pass: ipv4-ipv6 protocol translation
-qc pass: source prefix translation
-qc pass: target prefix translation
+qc pass: source prefix translation to address
+qc pass: target prefix translation to address
+qc pass: source prefix translation to interface
+qc pass: target prefix translation to interface
 qc pass: nat64 translation
 qc pass: source port randomization
 qc pass: source interface translation to address
