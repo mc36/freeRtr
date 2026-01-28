@@ -77,6 +77,7 @@ import org.freertr.serv.servOpenflow;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabHop;
 import org.freertr.tab.tabIntMatcher;
+import org.freertr.tab.tabNatTraN;
 import org.freertr.tab.tabQos;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
@@ -1580,6 +1581,110 @@ public class userPacket {
                 }
             }
             strm.setClose();
+            cmd.error("finished");
+            return null;
+        }
+        if (a.equals("bgpmass")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                return null;
+            }
+            cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+            if (ifc == null) {
+                return null;
+            }
+            addrIP trg = new addrIP();
+            if (trg.fromString(cmd.word())) {
+                return null;
+            }
+            int las = bits.str2num(cmd.word());
+            addrIP src = new addrIP();
+            if (src.fromString(cmd.word())) {
+                return null;
+            }
+            ipFwd fwd = vrf.getFwd(trg);
+            prtTcp tcp = vrf.getTcp(trg);
+            ipFwdIface ifw = ifc.getFwdIfc(trg);
+            int prt = bits.str2num(cmd.word());
+            int max = bits.str2num(cmd.word());
+            cmd.error("connecting " + trg);
+            List<pipeSide> conns = new ArrayList<pipeSide>();
+            for (int i = 0; i < max; i++) {
+                addrIP adr = new addrIP();
+                bits.msbPutD(adr.getBytes(), addrIP.size - 4, i);
+                adr.setAdd(adr, src);
+                tabNatTraN nat = new tabNatTraN();
+                nat.lastUsed = bits.getTime();
+                nat.created = nat.lastUsed;
+                nat.timeout = 60000;
+                nat.protocol = prtTcp.protoNum;
+                nat.origSrcAddr = ifw.addr.copyBytes();
+                nat.origTrgAddr = trg.copyBytes();
+                nat.origSrcPort = prt + i;
+                nat.origTrgPort = rtrBgp.port;
+                nat.newSrcAddr = adr.copyBytes();
+                nat.newTrgAddr = trg.copyBytes();
+                nat.newSrcPort = prt;
+                nat.newTrgPort = rtrBgp.port;
+                fwd.natTrns.put(nat);
+                fwd.natTrns.put(nat.reverseEntry());
+                fwd.tableChanger();
+                pipeSide strm = tcp.streamConnect(new pipeLine(65536, false), ifw, prt + i, trg, rtrBgp.port, "bgpmass", -1, null, -1, -1);
+                if (strm == null) {
+                    cmd.error("failed");
+                    continue;
+                }
+                conns.add(strm);
+                cmd.pipe.strPut(".");
+                if (need2stop()) {
+                    break;
+                }
+            }
+            cmd.error("sending " + conns.size() + " opens");
+            rtrBgp bgp = new rtrBgp(fwd, vrf, null, 0);
+            rtrBgpNeigh nei = new rtrBgpNeigh(bgp, trg);
+            nei.localAs = las;
+            int safi;
+            if (trg.isIPv4()) {
+                safi = rtrBgpUtil.safiIp4uni;
+            } else {
+                safi = rtrBgpUtil.safiIp6uni;
+            }
+            nei.addrFams = rtrBgpParam.boolsSet(false);
+            int idx = bgp.safi2idx(safi);
+            nei.addrFams[idx] = true;
+            List<rtrBgpSpeak> spkrs = new ArrayList<rtrBgpSpeak>();
+            for (int i = 0; i < conns.size(); i++) {
+                rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, conns.get(i), 0);
+                spk.sendOpen();
+                spk.sendKeepAlive();
+                spkrs.add(spk);
+                cmd.pipe.strPut(".");
+            }
+            cmd.error("waiting");
+            for (int o = 1000;; o++) {
+                if (o > 30) {
+                    cmd.pipe.strPut(".");
+                    for (int i = 0; i < spkrs.size(); i++) {
+                        spkrs.get(i).sendKeepAlive();
+                    }
+                    o = 0;
+                }
+                for (int p = 0; p < conns.size(); p++) {
+                    pipeSide strm = conns.get(p);
+                    int i = strm.ready2rx();
+                    if (i > 0) {
+                        strm.moreSkip(i);
+                    }
+                }
+                bits.sleep(1000);
+                if (need2stop()) {
+                    break;
+                }
+            }
+            for (int i = 0; i < conns.size(); i++) {
+                conns.get(i).setClose();
+            }
             cmd.error("finished");
             return null;
         }

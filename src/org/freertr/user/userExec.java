@@ -2851,6 +2851,14 @@ public class userExec {
         hl.add(null, true, 7, new int[]{8}, "<addr>", "prefix to originate");
         hl.add(null, true, 8, new int[]{9}, "<name:rm>", "route map to apply");
         hl.add(null, true, 9, new int[]{9, -1}, "<num>", "attribute byte");
+        hl.add(null, true, 2, new int[]{3}, "bgpmass", "run sink peer generator");
+        hl.add(null, true, 3, new int[]{4}, "<name:vrf>", "vrf name");
+        hl.add(null, true, 4, new int[]{5}, "<name:ifc>", "source interface name");
+        hl.add(null, true, 5, new int[]{6}, "<addr>", "target address");
+        hl.add(null, true, 6, new int[]{7}, "<num>", "local as");
+        hl.add(null, true, 7, new int[]{8}, "<addr>", "first address");
+        hl.add(null, true, 8, new int[]{9}, "<num>", "first port");
+        hl.add(null, true, 9, new int[]{-1}, "<num>", "number of peers");
         hl.add(null, true, 2, new int[]{3}, "bgpgen", "run random prefix generator");
         hl.add(null, true, 3, new int[]{4}, "<name:vrf>", "vrf name");
         hl.add(null, true, 4, new int[]{5}, "<name:ifc>", "source interface name");
