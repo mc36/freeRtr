@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v26.1.22-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-01-22 22:59:03, took 02:39:28, with 10 workers, on 865 cases, 1 failed, 0 traces, 22 retries
+-;-;-;freeRouter v26.1.29-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2026-01-30 03:46:35, took 02:42:58, with 10 workers, on 865 cases, 1 failed, 0 traces, 18 retries
 -;-;-;java -Xmx256m -jar rtr.jar, tofino
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
