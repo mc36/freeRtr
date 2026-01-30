@@ -9,6 +9,8 @@ import org.freertr.auth.authLocal;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgRtr;
+import org.freertr.ip.ipCor4;
+import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdMcast;
@@ -19,6 +21,7 @@ import org.freertr.sec.secInfoUtl;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
 import org.freertr.tab.tabRoute;
+import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
@@ -78,6 +81,18 @@ public class rtrMsdp extends ipRtr {
         fwdCore = forwarder;
         tcpCore = protocol;
         rtrNum = id;
+        tabRouteAttr.routeType rouTyp = null;
+        switch (fwdCore.ipVersion) {
+            case ipCor4.protocolVersion:
+                rouTyp = tabRouteAttr.routeType.msdp4;
+                break;
+            case ipCor6.protocolVersion:
+                rouTyp = tabRouteAttr.routeType.msdp6;
+                break;
+            default:
+                break;
+        }
+        fwdCore.routerAdd(this, rouTyp, id);
     }
 
     /**

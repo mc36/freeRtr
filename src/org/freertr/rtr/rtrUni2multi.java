@@ -160,6 +160,7 @@ public class rtrUni2multi extends ipRtr {
      * stop work
      */
     public void routerCloseNow() {
+        fwdCore.routerDel(this);
     }
 
     /**

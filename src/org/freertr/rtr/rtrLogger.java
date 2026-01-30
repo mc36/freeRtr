@@ -486,6 +486,7 @@ public class rtrLogger extends ipRtr {
      * stop work
      */
     public void routerCloseNow() {
+        fwdCore.routerDel(this);
     }
 
     /**

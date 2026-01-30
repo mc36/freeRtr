@@ -196,6 +196,7 @@ public class rtrMobile extends ipRtr implements Runnable {
      */
     public void routerCloseNow() {
         need2run = false;
+        fwdCore.routerDel(this);
     }
 
     /**

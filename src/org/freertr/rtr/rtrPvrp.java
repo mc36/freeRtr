@@ -579,6 +579,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
         tabLabel.release(segrouLab, tabLabelEntry.owner.pvrpSrgb);
         tabLabel.release(bierLab, tabLabelEntry.owner.pvrpBier);
+        fwdCore.routerDel(this);
     }
 
     /**

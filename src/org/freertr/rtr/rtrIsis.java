@@ -2135,6 +2135,7 @@ public class rtrIsis extends ipRtr {
         }
         tabLabel.release(segrouLab, tabLabelEntry.owner.isisSrgb);
         tabLabel.release(bierLab, tabLabelEntry.owner.isisBier);
+        fwdCore.routerDel(this);
     }
 
     /**

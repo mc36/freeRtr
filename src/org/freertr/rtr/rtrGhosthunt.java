@@ -826,6 +826,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
      */
     public void routerCloseNow() {
         need2run = false;
+        fwdCore.routerDel(this);
     }
 
     /**

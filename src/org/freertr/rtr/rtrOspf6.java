@@ -837,6 +837,7 @@ public class rtrOspf6 extends ipRtr {
         }
         tabLabel.release(segrouLab, tabLabelEntry.owner.ospf6srgb);
         tabLabel.release(bierLab, tabLabelEntry.owner.ospf6bier);
+        fwdCore.routerDel(this);
     }
 
     /**

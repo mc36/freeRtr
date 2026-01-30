@@ -253,6 +253,7 @@ public class rtrDeaggr extends ipRtr {
      * stop work
      */
     public void routerCloseNow() {
+        fwdCore.routerDel(this);
     }
 
     /**

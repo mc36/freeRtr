@@ -215,6 +215,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
      */
     public void routerCloseNow() {
         working = false;
+        fwdCore.routerDel(this);
     }
 
     /**

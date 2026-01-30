@@ -999,6 +999,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         tabLabel.release(segrouLab, tabLabelEntry.owner.lsrpSrgb);
         tabLabel.release(bierLab, tabLabelEntry.owner.lsrpBier);
+        fwdCore.routerDel(this);
     }
 
     /**

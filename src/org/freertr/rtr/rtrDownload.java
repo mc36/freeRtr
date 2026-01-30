@@ -404,6 +404,7 @@ public class rtrDownload extends ipRtr {
      */
     public void routerCloseNow() {
         stopNow();
+        fwdCore.routerDel(this);
     }
 
     /**

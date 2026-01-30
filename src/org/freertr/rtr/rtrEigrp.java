@@ -362,6 +362,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
             ifc.unregister2ip();
             ifc.closeNeighbors();
         }
+        fwdCore.routerDel(this);
     }
 
     /**

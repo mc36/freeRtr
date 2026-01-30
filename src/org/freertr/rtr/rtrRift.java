@@ -908,6 +908,7 @@ public class rtrRift extends ipRtr implements Runnable {
             }
             ifc.unregister2udp();
         }
+        fwdCore.routerDel(this);
     }
 
     /**
