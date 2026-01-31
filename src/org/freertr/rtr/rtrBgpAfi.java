@@ -52,6 +52,16 @@ public interface rtrBgpAfi {
     public rtrBgpAfi ipv6car = new rtrBgpAfiIpv6car();
 
     /**
+     * ipv4 tunnel
+     */
+    public rtrBgpAfi ipv4tun = new rtrBgpAfiIpv4tun();
+
+    /**
+     * ipv6 tunnel
+     */
+    public rtrBgpAfi ipv6tun = new rtrBgpAfiIpv6tun();
+
+    /**
      * vpnv4 unicast
      */
     public rtrBgpAfi vpnv4uni = new rtrBgpAfiVpnv4uni();
@@ -180,6 +190,37 @@ public interface rtrBgpAfi {
     public static <T extends addrType> void writeIpvXuni(addrPrefix<T> pfx, packHolder pck) {
         pck.putByte(0, pfx.maskLen);
         pck.putSkip(1);
+        pck.putAddr(0, pfx.network);
+        pck.putSkip((pfx.maskLen + 7) / 8);
+    }
+
+    /**
+     * read one ipvX tunnel
+     *
+     * @param <T> address kind
+     * @param adr dummy address
+     * @param pck packet to use
+     * @return address read
+     */
+    public static <T extends addrType> addrPrefix<T> readIpvXtun(T adr, packHolder pck) {
+        int i = pck.getByte(0);
+        pck.getSkip(3);
+        pck.getAddr(adr, 0);
+        pck.getSkip((i + 7) / 8);
+        return new addrPrefix<T>(adr, i - 16);
+    }
+
+    /**
+     * write one ipvX tunnel
+     *
+     * @param <T> address kind
+     * @param pfx address to write
+     * @param pck packet to use
+     */
+    public static <T extends addrType> void writeIpvXtun(addrPrefix<T> pfx, packHolder pck) {
+        pck.putByte(0, 16 + pfx.maskLen);
+        pck.msbPutW(1, 0xffff); // tunnel id
+        pck.putSkip(3);
         pck.putAddr(0, pfx.network);
         pck.putSkip((pfx.maskLen + 7) / 8);
     }
@@ -637,6 +678,36 @@ class rtrBgpAfiIpv6car implements rtrBgpAfi {
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
         rtrBgpAfi.writeIpvXcar(a6, ntry, pck);
+    }
+
+}
+
+class rtrBgpAfiIpv4tun implements rtrBgpAfi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = addrPrefix.ip4toIP(rtrBgpAfi.readIpvXtun(new addrIPv4(), pck));
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
+        rtrBgpAfi.writeIpvXtun(a4, pck);
+    }
+
+}
+
+class rtrBgpAfiIpv6tun implements rtrBgpAfi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = addrPrefix.ip6toIP(rtrBgpAfi.readIpvXtun(new addrIPv6(), pck));
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
+        rtrBgpAfi.writeIpvXtun(a6, pck);
     }
 
 }

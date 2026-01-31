@@ -63,6 +63,21 @@ public class rtrBgpUtil {
     public final static int afiNsap = 0x30000;
 
     /**
+     * hdlc address family
+     */
+    public final static int afiHdlc = 0x40000;
+
+    /**
+     * ethernet address family
+     */
+    public final static int afiE802 = 0x60000;
+
+    /**
+     * telephony address family
+     */
+    public final static int afiE163 = 0x70000;
+
+    /**
      * x25 address family
      */
     public final static int afiX25 = 0xa0000;
@@ -88,9 +103,49 @@ public class rtrBgpUtil {
     public final static int afiBanyan = 0xe0000;
 
     /**
+     * domain address family
+     */
+    public final static int afiDns = 0x100000;
+
+    /**
+     * name address family
+     */
+    public final static int afiName = 0x110000;
+
+    /**
+     * asn address family
+     */
+    public final static int afiAsn = 0x120000;
+
+    /**
      * l2vpn address family
      */
     public final static int afiL2vpn = 0x190000;
+
+    /**
+     * mpls tp sel end id address family
+     */
+    public final static int afiMtpSel = 0x1a0000;
+
+    /**
+     * mpls tp lsp end id address family
+     */
+    public final static int afiMtpLsp = 0x1b0000;
+
+    /**
+     * mpls tp pwe end id address family
+     */
+    public final static int afiMtpPwe = 0x1c0000;
+
+    /**
+     * multi topology ipv4 address family
+     */
+    public final static int afiMtIp4 = 0x1d0000;
+
+    /**
+     * multi topology ipv6 address family
+     */
+    public final static int afiMtIp6 = 0x1e0000;
 
     /**
      * nsh address family
@@ -426,6 +481,26 @@ public class rtrBgpUtil {
      * ipv6 mup address family
      */
     public final static int safiIp6mup = afiIpv6 | sfiMobUsrPln;
+
+    /**
+     * ipv4 tunnel address family
+     */
+    public final static int safiIp4tun = afiIpv4 | sfiTunnel;
+
+    /**
+     * ipv6 tunnel address family
+     */
+    public final static int safiIp6tun = afiIpv6 | sfiTunnel;
+
+    /**
+     * ipv4 encap address family
+     */
+    public final static int safiIp4enc = afiIpv4 | sfiEncap;
+
+    /**
+     * ipv6 encap address family
+     */
+    public final static int safiIp6enc = afiIpv6 | sfiEncap;
 
     /**
      * ipv4/ipv6 link state address family
