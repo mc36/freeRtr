@@ -3682,6 +3682,12 @@ qc pass: unicast+omup over bgp with soft-reconfig
 qc pass: unicast+omup over bgp with additional path
 qc pass: ibgp rr with a lot peer
 qc pass: bgp route server with a lot peer
+qc pass: unicast+tunnel over bgp
+qc pass: unicast+tunnel over bgp with soft-reconfig
+qc pass: unicast+tunnel over bgp with additional path
+qc pass: unicast+encap over bgp
+qc pass: unicast+encap over bgp with soft-reconfig
+qc pass: unicast+encap over bgp with additional path
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

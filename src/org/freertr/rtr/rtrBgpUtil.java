@@ -163,6 +163,11 @@ public class rtrBgpUtil {
     public final static int afiRpd = 0x400e0000;
 
     /**
+     * mpls address family
+     */
+    public final static int afiMpls = 0x400f0000;
+
+    /**
      * address family mask
      */
     public final static int afiMask = 0xffff0000;

@@ -17933,3 +17933,10 @@ qc pass: target prefix translation to interface
 ---------------------------------- 2026-01-28 15:13:08 26.1.28
 qc pass: ibgp rr with a lot peer
 qc pass: bgp route server with a lot peer
+---------------------------------- 2026-01-31 14:35:25 26.1.31
+qc pass: unicast+tunnel over bgp
+qc pass: unicast+tunnel over bgp with soft-reconfig
+qc pass: unicast+tunnel over bgp with additional path
+qc pass: unicast+encap over bgp
+qc pass: unicast+encap over bgp with soft-reconfig
+qc pass: unicast+encap over bgp with additional path

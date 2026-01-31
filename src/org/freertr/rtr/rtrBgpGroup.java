@@ -177,9 +177,6 @@ public class rtrBgpGroup extends rtrBgpParam {
 
     private void nextHopSelf(int idx, tabRouteAttr<addrIP> ntry, tabRouteEntry<addrIP> route) {
         boolean done = false;
-        if (!nxtHopCapa) {
-            ntry.hopCapa = null;
-        }
         if (nxtHopMltlb && (ntry.nextHop != null)) {
             ipFwd tab = getForwarder(idx, ntry);
             tabRouteEntry<addrIP> org = tab.labeldR.route(ntry.nextHop);
@@ -269,6 +266,9 @@ public class rtrBgpGroup extends rtrBgpParam {
     }
 
     private void clearAttribs(tabRouteAttr<addrIP> ntry) {
+        if (!nxtHopCapa) {
+            ntry.hopCapa = null;
+        }
         if ((sendCommunity & 1) == 0) {
             ntry.stdComm = null;
         }
