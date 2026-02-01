@@ -18007,3 +18007,6 @@ qc pass: p4lang: bundle qinq mspw with bgp
 qc pass: p4lang: routed mspw with bgp
 qc pass: p4lang: routed vlan mspw with bgp
 qc pass: p4lang: routed qinq mspw with bgp
+---------------------------------- 2026-02-01 19:13:40 26.2.1
+qc pass: p4lang: mspw over backplane
+qc pass: p4lang: routed mspw over backplane
