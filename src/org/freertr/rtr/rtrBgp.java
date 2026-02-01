@@ -2879,14 +2879,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return false;
             }
             if (s.equals("remote")) {
-                if (negated) {
-                    cur.remAdr = null;
-                    cur.remId = 0;
-                    return false;
-                }
                 cur.remAdr = new addrIP();
                 cur.remAdr.fromString(cmd.word());
                 cur.remId = tabRouteUtil.string2rd(cmd.word());
+                if (negated) {
+                    cur.remAdr = null;
+                    cur.remId = 0;
+                }
+                needFull.add(1);
+                compute.wakeup();
                 return false;
             }
             if (s.equals("update-source")) {

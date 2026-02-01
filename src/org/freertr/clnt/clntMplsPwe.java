@@ -152,7 +152,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
     private state.states lastStat = state.states.down;
 
     public String toString() {
-        return "pwe " + fwdTrg + " " + vcid;
+        return "pwe " + fwdTrg + " " + vcid + " " + srcI + " " + trgI;
     }
 
     /**

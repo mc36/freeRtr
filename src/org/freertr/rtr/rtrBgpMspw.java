@@ -167,8 +167,11 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
         len += 4;
         src.toBuffer(buf, len);
         len += src.getSize();
+        /*
         bits.msbPutD(buf, len, (int) id); // ac id
         len += 4;
+        ////////////////
+        */
         buf[0] = (byte) (len - 1);
         return buf;
     }
@@ -178,6 +181,14 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
      */
     protected void doPeers() {
         if (remAdr == null) {
+            doStop();
+            return;
+        }
+        if (iface == null) {
+            doStop();
+            return;
+        }
+        if (bridge == null) {
             doStop();
             return;
         }
@@ -209,14 +220,16 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
             len = got[0];
             per = ntry.best.nextHop.copyBytes();
         }
+        if (per == null) {
+            doStop();
+            return;
+        }
         if (last != null) {
             if (last.compareTo(per) == 0) {
                 return;
             }
         }
-        if (clnt != null) {
-            doStop();
-        }
+        doStop();
         last = per;
         if (debugger.rtrBgpEvnt) {
             logger.debug("start " + per);
@@ -242,16 +255,17 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
      * stop this mspw
      */
     public void doStop() {
-        if (debugger.rtrBgpEvnt) {
-            logger.debug("stop " + tabRouteUtil.rd2string(id) + " " + last);
-        }
         if (clnt == null) {
             return;
+        }
+        if (debugger.rtrBgpEvnt) {
+            logger.debug("stop " + tabRouteUtil.rd2string(id) + " " + last);
         }
         clnt.workStop();
         brdg.closeUp();
         clnt = null;
         brdg = null;
+        last = null;
     }
 
     /**
