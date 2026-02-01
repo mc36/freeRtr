@@ -1,4 +1,4 @@
-description p4lang: bundle vlan mspw with bgp
+description p4lang: bundle qinq mspw with bgp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -68,6 +68,8 @@ int sdn4
  bundle-gr 1
  exit
 int bun1.111
+ exit
+int bun1.111.222
  bridge-gr 1
  exit
 router bgp4 1
@@ -258,6 +260,8 @@ int eth2
  bundle-gr 1
  exit
 int bun1.111
+ exit
+int bun1.111.222
  vrf for v1
  ipv4 addr 1.1.3.5 255.255.255.0
  ipv6 addr 1234:3::5 ffff:ffff::

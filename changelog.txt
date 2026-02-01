@@ -17996,3 +17996,6 @@ qc pass: interop9: mspw over bgp
 qc pass: evpn/pbb+evpn/cmac over ebgp
 ---------------------------------- 2026-02-01 17:56:30 26.2.1
 qc pass: p4lang: mspw with bgp
+---------------------------------- 2026-02-01 18:25:35 26.2.1
+qc pass: p4lang: vlan mspw with bgp
+qc pass: p4lang: bundle vlan mspw with bgp
