@@ -415,6 +415,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected tabGen<rtrBgpVpls> vpls;
 
     /**
+     * list of mspw
+     */
+    protected tabGen<rtrBgpMspw> mspw;
+
+    /**
      * list of evpns
      */
     protected tabGen<rtrBgpEvpn> evpn;
@@ -576,6 +581,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l3es = new tabGen<rtrBgpVrf>();
         ol3es = new tabGen<rtrBgpVrf>();
         vpls = new tabGen<rtrBgpVpls>();
+        mspw = new tabGen<rtrBgpMspw>();
         evpn = new tabGen<rtrBgpEvpn>();
         evpnRcv = new rtrBgpEvpnPbb(this);
         routerID = new addrIPv4();
@@ -1127,6 +1133,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doAdvertise(freshly);
         }
+        for (int i = 0; i < mspw.size(); i++) {
+            mspw.get(i).doAdvertise(freshly);
+        }
         for (int i = 0; i < evpn.size(); i++) {
             evpn.get(i).doAdvertise(freshly);
         }
@@ -1332,6 +1341,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doPeers();
+        }
+        for (int i = 0; i < mspw.size(); i++) {
+            mspw.get(i).doPeers();
         }
         for (int i = 0; i < evpn.size(); i++) {
             evpn.get(i).doPeers();
@@ -1577,6 +1589,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         int cntGlb = done[rtrBgpParam.idxUni].size() + done[rtrBgpParam.idxMlt].size();
         int cntFlw = done[rtrBgpParam.idxFlw].size();
         int cntVpls = done[rtrBgpParam.idxVpls].size();
+        int cntMspw = done[rtrBgpParam.idxMspw].size();
         int cntEvpn = done[rtrBgpParam.idxEvpn].size();
         lspf.doPeersIncr();
         if (labPer || ((cntGlb + cntFlw) > 0)) {
@@ -1610,6 +1623,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (cntVpls > 0) {
             for (int i = 0; i < vpls.size(); i++) {
                 vpls.get(i).doPeers();
+            }
+        }
+        if (cntMspw > 0) {
+            for (int i = 0; i < mspw.size(); i++) {
+                mspw.get(i).doPeers();
             }
         }
         if (cntEvpn > 0) {
@@ -1786,6 +1804,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doStop();
         }
+        for (int i = 0; i < mspw.size(); i++) {
+            mspw.get(i).doStop();
+        }
         for (int i = 0; i < evpn.size(); i++) {
             evpn.get(i).doStop();
         }
@@ -1952,6 +1973,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 3, new int[]{4}, "ve-id", "specify ve id");
         l.add(null, false, 4, new int[]{5}, "<num>", "ve id number");
         l.add(null, false, 5, new int[]{-1}, "<num>", "ve maximum number");
+        l.add(null, false, 1, new int[]{2}, "afi-mspw", "select mspw to advertise");
+        l.add(null, false, 2, new int[]{3}, "<id>", "mspw id in global:ACid format");
+        l.add(null, false, 3, new int[]{4}, "remote", "select remote peer");
+        l.add(null, false, 4, new int[]{5}, "<addr>", "peer address");
+        l.add(null, false, 5, new int[]{-1}, "<id>", "peer id in global:ACid format");
+        l.add(null, false, 3, new int[]{4}, "bridge-group", "enable processing");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "bridge group number");
+        l.add(null, false, 3, new int[]{4}, "update-source", "select source to advertise");
+        l.add(null, false, 4, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, 3, new int[]{-1}, "control-word", "specify control word");
         l.add(null, false, 1, new int[]{2}, "afi-evpn", "select evpn to advertise");
         l.add(null, false, 2, new int[]{3}, "<id>", "evpn id");
         l.add(null, false, 3, new int[]{4}, "bridge-group", "enable processing");
@@ -2050,6 +2081,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).getConfig(l, beg);
+        }
+        for (int i = 0; i < mspw.size(); i++) {
+            mspw.get(i).getConfig(l, beg);
         }
         for (int i = 0; i < evpn.size(); i++) {
             evpn.get(i).getConfig(l, beg);
@@ -2811,6 +2845,73 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             return false;
         }
+        if (s.equals("afi-mspw")) {
+            rtrBgpMspw cur = new rtrBgpMspw(this);
+            cur.id = tabRouteUtil.string2rd(cmd.word());
+            s = cmd.word();
+            if (s.equals("bridge-group")) {
+                rtrBgpMspw old = mspw.del(cur);
+                if (old != null) {
+                    old.doStop();
+                }
+                if (negated) {
+                    needFull.add(1);
+                    compute.wakeup();
+                    return false;
+                }
+                cur.bridge = cfgAll.brdgFind(cmd.word(), false);
+                if (cur.bridge == null) {
+                    cmd.error("no such bridge");
+                    return false;
+                }
+                mspw.add(cur);
+                return false;
+            }
+            cur = mspw.find(cur);
+            if (cur == null) {
+                cmd.error("mspw not enabled");
+                return false;
+            }
+            if (s.equals("control-word")) {
+                cur.ctrlWrd = !negated;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("remote")) {
+                if (negated) {
+                    cur.remAdr = null;
+                    cur.remId = 0;
+                    return false;
+                }
+                cur.remAdr = new addrIP();
+                cur.remAdr.fromString(cmd.word());
+                cur.remId = tabRouteUtil.string2rd(cmd.word());
+                return false;
+            }
+            if (s.equals("update-source")) {
+                if (negated) {
+                    cur.iface = null;
+                    needFull.add(1);
+                    compute.wakeup();
+                    return false;
+                }
+                cfgIfc res = cfgAll.ifcFind(cmd.word(), 0);
+                if (res == null) {
+                    cmd.error("no such interface");
+                    return false;
+                }
+                if (res.vrfFor != vrfCore) {
+                    cmd.error("in other vrf");
+                    return false;
+                }
+                cur.iface = res;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            return false;
+        }
         if (s.equals("afi-evpn")) {
             rtrBgpEvpn cur = new rtrBgpEvpn(this);
             cur.id = bits.str2num(cmd.word());
@@ -3323,6 +3424,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).getPeerList(tab);
+        }
+        for (int i = 0; i < mspw.size(); i++) {
+            mspw.get(i).getPeerList(tab);
         }
         for (int i = 0; i < evpn.size(); i++) {
             evpn.get(i).getPeerList(tab);
@@ -4071,6 +4175,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add("l3evpn|" + rtrBgpUtil.tabSiz2str(l3es));
         l.add("other l3evpn|" + rtrBgpUtil.tabSiz2str(ol3es));
         l.add("vplses|" + rtrBgpUtil.tabSiz2str(vpls));
+        l.add("mspws|" + rtrBgpUtil.tabSiz2str(mspw));
         l.add("evpns|" + rtrBgpUtil.tabSiz2str(evpn));
         l.add("groups|" + groups.size() + "|" + groupMin + ".." + groupMax);
         l.add("roa table|" + rpkiA.size() + "|" + rpkiO.size());
