@@ -17946,3 +17946,6 @@ qc pass: mspw over ibgp
 ---------------------------------- 2026-02-01 12:01:51 26.2.1
 qc pass: mspw over bgp additional path
 qc pass: mspw over ibgp rr
+---------------------------------- 2026-02-01 12:25:20 26.2.1
+qc pass: mspw over confed bgp
+qc pass: mspw over bgp route server
