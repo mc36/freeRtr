@@ -2639,6 +2639,7 @@ qc pass: p4lang: vlan tcpmss out
 qc pass: p4lang: ttlset out
 qc pass: p4lang: vlan ttlset out
 qc pass: p4lang: qinq ttlset out
+qc pass: p4lang: mspw with bgp
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

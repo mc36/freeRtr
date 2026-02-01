@@ -17994,3 +17994,5 @@ qc pass: interop2: bgp extended nexthop
 no qc pass: evpn/pbb+vpls/cmac over ebgp
 qc pass: interop9: mspw over bgp
 qc pass: evpn/pbb+evpn/cmac over ebgp
+---------------------------------- 2026-02-01 17:56:30 26.2.1
+qc pass: p4lang: mspw with bgp
