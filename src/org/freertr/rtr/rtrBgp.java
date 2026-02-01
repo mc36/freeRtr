@@ -1978,6 +1978,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 3, new int[]{4}, "remote", "select remote peer");
         l.add(null, false, 4, new int[]{5}, "<addr>", "peer address");
         l.add(null, false, 5, new int[]{-1}, "<id>", "peer id in global:ACid format");
+        l.add(null, false, 3, new int[]{4}, "partial", "select partial advertisement");
+        l.add(null, false, 4, new int[]{-1}, "none", "no aggregation");
+        l.add(null, false, 4, new int[]{-1}, "acid", "omit ac id");
+        l.add(null, false, 4, new int[]{-1}, "prefix", "omit remote");
         l.add(null, false, 3, new int[]{4}, "bridge-group", "enable processing");
         l.add(null, false, 4, new int[]{-1}, "<num>", "bridge group number");
         l.add(null, false, 3, new int[]{4}, "update-source", "select source to advertise");
@@ -2874,6 +2878,24 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             if (s.equals("control-word")) {
                 cur.ctrlWrd = !negated;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("partial")) {
+                s = cmd.word();
+                if (s.equals("none")) {
+                    cur.aggr = 0;
+                }
+                if (s.equals("acid")) {
+                    cur.aggr = 1;
+                }
+                if (s.equals("prefix")) {
+                    cur.aggr = 2;
+                }
+                if (negated) {
+                    cur.aggr = 1;
+                }
                 needFull.add(1);
                 compute.wakeup();
                 return false;

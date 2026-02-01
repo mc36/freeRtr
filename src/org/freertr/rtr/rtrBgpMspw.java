@@ -60,6 +60,11 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
      */
     public long remId;
 
+    /**
+     * aggregate at, 0=none, 1=node, 2=global
+     */
+    public int aggr;
+
     private final rtrBgp parent;
 
     /**
@@ -81,6 +86,7 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
      */
     public rtrBgpMspw(rtrBgp p) {
         parent = p;
+        aggr = 1;
     }
 
     public int compareTo(rtrBgpMspw o) {
@@ -102,9 +108,29 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
     public void getConfig(List<String> l, String beg1) {
         String beg2 = beg1 + "afi-mspw " + tabRouteUtil.rd2string(id) + " ";
         l.add(beg2 + "bridge-group " + bridge.number);
-        l.add(beg2 + "remote " + remAdr + " " + tabRouteUtil.rd2string(remId));
+        if (remAdr != null) {
+            l.add(beg2 + "remote " + remAdr + " " + tabRouteUtil.rd2string(remId));
+        }
         if (ctrlWrd) {
             l.add(beg2 + "control-word");
+        }
+        String a = null;
+        switch (aggr) {
+            case 0:
+                a = "none";
+                break;
+            case 1:
+                a = "acid";
+                break;
+            case 2:
+                a = "prefix";
+                break;
+            default:
+                a = "unknown=" + aggr;
+                break;
+        }
+        if (aggr != 1) {
+            l.add(beg2 + "partial " + a);
         }
         if (iface != null) {
             l.add(beg2 + "update-source " + iface.name);
@@ -135,7 +161,7 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
             return;
         }
         addrType src = null;
-        if (!parent.isIpv6) {
+        if (remAdr.isIPv4()) {
             src = iface.addr4;
         } else {
             src = iface.addr6;
@@ -143,7 +169,7 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
         if (src == null) {
             return;
         }
-        byte[] buf = createAddr(src, id);
+        byte[] buf = createAddr(src, id, aggr);
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.best.extComm = new ArrayList<Long>();
         ntry.prefix = new addrPrefix<addrIP>(new addrIP(), buf.length * 8);
@@ -160,18 +186,19 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
         adverted = true;
     }
 
-    private byte[] createAddr(addrType src, long id) {
+    private static byte[] createAddr(addrType src, long id, int agr) {
         byte[] buf = new byte[addrIP.size * 2];
         int len = 1;
         bits.msbPutD(buf, len, (int) (id >>> 32)); // global
         len += 4;
-        src.toBuffer(buf, len);
-        len += src.getSize();
-        /*
-        bits.msbPutD(buf, len, (int) id); // ac id
-        len += 4;
-        ////////////////
-        */
+        if (agr < 2) {
+            src.toBuffer(buf, len);
+            len += src.getSize();
+        }
+        if (agr < 1) {
+            bits.msbPutD(buf, len, (int) id); // ac id
+            len += 4;
+        }
         buf[0] = (byte) (len - 1);
         return buf;
     }
@@ -193,10 +220,10 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
             return;
         }
         byte[] ned;
-        if (!parent.isIpv6) {
-            ned = createAddr(remAdr.toIPv4(), remId);
+        if (remAdr.isIPv4()) {
+            ned = createAddr(remAdr.toIPv4(), remId, 0);
         } else {
-            ned = createAddr(remAdr.toIPv6(), remId);
+            ned = createAddr(remAdr.toIPv6(), remId, 0);
         }
         byte[] got = new byte[ned.length];
         addrIP per = null;
@@ -230,10 +257,10 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
             }
         }
         doStop();
-        last = per;
         if (debugger.rtrBgpEvnt) {
             logger.debug("start " + per);
         }
+        last = per;
         clnt = new clntMplsPwe();
         clnt.pwType = packLdpPwe.pwtEthPort;
         clnt.pwMtu = bridge.bridgeHed.getMTUsize();
@@ -278,7 +305,7 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
             return;
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.prefix = new addrPrefix<addrIP>(remAdr, addrIP.size * 8);
+        ntry.prefix = new addrPrefix<addrIP>(last, addrIP.size * 8);
         tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.sfiUnicast, 0, ntry, true, null, null, parent.routerAutoMesh);
     }
 
