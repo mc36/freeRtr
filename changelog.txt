@@ -17943,3 +17943,6 @@ qc pass: unicast+encap over bgp with additional path
 ---------------------------------- 2026-02-01 10:14:38 26.2.1
 qc pass: mspw over ebgp
 qc pass: mspw over ibgp
+---------------------------------- 2026-02-01 12:01:51 26.2.1
+qc pass: mspw over bgp additional path
+qc pass: mspw over ibgp rr

@@ -3690,6 +3690,8 @@ qc pass: unicast+encap over bgp with soft-reconfig
 qc pass: unicast+encap over bgp with additional path
 qc pass: mspw over ebgp
 qc pass: mspw over ibgp
+qc pass: mspw over bgp additional path
+qc pass: mspw over ibgp rr
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
