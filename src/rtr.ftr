@@ -1500,6 +1500,7 @@ qc pass: interop9: bgp vpnv4
 qc pass: interop9: bgp authentication
 qc pass: interop9: bgp vpnv6
 qc pass: interop9: vpls/ldp over bgp
+qc pass: interop9: mspw over bgp
 qc pass: interop9: vpls/bgp over bgp
 qc pass: interop9: bgp extended community
 qc pass: interop9: bgp large community
@@ -2982,7 +2983,7 @@ qc pass: unicast+evpn/cmac over bgp
 qc pass: unicast+evpn/cmac over bgp with soft-reconfig
 qc pass: unicast+evpn/cmac over bgp additional path
 qc pass: evpn/cmac over bgp auto mesh tunnel
-qc pass: evpn/pbb+vpls/cmac over ebgp
+qc pass: evpn/pbb+evpn/cmac over ebgp
 qc pass: ibgp with ttl-security
 qc pass: ebgp with ttl-security
 qc pass: bgp routemap filtering with large community
