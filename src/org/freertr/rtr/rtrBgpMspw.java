@@ -143,7 +143,7 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
         if (src == null) {
             return;
         }
-        byte[] buf = conn2buf(src, id);
+        byte[] buf = createAddr(src, id);
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.best.extComm = new ArrayList<Long>();
         ntry.prefix = new addrPrefix<addrIP>(new addrIP(), buf.length * 8);
@@ -160,7 +160,7 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
         adverted = true;
     }
 
-    private byte[] conn2buf(addrType src, long id) {
+    private byte[] createAddr(addrType src, long id) {
         byte[] buf = new byte[addrIP.size * 2];
         int len = 1;
         bits.msbPutD(buf, len, (int) (id >>> 32));
@@ -183,9 +183,9 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
         }
         byte[] ned;
         if (!parent.isIpv6) {
-            ned = conn2buf(remAdr.toIPv4(), remId);
+            ned = createAddr(remAdr.toIPv4(), remId);
         } else {
-            ned = conn2buf(remAdr.toIPv6(), remId);
+            ned = createAddr(remAdr.toIPv6(), remId);
         }
         byte[] got = new byte[ned.length];
         addrIP per = null;
@@ -227,7 +227,9 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
         clnt.target = "" + per;
         clnt.vrf = parent.vrfCore;
         clnt.srcIfc = iface;
-        clnt.vcid = tabRouteUtil.agi2comm(id);
+        clnt.vcid = 0;
+        clnt.srcI = id;
+        clnt.trgI = remId;
         clnt.ctrlWrd = ctrlWrd;
         clnt.general = true;
         clnt.descr = null;

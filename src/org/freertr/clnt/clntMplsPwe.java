@@ -90,6 +90,16 @@ public class clntMplsPwe implements Runnable, ifcDn {
     public long vcid;
 
     /**
+     * source aii
+     */
+    public long srcI;
+
+    /**
+     * target aii
+     */
+    public long trgI;
+
+    /**
      * generalized
      */
     public boolean general;
@@ -401,6 +411,8 @@ public class clntMplsPwe implements Runnable, ifcDn {
         pweL.trgA = fwdTrg.copyBytes();
         pweL.grp = 0;
         pweL.vcid = vcid;
+        pweL.srcI = srcI;
+        pweL.trgI = trgI;
         pweL.general = general;
         pweL.label = labelL.label;
         pweL.typ = pwType;

@@ -4481,7 +4481,7 @@ public class userShow {
     }
 
     private void doShowPweList(tabGen<packLdpPwe> lst) {
-        userFormat txt = new userFormat("|", "type|cw|group|vcid|mtu|vccv|label|description");
+        userFormat txt = new userFormat("|", "type|cw|group|vcid|saii|taii|mtu|vccv|label|description");
         for (int i = 0; i < lst.size(); i++) {
             txt.add("" + lst.get(i));
         }

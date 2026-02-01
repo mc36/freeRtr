@@ -51,6 +51,16 @@ public class packLdpPwe implements Comparable<packLdpPwe> {
     public long vcid;
 
     /**
+     * source aii
+     */
+    public long srcI;
+
+    /**
+     * target aii
+     */
+    public long trgI;
+
+    /**
      * mtu value
      */
     public int mtu;
@@ -226,7 +236,7 @@ public class packLdpPwe implements Comparable<packLdpPwe> {
     }
 
     public String toString() {
-        return type2string(typ) + "|" + ctrlWrd + "|" + grp + "|" + vcid + "|" + mtu + "|" + vccv + "|" + label + "|" + desc;
+        return type2string(typ) + "|" + ctrlWrd + "|" + grp + "|" + vcid + "|" + srcI + "|" + trgI + "|" + mtu + "|" + vccv + "|" + label + "|" + desc;
     }
 
     /**
@@ -317,21 +327,28 @@ public class packLdpPwe implements Comparable<packLdpPwe> {
         return pck.getCopy();
     }
 
-    private int createAddr(packHolder pck, int ofs, addrIP adr) {
-        int i;
-        int o;
-        if (adr.isIPv4()) {
-            o = rtrBgpUtil.afiIpv4;
-            i = addrIPv4.size;
-            pck.putAddr(ofs + 2, adr.toIPv4());
-        } else {
-            o = rtrBgpUtil.afiIpv6;
-            i = addrIPv6.size;
-            pck.putAddr(ofs + 2, adr.toIPv6());
+    private int createAddr(packHolder pck, int ofs, addrIP adr, long id) {
+        int i = 2;
+        if (vcid == 0) {
+            pck.msbPutD(ofs + i, (int) (id >>> 32));
+            i += 4;
         }
-        pck.putByte(ofs, o >>> 16); // type
-        pck.putByte(ofs + 1, i); // size
-        return i + 2;
+        if (adr.isIPv4()) {
+            pck.putAddr(ofs + i, adr.toIPv4());
+            i += addrIPv4.size;
+        } else {
+            pck.putAddr(ofs + i, adr.toIPv6());
+            i += addrIPv6.size;
+        }
+        int o = 1;
+        if (vcid == 0) {
+            pck.msbPutD(ofs + i, (int) id);
+            i += 4;
+            o = 2;
+        }
+        pck.putByte(ofs + 0, o); // type
+        pck.putByte(ofs + 1, i - 2); // size
+        return i;
     }
 
     /**
@@ -375,8 +392,8 @@ public class packLdpPwe implements Comparable<packLdpPwe> {
         pck.putByte(4, 8); // agi length
         pck.msbPutQ(5, vcid); // agi value
         i = 13;
-        i += createAddr(pck, i, srcA); // source address
-        i += createAddr(pck, i, trgA); // target address
+        i += createAddr(pck, i, srcA, srcI); // source address
+        i += createAddr(pck, i, trgA, trgI); // target address
         pck.putByte(2, i - 3); // info length
         pck.putSkip(i);
     }
