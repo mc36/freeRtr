@@ -1,4 +1,4 @@
-description interop2: bgp vpnv6 over srv6
+description interop2: bgp vpnv4 over srv6
 
 exit
 
@@ -49,27 +49,28 @@ int lo3
  exit
 router bgp4 1
  vrf v1
- address vpnuni
+ address ovpnuni
  local-as 1
  router-id 4.4.4.1
- neigh 1.1.1.2 remote-as 1
+ neigh 1.1.1.2 remote-as 2
  neigh 1.1.1.2 send-comm both
  neigh 1.1.1.2 segrou
- afi-ovrf v2 ena
- afi-ovrf v2 srv6 tun1
- afi-ovrf v2 red conn
- afi-ovrf v3 ena
- afi-ovrf v3 srv6 tun1
- afi-ovrf v3 red conn
+ afi-vrf v2 ena
+ afi-vrf v2 srv6 tun1
+ afi-vrf v2 red conn
+ afi-vrf v3 ena
+ afi-vrf v3 srv6 tun1
+ afi-vrf v3 red conn
  exit
 router bgp6 1
  vrf v1
- address vpnuni
+ address ovpnuni
  local-as 1
  router-id 6.6.6.1
- neigh 1234::2 remote-as 1
+ neigh 1234::2 remote-as 2
  neigh 1234::2 send-comm both
  neigh 1234::2 segrou
+ neigh 1234::2 extended-nexthop-current ovpnuni
  afi-ovrf v2 ena
  afi-ovrf v2 srv6 tun1
  afi-ovrf v2 red conn
@@ -124,7 +125,7 @@ segment-routing srv6 locators locator a
  micro-segment behavior unode psp-usd
  prefix 1111:1111:1111::/48
 segment-routing srv6 encapsulation source-address 4321::2
-router bgp 1
+router bgp 2
  segment-routing srv6 locator a
  address-family vpnv4 unicast segment-routing srv6 locator a
  address-family vpnv6 unicast segment-routing srv6 locator a
@@ -134,18 +135,18 @@ router bgp 1
  vrf v2
   rd 1:2
   address-family ipv4 unicast
-   segment-routing srv6 alloc mode per-vrf
+   segment-routing srv6 alloc mode per-ce
    redistribute connected
   address-family ipv6 unicast
-   segment-routing srv6 alloc mode per-vrf
+   segment-routing srv6 alloc mode per-ce
    redistribute connected
  vrf v3
   rd 1:3
   address-family ipv4 unicast
-   segment-routing srv6 alloc mode per-vrf
+   segment-routing srv6 alloc mode per-ce
    redistribute connected
   address-family ipv6 unicast
-   segment-routing srv6 alloc mode per-vrf
+   segment-routing srv6 alloc mode per-ce
    redistribute connected
 root
 commit
@@ -156,7 +157,7 @@ r1 tping 100 10 1.1.1.2 vrf v1
 r1 tping 100 10 1234::2 vrf v1
 r1 tping 100 60 2.2.2.2 vrf v1 sou lo0
 r1 tping 100 60 4321::2 vrf v1 sou lo0
-!r1 tping 100 60 9.9.2.2 vrf v2
-r1 tping 100 60 9992::2 vrf v2
-!r1 tping 100 60 9.9.3.2 vrf v3
-r1 tping 100 60 9993::2 vrf v3
+r1 tping 100 60 9.9.2.2 vrf v2
+!r1 tping 100 60 9992::2 vrf v2
+r1 tping 100 60 9.9.3.2 vrf v3
+!r1 tping 100 60 9993::2 vrf v3

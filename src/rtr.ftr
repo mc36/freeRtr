@@ -1361,18 +1361,18 @@ qc pass: interop2: bgp vpnv4
 qc pass: interop2: bgp authentication
 qc pass: interop2: bgp vpnv6
 qc pass: interop2: vpls/ldp over bgp
+qc pass: interop2: mspw over bgp
 qc pass: interop2: vpls/bgp over bgp
 qc pass: interop2: evpn/pbb over bgp
 qc pass: interop2: bgp extended community
 qc pass: interop2: bgp large community
 qc pass: interop2: bgp vpnv4 over srv6
-qc pass: interop2: bgp vpnv6 over srv6
+qc pass: interop2: bgp 6pe
 qc pass: interop2: bgp 6pe
 qc pass: interop2: evpn/vpws over bgp
-qc pass: interop2: bgp aigp
+qc pass: interop2: bgp with php labels
 qc pass: interop2: bgp with php labels
 qc pass: interop2: bgp ao authentication
-qc pass: interop2: bgp extended nexthop
 qc pass: interop2: eigrp
 qc pass: interop2: eigrp prefix withdraw
 qc pass: interop2: ethernet encapsulation

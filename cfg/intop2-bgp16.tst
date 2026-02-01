@@ -1,4 +1,4 @@
-description interop2: evpn/pbb over bgp
+description interop2: vpls/bgp over bgp
 
 exit
 
@@ -10,8 +10,8 @@ vrf def v1
  label-mode per-prefix
  exit
 bridge 1
- rd 1:101
- rt-both 1:101
+ rd 1:1
+ rt-both 1:1
  mac-learn
  private
  exit
@@ -37,25 +37,24 @@ int bvi1
  exit
 router bgp4 1
  vrf v1
- address evpn
+ address vpls
  local-as 1
  router-id 4.4.4.1
  neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
- neigh 2.2.2.2 pmsi
- afi-evpn 101 bridge 1
- afi-evpn 101 update lo0
+ afi-vpls 1:1 bridge 1
+ afi-vpls 1:1 ve-id 1 10
+ afi-vpls 1:1 update lo0
  exit
 router bgp6 1
  vrf v1
- address evpn
+ address vpls
  local-as 1
  router-id 6.6.6.1
  neigh 4321::2 remote-as 1
  neigh 4321::2 update lo0
  neigh 4321::2 send-comm both
- neigh 4321::2 pmsi
  exit
 !
 
@@ -77,11 +76,14 @@ mpls ldp
  interface gigabit0/0/0/0
   address-family ipv4
   address-family ipv6
-l2vpn bridge group a
-  bridge-domain core
-   pbb core evi 1
-  bridge-domain edge
-   pbb edge i-sid 101 core-bridge core
+l2vpn bridge group a bridge-domain a
+   vfi a
+    vpn-id 1
+    autodiscovery bgp
+     rd 1:1
+     route-target import 1:1
+     route-target export 1:1
+     signaling-protocol bgp ve-id 2
    routed interface bvi1
 root
 interface bvi1
@@ -94,15 +96,15 @@ router static
  address-family ipv6 unicast 4321::1/128 1234::1 gigabit0/0/0/0
  exit
 router bgp 1
- address-family l2vpn evpn
+ address-family l2vpn vpls-vpws
  neighbor 2.2.2.1
   remote-as 1
   update-source loopback0
-  address-family l2vpn evpn
+  address-family l2vpn vpls-vpws
 ! neighbor 4321::1
 !  remote-as 1
 !  update-source loopback0
-!  address-family l2vpn evpn
+!  address-family l2vpn vpls-vpws
 root
 commit
 !

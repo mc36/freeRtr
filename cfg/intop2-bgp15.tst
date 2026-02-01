@@ -1,4 +1,4 @@
-description interop2: vpls/bgp over bgp
+description interop2: mspw over bgp
 
 exit
 
@@ -37,19 +37,19 @@ int bvi1
  exit
 router bgp4 1
  vrf v1
- address vpls
+ address mspw
  local-as 1
  router-id 4.4.4.1
  neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
- afi-vpls 1:1 bridge 1
- afi-vpls 1:1 ve-id 1 10
- afi-vpls 1:1 update lo0
+ afi-mspw 1000:333 bridge 1
+ afi-mspw 1000:333 update loopback0
+ afi-mspw 1000:333 remote 2.2.2.2 1000:444
  exit
 router bgp6 1
  vrf v1
- address vpls
+ address mspw
  local-as 1
  router-id 6.6.6.1
  neigh 4321::2 remote-as 1
@@ -77,13 +77,7 @@ mpls ldp
   address-family ipv4
   address-family ipv6
 l2vpn bridge group a bridge-domain a
-   vfi a
-    vpn-id 1
-    autodiscovery bgp
-     rd 1:1
-     route-target import 1:1
-     route-target export 1:1
-     signaling-protocol bgp ve-id 2
+   neighbor routed 1000:2.2.2.1:333 source 444
    routed interface bvi1
 root
 interface bvi1
@@ -96,15 +90,15 @@ router static
  address-family ipv6 unicast 4321::1/128 1234::1 gigabit0/0/0/0
  exit
 router bgp 1
- address-family l2vpn vpls-vpws
+ address-family l2vpn mspw
  neighbor 2.2.2.1
   remote-as 1
   update-source loopback0
-  address-family l2vpn vpls-vpws
+  address-family l2vpn mspw
 ! neighbor 4321::1
 !  remote-as 1
 !  update-source loopback0
-!  address-family l2vpn vpls-vpws
+!  address-family l2vpn mspw
 root
 commit
 !

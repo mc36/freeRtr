@@ -1,4 +1,4 @@
-description interop2: bgp large community
+description interop2: bgp extended community
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
@@ -18,7 +18,7 @@ int lo0
  exit
 route-map rm1
  sequence 10 act deny
-  match lrgcomm 12:34:1234
+  match extcomm 17153:33036:1234
  sequence 20 act permit
  exit
 router bgp4 1
@@ -65,9 +65,9 @@ interface gigabit0/0/0/0
  exit
 route-policy rp1
  if destination in (2.2.2.3/32, 4321::3/128) then
-  set large-community (12:34:1234)
+  set extcommunity cost (igp:12:1234)
  else
-  set large-community (23:45:4321)
+  set extcommunity cost (igp:23:4321)
  endif
  pass
  end-policy
