@@ -17999,3 +17999,11 @@ qc pass: p4lang: mspw with bgp
 ---------------------------------- 2026-02-01 18:25:35 26.2.1
 qc pass: p4lang: vlan mspw with bgp
 qc pass: p4lang: bundle vlan mspw with bgp
+---------------------------------- 2026-02-01 18:55:06 26.2.1
+qc pass: p4lang: hairpin mspw with bgp
+qc pass: p4lang: hairpin vlan mspw with bgp
+qc pass: p4lang: qinq mspw with bgp
+qc pass: p4lang: bundle qinq mspw with bgp
+qc pass: p4lang: routed mspw with bgp
+qc pass: p4lang: routed vlan mspw with bgp
+qc pass: p4lang: routed qinq mspw with bgp

@@ -2642,6 +2642,13 @@ qc pass: p4lang: qinq ttlset out
 qc pass: p4lang: mspw with bgp
 qc pass: p4lang: vlan mspw with bgp
 qc pass: p4lang: bundle vlan mspw with bgp
+qc pass: p4lang: hairpin mspw with bgp
+qc pass: p4lang: hairpin vlan mspw with bgp
+qc pass: p4lang: qinq mspw with bgp
+qc pass: p4lang: bundle qinq mspw with bgp
+qc pass: p4lang: routed mspw with bgp
+qc pass: p4lang: routed vlan mspw with bgp
+qc pass: p4lang: routed qinq mspw with bgp
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
