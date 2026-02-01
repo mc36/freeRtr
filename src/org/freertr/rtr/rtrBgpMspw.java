@@ -163,11 +163,11 @@ public class rtrBgpMspw implements Comparable<rtrBgpMspw> {
     private byte[] createAddr(addrType src, long id) {
         byte[] buf = new byte[addrIP.size * 2];
         int len = 1;
-        bits.msbPutD(buf, len, (int) (id >>> 32));
+        bits.msbPutD(buf, len, (int) (id >>> 32)); // global
         len += 4;
         src.toBuffer(buf, len);
         len += src.getSize();
-        bits.msbPutD(buf, len, (int) id);
+        bits.msbPutD(buf, len, (int) id); // ac id
         len += 4;
         buf[0] = (byte) (len - 1);
         return buf;

@@ -3,7 +3,6 @@ package org.freertr.pack;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
-import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.util.bits;
 import org.freertr.enc.encTlv;
 
@@ -232,6 +231,18 @@ public class packLdpPwe implements Comparable<packLdpPwe> {
         if (vcid > o.vcid) {
             return +1;
         }
+        if (srcI < o.srcI) {
+            return -1;
+        }
+        if (srcI > o.srcI) {
+            return +1;
+        }
+        if (trgI < o.trgI) {
+            return -1;
+        }
+        if (trgI > o.trgI) {
+            return +1;
+        }
         return 0;
     }
 
@@ -278,6 +289,23 @@ public class packLdpPwe implements Comparable<packLdpPwe> {
         int len = pck.getByte(2);
         pck.getSkip(3);
         vcid = pck.msbGetQ(2); // agi value
+        if (vcid != 0) {
+            pck.getSkip(len);
+            return;
+        }
+        int i = 0;
+        int o = pck.getByte(i + 1); // agi length
+        i += 2 + o;
+        o = pck.getByte(i + 1); // saii length
+        trgI = pck.msbGetD(i + 2); // global
+        trgI <<= 32;
+        trgI |= pck.msbGetD(i + o - 2); // ac id
+        i += 2 + o;
+        o = pck.getByte(i + 1); // taii length
+        srcI = pck.msbGetD(i + 2); // global
+        srcI <<= 32;
+        srcI |= pck.msbGetD(i + o - 2); // ac id
+        i += 2 + o;
         pck.getSkip(len);
     }
 
@@ -415,6 +443,12 @@ public class packLdpPwe implements Comparable<packLdpPwe> {
             return true;
         }
         if (vcid != other.vcid) {
+            return true;
+        }
+        if (srcI != other.srcI) {
+            return true;
+        }
+        if (trgI != other.trgI) {
             return true;
         }
         if (typ != other.typ) {
