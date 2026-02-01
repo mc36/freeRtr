@@ -17949,3 +17949,6 @@ qc pass: mspw over ibgp rr
 ---------------------------------- 2026-02-01 12:25:20 26.2.1
 qc pass: mspw over confed bgp
 qc pass: mspw over bgp route server
+---------------------------------- 2026-02-01 15:01:32 26.2.1
+qc pass: ethersite mspw over ibgp
+qc pass: mspw over bgp with soft-reconfig
