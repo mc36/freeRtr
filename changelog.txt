@@ -17962,3 +17962,18 @@ qc pass: mspw cw over ibgp rr
 qc pass: mspw cw over confed bgp
 qc pass: mspw cw over bgp route server
 qc pass: mspw cw over bgp with soft-reconfig
+---------------------------------- 2026-02-01 16:34:45 26.2.1
+qc pass: mspw partial over ebgp
+qc pass: mspw partial over ibgp
+qc pass: mspw partial over bgp additional path
+qc pass: mspw partial over ibgp rr
+qc pass: mspw partial over confed bgp
+qc pass: mspw partial over bgp route server
+qc pass: mspw partial over bgp with soft-reconfig
+qc pass: mspw mixed over ebgp
+qc pass: mspw mixed over ibgp
+qc pass: mspw mixed over bgp additional path
+qc pass: mspw mixed over ibgp rr
+qc pass: mspw mixed over confed bgp
+qc pass: mspw mixed over bgp route server
+qc pass: mspw mixed over bgp with soft-reconfig
