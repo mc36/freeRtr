@@ -3696,6 +3696,14 @@ qc pass: mspw over confed bgp
 qc pass: mspw over bgp route server
 qc pass: ethersite mspw over ibgp
 qc pass: mspw over bgp with soft-reconfig
+qc pass: mspw over bgp auto mesh tunnel
+qc pass: mspw cw over ebgp
+qc pass: mspw cw over ibgp
+qc pass: mspw cw over bgp additional path
+qc pass: mspw cw over ibgp rr
+qc pass: mspw cw over confed bgp
+qc pass: mspw cw over bgp route server
+qc pass: mspw cw over bgp with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

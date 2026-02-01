@@ -17952,3 +17952,13 @@ qc pass: mspw over bgp route server
 ---------------------------------- 2026-02-01 15:01:32 26.2.1
 qc pass: ethersite mspw over ibgp
 qc pass: mspw over bgp with soft-reconfig
+---------------------------------- 2026-02-01 16:00:48 26.2.1
+qc pass: mspw over bgp auto mesh tunnel
+qc pass: mspw cw over ebgp
+qc pass: mspw cw over ibgp
+---------------------------------- 2026-02-01 16:17:38 26.2.1
+qc pass: mspw cw over bgp additional path
+qc pass: mspw cw over ibgp rr
+qc pass: mspw cw over confed bgp
+qc pass: mspw cw over bgp route server
+qc pass: mspw cw over bgp with soft-reconfig
