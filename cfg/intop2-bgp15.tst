@@ -76,7 +76,12 @@ mpls ldp
  interface gigabit0/0/0/0
   address-family ipv4
   address-family ipv6
-l2vpn bridge group a bridge-domain a
+l2vpn
+ router-id 2.2.2.2
+ pw-routing
+  global-id 1000
+  bgp rd 1:1
+ bridge group a bridge-domain a
    neighbor routed 1000:2.2.2.1:333 source 444
    routed interface bvi1
 root

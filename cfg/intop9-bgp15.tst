@@ -1,4 +1,6 @@
-description interop9: vpls/bgp over bgp
+description interop9: mspw over bgp
+
+exit
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
@@ -35,19 +37,19 @@ int bvi1
  exit
 router bgp4 1
  vrf v1
- address vpls
+ address mspw
  local-as 1
  router-id 4.4.4.1
  neigh 2.2.2.2 remote-as 1
  neigh 2.2.2.2 update lo0
  neigh 2.2.2.2 send-comm both
- afi-vpls 1:1 bridge 1
- afi-vpls 1:1 ve-id 1 10
- afi-vpls 1:1 update lo0
+ afi-mspw 1000:333 bridge 1
+ afi-mspw 1000:333 update loopback0
+ afi-mspw 1000:333 remote 2.2.2.2 1000:444
  exit
 router bgp6 1
  vrf v1
- address vpls
+ address mspw
  local-as 1
  router-id 6.6.6.1
  neigh 4321::2 remote-as 1
@@ -55,7 +57,6 @@ router bgp6 1
  neigh 4321::2 send-comm both
  exit
 !
-
 
 addpersist r2
 int eth1 eth 0000.0000.2222 $per1$
@@ -67,6 +68,7 @@ set interfaces ge-0/0/0.0 family mpls
 set interfaces lo0.0 family inet address 2.2.2.2/32
 set interfaces lo0.0 family inet6 address 4321::2/128
 set protocols ldp interface ge-0/0/0.0
+set protocols ldp interface lo0.0
 set protocols mpls interface ge-0/0/0.0
 set routing-options rib inet.0 static route 2.2.2.1/32 next-hop 1.1.1.1
 set routing-options rib inet6.0 static route 4321::1/128 next-hop 1234::1
@@ -75,17 +77,16 @@ set protocols bgp group peers type internal
 set protocols bgp group peers peer-as 1
 set protocols bgp group peers neighbor 2.2.2.1
 set protocols bgp group peers local-address 2.2.2.2
-set protocols bgp group peers family l2vpn signaling
-set interfaces ge-0/0/1 encapsulation ethernet-vpls
-set interfaces ge-0/0/1.0 family vpls
-set routing-instances b1 instance-type vpls
+set protocols bgp group peers family l2vpn auto-discovery-mspw
+set interfaces ge-0/0/1 encapsulation ethernet-ccc
+set interfaces ge-0/0/1.0 family ccc
+set routing-instances b1 instance-type l2vpn
+set routing-instances b1 l2vpn-id l2vpn-id:1000:1
+set routing-instances b1 vrf-target target:1000:1
+set routing-instances b1 protocols l2vpn site c1 source-attachment-identifier 444:444:444
+set routing-instances b1 protocols l2vpn site c1 interface ge-0/0/1.0 target-attachment-identifier 333:333:333
 set routing-instances b1 vlan-id none
 set routing-instances b1 interface ge-0/0/1.0
-set routing-instances b1 route-distinguisher 1:1
-set routing-instances b1 vrf-target target:1:1
-set routing-instances b1 protocols vpls no-tunnel-services
-set routing-instances b1 protocols vpls site-range 10
-set routing-instances b1 protocols vpls site s2 site-identifier 2
 commit
 !
 

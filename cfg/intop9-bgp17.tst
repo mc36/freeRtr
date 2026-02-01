@@ -1,4 +1,4 @@
-description interop9: bgp large community
+description interop9: bgp extended community
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
@@ -18,7 +18,7 @@ int lo0
  exit
 route-map rm1
  sequence 10 act deny
-  match lrgcomm 12:34:4321
+  match extcomm 2:1234:4321
  sequence 20 act permit
  exit
 router bgp4 1
@@ -55,8 +55,8 @@ set interfaces lo0.0 family inet6 address 4321::3/128
 set interfaces lo0.0 family inet address 2.2.2.4/32
 set interfaces lo0.0 family inet6 address 4321::4/128
 set routing-options autonomous-system 1
-set policy-options community c1 members large:12:34:4321
-set policy-options community c2 members large:12:34:1234
+set policy-options community c1 members target:1234:4321
+set policy-options community c2 members target:1234:1234
 set policy-options policy-statement ps1 term 1 from interface [ 2.2.2.3 4321::3 ]
 set policy-options policy-statement ps1 term 1 then community set c1
 set policy-options policy-statement ps1 term 1 then accept

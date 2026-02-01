@@ -17984,3 +17984,9 @@ no qc pass: interop2: bgp vpnv6 over srv6
 qc pass: interop2: mspw over bgp
 qc pass: interop2: bgp 6pe
 qc pass: interop2: bgp with php labels
+---------------------------------- 2026-02-01 17:13:51 26.2.1
+no qc pass: interop2: bgp with php labels
+no qc pass: interop2: bgp 6pe
+qc pass: interop2: bgp vpnv6 over srv6
+qc pass: interop2: bgp aigp
+qc pass: interop2: bgp extended nexthop

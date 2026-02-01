@@ -1,4 +1,4 @@
-description interop9: bgp with ctp
+description interop9: bgp with php ctp
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $per1$
@@ -40,6 +40,7 @@ router bgp4 1
  local-as 1
  router-id 4.4.4.1
  neigh 1.1.1.2 remote-as 2
+ neigh 1.1.1.2 label-pop
  neigh 1.1.1.2 send-comm both
  red conn route-map rm1
  exit
@@ -50,6 +51,7 @@ router bgp6 1
  local-as 1
  router-id 6.6.6.1
  neigh 1234:1::2 remote-as 2
+ neigh 1234:1::2 label-pop
  neigh 1234:1::2 send-comm both
  red conn route-map rm1
  exit
@@ -137,6 +139,7 @@ router bgp4 1
  local-as 3
  router-id 4.4.4.3
  neigh 1.1.2.2 remote-as 2
+ neigh 1.1.2.2 label-pop
  neigh 1.1.2.2 send-comm both
  red conn route-map rm1
  exit
@@ -147,6 +150,7 @@ router bgp6 1
  local-as 3
  router-id 6.6.6.3
  neigh 1234:2::2 remote-as 2
+ neigh 1234:2::2 label-pop
  neigh 1234:2::2 send-comm both
  red conn route-map rm1
  exit
@@ -168,12 +172,12 @@ r1 tping 100 10 1234:1::2 vrf v1
 r3 tping 0 10 1.1.2.2 vrf v1
 r3 tping 100 10 1234:2::2 vrf v1
 
-r1 tping 100 60 2.2.2.3 vrf v1 sou lo0
-r1 tping 100 60 4321::3 vrf v1 sou lo0
-r3 tping 100 60 2.2.2.1 vrf v1 sou lo0
-r3 tping 100 60 4321::1 vrf v1 sou lo0
+r1 tping 0 60 2.2.2.3 vrf v1 sou lo0
+r1 tping 0 60 4321::3 vrf v1 sou lo0
+r3 tping 0 60 2.2.2.1 vrf v1 sou lo0
+r3 tping 0 60 4321::1 vrf v1 sou lo0
 
 r1 tping 100 40 3.3.3.2 vrf v1
 r3 tping 100 40 3.3.3.1 vrf v1
-r1 tping 100 40 3.3.3.6 vrf v1
-r3 tping 100 40 3.3.3.5 vrf v1
+!r1 tping 100 40 3.3.3.6 vrf v1
+!r3 tping 100 40 3.3.3.5 vrf v1

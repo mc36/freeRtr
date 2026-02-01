@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.2.1-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-02-01 17:11:55, took 00:12:54, with 50 workers, on 4264 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2026-02-01 17:29:09, took 00:15:18, with 50 workers, on 4265 cases, 0 failed, 0 traces, 7 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1371,12 +1371,13 @@ http://sources.freertr.org/cfg/intop2-bgp17.tst;intop2-bgp17.tst;success;interop
 http://sources.freertr.org/cfg/intop2-bgp18.tst;intop2-bgp18.tst;success;interop2: bgp extended community
 http://sources.freertr.org/cfg/intop2-bgp19.tst;intop2-bgp19.tst;success;interop2: bgp large community
 http://sources.freertr.org/cfg/intop2-bgp20.tst;intop2-bgp20.tst;success;interop2: bgp vpnv4 over srv6
-http://sources.freertr.org/cfg/intop2-bgp21.tst;intop2-bgp21.tst;success;interop2: bgp 6pe
+http://sources.freertr.org/cfg/intop2-bgp21.tst;intop2-bgp21.tst;success;interop2: bgp vpnv6 over srv6
 http://sources.freertr.org/cfg/intop2-bgp22.tst;intop2-bgp22.tst;success;interop2: bgp 6pe
 http://sources.freertr.org/cfg/intop2-bgp23.tst;intop2-bgp23.tst;success;interop2: evpn/vpws over bgp
-http://sources.freertr.org/cfg/intop2-bgp24.tst;intop2-bgp24.tst;success;interop2: bgp with php labels
+http://sources.freertr.org/cfg/intop2-bgp24.tst;intop2-bgp24.tst;success;interop2: bgp aigp
 http://sources.freertr.org/cfg/intop2-bgp25.tst;intop2-bgp25.tst;success;interop2: bgp with php labels
 http://sources.freertr.org/cfg/intop2-bgp26.tst;intop2-bgp26.tst;success;interop2: bgp ao authentication
+http://sources.freertr.org/cfg/intop2-bgp27.tst;intop2-bgp27.tst;success;interop2: bgp extended nexthop
 http://sources.freertr.org/cfg/intop2-eigrp01.tst;intop2-eigrp01.tst;success;interop2: eigrp
 http://sources.freertr.org/cfg/intop2-eigrp02.tst;intop2-eigrp02.tst;success;interop2: eigrp prefix withdraw
 http://sources.freertr.org/cfg/intop2-eth01.tst;intop2-eth01.tst;success;interop2: ethernet encapsulation
