@@ -1347,11 +1347,11 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         int mode = (safi >>> 8) & 0xff;
         safi &= rtrBgpUtil.frsMask;
         if (debugger.rtrBgpTraf) {
-            logger.debug("got refresh mode " + mode + " from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+            logger.debug("got refresh mode " + mode + " from peer " + neigh.peerAddr + " in " + rtrBgpParam.idx2string(idx));
         }
         if (!peerAfis[idx]) {
             if (debugger.rtrBgpError) {
-                logger.debug("got unknown refresh from peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+                logger.debug("got unknown refresh from peer " + neigh.peerAddr + " in " + rtrBgpParam.idx2string(idx));
             }
             return;
         }
@@ -1373,7 +1373,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         refreshRx++;
         if (peerRefreshNew) {
             needEofAfis[idx] = true;
-            sendFreshMark(safi, 1);
+            sendFreshMark(idx, safi, 1);
         }
         advert[idx].clear();
         needFull.set(3);
@@ -1467,7 +1467,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         parent.needFull.add(1);
         parent.compute.wakeup();
-        sendFreshMark(safi, 0);
+        sendFreshMark(idx, safi, 0);
     }
 
     /**
@@ -1509,7 +1509,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      */
     public void sendEndOfRib(int idx) {
         if (debugger.rtrBgpTraf) {
-            logger.debug("eor to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(parent.idx2safi[idx]));
+            logger.debug("eor to peer " + neigh.peerAddr + " in " + rtrBgpParam.idx2string(idx));
         }
         packHolder pck = new packHolder(true, true);
         rtrBgpUtil.createEndOfRib(this, pck, new packHolder(true, true), idx);
@@ -1519,12 +1519,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     /**
      * send refresh marker
      *
+     * @param idx safi to update
      * @param safi safi to update
      * @param mode mode to send, 0=request, 1=begin, 2=finish
      */
-    public void sendFreshMark(int safi, int mode) {
+    public void sendFreshMark(int idx, int safi, int mode) {
         if (debugger.rtrBgpTraf) {
-            logger.debug("refresh mode " + mode + " to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(safi));
+            logger.debug("refresh mode " + mode + " to peer " + neigh.peerAddr + " in " + rtrBgpParam.idx2string(idx));
         }
         packHolder pck = new packHolder(true, true);
         pck.msbPutD(0, safi | (mode << 8));
@@ -1546,7 +1547,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 tabRouteEntry<addrIP> ntry = lst.get(i);
                 s += " " + tabRouteUtil.rd2string(ntry.rouDst) + " " + ntry.prefix;
             }
-            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(parent.idx2safi[idx]) + ": " + (reach ? "reachable" : "withdraw") + s);
+            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpParam.idx2string(idx) + ": " + (reach ? "reachable" : "withdraw") + s);
         }
         pckTx.clear();
         if (!reach) {
@@ -1579,7 +1580,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 a = "reachable";
                 s = tabRouteUtil.rd2string(wil.rouDst) + " " + wil.prefix;
             }
-            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpUtil.safi2string(parent.idx2safi[idx]) + ": " + a + " " + s);
+            logger.debug("update to peer " + neigh.peerAddr + " in " + rtrBgpParam.idx2string(idx) + ": " + a + " " + s);
         }
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         if (wil == null) {

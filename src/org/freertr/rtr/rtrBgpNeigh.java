@@ -608,7 +608,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                     conn.needEorAfis[idx] = false;
                 }
                 if (needEof) {
-                    conn.sendFreshMark(lower.idx2safi[idx], 2);
+                    conn.sendFreshMark(idx, lower.idx2safi[idx], 2);
                     conn.needEofAfis[idx] = false;
                 }
                 continue;
@@ -684,7 +684,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
                 conn.needEorAfis[idx] = false;
             }
             if (needEof) {
-                conn.sendFreshMark(lower.idx2safi[idx], 2);
+                conn.sendFreshMark(idx, lower.idx2safi[idx], 2);
                 conn.needEofAfis[idx] = false;
             }
         }
