@@ -1387,9 +1387,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private void computeIncrEntry(int idx, int afi, tabRouteEntry<addrIP> curr, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
+    private void computeIncrEntry(int idx, tabRouteEntry<addrIP> curr, tabRoute<addrIP> cmp, tabRoute<addrIP> org) {
         if (debugger.rtrBgpIncr) {
-            logger.debug("bestpath for " + tabRouteUtil.rd2string(curr.rouDst) + " " + curr.prefix + " in " + rtrBgpUtil.safi2string(afi));
+            logger.debug("bestpath for " + tabRouteUtil.rd2string(curr.rouDst) + " " + curr.prefix + " in " + rtrBgpParam.idx2string(idx));
         }
         tabRouteEntry<addrIP> best = org.find(curr);
         if (best != null) {
@@ -1433,6 +1433,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         } else {
             cmp.add(tabRoute.addType.always, best, false, false);
         }
+        int afi = idx2safi[idx];
         for (int i = 0; i < groups.size(); i++) {
             rtrBgpGroup grp = groups.get(i);
             tabRoute<addrIP> wil = grp.willing[idx];
@@ -1572,12 +1573,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             tabRoute<addrIP> don = done[idx];
             tabRoute<addrIP> cmp = computd[idx];
             tabRoute<addrIP> org = origntd[idx];
-            int afi = idx2safi[idx];
             for (int i = chg.size() - 1; i >= 0; i--) {
                 tabRouteEntry<addrIP> ntry = chg.get(i);
                 chg.del(ntry);
                 don.add(tabRoute.addType.always, ntry, false, false);
-                computeIncrEntry(idx, afi, ntry, cmp, org);
+                computeIncrEntry(idx, ntry, cmp, org);
             }
         }
         routerChangedU = done[rtrBgpParam.idxUni];

@@ -1290,16 +1290,17 @@ public class userPacket {
                 }
                 return null;
             }
-            cmd.error("sending safi=" + rtrBgpUtil.safi2string(safi) + " as=" + las + " open");
             rtrBgp bgp = new rtrBgp(vrf.getFwd(trg), vrf, null, 0);
             rtrBgpNeigh nei = new rtrBgpNeigh(bgp, trg);
             nei.localAs = las;
             nei.addrFams = rtrBgpParam.boolsSet(false);
-            nei.addrFams[bgp.safi2idx(safi)] = true;
+            int idx = bgp.safi2idx(safi);
+            nei.addrFams[idx] = true;
             rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, strm, 0);
             packHolder pck = new packHolder(true, true);
             packHolder tmp = new packHolder(true, true);
             packHolder hlp = new packHolder(true, true);
+            cmd.error("sending safi=" + rtrBgpParam.idx2string(idx) + " as=" + las + " open");
             spk.sendOpen();
             spk.sendKeepAlive();
             cmd.error("sending updates as it was from " + sip + " to " + tip);
