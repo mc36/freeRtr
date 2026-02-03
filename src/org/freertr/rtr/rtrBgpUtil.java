@@ -1621,7 +1621,7 @@ public class rtrBgpUtil {
         rtrBgpAttr.placeTunEnc(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeLnkSta(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeOnlyCust(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placePrefSid(spkr, idx, pck, hlp, ntry);
+        rtrBgpAttr.placePrefSid(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeBier(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeNshChain(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeDomainPath(spkr, pck, hlp, ntry);
@@ -1767,7 +1767,7 @@ public class rtrBgpUtil {
         rtrBgpAttr.placeTunEnc(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeLnkSta(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeOnlyCust(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placePrefSid(spkr, idx, pck, hlp, ntry);
+        rtrBgpAttr.placePrefSid(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeBier(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeNshChain(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeDomainPath(spkr, pck, hlp, ntry);

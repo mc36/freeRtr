@@ -1373,13 +1373,11 @@ public class rtrBgpAttr {
      * place prefix sid attribute
      *
      * @param spkr where to signal
-     * @param idx sub address family
      * @param trg target packet
      * @param hlp helper packet
      * @param ntry table entry
      */
-    public static void placePrefSid(rtrBgpSpeak spkr, int idx, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        int afi = spkr.parent.idx2safi[idx] & rtrBgpUtil.afiMask;
+    public static void placePrefSid(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
         encTlv tlv = rtrBgpUtil.getPrefSidTlv();
         if (ntry.best.segrouIdx != 0) {
