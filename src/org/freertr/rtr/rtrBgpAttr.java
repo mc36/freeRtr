@@ -28,6 +28,21 @@ public class rtrBgpAttr {
     }
 
     /**
+     * layer2 behavior
+     */
+    public final static int behavDx2 = 0x15;
+
+    /**
+     * ipv4 behavior
+     */
+    public final static int behavDt4 = 0x13;
+
+    /**
+     * ipv6 behavior
+     */
+    public final static int behavDt6 = 0x12;
+
+    /**
      * interpret attribute
      *
      * @param spkr where to signal
@@ -542,6 +557,8 @@ public class rtrBgpAttr {
                         break;
                     }
                     adr6 = new addrIPv6();
+                    ntry.best.segrouEth = tlv.valTyp == 6;
+                    ntry.best.segrouBeh = bits.msbGetW(tlv.valDat, 22);
                     ntry.best.segrouPrf = new addrIP();
                     adr6.fromBuf(tlv.valDat, 5);
                     ntry.best.segrouPrf.fromIPv6addr(adr6);
@@ -1378,33 +1395,13 @@ public class rtrBgpAttr {
             tlv.putBytes(hlp, 3, 8, tlv.valDat);
         }
         if (ntry.best.segrouPrf != null) {
-            int i;
-            int o;
-            switch (afi) {
-                case rtrBgpUtil.afiIpv4:
-                    i = 0x13;
-                    o = 5;
-                    break;
-                case rtrBgpUtil.afiIpv6:
-                    i = 0x12;
-                    o = 5;
-                    break;
-                case rtrBgpUtil.afiL2vpn:
-                    i = 0x15;
-                    o = 6;
-                    break;
-                default:
-                    i = 0xffff;
-                    o = 4;
-                    break;
-            }
             tlv.valDat[0] = 0; // reserved
             tlv.valDat[1] = 1; // subtlv type
             bits.msbPutW(tlv.valDat, 2, 30); // size
             tlv.valDat[4] = 0; // reserved
             ntry.best.segrouPrf.toIPv6().toBuffer(tlv.valDat, 5);
             tlv.valDat[21] = 0; // sid flags
-            bits.msbPutW(tlv.valDat, 22, i); // behavior
+            bits.msbPutW(tlv.valDat, 22, ntry.best.segrouBeh); // behavior
             tlv.valDat[24] = 0; // reserved
             tlv.valDat[25] = 1; // sid structure
             bits.msbPutW(tlv.valDat, 26, 6); // subsubtlv length
@@ -1414,7 +1411,7 @@ public class rtrBgpAttr {
             tlv.valDat[31] = 0; // locator argument length
             tlv.valDat[32] = (byte) ntry.best.segrouSiz; // transposition length
             tlv.valDat[33] = (byte) ntry.best.segrouOfs; // transposition offset
-            tlv.putBytes(hlp, o, 34, tlv.valDat);
+            tlv.putBytes(hlp, ntry.best.segrouEth ? 6 : 5, 34, tlv.valDat);
         }
         if (hlp.headSize() < 1) {
             return;

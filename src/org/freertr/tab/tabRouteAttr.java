@@ -314,6 +314,16 @@ public class tabRouteAttr<T extends addrType> {
     public int segrouOfs;
 
     /**
+     * segment routing endpoint behaviour
+     */
+    public int segrouBeh;
+
+    /**
+     * segment routing layer2 endpoint
+     */
+    public boolean segrouEth;
+
+    /**
      * segment routing prefix sid
      */
     public T segrouPrf;
@@ -740,6 +750,8 @@ public class tabRouteAttr<T extends addrType> {
         atr.segrouIdx = segrouIdx;
         atr.segrouSiz = segrouSiz;
         atr.segrouOfs = segrouOfs;
+        atr.segrouBeh = segrouBeh;
+        atr.segrouEth = segrouEth;
         atr.segrouBeg = segrouBeg;
         atr.segrouOld = segrouOld;
         atr.bierSub = bierSub;
@@ -956,6 +968,12 @@ public class tabRouteAttr<T extends addrType> {
         }
         if (segrouOfs != other.segrouOfs) {
             return 15;
+        }
+        if (segrouBeh != other.segrouBeh) {
+            return 133;
+        }
+        if (segrouEth != other.segrouEth) {
+            return 134;
         }
         if (bierIdx != other.bierIdx) {
             return 16;
@@ -2019,6 +2037,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "segrout base|" + segrouBeg);
         lst.add(beg + "segrout size|" + segrouSiz);
         lst.add(beg + "segrout offset|" + segrouOfs);
+        lst.add(beg + "segrout behavior|" + segrouEth + "-" + segrouBeh);
         lst.add(beg + "segrout prefix|" + segrouPrf);
         lst.add(beg + "bier index|" + bierIdx);
         lst.add(beg + "bier subdomain|" + bierSub);
@@ -2095,7 +2114,7 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted
      */
     public String toShSrRoute() {
-        return segrouIdx + "|" + segrouBeg + "|" + segrouOld + "|" + segrouPrf;
+        return segrouIdx + "|" + segrouBeg + "|" + segrouOld + "|" + segrouPrf + "|" + segrouBeh;
     }
 
     /**

@@ -214,7 +214,7 @@ public class rtrBgpVrfRtr extends ipRtr {
                 }
             }
         }
-        tabRouteUtil.generateSrv6pfx(ntry, srv6, ntry.best.labelLoc);
+        tabRouteUtil.generateSrv6pfx(ntry, srv6, ntry.best.labelLoc, false, other ^ parent.isIpv6);
         if (afi != rtrBgpUtil.sfiEthVpn) {
             tabRoute.addUpdatedEntry(tabRoute.addType.ecmp, trg, afi, 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
             return;

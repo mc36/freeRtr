@@ -12,6 +12,7 @@ import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipMpls;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
+import org.freertr.rtr.rtrBgpAttr;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.user.userFormat;
 import org.freertr.user.userScript;
@@ -1367,20 +1368,34 @@ public class tabRouteUtil {
      * @param ntry route entry
      * @param ifc srv6 interface
      * @param lab label entry
+     * @param eth layer2
+     * @param ipv6 true if ipv6, false if ipv4
      * @return false if success, true if error
      */
-    public static boolean generateSrv6pfx(tabRouteEntry<addrIP> ntry, cfgIfc ifc, tabLabelEntry lab) {
+    public static boolean generateSrv6pfx(tabRouteEntry<addrIP> ntry, cfgIfc ifc, tabLabelEntry lab, boolean eth, boolean ipv6) {
         if (ifc == null) {
             return true;
         }
         if (ifc.addr6 == null) {
             return true;
         }
+        int beh;
+        if (eth) {
+            beh = rtrBgpAttr.behavDx2;
+        } else {
+            if (ipv6) {
+                beh = rtrBgpAttr.behavDt6;
+            } else {
+                beh = rtrBgpAttr.behavDt4;
+            }
+        }
         addrIP adr = new addrIP();
         adr.fromIPv6addr(ifc.addr6);
         bits.msbPutD(adr.getBytes(), 12, lab.label);
         for (int i = 0; i < ntry.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
+            attr.segrouBeh = beh;
+            attr.segrouEth = eth;
             attr.segrouPrf = adr.copyBytes();
             attr.labelLoc = new tabLabelEntry(ipMpls.labelImp);
         }

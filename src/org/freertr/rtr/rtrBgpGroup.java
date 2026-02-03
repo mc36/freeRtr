@@ -330,6 +330,8 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.segrouOld = 0;
             ntry.segrouSiz = 0;
             ntry.segrouOfs = 0;
+            ntry.segrouBeh = 0;
+            ntry.segrouEth = false;
             ntry.segrouPrf = null;
         }
         if (!bier) {

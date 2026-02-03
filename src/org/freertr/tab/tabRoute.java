@@ -907,7 +907,7 @@ public class tabRoute<T extends addrType> {
             case 6:
                 return new userFormat("|", "prefix|pack|byte|pack|byte|time", "1|2transmit|2receive|1");
             case 7:
-                return new userFormat("|", "prefix|index|base|oldbase|srv6");
+                return new userFormat("|", "prefix|index|base|oldbase|srv6|behav");
             case 8:
                 return new userFormat("|", "prefix|index|subdom|base|oldbase|size");
             case 2002:

@@ -263,7 +263,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 buf[0] = 2; // mac advertisement
                 bbmac.toBuffer(buf, 10);
                 ntry.prefix.network.fromBuf(buf, 0);
-                if (!tabRouteUtil.generateSrv6pfx(ntry, srv6, parent.evpnUni)) {
+                if (!tabRouteUtil.generateSrv6pfx(ntry, srv6, parent.evpnUni, true, false)) {
                     ntry.best.evpnLab = convLab(ntry.best.labelLoc);
                 } else {
                     ntry.best.evpnLab = convLab(parent.evpnUni);
@@ -274,7 +274,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 bits.msbPutD(buf, 2, id);
                 ntry.prefix.network.fromBuf(buf, 0);
                 ntry.prefix.broadcast = ntry.best.nextHop.copyBytes();
-                if (!tabRouteUtil.generateSrv6pfx(ntry, srv6, parent.evpnMul)) {
+                if (!tabRouteUtil.generateSrv6pfx(ntry, srv6, parent.evpnMul, true, false)) {
                     putPmsi(ntry, convLab(ntry.best.labelLoc));
                 } else {
                     putPmsi(ntry, convLab(parent.evpnMul));
@@ -310,7 +310,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                     label.setFwdPwe(tabLabelEntry.owner.evpnCmac, parent.fwdCore, cmacr, 0, null);
                 }
                 buf[0] = 2; // mac advertisement
-                if (!tabRouteUtil.generateSrv6pfx(ntry, srv6, label)) {
+                if (!tabRouteUtil.generateSrv6pfx(ntry, srv6, label, true, false)) {
                     ntry.best.evpnLab = convLab(ntry.best.labelLoc);
                 } else {
                     ntry.best.evpnLab = convLab(label);
@@ -327,7 +327,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                 bits.msbPutD(buf, 2, id);
                 ntry.prefix.network.fromBuf(buf, 0);
                 ntry.prefix.broadcast = ntry.best.nextHop.copyBytes();
-                if (!tabRouteUtil.generateSrv6pfx(ntry, srv6, label)) {
+                if (!tabRouteUtil.generateSrv6pfx(ntry, srv6, label, true, false)) {
                     putPmsi(ntry, convLab(ntry.best.labelLoc));
                 } else {
                     putPmsi(ntry, convLab(label));
@@ -345,7 +345,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                     label.setFwdPwe(tabLabelEntry.owner.evpnCmac, parent.fwdCore, vpwsr, 0, null);
                 }
                 buf[0] = 1; // eth advertisement
-                if (!tabRouteUtil.generateSrv6pfx(ntry, srv6, label)) {
+                if (!tabRouteUtil.generateSrv6pfx(ntry, srv6, label, true, false)) {
                     ntry.best.evpnLab = convLab(ntry.best.labelLoc);
                 } else {
                     ntry.best.evpnLab = convLab(label);
