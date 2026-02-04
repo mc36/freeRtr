@@ -360,7 +360,7 @@ public class rtrBgpDump {
     public static counter sumUnkAttrs(counter c[]) {
         counter res = new counter();
         for (int i = 0; i < c.length; i++) {
-            if (!rtrBgpUtil.isUnknownAttr(i)) {
+            if (rtrBgp.bgpAttrs[i] != rtrBgpAttr.attrUnknown) {
                 continue;
             }
             res = res.plus(c[i]);
@@ -377,7 +377,7 @@ public class rtrBgpDump {
     public static counter sumUnkMsgs(counter c[]) {
         counter res = new counter();
         for (int i = 0; i < c.length; i++) {
-            if (!rtrBgpUtil.isUnknownMsg(i)) {
+            if ((i >= rtrBgpUtil.msgOpen) && (i <= rtrBgpUtil.msgCompress)) {
                 continue;
             }
             res = res.plus(c[i]);

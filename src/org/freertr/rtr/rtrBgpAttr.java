@@ -143,6 +143,11 @@ public interface rtrBgpAttr {
     public rtrBgpAttr attrDomainPath = new rtrBgpAttrDomainPath();
 
     /**
+     * safi specific attribute
+     */
+    public rtrBgpAttr attrSafiSpec = new rtrBgpAttrSafiSpec();
+
+    /**
      * bfd discriminator attribute
      */
     public rtrBgpAttr attrBfdDisc = new rtrBgpAttrBfdDisc();
@@ -1015,6 +1020,24 @@ class rtrBgpAttrDomainPath implements rtrBgpAttr {
         hlp.putCopy(ntry.best.domainPath, 0, 0, ntry.best.domainPath.length);
         hlp.putSkip(ntry.best.domainPath.length);
         rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrDomainPath, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrSafiSpec implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.safiSpec = pck.getCopy();
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.safiSpec == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.safiSpec, 0, 0, ntry.best.safiSpec.length);
+        hlp.putSkip(ntry.best.safiSpec.length);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrSafiSpec, trg, hlp);
     }
 
 }

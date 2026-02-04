@@ -805,6 +805,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a[rtrBgpUtil.attrAttribSet] = rtrBgpAttr.attrAttribSet;
             a[rtrBgpUtil.attrNshChain] = rtrBgpAttr.attrNshChain;
             a[rtrBgpUtil.attrDomainPath] = rtrBgpAttr.attrDomainPath;
+            a[rtrBgpUtil.attrSafiSpec] = rtrBgpAttr.attrSafiSpec;
             a[rtrBgpUtil.attrBfdDisc] = rtrBgpAttr.attrBfdDisc;
             a[rtrBgpUtil.attrHopCapa] = rtrBgpAttr.attrHopCapa;
             a[rtrBgpUtil.attrPrefSid] = rtrBgpAttr.attrPrefSid;

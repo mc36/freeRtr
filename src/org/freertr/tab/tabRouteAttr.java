@@ -434,6 +434,11 @@ public class tabRouteAttr<T extends addrType> {
     public byte[] domainPath;
 
     /**
+     * safi specific
+     */
+    public byte[] safiSpec;
+
+    /**
      * bfd discriminator
      */
     public byte[] bfdDiscr;
@@ -806,6 +811,12 @@ public class tabRouteAttr<T extends addrType> {
             bits.byteCopy(domainPath, 0, atr.domainPath, 0, domainPath.length);
         } else {
             atr.domainPath = null;
+        }
+        if (safiSpec != null) {
+            atr.safiSpec = new byte[safiSpec.length];
+            bits.byteCopy(safiSpec, 0, atr.safiSpec, 0, safiSpec.length);
+        } else {
+            atr.safiSpec = null;
         }
         if (bfdDiscr != null) {
             atr.bfdDiscr = new byte[bfdDiscr.length];
@@ -1206,6 +1217,19 @@ public class tabRouteAttr<T extends addrType> {
             }
         } else if (other.domainPath != null) {
             return 127;
+        }
+        if (safiSpec != null) {
+            if (other.safiSpec == null) {
+                return 139;
+            }
+            if (safiSpec.length != other.safiSpec.length) {
+                return 140;
+            }
+            if (bits.byteComp(safiSpec, 0, other.safiSpec, 0, safiSpec.length) != 0) {
+                return 141;
+            }
+        } else if (other.safiSpec != null) {
+            return 142;
         }
         if (bfdDiscr != null) {
             if (other.bfdDiscr == null) {
@@ -1638,6 +1662,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, false, lv, new int[]{lv, -1}, "pathlimit", "ignore aspath limit");
         hl.add(null, false, lv, new int[]{lv, -1}, "nshchain", "ignore nsh service chain");
         hl.add(null, false, lv, new int[]{lv, -1}, "domainpath", "ignore domain path");
+        hl.add(null, false, lv, new int[]{lv, -1}, "safispec", "ignore safi specific");
         hl.add(null, false, lv, new int[]{lv, -1}, "bfddiscr", "ignore bfd discriminator");
         hl.add(null, false, lv, new int[]{lv, -1}, "hopcapa", "ignore next hop capability");
         hl.add(null, false, lv, new int[]{lv, -1}, "orignted", "ignore originator");
@@ -1766,6 +1791,9 @@ public class tabRouteAttr<T extends addrType> {
         if (a.equals("ip6comm")) {
             return 0x1000000000L;
         }
+        if (a.equals("safispec")) {
+            return 0x2000000000L;
+        }
         return 0;
     }
 
@@ -1890,6 +1918,9 @@ public class tabRouteAttr<T extends addrType> {
         }
         if ((i & 0x1000000000L) != 0) {
             a += " ip6comm";
+        }
+        if ((i & 0x2000000000L) != 0) {
+            a += " safispec";
         }
         return a.substring(1, a.length());
     }
@@ -2062,6 +2093,9 @@ public class tabRouteAttr<T extends addrType> {
         if ((ign & 0x1000000000L) != 0) {
             ntry.ip6comm = null;
         }
+        if ((ign & 0x2000000000L) != 0) {
+            ntry.safiSpec = null;
+        }
     }
 
     /**
@@ -2110,6 +2144,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "attribute value|" + bits.byteDump(attribVal, 0, -1));
         lst.add(beg + "nsh chain value|" + bits.byteDump(nshChain, 0, -1));
         lst.add(beg + "domain path value|" + bits.byteDump(domainPath, 0, -1));
+        lst.add(beg + "safi specific value|" + bits.byteDump(safiSpec, 0, -1));
         lst.add(beg + "bfd discr value|" + bits.byteDump(bfdDiscr, 0, -1));
         lst.add(beg + "hop capability value|" + bits.byteDump(hopCapa, 0, -1));
         lst.add(beg + "tunnel type|" + tunelTyp);

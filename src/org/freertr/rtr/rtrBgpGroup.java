@@ -309,6 +309,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (!domainPath) {
             ntry.domainPath = null;
         }
+        if (!safiSpec) {
+            ntry.safiSpec = null;
+        }
         if (!bfdDiscr) {
             ntry.bfdDiscr = null;
         }

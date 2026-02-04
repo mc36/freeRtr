@@ -154,6 +154,11 @@ public abstract class rtrBgpParam {
     public boolean domainPath;
 
     /**
+     * send safi specific
+     */
+    public boolean safiSpec;
+
+    /**
      * send bfd discriminator
      */
     public boolean bfdDiscr;
@@ -1654,6 +1659,7 @@ public abstract class rtrBgpParam {
         pathLim = src.pathLim;
         nshChain = src.nshChain;
         domainPath = src.domainPath;
+        safiSpec = src.safiSpec;
         bfdDiscr = src.bfdDiscr;
         tunEnc = src.tunEnc;
         lnkSta = src.lnkSta;
@@ -1866,6 +1872,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (domainPath != src.domainPath) {
+            return true;
+        }
+        if (safiSpec != src.safiSpec) {
             return true;
         }
         if (bfdDiscr != src.bfdDiscr) {
@@ -2204,6 +2213,7 @@ public abstract class rtrBgpParam {
         l.add(null, false, 3, new int[]{-1}, "aspath-limit", "send as path limit attribute");
         l.add(null, false, 3, new int[]{-1}, "nsh-chain", "send nsh service chain attribute");
         l.add(null, false, 3, new int[]{-1}, "domain-path", "send domain path attribute");
+        l.add(null, false, 3, new int[]{-1}, "safi-specific", "send safi specific attribute");
         l.add(null, false, 3, new int[]{-1}, "bfd-discriminator", "send bfd discriminator attribute");
         l.add(null, false, 3, new int[]{-1}, "tunenc", "send tunnel encapsulation attribute");
         l.add(null, false, 3, new int[]{-1}, "linkstate", "send link state attribute");
@@ -2297,6 +2307,7 @@ public abstract class rtrBgpParam {
         l.add(null, false, 4, new int[]{4, -1}, "standard", "send standard community");
         l.add(null, false, 4, new int[]{4, -1}, "extended", "send extended community");
         l.add(null, false, 4, new int[]{4, -1}, "large", "send large community");
+        l.add(null, false, 4, new int[]{4, -1}, "ipv6", "send ipv6 community");
         l.add(null, false, 4, new int[]{4, -1}, "both", "send std+ext communities");
         l.add(null, false, 4, new int[]{4, -1}, "all", "send std+ext+lrg communities");
         l.add(null, false, 4, new int[]{4, -1}, "none", "send no community");
@@ -2512,6 +2523,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !pathLim, beg, nei + "aspath-limit", "");
         cmds.cfgLine(l, !nshChain, beg, nei + "nsh-chain", "");
         cmds.cfgLine(l, !domainPath, beg, nei + "domain-path", "");
+        cmds.cfgLine(l, !safiSpec, beg, nei + "safi-specific", "");
         cmds.cfgLine(l, !bfdDiscr, beg, nei + "bfd-discriminator", "");
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
         cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
@@ -2554,33 +2566,28 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !nxtHopCapa, beg, nei + "next-hop-capability", "");
         cmds.cfgLine(l, !nxtHopSelf, beg, nei + "next-hop-self", "");
         cmds.cfgLine(l, !nxtHopPeer, beg, nei + "next-hop-peer", "");
+        s = "";
+        if ((sendCommunity & 1) != 0) {
+            s += " standard";
+        }
+        if ((sendCommunity & 2) != 0) {
+            s += " extended";
+        }
+        if ((sendCommunity & 4) != 0) {
+            s += " large";
+        }
+        if ((sendCommunity & 8) != 0) {
+            s += " ipv6";
+        }
         switch (sendCommunity) {
-            case 1:
-                s = "standard";
+            case 15:
+                s = " all";
                 break;
-            case 2:
-                s = "extended";
-                break;
-            case 3:
-                s = "standard extended";
-                break;
-            case 4:
-                s = "large";
-                break;
-            case 5:
-                s = "standard large";
-                break;
-            case 6:
-                s = "extended large";
-                break;
-            case 7:
-                s = "all";
-                break;
-            default:
-                s = "none";
+            case 0:
+                s = " none";
                 break;
         }
-        cmds.cfgLine(l, sendCommunity == 0, beg, nei + "send-community", s);
+        cmds.cfgLine(l, sendCommunity == 0, beg, nei + "send-community", s.substring(1, s.length()));
         cmds.cfgLine(l, prflstIn == null, beg, nei + "prefix-list-in", "" + prflstIn);
         cmds.cfgLine(l, prflstOut == null, beg, nei + "prefix-list-out", "" + prflstOut);
         cmds.cfgLine(l, roumapIn == null, beg, nei + "route-map-in", "" + roumapIn);
@@ -3168,6 +3175,10 @@ public abstract class rtrBgpParam {
             domainPath = !negated;
             return false;
         }
+        if (s.equals("safi-specific")) {
+            safiSpec = !negated;
+            return false;
+        }
         if (s.equals("bfd-discriminator")) {
             bfdDiscr = !negated;
             return false;
@@ -3443,6 +3454,10 @@ public abstract class rtrBgpParam {
                     sendCommunity |= 4;
                     continue;
                 }
+                if (s.equals("ipv6")) {
+                    sendCommunity |= 8;
+                    continue;
+                }
                 if (s.equals("none")) {
                     sendCommunity = 0;
                     continue;
@@ -3452,7 +3467,7 @@ public abstract class rtrBgpParam {
                     continue;
                 }
                 if (s.equals("all")) {
-                    sendCommunity |= 7;
+                    sendCommunity |= 15;
                     continue;
                 }
             }

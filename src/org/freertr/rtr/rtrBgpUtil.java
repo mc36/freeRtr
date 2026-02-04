@@ -1048,68 +1048,6 @@ public class rtrBgpUtil {
     public final static int commValidAspa = 0x43030000;
 
     /**
-     * check if an unknown message type
-     *
-     * @param i number to check
-     * @return true if yes, false if not
-     */
-    public static boolean isUnknownMsg(int i) {
-        if (i < msgOpen) {
-            return true;
-        }
-        if (i > msgCompress) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * check if an unknown attribute type
-     *
-     * @param i number to check
-     * @return true if yes, false if not
-     */
-    public static boolean isUnknownAttr(int i) {
-        switch (i) {
-            case attrOriginType:
-            case attrAsPath:
-            case attrNextHop:
-            case attrMetric:
-            case attrLocPref:
-            case attrAtomicAggr:
-            case attrAggregator:
-            case attrConnector:
-            case attrPeDistLab:
-            case attrPathLimit:
-            case attrNshChain:
-            case attrDomainPath:
-            case attrBfdDisc:
-            case attrHopCapa:
-            case attrStdComm:
-            case attrOriginator:
-            case attrClustList:
-            case attrReachable:
-            case attrUnReach:
-            case attrExtComm:
-            case attrPmsiTun:
-            case attrTunEnc:
-            case attrTraffEng:
-            case attrAccIgp:
-            case attrEntropyLab:
-            case attrLinkState:
-            case attrLrgComm:
-            case attrIpv6comm:
-            case attrOnlyCust:
-            case attrPrefSid:
-            case attrBier:
-            case attrAttribSet:
-                return false;
-            default:
-                return true;
-        }
-    }
-
-    /**
      * convert type to string
      *
      * @param i type to convert
@@ -1627,6 +1565,7 @@ public class rtrBgpUtil {
         rtrBgpAttr.attrBier.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrNshChain.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrDomainPath.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrSafiSpec.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrBfdDisc.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrHopCapa.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAttribSet.writeAttrib(spkr, pck, hlp, ntry);
@@ -1774,6 +1713,7 @@ public class rtrBgpUtil {
         rtrBgpAttr.attrBier.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrNshChain.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrDomainPath.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrSafiSpec.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrBfdDisc.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrHopCapa.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAttribSet.writeAttrib(spkr, pck, hlp, ntry);
