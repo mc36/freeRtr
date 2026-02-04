@@ -240,6 +240,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected final boolean isIpv6;
 
     /**
+     * index of ipv4 unicast safi
+     */
+    protected final int ipv4unIdx;
+
+    /**
      * other changes trigger full computation
      */
     protected boolean otherTrigger;
@@ -770,6 +775,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 rouTyp = tabRouteAttr.routeType.bgp4;
                 other = new rtrBgpOther(this, vrfCore.fwd6);
                 lspf = new rtrBgpSpf(this);
+                ipv4unIdx = rtrBgpParam.idxUni;
                 idx2safi = bgp4idxes;
                 safi2rdr = bgp4safis;
                 break;
@@ -778,6 +784,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 rouTyp = tabRouteAttr.routeType.bgp6;
                 other = new rtrBgpOther(this, vrfCore.fwd4);
                 lspf = new rtrBgpSpf(this);
+                ipv4unIdx = rtrBgpParam.idxOuni;
                 idx2safi = bgp6idxes;
                 safi2rdr = bgp6safis;
                 break;
@@ -786,6 +793,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 rouTyp = null;
                 other = new rtrBgpOther(this, null);
                 lspf = new rtrBgpSpf(this);
+                ipv4unIdx = 0;
                 idx2safi = null;
                 safi2rdr = null;
                 break;

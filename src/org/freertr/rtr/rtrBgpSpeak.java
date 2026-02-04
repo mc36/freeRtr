@@ -1268,10 +1268,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         if (!mpGot) {
-            int o = parent.safi2idx(rtrBgpUtil.safiIp4uni);
-            if (o > 0) {
-                peerAfis[o] = true;
-            }
+            peerAfis[parent.ipv4unIdx] = true;
         }
         if (!neigh.capaNego) {
             peerAfis = rtrBgpParam.boolsCopy(neigh.addrFams);
@@ -1676,10 +1673,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         ntry.best.rouSrc = neigh.peerType;
         ntry.best.srcRtr = neigh.peerAddr.copyBytes();
         ntry.best.locPref = neigh.preference;
-        int idx = parent.safi2idx(rtrBgpUtil.safiIp4uni);
-        if (idx < 0) {
-            return true;
-        }
+        int idx = parent.ipv4unIdx;
         boolean addpath = addpathRx[idx];
         int ident = 0;
         for (;;) {
