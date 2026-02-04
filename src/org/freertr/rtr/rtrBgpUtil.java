@@ -1569,7 +1569,7 @@ public class rtrBgpUtil {
             return;
         }
         spkr.currAdd.clear();
-        List<tabRouteEntry<addrIP>> del = new ArrayList<tabRouteEntry<addrIP>>();
+        spkr.currDel.clear();
         packHolder pck = new packHolder(true, true);
         packHolder cur = new packHolder(true, true);
         pck.putCopy(ntry.best.attribVal, 0, 0, ntry.best.attribVal.length);
@@ -1584,7 +1584,7 @@ public class rtrBgpUtil {
             if (rtrBgpAttr.parseAttrib(pck, cur)) {
                 break;
             }
-            rtrBgpAttr.interpretAttribute(spkr, ntry, del, cur);
+            rtrBgpAttr.interpretAttribute(spkr, ntry, cur);
         }
     }
 

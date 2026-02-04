@@ -47,10 +47,9 @@ public class rtrBgpAttr {
      *
      * @param spkr where to signal
      * @param ntry table entry
-     * @param del prefixes unreachable
      * @param pck packet to parse
      */
-    public static void interpretAttribute(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, List<tabRouteEntry<addrIP>> del, packHolder pck) {
+    public static void interpretAttribute(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
         rtrBgpUtil.updtStatsArr(false, spkr.parent.attrStats, pck.ETHtype, pck);
         rtrBgpUtil.updtStatsArr(false, spkr.neigh.attrStats, pck.ETHtype, pck);
         if (spkr.neigh.attribFilter != null) {
@@ -64,7 +63,7 @@ public class rtrBgpAttr {
                 parseReachable(spkr, spkr.currAdd, pck);
                 return;
             case rtrBgpUtil.attrUnReach:
-                parseUnReach(spkr, del, pck);
+                parseUnReach(spkr, spkr.currDel, pck);
                 return;
             case rtrBgpUtil.attrOrigin:
                 parseOrigin(ntry, pck);
