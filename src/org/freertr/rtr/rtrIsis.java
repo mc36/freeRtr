@@ -51,7 +51,6 @@ import org.freertr.util.logger;
 import org.freertr.spf.spfCalc;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
-import org.freertr.util.counter;
 
 /**
  * intermediate system to intermediate system (rfc1142) protocol
@@ -171,6 +170,11 @@ public class rtrIsis extends ipRtr {
     protected final int rtrNum;
 
     /**
+     * is over ipv4
+     */
+    protected final boolean isIpv4;
+
+    /**
      * list of flexalgos
      */
     protected tabGen<rtrAlgo> algos;
@@ -234,12 +238,15 @@ public class rtrIsis extends ipRtr {
         rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
+                isIpv4 = true;
                 rouTyp = tabRouteAttr.routeType.isis4;
                 break;
             case ipCor6.protocolVersion:
+                isIpv4 = false;
                 rouTyp = tabRouteAttr.routeType.isis6;
                 break;
             default:
+                isIpv4 = true;
                 rouTyp = null;
                 break;
         }
@@ -338,7 +345,7 @@ public class rtrIsis extends ipRtr {
      * @return nlpid
      */
     protected int getNLPIDval(boolean other) {
-        if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
+        if (other ^ isIpv4) {
             return ipCor4.protocolNLPID;
         } else {
             return ipCor6.protocolNLPID;
@@ -371,7 +378,7 @@ public class rtrIsis extends ipRtr {
      * @return mt
      */
     protected int getMTopoVal(boolean other) {
-        if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
+        if (other ^ isIpv4) {
             return 0;
         } else {
             return 2;
@@ -570,7 +577,7 @@ public class rtrIsis extends ipRtr {
      * @return prefix
      */
     protected addrPrefix<addrIP> getDefaultRoute(boolean other) {
-        if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
+        if (other ^ isIpv4) {
             return addrPrefix.ip4toIP(addrPrefix.defaultRoute4());
         } else {
             return addrPrefix.ip6toIP(addrPrefix.defaultRoute6());
@@ -587,7 +594,7 @@ public class rtrIsis extends ipRtr {
     protected tabGen<addrIP> getAddrIface(boolean other, encTlv tlv) {
         tabGen<addrIP> l = new tabGen<addrIP>();
         addrIP adr = new addrIP();
-        if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
+        if (other ^ isIpv4) {
             if (tlv.valTyp != rtrIsisLsp.tlvIpv4addr) {
                 return null;
             }
@@ -641,7 +648,7 @@ public class rtrIsis extends ipRtr {
      */
     protected encTlv putAddrIface(boolean other, addrIP adr) {
         encTlv tlv = getTlv();
-        if (other ^ (fwdCore.ipVersion == ipCor4.protocolVersion)) {
+        if (other ^ isIpv4) {
             addrIPv4 a = adr.toIPv4();
             tlv.valTyp = rtrIsisLsp.tlvIpv4addr;
             tlv.valSiz = addrIPv4.size;
@@ -741,7 +748,7 @@ public class rtrIsis extends ipRtr {
      */
     protected List<tabRouteEntry<addrIP>> getAddrReach(boolean other, boolean wide, boolean multi, encTlv tlv) {
         List<tabRouteEntry<addrIP>> l = new ArrayList<tabRouteEntry<addrIP>>();
-        if (other ^ (fwdCore.ipVersion != ipCor4.protocolVersion)) {
+        if (other ^ (!isIpv4)) {
             if (multi) {
                 if (tlv.valTyp != rtrIsisLsp.tlvMtIpv6reach) {
                     return null;
@@ -898,7 +905,7 @@ public class rtrIsis extends ipRtr {
         final boolean down = (flg & 2) != 0;
         final boolean ext = (flg & 1) != 0;
         encTlv tlv = getTlv();
-        if (other ^ (fwdCore.ipVersion != ipCor4.protocolVersion)) {
+        if (other ^ (!isIpv4)) {
             if (multi) {
                 bits.msbPutW(tlv.valDat, 0, getMTopoVal(other));
                 putAddrReach6(tlv, 2, addrPrefix.ip2ip6(pref), ext, down, met, subs);

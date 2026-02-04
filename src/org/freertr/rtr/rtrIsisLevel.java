@@ -7,7 +7,6 @@ import org.freertr.addr.addrIsis;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.enc.encBase64;
-import org.freertr.ip.ipCor4;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
@@ -572,10 +571,10 @@ public class rtrIsisLevel implements Runnable {
                 buf = rtrIsisTe.putSubs(lower, ifc, nei);
             }
             if (nei.segrouLab != null) {
-                buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion == ipCor4.protocolVersion, nei.segrouLab.label));
+                buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.isIpv4, nei.segrouLab.label));
             }
             if (nei.segrouOth != null) {
-                buf = bits.byteConcat(buf, rtrIsisSr.putAdj(lower.fwdCore.ipVersion != ipCor4.protocolVersion, nei.segrouOth.label));
+                buf = bits.byteConcat(buf, rtrIsisSr.putAdj(!lower.isIpv4, nei.segrouOth.label));
             }
             if (!lower.multiTopo && !lower.other.multiTopo) {
                 advertiseTlv(pck, lower.putISneigh(false, lower.metricWide, lower.multiTopo, nei.rtrID, 0, nei.getMetric(), buf));
