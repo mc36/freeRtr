@@ -72,6 +72,31 @@ public interface rtrBgpAttr {
     public rtrBgpAttr attrPathLimit = new rtrBgpAttrPathLimit();
 
     /**
+     * pe distinguisher attribute
+     */
+    public rtrBgpAttr attrPeDistLab = new rtrBgpAttrPeDistLab();
+
+    /**
+     * standard community
+     */
+    public rtrBgpAttr attrStdComm = new rtrBgpAttrStdComm();
+
+    /**
+     * extended community
+     */
+    public rtrBgpAttr attrExtComm = new rtrBgpAttrExtComm();
+
+    /**
+     * large community
+     */
+    public rtrBgpAttr attrLrgComm = new rtrBgpAttrLrgComm();
+
+    /**
+     * originator attribute
+     */
+    public rtrBgpAttr attrOriginator = new rtrBgpAttrOriginator();
+
+    /**
      * layer2 behavior
      */
     public final static int behavDx2 = 0x15;
@@ -159,19 +184,19 @@ public interface rtrBgpAttr {
                 attrPathLimit.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrPeDistLab:
-                parsePeDistLab(ntry, pck);
+                attrPeDistLab.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrStdComm:
-                parseStdComm(ntry, pck);
+                attrStdComm.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrExtComm:
-                parseExtComm(ntry, pck);
+                attrExtComm.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrLrgComm:
-                parseLrgComm(ntry, pck);
+                attrLrgComm.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrOriginator:
-                parseOriginator(ntry, pck);
+                attrOriginator.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrTraffEng:
                 parseTraffEng(ntry, pck);
@@ -222,92 +247,6 @@ public interface rtrBgpAttr {
                 parseUnknown(ntry, pck);
                 return;
         }
-    }
-
-    /**
-     * parse pe distinguisher attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parsePeDistLab(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        int i;
-        if (pck.dataSize() > 8) {
-            addrIPv4 as = new addrIPv4();
-            pck.getAddr(as, 0);
-            addrIP ax = new addrIP();
-            ax.fromIPv4addr(as);
-            ntry.best.pediRtr = ax;
-            i = addrIPv4.size;
-        } else {
-            addrIPv6 as = new addrIPv6();
-            pck.getAddr(as, 0);
-            addrIP ax = new addrIP();
-            ax.fromIPv6addr(as);
-            ntry.best.pediRtr = ax;
-            i = addrIPv6.size;
-        }
-        ntry.best.pediLab = pck.msbGetD(0) >>> 12;
-    }
-
-    /**
-     * parse standard community attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseStdComm(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.stdComm = new ArrayList<Integer>();
-        for (; pck.dataSize() >= 4;) {
-            ntry.best.stdComm.add(pck.msbGetD(0));
-            pck.getSkip(4);
-        }
-    }
-
-    /**
-     * parse extended community attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseExtComm(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.extComm = new ArrayList<Long>();
-        for (; pck.dataSize() >= 8;) {
-            ntry.best.extComm.add(pck.msbGetQ(0));
-            pck.getSkip(8);
-        }
-    }
-
-    /**
-     * parse large community attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseLrgComm(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.lrgComm = new ArrayList<tabLargeComm>();
-        for (; pck.dataSize() >= 12;) {
-            tabLargeComm d = new tabLargeComm();
-            d.as = pck.msbGetD(0);
-            d.d1 = pck.msbGetD(4);
-            d.d2 = pck.msbGetD(8);
-            ntry.best.lrgComm.add(d);
-            pck.getSkip(12);
-        }
-    }
-
-    /**
-     * parse originator attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseOriginator(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        addrIPv4 as = new addrIPv4();
-        pck.getAddr(as, 0);
-        addrIP ax = new addrIP();
-        ax.fromIPv4addr(as);
-        ntry.best.originator = ax;
     }
 
     /**
@@ -742,103 +681,6 @@ public interface rtrBgpAttr {
             }
             placeAttrib(spkr, blb.flag, blb.type, trg, hlp);
         }
-    }
-
-    /**
-     * place pe distinguisher attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placePeDistLab(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.pediRtr == null) {
-            return;
-        }
-        hlp.clear();
-        if (ntry.best.pediRtr.isIPv4()) {
-            hlp.putAddr(0, ntry.best.pediRtr.toIPv4());
-            hlp.putSkip(addrIPv4.size);
-        } else {
-            hlp.putAddr(0, ntry.best.pediRtr.toIPv6());
-            hlp.putSkip(addrIPv6.size);
-        }
-        hlp.msbPutD(0, ntry.best.pediLab << 12);
-        hlp.putSkip(3);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrPeDistLab, trg, hlp);
-    }
-
-    /**
-     * place standard community attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeStdComm(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.stdComm == null) {
-            return;
-        }
-        if (ntry.best.stdComm.size() < 1) {
-            return;
-        }
-        hlp.clear();
-        for (int i = 0; i < ntry.best.stdComm.size(); i++) {
-            hlp.msbPutD(0, ntry.best.stdComm.get(i));
-            hlp.putSkip(4);
-        }
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrStdComm, trg, hlp);
-    }
-
-    /**
-     * place extended community attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeExtComm(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.extComm == null) {
-            return;
-        }
-        if (ntry.best.extComm.size() < 1) {
-            return;
-        }
-        hlp.clear();
-        for (int i = 0; i < ntry.best.extComm.size(); i++) {
-            hlp.msbPutQ(0, ntry.best.extComm.get(i));
-            hlp.putSkip(8);
-        }
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrExtComm, trg, hlp);
-    }
-
-    /**
-     * place large community attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeLrgComm(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.lrgComm == null) {
-            return;
-        }
-        if (ntry.best.lrgComm.size() < 1) {
-            return;
-        }
-        hlp.clear();
-        for (int i = 0; i < ntry.best.lrgComm.size(); i++) {
-            tabLargeComm d = ntry.best.lrgComm.get(i);
-            hlp.msbPutD(0, d.as);
-            hlp.msbPutD(4, d.d1);
-            hlp.msbPutD(8, d.d2);
-            hlp.putSkip(12);
-        }
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrLrgComm, trg, hlp);
     }
 
     /**
@@ -1521,6 +1363,147 @@ class rtrBgpAttrPathLimit implements rtrBgpAttr {
         hlp.msbPutD(1, ntry.best.pathAsn);
         hlp.putSkip(5);
         rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrPathLimit, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrPeDistLab implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        int i;
+        ntry.best.pediRtr = new addrIP();
+        if (pck.dataSize() > 8) {
+            addrIPv6 adr = new addrIPv6();
+            pck.getAddr(adr, 0);
+            ntry.best.pediRtr.fromIPv6addr(adr);
+            pck.getSkip(addrIPv6.size);
+        } else {
+            addrIPv4 adr = new addrIPv4();
+            pck.getAddr(adr, 0);
+            ntry.best.pediRtr.fromIPv4addr(adr);
+            pck.getSkip(addrIPv4.size);
+        }
+        ntry.best.pediLab = pck.msbGetD(0) >>> 12;
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.pediRtr == null) {
+            return;
+        }
+        hlp.clear();
+        if (ntry.best.pediRtr.isIPv4()) {
+            hlp.putAddr(0, ntry.best.pediRtr.toIPv4());
+            hlp.putSkip(addrIPv4.size);
+        } else {
+            hlp.putAddr(0, ntry.best.pediRtr.toIPv6());
+            hlp.putSkip(addrIPv6.size);
+        }
+        hlp.msbPutD(0, ntry.best.pediLab << 12);
+        hlp.putSkip(3);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrPeDistLab, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrStdComm implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.stdComm = new ArrayList<Integer>();
+        for (; pck.dataSize() >= 4;) {
+            ntry.best.stdComm.add(pck.msbGetD(0));
+            pck.getSkip(4);
+        }
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.stdComm == null) {
+            return;
+        }
+        if (ntry.best.stdComm.size() < 1) {
+            return;
+        }
+        hlp.clear();
+        for (int i = 0; i < ntry.best.stdComm.size(); i++) {
+            hlp.msbPutD(0, ntry.best.stdComm.get(i));
+            hlp.putSkip(4);
+        }
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrStdComm, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrExtComm implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.extComm = new ArrayList<Long>();
+        for (; pck.dataSize() >= 8;) {
+            ntry.best.extComm.add(pck.msbGetQ(0));
+            pck.getSkip(8);
+        }
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.extComm == null) {
+            return;
+        }
+        if (ntry.best.extComm.size() < 1) {
+            return;
+        }
+        hlp.clear();
+        for (int i = 0; i < ntry.best.extComm.size(); i++) {
+            hlp.msbPutQ(0, ntry.best.extComm.get(i));
+            hlp.putSkip(8);
+        }
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrExtComm, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrLrgComm implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.lrgComm = new ArrayList<tabLargeComm>();
+        for (; pck.dataSize() >= 12;) {
+            tabLargeComm d = new tabLargeComm();
+            d.as = pck.msbGetD(0);
+            d.d1 = pck.msbGetD(4);
+            d.d2 = pck.msbGetD(8);
+            ntry.best.lrgComm.add(d);
+            pck.getSkip(12);
+        }
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.lrgComm == null) {
+            return;
+        }
+        if (ntry.best.lrgComm.size() < 1) {
+            return;
+        }
+        hlp.clear();
+        for (int i = 0; i < ntry.best.lrgComm.size(); i++) {
+            tabLargeComm d = ntry.best.lrgComm.get(i);
+            hlp.msbPutD(0, d.as);
+            hlp.msbPutD(4, d.d1);
+            hlp.msbPutD(8, d.d2);
+            hlp.putSkip(12);
+        }
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrLrgComm, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrOriginator implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        addrIPv4 adr = new addrIPv4();
+        pck.getAddr(adr, 0);
+        ntry.best.originator = new addrIP();
+        ntry.best.originator.fromIPv4addr(adr);
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }
