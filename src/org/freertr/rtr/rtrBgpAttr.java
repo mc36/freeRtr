@@ -47,6 +47,31 @@ public interface rtrBgpAttr {
     public rtrBgpAttr attrLocPref = new rtrBgpAttrLocPref();
 
     /**
+     * atomic aggregator attribute
+     */
+    public rtrBgpAttr attrAtomicAggr = new rtrBgpAttrAtomicAggr();
+
+    /**
+     * entropy label attribute
+     */
+    public rtrBgpAttr attrEntropyLab = new rtrBgpAttrEntropyLab();
+
+    /**
+     * aggregator attribute
+     */
+    public rtrBgpAttr attrAggregator = new rtrBgpAttrAggregator();
+
+    /**
+     * connector attribute
+     */
+    public rtrBgpAttr attrConnector = new rtrBgpAttrConnector();
+
+    /**
+     * path limit attribute
+     */
+    public rtrBgpAttr attrPathLimit = new rtrBgpAttrPathLimit();
+
+    /**
      * layer2 behavior
      */
     public final static int behavDx2 = 0x15;
@@ -119,19 +144,19 @@ public interface rtrBgpAttr {
                 attrLocPref.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrAtomicAggr:
-                parseAtomicAggr(ntry);
+                attrAtomicAggr.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrEntropyLab:
-                parseEntropyLab(ntry, pck);
+                attrEntropyLab.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrAggregator:
-                parseAggregator(spkr, ntry, pck);
+                attrAggregator.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrConnector:
-                parseConnector(ntry, pck);
+                attrConnector.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrPathLimit:
-                parsePathLimit(ntry, pck);
+                attrPathLimit.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrPeDistLab:
                 parsePeDistLab(ntry, pck);
@@ -200,50 +225,6 @@ public interface rtrBgpAttr {
     }
 
     /**
-     * parse atomic aggregator attribute
-     *
-     * @param ntry table entry
-     */
-    public static void parseAtomicAggr(tabRouteEntry<addrIP> ntry) {
-        ntry.best.atomicAggr = true;
-    }
-
-    /**
-     * parse entropy label attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseEntropyLab(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.entropyLabel = pck.getCopy();
-    }
-
-    /**
-     * parse connector attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseConnector(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        addrIPv4 as = new addrIPv4();
-        pck.getAddr(as, 4);
-        addrIP ax = new addrIP();
-        ax.fromIPv4addr(as);
-        ntry.best.connRtr = ax;
-    }
-
-    /**
-     * parse path limit attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parsePathLimit(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.pathLim = pck.getByte(0);
-        ntry.best.pathAsn = pck.msbGetD(1);
-    }
-
-    /**
      * parse pe distinguisher attribute
      *
      * @param ntry table entry
@@ -267,28 +248,6 @@ public interface rtrBgpAttr {
             i = addrIPv6.size;
         }
         ntry.best.pediLab = pck.msbGetD(0) >>> 12;
-    }
-
-    /**
-     * parse aggregator attribute
-     *
-     * @param spkr where to signal
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseAggregator(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        if (spkr.peer32bitAS) {
-            ntry.best.aggrAs = pck.msbGetD(0);
-            pck.getSkip(4);
-        } else {
-            ntry.best.aggrAs = pck.msbGetW(0);
-            pck.getSkip(2);
-        }
-        addrIPv4 as = new addrIPv4();
-        pck.getAddr(as, 0);
-        addrIP ax = new addrIP();
-        ax.fromIPv4addr(as);
-        ntry.best.aggrRtr = ax;
     }
 
     /**
@@ -783,106 +742,6 @@ public interface rtrBgpAttr {
             }
             placeAttrib(spkr, blb.flag, blb.type, trg, hlp);
         }
-    }
-
-    /**
-     * place entropy label attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeEntropyLab(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.entropyLabel == null) {
-            return;
-        }
-        if (ntry.best.entropyLabel.length < 1) {
-            return;
-        }
-        hlp.clear();
-        hlp.putCopy(ntry.best.entropyLabel, 0, 0, ntry.best.entropyLabel.length);
-        hlp.putSkip(ntry.best.entropyLabel.length);
-        placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrEntropyLab, trg, hlp);
-    }
-
-    /**
-     * place atomic aggregator attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeAtomicAggr(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (!ntry.best.atomicAggr) {
-            return;
-        }
-        hlp.clear();
-        placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrAtomicAggr, trg, hlp);
-    }
-
-    /**
-     * place aggregator attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeAggregator(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.aggrRtr == null) {
-            return;
-        }
-        hlp.clear();
-        if (spkr.peer32bitAS) {
-            hlp.msbPutD(0, ntry.best.aggrAs);
-            hlp.putSkip(4);
-        } else {
-            hlp.msbPutW(0, tabRouteUtil.asNum16bit(ntry.best.aggrAs));
-            hlp.putSkip(2);
-        }
-        hlp.putAddr(0, ntry.best.aggrRtr.toIPv4());
-        hlp.putSkip(addrIPv4.size);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrAggregator, trg, hlp);
-    }
-
-    /**
-     * place connector attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeConnector(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.connRtr == null) {
-            return;
-        }
-        hlp.clear();
-        hlp.msbPutD(0, 1);
-        hlp.putAddr(4, ntry.best.connRtr.toIPv4());
-        hlp.putSkip(4 + addrIPv4.size);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrConnector, trg, hlp);
-    }
-
-    /**
-     * place path limit attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placePathLimit(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.pathLim < 1) {
-            return;
-        }
-        hlp.clear();
-        hlp.putByte(0, ntry.best.pathLim);
-        hlp.msbPutD(1, ntry.best.pathAsn);
-        hlp.putSkip(5);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrPathLimit, trg, hlp);
     }
 
     /**
@@ -1548,6 +1407,120 @@ class rtrBgpAttrLocPref implements rtrBgpAttr {
         hlp.msbPutD(0, ntry.best.locPref);
         hlp.putSkip(4);
         rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrLocPref, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrAtomicAggr implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.atomicAggr = true;
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (!ntry.best.atomicAggr) {
+            return;
+        }
+        hlp.clear();
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrAtomicAggr, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrEntropyLab implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.entropyLabel = pck.getCopy();
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.entropyLabel == null) {
+            return;
+        }
+        if (ntry.best.entropyLabel.length < 1) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.entropyLabel, 0, 0, ntry.best.entropyLabel.length);
+        hlp.putSkip(ntry.best.entropyLabel.length);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrEntropyLab, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrAggregator implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        if (spkr.peer32bitAS) {
+            ntry.best.aggrAs = pck.msbGetD(0);
+            pck.getSkip(4);
+        } else {
+            ntry.best.aggrAs = pck.msbGetW(0);
+            pck.getSkip(2);
+        }
+        addrIPv4 adr = new addrIPv4();
+        pck.getAddr(adr, 0);
+        ntry.best.aggrRtr = new addrIP();
+        ntry.best.aggrRtr.fromIPv4addr(adr);
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.aggrRtr == null) {
+            return;
+        }
+        hlp.clear();
+        if (spkr.peer32bitAS) {
+            hlp.msbPutD(0, ntry.best.aggrAs);
+            hlp.putSkip(4);
+        } else {
+            hlp.msbPutW(0, tabRouteUtil.asNum16bit(ntry.best.aggrAs));
+            hlp.putSkip(2);
+        }
+        hlp.putAddr(0, ntry.best.aggrRtr.toIPv4());
+        hlp.putSkip(addrIPv4.size);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrAggregator, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrConnector implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        addrIPv4 adr = new addrIPv4();
+        pck.getAddr(adr, 4);
+        ntry.best.connRtr = new addrIP();
+        ntry.best.connRtr.fromIPv4addr(adr);
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.connRtr == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.msbPutD(0, 1);
+        hlp.putAddr(4, ntry.best.connRtr.toIPv4());
+        hlp.putSkip(4 + addrIPv4.size);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrConnector, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrPathLimit implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.pathLim = pck.getByte(0);
+        ntry.best.pathAsn = pck.msbGetD(1);
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.pathLim < 1) {
+            return;
+        }
+        hlp.clear();
+        hlp.putByte(0, ntry.best.pathLim);
+        hlp.msbPutD(1, ntry.best.pathAsn);
+        hlp.putSkip(5);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrPathLimit, trg, hlp);
     }
 
 }
