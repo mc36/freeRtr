@@ -1792,7 +1792,7 @@ public class rtrBgpUtil {
             pck.merge2beg();
             return;
         }
-        rtrBgpAttr.placeNextHop(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrNextHop.writeAttrib(spkr, pck, hlp, ntry);
         pck.merge2beg();
         pck.msbPutW(0, 0);
         pck.msbPutW(2, pck.dataSize());
