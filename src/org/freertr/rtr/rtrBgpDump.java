@@ -696,10 +696,10 @@ public class rtrBgpDump {
             }
             res.add("  attrib typ=" + hlp.ETHtype + " len=" + hlp.dataSize() + " " + rtrBgpUtil.attrType2string(hlp.ETHtype));
             ntry = new tabRouteEntry<addrIP>();
-            List<tabRouteEntry<addrIP>> add = new ArrayList<tabRouteEntry<addrIP>>();
+            spkr.currAdd.clear();
             List<tabRouteEntry<addrIP>> del = new ArrayList<tabRouteEntry<addrIP>>();
-            rtrBgpAttr.interpretAttribute(spkr, ntry, add, del, hlp.copyBytes(true, true));
-            dumpPacketFull(res, add);
+            rtrBgpAttr.interpretAttribute(spkr, ntry, del, hlp.copyBytes(true, true));
+            dumpPacketFull(res, spkr.currAdd);
             dumpPacketFull(res, del);
             userFormat ufmt = new userFormat("|", "|");
             ntry.best.fullDump(ufmt, "");
@@ -812,14 +812,14 @@ public class rtrBgpDump {
             if (rtrBgpAttr.parseAttrib(pck, hlp)) {
                 break;
             }
-            List<tabRouteEntry<addrIP>> add = new ArrayList<tabRouteEntry<addrIP>>();
+            spkr.currAdd.clear();
             List<tabRouteEntry<addrIP>> del = new ArrayList<tabRouteEntry<addrIP>>();
-            rtrBgpAttr.interpretAttribute(spkr, ntry, add, del, hlp.copyBytes(true, true));
-            if ((add.size() + del.size()) < 1) {
+            rtrBgpAttr.interpretAttribute(spkr, ntry, del, hlp.copyBytes(true, true));
+            if ((spkr.currAdd.size() + del.size()) < 1) {
                 continue;
             }
             String b = rtrBgpUtil.attrType2string(hlp.ETHtype);
-            dumpPacketSum(res, target, b, add);
+            dumpPacketSum(res, target, b, spkr.currAdd);
             dumpPacketSum(res, target, b, del);
         }
         a = rtrBgpUtil.attrType2string(rtrBgpUtil.attrReachable);

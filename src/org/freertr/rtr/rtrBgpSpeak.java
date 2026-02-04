@@ -1718,7 +1718,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (rtrBgpAttr.parseAttrib(pck, hlp)) {
                 return true;
             }
-            rtrBgpAttr.interpretAttribute(this, ntry, currAdd, currDel, hlp);
+            rtrBgpAttr.interpretAttribute(this, ntry, currDel, hlp);
         }
         pck.setBytesLeft(prt);
         for (;;) {
