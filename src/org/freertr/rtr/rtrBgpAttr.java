@@ -97,6 +97,36 @@ public interface rtrBgpAttr {
     public rtrBgpAttr attrOriginator = new rtrBgpAttrOriginator();
 
     /**
+     * traffic engineering attribute
+     */
+    public rtrBgpAttr attrTraffEng = new rtrBgpAttrTraffEng();
+
+    /**
+     * accumulated igp attribute
+     */
+    public rtrBgpAttr attrAccIgp = new rtrBgpAttrAccIgp();
+
+    /**
+     * pmsi tunnel attribute
+     */
+    public rtrBgpAttr attrPmsiTun = new rtrBgpAttrPmsiTun();
+
+    /**
+     * link state attribute
+     */
+    public rtrBgpAttr attrLinkState = new rtrBgpAttrLinkState();
+
+    /**
+     * tunnel encap attribute
+     */
+    public rtrBgpAttr attrTunEnc = new rtrBgpAttrTunEnc();
+
+    /**
+     * attribute set attribute
+     */
+    public rtrBgpAttr attrAttribSet = new rtrBgpAttrAttribSet();
+
+    /**
      * layer2 behavior
      */
     public final static int behavDx2 = 0x15;
@@ -199,22 +229,22 @@ public interface rtrBgpAttr {
                 attrOriginator.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrTraffEng:
-                parseTraffEng(ntry, pck);
+                attrTraffEng.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrAccIgp:
-                parseAccIgp(ntry, pck);
+                attrAccIgp.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrPmsiTun:
-                parsePmsiTun(ntry, pck);
+                attrPmsiTun.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrLinkState:
-                parseLnkSta(ntry, pck);
+                attrLinkState.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrTunEnc:
-                parseTunEnc(ntry, pck);
+                attrTunEnc.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrAttribSet:
-                parseAttribSet(ntry, pck);
+                attrAttribSet.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrNshChain:
                 parseNshChain(ntry, pck);
@@ -247,84 +277,6 @@ public interface rtrBgpAttr {
                 parseUnknown(ntry, pck);
                 return;
         }
-    }
-
-    /**
-     * parse accumulated igp attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseAccIgp(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        if (pck.getByte(0) != 1) {
-            return;
-        }
-        if (pck.msbGetW(1) < 11) {
-            return;
-        }
-        ntry.best.accIgp = (int) pck.msbGetQ(3);
-    }
-
-    /**
-     * parse traffic engineering attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseTraffEng(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.bandwidth = ((Float) Float.intBitsToFloat(pck.msbGetD(4))).intValue() * 8;
-    }
-
-    /**
-     * parse pmsi tunnel attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parsePmsiTun(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.pmsiTyp = pck.msbGetW(0);
-        ntry.best.pmsiLab = pck.msbGetD(2) >>> 8;
-        pck.getSkip(5);
-        ntry.best.pmsiTun = pck.getCopy();
-    }
-
-    /**
-     * parse tunnel encapsulation attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseTunEnc(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.tunelTyp = pck.msbGetW(0);
-        int len = pck.msbGetW(2);
-        pck.getSkip(4);
-        if (pck.dataSize() < len) {
-            return;
-        }
-        pck.setDataSize(len);
-        ntry.best.tunelVal = pck.getCopy();
-    }
-
-    /**
-     * parse link state attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseLnkSta(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.linkStat = pck.getCopy();
-    }
-
-    /**
-     * parse attribute set attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseAttribSet(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.attribAs = pck.msbGetD(0);
-        pck.getSkip(4);
-        ntry.best.attribVal = pck.getCopy();
     }
 
     /**
@@ -681,155 +633,6 @@ public interface rtrBgpAttr {
             }
             placeAttrib(spkr, blb.flag, blb.type, trg, hlp);
         }
-    }
-
-    /**
-     * place originator attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeOriginator(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.originator == null) {
-            return;
-        }
-        hlp.clear();
-        hlp.putAddr(0, ntry.best.originator.toIPv4());
-        hlp.putSkip(addrIPv4.size);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrOriginator, trg, hlp);
-    }
-
-    /**
-     * place accumulated igp attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeAccIgp(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.accIgp < 1) {
-            return;
-        }
-        hlp.clear();
-        hlp.putByte(0, 1); // type
-        hlp.msbPutW(1, 11); // length
-        hlp.msbPutQ(3, ntry.best.accIgp); // value
-        hlp.putSkip(11);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrAccIgp, trg, hlp);
-    }
-
-    /**
-     * place traffic engineering attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeTraffEng(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.bandwidth < 1) {
-            return;
-        }
-        hlp.clear();
-        hlp.putByte(0, 1); // psc1
-        hlp.putByte(1, 1); // packet
-        hlp.msbPutW(2, 0); // reserved
-        int i = Float.floatToIntBits(ntry.best.bandwidth / 8);
-        hlp.msbPutD(4, i); // pri0
-        hlp.msbPutD(8, i); // pri1
-        hlp.msbPutD(12, i); // pri2
-        hlp.msbPutD(16, i); // pri3
-        hlp.msbPutD(20, i); // pri4
-        hlp.msbPutD(24, i); // pri5
-        hlp.msbPutD(28, i); // pri6
-        hlp.msbPutD(32, i); // pri7
-        hlp.msbPutD(36, Float.floatToIntBits(1)); // minimum
-        hlp.msbPutW(40, 1500); // mtu
-        hlp.putSkip(42);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrTraffEng, trg, hlp);
-    }
-
-    /**
-     * place pmsi tunnel attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placePmsiTun(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.pmsiTun == null) {
-            return;
-        }
-        hlp.clear();
-        hlp.msbPutW(0, ntry.best.pmsiTyp);
-        hlp.msbPutD(2, ntry.best.pmsiLab << 8);
-        hlp.putSkip(5);
-        hlp.putCopy(ntry.best.pmsiTun, 0, 0, ntry.best.pmsiTun.length);
-        hlp.putSkip(ntry.best.pmsiTun.length);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrPmsiTun, trg, hlp);
-    }
-
-    /**
-     * place tunnel encapsulation attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeTunEnc(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.tunelVal == null) {
-            return;
-        }
-        hlp.clear();
-        hlp.msbPutW(0, ntry.best.tunelTyp);
-        hlp.msbPutW(2, ntry.best.tunelVal.length);
-        hlp.putSkip(4);
-        hlp.putCopy(ntry.best.tunelVal, 0, 0, ntry.best.tunelVal.length);
-        hlp.putSkip(ntry.best.tunelVal.length);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrTunEnc, trg, hlp);
-    }
-
-    /**
-     * place link state attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeLnkSta(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.linkStat == null) {
-            return;
-        }
-        hlp.clear();
-        hlp.putCopy(ntry.best.linkStat, 0, 0, ntry.best.linkStat.length);
-        hlp.putSkip(ntry.best.linkStat.length);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrLinkState, trg, hlp);
-    }
-
-    /**
-     * place attribute set attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeAttribSet(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.attribVal == null) {
-            return;
-        }
-        hlp.clear();
-        hlp.msbPutD(0, ntry.best.attribAs);
-        hlp.putSkip(4);
-        hlp.putCopy(ntry.best.attribVal, 0, 0, ntry.best.attribVal.length);
-        hlp.putSkip(ntry.best.attribVal.length);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrAttribSet, trg, hlp);
     }
 
     /**
@@ -1503,7 +1306,162 @@ class rtrBgpAttrOriginator implements rtrBgpAttr {
     }
 
     public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (ntry.best.originator == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putAddr(0, ntry.best.originator.toIPv4());
+        hlp.putSkip(addrIPv4.size);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrOriginator, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrTraffEng implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.bandwidth = ((Float) Float.intBitsToFloat(pck.msbGetD(4))).intValue() * 8;
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.bandwidth < 1) {
+            return;
+        }
+        hlp.clear();
+        hlp.putByte(0, 1); // psc1
+        hlp.putByte(1, 1); // packet
+        hlp.msbPutW(2, 0); // reserved
+        int i = Float.floatToIntBits(ntry.best.bandwidth / 8);
+        hlp.msbPutD(4, i); // pri0
+        hlp.msbPutD(8, i); // pri1
+        hlp.msbPutD(12, i); // pri2
+        hlp.msbPutD(16, i); // pri3
+        hlp.msbPutD(20, i); // pri4
+        hlp.msbPutD(24, i); // pri5
+        hlp.msbPutD(28, i); // pri6
+        hlp.msbPutD(32, i); // pri7
+        hlp.msbPutD(36, Float.floatToIntBits(1)); // minimum
+        hlp.msbPutW(40, 1500); // mtu
+        hlp.putSkip(42);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrTraffEng, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrAccIgp implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        if (pck.getByte(0) != 1) {
+            return;
+        }
+        if (pck.msbGetW(1) < 11) {
+            return;
+        }
+        ntry.best.accIgp = (int) pck.msbGetQ(3);
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.accIgp < 1) {
+            return;
+        }
+        hlp.clear();
+        hlp.putByte(0, 1); // type
+        hlp.msbPutW(1, 11); // length
+        hlp.msbPutQ(3, ntry.best.accIgp); // value
+        hlp.putSkip(11);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrAccIgp, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrPmsiTun implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.pmsiTyp = pck.msbGetW(0);
+        ntry.best.pmsiLab = pck.msbGetD(2) >>> 8;
+        pck.getSkip(5);
+        ntry.best.pmsiTun = pck.getCopy();
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.pmsiTun == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.msbPutW(0, ntry.best.pmsiTyp);
+        hlp.msbPutD(2, ntry.best.pmsiLab << 8);
+        hlp.putSkip(5);
+        hlp.putCopy(ntry.best.pmsiTun, 0, 0, ntry.best.pmsiTun.length);
+        hlp.putSkip(ntry.best.pmsiTun.length);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrPmsiTun, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrLinkState implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.linkStat = pck.getCopy();
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.linkStat == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.linkStat, 0, 0, ntry.best.linkStat.length);
+        hlp.putSkip(ntry.best.linkStat.length);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrLinkState, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrTunEnc implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.tunelTyp = pck.msbGetW(0);
+        int len = pck.msbGetW(2);
+        pck.getSkip(4);
+        if (pck.dataSize() < len) {
+            return;
+        }
+        pck.setDataSize(len);
+        ntry.best.tunelVal = pck.getCopy();
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.tunelVal == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.msbPutW(0, ntry.best.tunelTyp);
+        hlp.msbPutW(2, ntry.best.tunelVal.length);
+        hlp.putSkip(4);
+        hlp.putCopy(ntry.best.tunelVal, 0, 0, ntry.best.tunelVal.length);
+        hlp.putSkip(ntry.best.tunelVal.length);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrTunEnc, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrAttribSet implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.attribAs = pck.msbGetD(0);
+        pck.getSkip(4);
+        ntry.best.attribVal = pck.getCopy();
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.attribVal == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.msbPutD(0, ntry.best.attribAs);
+        hlp.putSkip(4);
+        hlp.putCopy(ntry.best.attribVal, 0, 0, ntry.best.attribVal.length);
+        hlp.putSkip(ntry.best.attribVal.length);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrAttribSet, trg, hlp);
     }
 
 }

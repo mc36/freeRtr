@@ -1613,13 +1613,13 @@ public class rtrBgpUtil {
         rtrBgpAttr.attrStdComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrExtComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrLrgComm.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeOriginator(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrOriginator.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeClustList(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeTraffEng(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeAccIgp(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placePmsiTun(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeTunEnc(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeLnkSta(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrTraffEng.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrAccIgp.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrPmsiTun.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrTunEnc.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrLinkState.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeOnlyCust(spkr, pck, hlp, ntry);
         rtrBgpAttr.placePrefSid(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeBier(spkr, pck, hlp, ntry);
@@ -1627,7 +1627,7 @@ public class rtrBgpUtil {
         rtrBgpAttr.placeDomainPath(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeBfdDiscr(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeHopCapa(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeAttribSet(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrAttribSet.writeAttrib(spkr, pck, hlp, ntry);
         pck.merge2beg();
         ntry.best.attribAs = as;
         ntry.best.attribVal = pck.getCopy();
@@ -1759,13 +1759,13 @@ public class rtrBgpUtil {
         rtrBgpAttr.attrStdComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrExtComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrLrgComm.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeOriginator(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrOriginator.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeClustList(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeTraffEng(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeAccIgp(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placePmsiTun(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeTunEnc(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeLnkSta(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrTraffEng.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrAccIgp.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrPmsiTun.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrTunEnc.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrLinkState.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeOnlyCust(spkr, pck, hlp, ntry);
         rtrBgpAttr.placePrefSid(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeBier(spkr, pck, hlp, ntry);
@@ -1773,7 +1773,7 @@ public class rtrBgpUtil {
         rtrBgpAttr.placeDomainPath(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeBfdDiscr(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeHopCapa(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeAttribSet(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrAttribSet.writeAttrib(spkr, pck, hlp, ntry);
         if (spkr.parent.idx2safi[idx] != safiIp4uni) {
             rtrBgpAttr.placeReachable(spkr, idx, addpath, pck, hlp, lst);
             pck.merge2beg();
