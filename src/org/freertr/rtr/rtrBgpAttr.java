@@ -27,6 +27,11 @@ public interface rtrBgpAttr {
     public rtrBgpAttr attrOrigin = new rtrBgpAttrOrigin();
 
     /**
+     * aspath attribute
+     */
+    public rtrBgpAttr attrAsPath = new rtrBgpAttrAsPath();
+
+    /**
      * layer2 behavior
      */
     public final static int behavDx2 = 0x15;
@@ -87,7 +92,7 @@ public interface rtrBgpAttr {
                 attrOrigin.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrAsPath:
-                parseAsPath(spkr, ntry, pck);
+                attrAsPath.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrNextHop:
                 parseNextHop(ntry, pck);
@@ -176,54 +181,6 @@ public interface rtrBgpAttr {
                 }
                 parseUnknown(ntry, pck);
                 return;
-        }
-    }
-
-    private static void parseAsList(boolean longAs, List<Integer> lst, packHolder pck) {
-        int o = pck.getByte(0);
-        pck.getSkip(1);
-        for (int i = 0; i < o; i++) {
-            int p = 0;
-            if (longAs) {
-                p = pck.msbGetD(0);
-                pck.getSkip(4);
-            } else {
-                p = pck.msbGetW(0);
-                pck.getSkip(2);
-            }
-            lst.add(p);
-        }
-    }
-
-    /**
-     * parse as path attribute
-     *
-     * @param spkr where to signal
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseAsPath(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.pathSeq = new ArrayList<Integer>();
-        ntry.best.pathSet = new ArrayList<Integer>();
-        ntry.best.confSeq = new ArrayList<Integer>();
-        ntry.best.confSet = new ArrayList<Integer>();
-        for (; pck.dataSize() > 0;) {
-            int i = pck.getByte(0);
-            pck.getSkip(1);
-            switch (i) {
-                case 1: // as set
-                    parseAsList(spkr.peer32bitAS, ntry.best.pathSet, pck);
-                    break;
-                case 2: // as seq
-                    parseAsList(spkr.peer32bitAS, ntry.best.pathSeq, pck);
-                    break;
-                case 3: // confed seq
-                    parseAsList(spkr.peer32bitAS, ntry.best.confSeq, pck);
-                    break;
-                case 4: // confed set
-                    parseAsList(spkr.peer32bitAS, ntry.best.pathSet, pck);
-                    break;
-            }
         }
     }
 
@@ -845,50 +802,6 @@ public interface rtrBgpAttr {
             }
             placeAttrib(spkr, blb.flag, blb.type, trg, hlp);
         }
-    }
-
-    private static void placeAsList(boolean longAs, packHolder pck, int typ, List<Integer> lst) {
-        if (lst == null) {
-            return;
-        }
-        int pos = 0;
-        int max = lst.size();
-        for (; pos < max;) {
-            int end = pos + 255;
-            if (end > max) {
-                end = max;
-            }
-            pck.putByte(0, typ);
-            pck.putByte(1, end - pos);
-            pck.putSkip(2);
-            for (; pos < end; pos++) {
-                int i = lst.get(pos);
-                if (longAs) {
-                    pck.msbPutD(0, i);
-                    pck.putSkip(4);
-                } else {
-                    pck.msbPutW(0, tabRouteUtil.asNum16bit(i));
-                    pck.putSkip(2);
-                }
-            }
-        }
-    }
-
-    /**
-     * place as path attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeAsPath(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        hlp.clear();
-        placeAsList(spkr.peer32bitAS, hlp, 3, ntry.best.confSeq); // confed seq
-        placeAsList(spkr.peer32bitAS, hlp, 4, ntry.best.confSet); // confed set
-        placeAsList(spkr.peer32bitAS, hlp, 2, ntry.best.pathSeq); // as seq
-        placeAsList(spkr.peer32bitAS, hlp, 1, ntry.best.pathSet); // as set
-        placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrAsPath, trg, hlp);
     }
 
     /**
@@ -1563,6 +1476,87 @@ class rtrBgpAttrOrigin implements rtrBgpAttr {
         hlp.putByte(0, ntry.best.origin % 3);
         hlp.putSkip(1);
         rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrOrigin, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrAsPath implements rtrBgpAttr {
+
+    private static void parseAsList(boolean longAs, List<Integer> lst, packHolder pck) {
+        int o = pck.getByte(0);
+        pck.getSkip(1);
+        for (int i = 0; i < o; i++) {
+            int p = 0;
+            if (longAs) {
+                p = pck.msbGetD(0);
+                pck.getSkip(4);
+            } else {
+                p = pck.msbGetW(0);
+                pck.getSkip(2);
+            }
+            lst.add(p);
+        }
+    }
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.pathSeq = new ArrayList<Integer>();
+        ntry.best.pathSet = new ArrayList<Integer>();
+        ntry.best.confSeq = new ArrayList<Integer>();
+        ntry.best.confSet = new ArrayList<Integer>();
+        for (; pck.dataSize() > 0;) {
+            int i = pck.getByte(0);
+            pck.getSkip(1);
+            switch (i) {
+                case 1: // as set
+                    parseAsList(spkr.peer32bitAS, ntry.best.pathSet, pck);
+                    break;
+                case 2: // as seq
+                    parseAsList(spkr.peer32bitAS, ntry.best.pathSeq, pck);
+                    break;
+                case 3: // confed seq
+                    parseAsList(spkr.peer32bitAS, ntry.best.confSeq, pck);
+                    break;
+                case 4: // confed set
+                    parseAsList(spkr.peer32bitAS, ntry.best.pathSet, pck);
+                    break;
+            }
+        }
+    }
+
+    private static void placeAsList(boolean longAs, packHolder pck, int typ, List<Integer> lst) {
+        if (lst == null) {
+            return;
+        }
+        int pos = 0;
+        int max = lst.size();
+        for (; pos < max;) {
+            int end = pos + 255;
+            if (end > max) {
+                end = max;
+            }
+            pck.putByte(0, typ);
+            pck.putByte(1, end - pos);
+            pck.putSkip(2);
+            for (; pos < end; pos++) {
+                int i = lst.get(pos);
+                if (longAs) {
+                    pck.msbPutD(0, i);
+                    pck.putSkip(4);
+                } else {
+                    pck.msbPutW(0, tabRouteUtil.asNum16bit(i));
+                    pck.putSkip(2);
+                }
+            }
+        }
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        hlp.clear();
+        placeAsList(spkr.peer32bitAS, hlp, 3, ntry.best.confSeq); // confed seq
+        placeAsList(spkr.peer32bitAS, hlp, 4, ntry.best.confSet); // confed set
+        placeAsList(spkr.peer32bitAS, hlp, 2, ntry.best.pathSeq); // as seq
+        placeAsList(spkr.peer32bitAS, hlp, 1, ntry.best.pathSet); // as set
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrAsPath, trg, hlp);
     }
 
 }
