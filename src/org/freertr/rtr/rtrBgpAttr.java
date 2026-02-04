@@ -19,13 +19,12 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class rtrBgpAttr {
+public interface rtrBgpAttr {
 
     /**
-     * create instance
+     * origin attribute
      */
-    private rtrBgpAttr() {
-    }
+    public rtrBgpAttr attrOrigin = new rtrBgpAttrOrigin();
 
     /**
      * layer2 behavior
@@ -41,6 +40,25 @@ public class rtrBgpAttr {
      * ipv6 behavior
      */
     public final static int behavDt6 = 0x12;
+
+    /**
+     * read attribute
+     *
+     * @param spkr where to signal
+     * @param ntry table entry
+     * @param pck packet to parse
+     */
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck);
+
+    /**
+     * write attribute
+     *
+     * @param spkr where to signal
+     * @param trg target packet
+     * @param hlp helper packet
+     * @param ntry table entry
+     */
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry);
 
     /**
      * interpret attribute
@@ -66,7 +84,7 @@ public class rtrBgpAttr {
                 parseUnReach(spkr, spkr.currDel, pck);
                 return;
             case rtrBgpUtil.attrOrigin:
-                parseOrigin(ntry, pck);
+                attrOrigin.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrAsPath:
                 parseAsPath(spkr, ntry, pck);
@@ -159,16 +177,6 @@ public class rtrBgpAttr {
                 parseUnknown(ntry, pck);
                 return;
         }
-    }
-
-    /**
-     * parse origin type attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseOrigin(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.origin = pck.getByte(0);
     }
 
     private static void parseAsList(boolean longAs, List<Integer> lst, packHolder pck) {
@@ -837,21 +845,6 @@ public class rtrBgpAttr {
             }
             placeAttrib(spkr, blb.flag, blb.type, trg, hlp);
         }
-    }
-
-    /**
-     * place origin type attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeOrigin(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        hlp.clear();
-        hlp.putByte(0, ntry.best.origin % 3);
-        hlp.putSkip(1);
-        placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrOrigin, trg, hlp);
     }
 
     private static void placeAsList(boolean longAs, packHolder pck, int typ, List<Integer> lst) {
@@ -1555,6 +1548,21 @@ public class rtrBgpAttr {
             rdr.writePrefix(true, hlp, ntry);
         }
         placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrUnReach, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrOrigin implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.origin = pck.getByte(0);
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        hlp.clear();
+        hlp.putByte(0, ntry.best.origin % 3);
+        hlp.putSkip(1);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrOrigin, trg, hlp);
     }
 
 }

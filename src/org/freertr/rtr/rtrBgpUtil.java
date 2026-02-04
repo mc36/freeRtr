@@ -1600,7 +1600,7 @@ public class rtrBgpUtil {
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
         rtrBgpAttr.placeUnknown(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeOrigin(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrOrigin.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeAsPath(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeMetric(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeLocPref(spkr, pck, hlp, ntry);
@@ -1746,7 +1746,7 @@ public class rtrBgpUtil {
     public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
         tabRouteEntry<addrIP> ntry = lst.get(0);
         rtrBgpAttr.placeUnknown(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeOrigin(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrOrigin.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeAsPath(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeMetric(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeLocPref(spkr, pck, hlp, ntry);
