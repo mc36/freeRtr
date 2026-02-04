@@ -167,6 +167,21 @@ public interface rtrBgpAttr {
     public rtrBgpAttr attrOnlyCust = new rtrBgpAttrOnlyCust();
 
     /**
+     * unknown attribute
+     */
+    public rtrBgpAttr attrUnknown = new rtrBgpAttrUnknown();
+
+    /**
+     * reachable attribute
+     */
+    public rtrBgpAttr attrReachable = new rtrBgpAttrReachable();
+
+    /**
+     * unreachable attribute
+     */
+    public rtrBgpAttr attrUnReach = new rtrBgpAttrUnReach();
+
+    /**
      * layer2 behavior
      */
     public final static int behavDx2 = 0x15;
@@ -218,10 +233,10 @@ public interface rtrBgpAttr {
         }
         switch (pck.ETHtype) {
             case rtrBgpUtil.attrReachable:
-                parseReachable(spkr, spkr.currAdd, pck);
+                attrReachable.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrUnReach:
-                parseUnReach(spkr, spkr.currDel, pck);
+                attrUnReach.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrOriginType:
                 attrOriginType.readAttrib(spkr, ntry, pck);
@@ -311,139 +326,8 @@ public interface rtrBgpAttr {
                 attrOnlyCust.readAttrib(spkr, ntry, pck);
                 return;
             default:
-                if (spkr.neigh.unknownsLog) {
-                    logger.info("got unknown (" + pck.ETHtype + ") attribute " + spkr.neigh.peerAddr + " -> " + spkr.neigh.localAddr + " " + pck.dump());
-                }
-                parseUnknown(ntry, pck);
+                attrUnknown.readAttrib(spkr, ntry, pck);
                 return;
-        }
-    }
-
-    /**
-     * parse unknown attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseUnknown(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        if (ntry.best.unknown == null) {
-            ntry.best.unknown = new ArrayList<tabRouteBlob>();
-        }
-        tabRouteBlob blb = new tabRouteBlob();
-        blb.type = pck.ETHtype;
-        blb.flag = pck.ETHcos;
-        blb.data = pck.getCopy();
-        ntry.best.unknown.add(blb);
-    }
-
-    /**
-     * parse reachable attribute
-     *
-     * @param spkr where to signal
-     * @param pfxs prefixes read
-     * @param pck packet to parse
-     */
-    public static void parseReachable(rtrBgpSpeak spkr, List<tabRouteEntry<addrIP>> pfxs, packHolder pck) {
-        int safi = rtrBgpUtil.triplet2safi(pck.msbGetD(0));
-        int idx = spkr.parent.safi2idx(safi);
-        if (idx < 0) {
-            return;
-        }
-        int sfi = safi & rtrBgpUtil.sfiMask;
-        int len = pck.getByte(3);
-        rtrBgpAfi rdr = spkr.parent.safi2rdr[idx];
-        boolean addpath = spkr.addpathRx[idx];
-        boolean oneLab = !spkr.peerMltLab[idx];
-        boolean v6nh = len >= addrIPv6.size;
-        pck.getSkip(4);
-        len = pck.dataSize() - len;
-        addrIP nextHop = null;
-        for (; pck.dataSize() > len;) {
-            if ((sfi == rtrBgpUtil.sfiMplsVpnU) || (sfi == rtrBgpUtil.sfiMplsVpnM) || (sfi == rtrBgpUtil.sfiClsTrnPl)) {
-                pck.getSkip(8); // rd
-            }
-            addrIP adr;
-            if (v6nh) {
-                adr = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv6, pck);
-            } else {
-                adr = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv4, pck);
-            }
-            if (adr == null) {
-                continue;
-            }
-            if (nextHop == null) {
-                nextHop = adr;
-                continue;
-            }
-            if (!v6nh) {
-                addrIPv4 adr4 = adr.toIPv4();
-                if (adr4.isEmpty()) {
-                    continue;
-                }
-            } else {
-                addrIPv6 adr6 = adr.toIPv6();
-                if (adr6.isEmpty()) {
-                    continue;
-                }
-                if (adr6.isLinkLocal()) {
-                    continue;
-                }
-            }
-            nextHop = adr;
-        }
-        pck.setBytesLeft(len);
-        len = pck.getByte(0);
-        pck.getSkip(1);
-        for (int i = 0; i < len; i++) {
-            pck.getSkip(pck.getByte(0) + 1);
-        }
-        int ident = 0;
-        for (; pck.dataSize() > 0;) {
-            if (addpath) {
-                ident = pck.msbGetD(0);
-                pck.getSkip(4);
-            }
-            tabRouteEntry<addrIP> res = rdr.readPrefix(oneLab, pck);
-            if (res == null) {
-                continue;
-            }
-            res.oldDst = idx;
-            res.best.ident = ident;
-            res.best.nextHop = nextHop;
-            pfxs.add(res);
-        }
-    }
-
-    /**
-     * parse unreachable attribute
-     *
-     * @param spkr where to signal
-     * @param pfxs prefixes read
-     * @param pck packet to parse
-     */
-    public static void parseUnReach(rtrBgpSpeak spkr, List<tabRouteEntry<addrIP>> pfxs, packHolder pck) {
-        pck.merge2beg();
-        int safi = rtrBgpUtil.triplet2safi(pck.msbGetD(0));
-        pck.getSkip(3);
-        int idx = spkr.parent.safi2idx(safi);
-        if (idx < 0) {
-            return;
-        }
-        boolean addpath = spkr.addpathRx[idx];
-        rtrBgpAfi rdr = spkr.parent.safi2rdr[idx];
-        int ident = 0;
-        for (; pck.dataSize() > 0;) {
-            if (addpath) {
-                ident = pck.msbGetD(0);
-                pck.getSkip(4);
-            }
-            tabRouteEntry<addrIP> res = rdr.readPrefix(true, pck);
-            if (res == null) {
-                continue;
-            }
-            res.oldDst = idx;
-            res.best.ident = ident;
-            pfxs.add(res);
         }
     }
 
@@ -508,30 +392,6 @@ public interface rtrBgpAttr {
         }
         trg.putCopy(buf, 0, 0, buf.length);
         trg.putSkip(buf.length);
-    }
-
-    /**
-     * place unknown attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeUnknown(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.unknown == null) {
-            return;
-        }
-        for (int i = 0; i < ntry.best.unknown.size(); i++) {
-            tabRouteBlob blb = ntry.best.unknown.get(i);
-            hlp.clear();
-            hlp.putCopy(blb.data, 0, 0, blb.data.length);
-            hlp.putSkip(blb.data.length);
-            if (spkr.neigh.unknownsLog) {
-                logger.info("sent unknown (" + blb.type + ") attribute " + spkr.neigh.peerAddr + " -> " + spkr.neigh.localAddr + " " + hlp.dump());
-            }
-            placeAttrib(spkr, blb.flag, blb.type, trg, hlp);
-        }
     }
 
     /**
@@ -1421,6 +1281,151 @@ class rtrBgpAttrOnlyCust implements rtrBgpAttr {
         hlp.msbPutD(0, ntry.best.onlyCust);
         hlp.putSkip(4);
         rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrOnlyCust, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrUnknown implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        if (spkr.neigh.unknownsLog) {
+            logger.info("got unknown (" + pck.ETHtype + ") attribute " + spkr.neigh.peerAddr + " -> " + spkr.neigh.localAddr + " " + pck.dump());
+        }
+        if (ntry.best.unknown == null) {
+            ntry.best.unknown = new ArrayList<tabRouteBlob>();
+        }
+        tabRouteBlob blb = new tabRouteBlob();
+        blb.type = pck.ETHtype;
+        blb.flag = pck.ETHcos;
+        blb.data = pck.getCopy();
+        ntry.best.unknown.add(blb);
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.unknown == null) {
+            return;
+        }
+        for (int i = 0; i < ntry.best.unknown.size(); i++) {
+            tabRouteBlob blb = ntry.best.unknown.get(i);
+            hlp.clear();
+            hlp.putCopy(blb.data, 0, 0, blb.data.length);
+            hlp.putSkip(blb.data.length);
+            if (spkr.neigh.unknownsLog) {
+                logger.info("sent unknown (" + blb.type + ") attribute " + spkr.neigh.peerAddr + " -> " + spkr.neigh.localAddr + " " + hlp.dump());
+            }
+            rtrBgpAttr.placeAttrib(spkr, blb.flag, blb.type, trg, hlp);
+        }
+    }
+
+}
+
+class rtrBgpAttrReachable implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        int safi = rtrBgpUtil.triplet2safi(pck.msbGetD(0));
+        int idx = spkr.parent.safi2idx(safi);
+        if (idx < 0) {
+            return;
+        }
+        int sfi = safi & rtrBgpUtil.sfiMask;
+        int len = pck.getByte(3);
+        rtrBgpAfi rdr = spkr.parent.safi2rdr[idx];
+        boolean addpath = spkr.addpathRx[idx];
+        boolean oneLab = !spkr.peerMltLab[idx];
+        boolean v6nh = len >= addrIPv6.size;
+        pck.getSkip(4);
+        len = pck.dataSize() - len;
+        addrIP nextHop = null;
+        for (; pck.dataSize() > len;) {
+            if ((sfi == rtrBgpUtil.sfiMplsVpnU) || (sfi == rtrBgpUtil.sfiMplsVpnM) || (sfi == rtrBgpUtil.sfiClsTrnPl)) {
+                pck.getSkip(8); // rd
+            }
+            addrIP adr;
+            if (v6nh) {
+                adr = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv6, pck);
+            } else {
+                adr = rtrBgpAfi.readAddress(rtrBgpUtil.afiIpv4, pck);
+            }
+            if (adr == null) {
+                continue;
+            }
+            if (nextHop == null) {
+                nextHop = adr;
+                continue;
+            }
+            if (!v6nh) {
+                addrIPv4 adr4 = adr.toIPv4();
+                if (adr4.isEmpty()) {
+                    continue;
+                }
+            } else {
+                addrIPv6 adr6 = adr.toIPv6();
+                if (adr6.isEmpty()) {
+                    continue;
+                }
+                if (adr6.isLinkLocal()) {
+                    continue;
+                }
+            }
+            nextHop = adr;
+        }
+        pck.setBytesLeft(len);
+        len = pck.getByte(0);
+        pck.getSkip(1);
+        for (int i = 0; i < len; i++) {
+            pck.getSkip(pck.getByte(0) + 1);
+        }
+        int ident = 0;
+        for (; pck.dataSize() > 0;) {
+            if (addpath) {
+                ident = pck.msbGetD(0);
+                pck.getSkip(4);
+            }
+            tabRouteEntry<addrIP> res = rdr.readPrefix(oneLab, pck);
+            if (res == null) {
+                continue;
+            }
+            res.oldDst = idx;
+            res.best.ident = ident;
+            res.best.nextHop = nextHop;
+            spkr.currAdd.add(res);
+        }
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+    }
+
+}
+
+class rtrBgpAttrUnReach implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        pck.merge2beg();
+        int safi = rtrBgpUtil.triplet2safi(pck.msbGetD(0));
+        pck.getSkip(3);
+        int idx = spkr.parent.safi2idx(safi);
+        if (idx < 0) {
+            return;
+        }
+        boolean addpath = spkr.addpathRx[idx];
+        rtrBgpAfi rdr = spkr.parent.safi2rdr[idx];
+        int ident = 0;
+        for (; pck.dataSize() > 0;) {
+            if (addpath) {
+                ident = pck.msbGetD(0);
+                pck.getSkip(4);
+            }
+            tabRouteEntry<addrIP> res = rdr.readPrefix(true, pck);
+            if (res == null) {
+                continue;
+            }
+            res.oldDst = idx;
+            res.best.ident = ident;
+            spkr.currDel.add(res);
+        }
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
     }
 
 }

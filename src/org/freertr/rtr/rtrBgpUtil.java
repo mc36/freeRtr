@@ -1599,7 +1599,7 @@ public class rtrBgpUtil {
     public static void encodeAttribSet(rtrBgpSpeak spkr, int idx, int as, tabRouteEntry<addrIP> ntry) {
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
-        rtrBgpAttr.placeUnknown(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrUnknown.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrOriginType.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAsPath.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrMetric.writeAttrib(spkr, pck, hlp, ntry);
@@ -1745,7 +1745,7 @@ public class rtrBgpUtil {
      */
     public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
         tabRouteEntry<addrIP> ntry = lst.get(0);
-        rtrBgpAttr.placeUnknown(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrUnknown.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrOriginType.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAsPath.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrMetric.writeAttrib(spkr, pck, hlp, ntry);
