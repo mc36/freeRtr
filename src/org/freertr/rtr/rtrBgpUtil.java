@@ -845,7 +845,7 @@ public class rtrBgpUtil {
     /**
      * domain path
      */
-    public final static int attrDomPath = 36;
+    public final static int attrDomainPath = 36;
 
     /**
      * nsh service chains
@@ -1082,7 +1082,7 @@ public class rtrBgpUtil {
             case attrPeDistLab:
             case attrPathLimit:
             case attrNshChain:
-            case attrDomPath:
+            case attrDomainPath:
             case attrBfdDisc:
             case attrHopCapa:
             case attrStdComm:
@@ -1209,7 +1209,7 @@ public class rtrBgpUtil {
                 return "commCont";
             case attrOnlyCust:
                 return "onlyCust";
-            case attrDomPath:
+            case attrDomainPath:
                 return "domPath";
             case attrHopCapa:
                 return "hopCapa";
@@ -1614,19 +1614,19 @@ public class rtrBgpUtil {
         rtrBgpAttr.attrExtComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrLrgComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrOriginator.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeClustList(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrClustList.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrTraffEng.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAccIgp.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrPmsiTun.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrTunEnc.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrLinkState.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeOnlyCust(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placePrefSid(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeBier(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeNshChain(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeDomainPath(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeBfdDiscr(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeHopCapa(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrOnlyCust.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrPrefSid.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrBier.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrNshChain.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrDomainPath.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrBfdDisc.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrHopCapa.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAttribSet.writeAttrib(spkr, pck, hlp, ntry);
         pck.merge2beg();
         ntry.best.attribAs = as;
@@ -1760,19 +1760,19 @@ public class rtrBgpUtil {
         rtrBgpAttr.attrExtComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrLrgComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrOriginator.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeClustList(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrClustList.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrTraffEng.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAccIgp.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrPmsiTun.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrTunEnc.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrLinkState.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeOnlyCust(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placePrefSid(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeBier(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeNshChain(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeDomainPath(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeBfdDiscr(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeHopCapa(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrOnlyCust.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrPrefSid.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrBier.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrNshChain.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrDomainPath.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrBfdDisc.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrHopCapa.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAttribSet.writeAttrib(spkr, pck, hlp, ntry);
         if (spkr.parent.idx2safi[idx] != safiIp4uni) {
             rtrBgpAttr.placeReachable(spkr, idx, addpath, pck, hlp, lst);

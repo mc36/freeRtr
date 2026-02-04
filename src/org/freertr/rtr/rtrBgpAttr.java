@@ -127,6 +127,46 @@ public interface rtrBgpAttr {
     public rtrBgpAttr attrAttribSet = new rtrBgpAttrAttribSet();
 
     /**
+     * nsh chain attribute
+     */
+    public rtrBgpAttr attrNshChain = new rtrBgpAttrNshChain();
+
+    /**
+     * domain path attribute
+     */
+    public rtrBgpAttr attrDomainPath = new rtrBgpAttrDomainPath();
+
+    /**
+     * bfd discriminator attribute
+     */
+    public rtrBgpAttr attrBfdDisc = new rtrBgpAttrBfdDisc();
+
+    /**
+     * hop capabilities attribute
+     */
+    public rtrBgpAttr attrHopCapa = new rtrBgpAttrHopCapa();
+
+    /**
+     * prefix sid attribute
+     */
+    public rtrBgpAttr attrPrefSid = new rtrBgpAttrPrefSid();
+
+    /**
+     * bier attribute
+     */
+    public rtrBgpAttr attrBier = new rtrBgpAttrBier();
+
+    /**
+     * cluster list attribute
+     */
+    public rtrBgpAttr attrClustList = new rtrBgpAttrClustList();
+
+    /**
+     * only to customer attribute
+     */
+    public rtrBgpAttr attrOnlyCust = new rtrBgpAttrOnlyCust();
+
+    /**
      * layer2 behavior
      */
     public final static int behavDx2 = 0x15;
@@ -247,28 +287,28 @@ public interface rtrBgpAttr {
                 attrAttribSet.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrNshChain:
-                parseNshChain(ntry, pck);
+                attrNshChain.readAttrib(spkr, ntry, pck);
                 return;
-            case rtrBgpUtil.attrDomPath:
-                parseDomainPath(ntry, pck);
+            case rtrBgpUtil.attrDomainPath:
+                attrDomainPath.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrBfdDisc:
-                parseBfdDiscr(ntry, pck);
+                attrBfdDisc.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrHopCapa:
-                parseHopCapa(ntry, pck);
+                attrHopCapa.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrPrefSid:
-                parsePrefSid(ntry, pck);
+                attrPrefSid.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrBier:
-                parseBier(ntry, pck);
+                attrBier.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrClustList:
-                parseClustList(ntry, pck);
+                attrClustList.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrOnlyCust:
-                parseOnlyCust(ntry, pck);
+                attrOnlyCust.readAttrib(spkr, ntry, pck);
                 return;
             default:
                 if (spkr.neigh.unknownsLog) {
@@ -277,147 +317,6 @@ public interface rtrBgpAttr {
                 parseUnknown(ntry, pck);
                 return;
         }
-    }
-
-    /**
-     * parse nsh service chain attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseNshChain(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.nshChain = pck.getCopy();
-    }
-
-    /**
-     * parse domain path attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseDomainPath(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.domainPath = pck.getCopy();
-    }
-
-    /**
-     * parse bfd discriminator attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseBfdDiscr(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.bfdDiscr = pck.getCopy();
-    }
-
-    /**
-     * parse next hop capabilities attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseHopCapa(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.hopCapa = pck.getCopy();
-    }
-
-    /**
-     * parse prefix sid attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parsePrefSid(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        encTlv tlv = rtrBgpUtil.getPrefSidTlv();
-        for (;;) {
-            if (tlv.getBytes(pck)) {
-                break;
-            }
-            switch (tlv.valTyp) {
-                case 1: // label index
-                    ntry.best.segrouIdx = bits.msbGetD(tlv.valDat, 3); // index
-                    break;
-                case 3: // srgb
-                    ntry.best.segrouBeg = bits.msbGetD(tlv.valDat, 2) >>> 8; // base
-                    ntry.best.segrouSiz = bits.msbGetD(tlv.valDat, 5) >>> 8; // range
-                    break;
-                case 4: // prefix sid
-                    addrIPv6 adr6 = new addrIPv6();
-                    ntry.best.segrouPrf = new addrIP();
-                    adr6.fromBuf(tlv.valDat, 3);
-                    ntry.best.segrouPrf.fromIPv6addr(adr6);
-                    break;
-                case 5: // layer3 service
-                case 6: // layer2 service
-                    if (tlv.valDat[1] != 1) { // subtlv
-                        break;
-                    }
-                    adr6 = new addrIPv6();
-                    ntry.best.segrouEth = tlv.valTyp == 6;
-                    ntry.best.segrouBeh = bits.msbGetW(tlv.valDat, 22);
-                    ntry.best.segrouPrf = new addrIP();
-                    adr6.fromBuf(tlv.valDat, 5);
-                    ntry.best.segrouPrf.fromIPv6addr(adr6);
-                    if (tlv.valDat[25] != 1) { // sid structure
-                        break;
-                    }
-                    ntry.best.segrouSiz = tlv.valDat[32] & 0xff; // transposition length
-                    ntry.best.segrouOfs = tlv.valDat[33] & 0xff; // transposition offset
-                    break;
-            }
-        }
-    }
-
-    /**
-     * parse bier attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseBier(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        encTlv tlv = rtrBgpUtil.getBierTlv();
-        for (;;) {
-            if (tlv.getBytes(pck)) {
-                break;
-            }
-            switch (tlv.valTyp) {
-                case 1: // bier
-                    ntry.best.bierSub = tlv.valDat[0]; // subdomain
-                    ntry.best.bierIdx = bits.msbGetW(tlv.valDat, 1); // bfr id
-                    break;
-                case 2: // mpls
-                    ntry.best.bierBeg = bits.msbGetD(tlv.valDat, 0) & 0xfffff; // base
-                    ntry.best.bierSiz = tlv.valDat[0] & 0xff; // range
-                    ntry.best.bierHdr = (tlv.valDat[1] >>> 4) & 0xf; // bsl
-                    break;
-            }
-        }
-    }
-
-    /**
-     * parse cluster list attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseClustList(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.clustList = new ArrayList<addrIP>();
-        for (; pck.dataSize() >= 4;) {
-            addrIPv4 as = new addrIPv4();
-            pck.getAddr(as, 0);
-            pck.getSkip(addrIPv4.size);
-            addrIP ax = new addrIP();
-            ax.fromIPv4addr(as);
-            ntry.best.clustList.add(ax);
-        }
-    }
-
-    /**
-     * parse only to customer attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseOnlyCust(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.onlyCust = pck.msbGetD(0);
     }
 
     /**
@@ -636,190 +535,6 @@ public interface rtrBgpAttr {
     }
 
     /**
-     * place nsh chain attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeNshChain(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.nshChain == null) {
-            return;
-        }
-        hlp.clear();
-        hlp.putCopy(ntry.best.nshChain, 0, 0, ntry.best.nshChain.length);
-        hlp.putSkip(ntry.best.nshChain.length);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrNshChain, trg, hlp);
-    }
-
-    /**
-     * place domain path attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeDomainPath(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.domainPath == null) {
-            return;
-        }
-        hlp.clear();
-        hlp.putCopy(ntry.best.domainPath, 0, 0, ntry.best.domainPath.length);
-        hlp.putSkip(ntry.best.domainPath.length);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrDomPath, trg, hlp);
-    }
-
-    /**
-     * place bfd discr attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeBfdDiscr(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.bfdDiscr == null) {
-            return;
-        }
-        hlp.clear();
-        hlp.putCopy(ntry.best.bfdDiscr, 0, 0, ntry.best.bfdDiscr.length);
-        hlp.putSkip(ntry.best.bfdDiscr.length);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrHopCapa, trg, hlp);
-    }
-
-    /**
-     * place hop capability attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeHopCapa(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.hopCapa == null) {
-            return;
-        }
-        hlp.clear();
-        hlp.putCopy(ntry.best.hopCapa, 0, 0, ntry.best.hopCapa.length);
-        hlp.putSkip(ntry.best.hopCapa.length);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrBfdDisc, trg, hlp);
-    }
-
-    /**
-     * place prefix sid attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placePrefSid(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        hlp.clear();
-        encTlv tlv = rtrBgpUtil.getPrefSidTlv();
-        if (ntry.best.segrouIdx != 0) {
-            tlv.valDat[0] = 0; // reserved
-            bits.msbPutW(tlv.valDat, 1, 0); // flags
-            bits.msbPutD(tlv.valDat, 3, ntry.best.segrouIdx); // index
-            tlv.putBytes(hlp, 1, 7, tlv.valDat);
-        }
-        if (ntry.best.segrouSiz != 0) {
-            bits.msbPutW(tlv.valDat, 0, 0); // flags
-            bits.msbPutD(tlv.valDat, 2, ntry.best.segrouBeg << 8); // base
-            bits.msbPutD(tlv.valDat, 5, ntry.best.segrouSiz << 8); // range
-            tlv.putBytes(hlp, 3, 8, tlv.valDat);
-        }
-        if (ntry.best.segrouPrf != null) {
-            tlv.valDat[0] = 0; // reserved
-            tlv.valDat[1] = 1; // subtlv type
-            bits.msbPutW(tlv.valDat, 2, 30); // size
-            tlv.valDat[4] = 0; // reserved
-            ntry.best.segrouPrf.toIPv6().toBuffer(tlv.valDat, 5);
-            tlv.valDat[21] = 0; // sid flags
-            bits.msbPutW(tlv.valDat, 22, ntry.best.segrouBeh); // behavior
-            tlv.valDat[24] = 0; // reserved
-            tlv.valDat[25] = 1; // sid structure
-            bits.msbPutW(tlv.valDat, 26, 6); // subsubtlv length
-            tlv.valDat[28] = 32; // locator block length
-            tlv.valDat[29] = 16; // locator node length
-            tlv.valDat[30] = 16; // locator function length
-            tlv.valDat[31] = 0; // locator argument length
-            tlv.valDat[32] = (byte) ntry.best.segrouSiz; // transposition length
-            tlv.valDat[33] = (byte) ntry.best.segrouOfs; // transposition offset
-            tlv.putBytes(hlp, ntry.best.segrouEth ? 6 : 5, 34, tlv.valDat);
-        }
-        if (hlp.headSize() < 1) {
-            return;
-        }
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrPrefSid, trg, hlp);
-    }
-
-    /**
-     * place bier attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeBier(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.bierIdx == 0) {
-            return;
-        }
-        hlp.clear();
-        encTlv tlv = rtrBgpUtil.getBierTlv();
-        tlv.valDat[0] = (byte) ntry.best.bierSub; // subdomain
-        bits.msbPutW(tlv.valDat, 1, ntry.best.bierIdx); // bfr id
-        tlv.putBytes(hlp, 1, 4, tlv.valDat);
-        if (ntry.best.bierSiz != 0) {
-            bits.msbPutD(tlv.valDat, 0, ntry.best.bierBeg); // base + bsl
-            tlv.valDat[1] |= (byte) (ntry.best.bierHdr << 4); // bsl
-            tlv.valDat[0] = (byte) ntry.best.bierSiz; // range
-            tlv.putBytes(hlp, 2, 4, tlv.valDat);
-        }
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrBier, trg, hlp);
-    }
-
-    /**
-     * place cluster list attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeClustList(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.clustList == null) {
-            return;
-        }
-        hlp.clear();
-        for (int i = 0; i < ntry.best.clustList.size(); i++) {
-            hlp.putAddr(0, ntry.best.clustList.get(i).toIPv4());
-            hlp.putSkip(addrIPv4.size);
-        }
-        placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrClustList, trg, hlp);
-    }
-
-    /**
-     * place only to customer attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeOnlyCust(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.onlyCust == 0) {
-            return;
-        }
-        hlp.clear();
-        hlp.msbPutD(0, ntry.best.onlyCust);
-        hlp.putSkip(4);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrOnlyCust, trg, hlp);
-    }
-
-    /**
      * place reachable attribute
      *
      * @param spkr where to signal
@@ -1022,11 +737,10 @@ class rtrBgpAttrMetric implements rtrBgpAttr {
 class rtrBgpAttrNextHop implements rtrBgpAttr {
 
     public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        addrIPv4 as = new addrIPv4();
-        pck.getAddr(as, 0);
-        addrIP ax = new addrIP();
-        ax.fromIPv4addr(as);
-        ntry.best.nextHop = ax;
+        addrIPv4 adr = new addrIPv4();
+        pck.getAddr(adr, 0);
+        ntry.best.nextHop = new addrIP();
+        ntry.best.nextHop.fromIPv4addr(adr);
     }
 
     public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
@@ -1462,6 +1176,251 @@ class rtrBgpAttrAttribSet implements rtrBgpAttr {
         hlp.putCopy(ntry.best.attribVal, 0, 0, ntry.best.attribVal.length);
         hlp.putSkip(ntry.best.attribVal.length);
         rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrAttribSet, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrNshChain implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.nshChain = pck.getCopy();
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.nshChain == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.nshChain, 0, 0, ntry.best.nshChain.length);
+        hlp.putSkip(ntry.best.nshChain.length);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrNshChain, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrDomainPath implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.domainPath = pck.getCopy();
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.domainPath == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.domainPath, 0, 0, ntry.best.domainPath.length);
+        hlp.putSkip(ntry.best.domainPath.length);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrDomainPath, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrBfdDisc implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.bfdDiscr = pck.getCopy();
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.bfdDiscr == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.bfdDiscr, 0, 0, ntry.best.bfdDiscr.length);
+        hlp.putSkip(ntry.best.bfdDiscr.length);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrHopCapa, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrHopCapa implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.hopCapa = pck.getCopy();
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.hopCapa == null) {
+            return;
+        }
+        hlp.clear();
+        hlp.putCopy(ntry.best.hopCapa, 0, 0, ntry.best.hopCapa.length);
+        hlp.putSkip(ntry.best.hopCapa.length);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrBfdDisc, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrPrefSid implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        encTlv tlv = rtrBgpUtil.getPrefSidTlv();
+        for (;;) {
+            if (tlv.getBytes(pck)) {
+                break;
+            }
+            switch (tlv.valTyp) {
+                case 1: // label index
+                    ntry.best.segrouIdx = bits.msbGetD(tlv.valDat, 3); // index
+                    break;
+                case 3: // srgb
+                    ntry.best.segrouBeg = bits.msbGetD(tlv.valDat, 2) >>> 8; // base
+                    ntry.best.segrouSiz = bits.msbGetD(tlv.valDat, 5) >>> 8; // range
+                    break;
+                case 4: // prefix sid
+                    addrIPv6 adr6 = new addrIPv6();
+                    ntry.best.segrouPrf = new addrIP();
+                    adr6.fromBuf(tlv.valDat, 3);
+                    ntry.best.segrouPrf.fromIPv6addr(adr6);
+                    break;
+                case 5: // layer3 service
+                case 6: // layer2 service
+                    if (tlv.valDat[1] != 1) { // subtlv
+                        break;
+                    }
+                    adr6 = new addrIPv6();
+                    ntry.best.segrouEth = tlv.valTyp == 6;
+                    ntry.best.segrouBeh = bits.msbGetW(tlv.valDat, 22);
+                    ntry.best.segrouPrf = new addrIP();
+                    adr6.fromBuf(tlv.valDat, 5);
+                    ntry.best.segrouPrf.fromIPv6addr(adr6);
+                    if (tlv.valDat[25] != 1) { // sid structure
+                        break;
+                    }
+                    ntry.best.segrouSiz = tlv.valDat[32] & 0xff; // transposition length
+                    ntry.best.segrouOfs = tlv.valDat[33] & 0xff; // transposition offset
+                    break;
+            }
+        }
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        hlp.clear();
+        encTlv tlv = rtrBgpUtil.getPrefSidTlv();
+        if (ntry.best.segrouIdx != 0) {
+            tlv.valDat[0] = 0; // reserved
+            bits.msbPutW(tlv.valDat, 1, 0); // flags
+            bits.msbPutD(tlv.valDat, 3, ntry.best.segrouIdx); // index
+            tlv.putBytes(hlp, 1, 7, tlv.valDat);
+        }
+        if (ntry.best.segrouSiz != 0) {
+            bits.msbPutW(tlv.valDat, 0, 0); // flags
+            bits.msbPutD(tlv.valDat, 2, ntry.best.segrouBeg << 8); // base
+            bits.msbPutD(tlv.valDat, 5, ntry.best.segrouSiz << 8); // range
+            tlv.putBytes(hlp, 3, 8, tlv.valDat);
+        }
+        if (ntry.best.segrouPrf != null) {
+            tlv.valDat[0] = 0; // reserved
+            tlv.valDat[1] = 1; // subtlv type
+            bits.msbPutW(tlv.valDat, 2, 30); // size
+            tlv.valDat[4] = 0; // reserved
+            ntry.best.segrouPrf.toIPv6().toBuffer(tlv.valDat, 5);
+            tlv.valDat[21] = 0; // sid flags
+            bits.msbPutW(tlv.valDat, 22, ntry.best.segrouBeh); // behavior
+            tlv.valDat[24] = 0; // reserved
+            tlv.valDat[25] = 1; // sid structure
+            bits.msbPutW(tlv.valDat, 26, 6); // subsubtlv length
+            tlv.valDat[28] = 32; // locator block length
+            tlv.valDat[29] = 16; // locator node length
+            tlv.valDat[30] = 16; // locator function length
+            tlv.valDat[31] = 0; // locator argument length
+            tlv.valDat[32] = (byte) ntry.best.segrouSiz; // transposition length
+            tlv.valDat[33] = (byte) ntry.best.segrouOfs; // transposition offset
+            tlv.putBytes(hlp, ntry.best.segrouEth ? 6 : 5, 34, tlv.valDat);
+        }
+        if (hlp.headSize() < 1) {
+            return;
+        }
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrPrefSid, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrBier implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        encTlv tlv = rtrBgpUtil.getBierTlv();
+        for (;;) {
+            if (tlv.getBytes(pck)) {
+                break;
+            }
+            switch (tlv.valTyp) {
+                case 1: // bier
+                    ntry.best.bierSub = tlv.valDat[0]; // subdomain
+                    ntry.best.bierIdx = bits.msbGetW(tlv.valDat, 1); // bfr id
+                    break;
+                case 2: // mpls
+                    ntry.best.bierBeg = bits.msbGetD(tlv.valDat, 0) & 0xfffff; // base
+                    ntry.best.bierSiz = tlv.valDat[0] & 0xff; // range
+                    ntry.best.bierHdr = (tlv.valDat[1] >>> 4) & 0xf; // bsl
+                    break;
+            }
+        }
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.bierIdx == 0) {
+            return;
+        }
+        hlp.clear();
+        encTlv tlv = rtrBgpUtil.getBierTlv();
+        tlv.valDat[0] = (byte) ntry.best.bierSub; // subdomain
+        bits.msbPutW(tlv.valDat, 1, ntry.best.bierIdx); // bfr id
+        tlv.putBytes(hlp, 1, 4, tlv.valDat);
+        if (ntry.best.bierSiz != 0) {
+            bits.msbPutD(tlv.valDat, 0, ntry.best.bierBeg); // base + bsl
+            tlv.valDat[1] |= (byte) (ntry.best.bierHdr << 4); // bsl
+            tlv.valDat[0] = (byte) ntry.best.bierSiz; // range
+            tlv.putBytes(hlp, 2, 4, tlv.valDat);
+        }
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrBier, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrClustList implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.clustList = new ArrayList<addrIP>();
+        for (; pck.dataSize() >= 4;) {
+            addrIPv4 adr4 = new addrIPv4();
+            pck.getAddr(adr4, 0);
+            pck.getSkip(addrIPv4.size);
+            addrIP addr = new addrIP();
+            addr.fromIPv4addr(adr4);
+            ntry.best.clustList.add(addr);
+        }
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.clustList == null) {
+            return;
+        }
+        hlp.clear();
+        for (int i = 0; i < ntry.best.clustList.size(); i++) {
+            hlp.putAddr(0, ntry.best.clustList.get(i).toIPv4());
+            hlp.putSkip(addrIPv4.size);
+        }
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrClustList, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrOnlyCust implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.onlyCust = pck.msbGetD(0);
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.onlyCust == 0) {
+            return;
+        }
+        hlp.clear();
+        hlp.msbPutD(0, ntry.best.onlyCust);
+        hlp.putSkip(4);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrOnlyCust, trg, hlp);
     }
 
 }
