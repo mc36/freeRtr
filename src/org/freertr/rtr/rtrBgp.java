@@ -562,6 +562,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     private static rtrBgpAfi[] bgp6safis;
 
     /**
+     * attribute reader
+     */
+    protected static rtrBgpAttr[] bgpAttrs;
+
+    /**
      * create bgp process
      *
      * @param forwarder forwarder to update
@@ -686,7 +691,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             bgp6idxes = a;
         }
         if (bgp4safis == null) {
-            rtrBgpAfi[] a = new rtrBgpAfi[origntd.length];;
+            rtrBgpAfi[] a = new rtrBgpAfi[origntd.length];
             a[rtrBgpParam.idxUni] = rtrBgpAfi.ipv4uni;
             a[rtrBgpParam.idxLab] = rtrBgpAfi.ipv4lab;
             a[rtrBgpParam.idxCtp] = rtrBgpAfi.vpnv4uni;
@@ -728,7 +733,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             bgp4safis = a;
         }
         if (bgp6safis == null) {
-            rtrBgpAfi[] a = new rtrBgpAfi[origntd.length];;
+            rtrBgpAfi[] a = new rtrBgpAfi[origntd.length];
             a[rtrBgpParam.idxUni] = rtrBgpAfi.ipv6uni;
             a[rtrBgpParam.idxLab] = rtrBgpAfi.ipv6lab;
             a[rtrBgpParam.idxCtp] = rtrBgpAfi.vpnv6uni;
@@ -768,6 +773,44 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a[rtrBgpParam.idxMtre] = rtrBgpAfi.mvpn;
             a[rtrBgpParam.idxMtro] = rtrBgpAfi.mvpn;
             bgp6safis = a;
+        }
+        if (bgpAttrs == null) {
+            rtrBgpAttr[] a = new rtrBgpAttr[256];
+            for (int i = 0; i < a.length; i++) {
+                a[i] = rtrBgpAttr.attrUnknown;
+            }
+            a[rtrBgpUtil.attrReachable] = rtrBgpAttr.attrReachable;
+            a[rtrBgpUtil.attrUnReach] = rtrBgpAttr.attrUnReach;
+            a[rtrBgpUtil.attrOriginType] = rtrBgpAttr.attrOriginType;
+            a[rtrBgpUtil.attrAsPath] = rtrBgpAttr.attrAsPath;
+            a[rtrBgpUtil.attrNextHop] = rtrBgpAttr.attrNextHop;
+            a[rtrBgpUtil.attrMetric] = rtrBgpAttr.attrMetric;
+            a[rtrBgpUtil.attrLocPref] = rtrBgpAttr.attrLocPref;
+            a[rtrBgpUtil.attrAtomicAggr] = rtrBgpAttr.attrAtomicAggr;
+            a[rtrBgpUtil.attrEntropyLab] = rtrBgpAttr.attrEntropyLab;
+            a[rtrBgpUtil.attrAggregator] = rtrBgpAttr.attrAggregator;
+            a[rtrBgpUtil.attrConnector] = rtrBgpAttr.attrConnector;
+            a[rtrBgpUtil.attrPathLimit] = rtrBgpAttr.attrPathLimit;
+            a[rtrBgpUtil.attrPeDistLab] = rtrBgpAttr.attrPeDistLab;
+            a[rtrBgpUtil.attrStdComm] = rtrBgpAttr.attrStdComm;
+            a[rtrBgpUtil.attrExtComm] = rtrBgpAttr.attrExtComm;
+            a[rtrBgpUtil.attrLrgComm] = rtrBgpAttr.attrLrgComm;
+            a[rtrBgpUtil.attrOriginator] = rtrBgpAttr.attrOriginator;
+            a[rtrBgpUtil.attrTraffEng] = rtrBgpAttr.attrTraffEng;
+            a[rtrBgpUtil.attrAccIgp] = rtrBgpAttr.attrAccIgp;
+            a[rtrBgpUtil.attrPmsiTun] = rtrBgpAttr.attrPmsiTun;
+            a[rtrBgpUtil.attrLinkState] = rtrBgpAttr.attrLinkState;
+            a[rtrBgpUtil.attrTunEnc] = rtrBgpAttr.attrTunEnc;
+            a[rtrBgpUtil.attrAttribSet] = rtrBgpAttr.attrAttribSet;
+            a[rtrBgpUtil.attrNshChain] = rtrBgpAttr.attrNshChain;
+            a[rtrBgpUtil.attrDomainPath] = rtrBgpAttr.attrDomainPath;
+            a[rtrBgpUtil.attrBfdDisc] = rtrBgpAttr.attrBfdDisc;
+            a[rtrBgpUtil.attrHopCapa] = rtrBgpAttr.attrHopCapa;
+            a[rtrBgpUtil.attrPrefSid] = rtrBgpAttr.attrPrefSid;
+            a[rtrBgpUtil.attrBier] = rtrBgpAttr.attrBier;
+            a[rtrBgpUtil.attrClustList] = rtrBgpAttr.attrClustList;
+            a[rtrBgpUtil.attrOnlyCust] = rtrBgpAttr.attrOnlyCust;
+            bgpAttrs = a;
         }
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
