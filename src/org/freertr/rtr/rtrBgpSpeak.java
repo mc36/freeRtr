@@ -113,6 +113,16 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
     public int currChg;
 
     /**
+     * currently advertised prefixes
+     */
+    protected final List<tabRouteEntry<addrIP>> currAdd;
+
+    /**
+     * currently withdrawn prefixes
+     */
+    protected final List<tabRouteEntry<addrIP>> currDel;
+
+    /**
      * addpath beginning
      */
     private int addpathBeg;
@@ -336,6 +346,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
      * @param res resume, 0=disabled, 1=normal, 2=resume
      */
     public rtrBgpSpeak(rtrBgp protocol, rtrBgpNeigh neighbor, pipeSide socket, int res) {
+        currAdd = new ArrayList<tabRouteEntry<addrIP>>();
+        currDel = new ArrayList<tabRouteEntry<addrIP>>();
         learnt = rtrBgpParam.freshTables();
         advert = rtrBgpParam.freshTables();
         contPos = new int[advert.length];
@@ -1664,8 +1676,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         if (prt < 0) {
             return true;
         }
-        List<tabRouteEntry<addrIP>> currAdd = new ArrayList<tabRouteEntry<addrIP>>();
-        List<tabRouteEntry<addrIP>> currDel = new ArrayList<tabRouteEntry<addrIP>>();
+        currAdd.clear();
+        currDel.clear();
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.best.rouTyp = neigh.lower.rouTyp;
         ntry.best.protoNum = neigh.lower.rtrNum;
