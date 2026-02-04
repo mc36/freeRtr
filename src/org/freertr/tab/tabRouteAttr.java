@@ -361,7 +361,7 @@ public class tabRouteAttr<T extends addrType> {
     /**
      * origin type
      */
-    public int origin;
+    public int originType;
 
     /**
      * local preference
@@ -629,7 +629,7 @@ public class tabRouteAttr<T extends addrType> {
                 return "N";
             case ospf4:
             case ospf6:
-                switch (ntry.origin) {
+                switch (ntry.originType) {
                     case 109:
                         a += "";
                         break;
@@ -743,7 +743,7 @@ public class tabRouteAttr<T extends addrType> {
         atr.ident = ident;
         atr.hops = hops;
         atr.tag = tag;
-        atr.origin = origin;
+        atr.originType = originType;
         atr.validRoa = validRoa;
         atr.validAspa = validAspa;
         atr.onlyCust = onlyCust;
@@ -1002,7 +1002,7 @@ public class tabRouteAttr<T extends addrType> {
         if (onlyCust != other.onlyCust) {
             return 21;
         }
-        if (origin != other.origin) {
+        if (originType != other.originType) {
             return 22;
         }
         if (locPref != other.locPref) {
@@ -1371,10 +1371,10 @@ public class tabRouteAttr<T extends addrType> {
         if (il > ol) {
             return false;
         }
-        if (imp.origin < origin) {
+        if (imp.originType < originType) {
             return true;
         }
-        if (imp.origin > origin) {
+        if (imp.originType > originType) {
             return false;
         }
         if (imp.metric < metric) {
@@ -1880,7 +1880,7 @@ public class tabRouteAttr<T extends addrType> {
             ntry.oldHop = null;
         }
         if ((ign & 0x4) != 0) {
-            ntry.origin = 0;
+            ntry.originType = 0;
         }
         if ((ign & 0x8) != 0) {
             ntry.metric = 0;
@@ -2056,7 +2056,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "nexthop|" + nextHop);
         lst.add(beg + "original nexthop|" + oldHop);
         lst.add(beg + "route tag|" + tag);
-        lst.add(beg + "origin type|" + origin);
+        lst.add(beg + "origin type|" + originType);
         lst.add(beg + "local preference|" + locPref);
         lst.add(beg + "accumulated igp|" + accIgp);
         lst.add(beg + "bandwidth|" + bandwidth);
@@ -2163,7 +2163,7 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted
      */
     public String toShBgpLast() {
-        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + origin + "/" + metric + "|" + asPathStr();
+        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + originType + "/" + metric + "|" + asPathStr();
     }
 
     /**
@@ -2172,7 +2172,7 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted
      */
     public String toShAsName() {
-        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + origin + "/" + metric + "|" + asNameStr();
+        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + originType + "/" + metric + "|" + asNameStr();
     }
 
     /**
@@ -2181,7 +2181,7 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted
      */
     public String toShAsInfo() {
-        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + origin + "/" + metric + "|" + asInfoStr();
+        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + originType + "/" + metric + "|" + asInfoStr();
     }
 
     /**
@@ -2190,7 +2190,7 @@ public class tabRouteAttr<T extends addrType> {
      * @return converted
      */
     public String toShAsMixed() {
-        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + origin + "/" + metric + "|" + asMixedStr();
+        return "|" + nextHop + "|" + distance + "/" + locPref + "/" + originType + "/" + metric + "|" + asMixedStr();
     }
 
     /**

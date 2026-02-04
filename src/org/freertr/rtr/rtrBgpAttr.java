@@ -22,12 +22,12 @@ import org.freertr.util.logger;
 public interface rtrBgpAttr {
 
     /**
-     * origin attribute
+     * origin type attribute
      */
-    public rtrBgpAttr attrOrigin = new rtrBgpAttrOrigin();
+    public rtrBgpAttr attrOriginType = new rtrBgpAttrOriginType();
 
     /**
-     * aspath attribute
+     * as path attribute
      */
     public rtrBgpAttr attrAsPath = new rtrBgpAttrAsPath();
 
@@ -40,6 +40,11 @@ public interface rtrBgpAttr {
      * next hop attribute
      */
     public rtrBgpAttr attrNextHop = new rtrBgpAttrNextHop();
+
+    /**
+     * local preference attribute
+     */
+    public rtrBgpAttr attrLocPref = new rtrBgpAttrLocPref();
 
     /**
      * layer2 behavior
@@ -98,8 +103,8 @@ public interface rtrBgpAttr {
             case rtrBgpUtil.attrUnReach:
                 parseUnReach(spkr, spkr.currDel, pck);
                 return;
-            case rtrBgpUtil.attrOrigin:
-                attrOrigin.readAttrib(spkr, ntry, pck);
+            case rtrBgpUtil.attrOriginType:
+                attrOriginType.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrAsPath:
                 attrAsPath.readAttrib(spkr, ntry, pck);
@@ -111,7 +116,7 @@ public interface rtrBgpAttr {
                 attrMetric.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrLocPref:
-                parseLocPref(ntry, pck);
+                attrLocPref.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrAtomicAggr:
                 parseAtomicAggr(ntry);
@@ -192,16 +197,6 @@ public interface rtrBgpAttr {
                 parseUnknown(ntry, pck);
                 return;
         }
-    }
-
-    /**
-     * parse local preference attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseLocPref(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.locPref = pck.msbGetD(0);
     }
 
     /**
@@ -788,24 +783,6 @@ public interface rtrBgpAttr {
             }
             placeAttrib(spkr, blb.flag, blb.type, trg, hlp);
         }
-    }
-
-    /**
-     * place local preference attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeLocPref(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.locPref < 1) {
-            return;
-        }
-        hlp.clear();
-        hlp.msbPutD(0, ntry.best.locPref);
-        hlp.putSkip(4);
-        placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrLocPref, trg, hlp);
     }
 
     /**
@@ -1418,17 +1395,17 @@ public interface rtrBgpAttr {
 
 }
 
-class rtrBgpAttrOrigin implements rtrBgpAttr {
+class rtrBgpAttrOriginType implements rtrBgpAttr {
 
     public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.origin = pck.getByte(0);
+        ntry.best.originType = pck.getByte(0);
     }
 
     public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
         hlp.clear();
-        hlp.putByte(0, ntry.best.origin % 3);
+        hlp.putByte(0, ntry.best.originType % 3);
         hlp.putSkip(1);
-        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrOrigin, trg, hlp);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrOriginType, trg, hlp);
     }
 
 }
@@ -1553,6 +1530,24 @@ class rtrBgpAttrNextHop implements rtrBgpAttr {
         hlp.putAddr(0, ntry.best.nextHop.toIPv4());
         hlp.putSkip(addrIPv4.size);
         rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrNextHop, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrLocPref implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.locPref = pck.msbGetD(0);
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.locPref < 1) {
+            return;
+        }
+        hlp.clear();
+        hlp.msbPutD(0, ntry.best.locPref);
+        hlp.putSkip(4);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrLocPref, trg, hlp);
     }
 
 }

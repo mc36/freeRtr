@@ -69,7 +69,7 @@ public class tabRouteUtil {
         t.addLine("set locpref " + attr.locPref);
         t.addLine("set aigp " + attr.accIgp);
         t.addLine("set bandwidth " + attr.bandwidth);
-        t.addLine("set origin " + attr.origin);
+        t.addLine("set origin " + attr.originType);
         t.addLine("set metric " + attr.metric);
         t.addLine("set tag " + attr.tag);
         t.addLine("set segrout " + attr.segrouIdx);
@@ -144,7 +144,7 @@ public class tabRouteUtil {
                 continue;
             }
             if (a.equals("origin")) {
-                attr.origin = bits.str2num(cmd.word());
+                attr.originType = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("metric")) {

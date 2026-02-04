@@ -793,7 +793,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
         if (defOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = addrPrefix.ip6toIP(addrPrefix.defaultRoute6());
-            ntry.best.origin = 111;
+            ntry.best.originType = 111;
             tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.sfiUnicast, 0, ntry, true, roumapInto, roupolInto, prflstInto);
         }
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, rs, lower.routerRedistedU, true, roumapInto, roupolInto, prflstInto);
@@ -802,7 +802,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            createExtLsa(i, ntry.prefix, ntry.best.origin, ntry.best.metric, ntry.best.tag);
+            createExtLsa(i, ntry.prefix, ntry.best.originType, ntry.best.metric, ntry.best.tag);
         }
     }
 
@@ -1083,7 +1083,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
                     pref = new tabRouteEntry<addrIP>();
                     pref.prefix = prf6.prefix;
                     pref.best.metric = met;
-                    pref.best.origin = 110;
+                    pref.best.originType = 110;
                     pref.best.distance = lower.distantSum;
                     pref.best.aggrAs = area;
                     spf.addPref(src, pref, false);
@@ -1098,7 +1098,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
                         pref = new tabRouteEntry<addrIP>();
                         pref.prefix = prf6.prefix;
                         pref.best.metric = prf6.metric;
-                        pref.best.origin = 109;
+                        pref.best.originType = 109;
                         pref.best.distance = lower.distantSum;
                         pref.best.aggrAs = area;
                         spf.addPref(src, pref, false);
@@ -1114,7 +1114,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
                         pref = new tabRouteEntry<addrIP>();
                         pref.prefix = prf6.prefix;
                         pref.best.metric = prf6.metric;
-                        pref.best.origin = 109;
+                        pref.best.originType = 109;
                         pref.best.distance = lower.distantSum;
                         pref.best.aggrAs = area;
                         spf.addPref(src, pref, false);
@@ -1139,10 +1139,10 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
                         pref.best.tag = pck.msbGetD(0); // route tag
                     }
                     if ((o & 0x04000000) != 0) {
-                        pref.best.origin = 112;
+                        pref.best.originType = 112;
                         spf.addPref(src, pref, true);
                     } else {
-                        pref.best.origin = 111;
+                        pref.best.originType = 111;
                         spf.addPref(src, pref, false);
                     }
                     break;

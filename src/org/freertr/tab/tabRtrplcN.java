@@ -875,7 +875,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
             case metric:
                 return intMatch.matches(net.best.metric);
             case origin:
-                return intMatch.matches(net.best.origin);
+                return intMatch.matches(net.best.originType);
             case locpref:
                 return intMatch.matches(net.best.locPref);
             case accigp:
@@ -1031,7 +1031,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 attr.metric = intSet.update(attr.metric);
                 return;
             case setOrigin:
-                attr.origin = intSet.update(attr.origin);
+                attr.originType = intSet.update(attr.originType);
                 return;
             case setLocPref:
                 attr.locPref = intSet.update(attr.locPref);

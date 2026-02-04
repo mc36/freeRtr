@@ -680,7 +680,7 @@ public class rtrBgpUtil {
     /**
      * origin type, 0=igp, 1=egp, 2=incomplete
      */
-    public final static int attrOrigin = 1;
+    public final static int attrOriginType = 1;
 
     /**
      * as path
@@ -1071,7 +1071,7 @@ public class rtrBgpUtil {
      */
     public static boolean isUnknownAttr(int i) {
         switch (i) {
-            case attrOrigin:
+            case attrOriginType:
             case attrAsPath:
             case attrNextHop:
             case attrMetric:
@@ -1143,7 +1143,7 @@ public class rtrBgpUtil {
      */
     public static String attrType2string(int i) {
         switch (i) {
-            case attrOrigin:
+            case attrOriginType:
                 return "origin";
             case attrAsPath:
                 return "aspath";
@@ -1600,10 +1600,10 @@ public class rtrBgpUtil {
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
         rtrBgpAttr.placeUnknown(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrOrigin.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrOriginType.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAsPath.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrMetric.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeLocPref(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrLocPref.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeEntropyLab(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeAtomicAggr(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeAggregator(spkr, pck, hlp, ntry);
@@ -1746,10 +1746,10 @@ public class rtrBgpUtil {
     public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
         tabRouteEntry<addrIP> ntry = lst.get(0);
         rtrBgpAttr.placeUnknown(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrOrigin.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrOriginType.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAsPath.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrMetric.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeLocPref(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrLocPref.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeEntropyLab(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeAtomicAggr(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeAggregator(spkr, pck, hlp, ntry);

@@ -658,7 +658,7 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
         if (defOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = addrPrefix.ip4toIP(addrPrefix.defaultRoute4());
-            ntry.best.origin = 111;
+            ntry.best.originType = 111;
             tabRoute.addUpdatedEntry(tabRoute.addType.better, rs, rtrBgpUtil.sfiUnicast, 0, ntry, true, roumapInto, roupolInto, prflstInto);
         }
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, rs, lower.routerRedistedU, true, roumapInto, roupolInto, prflstInto);
@@ -667,7 +667,7 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
             if (ntry == null) {
                 continue;
             }
-            createExtLsa(addrPrefix.ip2ip4(ntry.prefix), ntry.best.origin, ntry.best.metric, ntry.best.tag);
+            createExtLsa(addrPrefix.ip2ip4(ntry.prefix), ntry.best.originType, ntry.best.metric, ntry.best.tag);
         }
     }
 
@@ -940,7 +940,7 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
                                 pref = new tabRouteEntry<addrIP>();
                                 pref.prefix = addrPrefix.ip4toIP(prf4);
                                 pref.best.metric = met;
-                                pref.best.origin = 109;
+                                pref.best.originType = 109;
                                 pref.best.distance = lower.distantInt;
                                 pref.best.aggrAs = area;
                                 spf.addPref(ntry.rtrID, pref, false);
@@ -956,7 +956,7 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
                     prf4 = new addrPrefix<addrIPv4>(ntry.lsaID, adr4.toNetmask());
                     pref = new tabRouteEntry<addrIP>();
                     pref.prefix = addrPrefix.ip4toIP(prf4);
-                    pref.best.origin = 109;
+                    pref.best.originType = 109;
                     pref.best.distance = lower.distantInt;
                     pref.best.aggrAs = area;
                     spf.addPref(ntry.rtrID, pref, false);
@@ -979,7 +979,7 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
                     pref.prefix = addrPrefix.ip4toIP(prf4);
                     o = pck.msbGetD(4); // metric
                     pref.best.metric = o & 0xffffff;
-                    pref.best.origin = 110;
+                    pref.best.originType = 110;
                     pref.best.distance = lower.distantSum;
                     pref.best.aggrAs = area;
                     spf.addPref(ntry.rtrID, pref, false);
@@ -1000,10 +1000,10 @@ public class rtrOspf4area implements Comparable<rtrOspf4area>, Runnable {
                     pref.best.aggrAs = area;
                     pref.best.tag = pck.msbGetD(12); // route tag
                     if ((o & 0x80000000) != 0) {
-                        pref.best.origin = 112;
+                        pref.best.originType = 112;
                         spf.addPref(ntry.rtrID, pref, true);
                     } else {
-                        pref.best.origin = 111;
+                        pref.best.originType = 111;
                         spf.addPref(ntry.rtrID, pref, false);
                     }
                     break;

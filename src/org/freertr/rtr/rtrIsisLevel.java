@@ -679,13 +679,13 @@ public class rtrIsisLevel implements Runnable {
         if (defOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = lower.getDefaultRoute(false);
-            ntry.best.origin = 1;
+            ntry.best.originType = 1;
             rs.add(tabRoute.addType.better, ntry, false, false);
         }
         if (odefOrigin) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = lower.getDefaultRoute(true);
-            ntry.best.origin = 1;
+            ntry.best.originType = 1;
             os.add(tabRoute.addType.better, ntry, false, false);
         }
         for (int i = 0; i < lower.ifaces.size(); i++) {

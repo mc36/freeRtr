@@ -1699,7 +1699,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (!bandwidthMatch.matches(net.best.bandwidth)) {
             return false;
         }
-        if (!originMatch.matches(net.best.origin)) {
+        if (!originMatch.matches(net.best.originType)) {
             return false;
         }
         if (!metricMatch.matches(net.best.metric)) {
@@ -1951,7 +1951,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         attr.pathAsn = pathAsnSet.update(attr.pathAsn);
         attr.onlyCust = customerSet.update(attr.onlyCust);
         attr.bandwidth = bandwidthSet.update(attr.bandwidth);
-        attr.origin = originSet.update(attr.origin);
+        attr.originType = originSet.update(attr.originType);
         attr.metric = metricSet.update(attr.metric);
         attr.tag = tagSet.update(attr.tag);
         tabRouteUtil.updateLabloc(attr, lablocSet);
