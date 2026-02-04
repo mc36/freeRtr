@@ -1098,6 +1098,7 @@ public class rtrBgpUtil {
             case attrEntropyLab:
             case attrLinkState:
             case attrLrgComm:
+            case attrIpv6comm:
             case attrOnlyCust:
             case attrPrefSid:
             case attrBier:
@@ -1613,6 +1614,7 @@ public class rtrBgpUtil {
         rtrBgpAttr.attrStdComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrExtComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrLrgComm.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrIpv6comm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrOriginator.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrClustList.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrTraffEng.writeAttrib(spkr, pck, hlp, ntry);
@@ -1759,6 +1761,7 @@ public class rtrBgpUtil {
         rtrBgpAttr.attrStdComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrExtComm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrLrgComm.writeAttrib(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrIpv6comm.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrOriginator.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrClustList.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrTraffEng.writeAttrib(spkr, pck, hlp, ntry);

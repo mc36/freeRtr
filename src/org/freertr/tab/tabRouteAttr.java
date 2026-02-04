@@ -509,6 +509,11 @@ public class tabRouteAttr<T extends addrType> {
     public List<tabLargeComm> lrgComm;
 
     /**
+     * ipv6 community values
+     */
+    public List<tabIpv6comm> ip6comm;
+
+    /**
      * unknown attributes
      */
     public List<tabRouteBlob> unknown;
@@ -885,6 +890,14 @@ public class tabRouteAttr<T extends addrType> {
             }
         } else {
             atr.lrgComm = null;
+        }
+        if (ip6comm != null) {
+            atr.ip6comm = new ArrayList<tabIpv6comm>();
+            for (int i = 0; i < ip6comm.size(); i++) {
+                atr.ip6comm.add(ip6comm.get(i).copyBytes());
+            }
+        } else {
+            atr.ip6comm = null;
         }
         if (unknown != null) {
             atr.unknown = new ArrayList<tabRouteBlob>();
@@ -1306,6 +1319,22 @@ public class tabRouteAttr<T extends addrType> {
         } else if (other.lrgComm != null) {
             return 97;
         }
+        if (ip6comm != null) {
+            if (other.ip6comm == null) {
+                return 135;
+            }
+            if (ip6comm.size() != other.ip6comm.size()) {
+                return 136;
+            }
+            for (int i = 0; i < ip6comm.size(); i++) {
+                tabIpv6comm cmp = ip6comm.get(i);
+                if (cmp.compareTo(other.ip6comm.get(i)) != 0) {
+                    return 137;
+                }
+            }
+        } else if (other.ip6comm != null) {
+            return 138;
+        }
         if (unknown != null) {
             if (other.unknown == null) {
                 return 98;
@@ -1596,6 +1625,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, false, lv, new int[]{lv, -1}, "stdcomm", "ignore standard community");
         hl.add(null, false, lv, new int[]{lv, -1}, "extcomm", "ignore extended community");
         hl.add(null, false, lv, new int[]{lv, -1}, "lrgcomm", "ignore large community");
+        hl.add(null, false, lv, new int[]{lv, -1}, "ip6comm", "ignore ipv6 community");
         hl.add(null, false, lv, new int[]{lv, -1}, "unknown", "ignore unknown attribute");
         hl.add(null, false, lv, new int[]{lv, -1}, "sortcomm", "sort communities");
         hl.add(null, false, lv, new int[]{lv, -1}, "lnksta", "ignore link state");
@@ -1733,6 +1763,9 @@ public class tabRouteAttr<T extends addrType> {
         if (a.equals("asset")) {
             return 0x800000000L;
         }
+        if (a.equals("ip6comm")) {
+            return 0x1000000000L;
+        }
         return 0;
     }
 
@@ -1855,6 +1888,9 @@ public class tabRouteAttr<T extends addrType> {
         if ((i & 0x800000000L) != 0) {
             a += " asset";
         }
+        if ((i & 0x1000000000L) != 0) {
+            a += " ip6comm";
+        }
         return a.substring(1, a.length());
     }
 
@@ -1970,6 +2006,9 @@ public class tabRouteAttr<T extends addrType> {
             if (ntry.lrgComm != null) {
                 Collections.sort(ntry.lrgComm);
             }
+            if (ntry.ip6comm != null) {
+                Collections.sort(ntry.ip6comm);
+            }
         }
         if ((ign & 0x1000000) != 0) {
             ntry.linkStat = null;
@@ -1981,6 +2020,7 @@ public class tabRouteAttr<T extends addrType> {
             ntry.extComm = tabRouteUtil.nullEmptyList(ntry.extComm);
             ntry.labelRem = tabRouteUtil.nullEmptyList(ntry.labelRem);
             ntry.lrgComm = tabRouteUtil.nullEmptyList(ntry.lrgComm);
+            ntry.ip6comm = tabRouteUtil.nullEmptyList(ntry.ip6comm);
             ntry.pathSeq = tabRouteUtil.nullEmptyList(ntry.pathSeq);
             ntry.pathSet = tabRouteUtil.nullEmptyList(ntry.pathSet);
             ntry.stdComm = tabRouteUtil.nullEmptyList(ntry.stdComm);
@@ -2018,6 +2058,9 @@ public class tabRouteAttr<T extends addrType> {
         if ((ign & 0x800000000L) != 0) {
             ntry.pathSet = new ArrayList<Integer>();
             ntry.confSet = new ArrayList<Integer>();
+        }
+        if ((ign & 0x1000000000L) != 0) {
+            ntry.ip6comm = null;
         }
     }
 
@@ -2097,6 +2140,7 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "standard community|" + tabRouteUtil.stdComms2string(stdComm));
         lst.add(beg + "extended community|" + tabRouteUtil.extComms2string(extComm));
         lst.add(beg + "large community|" + tabRouteUtil.lrgComms2string(lrgComm));
+        lst.add(beg + "ipv6 community|" + tabRouteUtil.ip6comms2string(ip6comm));
         lst.add(beg + "internal source|" + rouSrc);
         lst.add(beg + "local label|" + labelLoc);
         lst.add(beg + "remote label|" + tabRouteUtil.dumpIntList(labelRem, "", ""));

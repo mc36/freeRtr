@@ -332,6 +332,26 @@ public class tabRouteUtil {
     }
 
     /**
+     * convert large community list to string
+     *
+     * @param l list
+     * @return string
+     */
+    public static String ip6comms2string(List<tabIpv6comm> l) {
+        if (l == null) {
+            return "";
+        }
+        if (l.size() < 1) {
+            return "";
+        }
+        String a = "";
+        for (int i = 0; i < l.size(); i++) {
+            a += " " + l.get(i);
+        }
+        return a.substring(1, a.length());
+    }
+
+    /**
      * convert community to string
      *
      * @param i community to convert

@@ -7,6 +7,7 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
 import org.freertr.enc.encTlv;
 import org.freertr.pack.packHolder;
+import org.freertr.tab.tabIpv6comm;
 import org.freertr.tab.tabLargeComm;
 import org.freertr.tab.tabRouteBlob;
 import org.freertr.tab.tabRouteEntry;
@@ -90,6 +91,11 @@ public interface rtrBgpAttr {
      * large community
      */
     public rtrBgpAttr attrLrgComm = new rtrBgpAttrLrgComm();
+
+    /**
+     * ipv6 community
+     */
+    public rtrBgpAttr attrIpv6comm = new rtrBgpAttrIp6comm();
 
     /**
      * originator attribute
@@ -769,6 +775,40 @@ class rtrBgpAttrLrgComm implements rtrBgpAttr {
             hlp.putSkip(12);
         }
         rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrLrgComm, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrIp6comm implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.ip6comm = new ArrayList<tabIpv6comm>();
+        for (; pck.dataSize() >= 20;) {
+            tabIpv6comm d = new tabIpv6comm();
+            d.typ = pck.msbGetW(0);
+            pck.getAddr(d.adr, 2);
+            d.loc = pck.msbGetD(18);
+            ntry.best.ip6comm.add(d);
+            pck.getSkip(20);
+        }
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.ip6comm == null) {
+            return;
+        }
+        if (ntry.best.ip6comm.size() < 1) {
+            return;
+        }
+        hlp.clear();
+        for (int i = 0; i < ntry.best.ip6comm.size(); i++) {
+            tabIpv6comm d = ntry.best.ip6comm.get(i);
+            hlp.msbPutW(0, d.typ);
+            hlp.putAddr(2, d.adr);
+            hlp.msbPutW(18, d.loc);
+            hlp.putSkip(20);
+        }
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrIpv6comm, trg, hlp);
     }
 
 }

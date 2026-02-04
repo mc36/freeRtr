@@ -795,6 +795,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a[rtrBgpUtil.attrStdComm] = rtrBgpAttr.attrStdComm;
             a[rtrBgpUtil.attrExtComm] = rtrBgpAttr.attrExtComm;
             a[rtrBgpUtil.attrLrgComm] = rtrBgpAttr.attrLrgComm;
+            a[rtrBgpUtil.attrIpv6comm] = rtrBgpAttr.attrIpv6comm;
             a[rtrBgpUtil.attrOriginator] = rtrBgpAttr.attrOriginator;
             a[rtrBgpUtil.attrTraffEng] = rtrBgpAttr.attrTraffEng;
             a[rtrBgpUtil.attrAccIgp] = rtrBgpAttr.attrAccIgp;
