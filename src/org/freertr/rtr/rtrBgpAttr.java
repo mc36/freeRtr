@@ -32,6 +32,11 @@ public interface rtrBgpAttr {
     public rtrBgpAttr attrAsPath = new rtrBgpAttrAsPath();
 
     /**
+     * metric attribute
+     */
+    public rtrBgpAttr attrMetric = new rtrBgpAttrMetric();
+
+    /**
      * layer2 behavior
      */
     public final static int behavDx2 = 0x15;
@@ -98,7 +103,7 @@ public interface rtrBgpAttr {
                 parseNextHop(ntry, pck);
                 return;
             case rtrBgpUtil.attrMetric:
-                parseMetric(ntry, pck);
+                attrMetric.readAttrib(spkr, ntry, pck);
                 return;
             case rtrBgpUtil.attrLocPref:
                 parseLocPref(ntry, pck);
@@ -196,16 +201,6 @@ public interface rtrBgpAttr {
         addrIP ax = new addrIP();
         ax.fromIPv4addr(as);
         ntry.best.nextHop = ax;
-    }
-
-    /**
-     * parse metric attribute
-     *
-     * @param ntry table entry
-     * @param pck packet to parse
-     */
-    public static void parseMetric(tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.metric = pck.msbGetD(0);
     }
 
     /**
@@ -817,24 +812,6 @@ public interface rtrBgpAttr {
         hlp.putAddr(0, ntry.best.nextHop.toIPv4());
         hlp.putSkip(addrIPv4.size);
         placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrNextHop, trg, hlp);
-    }
-
-    /**
-     * place metric attribute
-     *
-     * @param spkr where to signal
-     * @param trg target packet
-     * @param hlp helper packet
-     * @param ntry table entry
-     */
-    public static void placeMetric(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.metric < 1) {
-            return;
-        }
-        hlp.clear();
-        hlp.msbPutD(0, ntry.best.metric);
-        hlp.putSkip(4);
-        placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrMetric, trg, hlp);
     }
 
     /**
@@ -1483,18 +1460,20 @@ class rtrBgpAttrOrigin implements rtrBgpAttr {
 class rtrBgpAttrAsPath implements rtrBgpAttr {
 
     private static void parseAsList(boolean longAs, List<Integer> lst, packHolder pck) {
-        int o = pck.getByte(0);
+        int max = pck.getByte(0);
         pck.getSkip(1);
-        for (int i = 0; i < o; i++) {
-            int p = 0;
-            if (longAs) {
-                p = pck.msbGetD(0);
+        if (longAs) {
+            for (int pos = 0; pos < max; pos++) {
+                int i = pck.msbGetD(0);
                 pck.getSkip(4);
-            } else {
-                p = pck.msbGetW(0);
-                pck.getSkip(2);
+                lst.add(i);
             }
-            lst.add(p);
+            return;
+        }
+        for (int pos = 0; pos < max; pos++) {
+            int i = pck.msbGetW(0);
+            pck.getSkip(2);
+            lst.add(i);
         }
     }
 
@@ -1557,6 +1536,24 @@ class rtrBgpAttrAsPath implements rtrBgpAttr {
         placeAsList(spkr.peer32bitAS, hlp, 2, ntry.best.pathSeq); // as seq
         placeAsList(spkr.peer32bitAS, hlp, 1, ntry.best.pathSet); // as set
         rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagTransitive, rtrBgpUtil.attrAsPath, trg, hlp);
+    }
+
+}
+
+class rtrBgpAttrMetric implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        ntry.best.metric = pck.msbGetD(0);
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.metric < 1) {
+            return;
+        }
+        hlp.clear();
+        hlp.msbPutD(0, ntry.best.metric);
+        hlp.putSkip(4);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional, rtrBgpUtil.attrMetric, trg, hlp);
     }
 
 }

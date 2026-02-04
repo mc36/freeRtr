@@ -1602,7 +1602,7 @@ public class rtrBgpUtil {
         rtrBgpAttr.placeUnknown(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrOrigin.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAsPath.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeMetric(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrMetric.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeLocPref(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeEntropyLab(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeAtomicAggr(spkr, pck, hlp, ntry);
@@ -1748,7 +1748,7 @@ public class rtrBgpUtil {
         rtrBgpAttr.placeUnknown(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrOrigin.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.attrAsPath.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.placeMetric(spkr, pck, hlp, ntry);
+        rtrBgpAttr.attrMetric.writeAttrib(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeLocPref(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeEntropyLab(spkr, pck, hlp, ntry);
         rtrBgpAttr.placeAtomicAggr(spkr, pck, hlp, ntry);
