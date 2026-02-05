@@ -863,6 +863,18 @@ qc pass: p4lang: vlan tcpmss out
 qc pass: p4lang: ttlset out
 qc pass: p4lang: vlan ttlset out
 qc pass: p4lang: qinq ttlset out
+qc pass: p4lang: mspw with bgp
+qc pass: p4lang: vlan mspw with bgp
+qc pass: p4lang: bundle vlan mspw with bgp
+qc pass: p4lang: hairpin mspw with bgp
+qc pass: p4lang: hairpin vlan mspw with bgp
+qc pass: p4lang: qinq mspw with bgp
+qc pass: p4lang: bundle qinq mspw with bgp
+qc pass: p4lang: routed mspw with bgp
+qc pass: p4lang: routed vlan mspw with bgp
+qc pass: p4lang: routed qinq mspw with bgp
+qc pass: p4lang: mspw over backplane
+failed: p4lang: routed mspw over backplane
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

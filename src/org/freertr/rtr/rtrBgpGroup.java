@@ -278,6 +278,9 @@ public class rtrBgpGroup extends rtrBgpParam {
         if ((sendCommunity & 4) == 0) {
             ntry.lrgComm = null;
         }
+        if ((sendCommunity & 8) == 0) {
+            ntry.ip6comm = null;
+        }
         if (!accIgp) {
             ntry.accIgp = 0;
         }
