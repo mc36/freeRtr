@@ -18010,3 +18010,10 @@ qc pass: p4lang: routed qinq mspw with bgp
 ---------------------------------- 2026-02-01 19:13:40 26.2.1
 qc pass: p4lang: mspw over backplane
 qc pass: p4lang: routed mspw over backplane
+---------------------------------- 2026-02-05 21:51:58 26.2.5
+qc pass: bgp routemap filtering with destination prefer
+qc pass: bgp routemap filtering with destination prefer with soft-reconfig
+qc pass: bgp change in destination prefer
+qc pass: bgp change in destination prefer with soft-reconfig
+qc pass: bgp routepolicy filtering with destination prefer
+qc pass: bgp routepolicy filtering with destination prefer with soft-reconfig

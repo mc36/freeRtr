@@ -3732,6 +3732,12 @@ qc pass: mspw mixed over ibgp rr
 qc pass: mspw mixed over confed bgp
 qc pass: mspw mixed over bgp route server
 qc pass: mspw mixed over bgp with soft-reconfig
+qc pass: bgp routemap filtering with destination prefer
+qc pass: bgp routemap filtering with destination prefer with soft-reconfig
+qc pass: bgp change in destination prefer
+qc pass: bgp change in destination prefer with soft-reconfig
+qc pass: bgp routepolicy filtering with destination prefer
+qc pass: bgp routepolicy filtering with destination prefer with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

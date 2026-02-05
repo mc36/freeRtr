@@ -1,5 +1,5 @@
 url;file;udp;dpdk;xdp;bmv2;tofino;test
--;-;-;-;-;-;-;freeRouter v26.2.1-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v26.2.5-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;not ok;ok;ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;not ok;ok;ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;not ok;ok;ok;p4lang: egress access list
@@ -865,3 +865,15 @@ http://sources.freertr.org/cfg/p4lang-rout511.tst;p4lang-rout511.tst;ok;ok;not o
 http://sources.freertr.org/cfg/p4lang-rout512.tst;p4lang-rout512.tst;ok;ok;not ok;not ok;not ok;p4lang: ttlset out
 http://sources.freertr.org/cfg/p4lang-rout513.tst;p4lang-rout513.tst;ok;ok;not ok;not ok;not ok;p4lang: vlan ttlset out
 http://sources.freertr.org/cfg/p4lang-rout514.tst;p4lang-rout514.tst;ok;ok;not ok;not ok;not ok;p4lang: qinq ttlset out
+http://sources.freertr.org/cfg/p4lang-rout515.tst;p4lang-rout515.tst;ok;ok;ok;ok;ok;p4lang: mspw with bgp
+http://sources.freertr.org/cfg/p4lang-rout516.tst;p4lang-rout516.tst;ok;ok;ok;ok;ok;p4lang: vlan mspw with bgp
+http://sources.freertr.org/cfg/p4lang-rout517.tst;p4lang-rout517.tst;ok;ok;ok;ok;ok;p4lang: bundle vlan mspw with bgp
+http://sources.freertr.org/cfg/p4lang-rout518.tst;p4lang-rout518.tst;ok;ok;ok;ok;ok;p4lang: hairpin mspw with bgp
+http://sources.freertr.org/cfg/p4lang-rout519.tst;p4lang-rout519.tst;ok;ok;ok;ok;ok;p4lang: hairpin vlan mspw with bgp
+http://sources.freertr.org/cfg/p4lang-rout520.tst;p4lang-rout520.tst;ok;ok;ok;ok;ok;p4lang: qinq mspw with bgp
+http://sources.freertr.org/cfg/p4lang-rout521.tst;p4lang-rout521.tst;ok;ok;ok;ok;ok;p4lang: bundle qinq mspw with bgp
+http://sources.freertr.org/cfg/p4lang-rout522.tst;p4lang-rout522.tst;ok;ok;ok;ok;ok;p4lang: routed mspw with bgp
+http://sources.freertr.org/cfg/p4lang-rout523.tst;p4lang-rout523.tst;ok;ok;ok;ok;ok;p4lang: routed vlan mspw with bgp
+http://sources.freertr.org/cfg/p4lang-rout524.tst;p4lang-rout524.tst;ok;ok;ok;ok;ok;p4lang: routed qinq mspw with bgp
+http://sources.freertr.org/cfg/p4lang-rout525.tst;p4lang-rout525.tst;ok;ok;ok;ok;ok;p4lang: mspw over backplane
+http://sources.freertr.org/cfg/p4lang-rout526.tst;p4lang-rout526.tst;ok;ok;ok;not ok;ok;p4lang: routed mspw over backplane
