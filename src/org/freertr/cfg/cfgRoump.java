@@ -68,6 +68,7 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match validaspa all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match aggregator all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match customer all", null),
+        new userFilter("route-map .*", cmds.tabulator + "sequence .* match destpref all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match pathlen all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match unknowns all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match asend all", null),
@@ -117,6 +118,7 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set connector null", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set pathlimit leave leave", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set customer leave", null),
+        new userFilter("route-map .*", cmds.tabulator + "sequence .* set destpref leave leave", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set bandwidth leave", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set origin leave", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set metric leave", null),
@@ -236,6 +238,9 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "customer", "match customer");
         l.add(null, false, 3, new int[]{-1}, "<num>", "asn");
+        l.add(null, false, 3, new int[]{-1}, "all", "any value");
+        l.add(null, false, 2, new int[]{3}, "destpref", "match destination preference");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "preference");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "pathlen", "match as path length");
         l.add(null, false, 3, new int[]{-1}, "<num>", "length");
@@ -378,6 +383,13 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         l.add(null, false, 2, new int[]{3}, "customer", "set customer");
         l.add(null, false, 3, new int[]{-1}, "leave", "leave value unchanged");
         l.add(null, false, 3, new int[]{-1}, "<num>", "asn");
+        l.add(null, false, 2, new int[]{3}, "destpref", "set as destination preference");
+        l.add(null, false, 3, new int[]{4}, "leave", "leave value unchanged");
+        l.add(null, false, 4, new int[]{-1}, "leave", "leave value unchanged");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "asn");
+        l.add(null, false, 3, new int[]{4}, "<num>", "preference");
+        l.add(null, false, 4, new int[]{-1}, "leave", "leave value unchanged");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "asn");
         l.add(null, false, 2, new int[]{3}, "bandwidth", "set bandwidth");
         l.add(null, false, 3, new int[]{-1}, "leave", "leave value unchanged");
         l.add(null, false, 3, new int[]{-1}, "<num>", "value");

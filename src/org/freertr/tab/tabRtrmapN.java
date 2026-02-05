@@ -123,6 +123,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabIntMatcher customerMatch = new tabIntMatcher();
 
     /**
+     * destination preference value matcher
+     */
+    public tabIntMatcher destPrefMatch = new tabIntMatcher();
+
+    /**
      * aspath length matched
      */
     public tabIntMatcher pathlenMatch = new tabIntMatcher();
@@ -196,6 +201,16 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
      * customer updater
      */
     public tabIntUpdater customerSet = new tabIntUpdater();
+
+    /**
+     * destination preference value updater
+     */
+    public tabIntUpdater destPrefValSet = new tabIntUpdater();
+
+    /**
+     * destination preference asn updater
+     */
+    public tabIntUpdater destPrefAsnSet = new tabIntUpdater();
 
     /**
      * bandwidth updater
@@ -584,6 +599,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match validaspa " + validAspaMatch);
         l.add(beg + "match aggregator " + aggregatorMatch);
         l.add(beg + "match customer " + customerMatch);
+        l.add(beg + "match destpref " + destPrefMatch);
         l.add(beg + "match pathlen " + pathlenMatch);
         l.add(beg + "match unknowns " + unknownMatch);
         l.add(beg + "match asend " + asendMatch);
@@ -672,6 +688,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set connector " + connectorSet);
         l.add(beg + "set pathlimit " + pathLimSet + " " + pathAsnSet);
         l.add(beg + "set customer " + customerSet);
+        l.add(beg + "set destpref " + destPrefValSet + " " + destPrefAsnSet);
         l.add(beg + "set bandwidth " + bandwidthSet);
         l.add(beg + "set origin " + originSet);
         l.add(beg + "set metric " + metricSet);
@@ -940,6 +957,17 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             return false;
         }
+        if (a.equals("destpref")) {
+            if (destPrefValSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            if (destPrefAsnSet.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
         if (a.equals("bandwidth")) {
             if (bandwidthSet.fromString(cmd.word())) {
                 cmd.error("invalid action");
@@ -1101,6 +1129,11 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (a.equals("customer")) {
             customerSet.set2unchange();
+            return false;
+        }
+        if (a.equals("destpref")) {
+            destPrefValSet.set2unchange();
+            destPrefAsnSet.set2unchange();
             return false;
         }
         if (a.equals("bandwidth")) {
@@ -1355,6 +1388,13 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             return false;
         }
+        if (a.equals("destpref")) {
+            if (destPrefMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
         if (a.equals("pathlen")) {
             if (pathlenMatch.fromString(cmd.word())) {
                 cmd.error("invalid action");
@@ -1602,6 +1642,10 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             customerMatch.set2always();
             return false;
         }
+        if (a.equals("destpref")) {
+            destPrefMatch.set2always();
+            return false;
+        }
         if (a.equals("pathlen")) {
             pathlenMatch.set2always();
             return false;
@@ -1743,6 +1787,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (!customerMatch.matches(net.best.onlyCust)) {
+            return false;
+        }
+        if (!destPrefMatch.matches(net.best.destPrefVal)) {
             return false;
         }
         if (!pathlenMatch.matches(net.best.asPathLen())) {
@@ -1950,6 +1997,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         attr.pathLimVal = pathLimSet.update(attr.pathLimVal);
         attr.pathLimAsn = pathAsnSet.update(attr.pathLimAsn);
         attr.onlyCust = customerSet.update(attr.onlyCust);
+        attr.destPrefVal = destPrefValSet.update(attr.destPrefVal);
+        attr.destPrefAsn = destPrefAsnSet.update(attr.destPrefAsn);
         attr.bandwidth = bandwidthSet.update(attr.bandwidth);
         attr.originType = originSet.update(attr.originType);
         attr.metric = metricSet.update(attr.metric);

@@ -183,6 +183,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         setCustomer,
         /**
+         * set destination preference
+         */
+        setDestPref,
+        /**
          * set bandwidth
          */
         setBandwidth,
@@ -348,6 +352,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          * customer
          */
         customer,
+        /**
+         * destination preference
+         */
+        destPref,
         /**
          * pathlen
          */
@@ -614,6 +622,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "set pathlimit " + intSet + " " + int2set;
             case setCustomer:
                 return "set customer " + intSet;
+            case setDestPref:
+                return "set destpref " + intSet + " " + int2set;
             case setBandwidth:
                 return "set bandwidth " + intSet;
             case setTag:
@@ -722,6 +732,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "aggregator " + intMatch;
             case customer:
                 return "customer " + intMatch;
+            case destPref:
+                return "destpref " + intMatch;
             case pathlen:
                 return "pathlen " + intMatch;
             case unknown:
@@ -888,6 +900,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return intMatch.matches(net.best.aggrAs);
             case customer:
                 return intMatch.matches(net.best.onlyCust);
+            case destPref:
+                return intMatch.matches(net.best.destPrefVal);
             case pathlen:
                 return intMatch.matches(net.best.asPathLen());
             case unknown:
@@ -1069,6 +1083,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return;
             case setCustomer:
                 attr.onlyCust = intSet.update(attr.onlyCust);
+                return;
+            case setDestPref:
+                attr.destPrefVal = intSet.update(attr.destPrefVal);
+                attr.destPrefAsn = int2set.update(attr.destPrefAsn);
                 return;
             case setBandwidth:
                 attr.bandwidth = intSet.update(attr.bandwidth);

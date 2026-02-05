@@ -154,6 +154,9 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         l.add(null, false, 2, new int[]{3}, "customer", "match customer");
         l.add(null, false, 3, new int[]{-1}, "<num>", "asn");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
+        l.add(null, false, 2, new int[]{3}, "destpref", "match destination preference");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "preference");
+        l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "pathlen", "match as path length");
         l.add(null, false, 3, new int[]{-1}, "<num>", "length");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
@@ -302,6 +305,13 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         l.add(null, false, 2, new int[]{3}, "customer", "set customer");
         l.add(null, false, 3, new int[]{-1}, "leave", "leave value unchanged");
         l.add(null, false, 3, new int[]{-1}, "<num>", "asn");
+        l.add(null, false, 2, new int[]{3}, "destpref", "set as destination preference");
+        l.add(null, false, 3, new int[]{4}, "leave", "leave value unchanged");
+        l.add(null, false, 4, new int[]{-1}, "leave", "leave value unchanged");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "asn");
+        l.add(null, false, 3, new int[]{4}, "<num>", "preference");
+        l.add(null, false, 4, new int[]{-1}, "leave", "leave value unchanged");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "asn");
         l.add(null, false, 2, new int[]{3}, "bandwidth", "set bandwidth");
         l.add(null, false, 3, new int[]{-1}, "leave", "leave value unchanged");
         l.add(null, false, 3, new int[]{-1}, "<num>", "value");
@@ -533,6 +543,14 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("customer")) {
             ntry.ifMode = tabRtrplcN.ifType.customer;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("destpref")) {
+            ntry.ifMode = tabRtrplcN.ifType.destPref;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;
@@ -998,6 +1016,18 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
             if (a.equals("customer")) {
                 ntry.doMode = tabRtrplcN.doType.setCustomer;
                 if (ntry.intSet.fromString(cmd.getRemaining())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                return;
+            }
+            if (a.equals("destpref")) {
+                ntry.doMode = tabRtrplcN.doType.setDestPref;
+                if (ntry.intSet.fromString(cmd.word())) {
+                    cmd.error("invalid action");
+                    return;
+                }
+                if (ntry.int2set.fromString(cmd.word())) {
                     cmd.error("invalid action");
                     return;
                 }
