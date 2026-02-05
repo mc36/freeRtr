@@ -360,7 +360,7 @@ public class rtrBgpDump {
     public static counter sumUnkAttrs(counter c[]) {
         counter res = new counter();
         for (int i = 0; i < c.length; i++) {
-            if (rtrBgp.bgpAttrs[i] != rtrBgpAttr.attrUnknown) {
+            if (rtrBgp.bgpAttrsRx[i] != rtrBgpAttr.attrUnknown) {
                 continue;
             }
             res = res.plus(c[i]);

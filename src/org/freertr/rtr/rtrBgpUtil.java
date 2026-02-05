@@ -1538,37 +1538,9 @@ public class rtrBgpUtil {
     public static void encodeAttribSet(rtrBgpSpeak spkr, int idx, int as, tabRouteEntry<addrIP> ntry) {
         packHolder pck = new packHolder(true, true);
         packHolder hlp = new packHolder(true, true);
-        rtrBgpAttr.attrUnknown.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrOriginType.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrAsPath.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrMetric.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrLocPref.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrEntropyLab.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrAtomicAggr.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrAggregator.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrConnector.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrPathLimit.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrPeDistLab.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrStdComm.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrExtComm.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrLrgComm.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrIpv6comm.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrOriginator.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrClustList.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrTraffEng.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrAccIgp.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrPmsiTun.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrTunEnc.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrLinkState.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrOnlyCust.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrPrefSid.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrBier.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrNshChain.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrDomainPath.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrSafiSpec.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrBfdDisc.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrHopCapa.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrAttribSet.writeAttrib(spkr, pck, hlp, ntry);
+        for (int i = 0; i < rtrBgp.bgpAttrsTx.size(); i++) {
+            rtrBgp.bgpAttrsTx.get(i).writeAttrib(spkr, pck, hlp, ntry);
+        }
         pck.merge2beg();
         ntry.best.attribAs = as;
         ntry.best.attribVal = pck.getCopy();
@@ -1686,37 +1658,9 @@ public class rtrBgpUtil {
      */
     public static void createReachable(rtrBgpSpeak spkr, packHolder pck, packHolder hlp, int idx, boolean addpath, List<tabRouteEntry<addrIP>> lst) {
         tabRouteEntry<addrIP> ntry = lst.get(0);
-        rtrBgpAttr.attrUnknown.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrOriginType.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrAsPath.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrMetric.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrLocPref.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrEntropyLab.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrAtomicAggr.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrAggregator.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrConnector.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrPathLimit.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrPeDistLab.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrStdComm.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrExtComm.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrLrgComm.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrIpv6comm.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrOriginator.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrClustList.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrTraffEng.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrAccIgp.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrPmsiTun.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrTunEnc.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrLinkState.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrOnlyCust.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrPrefSid.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrBier.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrNshChain.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrDomainPath.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrSafiSpec.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrBfdDisc.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrHopCapa.writeAttrib(spkr, pck, hlp, ntry);
-        rtrBgpAttr.attrAttribSet.writeAttrib(spkr, pck, hlp, ntry);
+        for (int i = 0; i < rtrBgp.bgpAttrsTx.size(); i++) {
+            rtrBgp.bgpAttrsTx.get(i).writeAttrib(spkr, pck, hlp, ntry);
+        }
         if (spkr.parent.idx2safi[idx] != safiIp4uni) {
             rtrBgpAttr.placeReachable(spkr, idx, addpath, pck, hlp, lst);
             pck.merge2beg();

@@ -242,7 +242,7 @@ public interface rtrBgpAttr {
                 return;
             }
         }
-        rtrBgp.bgpAttrs[pck.ETHtype & 0xff].readAttrib(spkr, ntry, pck);
+        rtrBgp.bgpAttrsRx[pck.ETHtype & 0xff].readAttrib(spkr, ntry, pck);
     }
 
     /**

@@ -564,7 +564,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * attribute reader
      */
-    protected static rtrBgpAttr[] bgpAttrs;
+    protected static rtrBgpAttr[] bgpAttrsRx;
+
+    /**
+     * attribute writer
+     */
+    protected static List<rtrBgpAttr> bgpAttrsTx;
 
     /**
      * create bgp process
@@ -774,7 +779,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a[rtrBgpParam.idxMtro] = rtrBgpAfi.mvpn;
             bgp6safis = a;
         }
-        if (bgpAttrs == null) {
+        if (bgpAttrsRx == null) {
             rtrBgpAttr[] a = new rtrBgpAttr[256];
             for (int i = 0; i < a.length; i++) {
                 a[i] = rtrBgpAttr.attrUnknown;
@@ -812,7 +817,26 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a[rtrBgpUtil.attrBier] = rtrBgpAttr.attrBier;
             a[rtrBgpUtil.attrClustList] = rtrBgpAttr.attrClustList;
             a[rtrBgpUtil.attrOnlyCust] = rtrBgpAttr.attrOnlyCust;
-            bgpAttrs = a;
+            bgpAttrsRx = a;
+        }
+        if (bgpAttrsTx == null) {
+            List<rtrBgpAttr> a = new ArrayList<rtrBgpAttr>();
+            for (int i = 0; i < bgpAttrsRx.length; i++) {
+                if (bgpAttrsRx[i] == rtrBgpAttr.attrUnknown) {
+                    continue;
+                }
+                switch (i) {
+                    case rtrBgpUtil.attrReachable:
+                    case rtrBgpUtil.attrUnReach:
+                    case rtrBgpUtil.attrNextHop:
+                        continue;
+                    default:
+                        break;
+                }
+                a.add(bgpAttrsRx[i]);
+            }
+            a.add(rtrBgpAttr.attrUnknown);
+            bgpAttrsTx = a;
         }
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
