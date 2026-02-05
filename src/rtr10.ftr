@@ -12,6 +12,7 @@ qc pass: interop2: bgp vpnv4
 qc pass: interop2: bgp authentication
 qc pass: interop2: bgp vpnv6
 qc pass: interop2: vpls/ldp over bgp
+qc pass: interop2: mspw over bgp
 qc pass: interop2: vpls/bgp over bgp
 qc pass: interop2: evpn/pbb over bgp
 qc pass: interop2: bgp extended community

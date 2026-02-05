@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v26.1.29-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-01-30 06:40:10, took 00:33:31, with 1 workers, on 91 cases, 0 failed, 0 traces, 1 retries
+-;-;-;freeRouter v26.2.5-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2026-02-05 10:17:09, took 00:39:34, with 1 workers, on 92 cases, 0 failed, 0 traces, 1 retries
 -;-;-;java -Xmx256m -jar rtr.jar, null
 http://sources.freertr.org/cfg/intop2-bgp01.tst;intop2-bgp01.tst;success;interop2: ebgp
 http://sources.freertr.org/cfg/intop2-bgp02.tst;intop2-bgp02.tst;success;interop2: ibgp
@@ -16,18 +16,19 @@ http://sources.freertr.org/cfg/intop2-bgp11.tst;intop2-bgp11.tst;success;interop
 http://sources.freertr.org/cfg/intop2-bgp12.tst;intop2-bgp12.tst;success;interop2: bgp authentication
 http://sources.freertr.org/cfg/intop2-bgp13.tst;intop2-bgp13.tst;success;interop2: bgp vpnv6
 http://sources.freertr.org/cfg/intop2-bgp14.tst;intop2-bgp14.tst;success;interop2: vpls/ldp over bgp
-http://sources.freertr.org/cfg/intop2-bgp15.tst;intop2-bgp15.tst;success;interop2: vpls/bgp over bgp
-http://sources.freertr.org/cfg/intop2-bgp16.tst;intop2-bgp16.tst;success;interop2: evpn/pbb over bgp
-http://sources.freertr.org/cfg/intop2-bgp17.tst;intop2-bgp17.tst;success;interop2: bgp extended community
-http://sources.freertr.org/cfg/intop2-bgp18.tst;intop2-bgp18.tst;success;interop2: bgp large community
-http://sources.freertr.org/cfg/intop2-bgp19.tst;intop2-bgp19.tst;success;interop2: bgp vpnv4 over srv6
-http://sources.freertr.org/cfg/intop2-bgp20.tst;intop2-bgp20.tst;success;interop2: bgp vpnv6 over srv6
-http://sources.freertr.org/cfg/intop2-bgp21.tst;intop2-bgp21.tst;success;interop2: bgp 6pe
-http://sources.freertr.org/cfg/intop2-bgp22.tst;intop2-bgp22.tst;success;interop2: evpn/vpws over bgp
-http://sources.freertr.org/cfg/intop2-bgp23.tst;intop2-bgp23.tst;success;interop2: bgp aigp
-http://sources.freertr.org/cfg/intop2-bgp24.tst;intop2-bgp24.tst;success;interop2: bgp with php labels
-http://sources.freertr.org/cfg/intop2-bgp25.tst;intop2-bgp25.tst;success;interop2: bgp ao authentication
-http://sources.freertr.org/cfg/intop2-bgp26.tst;intop2-bgp26.tst;success;interop2: bgp extended nexthop
+http://sources.freertr.org/cfg/intop2-bgp15.tst;intop2-bgp15.tst;success;interop2: mspw over bgp
+http://sources.freertr.org/cfg/intop2-bgp16.tst;intop2-bgp16.tst;success;interop2: vpls/bgp over bgp
+http://sources.freertr.org/cfg/intop2-bgp17.tst;intop2-bgp17.tst;success;interop2: evpn/pbb over bgp
+http://sources.freertr.org/cfg/intop2-bgp18.tst;intop2-bgp18.tst;success;interop2: bgp extended community
+http://sources.freertr.org/cfg/intop2-bgp19.tst;intop2-bgp19.tst;success;interop2: bgp large community
+http://sources.freertr.org/cfg/intop2-bgp20.tst;intop2-bgp20.tst;success;interop2: bgp vpnv4 over srv6
+http://sources.freertr.org/cfg/intop2-bgp21.tst;intop2-bgp21.tst;success;interop2: bgp vpnv6 over srv6
+http://sources.freertr.org/cfg/intop2-bgp22.tst;intop2-bgp22.tst;success;interop2: bgp 6pe
+http://sources.freertr.org/cfg/intop2-bgp23.tst;intop2-bgp23.tst;success;interop2: evpn/vpws over bgp
+http://sources.freertr.org/cfg/intop2-bgp24.tst;intop2-bgp24.tst;success;interop2: bgp aigp
+http://sources.freertr.org/cfg/intop2-bgp25.tst;intop2-bgp25.tst;success;interop2: bgp with php labels
+http://sources.freertr.org/cfg/intop2-bgp26.tst;intop2-bgp26.tst;success;interop2: bgp ao authentication
+http://sources.freertr.org/cfg/intop2-bgp27.tst;intop2-bgp27.tst;success;interop2: bgp extended nexthop
 http://sources.freertr.org/cfg/intop2-eigrp01.tst;intop2-eigrp01.tst;success;interop2: eigrp
 http://sources.freertr.org/cfg/intop2-eigrp02.tst;intop2-eigrp02.tst;success;interop2: eigrp prefix withdraw
 http://sources.freertr.org/cfg/intop2-eth01.tst;intop2-eth01.tst;success;interop2: ethernet encapsulation

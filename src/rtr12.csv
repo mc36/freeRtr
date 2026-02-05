@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v26.1.29-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-01-30 07:03:21, took 00:40:23, with 1 workers, on 66 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v26.2.5-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2026-02-05 10:16:02, took 00:42:24, with 1 workers, on 67 cases, 0 failed, 0 traces, 0 retries
 -;-;-;java -Xmx256m -jar rtr.jar, null
 http://sources.freertr.org/cfg/intop9-bgp01.tst;intop9-bgp01.tst;success;interop9: ebgp
 http://sources.freertr.org/cfg/intop9-bgp02.tst;intop9-bgp02.tst;success;interop9: ibgp
@@ -16,13 +16,14 @@ http://sources.freertr.org/cfg/intop9-bgp11.tst;intop9-bgp11.tst;success;interop
 http://sources.freertr.org/cfg/intop9-bgp12.tst;intop9-bgp12.tst;success;interop9: bgp authentication
 http://sources.freertr.org/cfg/intop9-bgp13.tst;intop9-bgp13.tst;success;interop9: bgp vpnv6
 http://sources.freertr.org/cfg/intop9-bgp14.tst;intop9-bgp14.tst;success;interop9: vpls/ldp over bgp
-http://sources.freertr.org/cfg/intop9-bgp15.tst;intop9-bgp15.tst;success;interop9: vpls/bgp over bgp
-http://sources.freertr.org/cfg/intop9-bgp16.tst;intop9-bgp16.tst;success;interop9: bgp extended community
-http://sources.freertr.org/cfg/intop9-bgp17.tst;intop9-bgp17.tst;success;interop9: bgp large community
-http://sources.freertr.org/cfg/intop9-bgp18.tst;intop9-bgp18.tst;success;interop9: bgp with php labels
-http://sources.freertr.org/cfg/intop9-bgp19.tst;intop9-bgp19.tst;success;interop9: bgp ao authentication
-http://sources.freertr.org/cfg/intop9-bgp20.tst;intop9-bgp20.tst;success;interop9: bgp with ctp
-http://sources.freertr.org/cfg/intop9-bgp21.tst;intop9-bgp21.tst;success;interop9: bgp with php ctp
+http://sources.freertr.org/cfg/intop9-bgp15.tst;intop9-bgp15.tst;success;interop9: mspw over bgp
+http://sources.freertr.org/cfg/intop9-bgp16.tst;intop9-bgp16.tst;success;interop9: vpls/bgp over bgp
+http://sources.freertr.org/cfg/intop9-bgp17.tst;intop9-bgp17.tst;success;interop9: bgp extended community
+http://sources.freertr.org/cfg/intop9-bgp18.tst;intop9-bgp18.tst;success;interop9: bgp large community
+http://sources.freertr.org/cfg/intop9-bgp19.tst;intop9-bgp19.tst;success;interop9: bgp with php labels
+http://sources.freertr.org/cfg/intop9-bgp20.tst;intop9-bgp20.tst;success;interop9: bgp ao authentication
+http://sources.freertr.org/cfg/intop9-bgp21.tst;intop9-bgp21.tst;success;interop9: bgp with ctp
+http://sources.freertr.org/cfg/intop9-bgp22.tst;intop9-bgp22.tst;success;interop9: bgp with php ctp
 http://sources.freertr.org/cfg/intop9-eth01.tst;intop9-eth01.tst;success;interop9: ethernet encapsulation
 http://sources.freertr.org/cfg/intop9-eth02.tst;intop9-eth02.tst;success;interop9: dot1q encapsulation
 http://sources.freertr.org/cfg/intop9-eth03.tst;intop9-eth03.tst;success;interop9: fragmentation and reassembly
