@@ -3,7 +3,6 @@ package org.freertr.cfg;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
-import org.freertr.tab.tabGen;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabListingEntry;
 import org.freertr.tab.tabRtrmapN;
@@ -116,7 +115,7 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set validaspa leave", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set aggregator leave null", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set connector null", null),
-        new userFilter("route-map .*", cmds.tabulator + "sequence .* set aslimit leave leave", null),
+        new userFilter("route-map .*", cmds.tabulator + "sequence .* set pathlimit leave leave", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set customer leave", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set bandwidth leave", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* set origin leave", null),
@@ -369,7 +368,7 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         l.add(null, false, 4, new int[]{-1}, "<addr>", "address");
         l.add(null, false, 2, new int[]{3}, "connector", "set connector");
         l.add(null, false, 3, new int[]{-1}, "<addr>", "address");
-        l.add(null, false, 2, new int[]{3}, "aslimit", "set as path limit");
+        l.add(null, false, 2, new int[]{3}, "pathlimit", "set as path limit");
         l.add(null, false, 3, new int[]{4}, "leave", "leave value unchanged");
         l.add(null, false, 4, new int[]{-1}, "leave", "leave value unchanged");
         l.add(null, false, 4, new int[]{-1}, "<num>", "asn");

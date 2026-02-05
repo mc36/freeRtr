@@ -3,7 +3,6 @@ package org.freertr.cfg;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
-import org.freertr.tab.tabGen;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabListingEntry;
 import org.freertr.tab.tabPrfxlstN;
@@ -293,7 +292,7 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         l.add(null, false, 4, new int[]{-1}, "<addr>", "address");
         l.add(null, false, 2, new int[]{3}, "connector", "set connector");
         l.add(null, false, 3, new int[]{-1}, "<addr>", "address");
-        l.add(null, false, 2, new int[]{3}, "aslimit", "set as path limit");
+        l.add(null, false, 2, new int[]{3}, "pathlimit", "set as path limit");
         l.add(null, false, 3, new int[]{4}, "leave", "leave value unchanged");
         l.add(null, false, 4, new int[]{-1}, "leave", "leave value unchanged");
         l.add(null, false, 4, new int[]{-1}, "<num>", "asn");
@@ -984,8 +983,8 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
                 }
                 return;
             }
-            if (a.equals("aslimit")) {
-                ntry.doMode = tabRtrplcN.doType.setAsLimit;
+            if (a.equals("pathlimit")) {
+                ntry.doMode = tabRtrplcN.doType.setPathLimit;
                 if (ntry.intSet.fromString(cmd.word())) {
                     cmd.error("invalid action");
                     return;

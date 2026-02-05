@@ -17,7 +17,7 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
 route-policy rm1
- set aslimit 2 4
+ set pathlimit 2 4
  pass
  exit
 router bgp4 1

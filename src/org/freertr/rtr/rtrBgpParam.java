@@ -159,6 +159,11 @@ public abstract class rtrBgpParam {
     public boolean safiSpec;
 
     /**
+     * send destination preference
+     */
+    public boolean destPref;
+
+    /**
      * send bfd discriminator
      */
     public boolean bfdDiscr;
@@ -1660,6 +1665,7 @@ public abstract class rtrBgpParam {
         nshChain = src.nshChain;
         domainPath = src.domainPath;
         safiSpec = src.safiSpec;
+        destPref = src.destPref;
         bfdDiscr = src.bfdDiscr;
         tunEnc = src.tunEnc;
         lnkSta = src.lnkSta;
@@ -1875,6 +1881,9 @@ public abstract class rtrBgpParam {
             return true;
         }
         if (safiSpec != src.safiSpec) {
+            return true;
+        }
+        if (destPref != src.destPref) {
             return true;
         }
         if (bfdDiscr != src.bfdDiscr) {
@@ -2214,6 +2223,7 @@ public abstract class rtrBgpParam {
         l.add(null, false, 3, new int[]{-1}, "nsh-chain", "send nsh service chain attribute");
         l.add(null, false, 3, new int[]{-1}, "domain-path", "send domain path attribute");
         l.add(null, false, 3, new int[]{-1}, "safi-specific", "send safi specific attribute");
+        l.add(null, false, 3, new int[]{-1}, "destination-preference", "send destination preference attribute");
         l.add(null, false, 3, new int[]{-1}, "bfd-discriminator", "send bfd discriminator attribute");
         l.add(null, false, 3, new int[]{-1}, "tunenc", "send tunnel encapsulation attribute");
         l.add(null, false, 3, new int[]{-1}, "linkstate", "send link state attribute");
@@ -2524,6 +2534,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, !nshChain, beg, nei + "nsh-chain", "");
         cmds.cfgLine(l, !domainPath, beg, nei + "domain-path", "");
         cmds.cfgLine(l, !safiSpec, beg, nei + "safi-specific", "");
+        cmds.cfgLine(l, !destPref, beg, nei + "destination-preference", "");
         cmds.cfgLine(l, !bfdDiscr, beg, nei + "bfd-discriminator", "");
         cmds.cfgLine(l, !tunEnc, beg, nei + "tunenc", "");
         cmds.cfgLine(l, !lnkSta, beg, nei + "linkstate", "");
@@ -3177,6 +3188,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("safi-specific")) {
             safiSpec = !negated;
+            return false;
+        }
+        if (s.equals("destination-preference")) {
+            destPref = !negated;
             return false;
         }
         if (s.equals("bfd-discriminator")) {

@@ -419,6 +419,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* nsh-chain", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* domain-path", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* safi-specific", null),
+        new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* destination-preference", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* bfd-discriminator", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* tunenc", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* linkstate", null),

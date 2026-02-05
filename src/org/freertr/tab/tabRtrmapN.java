@@ -670,7 +670,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "set validaspa " + validAspaSet);
         l.add(beg + "set aggregator " + aggregatorSet + " " + aggregatorRtr);
         l.add(beg + "set connector " + connectorSet);
-        l.add(beg + "set aslimit " + pathLimSet + " " + pathAsnSet);
+        l.add(beg + "set pathlimit " + pathLimSet + " " + pathAsnSet);
         l.add(beg + "set customer " + customerSet);
         l.add(beg + "set bandwidth " + bandwidthSet);
         l.add(beg + "set origin " + originSet);
@@ -913,7 +913,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             return false;
         }
-        if (a.equals("aslimit")) {
+        if (a.equals("pathlimit")) {
             if (pathLimSet.fromString(cmd.word())) {
                 cmd.error("invalid action");
                 return true;
@@ -1090,7 +1090,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             aggregatorRtr = null;
             return false;
         }
-        if (a.equals("aslimit")) {
+        if (a.equals("pathlimit")) {
             pathLimSet.set2unchange();
             pathAsnSet.set2unchange();
             return false;
@@ -1947,8 +1947,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (connectorSet != null) {
             attr.connRtr = connectorSet.copyBytes();
         }
-        attr.pathLim = pathLimSet.update(attr.pathLim);
-        attr.pathAsn = pathAsnSet.update(attr.pathAsn);
+        attr.pathLimVal = pathLimSet.update(attr.pathLimVal);
+        attr.pathLimAsn = pathAsnSet.update(attr.pathLimAsn);
         attr.onlyCust = customerSet.update(attr.onlyCust);
         attr.bandwidth = bandwidthSet.update(attr.bandwidth);
         attr.originType = originSet.update(attr.originType);

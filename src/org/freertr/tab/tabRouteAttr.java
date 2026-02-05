@@ -474,6 +474,16 @@ public class tabRouteAttr<T extends addrType> {
     public T aggrRtr;
 
     /**
+     * destination preference asn
+     */
+    public int destPrefAsn;
+
+    /**
+     * destination preference value
+     */
+    public int destPrefVal;
+
+    /**
      * connector router
      */
     public T connRtr;
@@ -491,12 +501,12 @@ public class tabRouteAttr<T extends addrType> {
     /**
      * aspath limit
      */
-    public int pathLim;
+    public int pathLimVal;
 
     /**
      * aspath originator
      */
-    public int pathAsn;
+    public int pathLimAsn;
 
     /**
      * standard community values
@@ -780,9 +790,11 @@ public class tabRouteAttr<T extends addrType> {
         atr.bandwidth = bandwidth;
         atr.atomicAggr = atomicAggr;
         atr.aggrAs = aggrAs;
+        atr.destPrefAsn = destPrefAsn;
+        atr.destPrefVal = destPrefVal;
         atr.pediLab = pediLab;
-        atr.pathAsn = pathAsn;
-        atr.pathLim = pathLim;
+        atr.pathLimAsn = pathLimAsn;
+        atr.pathLimVal = pathLimVal;
         if (segrouPrf != null) {
             atr.segrouPrf = (T) segrouPrf.copyBytes();
         } else {
@@ -1059,13 +1071,19 @@ public class tabRouteAttr<T extends addrType> {
         if (aggrAs != other.aggrAs) {
             return 32;
         }
+        if (destPrefAsn != other.destPrefAsn) {
+            return 143;
+        }
+        if (destPrefVal != other.destPrefVal) {
+            return 144;
+        }
         if (pediLab != other.pediLab) {
             return 110;
         }
-        if (pathLim != other.pathLim) {
+        if (pathLimVal != other.pathLimVal) {
             return 114;
         }
-        if (pathAsn != other.pathAsn) {
+        if (pathLimAsn != other.pathLimAsn) {
             return 115;
         }
         if (segrouPrf != null) {
@@ -1663,6 +1681,7 @@ public class tabRouteAttr<T extends addrType> {
         hl.add(null, false, lv, new int[]{lv, -1}, "nshchain", "ignore nsh service chain");
         hl.add(null, false, lv, new int[]{lv, -1}, "domainpath", "ignore domain path");
         hl.add(null, false, lv, new int[]{lv, -1}, "safispec", "ignore safi specific");
+        hl.add(null, false, lv, new int[]{lv, -1}, "destpref", "ignore destination preference");
         hl.add(null, false, lv, new int[]{lv, -1}, "bfddiscr", "ignore bfd discriminator");
         hl.add(null, false, lv, new int[]{lv, -1}, "hopcapa", "ignore next hop capability");
         hl.add(null, false, lv, new int[]{lv, -1}, "orignted", "ignore originator");
@@ -1794,6 +1813,9 @@ public class tabRouteAttr<T extends addrType> {
         if (a.equals("safispec")) {
             return 0x2000000000L;
         }
+        if (a.equals("destpref")) {
+            return 0x4000000000L;
+        }
         return 0;
     }
 
@@ -1921,6 +1943,9 @@ public class tabRouteAttr<T extends addrType> {
         }
         if ((i & 0x2000000000L) != 0) {
             a += " safispec";
+        }
+        if ((i & 0x4000000000L) != 0) {
+            a += " destpref";
         }
         return a.substring(1, a.length());
     }
@@ -2071,8 +2096,8 @@ public class tabRouteAttr<T extends addrType> {
             ntry.pediLab = 0;
         }
         if ((ign & 0x40000000) != 0) {
-            ntry.pathLim = 0;
-            ntry.pathAsn = 0;
+            ntry.pathLimVal = 0;
+            ntry.pathLimAsn = 0;
         }
         if ((ign & 0x80000000) != 0) {
             ntry.nshChain = null;
@@ -2095,6 +2120,10 @@ public class tabRouteAttr<T extends addrType> {
         }
         if ((ign & 0x2000000000L) != 0) {
             ntry.safiSpec = null;
+        }
+        if ((ign & 0x4000000000L) != 0) {
+            ntry.destPrefAsn = 0;
+            ntry.destPrefVal = 0;
         }
     }
 
@@ -2159,12 +2188,15 @@ public class tabRouteAttr<T extends addrType> {
         lst.add(beg + "aggregator asnum|" + bits.num2str(aggrAs));
         lst.add(beg + "aggregator asnam|" + clntWhois.asn2name(aggrAs, true));
         lst.add(beg + "aggregator router|" + aggrRtr);
+        lst.add(beg + "dest pref asnum|" + bits.num2str(destPrefAsn));
+        lst.add(beg + "dest pref asnam|" + clntWhois.asn2name(destPrefAsn, true));
+        lst.add(beg + "dest pref value|" + destPrefVal);
         lst.add(beg + "connector router|" + connRtr);
         lst.add(beg + "distinguish pe|" + pediRtr);
         lst.add(beg + "distinguish label|" + pediLab);
-        lst.add(beg + "path limit|" + pathLim);
-        lst.add(beg + "path asnum|" + bits.num2str(pathAsn));
-        lst.add(beg + "path asnam|" + clntWhois.asn2name(pathAsn, true));
+        lst.add(beg + "path limit value|" + pathLimVal);
+        lst.add(beg + "path limit asnum|" + bits.num2str(pathLimAsn));
+        lst.add(beg + "path limit asnam|" + clntWhois.asn2name(pathLimAsn, true));
         lst.add(beg + "originator|" + originator);
         lst.add(beg + "cluster list|" + tabRouteUtil.dumpAddrList(clustList));
         lst.add(beg + "aspath|" + asPathStr());

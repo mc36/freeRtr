@@ -63,6 +63,11 @@ public interface rtrBgpAttr {
     public rtrBgpAttr attrAggregator = new rtrBgpAttrAggregator();
 
     /**
+     * destination preference attribute
+     */
+    public rtrBgpAttr attrDestPref = new rtrBgpAttrDestPref();
+
+    /**
      * connector attribute
      */
     public rtrBgpAttr attrConnector = new rtrBgpAttrConnector();
@@ -616,6 +621,38 @@ class rtrBgpAttrAggregator implements rtrBgpAttr {
 
 }
 
+class rtrBgpAttrDestPref implements rtrBgpAttr {
+
+    public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        if (spkr.peer32bitAS) {
+            ntry.best.destPrefAsn = pck.msbGetD(0);
+            pck.getSkip(4);
+        } else {
+            ntry.best.destPrefAsn = pck.msbGetW(0);
+            pck.getSkip(2);
+        }
+        ntry.best.destPrefVal = pck.msbGetD(0);
+    }
+
+    public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
+        if (ntry.best.destPrefVal < 1) {
+            return;
+        }
+        hlp.clear();
+        if (spkr.peer32bitAS) {
+            hlp.msbPutD(0, ntry.best.destPrefAsn);
+            hlp.putSkip(4);
+        } else {
+            hlp.msbPutW(0, tabRouteUtil.asNum16bit(ntry.best.destPrefAsn));
+            hlp.putSkip(2);
+        }
+        hlp.msbPutD(0, ntry.best.destPrefVal);
+        hlp.putSkip(4);
+        rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrDestPref, trg, hlp);
+    }
+
+}
+
 class rtrBgpAttrConnector implements rtrBgpAttr {
 
     public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
@@ -641,17 +678,17 @@ class rtrBgpAttrConnector implements rtrBgpAttr {
 class rtrBgpAttrPathLimit implements rtrBgpAttr {
 
     public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.pathLim = pck.getByte(0);
-        ntry.best.pathAsn = pck.msbGetD(1);
+        ntry.best.pathLimVal = pck.getByte(0);
+        ntry.best.pathLimAsn = pck.msbGetD(1);
     }
 
     public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
-        if (ntry.best.pathLim < 1) {
+        if (ntry.best.pathLimVal < 1) {
             return;
         }
         hlp.clear();
-        hlp.putByte(0, ntry.best.pathLim);
-        hlp.msbPutD(1, ntry.best.pathAsn);
+        hlp.putByte(0, ntry.best.pathLimVal);
+        hlp.msbPutD(1, ntry.best.pathLimAsn);
         hlp.putSkip(5);
         rtrBgpAttr.placeAttrib(spkr, rtrBgpUtil.flagOptional | rtrBgpUtil.flagTransitive, rtrBgpUtil.attrPathLimit, trg, hlp);
     }

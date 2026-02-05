@@ -557,6 +557,7 @@ router bgp4 65535 vrf v1
  template r nsh-chain
  template r domain-path
  template r safi-specific
+ template r destination-preference
  template r bfd-discriminator
  template r tunenc
  template r attribset
@@ -648,6 +649,7 @@ router bgp6 65535 vrf v1
  template r nsh-chain
  template r domain-path
  template r safi-specific
+ template r destination-preference
  template r bfd-discriminator
  template r tunenc
  template r attribset

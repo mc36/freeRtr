@@ -794,6 +794,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a[rtrBgpUtil.attrAtomicAggr] = rtrBgpAttr.attrAtomicAggr;
             a[rtrBgpUtil.attrEntropyLab] = rtrBgpAttr.attrEntropyLab;
             a[rtrBgpUtil.attrAggregator] = rtrBgpAttr.attrAggregator;
+            a[rtrBgpUtil.attrDestPref] = rtrBgpAttr.attrDestPref;
             a[rtrBgpUtil.attrConnector] = rtrBgpAttr.attrConnector;
             a[rtrBgpUtil.attrPathLimit] = rtrBgpAttr.attrPathLimit;
             a[rtrBgpUtil.attrPeDistLab] = rtrBgpAttr.attrPeDistLab;

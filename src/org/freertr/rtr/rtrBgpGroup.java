@@ -303,8 +303,8 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.pediLab = 0;
         }
         if (!pathLim) {
-            ntry.pathLim = 0;
-            ntry.pathAsn = 0;
+            ntry.pathLimVal = 0;
+            ntry.pathLimAsn = 0;
         }
         if (!nshChain) {
             ntry.nshChain = null;
@@ -314,6 +314,10 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         if (!safiSpec) {
             ntry.safiSpec = null;
+        }
+        if (!destPref) {
+            ntry.destPrefAsn = 0;
+            ntry.destPrefVal = 0;
         }
         if (!bfdDiscr) {
             ntry.bfdDiscr = null;
@@ -511,8 +515,8 @@ public class rtrBgpGroup extends rtrBgpParam {
         }
         switch (peerType) {
             case rtrBgpUtil.peerExtrn:
-                if (ntry.best.pathLim > 0) {
-                    if (ntry.best.asPathLen() >= ntry.best.pathLim) {
+                if (ntry.best.pathLimVal > 0) {
+                    if (ntry.best.asPathLen() >= ntry.best.pathLimVal) {
                         return null;
                     }
                 }

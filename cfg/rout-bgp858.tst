@@ -17,7 +17,7 @@ int eth1
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
 route-map rm1
- set aslimit 2 4
+ set pathlimit 2 4
  exit
 router bgp4 1
  vrf v1
@@ -205,7 +205,7 @@ r4 tping 100 60 4321::3 vrf v1
 
 r1 send conf t
 r1 send route-map rm1
-r1 send set aslimit 4 4
+r1 send set pathlimit 4 4
 r1 send end
 r1 send clear ipv4 route v1
 r1 send clear ipv6 route v1
