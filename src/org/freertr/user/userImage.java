@@ -641,17 +641,24 @@ public class userImage {
                 continue;
             }
             if (a.equals("catalog-save")) {
-                a = downDir + "/" + arch + "--" + cmd.word() + ".lst";
-                List<String> don = new ArrayList<String>();
+                a = downDir + "/" + arch + "--" + cmd.getRemaining() + ".mis";
+                List<String> cur = new ArrayList<String>();
+                for (i = 0; i < missing.size(); i++) {
+                    userImagePkg pkg = missing.get(i);
+                    cur.add(getPackageName(pkg));
+                }
+                bits.buf2txt(true, cur, a);
+                a = downDir + "/" + arch + "--" + cmd.getRemaining() + ".lst";
+                cur = new ArrayList<String>();
                 for (i = 0; i < selected.size(); i++) {
                     userImagePkg pkg = selected.get(i);
                     if (!pkg.done) {
                         continue;
                     }
-                    don.add(getPackageName(pkg));
+                    cur.add(getPackageName(pkg));
                 }
                 List<String> old = bits.txt2buf(a);
-                bits.buf2txt(true, don, a);
+                bits.buf2txt(true, cur, a);
                 if (old == null) {
                     continue;
                 }
@@ -660,7 +667,7 @@ public class userImage {
                     if (a.length() < 1) {
                         continue;
                     }
-                    if (don.indexOf(a) >= 0) {
+                    if (cur.indexOf(a) >= 0) {
                         continue;
                     }
                     cmd.error("renaming legacy " + a);
