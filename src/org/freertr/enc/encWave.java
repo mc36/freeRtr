@@ -2,8 +2,6 @@ package org.freertr.enc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packRtp;
 import org.freertr.util.bits;
@@ -152,11 +150,9 @@ public class encWave {
 
 }
 
-class encWavePlay extends TimerTask {
+class encWavePlay implements Runnable {
 
     private encWave lower;
-
-    private Timer keepTimer = new Timer();
 
     private int syncSrc;
 
@@ -180,7 +176,7 @@ class encWavePlay extends TimerTask {
         syncSrc = bits.randomD();
         pos = encWave.size;
         lower.state = 1;
-        keepTimer.scheduleAtFixedRate(this, 10, payInt);
+        new Thread(this).start();
     }
 
     public void run() {
@@ -193,33 +189,32 @@ class encWavePlay extends TimerTask {
     }
 
     public void doer() {
-        if (rtp.isClosed() != 0) {
-            keepTimer.cancel();
-            lower.state |= 4;
-            return;
+        for (;;) {
+            bits.sleep(payInt);
+            if (rtp.isClosed() != 0) {
+                lower.state |= 4;
+                break;
+            }
+            if (lower.buf == null) {
+                lower.state |= 4;
+                break;
+            }
+            if ((lower.state & 2) != 0) {
+                lower.state |= 4;
+                break;
+            }
+            if ((pos + paySiz) > lower.buf.length) {
+                lower.state |= 4;
+                break;
+            }
+            pck.clear();
+            pck.putCopy(lower.buf, pos, 0, paySiz);
+            pck.putSkip(paySiz);
+            rtp.typeTx = codec.getRTPtype();
+            rtp.syncTx = syncSrc;
+            rtp.sendPack(pck);
+            pos += paySiz;
         }
-        if (lower.buf == null) {
-            keepTimer.cancel();
-            lower.state |= 4;
-            return;
-        }
-        if ((lower.state & 2) != 0) {
-            keepTimer.cancel();
-            lower.state |= 4;
-            return;
-        }
-        if ((pos + paySiz) > lower.buf.length) {
-            keepTimer.cancel();
-            lower.state |= 4;
-            return;
-        }
-        pck.clear();
-        pck.putCopy(lower.buf, pos, 0, paySiz);
-        pck.putSkip(paySiz);
-        rtp.typeTx = codec.getRTPtype();
-        rtp.syncTx = syncSrc;
-        rtp.sendPack(pck);
-        pos += paySiz;
     }
 
 }
