@@ -1,7 +1,5 @@
 package org.freertr.pipe;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packRtp;
 import org.freertr.enc.encCodec;
@@ -45,15 +43,13 @@ public class pipeModem {
 
 }
 
-class pipeModemTx extends TimerTask {
+class pipeModemTx implements Runnable {
 
     private pipeSide pipe;
 
     private encCodec codec;
 
     private packRtp rtp;
-
-    private Timer keepTimer = new Timer();
 
     private encFsk modem = new encFsk();
 
@@ -74,43 +70,44 @@ class pipeModemTx extends TimerTask {
         syncSrc = bits.randomD();
         modem.carrier = freq;
         modem.sampDat = new int[1024];
-        keepTimer.scheduleAtFixedRate(this, 10, payInt);
+        new Thread(this).start();
     }
 
     public void doer() {
-        if (rtp.isClosed() != 0) {
-            keepTimer.cancel();
-            pipe.setClose();
-            return;
-        }
-        if (pipe.isClosed() != 0) {
-            keepTimer.cancel();
-            rtp.setClose();
-            return;
-        }
-        for (; queue.dataSize() < paySiz;) {
-            modem.sampPos = 0;
-            byte[] buf = new byte[1];
-            int i = pipe.nonBlockGet(buf, 0, buf.length);
-            if (i != buf.length) {
-                modem.encodeSilence();
-            } else {
-                modem.encodeByte(buf[0] & 0xff);
+        for (;;) {
+            bits.sleep(payInt);
+            if (rtp.isClosed() != 0) {
+                pipe.setClose();
+                break;
             }
-            byte[] res = codec.encodeBuf(modem.sampDat, 0, modem.sampPos);
-            queue.putCopy(res, 0, 0, res.length);
-            queue.putSkip(res.length);
-            queue.merge2end();
+            if (pipe.isClosed() != 0) {
+                rtp.setClose();
+                break;
+            }
+            for (; queue.dataSize() < paySiz;) {
+                modem.sampPos = 0;
+                byte[] buf = new byte[1];
+                int i = pipe.nonBlockGet(buf, 0, buf.length);
+                if (i != buf.length) {
+                    modem.encodeSilence();
+                } else {
+                    modem.encodeByte(buf[0] & 0xff);
+                }
+                byte[] res = codec.encodeBuf(modem.sampDat, 0, modem.sampPos);
+                queue.putCopy(res, 0, 0, res.length);
+                queue.putSkip(res.length);
+                queue.merge2end();
+            }
+            byte[] buf = new byte[paySiz];
+            queue.getCopy(buf, 0, 0, buf.length);
+            queue.getSkip(buf.length);
+            pck.clear();
+            pck.putCopy(buf, 0, 0, buf.length);
+            pck.putSkip(buf.length);
+            rtp.typeTx = codec.getRTPtype();
+            rtp.syncTx = syncSrc;
+            rtp.sendPack(pck);
         }
-        byte[] buf = new byte[paySiz];
-        queue.getCopy(buf, 0, 0, buf.length);
-        queue.getSkip(buf.length);
-        pck.clear();
-        pck.putCopy(buf, 0, 0, buf.length);
-        pck.putSkip(buf.length);
-        rtp.typeTx = codec.getRTPtype();
-        rtp.syncTx = syncSrc;
-        rtp.sendPack(pck);
     }
 
     public void run() {

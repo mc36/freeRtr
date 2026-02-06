@@ -1,7 +1,5 @@
 package org.freertr.pipe;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.cry.cryHashFcs16;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packRtp;
@@ -36,13 +34,11 @@ public class pipeSync {
 
 }
 
-class pipeSyncTx extends TimerTask {
+class pipeSyncTx implements Runnable {
 
     private pipeSide upper;
 
     private packRtp conn;
-
-    private Timer keepTimer = new Timer();
 
     private int syncSrc;
 
@@ -79,8 +75,8 @@ class pipeSyncTx extends TimerTask {
         syncSrc = bits.randomD();
         paySiz = payMax / (pre + use + app);
         payInt = 1000 / (8000 / paySiz);
-        keepTimer.scheduleAtFixedRate(this, 10, payInt);
         paySiz = (paySiz + 1) * use;
+        new Thread(this).start();
     }
 
     public void placeBit(boolean val) {
@@ -137,60 +133,61 @@ class pipeSyncTx extends TimerTask {
     }
 
     public void doer() {
-        if (conn.isClosed() != 0) {
-            keepTimer.cancel();
-            upper.setClose();
-            return;
-        }
-        if (upper.isClosed() != 0) {
-            keepTimer.cancel();
-            conn.setClose();
-            return;
-        }
-        if (resBuf.dataSize() < 1) {
-            resBuf.clear();
-        }
-        for (; resBuf.dataSize() <= paySiz;) {
-            pck.clear();
-            if (pck.pipeRecv(upper, 0, 8192, 142) < 1) {
+        for (;;) {
+            bits.sleep(payInt);
+            if (conn.isClosed() != 0) {
+                upper.setClose();
                 break;
             }
-            int siz = pck.dataSize();
-            cryHashFcs16 fcs = new cryHashFcs16();
-            fcs.init();
-            pck.hashData(fcs, 0, siz);
-            for (int i = 0; i < siz; i++) {
-                encodeByte(pck.getByte(i));
+            if (upper.isClosed() != 0) {
+                conn.setClose();
+                break;
             }
-            byte[] buf = fcs.finish();
-            encodeByte(buf[0]);
-            encodeByte(buf[1]);
-            placeFlag();
+            if (resBuf.dataSize() < 1) {
+                resBuf.clear();
+            }
+            for (; resBuf.dataSize() <= paySiz;) {
+                pck.clear();
+                if (pck.pipeRecv(upper, 0, 8192, 142) < 1) {
+                    break;
+                }
+                int siz = pck.dataSize();
+                cryHashFcs16 fcs = new cryHashFcs16();
+                fcs.init();
+                pck.hashData(fcs, 0, siz);
+                for (int i = 0; i < siz; i++) {
+                    encodeByte(pck.getByte(i));
+                }
+                byte[] buf = fcs.finish();
+                encodeByte(buf[0]);
+                encodeByte(buf[1]);
+                placeFlag();
+            }
+            for (; resBuf.dataSize() <= paySiz;) {
+                placeFlag();
+            }
+            pck.clear();
+            byte[] buf = new byte[chnUse];
+            for (; pck.dataSize() < payMax;) {
+                pck.putFill(0, chnPre, 0x7e);
+                pck.putSkip(chnPre);
+                resBuf.getCopy(buf, 0, 0, chnUse);
+                resBuf.getSkip(chnUse);
+                pck.putCopy(buf, 0, 0, chnUse);
+                pck.putSkip(chnUse);
+                pck.putFill(0, chnApp, 0x7e);
+                pck.putSkip(chnApp);
+                pck.merge2end();
+            }
+            pck.msbPutW(0, 0);
+            pck.msbPutW(2, seq);
+            seq++;
+            pck.putSkip(pipeSync.size);
+            pck.merge2beg();
+            conn.typeTx = 0;
+            conn.syncTx = syncSrc;
+            conn.sendPack(pck);
         }
-        for (; resBuf.dataSize() <= paySiz;) {
-            placeFlag();
-        }
-        pck.clear();
-        byte[] buf = new byte[chnUse];
-        for (; pck.dataSize() < payMax;) {
-            pck.putFill(0, chnPre, 0x7e);
-            pck.putSkip(chnPre);
-            resBuf.getCopy(buf, 0, 0, chnUse);
-            resBuf.getSkip(chnUse);
-            pck.putCopy(buf, 0, 0, chnUse);
-            pck.putSkip(chnUse);
-            pck.putFill(0, chnApp, 0x7e);
-            pck.putSkip(chnApp);
-            pck.merge2end();
-        }
-        pck.msbPutW(0, 0);
-        pck.msbPutW(2, seq);
-        seq++;
-        pck.putSkip(pipeSync.size);
-        pck.merge2beg();
-        conn.typeTx = 0;
-        conn.syncTx = syncSrc;
-        conn.sendPack(pck);
     }
 
     public void run() {
