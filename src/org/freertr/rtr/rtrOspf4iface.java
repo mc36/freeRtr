@@ -1,8 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.auth.authLocal;
@@ -73,7 +71,10 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
 
     private final rtrOspf4 lower;
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected rtrOspf4ifaceHello keepTimer;
 
     /**
      * suppress interface address
@@ -977,17 +978,12 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (shutdown) {
             return;
         }
-        keepTimer = new Timer();
-        rtrOspf4ifaceHello task = new rtrOspf4ifaceHello(this);
-        keepTimer.schedule(task, 500, helloTimer);
+        keepTimer = new rtrOspf4ifaceHello(this);
+        keepTimer.start();
     }
 
     /**
@@ -1532,7 +1528,7 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
 
 }
 
-class rtrOspf4ifaceHello extends TimerTask {
+class rtrOspf4ifaceHello implements Runnable {
 
     private final rtrOspf4iface lower;
 
@@ -1540,15 +1536,25 @@ class rtrOspf4ifaceHello extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.electDRs();
-            for (int i = 0; i < lower.areas.size(); i++) {
-                rtrOspf4area area = lower.areas.get(i);
-                if (area == null) {
-                    continue;
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
                 }
-                lower.sendHello(area);
+                lower.electDRs();
+                for (int i = 0; i < lower.areas.size(); i++) {
+                    rtrOspf4area area = lower.areas.get(i);
+                    if (area == null) {
+                        continue;
+                    }
+                    lower.sendHello(area);
+                }
+                bits.sleep(lower.helloTimer);
             }
         } catch (Exception e) {
             logger.traceback(e);

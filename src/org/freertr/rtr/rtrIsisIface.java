@@ -1,8 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIsis;
 import org.freertr.addr.addrMac;
 import org.freertr.auth.authLocal;
@@ -84,7 +82,10 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
 
     private final rtrIsis lower;
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected rtrIsisIfaceHello keepTimer;
 
     /**
      * own hardware address
@@ -1033,17 +1034,12 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (shutdown) {
             return;
         }
-        keepTimer = new Timer();
-        rtrIsisIfaceHello task = new rtrIsisIfaceHello(this);
-        keepTimer.schedule(task, 500, helloTimer);
+        keepTimer = new rtrIsisIfaceHello(this);
+        keepTimer.start();
     }
 
     /**
@@ -1699,7 +1695,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
 
 }
 
-class rtrIsisIfaceHello extends TimerTask {
+class rtrIsisIfaceHello implements Runnable {
 
     private final rtrIsisIface lower;
 
@@ -1707,9 +1703,19 @@ class rtrIsisIfaceHello extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.doRetrans();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.doRetrans();
+                bits.sleep(lower.helloTimer);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
