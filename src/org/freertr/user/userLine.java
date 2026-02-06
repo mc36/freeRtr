@@ -3,8 +3,6 @@ package org.freertr.user;
 import org.freertr.pipe.pipeScreen;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.auth.authGeneric;
 import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAll;
@@ -1006,8 +1004,6 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
 
     public boolean preauthed;
 
-    public Timer expTim;
-
     public userExec exe;
 
     public userConfig cfg;
@@ -1263,9 +1259,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         }
         if (parent.expirity && (physical == 0)) {
             exe.last = bits.getTime();
-            expTim = new Timer();
-            userLineExpirity task = new userLineExpirity(this);
-            expTim.schedule(task, 30 * 1000, 60 * 1000);
+            new userLineExpire(this);
         }
         if (physical == 2) {
             for (;;) {
@@ -1279,24 +1273,28 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         }
     }
 
-    public void doExpire() {
+    public boolean doExpire() {
+        if (pipe.isClosed() != 0) {
+            return true;
+        }
         long tim = bits.getTime() - exe.last;
         if (tim > parent.execTimeOut) {
             if (parent.banner) {
                 pipe.linePut(parent.promptGoodbye);
             }
             pipe.setClose();
-            return;
+            return true;
         }
         if (tim < 60000) {
-            return;
+            return false;
         }
         tim = parent.execTimeOut - tim;
         if (tim > 300000) {
             pipeScreen.sendNop(pipe);
-            return;
+            return false;
         }
         pipe.linePut("% session is about to expire in " + bits.timeDump(tim / 1000));
+        return false;
     }
 
     public void run() {
@@ -1310,10 +1308,6 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
             }
         } catch (Exception e) {
             logger.traceback(e);
-        }
-        try {
-            expTim.cancel();
-        } catch (Exception e) {
         }
         pipe.setClose();
         userLine.loggedUsers.del(this);
@@ -1331,16 +1325,26 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
 
 }
 
-class userLineExpirity extends TimerTask {
+class userLineExpire implements Runnable {
 
     public userLineHandler lower;
 
-    public userLineExpirity(userLineHandler parent) {
+    public userLineExpire(userLineHandler parent) {
         lower = parent;
+        new Thread(this).start();
     }
 
     public void run() {
-        lower.doExpire();
+        try {
+            for (;;) {
+                bits.sleep(60 * 1000);
+                if (lower.doExpire()) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
     }
 
 }
