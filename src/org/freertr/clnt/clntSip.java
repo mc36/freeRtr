@@ -2,8 +2,6 @@ package org.freertr.clnt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
@@ -156,17 +154,17 @@ public class clntSip implements Runnable {
 
     private addrIP trgAdr;
 
-    private boolean need2run;
+    /**
+     * keepalive
+     */
+    protected clntSipKeep timKeep;
 
-    private int seq;
+    /**
+     * need to run
+     */
+    protected boolean need2run;
 
-    private Timer timKeep;
-
-    private Timer timReg;
-
-    private Timer timSub;
-
-    private Timer timOpt;
+    private int sequence;
 
     public void run() {
         if (debugger.clntSipTraf) {
@@ -193,24 +191,12 @@ public class clntSip implements Runnable {
      */
     public void startWork() {
         need2run = true;
-        seq = bits.randomD();
+        sequence = bits.randomD();
         new Thread(this).start();
-        if (keepalive > 0) {
-            timKeep = new Timer();
-            timKeep.schedule(new clntSipKeep(this), 500, keepalive);
+        if ((keepalive + register + subscribe + options) < 1) {
+            return;
         }
-        if (register > 0) {
-            timReg = new Timer();
-            timReg.schedule(new clntSipReg(this), 500, register);
-        }
-        if (subscribe > 0) {
-            timSub = new Timer();
-            timSub.schedule(new clntSipSub(this), 500, subscribe);
-        }
-        if (options > 0) {
-            timOpt = new Timer();
-            timOpt.schedule(new clntSipOpt(this), 500, options);
-        }
+        timKeep = new clntSipKeep(this);
     }
 
     /**
@@ -218,6 +204,7 @@ public class clntSip implements Runnable {
      */
     public void stopWork() {
         need2run = false;
+        timKeep = null;
         if (conn != null) {
             conn.setClose();
         }
@@ -233,22 +220,6 @@ public class clntSip implements Runnable {
                 ins.get(i).data.setClose();
             } catch (Exception e) {
             }
-        }
-        try {
-            timKeep.cancel();
-        } catch (Exception e) {
-        }
-        try {
-            timReg.cancel();
-        } catch (Exception e) {
-        }
-        try {
-            timSub.cancel();
-        } catch (Exception e) {
-        }
-        try {
-            timOpt.cancel();
-        } catch (Exception e) {
         }
     }
 
@@ -358,8 +329,8 @@ public class clntSip implements Runnable {
             return;
         }
         packSip sip = new packSip(conn);
-        seq++;
-        sip.makeReq("SUBSCRIBE", "sip:" + endpt + "@" + encUrl.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, subscribe / 250);
+        sequence++;
+        sip.makeReq("SUBSCRIBE", "sip:" + endpt + "@" + encUrl.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), sequence, subscribe / 250);
         sip.addAuthor("", wau, usr, pwd);
         sip.addAuthor("Proxy-", pau, usr, pwd);
         if (debugger.clntSipTraf) {
@@ -379,8 +350,8 @@ public class clntSip implements Runnable {
             return;
         }
         packSip sip = new packSip(conn);
-        seq++;
-        sip.makeReq("OPTIONS", "sip:" + endpt + "@" + encUrl.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, 0);
+        sequence++;
+        sip.makeReq("OPTIONS", "sip:" + endpt + "@" + encUrl.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), sequence, 0);
         sip.addAuthor("", wau, usr, pwd);
         sip.addAuthor("Proxy-", pau, usr, pwd);
         if (debugger.clntSipTraf) {
@@ -400,8 +371,8 @@ public class clntSip implements Runnable {
             return;
         }
         packSip sip = new packSip(conn);
-        seq++;
-        sip.makeReq("REGISTER", "sip:" + encUrl.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), seq, register / 250);
+        sequence++;
+        sip.makeReq("REGISTER", "sip:" + encUrl.addr2str(trgAdr, 0), packSip.updateTag(getEndpt()), getEndpt(), getCont(), getVia(), "" + bits.randomD(), sequence, register / 250);
         sip.addAuthor("", wau, usr, pwd);
         sip.addAuthor("Proxy-", pau, usr, pwd);
         if (debugger.clntSipTraf) {
@@ -522,9 +493,9 @@ public class clntSip implements Runnable {
         leg.callTrg = called;
         leg.callSrc = calling;
         leg.callMsg = msg;
-        seq += 5;
-        leg.callSeq = seq;
-        seq += 5;
+        sequence += 5;
+        leg.callSeq = sequence;
+        sequence += 5;
         boolean res = leg.doSend();
         msgs.del(leg);
         return res;
@@ -553,9 +524,9 @@ public class clntSip implements Runnable {
         }
         leg.callTrg = called;
         leg.callSrc = calling;
-        seq += 5;
-        leg.callSeq = seq;
-        seq += 5;
+        sequence += 5;
+        leg.callSeq = sequence;
+        sequence += 5;
         leg.callPort = getDataPort();
         boolean res = leg.makeCall();
         if (res) {
@@ -870,71 +841,47 @@ public class clntSip implements Runnable {
 
 }
 
-class clntSipKeep extends TimerTask {
+class clntSipKeep implements Runnable {
 
-    private clntSip lower;
+    private final clntSip lower;
 
     public clntSipKeep(clntSip parent) {
         lower = parent;
+        new Thread(this).start();
     }
 
     public void run() {
         try {
-            lower.sendKeep();
-        } catch (Exception e) {
-            logger.traceback(e);
-        }
-    }
-
-}
-
-class clntSipReg extends TimerTask {
-
-    private clntSip lower;
-
-    public clntSipReg(clntSip parent) {
-        lower = parent;
-    }
-
-    public void run() {
-        try {
-            lower.sendReg(null, null);
-        } catch (Exception e) {
-            logger.traceback(e);
-        }
-    }
-
-}
-
-class clntSipSub extends TimerTask {
-
-    private clntSip lower;
-
-    public clntSipSub(clntSip parent) {
-        lower = parent;
-    }
-
-    public void run() {
-        try {
-            lower.sendSub(null, null);
-        } catch (Exception e) {
-            logger.traceback(e);
-        }
-    }
-
-}
-
-class clntSipOpt extends TimerTask {
-
-    private clntSip lower;
-
-    public clntSipOpt(clntSip parent) {
-        lower = parent;
-    }
-
-    public void run() {
-        try {
-            lower.sendOpt(null, null);
+            long lastKep = 0;
+            long lastReg = 0;
+            long lastSub = 0;
+            long lastOpt = 0;
+            for (;;) {
+                bits.sleep(1000);
+                if (lower.timKeep != this) {
+                    break;
+                }
+                if (!lower.need2run) {
+                    break;
+                }
+                long tim = bits.getTime();
+                if ((lower.keepalive > 0) && ((tim - lastKep) > lower.keepalive)) {
+                    lower.sendKeep();
+                    lastKep = tim;
+                }
+                if ((lower.register > 0) && ((tim - lastReg) > lower.register)) {
+                    lower.sendReg(null, null);
+                    lastReg = tim;
+                }
+                if ((lower.subscribe > 0) && ((tim - lastSub) > lower.subscribe)) {
+                    lower.sendSub(null, null);
+                    lastSub = tim;
+                }
+                if ((lower.options > 0) && ((tim - lastOpt) > lower.options)) {
+                    lower.sendOpt(null, null);
+                    lastOpt = tim;
+                }
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

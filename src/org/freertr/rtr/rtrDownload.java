@@ -3,8 +3,6 @@ package org.freertr.rtr;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.auth.authLocal;
@@ -109,7 +107,10 @@ public class rtrDownload extends ipRtr {
      */
     protected cfgTime time;
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected rtrDownloadTimer keepTimer;
 
     private List<String> dled;
 
@@ -156,10 +157,6 @@ public class rtrDownload extends ipRtr {
     }
 
     private synchronized void stopNow() {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         working = false;
     }
@@ -172,17 +169,7 @@ public class rtrDownload extends ipRtr {
             return;
         }
         working = true;
-        keepTimer = new Timer();
-        rtrDownloadTimer task = new rtrDownloadTimer(this);
-        int del = initial;
-        if (randIni > 0) {
-            del += bits.random(1, randIni);
-        }
-        if (respawn) {
-            keepTimer.schedule(task, del, interval);
-        } else {
-            keepTimer.schedule(task, del);
-        }
+        keepTimer = new rtrDownloadTimer(this);
     }
 
     /**
@@ -365,7 +352,9 @@ public class rtrDownload extends ipRtr {
             return false;
         }
         if (s.equals("respawn")) {
+            stopNow();
             respawn = !negated;
+            startNow();
             return false;
         }
         if (s.equals("delay")) {
@@ -473,17 +462,38 @@ public class rtrDownload extends ipRtr {
 
 }
 
-class rtrDownloadTimer extends TimerTask {
+class rtrDownloadTimer implements Runnable {
 
     private final rtrDownload lower;
 
     public rtrDownloadTimer(rtrDownload parent) {
         lower = parent;
+        new Thread(this).start();
     }
 
     public void run() {
         try {
+            int i = lower.initial;
+            if (lower.randIni > 0) {
+                i += bits.random(1, lower.randIni);
+            }
+            if (i > 0) {
+                bits.sleep(i);
+            }
             lower.doRound();
+            if (!lower.respawn) {
+                return;
+            }
+            for (;;) {
+                bits.sleep(lower.interval);
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                if (!lower.working) {
+                    break;
+                }
+                lower.doRound();
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

@@ -1,7 +1,5 @@
 package org.freertr.clnt;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
 import org.freertr.pack.packHolder;
@@ -245,7 +243,7 @@ public class clntVconf implements Runnable {
 
 }
 
-class clntVconfWork extends TimerTask {
+class clntVconfWork implements Runnable {
 
     public final static int paySiz = 160;
 
@@ -257,8 +255,6 @@ class clntVconfWork extends TimerTask {
 
     public final clntVconf lower;
 
-    private Timer keepTimer = new Timer();
-
     private packHolder pck = new packHolder(true, true);
 
     private byte[] buf = new byte[paySiz];
@@ -267,7 +263,7 @@ class clntVconfWork extends TimerTask {
 
     public clntVconfWork(clntVconf parent) {
         lower = parent;
-        keepTimer.scheduleAtFixedRate(this, 10, payInt);
+        new Thread(this).start();
     }
 
     public void run() {
@@ -289,53 +285,55 @@ class clntVconfWork extends TimerTask {
     }
 
     public void doer() {
-        if ((lower.user.isClosed() != 0) && (lower.peers.size() < 1)) {
-            keepTimer.cancel();
-            return;
-        }
-        for (int i = 0; i < paySiz; i++) {
-            sam[i] = 0;
-        }
-        for (int p = 0; p < lower.peers.size(); p++) {
-            clntVconfPeer ntry = lower.peers.get(p);
-            if (ntry == null) {
-                continue;
+        for (;;) {
+            bits.sleep(payInt);
+            if ((lower.user.isClosed() != 0) && (lower.peers.size() < 1)) {
+                break;
             }
-            if (ntry.codec == null) {
-                continue;
-            }
-            int o = ntry.pipeUsr.nonBlockGet(buf, 0, paySiz);
-            if (o < 0) {
-                ntry.sam = new int[paySiz];
-                continue;
-            }
-            bits.byteFill(buf, o, paySiz - o, 0);
-            ntry.sam = ntry.codec.decodeBuf(buf, 0, paySiz);
             for (int i = 0; i < paySiz; i++) {
-                o = (ntry.sam[i] * ntry.volIn) / 100;
-                ntry.sam[i] = o;
-                sam[i] += o;
+                sam[i] = 0;
             }
-        }
-        for (int p = 0; p < lower.peers.size(); p++) {
-            clntVconfPeer ntry = lower.peers.get(p);
-            if (ntry == null) {
-                continue;
+            for (int p = 0; p < lower.peers.size(); p++) {
+                clntVconfPeer ntry = lower.peers.get(p);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.codec == null) {
+                    continue;
+                }
+                int o = ntry.pipeUsr.nonBlockGet(buf, 0, paySiz);
+                if (o < 0) {
+                    ntry.sam = new int[paySiz];
+                    continue;
+                }
+                bits.byteFill(buf, o, paySiz - o, 0);
+                ntry.sam = ntry.codec.decodeBuf(buf, 0, paySiz);
+                for (int i = 0; i < paySiz; i++) {
+                    o = (ntry.sam[i] * ntry.volIn) / 100;
+                    ntry.sam[i] = o;
+                    sam[i] += o;
+                }
             }
-            if (ntry.codec == null) {
-                continue;
+            for (int p = 0; p < lower.peers.size(); p++) {
+                clntVconfPeer ntry = lower.peers.get(p);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.codec == null) {
+                    continue;
+                }
+                pck.clear();
+                for (int i = 0; i < paySiz; i++) {
+                    int o = sam[i] - ntry.sam[i];
+                    o = (o * ntry.volOut) / 100;
+                    o = limitSam(o);
+                    o = ntry.codec.encodeInt(o);
+                    pck.putByte(i, o);
+                }
+                pck.putSkip(paySiz);
+                pck.merge2end();
+                ntry.sendPack(pck);
             }
-            pck.clear();
-            for (int i = 0; i < paySiz; i++) {
-                int o = sam[i] - ntry.sam[i];
-                o = (o * ntry.volOut) / 100;
-                o = limitSam(o);
-                o = ntry.codec.encodeInt(o);
-                pck.putByte(i, o);
-            }
-            pck.putSkip(paySiz);
-            pck.merge2end();
-            ntry.sendPack(pck);
         }
     }
 
