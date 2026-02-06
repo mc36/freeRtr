@@ -170,6 +170,7 @@ public class rtrDownload extends ipRtr {
         }
         working = true;
         keepTimer = new rtrDownloadTimer(this);
+        keepTimer.start();
     }
 
     /**
@@ -468,6 +469,9 @@ class rtrDownloadTimer implements Runnable {
 
     public rtrDownloadTimer(rtrDownload parent) {
         lower = parent;
+    }
+
+    public void start() {
         new Thread(this).start();
     }
 

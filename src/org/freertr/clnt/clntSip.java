@@ -197,6 +197,7 @@ public class clntSip implements Runnable {
             return;
         }
         timKeep = new clntSipKeep(this);
+        timKeep.start();
     }
 
     /**
@@ -847,6 +848,9 @@ class clntSipKeep implements Runnable {
 
     public clntSipKeep(clntSip parent) {
         lower = parent;
+    }
+
+    public void start() {
         new Thread(this).start();
     }
 

@@ -1,8 +1,6 @@
 package org.freertr.rtr;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgPrfxlst;
@@ -158,7 +156,10 @@ public class rtrEigrpIface implements Comparable<rtrEigrpIface>, ipPrt {
      */
     protected counter cntr;
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected rtrEigrpIfaceHello keepTimer;
 
     /**
      * create one instance
@@ -302,17 +303,12 @@ public class rtrEigrpIface implements Comparable<rtrEigrpIface>, ipPrt {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (shutdown) {
             return;
         }
-        keepTimer = new Timer();
-        rtrEigrpIfaceHello task = new rtrEigrpIfaceHello(this);
-        keepTimer.schedule(task, 500, helloTimer);
+        keepTimer = new rtrEigrpIfaceHello(this);
+        keepTimer.start();
     }
 
     /**
@@ -736,7 +732,7 @@ public class rtrEigrpIface implements Comparable<rtrEigrpIface>, ipPrt {
 
 }
 
-class rtrEigrpIfaceHello extends TimerTask {
+class rtrEigrpIfaceHello implements Runnable {
 
     private final rtrEigrpIface lower;
 
@@ -744,10 +740,20 @@ class rtrEigrpIfaceHello extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendHello();
-            lower.purgeNeighs();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.sendHello();
+                lower.purgeNeighs();
+                bits.sleep(lower.helloTimer);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
