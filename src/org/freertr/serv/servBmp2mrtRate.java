@@ -1,6 +1,5 @@
 package org.freertr.serv;
 
-import java.util.TimerTask;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
 
@@ -9,7 +8,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class servBmp2mrtRate extends TimerTask {
+public class servBmp2mrtRate implements Runnable {
 
     private final servBmp2mrt lower;
 
