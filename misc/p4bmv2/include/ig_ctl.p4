@@ -63,6 +63,7 @@ control ig_ctl(inout headers hdr,
     IngressControlQosOut() ig_ctl_qos_out;
     IngressControlRateIn() ig_ctl_rate_in;
     IngressControlRateOut() ig_ctl_rate_out;
+    IngressControlTtlSet() ig_ctl_ttlset;
     IngressControlFlowspec() ig_ctl_flowspec;
     IngressControlMcast() ig_ctl_mcast;
     IngressControlOutPort() ig_ctl_outport;
@@ -249,6 +250,7 @@ control ig_ctl(inout headers hdr,
             mark_to_drop(ig_intr_md);
             return;
         }
+        ig_ctl_ttlset.apply(hdr,ig_md,ig_intr_md);
         ig_ctl_bundle.apply(hdr,ig_md,ig_intr_md);
     }
 

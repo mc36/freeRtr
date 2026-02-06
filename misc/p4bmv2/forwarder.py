@@ -3316,6 +3316,76 @@ def writeRateOutRules(delete, p4info_helper, ingress_sw, subif, bytes, interval)
 
 
 
+def writeTtlset4inRules(delete, p4info_helper, ingress_sw, subif, ttl):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ttlset.tbl_ipv4_in",
+        match_fields={
+            "ig_md.source_id": subif,
+        },
+        action_name="ig_ctl.ig_ctl_ttlset.act_ipv4_ttl",
+        action_params={
+            "ttl": ttl,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+def writeTtlset4outRules(delete, p4info_helper, ingress_sw, subif, ttl):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ttlset.tbl_ipv4_out",
+        match_fields={
+            "ig_md.aclport_id": subif,
+        },
+        action_name="ig_ctl.ig_ctl_ttlset.act_ipv4_ttl",
+        action_params={
+            "ttl": ttl,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+def writeTtlset6inRules(delete, p4info_helper, ingress_sw, subif, ttl):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ttlset.tbl_ipv6_in",
+        match_fields={
+            "ig_md.source_id": subif,
+        },
+        action_name="ig_ctl.ig_ctl_ttlset.act_ipv6_ttl",
+        action_params={
+            "ttl": ttl,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+def writeTtlset6outRules(delete, p4info_helper, ingress_sw, subif, ttl):
+    table_entry = p4info_helper.buildTableEntry(
+        table_name="ig_ctl.ig_ctl_ttlset.tbl_ipv6_out",
+        match_fields={
+            "ig_md.aclport_id": subif,
+        },
+        action_name="ig_ctl.ig_ctl_ttlset.act_ipv6_ttl",
+        action_params={
+            "ttl": ttl,
+        })
+    if delete == 1:
+        ingress_sw.WriteTableEntry(table_entry, False)
+    elif delete == 2:
+        ingress_sw.ModifyTableEntry(table_entry, False)
+    else:
+        ingress_sw.DeleteTableEntry(table_entry, False)
+
+
+
 
 def writeFlowspecRules4(delete, p4info_helper, ingress_sw, vrf, meter, bytes, interval, pri, act, pr, prm, sa, sam, da, dam, sp, spm, dp, dpm, ts, tsm, fl, flm, gr, grm):
     matches={"ig_md.vrf": vrf}
@@ -4565,6 +4635,22 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
 
         if cmds[0] == "rateout":
             writeRateOutRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]),int(splt[3]))
+            continue
+
+        if cmds[0] == "ttlset4in":
+            writeTtlset4inRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "ttlset4out":
+            writeTtlset4outRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "ttlset6in":
+            writeTtlset6inRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
+            continue
+
+        if cmds[0] == "ttlset6out":
+            writeTtlset6outRules(mode,p4info_helper,sw1,int(splt[1]),int(splt[2]))
             continue
 
         if cmds[0] == "flowspec4":

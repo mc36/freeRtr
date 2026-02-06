@@ -95,6 +95,7 @@
 #include "include/ig_ctl_qos_out.p4"
 #include "include/ig_ctl_rate_in.p4"
 #include "include/ig_ctl_rate_out.p4"
+#include "include/ig_ctl_ttlset.p4"
 #include "include/ig_ctl_flowspec.p4"
 #include "include/ig_ctl_mcast.p4"
 #include "include/ig_ctl_bundle.p4"
