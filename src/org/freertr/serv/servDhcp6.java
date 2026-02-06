@@ -3,8 +3,6 @@ package org.freertr.serv;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrMac;
@@ -127,7 +125,10 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
 
     private String bindFile;
 
-    private Timer purgeTimer;
+    /**
+     * purge
+     */
+    protected servDhcp6timer purgeTimer;
 
     // Relay mode fields
     /**
@@ -696,17 +697,12 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
     }
 
     private void restartTimer(boolean shutdown) {
-        try {
-            purgeTimer.cancel();
-        } catch (Exception e) {
-        }
         purgeTimer = null;
         if (shutdown) {
             return;
         }
-        purgeTimer = new Timer();
-        servDhcp6timer task = new servDhcp6timer(this);
-        purgeTimer.schedule(task, 1000, 60000);
+        purgeTimer = new servDhcp6timer(this);
+        purgeTimer.start();
     }
 
     /**
@@ -1513,7 +1509,7 @@ class servDhcp6bind implements Comparable<servDhcp6bind> {
 
 }
 
-class servDhcp6timer extends TimerTask {
+class servDhcp6timer implements Runnable {
 
     private servDhcp6 parent;
 
@@ -1521,12 +1517,22 @@ class servDhcp6timer extends TimerTask {
         parent = prnt;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         if (debugger.servDhcp6traf) {
             logger.debug("purging");
         }
         try {
-            parent.doPurging();
+            for (;;) {
+                if (parent.purgeTimer != this) {
+                    break;
+                }
+                parent.doPurging();
+                bits.sleep(60000);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

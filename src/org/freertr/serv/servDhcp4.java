@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrMac;
@@ -144,7 +142,10 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
     private String bindFile;
 
-    private Timer purgeTimer;
+    /**
+     * purge
+     */
+    protected servDhcp4timer purgeTimer;
 
     // Relay mode fields
     /**
@@ -1158,17 +1159,12 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
     }
 
     private void restartTimer(boolean shutdown) {
-        try {
-            purgeTimer.cancel();
-        } catch (Exception e) {
-        }
         purgeTimer = null;
         if (shutdown) {
             return;
         }
-        purgeTimer = new Timer();
-        servDhcp4timer task = new servDhcp4timer(this);
-        purgeTimer.schedule(task, 1000, 60000);
+        purgeTimer = new servDhcp4timer(this);
+        purgeTimer.start();
     }
 
     /**
@@ -1481,7 +1477,7 @@ class servDhcp4bind implements Comparable<servDhcp4bind> {
 
 }
 
-class servDhcp4timer extends TimerTask {
+class servDhcp4timer implements Runnable {
 
     private servDhcp4 parent;
 
@@ -1489,12 +1485,22 @@ class servDhcp4timer extends TimerTask {
         parent = prnt;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         if (debugger.servDhcp4traf) {
             logger.debug("purging");
         }
         try {
-            parent.doPurging();
+            for (;;) {
+                if (parent.purgeTimer != this) {
+                    break;
+                }
+                parent.doPurging();
+                bits.sleep(60000);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

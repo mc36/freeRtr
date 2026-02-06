@@ -1,8 +1,6 @@
 package org.freertr.serv;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -317,7 +315,7 @@ class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
 
     public int lastEcho;
 
-    public Timer keepTimer;
+    public servSdwanTimer keepTimer;
 
     public long created;
 
@@ -591,22 +589,17 @@ class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
     }
 
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (shutdown) {
             return;
         }
-        keepTimer = new Timer();
-        servSdwanTimer task = new servSdwanTimer(this);
-        keepTimer.schedule(task, 500, 60000);
+        keepTimer = new servSdwanTimer(this);
+        keepTimer.start();
     }
 
 }
 
-class servSdwanTimer extends TimerTask {
+class servSdwanTimer implements Runnable {
 
     private final servSdwanConn lower;
 
@@ -614,9 +607,19 @@ class servSdwanTimer extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.doTimer();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.doTimer();
+                bits.sleep(60000);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

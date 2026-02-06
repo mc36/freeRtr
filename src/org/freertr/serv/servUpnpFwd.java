@@ -1,8 +1,6 @@
 package org.freertr.serv;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
@@ -13,9 +11,9 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.prt.prtUdp;
-import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
+import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
 
@@ -50,7 +48,10 @@ public class servUpnpFwd extends servGeneric implements prtServS {
      */
     public addrIP target;
 
-    private Timer purgeTimer;
+    /**
+     * purge
+     */
+    protected servUpnpFwdKeep purgeTimer;
 
     private pipeSide trgt;
 
@@ -123,17 +124,12 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         if (trgt != null) {
             trgt.setClose();
         }
-        try {
-            purgeTimer.cancel();
-        } catch (Exception e) {
-        }
         purgeTimer = null;
         if (shutdown) {
             return;
         }
-        purgeTimer = new Timer();
-        servUpnpFwdKeep task = new servUpnpFwdKeep(this);
-        purgeTimer.schedule(task, 1000, 30000);
+        purgeTimer = new servUpnpFwdKeep(this);
+        purgeTimer.start();
     }
 
     /**
@@ -227,7 +223,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
 
 }
 
-class servUpnpFwdKeep extends TimerTask {
+class servUpnpFwdKeep implements Runnable {
 
     private servUpnpFwd parent;
 
@@ -235,9 +231,19 @@ class servUpnpFwdKeep extends TimerTask {
         parent = prnt;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            parent.doKeep();
+            for (;;) {
+                if (parent.purgeTimer != this) {
+                    break;
+                }
+                parent.doKeep();
+                bits.sleep(30000);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
