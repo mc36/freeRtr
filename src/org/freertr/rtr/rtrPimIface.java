@@ -1,7 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
@@ -85,7 +83,10 @@ public class rtrPimIface implements ipPrt {
 
     private tabGen<rtrPimNeigh> neighs = new tabGen<rtrPimNeigh>();
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected rtrPimIfaceHello keepTimer;
 
     /**
      * create new instance
@@ -105,10 +106,6 @@ public class rtrPimIface implements ipPrt {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (shutdown) {
             return;
@@ -116,9 +113,8 @@ public class rtrPimIface implements ipPrt {
         if (helloInterval < 1) {
             return;
         }
-        keepTimer = new Timer();
-        rtrPimIfaceHello task = new rtrPimIfaceHello(this);
-        keepTimer.schedule(task, 500, helloInterval);
+        keepTimer = new rtrPimIfaceHello(this);
+        keepTimer.start();
     }
 
     /**
@@ -505,7 +501,7 @@ class rtrPimNeigh implements Comparable<rtrPimNeigh>, rtrBfdClnt {
 
 }
 
-class rtrPimIfaceHello extends TimerTask {
+class rtrPimIfaceHello implements Runnable {
 
     private final rtrPimIface lower;
 
@@ -513,11 +509,21 @@ class rtrPimIfaceHello extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.purgeNeighs();
-            lower.sendHello();
-            lower.sendJoins();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.purgeNeighs();
+                lower.sendHello();
+                lower.sendJoins();
+                bits.sleep(lower.helloInterval);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

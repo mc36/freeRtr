@@ -1,7 +1,5 @@
 package org.freertr.rtr;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
 import org.freertr.cfg.cfgAll;
@@ -105,7 +103,10 @@ public class rtrVrrpIface implements ipPrt {
 
     private counter cntr = new counter();
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected rtrVrrpIfaceHello keepTimer;
 
     /**
      * create one instance
@@ -184,10 +185,6 @@ public class rtrVrrpIface implements ipPrt {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (shutdown) {
             return;
@@ -195,9 +192,8 @@ public class rtrVrrpIface implements ipPrt {
         if (hello < 1) {
             return;
         }
-        keepTimer = new Timer();
-        rtrVrrpIfaceHello task = new rtrVrrpIfaceHello(this);
-        keepTimer.schedule(task, 500, hello);
+        keepTimer = new rtrVrrpIfaceHello(this);
+        keepTimer.start();
     }
 
     /**
@@ -475,7 +471,7 @@ class rtrVrrpNeigh implements Comparable<rtrVrrpNeigh>, rtrBfdClnt {
 
 }
 
-class rtrVrrpIfaceHello extends TimerTask {
+class rtrVrrpIfaceHello implements Runnable {
 
     private final rtrVrrpIface lower;
 
@@ -483,9 +479,19 @@ class rtrVrrpIfaceHello extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendHello();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.sendHello();
+                bits.sleep(lower.hello);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
