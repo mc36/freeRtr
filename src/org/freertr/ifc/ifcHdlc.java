@@ -1,8 +1,6 @@
 package org.freertr.ifc;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrType;
 import org.freertr.pack.packHolder;
@@ -78,7 +76,10 @@ public class ifcHdlc implements ifcUp, ifcDn {
      */
     public int lastTxKeep = 0;
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected ifcHdlcTxKeep keepTimer;
 
     public counter getCounter() {
         return cntr;
@@ -239,10 +240,6 @@ public class ifcHdlc implements ifcUp, ifcDn {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (lastState == state.states.admin) {
             return;
@@ -253,9 +250,8 @@ public class ifcHdlc implements ifcUp, ifcDn {
         if (keepaliveInterval < 1) {
             return;
         }
-        keepTimer = new Timer();
-        ifcHdlcTxKeep task = new ifcHdlcTxKeep(this);
-        keepTimer.schedule(task, 500, keepaliveInterval);
+        keepTimer = new ifcHdlcTxKeep(this);
+        keepTimer.start();
     }
 
     public void recvPack(packHolder pck) {
@@ -335,7 +331,7 @@ public class ifcHdlc implements ifcUp, ifcDn {
 
 }
 
-class ifcHdlcTxKeep extends TimerTask {
+class ifcHdlcTxKeep implements Runnable {
 
     private ifcHdlc lower;
 
@@ -343,9 +339,19 @@ class ifcHdlcTxKeep extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendKeepalive();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.sendKeepalive();
+                bits.sleep(lower.keepaliveInterval);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
