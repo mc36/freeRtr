@@ -1,8 +1,6 @@
 package org.freertr.ifc;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
@@ -100,6 +98,21 @@ public class ifcBundle implements Runnable, ifcDn {
      */
     public int selected = -2;
 
+    /**
+     * timer
+     */
+    protected ifcBundleKeep timer1;
+
+    /**
+     * timer
+     */
+    protected ifcBundleCntr timer2;
+
+    /**
+     * need to run
+     */
+    protected boolean need2run = true;
+
     private ifcUp upper = new ifcNull();
 
     private int nextIfaceNum;
@@ -112,13 +125,7 @@ public class ifcBundle implements Runnable, ifcDn {
 
     private int seqTx;
 
-    private Timer timer1;
-
-    private Timer timer2;
-
     private notifier notif = new notifier();
-
-    private boolean need2run = true;
 
     public counter getCounter() {
         return cntr;
@@ -470,13 +477,12 @@ public class ifcBundle implements Runnable, ifcDn {
         }
         if (s.equals("reporter")) {
             reporter = bits.str2num(cmd.word());
-            try {
-                timer2.cancel();
-            } catch (Exception e) {
+            timer2 = null;
+            if (reporter < 1) {
+                return;
             }
-            timer2 = new Timer();
-            ifcBundleCntr task = new ifcBundleCntr(this);
-            timer2.schedule(task, 500, reporter);
+            timer2 = new ifcBundleCntr(this);
+            timer2.start();
             return;
         }
         if (!s.equals(cmds.negated)) {
@@ -532,10 +538,6 @@ public class ifcBundle implements Runnable, ifcDn {
         }
         if (s.equals("reporter")) {
             reporter = 0;
-            try {
-                timer2.cancel();
-            } catch (Exception e) {
-            }
             timer2 = null;
             return;
         }
@@ -871,9 +873,8 @@ public class ifcBundle implements Runnable, ifcDn {
         if (debugger.ifcBundleTraf) {
             logger.debug("startup");
         }
-        timer1 = new Timer();
-        ifcBundleKeep task = new ifcBundleKeep(this);
-        timer1.schedule(task, 500, 10000);
+        timer1 = new ifcBundleKeep(this);
+        timer1.start();
         new Thread(this).start();
     }
 
@@ -886,14 +887,8 @@ public class ifcBundle implements Runnable, ifcDn {
         }
         need2run = false;
         notif.wakeup();
-        try {
-            timer1.cancel();
-        } catch (Exception e) {
-        }
-        try {
-            timer2.cancel();
-        } catch (Exception e) {
-        }
+        timer1 = null;
+        timer2 = null;
         try {
             peering.workStop();
         } catch (Exception e) {
@@ -1014,7 +1009,7 @@ public class ifcBundle implements Runnable, ifcDn {
 
 }
 
-class ifcBundleKeep extends TimerTask {
+class ifcBundleKeep implements Runnable {
 
     private ifcBundle lower;
 
@@ -1022,9 +1017,22 @@ class ifcBundleKeep extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendKeep();
+            for (;;) {
+                if (lower.timer1 != this) {
+                    break;
+                }
+                if (!lower.need2run) {
+                    break;
+                }
+                lower.sendKeep();
+                bits.sleep(10000);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
@@ -1032,7 +1040,7 @@ class ifcBundleKeep extends TimerTask {
 
 }
 
-class ifcBundleCntr extends TimerTask {
+class ifcBundleCntr implements Runnable {
 
     private ifcBundle lower;
 
@@ -1040,9 +1048,22 @@ class ifcBundleCntr extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendCounter();
+            for (;;) {
+                if (lower.timer2 != this) {
+                    break;
+                }
+                if (!lower.need2run) {
+                    break;
+                }
+                lower.sendCounter();
+                bits.sleep(lower.reporter);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
