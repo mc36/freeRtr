@@ -2,8 +2,6 @@ package org.freertr.ifc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrMac;
 import org.freertr.cfg.cfgAll;
 import org.freertr.pack.packHolder;
@@ -30,11 +28,14 @@ public class ifcRadioTap implements ifcUp {
      */
     public boolean logging = false;
 
+    /**
+     * keepalive
+     */
+    protected ifcRadioTapPurge keepTimer;
+
     private ifcDn lower = new ifcNull();
 
     private counter cntr = new counter();
-
-    private Timer keepTimer;
 
     private tabGen<ifcRadioTapNeigh> neighs = new tabGen<ifcRadioTapNeigh>();
 
@@ -136,17 +137,12 @@ public class ifcRadioTap implements ifcUp {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (shutdown) {
             return;
         }
-        keepTimer = new Timer();
-        ifcRadioTapPurge task = new ifcRadioTapPurge(this);
-        keepTimer.schedule(task, 500, 15000);
+        keepTimer = new ifcRadioTapPurge(this);
+        keepTimer.start();
     }
 
     /**
@@ -182,7 +178,7 @@ public class ifcRadioTap implements ifcUp {
 
 }
 
-class ifcRadioTapPurge extends TimerTask {
+class ifcRadioTapPurge implements Runnable {
 
     private ifcRadioTap lower;
 
@@ -190,9 +186,19 @@ class ifcRadioTapPurge extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.purgePeers();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.purgePeers();
+                bits.sleep(15000);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

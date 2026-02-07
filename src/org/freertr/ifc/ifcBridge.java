@@ -2,8 +2,6 @@ package org.freertr.ifc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrBridge;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
@@ -161,6 +159,11 @@ public class ifcBridge implements ifcDn {
      */
     public tabSession inspect;
 
+    /**
+     * timer
+     */
+    protected ifcBridgeTimer timer;
+
     private tabGen<ifcBridgeIfc> ifaces;
 
     private tabGen<ifcBridgeAdr> learned;
@@ -170,8 +173,6 @@ public class ifcBridge implements ifcDn {
     private int nextIfaceNum;
 
     private counter cntr = new counter();
-
-    private Timer timer;
 
     private long currTim = bits.getTime();
 
@@ -788,17 +789,12 @@ public class ifcBridge implements ifcDn {
     }
 
     private void resetTimer(boolean needRun) {
-        try {
-            timer.cancel();
-        } catch (Exception e) {
-        }
         timer = null;
         if (!needRun) {
             return;
         }
-        timer = new Timer();
-        ifcBridgeTimer task = new ifcBridgeTimer(this);
-        timer.schedule(task, 500, 1000);
+        timer = new ifcBridgeTimer(this);
+        timer.start();
     }
 
     /**
@@ -1291,7 +1287,7 @@ public class ifcBridge implements ifcDn {
 
 }
 
-class ifcBridgeTimer extends TimerTask {
+class ifcBridgeTimer implements Runnable {
 
     private ifcBridge lower;
 
@@ -1301,12 +1297,22 @@ class ifcBridgeTimer extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            cntr = (cntr + 1) & 0xffff;
-            lower.doGroupPurge(cntr);
-            lower.doCachePurge(cntr);
-            lower.doStpFloop(cntr);
+            for (;;) {
+                if (lower.timer != this) {
+                    break;
+                }
+                cntr = (cntr + 1) & 0xffff;
+                lower.doGroupPurge(cntr);
+                lower.doCachePurge(cntr);
+                lower.doStpFloop(cntr);
+                bits.sleep(1000);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

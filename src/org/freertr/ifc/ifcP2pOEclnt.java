@@ -1,7 +1,5 @@
 package org.freertr.ifc;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
@@ -14,6 +12,7 @@ import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
 import org.freertr.user.userFormat;
+import org.freertr.util.bits;
 
 /**
  * ppp over ethernet (rfc2516) protocol client handler
@@ -72,7 +71,10 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
      */
     public cfgIfc clnIfc;
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected ifcP2pOEclntTxKeep keepTimer;
 
     private encTlv tlv = new encTlv(packPppOE.tlv);
 
@@ -234,10 +236,6 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (lastState == state.states.admin) {
             return;
@@ -248,9 +246,8 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
         if (keepaliveInterval < 1) {
             return;
         }
-        keepTimer = new Timer();
-        ifcP2pOEclntTxKeep task = new ifcP2pOEclntTxKeep(this);
-        keepTimer.schedule(task, 500, keepaliveInterval);
+        keepTimer = new ifcP2pOEclntTxKeep(this);
+        keepTimer.start();
     }
 
     /**
@@ -466,7 +463,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
 
 }
 
-class ifcP2pOEclntTxKeep extends TimerTask {
+class ifcP2pOEclntTxKeep implements Runnable {
 
     ifcP2pOEclnt lower;
 
@@ -474,10 +471,20 @@ class ifcP2pOEclntTxKeep extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendKeepalive();
-            lower.checkPeerState(state.states.up);
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.sendKeepalive();
+                lower.checkPeerState(state.states.up);
+                bits.sleep(lower.keepaliveInterval);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

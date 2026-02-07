@@ -1,7 +1,5 @@
 package org.freertr.ifc;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrMac;
 import org.freertr.auth.authResult;
 import org.freertr.auth.authenDown;
@@ -10,6 +8,7 @@ import org.freertr.auth.autherDoer;
 import org.freertr.auth.autherEap;
 import org.freertr.pack.packEapOL;
 import org.freertr.pack.packHolder;
+import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
@@ -47,7 +46,10 @@ public class ifcEapOLclnt implements ifcUp, authenDown {
      */
     public addrMac hwaddr;
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected ifcEapOLclntTxKeep keepTimer;
 
     private autherDoer doer;
 
@@ -59,17 +61,12 @@ public class ifcEapOLclnt implements ifcUp, authenDown {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (shutdown) {
             return;
         }
-        keepTimer = new Timer();
-        ifcEapOLclntTxKeep task = new ifcEapOLclntTxKeep(this);
-        keepTimer.schedule(task, 500, 5000);
+        keepTimer = new ifcEapOLclntTxKeep(this);
+        keepTimer.start();
     }
 
     public counter getCounter() {
@@ -190,7 +187,7 @@ public class ifcEapOLclnt implements ifcUp, authenDown {
 
 }
 
-class ifcEapOLclntTxKeep extends TimerTask {
+class ifcEapOLclntTxKeep implements Runnable {
 
     private ifcEapOLclnt lower;
 
@@ -198,9 +195,19 @@ class ifcEapOLclntTxKeep extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendTimer();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.sendTimer();
+                bits.sleep(5000);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

@@ -1,7 +1,5 @@
 package org.freertr.ifc;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -80,6 +78,11 @@ public class ifcNhrp implements ifcUp {
      */
     public int advertiseInterval = 30000;
 
+    /**
+     * keepalive
+     */
+    protected ifcNhrpTxAdv keepTimer;
+
     private cfgIfc cfg;
 
     private ifcDn lower = new ifcNull();
@@ -87,8 +90,6 @@ public class ifcNhrp implements ifcUp {
     private addrType hwadr;
 
     private counter cntr = new counter();
-
-    private Timer keepTimer;
 
     /**
      * convert type to string
@@ -260,10 +261,6 @@ public class ifcNhrp implements ifcUp {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (shutdown) {
             return;
@@ -271,9 +268,8 @@ public class ifcNhrp implements ifcUp {
         if (advertiseInterval < 1) {
             return;
         }
-        keepTimer = new Timer();
-        ifcNhrpTxAdv task = new ifcNhrpTxAdv(this);
-        keepTimer.schedule(task, 500, advertiseInterval);
+        keepTimer = new ifcNhrpTxAdv(this);
+        keepTimer.start();
     }
 
     /**
@@ -375,7 +371,7 @@ public class ifcNhrp implements ifcUp {
 
 }
 
-class ifcNhrpTxAdv extends TimerTask {
+class ifcNhrpTxAdv implements Runnable {
 
     private ifcNhrp lower;
 
@@ -383,9 +379,19 @@ class ifcNhrpTxAdv extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendAdvert();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.sendAdvert();
+                bits.sleep(lower.advertiseInterval);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
