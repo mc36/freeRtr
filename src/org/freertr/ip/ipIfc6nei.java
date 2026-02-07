@@ -1,8 +1,6 @@
 package org.freertr.ip;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrMac;
@@ -48,20 +46,22 @@ public class ipIfc6nei implements ifcUp {
      */
     public tabRateLimit neiQueryRate;
 
+    /**
+     * timer
+     */
+    protected ipIfc6neiTimer timer;
+
     private addrMac hwaddr = new addrMac();
 
     private addrIPv6 ipaddr = new addrIPv6();
 
     private addrIPv6 lladdr = new addrIPv6();
 
-    private addrPrefix<addrIPv6> network = new addrPrefix<addrIPv6>(
-            new addrIPv6(), 0);
+    private addrPrefix<addrIPv6> network = new addrPrefix<addrIPv6>(new addrIPv6(), 0);
 
     private tabGen<ipIfc6neiEntry> cache = new tabGen<ipIfc6neiEntry>();
 
     private ifcDn lower = new ifcNull();
-
-    private Timer timer;
 
     private ipIfc6 upper;
 
@@ -118,17 +118,12 @@ public class ipIfc6nei implements ifcUp {
     }
 
     private synchronized void resetTimer(boolean needRun) {
-        try {
-            timer.cancel();
-        } catch (Exception e) {
-        }
         timer = null;
         if (!needRun) {
             return;
         }
-        timer = new Timer();
-        ipIfc6neiTimer task = new ipIfc6neiTimer(this);
-        timer.schedule(task, 500, 60000);
+        timer = new ipIfc6neiTimer(this);
+        timer.start();
     }
 
     /**
@@ -497,17 +492,27 @@ public class ipIfc6nei implements ifcUp {
 
 }
 
-class ipIfc6neiTimer extends TimerTask {
+class ipIfc6neiTimer implements Runnable {
 
-    ipIfc6nei parent;
+    private ipIfc6nei parent;
 
     public ipIfc6neiTimer(ipIfc6nei prnt) {
         parent = prnt;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            parent.doCachePurge();
+            for (;;) {
+                if (parent.timer != this) {
+                    break;
+                }
+                bits.sleep(60000);
+                parent.doCachePurge();
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

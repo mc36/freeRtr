@@ -1,7 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
 
@@ -34,7 +32,10 @@ public class ipMhostIface {
      */
     protected ipFwdIface iface;
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected ipMhostIfaceQuery keepTimer;
 
     /**
      * create new instance
@@ -53,10 +54,6 @@ public class ipMhostIface {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (shutdown) {
             return;
@@ -64,9 +61,8 @@ public class ipMhostIface {
         if (queryInterval < 1) {
             return;
         }
-        keepTimer = new Timer();
-        ipMhostIfaceQuery task = new ipMhostIfaceQuery(this);
-        keepTimer.schedule(task, 500, queryInterval);
+        keepTimer = new ipMhostIfaceQuery(this);
+        keepTimer.start();
     }
 
     /**
@@ -108,7 +104,7 @@ public class ipMhostIface {
 
 }
 
-class ipMhostIfaceQuery extends TimerTask {
+class ipMhostIfaceQuery implements Runnable {
 
     private final ipMhostIface lower;
 
@@ -116,10 +112,20 @@ class ipMhostIfaceQuery extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendQuery();
-            lower.sendJoins();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.sendQuery();
+                lower.sendJoins();
+                bits.sleep(lower.queryInterval);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

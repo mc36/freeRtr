@@ -342,5 +342,5 @@ r6 tping 100 20 4321::11 vrf v1 sou eth1
 r6 tping 100 20 2.2.2.14 vrf v1 sou eth1
 r6 tping 100 20 4321::14 vrf v1 sou eth1
 
-r5 tping 100 10 232.2.2.2 vrf v1 sou eth1
-r5 tping 100 10 ff06::1 vrf v1 sou eth1
+r5 tping 100 60 232.2.2.2 vrf v1 sou eth1
+r5 tping 100 60 ff06::1 vrf v1 sou eth1

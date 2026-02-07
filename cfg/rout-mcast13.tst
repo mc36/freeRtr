@@ -382,5 +382,5 @@ r4 tping 100 20 4321::11 vrf v1 sou lo2
 r5 tping 100 20 2.2.2.11 vrf v1 sou lo2
 r5 tping 100 20 4321::11 vrf v1 sou lo2
 
-r1 tping 200 10 232.2.2.2 vrf v1 sou lo1 multi
-r1 tping 200 10 ff06::1 vrf v1 sou lo1 multi
+r1 tping 200 60 232.2.2.2 vrf v1 sou lo1 multi
+r1 tping 200 60 ff06::1 vrf v1 sou lo1 multi

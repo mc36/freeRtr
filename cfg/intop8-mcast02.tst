@@ -67,5 +67,5 @@ r1 tping 100 60 1234:1::1 vrf v1 sou eth1
 r3 tping 100 60 1.1.2.1 vrf v1 sou eth1
 r3 tping 100 60 1234:2::1 vrf v1 sou eth1
 
-r1 tping 100 60 232.2.2.2 vrf v1 sou eth1
-!r1 tping 100 60 ff06::1 vrf v1 sou eth1
+r1 tping 100 120 232.2.2.2 vrf v1 sou eth1
+!r1 tping 100 120 ff06::1 vrf v1 sou eth1

@@ -1,7 +1,5 @@
 package org.freertr.ip;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrMac;
 import org.freertr.clnt.clntProxy;
@@ -40,8 +38,6 @@ public class ipProxy implements ifcUp {
 
     private counter cntr = new counter();
 
-    private Timer timer;
-
     private ipCor4 ip4;
 
     private ipCor6 ip6;
@@ -49,6 +45,11 @@ public class ipProxy implements ifcUp {
     private tabGen<ipProxyConn> tcp;
 
     private tabGen<ipProxyConn> udp;
+
+    /**
+     * timer
+     */
+    protected ipProxyTimer timer;
 
     /**
      * create proxy handler
@@ -84,17 +85,12 @@ public class ipProxy implements ifcUp {
     }
 
     private synchronized void resetTimer(boolean needRun) {
-        try {
-            timer.cancel();
-        } catch (Exception e) {
-        }
         timer = null;
         if (!needRun) {
             return;
         }
-        timer = new Timer();
-        ipProxyTimer task = new ipProxyTimer(this);
-        timer.schedule(task, 500, 1000);
+        timer = new ipProxyTimer(this);
+        timer.start();
     }
 
     /**
@@ -412,7 +408,7 @@ class ipProxyConn implements Comparable<ipProxyConn> {
 
 }
 
-class ipProxyTimer extends TimerTask {
+class ipProxyTimer implements Runnable {
 
     private ipProxy parent;
 
@@ -420,9 +416,19 @@ class ipProxyTimer extends TimerTask {
         parent = prnt;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            parent.doTablePurge();
+            for (;;) {
+                if (parent.timer != this) {
+                    break;
+                }
+                parent.doTablePurge();
+                bits.sleep(1000);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

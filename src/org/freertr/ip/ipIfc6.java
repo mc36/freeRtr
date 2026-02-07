@@ -1,8 +1,6 @@
 package org.freertr.ip;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrMac;
@@ -15,6 +13,7 @@ import org.freertr.ifc.ifcUp;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabRateLimit;
 import org.freertr.user.userFormat;
+import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
 import org.freertr.util.state;
@@ -97,7 +96,10 @@ public class ipIfc6 implements ipIfc, ifcUp {
      */
     protected ipFwd upper = null;
 
-    private Timer timer;
+    /**
+     * timer
+     */
+    protected ipIfc6timer timer;
 
     private ipIcmp6 icc = new ipIcmp6();
 
@@ -486,10 +488,6 @@ public class ipIfc6 implements ipIfc, ifcUp {
      * @param needRun true if needed
      */
     public synchronized void resetTimer(boolean needRun) {
-        try {
-            timer.cancel();
-        } catch (Exception e) {
-        }
         timer = null;
         if (!needRun) {
             return;
@@ -497,9 +495,8 @@ public class ipIfc6 implements ipIfc, ifcUp {
         if (rtrAdvInterval < 1) {
             return;
         }
-        ipIfc6timer task = new ipIfc6timer(this);
-        timer = new Timer();
-        timer.schedule(task, 500, rtrAdvInterval);
+        timer = new ipIfc6timer(this);
+        timer.start();
     }
 
     /**
@@ -553,17 +550,27 @@ public class ipIfc6 implements ipIfc, ifcUp {
 
 }
 
-class ipIfc6timer extends TimerTask {
+class ipIfc6timer implements Runnable {
 
-    ipIfc6 parent;
+    private ipIfc6 parent;
 
     public ipIfc6timer(ipIfc6 prnt) {
         parent = prnt;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            parent.sendAdverts();
+            for (;;) {
+                if (parent.timer != this) {
+                    break;
+                }
+                bits.sleep(parent.rtrAdvInterval);
+                parent.sendAdverts();
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

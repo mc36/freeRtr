@@ -59,21 +59,21 @@ ipv4 multi v1 join 232.2.2.2 1.1.1.1
 ipv6 multi v1 join ff06::1 1234:1::1
 !
 
-r2 tping 100 5 1.1.1.5 vrf v1
-r2 tping 100 5 1.1.1.1 vrf v1
-r2 tping 100 5 1234:2::1 vrf v1
-r2 tping 100 5 1234:1::1 vrf v1
+r2 tping 100 60 1.1.1.5 vrf v1
+r2 tping 100 60 1.1.1.1 vrf v1
+r2 tping 100 60 1234:2::1 vrf v1
+r2 tping 100 60 1234:1::1 vrf v1
 
-r1 tping 100 5 1.1.1.5 vrf v1
-r1 tping 100 5 1234:2::1 vrf v1
-r3 tping 100 5 1.1.1.1 vrf v1
-r3 tping 100 5 1234:1::1 vrf v1
+r1 tping 100 60 1.1.1.5 vrf v1
+r1 tping 100 60 1234:2::1 vrf v1
+r3 tping 100 60 1.1.1.1 vrf v1
+r3 tping 100 60 1234:1::1 vrf v1
 
-r1 tping 100 5 232.2.2.2 vrf v1 sou eth1 ttl 150
-r1 tping 100 5 ff06::1 vrf v1 sou eth1 ttl 150
+r1 tping 100 60 232.2.2.2 vrf v1 sou eth1 ttl 150
+r1 tping 100 60 ff06::1 vrf v1 sou eth1 ttl 150
 
-r1 tping 0 5 232.2.2.2 vrf v1 sou eth1 ttl 50
-r1 tping 0 5 ff06::1 vrf v1 sou eth1 ttl 50
+r1 tping 0 60 232.2.2.2 vrf v1 sou eth1 ttl 50
+r1 tping 0 60 ff06::1 vrf v1 sou eth1 ttl 50
 
-r1 tping 100 5 232.2.2.2 vrf v1 sou eth1 ttl 150
-r1 tping 100 5 ff06::1 vrf v1 sou eth1 ttl 150
+r1 tping 100 60 232.2.2.2 vrf v1 sou eth1 ttl 150
+r1 tping 100 60 ff06::1 vrf v1 sou eth1 ttl 150
