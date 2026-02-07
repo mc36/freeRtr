@@ -2,8 +2,6 @@ package org.freertr.ifc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -43,6 +41,11 @@ public class ifcLldp implements ifcUp {
      */
     public tabGen<ifcLldpNeigh> neighs = new tabGen<ifcLldpNeigh>();
 
+    /**
+     * keepalive
+     */
+    protected ifcLldpTxAdv keepTimer;
+
     private cfgIfc cfg;
 
     private ifcDn lower = new ifcNull();
@@ -50,8 +53,6 @@ public class ifcLldp implements ifcUp {
     private addrType hwadr;
 
     private counter cntr = new counter();
-
-    private Timer keepTimer;
 
     /**
      * end of pdu
@@ -299,10 +300,6 @@ public class ifcLldp implements ifcUp {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (shutdown) {
             return;
@@ -310,9 +307,8 @@ public class ifcLldp implements ifcUp {
         if (advertiseInterval < 1) {
             return;
         }
-        keepTimer = new Timer();
-        ifcLldpTxAdv task = new ifcLldpTxAdv(this);
-        keepTimer.schedule(task, 500, advertiseInterval);
+        keepTimer = new ifcLldpTxAdv(this);
+        keepTimer.start();
     }
 
     private void putAddr(packHolder pck, encTlv tlv, int typ, addrType adr) {
@@ -400,7 +396,7 @@ public class ifcLldp implements ifcUp {
 
 }
 
-class ifcLldpTxAdv extends TimerTask {
+class ifcLldpTxAdv implements Runnable {
 
     private ifcLldp lower;
 
@@ -408,9 +404,19 @@ class ifcLldpTxAdv extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendAdvert();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.sendAdvert();
+                bits.sleep(lower.advertiseInterval);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }
