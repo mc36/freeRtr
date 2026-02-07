@@ -463,6 +463,8 @@ public class ifcBundle implements Runnable, ifcDn {
             }
             sequence = new tabWindow<packHolder>(i);
             seqTx = 0;
+            timer1 = new ifcBundleKeep(this);
+            timer1.start();
             return;
         }
         if (s.equals("dejitter")) {
@@ -524,6 +526,7 @@ public class ifcBundle implements Runnable, ifcDn {
         }
         if (s.equals("sequence")) {
             sequence = null;
+            timer1 = null;
             return;
         }
         if (s.equals("dejitter")) {
@@ -873,8 +876,6 @@ public class ifcBundle implements Runnable, ifcDn {
         if (debugger.ifcBundleTraf) {
             logger.debug("startup");
         }
-        timer1 = new ifcBundleKeep(this);
-        timer1.start();
         new Thread(this).start();
     }
 
