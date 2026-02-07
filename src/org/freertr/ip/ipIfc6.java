@@ -565,10 +565,10 @@ class ipIfc6timer implements Runnable {
     public void run() {
         try {
             for (;;) {
+                bits.sleep(parent.rtrAdvInterval);
                 if (parent.timer != this) {
                     break;
                 }
-                bits.sleep(parent.rtrAdvInterval);
                 parent.sendAdverts();
             }
         } catch (Exception e) {

@@ -507,10 +507,10 @@ class ipIfc6neiTimer implements Runnable {
     public void run() {
         try {
             for (;;) {
+                bits.sleep(60000);
                 if (parent.timer != this) {
                     break;
                 }
-                bits.sleep(60000);
                 parent.doCachePurge();
             }
         } catch (Exception e) {
