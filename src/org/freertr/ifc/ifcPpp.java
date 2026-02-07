@@ -1,8 +1,6 @@
 package org.freertr.ifc;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrEui;
 import org.freertr.addr.addrIPv4;
@@ -262,7 +260,10 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      */
     public cfgIfc cfger;
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected ifcPppTxKeep keepTimer;
 
     private int curMode = modeLcp;
 
@@ -1048,10 +1049,6 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (lastState == state.states.admin) {
             return;
@@ -1062,9 +1059,8 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         if (keepaliveInterval < 1) {
             return;
         }
-        keepTimer = new Timer();
-        ifcPppTxKeep task = new ifcPppTxKeep(this);
-        keepTimer.schedule(task, 500, keepaliveInterval);
+        keepTimer = new ifcPppTxKeep(this);
+        keepTimer.start();
     }
 
     /**
@@ -1718,7 +1714,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
 
 }
 
-class ifcPppTxKeep extends TimerTask {
+class ifcPppTxKeep implements Runnable {
 
     private ifcPpp lower;
 
@@ -1726,9 +1722,19 @@ class ifcPppTxKeep extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendKeepReq();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.sendKeepReq();
+                bits.sleep(lower.keepaliveInterval);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

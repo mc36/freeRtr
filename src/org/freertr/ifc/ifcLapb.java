@@ -1,8 +1,6 @@
 package org.freertr.ifc;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrType;
 import org.freertr.pack.packHolder;
@@ -156,7 +154,10 @@ public class ifcLapb implements ifcUp, ifcDn {
      */
     public final static int commandFRMR = 0x87;
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected ifcLapbTxKeep keepTimer;
 
     private final static int bufferMax = 6;
 
@@ -465,10 +466,6 @@ public class ifcLapb implements ifcUp, ifcDn {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (lastState == state.states.admin) {
             return;
@@ -479,9 +476,8 @@ public class ifcLapb implements ifcUp, ifcDn {
         if (keepaliveInterval < 1) {
             return;
         }
-        keepTimer = new Timer();
-        ifcLapbTxKeep task = new ifcLapbTxKeep(this);
-        keepTimer.schedule(task, 500, keepaliveInterval);
+        keepTimer = new ifcLapbTxKeep(this);
+        keepTimer.start();
     }
 
     /**
@@ -779,7 +775,7 @@ public class ifcLapb implements ifcUp, ifcDn {
 
 }
 
-class ifcLapbTxKeep extends TimerTask {
+class ifcLapbTxKeep implements Runnable {
 
     private ifcLapb lower;
 
@@ -787,9 +783,19 @@ class ifcLapbTxKeep extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendKeepalive();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.sendKeepalive();
+                bits.sleep(lower.keepaliveInterval);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

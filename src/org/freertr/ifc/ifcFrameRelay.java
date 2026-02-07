@@ -1,8 +1,6 @@
 package org.freertr.ifc;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrType;
 import org.freertr.pack.packHolder;
@@ -176,7 +174,10 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
      */
     public final static int opcodeStatus = 0x7d;
 
-    private Timer keepTimer;
+    /**
+     * keepalive
+     */
+    protected ifcFrameRelayTxKeep keepTimer;
 
     public counter getCounter() {
         return cntr;
@@ -444,10 +445,6 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
      * @param shutdown set true to shut down
      */
     public void restartTimer(boolean shutdown) {
-        try {
-            keepTimer.cancel();
-        } catch (Exception e) {
-        }
         keepTimer = null;
         if (lastState == state.states.admin) {
             return;
@@ -458,9 +455,8 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
         if (keepaliveInterval < 1) {
             return;
         }
-        keepTimer = new Timer();
-        ifcFrameRelayTxKeep task = new ifcFrameRelayTxKeep(this);
-        keepTimer.schedule(task, 500, keepaliveInterval);
+        keepTimer = new ifcFrameRelayTxKeep(this);
+        keepTimer.start();
     }
 
     private void putDLCI(packHolder pck, int dlci) {
@@ -753,7 +749,7 @@ public class ifcFrameRelay implements ifcUp, ifcDn {
 
 }
 
-class ifcFrameRelayTxKeep extends TimerTask {
+class ifcFrameRelayTxKeep implements Runnable {
 
     private ifcFrameRelay lower;
 
@@ -761,9 +757,19 @@ class ifcFrameRelayTxKeep extends TimerTask {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
-            lower.sendKeepalive();
+            for (;;) {
+                if (lower.keepTimer != this) {
+                    break;
+                }
+                lower.sendKeepalive();
+                bits.sleep(lower.keepaliveInterval);
+            }
         } catch (Exception e) {
             logger.traceback(e);
         }

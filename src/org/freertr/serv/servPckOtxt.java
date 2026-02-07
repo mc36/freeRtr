@@ -140,9 +140,9 @@ class servPckOtxtConn implements Runnable, ifcDn {
     public servPckOtxtConn(pipeSide pip, servPckOtxt lower) {
         pipe = pip;
         parent = lower;
-        ifc = lower.clnIfc.cloneStart(this);
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
+        ifc = lower.clnIfc.cloneStart(this);
         new Thread(this).start();
     }
 
