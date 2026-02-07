@@ -44,7 +44,7 @@ public class ifcEapOLclnt implements ifcUp, authenDown {
     /**
      * hardware address
      */
-    public addrMac hwaddr;
+    public addrMac hwaddr = addrMac.getRandom();
 
     /**
      * keepalive

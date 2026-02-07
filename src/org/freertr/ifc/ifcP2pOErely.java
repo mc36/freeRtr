@@ -60,7 +60,7 @@ public class ifcP2pOErely implements ifcUp {
     /**
      * hardware address
      */
-    public addrMac hwaddr;
+    public addrMac hwaddr = addrMac.getRandom();
 
     /**
      * serial handler

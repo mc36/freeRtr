@@ -2,6 +2,7 @@ package org.freertr.ifc;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAll;
@@ -51,7 +52,7 @@ public class ifcUdld implements ifcUp {
 
     private ifcDn lower = new ifcNull();
 
-    private addrType hwadr;
+    private addrType hwadr = new addrEmpty();
 
     private counter cntr = new counter();
 

@@ -52,12 +52,12 @@ public class ifcAtaOE implements ifcUp {
     /**
      * hardware address
      */
-    public addrMac hwaddr;
+    public addrMac hwaddr = addrMac.getRandom();
 
     /**
      * client address
      */
-    public addrMac clnMac;
+    public addrMac clnMac = new addrMac();
 
     /**
      * shelf id

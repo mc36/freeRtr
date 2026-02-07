@@ -1,5 +1,6 @@
 package org.freertr.ifc;
 
+import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAll;
@@ -25,7 +26,7 @@ public class ifcPtp implements ifcUp, Runnable {
 
     private ifcDn lower = new ifcNull();
 
-    private addrType hwadr;
+    private addrType hwadr = new addrEmpty();
 
     private counter cntr = new counter();
 

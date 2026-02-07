@@ -78,7 +78,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
 
     private encTlv tlv = new encTlv(packPppOE.tlv);
 
-    private addrMac hwAddr; // hw address
+    private addrMac hwAddr = addrMac.getRandom(); // hw address
 
     private int currState = 0; // saw: 1-pado, 2-pads, 3-conn, 4-wait
 

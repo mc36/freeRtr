@@ -70,7 +70,7 @@ public class ifcP2pOEserv implements ifcUp {
     /**
      * hardware address
      */
-    public addrMac hwaddr;
+    public addrMac hwaddr = addrMac.getRandom();
 
     public String toString() {
         String a = "";

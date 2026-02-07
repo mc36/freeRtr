@@ -33,7 +33,7 @@ public class ifcEapOLserv implements ifcUp, authenDown {
     /**
      * hardware address
      */
-    public addrMac hwaddr;
+    public addrMac hwaddr = addrMac.getRandom();
 
     /**
      * authenticator to use
