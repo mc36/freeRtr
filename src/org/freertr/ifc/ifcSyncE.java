@@ -111,32 +111,36 @@ public class ifcSyncE implements ifcUp, Runnable {
     }
 
     public void run() {
-        for (;;) {
-            if (!need2run) {
-                return;
+        try {
+            for (;;) {
+                if (!need2run) {
+                    return;
+                }
+                bits.sleep(1000);
+                if (debugger.ifcSynceEvnt) {
+                    logger.debug("sending packet");
+                }
+                packHolder pck = new packHolder(true, true);
+                encTlv tlv = getTlv();
+                pck.ETHtrg.fromString("0100:0ccd:cdd0");
+                if (hwadr.getSize() == addrMac.size) {
+                    pck.ETHsrc.fromBuf(hwadr.getBytes(), 0);
+                }
+                pck.msbPutW(0, ethtyp); // ethertype
+                pck.msbPutD(2, magic); // magic
+                pck.msbPutW(6, 0x01); // event
+                pck.msbPutD(8, 0x10000000); // flags
+                pck.putSkip(12);
+                tlv.valDat[0] = 0xb; // g813
+                tlv.putBytes(pck, 1, 1, tlv.valDat); // quality level
+                tlv.valDat[0] = 0; // timestamp
+                bits.msbPutD(tlv.valDat, 0, (int) bits.getTime()); // time
+                tlv.putBytes(pck, 2, 5, tlv.valDat); // timestamp
+                pck.merge2beg();
+                lower.sendPack(pck);
             }
-            bits.sleep(1000);
-            if (debugger.ifcSynceEvnt) {
-                logger.debug("sending packet");
-            }
-            packHolder pck = new packHolder(true, true);
-            encTlv tlv = getTlv();
-            pck.ETHtrg.fromString("0100:0ccd:cdd0");
-            if (hwadr.getSize() == addrMac.size) {
-                pck.ETHsrc.fromBuf(hwadr.getBytes(), 0);
-            }
-            pck.msbPutW(0, ethtyp); // ethertype
-            pck.msbPutD(2, magic); // magic
-            pck.msbPutW(6, 0x01); // event
-            pck.msbPutD(8, 0x10000000); // flags
-            pck.putSkip(12);
-            tlv.valDat[0] = 0xb; // g813
-            tlv.putBytes(pck, 1, 1, tlv.valDat); // quality level
-            tlv.valDat[0] = 0; // timestamp
-            bits.msbPutD(tlv.valDat, 0, (int) bits.getTime()); // time
-            tlv.putBytes(pck, 2, 5, tlv.valDat); // timestamp
-            pck.merge2beg();
-            lower.sendPack(pck);
+        } catch (Exception e) {
+            logger.traceback(e);
         }
     }
 

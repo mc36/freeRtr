@@ -134,37 +134,41 @@ public class ifcLacp implements ifcUp, Runnable {
     }
 
     public void run() {
-        for (;;) {
-            if (!need2run) {
-                return;
+        try {
+            for (;;) {
+                if (!need2run) {
+                    return;
+                }
+                bits.sleep(1000);
+                heard++;
+                if (heard > 60) {
+                    peer = new byte[18];
+                }
+                if (debugger.ifcLacpEvnt) {
+                    logger.debug("sending packet");
+                }
+                packHolder pck = new packHolder(true, true);
+                encTlv tlv = getTlv();
+                pck.ETHtrg.fromString("0180:c200:0002");
+                if (hwadr.getSize() == addrMac.size) {
+                    pck.ETHsrc.fromBuf(hwadr.getBytes(), 0);
+                }
+                pck.msbPutW(0, ethtyp); // ethertype
+                pck.msbPutW(2, 0x0101); // lacp v1
+                pck.putSkip(4);
+                tlv.putBytes(pck, 1, getInfo());
+                tlv.putBytes(pck, 2, peer);
+                byte[] buf = new byte[14];
+                bits.msbPutW(buf, 0, 0x8000);
+                tlv.putBytes(pck, 3, buf);
+                pck.merge2beg();
+                pck.putFill(0, 0x34, 0);
+                pck.putSkip(0x34);
+                pck.merge2end();
+                lower.sendPack(pck);
             }
-            bits.sleep(1000);
-            heard++;
-            if (heard > 60) {
-                peer = new byte[18];
-            }
-            if (debugger.ifcLacpEvnt) {
-                logger.debug("sending packet");
-            }
-            packHolder pck = new packHolder(true, true);
-            encTlv tlv = getTlv();
-            pck.ETHtrg.fromString("0180:c200:0002");
-            if (hwadr.getSize() == addrMac.size) {
-                pck.ETHsrc.fromBuf(hwadr.getBytes(), 0);
-            }
-            pck.msbPutW(0, ethtyp); // ethertype
-            pck.msbPutW(2, 0x0101); // lacp v1
-            pck.putSkip(4);
-            tlv.putBytes(pck, 1, getInfo());
-            tlv.putBytes(pck, 2, peer);
-            byte[] buf = new byte[14];
-            bits.msbPutW(buf, 0, 0x8000);
-            tlv.putBytes(pck, 3, buf);
-            pck.merge2beg();
-            pck.putFill(0, 0x34, 0);
-            pck.putSkip(0x34);
-            pck.merge2end();
-            lower.sendPack(pck);
+        } catch (Exception e) {
+            logger.traceback(e);
         }
     }
 

@@ -118,35 +118,39 @@ public class ifcPtp implements ifcUp, Runnable {
     }
 
     public void run() {
-        int clk = bits.randomD();
-        int seq = 0;
-        for (;;) {
-            if (!need2run) {
-                return;
+        try {
+            int clk = bits.randomD();
+            int seq = 0;
+            for (;;) {
+                if (!need2run) {
+                    return;
+                }
+                bits.sleep(1000);
+                seq++;
+                if (debugger.ifcPtpEvnt) {
+                    logger.debug("sending packet");
+                }
+                packHolder pck1 = new packHolder(true, true);
+                packPtp.setMac(pck1.ETHtrg);
+                if (hwadr.getSize() == addrMac.size) {
+                    pck1.ETHsrc.fromBuf(hwadr.getBytes(), 0);
+                }
+                packHolder pck2 = pck1.copyBytes(true, true);
+                packPtp ptp = new packPtp();
+                ptp.domain = 0;
+                ptp.port = 1;
+                ptp.clock = clk;
+                ptp.sequence = seq;
+                ptp.offset = cfgAll.timeServerOffset;
+                ptp.createSync(pck1);
+                packPtp.genHead(pck1);
+                lower.sendPack(pck1);
+                ptp.createFollow(pck2);
+                packPtp.genHead(pck2);
+                lower.sendPack(pck2);
             }
-            bits.sleep(1000);
-            seq++;
-            if (debugger.ifcPtpEvnt) {
-                logger.debug("sending packet");
-            }
-            packHolder pck1 = new packHolder(true, true);
-            packPtp.setMac(pck1.ETHtrg);
-            if (hwadr.getSize() == addrMac.size) {
-                pck1.ETHsrc.fromBuf(hwadr.getBytes(), 0);
-            }
-            packHolder pck2 = pck1.copyBytes(true, true);
-            packPtp ptp = new packPtp();
-            ptp.domain = 0;
-            ptp.port = 1;
-            ptp.clock = clk;
-            ptp.sequence = seq;
-            ptp.offset = cfgAll.timeServerOffset;
-            ptp.createSync(pck1);
-            packPtp.genHead(pck1);
-            lower.sendPack(pck1);
-            ptp.createFollow(pck2);
-            packPtp.genHead(pck2);
-            lower.sendPack(pck2);
+        } catch (Exception e) {
+            logger.traceback(e);
         }
     }
 

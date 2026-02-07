@@ -1092,34 +1092,38 @@ class ifcBundlePeer implements ifcUp, Runnable {
     }
 
     public void run() {
-        for (;;) {
-            bits.sleep(packReplicator.timeKeep);
-            if (!need2work) {
-                break;
+        try {
+            for (;;) {
+                bits.sleep(packReplicator.timeKeep);
+                if (!need2work) {
+                    break;
+                }
+                packHolder pck = new packHolder(true, true);
+                pck.msbPutW(0, packReplicator.ethTyp);
+                pck.putByte(2, packReplicator.typKeep);
+                pck.msbPutD(3, localId);
+                pck.putSkip(7);
+                pck.merge2beg();
+                pck.ETHsrc.setAddr(addrMac.getBroadcast());
+                pck.ETHtrg.setAddr(addrMac.getBroadcast());
+                ifHnd.sendPack(pck);
+                boolean old = remoteAlive;
+                if ((bits.getTime() - lastRx) < packReplicator.timeHold) {
+                    remoteAlive = true;
+                } else {
+                    remoteAlive = false;
+                    remoteBetter = false;
+                }
+                if (old == remoteAlive) {
+                    continue;
+                }
+                if (lower.logging) {
+                    logger.info("peer alive changed to " + remoteAlive);
+                }
+                lower.propagateState();
             }
-            packHolder pck = new packHolder(true, true);
-            pck.msbPutW(0, packReplicator.ethTyp);
-            pck.putByte(2, packReplicator.typKeep);
-            pck.msbPutD(3, localId);
-            pck.putSkip(7);
-            pck.merge2beg();
-            pck.ETHsrc.setAddr(addrMac.getBroadcast());
-            pck.ETHtrg.setAddr(addrMac.getBroadcast());
-            ifHnd.sendPack(pck);
-            boolean old = remoteAlive;
-            if ((bits.getTime() - lastRx) < packReplicator.timeHold) {
-                remoteAlive = true;
-            } else {
-                remoteAlive = false;
-                remoteBetter = false;
-            }
-            if (old == remoteAlive) {
-                continue;
-            }
-            if (lower.logging) {
-                logger.info("peer alive changed to " + remoteAlive);
-            }
-            lower.propagateState();
+        } catch (Exception e) {
+            logger.traceback(e);
         }
     }
 
