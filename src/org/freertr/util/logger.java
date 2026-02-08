@@ -449,6 +449,18 @@ public class logger {
     }
 
     /**
+     * start new thread
+     *
+     * @param r runnable to start
+     * @return thread created
+     */
+    public static Thread startThread(Runnable r) {
+        Thread t = new Thread(r);
+        t.start();
+        return t;
+    }
+
+    /**
      * start file logger
      *
      * @param fn name of file

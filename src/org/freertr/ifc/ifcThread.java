@@ -396,8 +396,7 @@ public abstract class ifcThread implements ifcDn, Runnable {
         }
         started = new Thread[thrd];
         for (int i = 0; i < started.length; i++) {
-            started[i] = new Thread(this);
-            started[i].start();
+            started[i] = logger.startThread(this);
         }
     }
 
