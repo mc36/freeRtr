@@ -1033,6 +1033,20 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         }
     }
 
+    private void purgeNeighs() {
+        long tim = bits.getTime();
+        for (int i = neighs.size() - 1; i >= 0; i--) {
+            rtrLsrpNeigh nei = neighs.get(i);
+            if (nei == null) {
+                continue;
+            }
+            if ((tim - nei.lastHeard) < deadTimer) {
+                continue;
+            }
+            nei.stopWork();
+        }
+    }
+
     /**
      * got better advertisement
      *
@@ -1058,17 +1072,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
             }
             try {
                 sendHello(conn);
-                long tim = bits.getTime();
-                for (int i = neighs.size() - 1; i >= 0; i--) {
-                    rtrLsrpNeigh nei = neighs.get(i);
-                    if (nei == null) {
-                        continue;
-                    }
-                    if ((tim - nei.lastHeard) < deadTimer) {
-                        continue;
-                    }
-                    nei.stopWork();
-                }
+                purgeNeighs();
             } catch (Exception e) {
                 logger.traceback(e);
             }

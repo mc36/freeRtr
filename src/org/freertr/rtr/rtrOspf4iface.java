@@ -1420,6 +1420,19 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
     }
 
     /**
+     * send hello packets
+     */
+    protected void sendHellos() {
+        for (int i = 0; i < lower.areas.size(); i++) {
+            rtrOspf4area area = lower.areas.get(i);
+            if (area == null) {
+                continue;
+            }
+            sendHello(area);
+        }
+    }
+
+    /**
      * get protocol number
      *
      * @return number
@@ -1547,13 +1560,7 @@ class rtrOspf4ifaceHello implements Runnable {
                     break;
                 }
                 lower.electDRs();
-                for (int i = 0; i < lower.areas.size(); i++) {
-                    rtrOspf4area area = lower.areas.get(i);
-                    if (area == null) {
-                        continue;
-                    }
-                    lower.sendHello(area);
-                }
+                lower.sendHellos();
                 bits.sleep(lower.helloTimer);
             }
         } catch (Exception e) {

@@ -1203,6 +1203,19 @@ public class rtrOspf6iface implements Comparable<rtrOspf6iface>, ipPrt {
     }
 
     /**
+     * send hello packets
+     */
+    protected void sendHellos() {
+        for (int i = 0; i < lower.areas.size(); i++) {
+            rtrOspf6area area = lower.areas.get(i);
+            if (area == null) {
+                continue;
+            }
+            sendHello(area);
+        }
+    }
+
+    /**
      * get protocol number
      *
      * @return number
@@ -1330,13 +1343,7 @@ class rtrOspf6ifaceHello implements Runnable {
                     break;
                 }
                 lower.electDRs();
-                for (int i = 0; i < lower.areas.size(); i++) {
-                    rtrOspf6area area = lower.areas.get(i);
-                    if (area == null) {
-                        continue;
-                    }
-                    lower.sendHello(area);
-                }
+                lower.sendHellos();
                 bits.sleep(lower.helloTimer);
             }
         } catch (Exception e) {

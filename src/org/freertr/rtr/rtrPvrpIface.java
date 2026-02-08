@@ -1197,6 +1197,20 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         }
     }
 
+    private void purgeNeighs() {
+        long tim = bits.getTime();
+        for (int i = neighs.size() - 1; i >= 0; i--) {
+            rtrPvrpNeigh nei = neighs.get(i);
+            if (nei == null) {
+                continue;
+            }
+            if ((tim - nei.lastHeard) < deadTimer) {
+                continue;
+            }
+            nei.stopWork();
+        }
+    }
+
     public void run() {
         for (;;) {
             if (!need2run) {
@@ -1204,17 +1218,7 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
             }
             try {
                 sendHello(conn);
-                long tim = bits.getTime();
-                for (int i = neighs.size() - 1; i >= 0; i--) {
-                    rtrPvrpNeigh nei = neighs.get(i);
-                    if (nei == null) {
-                        continue;
-                    }
-                    if ((tim - nei.lastHeard) < deadTimer) {
-                        continue;
-                    }
-                    nei.stopWork();
-                }
+                purgeNeighs();
             } catch (Exception e) {
                 logger.traceback(e);
             }
