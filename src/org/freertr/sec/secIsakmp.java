@@ -764,7 +764,7 @@ class secIsakmpRx implements Runnable {
 
     public secIsakmpRx(secIsakmp parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -787,7 +787,7 @@ class secIsakmpTx implements Runnable {
 
     public secIsakmpTx(secIsakmp parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

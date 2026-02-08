@@ -273,7 +273,7 @@ public class secInfoWrk implements Runnable {
         }
         thrd &= config.resolve || (config.pmtudTim > 0) || (config.script != null);
         if (thrd) {
-            new Thread(this).start();
+            logger.startThread(this);
             return true;
         }
         doLongWork();

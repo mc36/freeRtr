@@ -472,7 +472,7 @@ public class ipDlepNeigh implements Runnable, Comparable<ipDlepNeigh> {
      * start working
      */
     protected void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

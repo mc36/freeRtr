@@ -8,6 +8,7 @@ import org.freertr.serv.servDiscard;
 import org.freertr.serv.servGeneric;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.logger;
 
 /**
  * speed test client
@@ -97,17 +98,21 @@ class clntSpeedRx implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
-        for (;;) {
-            byte[] buf = new byte[1024];
-            int i = parent.rxp.blockingGet(buf, 0, buf.length);
-            if (i < 0) {
-                break;
+        try {
+            for (;;) {
+                byte[] buf = new byte[1024];
+                int i = parent.rxp.blockingGet(buf, 0, buf.length);
+                if (i < 0) {
+                    break;
+                }
+                parent.rxc += i;
             }
-            parent.rxc += i;
+        } catch (Exception e) {
+            logger.traceback(e);
         }
     }
 
@@ -122,17 +127,21 @@ class clntSpeedTx implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
-        for (;;) {
-            byte[] buf = new byte[1024];
-            int i = parent.txp.blockingPut(buf, 0, buf.length);
-            if (i < 0) {
-                break;
+        try {
+            for (;;) {
+                byte[] buf = new byte[1024];
+                int i = parent.txp.blockingPut(buf, 0, buf.length);
+                if (i < 0) {
+                    break;
+                }
+                parent.txc += i;
             }
-            parent.txc += i;
+        } catch (Exception e) {
+            logger.traceback(e);
         }
     }
 

@@ -159,7 +159,7 @@ class servTelnetConn implements Runnable {
         lower = prnt;
         pipe = pip;
         id = sck;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

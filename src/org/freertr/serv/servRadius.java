@@ -207,7 +207,7 @@ class servRadiusConn implements Runnable {
     public servRadiusConn(pipeSide conn, servRadius parent) {
         pipe = conn;
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private boolean doer() {

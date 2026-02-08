@@ -1127,7 +1127,7 @@ public class rtrIsisLevel implements Runnable {
             return;
         }
         todo.or(1);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

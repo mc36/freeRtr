@@ -76,7 +76,7 @@ public class prtRedun implements Runnable {
     }
 
     private void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private static void sendHellos() {
@@ -891,7 +891,7 @@ class prtRedunExec implements Runnable {
     public prtRedunExec(prtRedunIfc i, String a) {
         ifc = i;
         cmd = a;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -946,7 +946,7 @@ class prtRedunXfer implements Runnable {
         ifc = i;
         fn = a;
         rfn = b;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

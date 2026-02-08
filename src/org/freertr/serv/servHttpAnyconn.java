@@ -70,7 +70,7 @@ public class servHttpAnyconn implements Runnable, ifcDn {
         lower.sendRespHeader("200 ok", -1, null);
         lower.gotKeep = false;
         lower.pipe = null;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

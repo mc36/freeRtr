@@ -240,7 +240,7 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
         connM.timeout = 0;
         nonceL = bits.randomW();
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

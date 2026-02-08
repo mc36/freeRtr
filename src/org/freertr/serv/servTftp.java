@@ -154,7 +154,7 @@ class servTftpConn implements Runnable {
     public servTftpConn(pipeSide conn, servTftp parent) {
         pipe = conn;
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

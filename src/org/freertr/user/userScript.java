@@ -1112,7 +1112,7 @@ class userScriptExec implements Runnable {
         exe = e;
         pip = p;
         cmd = c;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

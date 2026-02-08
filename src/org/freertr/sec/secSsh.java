@@ -184,7 +184,7 @@ public class secSsh implements Runnable {
     }
 
     private void workerStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -757,7 +757,7 @@ class secSshRx implements Runnable {
 
     public secSshRx(secSsh parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -780,7 +780,7 @@ class secSshTx implements Runnable {
 
     public secSshTx(secSsh parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

@@ -268,7 +268,7 @@ public class clntEtherIp implements Runnable, ipPrt, ifcDn {
      * start connection
      */
     public void workStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

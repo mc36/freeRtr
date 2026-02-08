@@ -11,6 +11,7 @@ import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.logger;
 
 /**
  * daytime (rfc867) server
@@ -86,7 +87,7 @@ class servDaytimeConn implements Runnable {
 
     public servDaytimeConn(pipeSide conn) {
         pipe = conn;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

@@ -128,7 +128,7 @@ class servIscsiConn implements Runnable {
         pipe = conn;
         lower = parent;
         mySide = id;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

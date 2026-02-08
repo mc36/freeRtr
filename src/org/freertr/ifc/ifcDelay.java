@@ -63,7 +63,7 @@ class ifcDelayTx implements Runnable {
     public packHolder pack;
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -86,7 +86,7 @@ class ifcDelayRx implements Runnable {
     public packHolder pack;
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

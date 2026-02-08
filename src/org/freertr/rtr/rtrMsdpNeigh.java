@@ -391,7 +391,7 @@ public class rtrMsdpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrMsdpNei
         }
         need2run = true;
         upTime = bits.getTime();
-        new Thread(this).start();
+        logger.startThread(this);
         new rtrMsdpNeighTx(this);
     }
 
@@ -523,7 +523,7 @@ class rtrMsdpNeighTx implements Runnable {
 
     public rtrMsdpNeighTx(rtrMsdpNeigh prnt) {
         lower = prnt;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

@@ -59,7 +59,7 @@ class servOpenflowTx implements Runnable {
     public servOpenflowTx(pipeSide stream, servOpenflow parent) {
         pipe = stream;
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

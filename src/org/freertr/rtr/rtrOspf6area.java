@@ -1349,7 +1349,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
             return;
         }
         todo.or(1);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

@@ -166,7 +166,7 @@ class servImap4doer implements Runnable {
     public servImap4doer(servImap4 parent, pipeSide stream) {
         lower = parent;
         pipe = stream;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public tabGen<servImap4msg> getMsgList() {

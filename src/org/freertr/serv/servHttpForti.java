@@ -103,7 +103,7 @@ public class servHttpForti implements Runnable, ifcDn {
             }
         }
         clnd = cfg.allowForti.cloneStart(this);
-        new Thread(this).start();
+        logger.startThread(this);
         lower.gotKeep = false;
         lower.pipe = null;
     }

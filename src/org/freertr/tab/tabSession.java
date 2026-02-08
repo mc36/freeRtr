@@ -725,7 +725,7 @@ public class tabSession implements Runnable {
      */
     public void startTimer() {
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

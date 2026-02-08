@@ -389,7 +389,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
                     return;
                 }
                 locInt = bits.str2num(cmd.word());
-                new Thread(this).start();
+                logger.startThread(this);
                 return;
             }
             if (s.equals("delay")) {
@@ -398,7 +398,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
                     return;
                 }
                 locDel = bits.str2num(cmd.word());
-                new Thread(this).start();
+                logger.startThread(this);
                 return;
             }
             if (s.equals("memory")) {

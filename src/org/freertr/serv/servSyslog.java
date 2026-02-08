@@ -209,7 +209,7 @@ class servSyslogDoer implements Runnable {
         lower = parent;
         pipe = conn;
         sck = id;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

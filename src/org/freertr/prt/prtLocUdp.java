@@ -3,6 +3,7 @@ package org.freertr.prt;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import org.freertr.pipe.pipeSide;
+import org.freertr.util.logger;
 
 /**
  * local udp server
@@ -37,7 +38,7 @@ class prtLocUdpRx implements Runnable {
     public prtLocUdpRx(DatagramSocket clnt, pipeSide conn) {
         sock = clnt;
         pipe = conn;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -72,7 +73,7 @@ class prtLocUdpTx implements Runnable {
     public prtLocUdpTx(DatagramSocket clnt, pipeSide conn) {
         sock = clnt;
         pipe = conn;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

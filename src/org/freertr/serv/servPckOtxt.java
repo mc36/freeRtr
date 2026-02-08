@@ -143,7 +143,7 @@ class servPckOtxtConn implements Runnable, ifcDn {
         pipe.lineRx = pipeSide.modTyp.modeCRorLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         ifc = lower.clnIfc.cloneStart(this);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

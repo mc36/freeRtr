@@ -357,7 +357,7 @@ class servIrcConn implements Comparable<servIrcConn>, Runnable {
         peer = host.copyBytes();
         port = prt;
         nick = "peer" + peer;
-        new Thread(this).start();
+        logger.startThread(this);
         new servIrcKeep(this);
     }
 
@@ -554,7 +554,7 @@ class servIrcKeep implements Runnable {
 
     public servIrcKeep(servIrcConn conn) {
         lower = conn;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

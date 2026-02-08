@@ -449,7 +449,7 @@ public class clntSdwan implements Runnable, ifcDn {
         if (protol.size() < 1) {
             protol.add(protoTyp.l2tp);
         }
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

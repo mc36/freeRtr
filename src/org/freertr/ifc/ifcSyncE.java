@@ -40,7 +40,7 @@ public class ifcSyncE implements ifcUp, Runnable {
      * create new instance
      */
     public ifcSyncE() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

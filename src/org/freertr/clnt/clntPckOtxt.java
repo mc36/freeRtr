@@ -142,7 +142,7 @@ public class clntPckOtxt implements Runnable, ifcDn {
      * start connection
      */
     public void workStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

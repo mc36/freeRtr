@@ -61,7 +61,7 @@ public class userRecord implements Runnable {
         orig.copy2cfg(cfg);
         pip = pl.getSide();
         pip.setTime(0);
-        new Thread(this).start();
+        logger.startThread(this);
         pipeRelay trm = new pipeRelay(orig.pipe, pip, recf);
         trm.doTerm();
         exe.pipe.setClose();

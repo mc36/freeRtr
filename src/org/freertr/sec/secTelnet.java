@@ -563,7 +563,7 @@ class secTelnetRx implements Runnable {
 
     public secTelnetRx(secTelnet parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -586,7 +586,7 @@ class secTelnetTx implements Runnable {
 
     public secTelnetTx(secTelnet parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

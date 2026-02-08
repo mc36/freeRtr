@@ -158,7 +158,7 @@ class servPrometheusConn implements Runnable {
     public servPrometheusConn(servPrometheus parent, pipeSide pipe) {
         lower = parent;
         conn = pipe;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private void sendReply(String hdr, List<String> res) {

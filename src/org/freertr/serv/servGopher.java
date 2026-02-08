@@ -149,7 +149,7 @@ class servGopherConn implements Runnable {
     public servGopherConn(servGopher parent, pipeSide stream) {
         lower = parent;
         pipe = stream;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void sendSeparator() {

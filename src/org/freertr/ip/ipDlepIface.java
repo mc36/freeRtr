@@ -119,7 +119,7 @@ public class ipDlepIface implements prtServP, Runnable {
             return;
         }
         conn.timeout = 0;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public String toString() {

@@ -101,7 +101,7 @@ public class clntSlaac implements Runnable, ipPrt {
         cfger = cfg;
         clearState();
         working = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public String toString() {

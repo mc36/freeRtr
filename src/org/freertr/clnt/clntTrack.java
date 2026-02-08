@@ -683,7 +683,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
             return;
         }
         working = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private static String doScript(String scrptTxt, boolean selfVal) {

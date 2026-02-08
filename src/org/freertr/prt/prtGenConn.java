@@ -312,7 +312,7 @@ public class prtGenConn implements Runnable, Comparable<prtGenConn>, tabConnectL
         }
         if (!lower.clnts.add(iface, peerAddr, portLoc, portRem, this, name)) {
             registered = true;
-            new Thread(this).start();
+            logger.startThread(this);
             return false;
         }
         logger.info("failed to add " + this);

@@ -696,7 +696,7 @@ public class rtrOspf6neigh implements Runnable, rtrBfdClnt, Comparable<rtrOspf6n
             logger.debug("starting neighbor " + peer);
         }
         upTime = bits.getTime();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

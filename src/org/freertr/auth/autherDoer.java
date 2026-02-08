@@ -163,7 +163,7 @@ public abstract class autherDoer implements Runnable {
             return;
         }
         notif = new notifier();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

@@ -49,7 +49,7 @@ public class servBmp2mrtRate implements Runnable {
             return;
         }
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

@@ -1018,7 +1018,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         hsh = pip.hashCode();
         since = bits.getTime();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public boolean sendBcastMsg(byte[] buf) {
@@ -1331,7 +1331,7 @@ class userLineExpire implements Runnable {
 
     public userLineExpire(userLineHandler parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

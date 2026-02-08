@@ -179,7 +179,7 @@ public class clntMtrack implements Runnable, prtServS {
         }
         doRebind();
         working = 1;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private void doRound() {
@@ -686,7 +686,7 @@ class clntMtrackConn implements Runnable {
         lower = parent;
         pipe = conn;
         addr = peer;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

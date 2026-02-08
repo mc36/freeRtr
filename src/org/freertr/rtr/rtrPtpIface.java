@@ -89,7 +89,7 @@ public class rtrPtpIface implements Runnable, prtServP {
         connS = udp.packetConnect(this, ifc, packPtp.portS, peer, packPtp.portS, "ptp", -1, null, -1, -1);
         connF = udp.packetConnect(this, ifc, packPtp.portF, peer, packPtp.portF, "ptp", -1, null, -1, -1);
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

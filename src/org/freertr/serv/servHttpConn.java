@@ -150,7 +150,7 @@ public class servHttpConn implements Runnable {
         peer.setAddr(id.peerAddr);
         conn = id;
         secured = id.portLoc == lower.secondPort;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public String toString() {

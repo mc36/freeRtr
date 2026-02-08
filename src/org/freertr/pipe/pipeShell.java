@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.logger;
 
 /**
  * provide shell access
@@ -342,7 +343,7 @@ class pipeShellInput implements Runnable {
         strm = stream;
         stat = state;
         crlf = convert;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -403,7 +404,7 @@ class pipeShellOutput implements Runnable {
         prnt = parent;
         strm = stream;
         stat = state;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

@@ -211,7 +211,7 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
         if (debugger.clntMplsLdpTraf) {
             logger.debug("starting work");
         }
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

@@ -51,7 +51,7 @@ public class userReload implements Runnable {
         }
         when = tim;
         notif = new notifier();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

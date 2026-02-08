@@ -160,7 +160,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             logger.debug("starting " + peer);
         }
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

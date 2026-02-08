@@ -901,7 +901,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         compRound.add(1);
         routerCreateComputed();
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
         fwdCore.routerAdd(this, rouTyp, id);
     }
 

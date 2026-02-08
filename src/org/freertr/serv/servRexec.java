@@ -126,7 +126,7 @@ class servRexecConn implements Runnable {
     public servRexecConn(servRexec parent, pipeSide pipe) {
         lower = parent;
         conn = pipe;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

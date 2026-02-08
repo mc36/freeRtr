@@ -50,7 +50,7 @@ public class servHttpSstp implements Runnable, ifcDn {
     protected void doStart() {
         lower.gotKeep = false;
         lower.pipe = null;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

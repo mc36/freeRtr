@@ -91,7 +91,7 @@ class servCharGenDoer implements Runnable {
 
     public servCharGenDoer(pipeSide stream) {
         pipe = stream;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

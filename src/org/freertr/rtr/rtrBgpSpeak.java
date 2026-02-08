@@ -377,7 +377,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             peer32bitAS = true;
             return;
         }
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

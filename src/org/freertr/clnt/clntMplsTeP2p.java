@@ -343,7 +343,7 @@ public class clntMplsTeP2p implements Comparable<clntMplsTeP2p>, Runnable, ifcDn
         if (debugger.clntMplsTeTraf) {
             logger.debug("starting work");
         }
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

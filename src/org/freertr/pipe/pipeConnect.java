@@ -82,7 +82,7 @@ class pipeConnectDoer implements Runnable {
         siz = tx.getBufSize();
         siz = siz - (siz / 16);
         del = delay;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

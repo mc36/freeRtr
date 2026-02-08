@@ -67,7 +67,7 @@ class clntVconnSmpl implements Runnable {
         rx = s1;
         tx = s2;
         codec = c;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void doer() {
@@ -122,7 +122,7 @@ class clntVconnTrns implements Runnable {
         rxC = c1;
         txC = c2;
         syncSrc = bits.randomD();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void doer() {

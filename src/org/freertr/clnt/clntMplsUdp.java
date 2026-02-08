@@ -196,7 +196,7 @@ public class clntMplsUdp implements Comparable<clntMplsUdp>, Runnable, prtServP,
      * start connection
      */
     public void workStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

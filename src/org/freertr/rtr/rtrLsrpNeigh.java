@@ -211,7 +211,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
         lastHeard = bits.getTime();
         need2run = true;
         upTime = bits.getTime();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**
@@ -685,7 +685,7 @@ class rtrLsrpNeighRcvr implements Runnable {
     }
 
     public void startWork() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

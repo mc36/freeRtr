@@ -347,7 +347,7 @@ class servSdwanConn implements Runnable, Comparable<servSdwanConn> {
         connS = pipe;
         connA = remA;
         connP = remP;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public int compareTo(servSdwanConn o) {
@@ -608,7 +608,7 @@ class servSdwanTimer implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

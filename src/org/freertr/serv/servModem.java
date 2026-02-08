@@ -170,7 +170,7 @@ class servModemDoer implements Runnable {
         lower = parent;
         ctrl = stream;
         conn = id;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public String getContact() {
@@ -303,7 +303,7 @@ class servModemConn implements Runnable, Comparable<servModemConn> {
         pipeC = pip.getSide();
         pipeC.setReady();
         pipeS.setReady();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public int compareTo(servModemConn o) {

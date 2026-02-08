@@ -276,7 +276,7 @@ public class clntPolka implements Runnable, ifcDn {
             logger.debug("starting work");
         }
         working = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

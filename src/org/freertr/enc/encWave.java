@@ -176,7 +176,7 @@ class encWavePlay implements Runnable {
         syncSrc = bits.randomD();
         pos = encWave.size;
         lower.state = 1;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -242,7 +242,7 @@ class encWaveRec implements Runnable {
         }
         lower.buf = new byte[0];
         lower.state = 1;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -302,7 +302,7 @@ class encWaveDtmf implements Runnable {
         codec = codr;
         pck = new packHolder(true, true);
         lower.state = 1;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

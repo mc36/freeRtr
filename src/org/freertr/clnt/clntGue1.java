@@ -197,7 +197,7 @@ public class clntGue1 implements Comparable<clntGue1>, Runnable, prtServP, ifcDn
      * start connection
      */
     public void workStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

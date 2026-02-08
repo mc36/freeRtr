@@ -10,6 +10,7 @@ import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.logger;
 
 /**
  * quote of the day protocol (rfc865) server
@@ -146,7 +147,7 @@ class servQuoteConn implements Runnable {
     public servQuoteConn(servQuote parent, pipeSide conn) {
         pipe = conn;
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

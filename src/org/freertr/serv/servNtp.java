@@ -129,7 +129,7 @@ class servNtpConn implements Runnable {
     public servNtpConn(pipeSide conn, servNtp parent) {
         pipe = conn;
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

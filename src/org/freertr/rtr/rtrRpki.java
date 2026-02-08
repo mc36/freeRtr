@@ -149,7 +149,7 @@ public class rtrRpki extends ipRtr implements Runnable {
         seqNum = 0;
         routerCreateComputed();
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
         fwdCore.routerAdd(this, rouTyp, id);
     }
 

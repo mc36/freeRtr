@@ -426,7 +426,7 @@ class secWebsockRx implements Runnable {
 
     public secWebsockRx(secWebsock parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -449,7 +449,7 @@ class secWebsockTx implements Runnable {
 
     public secWebsockTx(secWebsock parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -472,7 +472,7 @@ class secWebsockKep implements Runnable {
 
     public secWebsockKep(secWebsock parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

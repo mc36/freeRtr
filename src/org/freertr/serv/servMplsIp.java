@@ -19,6 +19,7 @@ import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
+import org.freertr.util.logger;
 import org.freertr.util.state;
 
 /**
@@ -305,7 +306,7 @@ class servMplsIpConn implements Runnable, Comparable<servMplsIpConn> {
         worker.setUpper(acesIfc.ethtyp);
         acesIfc.ethtyp.setState(state.states.up);
         created = bits.getTime();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void doRecv(packHolder pck) {

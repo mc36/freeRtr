@@ -91,7 +91,7 @@ class pipeDiscardDoer implements Runnable {
     public pipeDiscardDoer(pipeSide side) {
         rx = side;
         siz = rx.getBufSize();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

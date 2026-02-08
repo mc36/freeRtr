@@ -63,7 +63,7 @@ public class prtLocTcp implements Runnable {
         socket.bind(sadr);
         vrf = prt;
         port = remote;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**
@@ -182,7 +182,7 @@ class prtLocTcpRx implements Runnable {
     public prtLocTcpRx(Socket clnt, pipeSide conn) {
         sock = clnt;
         pipe = conn;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -224,7 +224,7 @@ class prtLocTcpTx implements Runnable {
     public prtLocTcpTx(Socket clnt, pipeSide conn) {
         sock = clnt;
         pipe = conn;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

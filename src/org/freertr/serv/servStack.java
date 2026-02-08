@@ -760,7 +760,7 @@ class servStackDisc implements Runnable {
 
     public void startWork() {
         lower.randId = bits.randomD();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

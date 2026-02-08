@@ -187,7 +187,7 @@ public class rtrRift extends ipRtr implements Runnable {
         lastSpfS = new spfCalc<rtrRiftTieSpf>(null);
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

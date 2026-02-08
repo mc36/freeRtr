@@ -520,7 +520,7 @@ public class clntSmtp implements Runnable {
      * do background sending work
      */
     public void startSend() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

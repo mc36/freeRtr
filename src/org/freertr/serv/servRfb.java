@@ -198,7 +198,7 @@ class servRfbConn implements Runnable {
         img = image;
         notif = new notifier();
         new servRfbTimer(this);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -679,7 +679,7 @@ class servRfbTimer implements Runnable {
 
     public servRfbTimer(servRfbConn lower) {
         parent = lower;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

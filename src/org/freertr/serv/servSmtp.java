@@ -605,7 +605,7 @@ class servSmtpRbler implements Runnable {
         notif = noti;
         serv = srv;
         addr = adr;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private int doRound() {
@@ -681,7 +681,7 @@ class servSmtpDoer implements Runnable {
         lower = parent;
         pipe = stream;
         conn = id;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void doLine(String s) {

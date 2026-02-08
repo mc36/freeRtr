@@ -196,7 +196,7 @@ class ifcEapOLclntTxKeep implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

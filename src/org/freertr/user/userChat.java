@@ -7,6 +7,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
 import org.freertr.util.bits;
+import org.freertr.util.logger;
 
 /**
  * user chat
@@ -38,7 +39,7 @@ public class userChat implements Runnable {
     public void doChat() {
         pipe.linePut("entering chat, type /exit to exit");
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
         for (;;) {
             userHelp hl = new userHelp();
             hl.add(null, false, 1, new int[]{1, -1}, "<text>", "chat line");
@@ -56,24 +57,28 @@ public class userChat implements Runnable {
     }
 
     public void run() {
-        long old = 0;
-        for (;;) {
-            bits.sleep(100);
-            if (!need2run) {
-                break;
+        try {
+            long old = 0;
+            for (;;) {
+                bits.sleep(100);
+                if (!need2run) {
+                    break;
+                }
+                final int width = pipe.settingsGet(pipeSetting.width, 80);
+                final int height = pipe.settingsGet(pipeSetting.height, 25);
+                List<String> l = new ArrayList<String>();
+                old = cfgAll.chat.read(l, old, height - 5);
+                if (l.size() < 1) {
+                    continue;
+                }
+                for (int i = 0; i < l.size(); i++) {
+                    pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
+                    pipe.linePut(bits.padEnd("" + l.get(i), width, " "));
+                }
+                read.putCurrLine(true);
             }
-            final int width = pipe.settingsGet(pipeSetting.width, 80);
-            final int height = pipe.settingsGet(pipeSetting.height, 25);
-            List<String> l = new ArrayList<String>();
-            old = cfgAll.chat.read(l, old, height - 5);
-            if (l.size() < 1) {
-                continue;
-            }
-            for (int i = 0; i < l.size(); i++) {
-                pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
-                pipe.linePut(bits.padEnd("" + l.get(i), width, " "));
-            }
-            read.putCurrLine(true);
+        } catch (Exception e) {
+            logger.traceback(e);
         }
     }
 

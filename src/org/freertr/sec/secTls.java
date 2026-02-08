@@ -184,7 +184,7 @@ public class secTls implements Runnable {
     }
 
     private void workerStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -687,7 +687,7 @@ class secTlsRx implements Runnable {
     public secTlsRx(secTls parent, packTls p) {
         lower = parent;
         pack = p;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -713,7 +713,7 @@ class secTlsTx implements Runnable {
     public secTlsTx(secTls parent, packTls p) {
         lower = parent;
         pack = p;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

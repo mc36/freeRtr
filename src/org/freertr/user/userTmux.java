@@ -275,7 +275,7 @@ class userTmuxWin implements Runnable {
     public userTmuxWin(userTmux p, int n) {
         lower = p;
         num = n;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

@@ -218,7 +218,7 @@ class servWhoisConn implements Runnable {
      * do startup
      */
     public void doStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

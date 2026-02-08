@@ -455,7 +455,7 @@ public class logger {
      * @return thread created
      */
     public static Thread startThread(Runnable r) {
-        Thread t = new Thread(r);
+        Thread t = new /* */ Thread(r);
         t.start();
         return t;
     }

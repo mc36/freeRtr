@@ -356,7 +356,7 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         }
         conn.timeout = 0;
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

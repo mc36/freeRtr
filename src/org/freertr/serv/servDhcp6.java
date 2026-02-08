@@ -1518,7 +1518,7 @@ class servDhcp6timer implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -1553,7 +1553,7 @@ class servDhcp6worker implements Runnable {
         pipe = pip;
         pipe.setTime(10000);
         conn = id;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private void doer() {

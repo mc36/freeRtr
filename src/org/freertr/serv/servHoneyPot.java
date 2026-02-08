@@ -191,7 +191,7 @@ class servHoneyPotConn implements Runnable {
         local = loc;
         cls = new secInfoCls(null, null, null, lower.srvVrf.getFwd(remote), remote, prtTcp.protoNum, local);
         ipi = new secInfoWrk(lower.ipInfo, cls);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

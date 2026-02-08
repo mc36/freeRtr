@@ -311,7 +311,7 @@ class servRpkiConn implements Runnable, Comparable<servRpkiConn> {
         peer = rem;
         sess = bits.randomW();
         cntr = new counter();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public int compareTo(servRpkiConn o) {

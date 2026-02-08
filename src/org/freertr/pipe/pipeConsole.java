@@ -22,7 +22,7 @@ public class pipeConsole implements Runnable {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.setTime(0);
         new pipeConsoleDisp(pipe);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**
@@ -69,7 +69,7 @@ class pipeConsoleDisp implements Runnable {
 
     public pipeConsoleDisp(pipeSide pip) {
         pipe = pip;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

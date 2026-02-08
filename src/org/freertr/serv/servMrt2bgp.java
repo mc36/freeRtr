@@ -140,7 +140,7 @@ class servMrt2bgpConn implements Runnable {
         lower = parent;
         pipe = stream;
         peer = remote.copyBytes();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private void sendTable(rtrBgpSpeak spk, packHolder pck) {

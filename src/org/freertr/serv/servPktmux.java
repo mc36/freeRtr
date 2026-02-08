@@ -277,7 +277,7 @@ class servPktmuxConn implements Runnable, Comparable<servPktmuxConn> {
 
     public void startWork() {
         need2work = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void stopWork() {

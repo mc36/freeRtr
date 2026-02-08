@@ -128,7 +128,7 @@ class pipeRelayRx implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -166,7 +166,7 @@ class pipeRelayTx implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

@@ -303,7 +303,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         }
         conn.timeout = 0;
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

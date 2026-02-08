@@ -83,7 +83,7 @@ public class rtrLdpTrgtd implements Runnable, Comparable<rtrLdpTrgtd> {
             logger.debug("starting targeted hello with " + peer);
         }
         keepWorking();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

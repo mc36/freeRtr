@@ -97,7 +97,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         routerComputedI = new tabGen<tabIndex<addrIP>>();
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

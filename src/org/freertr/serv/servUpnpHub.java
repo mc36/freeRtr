@@ -117,7 +117,7 @@ class servUpnpHubConn implements Runnable, Comparable<servUpnpHubConn> {
         pipe = pip;
         conn = id;
         parent.conns.add(this);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public int compareTo(servUpnpHubConn o) {

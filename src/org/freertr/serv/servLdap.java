@@ -190,7 +190,7 @@ class servLdapConn implements Runnable {
     public servLdapConn(pipeSide conn, servLdap parent) {
         pipe = conn;
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

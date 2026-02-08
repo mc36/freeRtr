@@ -140,7 +140,7 @@ class servPckOdtlsConn implements Runnable, ifcDn {
         pipe = pip;
         parent = lower;
         ifc = lower.clnIfc.cloneStart(this);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

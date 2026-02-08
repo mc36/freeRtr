@@ -176,7 +176,7 @@ class servVoiceDoer implements Runnable {
         lower = parent;
         ctrl = stream;
         conn = id;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public String getContact() {
@@ -320,7 +320,7 @@ class servVoiceScr implements Runnable {
     public servVoiceScr(userScript t, pipeSide c) {
         s = t;
         p = c;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void doWork() {
@@ -366,7 +366,7 @@ class servVoiceConn implements Runnable, Comparable<servVoiceConn> {
         pipeC = pip.getSide();
         pipeS.setReady();
         pipeC.setReady();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public int compareTo(servVoiceConn o) {

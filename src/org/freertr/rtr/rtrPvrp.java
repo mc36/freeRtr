@@ -168,7 +168,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

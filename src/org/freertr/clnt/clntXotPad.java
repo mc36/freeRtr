@@ -58,7 +58,7 @@ public class clntXotPad implements Runnable {
         if (conn.parseCallAcc(conn.recvPack())) {
             return true;
         }
-        new Thread(this).start();
+        logger.startThread(this);
         new clntXotPadTx(this).startWork();
         return false;
     }
@@ -111,7 +111,7 @@ class clntXotPadTx implements Runnable {
     }
 
     public void startWork() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
 }

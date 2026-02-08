@@ -141,7 +141,7 @@ public class pipeSlip implements Runnable, ifcDn {
      */
     public pipeSlip(pipeSide pipe) {
         lower = pipe;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

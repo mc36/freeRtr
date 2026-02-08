@@ -29,7 +29,7 @@ class servOpenflowRx implements Runnable {
     public servOpenflowRx(pipeSide stream, servOpenflow parent) {
         pipe = stream;
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

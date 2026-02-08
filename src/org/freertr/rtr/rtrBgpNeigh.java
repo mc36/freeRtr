@@ -411,7 +411,7 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             return;
         }
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

@@ -147,7 +147,7 @@ public class pipeHdlc implements Runnable, ifcDn {
      */
     public pipeHdlc(pipeSide pipe) {
         lower = pipe;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

@@ -700,7 +700,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparable<rtrOspf4n
             logger.debug("starting neighbor " + peer);
         }
         upTime = bits.getTime();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

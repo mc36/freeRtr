@@ -106,7 +106,7 @@ public class clntTelemetry implements Runnable {
             return;
         }
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private void doWork() {

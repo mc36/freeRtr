@@ -139,7 +139,7 @@ public class servL2tp3conn implements Runnable, Comparable<servL2tp3conn> {
             }
         }
         created = bits.getTime();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

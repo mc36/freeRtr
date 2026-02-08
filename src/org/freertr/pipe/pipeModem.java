@@ -70,7 +70,7 @@ class pipeModemTx implements Runnable {
         syncSrc = bits.randomD();
         modem.carrier = freq;
         modem.sampDat = new int[1024];
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void doer() {
@@ -138,7 +138,7 @@ class pipeModemRx implements Runnable {
         rtp = conn;
         modem.carrier = freq;
         modem.sampDat = new int[1024];
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void doer() {

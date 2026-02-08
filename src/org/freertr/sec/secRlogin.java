@@ -111,7 +111,7 @@ public class secRlogin implements Runnable {
     }
 
     private void workerStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

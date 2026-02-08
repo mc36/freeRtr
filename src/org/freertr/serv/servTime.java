@@ -12,6 +12,7 @@ import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.logger;
 
 /**
  * time protocol (rfc868) server
@@ -87,7 +88,7 @@ class servTimeConn implements Runnable {
 
     public servTimeConn(pipeSide conn) {
         pipe = conn;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

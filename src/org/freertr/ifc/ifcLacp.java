@@ -72,7 +72,7 @@ public class ifcLacp implements ifcUp, Runnable {
      */
     public ifcLacp(cfgIfc ifc) {
         cfg = ifc;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

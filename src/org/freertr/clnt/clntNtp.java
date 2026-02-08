@@ -57,7 +57,7 @@ public class clntNtp implements Runnable {
      */
     public void startWork() {
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

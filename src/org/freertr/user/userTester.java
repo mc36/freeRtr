@@ -3129,7 +3129,7 @@ class userTesterWrk implements Runnable {
     public userTesterWrk(userTester parent, int slt) {
         lower = parent;
         slot = slt;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

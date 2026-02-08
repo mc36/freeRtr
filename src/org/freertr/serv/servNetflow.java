@@ -202,7 +202,7 @@ class servNetflowConn implements Runnable {
     public servNetflowConn(servNetflow prnt, pipeSide pip) {
         parent = prnt;
         pipe = pip;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

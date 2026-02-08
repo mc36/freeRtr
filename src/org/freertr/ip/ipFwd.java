@@ -702,7 +702,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      * start this vrf now
      */
     public void startThisVrf() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

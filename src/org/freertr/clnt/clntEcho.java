@@ -78,7 +78,7 @@ public class clntEcho implements Runnable {
      * do work
      */
     public void doWork() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

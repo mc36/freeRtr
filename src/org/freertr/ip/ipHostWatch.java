@@ -44,7 +44,7 @@ public class ipHostWatch implements Runnable {
      */
     public ipHostWatch(ipIfc iface) {
         ifc = iface;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public String toString() {

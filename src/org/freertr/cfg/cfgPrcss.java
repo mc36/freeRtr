@@ -201,7 +201,7 @@ public class cfgPrcss implements Comparable<cfgPrcss>, Runnable, cfgGeneric {
             return;
         }
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void getHelp(userHelp l) {

@@ -7,6 +7,7 @@ import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.pack.packHolder;
 import org.freertr.util.bits;
+import org.freertr.util.logger;
 
 /**
  * eoip handler
@@ -118,7 +119,7 @@ public class servEoIpConn implements Runnable, Comparable<servEoIpConn> {
         brdgIfc = lower.brdgIfc.bridgeHed.newIface(lower.physInt, true, false);
         worker.setUpper(brdgIfc);
         created = bits.getTime();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

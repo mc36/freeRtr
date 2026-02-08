@@ -366,7 +366,7 @@ class pipeWindowDoer implements Runnable {
 
     public pipeWindowDoer(pipeWindow parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private void doer() {

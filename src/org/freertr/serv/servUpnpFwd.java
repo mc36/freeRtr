@@ -232,7 +232,7 @@ class servUpnpFwdKeep implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -260,7 +260,7 @@ class servUpnpFwdServ implements Runnable {
     public servUpnpFwdServ(servUpnpFwd prnt, pipeSide pip) {
         parent = prnt;
         pipe = pip;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -293,7 +293,7 @@ class servUpnpFwdClnt implements Runnable {
         parent = prnt;
         pipe = pip;
         conn = id;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

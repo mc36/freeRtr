@@ -399,7 +399,7 @@ public class rtrEigrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrEigrpN
         lastHeard = bits.getTime();
         need2run = true;
         upTime = bits.getTime();
-        new Thread(this).start();
+        logger.startThread(this);
         txSeq = bits.randomW() + 1;
         txFlg = flagInit;
         txOpc = opcUpdate;

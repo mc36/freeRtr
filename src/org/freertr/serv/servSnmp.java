@@ -205,7 +205,7 @@ class servSnmpWorker implements Runnable {
     public servSnmpWorker(servSnmp parent, pipeSide conn) {
         lower = parent;
         pipe = conn;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void doer() {

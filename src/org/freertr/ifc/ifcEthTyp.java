@@ -473,7 +473,7 @@ public class ifcEthTyp implements Runnable, ifcUp {
             logger.debug("starting");
         }
         need2run |= 2;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

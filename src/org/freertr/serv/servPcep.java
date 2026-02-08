@@ -158,7 +158,7 @@ class servPcepConn implements Runnable {
         lower = parent;
         peer = remote;
         conn = pipe;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void doWork() {

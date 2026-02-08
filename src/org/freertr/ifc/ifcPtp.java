@@ -36,7 +36,7 @@ public class ifcPtp implements ifcUp, Runnable {
      * create new instance
      */
     public ifcPtp() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

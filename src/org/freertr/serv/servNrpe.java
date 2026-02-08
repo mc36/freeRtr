@@ -164,7 +164,7 @@ class servNrpeConn implements Runnable {
         lower = parent;
         conn = pipe;
         peer = rem;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

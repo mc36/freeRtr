@@ -221,7 +221,7 @@ class servPlan9conn implements Runnable {
     public servPlan9conn(servPlan9 parent, pipeSide pipe) {
         lower = parent;
         conn = pipe;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private boolean doWork() {

@@ -257,7 +257,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         lastSpf = new spfCalc<addrIPv4>(null);
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

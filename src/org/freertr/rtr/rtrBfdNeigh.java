@@ -145,7 +145,7 @@ public class rtrBfdNeigh implements Runnable, Comparable<rtrBfdNeigh> {
         connTx.sendFLW = 0;
         need2run = true;
         myDisc = bits.randomD();
-        new Thread(this).start();
+        logger.startThread(this);
         return false;
     }
 

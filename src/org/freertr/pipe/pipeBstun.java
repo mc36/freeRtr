@@ -64,7 +64,7 @@ class pipeBstunRx implements Runnable {
     public pipeBstunRx(pipeSide net, pipeSide usr, int grp) {
         pck = new packBstun(net, grp);
         upper = usr;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -96,7 +96,7 @@ class pipeBstunTx implements Runnable {
     public pipeBstunTx(pipeSide net, pipeSide usr, int grp) {
         pck = new packBstun(net, grp);
         upper = usr;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

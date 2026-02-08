@@ -1979,7 +1979,7 @@ class userGameTetris implements Runnable {
             }
         }
         lines = 0;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

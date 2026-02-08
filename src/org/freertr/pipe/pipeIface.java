@@ -5,6 +5,7 @@ import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcUp;
 import org.freertr.pack.packHolder;
 import org.freertr.util.counter;
+import org.freertr.util.logger;
 import org.freertr.util.state;
 
 /**
@@ -32,7 +33,7 @@ public class pipeIface implements ifcUp, Runnable {
         pipe = new pipeLine(65536, true);
         pipC = pipe.getSide();
         pipS = pipe.getSide();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**
@@ -88,12 +89,16 @@ public class pipeIface implements ifcUp, Runnable {
     }
 
     public void run() {
-        for (;;) {
-            packHolder pck = new packHolder(true, true);
-            if (pck.pipeRecv(pipS, 0, 4096, 143) < 1) {
-                break;
+        try {
+            for (;;) {
+                packHolder pck = new packHolder(true, true);
+                if (pck.pipeRecv(pipS, 0, 4096, 143) < 1) {
+                    break;
+                }
+                lower.sendPack(pck);
             }
-            lower.sendPack(pck);
+        } catch (Exception e) {
+            logger.traceback(e);
         }
     }
 

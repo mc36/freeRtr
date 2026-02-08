@@ -372,7 +372,7 @@ class servSocksDoer implements Runnable {
     public servSocksDoer(servSocks prnt, pipeSide stream) {
         parent = prnt;
         pipe = stream;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

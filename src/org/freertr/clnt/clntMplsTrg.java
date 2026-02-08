@@ -50,7 +50,7 @@ public class clntMplsTrg implements Runnable, Comparable<clntMplsTrg> {
      * start connection
      */
     public void workStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

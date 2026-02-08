@@ -157,7 +157,7 @@ class servDcpDoer implements Runnable, Comparable<servDcpDoer> {
     public servDcpDoer(servDcp parent, pipeSide conn) {
         lower = parent;
         pipe = conn;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public int compareTo(servDcpDoer o) {

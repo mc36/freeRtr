@@ -1385,7 +1385,7 @@ class secHttp2rx implements Runnable {
 
     public secHttp2rx(secHttp2 parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -1408,7 +1408,7 @@ class secHttp2tx implements Runnable {
 
     public secHttp2tx(secHttp2 parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

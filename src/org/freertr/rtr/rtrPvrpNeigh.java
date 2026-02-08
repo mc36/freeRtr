@@ -232,7 +232,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
         lastHeard = bits.getTime();
         need2run = true;
         upTime = bits.getTime();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**
@@ -842,7 +842,7 @@ class rtrPvrpNeighRcvr implements Runnable {
     }
 
     public void startWork() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

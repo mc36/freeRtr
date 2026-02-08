@@ -62,7 +62,7 @@ public class clntVscript implements Runnable {
         strm = rtp;
         calSrc = calling;
         calTrg = called;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

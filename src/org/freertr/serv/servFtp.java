@@ -300,7 +300,7 @@ class servFtpDoer implements Runnable {
         lower = parent;
         pipe = stream;
         conn = id;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public String getRelPath(String s, boolean real) {

@@ -30,7 +30,7 @@ public class pipeReader implements Runnable {
         pipC = pipP.getSide();
         pipS = pipP.getSide();
         res = new ArrayList<String>();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

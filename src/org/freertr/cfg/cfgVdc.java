@@ -1271,7 +1271,7 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
             l.add("hostname " + cfgAll.hostName + "-" + name);
             bits.buf2txt(true, l, a);
         }
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

@@ -451,7 +451,7 @@ class servDnsDoer implements Runnable {
         parent = lower;
         pipe = stream;
         conn = id;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void sendReply(packDns pckD) {

@@ -445,7 +445,7 @@ class servForwarderDoer implements Runnable {
         parent = prnt;
         pipe = stream;
         conn = id;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

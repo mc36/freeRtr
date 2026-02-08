@@ -93,7 +93,7 @@ public class clntVconf implements Runnable {
      * start work
      */
     public void startWork() {
-        new Thread(this).start();
+        logger.startThread(this);
         new clntVconfWork(this);
     }
 
@@ -263,7 +263,7 @@ class clntVconfWork implements Runnable {
 
     public clntVconfWork(clntVconf parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -381,7 +381,7 @@ class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
 
     public void startWork() {
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

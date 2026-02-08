@@ -65,7 +65,7 @@ public class clntIrc implements Runnable {
         if (!running) {
             return;
         }
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

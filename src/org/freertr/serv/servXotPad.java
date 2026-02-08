@@ -107,7 +107,7 @@ class servXotPadRx implements Runnable {
     }
 
     public void startWork() {
-        new Thread(this).start();
+        logger.startThread(this);
         new servXotPadTx(this).startWork();
     }
 
@@ -152,7 +152,7 @@ class servXotPadTx implements Runnable {
     }
 
     public void startWork() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
 }

@@ -223,7 +223,7 @@ class servTacacsConn implements Runnable {
     public servTacacsConn(pipeSide conn, servTacacs parent) {
         pipe = conn;
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

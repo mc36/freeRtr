@@ -127,7 +127,7 @@ public class servP4langConn implements Runnable {
      * start working
      */
     protected void startWork() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

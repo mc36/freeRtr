@@ -167,7 +167,7 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
         conn = pipe;
         peer = id.peerAddr.copyBytes();
         port = id.portRem;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public String toString() {

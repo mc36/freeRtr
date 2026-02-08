@@ -156,7 +156,7 @@ class servStunConn implements Runnable, ifcDn {
         }
         lower = new packStun(conn, grp);
         ifc = parent.clnIfc.cloneStart(this);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

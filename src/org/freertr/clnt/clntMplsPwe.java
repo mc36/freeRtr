@@ -275,7 +275,7 @@ public class clntMplsPwe implements Runnable, ifcDn {
         if (debugger.clntPweTraf) {
             logger.debug("starting work");
         }
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

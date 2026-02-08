@@ -385,7 +385,7 @@ public class clntSdwanConn implements Runnable, prtServP, Comparable<clntSdwanCo
                 prtGtp.cfger = ifc;
                 break;
         }
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

@@ -140,7 +140,7 @@ public class rtrEigrp extends ipRtr implements Runnable {
         k3 = 1;
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

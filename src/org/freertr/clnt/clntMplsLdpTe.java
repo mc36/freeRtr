@@ -310,7 +310,7 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
         if (debugger.clntMplsLdpTraf) {
             logger.debug("starting work");
         }
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

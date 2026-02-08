@@ -221,7 +221,7 @@ class servSipDoer implements Runnable, Comparable<servSipDoer> {
         if (conn == null) {
             return;
         }
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public int compareTo(servSipDoer o) {

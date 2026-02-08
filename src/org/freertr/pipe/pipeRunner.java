@@ -131,7 +131,7 @@ public class pipeRunner implements Runnable {
         line = lin;
         name = nam;
         pipe = thread.getPipe();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

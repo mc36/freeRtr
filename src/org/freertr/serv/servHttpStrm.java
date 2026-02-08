@@ -31,7 +31,7 @@ public class servHttpStrm implements Runnable {
      * start streaming
      */
     protected void doStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

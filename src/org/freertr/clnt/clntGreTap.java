@@ -199,7 +199,7 @@ public class clntGreTap implements ifcDn, ifcUp, Runnable {
      * start connection
      */
     public void workStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

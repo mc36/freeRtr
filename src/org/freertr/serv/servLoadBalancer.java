@@ -319,7 +319,7 @@ class servLoadBalancerDoer implements Runnable {
     public servLoadBalancerDoer(servLoadBalancer prnt, pipeSide stream) {
         parent = prnt;
         pipe = stream;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

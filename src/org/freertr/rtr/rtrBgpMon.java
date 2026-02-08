@@ -115,7 +115,7 @@ public class rtrBgpMon implements Comparable<rtrBgpMon>, Runnable {
      */
     protected void startNow() {
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

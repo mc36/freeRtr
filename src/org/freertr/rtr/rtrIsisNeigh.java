@@ -355,7 +355,7 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparable<rtrIsisNei
         if (debugger.rtrIsisEvnt) {
             logger.debug("starting neighbor l" + level.level + " " + ethAddr);
         }
-        new Thread(this).start();
+        logger.startThread(this);
         upTime = bits.getTime();
     }
 

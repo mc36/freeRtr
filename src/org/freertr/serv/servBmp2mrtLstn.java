@@ -40,7 +40,7 @@ public abstract class servBmp2mrtLstn implements Runnable, Comparable<servBmp2mr
         pipe = pip;
         lower = prnt;
         conn = id;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public int compareTo(servBmp2mrtLstn o) {

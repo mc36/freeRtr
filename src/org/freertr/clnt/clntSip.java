@@ -192,7 +192,7 @@ public class clntSip implements Runnable {
     public void startWork() {
         need2run = true;
         sequence = bits.randomD();
-        new Thread(this).start();
+        logger.startThread(this);
         if ((keepalive + register + subscribe + options) < 1) {
             return;
         }
@@ -851,7 +851,7 @@ class clntSipKeep implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -1109,7 +1109,7 @@ class clntSipIn implements Runnable, Comparable<clntSipIn> {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -1304,7 +1304,7 @@ class clntSipMsg implements Runnable, Comparable<clntSipMsg> {
     }
 
     public void startWork() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public boolean doSend() {

@@ -158,7 +158,7 @@ class servLpdDoer implements Runnable {
     public servLpdDoer(servLpd parent, pipeSide conn) {
         lower = parent;
         pipe = conn;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

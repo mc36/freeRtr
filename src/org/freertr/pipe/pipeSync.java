@@ -76,7 +76,7 @@ class pipeSyncTx implements Runnable {
         paySiz = payMax / (pre + use + app);
         payInt = 1000 / (8000 / paySiz);
         paySiz = (paySiz + 1) * use;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void placeBit(boolean val) {
@@ -228,7 +228,7 @@ class pipeSyncRx implements Runnable {
         chnPre = pre;
         chnUse = use;
         chnApp = app;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void decodeBit(boolean val) {

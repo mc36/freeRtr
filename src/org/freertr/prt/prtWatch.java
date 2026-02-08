@@ -105,7 +105,7 @@ public class prtWatch implements Runnable {
     public prtWatch(String nam, ifcThread thr, String par) {
         name = nam;
         thrd = thr;
-        new Thread(this).start();
+        logger.startThread(this);
         ports = bits.str2num(par);
         names = new String[ports];
         procs = new pipeShell[ports];

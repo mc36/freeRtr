@@ -876,7 +876,7 @@ public class ifcBundle implements Runnable, ifcDn {
         if (debugger.ifcBundleTraf) {
             logger.debug("startup");
         }
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**
@@ -1019,7 +1019,7 @@ class ifcBundleKeep implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -1050,7 +1050,7 @@ class ifcBundleCntr implements Runnable {
     }
 
     public void start() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -1110,7 +1110,7 @@ class ifcBundlePeer implements ifcUp, Runnable {
         need2work = true;
         ifCfg.ethtyp.addET(packReplicator.ethTyp, "peer", this);
         ifCfg.ethtyp.updateET(packReplicator.ethTyp, this);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

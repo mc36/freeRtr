@@ -129,7 +129,7 @@ public class ifcRandom implements ifcUp, Runnable {
      */
     public void startWork() {
         need2work = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     private void doRound() {

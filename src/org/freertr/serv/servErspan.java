@@ -24,6 +24,7 @@ import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
+import org.freertr.util.logger;
 import org.freertr.util.state;
 
 /**
@@ -370,7 +371,7 @@ class servErspanConn implements Runnable, ifcDn, Comparable<servErspanConn> {
         brdgIfc = lower.brdgIfc.bridgeHed.newIface(lower.physInt, true, false);
         setUpper(brdgIfc);
         created = bits.getTime();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void doRecv(packHolder pckBin) {

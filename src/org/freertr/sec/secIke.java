@@ -769,7 +769,7 @@ class secIkeRx implements Runnable {
 
     public secIkeRx(secIke parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {
@@ -792,7 +792,7 @@ class secIkeTx implements Runnable {
 
     public secIkeTx(secIke parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

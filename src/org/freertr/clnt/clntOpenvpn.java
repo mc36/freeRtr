@@ -342,7 +342,7 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
      * start connection
      */
     public void workStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

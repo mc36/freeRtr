@@ -144,7 +144,7 @@ class servPckOtcpConn implements Runnable, ifcDn {
         parent = lower;
         pips = new packSize(pipe, 2, true, 1, 0);
         ifc = lower.clnIfc.cloneStart(this);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

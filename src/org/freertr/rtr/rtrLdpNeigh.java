@@ -236,7 +236,7 @@ public class rtrLdpNeigh implements Runnable, Comparable<rtrLdpNeigh> {
         }
         upTime = bits.getTime();
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**
@@ -959,7 +959,7 @@ class rtrLdpNeighRx implements Runnable {
 
     public rtrLdpNeighRx(rtrLdpNeigh parent) {
         lower = parent;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

@@ -318,7 +318,7 @@ public class clntL2tp3 implements Runnable, ipPrt, ifcDn {
      * start connection
      */
     public void workStart() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**

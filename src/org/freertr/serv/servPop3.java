@@ -187,7 +187,7 @@ class servPop3doer implements Runnable {
         pipe = stream;
         conn = id;
         cookie = bits.randomD();
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public String getCookie() {

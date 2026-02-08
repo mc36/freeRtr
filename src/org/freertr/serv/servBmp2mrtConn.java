@@ -34,7 +34,7 @@ public class servBmp2mrtConn implements Runnable {
         lower = prnt;
         peer = id.peerAddr.copyBytes();
         hlp = new packHolder(true, true);
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

@@ -297,7 +297,7 @@ class servPptpConn implements Runnable, Comparable<servPptpConn> {
         need2run = true;
         fwdCor = lower.srvVrf.getFwd(peer);
         fwdCor.protoAdd(lower, iface, peer);
-        new Thread(this).start();
+        logger.startThread(this);
         new servPptpKeep(this).doStartup();
     }
 
@@ -526,7 +526,7 @@ class servPptpKeep implements Runnable {
     }
 
     public void doStartup() {
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     public void run() {

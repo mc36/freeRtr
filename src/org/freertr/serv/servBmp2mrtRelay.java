@@ -100,7 +100,7 @@ public class servBmp2mrtRelay implements Comparable<servBmp2mrtRelay>, Runnable 
      */
     public void startWork() {
         need2run = true;
-        new Thread(this).start();
+        logger.startThread(this);
     }
 
     /**
