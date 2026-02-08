@@ -825,7 +825,7 @@ public class clntSip implements Runnable {
             legI.prt = prt;
             legI.callPort = getDataPort();
             legI.callRep = sip.byteCopy(null);
-            new Thread(legI).start();
+            legI.start();
             ins.add(legI);
         }
         if (conn != null) {
@@ -1106,6 +1106,10 @@ class clntSipIn implements Runnable, Comparable<clntSipIn> {
 
     public int compareTo(clntSipIn o) {
         return cid.compareTo(o.cid);
+    }
+
+    public void start() {
+        new Thread(this).start();
     }
 
     public void run() {
