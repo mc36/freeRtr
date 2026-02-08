@@ -1300,7 +1300,7 @@ public class cfgInit implements Runnable {
         stateLoad();
         started = bits.getTime();
         booting = false;
-        new Thread(new cfgInit()).start();
+        new cfgInit().start();
         logger.info("boot completed");
     }
 
@@ -1681,6 +1681,10 @@ public class cfgInit implements Runnable {
 
     private final static void putln(String s) {
         System.out.println(s);
+    }
+
+    private void start() {
+        new Thread(this).start();
     }
 
     public void run() {

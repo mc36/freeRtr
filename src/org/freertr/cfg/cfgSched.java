@@ -8,7 +8,6 @@ import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
-import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
@@ -368,7 +367,7 @@ public class cfgSched implements Comparable<cfgSched>, cfgGeneric {
             return;
         }
         working = true;
-        new Thread(new cfgSchedWork(this)).start();
+        new cfgSchedWork(this).start();
     }
 
     /**
@@ -390,7 +389,7 @@ public class cfgSched implements Comparable<cfgSched>, cfgGeneric {
         restartT = bits.getTime();
         pipeLine pipe = new pipeLine(32768, false);
         loc = pipe.getSide();
-        new Thread(new cfgSchedRead(this)).start();
+        new cfgSchedRead(this).start();
         pipeSide pip = pipe.getSide();
         userRead rdr = new userRead(pip, null);
         pip.settingsPut(pipeSetting.height, 0);
@@ -450,6 +449,10 @@ class cfgSchedRead implements Runnable {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
             lower.doReader();
@@ -466,6 +469,10 @@ class cfgSchedWork implements Runnable {
 
     public cfgSchedWork(cfgSched parent) {
         lower = parent;
+    }
+
+    public void start() {
+        new Thread(this).start();
     }
 
     public void run() {

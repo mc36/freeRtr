@@ -8,7 +8,6 @@ import org.freertr.pipe.pipeConnect;
 import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
-import org.freertr.tab.tabGen;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabScrptN;
 import org.freertr.user.userFilter;
@@ -384,7 +383,7 @@ public class cfgScrpt implements Comparable<cfgScrpt>, cfgGeneric {
             return;
         }
         working = true;
-        new Thread(new cfgScrptWork(this)).start();
+        new cfgScrptWork(this).start();
     }
 
     /**
@@ -408,7 +407,7 @@ public class cfgScrpt implements Comparable<cfgScrpt>, cfgGeneric {
         restartT = bits.getTime();
         pipeLine pl = new pipeLine(32768, false);
         loc = pl.getSide();
-        new Thread(new cfgScrptRead(this)).start();
+        new cfgScrptRead(this).start();
         pipeSide pip = pl.getSide();
         pip.setTime(120000);
         pip.lineTx = pipeSide.modTyp.modeCRLF;
@@ -470,6 +469,10 @@ class cfgScrptRead implements Runnable {
         lower = parent;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
             lower.doReader();
@@ -486,6 +489,10 @@ class cfgScrptWork implements Runnable {
 
     public cfgScrptWork(cfgScrpt parent) {
         lower = parent;
+    }
+
+    public void start() {
+        new Thread(this).start();
     }
 
     public void run() {
