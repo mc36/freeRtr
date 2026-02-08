@@ -75,6 +75,10 @@ public class prtRedun implements Runnable {
         }
     }
 
+    private void start() {
+        new Thread(this).start();
+    }
+
     private static void sendHellos() {
         packHolder pck = new packHolder(true, true);
         long tim = bits.getTime();
@@ -301,7 +305,7 @@ public class prtRedun implements Runnable {
         logger.info("initializing redundancy");
         started = bits.getTime();
         state = packRedundancy.statSpeak;
-        new Thread(new prtRedun()).start();
+        new prtRedun().start();
         bits.sleep(cfgAll.redundancyInit);
         int act = findActive();
         if (act < 0) {

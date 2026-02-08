@@ -350,7 +350,7 @@ public class userUpgrade {
      * start auto-revert
      */
     public static void startReverter() {
-        new Thread(new userUpgradeRevert()).start();
+        new userUpgradeRevert().start();
     }
 
     /**
@@ -720,6 +720,10 @@ public class userUpgrade {
 }
 
 class userUpgradeRevert implements Runnable {
+
+    public void start() {
+        new Thread(this).start();
+    }
 
     public void run() {
         String s = bits.lst2str(bits.txt2buf(cfgInit.myReloadFile()), " ");
