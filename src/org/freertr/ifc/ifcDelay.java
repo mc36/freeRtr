@@ -30,7 +30,7 @@ public class ifcDelay {
         d.delay = tim;
         d.lower = ifc;
         d.pack = pck.copyBytes(true, true);
-        new Thread(d).start();
+        d.start();
     }
 
     /**
@@ -49,7 +49,7 @@ public class ifcDelay {
         d.delay = tim;
         d.lower = ifc;
         d.pack = pck.copyBytes(true, true);
-        new Thread(d).start();
+        d.start();
     }
 
 }
@@ -61,6 +61,10 @@ class ifcDelayTx implements Runnable {
     public int delay;
 
     public packHolder pack;
+
+    public void start() {
+        new Thread(this).start();
+    }
 
     public void run() {
         bits.sleep(delay);
@@ -80,6 +84,10 @@ class ifcDelayRx implements Runnable {
     public int delay;
 
     public packHolder pack;
+
+    public void start() {
+        new Thread(this).start();
+    }
 
     public void run() {
         bits.sleep(delay);

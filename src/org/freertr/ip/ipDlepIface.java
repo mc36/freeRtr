@@ -187,7 +187,7 @@ public class ipDlepIface implements prtServP, Runnable {
             return true;
         }
         neighs.put(ntry);
-        new Thread(ntry).start();
+        ntry.start();
         return true;
     }
 

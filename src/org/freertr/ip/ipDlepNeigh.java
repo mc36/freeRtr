@@ -468,6 +468,13 @@ public class ipDlepNeigh implements Runnable, Comparable<ipDlepNeigh> {
         return false;
     }
 
+    /**
+     * start working
+     */
+    protected void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         try {
             doConn();

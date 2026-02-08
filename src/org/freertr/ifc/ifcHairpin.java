@@ -90,8 +90,8 @@ public class ifcHairpin {
      * start this hairpin
      */
     public void startWork() {
-        new Thread(s1).start();
-        new Thread(s2).start();
+        s1.start();
+        s2.start();
     }
 
     /**
@@ -463,6 +463,10 @@ class ifcHairpinWorker implements ifcDn, Runnable {
             return;
         }
         ifcEther.parseETHheader(pck, false);
+    }
+
+    public void start() {
+        new Thread(this).start();
     }
 
     public void run() {

@@ -291,7 +291,7 @@ public class servStreamingMdt extends servGeneric implements prtServS {
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.setTime(120000);
         servTelemetryConn ntry = new servTelemetryConn(this, pipe, id.peerAddr.copyBytes());
-        new Thread(ntry).start();
+        ntry.start();
         return false;
     }
 
@@ -553,6 +553,10 @@ class servTelemetryConn implements Comparable<servTelemetryConn>, Runnable {
             return null;
         }
         return sen;
+    }
+
+    public void start() {
+        new Thread(this).start();
     }
 
     public void run() {

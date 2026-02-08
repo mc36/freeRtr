@@ -152,7 +152,7 @@ public class servMultiplexer extends servGeneric implements prtServS {
                     continue;
                 }
             }
-            new Thread(ntry).start();
+            ntry.start();
             servMultiplexerTrgt old = targets.put(ntry);
             if (old == null) {
                 return false;
@@ -228,7 +228,7 @@ public class servMultiplexer extends servGeneric implements prtServS {
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.setTime(timeOut);
         servMultiplexerConn ntry = new servMultiplexerConn(this, id.peerAddr, pipe);
-        new Thread(ntry).start();
+        ntry.start();
         conns.add(ntry);
         return false;
     }
@@ -305,6 +305,10 @@ class servMultiplexerConn implements Runnable {
         lower = parent;
         conn = pipe;
         peer = addr;
+    }
+
+    public void start() {
+        new Thread(this).start();
     }
 
     public void run() {
@@ -410,6 +414,10 @@ class servMultiplexerTrgt implements Comparable<servMultiplexerTrgt>, Runnable {
             return +1;
         }
         return 0;
+    }
+
+    public void start() {
+        new Thread(this).start();
     }
 
     public void run() {
