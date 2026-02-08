@@ -67,8 +67,8 @@ public class clntSpeed {
             s.rxp.setClose();
             return;
         }
-        new Thread(new clntSpeedRx(s)).start();
-        new Thread(new clntSpeedTx(s)).start();
+        new clntSpeedRx(s).start();
+        new clntSpeedTx(s).start();
         cmd.error("       rxbps       txbps");
         for (;;) {
             if (cmd.pipe.isClosed() != 0) {
@@ -96,6 +96,10 @@ class clntSpeedRx implements Runnable {
         parent = lower;
     }
 
+    public void start() {
+        new Thread(this).start();
+    }
+
     public void run() {
         for (;;) {
             byte[] buf = new byte[1024];
@@ -115,6 +119,10 @@ class clntSpeedTx implements Runnable {
 
     public clntSpeedTx(clntSpeed lower) {
         parent = lower;
+    }
+
+    public void start() {
+        new Thread(this).start();
     }
 
     public void run() {

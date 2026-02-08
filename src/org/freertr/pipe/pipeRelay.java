@@ -97,8 +97,8 @@ public class pipeRelay {
         console.linePut("");
         console.linePut("escape character is " + getEscNam() + ".");
         console.linePut("");
-        new Thread(new pipeRelayRx(this)).start();
-        new Thread(new pipeRelayTx(this)).start();
+        new pipeRelayRx(this).start();
+        new pipeRelayTx(this).start();
         for (;;) {
             bits.sleep(threadTime * 2);
             if (stream.isClosed() != 0) {
@@ -125,6 +125,10 @@ class pipeRelayRx implements Runnable {
 
     public pipeRelayRx(pipeRelay prnt) {
         parent = prnt;
+    }
+
+    public void start() {
+        new Thread(this).start();
     }
 
     public void run() {
@@ -159,6 +163,10 @@ class pipeRelayTx implements Runnable {
 
     public pipeRelayTx(pipeRelay prnt) {
         parent = prnt;
+    }
+
+    public void start() {
+        new Thread(this).start();
     }
 
     public void run() {
