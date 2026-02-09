@@ -1300,7 +1300,6 @@ public class cfgInit implements Runnable {
         stateLoad();
         started = bits.getTime();
         booting = false;
-        new cfgInit().start();
         logger.info("boot completed");
     }
 
@@ -1461,6 +1460,7 @@ public class cfgInit implements Runnable {
         cfgAll.con0.line.createHandler(ps, "applet", 2);
         img.scr.doRound(true);
         img.doImage();
+        threadLoop();
         return img;
     }
 
@@ -1542,6 +1542,7 @@ public class cfgInit implements Runnable {
             if (pipWin != null) {
                 cfgAll.con0.line.createHandler(pipWin, "window", 2);
             }
+            mainLoop();
             return;
         }
         setupJVM();
@@ -1683,11 +1684,19 @@ public class cfgInit implements Runnable {
         System.out.println(s);
     }
 
+    private final static void threadLoop() {
+        new cfgInit().start();
+    }
+
     private void start() {
         logger.startThread(this);
     }
 
     public void run() {
+        cfgInit.mainLoop();
+    }
+
+    private final static void mainLoop() {
         int rnd = 0;
         counter cntr = new counter();
         cntr.byteRx = bits.getTime() / 8;
