@@ -253,7 +253,7 @@ qc pass: isdn with grefr
 qc pass: sep with grefr
 qc pass: dvbgse with grefr
 qc pass: smds with grefr
-qc pass: ppp over gtp
+failed: ppp over gtp
 qc pass: ipv4 over gtp
 qc pass: ipv6 over gtp
 qc pass: ipv4 and ipv6 over gtp
@@ -421,9 +421,9 @@ qc pass: pckoip over ipv6
 qc pass: pckoip over pckoip
 qc pass: pckoip over loopback
 qc pass: ppp with packet over tcp
-qc pass: ppp with packet over tls
+failed: ppp with packet over tls
 qc pass: ppp with packet over txt
-qc pass: ppp with packet over txtls
+failed: ppp with packet over txtls
 qc pass: ppp with packet over udp
 qc pass: ethernet with packet over udp
 qc pass: hdlc tunneling with packet over udp
@@ -469,7 +469,7 @@ qc pass: ppp with asymmetric multilink
 qc pass: ppp address propagation
 qc pass: ppp labeled gateway
 qc pass: ppp no remote address
-qc pass: ppp no local address
+failed: ppp no local address
 qc pass: ppp policy with local authentication
 qc pass: ppp policy with radius authentication
 qc pass: pppoe over ethernet encapsulation
@@ -512,7 +512,7 @@ qc pass: ppp over stun
 qc pass: ppp over tcp
 qc pass: ppp over tcp without sack
 qc pass: ppp over tcp with sack
-qc pass: ppp over tcp with asymmetric sack
+failed: ppp over tcp with asymmetric sack
 qc pass: ppp over tcp with ecn
 qc pass: ppp over tcp without ecn
 qc pass: ppp over tcp with timestamp
@@ -3373,7 +3373,7 @@ qc pass: vpns with ingress rtfilter
 qc pass: vpns with egress rtfilter
 qc pass: othervpns with ingress rtfilter
 qc pass: othervpns with egress rtfilter
-qc pass: vpls/ldp with ingress rtfilter
+failed: vpls/ldp with ingress rtfilter
 qc pass: vpls/ldp with egress rtfilter
 qc pass: evpn/pbb with ingress rtfilter
 qc pass: evpn/pbb with egress rtfilter
@@ -3600,7 +3600,7 @@ qc pass: otherl3evpns with default route
 qc pass: bgp l3evpns change in metric
 qc pass: ibgp rr l3evpns prefix movement
 qc pass: bgp otherl3evpns change in metric
-qc pass: ibgp rr otherl3evpns prefix movement
+failed: ibgp rr otherl3evpns prefix movement
 qc pass: ibgp rr l3evpns prefix withdraw
 qc pass: ibgp rr otherl3evpns prefix withdraw
 qc pass: l3evpns with ingress rtfilter
@@ -3664,7 +3664,7 @@ qc pass: bgp change in aspa validity with soft-reconfig
 qc pass: bgp routepolicy filtering with aspa validity
 qc pass: bgp routepolicy filtering with aspa validity with soft-reconfig
 qc pass: bgp aspa rpki valid
-qc pass: bgp aspa rpki invalid
+failed: bgp aspa rpki invalid
 qc pass: ibgp rr in subnet without client reflection
 qc pass: vpns over ibgp rr without client reflection
 qc pass: unicast+sdwan over bgp
@@ -3769,7 +3769,7 @@ qc pass: isis over ethernet
 qc pass: isis over ethernet vlan
 qc pass: isis over ethernet bridge
 qc pass: isis over hdlc
-qc pass: isis over ppp
+failed: isis over ppp
 qc pass: isis over framerelay
 qc pass: isis over atmdxi
 qc pass: isis over gre

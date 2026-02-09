@@ -18017,3 +18017,22 @@ qc pass: bgp change in destination prefer
 qc pass: bgp change in destination prefer with soft-reconfig
 qc pass: bgp routepolicy filtering with destination prefer
 qc pass: bgp routepolicy filtering with destination prefer with soft-reconfig
+---------------------------------- 2026-02-09 07:59:56 26.2.9
+no qc pass: isis over ppp
+no qc pass: bgp aspa rpki invalid
+no qc pass: ibgp rr otherl3evpns prefix movement
+no qc pass: vpls/ldp with ingress rtfilter
+no qc pass: ppp over tcp with asymmetric sack
+no qc pass: ppp no local address
+no qc pass: ppp with packet over txtls
+no qc pass: ppp with packet over tls
+no qc pass: ppp over gtp
+failed: ppp over gtp
+failed: ppp with packet over tls
+failed: ppp with packet over txtls
+failed: ppp no local address
+failed: ppp over tcp with asymmetric sack
+failed: vpls/ldp with ingress rtfilter
+failed: ibgp rr otherl3evpns prefix movement
+failed: bgp aspa rpki invalid
+failed: isis over ppp
