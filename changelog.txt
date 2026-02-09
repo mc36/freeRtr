@@ -18055,3 +18055,6 @@ qc pass: vpls/ldp with ingress rtfilter
 qc pass: ibgp rr otherl3evpns prefix movement
 qc pass: bgp aspa rpki invalid
 qc pass: isis over ppp
+---------------------------------- 2026-02-09 11:39:57 26.2.9
+no qc pass: ospf point2multipoint nonbroadcast connection
+failed: ospf point2multipoint nonbroadcast connection

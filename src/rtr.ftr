@@ -3991,7 +3991,7 @@ qc pass: olsr address unsuppression
 qc pass: olsr auto summarization
 qc pass: ospf point2point connection
 qc pass: ospf point2multipoint connection
-qc pass: ospf point2multipoint nonbroadcast connection
+failed: ospf point2multipoint nonbroadcast connection
 qc pass: ospf broadcast connection
 qc pass: ospf nonbroadcast connection
 qc pass: ospf point2point chain

@@ -1,7 +1,7 @@
 url;file;result;test
 -;-;-;freeRouter v26.2.9-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-02-09 10:59:26, took 00:21:29, with 50 workers, on 4284 cases, 0 failed, 0 traces, 4 retries
--;-;-;./rtr.bin, null
+-;-;-;2026-02-09 12:39:59, took 01:00:01, with 20 workers, on 4284 cases, 1 failed, 0 traces, 29 retries
+-;-;-;java -Xmx256m -jar rtr.jar, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
 http://sources.freertr.org/cfg/basic03.tst;basic03.tst;success;subinterface with slot
@@ -3995,7 +3995,7 @@ http://sources.freertr.org/cfg/rout-olsr28.tst;rout-olsr28.tst;success;olsr addr
 http://sources.freertr.org/cfg/rout-olsr29.tst;rout-olsr29.tst;success;olsr auto summarization
 http://sources.freertr.org/cfg/rout-ospf01.tst;rout-ospf01.tst;success;ospf point2point connection
 http://sources.freertr.org/cfg/rout-ospf02.tst;rout-ospf02.tst;success;ospf point2multipoint connection
-http://sources.freertr.org/cfg/rout-ospf03.tst;rout-ospf03.tst;success;ospf point2multipoint nonbroadcast connection
+http://sources.freertr.org/cfg/rout-ospf03.tst;rout-ospf03.tst;#6-run-r1 tping 100 80 2.2.2.2 vrf v1;ospf point2multipoint nonbroadcast connection
 http://sources.freertr.org/cfg/rout-ospf04.tst;rout-ospf04.tst;success;ospf broadcast connection
 http://sources.freertr.org/cfg/rout-ospf05.tst;rout-ospf05.tst;success;ospf nonbroadcast connection
 http://sources.freertr.org/cfg/rout-ospf06.tst;rout-ospf06.tst;success;ospf point2point chain
