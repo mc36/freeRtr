@@ -18036,3 +18036,22 @@ failed: vpls/ldp with ingress rtfilter
 failed: ibgp rr otherl3evpns prefix movement
 failed: bgp aspa rpki invalid
 failed: isis over ppp
+---------------------------------- 2026-02-09 09:21:38 26.2.9
+no failed: isis over ppp
+no failed: bgp aspa rpki invalid
+no failed: ibgp rr otherl3evpns prefix movement
+no failed: vpls/ldp with ingress rtfilter
+no failed: ppp over tcp with asymmetric sack
+no failed: ppp no local address
+no failed: ppp with packet over txtls
+no failed: ppp with packet over tls
+no failed: ppp over gtp
+qc pass: ppp over gtp
+qc pass: ppp with packet over tls
+qc pass: ppp with packet over txtls
+qc pass: ppp no local address
+qc pass: ppp over tcp with asymmetric sack
+qc pass: vpls/ldp with ingress rtfilter
+qc pass: ibgp rr otherl3evpns prefix movement
+qc pass: bgp aspa rpki invalid
+qc pass: isis over ppp

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.2.9-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-02-09 09:19:28, took 01:19:32, with 50 workers, on 4284 cases, 9 failed, 0 traces, 303 retries
+-;-;-;2026-02-09 09:38:31, took 00:16:53, with 50 workers, on 4284 cases, 0 failed, 0 traces, 5 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -257,7 +257,7 @@ http://sources.freertr.org/cfg/conn-gre25.tst;conn-gre25.tst;success;isdn with g
 http://sources.freertr.org/cfg/conn-gre26.tst;conn-gre26.tst;success;sep with grefr
 http://sources.freertr.org/cfg/conn-gre27.tst;conn-gre27.tst;success;dvbgse with grefr
 http://sources.freertr.org/cfg/conn-gre28.tst;conn-gre28.tst;success;smds with grefr
-http://sources.freertr.org/cfg/conn-gtp01.tst;conn-gtp01.tst;#6-run-r2 tping 100 60 2.2.2.0 vrf v1;ppp over gtp
+http://sources.freertr.org/cfg/conn-gtp01.tst;conn-gtp01.tst;success;ppp over gtp
 http://sources.freertr.org/cfg/conn-gtp02.tst;conn-gtp02.tst;success;ipv4 over gtp
 http://sources.freertr.org/cfg/conn-gtp03.tst;conn-gtp03.tst;success;ipv6 over gtp
 http://sources.freertr.org/cfg/conn-gtp04.tst;conn-gtp04.tst;success;ipv4 and ipv6 over gtp
@@ -425,9 +425,9 @@ http://sources.freertr.org/cfg/conn-pckoi02.tst;conn-pckoi02.tst;success;pckoip 
 http://sources.freertr.org/cfg/conn-pckoi03.tst;conn-pckoi03.tst;success;pckoip over pckoip
 http://sources.freertr.org/cfg/conn-pckoi04.tst;conn-pckoi04.tst;success;pckoip over loopback
 http://sources.freertr.org/cfg/conn-pckot01.tst;conn-pckot01.tst;success;ppp with packet over tcp
-http://sources.freertr.org/cfg/conn-pckot02.tst;conn-pckot02.tst;#6-run-r2 tping 100 60 2.2.2.0 vrf v1;ppp with packet over tls
+http://sources.freertr.org/cfg/conn-pckot02.tst;conn-pckot02.tst;success;ppp with packet over tls
 http://sources.freertr.org/cfg/conn-pckot03.tst;conn-pckot03.tst;success;ppp with packet over txt
-http://sources.freertr.org/cfg/conn-pckot04.tst;conn-pckot04.tst;#6-run-r2 tping 100 60 2.2.2.0 vrf v1;ppp with packet over txtls
+http://sources.freertr.org/cfg/conn-pckot04.tst;conn-pckot04.tst;success;ppp with packet over txtls
 http://sources.freertr.org/cfg/conn-pckou01.tst;conn-pckou01.tst;success;ppp with packet over udp
 http://sources.freertr.org/cfg/conn-pckou02.tst;conn-pckou02.tst;success;ethernet with packet over udp
 http://sources.freertr.org/cfg/conn-pckou03.tst;conn-pckou03.tst;success;hdlc tunneling with packet over udp
@@ -473,7 +473,7 @@ http://sources.freertr.org/cfg/conn-ppp14.tst;conn-ppp14.tst;success;ppp with as
 http://sources.freertr.org/cfg/conn-ppp15.tst;conn-ppp15.tst;success;ppp address propagation
 http://sources.freertr.org/cfg/conn-ppp16.tst;conn-ppp16.tst;success;ppp labeled gateway
 http://sources.freertr.org/cfg/conn-ppp17.tst;conn-ppp17.tst;success;ppp no remote address
-http://sources.freertr.org/cfg/conn-ppp18.tst;conn-ppp18.tst;#6-run-r1 tping 100 30 1.1.1.2 vrf v1 sou lo0;ppp no local address
+http://sources.freertr.org/cfg/conn-ppp18.tst;conn-ppp18.tst;success;ppp no local address
 http://sources.freertr.org/cfg/conn-ppp19.tst;conn-ppp19.tst;success;ppp policy with local authentication
 http://sources.freertr.org/cfg/conn-ppp20.tst;conn-ppp20.tst;success;ppp policy with radius authentication
 http://sources.freertr.org/cfg/conn-pppoe01.tst;conn-pppoe01.tst;success;pppoe over ethernet encapsulation
@@ -516,7 +516,7 @@ http://sources.freertr.org/cfg/conn-stun.tst;conn-stun.tst;success;ppp over stun
 http://sources.freertr.org/cfg/conn-tcp01.tst;conn-tcp01.tst;success;ppp over tcp
 http://sources.freertr.org/cfg/conn-tcp02.tst;conn-tcp02.tst;success;ppp over tcp without sack
 http://sources.freertr.org/cfg/conn-tcp03.tst;conn-tcp03.tst;success;ppp over tcp with sack
-http://sources.freertr.org/cfg/conn-tcp04.tst;conn-tcp04.tst;#6-run-r2 tping 100 30 2.2.2.0 vrf v1;ppp over tcp with asymmetric sack
+http://sources.freertr.org/cfg/conn-tcp04.tst;conn-tcp04.tst;success;ppp over tcp with asymmetric sack
 http://sources.freertr.org/cfg/conn-tcp05.tst;conn-tcp05.tst;success;ppp over tcp with ecn
 http://sources.freertr.org/cfg/conn-tcp06.tst;conn-tcp06.tst;success;ppp over tcp without ecn
 http://sources.freertr.org/cfg/conn-tcp07.tst;conn-tcp07.tst;success;ppp over tcp with timestamp
@@ -3377,7 +3377,7 @@ http://sources.freertr.org/cfg/rout-bgp590.tst;rout-bgp590.tst;success;vpns with
 http://sources.freertr.org/cfg/rout-bgp591.tst;rout-bgp591.tst;success;vpns with egress rtfilter
 http://sources.freertr.org/cfg/rout-bgp592.tst;rout-bgp592.tst;success;othervpns with ingress rtfilter
 http://sources.freertr.org/cfg/rout-bgp593.tst;rout-bgp593.tst;success;othervpns with egress rtfilter
-http://sources.freertr.org/cfg/rout-bgp594.tst;rout-bgp594.tst;#6-run-r1 tping 100 60 4.4.4.2 vrf v1;vpls/ldp with ingress rtfilter
+http://sources.freertr.org/cfg/rout-bgp594.tst;rout-bgp594.tst;success;vpls/ldp with ingress rtfilter
 http://sources.freertr.org/cfg/rout-bgp595.tst;rout-bgp595.tst;success;vpls/ldp with egress rtfilter
 http://sources.freertr.org/cfg/rout-bgp596.tst;rout-bgp596.tst;success;evpn/pbb with ingress rtfilter
 http://sources.freertr.org/cfg/rout-bgp597.tst;rout-bgp597.tst;success;evpn/pbb with egress rtfilter
@@ -3604,7 +3604,7 @@ http://sources.freertr.org/cfg/rout-bgp817.tst;rout-bgp817.tst;success;otherl3ev
 http://sources.freertr.org/cfg/rout-bgp818.tst;rout-bgp818.tst;success;bgp l3evpns change in metric
 http://sources.freertr.org/cfg/rout-bgp819.tst;rout-bgp819.tst;success;ibgp rr l3evpns prefix movement
 http://sources.freertr.org/cfg/rout-bgp820.tst;rout-bgp820.tst;success;bgp otherl3evpns change in metric
-http://sources.freertr.org/cfg/rout-bgp821.tst;rout-bgp821.tst;#6-run-r1 tping 100 60 9.9.4.2 vrf v4;ibgp rr otherl3evpns prefix movement
+http://sources.freertr.org/cfg/rout-bgp821.tst;rout-bgp821.tst;success;ibgp rr otherl3evpns prefix movement
 http://sources.freertr.org/cfg/rout-bgp822.tst;rout-bgp822.tst;success;ibgp rr l3evpns prefix withdraw
 http://sources.freertr.org/cfg/rout-bgp823.tst;rout-bgp823.tst;success;ibgp rr otherl3evpns prefix withdraw
 http://sources.freertr.org/cfg/rout-bgp824.tst;rout-bgp824.tst;success;l3evpns with ingress rtfilter
@@ -3668,7 +3668,7 @@ http://sources.freertr.org/cfg/rout-bgp891.tst;rout-bgp891.tst;success;bgp chang
 http://sources.freertr.org/cfg/rout-bgp892.tst;rout-bgp892.tst;success;bgp routepolicy filtering with aspa validity
 http://sources.freertr.org/cfg/rout-bgp893.tst;rout-bgp893.tst;success;bgp routepolicy filtering with aspa validity with soft-reconfig
 http://sources.freertr.org/cfg/rout-bgp894.tst;rout-bgp894.tst;success;bgp aspa rpki valid
-http://sources.freertr.org/cfg/rout-bgp895.tst;rout-bgp895.tst;#6-run-r3 tping 100 60 2.2.2.1 vrf v1;bgp aspa rpki invalid
+http://sources.freertr.org/cfg/rout-bgp895.tst;rout-bgp895.tst;success;bgp aspa rpki invalid
 http://sources.freertr.org/cfg/rout-bgp896.tst;rout-bgp896.tst;success;ibgp rr in subnet without client reflection
 http://sources.freertr.org/cfg/rout-bgp897.tst;rout-bgp897.tst;success;vpns over ibgp rr without client reflection
 http://sources.freertr.org/cfg/rout-bgp898.tst;rout-bgp898.tst;success;unicast+sdwan over bgp
@@ -3773,7 +3773,7 @@ http://sources.freertr.org/cfg/rout-isis001.tst;rout-isis001.tst;success;isis ov
 http://sources.freertr.org/cfg/rout-isis002.tst;rout-isis002.tst;success;isis over ethernet vlan
 http://sources.freertr.org/cfg/rout-isis003.tst;rout-isis003.tst;success;isis over ethernet bridge
 http://sources.freertr.org/cfg/rout-isis004.tst;rout-isis004.tst;success;isis over hdlc
-http://sources.freertr.org/cfg/rout-isis005.tst;rout-isis005.tst;#6-run-r1 tping 100 20 4321::2 vrf v1;isis over ppp
+http://sources.freertr.org/cfg/rout-isis005.tst;rout-isis005.tst;success;isis over ppp
 http://sources.freertr.org/cfg/rout-isis006.tst;rout-isis006.tst;success;isis over framerelay
 http://sources.freertr.org/cfg/rout-isis007.tst;rout-isis007.tst;success;isis over atmdxi
 http://sources.freertr.org/cfg/rout-isis008.tst;rout-isis008.tst;success;isis over gre
