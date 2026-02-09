@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v26.2.8-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-02-08 22:08:55, took 00:16:06, with 50 workers, on 4284 cases, 0 failed, 0 traces, 0 retries
+-;-;-;freeRouter v26.2.9-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2026-02-09 06:18:53, took 00:16:49, with 50 workers, on 4284 cases, 0 failed, 0 traces, 10 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
