@@ -1574,6 +1574,7 @@ public class cfgInit implements Runnable {
             if (det) {
                 pipeScreen.updtSiz(pip);
             }
+            threadLoop();
             userExec exe = new userExec(pip, rdr);
             exe.privileged = true;
             s = exe.repairCommand(s);

@@ -18058,3 +18058,6 @@ qc pass: isis over ppp
 ---------------------------------- 2026-02-09 11:39:57 26.2.9
 no qc pass: ospf point2multipoint nonbroadcast connection
 failed: ospf point2multipoint nonbroadcast connection
+---------------------------------- 2026-02-09 12:49:13 26.2.9
+no failed: ospf point2multipoint nonbroadcast connection
+qc pass: ospf point2multipoint nonbroadcast connection
