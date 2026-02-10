@@ -1,6 +1,6 @@
 download 3
 reget-time 168
-kern http://download.freebsd.org/snapshots/%arch%/15.0-STABLE/
+kern http://download.freebsd.org/releases/%arch%/15.0-RELEASE/
 
 mkdir %dwn%
 del-alw %tmp%
