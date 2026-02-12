@@ -18064,3 +18064,6 @@ qc pass: ospf point2multipoint nonbroadcast connection
 ---------------------------------- 2026-02-11 22:01:48 26.2.11
 no qc pass: wireguard over ipv6
 failed: wireguard over ipv6
+---------------------------------- 2026-02-11 22:42:42 26.2.11
+no failed: wireguard over ipv6
+qc pass: wireguard over ipv6
