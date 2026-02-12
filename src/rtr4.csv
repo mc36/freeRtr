@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v26.2.5-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-02-05 12:53:54, took 01:22:18, with 10 workers, on 877 cases, 4 failed, 0 traces, 33 retries
+-;-;-;freeRouter v26.2.12-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2026-02-12 11:48:02, took 01:21:00, with 10 workers, on 877 cases, 5 failed, 0 traces, 37 retries
 -;-;-;java -Xmx256m -jar rtr.jar, bmv2
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -747,8 +747,8 @@ http://sources.freertr.org/cfg/p4lang-rout391.tst;p4lang-rout391.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout392.tst;p4lang-rout392.tst;success;p4lang: l3vpn over pwhe mpls
 http://sources.freertr.org/cfg/p4lang-rout393.tst;p4lang-rout393.tst;success;p4lang: pwhe routing over qinq
 http://sources.freertr.org/cfg/p4lang-rout394.tst;p4lang-rout394.tst;success;p4lang: pwhe mpls over qinq
-http://sources.freertr.org/cfg/p4lang-rout395.tst;p4lang-rout395.tst;#6-run-r5 tping 100 10 1.1.1.5 vrf v1;p4lang: bridge routing over backplane
-http://sources.freertr.org/cfg/p4lang-rout396.tst;p4lang-rout396.tst;success;p4lang: mixed bridge routing over backplane
+http://sources.freertr.org/cfg/p4lang-rout395.tst;p4lang-rout395.tst;#6-run-r1 tping 100 10 1234::3 vrf v1;p4lang: bridge routing over backplane
+http://sources.freertr.org/cfg/p4lang-rout396.tst;p4lang-rout396.tst;#6-run-r1 tping 100 10 1234::3 vrf v1;p4lang: mixed bridge routing over backplane
 http://sources.freertr.org/cfg/p4lang-rout397.tst;p4lang-rout397.tst;success;p4lang: routed vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout398.tst;p4lang-rout398.tst;success;p4lang: routed vlan vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout399.tst;p4lang-rout399.tst;success;p4lang: routed qinq vpls/ldp with bgp
@@ -757,8 +757,8 @@ http://sources.freertr.org/cfg/p4lang-rout401.tst;p4lang-rout401.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout402.tst;p4lang-rout402.tst;success;p4lang: routed qinq evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout403.tst;p4lang-rout403.tst;success;p4lang: vpls/ldp over backplane
 http://sources.freertr.org/cfg/p4lang-rout404.tst;p4lang-rout404.tst;success;p4lang: evpn/cmac over backplane
-http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;#6-run-r5 tping 100 10 3.3.3.104 vrf v1 sou lo1;p4lang: routed vpls/ldp over backplane
-http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;#6-run-r5 tping 100 10 3.3.3.104 vrf v1 sou lo1;p4lang: routed evpn/cmac over backplane
+http://sources.freertr.org/cfg/p4lang-rout405.tst;p4lang-rout405.tst;success;p4lang: routed vpls/ldp over backplane
+http://sources.freertr.org/cfg/p4lang-rout406.tst;p4lang-rout406.tst;success;p4lang: routed evpn/cmac over backplane
 http://sources.freertr.org/cfg/p4lang-rout407.tst;p4lang-rout407.tst;success;p4lang: vpn mldp egress edge
 http://sources.freertr.org/cfg/p4lang-rout408.tst;p4lang-rout408.tst;success;p4lang: vpn mldp ingress edge
 http://sources.freertr.org/cfg/p4lang-rout409.tst;p4lang-rout409.tst;success;p4lang: vpn bier egress edge
@@ -859,14 +859,14 @@ http://sources.freertr.org/cfg/p4lang-rout503.tst;p4lang-rout503.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout504.tst;p4lang-rout504.tst;success;p4lang: eoip server over ipv6
 http://sources.freertr.org/cfg/p4lang-rout505.tst;p4lang-rout505.tst;success;p4lang: eoip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout506.tst;p4lang-rout506.tst;success;p4lang: eoip server over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout507.tst;p4lang-rout507.tst;not applicable;p4lang: ttlset in
-http://sources.freertr.org/cfg/p4lang-rout508.tst;p4lang-rout508.tst;not applicable;p4lang: vlan ttlset in
-http://sources.freertr.org/cfg/p4lang-rout509.tst;p4lang-rout509.tst;not applicable;p4lang: qinq ttlset in
+http://sources.freertr.org/cfg/p4lang-rout507.tst;p4lang-rout507.tst;#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0 ttl 1;p4lang: ttlset in
+http://sources.freertr.org/cfg/p4lang-rout508.tst;p4lang-rout508.tst;#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0 ttl 1;p4lang: vlan ttlset in
+http://sources.freertr.org/cfg/p4lang-rout509.tst;p4lang-rout509.tst;#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0 ttl 1;p4lang: qinq ttlset in
 http://sources.freertr.org/cfg/p4lang-rout510.tst;p4lang-rout510.tst;not applicable;p4lang: tcpmss out
 http://sources.freertr.org/cfg/p4lang-rout511.tst;p4lang-rout511.tst;not applicable;p4lang: vlan tcpmss out
-http://sources.freertr.org/cfg/p4lang-rout512.tst;p4lang-rout512.tst;not applicable;p4lang: ttlset out
-http://sources.freertr.org/cfg/p4lang-rout513.tst;p4lang-rout513.tst;not applicable;p4lang: vlan ttlset out
-http://sources.freertr.org/cfg/p4lang-rout514.tst;p4lang-rout514.tst;not applicable;p4lang: qinq ttlset out
+http://sources.freertr.org/cfg/p4lang-rout512.tst;p4lang-rout512.tst;success;p4lang: ttlset out
+http://sources.freertr.org/cfg/p4lang-rout513.tst;p4lang-rout513.tst;success;p4lang: vlan ttlset out
+http://sources.freertr.org/cfg/p4lang-rout514.tst;p4lang-rout514.tst;success;p4lang: qinq ttlset out
 http://sources.freertr.org/cfg/p4lang-rout515.tst;p4lang-rout515.tst;success;p4lang: mspw with bgp
 http://sources.freertr.org/cfg/p4lang-rout516.tst;p4lang-rout516.tst;success;p4lang: vlan mspw with bgp
 http://sources.freertr.org/cfg/p4lang-rout517.tst;p4lang-rout517.tst;success;p4lang: bundle vlan mspw with bgp
@@ -878,4 +878,4 @@ http://sources.freertr.org/cfg/p4lang-rout522.tst;p4lang-rout522.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout523.tst;p4lang-rout523.tst;success;p4lang: routed vlan mspw with bgp
 http://sources.freertr.org/cfg/p4lang-rout524.tst;p4lang-rout524.tst;success;p4lang: routed qinq mspw with bgp
 http://sources.freertr.org/cfg/p4lang-rout525.tst;p4lang-rout525.tst;success;p4lang: mspw over backplane
-http://sources.freertr.org/cfg/p4lang-rout526.tst;p4lang-rout526.tst;#6-run-r5 tping 100 10 3.3.3.104 vrf v1 sou lo1;p4lang: routed mspw over backplane
+http://sources.freertr.org/cfg/p4lang-rout526.tst;p4lang-rout526.tst;success;p4lang: routed mspw over backplane

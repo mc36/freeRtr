@@ -9,8 +9,8 @@
 .bad { color: red }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v26.2.5-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2026-02-05 12:53:54, took 01:22:18, with 10 workers, on 877 cases, 4 failed, 0 traces, 33 retries<br/>
+release: freeRouter v26.2.12-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2026-02-12 11:48:02, took 01:21:00, with 10 workers, on 877 cases, 5 failed, 0 traces, 37 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar, other: bmv2<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -759,8 +759,8 @@ jvm: java -Xmx256m -jar rtr.jar, other: bmv2<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout392.tst">p4lang-rout392.tst</a></td><td>success</td><td>p4lang: l3vpn over pwhe mpls</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout393.tst">p4lang-rout393.tst</a></td><td>success</td><td>p4lang: pwhe routing over qinq</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout394.tst">p4lang-rout394.tst</a></td><td>success</td><td>p4lang: pwhe mpls over qinq</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout395.tst">p4lang-rout395.tst</a></td><td>#6-run-r5 tping 100 10 1.1.1.5 vrf v1</td><td>p4lang: bridge routing over backplane</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout396.tst">p4lang-rout396.tst</a></td><td>success</td><td>p4lang: mixed bridge routing over backplane</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout395.tst">p4lang-rout395.tst</a></td><td>#6-run-r1 tping 100 10 1234::3 vrf v1</td><td>p4lang: bridge routing over backplane</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout396.tst">p4lang-rout396.tst</a></td><td>#6-run-r1 tping 100 10 1234::3 vrf v1</td><td>p4lang: mixed bridge routing over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout397.tst">p4lang-rout397.tst</a></td><td>success</td><td>p4lang: routed vpls/ldp with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout398.tst">p4lang-rout398.tst</a></td><td>success</td><td>p4lang: routed vlan vpls/ldp with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout399.tst">p4lang-rout399.tst</a></td><td>success</td><td>p4lang: routed qinq vpls/ldp with bgp</td></tr>
@@ -769,8 +769,8 @@ jvm: java -Xmx256m -jar rtr.jar, other: bmv2<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout402.tst">p4lang-rout402.tst</a></td><td>success</td><td>p4lang: routed qinq evpn/cmac with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout403.tst">p4lang-rout403.tst</a></td><td>success</td><td>p4lang: vpls/ldp over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout404.tst">p4lang-rout404.tst</a></td><td>success</td><td>p4lang: evpn/cmac over backplane</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout405.tst">p4lang-rout405.tst</a></td><td>#6-run-r5 tping 100 10 3.3.3.104 vrf v1 sou lo1</td><td>p4lang: routed vpls/ldp over backplane</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout406.tst">p4lang-rout406.tst</a></td><td>#6-run-r5 tping 100 10 3.3.3.104 vrf v1 sou lo1</td><td>p4lang: routed evpn/cmac over backplane</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout405.tst">p4lang-rout405.tst</a></td><td>success</td><td>p4lang: routed vpls/ldp over backplane</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout406.tst">p4lang-rout406.tst</a></td><td>success</td><td>p4lang: routed evpn/cmac over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout407.tst">p4lang-rout407.tst</a></td><td>success</td><td>p4lang: vpn mldp egress edge</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout408.tst">p4lang-rout408.tst</a></td><td>success</td><td>p4lang: vpn mldp ingress edge</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout409.tst">p4lang-rout409.tst</a></td><td>success</td><td>p4lang: vpn bier egress edge</td></tr>
@@ -871,14 +871,14 @@ jvm: java -Xmx256m -jar rtr.jar, other: bmv2<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout504.tst">p4lang-rout504.tst</a></td><td>success</td><td>p4lang: eoip server over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout505.tst">p4lang-rout505.tst</a></td><td>success</td><td>p4lang: eoip server over ipv4 loopback</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout506.tst">p4lang-rout506.tst</a></td><td>success</td><td>p4lang: eoip server over ipv6 loopback</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout507.tst">p4lang-rout507.tst</a></td><td>not applicable</td><td>p4lang: ttlset in</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout508.tst">p4lang-rout508.tst</a></td><td>not applicable</td><td>p4lang: vlan ttlset in</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout509.tst">p4lang-rout509.tst</a></td><td>not applicable</td><td>p4lang: qinq ttlset in</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout507.tst">p4lang-rout507.tst</a></td><td>#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0 ttl 1</td><td>p4lang: ttlset in</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout508.tst">p4lang-rout508.tst</a></td><td>#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0 ttl 1</td><td>p4lang: vlan ttlset in</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout509.tst">p4lang-rout509.tst</a></td><td>#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0 ttl 1</td><td>p4lang: qinq ttlset in</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout510.tst">p4lang-rout510.tst</a></td><td>not applicable</td><td>p4lang: tcpmss out</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout511.tst">p4lang-rout511.tst</a></td><td>not applicable</td><td>p4lang: vlan tcpmss out</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout512.tst">p4lang-rout512.tst</a></td><td>not applicable</td><td>p4lang: ttlset out</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout513.tst">p4lang-rout513.tst</a></td><td>not applicable</td><td>p4lang: vlan ttlset out</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout514.tst">p4lang-rout514.tst</a></td><td>not applicable</td><td>p4lang: qinq ttlset out</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout512.tst">p4lang-rout512.tst</a></td><td>success</td><td>p4lang: ttlset out</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout513.tst">p4lang-rout513.tst</a></td><td>success</td><td>p4lang: vlan ttlset out</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout514.tst">p4lang-rout514.tst</a></td><td>success</td><td>p4lang: qinq ttlset out</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout515.tst">p4lang-rout515.tst</a></td><td>success</td><td>p4lang: mspw with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout516.tst">p4lang-rout516.tst</a></td><td>success</td><td>p4lang: vlan mspw with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout517.tst">p4lang-rout517.tst</a></td><td>success</td><td>p4lang: bundle vlan mspw with bgp</td></tr>
@@ -890,5 +890,5 @@ jvm: java -Xmx256m -jar rtr.jar, other: bmv2<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout523.tst">p4lang-rout523.tst</a></td><td>success</td><td>p4lang: routed vlan mspw with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout524.tst">p4lang-rout524.tst</a></td><td>success</td><td>p4lang: routed qinq mspw with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout525.tst">p4lang-rout525.tst</a></td><td>success</td><td>p4lang: mspw over backplane</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout526.tst">p4lang-rout526.tst</a></td><td>#6-run-r5 tping 100 10 3.3.3.104 vrf v1 sou lo1</td><td>p4lang: routed mspw over backplane</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout526.tst">p4lang-rout526.tst</a></td><td>success</td><td>p4lang: routed mspw over backplane</td></tr>
 </tbody></table></body></html>
