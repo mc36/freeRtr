@@ -808,6 +808,11 @@ public class cfgAll {
     public static boolean domainLookup = false;
 
     /**
+     * virtual threads
+     */
+    public static boolean virtThrds = false;
+
+    /**
      * end format
      */
     public static int endForm = 0;

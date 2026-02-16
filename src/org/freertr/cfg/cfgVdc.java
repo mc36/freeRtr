@@ -1011,12 +1011,16 @@ public class cfgVdc implements Comparable<cfgVdc>, Runnable, cfgGeneric {
         one.fromString("0000:0000:0001");
         String cmd;
         if (image1name == null) {
+            String b = "cs";
+            if (imageCpu != 1) {
+                b += "v";
+            }
             String a = cfgBase + cfgInit.hwCfgEnd;
             String s = cfgBase + cfgInit.swCfgEnd;
             if (configFile != null) {
                 s = configFile;
             }
-            cmd = cfgInit.getJvmExec() + " " + cfgInit.jvmParam + " -Xmx" + imageMem + "m -jar " + cfgInit.getFileName() + " routercs " + a + " " + s;
+            cmd = cfgInit.getJvmExec() + " " + cfgInit.jvmParam + " -Xmx" + imageMem + "m -jar " + cfgInit.getFileName() + " router" + b + " " + a + " " + s;
         } else {
             cmd = "qemu-system-x86_64 -monitor none -serial stdio -nographic -no-reboot -enable-kvm -drive file=" + image1name + ",format=raw,cache=unsafe -m " + imageMem;
             if (vga2vnc != null) {

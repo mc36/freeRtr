@@ -1504,6 +1504,10 @@ public class cfgInit implements Runnable {
                     det = true;
                     continue;
                 }
+                if (a.equals("v")) {
+                    cfgAll.virtThrds = true;
+                    continue;
+                }
             }
             pipeSide pipCon = null;
             pipeSide pipWin = null;
@@ -1552,6 +1556,10 @@ public class cfgInit implements Runnable {
                 String a = "" + s.charAt(i);
                 if (a.equals("d")) {
                     det = true;
+                    continue;
+                }
+                if (a.equals("v")) {
+                    cfgAll.virtThrds = true;
                     continue;
                 }
             }
