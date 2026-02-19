@@ -313,6 +313,10 @@ public class cfgProxy implements Comparable<cfgProxy>, cfgGeneric {
             proxy.lowProxy = null;
             return;
         }
+        if (s.equals("prefer")) {
+            proxy.prefer = 0;
+            return;
+        }
         cmd.badCmd();
     }
 

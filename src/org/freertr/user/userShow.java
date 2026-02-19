@@ -2477,6 +2477,25 @@ public class userShow {
             cmd.badCmd();
             return null;
         }
+        if (a.equals("routes")) {
+            clntProxy prx = cfgAll.getClntPrx(cfgAll.showProxy);
+            if (prx == null) {
+                cmd.error("no proxy configured");
+                return null;
+            }
+            if (prx.vrf == null) {
+                cmd.error("no vrf configured");
+                return null;
+            }
+            tabRoute<addrIP> tab;
+            if (prx.prefer == 4) {
+                tab = prx.vrf.fwd4.actualU;
+            } else {
+                tab = prx.vrf.fwd6.actualU;
+            }
+            doShowRoutes(null, tab, 1);
+            return null;
+        }
         if (a.equals("router")) {
             tabRouteAttr.routeType typ = cfgRtr.name2num(cmd.word());
             if (typ == null) {

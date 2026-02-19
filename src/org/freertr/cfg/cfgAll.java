@@ -933,6 +933,11 @@ public class cfgAll {
     public static clntProxy whoisProxy;
 
     /**
+     * proxy to use
+     */
+    public static clntProxy showProxy;
+
+    /**
      * chatter
      */
     public final static chatter chat = new chatter();
@@ -1519,6 +1524,7 @@ public class cfgAll {
         new userFilter("", cmds.negated + cmds.tabulator + "client upgrade-revert", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client upgrade-script", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client upgrade-ownkey", null),
+        new userFilter("", cmds.negated + cmds.tabulator + "client show-proxy", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client whois-proxy", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client whois-server", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client whois-option", null),
@@ -3953,6 +3959,7 @@ public class cfgAll {
             l.add("client whois-online" + a);
         }
         cmds.cfgLine(l, whoisProxy == null, "", "client whois-proxy", "" + whoisProxy);
+        cmds.cfgLine(l, showProxy == null, "", "client show-proxy", "" + showProxy);
         cmds.cfgLine(l, !graceReload, "", "client graceful-reload", "");
         l.add("client ipv4-tos " + ipv4sendingTOS);
         l.add("client ipv4-ttl " + ipv4sendingTTL);

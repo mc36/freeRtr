@@ -1942,6 +1942,9 @@ public class userExec {
         hl.add(null, false, 3, new int[]{4}, "route", "routing table entries");
         hl.add(null, false, 4, new int[]{5, -1}, "<name:vrf>", "name of routing table");
         hl.add(null, false, 5, new int[]{-1}, "[addr]", "prefix to view");
+        hl.add(null, false, 2, new int[]{3, -1}, "routes", "routing table entries");
+        hl.add(null, false, 3, new int[]{4, -1}, "[addr]", "prefix to view");
+        hl.add(null, false, 4, new int[]{-1}, "[rd]", "route distinguisher");
         hl.add(null, false, 2, new int[]{3}, "router", "routing protocol information");
         cfgRtr.getRouterList(hl, 1, " to show");
         hl.add(null, false, 4, new int[]{5}, "<num:rtr>", "process id");

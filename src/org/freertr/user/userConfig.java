@@ -536,6 +536,8 @@ public class userConfig {
         l.add(null, false, 3, new int[]{-1}, "<str>", "server name");
         l.add(null, false, 2, new int[]{3}, "whois-proxy", "specify proxy profile");
         l.add(null, false, 3, new int[]{-1}, "<name:prx>", "name of profile");
+        l.add(null, false, 2, new int[]{3}, "show-proxy", "specify proxy profile");
+        l.add(null, false, 3, new int[]{-1}, "<name:prx>", "name of profile");
         l.add(null, false, 2, new int[]{-1}, "password-stars", "type stars in passwords");
         l.add(null, false, 2, new int[]{-1}, "prefer-ipv6", "prefer ipv6 for domains");
         l.add(null, false, 2, new int[]{-1}, "prefer-ipv4", "prefer ipv4 for domains");
@@ -2868,6 +2870,10 @@ public class userConfig {
             cfgAll.whoisProxy = null;
             return;
         }
+        if (s.equals("show-proxy")) {
+            cfgAll.showProxy = null;
+            return;
+        }
         if (s.equals("end-format")) {
             cfgAll.endForm = 0;
             return;
@@ -3142,6 +3148,15 @@ public class userConfig {
                 return;
             }
             cfgAll.whoisProxy = prx.proxy;
+            return;
+        }
+        if (a.equals("show-proxy")) {
+            cfgProxy prx = cfgAll.proxyFind(cmd.word(), false);
+            if (prx == null) {
+                cmd.error("no such proxy");
+                return;
+            }
+            cfgAll.showProxy = prx.proxy;
             return;
         }
         if (a.equals("end-format")) {
