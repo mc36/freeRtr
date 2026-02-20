@@ -1,6 +1,6 @@
 url;file;result;test
--;-;-;freeRouter v26.2.12-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-02-12 11:48:02, took 01:21:00, with 10 workers, on 877 cases, 5 failed, 0 traces, 37 retries
+-;-;-;freeRouter v26.2.19-cur, done by sprscc13@mrn0b0dy.
+-;-;-;2026-02-19 19:49:10, took 01:23:35, with 10 workers, on 877 cases, 2 failed, 0 traces, 23 retries
 -;-;-;java -Xmx256m -jar rtr.jar, bmv2
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -859,9 +859,9 @@ http://sources.freertr.org/cfg/p4lang-rout503.tst;p4lang-rout503.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout504.tst;p4lang-rout504.tst;success;p4lang: eoip server over ipv6
 http://sources.freertr.org/cfg/p4lang-rout505.tst;p4lang-rout505.tst;success;p4lang: eoip server over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout506.tst;p4lang-rout506.tst;success;p4lang: eoip server over ipv6 loopback
-http://sources.freertr.org/cfg/p4lang-rout507.tst;p4lang-rout507.tst;#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0 ttl 1;p4lang: ttlset in
-http://sources.freertr.org/cfg/p4lang-rout508.tst;p4lang-rout508.tst;#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0 ttl 1;p4lang: vlan ttlset in
-http://sources.freertr.org/cfg/p4lang-rout509.tst;p4lang-rout509.tst;#6-run-r3 tping 100 10 2.2.2.104 vrf v1 sou lo0 ttl 1;p4lang: qinq ttlset in
+http://sources.freertr.org/cfg/p4lang-rout507.tst;p4lang-rout507.tst;success;p4lang: ttlset in
+http://sources.freertr.org/cfg/p4lang-rout508.tst;p4lang-rout508.tst;success;p4lang: vlan ttlset in
+http://sources.freertr.org/cfg/p4lang-rout509.tst;p4lang-rout509.tst;success;p4lang: qinq ttlset in
 http://sources.freertr.org/cfg/p4lang-rout510.tst;p4lang-rout510.tst;not applicable;p4lang: tcpmss out
 http://sources.freertr.org/cfg/p4lang-rout511.tst;p4lang-rout511.tst;not applicable;p4lang: vlan tcpmss out
 http://sources.freertr.org/cfg/p4lang-rout512.tst;p4lang-rout512.tst;success;p4lang: ttlset out

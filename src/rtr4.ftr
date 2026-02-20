@@ -855,9 +855,9 @@ qc pass: p4lang: eoip server over ipv4
 qc pass: p4lang: eoip server over ipv6
 qc pass: p4lang: eoip server over ipv4 loopback
 qc pass: p4lang: eoip server over ipv6 loopback
-failed: p4lang: ttlset in
-failed: p4lang: vlan ttlset in
-failed: p4lang: qinq ttlset in
+qc pass: p4lang: ttlset in
+qc pass: p4lang: vlan ttlset in
+qc pass: p4lang: qinq ttlset in
 qc pass: p4lang: tcpmss out
 qc pass: p4lang: vlan tcpmss out
 qc pass: p4lang: ttlset out
