@@ -116,6 +116,8 @@ public class logger {
      */
     public static int logPosForm = 2;
 
+    private static int threadCreated = 0;
+
     private static logFil logFilHnd = null;
 
     private static logBuf logBufLst = new logBuf(512);
@@ -455,6 +457,7 @@ public class logger {
      * @return thread created
      */
     public static Thread startThread(Runnable r) {
+        threadCreated++;
         if (cfgAll.virtThrds) {
             return Thread.ofVirtual().start(r);
         }
@@ -641,6 +644,19 @@ public class logger {
         } catch (Exception e) {
             traceback(e);
         }
+        return l;
+    }
+
+    /**
+     * list thread
+     *
+     * @return list of thread
+     */
+    public static userFormat listThrd() {
+        userFormat l = new userFormat("|", "category|value");
+        l.add("virtual|" + cfgAll.virtThrds);
+        l.add("created|" + threadCreated);
+        l.add("active|" + Thread.activeCount());
         return l;
     }
 

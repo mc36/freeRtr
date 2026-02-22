@@ -669,6 +669,10 @@ public class userShow {
                 rdr.putStrTab(logger.listSys());
                 return null;
             }
+            if (a.equals("thread")) {
+                rdr.putStrTab(logger.listThrd());
+                return null;
+            }
             if (a.equals("software")) {
                 rdr.putStrTab(ifcThread.showStalls());
                 return null;
