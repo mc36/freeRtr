@@ -3696,19 +3696,6 @@ public class cfgAll {
     }
 
     /**
-     * get list of aliases
-     *
-     * @return list of aliases
-     */
-    public static userFormat getShAlias() {
-        userFormat l = new userFormat("|", "type|name|command");
-        for (int i = 0; i < aliases.size(); i++) {
-            l.add("" + aliases.get(i));
-        }
-        return l;
-    }
-
-    /**
      * build list of interfaces
      *
      * @param mode mode to use
@@ -3811,57 +3798,6 @@ public class cfgAll {
                 continue;
             }
             ifc.getShIntTab(l, mode);
-        }
-        return l;
-    }
-
-    /**
-     * build list of trackers
-     *
-     * @return text to display
-     */
-    public static userFormat getShTracker() {
-        userFormat l = new userFormat("|", "name|type|mode|target|state|changes|took|changed");
-        for (int i = 0; i < trackers.size(); i++) {
-            cfgTrack trck = trackers.get(i);
-            if (trck == null) {
-                continue;
-            }
-            l.add(trck.worker.getShSum());
-        }
-        return l;
-    }
-
-    /**
-     * build list of checks
-     *
-     * @return text to display
-     */
-    public static userFormat getShCheck() {
-        userFormat l = new userFormat("|", "name|state|asked|reply|times|last|times|last", "4|2pass|2fail");
-        for (int i = 0; i < cfgAll.checks.size(); i++) {
-            cfgCheck ntry = cfgAll.checks.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            l.add(ntry.getShSum());
-        }
-        return l;
-    }
-
-    /**
-     * build list of mtrackers
-     *
-     * @return text to display
-     */
-    public static userFormat getShMtracker() {
-        userFormat l = new userFormat("|", "name|group|port|total|reach|bidir|changed");
-        for (int i = 0; i < mtrackers.size(); i++) {
-            cfgMtrack trck = mtrackers.get(i);
-            if (trck == null) {
-                continue;
-            }
-            l.add(trck.worker.getShSum());
         }
         return l;
     }

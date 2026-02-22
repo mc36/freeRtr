@@ -1023,7 +1023,7 @@ public class userShow {
             return null;
         }
         if (a.equals("alias")) {
-            rdr.putStrTab(cfgAll.getShAlias());
+            rdr.putStrTab(doShowAlias());
             return null;
         }
         if (a.equals("vrf")) {
@@ -1401,7 +1401,7 @@ public class userShow {
         if (a.equals("check")) {
             a = cmd.word();
             if (a.length() < 1) {
-                rdr.putStrTab(cfgAll.getShCheck());
+                rdr.putStrTab(doShowCheck());
                 return null;
             }
             cfgCheck srv = cfgAll.checkFind(a, false);
@@ -2073,7 +2073,7 @@ public class userShow {
         }
         if (a.equals("tracker")) {
             if (cmd.size() < 1) {
-                rdr.putStrTab(cfgAll.getShTracker());
+                rdr.putStrTab(doShowTracker());
                 return null;
             }
             cfgTrack trck = cfgAll.trackFind(cmd.word(), false);
@@ -2088,7 +2088,7 @@ public class userShow {
         }
         if (a.equals("mtracker")) {
             if (cmd.size() < 1) {
-                rdr.putStrTab(cfgAll.getShMtracker());
+                rdr.putStrTab(doShowMtracker());
                 return null;
             }
             cfgMtrack trck = cfgAll.mtrackFind(cmd.word(), false);
@@ -6268,6 +6268,50 @@ public class userShow {
             rdr.putStrTab(ses.doShowTalk());
             return;
         }
+    }
+
+    private userFormat doShowAlias() {
+        userFormat l = new userFormat("|", "type|name|command");
+        for (int i = 0; i < cfgAll.aliases.size(); i++) {
+            l.add("" + cfgAll.aliases.get(i));
+        }
+        return l;
+    }
+
+    private userFormat doShowTracker() {
+        userFormat l = new userFormat("|", "name|type|mode|target|state|changes|took|changed");
+        for (int i = 0; i < cfgAll.trackers.size(); i++) {
+            cfgTrack trck = cfgAll.trackers.get(i);
+            if (trck == null) {
+                continue;
+            }
+            l.add(trck.worker.getShSum());
+        }
+        return l;
+    }
+
+    private userFormat doShowCheck() {
+        userFormat l = new userFormat("|", "name|state|asked|reply|times|last|times|last", "4|2pass|2fail");
+        for (int i = 0; i < cfgAll.checks.size(); i++) {
+            cfgCheck ntry = cfgAll.checks.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            l.add(ntry.getShSum());
+        }
+        return l;
+    }
+
+    private userFormat doShowMtracker() {
+        userFormat l = new userFormat("|", "name|group|port|total|reach|bidir|changed");
+        for (int i = 0; i < cfgAll.mtrackers.size(); i++) {
+            cfgMtrack trck = cfgAll.mtrackers.get(i);
+            if (trck == null) {
+                continue;
+            }
+            l.add(trck.worker.getShSum());
+        }
+        return l;
     }
 
     private static int getConfigFilter(int flt, String cmd) {
