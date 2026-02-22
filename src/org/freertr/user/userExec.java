@@ -1835,7 +1835,8 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "memory", "local stored data");
         hl.add(null, false, 4, new int[]{-1}, "history", "historical data");
         hl.add(null, false, 4, new int[]{5}, "dashboard", "dashboard data");
-        hl.add(null, false, 5, new int[]{-1}, "<num>", "column number");
+        hl.add(null, false, 5, new int[]{6}, "<num>", "row number");
+        hl.add(null, false, 6, new int[]{-1}, "<num>", "column number");
         hl.add(null, false, 4, new int[]{5}, "graph", "graph historical data");
         hl.add(null, false, 5, new int[]{-1}, "<num>", "column number");
         hl.add(null, false, 4, new int[]{5}, "oldgraph", "graph historical data");

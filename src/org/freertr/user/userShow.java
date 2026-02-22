@@ -1329,8 +1329,8 @@ public class userShow {
             }
             if (a.equals("dashboard")) {
                 a = cmd.word();
-                String s = exp.getDashValue(bits.str2num(a));
-                rdr.putStrArr(bits.str2lst(a + "=" + s));
+                a = exp.getDashValue(bits.str2num(a), bits.str2num(cmd.word()));
+                rdr.putStrArr(bits.str2lst(a));
                 return null;
             }
             if (a.equals("graph")) {

@@ -75,7 +75,8 @@ public class cfgDshbrd implements Comparable<cfgDshbrd>, cfgGeneric {
         l.add(null, false, 1, new int[]{-1}, "newline", "new line to show");
         l.add(null, false, 1, new int[]{2, -1}, "sensor", "sensor information");
         l.add(null, false, 2, new int[]{3}, "<name:sns>", "sensor name");
-        l.add(null, false, 3, new int[]{-1}, "<num>", "column to show");
+        l.add(null, false, 3, new int[]{4}, "<num>", "row to show");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "column to show");
         l.add(null, false, 1, new int[]{2, -1}, "reindex", "reindex time map");
         l.add(null, false, 2, new int[]{3, -1}, "[num]", "initial number to start with");
         l.add(null, false, 3, new int[]{-1}, "[num]", "increment number");
@@ -183,10 +184,10 @@ public class cfgDshbrd implements Comparable<cfgDshbrd>, cfgGeneric {
                     s += t.str;
                     break;
                 case chr:
-                    s += (char) t.num;
+                    s += (char) t.num1;
                     break;
                 case snsr:
-                    s += t.val.getDashValue(t.num);
+                    s += t.val.getDashValue(t.num1, t.num2);
                     break;
                 default:
                     break;
@@ -205,7 +206,9 @@ class cfgDshbrdNtry implements Comparable<cfgDshbrdNtry> {
 
     public command act;
 
-    public int num;
+    public int num1;
+
+    public int num2;
 
     public String str;
 
@@ -239,10 +242,10 @@ class cfgDshbrdNtry implements Comparable<cfgDshbrdNtry> {
                 s = "text " + str;
                 break;
             case chr:
-                s = "char " + num;
+                s = "char " + num1;
                 break;
             case snsr:
-                s = "sensor " + val.name + " " + num;
+                s = "sensor " + val.name + " " + num1 + " " + num2;
                 break;
             case nwln:
                 s = "newline";
@@ -272,7 +275,7 @@ class cfgDshbrdNtry implements Comparable<cfgDshbrdNtry> {
         }
         if (s.equals("char")) {
             act = command.chr;
-            num = bits.str2num(cmd.word());
+            num1 = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("newline")) {
@@ -282,7 +285,8 @@ class cfgDshbrdNtry implements Comparable<cfgDshbrdNtry> {
         if (s.equals("sensor")) {
             act = command.snsr;
             val = cfgAll.sensorFind(cmd.word(), false);
-            num = bits.str2num(cmd.word());
+            num1 = bits.str2num(cmd.word());
+            num2 = bits.str2num(cmd.word());
             return val == null;
         }
         return true;

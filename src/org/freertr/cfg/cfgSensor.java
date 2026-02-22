@@ -1082,10 +1082,11 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     /**
      * generate report
      *
-     * @param num column
+     * @param num1 row
+     * @param num2 column
      * @return report
      */
-    public String getDashValue(int num) {
+    public String getDashValue(int num1, int num2) {
         last = bits.getTime();
         cnt++;
         List<String> lst = new ArrayList<String>();
@@ -1096,15 +1097,15 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             }
             res.remove(0);
         }
-        if (res.size() < 1) {
+        if (res.size() <= num1) {
             return null;
         }
-        String a = doLineCsv(res.get(0));
+        String a = doLineCsv(res.get(num1));
         List<String> cl = doSplitLine(a);
-        if (cols.size() <= num) {
+        if (cols.size() <= num2) {
             return null;
         }
-        cfgSensorCol cc = cols.get(num);
+        cfgSensorCol cc = cols.get(num2);
         if (cl.size() <= cc.num) {
             return null;
         }
