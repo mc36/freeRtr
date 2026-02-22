@@ -218,6 +218,11 @@ public class cfgAll {
     public final static tabGen<cfgSensor> sensors = new tabGen<cfgSensor>();
 
     /**
+     * list of dashboards
+     */
+    public final static tabGen<cfgDshbrd> dshbrds = new tabGen<cfgDshbrd>();
+
+    /**
      * list of routers
      */
     public final static tabGen<cfgRtr> routers = new tabGen<cfgRtr>();
@@ -3601,6 +3606,44 @@ public class cfgAll {
     }
 
     /**
+     * find one dashboard
+     *
+     * @param nam name of this
+     * @param create create new on this number if not found
+     * @return descriptor, null if not found
+     */
+    public static cfgDshbrd dshbrdFind(String nam, boolean create) {
+        nam = nam.trim();
+        if (nam.length() < 1) {
+            return null;
+        }
+        cfgDshbrd ntry = new cfgDshbrd(nam);
+        if (!create) {
+            return dshbrds.find(ntry);
+        }
+        cfgDshbrd old = dshbrds.add(ntry);
+        if (old != null) {
+            return old;
+        }
+        return ntry;
+    }
+
+    /**
+     * delete one dashboard
+     *
+     * @param nam name of this
+     * @return descriptor, null if not found
+     */
+    public static cfgDshbrd dshbrdDel(String nam) {
+        cfgDshbrd ntry = new cfgDshbrd(nam);
+        ntry = dshbrds.del(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        return ntry;
+    }
+
+    /**
      * find one translation rule
      *
      * @param nam name of this
@@ -4122,6 +4165,7 @@ public class cfgAll {
         servGenList.listGetRun(l, tabNshEntry.services, filter);
         servGenList.listGetRun(l, checks, filter);
         servGenList.listGetRun(l, sensors, filter);
+        servGenList.listGetRun(l, dshbrds, filter);
         servGenList.listGetRun(l, tlmtrydst, filter);
         servGenList.listGetRun(l, trnsltns, filter);
         servGenList.listGetRun(l, dials, filter);

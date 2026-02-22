@@ -17,6 +17,7 @@ import org.freertr.cfg.cfgBndl;
 import org.freertr.cfg.cfgBrdg;
 import org.freertr.cfg.cfgCheck;
 import org.freertr.cfg.cfgDial;
+import org.freertr.cfg.cfgDshbrd;
 import org.freertr.cfg.cfgGeneric;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgInit;
@@ -1322,6 +1323,12 @@ public class userShow {
                 rdr.putStrArr(exp.getShowHistory());
                 return null;
             }
+            if (a.equals("dashboard")) {
+                a = cmd.word();
+                String s = exp.getDashValue(bits.str2num(a));
+                rdr.putStrArr(bits.str2lst(a + "=" + s));
+                return null;
+            }
             if (a.equals("graph")) {
                 a = cmd.word();
                 pipeScreen scr = new pipeScreen(cmd.pipe);
@@ -1423,34 +1430,22 @@ public class userShow {
             return null;
         }
         if (a.equals("dashboard")) {
-            List<String> rep = new ArrayList<String>();
-            for (;;) {
-                a = cmd.word();
-                if (a.length() < 1) {
-                    break;
+            a = cmd.word();
+            if (a.length() < 1) {
+                userFormat l = new userFormat("|", "name|rep|time|last");
+                for (int i = 0; i < cfgAll.dshbrds.size(); i++) {
+                    cfgDshbrd exp = cfgAll.dshbrds.get(i);
+                    l.add(exp.name + "|" + exp.cnt + "|" + exp.time + "|" + bits.timePast(exp.last));
                 }
-                if (a.equals("replace")) {
-                    rep.add(cmd.word());
-                    rep.add(cmd.word());
-                    continue;
-                }
-                if (a.equals("text")) {
-                    rdr.putStrArr(getDashText(cmd.word(), rep));
-                    continue;
-                }
-                if (a.equals("iface")) {
-                    rdr.putStrArr(getDashIfc(cmd.word(), rep));
-                    continue;
-                }
-                if (a.equals("vrf")) {
-                    rdr.putStrArr(getDashVrf(cmd.word(), rep));
-                    continue;
-                }
-                if (a.equals("router")) {
-                    rdr.putStrArr(getDashRtr(cmd.word(), rep));
-                    continue;
-                }
+                rdr.putStrTab(l);
+                return null;
             }
+            cfgDshbrd exp = cfgAll.dshbrdFind(a, false);
+            if (exp == null) {
+                cmd.error("no such exporter");
+                return null;
+            }
+            rdr.putStrArr(exp.getResult());
             return null;
         }
         if (a.equals("ppp")) {
@@ -3465,78 +3460,6 @@ public class userShow {
             rdr.putStrTab(r.logger.outgoingInterfaces());
             return;
         }
-    }
-
-    private String getDashRep(String s, List<String> r) {
-        for (int i = 0; i < r.size(); i += 2) {
-            s = s.replaceAll(r.get(i + 0), r.get(i + 1));
-        }
-        return encUrl.percentEncode(s);
-    }
-
-    private List<String> getDashRtr(String u, List<String> r) {
-        List<String> res = new ArrayList<String>();
-        for (int i = 0; i < cfgAll.routers.size(); i++) {
-            cfgRtr ntry = cfgAll.routers.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            String a = u.replaceAll("%q%", "?").replaceAll("%s%", " ");
-            a = a.replaceAll("%name%", getDashRep(cfgRtr.num2name(ntry.type), r));
-            a = a.replaceAll("%id%", getDashRep("" + ntry.number, r));
-            a = a.replaceAll("%Name%", cfgRtr.num2name(ntry.type));
-            a = a.replaceAll("%Id%", "" + ntry.number);
-            res.add(a);
-        }
-        return res;
-    }
-
-    private List<String> getDashVrf(String u, List<String> r) {
-        List<String> res = new ArrayList<String>();
-        for (int i = 0; i < cfgAll.vrfs.size(); i++) {
-            cfgVrf ntry = cfgAll.vrfs.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            String a = u.replaceAll("%q%", "?").replaceAll("%s%", " ");
-            a = a.replaceAll("%name%", getDashRep(ntry.name, r));
-            a = a.replaceAll("%desc%", getDashRep(ntry.description, r));
-            a = a.replaceAll("%Name%", ntry.name);
-            a = a.replaceAll("%Desc%", ntry.description);
-            res.add(a);
-        }
-        return res;
-    }
-
-    private List<String> getDashIfc(String u, List<String> r) {
-        List<String> res = new ArrayList<String>();
-        for (int i = 0; i < cfgAll.ifaces.size(); i++) {
-            cfgIfc ntry = cfgAll.ifaces.get(i);
-            if (ntry == null) {
-                continue;
-            }
-            if (ntry.cloned != null) {
-                continue;
-            }
-            String a = u.replaceAll("%q%", "?").replaceAll("%s%", " ");
-            a = a.replaceAll("%name%", getDashRep(ntry.name, r));
-            a = a.replaceAll("%desc%", getDashRep(ntry.description, r));
-            a = a.replaceAll("%Name%", ntry.name);
-            a = a.replaceAll("%Desc%", ntry.description);
-            res.add(a);
-        }
-        return res;
-    }
-
-    private List<String> getDashText(String u, List<String> r) {
-        List<String> res = new ArrayList<String>();
-        String a = u.replaceAll("%q%", "?").replaceAll("%s%", " ");
-        a = a.replaceAll("%hostname%", getDashRep(cfgAll.hostName, r));
-        a = a.replaceAll("%domain%", getDashRep(cfgAll.domainName, r));
-        a = a.replaceAll("%Hostname%", cfgAll.hostName);
-        a = a.replaceAll("%Domain%", cfgAll.domainName);
-        res.add(a);
-        return res;
     }
 
     private void doShowIpXlsrp(tabRouteAttr.routeType afi) {

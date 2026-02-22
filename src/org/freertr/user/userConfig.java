@@ -20,6 +20,7 @@ import org.freertr.cfg.cfgCert;
 import org.freertr.cfg.cfgChat;
 import org.freertr.cfg.cfgCheck;
 import org.freertr.cfg.cfgDial;
+import org.freertr.cfg.cfgDshbrd;
 import org.freertr.cfg.cfgEvntmgr;
 import org.freertr.cfg.cfgGeneric;
 import org.freertr.cfg.cfgHrpn;
@@ -435,6 +436,8 @@ public class userConfig {
         l.add(null, false, 2, new int[]{-1}, "<name:chk>", "name of check");
         l.add(null, false, 1, new int[]{2}, "sensor", "sensor parameters");
         l.add(null, false, 2, new int[]{-1}, "<name:sns>", "name of sensor");
+        l.add(null, false, 1, new int[]{2}, "dashboard", "dashboard parameters");
+        l.add(null, false, 2, new int[]{-1}, "<name:dsh>", "name of dashboard");
         l.add(null, false, 1, new int[]{2}, "dial-peer", "dial peer parameters");
         l.add(null, false, 2, new int[]{-1}, "<num>", "number of peer");
         l.add(null, false, 1, new int[]{2}, "translation-rule", "translation rule parameters");
@@ -993,6 +996,14 @@ public class userConfig {
             submode = cfgAll.sensorFind(cmd.word(), commits == null);
             if (submode == null) {
                 cmd.error("invalid sensor name");
+                return;
+            }
+            return;
+        }
+        if (a.equals("dashboard")) {
+            submode = cfgAll.dshbrdFind(cmd.word(), commits == null);
+            if (submode == null) {
+                cmd.error("invalid dashboard name");
                 return;
             }
             return;
@@ -1681,6 +1692,14 @@ public class userConfig {
             cfgSensor ntry = cfgAll.sensorDel(cmd.word());
             if (ntry == null) {
                 cmd.error("invalid sensor name");
+                return;
+            }
+            return;
+        }
+        if (a.equals("dashboard")) {
+            cfgDshbrd ntry = cfgAll.dshbrdDel(cmd.word());
+            if (ntry == null) {
+                cmd.error("invalid dashboard name");
                 return;
             }
             return;

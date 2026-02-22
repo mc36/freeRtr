@@ -2,7 +2,6 @@ package org.freertr.cfg;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Deflater;
 import org.freertr.enc.enc7bit;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
@@ -1081,6 +1080,47 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     }
 
     /**
+     * generate report
+     *
+     * @param num column
+     * @return report
+     */
+    public String getDashValue(int num) {
+        last = bits.getTime();
+        cnt++;
+        List<String> lst = new ArrayList<String>();
+        List<String> res = getResult();
+        for (int i = 0; i < skip; i++) {
+            if (res.size() < 1) {
+                break;
+            }
+            res.remove(0);
+        }
+        if (res.size() < 1) {
+            return null;
+        }
+        String a = doLineCsv(res.get(0));
+        List<String> cl = doSplitLine(a);
+        if (cols.size() <= num) {
+            return null;
+        }
+        cfgSensorCol cc = cols.get(num);
+        if (cl.size() <= cc.num) {
+            return null;
+        }
+        a = doReplaces(cl.get(cc.num), cc.reps);
+        time = (int) (bits.getTime() - last);
+        if (cc.splS == null) {
+            return a;
+        }
+        int i = a.indexOf(cc.splS);
+        if (i < 0) {
+            return a;
+        }
+        return a.substring(0, i);
+    }
+
+    /**
      * get yang
      *
      * @return result
@@ -1143,17 +1183,6 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             id = id.substring(0, id.length() - 2);
             res.add(id + "}");
         }
-        return res;
-    }
-
-    private byte[] compressReply(List<String> lst) {
-        byte[] buf = bits.lst2str(lst, "\r").getBytes();
-        Deflater cmp = new Deflater();
-        cmp.setInput(buf);
-        cmp.finish();
-        int i = cmp.deflate(buf);
-        byte[] res = new byte[i];
-        bits.byteCopy(buf, 0, res, 0, res.length);
         return res;
     }
 

@@ -1764,17 +1764,7 @@ public class userExec {
         hl.add(null, false, 5, new int[]{-1}, "numhist", "numeric historic byte counters");
         hl.add(null, false, 5, new int[]{-1}, "numphist", "numeric historic packet counters");
         hl.add(null, false, 2, new int[]{3, -1}, "dashboard", "generate dashboard of this node");
-        hl.add(null, false, 3, new int[]{4}, "replace", "specify replacement");
-        hl.add(null, false, 4, new int[]{5}, "<str>", "source");
-        hl.add(null, false, 5, new int[]{3, -1}, "<str>", "target");
-        hl.add(null, false, 3, new int[]{4}, "text", "specify static text");
-        hl.add(null, false, 4, new int[]{3, -1}, "<str>", "url to use, %hostname% and %domain% will be replaced");
-        hl.add(null, false, 3, new int[]{4}, "iface", "specify intrefaces url");
-        hl.add(null, false, 4, new int[]{3, -1}, "<str>", "url to use, %name% and %desc% will be replaced");
-        hl.add(null, false, 3, new int[]{4}, "vrf", "specify vrf url");
-        hl.add(null, false, 4, new int[]{3, -1}, "<str>", "url to use, %name% and %desc% will be replaced");
-        hl.add(null, false, 3, new int[]{4}, "router", "specify router url");
-        hl.add(null, false, 4, new int[]{3, -1}, "<str>", "url to use, %name% and %id% will be replaced");
+        hl.add(null, false, 3, new int[]{-1}, "<name:dsh>", "name");
         hl.add(null, false, 2, new int[]{3}, "dns", "dns protocol information");
         hl.add(cfgAll.dmnDns.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
         hl.add(null, false, 4, new int[]{-1}, "<str>", "zone name");
@@ -1843,6 +1833,8 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "kvgpb", "kvgpb data");
         hl.add(null, false, 4, new int[]{-1}, "memory", "local stored data");
         hl.add(null, false, 4, new int[]{-1}, "history", "historical data");
+        hl.add(null, false, 4, new int[]{5}, "dashboard", "dashboard data");
+        hl.add(null, false, 5, new int[]{-1}, "<num>", "column number");
         hl.add(null, false, 4, new int[]{5}, "graph", "graph historical data");
         hl.add(null, false, 5, new int[]{-1}, "<num>", "column number");
         hl.add(null, false, 4, new int[]{5}, "oldgraph", "graph historical data");

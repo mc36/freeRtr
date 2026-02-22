@@ -11,6 +11,7 @@ import org.freertr.cfg.cfgAuther;
 import org.freertr.cfg.cfgCert;
 import org.freertr.cfg.cfgChat;
 import org.freertr.cfg.cfgCheck;
+import org.freertr.cfg.cfgDshbrd;
 import org.freertr.cfg.cfgEvntmgr;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgIpsec;
@@ -405,6 +406,18 @@ public class userHelp {
         if (a.equals("sns")) {
             for (i = 0; i < cfgAll.sensors.size(); i++) {
                 cfgSensor ntry = cfgAll.sensors.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                userHelpData res = d.copyBytes();
+                res.command = ntry.name;
+                lines.add(res);
+            }
+            return;
+        }
+        if (a.equals("dsh")) {
+            for (i = 0; i < cfgAll.dshbrds.size(); i++) {
+                cfgDshbrd ntry = cfgAll.dshbrds.get(i);
                 if (ntry == null) {
                     continue;
                 }
