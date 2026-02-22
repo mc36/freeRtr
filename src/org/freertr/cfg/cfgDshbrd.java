@@ -2,9 +2,15 @@ package org.freertr.cfg;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.pipe.pipeLine;
+import org.freertr.pipe.pipeSetting;
+import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
+import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
+import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
+import org.freertr.user.userRead;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -36,11 +42,6 @@ public class cfgDshbrd implements Comparable<cfgDshbrd>, cfgGeneric {
     public int cnt;
 
     /**
-     * description of this dashboard
-     */
-    public String description = null;
-
-    /**
      * actions
      */
     protected tabGen<cfgDshbrdNtry> actions = new tabGen<cfgDshbrdNtry>();
@@ -51,7 +52,7 @@ public class cfgDshbrd implements Comparable<cfgDshbrd>, cfgGeneric {
     public final static userFilter[] defaultF = {};
 
     /**
-     * create new sensor
+     * create new dashboard
      *
      * @param n name
      */
@@ -70,9 +71,13 @@ public class cfgDshbrd implements Comparable<cfgDshbrd>, cfgGeneric {
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "description");
         l.add(null, false, 1, new int[]{2}, "text", "text to show");
         l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
+        l.add(null, false, 1, new int[]{2}, "head", "headline to show");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "char", "char to show");
         l.add(null, false, 2, new int[]{2, -1}, "<num>", "ascii code");
         l.add(null, false, 1, new int[]{-1}, "newline", "new line to show");
+        l.add(null, false, 1, new int[]{2}, "command", "specify command to execute");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "command");
         l.add(null, false, 1, new int[]{2, -1}, "sensor", "sensor information");
         l.add(null, false, 2, new int[]{3}, "<name:sns>", "sensor name");
         l.add(null, false, 3, new int[]{4}, "<num>", "row to show");
@@ -166,9 +171,10 @@ public class cfgDshbrd implements Comparable<cfgDshbrd>, cfgGeneric {
     /**
      * get result
      *
+     * @param m table mode
      * @return result
      */
-    public List<String> getResult() {
+    public List<String> getResult(userFormat.tableMode m) {
         last = bits.getTime();
         cnt++;
         List<String> lst = new ArrayList<String>();
@@ -188,6 +194,38 @@ public class cfgDshbrd implements Comparable<cfgDshbrd>, cfgGeneric {
                     break;
                 case snsr:
                     s += t.val.getDashValue(t.num1, t.num2);
+                    break;
+                case hed:
+                    lst.add(" " + t.str);
+                    lst.add(bits.padEnd("", t.str.length() + 2, "~"));
+                    break;
+                case cmd:
+                    pipeLine pl = new pipeLine(1024 * 1024, false);
+                    pipeSide pip = pl.getSide();
+                    pip.lineTx = pipeSide.modTyp.modeCRLF;
+                    pip.lineRx = pipeSide.modTyp.modeCRorLF;
+                    userRead rdr = new userRead(pip, null);
+                    pip.settingsPut(pipeSetting.tabMod, m);
+                    pip.settingsPut(pipeSetting.height, 0);
+                    userExec exe = new userExec(pip, rdr);
+                    exe.privileged = true;
+                    pip.setTime(120000);
+                    String a = exe.repairCommand(t.str);
+                    exe.executeCommand(a);
+                    pip = pl.getSide();
+                    pl.setClose();
+                    pip.lineTx = pipeSide.modTyp.modeCRLF;
+                    pip.lineRx = pipeSide.modTyp.modeCRtryLF;
+                    for (;;) {
+                        if (pip.ready2rx() < 1) {
+                            break;
+                        }
+                        a = pip.lineGet(1);
+                        if (a.length() < 1) {
+                            continue;
+                        }
+                        lst.add(a);
+                    }
                     break;
                 default:
                     break;
@@ -217,6 +255,8 @@ class cfgDshbrdNtry implements Comparable<cfgDshbrdNtry> {
     public enum command {
         descr,
         str,
+        cmd,
+        hed,
         chr,
         nwln,
         snsr
@@ -241,11 +281,17 @@ class cfgDshbrdNtry implements Comparable<cfgDshbrdNtry> {
             case str:
                 s = "text " + str;
                 break;
+            case hed:
+                s = "head " + str;
+                break;
             case chr:
                 s = "char " + num1;
                 break;
             case snsr:
                 s = "sensor " + val.name + " " + num1 + " " + num2;
+                break;
+            case cmd:
+                s = "command " + str;
                 break;
             case nwln:
                 s = "newline";
@@ -273,6 +319,11 @@ class cfgDshbrdNtry implements Comparable<cfgDshbrdNtry> {
             str = cmd.getRemaining();
             return false;
         }
+        if (s.equals("head")) {
+            act = command.hed;
+            str = cmd.getRemaining();
+            return false;
+        }
         if (s.equals("char")) {
             act = command.chr;
             num1 = bits.str2num(cmd.word());
@@ -288,6 +339,11 @@ class cfgDshbrdNtry implements Comparable<cfgDshbrdNtry> {
             num1 = bits.str2num(cmd.word());
             num2 = bits.str2num(cmd.word());
             return val == null;
+        }
+        if (s.equals("command")) {
+            act = command.cmd;
+            str = cmd.getRemaining();
+            return false;
         }
         return true;
     }

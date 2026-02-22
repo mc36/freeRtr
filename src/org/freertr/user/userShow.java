@@ -1449,7 +1449,7 @@ public class userShow {
                 cmd.error("no such exporter");
                 return null;
             }
-            rdr.putStrArr(exp.getResult());
+            rdr.putStrArr(exp.getResult(cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)));
             return null;
         }
         if (a.equals("ppp")) {
