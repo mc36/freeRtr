@@ -1765,7 +1765,7 @@ public class userExec {
         hl.add(null, false, 5, new int[]{-1}, "numhist", "numeric historic byte counters");
         hl.add(null, false, 5, new int[]{-1}, "numphist", "numeric historic packet counters");
         hl.add(null, false, 2, new int[]{3, -1}, "dashboard", "generate dashboard of this node");
-        hl.add(null, false, 3, new int[]{-1}, "<name:dsh>", "name");
+        hl.add(null, false, 3, new int[]{-1}, "<name:dsh>", "dashboard name");
         hl.add(null, false, 2, new int[]{3}, "dns", "dns protocol information");
         hl.add(cfgAll.dmnDns.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
         hl.add(null, false, 4, new int[]{-1}, "<str>", "zone name");

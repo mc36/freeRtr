@@ -1283,7 +1283,7 @@ public class userShow {
             }
             cfgSensor exp = cfgAll.sensorFind(a, false);
             if (exp == null) {
-                cmd.error("no such exporter");
+                cmd.error("no such sensor");
                 return null;
             }
             a = cmd.word();
@@ -1446,7 +1446,7 @@ public class userShow {
             }
             cfgDshbrd exp = cfgAll.dshbrdFind(a, false);
             if (exp == null) {
-                cmd.error("no such exporter");
+                cmd.error("no such dashboard");
                 return null;
             }
             rdr.putStrArr(exp.getResult(cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal)));
