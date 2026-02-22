@@ -973,7 +973,6 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
      * @return false if success, true if error
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        id.setClosing();
         if ((connectedCheck) && (!iface.network.matches(id.peerAddr))) {
             logger.info("got from out of subnet peer " + id);
             return true;

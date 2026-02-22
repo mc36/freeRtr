@@ -462,7 +462,9 @@ public class rtrLdpIface implements prtServP {
             id.send2net(pr.pack);
             trg = true;
         }
-        id.setClosing();
+        if (trg) {
+            id.setClosing();
+        }
         rtrLdpNeigh ntry = ip.ldpNeighFind(id.peerAddr, true);
         ntry.helloIfc = !trg;
         ntry.helloTrg = trg;

@@ -1137,7 +1137,6 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
      * @return false if success, true if error
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        id.setClosing();
         if (passiveInt) {
             return true;
         }

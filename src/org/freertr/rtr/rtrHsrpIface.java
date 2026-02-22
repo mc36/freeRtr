@@ -317,7 +317,6 @@ public class rtrHsrpIface implements prtServP {
      * @return false if success, true if error
      */
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
-        id.setClosing();
         if (!ifc.network.matches(id.peerAddr)) {
             logger.info("got from out of subnet peer " + id);
             return true;
