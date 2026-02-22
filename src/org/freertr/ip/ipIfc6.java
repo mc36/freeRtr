@@ -314,7 +314,6 @@ public class ipIfc6 implements ipIfc, ifcUp {
      * @param mask mask
      */
     public void setIPv6addr(addrIPv6 addr, int mask) {
-        resetTimer(false);
         if (addr.isLinkLocal()) {
             lladdr.setAddr(addr);
         }
@@ -326,12 +325,11 @@ public class ipIfc6 implements ipIfc, ifcUp {
         addrIP m1 = new addrIP();
         m1.fromIPv6mask(m2);
         int ipm = m1.toNetmask();
+        prefix = new addrPrefix<addrIP>(ipaddr, ipm);
         if (neiCache != null) {
             neiCache.setIPv6addr(addr, mask);
         }
-        prefix = new addrPrefix<addrIP>(ipaddr, ipm);
         upper.ifaceAddr(ifcHdr, ipaddr, ipm);
-        resetTimer(true);
     }
 
     public boolean createETHheader(packHolder pck, addrIP nexthop, int typ) {

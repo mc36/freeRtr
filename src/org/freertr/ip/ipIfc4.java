@@ -192,10 +192,10 @@ public class ipIfc4 implements ipIfc, ifcUp {
         addrIP m1 = new addrIP();
         m1.fromIPv4mask(m2);
         int ipm = m1.toNetmask();
+        prefix = new addrPrefix<addrIP>(ipaddr, ipm);
         if (arpCache != null) {
             arpCache.setIPv4addr(addr, mask);
         }
-        prefix = new addrPrefix<addrIP>(ipaddr, ipm);
         upper.ifaceAddr(ifcHdr, ipaddr, ipm);
     }
 

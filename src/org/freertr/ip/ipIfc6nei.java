@@ -100,12 +100,10 @@ public class ipIfc6nei implements ifcUp {
      * @param mask mask
      */
     public void setIPv6addr(addrIPv6 addr, int mask) {
-        resetTimer(false);
         cache.clear();
         lladdr = upper.getLinkLocalAddr().toIPv6();
         ipaddr = addr.copyBytes();
         network = new addrPrefix<addrIPv6>(addr, mask);
-        resetTimer(true);
     }
 
     /**

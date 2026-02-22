@@ -154,11 +154,9 @@ public class ipIfc4arp implements ifcUp {
      * @param mask mask
      */
     public void setIPv4addr(addrIPv4 addr, int mask) {
-        resetTimer(false);
         cache.clear();
         ipaddr = addr.copyBytes();
         network = new addrPrefix<addrIPv4>(addr, mask);
-        resetTimer(true);
     }
 
     private synchronized void resetTimer(boolean needRun) {
