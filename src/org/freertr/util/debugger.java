@@ -584,6 +584,11 @@ public class debugger {
     public static boolean prtPimTraf = false;
 
     /**
+     * tabThread table events
+     */
+    public static boolean tabThreadEvnt = false;
+
+    /**
      * tabConnect table events
      */
     public static boolean tabConnectEvnt = false;
@@ -1242,6 +1247,7 @@ public class debugger {
         l.add(null, false, b + 1, new int[]{-1}, "gre", "generic routing encapsulation");
         l.add(null, false, b + 1, new int[]{-1}, "ipip", "ip in ip encapsulation");
         l.add(null, false, b, new int[]{b + 1}, "table", "table events");
+        l.add(null, false, b + 1, new int[]{-1}, "thread", "thread table");
         l.add(null, false, b + 1, new int[]{-1}, "conn", "connection table");
         l.add(null, false, b + 1, new int[]{-1}, "route", "route table");
         l.add(null, false, b + 1, new int[]{-1}, "label", "label table");
@@ -1955,6 +1961,10 @@ public class debugger {
         }
         if (s.equals("table")) {
             s = cmd.word();
+            if (s.equals("thread")) {
+                tabThreadEvnt = v;
+                return false;
+            }
             if (s.equals("conn")) {
                 tabConnectEvnt = v;
                 return false;

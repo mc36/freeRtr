@@ -457,6 +457,9 @@ public class logger {
      * @return thread created
      */
     public static Thread startThread(Runnable r) {
+        if (debugger.tabThreadEvnt) {
+            logger.debug("starting " + r);
+        }
         threadCreated++;
         if (cfgAll.virtThrds) {
             return Thread.ofVirtual().start(r);
