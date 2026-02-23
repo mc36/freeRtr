@@ -458,7 +458,7 @@ public class logger {
      */
     public static Thread startThread(Runnable r) {
         if (debugger.tabThreadEvnt) {
-            logger.debug("starting " + r);
+            logger.debug("starting " + r.getClass());
         }
         threadCreated++;
         if (cfgAll.virtThrds) {
