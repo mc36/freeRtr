@@ -12,6 +12,18 @@ binary-down %kern%/kernel.txz %dwn%/fbsd-%arch%-kern.txz
 exec tar xf %dwn%/fbsd-%arch%-base.txz -C %tmp%/
 exec tar xf %dwn%/fbsd-%arch%-kern.txz -C %tmp%/
 
+exec mv %tmp%/boot/kernel/* %tmp%/tmp/
+exec mv %tmp%/tmp/kernel %tmp%/boot/kernel/
+exec mv %tmp%/tmp/linux.ko %tmp%/boot/kernel/
+exec mv %tmp%/tmp/linux64.ko %tmp%/boot/kernel/
+exec mv %tmp%/tmp/linux_common.ko %tmp%/boot/kernel/
+exec mv %tmp%/tmp/mqueuefs.ko %tmp%/boot/kernel/
+exec mv %tmp%/tmp/linprocfs.ko %tmp%/boot/kernel/
+exec mv %tmp%/tmp/linsysfs.ko %tmp%/boot/kernel/
+exec mv %tmp%/tmp/unionfs.ko %tmp%/boot/kernel/
+del-alw %tmp%/boot/firmware
+del-alw %tmp%/tmp/*
+
 exec mv %tmp%/usr/sbin/ndp %tmp%/sbin/
 exec cp ../misc/image/boot.fbsd %tmp%/boot/loader.conf
 exec cp ../misc/image/init.fbsd %tmp%/etc/rc

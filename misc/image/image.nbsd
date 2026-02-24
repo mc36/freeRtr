@@ -18,6 +18,12 @@ exec tar xf %dwn%/nbsd-%arch%-etc.txz -C %tmp%/
 exec tar xf %dwn%/nbsd-%arch%-kern.txz -C %tmp%/
 exec tar xf %dwn%/nbsd-%arch%-mods.txz -C %tmp%/
 
+exec mv %tmp%/stand/%arch%/*/modules/* %tmp%/tmp/
+exec mv %tmp%/tmp/compat_linux %tmp%/stand/%arch%/*/modules/
+exec mv %tmp%/tmp/compat_ossaudio %tmp%/stand/%arch%/*/modules/
+del-alw %tmp%/libdata/firmware
+del-alw %tmp%/tmp/*
+
 exec mv %tmp%/usr/mdec/bootxx_cd9660 %tmp%/cdboot
 exec mv %tmp%/usr/mdec/boot %tmp%/
 exec mv %tmp%/usr/sbin/ndp %tmp%/sbin/
