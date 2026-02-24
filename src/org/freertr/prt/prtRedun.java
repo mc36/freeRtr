@@ -42,16 +42,6 @@ public class prtRedun implements Runnable {
     }
 
     /**
-     * ethertype
-     */
-    public final static int ethtyp = 0x8087;
-
-    /**
-     * header size
-     */
-    public final static int size = 20;
-
-    /**
      * hello
      */
     public final static int typHello = 1;
@@ -1119,6 +1109,16 @@ class prtRedunXfer implements Runnable {
 class prtRedunPack {
 
     /**
+     * ethertype
+     */
+    public final static int ethtyp = 0x8087;
+
+    /**
+     * header size
+     */
+    public final static int size = 20;
+
+    /**
      * create instance
      */
     public prtRedunPack() {
@@ -1161,7 +1161,7 @@ class prtRedunPack {
      * @return false on success, true on error
      */
     public boolean parseHeader(packHolder pck) {
-        if (pck.msbGetW(0) != prtRedun.ethtyp) {
+        if (pck.msbGetW(0) != ethtyp) {
             return true;
         }
         type = pck.getByte(2);
@@ -1170,7 +1170,7 @@ class prtRedunPack {
         peer = pck.msbGetD(8);
         uptime = pck.msbGetD(12);
         priority = pck.msbGetD(16);
-        pck.getSkip(prtRedun.size);
+        pck.getSkip(size);
         return false;
     }
 
@@ -1180,14 +1180,14 @@ class prtRedunPack {
      * @param pck packet to update
      */
     public void createHeader(packHolder pck) {
-        pck.msbPutW(0, prtRedun.ethtyp);
+        pck.msbPutW(0, ethtyp);
         pck.putByte(2, type);
         pck.putByte(3, state);
         pck.msbPutD(4, magic);
         pck.msbPutD(8, peer);
         pck.msbPutD(12, uptime);
         pck.msbPutD(16, priority);
-        pck.putSkip(prtRedun.size);
+        pck.putSkip(size);
         pck.merge2beg();
     }
 
