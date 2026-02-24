@@ -9,7 +9,6 @@ import org.freertr.cfg.cfgVrf;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packMtrack;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
@@ -36,6 +35,11 @@ public class clntMtrack implements Runnable, prtServS {
     }
 
     /**
+     * default port number
+     */
+    public final static int defPort = 5499;
+
+    /**
      * name of this tracker
      */
     public String name;
@@ -53,7 +57,7 @@ public class clntMtrack implements Runnable, prtServS {
     /**
      * port number
      */
-    public int port = packMtrack.port;
+    public int port = defPort;
 
     /**
      * vrf of target
@@ -249,8 +253,8 @@ public class clntMtrack implements Runnable, prtServS {
         }
         pipe.setTime(5000);
         packHolder pckB = new packHolder(true, true);
-        packMtrack pck = new packMtrack();
-        pck.typ = packMtrack.typCfgReq;
+        clntMtrackPack pck = new clntMtrackPack();
+        pck.typ = clntMtrackPack.typCfgReq;
         pck.createPacket(pckB);
         pckB.pipeSend(pipe, 0, pckB.dataSize(), 2);
         tabGen<clntMtrackPeer> clnt = new tabGen<clntMtrackPeer>();
@@ -263,8 +267,8 @@ public class clntMtrack implements Runnable, prtServS {
             }
             pck.parsePacket(pckB);
             switch (pck.typ) {
-                case packMtrack.typCfgRep:
-                case packMtrack.typCfgEnd:
+                case clntMtrackPack.typCfgRep:
+                case clntMtrackPack.typCfgEnd:
                     break;
                 default:
                     continue;
@@ -281,7 +285,7 @@ public class clntMtrack implements Runnable, prtServS {
                 }
                 clnt.add(new clntMtrackPeer(adr));
             }
-            if (pck.typ == packMtrack.typCfgEnd) {
+            if (pck.typ == clntMtrackPack.typCfgEnd) {
                 break;
             }
         }
@@ -289,7 +293,7 @@ public class clntMtrack implements Runnable, prtServS {
         if ((cfg == null) || (cgrp == null)) {
             return;
         }
-        if (packMtrack.validateCfg(cgrp, cfg)) {
+        if (clntMtrackPack.validateCfg(cgrp, cfg)) {
             logger.info("got invalid config");
             return;
         }
@@ -345,8 +349,8 @@ public class clntMtrack implements Runnable, prtServS {
             pipes.get(o).setTime(20000);
         }
         packHolder pckB = new packHolder(true, true);
-        packMtrack pck = new packMtrack();
-        pck.typ = packMtrack.typReport;
+        clntMtrackPack pck = new clntMtrackPack();
+        pck.typ = clntMtrackPack.typReport;
         long tim = bits.getTime();
         pck.tim = tim;
         tim -= (interval * timeout);
@@ -370,7 +374,7 @@ public class clntMtrack implements Runnable, prtServS {
             pck.adrs.add(ntry.adr);
             pck.rtts.add(ntry.rtt);
             pck.loss.add(ntry.loss);
-            if (pck.adrs.size() < packMtrack.maxAddrs) {
+            if (pck.adrs.size() < clntMtrackPack.maxAddrs) {
                 continue;
             }
             pck.seq = seq++;
@@ -384,7 +388,7 @@ public class clntMtrack implements Runnable, prtServS {
             pck.loss.clear();
             pck.tim = bits.getTime();
         }
-        pck.typ = packMtrack.typLreport;
+        pck.typ = clntMtrackPack.typLreport;
         pck.seq = seq++;
         pck.createPacket(pckB);
         for (int o = 0; o < pipes.size(); o++) {
@@ -402,13 +406,13 @@ public class clntMtrack implements Runnable, prtServS {
      * @param pckB packet to process
      */
     protected void doPacket(pipeSide pipe, addrIP addr, packHolder pckB) {
-        packMtrack pck = new packMtrack();
+        clntMtrackPack pck = new clntMtrackPack();
         pck.parsePacket(pckB);
         switch (pck.typ) {
-            case packMtrack.typLreport:
-            case packMtrack.typReport:
+            case clntMtrackPack.typLreport:
+            case clntMtrackPack.typReport:
                 break;
-            case packMtrack.typCfgReq:
+            case clntMtrackPack.typCfgReq:
                 if (cfgGrp == null) {
                     return;
                 }
@@ -416,14 +420,14 @@ public class clntMtrack implements Runnable, prtServS {
                 bits.msbPutD(adr.getBytes(), 0, pers.size());
                 bits.msbPutD(adr.getBytes(), 4, interval);
                 bits.msbPutD(adr.getBytes(), 8, timeout);
-                packMtrack.updateCfg(cfgGrp, adr);
-                pck.typ = packMtrack.typCfgRep;
+                clntMtrackPack.updateCfg(cfgGrp, adr);
+                pck.typ = clntMtrackPack.typCfgRep;
                 pck.adrs.clear();
                 pck.adrs.add(adr);
                 pck.adrs.add(cfgGrp);
                 for (int i = 0; i < cfgTrg.size(); i++) {
                     pck.adrs.add(cfgTrg.get(i));
-                    if (pck.adrs.size() < packMtrack.maxAddrs) {
+                    if (pck.adrs.size() < clntMtrackPack.maxAddrs) {
                         continue;
                     }
                     pck.createPacket(pckB);
@@ -431,12 +435,12 @@ public class clntMtrack implements Runnable, prtServS {
                     pck.adrs.clear();
                     bits.sleep(packTim);
                 }
-                pck.typ = packMtrack.typCfgEnd;
+                pck.typ = clntMtrackPack.typCfgEnd;
                 pck.createPacket(pckB);
                 pckB.pipeSend(pipe, 0, pckB.dataSize(), 2);
                 return;
-            case packMtrack.typCfgRep:
-            case packMtrack.typCfgEnd:
+            case clntMtrackPack.typCfgRep:
+            case clntMtrackPack.typCfgEnd:
                 return;
             default:
                 logger.info("got unknown type (" + pck.typ + ") from " + addr);
@@ -448,7 +452,7 @@ public class clntMtrack implements Runnable, prtServS {
             return;
         }
         ntry.gotReport(pck);
-        if (pck.typ == packMtrack.typLreport) {
+        if (pck.typ == clntMtrackPack.typLreport) {
             pipe.setClose();
         }
     }
@@ -814,7 +818,7 @@ class clntMtrackPeer implements Comparable<clntMtrackPeer> {
         return old != rxing;
     }
 
-    public void gotReport(packMtrack pck) {
+    public void gotReport(clntMtrackPack pck) {
         lastRx = bits.getTime();
         rtt = (int) (lastRx - pck.tim);
         if (rtt < 0) {
@@ -847,6 +851,174 @@ class clntMtrackPeer implements Comparable<clntMtrackPeer> {
             r.lastRx = lastRx;
             r.reports++;
         }
+    }
+
+}
+
+class clntMtrackPack {
+
+    /**
+     * create instance
+     */
+    public clntMtrackPack() {
+    }
+
+    /**
+     * config request
+     */
+    public final static int typCfgReq = 1;
+
+    /**
+     * config reply
+     */
+    public final static int typCfgRep = 2;
+
+    /**
+     * config reply
+     */
+    public final static int typCfgEnd = 3;
+
+    /**
+     * report
+     */
+    public final static int typReport = 4;
+
+    /**
+     * last report
+     */
+    public final static int typLreport = 5;
+
+    /**
+     * maximum addresses
+     */
+    public final static int maxAddrs = 1024 / addrIP.size;
+
+    /**
+     * packet type
+     */
+    public int typ;
+
+    /**
+     * packet time
+     */
+    public long tim;
+
+    /**
+     * packet sequence
+     */
+    public int seq;
+
+    /**
+     * addresses
+     */
+    public List<addrIP> adrs = new ArrayList<addrIP>();
+
+    /**
+     * rtt times
+     */
+    public List<Integer> rtts = new ArrayList<Integer>();
+
+    /**
+     * loss counts
+     */
+    public List<Integer> loss = new ArrayList<Integer>();
+
+    /**
+     * parse one packet
+     *
+     * @param pck packet to update
+     */
+    public void parsePacket(packHolder pck) {
+        typ = pck.getByte(0); // type
+        tim = pck.msbGetQ(1); // time
+        seq = pck.msbGetD(9); // sequence
+        pck.getSkip(13);
+        adrs.clear();
+        for (;;) {
+            int i = pck.getByte(0);
+            int o = pck.getByte(1);
+            pck.getSkip(2);
+            if (pck.dataSize() < addrIP.size) {
+                return;
+            }
+            addrIP a = new addrIP();
+            pck.getAddr(a, 0); // address
+            pck.getSkip(addrIP.size);
+            adrs.add(a);
+            rtts.add(i);
+            loss.add(o);
+        }
+    }
+
+    /**
+     * create one packet
+     *
+     * @param pck packet to update
+     */
+    public void createPacket(packHolder pck) {
+        pck.clear();
+        pck.putByte(0, typ); // type
+        pck.msbPutQ(1, tim); // time
+        pck.msbPutD(9, seq); // sequence
+        pck.putSkip(13);
+        for (int i = 0; i < adrs.size(); i++) {
+            if (tim == 0) {
+                pck.putByte(0, 0); // rtt
+            } else {
+                pck.putByte(0, rtts.get(i)); // rtt
+            }
+            pck.putSkip(1);
+            if (seq == 0) {
+                pck.putByte(0, 0); // loss
+            } else {
+                pck.putByte(0, loss.get(i)); // loss
+            }
+            pck.putSkip(1);
+            pck.putAddr(0, adrs.get(i)); // address
+            pck.putSkip(addrIP.size);
+        }
+        pck.merge2beg();
+    }
+
+    /**
+     * update config address
+     *
+     * @param grp group
+     * @param cfg config
+     */
+    public static void updateCfg(addrIP grp, addrIP cfg) {
+        byte[] buf = cfg.getBytes();
+        buf[12] = 0;
+        buf[13] = 0;
+        buf[14] = 0;
+        buf[15] = 0;
+        int i = cfg.getHashB() ^ grp.getHashB();
+        buf[12] = (byte) i;
+        buf[13] = (byte) (0xff - i);
+    }
+
+    /**
+     * validate config address
+     *
+     * @param grp group
+     * @param cfg config
+     * @return false on success, true on error
+     */
+    public static boolean validateCfg(addrIP grp, addrIP cfg) {
+        if ((grp == null) || (cfg == null)) {
+            return true;
+        }
+        byte[] buf = cfg.getBytes();
+        if ((buf[14] != 0) || (buf[15] != 0)) {
+            return true;
+        }
+        int i = buf[12] & 0xff;
+        if ((buf[13] & 0xff) != (0xff - i)) {
+            return true;
+        }
+        buf[12] = 0;
+        buf[13] = 0;
+        return i != (cfg.getHashB() ^ grp.getHashB());
     }
 
 }

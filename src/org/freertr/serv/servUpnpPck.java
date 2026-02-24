@@ -1,18 +1,19 @@
-package org.freertr.pack;
+package org.freertr.serv;
 
 import org.freertr.addr.addrIP;
+import org.freertr.pack.packHolder;
 
 /**
- * our proprietary upnp forwarder packets
+ * upnp packet
  *
  * @author matecsaba
  */
-public class packUpnpFwd {
+public class servUpnpPck {
 
     /**
      * create instance
      */
-    public packUpnpFwd() {
+    public servUpnpPck() {
     }
 
     /**

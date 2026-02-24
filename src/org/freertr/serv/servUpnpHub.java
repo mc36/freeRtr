@@ -2,7 +2,6 @@ package org.freertr.serv;
 
 import java.util.List;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packUpnpFwd;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
@@ -30,7 +29,7 @@ public class servUpnpHub extends servGeneric implements prtServS {
      * defaults text
      */
     public final static userFilter[] defaultF = {
-        new userFilter("server upnphub .*", cmds.tabulator + "port " + packUpnpFwd.portNum, null),
+        new userFilter("server upnphub .*", cmds.tabulator + "port " + servUpnpPck.portNum, null),
         new userFilter("server upnphub .*", cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp), null)
     };
 
@@ -64,7 +63,7 @@ public class servUpnpHub extends servGeneric implements prtServS {
     }
 
     public int srvPort() {
-        return packUpnpFwd.portNum;
+        return servUpnpPck.portNum;
     }
 
     public int srvProto() {
@@ -86,10 +85,10 @@ public class servUpnpHub extends servGeneric implements prtServS {
      * @param pck packet
      */
     protected void doPacket(servUpnpHubConn conn, packHolder pck) {
-        packUpnpFwd pckF = new packUpnpFwd();
+        servUpnpPck pckF = new servUpnpPck();
         pckF.parsePacket(pck);
         pckF.createPacket(pck);
-        if (pckF.typ != packUpnpFwd.typData) {
+        if (pckF.typ != servUpnpPck.typData) {
             conn.doPack(pck);
             return;
         }

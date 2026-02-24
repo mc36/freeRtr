@@ -7,7 +7,6 @@ import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packReplicator;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabWindow;
 import org.freertr.user.userFormat;
@@ -619,18 +618,18 @@ public class ifcBundle implements Runnable, ifcDn {
             }
         }
         if (sequence != null) {
-            packReplicator pckH = new packReplicator();
+            ifcBundleRepl pckH = new ifcBundleRepl();
             if (pckH.parseHeader(pck)) {
                 cntr.drop(pck, counter.reasons.badHdr);
                 return;
             }
             switch (pckH.typ) {
-                case packReplicator.typData:
+                case ifcBundleRepl.typData:
                     break;
-                case packReplicator.typKeep:
+                case ifcBundleRepl.typKeep:
                     sequence.gotSet(pckH.seq);
                     return;
-                case packReplicator.typCntr:
+                case ifcBundleRepl.typCntr:
                     if (dynamic < 1) {
                         return;
                     }
@@ -669,8 +668,8 @@ public class ifcBundle implements Runnable, ifcDn {
         cntr.tx(pck);
         pck.merge2beg();
         if (sequence != null) {
-            packReplicator pckH = new packReplicator();
-            pckH.typ = packReplicator.typData;
+            ifcBundleRepl pckH = new ifcBundleRepl();
+            pckH.typ = ifcBundleRepl.typData;
             pckH.seq = seqTx;
             seqTx++;
             pckH.createHeader(pck);
@@ -907,8 +906,8 @@ public class ifcBundle implements Runnable, ifcDn {
             logger.debug("send keepalive");
         }
         packHolder pck = new packHolder(true, true);
-        packReplicator pckH = new packReplicator();
-        pckH.typ = packReplicator.typKeep;
+        ifcBundleRepl pckH = new ifcBundleRepl();
+        pckH.typ = ifcBundleRepl.typKeep;
         pckH.seq = seqTx;
         pckH.createHeader(pck);
         pck.merge2beg();
@@ -931,8 +930,8 @@ public class ifcBundle implements Runnable, ifcDn {
                 continue;
             }
             packHolder pck = new packHolder(true, true);
-            packReplicator pckH = new packReplicator();
-            pckH.typ = packReplicator.typCntr;
+            ifcBundleRepl pckH = new ifcBundleRepl();
+            pckH.typ = ifcBundleRepl.typCntr;
             pckH.seq = ifc.byteRcvd;
             ifc.byteRcvd = 0;
             pckH.createHeader(pck);
@@ -1103,26 +1102,26 @@ class ifcBundlePeer implements ifcUp, Runnable {
 
     public void workStop() {
         need2work = false;
-        ifCfg.ethtyp.delET(packReplicator.ethTyp);
+        ifCfg.ethtyp.delET(ifcBundleRepl.ethTyp);
     }
 
     public void workStart() {
         need2work = true;
-        ifCfg.ethtyp.addET(packReplicator.ethTyp, "peer", this);
-        ifCfg.ethtyp.updateET(packReplicator.ethTyp, this);
+        ifCfg.ethtyp.addET(ifcBundleRepl.ethTyp, "peer", this);
+        ifCfg.ethtyp.updateET(ifcBundleRepl.ethTyp, this);
         logger.startThread(this);
     }
 
     public void run() {
         try {
             for (;;) {
-                bits.sleep(packReplicator.timeKeep);
+                bits.sleep(ifcBundleRepl.timeKeep);
                 if (!need2work) {
                     break;
                 }
                 packHolder pck = new packHolder(true, true);
-                pck.msbPutW(0, packReplicator.ethTyp);
-                pck.putByte(2, packReplicator.typKeep);
+                pck.msbPutW(0, ifcBundleRepl.ethTyp);
+                pck.putByte(2, ifcBundleRepl.typKeep);
                 pck.msbPutD(3, localId);
                 pck.putSkip(7);
                 pck.merge2beg();
@@ -1130,7 +1129,7 @@ class ifcBundlePeer implements ifcUp, Runnable {
                 pck.ETHtrg.setAddr(addrMac.getBroadcast());
                 ifHnd.sendPack(pck);
                 boolean old = remoteAlive;
-                if ((bits.getTime() - lastRx) < packReplicator.timeHold) {
+                if ((bits.getTime() - lastRx) < ifcBundleRepl.timeHold) {
                     remoteAlive = true;
                 } else {
                     remoteAlive = false;
@@ -1153,8 +1152,8 @@ class ifcBundlePeer implements ifcUp, Runnable {
         if (!lower.notEther) {
             ifcEther.createETHheader(pck, false);
         }
-        pck.msbPutW(0, packReplicator.ethTyp);
-        pck.putByte(2, packReplicator.typData);
+        pck.msbPutW(0, ifcBundleRepl.ethTyp);
+        pck.putByte(2, ifcBundleRepl.typData);
         pck.putSkip(3);
         pck.merge2beg();
         pck.ETHsrc.setAddr(addrMac.getBroadcast());
@@ -1163,19 +1162,19 @@ class ifcBundlePeer implements ifcUp, Runnable {
     }
 
     public void recvPack(packHolder pck) {
-        if (pck.msbGetW(0) != packReplicator.ethTyp) {
+        if (pck.msbGetW(0) != ifcBundleRepl.ethTyp) {
             return;
         }
         int i = pck.getByte(2);
         pck.getSkip(3);
         switch (i) {
-            case packReplicator.typData:
+            case ifcBundleRepl.typData:
                 if (!lower.notEther) {
                     ifcEther.parseETHheader(pck, false);
                 }
                 lower.doTxUpper(pck);
                 break;
-            case packReplicator.typKeep:
+            case ifcBundleRepl.typKeep:
                 i = pck.msbGetD(0);
                 lastRx = bits.getTime();
                 boolean old = remoteBetter;
@@ -1203,6 +1202,84 @@ class ifcBundlePeer implements ifcUp, Runnable {
 
     public counter getCounter() {
         return cntr;
+    }
+
+}
+
+class ifcBundleRepl {
+
+    /**
+     * create instance
+     */
+    public ifcBundleRepl() {
+    }
+
+    /**
+     * ethertype to use
+     */
+    public final static int ethTyp = 0x8086;
+
+    /**
+     * data packet
+     */
+    public final static int typData = 1;
+
+    /**
+     * keepalive packet
+     */
+    public final static int typKeep = 2;
+
+    /**
+     * counter packet
+     */
+    public final static int typCntr = 3;
+
+    /**
+     * keepalive time
+     */
+    public final static int timeKeep = 1000;
+
+    /**
+     * hold time
+     */
+    public final static int timeHold = timeKeep * 5;
+
+    /**
+     * type of packet
+     */
+    public int typ;
+
+    /**
+     * sequence number
+     */
+    public int seq;
+
+    /**
+     * parse one header
+     *
+     * @param pck packet to parse
+     * @return false on success, true on error
+     */
+    public boolean parseHeader(packHolder pck) {
+        if (pck.msbGetW(0) != ethTyp) {
+            return true;
+        }
+        typ = pck.getByte(2);
+        seq = pck.msbGetD(3);
+        pck.getSkip(7);
+        return false;
+    }
+
+    /**
+     * create one header
+     *
+     * @param pck packet to update
+     */
+    public void createHeader(packHolder pck) {
+        pck.msbPutW(0, ethTyp);
+        pck.putByte(2, typ);
+        pck.msbPutD(3, seq);
+        pck.putSkip(7);
     }
 
 }

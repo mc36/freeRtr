@@ -5,7 +5,6 @@ import org.freertr.addr.addrIP;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packUpnpFwd;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
@@ -34,7 +33,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
      * defaults text
      */
     public final static userFilter[] defaultF = {
-        new userFilter("server upnpfwd .*", cmds.tabulator + "port " + packUpnpFwd.portNum, null),
+        new userFilter("server upnpfwd .*", cmds.tabulator + "port " + servUpnpPck.portNum, null),
         new userFilter("server upnpfwd .*", cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp), null),
         new userFilter("server upnpfwd .*", cmds.tabulator + "target null", null)
     };
@@ -103,7 +102,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
     }
 
     public int srvPort() {
-        return packUpnpFwd.portNum;
+        return servUpnpPck.portNum;
     }
 
     public int srvProto() {
@@ -174,8 +173,8 @@ public class servUpnpFwd extends servGeneric implements prtServS {
             new servUpnpFwdServ(this, trgt);
         }
         packHolder pckB = new packHolder(true, true);
-        packUpnpFwd pckF = new packUpnpFwd();
-        pckF.typ = packUpnpFwd.typKeep;
+        servUpnpPck pckF = new servUpnpPck();
+        pckF.typ = servUpnpPck.typKeep;
         pckF.createPacket(pckB);
         pckB.pipeSend(trgt, 0, pckB.dataSize(), 2);
     }
@@ -190,8 +189,8 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         if (trgt == null) {
             return;
         }
-        packUpnpFwd pckF = new packUpnpFwd();
-        pckF.typ = packUpnpFwd.typData;
+        servUpnpPck pckF = new servUpnpPck();
+        pckF.typ = servUpnpPck.typData;
         pckF.addr.setAddr(conn.peerAddr);
         pckF.port = conn.portRem;
         pckF.createPacket(pck);
@@ -204,9 +203,9 @@ public class servUpnpFwd extends servGeneric implements prtServS {
      * @param pck packet
      */
     protected void doPackSrv(packHolder pck) {
-        packUpnpFwd pckF = new packUpnpFwd();
+        servUpnpPck pckF = new servUpnpPck();
         pckF.parsePacket(pck);
-        if (pckF.typ != packUpnpFwd.typData) {
+        if (pckF.typ != servUpnpPck.typData) {
             return;
         }
         pck.putDefaults();

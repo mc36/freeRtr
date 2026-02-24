@@ -12,7 +12,6 @@ import org.freertr.ifc.ifcThread;
 import org.freertr.ifc.ifcUp;
 import org.freertr.util.cmds;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packRedundancy;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
@@ -43,6 +42,116 @@ public class prtRedun implements Runnable {
     }
 
     /**
+     * ethertype
+     */
+    public final static int ethtyp = 0x8087;
+
+    /**
+     * header size
+     */
+    public final static int size = 20;
+
+    /**
+     * hello
+     */
+    public final static int typHello = 1;
+
+    /**
+     * reload
+     */
+    public final static int typReload = 2;
+
+    /**
+     * acknowledge
+     */
+    public final static int typAck = 3;
+
+    /**
+     * file begin
+     */
+    public final static int typFilBeg = 4;
+
+    /**
+     * file data
+     */
+    public final static int typFilDat = 5;
+
+    /**
+     * file end
+     */
+    public final static int typFilEnd = 6;
+
+    /**
+     * file checksum request
+     */
+    public final static int typSumReq = 7;
+
+    /**
+     * file checksum reply
+     */
+    public final static int typSumVal = 8;
+
+    /**
+     * set priority
+     */
+    public final static int typSetPri = 9;
+
+    /**
+     * execute command
+     */
+    public final static int typExecCmd = 10;
+
+    /**
+     * transfer request
+     */
+    public final static int typXferReq = 11;
+
+    /**
+     * config file
+     */
+    public final static String fnStart = "config";
+
+    /**
+     * image file
+     */
+    public final static String fnCore = "code";
+
+    /**
+     * show file
+     */
+    public final static String fnShow = "show";
+
+    /**
+     * state file
+     */
+    public final static String fnState = "state";
+
+    /**
+     * init
+     */
+    public final static int statInit = 0;
+
+    /**
+     * speaking
+     */
+    public final static int statSpeak = 1;
+
+    /**
+     * standby
+     */
+    public final static int statStandby = 2;
+
+    /**
+     * active
+     */
+    public final static int statActive = 3;
+
+    /**
+     * max size
+     */
+    public final static int dataMax = 1024;
+
+    /**
      * my magic number
      */
     protected static int magic = (bits.randomD() & 0x3fffffff) + 1;
@@ -50,7 +159,7 @@ public class prtRedun implements Runnable {
     /**
      * current state
      */
-    protected static int state = packRedundancy.statInit;
+    protected static int state = statInit;
 
     /**
      * current uptime
@@ -86,7 +195,7 @@ public class prtRedun implements Runnable {
         for (int i = 0; i < ifaces.size(); i++) {
             pck.clear();
             prtRedunIfc ifc = ifaces.get(i);
-            ifc.doPack(packRedundancy.typHello, pck);
+            ifc.doPack(typHello, pck);
             if ((tim - ifc.heard) < cfgAll.redundancyHold) {
                 continue;
             }
@@ -117,10 +226,10 @@ public class prtRedun implements Runnable {
      */
     public static userFormat doShowStatus() {
         userFormat l = new userFormat("|", "iface|reach|state|prio|uptime|changes|magic|heard");
-        l.add("self|-|" + packRedundancy.stat2str(state) + "|" + cfgInit.redunPrio + "|" + bits.timeDump(uptime) + "|-|" + bits.padBeg(bits.toHexD(magic), 8, "0") + "|-");
+        l.add("self|-|" + stat2str(state) + "|" + cfgInit.redunPrio + "|" + bits.timeDump(uptime) + "|-|" + bits.padBeg(bits.toHexD(magic), 8, "0") + "|-");
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
-            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.last.priority + "|" + bits.timeDump(ifc.last.uptime) + "|" + ifc.changes + "|" + bits.padBeg(bits.toHexD(ifc.last.magic), 8, "0") + "|" + bits.timePast(ifc.heard));
+            l.add(ifc.name + "|" + ifc.reach + "|" + stat2str(ifc.last.state) + "|" + ifc.last.priority + "|" + bits.timeDump(ifc.last.uptime) + "|" + ifc.changes + "|" + bits.padBeg(bits.toHexD(ifc.last.magic), 8, "0") + "|" + bits.timePast(ifc.heard));
         }
         return l;
     }
@@ -132,10 +241,10 @@ public class prtRedun implements Runnable {
      */
     public static userFormat doShowDescr() {
         userFormat l = new userFormat("|", "iface|reach|state|descr");
-        l.add("self|-|" + packRedundancy.stat2str(state) + "|" + cfgInit.prntNam);
+        l.add("self|-|" + stat2str(state) + "|" + cfgInit.prntNam);
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
-            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + ifc.descr);
+            l.add(ifc.name + "|" + ifc.reach + "|" + stat2str(ifc.last.state) + "|" + ifc.descr);
         }
         return l;
     }
@@ -149,14 +258,14 @@ public class prtRedun implements Runnable {
     public static userFormat doShowHash(String fn) {
         userFormat l = new userFormat("|", "iface|reach|state|match|hash");
         String mine = getFileHash(wireName2fileName(fn));
-        l.add("self|-|" + packRedundancy.stat2str(state) + "|-|" + mine);
+        l.add("self|-|" + stat2str(state) + "|-|" + mine);
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
             String got = ifc.doHash(fn);
             if (got == null) {
                 got = "nothing";
             }
-            l.add(ifc.name + "|" + ifc.reach + "|" + packRedundancy.stat2str(ifc.last.state) + "|" + mine.equals(got) + "|" + got);
+            l.add(ifc.name + "|" + ifc.reach + "|" + stat2str(ifc.last.state) + "|" + mine.equals(got) + "|" + got);
         }
         return l;
     }
@@ -221,8 +330,8 @@ public class prtRedun implements Runnable {
      *
      * @return get self packet
      */
-    public static packRedundancy getSelf() {
-        packRedundancy pckP = new packRedundancy();
+    public static prtRedunPack getSelf() {
+        prtRedunPack pckP = new prtRedunPack();
         pckP.state = prtRedun.state;
         pckP.magic = prtRedun.magic;
         pckP.uptime = prtRedun.uptime;
@@ -236,14 +345,14 @@ public class prtRedun implements Runnable {
      * @return best peer index, -1 if none
      */
     public static int findActive() {
-        packRedundancy bst = getSelf();
+        prtRedunPack bst = getSelf();
         int idx = -1;
         for (int i = 0; i < ifaces.size(); i++) {
             prtRedunIfc ifc = ifaces.get(i);
             if (ifc.reach.get() != 3) {
                 continue;
             }
-            if (ifc.last.state == packRedundancy.statActive) {
+            if (ifc.last.state == statActive) {
                 return i;
             }
             String a = bst.otherBetter(ifc.last);
@@ -299,23 +408,23 @@ public class prtRedun implements Runnable {
      */
     public static void doInit(pipeSide con) {
         if (ifaces.size() < 1) {
-            state = packRedundancy.statActive;
+            state = statActive;
             return;
         }
         logger.info("initializing redundancy");
         started = bits.getTime();
-        state = packRedundancy.statSpeak;
+        state = statSpeak;
         new prtRedun().start();
         bits.sleep(cfgAll.redundancyInit);
         int act = findActive();
         if (act < 0) {
-            state = packRedundancy.statActive;
+            state = statActive;
             sendHellos();
             logger.info("became active");
             return;
         }
-        ifaces.get(act).doXfer(packRedundancy.fnState);
-        state = packRedundancy.statStandby;
+        ifaces.get(act).doXfer(fnState);
+        state = statStandby;
         sendHellos();
         logger.info("became standby, active on " + ifaces.get(act));
         for (;;) {
@@ -332,7 +441,7 @@ public class prtRedun implements Runnable {
             if (a == null) {
                 break;
             }
-            state = packRedundancy.statActive;
+            state = statActive;
             sendHellos();
             logger.info("preempting over " + ifaces.get(act) + " because won on " + a);
             return;
@@ -345,7 +454,7 @@ public class prtRedun implements Runnable {
             handleConsole(con, act);
             bits.sleep(cfgAll.redundancyKeep);
         }
-        state = packRedundancy.statActive;
+        state = statActive;
         sendHellos();
         logger.info("lost active after " + bits.timeDump(uptime));
     }
@@ -395,7 +504,7 @@ public class prtRedun implements Runnable {
         if (fnd == null) {
             return true;
         }
-        return fnd.doXfer(packRedundancy.fnStart);
+        return fnd.doXfer(fnStart);
     }
 
     /**
@@ -403,7 +512,7 @@ public class prtRedun implements Runnable {
      */
     public static void doConfig() {
         for (int i = 0; i < ifaces.size(); i++) {
-            ifaces.get(i).doFile(cfgInit.cfgFileSw, packRedundancy.fnStart);
+            ifaces.get(i).doFile(cfgInit.cfgFileSw, fnStart);
         }
     }
 
@@ -418,7 +527,7 @@ public class prtRedun implements Runnable {
         if (fnd == null) {
             return true;
         }
-        return fnd.doXfer(packRedundancy.fnCore);
+        return fnd.doXfer(fnCore);
     }
 
     /**
@@ -426,7 +535,7 @@ public class prtRedun implements Runnable {
      */
     public static void doCore() {
         for (int i = 0; i < ifaces.size(); i++) {
-            ifaces.get(i).doFile(cfgInit.getFileName(), packRedundancy.fnCore);
+            ifaces.get(i).doFile(cfgInit.getFileName(), fnCore);
         }
     }
 
@@ -435,7 +544,7 @@ public class prtRedun implements Runnable {
      */
     public static void doState() {
         for (int i = 0; i < ifaces.size(); i++) {
-            ifaces.get(i).doFile(cfgInit.myStateFile(), packRedundancy.fnState);
+            ifaces.get(i).doFile(cfgInit.myStateFile(), fnState);
         }
     }
 
@@ -444,7 +553,7 @@ public class prtRedun implements Runnable {
      */
     public static void doReload() {
         for (int i = 0; i < ifaces.size(); i++) {
-            ifaces.get(i).doRetry(packRedundancy.typReload, new packHolder(true, true));
+            ifaces.get(i).doRetry(typReload, new packHolder(true, true));
         }
     }
 
@@ -455,16 +564,68 @@ public class prtRedun implements Runnable {
      * @return file name
      */
     public static String wireName2fileName(String s) {
-        if (s.equals(packRedundancy.fnCore)) {
+        if (s.equals(fnCore)) {
             return cfgInit.getFileName();
         }
-        if (s.equals(packRedundancy.fnState)) {
+        if (s.equals(fnState)) {
             return cfgInit.myStateFile();
         }
-        if (s.equals(packRedundancy.fnStart)) {
+        if (s.equals(fnStart)) {
             return cfgInit.cfgFileSw;
         }
         return null;
+    }
+
+    /**
+     * type to string
+     *
+     * @param i type
+     * @return string
+     */
+    public static String typ2str(int i) {
+        switch (i) {
+            case typHello:
+                return "hello";
+            case typReload:
+                return "reload";
+            case typAck:
+                return "ack";
+            case typFilBeg:
+                return "filBeg";
+            case typFilDat:
+                return "filDat";
+            case typFilEnd:
+                return "filEnd";
+            case typSumReq:
+                return "sumReq";
+            case typSumVal:
+                return "sumVal";
+            case typSetPri:
+                return "setPri";
+            default:
+                return "unknown=" + i;
+        }
+    }
+
+    /**
+     * state to string
+     *
+     * @param i type
+     * @return string
+     */
+    public static String stat2str(int i) {
+        switch (i) {
+            case statInit:
+                return "init";
+            case statSpeak:
+                return "speak";
+            case statStandby:
+                return "standby";
+            case statActive:
+                return "active";
+            default:
+                return "unknown=" + i;
+        }
     }
 
 }
@@ -489,7 +650,7 @@ class prtRedunIfc implements ifcUp {
 
     public final syncInt reach = new syncInt(0);
 
-    public packRedundancy last = new packRedundancy();
+    public prtRedunPack last = new prtRedunPack();
 
     public long heard;
 
@@ -510,7 +671,7 @@ class prtRedunIfc implements ifcUp {
         name = nam;
         descr = desc;
         lower = thrd;
-        last.state = packRedundancy.statInit;
+        last.state = prtRedun.statInit;
         heard = 0;
         dualAct = 0;
         lower.setFilter(false);
@@ -534,7 +695,7 @@ class prtRedunIfc implements ifcUp {
     }
 
     public void recvPack(packHolder pck) {
-        packRedundancy pckP = new packRedundancy();
+        prtRedunPack pckP = new prtRedunPack();
         if (pckP.parseHeader(pck)) {
             return;
         }
@@ -554,15 +715,15 @@ class prtRedunIfc implements ifcUp {
         }
         heard = bits.getTime();
         switch (pckP.type) {
-            case packRedundancy.typHello:
+            case prtRedun.typHello:
                 if ((last.magic == prtRedun.magic) && (last.state >= prtRedun.state)) {
                     cfgInit.stopRouter(true, 6, "magic collision");
                 }
-                if (prtRedun.state != packRedundancy.statActive) {
+                if (prtRedun.state != prtRedun.statActive) {
                     dualAct = 0;
                     break;
                 }
-                if (last.state != packRedundancy.statActive) {
+                if (last.state != prtRedun.statActive) {
                     dualAct = 0;
                     break;
                 }
@@ -575,20 +736,20 @@ class prtRedunIfc implements ifcUp {
                     break;
                 }
                 logger.warn("dual active, reloading peer");
-                doPack(packRedundancy.typReload, new packHolder(true, true));
+                doPack(prtRedun.typReload, new packHolder(true, true));
                 break;
-            case packRedundancy.typReload:
-                if (prtRedun.state == packRedundancy.statActive) {
+            case prtRedun.typReload:
+                if (prtRedun.state == prtRedun.statActive) {
                     break;
                 }
                 doAck(-4);
                 cfgInit.stopRouter(true, 10, "peer request");
                 break;
-            case packRedundancy.typAck:
+            case prtRedun.typAck:
                 ackRx = pck.msbGetD(0);
                 notif.wakeup();
                 break;
-            case packRedundancy.typFilBeg:
+            case prtRedun.typFilBeg:
                 try {
                     filRx.close();
                 } catch (Exception e) {
@@ -603,7 +764,7 @@ class prtRedunIfc implements ifcUp {
                 }
                 doAck(-2);
                 break;
-            case packRedundancy.typFilDat:
+            case prtRedun.typFilDat:
                 int i = pck.msbGetD(0);
                 int o = pck.msbGetW(4);
                 pck.getSkip(6);
@@ -618,7 +779,7 @@ class prtRedunIfc implements ifcUp {
                 }
                 doAck(i);
                 break;
-            case packRedundancy.typFilEnd:
+            case prtRedun.typFilEnd:
                 try {
                     filRx.close();
                 } catch (Exception e) {
@@ -626,8 +787,8 @@ class prtRedunIfc implements ifcUp {
                     break;
                 }
                 filRx = null;
-                a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
-                if (a.equals(packRedundancy.fnShow)) {
+                a = pck.getAsciiZ(0, prtRedun.dataMax, 0);
+                if (a.equals(prtRedun.fnShow)) {
                     lastFileHash = filNm;
                     doAck(-3);
                     break;
@@ -642,8 +803,8 @@ class prtRedunIfc implements ifcUp {
                 userFlash.delete(filNm);
                 doAck(-3);
                 break;
-            case packRedundancy.typSumReq:
-                a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
+            case prtRedun.typSumReq:
+                a = pck.getAsciiZ(0, prtRedun.dataMax, 0);
                 b = prtRedun.wireName2fileName(a);
                 if (b == null) {
                     logger.error("got invalid filename");
@@ -656,26 +817,26 @@ class prtRedunIfc implements ifcUp {
                     logger.info(b);
                 }
                 pck.clear();
-                pck.putAsciiZ(0, packRedundancy.dataMax, b, 0);
-                pck.putSkip(packRedundancy.dataMax);
-                doPack(packRedundancy.typSumVal, pck);
+                pck.putAsciiZ(0, prtRedun.dataMax, b, 0);
+                pck.putSkip(prtRedun.dataMax);
+                doPack(prtRedun.typSumVal, pck);
                 break;
-            case packRedundancy.typSumVal:
-                lastFileHash = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
+            case prtRedun.typSumVal:
+                lastFileHash = pck.getAsciiZ(0, prtRedun.dataMax, 0);
                 break;
-            case packRedundancy.typSetPri:
+            case prtRedun.typSetPri:
                 cfgInit.redunPrio = pck.msbGetD(0);
                 logger.info("priority changed to " + cfgInit.redunPrio);
                 doAck(-5);
                 break;
-            case packRedundancy.typExecCmd:
-                a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
+            case prtRedun.typExecCmd:
+                a = pck.getAsciiZ(0, prtRedun.dataMax, 0);
                 logger.info("exec command " + a);
                 doAck(-6);
                 new prtRedunExec(this, a);
                 break;
-            case packRedundancy.typXferReq:
-                a = pck.getAsciiZ(0, packRedundancy.dataMax, 0);
+            case prtRedun.typXferReq:
+                a = pck.getAsciiZ(0, prtRedun.dataMax, 0);
                 b = prtRedun.wireName2fileName(a);
                 if (b == null) {
                     logger.error("got invalid filename");
@@ -690,7 +851,7 @@ class prtRedunIfc implements ifcUp {
 
     public void doPack(int typ, packHolder pckB) {
         pckB.merge2beg();
-        packRedundancy pckP = prtRedun.getSelf();
+        prtRedunPack pckP = prtRedun.getSelf();
         pckP.type = typ;
         pckP.peer = last.magic;
         pckP.createHeader(pckB);
@@ -706,7 +867,7 @@ class prtRedunIfc implements ifcUp {
         packHolder pck = new packHolder(true, true);
         pck.msbPutD(0, ofs);
         pck.putSkip(4);
-        doPack(packRedundancy.typAck, pck);
+        doPack(prtRedun.typAck, pck);
     }
 
     public boolean doRetry(int typ, packHolder pck) {
@@ -724,9 +885,9 @@ class prtRedunIfc implements ifcUp {
 
     public List<String> doCmd(String fn) {
         packHolder pck = new packHolder(true, true);
-        pck.putAsciiZ(0, packRedundancy.dataMax, fn, 0);
-        pck.putSkip(packRedundancy.dataMax);
-        doPack(packRedundancy.typExecCmd, pck);
+        pck.putAsciiZ(0, prtRedun.dataMax, fn, 0);
+        pck.putSkip(prtRedun.dataMax);
+        doPack(prtRedun.typExecCmd, pck);
         for (int i = 0; i < 10; i++) {
             bits.sleep(cfgAll.redundancyHold / 10);
             if (lastFileHash != null) {
@@ -748,9 +909,9 @@ class prtRedunIfc implements ifcUp {
     public String doHash(String fn) {
         lastFileHash = null;
         packHolder pck = new packHolder(true, true);
-        pck.putAsciiZ(0, packRedundancy.dataMax, fn, 0);
-        pck.putSkip(packRedundancy.dataMax);
-        doPack(packRedundancy.typSumReq, pck);
+        pck.putAsciiZ(0, prtRedun.dataMax, fn, 0);
+        pck.putSkip(prtRedun.dataMax);
+        doPack(prtRedun.typSumReq, pck);
         for (int i = 0; i < 10; i++) {
             bits.sleep(cfgAll.redundancyHold / 10);
             if (lastFileHash != null) {
@@ -781,9 +942,9 @@ class prtRedunIfc implements ifcUp {
         logger.info("requesting file " + fn + " as " + b);
         long lst = getFileTime(b);
         packHolder pck = new packHolder(true, true);
-        pck.putAsciiZ(0, packRedundancy.dataMax, fn, 0);
-        pck.putSkip(packRedundancy.dataMax);
-        doPack(packRedundancy.typXferReq, pck);
+        pck.putAsciiZ(0, prtRedun.dataMax, fn, 0);
+        pck.putSkip(prtRedun.dataMax);
+        doPack(prtRedun.typXferReq, pck);
         for (int i = 0; i < 10; i++) {
             bits.sleep(cfgAll.redundancyInit / 10);
             if (lst != getFileTime(b)) {
@@ -797,7 +958,7 @@ class prtRedunIfc implements ifcUp {
         packHolder pck = new packHolder(true, true);
         pck.msbPutD(0, pri);
         pck.putSkip(4);
-        if (doRetry(packRedundancy.typSetPri, pck)) {
+        if (doRetry(prtRedun.typSetPri, pck)) {
             return true;
         }
         return false;
@@ -825,7 +986,7 @@ class prtRedunIfc implements ifcUp {
             }
             return true;
         }
-        if (doRetry(packRedundancy.typFilBeg, new packHolder(true, true))) {
+        if (doRetry(prtRedun.typFilBeg, new packHolder(true, true))) {
             try {
                 fr.close();
             } catch (Exception e) {
@@ -835,8 +996,8 @@ class prtRedunIfc implements ifcUp {
         long pos = 0;
         for (; pos < siz;) {
             long rndl = siz - pos;
-            if (rndl > packRedundancy.dataMax) {
-                rndl = packRedundancy.dataMax;
+            if (rndl > prtRedun.dataMax) {
+                rndl = prtRedun.dataMax;
             }
             int rndi = (int) rndl;
             byte[] buf = new byte[rndi];
@@ -854,7 +1015,7 @@ class prtRedunIfc implements ifcUp {
             pos += rndl;
             pck.putCopy(buf, 0, 0, buf.length);
             pck.putSkip(buf.length);
-            if (doRetry(packRedundancy.typFilDat, pck)) {
+            if (doRetry(prtRedun.typFilDat, pck)) {
                 try {
                     fr.close();
                 } catch (Exception e) {
@@ -872,9 +1033,9 @@ class prtRedunIfc implements ifcUp {
             return true;
         }
         packHolder pck = new packHolder(true, true);
-        pck.putAsciiZ(0, packRedundancy.dataMax, rfn, 0);
-        pck.putSkip(packRedundancy.dataMax);
-        if (doRetry(packRedundancy.typFilEnd, pck)) {
+        pck.putAsciiZ(0, prtRedun.dataMax, rfn, 0);
+        pck.putSkip(prtRedun.dataMax);
+        if (doRetry(prtRedun.typFilEnd, pck)) {
             return true;
         }
         return false;
@@ -928,7 +1089,7 @@ class prtRedunExec implements Runnable {
             return;
         }
         txt.clear();
-        ifc.doFile(a, packRedundancy.fnShow);
+        ifc.doFile(a, prtRedun.fnShow);
         userFlash.delete(a);
     }
 
@@ -951,6 +1112,115 @@ class prtRedunXfer implements Runnable {
 
     public void run() {
         ifc.doFile(fn, rfn);
+    }
+
+}
+
+class prtRedunPack {
+
+    /**
+     * create instance
+     */
+    public prtRedunPack() {
+    }
+
+    /**
+     * type
+     */
+    public int type;
+
+    /**
+     * my state
+     */
+    public int state;
+
+    /**
+     * magic
+     */
+    public int magic;
+
+    /**
+     * peer magic
+     */
+    public int peer;
+
+    /**
+     * uptime
+     */
+    public int uptime;
+
+    /**
+     * priority
+     */
+    public int priority;
+
+    /**
+     * parse header
+     *
+     * @param pck packet to read
+     * @return false on success, true on error
+     */
+    public boolean parseHeader(packHolder pck) {
+        if (pck.msbGetW(0) != prtRedun.ethtyp) {
+            return true;
+        }
+        type = pck.getByte(2);
+        state = pck.getByte(3);
+        magic = pck.msbGetD(4);
+        peer = pck.msbGetD(8);
+        uptime = pck.msbGetD(12);
+        priority = pck.msbGetD(16);
+        pck.getSkip(prtRedun.size);
+        return false;
+    }
+
+    /**
+     * create packet
+     *
+     * @param pck packet to update
+     */
+    public void createHeader(packHolder pck) {
+        pck.msbPutW(0, prtRedun.ethtyp);
+        pck.putByte(2, type);
+        pck.putByte(3, state);
+        pck.msbPutD(4, magic);
+        pck.msbPutD(8, peer);
+        pck.msbPutD(12, uptime);
+        pck.msbPutD(16, priority);
+        pck.putSkip(prtRedun.size);
+        pck.merge2beg();
+    }
+
+    /**
+     * check if other better
+     *
+     * @param o other
+     * @return reason, null if not
+     */
+    public String otherBetter(prtRedunPack o) {
+        if (priority < o.priority) {
+            return "priority";
+        }
+        if (priority > o.priority) {
+            return null;
+        }
+        if (uptime < o.uptime) {
+            return "uptime";
+        }
+        if (uptime > o.uptime) {
+            return null;
+        }
+        if (magic < o.magic) {
+            return "magic";
+        }
+        if (magic > o.magic) {
+            return null;
+        }
+        return null;
+    }
+
+    public String toString() {
+        return "type=" + prtRedun.typ2str(type) + " state=" + prtRedun.stat2str(state) + " magic=" + magic + " peer=" + peer + " priority=" + priority + " uptime=" + uptime;
     }
 
 }

@@ -104,10 +104,8 @@ import org.freertr.serv.servSmtp;
 import org.freertr.serv.servStreamingMdt;
 import org.freertr.serv.servVxlan;
 import org.freertr.enc.enc7bit;
-import org.freertr.enc.encUrl;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
-import org.freertr.pack.packRedundancy;
 import org.freertr.rtr.rtrBgp;
 import org.freertr.rtr.rtrBgpDump;
 import org.freertr.rtr.rtrBgpSpeak;
@@ -570,15 +568,15 @@ public class userShow {
                 return null;
             }
             if (a.equals("core")) {
-                rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnCore));
+                rdr.putStrTab(prtRedun.doShowHash(prtRedun.fnCore));
                 return null;
             }
             if (a.equals("config")) {
-                rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnStart));
+                rdr.putStrTab(prtRedun.doShowHash(prtRedun.fnStart));
                 return null;
             }
             if (a.equals("state-hash")) {
-                rdr.putStrTab(prtRedun.doShowHash(packRedundancy.fnState));
+                rdr.putStrTab(prtRedun.doShowHash(prtRedun.fnState));
                 return null;
             }
             if (a.equals("state-save")) {

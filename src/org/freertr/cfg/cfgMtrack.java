@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.clnt.clntMtrack;
-import org.freertr.pack.packMtrack;
-import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
@@ -55,7 +53,7 @@ public class cfgMtrack implements Comparable<cfgMtrack>, cfgGeneric {
         new userFilter("mtracker .*", cmds.tabulator + "interval 30000", null),
         new userFilter("mtracker .*", cmds.tabulator + "timeout 10", null),
         new userFilter("mtracker .*", cmds.tabulator + "packet 10", null),
-        new userFilter("mtracker .*", cmds.tabulator + "port " + packMtrack.port, null),
+        new userFilter("mtracker .*", cmds.tabulator + "port " + clntMtrack.defPort, null),
         new userFilter("mtracker .*", cmds.tabulator + "tos 0", null),
         new userFilter("mtracker .*", cmds.tabulator + "ttl 255", null),
         new userFilter("mtracker .*", cmds.tabulator + "flow 0", null)
@@ -263,7 +261,7 @@ public class cfgMtrack implements Comparable<cfgMtrack>, cfgGeneric {
             return false;
         }
         if (a.equals("port")) {
-            worker.port = packMtrack.port;
+            worker.port = clntMtrack.defPort;
             return false;
         }
         if (a.equals("stop")) {
