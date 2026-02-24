@@ -10,6 +10,7 @@ import org.freertr.cfg.cfgInit;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcThread;
 import org.freertr.ifc.ifcUp;
+import org.freertr.ip.ipIfc4;
 import org.freertr.util.cmds;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
@@ -1107,6 +1108,10 @@ class prtRedunXfer implements Runnable {
 }
 
 class prtRedunPack {
+
+    private final static int magic1 = 0x00010000 | ipIfc4.type;
+
+    private final static int magic2 = 0x06040c0d;
 
     /**
      * ethertype
