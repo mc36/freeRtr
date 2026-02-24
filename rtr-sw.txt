@@ -473,6 +473,7 @@ interface bvi9
  ipv6 gateway-prefix def6
  ipv6 host-watch
  ipv6 slaac-client enable
+ ipv6 slaac-client follow-changes
  ipv6 prefix-suppress
  no shutdown
  no log-link-change

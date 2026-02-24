@@ -1725,6 +1725,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + "ipv4 dhcp-client fill-ciaddr", null),
         new userFilter("interface .*", cmds.tabulator + "ipv6 slaac-client renew-min 60000", null),
         new userFilter("interface .*", cmds.tabulator + "ipv6 slaac-client renew-max 43200000", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 slaac-client follow-changes", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 prefix-dns", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv6 prefix-domain", null),
         new userFilter("interface .*", cmds.tabulator + "ipv6 prefix-interval 120000", null),
@@ -7186,6 +7187,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         ipFwdIface.getHelp(l);
         l.add(null, false, 2, new int[]{3}, "slaac-client", "stateless address autoconfiguration");
         l.add(null, false, 3, new int[]{-1}, "enable", "start address acquision");
+        l.add(null, false, 3, new int[]{-1}, "follow-changes", "follow prefix changes");
         l.add(null, false, 3, new int[]{4}, "renew-min", "minimum renew time");
         l.add(null, false, 4, new int[]{-1}, "<num>", "time in ms");
         l.add(null, false, 3, new int[]{4}, "renew-max", "maximum renew time");
@@ -9675,6 +9677,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 slaac = null;
                 return;
             }
+            slaac.unConfig(a, cmd);
             return;
         }
         if (a.equals("prefix-suppress")) {

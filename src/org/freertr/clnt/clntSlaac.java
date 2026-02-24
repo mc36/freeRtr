@@ -43,6 +43,11 @@ public class clntSlaac implements Runnable, ipPrt {
      */
     public int leaseMax = 43200 * 1000;
 
+    /**
+     * follow prefix changes
+     */
+    public boolean followChanges;
+
     private ipFwd lower;
 
     private ipFwdIface iface;
@@ -112,6 +117,9 @@ public class clntSlaac implements Runnable, ipPrt {
      * stop client
      */
     public void closeClient() {
+        if (working) {
+            lower.protoDel(this, iface, null);
+        }
         working = false;
         notif.wakeup();
     }
@@ -174,13 +182,9 @@ public class clntSlaac implements Runnable, ipPrt {
             iface.lower.sendProto(pck, pck.IPtrg);
             notif.sleep(10000);
         }
-        lower.protoDel(this, iface, null);
-        ll = ipifc.getLinkLocalAddr().toIPv6();
-        addrIPv6 wld = new addrIPv6();
-        wld.setNot(locMask);
-        ll.setAnd(ll, wld);
-        locAddr.setAnd(locAddr, locMask);
-        locAddr.setOr(locAddr, ll);
+        if (!followChanges) {
+            lower.protoDel(this, iface, null);
+        }
         cfger.addr6changed(locAddr, locMask, gwAddr);
         return false;
     }
@@ -272,6 +276,12 @@ public class clntSlaac implements Runnable, ipPrt {
         }
         locMask.fromNetmask(pl);
         gwAddr = pck.IPsrc.toIPv6();
+        addrIPv6 ll = ipifc.getLinkLocalAddr().toIPv6();
+        addrIPv6 wld = new addrIPv6();
+        wld.setNot(locMask);
+        ll.setAnd(ll, wld);
+        locAddr.setAnd(locAddr, locMask);
+        locAddr.setOr(locAddr, ll);
         if (debugger.clntSlaacTraf) {
             logger.debug("addr=" + locAddr + "/" + locMask + " gw=" + gwAddr + " dns1=" + dns1addr + " dns2=" + dns2addr + " valid=" + lt);
         }
@@ -331,6 +341,7 @@ public class clntSlaac implements Runnable, ipPrt {
     public void getConfig(List<String> l, String beg, String cmd) {
         l.add(beg + cmd + "renew-min " + leaseMin);
         l.add(beg + cmd + "renew-max " + leaseMax);
+        cmds.cfgLine(l, !followChanges, beg, cmd + "follow-changes", "");
     }
 
     /**
@@ -347,6 +358,25 @@ public class clntSlaac implements Runnable, ipPrt {
         }
         if (a.equals("renew-max")) {
             leaseMax = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("follow-changes")) {
+            followChanges = true;
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * negate configuration
+     *
+     * @param a command
+     * @param cmd commands
+     * @return result code, true on error, false on success
+     */
+    public boolean unConfig(String a, cmds cmd) {
+        if (a.equals("follow-changes")) {
+            followChanges = false;
             return false;
         }
         return true;
