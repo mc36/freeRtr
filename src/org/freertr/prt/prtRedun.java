@@ -10,6 +10,8 @@ import org.freertr.cfg.cfgInit;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcThread;
 import org.freertr.ifc.ifcUp;
+import org.freertr.ip.ipIfc4;
+import org.freertr.ip.ipIfc4arp;
 import org.freertr.util.cmds;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
@@ -622,9 +624,9 @@ public class prtRedun implements Runnable {
 
 class prtRedunIfc implements ifcUp {
 
-    private final static int ethtyp = 0x8087;
+    private final static int magic1 = 0x00010000 | ipIfc4.type;
 
-    private final static int size = 20;
+    private final static int magic2 = 0x06040c0d;
 
     private ifcThread lower;
 
@@ -691,21 +693,30 @@ class prtRedunIfc implements ifcUp {
     public void recvPack(packHolder pckB) {
         prtRedunPack pckP = new prtRedunPack();
         int i = pckB.msbGetW(0);
-        if (i != ethtyp) {
+        if (i != ipIfc4arp.type) {
             logger.info("got invalid (" + bits.toHexW(i) + ") packet on " + name);
             return;
         }
-        if (pckB.dataSize() < size) {
+        pckB.getSkip(2);
+        if (pckB.dataSize() < ipIfc4arp.size) {
             logger.info("got truncated packet on " + name);
             return;
         }
-        pckP.type = pckB.getByte(2);
-        pckP.state = pckB.getByte(3);
-        pckP.magic = pckB.msbGetD(4);
-        pckP.peer = pckB.msbGetD(8);
-        pckP.uptime = pckB.msbGetD(12);
-        pckP.priority = pckB.msbGetD(16);
-        pckB.getSkip(size);
+        if (pckB.msbGetD(0) != magic1) {
+            logger.info("got invalid magic on " + name);
+            return;
+        }
+        if (pckB.msbGetD(4) != magic2) {
+            logger.info("got invalid magic on " + name);
+            return;
+        }
+        pckP.type = pckB.getByte(8);
+        pckP.state = pckB.getByte(9);
+        pckP.magic = pckB.msbGetD(10);
+        pckP.peer = pckB.msbGetD(14);
+        pckP.uptime = pckB.msbGetD(18);
+        pckP.priority = pckB.msbGetD(22);
+        pckB.getSkip(ipIfc4arp.size);
         if (debugger.prtRedun) {
             logger.debug("rx " + pckP);
         }
@@ -864,14 +875,18 @@ class prtRedunIfc implements ifcUp {
         prtRedunPack pckP = prtRedun.getSelf();
         pckP.type = typ;
         pckP.peer = last.magic;
-        pckB.msbPutW(0, ethtyp);
-        pckB.putByte(2, pckP.type);
-        pckB.putByte(3, pckP.state);
-        pckB.msbPutD(4, pckP.magic);
-        pckB.msbPutD(8, pckP.peer);
-        pckB.msbPutD(12, pckP.uptime);
-        pckB.msbPutD(16, pckP.priority);
-        pckB.putSkip(size);
+        pckB.msbPutW(0, ipIfc4arp.type);
+        pckB.putSkip(2);
+        pckB.putFill(0, ipIfc4arp.size, 0);
+        pckB.msbPutD(0, magic1);
+        pckB.msbPutD(4, magic2);
+        pckB.putByte(8, pckP.type);
+        pckB.putByte(9, pckP.state);
+        pckB.msbPutD(10, pckP.magic);
+        pckB.msbPutD(14, pckP.peer);
+        pckB.msbPutD(18, pckP.uptime);
+        pckB.msbPutD(22, pckP.priority);
+        pckB.putSkip(ipIfc4arp.size);
         pckB.merge2beg();
         if (debugger.prtRedun) {
             logger.debug("tx " + pckP);
