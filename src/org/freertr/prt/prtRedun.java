@@ -622,6 +622,10 @@ public class prtRedun implements Runnable {
 
 class prtRedunIfc implements ifcUp {
 
+    private final static int ethtyp = 0x8087;
+
+    private final static int size = 20;
+
     private ifcThread lower;
 
     private counter cntr = new counter();
@@ -684,11 +688,24 @@ class prtRedunIfc implements ifcUp {
         return cntr;
     }
 
-    public void recvPack(packHolder pck) {
+    public void recvPack(packHolder pckB) {
         prtRedunPack pckP = new prtRedunPack();
-        if (pckP.parseHeader(pck)) {
+        int i = pckB.msbGetW(0);
+        if (i != ethtyp) {
+            logger.info("got invalid (" + bits.toHexW(i) + ") packet on " + name);
             return;
         }
+        if (pckB.dataSize() < size) {
+            logger.info("got truncated packet on " + name);
+            return;
+        }
+        pckP.type = pckB.getByte(2);
+        pckP.state = pckB.getByte(3);
+        pckP.magic = pckB.msbGetD(4);
+        pckP.peer = pckB.msbGetD(8);
+        pckP.uptime = pckB.msbGetD(12);
+        pckP.priority = pckB.msbGetD(16);
+        pckB.getSkip(size);
         if (debugger.prtRedun) {
             logger.debug("rx " + pckP);
         }
@@ -736,7 +753,7 @@ class prtRedunIfc implements ifcUp {
                 cfgInit.stopRouter(true, 10, "peer request");
                 break;
             case prtRedun.typAck:
-                ackRx = pck.msbGetD(0);
+                ackRx = pckB.msbGetD(0);
                 notif.wakeup();
                 break;
             case prtRedun.typFilBeg:
@@ -755,11 +772,11 @@ class prtRedunIfc implements ifcUp {
                 doAck(-2);
                 break;
             case prtRedun.typFilDat:
-                int i = pck.msbGetD(0);
-                int o = pck.msbGetW(4);
-                pck.getSkip(6);
+                i = pckB.msbGetD(0);
+                int o = pckB.msbGetW(4);
+                pckB.getSkip(6);
                 byte[] buf = new byte[o];
-                pck.getCopy(buf, 0, 0, o);
+                pckB.getCopy(buf, 0, 0, o);
                 try {
                     filRx.seek(i);
                     filRx.write(buf);
@@ -777,7 +794,7 @@ class prtRedunIfc implements ifcUp {
                     break;
                 }
                 filRx = null;
-                a = pck.getAsciiZ(0, prtRedun.dataMax, 0);
+                a = pckB.getAsciiZ(0, prtRedun.dataMax, 0);
                 if (a.equals(prtRedun.fnShow)) {
                     lastFileHash = filNm;
                     doAck(-3);
@@ -794,7 +811,7 @@ class prtRedunIfc implements ifcUp {
                 doAck(-3);
                 break;
             case prtRedun.typSumReq:
-                a = pck.getAsciiZ(0, prtRedun.dataMax, 0);
+                a = pckB.getAsciiZ(0, prtRedun.dataMax, 0);
                 b = prtRedun.wireName2fileName(a);
                 if (b == null) {
                     logger.error("got invalid filename");
@@ -806,27 +823,27 @@ class prtRedunIfc implements ifcUp {
                     b = b.substring(1, b.length());
                     logger.info(b);
                 }
-                pck.clear();
-                pck.putAsciiZ(0, prtRedun.dataMax, b, 0);
-                pck.putSkip(prtRedun.dataMax);
-                doPack(prtRedun.typSumVal, pck);
+                pckB.clear();
+                pckB.putAsciiZ(0, prtRedun.dataMax, b, 0);
+                pckB.putSkip(prtRedun.dataMax);
+                doPack(prtRedun.typSumVal, pckB);
                 break;
             case prtRedun.typSumVal:
-                lastFileHash = pck.getAsciiZ(0, prtRedun.dataMax, 0);
+                lastFileHash = pckB.getAsciiZ(0, prtRedun.dataMax, 0);
                 break;
             case prtRedun.typSetPri:
-                cfgInit.redunPrio = pck.msbGetD(0);
+                cfgInit.redunPrio = pckB.msbGetD(0);
                 logger.info("priority changed to " + cfgInit.redunPrio);
                 doAck(-5);
                 break;
             case prtRedun.typExecCmd:
-                a = pck.getAsciiZ(0, prtRedun.dataMax, 0);
+                a = pckB.getAsciiZ(0, prtRedun.dataMax, 0);
                 logger.info("exec command " + a);
                 doAck(-6);
                 new prtRedunExec(this, a);
                 break;
             case prtRedun.typXferReq:
-                a = pck.getAsciiZ(0, prtRedun.dataMax, 0);
+                a = pckB.getAsciiZ(0, prtRedun.dataMax, 0);
                 b = prtRedun.wireName2fileName(a);
                 if (b == null) {
                     logger.error("got invalid filename");
@@ -836,6 +853,9 @@ class prtRedunIfc implements ifcUp {
                 doAck(-7);
                 new prtRedunXfer(this, b, a);
                 break;
+            default:
+                logger.info("got invalid (" + pckP.type + ") request on " + name);
+                break;
         }
     }
 
@@ -844,7 +864,15 @@ class prtRedunIfc implements ifcUp {
         prtRedunPack pckP = prtRedun.getSelf();
         pckP.type = typ;
         pckP.peer = last.magic;
-        pckP.createHeader(pckB);
+        pckB.msbPutW(0, ethtyp);
+        pckB.putByte(2, pckP.type);
+        pckB.putByte(3, pckP.state);
+        pckB.msbPutD(4, pckP.magic);
+        pckB.msbPutD(8, pckP.peer);
+        pckB.msbPutD(12, pckP.uptime);
+        pckB.msbPutD(16, pckP.priority);
+        pckB.putSkip(size);
+        pckB.merge2beg();
         if (debugger.prtRedun) {
             logger.debug("tx " + pckP);
         }
@@ -1109,22 +1137,6 @@ class prtRedunXfer implements Runnable {
 class prtRedunPack {
 
     /**
-     * ethertype
-     */
-    public final static int ethtyp = 0x8087;
-
-    /**
-     * header size
-     */
-    public final static int size = 20;
-
-    /**
-     * create instance
-     */
-    public prtRedunPack() {
-    }
-
-    /**
      * type
      */
     public int type;
@@ -1153,43 +1165,6 @@ class prtRedunPack {
      * priority
      */
     public int priority;
-
-    /**
-     * parse header
-     *
-     * @param pck packet to read
-     * @return false on success, true on error
-     */
-    public boolean parseHeader(packHolder pck) {
-        if (pck.msbGetW(0) != ethtyp) {
-            return true;
-        }
-        type = pck.getByte(2);
-        state = pck.getByte(3);
-        magic = pck.msbGetD(4);
-        peer = pck.msbGetD(8);
-        uptime = pck.msbGetD(12);
-        priority = pck.msbGetD(16);
-        pck.getSkip(size);
-        return false;
-    }
-
-    /**
-     * create packet
-     *
-     * @param pck packet to update
-     */
-    public void createHeader(packHolder pck) {
-        pck.msbPutW(0, ethtyp);
-        pck.putByte(2, type);
-        pck.putByte(3, state);
-        pck.msbPutD(4, magic);
-        pck.msbPutD(8, peer);
-        pck.msbPutD(12, uptime);
-        pck.msbPutD(16, priority);
-        pck.putSkip(size);
-        pck.merge2beg();
-    }
 
     /**
      * check if other better
