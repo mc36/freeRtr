@@ -10,7 +10,6 @@ import org.freertr.cfg.cfgInit;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcThread;
 import org.freertr.ifc.ifcUp;
-import org.freertr.ip.ipIfc4;
 import org.freertr.util.cmds;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
@@ -41,6 +40,16 @@ public class prtRedun implements Runnable {
      */
     public prtRedun() {
     }
+
+    /**
+     * ethertype
+     */
+    public final static int ethtyp = 0x8087;
+
+    /**
+     * header size
+     */
+    public final static int size = 20;
 
     /**
      * hello
@@ -1109,20 +1118,6 @@ class prtRedunXfer implements Runnable {
 
 class prtRedunPack {
 
-    private final static int magic1 = 0x00010000 | ipIfc4.type;
-
-    private final static int magic2 = 0x06040c0d;
-
-    /**
-     * ethertype
-     */
-    public final static int ethtyp = 0x8087;
-
-    /**
-     * header size
-     */
-    public final static int size = 20;
-
     /**
      * create instance
      */
@@ -1166,7 +1161,7 @@ class prtRedunPack {
      * @return false on success, true on error
      */
     public boolean parseHeader(packHolder pck) {
-        if (pck.msbGetW(0) != ethtyp) {
+        if (pck.msbGetW(0) != prtRedun.ethtyp) {
             return true;
         }
         type = pck.getByte(2);
@@ -1175,7 +1170,7 @@ class prtRedunPack {
         peer = pck.msbGetD(8);
         uptime = pck.msbGetD(12);
         priority = pck.msbGetD(16);
-        pck.getSkip(size);
+        pck.getSkip(prtRedun.size);
         return false;
     }
 
@@ -1185,14 +1180,14 @@ class prtRedunPack {
      * @param pck packet to update
      */
     public void createHeader(packHolder pck) {
-        pck.msbPutW(0, ethtyp);
+        pck.msbPutW(0, prtRedun.ethtyp);
         pck.putByte(2, type);
         pck.putByte(3, state);
         pck.msbPutD(4, magic);
         pck.msbPutD(8, peer);
         pck.msbPutD(12, uptime);
         pck.msbPutD(16, priority);
-        pck.putSkip(size);
+        pck.putSkip(prtRedun.size);
         pck.merge2beg();
     }
 
