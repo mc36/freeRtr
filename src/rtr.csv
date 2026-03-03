@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.3.2-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-03-02 20:33:43, took 00:25:59, with 50 workers, on 4284 cases, 1 failed, 0 traces, 12 retries
+-;-;-;2026-03-02 21:41:11, took 00:16:07, with 50 workers, on 4284 cases, 0 failed, 0 traces, 4 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -4097,7 +4097,7 @@ http://sources.freertr.org/cfg/rout-pvrp30.tst;rout-pvrp30.tst;success;pvrp auto
 http://sources.freertr.org/cfg/rout-pvrp31.tst;rout-pvrp31.tst;success;pvrp default address suppression
 http://sources.freertr.org/cfg/rout-pvrp32.tst;rout-pvrp32.tst;success;pvrp address unsuppression
 http://sources.freertr.org/cfg/rout-pvrp33.tst;rout-pvrp33.tst;success;pvrp with php labels
-http://sources.freertr.org/cfg/rout-pvrp34.tst;rout-pvrp34.tst;#6-run-r2 tping 100 10 2.2.2.1 vrf v1 sou lo0;ingress label filtering with pvrp
+http://sources.freertr.org/cfg/rout-pvrp34.tst;rout-pvrp34.tst;success;ingress label filtering with pvrp
 http://sources.freertr.org/cfg/rout-pvrp35.tst;rout-pvrp35.tst;success;egress label filtering with pvrp
 http://sources.freertr.org/cfg/rout-pvrp36.tst;rout-pvrp36.tst;success;pvrp stub node
 http://sources.freertr.org/cfg/rout-pvrp37.tst;rout-pvrp37.tst;success;pvrp stub interface
