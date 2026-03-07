@@ -1,0 +1,12 @@
+[Unit]
+Description=router processes
+Wants=network.target
+After=network-pre.target
+Before=network.target
+
+[Service]
+Type=forking
+ExecStart=/home/mc36/cons.sh
+
+[Install]
+WantedBy=multi-user.target

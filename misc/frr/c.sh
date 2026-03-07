@@ -7,3 +7,7 @@ cp sysctl /etc/sysctl.d/00-frr.conf
 cp initd /etc/init.d/rtr
 chmod 755 /etc/init.d/rtr
 update-rc.d rtr defaults
+cp service /lib/systemd/system/rtr.service
+systemctl daemon-reload
+systemctl unmask rtr
+systemctl enable rtr
