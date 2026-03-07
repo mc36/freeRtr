@@ -10,6 +10,7 @@ start-stop-daemon -S -b -x /home/mc36/r-ens5.sh
 start-stop-daemon -S -b -x /home/mc36/r-ens6.sh
 start-stop-daemon -S -b -x /home/mc36/r-ens7.sh
 start-stop-daemon -S -b -x /home/mc36/r-ens8.sh
+/home/mc36/dummyCon.bin &
 while (true); do
   /home/mc36/p4udp.bin 10.10.10.227 9080 0 127.0.0.1 127.0.0.1  10012 10011  10022 10021  10032 10031  10042 10041  10052 10051
   done
