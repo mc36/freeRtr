@@ -18103,3 +18103,9 @@ failed: ingress label filtering with pvrp
 ---------------------------------- 2026-03-02 21:25:03 26.3.2
 no failed: ingress label filtering with pvrp
 qc pass: ingress label filtering with pvrp
+---------------------------------- 2026-03-08 13:02:27 26.3.8
+no qc pass: egress label filtering with pvrp
+failed: egress label filtering with pvrp
+---------------------------------- 2026-03-08 14:08:27 26.3.8
+no failed: egress label filtering with pvrp
+qc pass: egress label filtering with pvrp
