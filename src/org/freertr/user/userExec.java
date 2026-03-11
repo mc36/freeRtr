@@ -1154,6 +1154,7 @@ public class userExec {
         hl.add(null, false, 7, new int[]{-1}, "<num>", "asn to start with");
         hl.add(null, false, 6, new int[]{-1}, "asorigin", "originating ases");
         hl.add(null, false, 6, new int[]{-1}, "asuplink", "uplink ases");
+        hl.add(null, false, 6, new int[]{-1}, "asdownlink", "downlink ases");
         hl.add(null, false, 6, new int[]{-1}, "astransit", "transiting ases");
         hl.add(null, false, 6, new int[]{-1}, "asconn", "connectivity of ases");
         hl.add(null, false, 6, new int[]{7}, "pathsof", "paths contain asn");

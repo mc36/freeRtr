@@ -4956,6 +4956,10 @@ public class userShow {
             rdr.putStrTab(r.bgp.getAsUplink(idx));
             return;
         }
+        if (a.equals("asdownlink")) {
+            rdr.putStrTab(r.bgp.getAsDownlink(idx));
+            return;
+        }
         if (a.equals("astransit")) {
             rdr.putStrTab(r.bgp.getAsTransit(idx));
             return;

@@ -1529,6 +1529,22 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
+     * last but one of as path
+     *
+     * @return last but one of as path, -1 if none
+     */
+    public int asPathLbo() {
+        if (pathSeq == null) {
+            return -1;
+        }
+        int i = pathSeq.size();
+        if (i < 2) {
+            return -1;
+        }
+        return pathSeq.get(i - 2);
+    }
+
+    /**
      * begin of as path
      *
      * @return end of as path, -1 if none
