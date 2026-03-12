@@ -5724,6 +5724,7 @@ public class userExec {
     private void doWatch() {
         reader.keyFlush();
         boolean color = pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal) != userFormat.colorMode.normal;
+        pipeScreen.ansiMode ansi = pipe.settingsGet(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
         for (;;) {
             if (pipe.isClosed() != 0) {
                 break;
@@ -5732,11 +5733,11 @@ public class userExec {
             pipeScreen.sendCur(pipe, 0, 0);
             pipeScreen.sendCls(pipe);
             if (color) {
-                pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colPrompt, pipeScreen.colBrGreen));
+                pipeScreen.sendCol(pipe, ansi, pipe.settingsGet(pipeSetting.colPrompt, pipeScreen.colBrGreen));
             }
             pipe.linePut(cfgAll.hostName + "#show " + cmd.getRemaining());
             if (color) {
-                pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite));
+                pipeScreen.sendCol(pipe, ansi, pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite));
             }
             if (pipe.settingsGet(pipeSetting.times, false)) {
                 pipe.linePut(logger.getTimestamp());

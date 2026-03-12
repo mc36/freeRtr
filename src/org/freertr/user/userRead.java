@@ -913,15 +913,17 @@ public class userRead implements Comparator<String> {
                     pipe.linePut(a);
                     break;
                 case header:
-                    pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colHeader, pipeScreen.colBrYellow));
+                    pipeScreen.ansiMode ansi = pipe.settingsGet(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
+                    pipeScreen.sendCol(pipe, ansi, pipe.settingsGet(pipeSetting.colHeader, pipeScreen.colBrYellow));
                     pipe.linePut(a);
-                    pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite));
+                    pipeScreen.sendCol(pipe, ansi, pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite));
                     if (i >= columnL) {
                         color = userFormat.colorMode.normal;
                     }
                     break;
                 case rainbow:
                     int d = pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite);
+                    ansi = pipe.settingsGet(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
                     int r = a.length();
                     for (int q = 0;; q++) {
                         int s = q * rainc.length;
@@ -932,26 +934,27 @@ public class userRead implements Comparator<String> {
                         if (t > r) {
                             t = r;
                         }
-                        pipeScreen.sendAnsCol(pipe, pipeScreen.setForeground(d, rainc[(i + q) % rainc.length]));
+                        pipeScreen.sendCol(pipe, ansi, pipeScreen.setForeground(d, rainc[(i + q) % rainc.length]));
                         pipe.strPut(a.substring(s, t));
                     }
-                    pipeScreen.sendAnsCol(pipe, d);
+                    pipeScreen.sendCol(pipe, ansi, d);
                     pipe.linePut("");
                     break;
                 case zeroes:
                     d = pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite);
+                    ansi = pipe.settingsGet(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
                     r = d;
                     byte[] b = a.getBytes();
                     for (int q = 0; q < b.length; q++) {
                         int ch = b[q];
                         int s = userFormat.zeroesColor(ch, d, rainc);
                         if (s != r) {
-                            pipeScreen.sendAnsCol(pipe, pipeScreen.setForeground(d, s));
+                            pipeScreen.sendCol(pipe, ansi, pipeScreen.setForeground(d, s));
                             r = s;
                         }
                         pipe.strPut("" + (char) ch);
                     }
-                    pipeScreen.sendAnsCol(pipe, d);
+                    pipeScreen.sendCol(pipe, ansi, d);
                     pipe.linePut("");
                     break;
                 default:
@@ -1025,6 +1028,7 @@ public class userRead implements Comparator<String> {
     public synchronized void putCurrLine(boolean clr) {
         final String trncd = "$";
         final boolean color = pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal) != userFormat.colorMode.normal;
+        pipeScreen.ansiMode ansi = pipe.settingsGet(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
         final int width = pipe.settingsGet(pipeSetting.width, 80) - 1;
         clr |= rangeCheck();
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
@@ -1052,14 +1056,14 @@ public class userRead implements Comparator<String> {
         }
         pipe.blockingPut(pipeSide.getEnding(pipeSide.modTyp.modeCR), 0, 1);
         if (color) {
-            pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colPrompt, pipeScreen.colBrGreen));
+            pipeScreen.sendCol(pipe, ansi, pipe.settingsGet(pipeSetting.colPrompt, pipeScreen.colBrGreen));
         }
         if (crsr > s.length()) {
             crsr = s.length();
         }
         pipe.strPut(s.substring(0, crsr));
         if (color) {
-            pipeScreen.sendAnsCol(pipe, pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite));
+            pipeScreen.sendCol(pipe, ansi, pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite));
         }
     }
 

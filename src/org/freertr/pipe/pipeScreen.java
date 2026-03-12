@@ -923,6 +923,30 @@ public class pipeScreen {
         pip.strPut(s + "m");
     }
 
+    /**
+     * send color change
+     *
+     * @param pip pipeline to use
+     * @param mod ansi mode
+     * @param col color to use
+     */
+    public static void sendCol(pipeSide pip, ansiMode mod, int col) {
+        switch (mod) {
+            case original:
+                sendOldCol(pip, col);
+                break;
+            case normal:
+                sendAnsCol(pip, col);
+                break;
+            case indexed:
+                sendIdxCol(pip, col);
+                break;
+            case palette:
+                sendTruCol(pip, pipeFonts.colorIdxd[col & 0xf], pipeFonts.colorIdxd[(col >>> 16) & 0xf]);
+                break;
+        }
+    }
+
     private void doReset() {
         remP = 0x12345678;
         remX = remP;
@@ -948,20 +972,7 @@ public class pipeScreen {
         if (remP == col) {
             return;
         }
-        switch (ansM) {
-            case original:
-                sendOldCol(pipe, col);
-                break;
-            case normal:
-                sendAnsCol(pipe, col);
-                break;
-            case indexed:
-                sendIdxCol(pipe, col);
-                break;
-            case palette:
-                sendTruCol(pipe, pipeFonts.colorIdxd[col & 0xf], pipeFonts.colorIdxd[(col >>> 16) & 0xf]);
-                break;
-        }
+        sendCol(pipe, ansM, col);
         remP = col;
     }
 

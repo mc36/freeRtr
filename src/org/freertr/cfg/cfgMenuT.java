@@ -353,9 +353,9 @@ class cfgMenuTdoer {
     }
 
     private void doExecOne(cfgMenuTentry ent) {
-        pipeScreen.sendAnsCol(console.pipe, pipeScreen.colBrGreen);
+        pipeScreen.sendCol(console.pipe, console.ansM, pipeScreen.colBrGreen);
         console.pipe.linePut(ent.group + " - " + ent.name);
-        pipeScreen.sendAnsCol(console.pipe, pipeScreen.colWhite);
+        pipeScreen.sendCol(console.pipe, console.ansM, pipeScreen.colWhite);
         userExec exe = new userExec(console.pipe, reader);
         exe.privileged = privileged;
         String s = exe.repairCommand(ent.exec);
