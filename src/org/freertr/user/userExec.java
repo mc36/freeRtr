@@ -5697,8 +5697,10 @@ public class userExec {
         pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));
         if (col) {
             pip.settingsPut(pipeSetting.colors, pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
+            pip.settingsPut(pipeSetting.ansiMode, pipe.settingsGet(pipeSetting.ansiMode, pipeScreen.ansiMode.normal));
         } else {
             pip.settingsPut(pipeSetting.colors, userFormat.colorMode.normal);
+            pip.settingsPut(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
         }
         userExec exe = new userExec(pip, rdr);
         exe.privileged = privileged;
