@@ -5725,6 +5725,7 @@ public class userExec {
         reader.keyFlush();
         boolean color = pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal) != userFormat.colorMode.normal;
         pipeScreen.ansiMode ansi = pipe.settingsGet(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
+        boolean times = pipe.settingsGet(pipeSetting.times, false);
         for (;;) {
             if (pipe.isClosed() != 0) {
                 break;
@@ -5739,7 +5740,7 @@ public class userExec {
             if (color) {
                 pipeScreen.sendCol(pipe, ansi, pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite));
             }
-            if (pipe.settingsGet(pipeSetting.times, false)) {
+            if (times) {
                 pipe.linePut(logger.getTimestamp());
             }
             pipe.strPut(a);

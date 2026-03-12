@@ -863,7 +863,7 @@ public class pipeScreen {
      * @param fg foreground rgb
      * @param bg background rgb
      */
-    public static void sendTruCol(pipeSide pip, int fg, int bg) {
+    protected static void sendTruCol(pipeSide pip, int fg, int bg) {
         pip.strPut("\033[38;2;" + ((fg >>> 16) & 0xff) + ";" + ((fg >>> 8) & 0xff) + ";" + (fg & 0xff) + "m");
         pip.strPut("\033[48;2;" + ((bg >>> 16) & 0xff) + ";" + ((bg >>> 8) & 0xff) + ";" + (bg & 0xff) + "m");
     }
@@ -874,7 +874,7 @@ public class pipeScreen {
      * @param pip pipeline to use
      * @param col color to use
      */
-    public static void sendIdxCol(pipeSide pip, int col) {
+    protected static void sendIdxCol(pipeSide pip, int col) {
         int bg = (col >>> 16) & 0xf;
         int fg = col & 0xf;
         pip.strPut("\033[38;5;" + (fg & 0xff) + "m");
@@ -887,7 +887,7 @@ public class pipeScreen {
      * @param pip pipeline to use
      * @param col color to use
      */
-    public static void sendOldCol(pipeSide pip, int col) {
+    protected static void sendOldCol(pipeSide pip, int col) {
         int bg = (col >>> 16) & 0xf;
         int fg = col & 0xf;
         String s = "\033[0";
@@ -908,7 +908,7 @@ public class pipeScreen {
      * @param pip pipeline to use
      * @param col color to use
      */
-    public static void sendAnsCol(pipeSide pip, int col) {
+    protected static void sendAnsCol(pipeSide pip, int col) {
         int bg = (col >>> 16) & 0xf;
         int fg = col & 0xf;
         String s = "\033[0";
