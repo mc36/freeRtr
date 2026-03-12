@@ -7,7 +7,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
-import org.freertr.user.userRead;
+import org.freertr.user.userReader;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -496,7 +496,7 @@ public class cfgAlias implements Comparable<cfgAlias>, cfgGeneric {
                 stickyPar = "";
                 return;
             }
-            userRead rdr = new userRead(cmd.pipe, null);
+            userReader rdr = new userReader(cmd.pipe, null);
             userExec exe = new userExec(cmd.pipe, rdr);
             exe.privileged = true;
             doCommands(exe, cmd);

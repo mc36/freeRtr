@@ -87,7 +87,7 @@ public class userExec {
     /**
      * reader of user
      */
-    protected final userRead reader;
+    protected final userReader reader;
 
     /**
      * currently processed string
@@ -167,7 +167,7 @@ public class userExec {
      * @param pip pipeline to use as input
      * @param rdr reader to use as input
      */
-    public userExec(pipeSide pip, userRead rdr) {
+    public userExec(pipeSide pip, userReader rdr) {
         pipe = pip;
         reader = rdr;
     }
@@ -3555,7 +3555,7 @@ public class userExec {
             if (a.equals("editor")) {
                 List<String> c1 = cfgAll.getShRun(1);
                 if (cmd.size() > 0) {
-                    c1 = userFilter.getSection(c1, userRead.filter2reg(cmd.getRemaining()));
+                    c1 = userFilter.getSection(c1, userReader.filter2reg(cmd.getRemaining()));
                 }
                 List<String> c2 = new ArrayList<String>();
                 c2.addAll(c1);
@@ -3574,7 +3574,7 @@ public class userExec {
             if (a.equals("viewer")) {
                 List<String> c1 = cfgAll.getShRun(1);
                 if (cmd.size() > 0) {
-                    c1 = userFilter.getSection(c1, userRead.filter2reg(cmd.getRemaining()));
+                    c1 = userFilter.getSection(c1, userReader.filter2reg(cmd.getRemaining()));
                 }
                 userEditor v = new userEditor(new pipeScreen(pipe), c1, "running config", false);
                 v.doView();
@@ -3885,7 +3885,7 @@ public class userExec {
      * @param cmd command to execute
      * @param negated true if unset
      */
-    public static void doSetUnset(pipeSide pipe, userRead reader, cmds cmd, boolean negated) {
+    public static void doSetUnset(pipeSide pipe, userReader reader, cmds cmd, boolean negated) {
         userConfig cfg = new userConfig(pipe, reader);
         reader.setFilter(null);
         userHelp hlp;
@@ -5689,7 +5689,7 @@ public class userExec {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userRead rdr = new userRead(pip, null);
+        userReader rdr = new userReader(pip, null);
         pipeTerm.setTermWdt(pip, pipe.settingsGet(pipeSetting.width, 80));
         pipeTerm.setTermLen(pip, 0);
         pip.settingsPut(pipeSetting.tabMod, pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));

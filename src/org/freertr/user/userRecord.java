@@ -18,7 +18,7 @@ public class userRecord implements Runnable {
 
     private final String recn;
 
-    private userRead rdr;
+    private userReader rdr;
 
     private userExec exe;
 
@@ -52,7 +52,7 @@ public class userRecord implements Runnable {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        rdr = new userRead(pip, null);
+        rdr = new userReader(pip, null);
         pip.settingsCopy(orig.pipe);
         pip.setTime(0);
         exe = new userExec(pip, rdr);

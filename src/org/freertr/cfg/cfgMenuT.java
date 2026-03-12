@@ -8,7 +8,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
-import org.freertr.user.userRead;
+import org.freertr.user.userReader;
 import org.freertr.pipe.pipeScreen;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
@@ -162,7 +162,7 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
      * @param rdr reader
      * @param prv privileged
      */
-    public void doMenu(pipeSide pipe, userRead rdr, boolean prv) {
+    public void doMenu(pipeSide pipe, userReader rdr, boolean prv) {
         cfgMenuTdoer d = new cfgMenuTdoer(this, new pipeScreen(pipe), rdr, prv);
         d.doWork();
     }
@@ -213,7 +213,7 @@ class cfgMenuTdoer {
 
     private final pipeScreen console;
 
-    private final userRead reader;
+    private final userReader reader;
 
     private final boolean privileged;
 
@@ -227,7 +227,7 @@ class cfgMenuTdoer {
 
     private int max;
 
-    public cfgMenuTdoer(cfgMenuT prn, pipeScreen pip, userRead rdr, boolean prv) {
+    public cfgMenuTdoer(cfgMenuT prn, pipeScreen pip, userReader rdr, boolean prv) {
         lower = prn;
         console = pip;
         reader = rdr;

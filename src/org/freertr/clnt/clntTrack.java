@@ -30,7 +30,7 @@ import org.freertr.sec.secClient;
 import org.freertr.serv.servGeneric;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
-import org.freertr.user.userRead;
+import org.freertr.user.userReader;
 import org.freertr.user.userScript;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -1074,7 +1074,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         pipeLine pipe = new pipeLine(32768, false);
         pipeDiscard.discard(pipe.getSide());
         pipeSide pip = pipe.getSide();
-        userRead rdr = new userRead(pip, null);
+        userReader rdr = new userReader(pip, null);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = true;

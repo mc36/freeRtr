@@ -23,7 +23,7 @@ public class userGame {
 
     private final pipeScreen console;
 
-    private final userRead reader;
+    private final userReader reader;
 
     /**
      * screen tester
@@ -31,10 +31,10 @@ public class userGame {
      * @param conn connection to use
      * @param rdr reader to use
      */
-    public userGame(pipeScreen conn, userRead rdr) {
+    public userGame(pipeScreen conn, userReader rdr) {
         console = conn;
         if (rdr == null) {
-            rdr = new userRead(conn.pipe, null);
+            rdr = new userReader(conn.pipe, null);
         }
         reader = rdr;
     }

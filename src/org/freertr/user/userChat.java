@@ -18,7 +18,7 @@ public class userChat implements Runnable {
 
     private final pipeSide pipe;
 
-    private final userRead read;
+    private final userReader read;
 
     private boolean need2run;
 
@@ -28,7 +28,7 @@ public class userChat implements Runnable {
      * @param con pipeline to use
      * @param rdr reader to use
      */
-    public userChat(pipeSide con, userRead rdr) {
+    public userChat(pipeSide con, userReader rdr) {
         pipe = con;
         read = rdr;
     }

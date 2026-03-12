@@ -42,7 +42,7 @@ import org.freertr.pipe.pipeFonts;
 import org.freertr.user.userHelp;
 import org.freertr.user.userHwdet;
 import org.freertr.user.userNetconf;
-import org.freertr.user.userRead;
+import org.freertr.user.userReader;
 import org.freertr.pipe.pipeScreen;
 import org.freertr.user.userUpgrade;
 import org.freertr.util.bits;
@@ -1139,7 +1139,7 @@ public class cfgInit implements Runnable {
         pipeLine pl = new pipeLine(65536, false);
         pipeSide psS = pl.getSide();
         pipeSide psC = pl.getSide();
-        userRead rd = new userRead(psC, null);
+        userReader rd = new userReader(psC, null);
         psC.settingsPut(pipeSetting.height, 0);
         userConfig uc = new userConfig(psC, rd);
         psS.lineRx = pipeSide.modTyp.modeCRorLF;
@@ -1577,7 +1577,7 @@ public class cfgInit implements Runnable {
             List<String> swT = httpGet(cfgFileSw);
             doInit(null, swT, pip);
             logger.pipeStart(pip);
-            userRead rdr = new userRead(pip, null);
+            userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             if (det) {
                 pipeScreen.updtSiz(pip);
@@ -1603,7 +1603,7 @@ public class cfgInit implements Runnable {
             pipeSide pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            userRead rdr = new userRead(pip, null);
+            userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(pip, rdr);
             exe.privileged = true;
@@ -1642,7 +1642,7 @@ public class cfgInit implements Runnable {
             }
             pipeSide pip = pipeConsole.create();
             logger.pipeStart(pip);
-            userRead rdr = new userRead(pip, null);
+            userReader rdr = new userReader(pip, null);
             pip.settingsPut(pipeSetting.height, 0);
             if (det) {
                 pipeScreen.updtSiz(pip);

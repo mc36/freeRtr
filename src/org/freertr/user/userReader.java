@@ -25,7 +25,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class userRead implements Comparator<String> {
+public class userReader implements Comparator<String> {
 
     private pipeSide pipe; // pipe to use
 
@@ -263,7 +263,7 @@ public class userRead implements Comparator<String> {
      * @param pip pipeline to use as input
      * @param parent line to use
      */
-    public userRead(pipeSide pip, userLine parent) {
+    public userReader(pipeSide pip, userLine parent) {
         pipe = pip;
         clip = "";
         filterS = "";

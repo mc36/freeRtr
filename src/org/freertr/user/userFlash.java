@@ -62,7 +62,7 @@ public class userFlash {
     /**
      * reader of user
      */
-    public userRead rdr;
+    public userReader rdr;
 
     /**
      * get table art from a file

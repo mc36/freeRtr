@@ -13,7 +13,7 @@ import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
-import org.freertr.user.userRead;
+import org.freertr.user.userReader;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -607,7 +607,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userRead rdr = new userRead(pip, null);
+        userReader rdr = new userReader(pip, null);
         pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
         pip.settingsPut(pipeSetting.height, 0);
         userExec exe = new userExec(pip, rdr);

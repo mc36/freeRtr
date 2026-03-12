@@ -347,7 +347,7 @@ public class userLine {
      * @param exe exec handler
      * @param cfg config handler
      */
-    public static void doCommands(userRead rdr, userExec exe, userConfig cfg) {
+    public static void doCommands(userReader rdr, userExec exe, userConfig cfg) {
         for (;;) {
             exe.last = bits.getTime();
             userExec.cmdRes i = exe.doCommand();
@@ -504,7 +504,7 @@ public class userLine {
         if ((filter & 1) == 0) {
             return;
         }
-        List<String> res = userFilter.filterText(lst, userRead.linedefF);
+        List<String> res = userFilter.filterText(lst, userReader.linedefF);
         lst.clear();
         lst.addAll(res);
     }
@@ -1217,7 +1217,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         userLine.prevUserGlb = s;
         parent.prevUserLoc = s;
         pipe.setTime(parent.execTimeOut);
-        userRead rdr = new userRead(pipe, parent);
+        userReader rdr = new userReader(pipe, parent);
         pipe.settingsPut(pipeSetting.origin, remote);
         pipe.settingsPut(pipeSetting.authed, user);
         exe = new userExec(pipe, rdr);

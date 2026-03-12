@@ -28,7 +28,7 @@ public class userTmux {
 
     private pipeTerm scr[];
 
-    private userRead rdr[];
+    private userReader rdr[];
 
     private userExec exe[];
 
@@ -95,7 +95,7 @@ public class userTmux {
             return true;
         }
         scr = new pipeTerm[begX.length];
-        rdr = new userRead[begX.length];
+        rdr = new userReader[begX.length];
         exe = new userExec[begX.length];
         cfg = new userConfig[begX.length];
         for (int i = 0; i < begX.length; i++) {
@@ -107,7 +107,7 @@ public class userTmux {
             pip = pl.getSide();
             pip.lineTx = pipeSide.modTyp.modeCRLF;
             pip.lineRx = pipeSide.modTyp.modeCRorLF;
-            rdr[i] = new userRead(pip, null);
+            rdr[i] = new userReader(pip, null);
             pip.settingsCopy(cons.pipe);
             pipeTerm.setTermWdt(pip, sizX);
             pipeTerm.setTermLen(pip, sizY);

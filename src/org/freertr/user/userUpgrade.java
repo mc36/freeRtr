@@ -505,7 +505,7 @@ public class userUpgrade {
         }
         if (cfgAll.upgradeConfig) {
             cons.debugRes("saving configuration");
-            userRead rdr = new userRead(cmd.pipe, null);
+            userReader rdr = new userReader(cmd.pipe, null);
             cmd.pipe.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(cmd.pipe, rdr);
             exe.privileged = true;

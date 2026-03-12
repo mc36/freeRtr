@@ -106,7 +106,7 @@ public class userClear {
     /**
      * reader of user
      */
-    public userRead rdr;
+    public userReader rdr;
 
     private void doOneCrashFile(File fl) {
         String a = fl.getName();

@@ -15,7 +15,7 @@ import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
-import org.freertr.user.userRead;
+import org.freertr.user.userReader;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
 
@@ -148,7 +148,7 @@ class servRexecConn implements Runnable {
             conn.settingsPut(pipeSetting.authed, res);
             conn.lineTx = pipeSide.modTyp.modeCRLF;
             conn.lineRx = pipeSide.modTyp.modeCRorLF;
-            userRead rdr = new userRead(conn, null);
+            userReader rdr = new userReader(conn, null);
             conn.settingsPut(pipeSetting.tabMod, userFormat.tableMode.raw);
             conn.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(conn, rdr);

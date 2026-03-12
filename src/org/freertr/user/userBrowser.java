@@ -628,7 +628,7 @@ public class userBrowser {
         if (b.length() < 1) {
             return;
         }
-        b = userRead.filter2reg(b);
+        b = userReader.filter2reg(b);
         for (int i = beg; i < txt.size(); i++) {
             String res = getTxt(i);
             if (!res.matches(b)) {

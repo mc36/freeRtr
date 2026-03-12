@@ -175,7 +175,7 @@ public class userShow {
     /**
      * reader of user
      */
-    public userRead rdr;
+    public userReader rdr;
 
     /**
      * current help context
@@ -784,7 +784,7 @@ public class userShow {
                     return null;
                 }
                 List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
-                lst = userFilter.getSection(lst, userRead.section2filter(cur));
+                lst = userFilter.getSection(lst, userReader.section2filter(cur));
                 rdr.putStrArr(userFilter.getDiffs(cur, lst));
                 return null;
             }
@@ -799,7 +799,7 @@ public class userShow {
                     return null;
                 }
                 List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
-                lst = userFilter.getSection(lst, userRead.section2filter(cur));
+                lst = userFilter.getSection(lst, userReader.section2filter(cur));
                 rdr.putStrArr(userFilter.getDiffs(lst, cur));
                 return null;
             }
@@ -1019,7 +1019,7 @@ public class userShow {
             }
             List<String> lst = cfgAll.getShRun(1);
             if (a.length() > 0) {
-                lst = userFilter.getSection(lst, userRead.filter2reg(a + " " + cmd.getRemaining()));
+                lst = userFilter.getSection(lst, userReader.filter2reg(a + " " + cmd.getRemaining()));
             }
             rdr.putStrArr(lst);
             return null;
@@ -6378,7 +6378,7 @@ public class userShow {
                 return;
             }
             List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
-            lst = userFilter.getSection(lst, userRead.section2filter(cur));
+            lst = userFilter.getSection(lst, userReader.section2filter(cur));
             rdr.putStrArr(lst);
             return;
         }
@@ -6387,7 +6387,7 @@ public class userShow {
             return;
         }
         if (a.length() > 0) {
-            lst = userFilter.getSection(lst, userRead.filter2reg(a));
+            lst = userFilter.getSection(lst, userReader.filter2reg(a));
         }
         rdr.putStrArr(lst);
     }

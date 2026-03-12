@@ -11,7 +11,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.user.userLine;
-import org.freertr.user.userRead;
+import org.freertr.user.userReader;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 

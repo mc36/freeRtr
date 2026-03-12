@@ -114,7 +114,7 @@ public class userConfig {
 
     private pipeSide pipe; // pipe to use
 
-    private userRead reader; // reader of the user
+    private userReader reader; // reader of the user
 
     private cmds cmd; // currently processed string
 
@@ -126,7 +126,7 @@ public class userConfig {
      * @param pip pipeline to use as input
      * @param rdr reader to use as input
      */
-    public userConfig(pipeSide pip, userRead rdr) {
+    public userConfig(pipeSide pip, userReader rdr) {
         pipe = pip;
         reader = rdr;
         resetMode();
