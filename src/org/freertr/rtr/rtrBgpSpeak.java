@@ -1913,6 +1913,13 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 logger.info("prefix " + addrPrefix.ip2str(ntry.prefix) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " from " + neigh.peerAddr + " changed from lastasn " + bits.num2str(o) + " to " + bits.num2str(c));
             }
         }
+        if (neigh.dnlkChanges) {
+            int o = old.best.asPathDwlk();
+            int c = ntry.best.asPathDwlk();
+            if (o != c) {
+                logger.info("prefix " + addrPrefix.ip2str(ntry.prefix) + " " + tabRouteUtil.rd2string(ntry.rouDst) + " from " + neigh.peerAddr + " changed from downasn " + bits.num2str(o) + " to " + bits.num2str(c));
+            }
+        }
         if (neigh.begChanges) {
             int o = old.best.asPathBeg();
             int c = ntry.best.asPathBeg();

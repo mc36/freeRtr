@@ -1501,6 +1501,31 @@ public class tabRouteAttr<T extends addrType> {
     }
 
     /**
+     * downlink of as path
+     *
+     * @return downlink of as path, -1 if none
+     */
+    public int asPathDwlk() {
+        if (pathSeq == null) {
+            return -1;
+        }
+        int i = pathSeq.size() - 1;
+        if (i < 0) {
+            return -1;
+        }
+        int o = pathSeq.get(i);
+        for (; i > 0;) {
+            i--;
+            int p = pathSeq.get(i);
+            if (o == p) {
+                continue;
+            }
+            return p;
+        }
+        return -1;
+    }
+
+    /**
      * number of unknown attributes
      *
      * @return count
@@ -1526,22 +1551,6 @@ public class tabRouteAttr<T extends addrType> {
             return -1;
         }
         return pathSeq.get(i - 1);
-    }
-
-    /**
-     * last but one of as path
-     *
-     * @return last but one of as path, -1 if none
-     */
-    public int asPathLbo() {
-        if (pathSeq == null) {
-            return -1;
-        }
-        int i = pathSeq.size();
-        if (i < 2) {
-            return -1;
-        }
-        return pathSeq.get(i - 2);
     }
 
     /**

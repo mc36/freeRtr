@@ -209,6 +209,11 @@ public abstract class rtrBgpParam {
     public boolean endChanges;
 
     /**
+     * log downlink changes
+     */
+    public boolean dnlkChanges;
+
+    /**
      * log begin changes
      */
     public boolean begChanges;
@@ -1671,6 +1676,7 @@ public abstract class rtrBgpParam {
         lnkSta = src.lnkSta;
         attribSet = src.attribSet;
         endChanges = src.endChanges;
+        dnlkChanges = src.dnlkChanges;
         begChanges = src.begChanges;
         hopChanges = src.hopChanges;
         unknownsColl = src.unknownsColl;
@@ -2236,6 +2242,7 @@ public abstract class rtrBgpParam {
         l.add(null, false, 4, new int[]{-1}, "<num>", "allowed attributes");
         l.add(null, false, 3, new int[]{-1}, "unknowns-log", "log received unknown attributes");
         l.add(null, false, 3, new int[]{-1}, "log-end-changes", "log received origin asn changes");
+        l.add(null, false, 3, new int[]{-1}, "log-downlink-changes", "log received downlink asn changes");
         l.add(null, false, 3, new int[]{-1}, "log-begin-changes", "log received uplink asn changes");
         l.add(null, false, 3, new int[]{-1}, "log-nexthop-changes", "log received origin hop changes");
         l.add(null, false, 3, new int[]{4}, "log-length-changes", "log received aspath length changes");
@@ -2548,6 +2555,7 @@ public abstract class rtrBgpParam {
         cmds.cfgLine(l, unknownsIn == null, beg, nei + "unknowns-in", "" + unknownsIn);
         cmds.cfgLine(l, !unknownsLog, beg, nei + "unknowns-log", "");
         cmds.cfgLine(l, !endChanges, beg, nei + "log-end-changes", "");
+        cmds.cfgLine(l, !dnlkChanges, beg, nei + "log-downlink-changes", "");
         cmds.cfgLine(l, !begChanges, beg, nei + "log-begin-changes", "");
         cmds.cfgLine(l, !hopChanges, beg, nei + "log-nexthop-changes", "");
         cmds.cfgLine(l, lengthChanges == null, beg, nei + "log-length-changes", "" + lengthChanges);
@@ -3241,6 +3249,10 @@ public abstract class rtrBgpParam {
         }
         if (s.equals("log-end-changes")) {
             endChanges = !negated;
+            return false;
+        }
+        if (s.equals("log-downlink-changes")) {
+            dnlkChanges = !negated;
             return false;
         }
         if (s.equals("log-begin-changes")) {

@@ -3754,7 +3754,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (ntry == null) {
                 continue;
             }
-            int o = ntry.best.asPathLbo();
+            int o = ntry.best.asPathDwlk();
             if (o == -1) {
                 rtrBgpDump.updateAsOrigin(lst, localAs);
             } else {
