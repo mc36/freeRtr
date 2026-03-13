@@ -3070,6 +3070,14 @@ public class userExec {
         return hl;
     }
 
+    private String getHstNam() {
+        if (fakePrompt == null) {
+            return cfgAll.hostName;
+        } else {
+            return fakePrompt;
+        }
+    }
+
     /**
      * execute one command
      *
@@ -3078,7 +3086,7 @@ public class userExec {
     public cmdRes doCommand() {
         rollback = false;
         committed = false;
-        String s = fakePrompt == null ? cfgAll.hostName : fakePrompt;
+        String s = getHstNam();
         s += privileged ? "#" : ">";
         reader.setContext(getHelping(), s);
         s = reader.readLine(null);
@@ -3171,7 +3179,7 @@ public class userExec {
         }
         if (a.equals("telnet")) {
             doTelnet(0);
-            pipeScreen.sendTit(pipe, cfgAll.hostName);
+            pipeScreen.sendTit(pipe, getHstNam());
             return cmdRes.command;
         }
         if (a.equals("echo")) {
@@ -3659,7 +3667,7 @@ public class userExec {
                     }
                 }
                 if (url.filName.length() < 1) {
-                    url.filName = "" + cfgAll.hostName;
+                    url.filName = "" + getHstNam();
                     url.filExt = ".txt";
                 }
                 a = cfgInit.getRWpath() + "wrt" + bits.randomD() + userUpgrade.tmpExt;
@@ -4093,7 +4101,7 @@ public class userExec {
         mode = (mode * 6) + (counter * 3) + interval + 21;
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, cfgAll.hostName + "#bwmon", pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, getHstNam() + "#bwmon", pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             lst.clear();
             lst.addAll(cfgAll.getShIntTxt(mode));
@@ -4217,7 +4225,7 @@ public class userExec {
         int ttl = 0;
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, cfgAll.hostName + "#trace " + trg, pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, getHstNam() + "#trace " + trg, pipe.settingsGet(pipeSetting.times, false));
         int request[] = new int[256];
         int reply[] = new int[256];
         int timeCur[] = new int[256];
@@ -5430,7 +5438,7 @@ public class userExec {
             return;
         }
         if (a.equals("title")) {
-            pipeScreen.sendTit(pipe, cfgAll.hostName);
+            pipeScreen.sendTit(pipe, getHstNam());
             return;
         }
         if (a.equals("clipboard")) {
@@ -5719,7 +5727,7 @@ public class userExec {
         List<String> lst = new ArrayList<String>();
         packText pt = new packText(getShPipe(false));
         pt.recvAll(lst);
-        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, cfgAll.hostName + "#show " + cmd.getRemaining(), false);
+        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, getHstNam() + "#show " + cmd.getRemaining(), false);
         edtr.doView();
     }
 
@@ -5738,7 +5746,7 @@ public class userExec {
             if (color) {
                 pipeScreen.sendCol(pipe, ansi, pipe.settingsGet(pipeSetting.colPrompt, pipeScreen.colBrGreen));
             }
-            pipe.linePut(cfgAll.hostName + "#show " + cmd.getRemaining());
+            pipe.linePut(getHstNam() + "#show " + cmd.getRemaining());
             if (color) {
                 pipeScreen.sendCol(pipe, ansi, pipe.settingsGet(pipeSetting.colNormal, pipeScreen.colWhite));
             }
@@ -5757,7 +5765,7 @@ public class userExec {
     private void doDisplay() {
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, getHstNam() + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             lst.clear();
             packText pt = new packText(getShPipe(false));
@@ -5783,7 +5791,7 @@ public class userExec {
         List<String> r1 = new packText(getShPipe(false)).recvAll();
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
-        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, cfgAll.hostName + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
+        userEditor edtr = new userEditor(new pipeScreen(pipe), lst, getHstNam() + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             List<String> r2 = new packText(getShPipe(false)).recvAll();
             differ df = new differ();

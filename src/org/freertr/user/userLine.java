@@ -1110,7 +1110,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         }
         pipe.setTime(parent.promptTimeout);
         if (parent.title) {
-            pipeScreen.sendTit(pipe, cfgAll.hostName);
+            pipeScreen.sendTit(pipe, parent.fakePrompt == null ? cfgAll.hostName : parent.fakePrompt);
         }
         if (parent.detect) {
             pipeScreen.updtSiz(pipe);
