@@ -73,6 +73,7 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match unknowns all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match asend all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match asbeg all", null),
+        new userFilter("route-map .*", cmds.tabulator + "sequence .* match aslbo all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match asmid all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match asany all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match bandwidth all", null),
@@ -246,19 +247,22 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "<num>", "length");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "unknowns", "match number of unknown attributes");
-        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "count");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "asend", "match as path ending");
-        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "asn");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "asbeg", "match as path beginning");
-        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "asn");
+        l.add(null, false, 3, new int[]{-1}, "all", "any value");
+        l.add(null, false, 2, new int[]{3}, "aslbo", "match as path downlink");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "asn");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "asmid", "match as path middle");
-        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "asn");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "asany", "match as path anywhere");
-        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "asn");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "bandwidth", "match bandwidth");
         l.add(null, false, 3, new int[]{-1}, "<num>", "bandwidth");

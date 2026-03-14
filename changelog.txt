@@ -18115,3 +18115,8 @@ failed: wireguard over wireguard
 ---------------------------------- 2026-03-13 18:57:50 26.3.13
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
+---------------------------------- 2026-03-14 18:44:32 26.3.14
+qc pass: bgp routemap filtering with aslbo
+qc pass: bgp routemap filtering with aslbo with soft-reconfig
+qc pass: bgp routepolicy filtering with aslbo
+qc pass: bgp routepolicy filtering with aslbo with soft-reconfig

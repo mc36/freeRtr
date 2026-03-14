@@ -3738,6 +3738,10 @@ qc pass: bgp change in destination prefer
 qc pass: bgp change in destination prefer with soft-reconfig
 qc pass: bgp routepolicy filtering with destination prefer
 qc pass: bgp routepolicy filtering with destination prefer with soft-reconfig
+qc pass: bgp routemap filtering with aslbo
+qc pass: bgp routemap filtering with aslbo with soft-reconfig
+qc pass: bgp routepolicy filtering with aslbo
+qc pass: bgp routepolicy filtering with aslbo with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

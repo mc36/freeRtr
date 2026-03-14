@@ -77,6 +77,7 @@ public class tabRouteUtil {
         t.addLine("set aspath \"" + attr.asPathStr() + "\"");
         t.addLine("set asend \"" + attr.asPathEnd() + "\"");
         t.addLine("set asbeg \"" + attr.asPathBeg() + "\"");
+        t.addLine("set aslbo \"" + attr.asPathDwlk() + "\"");
         t.addLine("set pathlen \"" + attr.asPathLen() + "\"");
         t.addLine("set stdcomm \"" + stdComms2string(attr.stdComm) + "\"");
         t.addLine("set extcomm \"" + extComms2string(attr.extComm) + "\"");
