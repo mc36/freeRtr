@@ -1,5 +1,7 @@
 package org.freertr.user;
 
+import org.freertr.pipe.pipeGpsEmu;
+import org.freertr.pipe.pipeModEmu;
 import org.freertr.pipe.pipeScreen;
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -3158,15 +3160,15 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("modememu")) {
-            new userModem(pipe).doWork();
+            new pipeModEmu(pipe).doWork();
             return cmdRes.command;
         }
         if (a.equals("gpsemu")) {
-            new userGps(pipe).doWorkTx();
+            new pipeGpsEmu(pipe).doWorkTx();
             return cmdRes.command;
         }
         if (a.equals("gpstime")) {
-            new userGps(pipe).doWorkRx();
+            new pipeGpsEmu(pipe).doWorkRx();
             return cmdRes.command;
         }
         if (a.equals("lookup")) {

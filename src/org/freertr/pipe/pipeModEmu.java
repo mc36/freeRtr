@@ -1,11 +1,9 @@
-package org.freertr.user;
+package org.freertr.pipe;
 
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
 import org.freertr.clnt.clntProxy;
-import org.freertr.pipe.pipeConnect;
-import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servGeneric;
 import org.freertr.serv.servTelnet;
 import org.freertr.util.bits;
@@ -15,7 +13,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class userModem {
+public class pipeModEmu {
 
     private final pipeSide pipe;
 
@@ -30,7 +28,7 @@ public class userModem {
      *
      * @param console pipeline to use
      */
-    public userModem(pipeSide console) {
+    public pipeModEmu(pipeSide console) {
         pipe = console;
         doReset();
     }

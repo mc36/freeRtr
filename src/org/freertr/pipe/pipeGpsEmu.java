@@ -1,7 +1,6 @@
-package org.freertr.user;
+package org.freertr.pipe;
 
 import org.freertr.cfg.cfgAll;
-import org.freertr.pipe.pipeSide;
 import org.freertr.util.bits;
 
 /**
@@ -9,7 +8,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class userGps {
+public class pipeGpsEmu {
 
     private final pipeSide pipe;
 
@@ -18,7 +17,7 @@ public class userGps {
      *
      * @param pip pipeline to use
      */
-    public userGps(pipeSide pip) {
+    public pipeGpsEmu(pipeSide pip) {
         pipe = pip;
     }
 
