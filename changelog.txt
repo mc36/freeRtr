@@ -18120,3 +18120,6 @@ qc pass: bgp routemap filtering with aslbo
 qc pass: bgp routemap filtering with aslbo with soft-reconfig
 qc pass: bgp routepolicy filtering with aslbo
 qc pass: bgp routepolicy filtering with aslbo with soft-reconfig
+---------------------------------- 2026-03-16 11:18:58 26.3.16
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard
