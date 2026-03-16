@@ -18123,3 +18123,6 @@ qc pass: bgp routepolicy filtering with aslbo with soft-reconfig
 ---------------------------------- 2026-03-16 11:18:58 26.3.16
 no qc pass: wireguard over wireguard
 failed: wireguard over wireguard
+---------------------------------- 2026-03-16 12:58:53 26.3.16
+no failed: wireguard over wireguard
+qc pass: wireguard over wireguard
