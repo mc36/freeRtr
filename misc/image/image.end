@@ -27,6 +27,7 @@ del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
 mkdir %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
 exec mv %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/
 
+exec mv %tmp%/usr/lib/modules/%find%/kernel/fs/isofs %tmp%/tmp/
 exec mv %tmp%/usr/lib/modules/%find%/kernel/fs/ext4 %tmp%/tmp/
 exec mv %tmp%/usr/lib/modules/%find%/kernel/fs/fat %tmp%/tmp/
 del-alw %tmp%/usr/lib/modules/%find%/kernel/fs
