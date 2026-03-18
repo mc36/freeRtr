@@ -2,7 +2,7 @@ arch sparc64
 unam sparc64
 qemu sparc64
 ctrg sparc64
-carc big-endian
+carc big
 kern sparc64
 grub ieee1275-bin
 boot sparc64-ieee1275-cdcore

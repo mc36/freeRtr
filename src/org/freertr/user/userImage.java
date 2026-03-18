@@ -61,7 +61,7 @@ public class userImage {
 
     private String ctrg = "x86_64";
 
-    private String carc = "little-endian";
+    private String carc = "little";
 
     private String grub = "efi-amd64-bin";
 

@@ -2,7 +2,7 @@ arch s390x
 unam s390x
 qemu s390x
 ctrg s390x
-carc big-endian
+carc big
 kern s390x
 grub ieee1275-bin
 boot s390x-efi

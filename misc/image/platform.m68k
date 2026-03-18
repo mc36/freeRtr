@@ -3,7 +3,7 @@ unam m68k
 qemu m68k
 ctrg m68k
 comp gcc
-carc big-endian
+carc big
 kern m68k
 grub ieee1275-bin
 boot m68k-ieee1275

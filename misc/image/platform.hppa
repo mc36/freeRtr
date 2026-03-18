@@ -3,7 +3,7 @@ unam parisc
 qemu hppa
 ctrg hppa
 comp gcc
-carc big-endian
+carc big
 kern parisc64
 grub ieee1275-bin
 boot hppa-ieee1275
