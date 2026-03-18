@@ -8,28 +8,10 @@ select-dep no
 select-dis java-common.*                 #commons
 select-dis default-jdk-.*                #def jvm
 select-dis default-jre-.*                #def jvm
-select-dis openjdk-6-.*                  #old jvm
-select-dis openjdk-7-.*                  #old jvm
-select-dis openjdk-8-.*                  #old jvm
-select-dis openjdk-9-.*                  #old jvm
-select-dis openjdk-10-.*                 #old jvm
-select-dis openjdk-11-.*                 #old jvm
-select-dis openjdk-12-.*                 #old jvm
-select-dis openjdk-13-.*                 #old jvm
-select-dis openjdk-14-.*                 #old jvm
-select-dis openjdk-15-.*                 #old jvm
-select-dis openjdk-16-.*                 #old jvm
-select-dis openjdk-17-.*                 #old jvm
-select-dis openjdk-18-.*                 #old jvm
-select-dis openjdk-19-.*                 #old jvm
-select-dis openjdk-20-.*                 #old jvm
-select-dis openjdk-21-.*                 #old jvm
-select-dis openjdk-22-.*                 #old jvm
-select-dis openjdk-23-.*                 #old jvm
-select-dis openjdk-24-.*                 #old jvm
-select-dis openjdk-25-.*                 #old jvm
-select-dis openjdk-26-.*                 #old jvm
-select-any openjdk-27-jdk-headless       #new jdk
+find-clear
+find-package 1-1111 openjdk-[0-9][0-9]-jdk-headless
+find-result
+select-one %find%                        #new jdk
 select-dep yes
 
 exec cp ../misc/image/init.jvm %tmp%/init.run
@@ -42,7 +24,7 @@ package-xtra
 package-inst
 
 find-clear
-find-file 1-1111 %tmp%/usr/lib/jvm/ java-[0-9]+-openjdk-%arch%
+find-file 1-1111 %tmp%/usr/lib/jvm/ java-[0-9][0-9]-openjdk-%arch%
 find-result
 find-remove -%arch%
 find-result

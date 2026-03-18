@@ -543,14 +543,30 @@ public class userImage {
                 continue;
             }
             if (a.equals("find-replace")) {
-                i = s.indexOf(" ");
-                a = s.substring(0, i);
-                s = s.substring(i + 1, s.length());
+                a = cmd.word();
+                s = cmd.getRemaining();
                 found = found.replaceAll(a, s);
                 continue;
             }
             if (a.equals("find-remove")) {
                 found = found.replaceAll(s, "");
+                continue;
+            }
+            if (a.equals("find-package")) {
+                tabIntMatcher mod = new tabIntMatcher();
+                mod.fromString(cmd.word());
+                s = cmd.getRemaining();
+                for (i = 0; i < allPkgs.size(); i++) {
+                    userImagePkg cur = allPkgs.get(i);
+                    if (!cur.name.matches(s)) {
+                        continue;
+                    }
+                    int p = cur.name.compareTo(found);
+                    if (!mod.matches(p)) {
+                        continue;
+                    }
+                    found = cur.name;
+                }
                 continue;
             }
             if (a.equals("find-file")) {
@@ -573,7 +589,6 @@ public class userImage {
                         continue;
                     }
                     found = a;
-                    break;
                 }
                 continue;
             }
@@ -600,17 +615,15 @@ public class userImage {
                 continue;
             }
             if (a.equals("file-hash")) {
-                i = s.indexOf(" ");
-                a = s.substring(0, i);
-                s = s.substring(i + 1, s.length());
+                a = cmd.word();
+                s = cmd.getRemaining();
                 i = secTransform.str2hash(a);
                 found = userFlash.calcFileHash(secTransform.getHash(i), s);
                 continue;
             }
             if (a.equals("file-line")) {
-                i = s.indexOf(" ");
-                a = s.substring(0, i);
-                s = s.substring(i + 1, s.length());
+                a = cmd.word();
+                s = cmd.getRemaining();
                 bits.buf2txt(false, bits.str2lst(s), a);
                 continue;
             }
