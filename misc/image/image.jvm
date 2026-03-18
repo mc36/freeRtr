@@ -41,7 +41,8 @@ package-down
 package-xtra
 package-inst
 
-find-file %tmp%/usr/lib/jvm/ java-[0-9]+-openjdk-%arch%
+find-clear
+find-file 1-1111 %tmp%/usr/lib/jvm/ java-[0-9]+-openjdk-%arch%
 find-result
 find-remove -%arch%
 find-result

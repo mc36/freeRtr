@@ -14,7 +14,7 @@ exec ln -s ../libexec %tmp%/usr/libexec
 
 exec cpio --quiet -H newc -i -D %tmp%/tmp/ < %img%.cpio
 find-clear
-find-file %tmp%/tmp/usr/lib/ .*-linux-gnu.*
+find-file 1-1111 %tmp%/tmp/usr/lib/ .*-linux-gnu.*
 find-result
 del-alw %tmp%/tmp/usr/lib/%find%/systemd
 exec mv %tmp%/tmp/usr/lib/%find% %tmp%/%boot%/lib

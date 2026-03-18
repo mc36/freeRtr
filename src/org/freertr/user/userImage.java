@@ -11,6 +11,7 @@ import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
 import org.freertr.sec.secTransform;
 import org.freertr.tab.tabGen;
+import org.freertr.tab.tabIntMatcher;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 
@@ -553,9 +554,10 @@ public class userImage {
                 continue;
             }
             if (a.equals("find-file")) {
-                i = s.indexOf(" ");
-                a = s.substring(0, i);
-                s = s.substring(i + 1, s.length());
+                tabIntMatcher mod = new tabIntMatcher();
+                mod.fromString(cmd.word());
+                a = cmd.word();
+                s = cmd.getRemaining();
                 File[] fl = userFlash.dirList(a);
                 if (fl == null) {
                     cmd.error("error getting list");
@@ -564,6 +566,10 @@ public class userImage {
                 for (i = 0; i < fl.length; i++) {
                     a = fl[i].getName();
                     if (!a.matches(s)) {
+                        continue;
+                    }
+                    int p = a.compareTo(found);
+                    if (!mod.matches(p)) {
                         continue;
                     }
                     found = a;
