@@ -409,19 +409,23 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 }
                 break;
             case 3:
-                ipRtr rtr = fwdCore.routerFind(lookTyp, lookNum);
+                cfgRtr rtr = cfgAll.rtrFind(lookTyp, lookNum, false);
                 if (rtr == null) {
+                    return;
+                }
+                ipRtr ipr = rtr.getRouter();
+                if (ipr == null) {
                     return;
                 }
                 switch (afi) {
                     case 1:
-                        rcvd = rtr.routerComputedU.find(sent);
+                        rcvd = ipr.routerComputedU.find(sent);
                         break;
                     case 2:
-                        rcvd = rtr.routerComputedM.find(sent);
+                        rcvd = ipr.routerComputedM.find(sent);
                         break;
                     case 3:
-                        rcvd = rtr.routerComputedF.find(sent);
+                        rcvd = ipr.routerComputedF.find(sent);
                         break;
                 }
                 break;

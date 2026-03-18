@@ -3462,6 +3462,26 @@ public class userShow {
             rdr.putStrTab(r.logger.outgoingInterfaces());
             return;
         }
+        if (a.equals("lookup")) {
+            tabRouteAttr.routeType typ = cfgRtr.name2num(cmd.word());
+            if (typ == null) {
+                cmd.error("invalid routing protocol");
+                return;
+            }
+            int num = bits.str2num(cmd.word());
+            cfgRtr rtr = cfgAll.rtrFind(typ, num, false);
+            if (rtr == null) {
+                cmd.error("no such router");
+                return;
+            }
+            ipRtr ipr = rtr.getRouter();
+            if (ipr == null) {
+                cmd.error("not initialized");
+                return;
+            }
+            rdr.putStrTab(r.logger.lookupPrefixPaths(ipr));
+            return;
+        }
     }
 
     private void doShowIpXlsrp(tabRouteAttr.routeType afi) {

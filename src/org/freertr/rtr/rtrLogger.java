@@ -4,6 +4,8 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
+import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgRtr;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
@@ -71,6 +73,16 @@ public class rtrLogger extends ipRtr {
      * address family
      */
     protected int afi;
+
+    /**
+     * type of router
+     */
+    protected tabRouteAttr.routeType lookTyp;
+
+    /**
+     * number of router
+     */
+    protected int lookNum;
 
     /**
      * create logger process
@@ -200,6 +212,27 @@ public class rtrLogger extends ipRtr {
     }
 
     /**
+     * lookup prefixes paths
+     *
+     * @param tab routing table
+     * @param rtr router to use
+     * @return prefix length report
+     */
+    public static userFormat lookupPrefixPaths(tabRoute<addrIP> tab, ipRtr rtr) {
+        userFormat lst = new userFormat("|", "prefix|path|name|info");
+        for (int o = 0; o < tab.size(); o++) {
+            tabRouteEntry<addrIP> ntry = tab.get(o);
+            tabRouteEntry<addrIP> rcvd = rtr.routerComputedU.route(ntry.prefix.network);
+            if (rcvd == null) {
+                lst.add(addrPrefix.ip2str(ntry.prefix) + "|null|null|null");
+                continue;
+            }
+            lst.add(addrPrefix.ip2str(ntry.prefix) + "|" + ntry.best.asPathStr() + "|" + ntry.best.asNameStr() + "|" + ntry.best.asInfoStr());
+        }
+        return lst;
+    }
+
+    /**
      * count prefix lengths
      *
      * @return prefix length report
@@ -215,6 +248,16 @@ public class rtrLogger extends ipRtr {
      */
     public userFormat outgoingInterfaces() {
         return outgointInterfaces(oldU);
+    }
+
+    /**
+     * lookup prefixes paths
+     *
+     * @param rtr router to use
+     * @return prefix length report
+     */
+    public userFormat lookupPrefixPaths(ipRtr rtr) {
+        return lookupPrefixPaths(oldU, rtr);
     }
 
     /**
@@ -342,9 +385,28 @@ public class rtrLogger extends ipRtr {
         }
     }
 
+    private String lookupAddr(addrIP adr) {
+        if (lookTyp == null) {
+            return "";
+        }
+        cfgRtr rtr = cfgAll.rtrFind(lookTyp, lookNum, false);
+        if (rtr == null) {
+            return "";
+        }
+        ipRtr ipr = rtr.getRouter();
+        if (ipr == null) {
+            return "";
+        }
+        tabRouteEntry<addrIP> rcvd = ipr.routerComputedU.route(adr);
+        if (rcvd == null) {
+            return "";
+        }
+        return ", path=" + rcvd.best.asPathStr();
+    }
+
     private void doChgd(int afi, tabRouteEntry<addrIP> ntry, String act) {
         if (logging) {
-            logger.info(act + " " + afi2str(afi) + " " + prf2str(afi, ntry.prefix));
+            logger.info(act + " " + afi2str(afi) + " " + prf2str(afi, ntry.prefix) + lookupAddr(ntry.prefix.network));
         }
         if (flaps == null) {
             return;
@@ -427,6 +489,9 @@ public class rtrLogger extends ipRtr {
     public void routerGetHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "flapstat", "count flap statistics");
         l.add(null, false, 1, new int[]{-1}, "logging", "log events");
+        l.add(null, false, 1, new int[]{2}, "lookup", "set lookup");
+        cfgRtr.getRouterList(l, 0, " to use");
+        l.add(null, false, 3, new int[]{-1}, "<num:rtr>", "process id");
         l.add(null, false, 1, new int[]{2}, "afi", "set address family");
         l.add(null, false, 2, new int[]{-1}, "unicast", "select unicast");
         l.add(null, false, 2, new int[]{-1}, "multicast", "select multicast");
@@ -442,6 +507,9 @@ public class rtrLogger extends ipRtr {
      */
     public void routerGetConfig(List<String> l, String beg, int filter) {
         l.add(beg + "afi " + afi2str(afi));
+        if (lookTyp != null) {
+            l.add(beg + "lookup " + cfgRtr.num2name(lookTyp) + " " + lookNum);
+        }
         cmds.cfgLine(l, flaps == null, beg, "flapstat", "");
         cmds.cfgLine(l, !logging, beg, "logging", "");
     }
@@ -469,6 +537,20 @@ public class rtrLogger extends ipRtr {
         }
         if (s.equals("logging")) {
             logging = !negated;
+            return false;
+        }
+        if (s.equals("lookup")) {
+            if (negated) {
+                lookTyp = null;
+                lookNum = 0;
+                return false;
+            }
+            lookTyp = cfgRtr.name2num(cmd.word());
+            if (lookTyp == null) {
+                cmd.error("invalid routing protocol");
+                return true;
+            }
+            lookNum = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("flapstat")) {

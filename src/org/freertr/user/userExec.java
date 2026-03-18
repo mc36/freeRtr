@@ -1262,6 +1262,9 @@ public class userExec {
         hl.add(null, false, 4, new int[]{5}, "<num:rtr>", "process id");
         hl.add(null, false, 5, new int[]{-1}, "prefix-lengths", "list of prefix lengths");
         hl.add(null, false, 5, new int[]{-1}, "interfaces", "list of outgoing interface");
+        hl.add(null, false, 5, new int[]{6}, "lookup", "list of paths of prefixes");
+        cfgRtr.getRouterList(hl, 4, " to use");
+        hl.add(null, false, 7, new int[]{-1}, "<num:rtr>", "process id");
         hl.add(null, false, 5, new int[]{6, -1}, "database", "list of database");
         hl.add(null, false, 6, new int[]{-1}, "[addr]", "entry to view");
         hl.add(null, false, 5, new int[]{6, -1}, "flapstat", "prefix flap statistics");
