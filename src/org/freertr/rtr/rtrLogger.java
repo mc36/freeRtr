@@ -227,7 +227,7 @@ public class rtrLogger extends ipRtr {
                 lst.add(addrPrefix.ip2str(ntry.prefix) + "|null|null|null");
                 continue;
             }
-            lst.add(addrPrefix.ip2str(ntry.prefix) + "|" + ntry.best.asPathStr() + "|" + ntry.best.asNameStr() + "|" + ntry.best.asInfoStr());
+            lst.add(addrPrefix.ip2str(ntry.prefix) + "|" + rcvd.best.asPathStr() + "|" + rcvd.best.asNameStr() + "|" + rcvd.best.asInfoStr());
         }
         return lst;
     }
@@ -322,6 +322,9 @@ public class rtrLogger extends ipRtr {
      * clear flap stats
      */
     public void clearFlapstat() {
+        if (flaps == null) {
+            return;
+        }
         flaps = new tabGen<rtrBgpDamp>();
     }
 
