@@ -2915,6 +2915,10 @@ public class userShow {
                 doShowOutIfaces(4);
                 return null;
             }
+            if (a.equals("lookup")) {
+                doShowReLookup(4);
+                return null;
+            }
             if (a.equals("prefix-lengths")) {
                 doShowPrefLens(4);
                 return null;
@@ -3298,6 +3302,10 @@ public class userShow {
             }
             if (a.equals("out-interfaces")) {
                 doShowOutIfaces(6);
+                return null;
+            }
+            if (a.equals("lookup")) {
+                doShowReLookup(6);
                 return null;
             }
             if (a.equals("prefix-lengths")) {
@@ -5909,6 +5917,30 @@ public class userShow {
             return;
         }
         rdr.putStrTab(rtrLogger.outgointInterfaces(fwd.actualU));
+    }
+
+    private void doShowReLookup(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        tabRouteAttr.routeType typ = cfgRtr.name2num(cmd.word());
+        if (typ == null) {
+            cmd.error("invalid routing protocol");
+            return;
+        }
+        int num = bits.str2num(cmd.word());
+        cfgRtr rtr = cfgAll.rtrFind(typ, num, false);
+        if (rtr == null) {
+            cmd.error("no such router");
+            return;
+        }
+        ipRtr ipr = rtr.getRouter();
+        if (ipr == null) {
+            cmd.error("not initialized");
+            return;
+        }
+        rdr.putStrTab(rtrLogger.lookupPrefixPaths(fwd.actualU, ipr));
     }
 
     private void doShowRouteSR(int ver) {

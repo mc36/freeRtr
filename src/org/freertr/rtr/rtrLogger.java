@@ -219,7 +219,7 @@ public class rtrLogger extends ipRtr {
      * @return prefix length report
      */
     public static userFormat lookupPrefixPaths(tabRoute<addrIP> tab, ipRtr rtr) {
-        userFormat lst = new userFormat("|", "prefix|path|name|info");
+        userFormat lst = new userFormat("|", "prefix|match|path|info");
         for (int o = 0; o < tab.size(); o++) {
             tabRouteEntry<addrIP> ntry = tab.get(o);
             tabRouteEntry<addrIP> rcvd = rtr.routerComputedU.route(ntry.prefix.network);
@@ -227,7 +227,7 @@ public class rtrLogger extends ipRtr {
                 lst.add(addrPrefix.ip2str(ntry.prefix) + "|null|null|null");
                 continue;
             }
-            lst.add(addrPrefix.ip2str(ntry.prefix) + "|" + rcvd.best.asPathStr() + "|" + rcvd.best.asNameStr() + "|" + rcvd.best.asInfoStr());
+            lst.add(addrPrefix.ip2str(ntry.prefix) + "|" + addrPrefix.ip2str(rcvd.prefix) + "|" + rcvd.best.asMixedStr() + "|" + rcvd.best.asInfoStr());
         }
         return lst;
     }
