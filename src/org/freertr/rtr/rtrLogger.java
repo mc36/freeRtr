@@ -224,7 +224,7 @@ public class rtrLogger extends ipRtr {
             tabRouteEntry<addrIP> ntry = tab.get(o);
             tabRouteEntry<addrIP> rcvd = rtr.routerComputedU.route(ntry.prefix.network);
             if (rcvd == null) {
-                lst.add(addrPrefix.ip2str(ntry.prefix) + "|null|null|null");
+                lst.add(addrPrefix.ip2str(ntry.prefix));
                 continue;
             }
             lst.add(addrPrefix.ip2str(ntry.prefix) + "|" + addrPrefix.ip2str(rcvd.prefix) + "|" + rcvd.best.asMixedStr() + "|" + rcvd.best.asInfoStr());
