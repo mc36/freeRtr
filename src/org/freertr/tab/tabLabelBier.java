@@ -120,7 +120,7 @@ public class tabLabelBier {
      * @return bsl
      */
     public static int bsl2num(int i) {
-        return 1 << (i + 5);
+        return bits.bitVals[i + 5];
     }
 
     /**

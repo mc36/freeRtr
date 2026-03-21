@@ -236,7 +236,7 @@ class pipeSyncRx implements Runnable {
             if (resOne > 5) {
                 return;
             }
-            resVal |= 1 << resLen;
+            resVal |= bits.bitVals[resLen];
             resLen++;
             resOne++;
             return;
@@ -260,7 +260,7 @@ class pipeSyncRx implements Runnable {
             }
             resLen = 0;
         } else {
-            resVal &= (1 << resLen) - 1;
+            resVal &= bits.bitVals[resLen] - 1;
         }
         siz -= 2;
         if (siz < 1) {

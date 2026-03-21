@@ -2548,9 +2548,9 @@ class userGameChess {
     }
 
     private void doMov(int m) {
-        int fy = (m >> 24) & 7;
-        int fx = (m >> 16) & 7;
-        int ty = (m >> 8) & 7;
+        int fy = (m >>> 24) & 7;
+        int fx = (m >>> 16) & 7;
+        int ty = (m >>> 8) & 7;
         int tx = m & 7;
         tab[(ty * 8) + tx] = tab[(fy * 8) + fx];
         tab[(fy * 8) + fx] = 0;

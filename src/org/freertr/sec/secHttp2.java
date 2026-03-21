@@ -713,7 +713,7 @@ public class secHttp2 {
                     if ((pck.getByte(pos >>> 3) & bits.bitVals[7 - (pos & 7)]) == 0) {
                         continue;
                     }
-                    val |= 1 << (huf.siz - siz - 1);
+                    val |= bits.bitVals[huf.siz - siz - 1];
                 }
                 if (end > 0) {
                     break;

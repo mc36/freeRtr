@@ -72,7 +72,7 @@ public class cryHashCrc32 extends cryHashGeneric {
         int r = 0;
         for (int i = 0; i < 32; i++) {
             if ((b & 1) != 0) {
-                r |= 1 << (31 - i);
+                r |= bits.bitVals[31 - i];
             }
             b >>>= 1;
         }

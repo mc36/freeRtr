@@ -400,7 +400,7 @@ public class clntMpolka implements Runnable, ifcDn {
                     continue;
                 }
                 p++;
-                neis |= 1 << p;
+                neis |= bits.bitVals[p];
             }
             if (neis == 0) {
                 if (debugger.clntMpolkaTraf) {

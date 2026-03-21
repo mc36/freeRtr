@@ -155,9 +155,9 @@ public class prtWatch implements Runnable {
             logger.debug("turn port=" + port + " stat=" + stat);
         }
         if (stat) {
-            portStates |= 1 << port;
+            portStates |= bits.bitVals[port];
         } else {
-            portStates &= 0xfff - (1 << port);
+            portStates &= 0xfff - bits.bitVals[port];
         }
         sendMagic(0x40 + portStates);
     }
