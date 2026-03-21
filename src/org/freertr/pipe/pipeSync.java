@@ -84,7 +84,7 @@ class pipeSyncTx implements Runnable {
             resLen++;
             return;
         }
-        resVal |= 1 << resLen;
+        resVal |= bits.bitVals[resLen];
         resLen++;
     }
 
