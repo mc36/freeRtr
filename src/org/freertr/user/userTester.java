@@ -15,6 +15,7 @@ import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servHttp;
 import org.freertr.spf.spfCalc;
+import org.freertr.spf.spfGraph;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIntMatcher;
 import org.freertr.util.bits;
@@ -1704,7 +1705,6 @@ class userTesterOne {
             l.add("```");
         }
         bits.buf2txt(true, l, path + fileName + ".md");
-        l = new ArrayList<String>();
         for (int i = 0; i < procs.size(); i++) {
             procs.get(i).readConns();
         }
@@ -1735,23 +1735,18 @@ class userTesterOne {
                 }
             }
         }
-        l.add(spfCalc.graphBeg1);
-        l.add(spfCalc.graphBeg2);
-        l.add(spfCalc.graphBeg3);
+        spfGraph g = new spfGraph(true, null, false);
         for (int o = 0; o < procs.size(); o++) {
             userTesterPrc p = procs.get(o);
-            l.add("//" + p.name);
             for (int i = 0; i < p.conns.size(); i++) {
                 userTesterCon c = p.conns.get(i);
                 if (c.perP == null) {
                     continue;
                 }
-                l.add("  " + p.name + " -- " + c.perP.name + " [weight=10] [taillabel=" + c.ifc + "] [headlabel=" + c.perC.ifc + "]");
+                g.addLink(p.name, c.perP.name, 10, c.ifc, c.perC.ifc);
             }
         }
-        l.add(spfCalc.graphEnd1);
-        l.add(spfCalc.graphEnd2);
-        bits.buf2txt(true, l, path + fileName + ".dot");
+        bits.buf2txt(true, g.getRes(), path + fileName + ".dot");
     }
 
     /**

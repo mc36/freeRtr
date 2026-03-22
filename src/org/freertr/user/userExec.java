@@ -460,7 +460,8 @@ public class userExec {
         hl.add(null, false, 4, new int[]{5}, "<num:rtr>", "process id");
         hl.add(null, false, 5, new int[]{-1}, "status", "status of the process");
         hl.add(null, false, 5, new int[]{-1}, "summary", "list of neighbors");
-        hl.add(null, false, 5, new int[]{-1}, "aspagraph", "graph of neighbors");
+        hl.add(null, false, 5, new int[]{6, -1}, "aspagraph", "graph of neighbors");
+        hl.add(null, false, 6, new int[]{6, -1}, "cli", "cli commands");
         hl.add(null, false, 5, new int[]{6}, "prefixes4", "list ipv4 prefixes of asn");
         hl.add(null, false, 6, new int[]{-1}, "<num>", "as number");
         hl.add(null, false, 5, new int[]{6}, "prefixes6", "list ipv6 prefixes of asn");
@@ -616,7 +617,8 @@ public class userExec {
         hl.add(null, false, 5, new int[]{6}, "graph", "graph about last spf");
         hl.add(null, false, 6, new int[]{7, -1}, "<dir>", "north or south spf");
         hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
-        hl.add(null, false, 7, new int[]{7, -1}, "svg", "svg commands");
+        hl.add(null, false, 7, new int[]{8}, "svg", "svg path");
+        hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
         hl.add(null, false, 7, new int[]{7, -1}, "mets", "connected metrics");
@@ -726,7 +728,8 @@ public class userExec {
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "text to remove");
         hl.add(null, false, 5, new int[]{6, -1}, "graph", "graph about last spf");
         hl.add(null, false, 6, new int[]{6, -1}, "cli", "cli commands");
-        hl.add(null, false, 6, new int[]{6, -1}, "svg", "svg commands");
+        hl.add(null, false, 6, new int[]{7}, "svg", "svg path");
+        hl.add(null, false, 7, new int[]{6, -1}, "<str>", "file name");
         hl.add(null, false, 6, new int[]{6, -1}, "nets", "connected networks");
         hl.add(null, false, 6, new int[]{6, -1}, "ints", "connected interfaces");
         hl.add(null, false, 6, new int[]{6, -1}, "mets", "connected metrics");
@@ -821,7 +824,8 @@ public class userExec {
         hl.add(null, false, 5, new int[]{6}, "graph", "graph about last spf");
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "area number");
         hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
-        hl.add(null, false, 7, new int[]{7, -1}, "svg", "svg commands");
+        hl.add(null, false, 7, new int[]{8}, "svg", "svg path");
+        hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
         hl.add(null, false, 7, new int[]{7, -1}, "mets", "connected metrics");
@@ -906,7 +910,8 @@ public class userExec {
         hl.add(null, false, 5, new int[]{6}, "graph", "graph about last spf");
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "level number");
         hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
-        hl.add(null, false, 7, new int[]{7, -1}, "svg", "svg commands");
+        hl.add(null, false, 7, new int[]{8}, "svg", "svg path");
+        hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
         hl.add(null, false, 7, new int[]{7, -1}, "mets", "connected metrics");
@@ -992,7 +997,8 @@ public class userExec {
         hl.add(null, false, 9, new int[]{8, -1}, "<str>", "text to remove");
         hl.add(null, false, 6, new int[]{7, -1}, "graph", "graph about last spf");
         hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
-        hl.add(null, false, 7, new int[]{7, -1}, "svg", "svg commands");
+        hl.add(null, false, 7, new int[]{8}, "svg", "svg path");
+        hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
         hl.add(null, false, 7, new int[]{7, -1}, "mets", "connected metrics");
@@ -1155,7 +1161,8 @@ public class userExec {
         hl.add(null, false, 6, new int[]{7, -1}, "asmixed", "numbers and names in the paths");
         hl.add(null, false, 7, new int[]{8, -1}, "<addr>", "prefix to view");
         hl.add(null, false, 8, new int[]{-1}, "[rd]", "route distinguisher");
-        hl.add(null, false, 6, new int[]{-1}, "asgraph", "connectivity graph of ases");
+        hl.add(null, false, 6, new int[]{7, -1}, "asgraph", "connectivity graph of ases");
+        hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
         hl.add(null, false, 6, new int[]{7, -1}, "astree", "connectivity tree of ases");
         hl.add(null, false, 7, new int[]{-1}, "<num>", "asn to start with");
         hl.add(null, false, 6, new int[]{-1}, "asorigin", "originating ases");

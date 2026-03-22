@@ -1,6 +1,5 @@
 package org.freertr.tab;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.freertr.addr.addrIP;
@@ -8,7 +7,7 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.clnt.clntWhois;
-import org.freertr.spf.spfCalc;
+import org.freertr.spf.spfGraph;
 import org.freertr.user.userFormat;
 
 /**
@@ -608,23 +607,19 @@ public class tabRpkiUtil {
      * aspa path graph
      *
      * @param tab table to convert
+     * @param cli cli knobs
      * @return text
      */
-    public final static List<String> getAspaGraph(tabGen<tabRpkiAspa> tab) {
-        List<String> res = new ArrayList<String>();
-        res.add(spfCalc.graphBeg1);
-        res.add(spfCalc.graphBeg2);
-        res.add(spfCalc.graphBeg3);
+    public final static List<String> getAspaGraph(tabGen<tabRpkiAspa> tab, boolean cli) {
+        spfGraph res = new spfGraph(cli, null, false);
         for (int o = 0; o < tab.size(); o++) {
             tabRpkiAspa ntry = tab.get(o);
             String a = clntWhois.asn2mixed(ntry.cust, true);
             for (int i = 0; i < ntry.provs.size(); i++) {
-                res.add("\"" + a + "\" -- \"" + clntWhois.asn2mixed(ntry.provs.get(i), true) + "\"");
+                res.addLink(a, clntWhois.asn2mixed(ntry.provs.get(i), true), 10, null, null);
             }
         }
-        res.add(spfCalc.graphEnd1);
-        res.add(spfCalc.graphEnd2);
-        return res;
+        return res.getRes();
     }
 
     /**

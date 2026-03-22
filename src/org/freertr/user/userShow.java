@@ -4216,8 +4216,19 @@ public class userShow {
             return;
         }
         if (a.equals("aspagraph")) {
+            boolean cli = false;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("cli")) {
+                    cli = true;
+                    continue;
+                }
+            }
             tabGen<tabRpkiAspa> tab = r.rpki.getFinalTabAspa();
-            rdr.putStrArr(tabRpkiUtil.getAspaGraph(tab));
+            rdr.putStrArr(tabRpkiUtil.getAspaGraph(tab, cli));
             return;
         }
         if (a.equals("prefixes4")) {
@@ -4967,7 +4978,18 @@ public class userShow {
             return;
         }
         if (a.equals("asgraph")) {
-            rdr.putStrArr(r.bgp.getAsGraph(idx));
+            boolean cli = false;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                if (a.equals("cli")) {
+                    cli = true;
+                    continue;
+                }
+            }
+            rdr.putStrArr(r.bgp.getAsGraph(idx, cli));
             return;
         }
         if (a.equals("astree")) {

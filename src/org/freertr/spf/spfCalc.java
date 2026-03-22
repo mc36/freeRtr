@@ -40,31 +40,6 @@ import org.freertr.util.syncInt;
  */
 public class spfCalc<Ta extends addrType> {
 
-    /**
-     * beginning of graph
-     */
-    public final static String graphBeg1 = "sfdp -Tpng > net.png << EOF";
-
-    /**
-     * beginning of graph
-     */
-    public final static String graphBeg2 = "graph net {";
-
-    /**
-     * beginning of graph
-     */
-    public final static String graphBeg3 = "node [fontname=ubuntu,shape=none,labelloc=b,image=\"../misc/router.svg\"] edge [fontname=ubuntu,shape=none]";
-
-    /**
-     * ending of graph
-     */
-    public final static String graphEnd1 = "}";
-
-    /**
-     * ending of graph
-     */
-    public final static String graphEnd2 = "EOF";
-
     private final tabGen<spfNode<Ta>> nodes;
 
     private final List<spfLog> log = new ArrayList<spfLog>();
@@ -1533,7 +1508,7 @@ public class spfCalc<Ta extends addrType> {
      * @return list
      */
     public List<String> listGraphviz(cmds cmd) {
-        boolean svg = false;
+        String svg = null;
         boolean cli = false;
         String dns = null;
         boolean nets = false;
@@ -1563,7 +1538,7 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
             if (a.equals("svg")) {
-                svg = true;
+                svg = cmd.word();
                 continue;
             }
             if (a.equals("dns")) {
@@ -1626,18 +1601,10 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
         }
-        List<String> res = new ArrayList<String>();
-        if (cli) {
-            res.add(graphBeg1);
-        }
-        res.add(graphBeg2);
-        if (svg) {
-            res.add(graphBeg3);
-        }
+        spfGraph res = new spfGraph(cli, svg, mets);
         for (int o = 0; o < nodes.size(); o++) {
             spfNode<Ta> ntry = nodes.get(o);
             String nam = node2name(ntry, dns, remv);
-            res.add("//" + nam);
             if (locs != null) {
                 clntDns clnt = new clntDns();
                 clnt.doResolvList(cfgAll.nameServerAddr, nam + "." + locs, false, packDnsRec.typeTXT);
@@ -1669,7 +1636,7 @@ public class spfCalc<Ta extends addrType> {
                     y -= sclSY;
                     p = new String[]{"" + (int) x, "" + (int) y};
                 }
-                res.add("\"" + nam + "\" [pin=true pos=\"" + p[0] + "," + p[1] + "\"]");
+                res.addNode(nam, p[0] + "," + p[1]);
             }
             for (int i = 0; i < ntry.conn.size(); i++) {
                 spfConn<Ta> cur = ntry.conn.get(i);
@@ -1678,40 +1645,29 @@ public class spfCalc<Ta extends addrType> {
                         continue;
                     }
                 }
-                String a = "";
-                if (ints) {
-                    a += " [taillabel=\"" + cur.ident + "\"]";
-                }
-                if (mets) {
-                    a += " [label=\"" + cur.metric + "\"]";
-                }
-                res.add("  \"" + nam + "\" -- \"" + node2name(cur.target, dns, remv) + "\" [weight=" + cur.metric + "]" + a);
+                res.addLink(nam, node2name(cur.target, dns, remv), cur.metric, ints ? cur.ident : null, null);
             }
             if (!nets) {
                 continue;
             }
             for (int i = 0; i < ntry.prfAdd.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.prfAdd.get(i);
-                res.add("  \"" + nam + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
+                res.addLink(nam, addrPrefix.ip2str(cur.prefix), cur.best.metric, null, null);
             }
             for (int i = 0; i < ntry.prfFix.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.prfFix.get(i);
-                res.add("  \"" + nam + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
+                res.addLink(nam, addrPrefix.ip2str(cur.prefix), cur.best.metric, null, null);
             }
             for (int i = 0; i < ntry.othAdd.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.othAdd.get(i);
-                res.add("  \"" + nam + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
+                res.addLink(nam, addrPrefix.ip2str(cur.prefix), cur.best.metric, null, null);
             }
             for (int i = 0; i < ntry.othFix.size(); i++) {
                 tabRouteEntry<addrIP> cur = ntry.othFix.get(i);
-                res.add("  \"" + nam + "\" -- \"" + addrPrefix.ip2str(cur.prefix) + "\" [weight=" + cur.best.metric + "]");
+                res.addLink(nam, addrPrefix.ip2str(cur.prefix), cur.best.metric, null, null);
             }
         }
-        res.add(graphEnd1);
-        if (cli) {
-            res.add(graphEnd2);
-        }
-        return res;
+        return res.getRes();
     }
 
     private void listNhIncons(tabGen<spfPrefix<Ta>> lst, spfNode<Ta> nod, addrPrefix<addrIP> pfx) {
