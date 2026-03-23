@@ -10,9 +10,11 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.auth.authGeneric;
 import org.freertr.auth.authLocal;
+import org.freertr.auth.authLocalMenu;
 import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAlias;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgAuther;
 import org.freertr.cfg.cfgChat;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgInit;
@@ -2067,6 +2069,8 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "<name:mnk>", "name of menu");
         hl.add(null, false, 2, new int[]{3}, "tui", "tui based");
         hl.add(null, false, 3, new int[]{-1}, "<name:mnt>", "name of menu");
+        hl.add(null, false, 2, new int[]{3}, "pwd", "pwd based");
+        hl.add(null, false, 3, new int[]{-1}, "<name:aaa>", "aaa list");
         hl.add(null, false, 1, new int[]{2}, "terminal", "terminal specific parameters");
         hl.add(null, false, 2, new int[]{2}, cmds.negated, "negate a parameter");
         hl.add(null, false, 2, new int[]{3}, "width", "set terminal width");
@@ -3278,6 +3282,10 @@ public class userExec {
                 doMenuT();
                 return cmdRes.command;
             }
+            if (a.equals("pwd")) {
+                doMenuP();
+                return cmdRes.command;
+            }
             cmd.badCmd();
             return cmdRes.command;
         }
@@ -3988,6 +3996,26 @@ public class userExec {
             return;
         }
         ntry.doMenu(pipe, reader, privileged);
+    }
+
+    private void doMenuP() {
+        String a = cmd.word();
+        cfgAuther ntry = cfgAll.autherFind(a, null);
+        if (ntry == null) {
+            cmd.error("no such auth list");
+            return;
+        }
+        authLocal loc = null;
+        try {
+            loc = (authLocal) ntry.getAuther();
+        } catch (Exception e) {
+        }
+        if (loc == null) {
+            cmd.error("not local auth list");
+            return;
+        }
+        authLocalMenu mnu = new authLocalMenu(loc, pipe);
+        mnu.doMenu(privileged);
     }
 
     private void doPortscan() {
