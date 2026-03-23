@@ -294,6 +294,8 @@ public class authLocal extends authGeneric {
         l.add(null, false, 5, new int[]{5, -1}, "[text]", "seed of user");
         l.add(null, false, 3, new int[]{4}, "autocommand", "set automatic command");
         l.add(null, false, 4, new int[]{4, -1}, "[text]", "autocommand of user");
+        l.add(null, false, 3, new int[]{4}, "description", "specify description");
+        l.add(null, false, 4, new int[]{4, -1}, "<str>", "description");
         l.add(null, false, 3, new int[]{4}, "countdown", "set counter");
         l.add(null, false, 4, new int[]{-1}, "<num>", "login counter");
         l.add(null, false, 3, new int[]{-1}, "anypass", "any password will be accepted");
@@ -683,6 +685,11 @@ class authLocalEntry implements Comparable<authLocalEntry> {
     public String username = "";
 
     /**
+     * description of user
+     */
+    public String description = null;
+
+    /**
      * password of user
      */
     public String password = null;
@@ -777,6 +784,9 @@ class authLocalEntry implements Comparable<authLocalEntry> {
         beg += "username " + username;
         lst.add(beg);
         beg += " ";
+        if (description != null) {
+            lst.add(beg + "description " + description);
+        }
         if (password != null) {
             lst.add(beg + "password " + authLocal.passwdEncode(password, (filter & 2) != 0));
         }
@@ -836,6 +846,13 @@ class authLocalEntry implements Comparable<authLocalEntry> {
     public boolean fromString(boolean neg, cmds cmd) {
         String s = cmd.word();
         if (s.length() < 1) {
+            return false;
+        }
+        if (s.equals("description")) {
+            description = cmd.getRemaining();
+            if (neg) {
+                description = null;
+            }
             return false;
         }
         if (s.equals("password")) {
