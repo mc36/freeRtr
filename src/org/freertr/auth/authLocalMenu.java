@@ -5,6 +5,7 @@ import java.util.List;
 import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeScreen;
 import org.freertr.pipe.pipeSide;
+import org.freertr.user.userEditor;
 
 /**
  * run tui based menu
@@ -51,6 +52,7 @@ public class authLocalMenu {
         if (!prv && !database.menuGst) {
             return false;
         }
+        changed = false;
         console.putCls();
         doReset();
         doFilter();
@@ -103,6 +105,9 @@ public class authLocalMenu {
             case 0x0276: // ctrl+v
                 doKeyF3();
                 return false;
+            case 0x0265: // ctrl+e
+                doKeyF4();
+                return false;
             case 0x0277: // ctrl+w
                 doKeyClr();
                 return false;
@@ -132,6 +137,9 @@ public class authLocalMenu {
                 return false;
             case 0x8016: // f3
                 doKeyF3();
+                return false;
+            case 0x8017: // f4
+                doKeyF4();
                 return false;
             case 0x801d: // f10
                 return true;
@@ -194,10 +202,12 @@ public class authLocalMenu {
         List<String> l = new ArrayList<String>();
         l.add("f1 - help");
         l.add("f3 - view entry");
+        l.add("f3 - edit entry");
         l.add("f10 - exit");
         l.add("type - search");
         l.add("ctrl+s - help");
         l.add("ctrl+v - view entry");
+        l.add("ctrl+e - edit entry");
         l.add("ctrl+a - move up");
         l.add("ctrl+z - move down");
         l.add("ctrl+w - erase filter");
@@ -216,12 +226,25 @@ public class authLocalMenu {
             return;
         }
         authLocalEntry ent = buf.get(cur);
-        List<String> l = new ArrayList<String>();
-        l.add("entry=" + ent.description);
-        l.add("passwd=" + ent.password);
-        l.add("otpurl=" + ent.getOtpUrl());
-        l.add("otpass=" + ent.getOtpPass());
+        List<String> l = ent.toMenu();
         console.helpWin(pipeScreen.colBlue, pipeScreen.colWhite, pipeScreen.colBrWhite, -1, -1, -1, -1, l);
+    }
+
+    private void doKeyF4() {
+        if (database.menuRdo) {
+            return;
+        }
+        if (cur > buf.size()) {
+            return;
+        }
+        authLocalEntry ent = buf.get(cur);
+        List<String> l = ent.toMenu();
+        userEditor e = new userEditor(console, l, "entry", false);
+        if (e.doEdit()) {
+            return;
+        }
+        ent.fromMenu(l);
+        changed = true;
     }
 
     private void doReset() {

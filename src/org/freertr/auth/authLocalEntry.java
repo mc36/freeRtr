@@ -417,6 +417,7 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
      * @return false on success, true on error
      */
     public boolean setOtpUrl(String s) {
+        otpseed = null;
         encUrl url = encUrl.parseOne(s);
         byte[] buf1 = new byte[2];
         s = url.getParam("digits");
@@ -459,6 +460,82 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
             return true;
         }
         return false;
+    }
+
+    /**
+     * get menu data
+     *
+     * @return list of stings
+     */
+    public List<String> toMenu() {
+        List<String> res = new ArrayList<String>();
+        res.add("entry " + description);
+        res.add("passwd " + password);
+        res.add("otpurl " + getOtpUrl());
+        res.add("otpass " + getOtpPass());
+        res.add("---");
+        if (hidata == null) {
+            return res;
+        }
+        String a = "";
+        for (int i = 0; i < hidata.length; i++) {
+            int o = hidata[i] & 0xff;
+            switch (o) {
+                case 0:
+                    res.add(a);
+                    a = "";
+                    break;
+                default:
+                    a += (char) o;
+                    break;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * set menu data
+     *
+     * @param lst
+     */
+    public void fromMenu(List<String> lst) {
+        if (lst == null) {
+            return;
+        }
+        int i = 0;
+        for (; i < lst.size(); i++) {
+            String a = lst.get(i);
+            cmds cmd = new cmds("menu", a);
+            a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("---")) {
+                break;
+            }
+            if (a.equals("entry")) {
+                description = cmd.getRemaining();
+                continue;
+            }
+            if (a.equals("passwd")) {
+                password = cmd.getRemaining();
+                continue;
+            }
+            if (a.equals("otpurl")) {
+                setOtpUrl(cmd.getRemaining());
+                continue;
+            }
+        }
+        i++;
+        hidata = new byte[0];
+        for (; i < lst.size(); i++) {
+            byte[] buf = lst.get(i).getBytes();
+            buf = bits.byteConcat(buf, new byte[1]);
+            hidata = bits.byteConcat(hidata, buf);
+        }
+        if (hidata.length < 1) {
+            hidata = null;
+        }
     }
 
 }
