@@ -97,6 +97,7 @@ import org.freertr.cry.cryHashShake256;
 import org.freertr.cry.cryKeyCurve25519;
 import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryUtils;
+import org.freertr.enc.encBase32;
 import org.freertr.pack.packDnsRec;
 import org.freertr.pack.packDnsRes;
 import org.freertr.pack.packDnsZone;
@@ -300,7 +301,7 @@ public class userTest {
         if (a.equals("otppass")) {
             byte[] buf = cmd.word().getBytes();
             long t = (bits.getTime() + cfgAll.timeServerOffset) / 1000;
-            a = autherOtp.calcTotp(buf, t, autherOtp.timeInt, 8, new cryHashSha1());
+            a = autherOtp.calcTotp(buf, t, 30, 8, new cryHashSha1());
             cmd.error("seed=" + bits.byteDump(buf, 0, buf.length));
             cmd.error("time=" + t);
             cmd.error("key=" + a);
@@ -333,6 +334,19 @@ public class userTest {
             }
             cmd.error("default: " + adr);
             cmd.error("linux: " + adr.toEmuStr());
+            return null;
+        }
+        if (a.equals("base32")) {
+            a = cmd.getRemaining();
+            cmd.error("data: " + a);
+            byte[] b = encBase32.decodeBytes(a);
+            if (b == null) {
+                cmd.error("error in data");
+                return null;
+            }
+            cmd.error("decoded: " + bits.byteDump(b, 0, -1));
+            a = encBase32.encodeBytes(b);
+            cmd.error("encoded: " + a);
             return null;
         }
         if (a.equals("base64")) {

@@ -15,11 +15,6 @@ public class autherOtp {
     }
 
     /**
-     * time interval
-     */
-    public final static int timeInt = 30;
-
-    /**
      * calculate hotp
      *
      * @param key key

@@ -2975,6 +2975,8 @@ public class userExec {
         hl.add(null, false, 3, new int[]{3, -1}, "<str>", "encoded string");
         hl.add(null, false, 2, new int[]{3, -1}, "asn1", "decode asn1 encoded bytes");
         hl.add(null, false, 3, new int[]{3, -1}, "<str>", "parameter");
+        hl.add(null, false, 2, new int[]{3, -1}, "base32", "decode base32 encoded bytes");
+        hl.add(null, false, 3, new int[]{3, -1}, "<str>", "parameter");
         hl.add(null, false, 2, new int[]{3, -1}, "base64", "decode base64 encoded bytes");
         hl.add(null, false, 3, new int[]{3, -1}, "<str>", "parameter");
         hl.add(null, false, 2, new int[]{3, -1}, "macaddr", "convert mac address");

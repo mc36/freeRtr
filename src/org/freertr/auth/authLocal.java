@@ -15,6 +15,8 @@ import org.freertr.cry.cryHashSha1;
 import org.freertr.cry.cryHashSha2224;
 import org.freertr.cry.cryHashSha2256;
 import org.freertr.cry.cryKeyGeneric;
+import org.freertr.enc.encBase32;
+import org.freertr.enc.encUrl;
 import org.freertr.serv.servPop3;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFormat;
@@ -293,7 +295,10 @@ public class authLocal extends authGeneric {
         l.add(null, false, 4, new int[]{4, -1}, "[text]", "seed of user");
         l.add(null, false, 3, new int[]{4}, "otppass", "set seed of user");
         l.add(null, false, 4, new int[]{5}, "<num>", "length of tokencode");
-        l.add(null, false, 5, new int[]{5, -1}, "[text]", "seed of user");
+        l.add(null, false, 5, new int[]{6}, "<num>", "interval in seconds");
+        l.add(null, false, 6, new int[]{6, -1}, "[text]", "seed of user");
+        l.add(null, false, 3, new int[]{4}, "otpurl", "set seed of user");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "seed of user");
         l.add(null, false, 3, new int[]{4}, "autocommand", "set automatic command");
         l.add(null, false, 4, new int[]{4, -1}, "[text]", "autocommand of user");
         l.add(null, false, 3, new int[]{4}, "description", "specify description");
@@ -894,19 +899,11 @@ class authLocalEntry implements Comparable<authLocalEntry> {
                 otpseed = null;
                 return false;
             }
-            s = cmd.getRemaining();
-            if (s.startsWith(authLocal.passwdBeg)) {
-                otpseed = null;
-                s = authLocal.passwdDecode(s);
-                if (s == null) {
-                    return false;
-                }
-                otpseed = s.getBytes();
+            s = authLocal.passwdDecode(s);
+            if (s == null) {
                 return false;
             }
-            byte[] buf1 = new byte[1];
-            buf1[0] = (byte) bits.str2num(cmd.word());
-            otpseed = bits.byteConcat(buf1, cmd.getRemaining().getBytes());
+            otpseed = s.getBytes();
             return false;
         }
         if (s.equals("hidata")) {
@@ -943,9 +940,34 @@ class authLocalEntry implements Comparable<authLocalEntry> {
             return false;
         }
         if (s.equals("otppass")) {
-            byte[] buf1 = new byte[1];
+            byte[] buf1 = new byte[2];
             buf1[0] = (byte) bits.str2num(cmd.word());
+            buf1[1] = (byte) bits.str2num(cmd.word());
             otpseed = bits.byteConcat(buf1, cmd.getRemaining().getBytes());
+            return false;
+        }
+        if (s.equals("otpurl")) {
+            encUrl url = encUrl.parseOne(cmd.getRemaining());
+            byte[] buf1 = new byte[2];
+            s = url.getParam("digits");
+            if (s == null) {
+                return true;
+            }
+            buf1[0] = (byte) bits.str2num(s);
+            s = url.getParam("period");
+            if (s == null) {
+                return true;
+            }
+            buf1[1] = (byte) bits.str2num(s);
+            s = url.getParam("secret");
+            if (s == null) {
+                return true;
+            }
+            byte[] buf2 = encBase32.decodeBytes(s);
+            if (buf2 == null) {
+                return true;
+            }
+            otpseed = bits.byteConcat(buf1, buf2);
             return false;
         }
         if (s.equals("autocommand")) {
@@ -1026,18 +1048,19 @@ class authLocalEntry implements Comparable<authLocalEntry> {
         if (otpseed == null) {
             return null;
         }
-        int digs = otpseed[0];
         String pref = "";
         if (password != null) {
             pref = "" + password;
         }
-        byte[] seed = new byte[otpseed.length - 1];
-        bits.byteCopy(otpseed, 1, seed, 0, seed.length);
+        byte[] seed = new byte[otpseed.length - 2];
+        bits.byteCopy(otpseed, 2, seed, 0, seed.length);
         List<String> lst = new ArrayList<String>();
         long tim = (bits.getTime() + cfgAll.timeServerOffset) / 1000;
         final int range = 10;
-        for (int i = -range; i < range; i += autherOtp.timeInt) {
-            String a = autherOtp.calcTotp(seed, tim + i, autherOtp.timeInt, digs, new cryHashSha1());
+        final int digits = otpseed[0];
+        final int period = otpseed[1];
+        for (int i = -range; i < range; i += otpseed[1]) {
+            String a = autherOtp.calcTotp(seed, tim + i, period, digits, new cryHashSha1());
             lst.add(pref + a);
         }
         return lst;
