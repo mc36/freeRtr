@@ -15,6 +15,7 @@ import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
 import org.freertr.auth.authConstant;
 import org.freertr.auth.authLocal;
+import org.freertr.auth.authLocalEntry;
 import org.freertr.cfg.cfgAlias;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
@@ -296,6 +297,16 @@ public class userTest {
                 return null;
             }
             cfgAll.con0.line.createHandler(pipWin, "window", 2);
+            return null;
+        }
+        if (a.equals("otpurl")) {
+            authLocalEntry ntry = new authLocalEntry();
+            if (ntry.setOtpUrl(cmd.getRemaining())) {
+                cmd.error("failed");
+                return null;
+            }
+            cmd.error("url=" + ntry.getOtpUrl());
+            cmd.error("key=" + ntry.getOtpPass());
             return null;
         }
         if (a.equals("otppass")) {

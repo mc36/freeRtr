@@ -26,11 +26,20 @@ import org.freertr.util.counter;
  */
 public class authLocal extends authGeneric {
 
-    private tabGen<authLocalEntry> users;
+    /**
+     * list of users
+     */
+    protected tabGen<authLocalEntry> users;
 
-    private List<String> forbidden;
+    /**
+     * forbidden commands
+     */
+    protected List<String> forbidden;
 
-    private List<String> commands;
+    /**
+     * allowed commands
+     */
+    protected List<String> commands;
 
     /**
      * menu enabled
@@ -548,11 +557,9 @@ public class authLocal extends authGeneric {
             return createPassed(ntry, user, pass);
         }
         if (ntry.otpseed != null) {
-            List<String> lst = ntry.getOtpPass();
-            for (int i = 0; i < lst.size(); i++) {
-                if (lst.get(i).equals(pass)) {
-                    return createPassed(ntry, user, pass);
-                }
+            String pwd = ntry.getOtpPass();
+            if (pwd.equals(pass)) {
+                return createPassed(ntry, user, pass);
             }
             return new authResult(this, authResult.authBadUserPass, user, pass);
         }

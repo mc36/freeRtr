@@ -30,112 +30,112 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
     /**
      * times matched
      */
-    public int matches;
+    protected int matches;
 
     /**
      * last matched
      */
-    public long lastMatch;
+    protected long lastMatch;
 
     /**
      * name of user
      */
-    public String username = "";
+    protected String username = "";
 
     /**
      * description of user
      */
-    public String description = null;
+    protected String description = null;
 
     /**
      * password of user
      */
-    public String password = null;
+    protected String password = null;
 
     /**
      * secret of user
      */
-    public byte[] secret;
+    protected byte[] secret;
 
     /**
      * hidden data
      */
-    public byte[] hidata;
+    protected byte[] hidata;
 
     /**
      * one time password
      */
-    public byte[] otpseed;
+    protected byte[] otpseed;
 
     /**
      * ssh public key
      */
-    public byte[] pubkey;
+    protected byte[] pubkey;
 
     /**
      * accept any password
      */
-    public boolean anyPass;
+    protected boolean anyPass;
 
     /**
      * accept any public key
      */
-    public boolean anyKey;
+    protected boolean anyKey;
 
     /**
      * accept refused authentication
      */
-    public boolean nothing;
+    protected boolean nothing;
 
     /**
      * command to use on login
      */
-    public String autoCommand = "";
+    protected String autoCommand = "";
 
     /**
      * terminate session after command
      */
-    public boolean autoHangup = false;
+    protected boolean autoHangup = false;
 
     /**
      * privilege of user
      */
-    public int privilege = 15;
+    protected int privilege = 15;
 
     /**
      * filter id of user
      */
-    public String filterid;
+    protected String filterid;
 
     /**
      * usage counter
      */
-    public int countdown = -1;
+    protected int countdown = -1;
 
     /**
      * ipv4 address
      */
-    public addrIPv4 ipv4addr;
+    protected addrIPv4 ipv4addr;
 
     /**
      * ipv4 routes
      */
-    public String ipv4route;
+    protected String ipv4route;
 
     /**
      * ipv6 address
      */
-    public addrIPv6 ipv6addr;
+    protected addrIPv6 ipv6addr;
 
     /**
      * ipv6 interface id
      */
-    public addrEui ipv6ifid;
+    protected addrEui ipv6ifid;
 
     /**
      * ipv6 routes
      */
-    public String ipv6route;
+    protected String ipv6route;
 
     /**
      * get running configuration
@@ -158,10 +158,10 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
             lst.add(beg + "secret " + authLocal.secretEncode(secret, (filter & 2) != 0));
         }
         if (otpseed != null) {
-            lst.add(beg + "otpseed " + authLocal.passwdEncode(new String(otpseed), (filter & 2) != 0));
+            lst.add(beg + "otpseed " + authLocal.passwdEncode(encBase64.encodeBytes(otpseed), (filter & 2) != 0));
         }
         if (hidata != null) {
-            lst.add(beg + "hidata " + authLocal.passwdEncode(new String(hidata), (filter & 2) != 0));
+            lst.add(beg + "hidata " + authLocal.passwdEncode(encBase64.encodeBytes(hidata), (filter & 2) != 0));
         }
         if (pubkey != null) {
             lst.add(beg + "pubkey " + encBase64.encodeBytes(pubkey));
@@ -251,11 +251,12 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
                 otpseed = null;
                 return false;
             }
+            s = cmd.getRemaining();
             s = authLocal.passwdDecode(s);
             if (s == null) {
                 return false;
             }
-            otpseed = s.getBytes();
+            otpseed = encBase64.decodeBytes(s);
             return false;
         }
         if (s.equals("hidata")) {
@@ -268,7 +269,7 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
             if (s == null) {
                 return false;
             }
-            hidata = s.getBytes();
+            hidata = encBase64.decodeBytes(s);
             return false;
         }
         if (s.equals("anypass")) {
@@ -299,28 +300,7 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
             return false;
         }
         if (s.equals("otpurl")) {
-            encUrl url = encUrl.parseOne(cmd.getRemaining());
-            byte[] buf1 = new byte[2];
-            s = url.getParam("digits");
-            if (s == null) {
-                return true;
-            }
-            buf1[0] = (byte) bits.str2num(s);
-            s = url.getParam("period");
-            if (s == null) {
-                return true;
-            }
-            buf1[1] = (byte) bits.str2num(s);
-            s = url.getParam("secret");
-            if (s == null) {
-                return true;
-            }
-            byte[] buf2 = encBase32.decodeBytes(s);
-            if (buf2 == null) {
-                return true;
-            }
-            otpseed = bits.byteConcat(buf1, buf2);
-            return false;
+            return setOtpUrl(cmd.getRemaining());
         }
         if (s.equals("autocommand")) {
             if (neg) {
@@ -401,26 +381,64 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
      *
      * @return list of passwords
      */
-    public List<String> getOtpPass() {
+    public String getOtpPass() {
         if (otpseed == null) {
             return null;
         }
-        String pref = "";
-        if (password != null) {
-            pref = "" + password;
-        }
         byte[] seed = new byte[otpseed.length - 2];
         bits.byteCopy(otpseed, 2, seed, 0, seed.length);
-        List<String> lst = new ArrayList<String>();
         long tim = (bits.getTime() + cfgAll.timeServerOffset) / 1000;
-        final int range = 10;
         final int digits = otpseed[0];
         final int period = otpseed[1];
-        for (int i = -range; i < range; i += otpseed[1]) {
-            String a = autherOtp.calcTotp(seed, tim + i, period, digits, new cryHashSha1());
-            lst.add(pref + a);
+        String a = autherOtp.calcTotp(seed, tim, period, digits, new cryHashSha1());
+        if (password == null) {
+            return a;
+        } else {
+            return password + a;
         }
-        return lst;
+    }
+
+    /**
+     * get otp url
+     *
+     * @return url string
+     */
+    public String getOtpUrl() {
+        if (otpseed == null) {
+            return null;
+        }
+        return "totp:///?secret=" + encBase32.encodeBytes(otpseed, 2, otpseed.length - 2) + "&digits=" + otpseed[0] + "&period=" + otpseed[1];
+    }
+
+    /**
+     * set otp url
+     *
+     * @param s string
+     * @return false on success, true on error
+     */
+    public boolean setOtpUrl(String s) {
+        encUrl url = encUrl.parseOne(s);
+        byte[] buf1 = new byte[2];
+        s = url.getParam("digits");
+        if (s == null) {
+            return true;
+        }
+        buf1[0] = (byte) bits.str2num(s);
+        s = url.getParam("period");
+        if (s == null) {
+            return true;
+        }
+        buf1[1] = (byte) bits.str2num(s);
+        s = url.getParam("secret");
+        if (s == null) {
+            return true;
+        }
+        byte[] buf2 = encBase32.decodeBytes(s);
+        if (buf2 == null) {
+            return true;
+        }
+        otpseed = bits.byteConcat(buf1, buf2);
+        return false;
     }
 
     /**

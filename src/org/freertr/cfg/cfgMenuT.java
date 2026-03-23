@@ -372,6 +372,7 @@ class cfgMenuTdoer {
         l.add("f10 - exit");
         l.add("type - search");
         l.add("space - select");
+        l.add("enter - execute");
         l.add("ctrl+s - help");
         l.add("ctrl+v - view command");
         l.add("ctrl+a - move up");

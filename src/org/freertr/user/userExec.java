@@ -2069,7 +2069,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "<name:mnk>", "name of menu");
         hl.add(null, false, 2, new int[]{3}, "tui", "tui based");
         hl.add(null, false, 3, new int[]{-1}, "<name:mnt>", "name of menu");
-        hl.add(null, false, 2, new int[]{3}, "pwd", "pwd based");
+        hl.add(null, false, 2, new int[]{3}, "aaa", "aaa based");
         hl.add(null, false, 3, new int[]{-1}, "<name:aaa>", "aaa list");
         hl.add(null, false, 1, new int[]{2}, "terminal", "terminal specific parameters");
         hl.add(null, false, 2, new int[]{2}, cmds.negated, "negate a parameter");
@@ -2981,6 +2981,8 @@ public class userExec {
         hl.add(null, false, 3, new int[]{3, -1}, "<str>", "encoded string");
         hl.add(null, false, 2, new int[]{3, -1}, "otppass", "generate password");
         hl.add(null, false, 3, new int[]{3, -1}, "<str>", "encoded string");
+        hl.add(null, false, 2, new int[]{3, -1}, "otpurl", "generate password");
+        hl.add(null, false, 3, new int[]{3, -1}, "<str>", "encoded string");
         hl.add(null, false, 2, new int[]{3, -1}, "asn1", "decode asn1 encoded bytes");
         hl.add(null, false, 3, new int[]{3, -1}, "<str>", "parameter");
         hl.add(null, false, 2, new int[]{3, -1}, "base32", "decode base32 encoded bytes");
@@ -3282,8 +3284,8 @@ public class userExec {
                 doMenuT();
                 return cmdRes.command;
             }
-            if (a.equals("pwd")) {
-                doMenuP();
+            if (a.equals("aaa")) {
+                doMenuA();
                 return cmdRes.command;
             }
             cmd.badCmd();
@@ -3998,7 +4000,7 @@ public class userExec {
         ntry.doMenu(pipe, reader, privileged);
     }
 
-    private void doMenuP() {
+    private void doMenuA() {
         String a = cmd.word();
         cfgAuther ntry = cfgAll.autherFind(a, null);
         if (ntry == null) {
@@ -4015,7 +4017,12 @@ public class userExec {
             return;
         }
         authLocalMenu mnu = new authLocalMenu(loc, pipe);
-        mnu.doMenu(privileged);
+        if (!mnu.doMenu(privileged)) {
+            return;
+        }
+        userExec exe = new userExec(pipe, reader);
+        exe.privileged = true;
+        exe.executeCommand("write memory");
     }
 
     private void doPortscan() {
