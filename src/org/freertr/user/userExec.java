@@ -2569,6 +2569,8 @@ public class userExec {
         hlp.add(null, false, 3, new int[]{-1}, "<file>", "filename");
         hlp.add(null, false, 2, new int[]{3}, "bintype", "type one binary file");
         hlp.add(null, false, 3, new int[]{-1}, "<file>", "filename");
+        hlp.add(null, false, 2, new int[]{3}, "tcltype", "type one binary file");
+        hlp.add(null, false, 3, new int[]{-1}, "<file>", "filename");
         hlp.add(null, false, 2, new int[]{3}, "7bittype", "type one binary file");
         hlp.add(null, false, 3, new int[]{-1}, "<file>", "filename");
         hlp.add(null, false, 2, new int[]{3}, "hacktype", "type one binary file");
@@ -2634,6 +2636,8 @@ public class userExec {
         hl.add(null, false, 2, new int[]{3}, "hexview", "view one binary file");
         hl.add(null, false, 3, new int[]{-1}, "<file>", "filename");
         hl.add(null, false, 2, new int[]{3}, "binview", "view one binary file");
+        hl.add(null, false, 3, new int[]{-1}, "<file>", "filename");
+        hl.add(null, false, 2, new int[]{3}, "tclview", "view one binary file");
         hl.add(null, false, 3, new int[]{-1}, "<file>", "filename");
         hl.add(null, false, 2, new int[]{3}, "coltab", "view one image file");
         hl.add(null, false, 3, new int[]{-1}, "<file>", "filename");

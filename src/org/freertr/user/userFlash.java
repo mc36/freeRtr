@@ -212,6 +212,13 @@ public class userFlash {
             v.doView();
             return null;
         }
+        if (a.equals("tclview")) {
+            a = cmd.getRemaining();
+            List<String> b = tclRead(a);
+            userEditor v = new userEditor(new pipeScreen(pip), b, a, false);
+            v.doView();
+            return null;
+        }
         if (a.equals("coltab")) {
             a = cmd.getRemaining();
             tableArt(a, new pipeScreen(pip));
@@ -377,6 +384,10 @@ public class userFlash {
         }
         if (a.equals("bintype")) {
             rdr.putStrArr(binRead(cmd.getRemaining()));
+            return null;
+        }
+        if (a.equals("tcltype")) {
+            rdr.putStrArr(tclRead(cmd.getRemaining()));
             return null;
         }
         if (a.equals("7bittype")) {
@@ -1462,6 +1473,24 @@ public class userFlash {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * read tcl file for viewing
+     *
+     * @param fn file
+     * @return converted text
+     */
+    public static List<String> tclRead(String fn) {
+        List<String> l = bits.txt2buf(fn);
+        if (l == null) {
+            return null;
+        }
+        for (int i = 0; i < l.size(); i++) {
+            String a = l.get(i);
+            l.set(i, "sequence " + (i + 1) + "0 puts \"" + a + "\"");
+        }
+        return l;
     }
 
     /**
