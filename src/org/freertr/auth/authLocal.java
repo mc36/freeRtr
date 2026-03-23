@@ -287,6 +287,8 @@ public class authLocal extends authGeneric {
         l.add(null, false, 4, new int[]{4, -1}, "[text]", "public key of user");
         l.add(null, false, 3, new int[]{4}, "secret", "set secret of user");
         l.add(null, false, 4, new int[]{4, -1}, "[text]", "secret of user");
+        l.add(null, false, 3, new int[]{4}, "hidata", "set data of user");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "data of user");
         l.add(null, false, 3, new int[]{4}, "otpseed", "set seed of user");
         l.add(null, false, 4, new int[]{4, -1}, "[text]", "seed of user");
         l.add(null, false, 3, new int[]{4}, "otppass", "set seed of user");
@@ -700,6 +702,11 @@ class authLocalEntry implements Comparable<authLocalEntry> {
     public byte[] secret;
 
     /**
+     * hidden data
+     */
+    public byte[] hidata;
+
+    /**
      * one time password
      */
     public byte[] otpseed;
@@ -795,6 +802,9 @@ class authLocalEntry implements Comparable<authLocalEntry> {
         }
         if (otpseed != null) {
             lst.add(beg + "otpseed " + authLocal.passwdEncode(new String(otpseed), (filter & 2) != 0));
+        }
+        if (hidata != null) {
+            lst.add(beg + "hidata " + authLocal.passwdEncode(new String(hidata), (filter & 2) != 0));
         }
         if (pubkey != null) {
             lst.add(beg + "pubkey " + encBase64.encodeBytes(pubkey));
@@ -897,6 +907,19 @@ class authLocalEntry implements Comparable<authLocalEntry> {
             byte[] buf1 = new byte[1];
             buf1[0] = (byte) bits.str2num(cmd.word());
             otpseed = bits.byteConcat(buf1, cmd.getRemaining().getBytes());
+            return false;
+        }
+        if (s.equals("hidata")) {
+            if (neg) {
+                hidata = null;
+                return false;
+            }
+            s = cmd.getRemaining();
+            s = authLocal.passwdDecode(s);
+            if (s == null) {
+                return false;
+            }
+            hidata = s.getBytes();
             return false;
         }
         if (s.equals("anypass")) {
