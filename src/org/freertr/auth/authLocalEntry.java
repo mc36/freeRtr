@@ -379,9 +379,10 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
     /**
      * get otp list
      *
+     * @param pwd include password
      * @return list of passwords
      */
-    public String getOtpPass() {
+    public String getOtpPass(boolean pwd) {
         if (otpseed == null) {
             return null;
         }
@@ -393,9 +394,11 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
         String a = autherOtp.calcTotp(seed, tim, period, digits, new cryHashSha1());
         if (password == null) {
             return a;
-        } else {
-            return password + a;
         }
+        if (!pwd) {
+            return a;
+        }
+        return password + a;
     }
 
     /**
@@ -417,7 +420,6 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
      * @return false on success, true on error
      */
     public boolean setOtpUrl(String s) {
-        otpseed = null;
         encUrl url = encUrl.parseOne(s);
         byte[] buf1 = new byte[2];
         s = url.getParam("digits");
@@ -465,14 +467,18 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
     /**
      * get menu data
      *
+     * @param otp value
      * @return list of stings
      */
-    public List<String> toMenu() {
+    public List<String> toMenu(boolean otp) {
         List<String> res = new ArrayList<String>();
         res.add("entry " + description);
         res.add("passwd " + password);
-        res.add("otpurl " + getOtpUrl());
-        res.add("otpass " + getOtpPass());
+        if (otp) {
+            res.add("otpass " + getOtpPass(false));
+        } else {
+            res.add("otpurl " + getOtpUrl());
+        }
         res.add("---");
         if (hidata == null) {
             return res;
@@ -502,6 +508,8 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
         if (lst == null) {
             return;
         }
+        password = "";
+        otpseed = null;
         int i = 0;
         for (; i < lst.size(); i++) {
             String a = lst.get(i);

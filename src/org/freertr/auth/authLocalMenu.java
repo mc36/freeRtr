@@ -226,7 +226,7 @@ public class authLocalMenu {
             return;
         }
         authLocalEntry ent = buf.get(cur);
-        List<String> l = ent.toMenu();
+        List<String> l = ent.toMenu(true);
         console.helpWin(pipeScreen.colBlue, pipeScreen.colWhite, pipeScreen.colBrWhite, -1, -1, -1, -1, l);
     }
 
@@ -238,7 +238,7 @@ public class authLocalMenu {
             return;
         }
         authLocalEntry ent = buf.get(cur);
-        List<String> l = ent.toMenu();
+        List<String> l = ent.toMenu(false);
         userEditor e = new userEditor(console, l, "entry", false);
         if (e.doEdit()) {
             return;

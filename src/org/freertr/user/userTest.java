@@ -306,7 +306,7 @@ public class userTest {
                 return null;
             }
             cmd.error("url=" + ntry.getOtpUrl());
-            cmd.error("key=" + ntry.getOtpPass());
+            cmd.error("key=" + ntry.getOtpPass(true));
             return null;
         }
         if (a.equals("otppass")) {

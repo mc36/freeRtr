@@ -557,7 +557,7 @@ public class authLocal extends authGeneric {
             return createPassed(ntry, user, pass);
         }
         if (ntry.otpseed != null) {
-            String pwd = ntry.getOtpPass();
+            String pwd = ntry.getOtpPass(true);
             if (pwd.equals(pass)) {
                 return createPassed(ntry, user, pass);
             }
