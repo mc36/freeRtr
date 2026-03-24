@@ -472,13 +472,9 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
      */
     public List<String> toMenu(boolean otp) {
         List<String> res = new ArrayList<String>();
-        res.add("entry " + description);
-        res.add("passwd " + password);
-        if (otp) {
-            res.add("otpass " + getOtpPass(false));
-        } else {
-            res.add("otpurl " + getOtpUrl());
-        }
+        res.add("nam " + description);
+        res.add("pwd " + password);
+        res.add("otp " + (otp ? getOtpPass(false) : getOtpUrl()));
         res.add("---");
         if (hidata == null) {
             return res;
@@ -521,15 +517,15 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
             if (a.equals("---")) {
                 break;
             }
-            if (a.equals("entry")) {
+            if (a.equals("nam")) {
                 description = cmd.getRemaining();
                 continue;
             }
-            if (a.equals("passwd")) {
+            if (a.equals("pwd")) {
                 password = cmd.getRemaining();
                 continue;
             }
-            if (a.equals("otpurl")) {
+            if (a.equals("otp")) {
                 setOtpUrl(cmd.getRemaining());
                 continue;
             }

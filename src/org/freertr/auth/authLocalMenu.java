@@ -6,6 +6,7 @@ import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeScreen;
 import org.freertr.pipe.pipeSide;
 import org.freertr.user.userEditor;
+import org.freertr.util.bits;
 
 /**
  * run tui based menu
@@ -81,15 +82,6 @@ public class authLocalMenu {
             case 0x0268: // ctrl+h
                 doKeyBs();
                 return false;
-            case 0x0270: // ctrl+p
-                doKeyPgUp();
-                return false;
-            case 0x026e: // ctrl+n
-                doKeyPgDn();
-                return false;
-            case 0x0272: // ctrl+r
-                doDraw(true);
-                return false;
             case 0x026c: // ctrl+l
                 doDraw(true);
                 return false;
@@ -107,6 +99,15 @@ public class authLocalMenu {
                 return false;
             case 0x0265: // ctrl+e
                 doKeyF4();
+                return false;
+            case 0x0264: // ctrl+d
+                doKeyF5();
+                return false;
+            case 0x026e: // ctrl+n
+                doKeyF7();
+                return false;
+            case 0x0272: // ctrl+r
+                doKeyF8();
                 return false;
             case 0x0277: // ctrl+w
                 doKeyClr();
@@ -140,6 +141,15 @@ public class authLocalMenu {
                 return false;
             case 0x8017: // f4
                 doKeyF4();
+                return false;
+            case 0x8018: // f5
+                doKeyF5();
+                return false;
+            case 0x801a: // f7
+                doKeyF7();
+                return false;
+            case 0x801b: // f8
+                doKeyF8();
                 return false;
             case 0x801d: // f10
                 return true;
@@ -202,18 +212,21 @@ public class authLocalMenu {
         List<String> l = new ArrayList<String>();
         l.add("f1 - help");
         l.add("f3 - view entry");
-        l.add("f3 - edit entry");
+        l.add("f4 - edit entry");
+        l.add("f5 - duplicate entry");
+        l.add("f7 - create entry");
+        l.add("f8 - remove entry");
         l.add("f10 - exit");
         l.add("type - search");
         l.add("ctrl+s - help");
         l.add("ctrl+v - view entry");
         l.add("ctrl+e - edit entry");
+        l.add("ctrl+d - duplicate entry");
+        l.add("ctrl+r - remove entry");
+        l.add("ctrl+n - create entry");
         l.add("ctrl+a - move up");
         l.add("ctrl+z - move down");
         l.add("ctrl+w - erase filter");
-        l.add("ctrl+p - move page up");
-        l.add("ctrl+n - move page down");
-        l.add("ctrl+r - redraw screen");
         l.add("ctrl+l - redraw screen");
         l.add("ctrl+q - exit");
         l.add("ctrl+x - exit");
@@ -245,6 +258,58 @@ public class authLocalMenu {
         }
         ent.fromMenu(l);
         changed = true;
+        doFilter();
+    }
+
+    private void doKeyF5() {
+        if (database.menuRdo) {
+            return;
+        }
+        if (cur > buf.size()) {
+            return;
+        }
+        authLocalEntry ent = buf.get(cur);
+        List<String> l = ent.toMenu(false);
+        ent = new authLocalEntry();
+        ent.fromMenu(l);
+        ent.description += " - dup";
+        ent.username = "" + bits.getTime();
+        database.users.add(ent);
+        changed = true;
+        doFilter();
+    }
+
+    private void doKeyF7() {
+        if (database.menuRdo) {
+            return;
+        }
+        if (cur > buf.size()) {
+            return;
+        }
+        authLocalEntry ent = new authLocalEntry();
+        ent.fromMenu(new ArrayList<String>());
+        ent.description = "new";
+        ent.username = "" + bits.getTime();
+        database.users.add(ent);
+        changed = true;
+        doFilter();
+    }
+
+    private void doKeyF8() {
+        if (database.menuRdo) {
+            return;
+        }
+        if (cur > buf.size()) {
+            return;
+        }
+        authLocalEntry ent = buf.get(cur);
+        String a = console.askUser("delete entry? (y/n)", pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "n");
+        if (!a.trim().toLowerCase().equals("y")) {
+            return;
+        }
+        database.users.del(ent);
+        changed = true;
+        doFilter();
     }
 
     private void doReset() {
