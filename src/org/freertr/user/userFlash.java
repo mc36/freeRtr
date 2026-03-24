@@ -214,7 +214,14 @@ public class userFlash {
         }
         if (a.equals("tclview")) {
             a = cmd.getRemaining();
-            List<String> b = tclRead(a);
+            List<String> b = tclRead(a, "", "");
+            userEditor v = new userEditor(new pipeScreen(pip), b, a, false);
+            v.doView();
+            return null;
+        }
+        if (a.equals("tctview")) {
+            a = cmd.getRemaining();
+            List<String> b = tclRead(a, "puts \"", "\"");
             userEditor v = new userEditor(new pipeScreen(pip), b, a, false);
             v.doView();
             return null;
@@ -387,7 +394,11 @@ public class userFlash {
             return null;
         }
         if (a.equals("tcltype")) {
-            rdr.putStrArr(tclRead(cmd.getRemaining()));
+            rdr.putStrArr(tclRead(cmd.getRemaining(), "", ""));
+            return null;
+        }
+        if (a.equals("tcttype")) {
+            rdr.putStrArr(tclRead(cmd.getRemaining(), "puts \"", "\""));
             return null;
         }
         if (a.equals("7bittype")) {
@@ -1479,16 +1490,18 @@ public class userFlash {
      * read tcl file for viewing
      *
      * @param fn file
+     * @param b beginning
+     * @param e ending
      * @return converted text
      */
-    public static List<String> tclRead(String fn) {
+    public static List<String> tclRead(String fn, String b, String e) {
         List<String> l = bits.txt2buf(fn);
         if (l == null) {
             return null;
         }
         for (int i = 0; i < l.size(); i++) {
             String a = l.get(i);
-            l.set(i, "sequence " + (i + 1) + "0 puts \"" + a + "\"");
+            l.set(i, "sequence " + (i + 1) + "0 " + b + a + e);
         }
         return l;
     }
