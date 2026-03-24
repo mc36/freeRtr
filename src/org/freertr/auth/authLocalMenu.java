@@ -348,32 +348,27 @@ public class authLocalMenu {
         boolean spc = false;
         for (;;) {
             String s = authLocal.passwdRand(len, low, upp, num, spc);
-            String a = console.askUser("q=ok l=az u=AZ n=09 s=@# X=len " + s, pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "q");
-            a = a.toLowerCase();
-            if (a.equals("q")) {
-                pipeScreen.sendClp(console.pipe, "" + s);
-                break;
-            }
-            if (a.equals("l")) {
-                low ^= true;
-                continue;
-            }
-            if (a.equals("u")) {
-                upp ^= true;
-                continue;
-            }
-            if (a.equals("n")) {
-                num ^= true;
-                continue;
-            }
-            if (a.equals("s")) {
-                spc ^= true;
-                continue;
-            }
+            String a = console.askUser("0=ok 1=az 2=AZ 3=09 4=@# X=len " + s, pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "0");
             int i = bits.str2num(a);
-            if (i > 0) {
-                len = i;
-                continue;
+            switch (i) {
+                case 0:
+                    pipeScreen.sendClp(console.pipe, "" + s);
+                    return;
+                case 1:
+                    low ^= true;
+                    break;
+                case 2:
+                    upp ^= true;
+                    break;
+                case 3:
+                    num ^= true;
+                    break;
+                case 4:
+                    spc ^= true;
+                    break;
+                default:
+                    len = i;
+                    break;
             }
         }
     }
