@@ -410,7 +410,7 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
         if (otpseed == null) {
             return null;
         }
-        return "totp:///?secret=" + encBase32.encodeBytes(otpseed, 2, otpseed.length - 2) + "&digits=" + otpseed[0] + "&period=" + otpseed[1];
+        return "otpauth://totp/?secret=" + encBase32.encodeBytes(otpseed, 2, otpseed.length - 2) + "&digits=" + otpseed[0] + "&period=" + otpseed[1];
     }
 
     /**
@@ -498,7 +498,7 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
     /**
      * set menu data
      *
-     * @param lst
+     * @param lst list to read
      */
     public void fromMenu(List<String> lst) {
         if (lst == null) {

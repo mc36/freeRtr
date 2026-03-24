@@ -18132,3 +18132,9 @@ failed: wireguard over ipv4
 ---------------------------------- 2026-03-20 09:56:44 26.3.20
 no failed: wireguard over ipv4
 qc pass: wireguard over ipv4
+---------------------------------- 2026-03-24 11:12:09 26.3.24
+no qc pass: wireguard over ipv6
+failed: wireguard over ipv6
+---------------------------------- 2026-03-24 12:53:50 26.3.24
+no failed: wireguard over ipv6
+qc pass: wireguard over ipv6

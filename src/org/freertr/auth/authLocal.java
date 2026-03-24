@@ -52,14 +52,14 @@ public class authLocal extends authGeneric {
     protected boolean menuGst;
 
     /**
-     * read only
+     * write allowed
      */
-    protected boolean menuRdo;
+    protected boolean menuWrt;
 
     /**
      * auto save
      */
-    protected boolean menuAwr;
+    protected boolean menuAsv;
 
     /**
      * password beginning
@@ -80,6 +80,42 @@ public class authLocal extends authGeneric {
      * removed secret
      */
     protected final static String removedEnd = "<removed>$";
+
+    /**
+     * generate password
+     *
+     * @param len length
+     * @param low lowercase
+     * @param upp uppercase
+     * @param num numbers
+     * @param spc specials
+     * @return random password, null if none
+     */
+    public static String passwdRand(int len, boolean low, boolean upp, boolean num, boolean spc) {
+        String a = "";
+        if (low) {
+            a += "abcdefghijklmnopqrstuvwxyz";
+        }
+        if (upp) {
+            a += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        }
+        if (num) {
+            a += "0123456789";
+        }
+        if (spc) {
+            a += "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+        }
+        int m = a.length();
+        if (m < 1) {
+            return null;
+        }
+        String s = "";
+        for (int i = 0; i < len; i++) {
+            int o = bits.random(0, m);
+            s += a.substring(o, o + 1);
+        }
+        return s;
+    }
 
     /**
      * hide password
@@ -302,7 +338,7 @@ public class authLocal extends authGeneric {
         l.add(null, false, 2, new int[]{2, -1}, "<text>", "command");
         l.add(null, false, 1, new int[]{2, -1}, "menu-mode", "enable menu usage");
         l.add(null, false, 2, new int[]{2, -1}, "guest", "without privileges");
-        l.add(null, false, 2, new int[]{2, -1}, "read-only", "no changes allowed");
+        l.add(null, false, 2, new int[]{2, -1}, "read-write", "changes allowed");
         l.add(null, false, 2, new int[]{2, -1}, "auto-save", "save config on change");
         l.add(null, false, 1, new int[]{2}, "username", "create or update user");
         List<String> lst = new ArrayList<String>();
@@ -390,8 +426,8 @@ public class authLocal extends authGeneric {
             }
             menuEna = true;
             menuGst = false;
-            menuRdo = false;
-            menuAwr = false;
+            menuWrt = false;
+            menuAsv = false;
             for (;;) {
                 a = cmd.word();
                 if (a.length() < 1) {
@@ -401,12 +437,12 @@ public class authLocal extends authGeneric {
                     menuGst = true;
                     continue;
                 }
-                if (a.equals("read-only")) {
-                    menuRdo = true;
+                if (a.equals("read-write")) {
+                    menuWrt = true;
                     continue;
                 }
                 if (a.equals("auto-save")) {
-                    menuAwr = true;
+                    menuAsv = true;
                     continue;
                 }
             }
@@ -456,10 +492,10 @@ public class authLocal extends authGeneric {
             if (menuGst) {
                 a += " guest";
             }
-            if (menuRdo) {
-                a += " read-only";
+            if (menuWrt) {
+                a += " read-write";
             }
-            if (menuAwr) {
+            if (menuAsv) {
                 a += " auto-save";
             }
             l.add(beg + "menu-mode" + a);

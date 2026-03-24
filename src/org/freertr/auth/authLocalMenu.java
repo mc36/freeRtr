@@ -44,7 +44,7 @@ public class authLocalMenu {
      * do menu
      *
      * @param prv privileged
-     * @param true to save config, false if no changes made
+     * @return true to save config, false if no changes made
      */
     public boolean doMenu(boolean prv) {
         if (!database.menuEna) {
@@ -65,7 +65,7 @@ public class authLocalMenu {
             }
         }
         doClear();
-        return changed & database.menuAwr;
+        return changed & database.menuAsv;
     }
 
     private boolean doKey() {
@@ -111,6 +111,15 @@ public class authLocalMenu {
                 return false;
             case 0x0277: // ctrl+w
                 doKeyClr();
+                return false;
+            case 0x026f: // ctrl+o
+                doKeyOtp();
+                return false;
+            case 0x0270: // ctrl+p
+                doKeyPwd();
+                return false;
+            case 0x0267: // ctrl+g
+                doKeyGen();
                 return false;
             case 0x8003: // backspace
                 doKeyBs();
@@ -224,6 +233,9 @@ public class authLocalMenu {
         l.add("ctrl+d - duplicate entry");
         l.add("ctrl+r - remove entry");
         l.add("ctrl+n - create entry");
+        l.add("ctrl+o - copy otp");
+        l.add("ctrl+p - copy pwd");
+        l.add("ctrl+g - generate password");
         l.add("ctrl+a - move up");
         l.add("ctrl+z - move down");
         l.add("ctrl+w - erase filter");
@@ -244,7 +256,7 @@ public class authLocalMenu {
     }
 
     private void doKeyF4() {
-        if (database.menuRdo) {
+        if (!database.menuWrt) {
             return;
         }
         if (cur > buf.size()) {
@@ -262,7 +274,7 @@ public class authLocalMenu {
     }
 
     private void doKeyF5() {
-        if (database.menuRdo) {
+        if (!database.menuWrt) {
             return;
         }
         if (cur > buf.size()) {
@@ -280,7 +292,7 @@ public class authLocalMenu {
     }
 
     private void doKeyF7() {
-        if (database.menuRdo) {
+        if (!database.menuWrt) {
             return;
         }
         if (cur > buf.size()) {
@@ -296,7 +308,7 @@ public class authLocalMenu {
     }
 
     private void doKeyF8() {
-        if (database.menuRdo) {
+        if (!database.menuWrt) {
             return;
         }
         if (cur > buf.size()) {
@@ -310,6 +322,60 @@ public class authLocalMenu {
         database.users.del(ent);
         changed = true;
         doFilter();
+    }
+
+    private void doKeyPwd() {
+        if (cur > buf.size()) {
+            return;
+        }
+        authLocalEntry ent = buf.get(cur);
+        pipeScreen.sendClp(console.pipe, "" + ent.password);
+    }
+
+    private void doKeyOtp() {
+        if (cur > buf.size()) {
+            return;
+        }
+        authLocalEntry ent = buf.get(cur);
+        pipeScreen.sendClp(console.pipe, "" + ent.getOtpPass(false));
+    }
+
+    private void doKeyGen() {
+        int len = 16;
+        boolean low = true;
+        boolean upp = true;
+        boolean num = true;
+        boolean spc = false;
+        for (;;) {
+            String s = authLocal.passwdRand(len, low, upp, num, spc);
+            String a = console.askUser("q=ok l=az u=AZ n=09 s=@# X=len " + s, pipeScreen.colRed, pipeScreen.colWhite, pipeScreen.colBrYellow, pipeScreen.colBrWhite, -1, -1, -1, "q");
+            a = a.toLowerCase();
+            if (a.equals("q")) {
+                pipeScreen.sendClp(console.pipe, "" + s);
+                break;
+            }
+            if (a.equals("l")) {
+                low ^= true;
+                continue;
+            }
+            if (a.equals("u")) {
+                upp ^= true;
+                continue;
+            }
+            if (a.equals("n")) {
+                num ^= true;
+                continue;
+            }
+            if (a.equals("s")) {
+                spc ^= true;
+                continue;
+            }
+            int i = bits.str2num(a);
+            if (i > 0) {
+                len = i;
+                continue;
+            }
+        }
     }
 
     private void doReset() {
