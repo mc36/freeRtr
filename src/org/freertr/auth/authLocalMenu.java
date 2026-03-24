@@ -247,7 +247,7 @@ public class authLocalMenu {
     }
 
     private void doKeyF3() {
-        if (cur > buf.size()) {
+        if (cur >= buf.size()) {
             return;
         }
         authLocalEntry ent = buf.get(cur);
@@ -259,7 +259,7 @@ public class authLocalMenu {
         if (!database.menuWrt) {
             return;
         }
-        if (cur > buf.size()) {
+        if (cur >= buf.size()) {
             return;
         }
         authLocalEntry ent = buf.get(cur);
@@ -277,7 +277,7 @@ public class authLocalMenu {
         if (!database.menuWrt) {
             return;
         }
-        if (cur > buf.size()) {
+        if (cur >= buf.size()) {
             return;
         }
         authLocalEntry ent = buf.get(cur);
@@ -295,7 +295,7 @@ public class authLocalMenu {
         if (!database.menuWrt) {
             return;
         }
-        if (cur > buf.size()) {
+        if (cur >= buf.size()) {
             return;
         }
         authLocalEntry ent = new authLocalEntry();
@@ -311,7 +311,7 @@ public class authLocalMenu {
         if (!database.menuWrt) {
             return;
         }
-        if (cur > buf.size()) {
+        if (cur >= buf.size()) {
             return;
         }
         authLocalEntry ent = buf.get(cur);
@@ -325,7 +325,7 @@ public class authLocalMenu {
     }
 
     private void doKeyPwd() {
-        if (cur > buf.size()) {
+        if (cur >= buf.size()) {
             return;
         }
         authLocalEntry ent = buf.get(cur);
@@ -333,7 +333,7 @@ public class authLocalMenu {
     }
 
     private void doKeyOtp() {
-        if (cur > buf.size()) {
+        if (cur >= buf.size()) {
             return;
         }
         authLocalEntry ent = buf.get(cur);

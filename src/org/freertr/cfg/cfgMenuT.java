@@ -413,7 +413,7 @@ class cfgMenuTdoer {
         if (!privileged) {
             return;
         }
-        if (cur > buf.size()) {
+        if (cur >= buf.size()) {
             return;
         }
         cfgMenuTentry ent = buf.get(cur);
