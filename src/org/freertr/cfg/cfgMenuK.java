@@ -2,6 +2,7 @@ package org.freertr.cfg;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.auth.authLocal;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
@@ -20,7 +21,8 @@ public class cfgMenuK implements Comparable<cfgMenuK>, cfgGeneric {
      */
     public final static userFilter[] defaultL = {
         new userFilter("menu key .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
-        new userFilter("menu key .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ignore-case", null)
+        new userFilter("menu key .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ignore-case", null),
+        new userFilter("menu key .*", cmds.tabulator + cmds.negated + cmds.tabulator + "hidden", null)
     };
 
     /**
@@ -37,6 +39,11 @@ public class cfgMenuK implements Comparable<cfgMenuK>, cfgGeneric {
      * ignore case
      */
     public boolean ignoreCase;
+
+    /**
+     * hide commands
+     */
+    public boolean hidden = false;
 
     /**
      * letters of menu
@@ -61,6 +68,7 @@ public class cfgMenuK implements Comparable<cfgMenuK>, cfgGeneric {
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "rename", "rename this menu");
         l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
+        l.add(null, false, 1, new int[]{-1}, "hidden", "hide command");
         l.add(null, false, 1, new int[]{-1}, "ignore-case", "ignore case on matching");
         l.add(null, false, 1, new int[]{2}, "letter", "set letter to configure");
         l.add(null, false, 2, new int[]{3, -1}, "<str>", "menu item");
@@ -75,9 +83,14 @@ public class cfgMenuK implements Comparable<cfgMenuK>, cfgGeneric {
         l.add("menu key " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
         cmds.cfgLine(l, !ignoreCase, cmds.tabulator, "ignore-case", "");
+        cmds.cfgLine(l, !hidden, cmds.tabulator, "hidden", "");
         for (int i = 0; i < letter.size(); i++) {
             cfgMenuKentry ntry = letter.get(i);
-            l.add(cmds.tabulator + "letter " + ntry.name + " command " + ntry.command);
+            String a = ntry.command;
+            if (hidden) {
+                a = authLocal.passwdEncode(a, (filter & 2) != 0);
+            }
+            l.add(cmds.tabulator + "letter " + ntry.name + " command " + a);
             l.add(cmds.tabulator + "letter " + ntry.name + " text " + ntry.text);
         }
         l.add(cmds.tabulator + cmds.finish);
@@ -116,6 +129,10 @@ public class cfgMenuK implements Comparable<cfgMenuK>, cfgGeneric {
             name = a;
             return;
         }
+        if (a.equals("hidden")) {
+            hidden = !negated;
+            return;
+        }
         if (!a.equals("letter")) {
             cmd.badCmd();
             return;
@@ -128,7 +145,11 @@ public class cfgMenuK implements Comparable<cfgMenuK>, cfgGeneric {
         }
         a = cmd.word();
         if (a.equals("command")) {
-            ntry.command = cmd.getRemaining();
+            a = authLocal.passwdDecode(cmd.getRemaining());
+            if (a == null) {
+                return;
+            }
+            ntry.command = a;
             if (negated) {
                 letter.del(ntry);
             }

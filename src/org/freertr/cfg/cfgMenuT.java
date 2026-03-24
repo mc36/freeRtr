@@ -2,6 +2,7 @@ package org.freertr.cfg;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.auth.authLocal;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
@@ -24,7 +25,8 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
      * defaults text
      */
     public final static userFilter[] defaultL = {
-        new userFilter("menu tui .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null)
+        new userFilter("menu tui .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
+        new userFilter("menu tui .*", cmds.tabulator + cmds.negated + cmds.tabulator + "hidden", null)
     };
 
     /**
@@ -36,6 +38,11 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
      * description
      */
     public String description;
+
+    /**
+     * hide commands
+     */
+    public boolean hidden = false;
 
     /**
      * groups of menu
@@ -60,6 +67,7 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "text");
         l.add(null, false, 1, new int[]{2}, "rename", "rename this menu");
         l.add(null, false, 2, new int[]{-1}, "<str>", "set new name");
+        l.add(null, false, 1, new int[]{-1}, "hidden", "hide command");
         l.add(null, false, 1, new int[]{2}, "entry", "add an entry");
         l.add(null, false, 2, new int[]{3}, "<str>", "group name");
         l.add(null, false, 3, new int[]{4}, "<str>", "entry name");
@@ -70,11 +78,16 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
         List<String> l = new ArrayList<String>();
         l.add("menu tui " + name);
         cmds.cfgLine(l, description == null, cmds.tabulator, "description", description);
+        cmds.cfgLine(l, !hidden, cmds.tabulator, "hidden", "");
         for (int o = 0; o < group.size(); o++) {
             cfgMenuTgroup grp = group.get(o);
             for (int i = 0; i < grp.entry.size(); i++) {
                 cfgMenuTentry ent = grp.entry.get(i);
-                l.add(cmds.tabulator + "entry " + grp.name + " " + ent.name + " " + ent.exec);
+                String a = ent.exec;
+                if (hidden) {
+                    a = authLocal.passwdEncode(a, (filter & 2) != 0);
+                }
+                l.add(cmds.tabulator + "entry " + grp.name + " " + ent.name + " " + a);
             }
         }
         l.add(cmds.tabulator + cmds.finish);
@@ -109,13 +122,21 @@ public class cfgMenuT implements Comparable<cfgMenuT>, cfgGeneric {
             name = a;
             return;
         }
+        if (a.equals("hidden")) {
+            hidden = !negated;
+            return;
+        }
         if (!a.equals("entry")) {
             cmd.badCmd();
             return;
         }
         cfgMenuTgroup grp = new cfgMenuTgroup(cmd.word());
         a = cmd.word();
-        cfgMenuTentry ent = new cfgMenuTentry(a, cmd.getRemaining());
+        String s = authLocal.passwdDecode(cmd.getRemaining());
+        if (s == null) {
+            return;
+        }
+        cfgMenuTentry ent = new cfgMenuTentry(a, s);
         if (!negated) {
             int i = findGrp(grp.name);
             if (i >= 0) {
