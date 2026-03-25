@@ -428,7 +428,12 @@ public class authLocalMenu {
         for (int i = 0; i < database.users.size(); i++) {
             authLocalEntry ent = database.users.get(i);
             String a = "" + ent.group;
-            if ((a.indexOf(flt) < 0) && (ent.description.indexOf(flt) < 0)) {
+            boolean ned = a.indexOf(flt) >= 0;
+            a = "" + ent.description;
+            ned |= a.indexOf(flt) >= 0;
+            a = "" + ent.remark;
+            ned |= a.indexOf(flt) >= 0;
+            if (!ned) {
                 continue;
             }
             int o = a.length();
