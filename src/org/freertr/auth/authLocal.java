@@ -433,14 +433,20 @@ public class authLocal extends authGeneric {
                     lin[i] = lin[i].replaceAll("\"\"", "\"");
                 }
                 authLocalEntry ent = new authLocalEntry();
-                ent.username = "" + bits.str2time(cfgAll.timeZoneName, lin[9]);
+                long tim = bits.str2time(cfgAll.timeZoneName, lin[9]);
                 ent.group = lin[1];
                 ent.remark = lin[3];
                 ent.password = lin[4];
                 ent.description = lin[5];
                 ent.hidata = lin[6].getBytes();
                 ent.setOtpUrl(lin[7]);
-                users.add(ent);
+                for (;;) {
+                    ent.username = "" + tim;
+                    if (users.add(ent) == null) {
+                        break;
+                    }
+                    tim++;
+                }
             }
             return false;
         }

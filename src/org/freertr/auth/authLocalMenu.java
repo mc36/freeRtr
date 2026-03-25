@@ -29,6 +29,8 @@ public class authLocalMenu {
 
     private List<authLocalEntry> buf;
 
+    private int usr;
+
     private int max;
 
     /**
@@ -54,6 +56,15 @@ public class authLocalMenu {
         }
         if (!prv && !database.menuGst) {
             return false;
+        }
+        usr = 0;
+        for (int i = 0; i < database.users.size(); i++) {
+            authLocalEntry ent = database.users.get(i);
+            String a = ent.remark + "";
+            int o = a.length();
+            if (o > usr) {
+                usr = o;
+            }
         }
         changed = false;
         console.putCls();
@@ -144,6 +155,12 @@ public class authLocalMenu {
             case 0x800d: // down
                 doKeyDn();
                 return false;
+            case 0x800e: // left
+                doKeyLft();
+                return false;
+            case 0x800f: // right
+                doKeyRgt();
+                return false;
             case 0x8014: // f1
                 doKeyF1();
                 return false;
@@ -176,6 +193,14 @@ public class authLocalMenu {
 
     private void doKeyDn() {
         cur++;
+    }
+
+    private void doKeyLft() {
+        usr--;
+    }
+
+    private void doKeyRgt() {
+        usr++;
     }
 
     private void doKeyHom() {
@@ -427,6 +452,13 @@ public class authLocalMenu {
         if (beg > bs) {
             beg = bs;
         }
+        if (usr < 0) {
+            usr = 0;
+        }
+        i = console.sizX - 5;
+        if (usr > i) {
+            usr = i;
+        }
     }
 
     private void doDraw(boolean clr) {
@@ -479,7 +511,8 @@ public class authLocalMenu {
         }
         authLocalEntry ent = buf.get(lin);
         console.putStr(0, ln + 1, bg, fg, false, "" + ent.group);
-        console.putStr(max + 1, ln + 1, bg, fg, false, "" + ent.description);
+        console.putStr(max + 1, ln + 1, bg, fg, false, "" + ent.remark);
+        console.putStr(usr + max + 1, ln + 1, bg, fg, false, " " + ent.description);
     }
 
     private void putFill(int ln, int bg, int fg, int ch) {
