@@ -125,6 +125,9 @@ public class authLocalMenu {
             case 0x0277: // ctrl+w
                 doKeyClr();
                 return false;
+            case 0x0279: // ctrl+y
+                doKeyUrl();
+                return false;
             case 0x0275: // ctrl+u
                 doKeyUsr();
                 return false;
@@ -163,6 +166,12 @@ public class authLocalMenu {
                 return false;
             case 0x800f: // right
                 doKeyRgt();
+                return false;
+            case 0x820e: // ctrl+left
+                doKeyCtLft();
+                return false;
+            case 0x820f: // ctrl+right
+                doKeyCtRgt();
                 return false;
             case 0x8014: // f1
                 doKeyF1();
@@ -204,6 +213,14 @@ public class authLocalMenu {
 
     private void doKeyRgt() {
         usr++;
+    }
+
+    private void doKeyCtLft() {
+        usr -= 8;
+    }
+
+    private void doKeyCtRgt() {
+        usr += 8;
     }
 
     private void doKeyHom() {
@@ -266,6 +283,7 @@ public class authLocalMenu {
         l.add("ctrl+o - copy otp code");
         l.add("ctrl+p - copy password");
         l.add("ctrl+u - copy username");
+        l.add("ctrl+y - copy entry name");
         l.add("ctrl+g - generate password");
         l.add("ctrl+a - move up");
         l.add("ctrl+z - move down");
@@ -351,6 +369,14 @@ public class authLocalMenu {
         database.users.del(ent);
         changed = true;
         doFilter();
+    }
+
+    private void doKeyUrl() {
+        if (cur >= buf.size()) {
+            return;
+        }
+        authLocalEntry ent = buf.get(cur);
+        pipeScreen.sendClp(console.pipe, "" + ent.description);
     }
 
     private void doKeyUsr() {
