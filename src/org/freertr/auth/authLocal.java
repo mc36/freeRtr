@@ -364,6 +364,8 @@ public class authLocal extends authGeneric {
         l.add(null, false, 4, new int[]{4, -1}, "[text]", "seed of user");
         l.add(null, false, 3, new int[]{4}, "autocommand", "set automatic command");
         l.add(null, false, 4, new int[]{4, -1}, "[text]", "autocommand of user");
+        l.add(null, false, 3, new int[]{4}, "group", "set group of user");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "group of user");
         l.add(null, false, 3, new int[]{4}, "description", "specify description");
         l.add(null, false, 4, new int[]{4, -1}, "<str>", "description");
         l.add(null, false, 3, new int[]{4}, "countdown", "set counter");

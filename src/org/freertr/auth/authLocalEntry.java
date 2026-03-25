@@ -48,6 +48,11 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
     protected String description = null;
 
     /**
+     * group of user
+     */
+    protected String group = null;
+
+    /**
      * password of user
      */
     protected String password = null;
@@ -151,6 +156,9 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
         if (description != null) {
             lst.add(beg + "description " + description);
         }
+        if (group != null) {
+            lst.add(beg + "group " + group);
+        }
         if (password != null) {
             lst.add(beg + "password " + authLocal.passwdEncode(password, (filter & 2) != 0));
         }
@@ -219,6 +227,13 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
             description = cmd.getRemaining();
             if (neg) {
                 description = null;
+            }
+            return false;
+        }
+        if (s.equals("group")) {
+            group = cmd.getRemaining();
+            if (neg) {
+                group = null;
             }
             return false;
         }
@@ -473,6 +488,7 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
     public List<String> toMenu(boolean otp) {
         List<String> res = new ArrayList<String>();
         res.add("nam " + description);
+        res.add("grp " + group);
         res.add("pwd " + password);
         res.add("otp " + (otp ? getOtpPass(false) : getOtpUrl()));
         res.add("---");
@@ -483,7 +499,7 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
         for (int i = 0; i < hidata.length; i++) {
             int o = hidata[i] & 0xff;
             switch (o) {
-                case 0:
+                case 10:
                     res.add(a);
                     a = "";
                     break;
@@ -504,6 +520,8 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
         if (lst == null) {
             return;
         }
+        description = "";
+        group = "";
         password = "";
         otpseed = null;
         int i = 0;
@@ -521,6 +539,10 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
                 description = cmd.getRemaining();
                 continue;
             }
+            if (a.equals("grp")) {
+                group = cmd.getRemaining();
+                continue;
+            }
             if (a.equals("pwd")) {
                 password = cmd.getRemaining();
                 continue;
@@ -534,7 +556,7 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
         hidata = new byte[0];
         for (; i < lst.size(); i++) {
             byte[] buf = lst.get(i).getBytes();
-            buf = bits.byteConcat(buf, new byte[1]);
+            buf = bits.byteConcat(buf, new byte[]{10});
             hidata = bits.byteConcat(hidata, buf);
         }
         if (hidata.length < 1) {

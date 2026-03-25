@@ -29,6 +29,8 @@ public class authLocalMenu {
 
     private List<authLocalEntry> buf;
 
+    private int max;
+
     /**
      * create instance
      *
@@ -295,12 +297,10 @@ public class authLocalMenu {
         if (!database.menuWrt) {
             return;
         }
-        if (cur >= buf.size()) {
-            return;
-        }
         authLocalEntry ent = new authLocalEntry();
         ent.fromMenu(new ArrayList<String>());
         ent.description = "new";
+        ent.group = "new";
         ent.username = "" + bits.getTime();
         database.users.add(ent);
         changed = true;
@@ -387,13 +387,16 @@ public class authLocalMenu {
 
     private void doFilter() {
         buf = new ArrayList<authLocalEntry>();
+        max = 0;
         for (int i = 0; i < database.users.size(); i++) {
             authLocalEntry ent = database.users.get(i);
-            if (ent.description == null) {
+            String a = "" + ent.group;
+            if ((a.indexOf(flt) < 0) && (ent.description.indexOf(flt) < 0)) {
                 continue;
             }
-            if (ent.description.indexOf(flt) < 0) {
-                continue;
+            int o = a.length();
+            if (max < o) {
+                max = o;
             }
             buf.add(ent);
         }
@@ -475,7 +478,8 @@ public class authLocalMenu {
             return;
         }
         authLocalEntry ent = buf.get(lin);
-        console.putStr(0, ln + 1, bg, fg, false, ent.description);
+        console.putStr(0, ln + 1, bg, fg, false, "" + ent.group);
+        console.putStr(max + 1, ln + 1, bg, fg, false, "" + ent.description);
     }
 
     private void putFill(int ln, int bg, int fg, int ch) {
