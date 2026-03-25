@@ -332,6 +332,9 @@ public class prtTmux implements ipPrt, ifcDn {
      * @param pck packet
      */
     public void sendPack(packHolder pck) {
+        if (sendingIfc == null) {
+            return;
+        }
         cntr.tx(pck);
         int i = pck.msbGetW(0);
         pck.getSkip(2);

@@ -315,6 +315,9 @@ public class prtGre implements ipPrt, ifcDn {
      * @param pck packet
      */
     public void sendPack(packHolder pck) {
+        if (sendingIfc == null) {
+            return;
+        }
         cntr.tx(pck);
         int typ = pck.msbGetW(0);
         pck.getSkip(2);

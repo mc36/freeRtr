@@ -269,6 +269,9 @@ public class prtIcmptun implements ipPrt, ifcDn {
      * @param pck packet
      */
     public void sendPack(packHolder pck) {
+        if (sendingIfc == null) {
+            return;
+        }
         cntr.tx(pck);
         pck.merge2beg();
         if (tunnelKey < 0) {

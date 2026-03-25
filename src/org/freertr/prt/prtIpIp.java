@@ -408,6 +408,9 @@ class prtIpIpHnd implements ipPrt {
     }
 
     public void sendPack(packHolder pck) {
+        if (sendingIfc == null) {
+            return;
+        }
         cntr.tx(pck);
         if (debugger.prtIpIpTraf) {
             logger.debug("tx " + pck.IPsrc + " -> " + pck.IPtrg + " pr=" + pck.IPprt);

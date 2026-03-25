@@ -215,6 +215,9 @@ public class prtPckOip implements ipPrt, ifcDn {
      * @param pck packet
      */
     public void sendPack(packHolder pck) {
+        if (sendingIfc == null) {
+            return;
+        }
         cntr.tx(pck);
         pck.putDefaults();
         if (sendingTTL >= 0) {

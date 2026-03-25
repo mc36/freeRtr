@@ -256,6 +256,9 @@ public class prtIpcomp implements ipPrt, ifcDn {
      * @param pck packet
      */
     public void sendPack(packHolder pck) {
+        if (sendingIfc == null) {
+            return;
+        }
         cntr.tx(pck);
         int o = pck.msbGetW(0);
         pck.getSkip(2);
