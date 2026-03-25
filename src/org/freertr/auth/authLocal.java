@@ -332,6 +332,8 @@ public class authLocal extends authGeneric {
      * @param l help
      */
     public void getHelp(userHelp l) {
+        l.add(null, false, 1, new int[]{2}, "import", "import csv file");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "name of file");
         l.add(null, false, 1, new int[]{2}, "allowed", "allow one command");
         l.add(null, false, 2, new int[]{2, -1}, "<text>", "command");
         l.add(null, false, 1, new int[]{2}, "forbidden", "forbid one command");
@@ -366,6 +368,8 @@ public class authLocal extends authGeneric {
         l.add(null, false, 4, new int[]{4, -1}, "[text]", "autocommand of user");
         l.add(null, false, 3, new int[]{4}, "group", "set group of user");
         l.add(null, false, 4, new int[]{4, -1}, "[text]", "group of user");
+        l.add(null, false, 3, new int[]{4}, "remark", "specify remark");
+        l.add(null, false, 4, new int[]{4, -1}, "[text]", "remarks");
         l.add(null, false, 3, new int[]{4}, "description", "specify description");
         l.add(null, false, 4, new int[]{4, -1}, "<str>", "description");
         l.add(null, false, 3, new int[]{4}, "countdown", "set counter");
@@ -402,6 +406,43 @@ public class authLocal extends authGeneric {
         if (a.equals(cmds.negated)) {
             negated = true;
             a = cmd.word();
+        }
+        if (a.equals("import")) {
+            List<String> lst = bits.txt2buf(cmd.getRemaining());
+            if (lst == null) {
+                return false;
+            }
+            int pos = 1;
+            for (; pos < lst.size();) {
+                String s = "";
+                for (; pos < lst.size();) {
+                    a = lst.get(pos);
+                    pos++;
+                    s += a;
+                    if (a.endsWith("\",\"")) {
+                        continue;
+                    }
+                    if (a.endsWith("\"")) {
+                        break;
+                    }
+                    s += (char) 10;
+                }
+                s = "\"," + s + ",\"";
+                String[] lin = s.split("\"\\,\"");
+                for (int i = 0; i < lin.length; i++) {
+                    lin[i] = lin[i].replaceAll("\"\"", "\"");
+                }
+                authLocalEntry ent = new authLocalEntry();
+                ent.username = "" + bits.str2time(cfgAll.timeZoneName, lin[9]);
+                ent.group = lin[1];
+                ent.remark = lin[3];
+                ent.password = lin[4];
+                ent.description = lin[5];
+                ent.hidata = lin[6].getBytes();
+                ent.setOtpUrl(lin[7]);
+                users.add(ent);
+            }
+            return false;
         }
         if (a.equals("forbidden")) {
             a = cmd.getRemaining().trim();

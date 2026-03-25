@@ -48,6 +48,11 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
     protected String description = null;
 
     /**
+     * remark of user
+     */
+    protected String remark = null;
+
+    /**
      * group of user
      */
     protected String group = null;
@@ -156,6 +161,9 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
         if (description != null) {
             lst.add(beg + "description " + description);
         }
+        if (remark != null) {
+            lst.add(beg + "remark " + remark);
+        }
         if (group != null) {
             lst.add(beg + "group " + group);
         }
@@ -234,6 +242,13 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
             group = cmd.getRemaining();
             if (neg) {
                 group = null;
+            }
+            return false;
+        }
+        if (s.equals("remark")) {
+            remark = cmd.getRemaining();
+            if (neg) {
+                remark = null;
             }
             return false;
         }
@@ -488,6 +503,7 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
     public List<String> toMenu(boolean otp) {
         List<String> res = new ArrayList<String>();
         res.add("nam " + description);
+        res.add("usr " + remark);
         res.add("grp " + group);
         res.add("pwd " + password);
         res.add("otp " + (otp ? getOtpPass(false) : getOtpUrl()));
@@ -521,6 +537,7 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
             return;
         }
         description = "";
+        remark = "";
         group = "";
         password = "";
         otpseed = null;
@@ -537,6 +554,10 @@ public class authLocalEntry implements Comparable<authLocalEntry> {
             }
             if (a.equals("nam")) {
                 description = cmd.getRemaining();
+                continue;
+            }
+            if (a.equals("usr")) {
+                remark = cmd.getRemaining();
                 continue;
             }
             if (a.equals("grp")) {
