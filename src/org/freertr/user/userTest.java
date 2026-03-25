@@ -120,6 +120,7 @@ import org.freertr.enc.encPrtbuf;
 import org.freertr.enc.encThrift;
 import org.freertr.enc.encUrl;
 import org.freertr.serv.servP4lang;
+import org.freertr.spf.spfGraph;
 import org.freertr.util.syncInt;
 
 /**
@@ -164,6 +165,20 @@ public class userTest {
         cfgAlias alias = cfgAll.aliasFind(a, cfgAlias.aliasType.test, false);
         if (alias != null) {
             return alias;
+        }
+        if (a.equals("graph")) {
+            spfGraph g = new spfGraph(true, null, false);
+            String s = cmd.word();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                g.addLink(s, a, 10, null, null);
+                s = a;
+            }
+            rdr.putStrArr(g.getRes());
+            return null;
         }
         if (a.equals("p4lang")) {
             servP4lang srv = cfgAll.srvrFind(new servP4lang(), cfgAll.dmnP4lang, cmd.word());

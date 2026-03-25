@@ -2954,6 +2954,8 @@ public class userExec {
         hl.add(null, false, 8, new int[]{-1}, "<str>", "target address");
         cfgAll.aliasHelps(cfgAlias.aliasType.pckt, 2, hl);
         hl.add(null, false, 1, new int[]{2}, "test", "test various things");
+        hl.add(null, true, 2, new int[]{3}, "graph", "graph export testing");
+        hl.add(null, false, 3, new int[]{3, -1}, "<str>", "hop to add");
         hl.add(null, true, 2, new int[]{3}, "p4lang", "p4lang protocol api testing");
         hl.add(cfgAll.dmnP4lang.listServers(), false, 3, new int[]{4}, "<name:loc>", "server name");
         hl.add(null, false, 4, new int[]{4, -1}, "<str>", "string to send");
