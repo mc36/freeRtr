@@ -429,16 +429,16 @@ public class authLocalMenu {
             authLocalEntry ent = database.users.get(i);
             String a = "" + ent.group;
             boolean ned = a.indexOf(flt) >= 0;
+            int o = a.length();
+            if (max < o) {
+                max = o;
+            }
             a = "" + ent.description;
             ned |= a.indexOf(flt) >= 0;
             a = "" + ent.remark;
             ned |= a.indexOf(flt) >= 0;
             if (!ned) {
                 continue;
-            }
-            int o = a.length();
-            if (max < o) {
-                max = o;
             }
             buf.add(ent);
         }
