@@ -9,8 +9,8 @@
 .bad { color: red }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v26.3.20-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2026-03-20 08:46:26, took 01:18:12, with 1 workers, on 155 cases, 0 failed, 0 traces, 0 retries<br/>
+release: freeRouter v26.3.26-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2026-03-27 04:57:37, took 03:10:02, with 1 workers, on 155 cases, 3 failed, 0 traces, 22 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -87,7 +87,7 @@ jvm: java -Xmx256m -jar rtr.jar, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ike212.tst">intop1-ike212.tst</a></td><td>success</td><td>interop1: ike2 with group14</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ike213.tst">intop1-ike213.tst</a></td><td>success</td><td>interop1: ike2 with group15</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ike214.tst">intop1-ike214.tst</a></td><td>success</td><td>interop1: ike2 with group16</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop1-ike215.tst">intop1-ike215.tst</a></td><td>success</td><td>interop1: ike2 with group24</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-ike215.tst">intop1-ike215.tst</a></td><td>#6-run-r1 tping 100 120 2.2.2.2 vrf v1</td><td>interop1: ike2 with group24</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ike216.tst">intop1-ike216.tst</a></td><td>success</td><td>interop1: ike2 with aes128gcm</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ike217.tst">intop1-ike217.tst</a></td><td>success</td><td>interop1: ike2 with aes256gcm</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-ike218.tst">intop1-ike218.tst</a></td><td>success</td><td>interop1: ike2 with group19</td></tr>
@@ -112,7 +112,7 @@ jvm: java -Xmx256m -jar rtr.jar, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis16.tst">intop1-isis16.tst</a></td><td>success</td><td>interop1: isis lsp md5 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis17.tst">intop1-isis17.tst</a></td><td>success</td><td>interop1: integrated isis multi-topology</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis18.tst">intop1-isis18.tst</a></td><td>success</td><td>interop1: isis sha1 authentication</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis19.tst">intop1-isis19.tst</a></td><td>success</td><td>interop1: isis lsp sha1 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-isis19.tst">intop1-isis19.tst</a></td><td>#6-run-r1 tping 100 60 2.2.2.2 vrf v1 sou lo0</td><td>interop1: isis lsp sha1 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis20.tst">intop1-isis20.tst</a></td><td>success</td><td>interop1: isis sha256 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis21.tst">intop1-isis21.tst</a></td><td>success</td><td>interop1: isis lsp sha256 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-isis22.tst">intop1-isis22.tst</a></td><td>success</td><td>interop1: isis sha384 authentication</td></tr>
@@ -167,6 +167,6 @@ jvm: java -Xmx256m -jar rtr.jar, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-tacacs.tst">intop1-tacacs.tst</a></td><td>success</td><td>interop1: tacacs</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-tun01.tst">intop1-tun01.tst</a></td><td>success</td><td>interop1: gre tunnel</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-tun02.tst">intop1-tun02.tst</a></td><td>success</td><td>interop1: ipip tunnel</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop1-tun03.tst">intop1-tun03.tst</a></td><td>success</td><td>interop1: vxlan tunnel</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop1-tun03.tst">intop1-tun03.tst</a></td><td>#6-run-r1 tping 100 10 2.2.2.2 vrf v1</td><td>interop1: vxlan tunnel</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop1-tun04.tst">intop1-tun04.tst</a></td><td>success</td><td>interop1: udp tunnel</td></tr>
 </tbody></table></body></html>

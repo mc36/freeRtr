@@ -71,7 +71,7 @@ qc pass: interop1: ike2 with group5
 qc pass: interop1: ike2 with group14
 qc pass: interop1: ike2 with group15
 qc pass: interop1: ike2 with group16
-qc pass: interop1: ike2 with group24
+failed: interop1: ike2 with group24
 qc pass: interop1: ike2 with aes128gcm
 qc pass: interop1: ike2 with aes256gcm
 qc pass: interop1: ike2 with group19
@@ -96,7 +96,7 @@ qc pass: interop1: isis md5 authentication
 qc pass: interop1: isis lsp md5 authentication
 qc pass: interop1: integrated isis multi-topology
 qc pass: interop1: isis sha1 authentication
-qc pass: interop1: isis lsp sha1 authentication
+failed: interop1: isis lsp sha1 authentication
 qc pass: interop1: isis sha256 authentication
 qc pass: interop1: isis lsp sha256 authentication
 qc pass: interop1: isis sha384 authentication
@@ -151,7 +151,7 @@ qc pass: interop1: ssh
 qc pass: interop1: tacacs
 qc pass: interop1: gre tunnel
 qc pass: interop1: ipip tunnel
-qc pass: interop1: vxlan tunnel
+failed: interop1: vxlan tunnel
 qc pass: interop1: udp tunnel
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4

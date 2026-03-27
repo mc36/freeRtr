@@ -174,6 +174,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         new userFilter("sensor .*", cmds.tabulator + "column .* type uint64", null),
         new userFilter("sensor .*", cmds.tabulator + "column .* split null null null", null),
         new userFilter("sensor .*", cmds.tabulator + "column .* help null", null),
+        new userFilter("sensor .*", cmds.tabulator + "column .* threshold 0", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local interval", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local delay", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local memory", null),
@@ -258,6 +259,8 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         l.add(null, false, 4, new int[]{-1}, "sint64", "signed 64bit integer");
         l.add(null, false, 4, new int[]{-1}, "float", "32bit floating point number");
         l.add(null, false, 4, new int[]{-1}, "double", "64bit floating point number");
+        l.add(null, false, 3, new int[]{4}, "threshold", "specify alarm limit");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "percent");
         l.add(null, false, 3, new int[]{4}, "style", "set style");
         l.add(null, false, 4, new int[]{-1}, "gauge", "gauge");
         l.add(null, false, 4, new int[]{-1}, "counter", "counter");
@@ -330,6 +333,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             l.add(cn + " name " + col.nam + a);
             l.add(cn + " style " + col.sty);
             l.add(cn + " type " + servStreamingMdt.type2string(col.typ));
+            l.add(cn + " threshold " + col.thr);
             l.add(cn + " help " + col.hlp);
             l.add(cn + " split " + col.splS + " " + col.splL + " " + col.splR);
             for (int i = 0; i < col.reps.size(); i++) {
@@ -570,6 +574,14 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             col.sty = cmd.word();
             return;
         }
+        if (s.equals("threshold")) {
+            if (negated) {
+                col.thr = 0;
+            } else {
+                col.thr = bits.str2num(cmd.word());
+            }
+            return;
+        }
         if (s.equals("split")) {
             if (negated) {
                 col.splS = null;
@@ -803,7 +815,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         return beg;
     }
 
-    private void doLineMem(String beg, int col, long mul, String val) {
+    private void doLineMem(String beg, int col, long mul, int thr, String val) {
         cfgSensorMem ntry = new cfgSensorMem(beg, col);
         cfgSensorMem old = locMem.add(ntry);
         if (old != null) {
@@ -815,6 +827,10 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         cntr.packRx = bits.str2long(val) * mul;
         cntr.packTx = cntr.packRx;
         ntry.hist.update(cntr, false);
+        String a = ntry.hist.threshold(thr);
+        if (a != null) {
+            logger.info("sensor " + name + " " + beg + " column " + col + " " + a);
+        }
     }
 
     private void doLineMem(String a) {
@@ -842,16 +858,16 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             }
             a = doReplaces(cl.get(cc.num), cc.reps);
             if (cc.splS == null) {
-                doLineMem(beg, cc.num, mul, a);
+                doLineMem(beg, cc.num, mul, cc.thr, a);
                 continue;
             }
             int i = a.indexOf(cc.splS);
             if (i < 0) {
-                doLineMem(beg, cc.num, mul, a);
+                doLineMem(beg, cc.num, mul, cc.thr, a);
                 continue;
             }
-            doLineMem(beg, cc.num, mul, a.substring(0, i));
-            doLineMem(beg, cc.num, mul, a.substring(i + cc.splS.length(), a.length()));
+            doLineMem(beg, cc.num, mul, cc.thr, a.substring(0, i));
+            doLineMem(beg, cc.num, mul, 0, a.substring(i + cc.splS.length(), a.length()));
         }
     }
 
@@ -1476,6 +1492,8 @@ class cfgSensorCol implements Comparable<cfgSensorCol> {
     public String splL;
 
     public String splR;
+
+    public int thr;
 
     public int typ = servStreamingMdt.fnUint64;
 

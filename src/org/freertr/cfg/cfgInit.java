@@ -1729,6 +1729,7 @@ public class cfgInit implements Runnable {
                 if ((rnd % 60) != 0) {
                     continue;
                 }
+                ifcThread.alertIfaces();
                 ipFwdTab.alertVrfs();
                 clntDns.purgeLocalCache(false);
                 stateSave();

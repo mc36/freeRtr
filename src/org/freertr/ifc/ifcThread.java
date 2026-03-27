@@ -125,6 +125,19 @@ public abstract class ifcThread implements ifcDn, Runnable {
     }
 
     /**
+     * check for stalled interfaces
+     */
+    public static void alertIfaces() {
+        for (int i = cfgAll.ifaces.size() - 1; i >= 0; i--) {
+            cfgIfc ntry = cfgAll.ifaces.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry.alertHistory();
+        }
+    }
+
+    /**
      * show interface stalls
      *
      * @return show output

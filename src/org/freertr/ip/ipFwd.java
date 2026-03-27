@@ -362,6 +362,11 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     public int thresholdT;
 
     /**
+     * local threshold for this vrf
+     */
+    public int thresholdL;
+
+    /**
      * route threshold for this vrf
      */
     public int thresholdR;
@@ -675,6 +680,10 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         a = hstryH.threshold(thresholdT);
         if (a != null) {
             logger.info("vrf " + vrfName + " hwtraffic " + a);
+        }
+        a = hstryL.threshold(thresholdL);
+        if (a != null) {
+            logger.info("vrf " + vrfName + " local " + a);
         }
         a = hstryR.threshold(thresholdR);
         if (a != null) {

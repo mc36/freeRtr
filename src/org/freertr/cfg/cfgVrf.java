@@ -232,6 +232,8 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         new userFilter("vrf definition .*", cmds.tabulator + "threshold6traffic 0", null),
         new userFilter("vrf definition .*", cmds.tabulator + "threshold4route 0", null),
         new userFilter("vrf definition .*", cmds.tabulator + "threshold6route 0", null),
+        new userFilter("vrf definition .*", cmds.tabulator + "threshold4local 0", null),
+        new userFilter("vrf definition .*", cmds.tabulator + "threshold6local 0", null),
         new userFilter("", "ipv[46] nat .* sequence .* timeout 300000", null),
         new userFilter("", "ipv[46] nat .* sequence .* sessions 0", null),
         new userFilter("", "ipv[46] flow .* parameters ", null)
@@ -641,6 +643,8 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(cmds.tabulator + "threshold6traffic " + fwd6.thresholdT);
         l.add(cmds.tabulator + "threshold4route " + fwd4.thresholdR);
         l.add(cmds.tabulator + "threshold6route " + fwd6.thresholdR);
+        l.add(cmds.tabulator + "threshold4local " + fwd4.thresholdL);
+        l.add(cmds.tabulator + "threshold6local " + fwd6.thresholdL);
         l.add(cmds.tabulator + cmds.finish);
         l.add(cmds.comment);
         if ((filter & 1) == 0) {
@@ -845,6 +849,10 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(null, false, 1, new int[]{2}, "threshold-route", "specify alarm limit");
         l.add(null, false, 1, new int[]{2}, "threshold4route", "specify ipv4 alarm limit");
         l.add(null, false, 1, new int[]{2}, "threshold6route", "specify ipv6 alarm limit");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "percent");
+        l.add(null, false, 1, new int[]{2}, "threshold-local", "specify alarm limit");
+        l.add(null, false, 1, new int[]{2}, "threshold4local", "specify ipv4 alarm limit");
+        l.add(null, false, 1, new int[]{2}, "threshold6local", "specify ipv6 alarm limit");
         l.add(null, false, 2, new int[]{-1}, "<num>", "percent");
     }
 
@@ -1449,6 +1457,20 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
             fwd6.thresholdR = bits.str2num(cmd.word());
             return;
         }
+        if (a.equals("threshold-local")) {
+            int res = bits.str2num(cmd.word());
+            fwd4.thresholdL = res;
+            fwd6.thresholdL = res;
+            return;
+        }
+        if (a.equals("threshold4local")) {
+            fwd4.thresholdL = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("threshold6local")) {
+            fwd6.thresholdL = bits.str2num(cmd.word());
+            return;
+        }
         if (!a.equals(cmds.negated)) {
             cmd.badCmd();
             return;
@@ -1826,6 +1848,19 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         }
         if (a.equals("threshold6route")) {
             fwd6.thresholdR = 0;
+            return;
+        }
+        if (a.equals("threshold-local")) {
+            fwd4.thresholdL = 0;
+            fwd6.thresholdL = 0;
+            return;
+        }
+        if (a.equals("threshold4local")) {
+            fwd4.thresholdL = 0;
+            return;
+        }
+        if (a.equals("threshold6local")) {
+            fwd6.thresholdL = 0;
             return;
         }
         cmd.badCmd();

@@ -229,6 +229,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public int carrierDelay;
 
     /**
+     * truly random variable
+     */
+    public int trafficThreshold;
+
+    /**
      * disable macsec on this interface
      */
     public boolean disableMacsec;
@@ -1537,6 +1542,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ptp receive", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "lacp", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "carrier-delay", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "traffic-threshold", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "udld enable", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "radiotap enable", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "radiotap logging", null),
@@ -6072,6 +6078,23 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     }
 
     /**
+     * update interface history
+     */
+    public void alertHistory() {
+        String a = ethtyp.getHistory().threshold(trafficThreshold);
+        if (a != null) {
+            logger.info("interface " + name + " traffic " + a);
+        }
+        if (ethtyp.hwHstry == null) {
+            return;
+        }
+        a = ethtyp.hwHstry.threshold(trafficThreshold);
+        if (a != null) {
+            logger.info("interface " + name + " hwtraffic " + a);
+        }
+    }
+
+    /**
      * follow tracker
      */
     public void followTracker() {
@@ -6442,11 +6465,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             l.add(cmds.tabulator + "ptp enable");
             cmds.cfgLine(l, !ptp.receive, cmds.tabulator, "ptp receive", "");
         }
-        if (carrierDelay != 0) {
-            l.add(cmds.tabulator + "carrier-delay " + carrierDelay);
-        } else {
-            l.add(cmds.tabulator + "no carrier-delay");
-        }
+        cmds.cfgLine(l, carrierDelay == 0, cmds.tabulator, "carrier-delay", "" + carrierDelay);
+        cmds.cfgLine(l, trafficThreshold == 0, cmds.tabulator, "traffic-threshold", "" + trafficThreshold);
         cmds.cfgLine(l, lacp == null, cmds.tabulator, "lacp", ifcLacp.getCfg(lacp));
         cmds.cfgLine(l, udld == null, cmds.tabulator, "udld enable", "");
         cmds.cfgLine(l, radioTap == null, cmds.tabulator, "radiotap enable", "");
@@ -6998,6 +7018,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 1, new int[]{-1}, "log-link-change", "log link state changes");
         l.add(null, false, 1, new int[]{2}, "carrier-delay", "log link state changes");
         l.add(null, false, 2, new int[]{-1}, "<num>", "time before bringing link up");
+        l.add(null, false, 1, new int[]{2}, "traffic-threshold", "specify traffic alarm limit");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "percent");
         l.add(null, false, 1, new int[]{-1}, "shutdown", "administratively disable interface");
         l.add(null, false, 1, new int[]{-1}, "autostate", "administratively enable interface");
         l.add(null, false, 1, new int[]{2}, "mtu", "change interface maximum transmission unit");
@@ -7791,6 +7813,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (a.equals("carrier-delay")) {
             carrierDelay = bits.str2num(cmd.word());
+            return;
+        }
+        if (a.equals("traffic-threshold")) {
+            trafficThreshold = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("ataoe")) {
@@ -8767,6 +8793,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (a.equals("carrier-delay")) {
             carrierDelay = 0;
+            return;
+        }
+        if (a.equals("traffic-threshold")) {
+            trafficThreshold = 0;
             return;
         }
         if (a.equals("ataoe")) {
