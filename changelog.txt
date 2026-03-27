@@ -18144,3 +18144,6 @@ failed: wireguard over ipv4
 ---------------------------------- 2026-03-25 05:46:08 26.3.25
 no failed: wireguard over ipv4
 qc pass: wireguard over ipv4
+---------------------------------- 2026-03-27 20:54:54 26.3.27
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
