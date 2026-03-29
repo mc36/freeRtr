@@ -1,6 +1,6 @@
 # freeRouter source tree
 
-freeRouter is a free, open source router os process.
+freeRouter is a free, open source router process.
 it speaks routing protocols, and (re)encapsulates packets on interfaces.
 it can export the computed forwarding tables to external dataplanes.
 
