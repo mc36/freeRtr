@@ -30,10 +30,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@latest
+      uses: actions/checkout@v5
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@latest
+      uses: github/codeql-action/init@v5
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
@@ -63,6 +63,6 @@ jobs:
         ./cp.sh
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@latest
+      uses: github/codeql-action/analyze@v5
       with:
         category: "/language:${{matrix.language}}"
