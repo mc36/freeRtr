@@ -49,7 +49,7 @@ jobs:
       run: |
         sudo apt-get -y update || true
         for a in gcc clang libpcap-dev libssl-dev dpdk-dev libbpf-dev libxdp-dev liburing-dev libmnl-dev ; do
-          #sudo apt-get -y install $a || true
+          echo sudo apt-get -y install $a || true
           done
         clang --version
         gcc --version
