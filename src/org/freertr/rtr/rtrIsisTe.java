@@ -75,6 +75,11 @@ public class rtrIsisTe {
     public final static int typLinkMsd = 15;
 
     /**
+     * link application specific
+     */
+    public final static int typLinkApp = 16;
+
+    /**
      * te metric
      */
     public final static int typMetric = 18;
@@ -128,6 +133,51 @@ public class rtrIsisTe {
      * maximum transmission unit
      */
     public final static int typMtu = 28;
+
+    /**
+     * shortest path bridging metric
+     */
+    public final static int typSpbMet = 29;
+
+    /**
+     * shortest path bridging algorithm
+     */
+    public final static int typSpbAlg = 30;
+
+    /**
+     * undirectional delay
+     */
+    public final static int typUniDel = 33;
+
+    /**
+     * undirectional min-max delay
+     */
+    public final static int typRanDel = 34;
+
+    /**
+     * undirectional delay variation
+     */
+    public final static int typVarDel = 35;
+
+    /**
+     * undirectional loss
+     */
+    public final static int typUniLos = 36;
+
+    /**
+     * residual bandwidth
+     */
+    public final static int typResBndwdt = 37;
+
+    /**
+     * available bandwidth
+     */
+    public final static int typFreBndwdt = 38;
+
+    /**
+     * utilized bandwidth
+     */
+    public final static int typUsdBndwdt = 39;
 
     /**
      * create te router id

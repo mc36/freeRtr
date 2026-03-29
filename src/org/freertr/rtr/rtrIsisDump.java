@@ -85,16 +85,26 @@ public class rtrIsisDump {
                     l.add("buffer size: " + bits.msbGetW(tlv.valDat, 0));
                     break;
                 case rtrIsisLsp.tlvExtIsNeigh:
-                    adrI = new addrIsis();
-                    adrI.fromBuf(tlv.valDat, 0);
-                    l.add("ext is reach: " + adrI + " metric=" + (bits.msbGetD(tlv.valDat, 7) >>> 8));
-                    dumpExtIsReach(l, tlv, 11);
+                    for (int ofs = 0; ofs < tlv.valSiz;) {
+                        adrI = new addrIsis();
+                        adrI.fromBuf(tlv.valDat, ofs + 0);
+                        l.add("ext is reach: " + adrI + " metric=" + (bits.msbGetD(tlv.valDat, ofs + 7) >>> 8));
+                        int len = tlv.valDat[ofs + 10] & 0xff;
+                        ofs += 11;
+                        dumpExtIsReach(l, tlv, ofs, len);
+                        ofs += len;
+                    }
                     break;
                 case rtrIsisLsp.tlvIsNeighAttr:
-                    adrI = new addrIsis();
-                    adrI.fromBuf(tlv.valDat, 0);
-                    l.add("is neigh attr: " + adrI + " metric=" + (bits.msbGetD(tlv.valDat, 7) >>> 8));
-                    dumpExtIsReach(l, tlv, 11);
+                    for (int ofs = 0; ofs < tlv.valSiz;) {
+                        adrI = new addrIsis();
+                        adrI.fromBuf(tlv.valDat, ofs + 0);
+                        l.add("is neigh attr: " + adrI + " metric=" + (bits.msbGetD(tlv.valDat, ofs + 7) >>> 8));
+                        int len = tlv.valDat[ofs + 10] & 0xff;
+                        ofs += 11;
+                        dumpExtIsReach(l, tlv, ofs, len);
+                        ofs += len;
+                    }
                     break;
                 case rtrIsisLsp.tlvIsAlias:
                     adrI = new addrIsis();
@@ -180,16 +190,26 @@ public class rtrIsisDump {
                     l.add("ipv6 te id:" + adr6);
                     break;
                 case rtrIsisLsp.tlvMtIsNeigh:
-                    adrI = new addrIsis();
-                    adrI.fromBuf(tlv.valDat, 2);
-                    l.add("mt is reach: " + adrI + " metric=" + (bits.msbGetD(tlv.valDat, 9) >>> 8) + " mtid=" + bits.msbGetW(tlv.valDat, 0));
-                    dumpExtIsReach(l, tlv, 13);
+                    for (int ofs = 2; ofs < tlv.valSiz;) {
+                        adrI = new addrIsis();
+                        adrI.fromBuf(tlv.valDat, ofs + 0);
+                        l.add("mt is reach: " + adrI + " metric=" + (bits.msbGetD(tlv.valDat, ofs + 7) >>> 8) + " mtid=" + bits.msbGetW(tlv.valDat, 0));
+                        int len = tlv.valDat[ofs + 10] & 0xff;
+                        ofs += 11;
+                        dumpExtIsReach(l, tlv, ofs, len);
+                        ofs += len;
+                    }
                     break;
                 case rtrIsisLsp.tlvMtNeighAttr:
-                    adrI = new addrIsis();
-                    adrI.fromBuf(tlv.valDat, 2);
-                    l.add("mt is attr: " + adrI + " metric=" + (bits.msbGetD(tlv.valDat, 9) >>> 8) + " mtid=" + bits.msbGetW(tlv.valDat, 0));
-                    dumpExtIsReach(l, tlv, 13);
+                    for (int ofs = 2; ofs < tlv.valSiz;) {
+                        adrI = new addrIsis();
+                        adrI.fromBuf(tlv.valDat, ofs + 0);
+                        l.add("mt is attr: " + adrI + " metric=" + (bits.msbGetD(tlv.valDat, ofs + 7) >>> 8) + " mtid=" + bits.msbGetW(tlv.valDat, 0));
+                        int len = tlv.valDat[ofs + 10] & 0xff;
+                        ofs += 11;
+                        dumpExtIsReach(l, tlv, ofs, len);
+                        ofs += len;
+                    }
                     break;
                 case rtrIsisLsp.tlvMultiTopo:
                     a = "";
@@ -323,10 +343,10 @@ public class rtrIsisDump {
         }
     }
 
-    private static void dumpExtIsReach(List<String> l, encTlv tlv, int ofs) {
+    private static void dumpExtIsReach(List<String> l, encTlv tlv, int ofs, int len) {
         packHolder pck = new packHolder(true, true);
-        pck.putCopy(tlv.valDat, ofs, 0, tlv.valSiz - ofs);
-        pck.putSkip(tlv.valSiz - ofs);
+        pck.putCopy(tlv.valDat, ofs, 0, len);
+        pck.putSkip(len);
         pck.merge2beg();
         tlv = rtrIsis.getTlv();
         for (;;) {
@@ -362,6 +382,13 @@ public class rtrIsisDump {
                     break;
                 case rtrIsisTe.typUnReserv:
                     l.add("  unreserved: " + (long) Float.intBitsToFloat(bits.msbGetD(tlv.valDat, 0)));
+                    break;
+                case rtrIsisTe.typLinkApp:
+                    l.add("  appl: " + tlv.valDat[0] + " " + tlv.valDat[1]);
+                    ofs = 2;
+                    ofs += tlv.valDat[0] & 0x7f;
+                    ofs += tlv.valDat[1] & 0x7f;
+                    dumpExtIsReach(l, tlv, ofs, tlv.valSiz - ofs);
                     break;
                 case rtrIsisTe.typLoc6adr:
                     addrIPv6 adr6 = new addrIPv6();
@@ -427,6 +454,27 @@ public class rtrIsisDump {
                     addrIsis adrI = new addrIsis();
                     adrI.fromBuf(tlv.valDat, 2);
                     l.add("  adj sid: sysid=" + adrI + " flg=" + bits.toHexB(tlv.valDat[0]) + " lab=" + (bits.msbGetD(tlv.valDat, 8) >>> 8));
+                    break;
+                case rtrIsisTe.typUniDel:
+                    l.add("  uni delay: " + bits.msbGetD(tlv.valDat, 0));
+                    break;
+                case rtrIsisTe.typRanDel:
+                    l.add("  uni delay range: " + bits.msbGetD(tlv.valDat, 0) + " " + bits.msbGetD(tlv.valDat, 4));
+                    break;
+                case rtrIsisTe.typVarDel:
+                    l.add("  uni delay vari: " + bits.msbGetD(tlv.valDat, 0));
+                    break;
+                case rtrIsisTe.typUniLos:
+                    l.add("  uni loss: " + bits.msbGetD(tlv.valDat, 0));
+                    break;
+                case rtrIsisTe.typResBndwdt:
+                    l.add("  resi bandwidth: " + (long) Float.intBitsToFloat(bits.msbGetD(tlv.valDat, 0)));
+                    break;
+                case rtrIsisTe.typFreBndwdt:
+                    l.add("  free bandwidth: " + (long) Float.intBitsToFloat(bits.msbGetD(tlv.valDat, 0)));
+                    break;
+                case rtrIsisTe.typUsdBndwdt:
+                    l.add("  used bandwidth: " + (long) Float.intBitsToFloat(bits.msbGetD(tlv.valDat, 0)));
                     break;
                 default:
                     l.add("  unknown: " + tlv.dump());
@@ -503,6 +551,16 @@ public class rtrIsisDump {
                     break;
                 case rtrIsisSr.typSrCapa: // sr capa
                     l.add("  sr: flg=" + bits.toHexB(tlv.valDat[0]) + " range=" + (bits.msbGetD(tlv.valDat, 1) >>> 8) + " base=" + (bits.msbGetD(tlv.valDat, 6) >>> 8));
+                    break;
+                case 11: // ipv4 te
+                    addrIPv4 adr4 = new addrIPv4();
+                    adr4.fromBuf(tlv.valDat, 0);
+                    l.add("  ipv4 te: " + adr4);
+                    break;
+                case 12: // ipv6 te
+                    addrIPv6 adr6 = new addrIPv6();
+                    adr6.fromBuf(tlv.valDat, 0);
+                    l.add("  ipv6 te: " + adr6);
                     break;
                 case 19: // sr algo
                     l.add("  sr algo: " + bits.byteDump(tlv.valDat, 0, tlv.valSiz));
