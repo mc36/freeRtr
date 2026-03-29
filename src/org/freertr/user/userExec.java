@@ -440,7 +440,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{4}, "bfd", "bidirectional forwarding detection protocol");
         hl.add(null, false, 4, new int[]{5}, "<name:vrf>", "specify routing table");
         hl.add(null, false, 5, new int[]{-1}, "neighbor", "list of neighbors");
-        hl.add(null, false, 3, new int[]{4}, "dlep", "hot dynamic link exchange neighbors");
+        hl.add(null, false, 3, new int[]{4}, "dlep", "dynamic link exchange neighbors");
         hl.add(null, false, 4, new int[]{5}, "<name:ifc>", "specify routing table");
         hl.add(null, false, 5, new int[]{-1}, "neighbor", "list of neighbors");
         hl.add(null, false, 5, new int[]{-1}, "clients", "list of clients");
