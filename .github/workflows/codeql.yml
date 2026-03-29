@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: cpp
+        - language: c
           build-mode: manual
         - language: java
           build-mode: manual
@@ -30,20 +30,26 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
+
+    - name: Setup java
+      uses: actions/setup-java@v5
+      with:
+        distribution: 'temurin'
+        java-version: '25'
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v5
+      uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
 
-    - if: matrix.language == 'cpp'
-      name: build cpp
+    - if: matrix.language == 'c'
+      name: Build c
       run: |
         sudo apt-get -y update || true
         for a in gcc clang libpcap-dev libssl-dev dpdk-dev libbpf-dev libxdp-dev liburing-dev libmnl-dev ; do
-          sudo apt-get -y install $a || true
+          #sudo apt-get -y install $a || true
           done
         clang --version
         gcc --version
@@ -51,10 +57,8 @@ jobs:
         ./c.sh
 
     - if: matrix.language == 'java'
-      name: build java
+      name: Build java
       run: |
-        sudo apt-get update
-        sudo apt-get -y install default-jdk-headless
         javac --version
         java --version
         cd src
@@ -63,6 +67,6 @@ jobs:
         ./cp.sh
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v5
+      uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{matrix.language}}"
