@@ -3833,10 +3833,26 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * as path graph
      *
      * @param idx safi to query
-     * @param cli cli knobs
+     * @param cmd commands to parse
      * @return text
      */
-    public List<String> getAsGraph(int idx, boolean cli) {
+    public List<String> getAsGraph(int idx, cmds cmd) {
+        boolean jsn = false;
+        boolean cli = false;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("json")) {
+                jsn = true;
+                continue;
+            }
+            if (a.equals("cli")) {
+                cli = true;
+                continue;
+            }
+        }
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpDump.updateAsGraph(localAs, lst, neighs.get(i), idx);
@@ -3852,7 +3868,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
         }
         o += 2;
-        spfGraph res = new spfGraph(cli, null, false);
+        spfGraph res = new spfGraph(jsn, cli, null, false);
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlapAsn ntry = lst.get(i);
             res.addLink(clntWhois.asn2mixed(ntry.prev, true), clntWhois.asn2mixed(ntry.asn, true), o - ntry.count, null, null);
@@ -4214,7 +4230,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return graph of spf
      */
     public List<String> getSpfGraph(cmds cmd) {
-        return lspf.lastSpf.listGraphviz(cmd);
+        return lspf.lastSpf.listGraph(cmd);
     }
 
     /**

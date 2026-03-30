@@ -643,7 +643,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return graph of spf
      */
     public List<String> showSpfGraph(cmds cmds) {
-        return lastSpf.listGraphviz(cmds);
+        return lastSpf.listGraph(cmds);
     }
 
     /**

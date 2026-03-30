@@ -464,7 +464,7 @@ public class rtrRift extends ipRtr implements Runnable {
      * @return graph of spf
      */
     public List<String> showSpfGraph(String dir, cmds cmd) {
-        return getSpf(dir).listGraphviz(cmd);
+        return getSpf(dir).listGraph(cmd);
     }
 
     /**

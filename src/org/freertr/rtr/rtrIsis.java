@@ -2490,7 +2490,7 @@ public class rtrIsis extends ipRtr {
      */
     public List<String> showSpfGraph(int level, cmds cmd) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.lastSpf.listGraphviz(cmd);
+        return lev.lastSpf.listGraph(cmd);
     }
 
     /**

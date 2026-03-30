@@ -1157,7 +1157,7 @@ public class rtrOspf4 extends ipRtr {
         if (ara == null) {
             return new ArrayList<String>();
         }
-        return ara.lastSpf.listGraphviz(cmd);
+        return ara.lastSpf.listGraph(cmd);
     }
 
     /**

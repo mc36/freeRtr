@@ -1735,7 +1735,7 @@ class userTesterOne {
                 }
             }
         }
-        spfGraph g = new spfGraph(true, null, false);
+        spfGraph g = new spfGraph(false, true, null, false);
         for (int o = 0; o < procs.size(); o++) {
             userTesterPrc p = procs.get(o);
             for (int i = 0; i < p.conns.size(); i++) {

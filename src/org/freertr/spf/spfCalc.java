@@ -1507,8 +1507,9 @@ public class spfCalc<Ta extends addrType> {
      * @param cmd masks to use
      * @return list
      */
-    public List<String> listGraphviz(cmds cmd) {
+    public List<String> listGraph(cmds cmd) {
         String svg = null;
+        boolean jsn = false;
         boolean cli = false;
         String dns = null;
         boolean nets = false;
@@ -1532,6 +1533,10 @@ public class spfCalc<Ta extends addrType> {
             String a = cmd.word();
             if (a.length() < 1) {
                 break;
+            }
+            if (a.equals("json")) {
+                jsn = true;
+                continue;
             }
             if (a.equals("cli")) {
                 cli = true;
@@ -1601,7 +1606,7 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
         }
-        spfGraph res = new spfGraph(cli, svg, mets);
+        spfGraph res = new spfGraph(jsn, cli, svg, mets);
         for (int o = 0; o < nodes.size(); o++) {
             spfNode<Ta> ntry = nodes.get(o);
             String nam = node2name(ntry, dns, remv);

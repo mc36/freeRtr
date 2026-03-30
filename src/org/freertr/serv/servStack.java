@@ -715,7 +715,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        return cur.spf.listGraphviz(cmd);
+        return cur.spf.listGraph(cmd);
     }
 
     /**

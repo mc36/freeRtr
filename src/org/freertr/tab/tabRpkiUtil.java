@@ -9,6 +9,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.clnt.clntWhois;
 import org.freertr.spf.spfGraph;
 import org.freertr.user.userFormat;
+import org.freertr.util.cmds;
 
 /**
  * route authorization utils
@@ -607,11 +608,27 @@ public class tabRpkiUtil {
      * aspa path graph
      *
      * @param tab table to convert
-     * @param cli cli knobs
+     * @param cmd commands to parse
      * @return text
      */
-    public final static List<String> getAspaGraph(tabGen<tabRpkiAspa> tab, boolean cli) {
-        spfGraph res = new spfGraph(cli, null, false);
+    public final static List<String> getAspaGraph(tabGen<tabRpkiAspa> tab, cmds cmd) {
+        boolean jsn = false;
+        boolean cli = false;
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("json")) {
+                jsn = true;
+                continue;
+            }
+            if (a.equals("cli")) {
+                cli = true;
+                continue;
+            }
+        }
+        spfGraph res = new spfGraph(jsn, cli, null, false);
         for (int o = 0; o < tab.size(); o++) {
             tabRpkiAspa ntry = tab.get(o);
             String a = clntWhois.asn2mixed(ntry.cust, true);

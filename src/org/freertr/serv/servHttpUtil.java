@@ -1303,7 +1303,6 @@ public class servHttpUtil {
             exe.privileged = prv;
             pip.setTime(60000);
             String a = exe.repairCommand(s);
-            r += "#" + a + e;
             exe.executeCommand(a);
             pip = pl.getSide();
             pl.setClose();
