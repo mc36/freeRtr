@@ -65,7 +65,7 @@ public class spfGraph {
         stripComma();
         res.add("] , \"nodes\": [");
         for (int i = 0; i < json.size(); i++) {
-            res.add("{ \"id\": \"" + json.get(i) + "\" },");
+            res.add("{\"id\": \"" + json.get(i) + "\"},");
         }
         stripComma();
         res.add("] }");
