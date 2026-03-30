@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.auth.authLocal;
+import org.freertr.enc.encBase64;
 import org.freertr.pipe.pipeConnect;
 import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeLine;
@@ -172,6 +173,11 @@ public class cfgScrpt implements Comparable<cfgScrpt>, cfgGeneric {
         l.add(null, false, 1, new int[]{-1}, "log-console", "log console activity");
         l.add(null, false, 1, new int[]{2}, "log-collect", "collect console activity");
         l.add(null, false, 2, new int[]{-1}, "<num>", "lines to store");
+        l.add(null, false, 1, new int[]{2}, "import", "import file");
+        l.add(null, false, 2, new int[]{3}, "raw", "as raw text");
+        l.add(null, false, 2, new int[]{3}, "puts", "as puts text");
+        l.add(null, false, 2, new int[]{3}, "bin", "as base64");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "name of file");
         l.add(null, false, 1, new int[]{2}, "sequence", "sequence number of an entry");
         l.add(null, false, 2, new int[]{3, -1}, "<num>", "sequence number");
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "tcl commands");
@@ -282,6 +288,41 @@ public class cfgScrpt implements Comparable<cfgScrpt>, cfgGeneric {
         }
         if (a.equals("runnow")) {
             doRound(null);
+            return;
+        }
+        if (a.equals("import")) {
+            a = cmd.word();
+            List<String> l = null;
+            String b = "puts \"";
+            String e = "\"";
+            if (a.equals("raw")) {
+                l = bits.txt2buf(cmd.getRemaining());
+                b = "";
+                e = "";
+            }
+            if (a.equals("puts")) {
+                l = bits.txt2buf(cmd.getRemaining());
+            }
+            if (a.equals("bin")) {
+                byte[] buf = bits.byteLoad(cmd.getRemaining());
+                if (buf == null) {
+                    cmd.error("error reading");
+                    return;
+                }
+                a = encBase64.encodeBytes(buf);
+                l = bits.str2lst(a);
+            }
+            if (l == null) {
+                cmd.error("error reading");
+                return;
+            }
+            script.clear();
+            for (int i = 0; i < l.size(); i++) {
+                tabScrptN ntry = new tabScrptN();
+                ntry.sequence = (i + 1) * 10;
+                ntry.lin = b + l.get(i) + e;
+                script.add(ntry);
+            }
             return;
         }
         if (a.equals("sequence")) {
