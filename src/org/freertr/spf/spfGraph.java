@@ -116,7 +116,7 @@ public class spfGraph {
         if (json != null) {
             json.add(src);
             json.add(trg);
-            res.add("{\"source\": \"" + src + "\", \"target\": \"" + trg + "\", \"value\": \"" + met + "\"},");
+            res.add("{\"source\": \"" + src + "\", \"target\": \"" + trg + "\", \"value\": " + met + "},");
             return;
         }
         String a = " [weight=" + met + "]";
