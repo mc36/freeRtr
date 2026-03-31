@@ -164,8 +164,7 @@ public class spfLayout {
                     if (o == i) {
                         continue;
                     }
-                    spfLayoutLink lnk = cur.lnk.get(i);
-                    spfLayoutNode oth = lnk.nam;
+                    spfLayoutNode oth = cur.lnk.get(i);
                     double x = cur.cx - oth.cx;
                     double y = cur.cy - oth.cy;
                     double d = Math.sqrt((x * x) + (y * y));
@@ -207,7 +206,7 @@ public class spfLayout {
                 int cx = cur.getX(scr.sizX);
                 int cy = cur.getY(scr.sizY);
                 for (int i = 0; i < cur.lnk.size(); i++) {
-                    spfLayoutNode oth = cur.lnk.get(i).nam;
+                    spfLayoutNode oth = cur.lnk.get(i);
                     int ox = oth.getX(scr.sizX);
                     int oy = oth.getY(scr.sizY);
                     scr.drawLine(cx, cy, ox, oy, pipeScreen.colBlack, pipeScreen.colWhite, '*');
@@ -226,7 +225,7 @@ public class spfLayout {
             int cx = cur.getX(max);
             int cy = cur.getY(max);
             for (int i = 0; i < cur.lnk.size(); i++) {
-                spfLayoutNode oth = cur.lnk.get(i).nam;
+                spfLayoutNode oth = cur.lnk.get(i);
                 int ox = oth.getX(max);
                 int oy = oth.getY(max);
                 res.add("<line x1=\"" + cx + "\" y1=\"" + cy + "\" x2=\"" + ox + "\" y2=\"" + oy + "\" stroke=\"gray\"/>");
@@ -303,7 +302,7 @@ public class spfLayout {
             if (to == null) {
                 to = tn;
             }
-            so.lnk.add(new spfLayoutLink(to, met));
+            so.lnk.add(to);
             return;
         }
         if (json != null) {
@@ -331,7 +330,7 @@ class spfLayoutNode implements Comparable<spfLayoutNode> {
 
     public final String nam;
 
-    public final List<spfLayoutLink> lnk;
+    public final List<spfLayoutNode> lnk;
 
     public double cx;
 
@@ -343,7 +342,7 @@ class spfLayoutNode implements Comparable<spfLayoutNode> {
 
     public spfLayoutNode(String n) {
         nam = n;
-        lnk = new ArrayList<spfLayoutLink>();
+        lnk = new ArrayList<spfLayoutNode>();
     }
 
     public int compareTo(spfLayoutNode o) {
@@ -356,23 +355,6 @@ class spfLayoutNode implements Comparable<spfLayoutNode> {
 
     public int getY(int max) {
         return (max >>> 1) + (int) (cy * (double) max);
-    }
-
-}
-
-class spfLayoutLink implements Comparable<spfLayoutLink> {
-
-    public final spfLayoutNode nam;
-
-    public final int val;
-
-    public spfLayoutLink(spfLayoutNode n, int v) {
-        nam = n;
-        val = v;
-    }
-
-    public int compareTo(spfLayoutLink o) {
-        return nam.compareTo(o.nam);
     }
 
 }
