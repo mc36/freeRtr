@@ -1509,8 +1509,7 @@ public class spfCalc<Ta extends addrType> {
      */
     public List<String> listGraph(cmds cmd) {
         String pix = null;
-        boolean jsn = false;
-        boolean cli = false;
+        int fmt = 0;
         String dns = null;
         boolean nets = false;
         boolean ints = false;
@@ -1534,14 +1533,7 @@ public class spfCalc<Ta extends addrType> {
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("json")) {
-                jsn = true;
-                continue;
-            }
-            if (a.equals("cli")) {
-                cli = true;
-                continue;
-            }
+            fmt = spfLayout.string2format(fmt, a);
             if (a.equals("pix")) {
                 pix = cmd.word();
                 continue;
@@ -1606,7 +1598,7 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
         }
-        spfGraph res = new spfGraph(jsn, cli, pix, mets);
+        spfLayout res = new spfLayout(fmt, pix, mets);
         for (int o = 0; o < nodes.size(); o++) {
             spfNode<Ta> ntry = nodes.get(o);
             String nam = node2name(ntry, dns, remv);

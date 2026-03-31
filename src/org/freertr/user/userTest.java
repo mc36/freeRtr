@@ -120,7 +120,7 @@ import org.freertr.enc.encPrtbuf;
 import org.freertr.enc.encThrift;
 import org.freertr.enc.encUrl;
 import org.freertr.serv.servP4lang;
-import org.freertr.spf.spfGraph;
+import org.freertr.spf.spfLayout;
 import org.freertr.util.syncInt;
 
 /**
@@ -167,7 +167,7 @@ public class userTest {
             return alias;
         }
         if (a.equals("graph")) {
-            spfGraph g = new spfGraph(false, true, null, false);
+            spfLayout g = new spfLayout(1, null, false);
             String s = cmd.word();
             for (;;) {
                 a = cmd.word();

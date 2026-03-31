@@ -63,6 +63,7 @@ import org.freertr.pipe.pipeTerm;
 import org.freertr.prt.prtIcmptun;
 import org.freertr.sec.secClient;
 import org.freertr.sec.secTelnet;
+import org.freertr.spf.spfLayout;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -463,8 +464,7 @@ public class userExec {
         hl.add(null, false, 5, new int[]{-1}, "status", "status of the process");
         hl.add(null, false, 5, new int[]{-1}, "summary", "list of neighbors");
         hl.add(null, false, 5, new int[]{6, -1}, "aspagraph", "graph of neighbors");
-        hl.add(null, false, 6, new int[]{6, -1}, "cli", "cli commands");
-        hl.add(null, false, 6, new int[]{6, -1}, "json", "json format");
+        spfLayout.format2help(hl, 6);
         hl.add(null, false, 5, new int[]{6}, "prefixes4", "list ipv4 prefixes of asn");
         hl.add(null, false, 6, new int[]{-1}, "<num>", "as number");
         hl.add(null, false, 5, new int[]{6}, "prefixes6", "list ipv6 prefixes of asn");
@@ -619,8 +619,7 @@ public class userExec {
         hl.add(null, false, 9, new int[]{8, -1}, "<str>", "text to remove");
         hl.add(null, false, 5, new int[]{6}, "graph", "graph about last spf");
         hl.add(null, false, 6, new int[]{7, -1}, "<dir>", "north or south spf");
-        hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
-        hl.add(null, false, 7, new int[]{7, -1}, "json", "json format");
+        spfLayout.format2help(hl, 7);
         hl.add(null, false, 7, new int[]{8}, "pix", "image path");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
@@ -731,8 +730,7 @@ public class userExec {
         hl.add(null, false, 7, new int[]{8}, "remv", "remove string");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "text to remove");
         hl.add(null, false, 5, new int[]{6, -1}, "graph", "graph about last spf");
-        hl.add(null, false, 6, new int[]{6, -1}, "cli", "cli commands");
-        hl.add(null, false, 6, new int[]{6, -1}, "json", "json format");
+        spfLayout.format2help(hl, 6);
         hl.add(null, false, 6, new int[]{7}, "pix", "image path");
         hl.add(null, false, 7, new int[]{6, -1}, "<str>", "file name");
         hl.add(null, false, 6, new int[]{6, -1}, "nets", "connected networks");
@@ -828,8 +826,7 @@ public class userExec {
         hl.add(null, false, 9, new int[]{8, -1}, "<str>", "text to remove");
         hl.add(null, false, 5, new int[]{6}, "graph", "graph about last spf");
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "area number");
-        hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
-        hl.add(null, false, 7, new int[]{7, -1}, "json", "json format");
+        spfLayout.format2help(hl, 7);
         hl.add(null, false, 7, new int[]{8}, "pix", "image path");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
@@ -915,8 +912,7 @@ public class userExec {
         hl.add(null, false, 9, new int[]{8, -1}, "<str>", "text to remove");
         hl.add(null, false, 5, new int[]{6}, "graph", "graph about last spf");
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "level number");
-        hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
-        hl.add(null, false, 7, new int[]{7, -1}, "json", "json format");
+        spfLayout.format2help(hl, 7);
         hl.add(null, false, 7, new int[]{8}, "pix", "image path");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
@@ -1003,8 +999,7 @@ public class userExec {
         hl.add(null, false, 8, new int[]{9}, "remv", "remove string");
         hl.add(null, false, 9, new int[]{8, -1}, "<str>", "text to remove");
         hl.add(null, false, 6, new int[]{7, -1}, "graph", "graph about last spf");
-        hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
-        hl.add(null, false, 7, new int[]{7, -1}, "json", "json format");
+        spfLayout.format2help(hl, 7);
         hl.add(null, false, 7, new int[]{8}, "pix", "image path");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
@@ -1170,8 +1165,7 @@ public class userExec {
         hl.add(null, false, 7, new int[]{8, -1}, "<addr>", "prefix to view");
         hl.add(null, false, 8, new int[]{-1}, "[rd]", "route distinguisher");
         hl.add(null, false, 6, new int[]{7, -1}, "asgraph", "connectivity graph of ases");
-        hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
-        hl.add(null, false, 7, new int[]{7, -1}, "json", "json format");
+        spfLayout.format2help(hl, 7);
         hl.add(null, false, 6, new int[]{7, -1}, "astree", "connectivity tree of ases");
         hl.add(null, false, 7, new int[]{-1}, "<num>", "asn to start with");
         hl.add(null, false, 6, new int[]{-1}, "asorigin", "originating ases");
@@ -1920,8 +1914,7 @@ public class userExec {
         hl.add(null, false, 5, new int[]{-1}, "<num>", "forwarder number");
         hl.add(null, false, 4, new int[]{5}, "graph", "graph");
         hl.add(null, false, 5, new int[]{6, -1}, "<num>", "forwarder number");
-        hl.add(null, false, 6, new int[]{6, -1}, "cli", "cli commands");
-        hl.add(null, false, 6, new int[]{6, -1}, "json", "json format");
+        spfLayout.format2help(hl, 6);
         hl.add(null, false, 6, new int[]{7}, "pix", "image path");
         hl.add(null, false, 7, new int[]{6, -1}, "<str>", "file name");
         hl.add(null, false, 4, new int[]{5}, "route", "routes");

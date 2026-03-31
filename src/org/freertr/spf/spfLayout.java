@@ -3,15 +3,16 @@ package org.freertr.spf;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.tab.tabGen;
+import org.freertr.user.userHelp;
 
 /**
- * spf graph
+ * spf layout
  *
  * @author matecsaba
  */
-public class spfGraph {
+public class spfLayout {
 
-    private final boolean cli;
+    private final int fmt;
 
     private final boolean mets;
 
@@ -20,24 +21,55 @@ public class spfGraph {
     private final tabGen<String> json;
 
     /**
+     * format to string;
+     *
+     * @param o current value
+     * @param a string
+     * @return format
+     */
+    public static int string2format(int o, String a) {
+        if (a.equals("fmt-dot")) {
+            return 0;
+        }
+        if (a.equals("fmt-cli")) {
+            return 1;
+        }
+        if (a.equals("fmt-json")) {
+            return 2;
+        }
+        return o;
+    }
+
+    /**
+     * get format help
+     *
+     * @param hl help
+     * @param cur current
+     */
+    public static void format2help(userHelp hl, int cur) {
+        hl.add(null, false, cur, new int[]{cur, -1}, "fmt-dot", "dot format");
+        hl.add(null, false, cur, new int[]{cur, -1}, "fmt-cli", "cli format");
+        hl.add(null, false, cur, new int[]{cur, -1}, "fmt-json", "json format");
+    }
+
+    /**
      * create instance
      *
-     * @param js json
-     * @param cl cli
+     * @param fm fmt
      * @param px pix
      * @param met met
      */
-    public spfGraph(boolean js, boolean cl, String px, boolean met) {
-        cli = cl;
+    public spfLayout(int fm, String px, boolean met) {
+        fmt = fm;
         mets = met;
         res = new ArrayList<String>();
-        if (js) {
+        if (fm >= 2) {
             json = new tabGen<String>();
             res.add("{ \"links\": [");
             return;
         }
         json = null;
-        if (cli) {
+        if (fm >= 1) {
             res.add("dot -Tpng > net.png << EOF");
         }
         res.add("graph net {");
@@ -57,7 +89,7 @@ public class spfGraph {
     public List<String> getRes() {
         if (json == null) {
             res.add("}");
-            if (cli) {
+            if (fmt >= 1) {
                 res.add("EOF");
             }
             return res;

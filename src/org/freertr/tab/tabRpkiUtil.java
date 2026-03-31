@@ -7,7 +7,7 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.clnt.clntWhois;
-import org.freertr.spf.spfGraph;
+import org.freertr.spf.spfLayout;
 import org.freertr.user.userFormat;
 import org.freertr.util.cmds;
 
@@ -612,23 +612,15 @@ public class tabRpkiUtil {
      * @return text
      */
     public final static List<String> getAspaGraph(tabGen<tabRpkiAspa> tab, cmds cmd) {
-        boolean jsn = false;
-        boolean cli = false;
+        int fmt = 0;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("json")) {
-                jsn = true;
-                continue;
-            }
-            if (a.equals("cli")) {
-                cli = true;
-                continue;
-            }
+            fmt = spfLayout.string2format(fmt, a);
         }
-        spfGraph res = new spfGraph(jsn, cli, null, false);
+        spfLayout res = new spfLayout(fmt, null, false);
         for (int o = 0; o < tab.size(); o++) {
             tabRpkiAspa ntry = tab.get(o);
             String a = clntWhois.asn2mixed(ntry.cust, true);

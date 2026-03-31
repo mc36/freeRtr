@@ -56,7 +56,7 @@ import org.freertr.util.logFil;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
 import org.freertr.spf.spfCalc;
-import org.freertr.spf.spfGraph;
+import org.freertr.spf.spfLayout;
 import org.freertr.spf.spfLnkst;
 import org.freertr.tab.tabRpkiAspa;
 import org.freertr.tab.tabRpkiRoa;
@@ -3837,21 +3837,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @return text
      */
     public List<String> getAsGraph(int idx, cmds cmd) {
-        boolean jsn = false;
-        boolean cli = false;
+        int fmt = 0;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
                 break;
             }
-            if (a.equals("json")) {
-                jsn = true;
-                continue;
-            }
-            if (a.equals("cli")) {
-                cli = true;
-                continue;
-            }
+            fmt = spfLayout.string2format(fmt, a);
         }
         tabGen<rtrBgpFlapAsn> lst = new tabGen<rtrBgpFlapAsn>();
         for (int i = 0; i < neighs.size(); i++) {
@@ -3868,7 +3860,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
         }
         o += 2;
-        spfGraph res = new spfGraph(jsn, cli, null, false);
+        spfLayout res = new spfLayout(fmt, null, false);
         for (int i = 0; i < lst.size(); i++) {
             rtrBgpFlapAsn ntry = lst.get(i);
             res.addLink(clntWhois.asn2mixed(ntry.prev, true), clntWhois.asn2mixed(ntry.asn, true), o - ntry.count, null, null);

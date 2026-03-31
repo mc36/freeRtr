@@ -15,7 +15,7 @@ import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servHttp;
 import org.freertr.spf.spfCalc;
-import org.freertr.spf.spfGraph;
+import org.freertr.spf.spfLayout;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIntMatcher;
 import org.freertr.util.bits;
@@ -1735,7 +1735,7 @@ class userTesterOne {
                 }
             }
         }
-        spfGraph g = new spfGraph(false, true, null, false);
+        spfLayout g = new spfLayout(1, null, false);
         for (int o = 0; o < procs.size(); o++) {
             userTesterPrc p = procs.get(o);
             for (int i = 0; i < p.conns.size(); i++) {
