@@ -24,10 +24,10 @@ public class spfGraph {
      *
      * @param js json
      * @param cl cli
-     * @param sv svg
+     * @param px pix
      * @param met met
      */
-    public spfGraph(boolean js, boolean cl, String sv, boolean met) {
+    public spfGraph(boolean js, boolean cl, String px, boolean met) {
         cli = cl;
         mets = met;
         res = new ArrayList<String>();
@@ -41,12 +41,12 @@ public class spfGraph {
             res.add("dot -Tpng > net.png << EOF");
         }
         res.add("graph net {");
-        if (sv == null) {
-            sv = "";
+        if (px == null) {
+            px = "";
         } else {
-            sv = ",labelloc=b,image=\"" + sv + "\"";
+            px = ",labelloc=b,image=\"" + px + "\"";
         }
-        res.add("node [fontname=ubuntu,shape=none" + sv + "] edge [fontname=ubuntu,shape=none]");
+        res.add("node [fontname=ubuntu,shape=none" + px + "] edge [fontname=ubuntu,shape=none]");
     }
 
     /**

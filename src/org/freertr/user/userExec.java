@@ -621,7 +621,7 @@ public class userExec {
         hl.add(null, false, 6, new int[]{7, -1}, "<dir>", "north or south spf");
         hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
         hl.add(null, false, 7, new int[]{7, -1}, "json", "json format");
-        hl.add(null, false, 7, new int[]{8}, "svg", "svg path");
+        hl.add(null, false, 7, new int[]{8}, "pix", "image path");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
@@ -733,7 +733,7 @@ public class userExec {
         hl.add(null, false, 5, new int[]{6, -1}, "graph", "graph about last spf");
         hl.add(null, false, 6, new int[]{6, -1}, "cli", "cli commands");
         hl.add(null, false, 6, new int[]{6, -1}, "json", "json format");
-        hl.add(null, false, 6, new int[]{7}, "svg", "svg path");
+        hl.add(null, false, 6, new int[]{7}, "pix", "image path");
         hl.add(null, false, 7, new int[]{6, -1}, "<str>", "file name");
         hl.add(null, false, 6, new int[]{6, -1}, "nets", "connected networks");
         hl.add(null, false, 6, new int[]{6, -1}, "ints", "connected interfaces");
@@ -830,7 +830,7 @@ public class userExec {
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "area number");
         hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
         hl.add(null, false, 7, new int[]{7, -1}, "json", "json format");
-        hl.add(null, false, 7, new int[]{8}, "svg", "svg path");
+        hl.add(null, false, 7, new int[]{8}, "pix", "image path");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
@@ -917,7 +917,7 @@ public class userExec {
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "level number");
         hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
         hl.add(null, false, 7, new int[]{7, -1}, "json", "json format");
-        hl.add(null, false, 7, new int[]{8}, "svg", "svg path");
+        hl.add(null, false, 7, new int[]{8}, "pix", "image path");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
@@ -1005,7 +1005,7 @@ public class userExec {
         hl.add(null, false, 6, new int[]{7, -1}, "graph", "graph about last spf");
         hl.add(null, false, 7, new int[]{7, -1}, "cli", "cli commands");
         hl.add(null, false, 7, new int[]{7, -1}, "json", "json format");
-        hl.add(null, false, 7, new int[]{8}, "svg", "svg path");
+        hl.add(null, false, 7, new int[]{8}, "pix", "image path");
         hl.add(null, false, 8, new int[]{7, -1}, "<str>", "file name");
         hl.add(null, false, 7, new int[]{7, -1}, "nets", "connected networks");
         hl.add(null, false, 7, new int[]{7, -1}, "ints", "connected interfaces");
@@ -1922,7 +1922,7 @@ public class userExec {
         hl.add(null, false, 5, new int[]{6, -1}, "<num>", "forwarder number");
         hl.add(null, false, 6, new int[]{6, -1}, "cli", "cli commands");
         hl.add(null, false, 6, new int[]{6, -1}, "json", "json format");
-        hl.add(null, false, 6, new int[]{7}, "svg", "svg path");
+        hl.add(null, false, 6, new int[]{7}, "pix", "image path");
         hl.add(null, false, 7, new int[]{6, -1}, "<str>", "file name");
         hl.add(null, false, 4, new int[]{5}, "route", "routes");
         hl.add(null, false, 5, new int[]{6, -1}, "<num>", "forwarder number");

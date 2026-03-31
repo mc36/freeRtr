@@ -1508,7 +1508,7 @@ public class spfCalc<Ta extends addrType> {
      * @return list
      */
     public List<String> listGraph(cmds cmd) {
-        String svg = null;
+        String pix = null;
         boolean jsn = false;
         boolean cli = false;
         String dns = null;
@@ -1542,8 +1542,8 @@ public class spfCalc<Ta extends addrType> {
                 cli = true;
                 continue;
             }
-            if (a.equals("svg")) {
-                svg = cmd.word();
+            if (a.equals("pix")) {
+                pix = cmd.word();
                 continue;
             }
             if (a.equals("dns")) {
@@ -1606,7 +1606,7 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
         }
-        spfGraph res = new spfGraph(jsn, cli, svg, mets);
+        spfGraph res = new spfGraph(jsn, cli, pix, mets);
         for (int o = 0; o < nodes.size(); o++) {
             spfNode<Ta> ntry = nodes.get(o);
             String nam = node2name(ntry, dns, remv);
