@@ -292,17 +292,17 @@ public class spfLayout {
      */
     public void addLink(String src, String trg, int met, String tal, String hed) {
         if (nodes != null) {
-            spfLayoutNode sn = new spfLayoutNode(src);
-            spfLayoutNode tn = new spfLayoutNode(trg);
-            spfLayoutNode so = nodes.add(sn);
-            spfLayoutNode to = nodes.add(tn);
-            if (so == null) {
-                so = sn;
+            spfLayoutNode n = new spfLayoutNode(src);
+            spfLayoutNode s = nodes.add(n);
+            if (s == null) {
+                s = n;
             }
-            if (to == null) {
-                to = tn;
+            n = new spfLayoutNode(trg);
+            spfLayoutNode t = nodes.add(n);
+            if (t == null) {
+                t = n;
             }
-            so.lnk.add(to);
+            s.lnk.add(t);
             return;
         }
         if (json != null) {
