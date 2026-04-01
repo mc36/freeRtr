@@ -18150,3 +18150,6 @@ failed: wireguard over asymmetric ports
 ---------------------------------- 2026-03-27 21:34:29 26.3.27
 no failed: wireguard over asymmetric ports
 qc pass: wireguard over asymmetric ports
+---------------------------------- 2026-04-01 15:28:06 26.4.1
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard

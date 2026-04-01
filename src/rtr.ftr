@@ -1170,7 +1170,7 @@ qc pass: tls with ecdsa
 qc pass: tls with mldsa
 qc pass: wireguard over ipv4
 qc pass: wireguard over ipv6
-qc pass: wireguard over wireguard
+failed: wireguard over wireguard
 qc pass: wireguard over loopback
 qc pass: wireguard over asymmetric ports
 qc pass: empty demo network
