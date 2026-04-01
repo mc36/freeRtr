@@ -128,8 +128,8 @@ public class spfLayout {
             a /= nodes.size();
             cur.cx = Math.cos(a) / 3;
             cur.cy = Math.sin(a) / 3;
-            cur.vx = 0;
-            cur.vy = 0;
+            cur.vx = 0.0;
+            cur.vy = 0.0;
         }
         for (int r = 0; r < 1000; r++) {
             double t = 10.0 + (double) r;
@@ -137,12 +137,7 @@ public class spfLayout {
             double k = 0.4 * Math.sqrt(1.0 / nodes.size());
             for (int o = 0; o < nodes.size(); o++) {
                 spfLayoutNode cur = nodes.get(o);
-                cur.vx = 0.0;
-                cur.vy = 0.0;
-                for (int i = 0; i < nodes.size(); i++) {
-                    if (o == i) {
-                        continue;
-                    }
+                for (int i = o + 1; i < nodes.size(); i++) {
                     spfLayoutNode oth = nodes.get(i);
                     double x = cur.cx - oth.cx;
                     double y = cur.cy - oth.cy;
@@ -156,14 +151,13 @@ public class spfLayout {
                     y *= d;
                     cur.vx += x;
                     cur.vy += y;
+                    oth.vx -= x;
+                    oth.vy -= y;
                 }
             }
             for (int o = 0; o < nodes.size(); o++) {
                 spfLayoutNode cur = nodes.get(o);
                 for (int i = 0; i < cur.lnk.size(); i++) {
-                    if (o == i) {
-                        continue;
-                    }
                     spfLayoutNode oth = cur.lnk.get(i);
                     double x = cur.cx - oth.cx;
                     double y = cur.cy - oth.cy;
@@ -197,6 +191,8 @@ public class spfLayout {
                 cur.cy += y;
                 cur.cx = limitDouble(cur.cx, -0.45, +0.45);
                 cur.cy = limitDouble(cur.cy, -0.45, +0.45);
+                cur.vx = 0.0;
+                cur.vy = 0.0;
             }
         }
         if (fmt < 4) {
