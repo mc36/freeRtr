@@ -124,10 +124,10 @@ public class spfLayout {
         }
         for (int o = 0; o < nodes.size(); o++) {
             spfLayoutNode cur = nodes.get(o);
-            double a = 2 * o * Math.PI;
-            a /= nodes.size();
-            cur.cx = Math.cos(a) / 3;
-            cur.cy = Math.sin(a) / 3;
+            double a = (double) (2 * o) * Math.PI;
+            a /= (double) nodes.size();
+            cur.cx = Math.cos(a) / 3.0;
+            cur.cy = Math.sin(a) / 3.0;
             cur.vx = 0.0;
             cur.vy = 0.0;
         }
@@ -213,17 +213,18 @@ public class spfLayout {
         }
         res.add("<?xml version=\"1.0\" ?>");
         res.add("<!DOCTYPE svg>");
-        final int max = 1000;
-        res.add("<svg width=\"" + max + "\" height=\"" + max + "\" viewBox=\"0 0 " + max + " " + max + "\">");
-        res.add("<rect fill=\"black\" x=\"0\" y=\"0\" width=\"" + max + "\" height=\"" + max + "\"/>");
+        final int sizX = 2000;
+        final int sizY = 1000;
+        res.add("<svg width=\"" + sizX + "\" height=\"" + sizY + "\" viewBox=\"0 0 " + sizX + " " + sizY + "\">");
+        res.add("<rect fill=\"black\" x=\"0\" y=\"0\" width=\"" + sizX + "\" height=\"" + sizY + "\"/>");
         for (int o = 0; o < nodes.size(); o++) {
             spfLayoutNode cur = nodes.get(o);
-            int cx = cur.getX(max);
-            int cy = cur.getY(max);
+            int cx = cur.getX(sizX);
+            int cy = cur.getY(sizY);
             for (int i = 0; i < cur.lnk.size(); i++) {
                 spfLayoutNode oth = cur.lnk.get(i);
-                int ox = oth.getX(max);
-                int oy = oth.getY(max);
+                int ox = oth.getX(sizX);
+                int oy = oth.getY(sizY);
                 res.add("<line x1=\"" + cx + "\" y1=\"" + cy + "\" x2=\"" + ox + "\" y2=\"" + oy + "\" stroke=\"gray\"/>");
             }
             res.add("<text x=\"" + cx + "\" y=\"" + cy + "\" font-size=\"14.0\" fill=\"white\">" + cur.nam + "</text>");
