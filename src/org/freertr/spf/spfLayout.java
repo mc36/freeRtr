@@ -259,10 +259,9 @@ public class spfLayout {
             return scr.getAscii();
         }
         res.add("<?xml version=\"1.0\" ?>");
-        res.add("<!DOCTYPE svg>");
         final int sizX = 2000;
         final int sizY = 1000;
-        res.add("<svg width=\"" + sizX + "\" height=\"" + sizY + "\" viewBox=\"0 0 " + sizX + " " + sizY + "\">");
+        res.add("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 " + sizX + " " + sizY + "\">");
         res.add("<rect fill=\"black\" x=\"0\" y=\"0\" width=\"" + sizX + "\" height=\"" + sizY + "\"/>");
         for (int o = 0; o < nodes.size(); o++) {
             spfLayoutNode cur = nodes.get(o);
