@@ -126,8 +126,8 @@ public class spfLayout {
             spfLayoutNode cur = nodes.get(o);
             double a = (double) (2 * o) * Math.PI;
             a /= (double) nodes.size();
-            cur.cx = Math.cos(a) / 3.0;
-            cur.cy = Math.sin(a) / 3.0;
+            cur.cx = Math.cos(a);
+            cur.cy = Math.sin(a);
             cur.vx = 0.0;
             cur.vy = 0.0;
         }
@@ -184,16 +184,63 @@ public class spfLayout {
                     x /= d;
                     y /= d;
                 }
-                d = limitDouble(d, -t, t);
+                if (d < -t) {
+                    d = -t;
+                }
+                if (d > +t) {
+                    d = +t;
+                }
                 x *= d;
                 y *= d;
                 cur.cx += x;
                 cur.cy += y;
-                cur.cx = limitDouble(cur.cx, -0.45, +0.45);
-                cur.cy = limitDouble(cur.cy, -0.45, +0.45);
                 cur.vx = 0.0;
                 cur.vy = 0.0;
             }
+        }
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE;
+        double maxY = Double.MIN_VALUE;
+        for (int o = 0; o < nodes.size(); o++) {
+            spfLayoutNode cur = nodes.get(o);
+            double x = cur.cx;
+            double y = cur.cy;
+            if (x < minX) {
+                minX = x;
+            }
+            if (y < minY) {
+                minY = y;
+            }
+            if (x > maxX) {
+                maxX = x;
+            }
+            if (y > maxY) {
+                maxY = y;
+            }
+        }
+        maxX -= minX;
+        maxY -= minY;
+        if (!(maxX > 0.0)) {
+            maxX = 1.0;
+        }
+        if (!(maxY > 0.0)) {
+            maxY = 1.0;
+        }
+        minX -= maxX * 0.1;
+        minY -= maxY * 0.1;
+        maxX *= 1.2;
+        maxY *= 1.2;
+        for (int o = 0; o < nodes.size(); o++) {
+            spfLayoutNode cur = nodes.get(o);
+            double x = cur.cx;
+            double y = cur.cy;
+            x -= minX;
+            y -= minY;
+            x /= maxX;
+            y /= maxY;
+            cur.cx = x;
+            cur.cy = y;
         }
         if (fmt < 4) {
             pipeScreen scr = new pipeScreen(pipeDiscard.needAny(null));
@@ -231,16 +278,6 @@ public class spfLayout {
         }
         res.add("</svg>");
         return res;
-    }
-
-    private double limitDouble(double val, double min, double max) {
-        if (val < min) {
-            val = min;
-        }
-        if (val > max) {
-            val = max;
-        }
-        return val;
     }
 
     private void stripComma() {
@@ -347,11 +384,10 @@ class spfLayoutNode implements Comparable<spfLayoutNode> {
     }
 
     public int getX(int max) {
-        return (max >>> 1) + (int) (cx * (double) max);
+        return (int) (cx * (double) max);
     }
 
     public int getY(int max) {
-        return (max >>> 1) + (int) (cy * (double) max);
+        return (int) (cy * (double) max);
     }
-
 }
