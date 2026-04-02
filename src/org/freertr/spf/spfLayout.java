@@ -24,6 +24,8 @@ public class spfLayout {
 
     private final tabGen<spfLayoutNode> nodes;
 
+    private final tabGen<spfLayoutLink> links;
+
     /**
      * format to string;
      *
@@ -61,7 +63,7 @@ public class spfLayout {
         hl.add(null, false, cur, new int[]{cur, -1}, "fmt-cli", "cli format");
         hl.add(null, false, cur, new int[]{cur, -1}, "fmt-json", "json format");
         hl.add(null, false, cur, new int[]{cur, -1}, "fmt-text", "text format");
-        hl.add(null, false, cur, new int[]{cur, -1}, "fmt-svg", "text format");
+        hl.add(null, false, cur, new int[]{cur, -1}, "fmt-svg", "svg format");
     }
 
     /**
@@ -78,9 +80,11 @@ public class spfLayout {
         if (fm >= 3) {
             json = null;
             nodes = new tabGen<spfLayoutNode>();
+            links = new tabGen<spfLayoutLink>();
             return;
         }
         nodes = null;
+        links = null;
         if (fm >= 2) {
             json = new tabGen<String>();
             res.add("{ \"links\": [");
@@ -155,25 +159,22 @@ public class spfLayout {
                     oth.vy -= y;
                 }
             }
-            for (int o = 0; o < nodes.size(); o++) {
-                spfLayoutNode cur = nodes.get(o);
-                for (int i = 0; i < cur.lnk.size(); i++) {
-                    spfLayoutNode oth = cur.lnk.get(i);
-                    double x = cur.cx - oth.cx;
-                    double y = cur.cy - oth.cy;
-                    double d = Math.sqrt((x * x) + (y * y));
-                    if (d > 0.0) {
-                        x /= d;
-                        y /= d;
-                    }
-                    d = d * d / k;
-                    x *= d;
-                    y *= d;
-                    cur.vx -= x;
-                    cur.vy -= y;
-                    oth.vx += x;
-                    oth.vy += y;
+            for (int o = 0; o < links.size(); o++) {
+                spfLayoutLink lnk = links.get(o);
+                double x = lnk.src.cx - lnk.trg.cx;
+                double y = lnk.src.cy - lnk.trg.cy;
+                double d = Math.sqrt((x * x) + (y * y));
+                if (d > 0.0) {
+                    x /= d;
+                    y /= d;
                 }
+                d = d * d / k;
+                x *= d;
+                y *= d;
+                lnk.src.vx -= x;
+                lnk.src.vy -= y;
+                lnk.trg.vx += x;
+                lnk.trg.vy += y;
             }
             for (int o = 0; o < nodes.size(); o++) {
                 spfLayoutNode cur = nodes.get(o);
@@ -244,16 +245,18 @@ public class spfLayout {
         }
         if (fmt < 4) {
             pipeScreen scr = new pipeScreen(pipeDiscard.needAny(null));
+            for (int i = 0; i < links.size(); i++) {
+                spfLayoutLink lnk = links.get(i);
+                int cx = lnk.src.getX(scr.sizX);
+                int cy = lnk.src.getY(scr.sizY);
+                int ox = lnk.trg.getX(scr.sizX);
+                int oy = lnk.trg.getY(scr.sizY);
+                scr.drawLine(cx, cy, ox, oy, pipeScreen.colBlack, pipeScreen.colWhite, '*');
+            }
             for (int o = 0; o < nodes.size(); o++) {
                 spfLayoutNode cur = nodes.get(o);
                 int cx = cur.getX(scr.sizX);
                 int cy = cur.getY(scr.sizY);
-                for (int i = 0; i < cur.lnk.size(); i++) {
-                    spfLayoutNode oth = cur.lnk.get(i);
-                    int ox = oth.getX(scr.sizX);
-                    int oy = oth.getY(scr.sizY);
-                    scr.drawLine(cx, cy, ox, oy, pipeScreen.colBlack, pipeScreen.colWhite, '*');
-                }
                 scr.putStr(cx, cy, pipeScreen.colBlack, pipeScreen.colBrGreen, false, cur.nam);
             }
             return scr.getAscii();
@@ -263,16 +266,18 @@ public class spfLayout {
         final int sizY = 1000;
         res.add("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 " + sizX + " " + sizY + "\">");
         res.add("<rect fill=\"black\" x=\"0\" y=\"0\" width=\"" + sizX + "\" height=\"" + sizY + "\"/>");
+        for (int i = 0; i < links.size(); i++) {
+            spfLayoutLink lnk = links.get(i);
+            int cx = lnk.src.getX(sizX);
+            int cy = lnk.src.getY(sizY);
+            int ox = lnk.trg.getX(sizX);
+            int oy = lnk.trg.getY(sizY);
+            res.add("<line x1=\"" + cx + "\" y1=\"" + cy + "\" x2=\"" + ox + "\" y2=\"" + oy + "\" stroke=\"gray\"/>");
+        }
         for (int o = 0; o < nodes.size(); o++) {
             spfLayoutNode cur = nodes.get(o);
             int cx = cur.getX(sizX);
             int cy = cur.getY(sizY);
-            for (int i = 0; i < cur.lnk.size(); i++) {
-                spfLayoutNode oth = cur.lnk.get(i);
-                int ox = oth.getX(sizX);
-                int oy = oth.getY(sizY);
-                res.add("<line x1=\"" + cx + "\" y1=\"" + cy + "\" x2=\"" + ox + "\" y2=\"" + oy + "\" stroke=\"gray\"/>");
-            }
             res.add("<text x=\"" + cx + "\" y=\"" + cy + "\" font-size=\"14.0\" fill=\"white\">" + cur.nam + "</text>");
         }
         res.add("</svg>");
@@ -335,7 +340,16 @@ public class spfLayout {
             if (t == null) {
                 t = n;
             }
-            s.lnk.add(t);
+            if (s.compareTo(t) == 0) {
+                return;
+            }
+            spfLayoutLink l;
+            l = new spfLayoutLink(t, s);
+            if (links.find(l) != null) {
+                return;
+            }
+            l = new spfLayoutLink(s, t);
+            links.add(l);
             return;
         }
         if (json != null) {
@@ -363,8 +377,6 @@ class spfLayoutNode implements Comparable<spfLayoutNode> {
 
     public final String nam;
 
-    public final List<spfLayoutNode> lnk;
-
     public double cx;
 
     public double cy;
@@ -375,7 +387,6 @@ class spfLayoutNode implements Comparable<spfLayoutNode> {
 
     public spfLayoutNode(String n) {
         nam = n;
-        lnk = new ArrayList<spfLayoutNode>();
     }
 
     public int compareTo(spfLayoutNode o) {
@@ -389,4 +400,25 @@ class spfLayoutNode implements Comparable<spfLayoutNode> {
     public int getY(int max) {
         return (int) (cy * (double) max);
     }
+}
+
+class spfLayoutLink implements Comparable<spfLayoutLink> {
+
+    public final spfLayoutNode src;
+
+    public final spfLayoutNode trg;
+
+    public spfLayoutLink(spfLayoutNode s, spfLayoutNode t) {
+        src = s;
+        trg = t;
+    }
+
+    public int compareTo(spfLayoutLink o) {
+        int i = src.compareTo(o.src);
+        if (i != 0) {
+            return i;
+        }
+        return trg.compareTo(o.trg);
+    }
+
 }

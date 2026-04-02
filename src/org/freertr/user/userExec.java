@@ -1148,10 +1148,14 @@ public class userExec {
         hl.add(null, false, 8, new int[]{-1}, "<num:rtr>", "process number");
         hl.add(null, false, 6, new int[]{7}, "validtest", "perform rpki lookups for a table");
         cfgRtr.getRouterList(hl, 5, "");
-        hl.add(null, false, 8, new int[]{-1}, "<num:rtr>", "process number");
+        hl.add(null, false, 8, new int[]{9, -1}, "<num:rtr>", "process number");
+        hl.add(null, false, 9, new int[]{10, -1}, "<addr>", "prefix to view");
+        hl.add(null, false, 10, new int[]{-1}, "[rd]", "route distinguisher");
         hl.add(null, false, 6, new int[]{7}, "validmismark", "verify rpki markings for a table");
         cfgRtr.getRouterList(hl, 5, "");
-        hl.add(null, false, 8, new int[]{-1}, "<num:rtr>", "process number");
+        hl.add(null, false, 8, new int[]{9, -1}, "<num:rtr>", "process number");
+        hl.add(null, false, 9, new int[]{10, -1}, "<addr>", "prefix to view");
+        hl.add(null, false, 10, new int[]{-1}, "[rd]", "route distinguisher");
         hl.add(null, false, 6, new int[]{7, -1}, "validated", "validation status of the paths");
         hl.add(null, false, 7, new int[]{8, -1}, "<addr>", "prefix to view");
         hl.add(null, false, 8, new int[]{-1}, "[rd]", "route distinguisher");
