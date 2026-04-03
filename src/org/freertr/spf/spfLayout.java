@@ -34,19 +34,19 @@ public class spfLayout {
      * @return format
      */
     public static int string2format(int o, String a) {
-        if (a.equals("fmt-dot")) {
+        if (a.equals("as-dot")) {
             return 0;
         }
-        if (a.equals("fmt-cli")) {
+        if (a.equals("as-cli")) {
             return 1;
         }
-        if (a.equals("fmt-json")) {
+        if (a.equals("as-json")) {
             return 2;
         }
-        if (a.equals("fmt-text")) {
+        if (a.equals("as-text")) {
             return 3;
         }
-        if (a.equals("fmt-svg")) {
+        if (a.equals("as-svg")) {
             return 4;
         }
         return o;
@@ -59,11 +59,11 @@ public class spfLayout {
      * @param cur current
      */
     public static void format2help(userHelp hl, int cur) {
-        hl.add(null, false, cur, new int[]{cur, -1}, "fmt-dot", "dot format");
-        hl.add(null, false, cur, new int[]{cur, -1}, "fmt-cli", "cli format");
-        hl.add(null, false, cur, new int[]{cur, -1}, "fmt-json", "json format");
-        hl.add(null, false, cur, new int[]{cur, -1}, "fmt-text", "text format");
-        hl.add(null, false, cur, new int[]{cur, -1}, "fmt-svg", "svg format");
+        hl.add(null, false, cur, new int[]{cur, -1}, "as-dot", "dot format");
+        hl.add(null, false, cur, new int[]{cur, -1}, "as-cli", "cli format");
+        hl.add(null, false, cur, new int[]{cur, -1}, "as-json", "json format");
+        hl.add(null, false, cur, new int[]{cur, -1}, "as-text", "text format");
+        hl.add(null, false, cur, new int[]{cur, -1}, "as-svg", "svg format");
     }
 
     /**
