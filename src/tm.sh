@@ -1,2 +1,2 @@
 #!/bin/sh
-java -Xmx512m -jar rtr.jar test tstmov $@
+java -Xmx1024m -jar rtr.jar test tstmov $@
