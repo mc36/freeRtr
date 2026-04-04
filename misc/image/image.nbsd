@@ -1,6 +1,6 @@
 download 3
 reget-time 168
-kern http://cdn.netbsd.org/pub/NetBSD/NetBSD-11.0_RC2/%arch%/binary/sets/
+kern http://cdn.netbsd.org/pub/NetBSD/NetBSD-11.0_RC3/%arch%/binary/sets/
 
 mkdir %dwn%
 del-alw %tmp%
