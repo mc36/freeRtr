@@ -1,6 +1,7 @@
 package org.freertr.serv;
 
 import java.util.List;
+import java.util.zip.Deflater;
 import org.freertr.cfg.cfgAll;
 import org.freertr.pipe.pipeImage;
 import org.freertr.pipe.pipeLine;
@@ -174,6 +175,8 @@ class servRfbConn implements Runnable {
     private notifier notif;
 
     private int mode = 0; // 0=pal, 1=byte, 2=word, 4=dword, 0x100=msb
+
+    private Deflater compr = null;
 
     private int redSh1 = 0;
 
@@ -393,6 +396,15 @@ class servRfbConn implements Runnable {
                 if (pipe.moreGet(buf, 0, buf.length) != buf.length) {
                     return true;
                 }
+                compr = null;
+                for (int i = 0; i < buf.length; i += 4) {
+                    if (bits.msbGetD(buf, i) == 6) {
+                        compr = new Deflater();
+                    }
+                }
+                if (debugger.servRfbTraf) {
+                    logger.debug("compress=" + (compr != null));
+                }
                 break;
             case typFBupdate:
                 buf = new byte[9];
@@ -466,50 +478,68 @@ class servRfbConn implements Runnable {
         if (sizP < 1) {
             sizP = 1;
         }
-        if (debugger.servRfbTraf) {
-            logger.debug("tx update " + sizX + "x" + sizY + "x" + sizP);
-        }
-        byte[] buf = new byte[20];
-        buf[0] = 0; // FBupdate
-        buf[1] = 0; // pad
-        bits.msbPutW(buf, 2, 1); // # of rectangles
-        bits.msbPutW(buf, 4, 0); // begin x
-        bits.msbPutW(buf, 6, 0); // begin y
-        bits.msbPutW(buf, 8, sizX); // size x
-        bits.msbPutW(buf, 10, sizY); // size y
-        bits.msbPutD(buf, 12, 0); // raw encoding
-        bits.msbPutD(buf, 16, sizX * sizY * sizP); // byte size
-        pipe.morePut(buf, 0, buf.length);
+        byte[] buf2 = new byte[sizY * sizX * sizP];
+        int len = 0;
         for (int y = 0; y < sizY; y++) {
-            buf = new byte[sizX * sizP];
             for (int x = 0; x < sizX; x++) {
                 int i = img.img2[y][x];
                 i = (((i >>> redSh1) & redSh3) << redSh2) | (((i >>> grnSh1) & grnSh3) << grnSh2) | (((i >>> bluSh1) & bluSh3) << bluSh2);
                 switch (mode) {
                     case 0x000:
                     case 0x100:
-                        buf[x] = (byte) img.img1[y][x];
+                        buf2[len] = (byte) img.img1[y][x];
+                        len++;
                         break;
                     case 0x001:
                     case 0x101:
-                        buf[x] = (byte) i;
+                        buf2[len] = (byte) i;
+                        len++;
                         break;
                     case 0x002:
-                        bits.lsbPutW(buf, x * 2, i);
+                        bits.lsbPutW(buf2, len, i);
+                        len += 2;
                         break;
                     case 0x102:
-                        bits.msbPutW(buf, x * 2, i);
+                        bits.msbPutW(buf2, len, i);
+                        len += 2;
                         break;
                     case 0x004:
-                        bits.lsbPutD(buf, x * 4, i);
+                        bits.lsbPutD(buf2, len, i);
+                        len += 4;
                         break;
                     case 0x104:
-                        bits.msbPutD(buf, x * 4, i);
+                        bits.msbPutD(buf2, len, i);
+                        len += 4;
                         break;
                 }
             }
-            pipe.morePut(buf, 0, buf.length);
         }
+        int typ = 0; // raw encoding
+        if (compr != null) {
+            compr.setInput(buf2);
+            byte[] buf3 = new byte[buf2.length];
+            int res = compr.deflate(buf3, 0, buf3.length, Deflater.SYNC_FLUSH);
+            if (res < len) {
+                typ = 6; // zlib encoding
+                buf2 = buf3;
+                len = res;
+            }
+        }
+        if (debugger.servRfbTraf) {
+            logger.debug("tx update " + sizX + "x" + sizY + "x" + sizP + " typ=" + typ + " len=" + len);
+        }
+        byte[] buf1 = new byte[20];
+        buf1[0] = 0; // FBupdate
+        buf1[1] = 0; // pad
+        bits.msbPutW(buf1, 2, 1); // # of rectangles
+        bits.msbPutW(buf1, 4, 0); // begin x
+        bits.msbPutW(buf1, 6, 0); // begin y
+        bits.msbPutW(buf1, 8, sizX); // size x
+        bits.msbPutW(buf1, 10, sizY); // size y
+        bits.msbPutD(buf1, 12, typ); // encoding type
+        bits.msbPutD(buf1, 16, len); // byte size
+        pipe.morePut(buf1, 0, buf1.length);
+        pipe.morePut(buf2, 0, len);
     }
 
     private void gotUpdate(boolean inc, int begX, int begY, int sizX, int sizY) {
