@@ -571,6 +571,9 @@ public class userGame {
                 maxZ = cz;
             }
         }
+        if (rx.size() < 1) {
+            return;
+        }
         maxX -= minX;
         maxY -= minY;
         maxZ -= minZ;
