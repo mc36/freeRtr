@@ -2,7 +2,7 @@ arch mipsel
 unam mips
 qemu mipsel
 ctrg mipsel
-cabi gnuabi
+cabi gnu
 kern mips32r2el
 grub ieee1275-bin
 boot mips-arc
