@@ -9,6 +9,8 @@ import org.freertr.enc.encBase64;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashSha2512;
 import org.freertr.cry.cryHashSha3512;
+import org.freertr.cry.cryKeyGeneric;
+import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.cry.cryUtils;
 import org.freertr.pipe.pipeDiscard;
@@ -135,8 +137,8 @@ public class userUpgrade {
      * generate release version file
      */
     public void doRelease() {
-        cryKeyRSA ky = readUpKey(cmd.word(), "current");
-        if (ky == null) {
+        cryKeyGeneric k = readUpKey(cmd.word(), "current");
+        if (k == null) {
             cmd.error("failed to get current key!");
             return;
         }
@@ -154,7 +156,7 @@ public class userUpgrade {
             }
             blb.files.add(new userUpgradeNtry(h, f, n));
         }
-        blb.doSign(ky);
+        blb.doSign(k);
         bits.buf2txt(true, blb.getText(2), myVerFile());
         cmd.error(myVerFile() + " written!");
     }
@@ -165,23 +167,33 @@ public class userUpgrade {
     public void doMakeKey() {
         int i = bits.str2num(cmd.word());
         cmd.error("generating " + i + " bits key");
-        cryKeyRSA kc = new cryKeyRSA();
-        kc.keyMakeSize(i);
-        cmd.error("resulted in " + kc.keySize() + " bits, error=" + kc.keyVerify());
-        cmd.pipe.linePut(" sequence 10 puts \"" + kc.pemWriteStr(true) + "\"");
-        cmd.pipe.linePut(" sequence 20 puts \"" + kc.pemWriteStr(false) + "\"");
+        cryKeyGeneric k;
+        boolean b = true;
+        if (i < 256) {
+            k = new cryKeyMLDSA();
+            b = k.keyMakeSize(i);
+        } else {
+            k = new cryKeyRSA();
+            b = k.keyMakeSize(i);
+        }
+        if (b) {
+            return;
+        }
+        cmd.error("resulted in " + k.keySize() + " bits, error=" + k.keyVerify());
+        cmd.pipe.linePut(" sequence 10 puts \"" + k.pemWriteStr(true) + "\"");
+        cmd.pipe.linePut(" sequence 20 puts \"" + k.pemWriteStr(false) + "\"");
     }
 
     /**
      * update version core file
      */
     public void doVerCore() {
-        cryKeyRSA kc = readUpKey(cmd.word(), "current");
+        cryKeyGeneric kc = readUpKey(cmd.word(), "current");
         if (kc == null) {
             cmd.error("failed to get current key!");
             return;
         }
-        cryKeyRSA ko = readUpKey(cmd.word(), "old");
+        cryKeyGeneric ko = readUpKey(cmd.word(), "old");
         if (ko == null) {
             cmd.error("failed to get old key!");
             return;
@@ -640,7 +652,7 @@ public class userUpgrade {
         return false;
     }
 
-    private cryKeyRSA readUpKey(String s, String v) {
+    private cryKeyGeneric readUpKey(String s, String v) {
         List<String> l = cfgInit.httpGet(s);
         if (l == null) {
             cmd.error("got empty " + v + " key!");
@@ -650,10 +662,13 @@ public class userUpgrade {
             cmd.error("got too small " + v + " key!");
             return null;
         }
-        cryKeyRSA k = new cryKeyRSA();
+        cryKeyGeneric k = new cryKeyRSA();
         if (k.pemReadStr(l.get(0), true)) {
-            cmd.error("error reading public " + v + " key!");
-            return null;
+            k = new cryKeyMLDSA();
+            if (k.pemReadStr(l.get(0), true)) {
+                cmd.error("error reading public " + v + " key!");
+                return null;
+            }
         }
         if (k.pemReadStr(l.get(1), false)) {
             cmd.error("error reading private " + v + " key!");
@@ -995,11 +1010,14 @@ class userUpgradeBlob {
             if (ks == null) {
                 return "public key not exists!";
             }
-            cryKeyRSA ky = new cryKeyRSA();
-            if (ky.pemReadStr(ks, true)) {
-                return "error reading public key!";
+            cryKeyGeneric k = new cryKeyRSA();
+            if (k.pemReadStr(ks, true)) {
+                k = new cryKeyMLDSA();
+                if (k.pemReadStr(ks, true)) {
+                    return "error reading public key!";
+                }
             }
-            if (ky.tlsVerify(-1, new cryHashSha3512(), getSum(0).getBytes(), buf)) {
+            if (k.tlsVerify(-1, new cryHashSha3512(), getSum(0).getBytes(), buf)) {
                 return "signature mismatch!";
             }
             return null;
@@ -1009,7 +1027,7 @@ class userUpgradeBlob {
         return "error during verify!";
     }
 
-    public void doSign(cryKeyRSA k) {
+    public void doSign(cryKeyGeneric k) {
         time = bits.getTime();
         sign = encBase64.encodeBytes(k.tlsSigning(-1, new cryHashSha3512(), getSum(0).getBytes()));
     }
