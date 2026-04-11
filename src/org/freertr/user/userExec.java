@@ -1476,7 +1476,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "gc", "garbage collector information");
         hl.add(null, false, 3, new int[]{-1}, "system", "system information");
         hl.add(null, false, 3, new int[]{-1}, "thread", "thread information");
-        hl.add(null, false, 3, new int[]{-1}, "software", "software watchdog information");
+        hl.add(null, false, 3, new int[]{-1}, "iface", "interface stall information");
         hl.add(null, false, 3, new int[]{-1}, "timer", "timer history information");
         hl.add(null, false, 3, new int[]{-1}, "memory", "memory history information");
         hl.add(null, false, 2, new int[]{3, -1}, "interfaces", "interface status and configuration");

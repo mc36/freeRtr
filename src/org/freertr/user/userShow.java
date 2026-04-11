@@ -670,7 +670,7 @@ public class userShow {
                 rdr.putStrTab(logger.listThrd());
                 return null;
             }
-            if (a.equals("software")) {
+            if (a.equals("iface")) {
                 rdr.putStrTab(ifcThread.showStalls());
                 return null;
             }

@@ -508,11 +508,21 @@ public class userGame {
         }
     }
 
+    private double doObj(String a) {
+        try {
+            return Double.parseDouble(a);
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
+
     /**
      * rotating object
+     *
+     * @param cmd command line to use
      */
-    public void doObj(String s) {
-        List<String> lst = bits.txt2buf(s);
+    public void doObj(cmds cmd) {
+        List<String> lst = bits.txt2buf(cmd.getRemaining());
         if (lst == null) {
             return;
         }
@@ -526,29 +536,14 @@ public class userGame {
         double maxY = Double.MIN_VALUE;
         double maxZ = Double.MIN_VALUE;
         for (int i = 0; i < lst.size(); i++) {
-            s = lst.get(i);
-            cmds cmd = new cmds("f", s);
+            String s = lst.get(i);
+            cmd = new cmds("f", s);
             if (!cmd.word().equals("v")) {
                 continue;
             }
-            double cx;
-            try {
-                cx = Double.parseDouble(cmd.word());
-            } catch (Exception e) {
-                continue;
-            }
-            double cy;
-            try {
-                cy = Double.parseDouble(cmd.word());
-            } catch (Exception e) {
-                continue;
-            }
-            double cz;
-            try {
-                cz = Double.parseDouble(cmd.word());
-            } catch (Exception e) {
-                continue;
-            }
+            double cx = doObj(cmd.word());
+            double cy = doObj(cmd.word());
+            double cz = doObj(cmd.word());
             rx.add(cx);
             ry.add(cy);
             rz.add(cz);
@@ -1451,7 +1446,7 @@ public class userGame {
             return;
         }
         if (a.equals("obj")) {
-            doObj(cmd.getRemaining());
+            doObj(cmd);
             return;
         }
         if (a.equals("cube")) {
