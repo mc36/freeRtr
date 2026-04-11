@@ -66,7 +66,6 @@ import org.freertr.pack.packLdpMp;
 import org.freertr.pack.packLdpPwe;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.prt.prtRedun;
-import org.freertr.prt.prtWatch;
 import org.freertr.rtr.rtrBabelNeigh;
 import org.freertr.rtr.rtrBgpGroup;
 import org.freertr.rtr.rtrBgpNeigh;
@@ -673,10 +672,6 @@ public class userShow {
             }
             if (a.equals("software")) {
                 rdr.putStrTab(ifcThread.showStalls());
-                return null;
-            }
-            if (a.equals("hardware")) {
-                rdr.putStrTab(prtWatch.doShow());
                 return null;
             }
             if (a.equals("timer")) {

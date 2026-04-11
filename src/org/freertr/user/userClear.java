@@ -37,7 +37,6 @@ import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdTab;
 import org.freertr.pack.packHolder;
 import org.freertr.prt.prtGen;
-import org.freertr.prt.prtWatch;
 import org.freertr.rtr.rtrBabelNeigh;
 import org.freertr.rtr.rtrBfdNeigh;
 import org.freertr.rtr.rtrBgpNeigh;
@@ -54,8 +53,6 @@ import org.freertr.rtr.rtrPvrpNeigh;
 import org.freertr.rtr.rtrRip4neigh;
 import org.freertr.rtr.rtrRip6neigh;
 import org.freertr.serv.servBmp2mrt;
-import org.freertr.serv.servDhcp4;
-import org.freertr.serv.servDhcp6;
 import org.freertr.serv.servP4lang;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.util.bits;
@@ -837,10 +834,6 @@ public class userClear {
         if (a.equals("logging")) {
             logger.bufferClear();
             logger.error("log buffer cleared");
-            return null;
-        }
-        if (a.equals("watchdog")) {
-            prtWatch.doClear(cmd);
             return null;
         }
         if (a.equals("line")) {

@@ -59,11 +59,6 @@ public class debugger {
     public static boolean prtRedun = false;
 
     /**
-     * prtWatch commands
-     */
-    public static boolean prtWatchEvnt = false;
-
-    /**
      * prtScsi traffic
      */
     public static boolean prtScsiTraf = false;
@@ -1112,7 +1107,6 @@ public class debugger {
         l.add(null, false, b + 1, new int[]{-1}, "swcfg", "software config");
         l.add(null, false, b + 1, new int[]{-1}, "ipinfo", "ipinfo events");
         l.add(null, false, b + 1, new int[]{-1}, "redundancy", "redundancy events");
-        l.add(null, false, b + 1, new int[]{-1}, "watchdog", "watchdog events");
         l.add(null, false, b + 1, new int[]{-1}, "runner", "line runner");
         l.add(null, false, b + 1, new int[]{-1}, "thread", "line thread");
         l.add(null, false, b, new int[]{b + 1}, "server", "protocol servers");
@@ -1415,10 +1409,6 @@ public class debugger {
             }
             if (s.equals("redundancy")) {
                 prtRedun = v;
-                return false;
-            }
-            if (s.equals("watchdog")) {
-                prtWatchEvnt = v;
                 return false;
             }
             if (s.equals("script")) {

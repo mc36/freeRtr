@@ -1476,7 +1476,6 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "gc", "garbage collector information");
         hl.add(null, false, 3, new int[]{-1}, "system", "system information");
         hl.add(null, false, 3, new int[]{-1}, "thread", "thread information");
-        hl.add(null, false, 3, new int[]{-1}, "hardware", "hardware watchdog information");
         hl.add(null, false, 3, new int[]{-1}, "software", "software watchdog information");
         hl.add(null, false, 3, new int[]{-1}, "timer", "timer history information");
         hl.add(null, false, 3, new int[]{-1}, "memory", "memory history information");
@@ -2499,8 +2498,6 @@ public class userExec {
         hl.add(null, false, 2, new int[]{-1}, "tunnel-domain", "resolve destination domain names");
         hl.add(null, false, 2, new int[]{-1}, "name-cache", "dns local cache");
         hl.add(null, false, 2, new int[]{-1}, "asn-cache", "asn local cache");
-        hl.add(null, false, 2, new int[]{3, -1}, "watchdog", "watchdog");
-        hl.add(null, false, 3, new int[]{3, -1}, "[name]", "parameter");
         hl.add(null, false, 2, new int[]{3}, "line", "disconnect line");
         hl.add(null, false, 3, new int[]{-1}, "<name:lin>", "name of line");
         hl.add(null, false, 2, new int[]{3}, "interface", "disconnect interface");

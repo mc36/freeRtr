@@ -24,7 +24,6 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.pipe.pipeWindow;
 import org.freertr.prt.prtLocTcp;
 import org.freertr.prt.prtRedun;
-import org.freertr.prt.prtWatch;
 import org.freertr.serv.servOpenflow;
 import org.freertr.serv.servP4lang;
 import org.freertr.enc.encUrl;
@@ -948,9 +947,6 @@ public class cfgInit implements Runnable {
                 if (s.equals("red")) {
                     stat = 2;
                 }
-                if (s.equals("dog")) {
-                    stat = 3;
-                }
                 if (stat != 0) {
                     s = cmd.word().toLowerCase();
                 }
@@ -965,32 +961,24 @@ public class cfgInit implements Runnable {
                 int rem = bits.str2num(cmd.word());
                 s = cmd.word();
                 int thrd = bits.str2num(s);
-                ifcUdpInt hdr = new ifcUdpInt(loop, loc, peer, rem, mac,
-                        typ != tabRouteIface.ifaceType.ether, stat == 1);
-                switch (stat) {
-                    case 2:
-                        hdr.booter = true;
-                        prtRedun.ifcAdd(nam, hdr, s);
-                        break;
-                    case 3:
-                        hdr.booter = true;
-                        prtWatch.ifcAdd(nam, hdr, mac);
-                        break;
-                    default:
-                        cfgIfc ifc = cfgAll.ifcAdd(nam, typ, hdr, thrd);
-                        if (ifc == null) {
-                            continue;
-                        }
-                        cfgVdcIfc ntry = new cfgVdcIfc(ifc.name, old);
-                        ntry.portL = loc;
-                        ntry.portR = rem;
-                        ntry.peer = peer;
-                        ifaceLst.add(ntry);
-                        ifc.initPhysical();
-                        if (debugger.cfgInitHw) {
-                            logger.debug("iface " + hdr);
-                        }
-                        break;
+                ifcUdpInt hdr = new ifcUdpInt(loop, loc, peer, rem, mac, typ != tabRouteIface.ifaceType.ether, stat == 1);
+                if (stat == 2) {
+                    hdr.booter = true;
+                    prtRedun.ifcAdd(nam, hdr, s);
+                    continue;
+                }
+                cfgIfc ifc = cfgAll.ifcAdd(nam, typ, hdr, thrd);
+                if (ifc == null) {
+                    continue;
+                }
+                cfgVdcIfc ntry = new cfgVdcIfc(ifc.name, old);
+                ntry.portL = loc;
+                ntry.portR = rem;
+                ntry.peer = peer;
+                ifaceLst.add(ntry);
+                ifc.initPhysical();
+                if (debugger.cfgInitHw) {
+                    logger.debug("iface " + hdr);
                 }
                 continue;
             }
@@ -1412,7 +1400,6 @@ public class cfgInit implements Runnable {
                 }
             }
             prtRedun.doShut();
-            prtWatch.doShut();
             bits.sleep(100);
         }
         for (int i = 0; i < vnetLst.size(); i++) {
@@ -1717,9 +1704,6 @@ public class cfgInit implements Runnable {
             try {
                 rnd += 1;
                 bits.sleep(1000);
-                if (debugger.prtWatchEvnt) {
-                    logger.debug("health check");
-                }
                 ifcThread.checkIfaces();
                 ipFwdTab.checkVrfs();
                 cntr.byteRx = bits.getTime() / 8;
