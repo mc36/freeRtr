@@ -115,12 +115,12 @@ public class userFlash {
     }
 
     /**
-     * play ansi animation from a file
+     * play ansi movie from a file
      *
      * @param fn filename
      * @param con console to draw
      */
-    public static void ansiAnim(String fn, pipeScreen con) {
+    public static void ansiMov(String fn, pipeScreen con) {
         File fil = new File(fn);
         con.putCls();
         con.putCur(0, 0);
@@ -128,12 +128,12 @@ public class userFlash {
     }
 
     /**
-     * play music from a file
+     * play ansi music from a file
      *
      * @param fn filename
      * @param con console to play
      */
-    public static void ansiMusic(String fn, pipeScreen con) {
+    public static void ansiMus(String fn, pipeScreen con) {
         File fil = new File(fn);
         con.putCls();
         con.putCur(0, 0);

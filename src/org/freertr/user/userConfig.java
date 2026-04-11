@@ -331,6 +331,8 @@ public class userConfig {
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "file name");
         l.add(null, false, 2, new int[]{3}, "movie", "add movie file");
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "file name");
+        l.add(null, false, 2, new int[]{3}, "music", "add music file");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "file name");
         l.add(null, false, 2, new int[]{3}, "pixel", "add movie file");
         l.add(null, false, 3, new int[]{3, -1}, "<str>", "file name");
         l.add(null, false, 1, new int[]{2}, "logging", "set logging parameters");
@@ -1520,6 +1522,10 @@ public class userConfig {
                 cfgAll.bannerMov = cmd.getRemaining();
                 return;
             }
+            if (a.equals("music")) {
+                cfgAll.bannerMus = cmd.getRemaining();
+                return;
+            }
             if (!a.equals("editor")) {
                 cmd.badCmd();
                 return;
@@ -1630,6 +1636,10 @@ public class userConfig {
             }
             if (a.equals("movie")) {
                 cfgAll.bannerMov = null;
+                return;
+            }
+            if (a.equals("music")) {
+                cfgAll.bannerMus = null;
                 return;
             }
             return;

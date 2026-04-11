@@ -863,6 +863,11 @@ public class cfgAll {
     public static String bannerMov = null;
 
     /**
+     * music banner of this host
+     */
+    public static String bannerMus = null;
+
+    /**
      * locale of this host
      */
     public static String locale = null;
@@ -1487,6 +1492,7 @@ public class cfgAll {
         new userFilter("", cmds.negated + cmds.tabulator + "banner pixel", null),
         new userFilter("", cmds.negated + cmds.tabulator + "banner image", null),
         new userFilter("", cmds.negated + cmds.tabulator + "banner movie", null),
+        new userFilter("", cmds.negated + cmds.tabulator + "banner music", null),
         new userFilter("", cmds.negated + cmds.tabulator + "password-encrypt", null),
         new userFilter("", cmds.negated + cmds.tabulator + "enable", null),
         new userFilter("", cmds.negated + cmds.tabulator + "locale", null),
@@ -3858,6 +3864,7 @@ public class cfgAll {
         cmds.cfgLine(l, bannerPix == null, "", "banner pixel", bannerPix);
         cmds.cfgLine(l, bannerImg == null, "", "banner image", bannerImg);
         cmds.cfgLine(l, bannerMov == null, "", "banner movie", bannerMov);
+        cmds.cfgLine(l, bannerMus == null, "", "banner music", bannerMus);
         l.add(cmds.comment);
         l.add("client label-range " + labelRangeBeg + " " + labelRangeEnd);
         for (int i = 0; i < alwaysDebugs.size(); i++) {

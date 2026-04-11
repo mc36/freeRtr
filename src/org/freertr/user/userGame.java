@@ -1360,12 +1360,12 @@ public class userGame {
             return;
         }
         if (a.equals("movie")) {
-            userFlash.ansiAnim(cmd.getRemaining(), console);
+            userFlash.ansiMov(cmd.getRemaining(), console);
             pipeScreen.getKey(console.pipe);
             return;
         }
         if (a.equals("music")) {
-            userFlash.ansiMusic(cmd.getRemaining(), console);
+            userFlash.ansiMus(cmd.getRemaining(), console);
             pipeScreen.getKey(console.pipe);
             return;
         }

@@ -1116,8 +1116,11 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
             pipeScreen.updtSiz(pipe);
         }
         if (parent.banner) {
+            if (cfgAll.bannerMus != null) {
+                userFlash.ansiMus(cfgAll.bannerMus, new pipeScreen(pipe));
+            }
             if (cfgAll.bannerMov != null) {
-                userFlash.ansiAnim(cfgAll.bannerMov, new pipeScreen(pipe));
+                userFlash.ansiMov(cfgAll.bannerMov, new pipeScreen(pipe));
             }
             if (cfgAll.bannerImg != null) {
                 userFlash.ansiArt(cfgAll.bannerImg, new pipeScreen(pipe));

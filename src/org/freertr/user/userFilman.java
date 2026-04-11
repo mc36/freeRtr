@@ -367,7 +367,7 @@ public class userFilman {
 
     private void doKeyMov() {
         String a = pan[act].getFn();
-        userFlash.ansiAnim(a, console);
+        userFlash.ansiMov(a, console);
         pipeScreen.getKey(console.pipe);
     }
 

@@ -591,7 +591,7 @@ public class userBrowser {
             return;
         }
         doClear();
-        userFlash.ansiAnim(tempFile, console);
+        userFlash.ansiMov(tempFile, console);
         pipeScreen.getKey(console.pipe);
         doClear();
     }
