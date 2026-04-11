@@ -2297,6 +2297,8 @@ public class userExec {
             hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
             hl.add(null, false, 2, new int[]{3}, "movie", "show some art");
             hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
+            hl.add(null, false, 2, new int[]{3}, "music", "show some art");
+            hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
             hl.add(null, false, 2, new int[]{3}, "sixel", "show some art");
             hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
             hl.add(null, false, 2, new int[]{3}, "obj", "show some art");

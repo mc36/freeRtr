@@ -14,6 +14,11 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.sound.midi.MidiEvent;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Sequence;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Track;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.freertr.cfg.cfgInit;
@@ -43,6 +48,54 @@ public class pipeWindow extends JPanel {
      * window handler
      */
     protected JFrame win;
+
+    /**
+     * play music
+     *
+     * @param pip pipe to use
+     * @param fil file
+     */
+    public static void midiAnsi(pipeSide pip, File fil) {
+        Track ts[];
+        try {
+            Sequence seq = MidiSystem.getSequence(fil);
+            ts = seq.getTracks();
+        } catch (Exception e) {
+            logger.traceback(e);
+            return;
+        }
+        Track tr = ts[0];
+        for (int i = 1; i < ts.length; i++) {
+            Track cur = ts[i];
+            if (tr.size() > cur.size()) {
+                continue;
+            }
+            tr = cur;
+        }
+        final String[] notes = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+        String a = "T100L15";
+        int p = -1;
+        for (int i = 0; i < tr.size(); i++) {
+            MidiEvent ev = tr.get(i);
+            ShortMessage sm;
+            try {
+                sm = (ShortMessage) ev.getMessage();
+            } catch (Exception e) {
+                continue;
+            }
+            if (sm.getCommand() != ShortMessage.NOTE_ON) {
+                continue;
+            }
+            int o = sm.getData1();
+            int v = o / notes.length;
+            if (v != p) {
+                a += "O" + v;
+                p = v;
+            }
+            a += notes[o % notes.length];
+        }
+        pipeScreen.sendMusicAnsi(pip, a);
+    }
 
     /**
      * play animated image

@@ -128,6 +128,19 @@ public class userFlash {
     }
 
     /**
+     * play music from a file
+     *
+     * @param fn filename
+     * @param con console to play
+     */
+    public static void ansiMusic(String fn, pipeScreen con) {
+        File fil = new File(fn);
+        con.putCls();
+        con.putCur(0, 0);
+        pipeWindow.midiAnsi(con.pipe, fil);
+    }
+
+    /**
      * get gzip header
      *
      * @return header
