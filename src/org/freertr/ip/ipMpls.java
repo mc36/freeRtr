@@ -151,6 +151,21 @@ public class ipMpls implements ifcUp {
     public final static int bierIp6 = 6;
 
     /**
+     * bier vxlan
+     */
+    public final static int bierVxl = 7;
+
+    /**
+     * bier nvgre
+     */
+    public final static int bierNvg = 8;
+
+    /**
+     * bier geneve
+     */
+    public final static int bierGnv = 9;
+
+    /**
      * label security
      */
     public boolean security;

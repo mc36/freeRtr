@@ -59,9 +59,14 @@ public class ifcNshFwd implements ifcUp {
     public final static int protMpls = 0x05;
 
     /**
-     * gbp packet
+     * ioam packet
      */
-    public final static int protGbp = 0x06;
+    public final static int protIoam = 0x06;
+
+    /**
+     * sfc active oam packet
+     */
+    public final static int protSoam = 0x07;
 
     /**
      * counter of this interface
