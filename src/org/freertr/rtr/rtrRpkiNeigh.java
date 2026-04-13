@@ -411,6 +411,8 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 return processOneAspa(pck, tableA);
             case rtrRpkiSpeak.msgCacheReply:
                 return 0;
+            case rtrRpkiSpeak.msgSerialNotify:
+                return 4;
             case rtrRpkiSpeak.msgCacheReset:
                 table4.clear();
                 table6.clear();
