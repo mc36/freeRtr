@@ -18162,3 +18162,6 @@ failed: wireguard over ipv6
 ---------------------------------- 2026-04-12 16:23:41 26.4.12
 no failed: wireguard over ipv6
 qc pass: wireguard over ipv6
+---------------------------------- 2026-04-13 20:44:40 26.4.13
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard
