@@ -1,0 +1,23 @@
+download 3
+reget-time 72
+
+mkdir %tmp%
+catalog-read freesh gz http://ftp.linuxliber.md/freesh/ freesh main
+
+select-dis freesh-archive-.*
+select-one linux-libre                    #libre kernel
+catalog-sum
+
+select-lst
+select-sum
+package-down
+package-inst
+
+exec mv %tmp%/lib %tmp%/usr
+
+exec mv %dwn%/%arch%-linux-image-gnu.tgz %dwn%/%arch%-linux-image-gnu.bak
+exec tar cfz %dwn%/%arch%-linux-image-gnu.tgz -C %tmp%/ boot usr
+
+catalog-save lib
+
+del-alw %tmp%
