@@ -166,6 +166,7 @@ void tree_del(struct tree_head *tab, void *ntry) {
             if (old == NULL) return;
             cur->value = NULL;
             tree_cache(bas);
+            usleep(1000);
             free(old);
             return;
         }
