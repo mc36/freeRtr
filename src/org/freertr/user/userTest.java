@@ -115,6 +115,7 @@ import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.enc.encXml;
 import org.freertr.enc.encJson;
+import org.freertr.enc.encJsonEntry;
 import org.freertr.util.logger;
 import org.freertr.enc.encPrtbuf;
 import org.freertr.enc.encThrift;
@@ -166,7 +167,96 @@ public class userTest {
         if (alias != null) {
             return alias;
         }
-        if (a.equals("graph")) {
+        if (a.equals("graph-dot")) {
+            List<String> lst = bits.txt2buf(cmd.word());
+            if (lst == null) {
+                cmd.error("no such file");
+                return null;
+            }
+            int fmt = 0;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                fmt = spfLayout.string2format(fmt, a);
+            }
+            spfLayout g = new spfLayout(fmt, null, false);
+            for (int o = 0; o < lst.size(); o++) {
+                a = lst.get(o);
+                int i = a.indexOf("[");
+                if (i >= 0) {
+                    a = a.substring(0, i);
+                }
+                a = a.replaceAll("\"", "");
+                a = a.trim();
+                i = a.indexOf(" -- ");
+                if (i < 0) {
+                    continue;
+                }
+                g.addLink(a.substring(0, i), a.substring(i + 4, a.length()), 10, null, null);
+            }
+            rdr.putStrArr(g.getRes());
+            return null;
+        }
+        if (a.equals("graph-json")) {
+            List<String> lst = bits.txt2buf(cmd.word());
+            if (lst == null) {
+                cmd.error("no such file");
+                return null;
+            }
+            int fmt = 0;
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                fmt = spfLayout.string2format(fmt, a);
+            }
+            spfLayout g = new spfLayout(fmt, null, false);
+            encJson j = new encJson();
+            j.fromString(lst);
+            int o = j.findValue("links");
+            if (o < 0) {
+                cmd.error("no links found");
+                return null;
+            }
+            for (;;) {
+                o++;
+                encJsonEntry c = j.getData(o);
+                if (c == null) {
+                    break;
+                }
+                if (c.level < 2) {
+                    break;
+                }
+                if (c.data.equals("source")) {
+                    o++;
+                    c = j.getData(o);
+                    if (c == null) {
+                        break;
+                    }
+                    a = c.data;
+                    continue;
+                }
+                if (!c.data.equals("target")) {
+                    continue;
+                }
+                if (a == null) {
+                    continue;
+                }
+                o++;
+                c = j.getData(o);
+                if (c == null) {
+                    break;
+                }
+                g.addLink(a, c.data, 10, null, null);
+                a = null;
+            }
+            rdr.putStrArr(g.getRes());
+            return null;
+        }
+        if (a.equals("graph-chain")) {
             spfLayout g = new spfLayout(1, null, false);
             String s = cmd.word();
             for (;;) {
