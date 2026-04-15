@@ -490,13 +490,13 @@ public class rtrRpki extends ipRtr implements Runnable {
      * @return list of neighbors
      */
     public userFormat getNeighShow() {
-        userFormat l = new userFormat("|", "address|ipv4|ipv6|key|aspa|uptime");
+        userFormat l = new userFormat("|", "address|state|ipv4|ipv6|key|aspa|uptime");
         for (int i = 0; i < neighs.size(); i++) {
             rtrRpkiNeigh ntry = neighs.get(i);
             if (ntry == null) {
                 continue;
             }
-            l.add(ntry.peer + "|" + ntry.table4.size() + "|" + ntry.table6.size() + "|" + ntry.tableK.size() + "|" + ntry.tableA.size() + "|" + bits.timePast(ntry.upTime));
+            l.add(ntry.getNeighShow());
         }
         return l;
     }

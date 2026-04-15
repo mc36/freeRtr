@@ -101,6 +101,8 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
 
     private boolean need2run;
 
+    private boolean ready2use;
+
     private int serial;
 
     private int session;
@@ -198,6 +200,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
     }
 
     private void doWork() {
+        ready2use = false;
         if (!need2run) {
             return;
         }
@@ -220,7 +223,6 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
         table6.clear();
         tableA.clear();
         tableK.clear();
-        logger.warn("neighbor " + peer + " up");
         upTime = bits.getTime();
         for (;;) {
             int i = doOneClntRnd(pck);
@@ -237,6 +239,8 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             pipe.setClose();
             break;
         }
+        logger.warn("neighbor " + peer + " up");
+        ready2use = true;
         lower.compute.wakeup();
         long last = bits.getTime();
         for (;;) {
@@ -274,6 +278,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             }
             lower.compute.wakeup();
         }
+        ready2use = false;
         table4.clear();
         table6.clear();
         tableA.clear();
@@ -431,6 +436,21 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
             default:
                 return 0;
         }
+    }
+
+    /**
+     * get neighbor show
+     *
+     * @return list of neighbors
+     */
+    public String getNeighShow() {
+        String a;
+        if (need2run) {
+            a = cmds.upDown(ready2use);
+        } else {
+            a = "admin";
+        }
+        return peer + "|" + a + "|" + table4.size() + "|" + table6.size() + "|" + tableK.size() + "|" + tableA.size() + "|" + bits.timePast(upTime);
     }
 
     /**
