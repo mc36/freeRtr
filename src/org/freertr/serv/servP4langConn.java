@@ -3092,8 +3092,53 @@ public class servP4langConn implements Runnable {
                     }
                     sess = ses;
                 }
-                nei.viaI = prnt;
-                lower.sendLine("pppoe_" + act + " " + ifc.id + " " + prnt.id + " " + nei.id + " " + vrf.id + " " + sess + " " + macR.toEmuStr() + " " + macL.toEmuStr());
+                if (prnt.ifc.type != tabRouteIface.ifaceType.pweth) {
+                    nei.viaI = prnt;
+                    lower.sendLine("pppoe_" + act + " " + ifc.id + " " + prnt.id + " " + nei.id + " " + vrf.id + " " + sess + " " + macR.toEmuStr() + " " + macL.toEmuStr());
+                    ifc.sentPppoe = ses;
+                    return;
+                }
+                if (prnt.ifc.pwhe == null) {
+                    return;
+                }
+                if (prnt.ifc.pwhe.pwom == null) {
+                    return;
+                }
+                int ll = prnt.ifc.pwhe.pwom.getLabelLoc();
+                if (ll < 0) {
+                    return;
+                }
+                int lr = prnt.ifc.pwhe.pwom.getLabelRem();
+                if (lr < 0) {
+                    return;
+                }
+                addrIP adr = prnt.ifc.pwhe.pwom.getRemote();
+                if (adr == null) {
+                    return;
+                }
+                ipFwd ofwd = prnt.ifc.pwhe.pwom.vrf.getFwd(adr);
+                servP4langVrf ovrf = lower.findVrf(ofwd);
+                if (ovrf == null) {
+                    return;
+                }
+                tabRouteEntry<addrIP> rou = ofwd.actualU.route(adr);
+                rou = lower.convRou(rou, false);
+                if (ntry == null) {
+                    return;
+                }
+                if (rou.best.iface == null) {
+                    return;
+                }
+                servP4langNei hop = lower.findNei(rou.best.iface, rou.best.nextHop);
+                if (hop == null) {
+                    return;
+                }
+                if (hop.mac == null) {
+                    return;
+                }
+                ll = servP4langUtil.getLabel(rou);
+                nei.viaI = hop.getVia();
+                lower.sendLine("pppwhe_" + act + " " + nei.viaI.id + " " + prnt.id + " " + nei.id + " " + vrf.id + " " + sess + " " + macR.toEmuStr() + " " + macL.toEmuStr() + " " + hop.mac.toEmuStr() + " " + nei.viaI.getMac().toEmuStr() + " " + ll + " " + lr);
                 ifc.sentPppoe = ses;
                 return;
             } catch (Exception e) {
@@ -3897,22 +3942,22 @@ public class servP4langConn implements Runnable {
             if (ovrf == null) {
                 return;
             }
-            tabRouteEntry<addrIP> ntry = ofwd.actualU.route(adr);
-            ntry = lower.convRou(ntry, false);
-            if (ntry == null) {
+            tabRouteEntry<addrIP> rou = ofwd.actualU.route(adr);
+            rou = lower.convRou(rou, false);
+            if (rou == null) {
                 return;
             }
-            if (ntry.best.iface == null) {
+            if (rou.best.iface == null) {
                 return;
             }
-            servP4langNei hop = lower.findNei(ntry.best.iface, ntry.best.nextHop);
+            servP4langNei hop = lower.findNei(rou.best.iface, rou.best.nextHop);
             if (hop == null) {
                 return;
             }
             if (hop.mac == null) {
                 return;
             }
-            ll = servP4langUtil.getLabel(ntry);
+            ll = servP4langUtil.getLabel(rou);
             nei.viaI = hop.getVia();
             lower.sendLine("pppwhe_" + act + " " + nei.viaI.id + " " + ifc.pppoe.id + " " + nei.id + " " + vrf.id + " " + sess + " " + mac.toEmuStr() + " " + ifc.pppoe.getMac().toEmuStr() + " " + hop.mac.toEmuStr() + " " + nei.viaI.getMac().toEmuStr() + " " + ll + " " + lr);
             ifc.sentPppoe = ses;
