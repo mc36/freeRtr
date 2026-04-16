@@ -420,6 +420,43 @@ control EgressControlNexthop(inout headers hdr,
         eg_md.ethertype = ETHERTYPE_PPPOE_DATA;
     }
 
+
+
+    action act_ipv4_pppwhe(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, bit<16> session, mac_addr_t core_dst_mac, mac_addr_t core_src_mac, label_t egress_label, label_t vpn_label) {
+        hdr.pppoeD.setValid();
+        hdr.pppoeD.ver = 1;
+        hdr.pppoeD.type = 1;
+        hdr.pppoeD.code = 0;
+        hdr.pppoeD.session = session;
+        hdr.pppoeD.length = (bit<16>)eg_intr_md.packet_length - eg_md.vlan_size - 12;
+        hdr.pppoeD.ppptyp = 0;
+        if (eg_md.ethertype == ETHERTYPE_SGT) hdr.pppoeD.ppptyp = PPPTYPE_SGT;
+        if (eg_md.ethertype == ETHERTYPE_NSH) hdr.pppoeD.ppptyp = PPPTYPE_NSH;
+        if (eg_md.ethertype == ETHERTYPE_IPV4) hdr.pppoeD.ppptyp = PPPTYPE_IPV4;
+        if (eg_md.ethertype == ETHERTYPE_IPV6) hdr.pppoeD.ppptyp = PPPTYPE_IPV6;
+        if (eg_md.ethertype == ETHERTYPE_MPLS_UCAST) hdr.pppoeD.ppptyp = PPPTYPE_MPLS_UCAST;
+        if (eg_md.ethertype == ETHERTYPE_ROUTEDMAC) hdr.pppoeD.ppptyp = PPPTYPE_ROUTEDMAC;
+
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.eth7.setValid();
+        hdr.eth7.src_mac_addr = src_mac_addr;
+        hdr.eth7.dst_mac_addr = dst_mac_addr;
+        hdr.eth7.ethertype = ETHERTYPE_PPPOE_DATA;
+        hdr.mpls70.setValid();
+        hdr.mpls70.label = egress_label;
+        hdr.mpls70.ttl = 255;
+        hdr.mpls70.bos = 0;
+        hdr.mpls71.setValid();
+        hdr.mpls71.label = vpn_label;
+        hdr.mpls71.ttl = 255;
+        hdr.mpls71.bos = 1;
+        hdr.ethernet.src_mac_addr = core_src_mac;
+        hdr.ethernet.dst_mac_addr = core_dst_mac;
+        eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+
+
     action act_ipv4_gre4(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, ipv4_addr_t dst_ip_addr, ipv4_addr_t src_ip_addr) {
         /*
          * the packet header src_mac is now set to the previous header dst_mac
@@ -1064,6 +1101,7 @@ eg_md.nexthop_id:
             act_ipv4_labs8;
             act_ipv4_labs9;
             act_ipv4_pppoe;
+            act_ipv4_pppwhe;
             act_ipv4_gre4;
             act_ipv4_gre6;
             act_ipv4_tmux4;

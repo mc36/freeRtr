@@ -22,6 +22,9 @@ struct headers {
     ethernet_t		ethernet;
     vlan_t		vlan;
     vlan_t		vlanq;
+    mpls_t		mpls70;
+    mpls_t		mpls71;
+    ethernet_t		eth7;
     pppoe_t		pppoeC;
     pppoe_t		pppoeD;
     pppbr_t		pppoeB;

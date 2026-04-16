@@ -3868,8 +3868,53 @@ public class servP4langConn implements Runnable {
                 }
                 sess = ses;
             }
-            nei.viaI = ifc.pppoe;
-            lower.sendLine("pppoe_" + act + " " + ifc.id + " " + ifc.pppoe.id + " " + nei.id + " " + vrf.id + " " + sess + " " + mac.toEmuStr() + " " + ifc.pppoe.getMac().toEmuStr());
+            if (ifc.pppoe.ifc.type != tabRouteIface.ifaceType.pweth) {
+                nei.viaI = ifc.pppoe;
+                lower.sendLine("pppoe_" + act + " " + ifc.id + " " + ifc.pppoe.id + " " + nei.id + " " + vrf.id + " " + sess + " " + mac.toEmuStr() + " " + ifc.pppoe.getMac().toEmuStr());
+                ifc.sentPppoe = ses;
+                return;
+            }
+            if (ifc.pppoe.ifc.pwhe == null) {
+                return;
+            }
+            if (ifc.pppoe.ifc.pwhe.pwom == null) {
+                return;
+            }
+            int ll = ifc.pppoe.ifc.pwhe.pwom.getLabelLoc();
+            if (ll < 0) {
+                return;
+            }
+            int lr = ifc.pppoe.ifc.pwhe.pwom.getLabelRem();
+            if (lr < 0) {
+                return;
+            }
+            addrIP adr = ifc.pppoe.ifc.pwhe.pwom.getRemote();
+            if (adr == null) {
+                return;
+            }
+            ipFwd ofwd = ifc.pppoe.ifc.pwhe.pwom.vrf.getFwd(adr);
+            servP4langVrf ovrf = lower.findVrf(ofwd);
+            if (ovrf == null) {
+                return;
+            }
+            tabRouteEntry<addrIP> ntry = ofwd.actualU.route(adr);
+            ntry = lower.convRou(ntry, false);
+            if (ntry == null) {
+                return;
+            }
+            if (ntry.best.iface == null) {
+                return;
+            }
+            servP4langNei hop = lower.findNei(ntry.best.iface, ntry.best.nextHop);
+            if (hop == null) {
+                return;
+            }
+            if (hop.mac == null) {
+                return;
+            }
+            ll = servP4langUtil.getLabel(ntry);
+            nei.viaI = hop.getVia();
+            lower.sendLine("pppwhe_" + act + " " + nei.viaI.id + " " + ifc.pppoe.id + " " + nei.id + " " + vrf.id + " " + sess + " " + mac.toEmuStr() + " " + ifc.pppoe.getMac().toEmuStr() + " " + hop.mac.toEmuStr() + " " + nei.viaI.getMac().toEmuStr() + " " + ll + " " + lr);
             ifc.sentPppoe = ses;
             return;
         }
