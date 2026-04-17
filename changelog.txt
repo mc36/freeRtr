@@ -18170,3 +18170,5 @@ no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
 ---------------------------------- 2026-04-17 08:57:59 26.4.17
 qc pass: p4lang: ingress pppoe over pwhe access list
+---------------------------------- 2026-04-17 10:36:17 26.4.17
+qc pass: p4lang: egress pppoe over pwhe access list

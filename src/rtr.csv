@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.4.17-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-04-17 09:51:52, took 00:16:30, with 50 workers, on 4289 cases, 0 failed, 0 traces, 4 retries
+-;-;-;2026-04-17 10:52:21, took 00:16:04, with 50 workers, on 4290 cases, 0 failed, 0 traces, 6 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -1925,6 +1925,7 @@ http://sources.freertr.org/cfg/p4lang-acl144.tst;p4lang-acl144.tst;success;p4lan
 http://sources.freertr.org/cfg/p4lang-acl145.tst;p4lang-acl145.tst;success;p4lang: qinq ingress rate limit
 http://sources.freertr.org/cfg/p4lang-acl146.tst;p4lang-acl146.tst;success;p4lang: qinq egress rate limit
 http://sources.freertr.org/cfg/p4lang-acl147.tst;p4lang-acl147.tst;success;p4lang: ingress pppoe over pwhe access list
+http://sources.freertr.org/cfg/p4lang-acl148.tst;p4lang-acl148.tst;success;p4lang: egress pppoe over pwhe access list
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;success;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;success;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;success;p4lang: macsec with aes128cbc

@@ -1921,6 +1921,7 @@ qc pass: p4lang: vlan egress rate limit
 qc pass: p4lang: qinq ingress rate limit
 qc pass: p4lang: qinq egress rate limit
 qc pass: p4lang: ingress pppoe over pwhe access list
+qc pass: p4lang: egress pppoe over pwhe access list
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc
