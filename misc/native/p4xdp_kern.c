@@ -481,6 +481,22 @@ struct {
 
 
 
+#define putPppoe()                                              \
+    tmp = (bufE - bufD) - bufP;                                 \
+    put16msb(bufD, bufP, ethtyp);                               \
+    bufP -= sizeof(macaddr);                                    \
+    if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;         \
+    bufP = sizeof(macaddr);                                     \
+    revalidatePacket(sizeof(macaddr));                          \
+    bufP -= 6;                                                  \
+    put16msb(bufD, bufP + 0, 0x1100);                           \
+    put16msb(bufD, bufP + 2, neir->sess);                       \
+    put16msb(bufD, bufP + 4, tmp);                              \
+    ethtyp = ETHERTYPE_PPPOE_DATA;                              \
+    bufP -= 2;                                                  \
+    put16msb(bufD, bufP, ethtyp);
+
+
 
 
 
@@ -1034,19 +1050,7 @@ nethtyp_tx:
             goto subif_tx;
         case 2: // pppoe
             ethtyp2ppptyp();
-            tmp = (bufE - bufD) - bufP;
-            put16msb(bufD, bufP, ethtyp);
-            bufP -= sizeof(macaddr);
-            if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
-            bufP = sizeof(macaddr);
-            revalidatePacket(sizeof(macaddr));
-            bufP -= 6;
-            put16msb(bufD, bufP + 0, 0x1100);
-            put16msb(bufD, bufP + 2, neir->sess);
-            put16msb(bufD, bufP + 4, tmp);
-            ethtyp = ETHERTYPE_PPPOE_DATA;
-            bufP -= 2;
-            put16msb(bufD, bufP, ethtyp);
+            putPppoe();
             goto subif_tx;
         case 3: // gre
             bufP -= 2;
@@ -1085,6 +1089,7 @@ nethtyp_tx:
             put32msb(bufD, bufP + 4, neir->sess);
             goto neighlayer4;
         case 7: // pwhe
+pwhe:
             bufP -= sizeof(macaddr) + 16;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
             bufP = sizeof(macaddr) + 16;
@@ -1163,6 +1168,10 @@ nethtyp_tx:
             bufP -= 2;
             put16msb(bufD, bufP, ethtyp);
             goto subif_tx;
+        case 9: // pppwhe
+            ethtyp2ppptyp();
+            putPppoe();
+            goto pwhe;
         }
         goto drop;
 

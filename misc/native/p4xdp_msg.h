@@ -1046,6 +1046,30 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "pppwhe") == 0) {
+        neir.aclport = i = atoi(arg[2]);
+        neir.port = atoi(arg[3]);
+        pppoe.port = atoi(arg[4]);
+        pppoe.sess = atoi(arg[7]);
+        o = atoi(arg[5]);
+        neir.sess = pppoe.sess;
+        neir.cmd = 2;
+        str2mac(&neir.macs[0], arg[8]);
+        str2mac(&neir.macs[6], arg[9]);
+        str2mac(&neir.mac2[0], arg[10]);
+        str2mac(&neir.mac2[6], arg[11]);
+        neir.srcPort = atoi(arg[12]);
+        neir.trgPort = atoi(arg[13]);
+        neir.cmd = 9;
+        if (del == 0) {
+            if (bpf_map_delete_elem(pppoes_fd, &pppoe) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(neighs_fd, &o) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(pppoes_fd, &pppoe, &i, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(neighs_fd, &o, &neir, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "gre4") == 0) {
         o = atoi(arg[2]);
         neir.aclport = tunr.aclport = atoi(arg[3]);
