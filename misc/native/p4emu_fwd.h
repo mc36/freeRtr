@@ -378,6 +378,18 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     }
 
 
+#define putPppoe                                                \
+    put16msb(bufD, bufP, ethtyp);                               \
+    tmp = bufS - bufP + preBuff;                                \
+    bufP -= 6;                                                  \
+    put16msb(bufD, bufP + 0, 0x1100);                           \
+    put16msb(bufD, bufP + 2, neigh_res->tid);                   \
+    put16msb(bufD, bufP + 4, tmp);                              \
+    ethtyp = ETHERTYPE_PPPOE_DATA;                              \
+    bufP -= 2;                                                  \
+    put16msb(bufD, bufP, ethtyp);
+
+
 
 
 
@@ -554,15 +566,7 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         goto send;
     case 2: // pppoe
         ethtyp2ppptyp;
-        put16msb(bufD, bufP, ethtyp);
-        tmp = bufS - bufP + preBuff;
-        bufP -= 6;
-        put16msb(bufD, bufP + 0, 0x1100);
-        put16msb(bufD, bufP + 2, neigh_res->tid);
-        put16msb(bufD, bufP + 4, tmp);
-        ethtyp = ETHERTYPE_PPPOE_DATA;
-        bufP -= 2;
-        put16msb(bufD, bufP, ethtyp);
+        putPppoe;
         goto send;
     case 3: // gre
         bufP -= 2;
@@ -726,6 +730,7 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         tmp = IP_PROTOCOL_TMUX;
         goto layer3;
     case 13: // pwhe
+pwhe:
         bufP -= 12;
         memcpy(&bufD[bufP], &bufH[0], 12);
         bufP -= 4;
@@ -796,6 +801,10 @@ void send2neigh(struct packetContext *ctx, struct neigh_entry *neigh_res, int bu
         bufP -= 2;
         put16msb(bufD, bufP, ethtyp);
         goto send;
+    case 15: // pppwhe
+        ethtyp2ppptyp;
+        putPppoe;
+        goto pwhe;
     }
     doDropper;
 layer4:

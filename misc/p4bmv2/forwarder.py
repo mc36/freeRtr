@@ -4482,7 +4482,7 @@ def main(p4info_file_path, bmv2_file_path, p4runtime_address, freerouter_address
     sck.connect((freerouter_address, int(freerouter_port)))
     fil = sck.makefile('w')
     fil.write("platform bmv2\r\n");
-    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp l3tp route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap vxlan etherip eoip ipip tmux pckoudp srv6 pbr qos flwspc mroute duplab bier nsh sgt amt gtp vrfysrc loconn pwhe pppwhe\r\n");
+    fil.write("capabilities copp acl racl inspect nat vlan bundle bridge pppoe hairpin gre l2tp l3tp route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap vxlan etherip eoip ipip tmux pckoudp srv6 pbr qos flwspc mroute duplab bier nsh sgt amt gtp vrfysrc loconn pwhe mgre pppwhe\r\n");
     for x in range(0, 10):
         data = "portname %i bmv2-port%i\r\n" % (x,x)
         fil.write(data)

@@ -1823,6 +1823,25 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         else hasht_add(&neigh_table, &neigh_ntry);
         return 0;
     }
+    if (strcmp(arg[0], "pppwhe") == 0) {
+        neigh_ntry.port = pppoe_ntry.aclport = atoi(arg[2]);
+        neigh_ntry.aclport = pppoe_ntry.port = atoi(arg[3]);
+        neigh_ntry.tid = pppoe_ntry.session = atoi(arg[6]);
+        neigh_ntry.id = pppoe_ntry.neigh = atoi(arg[4]);
+        neigh_ntry.vrf = atoi(arg[5]);
+        neigh_ntry.command = 15;
+        str2mac(&neigh_ntry.macs[0], arg[7]);
+        str2mac(&neigh_ntry.macs[6], arg[8]);
+        str2mac(&neigh_ntry.mac2[0], arg[9]);
+        str2mac(&neigh_ntry.mac2[6], arg[10]);
+        neigh_ntry.sprt = atoi(arg[11]);
+        neigh_ntry.dprt = atoi(arg[12]);
+        if (del == 0) hasht_del(&pppoe_table, &pppoe_ntry);
+        else hasht_add(&pppoe_table, &pppoe_ntry);
+        if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
+        else hasht_add(&neigh_table, &neigh_ntry);
+        return 0;
+    }
     if (strcmp(arg[0], "gre4") == 0) {
         tun4_ntry.neigh = neigh_ntry.id = atoi(arg[2]);
         tun4_ntry.aclport = neigh_ntry.aclport = atoi(arg[3]);
@@ -3332,7 +3351,7 @@ void doNegotiate(char*name) {
     if (commandTx == NULL) err("failed to open file");
     fprintf(commandTx, "platform p4emu/%s\r\n", name);
     fprintf(commandTx, "capabilities %s%s\r\n",
-            "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap ipsectap vxlan etherip eoip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss ttlset pmtud mpolka polka pwhe mgre",
+            "packout punting copp acl nat vlan bundle bridge pppoe hairpin gre l2tp l3tp tmux route mpls vpls evpn eompls gretap pppoetap l2tptap l3tptap tmuxtap ipiptap ipsectap vxlan etherip eoip ipip pckoudp srv6 pbr qos flwspc mroute duplab bier amt nsh racl inspect sgt vrfysrc gtp loconn tcpmss ttlset pmtud mpolka polka pwhe mgre pppwhe",
 #ifdef HAVE_NOCRYPTO
             ""
 #else

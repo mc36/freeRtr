@@ -3123,7 +3123,7 @@ public class servP4langConn implements Runnable {
                 }
                 tabRouteEntry<addrIP> rou = ofwd.actualU.route(adr);
                 rou = lower.convRou(rou, false);
-                if (ntry == null) {
+                if (rou == null) {
                     return;
                 }
                 if (rou.best.iface == null) {

@@ -282,7 +282,7 @@ struct route6_entry {
 struct neigh_entry {
     int id;
     int vrf;
-    int command;    // 1=rawip, 2=pppoe, 3=gre, 4=l2tp, 5=ipip, 6=esp, 7=ovpn, 8=wg, 9=amt, 10=gtp, 11=l3tp, 12=tmux, 13=pwhe, 14=labels
+    int command;    // 1=rawip, 2=pppoe, 3=gre, 4=l2tp, 5=ipip, 6=esp, 7=ovpn, 8=wg, 9=amt, 10=gtp, 11=l3tp, 12=tmux, 13=pwhe, 14=labels, 15=pppwhe
     int layer3;     // 1=ipv4, 2=ipv6
     long pack;
     long byte;
