@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.4.17-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-04-17 13:06:23, took 00:13:41, with 50 workers, on 879 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2026-04-17 14:34:51, took 00:15:02, with 50 workers, on 883 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -150,6 +150,10 @@ http://sources.freertr.org/cfg/p4lang-acl145.tst;p4lang-acl145.tst;success;p4lan
 http://sources.freertr.org/cfg/p4lang-acl146.tst;p4lang-acl146.tst;success;p4lang: qinq egress rate limit
 http://sources.freertr.org/cfg/p4lang-acl147.tst;p4lang-acl147.tst;success;p4lang: ingress pppoe over pwhe access list
 http://sources.freertr.org/cfg/p4lang-acl148.tst;p4lang-acl148.tst;success;p4lang: egress pppoe over pwhe access list
+http://sources.freertr.org/cfg/p4lang-acl149.tst;p4lang-acl149.tst;success;p4lang: pppoe over pwhe interface inspection with ingress drop
+http://sources.freertr.org/cfg/p4lang-acl150.tst;p4lang-acl150.tst;success;p4lang: pppoe over pwhe interface inspection with egress drop
+http://sources.freertr.org/cfg/p4lang-acl151.tst;p4lang-acl151.tst;success;p4lang: pppoe over pwhe interface verify source
+http://sources.freertr.org/cfg/p4lang-acl152.tst;p4lang-acl152.tst;success;p4lang: pppoe over pwhe interface loose verify source
 http://sources.freertr.org/cfg/p4lang-crypt001.tst;p4lang-crypt001.tst;success;p4lang: macsec with des
 http://sources.freertr.org/cfg/p4lang-crypt002.tst;p4lang-crypt002.tst;success;p4lang: macsec with 3des
 http://sources.freertr.org/cfg/p4lang-crypt003.tst;p4lang-crypt003.tst;success;p4lang: macsec with aes128cbc

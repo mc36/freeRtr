@@ -1922,6 +1922,10 @@ qc pass: p4lang: qinq ingress rate limit
 qc pass: p4lang: qinq egress rate limit
 qc pass: p4lang: ingress pppoe over pwhe access list
 qc pass: p4lang: egress pppoe over pwhe access list
+qc pass: p4lang: pppoe over pwhe interface inspection with ingress drop
+qc pass: p4lang: pppoe over pwhe interface inspection with egress drop
+qc pass: p4lang: pppoe over pwhe interface verify source
+qc pass: p4lang: pppoe over pwhe interface loose verify source
 qc pass: p4lang: macsec with des
 qc pass: p4lang: macsec with 3des
 qc pass: p4lang: macsec with aes128cbc
