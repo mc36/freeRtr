@@ -1824,18 +1824,19 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         return 0;
     }
     if (strcmp(arg[0], "pppwhe") == 0) {
-        neigh_ntry.port = pppoe_ntry.aclport = atoi(arg[2]);
-        neigh_ntry.aclport = pppoe_ntry.port = atoi(arg[3]);
-        neigh_ntry.tid = pppoe_ntry.session = atoi(arg[6]);
-        neigh_ntry.id = pppoe_ntry.neigh = atoi(arg[4]);
-        neigh_ntry.vrf = atoi(arg[5]);
+        neigh_ntry.aclport = pppoe_ntry.aclport = atoi(arg[2]);
+        neigh_ntry.port = atoi(arg[3]);
+        pppoe_ntry.port = atoi(arg[4]);
+        neigh_ntry.tid = pppoe_ntry.session = atoi(arg[7]);
+        neigh_ntry.id = pppoe_ntry.neigh = atoi(arg[5]);
+        neigh_ntry.vrf = atoi(arg[6]);
         neigh_ntry.command = 15;
-        str2mac(&neigh_ntry.macs[0], arg[7]);
-        str2mac(&neigh_ntry.macs[6], arg[8]);
-        str2mac(&neigh_ntry.mac2[0], arg[9]);
-        str2mac(&neigh_ntry.mac2[6], arg[10]);
-        neigh_ntry.sprt = atoi(arg[11]);
-        neigh_ntry.dprt = atoi(arg[12]);
+        str2mac(&neigh_ntry.macs[0], arg[8]);
+        str2mac(&neigh_ntry.macs[6], arg[9]);
+        str2mac(&neigh_ntry.mac2[0], arg[10]);
+        str2mac(&neigh_ntry.mac2[6], arg[11]);
+        neigh_ntry.sprt = atoi(arg[12]);
+        neigh_ntry.dprt = atoi(arg[13]);
         if (del == 0) hasht_del(&pppoe_table, &pppoe_ntry);
         else hasht_add(&pppoe_table, &pppoe_ntry);
         if (del == 0) hasht_del(&neigh_table, &neigh_ntry);
@@ -3318,6 +3319,11 @@ void doConsoleCommand_vlan(void* buffer, int fixed) {
     printf("%10i %10i %10i\n", ntry->id, ntry->vlan, ntry->port);
 }
 
+void doConsoleCommand_pppoe(void* buffer, int fixed) {
+    struct pppoe_entry *ntry = buffer;
+    printf("%10i %10i %10i %10i\n", ntry->session, ntry->port, ntry->aclport, ntry->neigh);
+}
+
 void doConsoleCommand_bridge(void* buffer, int fixed) {
     struct bridge_entry *ntry = buffer;
     unsigned char buf[1024];
@@ -3469,6 +3475,7 @@ void doMainLoop() {
             printf("6 - display ipv6 table\n");
             printf("n - display nexthop table\n");
             printf("q - display qos table\n");
+            printf("o - display pppoe table\n");
             printf("v - display vlan table\n");
             break;
         case 'x':
@@ -3512,6 +3519,11 @@ void doMainLoop() {
         case 'V':
             printf("        id       vlan       port\n");
             hasht_walk(&vlanin_table, &doConsoleCommand_vlan, 0);
+            break;
+        case 'o':
+        case 'O':
+            printf("   session       port    aclport   neighbor\n");
+            hasht_walk(&pppoe_table, &doConsoleCommand_pppoe, 0);
             break;
         case '4':
             printf("            addr msk        vrf cmd    nexthop     label1     label2\n");
