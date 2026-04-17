@@ -18177,3 +18177,12 @@ qc pass: p4lang: pppoe over pwhe interface inspection with ingress drop
 qc pass: p4lang: pppoe over pwhe interface inspection with egress drop
 qc pass: p4lang: pppoe over pwhe interface verify source
 qc pass: p4lang: pppoe over pwhe interface loose verify source
+---------------------------------- 2026-04-17 19:24:28 26.4.17
+qc pass: p4lang: macsec over pppoe over pwhe
+qc pass: p4lang: sgt over pppoe over pwhe
+qc pass: p4lang: pppoe routing over vlan pwhe
+qc pass: p4lang: pppoe routing over ipv4 pwhe
+qc pass: p4lang: pppoe routing over ipv6 pwhe
+qc pass: p4lang: pppoe mpls over pwhe
+qc pass: p4lang: pppoe server routing over pwhe
+qc pass: p4lang: pppoe server mpls over pwhe

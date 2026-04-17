@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.4.17-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-04-17 18:03:17, took 00:14:02, with 50 workers, on 887 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2026-04-17 19:53:49, took 00:12:35, with 50 workers, on 891 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -889,3 +889,7 @@ http://sources.freertr.org/cfg/p4lang-rout525.tst;p4lang-rout525.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout526.tst;p4lang-rout526.tst;success;p4lang: routed mspw over backplane
 http://sources.freertr.org/cfg/p4lang-rout527.tst;p4lang-rout527.tst;success;p4lang: pppoe routing over vlan pwhe
 http://sources.freertr.org/cfg/p4lang-rout528.tst;p4lang-rout528.tst;success;p4lang: pppoe routing over ipv4 pwhe
+http://sources.freertr.org/cfg/p4lang-rout529.tst;p4lang-rout529.tst;success;p4lang: pppoe routing over ipv6 pwhe
+http://sources.freertr.org/cfg/p4lang-rout530.tst;p4lang-rout530.tst;success;p4lang: pppoe mpls over pwhe
+http://sources.freertr.org/cfg/p4lang-rout531.tst;p4lang-rout531.tst;success;p4lang: pppoe server routing over pwhe
+http://sources.freertr.org/cfg/p4lang-rout532.tst;p4lang-rout532.tst;success;p4lang: pppoe server mpls over pwhe
