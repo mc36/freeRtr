@@ -51,7 +51,7 @@ control EgressControlNexthop(inout headers hdr, inout ingress_metadata_t eg_md,
 
 
 #ifdef HAVE_MPLS
-#ifdef HAVE_BRIDGE
+#ifdef HAVE_PWHE
     action act_ipv4_pwhe(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, mac_addr_t core_dst_mac, mac_addr_t core_src_mac, label_t egress_label, label_t vpn_label) {
         eg_md.target_id = egress_port;
         eg_md.aclport_id = acl_port;
@@ -70,6 +70,39 @@ control EgressControlNexthop(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.mpls91.ttl = 255;
         hdr.mpls91.bos = 1;
         eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+    }
+#endif
+#endif
+
+
+
+#ifdef HAVE_PWHE
+#ifdef HAVE_PPPOE
+    action act_ipv4_pppwhe(mac_addr_t dst_mac_addr, mac_addr_t src_mac_addr, SubIntId_t egress_port, SubIntId_t acl_port, bit<16> session, mac_addr_t core_dst_mac, mac_addr_t core_src_mac, label_t egress_label, label_t vpn_label) {
+        hdr.pppoeD.setValid();
+        hdr.pppoeD.ver = 1;
+        hdr.pppoeD.type = 1;
+        hdr.pppoeD.code = 0;
+        hdr.pppoeD.session = session;
+        hdr.pppoeD.length = eg_md.pktlen + 2;
+        hdr.pppoeD.ppptyp = 0;
+
+        eg_md.target_id = egress_port;
+        eg_md.aclport_id = acl_port;
+        hdr.eth7.setValid();
+        hdr.eth7.src_mac_addr = src_mac_addr;
+        hdr.eth7.dst_mac_addr = dst_mac_addr;
+        hdr.eth7.ethertype = ETHERTYPE_PPPOE_DATA;
+        hdr.mpls70.setValid();
+        hdr.mpls70.label = egress_label;
+        hdr.mpls70.ttl = 255;
+        hdr.mpls70.bos = 0;
+        hdr.mpls71.setValid();
+        hdr.mpls71.label = vpn_label;          
+        hdr.mpls71.ttl = 255;                  
+        hdr.mpls71.bos = 1;                    
+        hdr.ethernet.src_mac_addr = core_src_mac;
+        hdr.ethernet.dst_mac_addr = core_dst_mac;
     }
 #endif
 #endif
@@ -939,8 +972,13 @@ eg_md.nexthop_id:
             act_ipv4_fib_hit;
             act_ipv4_fib_discard;
 #ifdef HAVE_MPLS
-#ifdef HAVE_BRIDGE
+#ifdef HAVE_PWHE
             act_ipv4_pwhe;
+#endif
+#endif
+#ifdef HAVE_PWHE
+#ifdef HAVE_PPPOE
+            act_ipv4_pppwhe;
 #endif
 #endif
 #ifdef HAVE_MPLS
@@ -1010,6 +1048,14 @@ eg_md.nexthop_id:
                 eg_md.ethertype = ETHERTYPE_PPPOE_DATA;
             }
 #endif
+
+#ifdef HAVE_PWHE
+#ifdef HAVE_PPPOE
+            if (hdr.eth7.isValid()) eg_md.ethertype = ETHERTYPE_MPLS_UCAST;
+#endif
+#endif
+
+
 #ifdef HAVE_L2TP
             if (hdr.l2tp2.isValid()) {
                 if (eg_md.ethertype == ETHERTYPE_IPV4) hdr.l2tp2.ppptyp = PPPTYPE_IPV4;

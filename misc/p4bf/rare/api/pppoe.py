@@ -57,3 +57,70 @@ def writePppoeRules(
         key_annotation_fields_2,
         data_annotation_fields_2,
     )
+
+
+
+
+
+def writePppwheRules(
+    self, op_type, port, nwport, phport, nexthop, vrf, ses, dmac, smac,  core_dst_mac, core_src_mac, label, vpnlab
+):
+    if self.pppoe == False:
+        return
+    tbl_global_path_1 = "ig_ctl.ig_ctl_pppoe"
+    tbl_name_1 = "%s.tbl_pppoe" % (tbl_global_path_1)
+    tbl_action_name_1 = "%s.act_pppoe_data" % (tbl_global_path_1)
+    key_field_list_1 = [
+        gc.KeyTuple("hdr.pppoeD.session", ses),
+        gc.KeyTuple("ig_md.source_id", phport),
+    ]
+    data_field_list_1 = [
+        gc.DataTuple("port", port),
+    ]
+    key_annotation_fields_1 = {
+    }
+    data_annotation_fields_1 = {
+    }
+    self._processEntryFromControlPlane(
+        op_type,
+        tbl_name_1,
+        key_field_list_1,
+        data_field_list_1,
+        tbl_action_name_1,
+        key_annotation_fields_1,
+        data_annotation_fields_1,
+    )
+    tbl_global_path_2 = "eg_ctl.eg_ctl_nexthop"
+    tbl_name_2 = "%s.tbl_nexthop" % (tbl_global_path_2)
+    tbl_action_name_2 = "%s.act_ipv4_pppwhe" % (tbl_global_path_2)
+    key_field_list_2 = [
+        gc.KeyTuple("eg_md.nexthop_id", nexthop),
+    ]
+    data_field_list_2 = [
+        gc.DataTuple("dst_mac_addr", dmac),
+        gc.DataTuple("src_mac_addr", smac),
+        gc.DataTuple("egress_port", nwport),
+        gc.DataTuple("acl_port", port),
+        gc.DataTuple("session", ses),
+        gc.DataTuple("core_dst_mac", core_dst_mac),
+        gc.DataTuple("core_src_mac", core_src_mac),
+        gc.DataTuple("egress_label", label),
+        gc.DataTuple("vpn_label", vpnlab),
+    ]
+    key_annotation_fields_2 = {
+    }
+    data_annotation_fields_2 = {
+        "src_mac_addr": "mac",
+        "dst_mac_addr": "mac",
+        "core_src_mac": "mac",
+        "core_dst_mac": "mac",
+    }
+    self._processEntryFromControlPlane(
+        op_type,
+        tbl_name_2,
+        key_field_list_2,
+        data_field_list_2,
+        tbl_action_name_2,
+        key_annotation_fields_2,
+        data_annotation_fields_2,
+    )

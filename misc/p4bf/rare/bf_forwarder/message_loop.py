@@ -1087,6 +1087,24 @@ def run(self):
             )
             continue
 
+        if cmds[0] == "pppwhe":
+            self.writePppwheRules(
+                mode,
+                int(splt[1]),
+                int(splt[2]),
+                int(splt[3]),
+                int(splt[4]),
+                int(splt[5]),
+                int(splt[6]),
+                splt[7],
+                splt[8],
+                splt[9],
+                splt[10],
+                int(splt[11]),
+                int(splt[12]),
+            )
+            continue
+
         if cmds[0] == "l2tp4":
             self.writeL2tp4rules(
                 mode,

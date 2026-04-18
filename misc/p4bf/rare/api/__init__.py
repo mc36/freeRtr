@@ -122,6 +122,7 @@ class RareApi(BfRtRare):
     from .portqinq import writeQinqRules
     from .portvrf import writeVrfRules
     from .pppoe import writePppoeRules
+    from .pppoe import writePppwheRules
     from .route4 import writeForwardRules4
     from .route6 import writeForwardRules6
     from .routedmac import writeRoumacRules

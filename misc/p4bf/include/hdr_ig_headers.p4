@@ -23,6 +23,13 @@ struct headers {
     ethernet_t ethernet;
     vlan_t vlan;
     vlan_t vlanq;
+#ifdef HAVE_PWHE
+#ifdef HAVE_PPPOE
+    mpls_t mpls70;
+    mpls_t mpls71;
+    ethernet_t eth7;
+#endif
+#endif
 #ifdef HAVE_PPPOE
     pppoe_t pppoeC;
     pppoe_t pppoeD;
@@ -62,7 +69,7 @@ struct headers {
     vxlan_t vxlan2;
 #endif
 #ifdef HAVE_MPLS
-#ifdef HAVE_BRIDGE
+#ifdef HAVE_PWHE
     mpls_t mpls90;
     mpls_t mpls91;
     ethernet_t eth9;

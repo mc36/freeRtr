@@ -149,6 +149,9 @@ control IngressControlMPLS(inout headers hdr, inout ingress_metadata_t ig_md,
     }
 
 
+#endif
+
+#ifdef HAVE_PWHE
     action act_mpls_decap_pwhe(SubIntId_t port) {
         ig_md.ethertype = hdr.eth2.ethertype;
         hdr.ethernet = hdr.eth2;
@@ -261,8 +264,10 @@ hdr.mpls0.label:
             act_mpls_swap2_set_nexthop;
             act_mpls_decap_set_nexthop;
             act_mpls_decap_ipv4;
-#ifdef HAVE_BRIDGE
+#ifdef HAVE_PWHE
             act_mpls_decap_pwhe;
+#endif
+#ifdef HAVE_BRIDGE
             act_mpls_decap_l2vpn;
             act_mpls_decap_vpls;
 #endif
@@ -289,8 +294,10 @@ hdr.mpls1.label:
             act_mpls_swap2_set_nexthop;
             act_mpls_decap_set_nexthop;
             act_mpls_decap_l3vpn;
-#ifdef HAVE_BRIDGE
+#ifdef HAVE_PWHE
             act_mpls_decap_pwhe;
+#endif
+#ifdef HAVE_BRIDGE
             act_mpls_decap_l2vpn;
             act_mpls_decap_vpls;
 #endif

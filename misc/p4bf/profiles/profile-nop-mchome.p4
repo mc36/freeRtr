@@ -1,5 +1,6 @@
 #ifdef PROFILE_NOP_MCHOME
 #define HAVE_MPLS
+#define HAVE_PWHE
 #define HAVE_DUPLAB
 #define HAVE_BIER
 #define HAVE_POLKA
