@@ -2696,6 +2696,13 @@ public class userShow {
                     rdr.putStrTab(r.ospf4.showNhIncons(i, mtch));
                     return null;
                 }
+                if (a.equals("pfxinconsistent")) {
+                    int i = bits.str2num(cmd.word());
+                    tabPrfxlstN mtch = new tabPrfxlstN();
+                    mtch.fromString(cmd.getRemaining());
+                    rdr.putStrTab(r.ospf4.showNeiIncons(i, mtch));
+                    return null;
+                }
                 if (a.equals("lnkinconsistent")) {
                     int i = bits.str2num(cmd.word());
                     tabIntMatcher mtch = new tabIntMatcher();
@@ -3083,6 +3090,13 @@ public class userShow {
                     tabIntMatcher mtch = new tabIntMatcher();
                     mtch.fromString(cmd.word());
                     rdr.putStrTab(r.ospf6.showNhIncons(i, mtch));
+                    return null;
+                }
+                if (a.equals("pfxinconsistent")) {
+                    int i = bits.str2num(cmd.word());
+                    tabPrfxlstN mtch = new tabPrfxlstN();
+                    mtch.fromString(cmd.getRemaining());
+                    rdr.putStrTab(r.ospf6.showNeiIncons(i, mtch));
                     return null;
                 }
                 if (a.equals("lnkinconsistent")) {
@@ -3622,6 +3636,12 @@ public class userShow {
             rdr.putStrTab(r.lsrp.showNhIncons(mtch));
             return;
         }
+        if (a.equals("pfxinconsistent")) {
+            tabPrfxlstN mtch = new tabPrfxlstN();
+            mtch.fromString(cmd.getRemaining());
+            rdr.putStrTab(r.lsrp.showNeiIncons(mtch));
+            return;
+        }
         if (a.equals("lnkinconsistent")) {
             tabIntMatcher mtch = new tabIntMatcher();
             mtch.fromString(cmd.word());
@@ -3710,6 +3730,13 @@ public class userShow {
             tabIntMatcher mtch = new tabIntMatcher();
             mtch.fromString(cmd.word());
             rdr.putStrTab(r.rift.showNhIncons(a, mtch));
+            return;
+        }
+        if (a.equals("pfxinconsistent")) {
+            a = cmd.word();
+            tabPrfxlstN mtch = new tabPrfxlstN();
+            mtch.fromString(cmd.getRemaining());
+            rdr.putStrTab(r.rift.showNeiIncons(a, mtch));
             return;
         }
         if (a.equals("lnkinconsistent")) {
@@ -3887,6 +3914,13 @@ public class userShow {
             tabIntMatcher mtch = new tabIntMatcher();
             mtch.fromString(cmd.word());
             rdr.putStrTab(r.isis.showNhIncons(i, mtch));
+            return;
+        }
+        if (a.equals("pfxinconsistent")) {
+            int i = bits.str2num(cmd.word());
+            tabPrfxlstN mtch = new tabPrfxlstN();
+            mtch.fromString(cmd.getRemaining());
+            rdr.putStrTab(r.isis.showNeiIncons(i, mtch));
             return;
         }
         if (a.equals("lnkinconsistent")) {
@@ -4737,6 +4771,12 @@ public class userShow {
                 tabIntMatcher mtch = new tabIntMatcher();
                 mtch.fromString(cmd.word());
                 rdr.putStrTab(r.bgp.getNhIncons(mtch));
+                return;
+            }
+            if (a.equals("pfxinconsistent")) {
+                tabPrfxlstN mtch = new tabPrfxlstN();
+                mtch.fromString(cmd.getRemaining());
+                rdr.putStrTab(r.bgp.showNeiIncons(mtch));
                 return;
             }
             if (a.equals("lnkinconsistent")) {

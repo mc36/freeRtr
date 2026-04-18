@@ -479,6 +479,17 @@ public class rtrRift extends ipRtr implements Runnable {
     }
 
     /**
+     * show nh inconsistency
+     *
+     * @param dir direction
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showNeiIncons(String dir, tabPrfxlstN mtch) {
+        return getSpf(dir).listNeiIncons(mtch);
+    }
+
+    /**
      * show met inconsistency
      *
      * @param dir direction

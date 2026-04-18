@@ -657,6 +657,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
     }
 
     /**
+     * show nh inconsistency
+     *
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showNeiIncons(tabPrfxlstN mtch) {
+        return lastSpf.listNeiIncons(mtch);
+    }
+
+    /**
      * show met inconsistency
      *
      * @param mtch matcher

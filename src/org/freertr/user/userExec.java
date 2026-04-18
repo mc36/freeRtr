@@ -647,6 +647,9 @@ public class userExec {
         hl.add(null, false, 11, new int[]{7, -1}, "<num>", "substract y coordinate");
         hl.add(null, false, 5, new int[]{6}, "nonredundant", "list of necessary nodes");
         hl.add(null, false, 6, new int[]{-1}, "<dir>", "north or south spf");
+        hl.add(null, false, 5, new int[]{6}, "pfxinconsistent", "inconsistent advertisements of prefixes");
+        hl.add(null, false, 6, new int[]{7}, "<dir>", "north or south spf");
+        hl.add(null, false, 7, new int[]{7, -1}, "<str>", "prefix matcher");
         hl.add(null, false, 5, new int[]{6}, "lnkinconsistent", "inconsistent advertisements of metrics");
         hl.add(null, false, 6, new int[]{7, -1}, "<dir>", "north or south spf");
         hl.add(null, false, 7, new int[]{-1}, "[str]", "int matcher");
@@ -757,6 +760,8 @@ public class userExec {
         hl.add(null, false, 9, new int[]{10}, "<num>", "substract x coordinate");
         hl.add(null, false, 10, new int[]{6, -1}, "<num>", "substract y coordinate");
         hl.add(null, false, 5, new int[]{-1}, "nonredundant", "list of necessary nodes");
+        hl.add(null, false, 5, new int[]{6}, "pfxinconsistent", "inconsistent advertisements of prefixes");
+        hl.add(null, false, 6, new int[]{6, -1}, "<str>", "prefix matcher");
         hl.add(null, false, 5, new int[]{6, -1}, "lnkinconsistent", "inconsistent advertisements of metrics");
         hl.add(null, false, 6, new int[]{-1}, "[str]", "int matcher");
         hl.add(null, false, 5, new int[]{6, -1}, "nhinconsistent", "inconsistent advertisements of next hops");
@@ -853,7 +858,10 @@ public class userExec {
         hl.add(null, false, 10, new int[]{11}, "<num>", "substract x coordinate");
         hl.add(null, false, 11, new int[]{7, -1}, "<num>", "substract y coordinate");
         hl.add(null, false, 5, new int[]{6}, "nonredundant", "list of necessary nodes");
-        hl.add(null, false, 6, new int[]{-1}, "<dir>", "area number");
+        hl.add(null, false, 6, new int[]{-1}, "<num", "area number");
+        hl.add(null, false, 5, new int[]{6}, "pfxinconsistent", "inconsistent advertisements of prefixes");
+        hl.add(null, false, 6, new int[]{7}, "<num>", "area number");
+        hl.add(null, false, 7, new int[]{7, -1}, "<str>", "prefix matcher");
         hl.add(null, false, 5, new int[]{6}, "lnkinconsistent", "inconsistent advertisements of metrics");
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "area number");
         hl.add(null, false, 7, new int[]{-1}, "[str]", "int matcher");
@@ -942,7 +950,10 @@ public class userExec {
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "level number");
         hl.add(null, false, 7, new int[]{-1}, "[str]", "int matcher");
         hl.add(null, false, 5, new int[]{6}, "nonredundant", "list of necessary nodes");
-        hl.add(null, false, 6, new int[]{-1}, "<dir>", "level number");
+        hl.add(null, false, 6, new int[]{-1}, "<num>", "level number");
+        hl.add(null, false, 5, new int[]{6}, "pfxinconsistent", "inconsistent advertisements of prefixes");
+        hl.add(null, false, 6, new int[]{7}, "<num>", "level number");
+        hl.add(null, false, 7, new int[]{7, -1}, "<str>", "prefix matcher");
         hl.add(null, false, 5, new int[]{6}, "lnkinconsistent", "inconsistent advertisements of metrics");
         hl.add(null, false, 6, new int[]{7, -1}, "<num>", "level number");
         hl.add(null, false, 7, new int[]{-1}, "[str]", "int matcher");
@@ -1027,6 +1038,8 @@ public class userExec {
         hl.add(null, false, 10, new int[]{11}, "<num>", "substract x coordinate");
         hl.add(null, false, 11, new int[]{7, -1}, "<num>", "substract y coordinate");
         hl.add(null, false, 6, new int[]{-1}, "nonredundant", "list of necessary nodes");
+        hl.add(null, false, 6, new int[]{7}, "pfxinconsistent", "inconsistent advertisements of prefixes");
+        hl.add(null, false, 7, new int[]{7, -1}, "<str>", "prefix matcher");
         hl.add(null, false, 6, new int[]{7, -1}, "lnkinconsistent", "inconsistent advertisements of metrics");
         hl.add(null, false, 7, new int[]{-1}, "[str]", "int matcher");
         hl.add(null, false, 6, new int[]{7, -1}, "nhinconsistent", "inconsistent advertisements of next hops");

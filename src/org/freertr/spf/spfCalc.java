@@ -15,6 +15,7 @@ import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipMpls;
 import org.freertr.pack.packDnsRec;
 import org.freertr.pack.packHolder;
+import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
 import org.freertr.tab.tabIntMatcher;
@@ -22,6 +23,7 @@ import org.freertr.tab.tabLabel;
 import org.freertr.tab.tabLabelBier;
 import org.freertr.tab.tabLabelBierN;
 import org.freertr.tab.tabLabelEntry;
+import org.freertr.tab.tabPrfxlstN;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
@@ -741,7 +743,7 @@ public class spfCalc<Ta extends addrType> {
                     continue;
                 }
                 if (bid) {
-                    if (c.target.findConn(ntry, -1) == null) {
+                    if (findConn(c.target.conn, ntry, -1) == null) {
                         continue;
                     }
                 }
@@ -823,7 +825,7 @@ public class spfCalc<Ta extends addrType> {
                 if (cc == null) {
                     continue;
                 }
-                spfConn<Ta> oc = on.findConn(cc.target, cc.metric);
+                spfConn<Ta> oc = findConn(on.conn, cc.target, cc.metric);
                 if (oc == null) {
                     if ((mode & 0x2) != 0) {
                         logger.warn("node " + cn + " established connection to " + cc.target);
@@ -851,7 +853,7 @@ public class spfCalc<Ta extends addrType> {
                 if (oc == null) {
                     continue;
                 }
-                spfConn<Ta> cc = cn.findConn(oc.target, oc.metric);
+                spfConn<Ta> cc = findConn(cn.conn, oc.target, oc.metric);
                 if (cc == null) {
                     if ((mode & 0x2) != 0) {
                         logger.warn("node " + on + " lost connection to " + oc.target);
@@ -1804,8 +1806,63 @@ public class spfCalc<Ta extends addrType> {
     }
 
     /**
+     * count prefixes
+     *
+     * @param lst list of prefixes
+     * @param mtch matcher
+     * @return number of prefixes
+     */
+    private int countNets(tabRoute<addrIP> lst, tabPrfxlstN mtch) {
+        int res = 0;
+        for (int i = 0; i < lst.size(); i++) {
+            tabRouteEntry<addrIP> ntry = lst.get(i);
+            if (!mtch.matches(rtrBgpUtil.sfiUnicast, 0, ntry.prefix)) {
+                continue;
+            }
+            res++;
+        }
+        return res;
+    }
+
+    /**
+     * find connection
+     *
+     * @param lst list of connections
+     * @param peer node id
+     * @param met required metric
+     * @return connection, null if not found
+     */
+    private spfConn<Ta> findConn(List<spfConn<Ta>> lst, spfNode<Ta> peer, int met) {
+        spfConn<Ta> best = null;
+        int diff = Integer.MAX_VALUE;
+        for (int i = 0; i < lst.size(); i++) {
+            spfConn<Ta> ntry = lst.get(i);
+            if (peer.compareTo(ntry.target) != 0) {
+                continue;
+            }
+            if (met < 0) {
+                return ntry;
+            }
+            if (met == ntry.metric) {
+                return ntry;
+            }
+            int o = ntry.metric - met;
+            if (o < 0) {
+                o = -o;
+            }
+            if (o > diff) {
+                continue;
+            }
+            best = ntry;
+            diff = o;
+        }
+        return best;
+    }
+
+    /**
      * inconsistency metrics
      *
+     * @param mtch matcher
      * @return inconsistency list
      */
     public userFormat listAfiIncons(tabIntMatcher mtch) {
@@ -1814,7 +1871,7 @@ public class spfCalc<Ta extends addrType> {
             spfNode<Ta> ntry = nodes.get(o);
             for (int i = 0; i < ntry.conn.size(); i++) {
                 spfConn<Ta> cn = ntry.conn.get(i);
-                spfConn<Ta> co = ntry.findOthCon(cn.target, cn.metric);
+                spfConn<Ta> co = findConn(ntry.othCon, cn.target, cn.metric);
                 if (co == null) {
                     res.add(ntry + "|" + cn.target + "|missing");
                     continue;
@@ -1847,7 +1904,7 @@ public class spfCalc<Ta extends addrType> {
             spfNode<Ta> ntry = nodes.get(o);
             for (int i = 0; i < ntry.conn.size(); i++) {
                 spfConn<Ta> cn = ntry.conn.get(i);
-                spfConn<Ta> co = cn.target.findConn(ntry, cn.metric);
+                spfConn<Ta> co = findConn(cn.target.conn, ntry, cn.metric);
                 if (co == null) {
                     res.add(ntry + "|" + cn.target + "|missing");
                     continue;
@@ -1864,6 +1921,27 @@ public class spfCalc<Ta extends addrType> {
                 }
                 res.add(ntry + "|" + cn.target + "|" + p);
             }
+        }
+        return res;
+    }
+
+    /**
+     * inconsistent neighbors
+     *
+     * @param mtch matcher
+     * @return text
+     */
+    public userFormat listNeiIncons(tabPrfxlstN mtch) {
+        userFormat res = new userFormat("|", "source|neighbors|prefixes");
+        for (int i = 0; i < nodes.size(); i++) {
+            spfNode<Ta> ntry = nodes.get(i);
+            int p = countNets(ntry.prfFix, mtch);
+            p += countNets(ntry.prfAdd, mtch);
+            int o = ntry.conn.size();
+            if (p == o) {
+                continue;
+            }
+            res.add(ntry + "|" + o + "|" + p);
         }
         return res;
     }

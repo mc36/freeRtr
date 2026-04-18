@@ -34,6 +34,7 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.spf.spfCalc;
 import org.freertr.spf.spfLnkst;
+import org.freertr.tab.tabPrfxlstN;
 import org.freertr.util.state;
 
 /**
@@ -1174,6 +1175,22 @@ public class rtrOspf4 extends ipRtr {
             return null;
         }
         return ara.lastSpf.listNhIncons(mtch);
+    }
+
+    /**
+     * show nh inconsistency
+     *
+     * @param area area number
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showNeiIncons(int area, tabPrfxlstN mtch) {
+        rtrOspf4area ara = new rtrOspf4area(this, area);
+        ara = areas.find(ara);
+        if (ara == null) {
+            return null;
+        }
+        return ara.lastSpf.listNeiIncons(mtch);
     }
 
     /**

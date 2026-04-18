@@ -51,6 +51,7 @@ import org.freertr.util.logger;
 import org.freertr.spf.spfCalc;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
+import org.freertr.tab.tabPrfxlstN;
 
 /**
  * intermediate system to intermediate system (rfc1142) protocol
@@ -2506,6 +2507,18 @@ public class rtrIsis extends ipRtr {
     }
 
     /**
+     * show nh inconsistency
+     *
+     * @param level level number
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showNeiIncons(int level, tabPrfxlstN mtch) {
+        rtrIsisLevel lev = getLevel(level);
+        return lev.lastSpf.listNeiIncons(mtch);
+    }
+
+    /**
      * show met inconsistency
      *
      * @param level level number
@@ -2532,6 +2545,7 @@ public class rtrIsis extends ipRtr {
      * show afi inconsistency
      *
      * @param level level number
+     * @param mtch matcher
      * @return inconsistency list
      */
     public userFormat showAfiIncons(int level, tabIntMatcher mtch) {

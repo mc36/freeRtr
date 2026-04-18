@@ -4236,6 +4236,16 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * show nh inconsistency
+     *
+     * @param mtch matcher
+     * @return inconsistency list
+     */
+    public userFormat showNeiIncons(tabPrfxlstN mtch) {
+        return lspf.lastSpf.listNeiIncons(mtch);
+    }
+
+    /**
      * show met inconsistency
      *
      * @param mtch matcher
