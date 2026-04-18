@@ -208,6 +208,10 @@ public class spfCalc<Ta extends addrType> {
                 spfConn<Ta> con = nod.conn.get(i);
                 res.addConn(nod.name, con.target.name, con.metric, con.realHop, con.stub, con.ident);
             }
+            for (int i = 0; i < nod.othCon.size(); i++) {
+                spfConn<Ta> con = nod.othCon.get(i);
+                res.addOconn(nod.name, con.target.name, con.metric, con.realHop, con.stub, con.ident);
+            }
             for (int i = 0; i < nod.prfAdd.size(); i++) {
                 res.addPref(nod.name, nod.prfAdd.get(i), false);
             }
@@ -267,6 +271,39 @@ public class spfCalc<Ta extends addrType> {
             ntry = old;
         }
         ntry.conn.add(c);
+    }
+
+    /**
+     * add other connection
+     *
+     * @param from source node
+     * @param to target node
+     * @param metric metric
+     * @param realHop true if hop, false if network
+     * @param stub stub adjacency
+     * @param ident link id
+     */
+    public void addOconn(Ta from, Ta to, int metric, boolean realHop, boolean stub, String ident) {
+        if (metric < 0) {
+            metric = 0;
+        }
+        spfNode<Ta> ntry = new spfNode<Ta>(to);
+        spfNode<Ta> old = nodes.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        spfConn<Ta> c = new spfConn<Ta>();
+        c.metric = metric;
+        c.target = ntry;
+        c.realHop = realHop;
+        c.stub = stub;
+        c.ident = ident;
+        ntry = new spfNode<Ta>(from);
+        old = nodes.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        ntry.othCon.add(c);
     }
 
     /**
@@ -1310,7 +1347,7 @@ public class spfCalc<Ta extends addrType> {
         }
         res.add("reachmet|" + ntry.metric);
         res.add("hopmet|" + ntry.nxtMet);
-        res.add("connections|" + ntry.conn.size());
+        res.add("connections|" + ntry.conn.size() + " " + ntry.othCon.size());
         res.add("prefixes|" + ntry.prfFix.size() + " " + ntry.prfAdd.size() + " " + ntry.othFix.size() + " " + ntry.othAdd.size());
         res.add("segrout|" + ntry.srIdx + " " + ntry.srBeg);
         for (int i = 0; i < ntry.algo.size(); i++) {
@@ -1332,6 +1369,13 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
             res.add("neighbor|" + con.target + "|" + con.metric + " " + con.ident);
+        }
+        for (int i = 0; i < ntry.othCon.size(); i++) {
+            spfConn<Ta> con = ntry.othCon.get(i);
+            if (con == null) {
+                continue;
+            }
+            res.add("otherneigh|" + con.target + "|" + con.metric + " " + con.ident);
         }
         for (int i = 0; i < ntry.prfFix.size(); i++) {
             tabRouteEntry<addrIP> rou = ntry.prfFix.get(i);
@@ -1755,6 +1799,38 @@ public class spfCalc<Ta extends addrType> {
                 continue;
             }
             res.add(ntry + "|" + tmp.listReachablility(false));
+        }
+        return res;
+    }
+
+    /**
+     * inconsistency metrics
+     *
+     * @return inconsistency list
+     */
+    public userFormat listAfiIncons(tabIntMatcher mtch) {
+        userFormat res = new userFormat("|", "source|target|diff");
+        for (int o = 0; o < nodes.size(); o++) {
+            spfNode<Ta> ntry = nodes.get(o);
+            for (int i = 0; i < ntry.conn.size(); i++) {
+                spfConn<Ta> cn = ntry.conn.get(i);
+                spfConn<Ta> co = ntry.findOthCon(cn.target, cn.metric);
+                if (co == null) {
+                    res.add(ntry + "|" + cn.target + "|missing");
+                    continue;
+                }
+                int p = cn.metric - co.metric;
+                if (p < 0) {
+                    p = -p;
+                }
+                if (p < 1) {
+                    continue;
+                }
+                if (!mtch.matches(p)) {
+                    continue;
+                }
+                res.add(ntry + "|" + cn.target + "|" + p);
+            }
         }
         return res;
     }

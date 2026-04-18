@@ -46,6 +46,11 @@ public class spfNode<Ta extends addrType> implements Comparable<spfNode<Ta>> {
     protected List<spfConn<Ta>> conn = new ArrayList<spfConn<Ta>>();
 
     /**
+     * other connections
+     */
+    protected List<spfConn<Ta>> othCon = new ArrayList<spfConn<Ta>>();
+
+    /**
      * algorithms
      */
     protected List<Integer> algo = new ArrayList<Integer>();
@@ -145,6 +150,40 @@ public class spfNode<Ta extends addrType> implements Comparable<spfNode<Ta>> {
         int diff = Integer.MAX_VALUE;
         for (int i = 0; i < conn.size(); i++) {
             spfConn<Ta> ntry = conn.get(i);
+            if (peer.compareTo(ntry.target) != 0) {
+                continue;
+            }
+            if (met < 0) {
+                return ntry;
+            }
+            if (met == ntry.metric) {
+                return ntry;
+            }
+            int o = ntry.metric - met;
+            if (o < 0) {
+                o = -o;
+            }
+            if (o > diff) {
+                continue;
+            }
+            best = ntry;
+            diff = o;
+        }
+        return best;
+    }
+
+    /**
+     * find connection
+     *
+     * @param peer node id
+     * @param met required metric
+     * @return connection, null if not found
+     */
+    protected spfConn<Ta> findOthCon(spfNode<Ta> peer, int met) {
+        spfConn<Ta> best = null;
+        int diff = Integer.MAX_VALUE;
+        for (int i = 0; i < othCon.size(); i++) {
+            spfConn<Ta> ntry = othCon.get(i);
             if (peer.compareTo(ntry.target) != 0) {
                 continue;
             }

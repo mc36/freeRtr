@@ -939,7 +939,8 @@ public class userExec {
         hl.add(null, false, 10, new int[]{11}, "<num>", "substract x coordinate");
         hl.add(null, false, 11, new int[]{7, -1}, "<num>", "substract y coordinate");
         hl.add(null, false, 5, new int[]{6}, "afinconsistent", "inconsistent advertisements of afi");
-        hl.add(null, false, 6, new int[]{-1}, "<num>", "level number");
+        hl.add(null, false, 6, new int[]{7, -1}, "<num>", "level number");
+        hl.add(null, false, 7, new int[]{-1}, "[str]", "int matcher");
         hl.add(null, false, 5, new int[]{6}, "nonredundant", "list of necessary nodes");
         hl.add(null, false, 6, new int[]{-1}, "<dir>", "level number");
         hl.add(null, false, 5, new int[]{6}, "lnkinconsistent", "inconsistent advertisements of metrics");

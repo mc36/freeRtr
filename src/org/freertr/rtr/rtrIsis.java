@@ -2534,9 +2534,9 @@ public class rtrIsis extends ipRtr {
      * @param level level number
      * @return inconsistency list
      */
-    public userFormat showAfiIncons(int level) {
+    public userFormat showAfiIncons(int level, tabIntMatcher mtch) {
         rtrIsisLevel lev = getLevel(level);
-        return lev.showAfiIncons();
+        return lev.lastSpf.listAfiIncons(mtch);
     }
 
     /**

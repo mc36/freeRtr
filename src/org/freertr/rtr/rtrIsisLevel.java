@@ -921,9 +921,24 @@ public class rtrIsisLevel implements Runnable {
                         if (nei == null) {
                             continue;
                         }
-                        spf.addConn(src, new rtrIsisLevelSpf(nei.srcID, nei.nodID), nei.lspNum, nei.nodID == 0, stub, null);
+                        rtrIsisLevelSpf nod = new rtrIsisLevelSpf(nei.srcID, nei.nodID);
+                        spf.addConn(src, nod, nei.lspNum, nei.nodID == 0, stub, null);
                     }
                     continue;
+                }
+                if (lower.other.enabled) {
+                    nel = lower.getISneigh(true, lower.other.metricWide, lower.other.multiTopo, tlv);
+                    if (nel != null) {
+                        for (int o = 0; o < nel.size(); o++) {
+                            rtrIsisLsp nei = nel.get(o);
+                            if (nei == null) {
+                                continue;
+                            }
+                            rtrIsisLevelSpf nod = new rtrIsisLevelSpf(nei.srcID, nei.nodID);
+                            spf.addOconn(src, nod, nei.lspNum, nei.nodID == 0, stub, null);
+                        }
+                        continue;
+                    }
                 }
                 List<tabRouteEntry<addrIP>> rou = lower.getAddrReach(false, lower.metricWide, lower.multiTopo, tlv);
                 if (rou != null) {
@@ -1135,43 +1150,6 @@ public class rtrIsisLevel implements Runnable {
      */
     public void stopNow() {
         todo.and(2);
-    }
-
-    /**
-     * show afi inconsistency
-     *
-     * @return inconsistency list
-     */
-    public userFormat showAfiIncons() {
-        int protoId = lower.getNLPIDval(false);
-        int otherId = lower.getNLPIDval(true);
-        userFormat res = new userFormat("|", "router|this|other");
-        for (int i = 0; i < lsps.size(); i++) {
-            rtrIsisLsp lsp = lsps.get(i);
-            if (lsp == null) {
-                continue;
-            }
-            packHolder pck = lsp.getPayload();
-            rtrIsisLevelSpf src = new rtrIsisLevelSpf(lsp.srcID, lsp.nodID);
-            encTlv tlv = rtrIsis.getTlv();
-            boolean protoSupp = false;
-            boolean otherSupp = false;
-            for (;;) {
-                if (tlv.getBytes(pck)) {
-                    break;
-                }
-                if (tlv.valTyp != rtrIsisLsp.tlvProtSupp) {
-                    continue;
-                }
-                for (int o = 0; o < tlv.valSiz; o++) {
-                    int currId = bits.getByte(tlv.valDat, o);
-                    protoSupp |= currId == protoId;
-                    otherSupp |= currId == otherId;
-                }
-            }
-            res.add(src + "|" + cmds.upDown(protoSupp) + "|" + cmds.upDown(otherSupp));
-        }
-        return res;
     }
 
     /**

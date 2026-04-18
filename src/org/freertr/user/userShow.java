@@ -3903,7 +3903,9 @@ public class userShow {
         }
         if (a.equals("afinconsistent")) {
             int i = bits.str2num(cmd.word());
-            rdr.putStrTab(r.isis.showAfiIncons(i));
+            tabIntMatcher mtch = new tabIntMatcher();
+            mtch.fromString(cmd.word());
+            rdr.putStrTab(r.isis.showAfiIncons(i, mtch));
             return;
         }
         if (a.equals("route")) {
