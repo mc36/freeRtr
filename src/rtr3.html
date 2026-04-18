@@ -9,7 +9,7 @@
 .bad { color: red }
 </style>
 <title>dataplanes</title></head><body>
-release: freeRouter v26.4.17-cur, done by sprscc13@mrn0b0dy.<br/>
+release: freeRouter v26.4.18-cur, done by sprscc13@mrn0b0dy.<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>udp</b></td><td><b>dpdk</b></td><td><b>xdp</b></td><td><b>bmv2</b></td><td><b>tofino</b></td><td><b>test</b></td></tr></thead><tbody>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl001.tst">p4lang-acl001.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: copp</td></tr>
@@ -158,6 +158,12 @@ release: freeRouter v26.4.17-cur, done by sprscc13@mrn0b0dy.<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl144.tst">p4lang-acl144.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: vlan egress rate limit</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl145.tst">p4lang-acl145.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: qinq ingress rate limit</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl146.tst">p4lang-acl146.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: qinq egress rate limit</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl147.tst">p4lang-acl147.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: ingress pppoe over pwhe access list</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl148.tst">p4lang-acl148.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: egress pppoe over pwhe access list</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl149.tst">p4lang-acl149.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=bad>not ok</td><td>p4lang: pppoe over pwhe interface inspection with ingress drop</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl150.tst">p4lang-acl150.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=good>ok</td><td class=bad>not ok</td><td>p4lang: pppoe over pwhe interface inspection with egress drop</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl151.tst">p4lang-acl151.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td>p4lang: pppoe over pwhe interface verify source</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-acl152.tst">p4lang-acl152.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td>p4lang: pppoe over pwhe interface loose verify source</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt001.tst">p4lang-crypt001.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td>p4lang: macsec with des</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt002.tst">p4lang-crypt002.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td>p4lang: macsec with 3des</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt003.tst">p4lang-crypt003.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td>p4lang: macsec with aes128cbc</td></tr>
@@ -363,6 +369,8 @@ release: freeRouter v26.4.17-cur, done by sprscc13@mrn0b0dy.<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt203.tst">p4lang-crypt203.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td>p4lang: mgre with packout</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt204.tst">p4lang-crypt204.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: monitor session</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt205.tst">p4lang-crypt205.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: flow inspection</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt206.tst">p4lang-crypt206.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td class=bad>not ok</td><td>p4lang: macsec over pppoe over pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-crypt207.tst">p4lang-crypt207.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=bad>not ok</td><td>p4lang: sgt over pppoe over pwhe</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout001.tst">p4lang-rout001.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: routing</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout002.tst">p4lang-rout002.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: bridging</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout003.tst">p4lang-rout003.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: mpls core</td></tr>
@@ -889,4 +897,10 @@ release: freeRouter v26.4.17-cur, done by sprscc13@mrn0b0dy.<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout524.tst">p4lang-rout524.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: routed qinq mspw with bgp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout525.tst">p4lang-rout525.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: mspw over backplane</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout526.tst">p4lang-rout526.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: routed mspw over backplane</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout527.tst">p4lang-rout527.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: pppoe routing over vlan pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout528.tst">p4lang-rout528.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: pppoe routing over ipv4 pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout529.tst">p4lang-rout529.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: pppoe routing over ipv6 pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout530.tst">p4lang-rout530.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: pppoe mpls over pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout531.tst">p4lang-rout531.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: pppoe server routing over pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/p4lang-rout532.tst">p4lang-rout532.tst</a></td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td class=good>ok</td><td>p4lang: pppoe server mpls over pwhe</td></tr>
 </tbody></table></body></html>
