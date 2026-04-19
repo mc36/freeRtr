@@ -1235,8 +1235,8 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(beg + "afi-other distance " + other.distance);
         cmds.cfgLine(l, !other.defOrigin, beg, "afi-other default-originate", "");
         cmds.cfgLine(l, !other.suppressAddr, beg, "afi-other suppress-prefix", "");
-        cmds.cfgLine(l, segrouMax < 1, beg, "afi-other segrout", "" + other.segrouIdx);
-        cmds.cfgLine(l, bierMax < 1, beg, "afi-other bier", other.bierIdx + " " + other.bierSub);
+        cmds.cfgLine(l, other.segrouIdx < 1, beg, "afi-other segrout", "" + other.segrouIdx);
+        cmds.cfgLine(l, other.bierIdx < 1, beg, "afi-other bier", other.bierIdx + " " + other.bierSub);
         cmds.cfgLine(l, other.prflstIn == null, beg, "afi-other prefix-list", "" + other.prflstIn);
         cmds.cfgLine(l, other.roumapIn == null, beg, "afi-other route-map", "" + other.roumapIn);
         cmds.cfgLine(l, other.roupolIn == null, beg, "afi-other route-policy", "" + other.roupolIn);

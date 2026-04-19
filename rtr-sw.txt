@@ -315,8 +315,6 @@ router lsrp6 1 vrf v1
  suppress-prefix
  segrout 300 227
  bier 256 300 227 0
- afi-other segrout 0
- afi-other bier 0 0
  justadvert loopback0
  ecmp
  exit
