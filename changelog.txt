@@ -18209,3 +18209,12 @@ qc pass: integrated lsrp flexalgo
 ---------------------------------- 2026-04-19 20:16:24 26.4.19
 qc pass: integrated lsrp over foreign ipv4
 qc pass: integrated lsrp over foreign ipv6
+---------------------------------- 2026-04-19 21:03:17 26.4.19
+no qc pass: static routing over ipv6 nexthop with interface
+no qc pass: static routing over ipv4 nexthop with interface
+no qc pass: static routing over ipv6 nexthop
+no qc pass: static routing over ipv4 nexthop
+qc pass: static routing over foreign ipv4
+qc pass: static routing over foreign ipv6
+qc pass: static routing over foreign ipv4 with interface
+qc pass: static routing over foreign ipv6 with interface
