@@ -11,6 +11,7 @@ import org.freertr.cfg.cfgInit;
 import org.freertr.cfg.cfgPrfxlst;
 import org.freertr.cfg.cfgRoump;
 import org.freertr.cfg.cfgRouplc;
+import org.freertr.cfg.cfgRtr;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
@@ -74,6 +75,26 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * tcp core
      */
     protected final prtTcp tcpCore;
+
+    /**
+     * other afi router
+     */
+    public final rtrLsrpOther other;
+
+    /**
+     * route type
+     */
+    protected final tabRouteAttr.routeType rouTyp;
+
+    /**
+     * router number
+     */
+    protected final int rtrNum;
+
+    /**
+     * is over ipv4
+     */
+    protected final boolean isIpv4;
 
     /**
      * router id
@@ -231,28 +252,34 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * create one lsrp process
      *
      * @param forwarder the ip protocol
+     * @param otherfwd the other ip protocol
      * @param udp the udp protocol
      * @param tcp the tcp protocol
      * @param id process id
      */
-    public rtrLsrp(ipFwd forwarder, prtUdp udp, prtTcp tcp, int id) {
+    public rtrLsrp(ipFwd forwarder, ipFwd otherfwd, prtUdp udp, prtTcp tcp, int id) {
         fwdCore = forwarder;
         udpCore = udp;
         tcpCore = tcp;
         routerID = new addrIPv4();
         algos = new tabGen<rtrAlgo>();
         ifaces = new tabGen<rtrLsrpIface>();
-        tabRouteAttr.routeType rouTyp = null;
+        rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
+                isIpv4 = true;
                 rouTyp = tabRouteAttr.routeType.lsrp4;
                 break;
             case ipCor6.protocolVersion:
+                isIpv4 = false;
                 rouTyp = tabRouteAttr.routeType.lsrp6;
                 break;
             default:
+                isIpv4 = true;
+                rouTyp = null;
                 break;
         }
+        other = new rtrLsrpOther(this, otherfwd);
         database = new tabGen<rtrLsrpData>();
         lastSpf = new spfCalc<addrIPv4>(null);
         routerCreateComputed();
@@ -273,16 +300,17 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * add one interface to work on
      *
      * @param ifc ip forwarder interface
+     * @param oifc the other ip interface to work on
      * @return false if successful, true if error happened
      */
-    public rtrLsrpIface addInterface(ipFwdIface ifc) {
+    public rtrLsrpIface addInterface(ipFwdIface ifc, ipFwdIface oifc) {
         if (debugger.rtrLsrpEvnt) {
             logger.debug("add iface " + ifc);
         }
         if (ifc == null) {
             return null;
         }
-        rtrLsrpIface ntry = new rtrLsrpIface(this, ifc);
+        rtrLsrpIface ntry = new rtrLsrpIface(this, ifc, oifc);
         rtrLsrpIface old = ifaces.add(ntry);
         if (old != null) {
             ntry = old;
@@ -297,15 +325,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * delete one interface
      *
      * @param ifc interface to delete
+     * @param oifc the other ip interface to work on
      */
-    public void delInterface(ipFwdIface ifc) {
+    public void delInterface(ipFwdIface ifc, ipFwdIface oifc) {
         if (debugger.rtrLsrpEvnt) {
             logger.debug("del iface " + ifc);
         }
         if (ifc == null) {
             return;
         }
-        rtrLsrpIface ntry = new rtrLsrpIface(this, ifc);
+        rtrLsrpIface ntry = new rtrLsrpIface(this, ifc, oifc);
         ntry = ifaces.del(ntry);
         if (ntry == null) {
             return;
@@ -389,7 +418,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         if (iface == null) {
             return null;
         }
-        rtrLsrpIface ifc = new rtrLsrpIface(this, iface);
+        rtrLsrpIface ifc = new rtrLsrpIface(this, iface, null);
         ifc = ifaces.find(ifc);
         if (ifc == null) {
             return null;
@@ -999,6 +1028,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             logger.debug("shutdown");
         }
         need2run = false;
+        other.unregister2ip();
         for (int i = 0; i < ifaces.size(); i++) {
             rtrLsrpIface ifc = ifaces.get(i);
             if (ifc == null) {
@@ -1064,6 +1094,24 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(null, false, 1, new int[]{2}, "flexalgo", "flexalgo parameters");
         l.add(null, false, 2, new int[]{3}, "<num>", "algorithm id");
         l.add(null, false, 3, new int[]{-1}, "<name:vrf>", "vrf to use");
+        l.add(null, false, 1, new int[]{2}, "afi-other", "select other to advertise");
+        l.add(null, false, 2, new int[]{-1}, "enable", "enable processing");
+        l.add(null, false, 2, new int[]{3}, "distance", "specify default distance");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "distance");
+        cfgRtr.getRedistHelp(l, 1);
+        l.add(null, false, 2, new int[]{-1}, "default-originate", "advertise default route");
+        l.add(null, false, 2, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
+        l.add(null, false, 2, new int[]{3}, "route-map", "process prefixes");
+        l.add(null, false, 3, new int[]{-1}, "<name:rm>", "name of route map");
+        l.add(null, false, 2, new int[]{3}, "route-policy", "process prefixes");
+        l.add(null, false, 3, new int[]{-1}, "<name:rpl>", "name of route policy");
+        l.add(null, false, 2, new int[]{3}, "prefix-list", "filter prefixes");
+        l.add(null, false, 3, new int[]{-1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, 2, new int[]{3}, "segrout", "segment routing parameters");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "this node index");
+        l.add(null, false, 2, new int[]{3}, "bier", "bier parameters");
+        l.add(null, false, 3, new int[]{4, -1}, "<num>", "node index");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "node subdomain");
     }
 
     /**
@@ -1103,6 +1151,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
         for (int i = 0; i < algos.size(); i++) {
             l.add(beg + "flexalgo " + algos.get(i));
         }
+        cmds.cfgLine(l, !other.enabled, beg, "afi-other enable", "");
+        l.add(beg + "afi-other distance " + other.distance);
+        cmds.cfgLine(l, !other.defOrigin, beg, "afi-other default-originate", "");
+        cmds.cfgLine(l, !other.suppressAddr, beg, "afi-other suppress-prefix", "");
+        cmds.cfgLine(l, segrouMax < 1, beg, "afi-other segrout", "" + other.segrouIdx);
+        cmds.cfgLine(l, bierMax < 1, beg, "afi-other bier", other.bierIdx + " " + other.bierSub);
+        cmds.cfgLine(l, other.prflstIn == null, beg, "afi-other prefix-list", "" + other.prflstIn);
+        cmds.cfgLine(l, other.roumapIn == null, beg, "afi-other route-map", "" + other.roumapIn);
+        cmds.cfgLine(l, other.roupolIn == null, beg, "afi-other route-policy", "" + other.roupolIn);
+        cfgRtr.getShRedist(l, beg + "afi-other ", other);
     }
 
     /**
@@ -1359,7 +1417,116 @@ public class rtrLsrp extends ipRtr implements Runnable {
             notif.wakeup();
             return false;
         }
-        return true;
+        if (!s.equals("afi-other")) {
+            return true;
+        }
+        s = cmd.word();
+        if (s.equals("enable")) {
+            if (negated) {
+                other.unregister2ip();
+            } else {
+                other.register2ip();
+            }
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("suppress-prefix")) {
+            other.suppressAddr = !negated;
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("distance")) {
+            other.distance = bits.str2num(cmd.word());
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("default-originate")) {
+            other.defOrigin = !negated;
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("segrout")) {
+            if (negated) {
+                other.segrouIdx = 0;
+                todo.set(0);
+                notif.wakeup();
+                return false;
+            }
+            other.segrouIdx = bits.str2num(cmd.word());
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("bier")) {
+            if (negated) {
+                other.bierIdx = 0;
+                other.bierSub = 0;
+                todo.set(0);
+                notif.wakeup();
+                return false;
+            }
+            other.bierIdx = bits.str2num(cmd.word());
+            other.bierSub = bits.str2num(cmd.word());
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("prefix-list")) {
+            if (negated) {
+                other.prflstIn = null;
+                todo.set(0);
+                notif.wakeup();
+                return false;
+            }
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return false;
+            }
+            other.prflstIn = ntry.prflst;
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("route-map")) {
+            if (negated) {
+                other.roumapIn = null;
+                todo.set(0);
+                notif.wakeup();
+                return false;
+            }
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return false;
+            }
+            other.roumapIn = ntry.roumap;
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("route-policy")) {
+            if (negated) {
+                other.roupolIn = null;
+                todo.set(0);
+                notif.wakeup();
+                return false;
+            }
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return false;
+            }
+            other.roupolIn = ntry.rouplc;
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        return cfgRtr.doCfgRedist(other, other.fwd, negated, s, cmd);
     }
 
     public void run() {

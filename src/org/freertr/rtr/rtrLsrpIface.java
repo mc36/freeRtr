@@ -244,9 +244,44 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
     public logFil dumpFile = null;
 
     /**
+     * other enabled
+     */
+    public boolean otherEna;
+
+    /**
+     * other unsuppress interface address
+     */
+    public boolean othUnsuppAddr;
+
+    /**
+     * other suppress interface address
+     */
+    public boolean othSuppAddr;
+
+    /**
+     * other segment rou index
+     */
+    public int srOthIdx;
+
+    /**
+     * other bier index
+     */
+    public int brOthIdx;
+
+    /**
+     * other bier subdomain
+     */
+    public int brOthSub;
+
+    /**
      * the interface this works on
      */
     protected final ipFwdIface iface;
+
+    /**
+     * the other ip interface this works on
+     */
+    protected final ipFwdIface oface;
 
     /**
      * the udp connection it uses to multicast
@@ -270,10 +305,12 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
      *
      * @param parent the rip protocol
      * @param ifc the ip interface to work on
+     * @param oifc the other ip interface to work on
      */
-    public rtrLsrpIface(rtrLsrp parent, ipFwdIface ifc) {
+    public rtrLsrpIface(rtrLsrp parent, ipFwdIface ifc, ipFwdIface oifc) {
         lower = parent;
         iface = ifc;
+        oface = oifc;
         neighs = new tabGen<rtrLsrpNeigh>();
     }
 
@@ -435,6 +472,11 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         cmds.cfgLine(l, dynamicMetric < 1, cmds.tabulator, beg + "dynamic-metric mode", a);
         l.add(cmds.tabulator + beg + "dynamic-metric time " + echoTimer);
         echoParam.getConfig(l, beg);
+        cmds.cfgLine(l, !otherEna, cmds.tabulator, beg + "other-enable", "");
+        cmds.cfgLine(l, !othSuppAddr, cmds.tabulator, beg + "other-suppress-prefix", "");
+        cmds.cfgLine(l, !othUnsuppAddr, cmds.tabulator, beg + "other-unsuppress-prefix", "");
+        cmds.cfgLine(l, srOthIdx < 1, cmds.tabulator, beg + "other-segrout", "" + srOthIdx);
+        cmds.cfgLine(l, brOthIdx < 1, cmds.tabulator, beg + "other-bier", brOthIdx + " " + brOthSub);
     }
 
     /**
@@ -505,6 +547,14 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         l.add(null, false, 6, new int[]{-1}, "udpecho", "udp echo requests");
         l.add(null, false, 6, new int[]{-1}, "twamp", "twamp echo requests");
         tabAverage.getHelp(l);
+        l.add(null, false, 4, new int[]{-1}, "other-enable", "enable other protocol processing");
+        l.add(null, false, 4, new int[]{-1}, "other-suppress-prefix", "do not advertise other interface");
+        l.add(null, false, 4, new int[]{-1}, "other-unsuppress-prefix", "do advertise other interface");
+        l.add(null, false, 4, new int[]{5}, "other-segrout", "segment routing parameters");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "this node index");
+        l.add(null, false, 4, new int[]{5}, "other-bier", "bier parameters");
+        l.add(null, false, 5, new int[]{6, -1}, "<num>", "node index");
+        l.add(null, false, 6, new int[]{-1}, "<num>", "node subdomain");
     }
 
     /**
@@ -721,6 +771,37 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
             lower.notif.wakeup();
             return;
         }
+        if (a.equals("other-enable")) {
+            otherEna = oface != null;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-suppress-prefix")) {
+            othSuppAddr = true;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-unsuppress-prefix")) {
+            othUnsuppAddr = true;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-segrout")) {
+            srOthIdx = bits.str2num(cmd.word());
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-bier")) {
+            brOthIdx = bits.str2num(cmd.word());
+            brOthSub = bits.str2num(cmd.word());
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -854,6 +935,37 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("encryption")) {
             encryptionMethod = 0;
+            return;
+        }
+        if (a.equals("other-enable")) {
+            otherEna = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-suppress-prefix")) {
+            othSuppAddr = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-unsuppress-prefix")) {
+            othUnsuppAddr = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-segrout")) {
+            srOthIdx = 0;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-bier")) {
+            brOthIdx = 0;
+            brOthSub = 0;
+            lower.todo.set(0);
+            lower.notif.wakeup();
             return;
         }
         cmd.badCmd();

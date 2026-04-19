@@ -95,6 +95,14 @@ prefix-list nht6
  sequence 10 permit 2001:db8::/32 ge 128 le 128
  exit
 !
+route-map nht
+ sequence 10 action permit
+ sequence 10 match distance 70
+ !
+ sequence 20 action deny
+ !
+ exit
+!
 route-policy nht
  sequence 10 if distance 70
  sequence 20   pass
@@ -287,6 +295,11 @@ router lsrp4 1 vrf v1
  suppress-prefix
  segrout 300 227
  bier 256 300 227 0
+ afi-other enable
+ afi-other suppress-prefix
+ afi-other segrout 226
+ afi-other bier 226 0
+ afi-other justadvert loopback0
  justadvert loopback0
  ecmp
  exit
@@ -302,6 +315,8 @@ router lsrp6 1 vrf v1
  suppress-prefix
  segrout 300 227
  bier 256 300 227 0
+ afi-other segrout 0
+ afi-other bier 0 0
  justadvert loopback0
  ecmp
  exit
@@ -372,6 +387,7 @@ interface template1
  router lsrp4 1 dynamic-metric mode inband
  router lsrp4 1 dynamic-metric size 4
  router lsrp4 1 dynamic-metric ignore 2
+ router lsrp4 1 other-enable
  router lsrp6 1 enable
  router lsrp6 1 dump lsrp6.log
  router lsrp6 1 accept-metric

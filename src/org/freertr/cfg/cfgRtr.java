@@ -250,6 +250,15 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "route-policy", null),
         new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "segrout", null),
         new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bier", null),
+        new userFilter("router lsrp[46] .*", cmds.tabulator + "afi-other distance 70", null),
+        new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other enable", null),
+        new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other segrout", null),
+        new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other bier", null),
+        new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other default-originate", null),
+        new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other suppress-prefix", null),
+        new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other prefix-list", null),
+        new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other route-map", null),
+        new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other route-policy", null),
         new userFilter("router lsrp[46] .*", cmds.tabulator + "refresh 2400000", null),
         new userFilter("router lsrp[46] .*", cmds.tabulator + "lifetime 3600000", null),
         // router eigrp
@@ -1843,11 +1852,11 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
                 break;
             case lsrp4:
                 fwd = vrf.fwd4;
-                lsrp = new rtrLsrp(vrf.fwd4, vrf.udp4, vrf.tcp4, number);
+                lsrp = new rtrLsrp(vrf.fwd4, vrf.fwd6, vrf.udp4, vrf.tcp4, number);
                 break;
             case lsrp6:
                 fwd = vrf.fwd6;
-                lsrp = new rtrLsrp(vrf.fwd6, vrf.udp6, vrf.tcp6, number);
+                lsrp = new rtrLsrp(vrf.fwd6, vrf.fwd4, vrf.udp6, vrf.tcp6, number);
                 break;
             case eigrp4:
                 fwd = vrf.fwd4;

@@ -1977,6 +1977,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric skip-min 0", null),
         new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric skip-max 0", null),
         new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric algo minimum", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* other-enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* other-suppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* other-unsuppress-prefix", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* other-segrout", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* other-bier", null),
         // eigrp
         new userFilter("interface .*", cmds.tabulator + "router eigrp[46] .* split-horizon", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router eigrp[46] .* passive", null),
@@ -3265,7 +3270,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 if (rtrLsrp4ifc != null) {
                     break;
                 }
-                rtrLsrp4ifc = rtr.lsrp.addInterface(fwdIf4);
+                rtrLsrp4ifc = rtr.lsrp.addInterface(fwdIf4, fwdIf6);
                 if (rtrLsrp4ifc == null) {
                     break;
                 }
@@ -3275,7 +3280,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 if (rtrLsrp6ifc != null) {
                     break;
                 }
-                rtrLsrp6ifc = rtr.lsrp.addInterface(fwdIf6);
+                rtrLsrp6ifc = rtr.lsrp.addInterface(fwdIf6, fwdIf4);
                 if (rtrLsrp6ifc == null) {
                     break;
                 }
@@ -3494,7 +3499,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 }
                 rtrLsrp4hnd = null;
                 rtrLsrp4ifc = null;
-                rtr.lsrp.delInterface(fwdIf4);
+                rtr.lsrp.delInterface(fwdIf4, fwdIf6);
                 return;
             case lsrp6:
                 if (rtrLsrp6hnd == null) {
@@ -3502,7 +3507,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 }
                 rtrLsrp6hnd = null;
                 rtrLsrp6ifc = null;
-                rtr.lsrp.delInterface(fwdIf6);
+                rtr.lsrp.delInterface(fwdIf6, fwdIf4);
                 return;
             case eigrp4:
                 if (rtrEigrp4hnd == null) {
