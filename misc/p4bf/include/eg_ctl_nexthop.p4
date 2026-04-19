@@ -98,9 +98,9 @@ control EgressControlNexthop(inout headers hdr, inout ingress_metadata_t eg_md,
         hdr.mpls70.ttl = 255;
         hdr.mpls70.bos = 0;
         hdr.mpls71.setValid();
-        hdr.mpls71.label = vpn_label;          
-        hdr.mpls71.ttl = 255;                  
-        hdr.mpls71.bos = 1;                    
+        hdr.mpls71.label = vpn_label;
+        hdr.mpls71.ttl = 255;
+        hdr.mpls71.bos = 1;
         hdr.ethernet.src_mac_addr = core_src_mac;
         hdr.ethernet.dst_mac_addr = core_dst_mac;
     }

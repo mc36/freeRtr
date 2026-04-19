@@ -558,7 +558,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
                 return;
             }
         }
-        if (lower.other.foreign || iface.otherForeign) {
+        if (lower.other.foreign || iface.otherFrgn) {
             opeer = peer.copyBytes();
         }
         if (mtu != iface.iface.mtu) {
@@ -577,7 +577,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
                 sendErr("bfdFail");
                 return;
             }
-            if (iface.otherEna && !lower.other.foreign && !iface.otherForeign) {
+            if (iface.otherEna && !lower.other.foreign && !iface.otherFrgn) {
                 iface.oface.bfdAdd(opeer, this, "lsrp");
                 if (iface.oface.bfdWait(opeer, iface.deadTimer)) {
                     sendErr("bfdFail");
@@ -600,7 +600,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
         lower.notif.wakeup();
         if (iface.bfdTrigger > 0) {
             iface.iface.bfdAdd(peer, this, "lsrp");
-            if (iface.otherEna && !lower.other.foreign && !iface.otherForeign) {
+            if (iface.otherEna && !lower.other.foreign && !iface.otherFrgn) {
                 iface.oface.bfdAdd(opeer, this, "lsrp");
             }
         }

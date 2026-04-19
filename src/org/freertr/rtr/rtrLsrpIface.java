@@ -251,7 +251,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
     /**
      * other with foreign nexthop
      */
-    public boolean otherForeign;
+    public boolean otherFrgn;
 
     /**
      * other unsuppress interface address
@@ -478,7 +478,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "dynamic-metric time " + echoTimer);
         echoParam.getConfig(l, beg);
         cmds.cfgLine(l, !otherEna, cmds.tabulator, beg + "other-enable", "");
-        cmds.cfgLine(l, !otherForeign, cmds.tabulator, beg + "other-foreign", "");
+        cmds.cfgLine(l, !otherFrgn, cmds.tabulator, beg + "other-foreign", "");
         cmds.cfgLine(l, !othSuppAddr, cmds.tabulator, beg + "other-suppress-prefix", "");
         cmds.cfgLine(l, !othUnsuppAddr, cmds.tabulator, beg + "other-unsuppress-prefix", "");
         cmds.cfgLine(l, srOthIdx < 1, cmds.tabulator, beg + "other-segrout", "" + srOthIdx);
@@ -785,7 +785,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
             return;
         }
         if (a.equals("other-foreign")) {
-            otherForeign = true;
+            otherFrgn = true;
             lower.todo.set(0);
             lower.notif.wakeup();
             return;
@@ -957,7 +957,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
             return;
         }
         if (a.equals("other-foreign")) {
-            otherForeign = false;
+            otherFrgn = false;
             lower.todo.set(0);
             lower.notif.wakeup();
             return;
