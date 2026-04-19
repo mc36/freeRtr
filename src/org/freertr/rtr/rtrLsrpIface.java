@@ -358,7 +358,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
             if (brief) {
                 res.add(nei.rtrId + "|" + nei.name + "|" + nei.isReady() + "|" + bits.timePast(nei.upTime));
             } else {
-                res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.inam + "|" + nei.peer + "|" + nei.isReady() + "|" + bits.timePast(nei.upTime));
+                res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.inam + "|" + nei.peer + "|" + nei.opeer + "|" + nei.isReady() + "|" + bits.timePast(nei.upTime));
             }
         }
     }

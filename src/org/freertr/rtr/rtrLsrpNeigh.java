@@ -50,6 +50,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
     public final addrIP peer;
 
     /**
+     * transport address of peer
+     */
+    public addrIP opeer;
+
+    /**
      * hostname of peer
      */
     public String name;
@@ -169,6 +174,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
         iface = ifc;
         rtrId = peerId.copyBytes();
         peer = peerAd.copyBytes();
+        opeer = peerAd.copyBytes();
         lastHeard = bits.getTime();
         advert = new tabGen<rtrLsrpData>();
         sentMet = -1;
@@ -235,6 +241,9 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
         lower.todo.set(0);
         lower.notif.wakeup();
         iface.iface.bfdDel(peer, this);
+        if (iface.oface != null) {
+            iface.oface.bfdDel(opeer, this);
+        }
         notif.wakeup();
     }
 
@@ -495,7 +504,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
             sendErr("notNeeded");
             return;
         }
-        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.mtu + " bfd=" + iface.bfdTrigger + " iface=" + iface.iface + " name=" + cfgAll.hostName);
+        String a = "";
+        if (iface.otherEna) {
+            a = " other=" + iface.oface.addr;
+        }
+        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.mtu + a + " bfd=" + iface.bfdTrigger + " iface=" + iface.iface + " name=" + cfgAll.hostName);
         cmds cmd = recvLn();
         if (cmd == null) {
             cmd = new cmds("", "");
@@ -506,10 +519,11 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
         }
         name = "?";
         inam = "?";
+        opeer = peer.copyBytes();
         int mtu = 0;
         int bfd = 0;
         for (;;) {
-            String a = cmd.word();
+            a = cmd.word();
             if (a.length() < 1) {
                 break;
             }
@@ -532,6 +546,17 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
                 bfd = bits.str2num(a.substring(4, a.length()));
                 continue;
             }
+            if (a.startsWith("other")) {
+                opeer.fromString(a.substring(6, a.length()));
+                continue;
+            }
+        }
+        if (iface.connectedCheck && iface.otherEna) {
+            if (!iface.oface.network.matches(opeer)) {
+                logger.info("got from out of other subnet peer " + opeer);
+                sendErr("badAddr");
+                return;
+            }
         }
         if (mtu != iface.iface.mtu) {
             logger.info("mtu mismatch with " + peer);
@@ -549,6 +574,13 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
                 sendErr("bfdFail");
                 return;
             }
+            if (iface.otherEna) {
+                iface.oface.bfdAdd(opeer, this, "lsrp");
+                if (iface.oface.bfdWait(opeer, iface.deadTimer)) {
+                    sendErr("bfdFail");
+                    return;
+                }
+            }
         }
         if (!need2run) {
             sendErr("notNeeded");
@@ -565,6 +597,9 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
         lower.notif.wakeup();
         if (iface.bfdTrigger > 0) {
             iface.iface.bfdAdd(peer, this, "lsrp");
+            if (iface.otherEna) {
+                iface.oface.bfdAdd(opeer, this, "lsrp");
+            }
         }
         long lastKeep = 0;
         for (;;) {

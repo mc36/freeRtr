@@ -733,9 +733,10 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
      * add to spf
      *
      * @param spf calcer
+     * @param ipv4 true if yes, false if not
      * @param dist distance
      */
-    protected void put2spf(spfCalc<addrIPv4> spf, int dist) {
+    protected void put2spf(spfCalc<addrIPv4> spf, boolean ipv4, int dist) {
         for (int i = 0; i < neighbor.size(); i++) {
             rtrLsrpDataNeigh ntry = neighbor.get(i);
             String a;
@@ -755,7 +756,11 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
             tabRouteEntry<addrIP> rou = network.get(i).copyBytes(tabRoute.addType.notyet);
             rou.best.bierHdr = brh;
             rou.best.distance = dist;
-            spf.addPref(rtrId, rou, false);
+            if (rou.prefix.network.isIPv4() == ipv4) {
+                spf.addPref(rtrId, rou, false);
+            } else {
+                spf.addOpref(rtrId, rou, false);
+            }
             spf.addSegRouI(rtrId, rou.best.segrouIdx);
             spf.addBierI(rtrId, rou.best.bierIdx);
             spf.addBierS(rtrId, rou.best.bierSub);

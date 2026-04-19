@@ -202,6 +202,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
     protected tabGen<rtrAlgo> algos;
 
     /**
+     * list of flexalgos
+     */
+    protected tabGen<rtrAlgo> oalgos;
+
+    /**
      * list of interfaces
      */
     protected tabGen<rtrLsrpIface> ifaces;
@@ -263,6 +268,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         tcpCore = tcp;
         routerID = new addrIPv4();
         algos = new tabGen<rtrAlgo>();
+        oalgos = new tabGen<rtrAlgo>();
         ifaces = new tabGen<rtrLsrpIface>();
         rtrNum = id;
         switch (fwdCore.ipVersion) {
@@ -356,7 +362,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         if (brief) {
             res = new userFormat("|", "router|name|ready|uptime");
         } else {
-            res = new userFormat("|", "iface|router|name|peerif|peer|ready|uptime");
+            res = new userFormat("|", "iface|router|name|peerif|peer|other|ready|uptime");
         }
         for (int i = 0; i < ifaces.size(); i++) {
             rtrLsrpIface ifc = ifaces.get(i);
@@ -741,6 +747,15 @@ public class rtrLsrp extends ipRtr implements Runnable {
             ntry.best.bierSub = bierSub;
             dat.network.add(tabRoute.addType.always, ntry, true, true);
         }
+        if (other.enabled && other.defOrigin) {
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = addrPrefix.defaultRoute(other.fwd.ipVersion);
+            ntry.best.segrouIdx = other.segrouIdx;
+            ntry.best.rouSrc = segrouPop ? 16 : 0;
+            ntry.best.bierIdx = other.bierIdx;
+            ntry.best.bierSub = other.bierSub;
+            dat.network.add(tabRoute.addType.always, ntry, true, true);
+        }
         for (int o = 0; o < ifaces.size(); o++) {
             rtrLsrpIface ifc = ifaces.get(o);
             if (ifc == null) {
@@ -764,6 +779,26 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 dat.addNeigh(nei.rtrId, "" + ifc.iface, nei.getMetric(), (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, ifc.iface.mtu, adj, nei.peer, nei.inam);
             }
             dat.addAddr("" + ifc.iface, ifc.iface.addr);
+            if (other.enabled && ifc.otherEna && (ifc.othUnsuppAddr || (!other.suppressAddr && !ifc.othSuppAddr))) {
+                tabRouteEntry<addrIP> ntry = dat.network.add(tabRoute.addType.better, ifc.oface.network, null);
+                ntry.best.rouTyp = tabRouteAttr.routeType.conn;
+                ntry.best.iface = ifc.oface;
+                ntry.best.distance = tabRouteAttr.distanIfc;
+                if (ifc.srOthIdx >= 0) {
+                    ntry.best.segrouIdx = ifc.srOthIdx;
+                    ntry.best.rouSrc = ifc.segrouPop ? 16 : 0;
+                } else {
+                    ntry.best.segrouIdx = other.segrouIdx;
+                    ntry.best.rouSrc = segrouPop ? 16 : 0;
+                }
+                if (ifc.brOthIdx >= 0) {
+                    ntry.best.bierIdx = ifc.brOthIdx;
+                    ntry.best.bierSub = ifc.brOthSub;
+                } else {
+                    ntry.best.bierIdx = other.bierIdx;
+                    ntry.best.bierSub = other.bierSub;
+                }
+            }
             if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
             }
@@ -798,6 +833,21 @@ public class rtrLsrp extends ipRtr implements Runnable {
             ntry.best.bierIdx = bierIdx;
             ntry.best.bierSub = bierSub;
             dat.network.add(tabRoute.addType.better, ntry, false, false);
+        }
+        if (other.enabled) {
+            for (int i = 0; i < other.routerRedistedU.size(); i++) {
+                tabRouteEntry<addrIP> ntry = other.routerRedistedU.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                ntry = ntry.copyBytes(tabRoute.addType.notyet);
+                ntry.best.distance = tabRouteAttr.distanIfc + 1;
+                ntry.best.segrouIdx = other.segrouIdx;
+                ntry.best.rouSrc = segrouPop ? 17 : 1;
+                ntry.best.bierIdx = other.bierIdx;
+                ntry.best.bierSub = other.bierSub;
+                dat.network.add(tabRoute.addType.better, ntry, false, false);
+            }
         }
         dat.rtrId = routerID.copyBytes();
         ipFwdIface mgmtIf = ipFwdTab.findStableIface(fwdCore);
@@ -872,7 +922,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (ntry == null) {
                 continue;
             }
-            ntry.put2spf(spf, distance);
+            ntry.put2spf(spf, isIpv4, distance);
         }
         spf.doWork(routerID);
         tabGen<tabIndex<addrIP>> segrouUsd = null;
@@ -887,9 +937,15 @@ public class rtrLsrp extends ipRtr implements Runnable {
             if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
             }
-            if ((segrouUsd != null) && (ifc.segrouIdx > 0)) {
-                segrouLab[ifc.segrouIdx].setFwdCommon(tabLabelEntry.owner.lsrpSrgb, fwdCore);
-                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+            if (segrouUsd != null) {
+                if (ifc.segrouIdx > 0) {
+                    segrouLab[ifc.segrouIdx].setFwdCommon(tabLabelEntry.owner.lsrpSrgb, fwdCore);
+                    tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+                }
+                if (other.enabled && ifc.otherEna && (ifc.srOthIdx > 0)) {
+                    segrouLab[ifc.srOthIdx].setFwdCommon(tabLabelEntry.owner.lsrpSrgb, other.fwd);
+                    tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.srOthIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+                }
             }
             for (int i = 0; i < ifc.neighs.size(); i++) {
                 rtrLsrpNeigh nei = ifc.neighs.get(i);
@@ -899,14 +955,17 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (!nei.isReady()) {
                     continue;
                 }
-                spf.addNextHop(nei.getMetric(), nei.rtrId, nei.peer, ifc.iface, null, null);
+                spf.addNextHop(nei.getMetric(), nei.rtrId, nei.peer, ifc.iface, nei.opeer, ifc.oface);
             }
         }
-        tabRoute<addrIP> tab1 = spf.getRoutes(fwdCore, tabLabelEntry.owner.lsrpSrgb, segrouLab, segrouUsd);
         if (segrouUsd != null) {
             if (segrouIdx > 0) {
                 segrouLab[segrouIdx].setFwdCommon(tabLabelEntry.owner.lsrpSrgb, fwdCore);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+            }
+            if (other.enabled && (other.segrouIdx > 0)) {
+                segrouLab[other.segrouIdx].setFwdCommon(tabLabelEntry.owner.lsrpSrgb, other.fwd);
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(other.segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
             }
             for (int i = 0; i < segrouLab.length; i++) {
                 if (segrouUsd.find(new tabIndex<addrIP>(i, null)) != null) {
@@ -915,23 +974,20 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 segrouLab[i].setFwdDrop(tabLabelEntry.owner.lsrpSrgb);
             }
         }
-        tabRoute<addrIP> tab2 = new tabRoute<addrIP>("routes");
-        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
-        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, fwdCore.commonLabel, null, 0);
         if (bierLab != null) {
             tabLabelBier res = spf.getBierI(fwdCore, bierLab[0].label, tabLabelBier.num2bsl(bierLen));
             res.idx = bierIdx;
-            if (bierIdx < 1) {
-                for (int i = 0; i < ifaces.size(); i++) {
-                    rtrLsrpIface ifc = ifaces.get(i);
-                    if (ifc == null) {
-                        continue;
-                    }
-                    if (ifc.bierIdx < 1) {
-                        continue;
-                    }
+            res.idx2 = other.bierIdx;
+            for (int i = 0; i < ifaces.size(); i++) {
+                rtrLsrpIface ifc = ifaces.get(i);
+                if (ifc == null) {
+                    continue;
+                }
+                if (ifc.bierIdx > 0) {
                     res.idx = ifc.bierIdx;
-                    break;
+                }
+                if (ifc.brOthIdx > 0) {
+                    res.idx2 = ifc.brOthIdx;
                 }
             }
             for (int i = 0; i < bierLab.length; i++) {
@@ -951,14 +1007,26 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 nei.notif.wakeup();
             }
         }
+        tabRoute<addrIP> tab1 = spf.getRoutes(fwdCore, tabLabelEntry.owner.lsrpSrgb, segrouLab, segrouUsd);
+        tabRoute<addrIP> tab2 = new tabRoute<addrIP>("routes");
+        tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, fwdCore.commonLabel, null, 0);
+        tabRoute<addrIP> tab3 = new tabRoute<addrIP>("routes");
+        if (other.enabled) {
+            tab1 = spf.getOroutes(other.fwd, tabLabelEntry.owner.lsrpSrgb, segrouLab, segrouUsd);
+            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab3, tab1, true, other.roumapIn, roupolIn, prflstIn);
+            other.routerDoAggregates(rtrBgpUtil.sfiUnicast, tab3, tab3, other.fwd.commonLabel, null, 0);
+        }
         if (debugger.rtrLsrpEvnt) {
             logger.debug("unreachable:" + spf.listReachablility(false));
             logger.debug("reachable:" + spf.listReachablility(true));
         }
         lastSpf = spf;
         tab2.setProto(routerProtoTyp, routerProcNum);
+        tab3.setProto(routerProtoTyp, routerProcNum);
         boolean same = tab2.preserveTime(routerComputedU);
         same &= !tabIndex.compareTables(routerComputedI, segrouUsd);
+        same &= tab3.preserveTime(other.routerComputedU);
         if (same) {
             return;
         }
@@ -967,6 +1035,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = segrouUsd;
         fwdCore.routerChg(this, false);
+        other.routerComputedU = tab3;
+        other.routerComputedM = tab3;
+        other.fwd.routerChg(other, false);
         for (int p = 0; p < algos.size(); p++) {
             rtrAlgo alg = algos.get(p);
             if (alg == null) {
@@ -991,18 +1062,30 @@ public class rtrLsrp extends ipRtr implements Runnable {
                     if (!nei.isReady()) {
                         continue;
                     }
-                    spf.addNextHop(nei.getMetric(), nei.rtrId, nei.peer, ifc.iface, null, null);
+                    spf.addNextHop(nei.getMetric(), nei.rtrId, nei.peer, ifc.iface, nei.opeer, ifc.oface);
                 }
             }
-            tab1 = spf.getRoutes(fwdCore, null, null, null);
             if (debugger.rtrLsrpEvnt) {
                 logger.debug("algo" + alg.num + " unreachable:" + spf.listReachablility(false));
                 logger.debug("algo" + alg.num + " reachable:" + spf.listReachablility(true));
             }
+            tab1 = spf.getRoutes(fwdCore, null, null, null);
             tab2 = new tabRoute<addrIP>("routes");
             tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, roumapIn, roupolIn, prflstIn);
             routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, fwdCore.commonLabel, null, 0);
             alg.vrf.update2ip(tab2);
+            if (!other.enabled) {
+                continue;
+            }
+            alg = oalgos.get(p);
+            if (alg == null) {
+                continue;
+            }
+            tab1 = spf.getOroutes(other.fwd, null, null, null);
+            tab2 = new tabRoute<addrIP>("routes");
+            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, other.roumapIn, other.roupolIn, other.prflstIn);
+            other.routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, other.fwd.commonLabel, null, 0);
+            alg.vrf.update2ip(tab1);
         }
     }
 
@@ -1148,9 +1231,6 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx + " " + bierSub);
-        for (int i = 0; i < algos.size(); i++) {
-            l.add(beg + "flexalgo " + algos.get(i));
-        }
         cmds.cfgLine(l, !other.enabled, beg, "afi-other enable", "");
         l.add(beg + "afi-other distance " + other.distance);
         cmds.cfgLine(l, !other.defOrigin, beg, "afi-other default-originate", "");
@@ -1161,6 +1241,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
         cmds.cfgLine(l, other.roumapIn == null, beg, "afi-other route-map", "" + other.roumapIn);
         cmds.cfgLine(l, other.roupolIn == null, beg, "afi-other route-policy", "" + other.roupolIn);
         cfgRtr.getShRedist(l, beg + "afi-other ", other);
+        for (int i = 0; i < algos.size(); i++) {
+            l.add(beg + "flexalgo " + algos.get(i));
+        }
     }
 
     /**
@@ -1199,10 +1282,15 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 cmd.error("no such vrf");
                 return false;
             }
-            rtrAlgo alg = new rtrAlgo(i, fwdCore.ipVersion == 4 ? vrf.fwd4 : vrf.fwd6, routerProtoTyp, routerProcNum);
+            rtrAlgo alg = new rtrAlgo(i, isIpv4 ? vrf.fwd4 : vrf.fwd6, routerProtoTyp, routerProcNum);
             if (!negated) {
                 algos.add(alg);
                 alg.vrf.register2ip();
+                if (other.enabled) {
+                    alg = new rtrAlgo(i, isIpv4 ? vrf.fwd6 : vrf.fwd4, routerProtoTyp, routerProcNum);
+                    oalgos.add(alg);
+                    alg.vrf.register2ip();
+                }
                 todo.set(0);
                 notif.wakeup();
                 return false;
@@ -1212,6 +1300,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 return false;
             }
             alg.vrf.unregister2ip();
+            if (other.enabled) {
+                alg = new rtrAlgo(i, isIpv4 ? vrf.fwd6 : vrf.fwd4, routerProtoTyp, routerProcNum);
+                alg = oalgos.del(alg);
+            }
             todo.set(0);
             notif.wakeup();
             return false;

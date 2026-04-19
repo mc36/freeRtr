@@ -18186,3 +18186,6 @@ qc pass: p4lang: pppoe routing over ipv6 pwhe
 qc pass: p4lang: pppoe mpls over pwhe
 qc pass: p4lang: pppoe server routing over pwhe
 qc pass: p4lang: pppoe server mpls over pwhe
+---------------------------------- 2026-04-19 11:59:11 26.4.19
+qc pass: integrated lsrp over ipv4
+qc pass: integrated lsrp over ipv6

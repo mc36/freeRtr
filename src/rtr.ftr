@@ -3957,6 +3957,8 @@ qc pass: lsrp with mpolka
 qc pass: lsrp flexalgo
 qc pass: lsrp with pmtud
 qc pass: lsrp ldp sync
+qc pass: integrated lsrp over ipv4
+qc pass: integrated lsrp over ipv6
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
