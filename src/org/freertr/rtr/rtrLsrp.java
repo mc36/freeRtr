@@ -1014,7 +1014,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         tabRoute<addrIP> tab3 = new tabRoute<addrIP>("routes");
         if (other.enabled) {
             tab1 = spf.getOroutes(other.fwd, tabLabelEntry.owner.lsrpSrgb, segrouLab, segrouUsd);
-            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab3, tab1, true, other.roumapIn, roupolIn, prflstIn);
+            tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab3, tab1, true, other.roumapIn, other.roupolIn, other.prflstIn);
             other.routerDoAggregates(rtrBgpUtil.sfiUnicast, tab3, tab3, other.fwd.commonLabel, null, 0);
         }
         if (debugger.rtrLsrpEvnt) {
@@ -1085,7 +1085,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             tab2 = new tabRoute<addrIP>("routes");
             tabRoute.addUpdatedTable(tabRoute.addType.ecmp, rtrBgpUtil.sfiUnicast, 0, tab2, tab1, true, other.roumapIn, other.roupolIn, other.prflstIn);
             other.routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, other.fwd.commonLabel, null, 0);
-            alg.vrf.update2ip(tab1);
+            alg.vrf.update2ip(tab2);
         }
     }
 

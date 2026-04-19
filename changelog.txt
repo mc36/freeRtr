@@ -18189,3 +18189,20 @@ qc pass: p4lang: pppoe server mpls over pwhe
 ---------------------------------- 2026-04-19 11:59:11 26.4.19
 qc pass: integrated lsrp over ipv4
 qc pass: integrated lsrp over ipv6
+---------------------------------- 2026-04-19 13:30:18 26.4.19
+qc pass: integrated lsrp address suppression
+qc pass: integrated lsrp route filtering with prefixlist
+qc pass: integrated lsrp route filtering with routemap
+qc pass: integrated lsrp route filtering with routepolicy
+qc pass: integrated lsrp default route
+qc pass: integrated lsrp with bfd
+qc pass: integrated lsrp with sr
+qc pass: integrated lsrp with bier
+qc pass: integrated lsrp default address suppression
+qc pass: integrated lsrp address unsuppression
+qc pass: integrated lsrp with selective sr
+qc pass: integrated lsrp with selective bier
+qc pass: integrated lsrp ecmp connection
+qc pass: integrated lsrp with bgp linkstate
+qc pass: integrated lsrp with strict bfd
+qc pass: integrated lsrp flexalgo
