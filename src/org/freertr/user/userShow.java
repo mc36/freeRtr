@@ -3660,6 +3660,14 @@ public class userShow {
             doShowRoutes(r.lsrp.fwdCore, r.lsrp.routerRedistedU, 1);
             return;
         }
+        if (a.equals("other-route")) {
+            doShowRoutes(r.lsrp.other.fwd, r.lsrp.other.routerComputedU, 1);
+            return;
+        }
+        if (a.equals("other-originate")) {
+            doShowRoutes(r.lsrp.other.fwd, r.lsrp.other.routerRedistedU, 1);
+            return;
+        }
         cmd.badCmd();
     }
 

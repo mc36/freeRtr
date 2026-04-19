@@ -776,6 +776,10 @@ public class userExec {
         hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
         hl.add(null, false, 5, new int[]{6, -1}, "originate", "list of routes originated locally");
         hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
+        hl.add(null, false, 5, new int[]{6, -1}, "other-route", "list of other routes in database");
+        hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
+        hl.add(null, false, 5, new int[]{6, -1}, "other-originate", "list of other routes originated locally");
+        hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
         hl.add(null, false, 3, new int[]{4}, "eigrp", "enhanced interior gateway routing protocol");
         hl.add(null, false, 4, new int[]{5}, "<num:rtr>", "process id");
         hl.add(null, false, 5, new int[]{6}, "neighbor", "information about neighbor");
