@@ -249,6 +249,11 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
     public boolean otherEna;
 
     /**
+     * other with foreign nexthop
+     */
+    public boolean otherForeign;
+
+    /**
      * other unsuppress interface address
      */
     public boolean othUnsuppAddr;
@@ -473,6 +478,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         l.add(cmds.tabulator + beg + "dynamic-metric time " + echoTimer);
         echoParam.getConfig(l, beg);
         cmds.cfgLine(l, !otherEna, cmds.tabulator, beg + "other-enable", "");
+        cmds.cfgLine(l, !otherForeign, cmds.tabulator, beg + "other-foreign", "");
         cmds.cfgLine(l, !othSuppAddr, cmds.tabulator, beg + "other-suppress-prefix", "");
         cmds.cfgLine(l, !othUnsuppAddr, cmds.tabulator, beg + "other-unsuppress-prefix", "");
         cmds.cfgLine(l, srOthIdx < 1, cmds.tabulator, beg + "other-segrout", "" + srOthIdx);
@@ -548,6 +554,7 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         l.add(null, false, 6, new int[]{-1}, "twamp", "twamp echo requests");
         tabAverage.getHelp(l);
         l.add(null, false, 4, new int[]{-1}, "other-enable", "enable other protocol processing");
+        l.add(null, false, 4, new int[]{-1}, "other-foreign", "use foreign nexthop for routes");
         l.add(null, false, 4, new int[]{-1}, "other-suppress-prefix", "do not advertise other interface");
         l.add(null, false, 4, new int[]{-1}, "other-unsuppress-prefix", "do advertise other interface");
         l.add(null, false, 4, new int[]{5}, "other-segrout", "segment routing parameters");
@@ -777,6 +784,12 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
             lower.notif.wakeup();
             return;
         }
+        if (a.equals("other-foreign")) {
+            otherForeign = true;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
         if (a.equals("other-suppress-prefix")) {
             othSuppAddr = true;
             lower.todo.set(0);
@@ -939,6 +952,12 @@ public class rtrLsrpIface implements Comparable<rtrLsrpIface>, Runnable, prtServ
         }
         if (a.equals("other-enable")) {
             otherEna = false;
+            lower.todo.set(0);
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-foreign")) {
+            otherForeign = false;
             lower.todo.set(0);
             lower.notif.wakeup();
             return;

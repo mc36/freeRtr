@@ -1179,6 +1179,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         l.add(null, false, 3, new int[]{-1}, "<name:vrf>", "vrf to use");
         l.add(null, false, 1, new int[]{2}, "afi-other", "select other to advertise");
         l.add(null, false, 2, new int[]{-1}, "enable", "enable processing");
+        l.add(null, false, 2, new int[]{-1}, "foreign", "use foreign nexthop for routes");
         l.add(null, false, 2, new int[]{3}, "distance", "specify default distance");
         l.add(null, false, 3, new int[]{-1}, "<num>", "distance");
         cfgRtr.getRedistHelp(l, 1);
@@ -1232,6 +1233,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx + " " + bierSub);
         cmds.cfgLine(l, !other.enabled, beg, "afi-other enable", "");
+        cmds.cfgLine(l, !other.foreign, beg, "afi-other foreign", "");
         l.add(beg + "afi-other distance " + other.distance);
         cmds.cfgLine(l, !other.defOrigin, beg, "afi-other default-originate", "");
         cmds.cfgLine(l, !other.suppressAddr, beg, "afi-other suppress-prefix", "");
@@ -1519,6 +1521,12 @@ public class rtrLsrp extends ipRtr implements Runnable {
             } else {
                 other.register2ip();
             }
+            todo.set(0);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("foreign")) {
+            other.foreign = !negated;
             todo.set(0);
             notif.wakeup();
             return false;

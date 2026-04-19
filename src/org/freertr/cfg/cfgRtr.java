@@ -252,6 +252,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bier", null),
         new userFilter("router lsrp[46] .*", cmds.tabulator + "afi-other distance 70", null),
         new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other enable", null),
+        new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other foreign", null),
         new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other segrout", null),
         new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other bier", null),
         new userFilter("router lsrp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other default-originate", null),

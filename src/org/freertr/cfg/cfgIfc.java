@@ -1978,6 +1978,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric skip-max 0", null),
         new userFilter("interface .*", cmds.tabulator + "router lsrp[46] .* dynamic-metric algo minimum", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* other-enable", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* other-foreign", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* other-suppress-prefix", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* other-unsuppress-prefix", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "router lsrp[46] .* other-segrout", null),

@@ -28,6 +28,11 @@ public class rtrLsrpOther extends ipRtr {
     public boolean enabled;
 
     /**
+     * other with foreign nexthop
+     */
+    public boolean foreign;
+
+    /**
      * suppress interface addresses
      */
     public boolean suppressAddr = false;
