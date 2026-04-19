@@ -300,21 +300,7 @@ router lsrp4 1 vrf v1
  afi-other segrout 226
  afi-other bier 226 0
  afi-other justadvert loopback0
- justadvert loopback0
- ecmp
- exit
-!
-router lsrp6 1 vrf v1
- router-id 100.100.3.227
- refresh 600000
- lifetime 2147483000
- ha-mode
- spf-log 500
- spf-bidir
- spf-ecmp
- suppress-prefix
- segrout 300 227
- bier 256 300 227 0
+ afi-other ecmp
  justadvert loopback0
  ecmp
  exit
@@ -327,11 +313,6 @@ router logger4 1 vrf v1
 router logger4 65535 vrf v1
  flapstat
  redistribute bgp4 65535
- exit
-!
-router logger6 1 vrf v1
- flapstat
- redistribute lsrp6 1
  exit
 !
 router logger6 65535 vrf v1
@@ -369,7 +350,7 @@ interface template1
  ipv6 ptp receive
  ipv6 bfd 1000 3000 3
  ipv6 pim enable
- ipv6 pim bier-tunnel 227
+ ipv6 pim bier-tunnel 226
  ipv6 pim join-source loopback0
  polka enable 227 70000 256
  mpls enable
@@ -386,14 +367,6 @@ interface template1
  router lsrp4 1 dynamic-metric size 4
  router lsrp4 1 dynamic-metric ignore 2
  router lsrp4 1 other-enable
- router lsrp6 1 enable
- router lsrp6 1 dump lsrp6.log
- router lsrp6 1 accept-metric
- router lsrp6 1 bfd
- router lsrp6 1 ipinfo pmtud 768 1024 666
- router lsrp6 1 dynamic-metric mode inband
- router lsrp6 1 dynamic-metric size 4
- router lsrp6 1 dynamic-metric ignore 2
  shutdown
  no log-link-change
  exit
