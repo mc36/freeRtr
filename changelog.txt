@@ -18206,3 +18206,6 @@ qc pass: integrated lsrp ecmp connection
 qc pass: integrated lsrp with bgp linkstate
 qc pass: integrated lsrp with strict bfd
 qc pass: integrated lsrp flexalgo
+---------------------------------- 2026-04-19 20:16:24 26.4.19
+qc pass: integrated lsrp over foreign ipv4
+qc pass: integrated lsrp over foreign ipv6

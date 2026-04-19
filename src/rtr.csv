@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.4.19-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-04-19 20:00:18, took 00:22:06, with 50 workers, on 4320 cases, 0 failed, 0 traces, 6 retries
+-;-;-;2026-04-19 20:47:52, took 00:31:28, with 50 workers, on 4322 cases, 0 failed, 0 traces, 7 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -3979,6 +3979,8 @@ http://sources.freertr.org/cfg/rout-lsrp66.tst;rout-lsrp66.tst;success;integrate
 http://sources.freertr.org/cfg/rout-lsrp67.tst;rout-lsrp67.tst;success;integrated lsrp with bgp linkstate
 http://sources.freertr.org/cfg/rout-lsrp68.tst;rout-lsrp68.tst;success;integrated lsrp with strict bfd
 http://sources.freertr.org/cfg/rout-lsrp69.tst;rout-lsrp69.tst;success;integrated lsrp flexalgo
+http://sources.freertr.org/cfg/rout-lsrp70.tst;rout-lsrp70.tst;success;integrated lsrp over foreign ipv4
+http://sources.freertr.org/cfg/rout-lsrp71.tst;rout-lsrp71.tst;success;integrated lsrp over foreign ipv6
 http://sources.freertr.org/cfg/rout-mcast01.tst;rout-mcast01.tst;success;multicast routing with static flooding
 http://sources.freertr.org/cfg/rout-mcast02.tst;rout-mcast02.tst;success;multicast routing with pim ssm
 http://sources.freertr.org/cfg/rout-mcast03.tst;rout-mcast03.tst;success;multicast routing with igmp/mld

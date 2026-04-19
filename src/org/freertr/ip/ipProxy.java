@@ -58,11 +58,11 @@ public class ipProxy implements ifcUp {
      */
     public ipProxy(clntProxy parent) {
         upper = parent;
-        resetTimer(true);
         ip4 = new ipCor4();
         ip6 = new ipCor6();
         tcp = new tabGen<ipProxyConn>();
         udp = new tabGen<ipProxyConn>();
+        resetTimer(true);
     }
 
     /**

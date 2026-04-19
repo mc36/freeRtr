@@ -11,6 +11,7 @@ import org.freertr.clnt.clntPing;
 import org.freertr.clnt.clntTwamp;
 import org.freertr.enc.encBase64;
 import org.freertr.ip.ipMpls;
+import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtAccept;
@@ -551,15 +552,17 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
                 continue;
             }
         }
-        if (iface.connectedCheck && iface.otherEna) {
-            if (!iface.oface.network.matches(opeer)) {
-                logger.info("got from out of other subnet peer " + opeer);
-                sendErr("badAddr");
-                return;
-            }
-        }
-        if (lower.other.foreign || iface.otherFrgn) {
+        if (!iface.otherEna || lower.other.foreign || iface.otherFrgn) {
             opeer = peer.copyBytes();
+        } else {
+            if (iface.connectedCheck) {
+                if (!iface.oface.network.matches(opeer)) {
+                    logger.info("got from out of other subnet peer " + opeer);
+                    sendErr("badAddr");
+                    return;
+                }
+            }
+            iface.oface.lower.createETHheader(new packHolder(true, true), opeer, 0);
         }
         if (mtu != iface.iface.mtu) {
             logger.info("mtu mismatch with " + peer);
@@ -577,7 +580,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
                 sendErr("bfdFail");
                 return;
             }
-            if (iface.otherEna && !lower.other.foreign && !iface.otherFrgn) {
+            if (peer.isIPv4() != opeer.isIPv4()) {
                 iface.oface.bfdAdd(opeer, this, "lsrp");
                 if (iface.oface.bfdWait(opeer, iface.deadTimer)) {
                     sendErr("bfdFail");
@@ -600,7 +603,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
         lower.notif.wakeup();
         if (iface.bfdTrigger > 0) {
             iface.iface.bfdAdd(peer, this, "lsrp");
-            if (iface.otherEna && !lower.other.foreign && !iface.otherFrgn) {
+            if (peer.isIPv4() != opeer.isIPv4()) {
                 iface.oface.bfdAdd(opeer, this, "lsrp");
             }
         }

@@ -1,4 +1,4 @@
-description static routing over ipv4 nexthop
+description static routing over foreign ipv4
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$

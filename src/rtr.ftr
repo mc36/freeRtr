@@ -3975,6 +3975,8 @@ qc pass: integrated lsrp ecmp connection
 qc pass: integrated lsrp with bgp linkstate
 qc pass: integrated lsrp with strict bfd
 qc pass: integrated lsrp flexalgo
+qc pass: integrated lsrp over foreign ipv4
+qc pass: integrated lsrp over foreign ipv6
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
