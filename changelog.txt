@@ -18218,3 +18218,6 @@ qc pass: static routing over foreign ipv4
 qc pass: static routing over foreign ipv6
 qc pass: static routing over foreign ipv4 with interface
 qc pass: static routing over foreign ipv6 with interface
+---------------------------------- 2026-04-20 07:52:11 26.4.20
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard
