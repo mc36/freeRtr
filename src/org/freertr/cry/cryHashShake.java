@@ -121,7 +121,7 @@ public class cryHashShake extends cryHashGeneric {
             KeccakAbsorb(dataQueue, 0);
         }
         int remaining;
-        while ((remaining = (len - count)) >= rateBytes) {
+        for (; (remaining = (len - count)) >= rateBytes;) {
             KeccakAbsorb(data, off + count);
             count += rateBytes;
         }
@@ -158,7 +158,7 @@ public class cryHashShake extends cryHashGeneric {
             squeezing = true;
         }
         long i = 0;
-        while (i < outputLength) {
+        for (; i < outputLength;) {
             if (bitsInQueue == 0) {
                 KeccakPermutation();
                 int bsOff = 0;

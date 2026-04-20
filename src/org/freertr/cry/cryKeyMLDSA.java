@@ -324,7 +324,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         s2.polyVecNtt();
         t0.polyVecNtt();
         int count = 0;
-        while (count < 1000) {
+        for (; count < 1000;) {
             count++;
             y.uniformGamma1(rhoPrime, nonce++);
             y.copyTo(z);
@@ -996,7 +996,7 @@ class cryKeyMLDSApoly {
         d.update(nonce >> 8);
         d.fillupBuffer(buf, 0, buflen);
         int ctr = rejectUniform(this, 0, cryKeyMLDSA.DilithiumN, buf, buflen);
-        while (ctr < cryKeyMLDSA.DilithiumN) {
+        for (; ctr < cryKeyMLDSA.DilithiumN;) {
             int off = buflen % 3;
             for (int i = 0; i < off; i++) {
                 buf[i] = buf[buflen - off + i];
@@ -1011,7 +1011,7 @@ class cryKeyMLDSApoly {
     private static int rejectUniform(cryKeyMLDSApoly outputPoly, int coeffOff, int len, byte[] inpBuf, int buflen) {
         int ctr = 0;
         int pos = 0;
-        while (ctr < len && pos + 3 <= buflen) {
+        for (; ctr < len && pos + 3 <= buflen;) {
             int t = (inpBuf[pos++] & 0xFF);
             t |= (inpBuf[pos++] & 0xFF) << 8;
             t |= (inpBuf[pos++] & 0xFF) << 16;
@@ -1040,7 +1040,7 @@ class cryKeyMLDSApoly {
         d.update(nonce >> 8);
         d.fillupBuffer(buf, 0, buflen);
         int ctr = rejectEta(this, 0, cryKeyMLDSA.DilithiumN, buf, buflen, engine.DilithiumEta);
-        while (ctr < cryKeyMLDSA.DilithiumN) {
+        for (; ctr < cryKeyMLDSA.DilithiumN;) {
             d.fillupBuffer(buf, 0, cryKeyMLDSA.stream256BlockBytes);
             ctr += rejectEta(this, ctr, cryKeyMLDSA.DilithiumN - ctr, buf, cryKeyMLDSA.stream256BlockBytes, engine.DilithiumEta);
         }
@@ -1050,7 +1050,7 @@ class cryKeyMLDSApoly {
     private static int rejectEta(cryKeyMLDSApoly outputPoly, int coeffOff, int len, byte[] buf, int buflen, int eta) {
         int ctr = 0;
         int pos = 0;
-        while (ctr < len && pos < buflen) {
+        for (; ctr < len && pos < buflen;) {
             int t0 = (buf[pos] & 0xFF) & 0x0F;
             int t1 = (buf[pos++] & 0xFF) >> 4;
             if (eta == 2) {

@@ -326,7 +326,7 @@ public class cryKeyMLKEM extends cryKeyGeneric {
                 int outLen = matrixNBlocks * xofBlockBytes;
                 h.fillupBuffer(buf, 0, outLen);
                 int ctr = aMatrix[i].vec[j].rejectionSampling(0, cryKeyMLKEM.KyberN, buf, outLen);
-                while (ctr < KyberN) {
+                for (; ctr < KyberN;) {
                     int off = outLen % 3;
                     for (int k = 0; k < off; k++) {
                         buf[k] = buf[outLen - off + k];
