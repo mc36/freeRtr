@@ -669,10 +669,9 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             a = cmd.word();
             if (a.equals("server")) {
                 mode = dhcpMode.server;
-            } else if (a.equals("relay")) {
+            }
+            if (a.equals("relay")) {
                 mode = dhcpMode.relay;
-            } else {
-                cmd.error("invalid mode");
             }
             return false;
         }
@@ -697,7 +696,8 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             a = cmd.word();
             if (a.equals("interface-name")) {
                 circuitIdTemplate = 1;
-            } else if (a.equals("interface-number")) {
+            }
+            if (a.equals("interface-number")) {
                 circuitIdTemplate = 2;
             }
             return false;
@@ -706,9 +706,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             a = cmd.word();
             if (a.equals("hostname")) {
                 remoteIdTemplate = 1;
-            } else if (a.equals("ip-address")) {
+            }
+            if (a.equals("ip-address")) {
                 remoteIdTemplate = 2;
-            } else if (a.equals("mac-address")) {
+            }
+            if (a.equals("mac-address")) {
                 remoteIdTemplate = 3;
             }
             return false;

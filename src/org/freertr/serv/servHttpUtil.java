@@ -1200,14 +1200,18 @@ public class servHttpUtil {
                 cn.gotRange = cn.gotRange.substring(6, cn.gotRange.length());
             }
             int i = cn.gotRange.indexOf("-");
-            if (i < 0) {
-                cn.gotRange = null;
-            } else if (i == 0) {
-                ranB = bits.str2long(cn.gotRange.substring(1, cn.gotRange.length()));
-                ranE = siz - 1;
-            } else {
-                ranB = bits.str2long(cn.gotRange.substring(0, i));
-                ranE = bits.str2long(cn.gotRange.substring(i + 1, cn.gotRange.length()));
+            switch (i) {
+                case -1:
+                    cn.gotRange = null;
+                    break;
+                case 0:
+                    ranB = bits.str2long(cn.gotRange.substring(1, cn.gotRange.length()));
+                    ranE = siz - 1;
+                    break;
+                default:
+                    ranB = bits.str2long(cn.gotRange.substring(0, i));
+                    ranE = bits.str2long(cn.gotRange.substring(i + 1, cn.gotRange.length()));
+                    break;
             }
             if (ranB < 0) {
                 ranB = 0;

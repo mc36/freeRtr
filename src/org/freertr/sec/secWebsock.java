@@ -299,18 +299,23 @@ public class secWebsock {
             int len = buf[1] & 0x7f;
             int opc = buf[0] & 0xf;
             boolean fin = (buf[0] & 0x80) != 0;
-            if (len == 126) {
-                buf = new byte[2];
-                if (lower.moreGet(buf, 0, buf.length) != buf.length) {
-                    return;
-                }
-                len = bits.msbGetW(buf, 0);
-            } else if (len == 127) {
-                buf = new byte[8];
-                if (lower.moreGet(buf, 0, buf.length) != buf.length) {
-                    return;
-                }
-                len = bits.msbGetD(buf, 4);
+            switch (len) {
+                case 126:
+                    buf = new byte[2];
+                    if (lower.moreGet(buf, 0, buf.length) != buf.length) {
+                        return;
+                    }
+                    len = bits.msbGetW(buf, 0);
+                    break;
+                case 127:
+                    buf = new byte[8];
+                    if (lower.moreGet(buf, 0, buf.length) != buf.length) {
+                        return;
+                    }
+                    len = bits.msbGetD(buf, 4);
+                    break;
+                default:
+                    break;
             }
             if (msk != null) {
                 if (lower.moreGet(msk, 0, msk.length) != msk.length) {

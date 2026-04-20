@@ -271,10 +271,9 @@ public class servDhcp6 extends servGeneric implements prtServS, prtServP {
             a = cmd.word();
             if (a.equals("server")) {
                 mode = dhcpMode.server;
-            } else if (a.equals("relay")) {
+            }
+            if (a.equals("relay")) {
                 mode = dhcpMode.relay;
-            } else {
-                cmd.error("invalid mode");
             }
             return false;
         }
