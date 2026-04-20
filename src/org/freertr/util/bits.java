@@ -548,7 +548,7 @@ public class bits {
             sum += getByte(buf, ofs + len - 1);
         }
         sum = (sum & 0xffff) + (sum >>> 16);
-        sum += (sum >> 16);
+        sum += (sum >>> 16);
         return sum;
     }
 

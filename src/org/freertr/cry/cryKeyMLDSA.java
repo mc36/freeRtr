@@ -1409,15 +1409,15 @@ class cryKeyMLDSApoly {
         for (int i = 0; i < cryKeyMLDSA.DilithiumN; i++) {
             coeffs[i] = 0;
         }
-        int b = 0;
         for (int i = cryKeyMLDSA.DilithiumN - engine.DilithiumTau; i < cryKeyMLDSA.DilithiumN; i++) {
-            do {
+            int b = i + 1;
+            for (; b > i;) {
                 if (pos >= cryKeyMLDSA.stream256BlockBytes) {
                     d.fillupBuffer(buf, 0, cryKeyMLDSA.stream256BlockBytes);
                     pos = 0;
                 }
                 b = (buf[pos++] & 0xFF);
-            } while (b > i);
+            }
             coeffs[i] = coeffs[b];
             coeffs[b] = (int) (1 - 2 * (signs & 1));
             signs = signs >> 1;

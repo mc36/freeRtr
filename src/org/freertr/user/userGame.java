@@ -2841,7 +2841,7 @@ class userGameRacerOpp implements Comparable<userGameRacerOpp> {
             return;
         }
         dir += lne;
-        String[] chr;
+        String[] chr = null;
         if (dir == 0) {
             chr = new String[]{
                 "     _________",
@@ -2852,7 +2852,8 @@ class userGameRacerOpp implements Comparable<userGameRacerOpp> {
                 "\\[::]_________[::]/",
                 " `--'         `--'"
             };
-        } else if (dir < 0) {
+        }
+        if (dir < 0) {
             chr = new String[]{
                 "        _,---____",
                 "      ,/-`-----__^^`",
@@ -2862,7 +2863,8 @@ class userGameRacerOpp implements Comparable<userGameRacerOpp> {
                 "(_ --_^^----' _/",
                 "  ^'  ^^^---.__)"
             };
-        } else {
+        }
+        if (dir > 0) {
             chr = new String[]{
                 "    ____---._",
                 " '^^__-----'-.\\",
