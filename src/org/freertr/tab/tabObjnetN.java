@@ -63,8 +63,10 @@ public class tabObjnetN<T extends addrType> extends tabListingEntry<T> {
                 addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(ntry.addr.toIPv6(), bits.str2num(s.substring(1, s.length())));
                 ntry.mask.fromIPv6addr(prf.mask);
             }
-        } else if (ntry.mask.fromString(s)) {
-            return true;
+        } else {
+            if (ntry.mask.fromString(s)) {
+                return true;
+            }
         }
         ntry.addr.setAnd(ntry.addr, ntry.mask);
         return false;

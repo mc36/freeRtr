@@ -1093,8 +1093,10 @@ public class tabRouteAttr<T extends addrType> {
             if (segrouPrf.compareTo(other.segrouPrf) != 0) {
                 return 34;
             }
-        } else if (other.segrouPrf != null) {
-            return 35;
+        } else {
+            if (other.segrouPrf != null) {
+                return 35;
+            }
         }
         if (labelLoc != null) {
             if (other.labelLoc == null) {
@@ -1103,8 +1105,10 @@ public class tabRouteAttr<T extends addrType> {
             if (labelLoc.compareTo(other.labelLoc) != 0) {
                 return 37;
             }
-        } else if (other.labelLoc != null) {
-            return 38;
+        } else {
+            if (other.labelLoc != null) {
+                return 38;
+            }
         }
         if (srcRtr != null) {
             if (other.srcRtr == null) {
@@ -1116,8 +1120,10 @@ public class tabRouteAttr<T extends addrType> {
             if (srcRtr.compareTo(other.srcRtr) != 0) {
                 return 41;
             }
-        } else if (other.srcRtr != null) {
-            return 42;
+        } else {
+            if (other.srcRtr != null) {
+                return 42;
+            }
         }
         if (aggrRtr != null) {
             if (other.aggrRtr == null) {
@@ -1126,8 +1132,10 @@ public class tabRouteAttr<T extends addrType> {
             if (aggrRtr.compareTo(other.aggrRtr) != 0) {
                 return 44;
             }
-        } else if (other.aggrRtr != null) {
-            return 45;
+        } else {
+            if (other.aggrRtr != null) {
+                return 45;
+            }
         }
         if (connRtr != null) {
             if (other.connRtr == null) {
@@ -1136,8 +1144,10 @@ public class tabRouteAttr<T extends addrType> {
             if (connRtr.compareTo(other.connRtr) != 0) {
                 return 108;
             }
-        } else if (other.connRtr != null) {
-            return 109;
+        } else {
+            if (other.connRtr != null) {
+                return 109;
+            }
         }
         if (pediRtr != null) {
             if (other.pediRtr == null) {
@@ -1146,8 +1156,10 @@ public class tabRouteAttr<T extends addrType> {
             if (pediRtr.compareTo(other.pediRtr) != 0) {
                 return 112;
             }
-        } else if (other.pediRtr != null) {
-            return 113;
+        } else {
+            if (other.pediRtr != null) {
+                return 113;
+            }
         }
         if (nextHop != null) {
             if (other.nextHop == null) {
@@ -1156,8 +1168,10 @@ public class tabRouteAttr<T extends addrType> {
             if (nextHop.compareTo(other.nextHop) != 0) {
                 return 47;
             }
-        } else if (other.nextHop != null) {
-            return 48;
+        } else {
+            if (other.nextHop != null) {
+                return 48;
+            }
         }
         if (oldHop != null) {
             if (other.oldHop == null) {
@@ -1166,8 +1180,10 @@ public class tabRouteAttr<T extends addrType> {
             if (oldHop.compareTo(other.oldHop) != 0) {
                 return 50;
             }
-        } else if (other.oldHop != null) {
-            return 51;
+        } else {
+            if (other.oldHop != null) {
+                return 51;
+            }
         }
         if (originator != null) {
             if (other.originator == null) {
@@ -1176,8 +1192,10 @@ public class tabRouteAttr<T extends addrType> {
             if (originator.compareTo(other.originator) != 0) {
                 return 53;
             }
-        } else if (other.originator != null) {
-            return 54;
+        } else {
+            if (other.originator != null) {
+                return 54;
+            }
         }
         if (tabRouteUtil.diffIntList(labelRem, other.labelRem)) {
             return 55;
@@ -1207,8 +1225,10 @@ public class tabRouteAttr<T extends addrType> {
             if (bits.byteComp(attribVal, 0, other.attribVal, 0, attribVal.length) != 0) {
                 return 63;
             }
-        } else if (other.attribVal != null) {
-            return 64;
+        } else {
+            if (other.attribVal != null) {
+                return 64;
+            }
         }
         if (nshChain != null) {
             if (other.nshChain == null) {
@@ -1220,8 +1240,10 @@ public class tabRouteAttr<T extends addrType> {
             if (bits.byteComp(nshChain, 0, other.nshChain, 0, nshChain.length) != 0) {
                 return 118;
             }
-        } else if (other.nshChain != null) {
-            return 119;
+        } else {
+            if (other.nshChain != null) {
+                return 119;
+            }
         }
         if (domainPath != null) {
             if (other.domainPath == null) {
@@ -1233,8 +1255,10 @@ public class tabRouteAttr<T extends addrType> {
             if (bits.byteComp(domainPath, 0, other.domainPath, 0, domainPath.length) != 0) {
                 return 126;
             }
-        } else if (other.domainPath != null) {
-            return 127;
+        } else {
+            if (other.domainPath != null) {
+                return 127;
+            }
         }
         if (safiSpec != null) {
             if (other.safiSpec == null) {
@@ -1246,8 +1270,10 @@ public class tabRouteAttr<T extends addrType> {
             if (bits.byteComp(safiSpec, 0, other.safiSpec, 0, safiSpec.length) != 0) {
                 return 141;
             }
-        } else if (other.safiSpec != null) {
-            return 142;
+        } else {
+            if (other.safiSpec != null) {
+                return 142;
+            }
         }
         if (bfdDiscr != null) {
             if (other.bfdDiscr == null) {
@@ -1259,8 +1285,10 @@ public class tabRouteAttr<T extends addrType> {
             if (bits.byteComp(bfdDiscr, 0, other.bfdDiscr, 0, bfdDiscr.length) != 0) {
                 return 122;
             }
-        } else if (other.bfdDiscr != null) {
-            return 123;
+        } else {
+            if (other.bfdDiscr != null) {
+                return 123;
+            }
         }
         if (hopCapa != null) {
             if (other.hopCapa == null) {
@@ -1272,8 +1300,10 @@ public class tabRouteAttr<T extends addrType> {
             if (bits.byteComp(hopCapa, 0, other.hopCapa, 0, hopCapa.length) != 0) {
                 return 131;
             }
-        } else if (other.hopCapa != null) {
-            return 132;
+        } else {
+            if (other.hopCapa != null) {
+                return 132;
+            }
         }
         if (tunelVal != null) {
             if (other.tunelVal == null) {
@@ -1285,8 +1315,10 @@ public class tabRouteAttr<T extends addrType> {
             if (bits.byteComp(tunelVal, 0, other.tunelVal, 0, tunelVal.length) != 0) {
                 return 67;
             }
-        } else if (other.tunelVal != null) {
-            return 68;
+        } else {
+            if (other.tunelVal != null) {
+                return 68;
+            }
         }
         if (linkStat != null) {
             if (other.linkStat == null) {
@@ -1298,8 +1330,10 @@ public class tabRouteAttr<T extends addrType> {
             if (bits.byteComp(linkStat, 0, other.linkStat, 0, linkStat.length) != 0) {
                 return 71;
             }
-        } else if (other.linkStat != null) {
-            return 72;
+        } else {
+            if (other.linkStat != null) {
+                return 72;
+            }
         }
         if (pmsiTun != null) {
             if (other.pmsiTun == null) {
@@ -1311,8 +1345,10 @@ public class tabRouteAttr<T extends addrType> {
             if (bits.byteComp(pmsiTun, 0, other.pmsiTun, 0, pmsiTun.length) != 0) {
                 return 75;
             }
-        } else if (other.pmsiTun != null) {
-            return 76;
+        } else {
+            if (other.pmsiTun != null) {
+                return 76;
+            }
         }
         if (clustList != null) {
             if (other.clustList == null) {
@@ -1327,8 +1363,10 @@ public class tabRouteAttr<T extends addrType> {
                     return 79;
                 }
             }
-        } else if (other.clustList != null) {
-            return 80;
+        } else {
+            if (other.clustList != null) {
+                return 80;
+            }
         }
         if (extComm != null) {
             if (other.extComm == null) {
@@ -1342,8 +1380,10 @@ public class tabRouteAttr<T extends addrType> {
                     return 92;
                 }
             }
-        } else if (other.extComm != null) {
-            return 93;
+        } else {
+            if (other.extComm != null) {
+                return 93;
+            }
         }
         if (lrgComm != null) {
             if (other.lrgComm == null) {
@@ -1358,8 +1398,10 @@ public class tabRouteAttr<T extends addrType> {
                     return 96;
                 }
             }
-        } else if (other.lrgComm != null) {
-            return 97;
+        } else {
+            if (other.lrgComm != null) {
+                return 97;
+            }
         }
         if (ip6comm != null) {
             if (other.ip6comm == null) {
@@ -1374,8 +1416,10 @@ public class tabRouteAttr<T extends addrType> {
                     return 137;
                 }
             }
-        } else if (other.ip6comm != null) {
-            return 138;
+        } else {
+            if (other.ip6comm != null) {
+                return 138;
+            }
         }
         if (unknown != null) {
             if (other.unknown == null) {
@@ -1390,8 +1434,10 @@ public class tabRouteAttr<T extends addrType> {
                     return 100;
                 }
             }
-        } else if (other.unknown != null) {
-            return 101;
+        } else {
+            if (other.unknown != null) {
+                return 101;
+            }
         }
         if (entropyLabel != null) {
             if (other.entropyLabel == null) {
@@ -1403,8 +1449,10 @@ public class tabRouteAttr<T extends addrType> {
             if (bits.byteComp(entropyLabel, 0, other.entropyLabel, 0, entropyLabel.length) != 0) {
                 return 104;
             }
-        } else if (other.entropyLabel != null) {
-            return 105;
+        } else {
+            if (other.entropyLabel != null) {
+                return 105;
+            }
         }
         return 0;
     }

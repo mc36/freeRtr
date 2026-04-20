@@ -256,8 +256,10 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
                     cmd.error("no such interface");
                     return 1;
                 }
-            } else if (orgA.fromString(s)) {
-                return 1;
+            } else {
+                if (orgA.fromString(s)) {
+                    return 1;
+                }
             }
         }
         if (protocol >= 0) {
@@ -270,24 +272,26 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
                 cmd.error("no such interface");
                 return 1;
             }
-        } else if (s.equals("pool")) {
-            s = cmd.word();
-            if (p == 4) {
-                newSrcPool4 = cfgAll.poolFind(cfgAll.ip4pool, s, false);
-                if (newSrcPool4 == null) {
-                    cmd.error("no such pool");
-                    return 1;
+        } else {
+            if (s.equals("pool")) {
+                s = cmd.word();
+                if (p == 4) {
+                    newSrcPool4 = cfgAll.poolFind(cfgAll.ip4pool, s, false);
+                    if (newSrcPool4 == null) {
+                        cmd.error("no such pool");
+                        return 1;
+                    }
+                } else {
+                    newSrcPool6 = cfgAll.poolFind(cfgAll.ip6pool, s, false);
+                    if (newSrcPool6 == null) {
+                        cmd.error("no such pool");
+                        return 1;
+                    }
                 }
             } else {
-                newSrcPool6 = cfgAll.poolFind(cfgAll.ip6pool, s, false);
-                if (newSrcPool6 == null) {
-                    cmd.error("no such pool");
+                if (newA.fromString(s)) {
                     return 1;
                 }
-            }
-        } else {
-            if (newA.fromString(s)) {
-                return 1;
             }
         }
         if (protocol >= 0) {
@@ -389,12 +393,16 @@ public class tabNatCfgN extends tabListingEntry<addrIP> {
         }
         if (newSrcIface != null) {
             s = s + " interface " + newSrcIface.name;
-        } else if (newSrcPool4 != null) {
-            s = s + " pool " + newSrcPool4.name;
-        } else if (newSrcPool6 != null) {
-            s = s + " pool " + newSrcPool6.name;
         } else {
-            s = s + " " + newA;
+            if (newSrcPool4 != null) {
+                s = s + " pool " + newSrcPool4.name;
+            } else {
+                if (newSrcPool6 != null) {
+                    s = s + " pool " + newSrcPool6.name;
+                } else {
+                    s = s + " " + newA;
+                }
+            }
         }
         if ((what & 4) != 0) {
             s = s + " " + newP;

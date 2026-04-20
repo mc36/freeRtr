@@ -292,29 +292,35 @@ public class tabAceslstN<T extends addrType> extends tabListingEntry<T> {
             } else {
                 ntry.trgOGnet = og.objgrp;
             }
-        } else if (a.equals("any")) {
-            addr.fromNetmask(0);
-            mask.fromNetmask(0);
-        } else if (a.equals("host")) {
-            if (addr.fromString(cmd.word())) {
-                return true;
-            }
-            mask.setAddr(getMaxMask(addr));
         } else {
-            if (addr.fromString(a)) {
-                return true;
-            }
-            a = cmd.word();
-            if (a.startsWith("/")) {
-                if (addr.isIPv4()) {
-                    addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(addr.toIPv4(), bits.str2num(a.substring(1, a.length())));
-                    mask.fromIPv4addr(prf.mask);
+            if (a.equals("any")) {
+                addr.fromNetmask(0);
+                mask.fromNetmask(0);
+            } else {
+                if (a.equals("host")) {
+                    if (addr.fromString(cmd.word())) {
+                        return true;
+                    }
+                    mask.setAddr(getMaxMask(addr));
                 } else {
-                    addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(addr.toIPv6(), bits.str2num(a.substring(1, a.length())));
-                    mask.fromIPv6addr(prf.mask);
+                    if (addr.fromString(a)) {
+                        return true;
+                    }
+                    a = cmd.word();
+                    if (a.startsWith("/")) {
+                        if (addr.isIPv4()) {
+                            addrPrefix<addrIPv4> prf = new addrPrefix<addrIPv4>(addr.toIPv4(), bits.str2num(a.substring(1, a.length())));
+                            mask.fromIPv4addr(prf.mask);
+                        } else {
+                            addrPrefix<addrIPv6> prf = new addrPrefix<addrIPv6>(addr.toIPv6(), bits.str2num(a.substring(1, a.length())));
+                            mask.fromIPv6addr(prf.mask);
+                        }
+                    } else {
+                        if (mask.fromString(a)) {
+                            return true;
+                        }
+                    }
                 }
-            } else if (mask.fromString(a)) {
-                return true;
             }
         }
         addr.setAnd(addr, mask);
