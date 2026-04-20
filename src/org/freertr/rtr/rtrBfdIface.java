@@ -162,8 +162,9 @@ public class rtrBfdIface implements prtServP {
         rtrBfdNeigh nei = new rtrBfdNeigh(this, adr);
         rtrBfdNeigh old = neighs.add(nei);
         if (old != null) {
-            nei = old;
-        } else if (nei.startNow()) {
+            return old.clientAdd(clnt, nam);
+        }
+        if (nei.startNow()) {
             neighs.del(nei);
             return true;
         }

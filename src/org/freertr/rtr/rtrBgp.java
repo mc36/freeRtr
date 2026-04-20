@@ -1801,8 +1801,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (needFull.set(0) > 0) {
             computeFull();
-        } else if (computeIncr()) {
-            computeFull();
+        } else {
+            if (computeIncr()) {
+                computeFull();
+            }
         }
         compRound.add(1);
         for (int i = 0; i < lstnNei.size(); i++) {

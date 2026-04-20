@@ -454,9 +454,11 @@ public class tabQos {
             long left = cls.updateTime(curr);
             if (left < 1) {
                 rnd = 0;
-            } else if (cls.packets.size() > 0) {
-                if (lastLeft < left) {
-                    lastLeft = left;
+            } else {
+                if (cls.packets.size() > 0) {
+                    if (lastLeft < left) {
+                        lastLeft = left;
+                    }
                 }
             }
             packHolder pck;

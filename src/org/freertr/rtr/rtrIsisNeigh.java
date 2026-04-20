@@ -576,11 +576,10 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparable<rtrIsisNei
         }
         int i = 1;
         byte[] locAuth = iface.getAuthData(pck, typ, authOfs + hdrSiz);
-        if (locAuth == null) {
-            if (remAuth == null) {
-                i = 0;
-            }
-        } else if (remAuth != null) {
+        if ((locAuth == null) && (remAuth == null)) {
+            i = 0;
+        }
+        if ((locAuth != null) && (remAuth != null)) {
             if (locAuth.length == remAuth.length) {
                 i = bits.byteComp(locAuth, 0, remAuth, 0, locAuth.length);
             }

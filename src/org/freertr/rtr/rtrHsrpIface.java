@@ -418,8 +418,10 @@ public class rtrHsrpIface implements prtServP {
         int stat = packHsrp.staSpk;
         if (stby == null) {
             stat = packHsrp.staStby;
-        } else if (stby.isWinner(genLocalNeigh()) < 0) {
-            stat = packHsrp.staStby;
+        } else {
+            if (stby.isWinner(genLocalNeigh()) < 0) {
+                stat = packHsrp.staStby;
+            }
         }
         if (actv == null) {
             if (lastStat == packHsrp.staStby) {
@@ -428,7 +430,9 @@ public class rtrHsrpIface implements prtServP {
             if (lastStat == packHsrp.staActv) {
                 stat = packHsrp.staActv;
             }
-        } else if (preempt && (actv.isWinner(genLocalNeigh()) < 0)) {
+            return stat;
+        }
+        if (preempt && (actv.isWinner(genLocalNeigh()) < 0)) {
             stat = packHsrp.staActv;
         }
         return stat;

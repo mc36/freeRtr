@@ -687,7 +687,9 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
             pck.str = "OK";
             if (dsc != null) {
                 pck.str += " " + dsc;
-            } else if (template != null) {
+                return;
+            }
+            if (template != null) {
                 if (template.dsc != null) {
                     pck.str += " " + template.dsc;
                 }
