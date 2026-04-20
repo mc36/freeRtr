@@ -179,7 +179,10 @@ static int doPacketLoop(__rte_unused void *arg) {
             }
             if ((pkts < 1) && (burst_sleep > 0)) usleep(burst_sleep);
         }
-    } else if (myconf->justProcessor > 0) {
+        goto fail;
+    }
+
+    if (myconf->justProcessor > 0) {
         seq = myconf->justProcessor - 1;
         for (;;) {
             num = rte_ring_count(lcore_ring[seq]);
@@ -196,32 +199,35 @@ static int doPacketLoop(__rte_unused void *arg) {
                 processDataPacket(&ctx, bufS, port);
             }
         }
-    } else {
-        for (;;) {
-            pkts = 0;
-            for (seq = 0; seq < myconf->tx_num; seq++) {
-                port = myconf->tx_list[seq];
-                num = rte_ring_count(tx_ring[port]);
-                if (num > burst_size) num = burst_size;
-                num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
-                if (num < 1) continue;
-                pkts += num;
-                done = rte_eth_tx_burst(port, 0, mbufs, num);
-                for (; done < num; done++) rte_pktmbuf_free(mbufs[done]);
-            }
-            for (seq = 0; seq < myconf->rx_num; seq++) {
-                port = myconf->rx_list[seq];
-                num = rte_eth_rx_burst(port, 0, mbufs, burst_size);
-                pkts += num;
-                for (i = 0; i < num; i++) {
-                    bufP = rte_pktmbuf_mtod(mbufs[i], void *);
-                    port = hashDataPacket(bufP) % lcore_procs;
-                    if (rte_ring_mp_enqueue(lcore_ring[port], mbufs[i]) != 0) rte_pktmbuf_free(mbufs[i]);
-                }
-            }
-            if ((pkts < 1) && (burst_sleep > 0)) usleep(burst_sleep);
-        }
+        goto fail;
     }
+
+    for (;;) {
+        pkts = 0;
+        for (seq = 0; seq < myconf->tx_num; seq++) {
+            port = myconf->tx_list[seq];
+            num = rte_ring_count(tx_ring[port]);
+            if (num > burst_size) num = burst_size;
+            num = rte_ring_sc_dequeue_bulk(tx_ring[port], (void**)mbufs, num, NULL);
+            if (num < 1) continue;
+            pkts += num;
+            done = rte_eth_tx_burst(port, 0, mbufs, num);
+            for (; done < num; done++) rte_pktmbuf_free(mbufs[done]);
+        }
+        for (seq = 0; seq < myconf->rx_num; seq++) {
+            port = myconf->rx_list[seq];
+            num = rte_eth_rx_burst(port, 0, mbufs, burst_size);
+            pkts += num;
+            for (i = 0; i < num; i++) {
+                bufP = rte_pktmbuf_mtod(mbufs[i], void *);
+                port = hashDataPacket(bufP) % lcore_procs;
+                if (rte_ring_mp_enqueue(lcore_ring[port], mbufs[i]) != 0) rte_pktmbuf_free(mbufs[i]);
+            }
+        }
+        if ((pkts < 1) && (burst_sleep > 0)) usleep(burst_sleep);
+    }
+
+fail:
     err("packet thread exited");
     return 0;
 }

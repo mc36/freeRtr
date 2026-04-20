@@ -35,7 +35,7 @@ void err(char*buf) {
 }
 
 void doAccLoop() {
-    while (1) {
+    for (;;) {
         int oldSock = commSock;
         commSock = accept(lstnSock, NULL, NULL);
         if (oldSock != -1) {
@@ -52,7 +52,7 @@ void doTxLoop() {
     if (ioctl(addrTty, TIOCMGET, &o) < 0) err("error getting state");
     o &= ~BANG_TX;
     if (ioctl(addrTty, TIOCMSET, &o) < 0) err("error setting state");
-    while (1) {
+    for (;;) {
         if (commSock == -1) {
             sleep(1);
             continue;
@@ -88,7 +88,7 @@ void doTxLoop() {
 void doRxLoop() {
     unsigned char buf[1];
     int i, o, p;
-    while (1) {
+    for (;;) {
         usleep(spedRx);
         if (ioctl(addrTty, TIOCMGET, &o) < 0) break;
         if ((o & BANG_RX) == 0) continue;

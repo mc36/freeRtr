@@ -62,7 +62,7 @@ int table_find(struct table_head *tab, void *ntry) {
     int upper = tab->size - 1;
     unsigned int*entry = (unsigned int*)ntry;
     int cmpln = tab->cmplen;
-    while (lower <= upper) {
+    for (;lower <= upper;) {
         int mid = (lower + upper) >> 1;
         unsigned int*curr = (unsigned int*)table_get(tab, mid);
         long cmp;

@@ -85,7 +85,7 @@ int hashDataPacket(unsigned char *bufP) {
 
 
 int calcIPsum(unsigned char *buf, int pos, int len, int sum) {
-    while (len > 1)  {
+    for (;len > 1;)  {
         sum += get16lsb(buf, pos);
         len -= 2;
         pos += 2;

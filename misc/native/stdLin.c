@@ -57,7 +57,7 @@ void setupTerminal() {
 }
 
 void doMainLoop() {
-    while (1) {
+    for (;;) {
         int oldSock = commSock;
         commSock = accept(lstnSock, NULL, NULL);
         if (oldSock != -1) {
@@ -72,7 +72,7 @@ void doMainLoop() {
 void doTxLoop() {
     unsigned char buf[1];
     int i;
-    while (1) {
+    for (;;) {
         i = recv(commSock, &buf, sizeof (buf), 0);
         if (i < 1) {
             sleep(1);
@@ -86,7 +86,7 @@ void doTxLoop() {
 void doRxLoop() {
     int i;
     unsigned char buf[1];
-    while (1) {
+    for (;;) {
         i = read(STDIN_FILENO, &buf, sizeof (buf));
         if (i < 1) {
             sleep(1);

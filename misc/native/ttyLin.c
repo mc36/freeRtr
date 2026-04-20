@@ -31,7 +31,7 @@ void err(char*buf) {
 }
 
 void doAccLoop() {
-    while (1) {
+    for (;;) {
         int oldSock = commSock;
         commSock = accept(lstnSock, NULL, NULL);
         if (oldSock != -1) {
@@ -45,7 +45,7 @@ void doAccLoop() {
 void doTxLoop() {
     unsigned char buf[8192];
     int i;
-    while (1) {
+    for (;;) {
         if (commSock == -1) {
             sleep(1);
             continue;
@@ -69,7 +69,7 @@ void doTxLoop() {
 void doRxLoop() {
     unsigned char buf[8192];
     int i;
-    while (1) {
+    for (;;) {
         if (ioctl(addrTty, FIONREAD, &i) < 0) i = 1;
         if (i < 1) {
             i = 1;
