@@ -86,7 +86,7 @@ public class phoneBook implements Comparator<String> {
         try {
             FileInputStream in = new FileInputStream(path);
             BufferedReader rd = new BufferedReader(new InputStreamReader(in));
-            while (rd.ready()) {
+            for (;rd.ready();) {
                 String a = rd.readLine();
                 if (a.indexOf(name) < 0) {
                     continue;

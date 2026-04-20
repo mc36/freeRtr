@@ -101,7 +101,7 @@ public class gallery {
         try {
             FileInputStream in = new FileInputStream(fn);
             BufferedReader rd = new BufferedReader(new InputStreamReader(in));
-            while (rd.ready()) {
+            for (;rd.ready();) {
                 ln.add(rd.readLine());
             }
             rd.close();

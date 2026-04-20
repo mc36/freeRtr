@@ -123,7 +123,7 @@ public class temperUtil {
         List<String> l = new ArrayList<String>();
         try {
             BufferedReader f = new BufferedReader(new FileReader(fn));
-            while (f.ready()) {
+            for (;f.ready();) {
                 l.add(f.readLine());
             }
             f.close();

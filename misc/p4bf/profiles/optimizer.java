@@ -31,7 +31,7 @@ public class optimizer {
         List<String> res = new ArrayList<String>();
         try {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            while (rd.ready()) {
+            for (;rd.ready();) {
                 res.add(rd.readLine());
             }
             rd.close();

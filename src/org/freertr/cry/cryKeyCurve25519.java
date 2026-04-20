@@ -140,7 +140,7 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
         int sbit = 6;
         int svalue = priv[sposn] | 0x40;
         int swap = 0;
-        while (true) {
+        for (;;) {
             int select = (svalue >> sbit) & 0x01;
             swap ^= select;
             cswap(swap, x_2, x_3);
@@ -166,9 +166,12 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
             mul(z_2, z_2, E);
             if (sbit > 0) {
                 sbit--;
-            } else if (sposn == 0) {
+                continue;
+            }
+            if (sposn == 0) {
                 break;
-            } else if (sposn == 1) {
+            }
+            if (sposn == 1) {
                 sposn--;
                 svalue = priv[sposn] & 0xF8;
                 sbit = 7;

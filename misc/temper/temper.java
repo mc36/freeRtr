@@ -857,7 +857,7 @@ public class temper implements Runnable {
         BufferedReader f = new BufferedReader(fr);
         f.readLine();
         List<temperHist> history = new ArrayList<temperHist>();
-        while (f.ready()) {
+        for (;f.ready();) {
             String s = f.readLine();
             temperHist l = new temperHist();
             l.parseLine(s);

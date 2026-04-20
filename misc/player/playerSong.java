@@ -257,7 +257,7 @@ public class playerSong implements Comparator<playerSong> {
     public static int find(List<playerSong> lst, playerSong val) {
         int lower = 0;
         int upper = lst.size() - 1;
-        while (lower <= upper) {
+        for (;lower <= upper;) {
             int mid = (lower + upper) >>> 1;
             int cmp = val.compare(lst.get(mid), val);
             if (cmp < 0) {
