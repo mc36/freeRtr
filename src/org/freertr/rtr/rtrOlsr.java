@@ -150,7 +150,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
         int ui = (i * 2) / 125;
         int a;
         int b = 0;
-        while (ui >= (1 << b)) {
+        for (; ui >= (1 << b);) {
             b++;
         }
         if (b == 0) {

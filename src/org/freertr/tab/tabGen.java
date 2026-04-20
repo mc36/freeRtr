@@ -221,7 +221,7 @@ public class tabGen<T extends Comparable<? super T>> {
                     upper = lstB;
                 }
             }
-            while (lower <= upper) {
+            for (; lower <= upper;) {
                 lstB = (lower + upper) >>> 1;
                 cmp = valD[lstB][0].compareTo(val);
                 if (cmp < 0) {
@@ -262,7 +262,7 @@ public class tabGen<T extends Comparable<? super T>> {
                 }
             }
         }
-        while (lower <= upper) {
+        for (; lower <= upper;) {
             lstI = (lower + upper) >>> 1;
             int cmp = rowD[lstI].compareTo(val);
             if (cmp < 0) {
@@ -281,7 +281,7 @@ public class tabGen<T extends Comparable<? super T>> {
     private void doCache(int idx) {
         int lower = 0;
         int upper = blkN - 1;
-        while (lower <= upper) {
+        for (; lower <= upper;) {
             lstB = (lower + upper) >>> 1;
             int cmp = isCache(idx);
             if (cmp < 0) {

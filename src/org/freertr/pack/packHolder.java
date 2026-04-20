@@ -1149,7 +1149,7 @@ public class packHolder {
         a = a.replaceAll("  ", " ");
         a = a.replaceAll(" ", "|");
         String b = "X" + a;
-        while (!a.equals(b)) {
+        for (; !a.equals(b);) {
             b = a;
             a = a.replaceAll("\\|\\|", "|");
         }

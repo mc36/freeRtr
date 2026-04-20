@@ -327,7 +327,7 @@ public class bits {
      */
     public static String toHexB(int val) {
         String a = Integer.toHexString(val & 0xff);
-        while (a.length() < 2) {
+        for (; a.length() < 2;) {
             a = "0" + a;
         }
         return a;
@@ -341,7 +341,7 @@ public class bits {
      */
     public static String toBinB(int val) {
         String a = Integer.toBinaryString(val & 0xff);
-        while (a.length() < 8) {
+        for (; a.length() < 8;) {
             a = "0" + a;
         }
         return a;
@@ -355,7 +355,7 @@ public class bits {
      */
     public static String toHexW(int val) {
         String a = Integer.toHexString(val & 0xffff);
-        while (a.length() < 4) {
+        for (; a.length() < 4;) {
             a = "0" + a;
         }
         return a;
@@ -369,7 +369,7 @@ public class bits {
      */
     public static String toHexD(int val) {
         String a = Integer.toHexString(val);
-        while (a.length() < 8) {
+        for (; a.length() < 8;) {
             a = "0" + a;
         }
         return a;
@@ -383,7 +383,7 @@ public class bits {
      */
     public static String toHexQ(long val) {
         String a = Long.toHexString(val);
-        while (a.length() < 16) {
+        for (; a.length() < 16;) {
             a = "0" + a;
         }
         return a;
@@ -547,9 +547,8 @@ public class bits {
         if ((len & 1) != 0) {
             sum += getByte(buf, ofs + len - 1);
         }
-        while ((sum & 0xffff) != sum) {
-            sum = (sum & 0xffff) + (sum >>> 16);
-        }
+        sum = (sum & 0xffff) + (sum >>> 16);
+        sum += (sum >> 16);
         return sum;
     }
 
