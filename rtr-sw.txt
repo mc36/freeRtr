@@ -597,8 +597,16 @@ router bgp4 65535 vrf v1
  afi-vpls 65535:1 bridge-group 3
  afi-vpls 65535:1 update-source loopback0
  !
+ afi-vpls 65535:2 bridge-group 1
+ afi-vpls 65535:2 update-source loopback0
+ !
  afi-vpls 65535:103 bridge-group 9
  afi-vpls 65535:103 update-source loopback0
+ !
+ afi-evpn 1 bridge-group 2
+ afi-evpn 1 bmac 0066.780b.6966
+ afi-evpn 1 encapsulation pbb
+ afi-evpn 1 update-source loopback0
  !
  afi-evpn 2 bridge-group 4
  afi-evpn 2 bmac 0002.4276.7a16
