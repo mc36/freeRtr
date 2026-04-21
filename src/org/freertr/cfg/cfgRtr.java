@@ -506,7 +506,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* evpn-route-policy-in", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "(template|neighbor) .* evpn-route-policy-out", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other enable", null),
-        new userFilter("router bgp[46] .*", cmds.tabulator + "afi-other vpn-mode", null),
+        new userFilter("router bgp[46] .*", cmds.tabulator + "afi-other vpn-mode both", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + "afi-other distance -1", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other default-originate", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-spf enable", null),

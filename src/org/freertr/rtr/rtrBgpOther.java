@@ -97,7 +97,8 @@ public class rtrBgpOther extends ipRtr {
     public rtrBgpOther(rtrBgp p, ipFwd f) {
         fwd = f;
         parent = p;
-        routerVpn = true;
+        routerVrx = true;
+        routerVtx = true;
         distance = -1;
     }
 
@@ -345,11 +346,21 @@ public class rtrBgpOther extends ipRtr {
         } else {
             l.add(cmds.tabulator + cmds.negated + beg + "default-originate");
         }
-        if (routerVpn) {
-            l.add(beg + "vpn-mode");
+        String a;
+        if (routerVrx) {
+            if (routerVtx) {
+                a = "both";
+            } else {
+                a = "rx";
+            }
         } else {
-            l.add(cmds.tabulator + cmds.negated + beg + "vpn-mode");
+            if (routerVtx) {
+                a = "tx";
+            } else {
+                a = "none";
+            }
         }
+        l.add(beg + "vpn-mode " + a);
         l.add(beg + "distance " + distance);
         if (flowInst) {
             l.add(beg + "flowspec-install");

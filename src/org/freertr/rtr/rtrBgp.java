@@ -2017,7 +2017,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 2, new int[]{3}, "spf-log", "spf log size");
         l.add(null, false, 3, new int[]{-1}, "<num>", "number of entries");
         l.add(null, false, 1, new int[]{2}, "afi-other", "select other to advertise");
-        l.add(null, false, 2, new int[]{-1}, "vpn-mode", "enable vpn mode");
+        l.add(null, false, 2, new int[]{3, -1}, "vpn-mode", "enable vpn mode");
+        l.add(null, false, 3, new int[]{-1}, "rx", "enable vpn rx mode");
+        l.add(null, false, 3, new int[]{-1}, "tx", "enable vpn tx mode");
+        l.add(null, false, 3, new int[]{-1}, "both", "enable vpn mode");
+        l.add(null, false, 3, new int[]{-1}, "none", "disable vpn mode");
         rtrBgpVrfRtr.getHelp(l, 2);
         cfgRtr.getRedistHelp(l, 1);
         l.add(null, false, 1, new int[]{2}, "afi-vrf", "select vrf to advertise");
@@ -2581,7 +2585,29 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return false;
             }
             if (s.equals("vpn-mode")) {
-                other.routerVpn = !negated;
+                other.routerVrx = true;
+                other.routerVtx = true;
+                s = cmd.word();
+                if (s.equals("none")) {
+                    other.routerVrx = false;
+                    other.routerVtx = false;
+                }
+                if (s.equals("both")) {
+                    other.routerVrx = true;
+                    other.routerVtx = true;
+                }
+                if (s.equals("rx")) {
+                    other.routerVrx = true;
+                    other.routerVtx = false;
+                }
+                if (s.equals("tx")) {
+                    other.routerVrx = false;
+                    other.routerVtx = true;
+                }
+                if (negated) {
+                    other.routerVrx = false;
+                    other.routerVtx = false;
+                }
                 needFull.add(1);
                 compute.wakeup();
                 return false;

@@ -144,7 +144,8 @@ public class rtrBgpVrfRtr extends ipRtr {
         parent = p;
         other = o;
         vrf = v;
-        routerVpn = true;
+        routerVrx = true;
+        routerVtx = true;
         distance = -1;
     }
 

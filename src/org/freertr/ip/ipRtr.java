@@ -49,9 +49,14 @@ public abstract class ipRtr implements Comparable<ipRtr> {
     public boolean routerEcmp;
 
     /**
-     * vpn instance
+     * vpn rx instance
      */
-    public boolean routerVpn;
+    public boolean routerVrx;
+
+    /**
+     * vpn tx instance
+     */
+    public boolean routerVtx;
 
     /**
      * igp instance
@@ -242,7 +247,7 @@ public abstract class ipRtr implements Comparable<ipRtr> {
                 if (routerIgp) {
                     return 0;
                 }
-                if (routerVpn) {
+                if (routerVrx) {
                     return 2;
                 }
                 return 1;

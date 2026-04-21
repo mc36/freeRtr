@@ -189,7 +189,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.labelRem = tabLabel.prependLabel(ntry.labelRem, loc.label);
             done = true;
         }
-        if ((idx == rtrBgpParam.idxOmlt) || ((idx == rtrBgpParam.idxOuni) && lower.other.routerVpn && !addrFams[rtrBgpParam.idxOlab] && !addrFams[rtrBgpParam.idxOctp] && !addrFams[rtrBgpParam.idxOcar])) {
+        if ((idx == rtrBgpParam.idxOmlt) || ((idx == rtrBgpParam.idxOuni) && lower.other.routerVtx && !addrFams[rtrBgpParam.idxOlab] && !addrFams[rtrBgpParam.idxOctp] && !addrFams[rtrBgpParam.idxOcar])) {
             ntry.nextHop = localOddr.copyBytes();
         } else {
             ntry.nextHop = localAddr.copyBytes();
