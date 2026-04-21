@@ -18224,3 +18224,16 @@ failed: wireguard over wireguard
 ---------------------------------- 2026-04-20 08:45:21 26.4.20
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
+---------------------------------- 2026-04-21 07:33:52 26.4.21
+qc pass: p4lang: native ouni with bgp
+qc pass: p4lang: native ouni with bgp over vlan
+qc pass: unicast+native ouni over ebgp
+qc pass: unicast+native ouni over bgp with soft-reconfig
+qc pass: unicast+native ouni over bgp with additional path
+qc pass: unicast+native ouni over ibgp
+qc pass: unicast+native ouni over ibgp rr
+qc pass: unicast+native ouni over confed bgp
+qc pass: unicast+native ouni over bgp route server
+qc pass: unicast+native ouni over loopback
+qc pass: native ouni bgp default route
+qc pass: native ouni bgp aggregation

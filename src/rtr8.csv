@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.4.21-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-04-21 07:31:49, took 00:12:54, with 50 workers, on 891 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2026-04-21 08:02:25, took 00:11:08, with 50 workers, on 893 cases, 0 failed, 0 traces, 1 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -893,3 +893,5 @@ http://sources.freertr.org/cfg/p4lang-rout529.tst;p4lang-rout529.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout530.tst;p4lang-rout530.tst;success;p4lang: pppoe mpls over pwhe
 http://sources.freertr.org/cfg/p4lang-rout531.tst;p4lang-rout531.tst;success;p4lang: pppoe server routing over pwhe
 http://sources.freertr.org/cfg/p4lang-rout532.tst;p4lang-rout532.tst;success;p4lang: pppoe server mpls over pwhe
+http://sources.freertr.org/cfg/p4lang-rout533.tst;p4lang-rout533.tst;success;p4lang: native ouni with bgp
+http://sources.freertr.org/cfg/p4lang-rout534.tst;p4lang-rout534.tst;success;p4lang: native ouni with bgp over vlan

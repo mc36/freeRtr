@@ -2665,6 +2665,8 @@ qc pass: p4lang: pppoe routing over ipv6 pwhe
 qc pass: p4lang: pppoe mpls over pwhe
 qc pass: p4lang: pppoe server routing over pwhe
 qc pass: p4lang: pppoe server mpls over pwhe
+qc pass: p4lang: native ouni with bgp
+qc pass: p4lang: native ouni with bgp over vlan
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
@@ -3756,6 +3758,16 @@ qc pass: bgp routemap filtering with aslbo
 qc pass: bgp routemap filtering with aslbo with soft-reconfig
 qc pass: bgp routepolicy filtering with aslbo
 qc pass: bgp routepolicy filtering with aslbo with soft-reconfig
+qc pass: unicast+native ouni over ebgp
+qc pass: unicast+native ouni over bgp with soft-reconfig
+qc pass: unicast+native ouni over bgp with additional path
+qc pass: unicast+native ouni over ibgp
+qc pass: unicast+native ouni over ibgp rr
+qc pass: unicast+native ouni over confed bgp
+qc pass: unicast+native ouni over bgp route server
+qc pass: unicast+native ouni over loopback
+qc pass: native ouni bgp default route
+qc pass: native ouni bgp aggregation
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
