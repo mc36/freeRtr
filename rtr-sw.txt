@@ -562,6 +562,10 @@ router bgp4 65535 vrf v1
  !
  neighbor 100.100.3.255 template r
  !
+ afi-other enable
+ afi-other vpn-mode tx
+ afi-other redistribute connected
+ afi-other redistribute static
  afi-vrf dn42 enable
  afi-vrf dn42 mvpn loopback0
  afi-vrf dn42 redistribute connected
@@ -576,96 +580,25 @@ router bgp4 65535 vrf v1
  afi-vrf vpn redistribute connected
  afi-vrf vpn redistribute static
  !
- afi-vpls 65535:1 bridge-group 1
+ afi-ovrf dn42 enable
+ afi-ovrf dn42 mvpn loopback0
+ afi-ovrf dn42 redistribute connected
+ afi-ovrf dn42 redistribute static
+ afi-ovrf dn42 ecmp
+ !
+ afi-ovrf rtbh enable
+ afi-ovrf rtbh redistribute blackhole6 1
+ !
+ afi-ovrf vpn enable
+ afi-ovrf vpn mvpn loopback0
+ afi-ovrf vpn redistribute connected
+ afi-ovrf vpn redistribute static
+ !
+ afi-vpls 65535:1 bridge-group 3
  afi-vpls 65535:1 update-source loopback0
  !
  afi-vpls 65535:103 bridge-group 9
  afi-vpls 65535:103 update-source loopback0
- !
- afi-evpn 2 bridge-group 2
- afi-evpn 2 bmac 006e.085c.1743
- afi-evpn 2 encapsulation pbb
- afi-evpn 2 update-source loopback0
- !
- !
- redistribute connected
- redistribute static
- ecmp
- exit
-!
-router bgp6 65535 vrf v1
- local-as 65535
- router-id 100.100.3.227
- address-family unicast multicast vpnuni vpnmlt vpls evpn mdt flowspec vpnflw ovpnuni ovpnmlt ovpnflw mvpn omvpn mspw srte linkstate ouni omlt oflw osrt nsh rtfilter rpd mtree omtree spf sdwan mup omup tunnel encap
- flapstat
- nexthop route-policy nht
- nexthop prefix-list nht6
- monitor bmp p1 2001:db8:1101::227:227 17971
- dump mrt bgp6.log
- !
- template r remote-as 65535
- template r local-as 65535
- template r ipinfo pmtud 512 1024 666
- template r ipinfo router4 bgp4 65535
- template r ipinfo resolve
- template r address-family unicast multicast vpnuni vpnmlt vpls evpn mdt flowspec vpnflw ovpnuni ovpnmlt ovpnflw mvpn omvpn mspw srte linkstate ouni omlt oflw osrt nsh rtfilter rpd mtree omtree spf sdwan mup omup tunnel encap
- template r distance 200
- template r connection-mode active
- template r dynamic-capability
- template r compression both
- template r additional-path-rx unicast multicast vpnuni vpnmlt
- template r additional-path-tx unicast multicast vpnuni vpnmlt
- template r update-source loopback0
- template r monitor bmp
- template r dump mrt
- template r hostname domain
- template r software
- template r extended-open
- template r extended-update
- template r ha-mode
- template r aigp
- template r entropy
- template r traffeng
- template r pmsitun
- template r connector
- template r pe-distinguisher
- template r aspath-limit
- template r nsh-chain
- template r domain-path
- template r safi-specific
- template r destination-preference
- template r bfd-discriminator
- template r tunenc
- template r attribset
- template r unknowns-out all
- template r unknowns-in all
- template r unknowns-log
- template r segrout
- template r bier
- template r leak-role attrib
- template r next-hop-capability
- template r send-community all
- !
- neighbor 2001:db8:1101::254 template r
- !
- neighbor 2001:db8:1101::255 template r
- !
- afi-vrf dn42 enable
- afi-vrf dn42 mvpn loopback0
- afi-vrf dn42 redistribute connected
- afi-vrf dn42 redistribute static
- afi-vrf dn42 ecmp
- !
- afi-vrf rtbh enable
- afi-vrf rtbh redistribute blackhole6 1
- !
- afi-vrf vpn enable
- afi-vrf vpn mvpn loopback0
- afi-vrf vpn redistribute connected
- afi-vrf vpn redistribute static
- !
- afi-vpls 65535:1 bridge-group 3
- afi-vpls 65535:1 update-source loopback0
  !
  afi-evpn 2 bridge-group 4
  afi-evpn 2 bmac 0002.4276.7a16
