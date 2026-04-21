@@ -18237,3 +18237,6 @@ qc pass: unicast+native ouni over bgp route server
 qc pass: unicast+native ouni over loopback
 qc pass: native ouni bgp default route
 qc pass: native ouni bgp aggregation
+---------------------------------- 2026-04-21 08:47:29 26.4.21
+qc pass: unicast+native ouni with ldp
+qc pass: unicast+native ouni with sr

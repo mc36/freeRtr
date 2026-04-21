@@ -3768,6 +3768,8 @@ qc pass: unicast+native ouni over bgp route server
 qc pass: unicast+native ouni over loopback
 qc pass: native ouni bgp default route
 qc pass: native ouni bgp aggregation
+qc pass: unicast+native ouni with ldp
+qc pass: unicast+native ouni with sr
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain
