@@ -164,6 +164,11 @@ void readAcl6(struct acl6_entry *acl6_ntry, char**arg) {
     sum += mul*get16lsb(buf2, 2);
 
 
+#define finalize_sum(nat)                                       \
+    nat.sum3 = (nat.sum3 & 0xffff) + (nat.sum3 >> 16);          \
+    nat.sum3 = (nat.sum3 & 0xffff) + (nat.sum3 >> 16);          \
+    nat.sum4 = (nat.sum4 & 0xffff) + (nat.sum4 >> 16);          \
+    nat.sum4 = (nat.sum4 & 0xffff) + (nat.sum4 >> 16);
 
 
 
@@ -1538,6 +1543,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.oTrgPort, -1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nSrcPort, +1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nTrgPort, +1);
+        finalize_sum(nat4_ntry);
         if (del == 0) hasht_del(&vrf2rib_res->natT, &nat4_ntry);
         else hasht_add(&vrf2rib_res->natT, &nat4_ntry);
         return 0;
@@ -1592,6 +1598,7 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.oTrgPort, -1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nSrcPort, +1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nTrgPort, +1);
+        finalize_sum(nat6_ntry);
         if (del == 0) hasht_del(&vrf2rib_res->natT, &nat6_ntry);
         else hasht_add(&vrf2rib_res->natT, &nat6_ntry);
         return 0;
