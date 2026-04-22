@@ -92,7 +92,7 @@ int calcIPsum(unsigned char *buf, int pos, int len, int sum) {
     }
     if (len > 0) sum += buf[pos];
     sum = (sum >> 16) + (sum & 0xffff);
-    sum += (sum >> 16);
+    sum = (sum >> 16) + (sum & 0xffff);
     return sum;
 }
 
