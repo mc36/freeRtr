@@ -592,13 +592,15 @@ public class ipMpls implements ifcUp {
     /**
      * create error report
      *
+     * @param fwd4 ipv4 forwarder
+     * @param fwd6 ipv6 forwarder
      * @param pck packet to report
      * @param lab label to report
      * @param res reason code
      * @param dat reason data
      * @return false if succeed, true if error
      */
-    public static boolean createError(packHolder pck, tabLabelEntry lab, counter.reasons res, int dat) {
+    public static boolean createError(ipFwd fwd4, ipFwd fwd6, packHolder pck, tabLabelEntry lab, counter.reasons res, int dat) {
         ipFwd fwd = lab.forwarder;
         if (fwd == null) {
             return true;
@@ -638,6 +640,22 @@ public class ipMpls implements ifcUp {
                 }
             }
             pck.MPLSlabel = old;
+        }
+        int i = pck.getByte(0) >>> 4;
+        if (i != fwd.ipVersion) {
+            switch (i) {
+                case ipCor4.protocolVersion:
+                    fwd = fwd4;
+                    break;
+                case ipCor6.protocolVersion:
+                    fwd = fwd6;
+                    break;
+                default:
+                    return true;
+            }
+            if (fwd == null) {
+                return true;
+            }
         }
         if (fwd.ipCore.parseIPheader(pck, true)) {
             return true;

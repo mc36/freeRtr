@@ -1907,7 +1907,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         if (lab.nextHop != null) {
             pck.MPLSttl--;
             if (pck.MPLSttl < 1) {
-                if (ipMpls.createError(pck, lab, counter.reasons.ttlExceed, 0)) {
+                if (ipMpls.createError(fwd4, fwd6, pck, lab, counter.reasons.ttlExceed, 0)) {
                     return;
                 }
             }
@@ -1922,7 +1922,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         if (lab.duplicate != null) {
             pck.MPLSttl--;
             if (pck.MPLSttl < 1) {
-                if (ipMpls.createError(pck, lab, counter.reasons.ttlExceed, 0)) {
+                if (ipMpls.createError(fwd4, fwd6, pck, lab, counter.reasons.ttlExceed, 0)) {
                     return;
                 }
             }
@@ -1940,7 +1940,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         if (lab.bier != null) {
             pck.MPLSttl--;
             if (pck.MPLSttl < 1) {
-                if (ipMpls.createError(pck, lab, counter.reasons.ttlExceed, 0)) {
+                if (ipMpls.createError(fwd4, fwd6, pck, lab, counter.reasons.ttlExceed, 0)) {
                     return;
                 }
             }
