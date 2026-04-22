@@ -619,13 +619,6 @@ public class ipMpls implements ifcUp {
                 return true;
             }
         }
-        ipFwdIface ifc = lab.iface;
-        if (ifc == null) {
-            ifc = ipFwdTab.findStableIface(fwd);
-            if (ifc == null) {
-                return true;
-            }
-        }
         List<Integer> labs = null;
         if (!pck.MPLSbottom) {
             int old = pck.MPLSlabel;
@@ -641,6 +634,7 @@ public class ipMpls implements ifcUp {
             }
             pck.MPLSlabel = old;
         }
+        ipFwdIface ifc = lab.iface;
         int i = pck.getByte(0) >>> 4;
         if (i != fwd.ipVersion) {
             switch (i) {
@@ -654,6 +648,13 @@ public class ipMpls implements ifcUp {
                     return true;
             }
             if (fwd == null) {
+                return true;
+            }
+            ifc = null;
+        }
+        if (ifc == null) {
+            ifc = ipFwdTab.findStableIface(fwd);
+            if (ifc == null) {
                 return true;
             }
         }
