@@ -889,6 +889,8 @@ qc pass: p4lang: pppoe routing over ipv6 pwhe
 qc pass: p4lang: pppoe mpls over pwhe
 qc pass: p4lang: pppoe server routing over pwhe
 qc pass: p4lang: pppoe server mpls over pwhe
+qc pass: p4lang: native ouni with bgp
+qc pass: p4lang: native ouni with bgp over vlan
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

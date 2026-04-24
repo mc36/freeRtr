@@ -18240,3 +18240,9 @@ qc pass: native ouni bgp aggregation
 ---------------------------------- 2026-04-21 08:47:29 26.4.21
 qc pass: unicast+native ouni with ldp
 qc pass: unicast+native ouni with sr
+---------------------------------- 2026-04-23 18:00:53 26.4.23
+no qc pass: wireguard over ipv4
+failed: wireguard over ipv4
+---------------------------------- 2026-04-24 04:27:15 26.4.24
+no failed: wireguard over ipv4
+qc pass: wireguard over ipv4

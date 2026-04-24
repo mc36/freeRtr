@@ -1,5 +1,5 @@
 url;file;udp;dpdk;xdp;bmv2;tofino;test
--;-;-;-;-;-;-;freeRouter v26.4.21-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v26.4.24-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;not ok;ok;ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;not ok;ok;ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;not ok;ok;ok;p4lang: egress access list
@@ -891,3 +891,5 @@ http://sources.freertr.org/cfg/p4lang-rout529.tst;p4lang-rout529.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout530.tst;p4lang-rout530.tst;ok;ok;ok;ok;ok;p4lang: pppoe mpls over pwhe
 http://sources.freertr.org/cfg/p4lang-rout531.tst;p4lang-rout531.tst;ok;ok;ok;ok;ok;p4lang: pppoe server routing over pwhe
 http://sources.freertr.org/cfg/p4lang-rout532.tst;p4lang-rout532.tst;ok;ok;ok;ok;ok;p4lang: pppoe server mpls over pwhe
+http://sources.freertr.org/cfg/p4lang-rout533.tst;p4lang-rout533.tst;ok;ok;ok;ok;ok;p4lang: native ouni with bgp
+http://sources.freertr.org/cfg/p4lang-rout534.tst;p4lang-rout534.tst;ok;ok;ok;ok;ok;p4lang: native ouni with bgp over vlan
