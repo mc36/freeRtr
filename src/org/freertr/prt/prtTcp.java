@@ -712,7 +712,7 @@ public class prtTcp extends prtGen {
      */
     protected boolean connectionStart(prtGenConn clnt, packHolder pck, boolean res) {
         if (debugger.prtTcpTraf) {
-            logger.debug("start");
+            logger.debug("start " + clnt);
         }
         clnt.sendPRT = protoNum;
         prtTcpConn pr = new prtTcpConn();
@@ -772,7 +772,7 @@ public class prtTcp extends prtGen {
     protected void connectionClose(prtGenConn clnt) {
         prtTcpConn pr = (prtTcpConn) clnt.protoDat;
         if (debugger.prtTcpTraf) {
-            logger.debug("close");
+            logger.debug("close " + clnt);
         }
         clnt.pipeClient.setClose();
         clnt.pipeNetwork.setClose();
@@ -829,7 +829,7 @@ public class prtTcp extends prtGen {
                     return;
                 }
                 if (debugger.prtTcpTraf) {
-                    logger.debug("resumed");
+                    logger.debug("resumed " + clnt);
                 }
                 pr.seqLoc = pck.TCPack;
                 pr.seqRem = pck.TCPseq;
@@ -912,7 +912,7 @@ public class prtTcp extends prtGen {
                 }
                 pr.seqRem = pck.TCPseq + 1;
                 if (debugger.prtTcpTraf) {
-                    logger.debug("accepted");
+                    logger.debug("accepted " + clnt);
                 }
                 if (pck.TCPtsE == 0) {
                     pr.tmstmpTx = 0;
@@ -944,7 +944,7 @@ public class prtTcp extends prtGen {
                     return;
                 }
                 if (debugger.prtTcpTraf) {
-                    logger.debug("got reset");
+                    logger.debug("got reset " + clnt);
                 }
                 pr.state = prtTcpConn.stDelete;
                 clnt.setClosing();
@@ -956,7 +956,9 @@ public class prtTcp extends prtGen {
                     if ((flg & flagFIN) != 0) {
                         pr.seqLoc++;
                     }
-                    logger.info("got future acknowledge number " + clnt);
+                    if (debugger.prtTcpTraf) {
+                        logger.debug("got future acknowledge number " + clnt);
+                    }
                     pr.activWait = cfgAll.tcpTimeLater;
                     nowAcked = 0;
                 }
@@ -985,7 +987,7 @@ public class prtTcp extends prtGen {
                 }
                 if (pr.state == prtTcpConn.stGotSyn) {
                     if (debugger.prtTcpTraf) {
-                        logger.debug("opened");
+                        logger.debug("opened " + clnt);
                     }
                     pr.state = prtTcpConn.stOpened;
                     pr.staTim = bits.getTime();
@@ -998,7 +1000,7 @@ public class prtTcp extends prtGen {
             }
             if (oldBytes < 0) {
                 if (debugger.prtTcpTraf) {
-                    logger.debug("got future sequence number");
+                    logger.debug("got future sequence number " + clnt);
                 }
                 pr.activWait = cfgAll.tcpTimeLater;
                 if (!pr.sackTx) {
@@ -1011,7 +1013,7 @@ public class prtTcp extends prtGen {
             if (newBytes > 0) {
                 if ((flg & flagFIN) != 0) {
                     if (debugger.prtTcpTraf) {
-                        logger.debug("got data with fin");
+                        logger.debug("got data with fin " + clnt);
                     }
                     flg = 0;
                 }
@@ -1045,14 +1047,14 @@ public class prtTcp extends prtGen {
                         return;
                     }
                     if (debugger.prtTcpTraf) {
-                        logger.debug("got old data again");
+                        logger.debug("got old data again " + clnt);
                     }
                     return;
                 }
                 pck.getSkip(oldBytes);
                 if (clnt.send2server(pck)) {
                     if (debugger.prtTcpTraf) {
-                        logger.debug("upper don't need data");
+                        logger.debug("upper don't need data " + clnt);
                     }
                     if (!pr.sackTx) {
                         return;
@@ -1079,7 +1081,7 @@ public class prtTcp extends prtGen {
                 pr.seenFin = true;
                 if (pr.state == prtTcpConn.stOpened) {
                     if (debugger.prtTcpTraf) {
-                        logger.debug("closing");
+                        logger.debug("closing " + clnt);
                     }
                     clnt.setClosing();
                     pr.state = prtTcpConn.stGotFin;
@@ -1144,7 +1146,7 @@ public class prtTcp extends prtGen {
             }
             if (need) {
                 if (debugger.prtTcpTraf) {
-                    logger.debug("closing");
+                    logger.debug("closing " + clnt);
                 }
                 clnt.timeout = cfgAll.tcpTimeFin;
                 pr.activWait = cfgAll.tcpTimeNow;
