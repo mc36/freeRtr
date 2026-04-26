@@ -372,6 +372,7 @@ public class rtrBgpOther extends ipRtr {
             l.add(beg + "srv6 " + srv6.name);
         }
         cfgRtr.getShRedist(l, beg, this);
+        l.add(beg + cmds.comment);
     }
 
     /**
