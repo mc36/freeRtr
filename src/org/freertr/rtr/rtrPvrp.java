@@ -6,6 +6,7 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
+import org.freertr.cfg.cfgRtr;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
@@ -60,6 +61,26 @@ public class rtrPvrp extends ipRtr implements Runnable {
     protected final prtTcp tcpCore;
 
     /**
+     * other afi router
+     */
+    public final rtrPvrpOther other;
+
+    /**
+     * route type
+     */
+    protected final tabRouteAttr.routeType rouTyp;
+
+    /**
+     * router number
+     */
+    protected final int rtrNum;
+
+    /**
+     * is over ipv4
+     */
+    protected final boolean isIpv4;
+
+    /**
      * router id
      */
     public addrIPv4 routerID;
@@ -73,6 +94,11 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * routes needed to advertise
      */
     public tabRoute<addrIP> need2adv;
+
+    /**
+     * other routes needed to advertise
+     */
+    public tabRoute<addrIP> othr2adv;
 
     /**
      * list of interfaces
@@ -145,27 +171,33 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * create one pvrp process
      *
      * @param forwarder the ip protocol
+     * @param otherfwd the other ip protocol
      * @param udp the udp protocol
      * @param tcp the tcp protocol
      * @param id process id
      */
-    public rtrPvrp(ipFwd forwarder, prtUdp udp, prtTcp tcp, int id) {
+    public rtrPvrp(ipFwd forwarder, ipFwd otherfwd, prtUdp udp, prtTcp tcp, int id) {
         fwdCore = forwarder;
         udpCore = udp;
         tcpCore = tcp;
         routerID = new addrIPv4();
         ifaces = new tabGen<rtrPvrpIface>();
-        tabRouteAttr.routeType rouTyp = null;
+        rtrNum = id;
         switch (fwdCore.ipVersion) {
             case ipCor4.protocolVersion:
+                isIpv4 = true;
                 rouTyp = tabRouteAttr.routeType.pvrp4;
                 break;
             case ipCor6.protocolVersion:
+                isIpv4 = false;
                 rouTyp = tabRouteAttr.routeType.pvrp6;
                 break;
             default:
+                isIpv4 = true;
+                rouTyp = null;
                 break;
         }
+        other = new rtrPvrpOther(this, otherfwd);
         routerCreateComputed();
         fwdCore.routerAdd(this, rouTyp, id);
         logger.startThread(this);
@@ -184,16 +216,17 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * add one interface to work on
      *
      * @param ifc ip forwarder interface
+     * @param oifc the other ip interface to work on
      * @return false if successful, true if error happened
      */
-    public rtrPvrpIface addInterface(ipFwdIface ifc) {
+    public rtrPvrpIface addInterface(ipFwdIface ifc, ipFwdIface oifc) {
         if (debugger.rtrPvrpEvnt) {
             logger.debug("add iface " + ifc);
         }
         if (ifc == null) {
             return null;
         }
-        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc);
+        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc, oifc);
         rtrPvrpIface old = ifaces.add(ntry);
         if (old != null) {
             ntry = old;
@@ -207,15 +240,16 @@ public class rtrPvrp extends ipRtr implements Runnable {
      * delete one interface
      *
      * @param ifc interface to delete
+     * @param oifc the other ip interface to work on
      */
-    public void delInterface(ipFwdIface ifc) {
+    public void delInterface(ipFwdIface ifc, ipFwdIface oifc) {
         if (debugger.rtrPvrpEvnt) {
             logger.debug("del iface " + ifc);
         }
         if (ifc == null) {
             return;
         }
-        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc);
+        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc, oifc);
         ntry = ifaces.del(ntry);
         if (ntry == null) {
             return;
@@ -236,7 +270,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
         if (brief) {
             res = new userFormat("|", "router|name|uptime");
         } else {
-            res = new userFormat("|", "iface|router|name|peerif|peer|learned|adverted|uptime");
+            res = new userFormat("|", "iface|router|name|peerif|peer|other|learned|adverted|uptime");
         }
         for (int i = 0; i < ifaces.size(); i++) {
             rtrPvrpIface ifc = ifaces.get(i);
@@ -289,7 +323,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
         if (iface == null) {
             return null;
         }
-        rtrPvrpIface ifc = new rtrPvrpIface(this, iface);
+        rtrPvrpIface ifc = new rtrPvrpIface(this, iface, null);
         ifc = ifaces.find(ifc);
         if (ifc == null) {
             return null;
@@ -603,6 +637,17 @@ public class rtrPvrp extends ipRtr implements Runnable {
         l.add(null, false, 3, new int[]{4}, "<num>", "maximum index");
         l.add(null, false, 4, new int[]{5, -1}, "<num>", "node index");
         l.add(null, false, 5, new int[]{-1}, "<num>", "node subdomain");
+        l.add(null, false, 1, new int[]{2}, "afi-other", "select other to advertise");
+        l.add(null, false, 2, new int[]{-1}, "enable", "enable processing");
+        l.add(null, false, 2, new int[]{-1}, "foreign", "use foreign nexthop for routes");
+        cfgRtr.getRedistHelp(l, 1);
+        l.add(null, false, 2, new int[]{-1}, "stub", "stub router");
+        l.add(null, false, 2, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
+        l.add(null, false, 2, new int[]{3}, "segrout", "segment routing parameters");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "this node index");
+        l.add(null, false, 2, new int[]{3}, "bier", "bier parameters");
+        l.add(null, false, 3, new int[]{4, -1}, "<num>", "node index");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "node subdomain");
     }
 
     /**
@@ -623,6 +668,13 @@ public class rtrPvrp extends ipRtr implements Runnable {
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx + " " + bierSub);
+        cmds.cfgLine(l, !other.enabled, beg, "afi-other enable", "");
+        cmds.cfgLine(l, !other.foreign, beg, "afi-other foreign", "");
+        cmds.cfgLine(l, !other.stub, beg, "afi-other stub", "");
+        cmds.cfgLine(l, !other.suppressAddr, beg, "afi-other suppress-prefix", "");
+        cmds.cfgLine(l, other.segrouIdx < 1, beg, "afi-other segrout", "" + other.segrouIdx);
+        cmds.cfgLine(l, other.bierIdx < 1, beg, "afi-other bier", other.bierIdx + " " + other.bierSub);
+        cfgRtr.getShRedist(l, beg + "afi-other ", other);
     }
 
     /**
@@ -713,7 +765,57 @@ public class rtrPvrp extends ipRtr implements Runnable {
             notif.wakeup();
             return false;
         }
-        return true;
+        if (!s.equals("afi-other")) {
+            return true;
+        }
+        s = cmd.word();
+        if (s.equals("enable")) {
+            if (negated) {
+                other.unregister2ip();
+            } else {
+                other.register2ip();
+            }
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("foreign")) {
+            other.foreign = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("stub")) {
+            other.stub = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("suppress-prefix")) {
+            other.suppressAddr = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("segrout")) {
+            if (negated) {
+                other.segrouIdx = 0;
+                notif.wakeup();
+                return false;
+            }
+            other.segrouIdx = bits.str2num(cmd.word());
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("bier")) {
+            if (negated) {
+                other.bierIdx = 0;
+                other.bierSub = 0;
+                notif.wakeup();
+                return false;
+            }
+            other.bierIdx = bits.str2num(cmd.word());
+            other.bierSub = bits.str2num(cmd.word());
+            notif.wakeup();
+            return false;
+        }
+        return cfgRtr.doCfgRedist(other, other.fwd, negated, s, cmd);
     }
 
     public void run() {

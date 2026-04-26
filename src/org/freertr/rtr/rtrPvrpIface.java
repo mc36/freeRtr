@@ -292,9 +292,114 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
     public logFil dumpFile = null;
 
     /**
+     * other enabled
+     */
+    public boolean otherEna;
+
+    /**
+     * other with foreign nexthop
+     */
+    public boolean otherFrgn;
+
+    /**
+     * other default distance
+     */
+    public int otherDist = 80;
+
+    /**
+     * other advertise default route
+     */
+    public boolean othDefOrig = false;
+
+    /**
+     * other stub flag
+     */
+    public boolean othStub = false;
+
+    /**
+     * other unstub flag
+     */
+    public boolean othUnstub = false;
+
+    /**
+     * other unsuppress interface address
+     */
+    public boolean othUnsuppAddr;
+
+    /**
+     * other suppress interface address
+     */
+    public boolean othSuppAddr;
+
+    /**
+     * not advertise other routes learned from interface back
+     */
+    public boolean othSpltHrzn = true;
+
+    /**
+     * other segment rou index
+     */
+    public int srOthIdx;
+
+    /**
+     * other bier index
+     */
+    public int brOthIdx;
+
+    /**
+     * other bier subdomain
+     */
+    public int brOthSub;
+
+    /**
+     * other ingress label filter
+     */
+    public tabListing<tabPrfxlstN, addrIP> othLabIn = null;
+
+    /**
+     * other egress label filter
+     */
+    public tabListing<tabPrfxlstN, addrIP> othLabOut = null;
+
+    /**
+     * other ingress prefix list
+     */
+    public tabListing<tabPrfxlstN, addrIP> othPrfIn = null;
+
+    /**
+     * other egress prefix list
+     */
+    public tabListing<tabPrfxlstN, addrIP> othPrfOut = null;
+
+    /**
+     * other ingress route map
+     */
+    public tabListing<tabRtrmapN, addrIP> othRmapIn = null;
+
+    /**
+     * other egress route map
+     */
+    public tabListing<tabRtrmapN, addrIP> othRmapOut = null;
+
+    /**
+     * other ingress route policy
+     */
+    public tabListing<tabRtrplcN, addrIP> othRpolIn = null;
+
+    /**
+     * other egress route policy
+     */
+    public tabListing<tabRtrplcN, addrIP> othRpolOut = null;
+
+    /**
      * the interface this works on
      */
     protected final ipFwdIface iface;
+
+    /**
+     * the other ip interface this works on
+     */
+    protected final ipFwdIface oface;
 
     /**
      * the udp connection it uses to multicast
@@ -323,10 +428,12 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
      *
      * @param parent the rip protocol
      * @param ifc the ip interface to work on
+     * @param oifc the other ip interface to work on
      */
-    public rtrPvrpIface(rtrPvrp parent, ipFwdIface ifc) {
+    public rtrPvrpIface(rtrPvrp parent, ipFwdIface ifc, ipFwdIface oifc) {
         lower = parent;
         iface = ifc;
+        oface = oifc;
         neighs = new tabGen<rtrPvrpNeigh>();
     }
 
@@ -493,6 +600,25 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         cmds.cfgLine(l, roumapOut == null, cmds.tabulator, beg + "route-map-out", "" + roumapOut);
         cmds.cfgLine(l, roupolIn == null, cmds.tabulator, beg + "route-policy-in", "" + roupolIn);
         cmds.cfgLine(l, roupolOut == null, cmds.tabulator, beg + "route-policy-out", "" + roupolOut);
+        cmds.cfgLine(l, !otherEna, cmds.tabulator, beg + "other-enable", "");
+        cmds.cfgLine(l, !otherFrgn, cmds.tabulator, beg + "other-foreign", "");
+        cmds.cfgLine(l, !othStub, cmds.tabulator, beg + "other-stub", "");
+        cmds.cfgLine(l, !othUnstub, cmds.tabulator, beg + "other-unstub", "");
+        cmds.cfgLine(l, !othSpltHrzn, cmds.tabulator, beg + "other-split-horizon", "");
+        cmds.cfgLine(l, !othSuppAddr, cmds.tabulator, beg + "other-suppress-prefix", "");
+        cmds.cfgLine(l, !othUnsuppAddr, cmds.tabulator, beg + "other-unsuppress-prefix", "");
+        cmds.cfgLine(l, srOthIdx < 1, cmds.tabulator, beg + "other-segrout", "" + srOthIdx);
+        cmds.cfgLine(l, brOthIdx < 1, cmds.tabulator, beg + "other-bier", brOthIdx + " " + brOthSub);
+        l.add(cmds.tabulator + beg + "other-distance " + otherDist);
+        cmds.cfgLine(l, !othDefOrig, cmds.tabulator, beg + "other-default-originate", "");
+        cmds.cfgLine(l, othLabIn == null, cmds.tabulator, beg + "other-label-in", "" + othLabIn);
+        cmds.cfgLine(l, othLabOut == null, cmds.tabulator, beg + "other-label-out", "" + othLabOut);
+        cmds.cfgLine(l, othPrfIn == null, cmds.tabulator, beg + "other-prefix-list-in", "" + othPrfIn);
+        cmds.cfgLine(l, othPrfOut == null, cmds.tabulator, beg + "other-prefix-list-out", "" + othPrfOut);
+        cmds.cfgLine(l, othRmapIn == null, cmds.tabulator, beg + "other-route-map-in", "" + othRmapIn);
+        cmds.cfgLine(l, othRmapOut == null, cmds.tabulator, beg + "other-route-map-out", "" + othRmapOut);
+        cmds.cfgLine(l, othRpolIn == null, cmds.tabulator, beg + "other-route-policy-in", "" + othRpolIn);
+        cmds.cfgLine(l, othRpolOut == null, cmds.tabulator, beg + "other-route-policy-out", "" + othRpolOut);
     }
 
     /**
@@ -579,6 +705,37 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         l.add(null, false, 6, new int[]{-1}, "udpecho", "udp echo requests");
         l.add(null, false, 6, new int[]{-1}, "twamp", "twamp echo requests");
         tabAverage.getHelp(l);
+        l.add(null, false, 4, new int[]{-1}, "other-enable", "enable other protocol processing");
+        l.add(null, false, 4, new int[]{-1}, "other-foreign", "use foreign nexthop for routes");
+        l.add(null, false, 4, new int[]{-1}, "other-stub", "do not route traffic");
+        l.add(null, false, 4, new int[]{-1}, "other-unstub", "do route traffic");
+        l.add(null, false, 4, new int[]{-1}, "other-suppress-prefix", "do not advertise other interface");
+        l.add(null, false, 4, new int[]{-1}, "other-unsuppress-prefix", "do advertise other interface");
+        l.add(null, false, 4, new int[]{-1}, "other-split-horizon", "dont advertise back on rx interface");
+        l.add(null, false, 4, new int[]{-1}, "other-default-originate", "send default route to peer");
+        l.add(null, false, 4, new int[]{5}, "other-distance", "administrative distance of routes");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "set administrative distance");
+        l.add(null, false, 4, new int[]{5}, "other-segrout", "segment routing parameters");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "this node index");
+        l.add(null, false, 4, new int[]{5}, "other-bier", "bier parameters");
+        l.add(null, false, 5, new int[]{6, -1}, "<num>", "node index");
+        l.add(null, false, 6, new int[]{-1}, "<num>", "node subdomain");
+        l.add(null, false, 4, new int[]{5}, "other-route-map-in", "process prefixes in ingress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:rm>", "name of route map");
+        l.add(null, false, 4, new int[]{5}, "other-route-map-out", "process prefixes in egress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:rm>", "name of route map");
+        l.add(null, false, 4, new int[]{5}, "other-route-policy-in", "process prefixes in ingress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:rpl>", "name of route policy");
+        l.add(null, false, 4, new int[]{5}, "other-route-policy-out", "process prefixes in egress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:rpl>", "name of route policy");
+        l.add(null, false, 4, new int[]{5}, "other-prefix-list-in", "filter prefixes in ingress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, 4, new int[]{5}, "other-prefix-list-out", "filter prefixes in egress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, 4, new int[]{5}, "other-label-in", "filter label in ingress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, 4, new int[]{5}, "other-label-out", "filter label in egress updates");
+        l.add(null, false, 5, new int[]{-1}, "<name:pl>", "name of prefix list");
     }
 
     /**
@@ -856,6 +1013,142 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
             lower.notif.wakeup();
             return;
         }
+        if (a.equals("other-enable")) {
+            otherEna = oface != null;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-foreign")) {
+            otherFrgn = true;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-segrout")) {
+            srOthIdx = bits.str2num(cmd.word());
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-bier")) {
+            brOthIdx = bits.str2num(cmd.word());
+            brOthSub = bits.str2num(cmd.word());
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-default-originate")) {
+            othDefOrig = true;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-split-horizon")) {
+            othSpltHrzn = true;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-stub")) {
+            othStub = true;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-unstub")) {
+            othUnstub = true;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-suppress-prefix")) {
+            othSuppAddr = true;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-unsuppress-prefix")) {
+            othUnsuppAddr = true;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-distance")) {
+            otherDist = bits.str2num(cmd.word());
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-label-in")) {
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            othLabIn = ntry.prflst;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-label-out")) {
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            othLabOut = ntry.prflst;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-prefix-list-in")) {
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            othPrfIn = ntry.prflst;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-prefix-list-out")) {
+            cfgPrfxlst ntry = cfgAll.prfxFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such prefix list");
+                return;
+            }
+            othPrfOut = ntry.prflst;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-route-map-in")) {
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return;
+            }
+            othRmapIn = ntry.roumap;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-route-map-out")) {
+            cfgRoump ntry = cfgAll.rtmpFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route map");
+                return;
+            }
+            othRmapOut = ntry.roumap;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-route-policy-in")) {
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return;
+            }
+            othRpolIn = ntry.rouplc;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-route-policy-out")) {
+            cfgRouplc ntry = cfgAll.rtplFind(cmd.word(), false);
+            if (ntry == null) {
+                cmd.error("no such route policy");
+                return;
+            }
+            othRpolOut = ntry.rouplc;
+            lower.notif.wakeup();
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -1017,6 +1310,97 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         }
         if (a.equals("route-policy-out")) {
             roupolOut = null;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-enable")) {
+            otherEna = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-foreign")) {
+            otherFrgn = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-default-originate")) {
+            othDefOrig = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-split-horizon")) {
+            othSpltHrzn = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-stub")) {
+            othStub = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-unstub")) {
+            othUnstub = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-suppress-prefix")) {
+            othSuppAddr = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-unsuppress-prefix")) {
+            othUnsuppAddr = false;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-segrout")) {
+            srOthIdx = 0;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-bier")) {
+            brOthIdx = 0;
+            brOthSub = 0;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-label-in")) {
+            othLabIn = null;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-label-out")) {
+            othLabOut = null;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-prefix-list-in")) {
+            othPrfIn = null;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-prefix-list-out")) {
+            othPrfOut = null;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-route-map-in")) {
+            othRmapIn = null;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-route-map-out")) {
+            othRmapOut = null;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-route-policy-in")) {
+            othRpolIn = null;
+            lower.notif.wakeup();
+            return;
+        }
+        if (a.equals("other-route-policy-out")) {
+            othRpolOut = null;
             lower.notif.wakeup();
             return;
         }
