@@ -747,6 +747,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             logger.debug("shutdown");
         }
         need2run = false;
+        other.unregister2ip();
         for (int i = 0; i < ifaces.size(); i++) {
             rtrPvrpIface ifc = ifaces.get(i);
             if (ifc == null) {
