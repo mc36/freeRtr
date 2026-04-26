@@ -808,32 +808,35 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
         } else {
             s = "reachable";
         }
-        String a = "";
+        int i = -1;
         if (lower.labels && (ntry.best.labelLoc != null)) {
-            int val = ntry.best.labelLoc.label;
-            if (iface.labelPop && (lower.fwdCore.commonLabel.label == val)) {
-                val = ipMpls.labelImp;
-            }
-            if (iface.labelPop && (lower.other.fwd.commonLabel.label == val)) {
-                val = ipMpls.labelImp;
-            }
-            a = " label=" + val;
+            i = ntry.best.labelLoc.label;
             if (oth) {
+                if (iface.labelPop && (lower.other.fwd.commonLabel.label == i)) {
+                    i = ipMpls.labelImp;
+                }
                 if (checkPrefix(iface.othLabOut, ntry.prefix)) {
-                    a = "";
+                    i = -1;
                 }
             } else {
+                if (iface.labelPop && (lower.fwdCore.commonLabel.label == i)) {
+                    i = ipMpls.labelImp;
+                }
                 if (checkPrefix(iface.labelOut, ntry.prefix)) {
-                    a = "";
+                    i = -1;
                 }
             }
-            if ((lower.segrouLab != null) && (ntry.best.segrouIdx > 0)) {
-                a += " segrou=" + ntry.best.segrouIdx;
-            }
-            if ((lower.bierLab != null) && (ntry.best.bierIdx > 0)) {
-                a += " bieri=" + ntry.best.bierIdx;
-                a += " biers=" + ntry.best.bierSub;
-            }
+        }
+        String a = "";
+        if (i >= 0) {
+            a = " label=" + i;
+        }
+        if ((lower.segrouLab != null) && (ntry.best.segrouIdx > 0)) {
+            a += " segrou=" + ntry.best.segrouIdx;
+        }
+        if ((lower.bierLab != null) && (ntry.best.bierIdx > 0)) {
+            a += " bieri=" + ntry.best.bierIdx;
+            a += " biers=" + ntry.best.bierSub;
         }
         sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.best.metric + iface.metricOut) + " tag=" + ntry.best.tag + " external=" + ((ntry.best.rouSrc & 1) != 0) + " path= " + lower.routerID + " " + tabRouteUtil.dumpAddrList(ntry.best.clustList));
     }

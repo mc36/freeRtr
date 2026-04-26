@@ -18283,3 +18283,14 @@ qc pass: integrated pvrp with selective sr
 qc pass: integrated pvrp with selective bier
 qc pass: integrated integrated pvrp over foreign ipv4
 qc pass: integrated integrated pvrp over foreign ipv6
+---------------------------------- 2026-04-26 14:04:23 26.4.26
+no qc pass: integrated integrated pvrp over foreign ipv6
+no qc pass: integrated integrated pvrp over foreign ipv4
+no failed: pvrp stub interface
+no failed: pvrp stub node
+no failed: egress label filtering with pvrp
+qc pass: egress label filtering with pvrp
+qc pass: pvrp stub node
+qc pass: pvrp stub interface
+qc pass: integrated pvrp over foreign ipv4
+qc pass: integrated pvrp over foreign ipv6

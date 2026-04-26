@@ -4146,9 +4146,9 @@ qc pass: pvrp default address suppression
 qc pass: pvrp address unsuppression
 qc pass: pvrp with php labels
 qc pass: ingress label filtering with pvrp
-failed: egress label filtering with pvrp
-failed: pvrp stub node
-failed: pvrp stub interface
+qc pass: egress label filtering with pvrp
+qc pass: pvrp stub node
+qc pass: pvrp stub interface
 qc pass: pvrp unstub interface
 qc pass: pvrp over point2point ethernet
 qc pass: pvrp peer metric
@@ -4190,8 +4190,8 @@ qc pass: integrated pvrp with sr
 qc pass: integrated pvrp with bier
 qc pass: integrated pvrp with selective sr
 qc pass: integrated pvrp with selective bier
-qc pass: integrated integrated pvrp over foreign ipv4
-qc pass: integrated integrated pvrp over foreign ipv6
+qc pass: integrated pvrp over foreign ipv4
+qc pass: integrated pvrp over foreign ipv6
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip

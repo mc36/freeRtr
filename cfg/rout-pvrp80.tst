@@ -1,4 +1,4 @@
-description integrated integrated pvrp over foreign ipv6
+description integrated pvrp over foreign ipv6
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
