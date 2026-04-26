@@ -2148,7 +2148,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             nei.getConfig(l, beg, filter);
         }
-        other.getConfig(l, beg + "afi-other ");
+        other.getConfig(l, beg);
         lspf.getConfig(l, beg, "afi-spf ");
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.getConfig(l, beg, "afi-vrf ");

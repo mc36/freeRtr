@@ -333,18 +333,19 @@ public class rtrBgpOther extends ipRtr {
      * get config
      *
      * @param l list to append
-     * @param beg beginning
+     * @param beg1 beginning
      */
-    public void getConfig(List<String> l, String beg) {
+    public void getConfig(List<String> l, String beg1) {
+        String beg2 = beg1 + "afi-other ";
         if (enabled) {
-            l.add(beg + "enable");
+            l.add(beg2 + "enable");
         } else {
-            l.add(cmds.tabulator + cmds.negated + beg + "enable");
+            l.add(cmds.tabulator + cmds.negated + beg2 + "enable");
         }
         if (defRou) {
-            l.add(beg + "default-originate");
+            l.add(beg2 + "default-originate");
         } else {
-            l.add(cmds.tabulator + cmds.negated + beg + "default-originate");
+            l.add(cmds.tabulator + cmds.negated + beg2 + "default-originate");
         }
         String a;
         if (routerVrx) {
@@ -360,19 +361,19 @@ public class rtrBgpOther extends ipRtr {
                 a = "none";
             }
         }
-        l.add(beg + "vpn-mode " + a);
-        l.add(beg + "distance " + distance);
+        l.add(beg2 + "vpn-mode " + a);
+        l.add(beg2 + "distance " + distance);
         if (flowInst) {
-            l.add(beg + "flowspec-install");
+            l.add(beg2 + "flowspec-install");
         }
         if (flowSpec != null) {
-            l.add(beg + "flowspec-advert " + flowSpec);
+            l.add(beg2 + "flowspec-advert " + flowSpec);
         }
         if (srv6 != null) {
-            l.add(beg + "srv6 " + srv6.name);
+            l.add(beg2 + "srv6 " + srv6.name);
         }
-        cfgRtr.getShRedist(l, beg, this);
-        l.add(beg + cmds.comment);
+        cfgRtr.getShRedist(l, beg2, this);
+        l.add(beg1 + cmds.comment);
     }
 
     /**

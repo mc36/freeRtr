@@ -566,6 +566,7 @@ router bgp4 65535 vrf v1
  afi-other vpn-mode tx
  afi-other redistribute connected
  afi-other redistribute static
+ !
  afi-vrf dn42 enable
  afi-vrf dn42 mvpn loopback0
  afi-vrf dn42 redistribute connected
