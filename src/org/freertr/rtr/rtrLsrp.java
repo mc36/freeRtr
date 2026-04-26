@@ -983,6 +983,9 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (ifc == null) {
                     continue;
                 }
+                if (ifc.iface.lower.getState() != state.states.up) {
+                    continue;
+                }
                 if (ifc.bierIdx > 0) {
                     res.idx = ifc.bierIdx;
                 }

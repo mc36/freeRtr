@@ -356,6 +356,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             logger.debug("create table");
         }
         tabRoute<addrIP> tab1 = new tabRoute<addrIP>("lernd");
+        tabRoute<addrIP> tab3 = new tabRoute<addrIP>("lernd");
         tabRouteEntry<addrIP> ntry;
         for (int i = 0; i < ifaces.size(); i++) {
             rtrPvrpIface ifc = ifaces.get(i);
@@ -364,6 +365,24 @@ public class rtrPvrp extends ipRtr implements Runnable {
             }
             if (ifc.iface.lower.getState() != state.states.up) {
                 continue;
+            }
+            if (other.enabled && ifc.otherEna && (ifc.othUnsuppAddr || (!other.suppressAddr && !ifc.othSuppAddr))) {
+                ntry = tab3.add(tabRoute.addType.better, ifc.oface.network, null);
+                ntry.best.rouTyp = tabRouteAttr.routeType.conn;
+                ntry.best.iface = ifc.oface;
+                ntry.best.distance = tabRouteAttr.distanIfc;
+                if (ifc.srOthIdx >= 0) {
+                    ntry.best.segrouIdx = ifc.srOthIdx;
+                } else {
+                    ntry.best.segrouIdx = other.segrouIdx;
+                }
+                if (ifc.brOthIdx >= 0) {
+                    ntry.best.bierIdx = ifc.brOthIdx;
+                    ntry.best.bierSub = ifc.brOthSub;
+                } else {
+                    ntry.best.bierIdx = other.bierIdx;
+                    ntry.best.bierSub = other.bierSub;
+                }
             }
             if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
                 continue;
@@ -399,6 +418,13 @@ public class rtrPvrp extends ipRtr implements Runnable {
                     continue;
                 }
                 tab1.mergeFrom(tabRoute.addType.ecmp, nei.learned, tabRouteAttr.distanLim);
+                if (!other.enabled) {
+                    continue;
+                }
+                if (!ifc.otherEna) {
+                    continue;
+                }
+                tab3.mergeFrom(tabRoute.addType.ecmp, nei.othLrnd, tabRouteAttr.distanLim);
             }
         }
         routerDoAggregates(rtrBgpUtil.sfiUnicast, tab1, tab1, fwdCore.commonLabel, null, 0);
@@ -429,13 +455,45 @@ public class rtrPvrp extends ipRtr implements Runnable {
             }
         }
         need2adv = tab1;
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab3, tab3, other.fwd.commonLabel, null, 0);
+        tabRoute<addrIP> tab4 = tab3;
+        tab3 = new tabRoute<addrIP>("ned2adv");
+        tab3.mergeFrom(tabRoute.addType.ecmp, tab4, tabRouteAttr.distanLim);
+        for (int i = 0; i < other.routerRedistedU.size(); i++) {
+            ntry = other.routerRedistedU.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
+            ntry.best.distance = tabRouteAttr.distanIfc + 1;
+            ntry.best.rouSrc = 1;
+            ntry.best.segrouIdx = other.segrouIdx;
+            ntry.best.bierIdx = other.bierIdx;
+            ntry.best.bierSub = other.bierSub;
+            tab3.add(tabRoute.addType.better, ntry, false, false);
+        }
+        if (labels) {
+            for (int i = 0; i < tab3.size(); i++) {
+                ntry = tab3.get(i);
+                tabRouteEntry<addrIP> org = other.fwd.labeldR.find(ntry);
+                if (org == null) {
+                    continue;
+                }
+                ntry.best.labelLoc = org.best.labelLoc;
+            }
+        }
+        othr2adv = tab3;
         for (int o = 0; o < ifaces.size(); o++) {
             rtrPvrpIface ifc = ifaces.get(o);
             if (ifc == null) {
                 continue;
             }
             tab1 = new tabRoute<addrIP>("ned2adv");
+            tab3 = new tabRoute<addrIP>("ned2adv");
             tabRoute.addUpdatedTable(tabRoute.addType.always, rtrBgpUtil.sfiUnicast, 0, tab1, need2adv, true, ifc.roumapOut, ifc.roupolOut, ifc.prflstOut);
+            if (other.enabled && ifc.otherEna) {
+                tabRoute.addUpdatedTable(tabRoute.addType.always, rtrBgpUtil.sfiUnicast, 0, tab3, othr2adv, true, ifc.othRmapOut, ifc.othRpolOut, ifc.othPrfOut);
+            }
             if (ifc.defOrigin) {
                 ntry = new tabRouteEntry<addrIP>();
                 ntry.prefix = addrPrefix.defaultRoute(fwdCore.ipVersion);
@@ -456,8 +514,31 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 }
                 tab1.add(tabRoute.addType.always, ntry, true, true);
             }
+            if (other.enabled && ifc.otherEna && ifc.othDefOrig) {
+                ntry = new tabRouteEntry<addrIP>();
+                ntry.prefix = addrPrefix.defaultRoute(other.fwd.ipVersion);
+                if (labels) {
+                    ntry.best.labelLoc = fwdCore.commonLabel;
+                }
+                if (ifc.srOthIdx >= 0) {
+                    ntry.best.segrouIdx = ifc.srOthIdx;
+                } else {
+                    ntry.best.segrouIdx = other.segrouIdx;
+                }
+                if (ifc.brOthIdx >= 0) {
+                    ntry.best.bierIdx = ifc.brOthIdx;
+                    ntry.best.bierSub = ifc.brOthSub;
+                } else {
+                    ntry.best.bierIdx = other.bierIdx;
+                    ntry.best.bierSub = other.bierSub;
+                }
+                tab3.add(tabRoute.addType.always, ntry, true, true);
+            }
             if (ifc.splitHorizon) {
                 tab1.delIface(ifc.iface);
+            }
+            if (ifc.othSpltHrzn) {
+                tab3.delIface(ifc.oface);
             }
             if ((stub || ifc.stub) && (!ifc.unstub)) {
                 for (int i = tab1.size() - 1; i >= 0; i--) {
@@ -474,7 +555,23 @@ public class rtrPvrp extends ipRtr implements Runnable {
                     tab1.del(ntry);
                 }
             }
+            if ((other.stub || ifc.othStub) && (!ifc.othUnstub)) {
+                for (int i = tab3.size() - 1; i >= 0; i--) {
+                    ntry = tab3.get(i);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    if (ntry.best.clustList == null) {
+                        continue;
+                    }
+                    if (ntry.best.clustList.size() < 1) {
+                        continue;
+                    }
+                    tab3.del(ntry);
+                }
+            }
             ifc.need2adv = tab1;
+            ifc.othr2adv = tab3;
             for (int i = 0; i < ifc.neighs.size(); i++) {
                 rtrPvrpNeigh nei = ifc.neighs.get(i);
                 if (nei == null) {
@@ -484,7 +581,10 @@ public class rtrPvrp extends ipRtr implements Runnable {
             }
         }
         tab2.setProto(routerProtoTyp, routerProcNum);
-        if (tab2.preserveTime(routerComputedU)) {
+        tab4.setProto(routerProtoTyp, routerProcNum);
+        boolean same = tab2.preserveTime(routerComputedU);
+        same &= tab4.preserveTime(other.routerComputedU);
+        if (same) {
             return;
         }
         tabGen<tabIndex<addrIP>> segrouUsd = new tabGen<tabIndex<addrIP>>();
@@ -504,9 +604,28 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 segrouLab[ntry.best.segrouIdx].setFwdMpls(tabLabelEntry.owner.pvrpSrgb, fwdCore, (ipFwdIface) ntry.best.iface, ntry.best.nextHop, lab);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ntry.best.segrouIdx, ntry.prefix));
             }
+            for (int i = 0; i < tab4.size(); i++) {
+                ntry = tab4.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.best.segrouBeg < 1) {
+                    continue;
+                }
+                if ((ntry.best.segrouIdx <= 0) || (ntry.best.segrouIdx >= segrouMax)) {
+                    continue;
+                }
+                List<Integer> lab = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
+                segrouLab[ntry.best.segrouIdx].setFwdMpls(tabLabelEntry.owner.pvrpSrgb, fwdCore, (ipFwdIface) ntry.best.iface, ntry.best.nextHop, lab);
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ntry.best.segrouIdx, ntry.prefix));
+            }
             if (segrouIdx > 0) {
                 segrouLab[segrouIdx].setFwdCommon(tabLabelEntry.owner.pvrpSrgb, fwdCore);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+            }
+            if (other.segrouIdx > 0) {
+                segrouLab[other.segrouIdx].setFwdCommon(tabLabelEntry.owner.pvrpSrgb, other.fwd);
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(other.segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
             }
             for (int o = 0; o < ifaces.size(); o++) {
                 rtrPvrpIface ifc = ifaces.get(o);
@@ -515,6 +634,10 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 }
                 if (ifc.iface.lower.getState() != state.states.up) {
                     continue;
+                }
+                if (other.enabled && ifc.otherEna && (ifc.srOthIdx > 0)) {
+                    segrouLab[ifc.srOthIdx].setFwdCommon(tabLabelEntry.owner.pvrpSrgb, other.fwd);
+                    tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.srOthIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
                 }
                 if (ifc.segrouIdx < 1) {
                     continue;
@@ -532,6 +655,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
         if (bierLab != null) {
             tabLabelBier res = new tabLabelBier(bierLab[0].label, tabLabelBier.num2bsl(bierLen));
             res.idx = bierIdx;
+            res.idx2 = other.bierIdx;
             for (int o = 0; o < ifaces.size(); o++) {
                 rtrPvrpIface ifc = ifaces.get(o);
                 if (ifc == null) {
@@ -540,17 +664,33 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 if (ifc.iface.lower.getState() != state.states.up) {
                     continue;
                 }
-                if (ifc.bierIdx < 1) {
-                    continue;
-                }
-                if (res.idx < 1) {
+                if (ifc.bierIdx > 0) {
                     res.idx = ifc.bierIdx;
-                } else {
-                    res.idx2 = ifc.bierIdx;
+                }
+                if (ifc.brOthIdx > 0) {
+                    res.idx2 = ifc.brOthIdx;
                 }
             }
             for (int i = 0; i < tab2.size(); i++) {
                 ntry = tab2.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.best.bierBeg < 1) {
+                    continue;
+                }
+                if ((ntry.best.bierIdx <= 0) || (ntry.best.bierIdx >= bierMax)) {
+                    continue;
+                }
+                tabLabelBierN per = new tabLabelBierN(fwdCore, ntry.best.iface, ntry.best.nextHop, ntry.best.bierBeg, 0);
+                tabLabelBierN old = res.peers.add(per);
+                if (old != null) {
+                    per = old;
+                }
+                per.setBit(ntry.best.bierIdx - 1);
+            }
+            for (int i = 0; i < tab4.size(); i++) {
+                ntry = tab4.get(i);
                 if (ntry == null) {
                     continue;
                 }
@@ -576,6 +716,10 @@ public class rtrPvrp extends ipRtr implements Runnable {
         routerComputedF = new tabRoute<addrIP>("rx");
         routerComputedI = segrouUsd;
         fwdCore.routerChg(this, false);
+        other.routerComputedU = tab4;
+        other.routerComputedM = tab4;
+        other.routerComputedF = new tabRoute<addrIP>("rx");
+        other.fwd.routerChg(other, false);
     }
 
     /**

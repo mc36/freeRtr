@@ -4146,9 +4146,9 @@ qc pass: pvrp default address suppression
 qc pass: pvrp address unsuppression
 qc pass: pvrp with php labels
 qc pass: ingress label filtering with pvrp
-qc pass: egress label filtering with pvrp
-qc pass: pvrp stub node
-qc pass: pvrp stub interface
+failed: egress label filtering with pvrp
+failed: pvrp stub node
+failed: pvrp stub interface
 qc pass: pvrp unstub interface
 qc pass: pvrp over point2point ethernet
 qc pass: pvrp peer metric
@@ -4168,6 +4168,30 @@ qc pass: pvrp with polka
 qc pass: pvrp auto summarization
 qc pass: pvrp with pmtud
 qc pass: pvrp ldp sync
+qc pass: integrated pvrp over ipv4
+qc pass: integrated pvrp over ipv6
+qc pass: integrated pvrp address suppression
+qc pass: integrated pvrp ingress route filtering with prefixlist
+qc pass: integrated pvrp egress route filtering with prefixlist
+qc pass: integrated pvrp ingress route filtering with routemap
+qc pass: integrated pvrp egress route filtering with routemap
+qc pass: integrated pvrp ingress route filtering with routepolicy
+qc pass: integrated pvrp egress route filtering with routepolicy
+qc pass: integrated pvrp default route
+qc pass: integrated pvrp with bfd
+qc pass: integrated pvrp with labels
+qc pass: integrated pvrp default address suppression
+qc pass: integrated pvrp address unsuppression
+qc pass: ingress label filtering with integrated pvrp
+qc pass: egress label filtering with integrated pvrp
+qc pass: integrated pvrp stub interface
+qc pass: integrated pvrp unstub interface
+qc pass: integrated pvrp with sr
+qc pass: integrated pvrp with bier
+qc pass: integrated pvrp with selective sr
+qc pass: integrated pvrp with selective bier
+qc pass: integrated integrated pvrp over foreign ipv4
+qc pass: integrated integrated pvrp over foreign ipv6
 qc pass: redistribution with isis
 qc pass: redistribution with ospf
 qc pass: redistribution with rip

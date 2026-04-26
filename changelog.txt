@@ -18252,3 +18252,34 @@ failed: dhcp with excluded address
 ---------------------------------- 2026-04-26 05:33:10 26.4.26
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2026-04-26 13:05:05 26.4.26
+no qc pass: pvrp stub interface
+no qc pass: pvrp stub node
+no qc pass: egress label filtering with pvrp
+failed: egress label filtering with pvrp
+failed: pvrp stub node
+failed: pvrp stub interface
+qc pass: integrated pvrp over ipv4
+qc pass: integrated pvrp over ipv6
+qc pass: integrated pvrp address suppression
+qc pass: integrated pvrp ingress route filtering with prefixlist
+qc pass: integrated pvrp egress route filtering with prefixlist
+qc pass: integrated pvrp ingress route filtering with routemap
+qc pass: integrated pvrp egress route filtering with routemap
+qc pass: integrated pvrp ingress route filtering with routepolicy
+qc pass: integrated pvrp egress route filtering with routepolicy
+qc pass: integrated pvrp default route
+qc pass: integrated pvrp with bfd
+qc pass: integrated pvrp with labels
+qc pass: integrated pvrp default address suppression
+qc pass: integrated pvrp address unsuppression
+qc pass: ingress label filtering with integrated pvrp
+qc pass: egress label filtering with integrated pvrp
+qc pass: integrated pvrp stub interface
+qc pass: integrated pvrp unstub interface
+qc pass: integrated pvrp with sr
+qc pass: integrated pvrp with bier
+qc pass: integrated pvrp with selective sr
+qc pass: integrated pvrp with selective bier
+qc pass: integrated integrated pvrp over foreign ipv4
+qc pass: integrated integrated pvrp over foreign ipv6

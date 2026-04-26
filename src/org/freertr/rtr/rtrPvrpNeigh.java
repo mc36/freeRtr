@@ -12,6 +12,7 @@ import org.freertr.clnt.clntPing;
 import org.freertr.clnt.clntTwamp;
 import org.freertr.enc.encBase64;
 import org.freertr.ip.ipMpls;
+import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtAccept;
@@ -54,6 +55,11 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
     public final addrIP peer;
 
     /**
+     * transport address of peer
+     */
+    public addrIP opeer;
+
+    /**
      * hostname of peer
      */
     public String name;
@@ -77,6 +83,16 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
      * advertised routes
      */
     public tabRoute<addrIP> adverted = new tabRoute<addrIP>("adv");
+
+    /**
+     * other learned routes
+     */
+    public tabRoute<addrIP> othLrnd = new tabRoute<addrIP>("lrn");
+
+    /**
+     * other advertised routes
+     */
+    public tabRoute<addrIP> othAdvtd = new tabRoute<addrIP>("adv");
 
     /**
      * metric of peer
@@ -198,6 +214,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
         iface = ifc;
         rtrId = peerId.copyBytes();
         peer = peerAd.copyBytes();
+        opeer = peerAd.copyBytes();
         lastHeard = bits.getTime();
         sentMet = -1;
         sentMed = false;
@@ -249,11 +266,16 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
         }
         adverted.clear();
         learned.clear();
+        othAdvtd.clear();
+        othLrnd.clear();
         if (oldrun) {
             iface.neighs.del(this);
         }
         lower.notif.wakeup();
         iface.iface.bfdDel(peer, this);
+        if (iface.oface != null) {
+            iface.oface.bfdDel(opeer, this);
+        }
         notif.wakeup();
     }
 
@@ -404,6 +426,8 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
         }
         adverted.clear();
         learned.clear();
+        othAdvtd.clear();
+        othLrnd.clear();
         bits.sleep(bits.random(1000, 5000));
         if (peer.compareTo(iface.iface.addr) > 0) {
             if (debugger.rtrPvrpEvnt) {
@@ -529,7 +553,11 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
             sendErr("notNeeded");
             return;
         }
-        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.mtu + " bfd=" + iface.bfdTrigger + " iface=" + iface.iface + " name=" + cfgAll.hostName);
+        String a = "";
+        if (iface.otherEna) {
+            a = " other=" + iface.oface.addr;
+        }
+        sendLn("open rtrid=" + lower.routerID + " mtu=" + iface.iface.mtu + a + " bfd=" + iface.bfdTrigger + " iface=" + iface.iface + " name=" + cfgAll.hostName);
         cmds cmd = recvLn();
         if (cmd == null) {
             cmd = new cmds("", "");
@@ -540,10 +568,11 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
         }
         name = "?";
         inam = "?";
+        opeer = peer.copyBytes();
         int mtu = 0;
         int bfd = 0;
         for (;;) {
-            String a = cmd.word();
+            a = cmd.word();
             if (a.length() < 1) {
                 break;
             }
@@ -566,6 +595,22 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
                 bfd = bits.str2num(a.substring(4, a.length()));
                 continue;
             }
+            if (a.startsWith("other")) {
+                opeer.fromString(a.substring(6, a.length()));
+                continue;
+            }
+        }
+        if (!iface.otherEna || lower.other.foreign || iface.otherFrgn) {
+            opeer = peer.copyBytes();
+        } else {
+            if (iface.connectedCheck) {
+                if (!iface.oface.network.matches(opeer)) {
+                    logger.info("got from out of other subnet peer " + opeer);
+                    sendErr("badAddr");
+                    return;
+                }
+            }
+            iface.oface.lower.createETHheader(new packHolder(true, true), opeer, 0);
         }
         if (mtu != iface.iface.mtu) {
             logger.info("mtu mismatch with " + peer);
@@ -583,6 +628,13 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
                 sendErr("bfdFail");
                 return;
             }
+            if (peer.isIPv4() != opeer.isIPv4()) {
+                iface.oface.bfdAdd(opeer, this, "pvrp");
+                if (iface.oface.bfdWait(opeer, iface.deadTimer)) {
+                    sendErr("bfdFail");
+                    return;
+                }
+            }
         }
         if (!need2run) {
             sendErr("notNeeded");
@@ -590,11 +642,16 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
         }
         learned.clear();
         adverted.clear();
+        othLrnd.clear();
+        othAdvtd.clear();
         logger.warn("neighbor " + name + " (" + peer + ") up");
         new rtrPvrpNeighRcvr(this).startWork();
         lower.notif.wakeup();
         if (iface.bfdTrigger > 0) {
             iface.iface.bfdAdd(peer, this, "pvrp");
+            if (peer.isIPv4() != opeer.isIPv4()) {
+                iface.oface.bfdAdd(opeer, this, "pvrp");
+            }
         }
         long lastKeep = 0;
         for (;;) {
@@ -690,7 +747,8 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
             if (conn.ready2tx() < 1024) {
                 return;
             }
-            sendUpdate(ntry, false);
+            adverted.del(ntry);
+            sendUpdate(false, ntry, false);
             sent++;
         }
         for (i = 0; i < iface.need2adv.size(); i++) {
@@ -704,7 +762,38 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
             if (conn.ready2tx() < 1024) {
                 return;
             }
-            sendUpdate(ntry, true);
+            adverted.add(tabRoute.addType.always, ntry, true, true);
+            sendUpdate(false, ntry, true);
+            sent++;
+        }
+        for (i = 0; i < othAdvtd.size(); i++) {
+            tabRouteEntry<addrIP> ntry = othAdvtd.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (iface.othr2adv.find(ntry) != null) {
+                continue;
+            }
+            if (conn.ready2tx() < 1024) {
+                return;
+            }
+            othAdvtd.del(ntry);
+            sendUpdate(true, ntry, false);
+            sent++;
+        }
+        for (i = 0; i < iface.othr2adv.size(); i++) {
+            tabRouteEntry<addrIP> ntry = iface.othr2adv.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.differs(tabRoute.addType.notyet, othAdvtd.find(ntry)) == 0) {
+                continue;
+            }
+            if (conn.ready2tx() < 1024) {
+                return;
+            }
+            othAdvtd.add(tabRoute.addType.always, ntry, true, true);
+            sendUpdate(true, ntry, true);
             sent++;
         }
         if (sent > 0) {
@@ -712,14 +801,12 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
         }
     }
 
-    private void sendUpdate(tabRouteEntry<addrIP> ntry, boolean reach) {
+    private void sendUpdate(boolean oth, tabRouteEntry<addrIP> ntry, boolean reach) {
         String s;
         if (!reach) {
             s = "withdraw";
-            adverted.del(ntry);
         } else {
             s = "reachable";
-            adverted.add(tabRoute.addType.always, ntry, true, true);
         }
         String a = "";
         if (lower.labels && (ntry.best.labelLoc != null)) {
@@ -727,254 +814,286 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
             if (iface.labelPop && (lower.fwdCore.commonLabel.label == val)) {
                 val = ipMpls.labelImp;
             }
-            a = " label=" + val;
-            if (checkPrefix(iface.labelOut, ntry.prefix)) {
-                a = "";
+            if (iface.labelPop && (lower.other.fwd.commonLabel.label == val)) {
+                val = ipMpls.labelImp;
             }
-        }
-        if ((lower.segrouLab != null) && (ntry.best.segrouIdx > 0)) {
-            a += " segrou=" + ntry.best.segrouIdx;
-        }
-        if ((lower.bierLab != null) && (ntry.best.bierIdx > 0)) {
-            a += " bieri=" + ntry.best.bierIdx;
-            a += " biers=" + ntry.best.bierSub;
+            a = " label=" + val;
+            if (oth) {
+                if (checkPrefix(iface.othLabOut, ntry.prefix)) {
+                    a = "";
+                }
+            } else {
+                if (checkPrefix(iface.labelOut, ntry.prefix)) {
+                    a = "";
+                }
+            }
+            if ((lower.segrouLab != null) && (ntry.best.segrouIdx > 0)) {
+                a += " segrou=" + ntry.best.segrouIdx;
+            }
+            if ((lower.bierLab != null) && (ntry.best.bierIdx > 0)) {
+                a += " bieri=" + ntry.best.bierIdx;
+                a += " biers=" + ntry.best.bierSub;
+            }
         }
         sendLn(s + " prefix=" + addrPrefix.ip2str(ntry.prefix) + a + " metric=" + (ntry.best.metric + iface.metricOut) + " tag=" + ntry.best.tag + " external=" + ((ntry.best.rouSrc & 1) != 0) + " path= " + lower.routerID + " " + tabRouteUtil.dumpAddrList(ntry.best.clustList));
     }
 
-}
+    class rtrPvrpNeighRcvr implements Runnable {
 
-class rtrPvrpNeighRcvr implements Runnable {
+        private final rtrPvrpNeigh lower;
 
-    private final rtrPvrpNeigh lower;
-
-    public rtrPvrpNeighRcvr(rtrPvrpNeigh parent) {
-        lower = parent;
-    }
-
-    public tabRouteEntry<addrIP> parsePrefix(cmds cmd) {
-        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            int i = a.indexOf("=");
-            String s = "";
-            if (i >= 0) {
-                s = a.substring(i + 1, a.length());
-                a = a.substring(0, i);
-            }
-            a = a.toLowerCase().trim();
-            if (a.equals("prefix")) {
-                ntry.prefix = addrPrefix.str2ip(s);
-                continue;
-            }
-            if (a.equals("external")) {
-                ntry.best.rouSrc = s.toLowerCase().equals("true") ? 1 : 0;
-                continue;
-            }
-            if (a.equals("metric")) {
-                ntry.best.metric = bits.str2num(s);
-                continue;
-            }
-            if (a.equals("label")) {
-                if (!lower.lower.labels) {
-                    continue;
-                }
-                ntry.best.labelRem = new ArrayList<Integer>();
-                ntry.best.labelRem.add(bits.str2num(s));
-                continue;
-            }
-            if (a.equals("segrou")) {
-                if (lower.lower.segrouLab == null) {
-                    continue;
-                }
-                ntry.best.segrouIdx = bits.str2num(s);
-                ntry.best.segrouBeg = lower.gotSegrouBeg;
-                ntry.best.segrouSiz = lower.gotSegrouMax;
-                ntry.best.labelRem = new ArrayList<Integer>();
-                ntry.best.labelRem.add(ntry.best.segrouBeg + ntry.best.segrouIdx);
-                continue;
-            }
-            if (a.equals("bieri")) {
-                if (lower.lower.bierLab == null) {
-                    continue;
-                }
-                ntry.best.bierIdx = bits.str2num(s);
-                ntry.best.bierBeg = lower.gotBierBeg;
-                ntry.best.bierHdr = lower.gotBierLen;
-                ntry.best.bierSiz = lower.gotBierMax;
-                continue;
-            }
-            if (a.equals("biers")) {
-                if (ntry.best.bierIdx < 1) {
-                    continue;
-                }
-                ntry.best.bierSub = bits.str2num(s);
-                continue;
-            }
-            if (a.equals("tag")) {
-                ntry.best.tag = bits.str2num(s);
-                continue;
-            }
-            if (a.equals("path")) {
-                break;
-            }
+        public rtrPvrpNeighRcvr(rtrPvrpNeigh parent) {
+            lower = parent;
         }
-        if (ntry.prefix == null) {
-            return null;
-        }
-        if (lower.checkPrefix(lower.iface.labelIn, ntry.prefix)) {
-            ntry.best.labelRem = null;
-        }
-        ntry.best.clustList = new ArrayList<addrIP>();
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            addrIP adr = new addrIP();
-            adr.fromString(a);
-            ntry.best.clustList.add(adr);
-        }
-        return ntry;
-    }
 
-    public void startWork() {
-        logger.startThread(this);
-    }
-
-    public void run() {
-        try {
-            doRun();
-        } catch (Exception e) {
-            logger.traceback(e);
-        }
-        lower.stopWork();
-    }
-
-    private void doRun() {
-        for (;;) {
-            cmds cmd = lower.recvLn();
-            if (cmd == null) {
-                return;
-            }
-            String a = cmd.word();
-            if (a.length() < 1) {
-                continue;
-            }
-            lower.lastHeard = bits.getTime();
-            if (a.equals("error")) {
-                logger.info("got error (" + cmd.getRemaining() + ") from " + lower.peer);
-                lower.stopWork();
-                continue;
-            }
-            if (a.equals("warning")) {
-                logger.info("got warning (" + cmd.getRemaining() + ") from " + lower.peer);
-                continue;
-            }
-            if (a.equals("discard")) {
-                continue;
-            }
-            if (a.equals("echoed")) {
-                if (lower.echoData != bits.str2num(cmd.word())) {
+        public tabRouteEntry<addrIP> parsePrefix(cmds cmd) {
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            for (;;) {
+                String a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                int i = a.indexOf("=");
+                String s = "";
+                if (i >= 0) {
+                    s = a.substring(i + 1, a.length());
+                    a = a.substring(0, i);
+                }
+                a = a.toLowerCase().trim();
+                if (a.equals("prefix")) {
+                    ntry.prefix = addrPrefix.str2ip(s);
                     continue;
                 }
-                lower.echoCalc.addValue((int) (bits.getTime() - lower.echoTime));
-                continue;
-            }
-            if (a.equals("echo")) {
-                lower.sendLn("echoed " + cmd.getRemaining());
-                continue;
-            }
-            if (a.equals("close")) {
-                lower.stopWork();
-                continue;
-            }
-            if (a.equals("request")) {
-                tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-                ntry.prefix = addrPrefix.str2ip(cmd.word());
-                lower.adverted.del(ntry);
-                continue;
-            }
-            if (a.equals("resending")) {
-                lower.learned.clear();
-                lower.lower.notif.wakeup();
-                continue;
-            }
-            if (a.equals("resend")) {
-                lower.sendLn("resending");
-                lower.sentMet = -1;
-                lower.sentMed = false;
-                lower.sentSegrou = -1;
-                lower.sentBier = -1;
-                lower.adverted.clear();
-                lower.notif.wakeup();
-                continue;
-            }
-            if (a.equals("nomore")) {
-                continue;
-            }
-            if (a.equals("keepalive")) {
-                lower.lastHeard += bits.str2num(cmd.word());
-                continue;
-            }
-            if (a.equals("measme")) {
-                lower.gotMeasure = cmd.word().equals("true");
-                continue;
-            }
-            if (a.equals("metric")) {
-                lower.gotMetric = bits.str2num(cmd.word());
-                continue;
-            }
-            if (a.equals("segrou")) {
-                lower.gotSegrouBeg = bits.str2num(cmd.word());
-                lower.gotSegrouMax = bits.str2num(cmd.word());
-                continue;
-            }
-            if (a.equals("bier")) {
-                lower.gotBierBeg = bits.str2num(cmd.word());
-                lower.gotBierLen = tabLabelBier.num2bsl(bits.str2num(cmd.word()));
-                lower.gotBierMax = bits.str2num(cmd.word());
-                continue;
-            }
-            if (a.equals("reachable")) {
-                tabRouteEntry<addrIP> ntry = parsePrefix(cmd);
-                if (ntry == null) {
+                if (a.equals("external")) {
+                    ntry.best.rouSrc = s.toLowerCase().equals("true") ? 1 : 0;
                     continue;
                 }
-                int cnt = tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.sfiUnicast, 0, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
+                if (a.equals("metric")) {
+                    ntry.best.metric = bits.str2num(s);
+                    continue;
+                }
+                if (a.equals("label")) {
+                    if (!lower.lower.labels) {
+                        continue;
+                    }
+                    ntry.best.labelRem = new ArrayList<Integer>();
+                    ntry.best.labelRem.add(bits.str2num(s));
+                    continue;
+                }
+                if (a.equals("segrou")) {
+                    if (lower.lower.segrouLab == null) {
+                        continue;
+                    }
+                    ntry.best.segrouIdx = bits.str2num(s);
+                    ntry.best.segrouBeg = lower.gotSegrouBeg;
+                    ntry.best.segrouSiz = lower.gotSegrouMax;
+                    ntry.best.labelRem = new ArrayList<Integer>();
+                    ntry.best.labelRem.add(ntry.best.segrouBeg + ntry.best.segrouIdx);
+                    continue;
+                }
+                if (a.equals("bieri")) {
+                    if (lower.lower.bierLab == null) {
+                        continue;
+                    }
+                    ntry.best.bierIdx = bits.str2num(s);
+                    ntry.best.bierBeg = lower.gotBierBeg;
+                    ntry.best.bierHdr = lower.gotBierLen;
+                    ntry.best.bierSiz = lower.gotBierMax;
+                    continue;
+                }
+                if (a.equals("biers")) {
+                    if (ntry.best.bierIdx < 1) {
+                        continue;
+                    }
+                    ntry.best.bierSub = bits.str2num(s);
+                    continue;
+                }
+                if (a.equals("tag")) {
+                    ntry.best.tag = bits.str2num(s);
+                    continue;
+                }
+                if (a.equals("path")) {
+                    break;
+                }
+            }
+            if (ntry.prefix == null) {
+                return null;
+            }
+            ntry.best.clustList = new ArrayList<addrIP>();
+            for (;;) {
+                String a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
                 addrIP adr = new addrIP();
-                adr.fromIPv4addr(lower.lower.routerID);
-                if (tabRouteUtil.findAddrList(ntry.best.clustList, adr) >= 0) {
+                adr.fromString(a);
+                ntry.best.clustList.add(adr);
+            }
+            return ntry;
+        }
+
+        public void startWork() {
+            logger.startThread(this);
+        }
+
+        public void run() {
+            try {
+                doRun();
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
+            lower.stopWork();
+        }
+
+        private void doRun() {
+            for (;;) {
+                cmds cmd = lower.recvLn();
+                if (cmd == null) {
+                    return;
+                }
+                String a = cmd.word();
+                if (a.length() < 1) {
+                    continue;
+                }
+                lower.lastHeard = bits.getTime();
+                if (a.equals("error")) {
+                    logger.info("got error (" + cmd.getRemaining() + ") from " + lower.peer);
+                    lower.stopWork();
+                    continue;
+                }
+                if (a.equals("warning")) {
+                    logger.info("got warning (" + cmd.getRemaining() + ") from " + lower.peer);
+                    continue;
+                }
+                if (a.equals("discard")) {
+                    continue;
+                }
+                if (a.equals("echoed")) {
+                    if (lower.echoData != bits.str2num(cmd.word())) {
+                        continue;
+                    }
+                    lower.echoCalc.addValue((int) (bits.getTime() - lower.echoTime));
+                    continue;
+                }
+                if (a.equals("echo")) {
+                    lower.sendLn("echoed " + cmd.getRemaining());
+                    continue;
+                }
+                if (a.equals("close")) {
+                    lower.stopWork();
+                    continue;
+                }
+                if (a.equals("request")) {
+                    tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+                    ntry.prefix = addrPrefix.str2ip(cmd.word());
+                    lower.adverted.del(ntry);
+                    continue;
+                }
+                if (a.equals("resending")) {
+                    lower.learned.clear();
+                    lower.othLrnd.clear();
+                    lower.lower.notif.wakeup();
+                    continue;
+                }
+                if (a.equals("resend")) {
+                    lower.sendLn("resending");
+                    lower.sentMet = -1;
+                    lower.sentMed = false;
+                    lower.sentSegrou = -1;
+                    lower.sentBier = -1;
+                    lower.adverted.clear();
+                    lower.othAdvtd.clear();
+                    lower.notif.wakeup();
+                    continue;
+                }
+                if (a.equals("nomore")) {
+                    continue;
+                }
+                if (a.equals("keepalive")) {
+                    lower.lastHeard += bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("measme")) {
+                    lower.gotMeasure = cmd.word().equals("true");
+                    continue;
+                }
+                if (a.equals("metric")) {
+                    lower.gotMetric = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("segrou")) {
+                    lower.gotSegrouBeg = bits.str2num(cmd.word());
+                    lower.gotSegrouMax = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("bier")) {
+                    lower.gotBierBeg = bits.str2num(cmd.word());
+                    lower.gotBierLen = tabLabelBier.num2bsl(bits.str2num(cmd.word()));
+                    lower.gotBierMax = bits.str2num(cmd.word());
+                    continue;
+                }
+                if (a.equals("reachable")) {
+                    tabRouteEntry<addrIP> ntry = parsePrefix(cmd);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    int cnt;
+                    boolean ipv4 = ntry.prefix.network.isIPv4();
+                    if (ipv4 == lower.lower.isIpv4) {
+                        if (lower.checkPrefix(lower.iface.labelIn, ntry.prefix)) {
+                            ntry.best.labelRem = null;
+                        }
+                        cnt = tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.sfiUnicast, 0, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
+                    } else {
+                        if (lower.checkPrefix(lower.iface.othLabIn, ntry.prefix)) {
+                            ntry.best.labelRem = null;
+                        }
+                        cnt = tabRoute.delUpdatedEntry(lower.othLrnd, rtrBgpUtil.sfiUnicast, 0, ntry, lower.iface.othRmapIn, lower.iface.othRpolIn, lower.iface.othPrfIn);
+                    }
+                    addrIP adr = new addrIP();
+                    adr.fromIPv4addr(lower.lower.routerID);
+                    if (tabRouteUtil.findAddrList(ntry.best.clustList, adr) >= 0) {
+                        if (cnt > 0) {
+                            lower.lower.notif.wakeup();
+                        }
+                        continue;
+                    }
+                    ntry.best.metric += lower.getMetric();
+                    ntry.best.distance = lower.iface.distance;
+                    ntry.best.srcRtr = lower.peer.copyBytes();
+                    if (ipv4 == lower.lower.isIpv4) {
+                        ntry.best.nextHop = lower.peer.copyBytes();
+                        ntry.best.iface = lower.iface.iface;
+                        cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, lower.learned, rtrBgpUtil.sfiUnicast, 0, ntry, true, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
+                    } else {
+                        ntry.best.nextHop = lower.opeer.copyBytes();
+                        ntry.best.iface = lower.iface.oface;
+                        cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, lower.othLrnd, rtrBgpUtil.sfiUnicast, 0, ntry, true, lower.iface.othRmapIn, lower.iface.othRpolIn, lower.iface.othPrfIn);
+                    }
                     if (cnt > 0) {
                         lower.lower.notif.wakeup();
                     }
                     continue;
                 }
-                ntry.best.metric += lower.getMetric();
-                ntry.best.nextHop = lower.peer.copyBytes();
-                ntry.best.distance = lower.iface.distance;
-                ntry.best.iface = lower.iface.iface;
-                ntry.best.srcRtr = lower.peer.copyBytes();
-                cnt += tabRoute.addUpdatedEntry(tabRoute.addType.always, lower.learned, rtrBgpUtil.sfiUnicast, 0, ntry, true, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
-                if (cnt > 0) {
-                    lower.lower.notif.wakeup();
-                }
-                continue;
-            }
-            if (a.equals("withdraw")) {
-                tabRouteEntry<addrIP> ntry = parsePrefix(cmd);
-                if (ntry == null) {
+                if (a.equals("withdraw")) {
+                    tabRouteEntry<addrIP> ntry = parsePrefix(cmd);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    int cnt;
+                    boolean ipv4 = ntry.prefix.network.isIPv4();
+                    if (ipv4 == lower.lower.isIpv4) {
+                        cnt = tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.sfiUnicast, 0, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn);
+                    } else {
+                        cnt = tabRoute.delUpdatedEntry(lower.othLrnd, rtrBgpUtil.sfiUnicast, 0, ntry, lower.iface.othRmapIn, lower.iface.othRpolIn, lower.iface.othPrfIn);
+                    }
+                    if (cnt > 0) {
+                        lower.lower.notif.wakeup();
+                    }
                     continue;
                 }
-                if (tabRoute.delUpdatedEntry(lower.learned, rtrBgpUtil.sfiUnicast, 0, ntry, lower.iface.roumapIn, lower.iface.roupolIn, lower.iface.prflstIn) > 0) {
-                    lower.lower.notif.wakeup();
-                }
-                continue;
+                lower.sendWrn("badCommand " + a);
             }
-            lower.sendWrn("badCommand " + a);
         }
     }
 

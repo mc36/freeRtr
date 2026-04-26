@@ -3821,6 +3821,14 @@ public class userShow {
                 doShowRoutes(r.pvrp.fwdCore, nei.adverted, 1);
                 return;
             }
+            if (a.equals("other-learned")) {
+                doShowRoutes(r.pvrp.fwdCore, nei.othLrnd, 1);
+                return;
+            }
+            if (a.equals("other-adverted")) {
+                doShowRoutes(r.pvrp.fwdCore, nei.othAdvtd, 1);
+                return;
+            }
             cmd.badCmd();
             return;
         }
@@ -3830,6 +3838,14 @@ public class userShow {
         }
         if (a.equals("originate")) {
             doShowRoutes(r.pvrp.fwdCore, r.pvrp.routerRedistedU, 1);
+            return;
+        }
+        if (a.equals("other-route")) {
+            doShowRoutes(r.pvrp.fwdCore, r.pvrp.othr2adv, 1);
+            return;
+        }
+        if (a.equals("other-originate")) {
+            doShowRoutes(r.pvrp.fwdCore, r.pvrp.other.routerRedistedU, 1);
             return;
         }
         cmd.badCmd();

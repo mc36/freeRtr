@@ -421,6 +421,11 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
      */
     protected tabRoute<addrIP> need2adv;
 
+    /**
+     * other routes needed to advertise
+     */
+    protected tabRoute<addrIP> othr2adv;
+
     private boolean need2run;
 
     /**
@@ -481,7 +486,7 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
             if (brief) {
                 res.add(nei.rtrId + "|" + nei.name + "|" + bits.timePast(nei.upTime));
             } else {
-                res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.inam + "|" + nei.peer + "|" + nei.learned.size() + "|" + nei.adverted.size() + "|" + bits.timePast(nei.upTime));
+                res.add(iface + "|" + nei.rtrId + "|" + nei.name + "|" + nei.inam + "|" + nei.peer + "|" + nei.opeer + "|" + nei.learned.size() + "+" + nei.othLrnd.size() + "|" + nei.adverted.size() + "+" + nei.othAdvtd.size() + "|" + bits.timePast(nei.upTime));
             }
         }
     }
