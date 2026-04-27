@@ -9,6 +9,7 @@ import org.freertr.clnt.clntErspan;
 import org.freertr.clnt.clntEtherIp;
 import org.freertr.clnt.clntGeneve;
 import org.freertr.clnt.clntGreFr;
+import org.freertr.clnt.clntGreHdlc;
 import org.freertr.clnt.clntGrePpp;
 import org.freertr.clnt.clntGreTap;
 import org.freertr.clnt.clntL2f;
@@ -125,6 +126,11 @@ public class cfgXconnSide {
      * gre ppp
      */
     public clntGrePpp pog;
+
+    /**
+     * gre hdlc
+     */
+    public clntGreHdlc hog;
 
     /**
      * gre fr
@@ -244,6 +250,7 @@ public class cfgXconnSide {
         l.add(null, false, p + 2, new int[]{p + 3}, "pptp", "pptp encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "greppp", "ppp over gre encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "grefr", "fr over gre encapsulation");
+        l.add(null, false, p + 2, new int[]{p + 3}, "grehdlc", "select hdlc over gre");
         l.add(null, false, p + 2, new int[]{p + 3}, "ax25", "ax25 encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "l2f", "l2f encapsulation");
         l.add(null, false, p + 2, new int[]{p + 3}, "l2tp2", "l2tp v2 encapsulation");
@@ -295,6 +302,10 @@ public class cfgXconnSide {
         if (fog != null) {
             fog.workStop();
             fog = null;
+        }
+        if (hog != null) {
+            hog.workStop();
+            hog = null;
         }
         if (ax25 != null) {
             ax25.workStop();
@@ -442,6 +453,16 @@ public class cfgXconnSide {
                 fog.setUpper(upper);
                 fog.workStart();
                 lower = fog;
+                break;
+            case prHog:
+                hog = new clntGreHdlc();
+                hog.target = "" + adr;
+                hog.vrf = vrf;
+                hog.srcIfc = ifc;
+                hog.vcid = vcid;
+                hog.setUpper(upper);
+                hog.workStart();
+                lower = hog;
                 break;
             case prAx25:
                 ax25 = new clntAx25();

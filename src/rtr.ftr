@@ -253,6 +253,15 @@ qc pass: isdn with grefr
 qc pass: sep with grefr
 qc pass: dvbgse with grefr
 qc pass: smds with grefr
+qc pass: ppp with grehdlc
+qc pass: hdlc with grehdlc
+qc pass: lapb with grehdlc
+qc pass: framerelay with grehdlc
+qc pass: atmdxi with grehdlc
+qc pass: isdn with grehdlc
+qc pass: sep with grehdlc
+qc pass: dvbgse with grehdlc
+qc pass: smds with grehdlc
 qc pass: ppp over gtp
 qc pass: ipv4 over gtp
 qc pass: ipv6 over gtp
@@ -1697,6 +1706,7 @@ qc pass: ppp over pptp pwhe
 qc pass: ppp over l2tp2 pwhe
 qc pass: ppp over l2tp3 pwhe
 qc pass: framerelay over grefr pwhe
+qc pass: hdlc over grehdlc pwhe
 qc pass: ethernet over l2tp3 pwhe
 qc pass: ppp over mpls pwhe
 qc pass: ethernet over mpls pwhe

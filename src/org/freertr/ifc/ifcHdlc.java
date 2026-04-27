@@ -20,6 +20,11 @@ import org.freertr.util.state;
 public class ifcHdlc implements ifcUp, ifcDn {
 
     /**
+     * ethertype
+     */
+    public final static int ethtyp = 0x8881;
+
+    /**
      * size of header
      */
     public final static int size = 2;

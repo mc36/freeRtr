@@ -18300,3 +18300,14 @@ failed: wireguard over ipv4
 ---------------------------------- 2026-04-27 05:35:52 26.4.27
 no failed: wireguard over ipv4
 qc pass: wireguard over ipv4
+---------------------------------- 2026-04-27 10:59:59 26.4.27
+qc pass: ppp with grehdlc
+qc pass: hdlc with grehdlc
+qc pass: lapb with grehdlc
+qc pass: framerelay with grehdlc
+qc pass: atmdxi with grehdlc
+qc pass: isdn with grehdlc
+qc pass: sep with grehdlc
+qc pass: dvbgse with grehdlc
+qc pass: smds with grehdlc
+qc pass: hdlc over grehdlc pwhe

@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.4.27-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-04-27 10:03:03, took 00:19:40, with 50 workers, on 4360 cases, 0 failed, 0 traces, 7 retries
+-;-;-;2026-04-27 11:18:04, took 00:18:05, with 50 workers, on 4370 cases, 0 failed, 0 traces, 12 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -257,6 +257,15 @@ http://sources.freertr.org/cfg/conn-gre25.tst;conn-gre25.tst;success;isdn with g
 http://sources.freertr.org/cfg/conn-gre26.tst;conn-gre26.tst;success;sep with grefr
 http://sources.freertr.org/cfg/conn-gre27.tst;conn-gre27.tst;success;dvbgse with grefr
 http://sources.freertr.org/cfg/conn-gre28.tst;conn-gre28.tst;success;smds with grefr
+http://sources.freertr.org/cfg/conn-gre29.tst;conn-gre29.tst;success;ppp with grehdlc
+http://sources.freertr.org/cfg/conn-gre30.tst;conn-gre30.tst;success;hdlc with grehdlc
+http://sources.freertr.org/cfg/conn-gre31.tst;conn-gre31.tst;success;lapb with grehdlc
+http://sources.freertr.org/cfg/conn-gre32.tst;conn-gre32.tst;success;framerelay with grehdlc
+http://sources.freertr.org/cfg/conn-gre33.tst;conn-gre33.tst;success;atmdxi with grehdlc
+http://sources.freertr.org/cfg/conn-gre34.tst;conn-gre34.tst;success;isdn with grehdlc
+http://sources.freertr.org/cfg/conn-gre35.tst;conn-gre35.tst;success;sep with grehdlc
+http://sources.freertr.org/cfg/conn-gre36.tst;conn-gre36.tst;success;dvbgse with grehdlc
+http://sources.freertr.org/cfg/conn-gre37.tst;conn-gre37.tst;success;smds with grehdlc
 http://sources.freertr.org/cfg/conn-gtp01.tst;conn-gtp01.tst;success;ppp over gtp
 http://sources.freertr.org/cfg/conn-gtp02.tst;conn-gtp02.tst;success;ipv4 over gtp
 http://sources.freertr.org/cfg/conn-gtp03.tst;conn-gtp03.tst;success;ipv6 over gtp
@@ -1701,13 +1710,14 @@ http://sources.freertr.org/cfg/mpls-pwhe13.tst;mpls-pwhe13.tst;success;ppp over 
 http://sources.freertr.org/cfg/mpls-pwhe14.tst;mpls-pwhe14.tst;success;ppp over l2tp2 pwhe
 http://sources.freertr.org/cfg/mpls-pwhe15.tst;mpls-pwhe15.tst;success;ppp over l2tp3 pwhe
 http://sources.freertr.org/cfg/mpls-pwhe16.tst;mpls-pwhe16.tst;success;framerelay over grefr pwhe
-http://sources.freertr.org/cfg/mpls-pwhe17.tst;mpls-pwhe17.tst;success;ethernet over l2tp3 pwhe
-http://sources.freertr.org/cfg/mpls-pwhe18.tst;mpls-pwhe18.tst;success;ppp over mpls pwhe
-http://sources.freertr.org/cfg/mpls-pwhe19.tst;mpls-pwhe19.tst;success;ethernet over mpls pwhe
-http://sources.freertr.org/cfg/mpls-pwhe20.tst;mpls-pwhe20.tst;success;ethernet over mpls pwhe with cw
-http://sources.freertr.org/cfg/mpls-pwhe21.tst;mpls-pwhe21.tst;success;ethernet over gretap pwhe
-http://sources.freertr.org/cfg/mpls-pwhe22.tst;mpls-pwhe22.tst;success;ethernet over sreth pwhe
-http://sources.freertr.org/cfg/mpls-pwhe23.tst;mpls-pwhe23.tst;success;ethernet over eoip pwhe
+http://sources.freertr.org/cfg/mpls-pwhe17.tst;mpls-pwhe17.tst;success;hdlc over grehdlc pwhe
+http://sources.freertr.org/cfg/mpls-pwhe18.tst;mpls-pwhe18.tst;success;ethernet over l2tp3 pwhe
+http://sources.freertr.org/cfg/mpls-pwhe19.tst;mpls-pwhe19.tst;success;ppp over mpls pwhe
+http://sources.freertr.org/cfg/mpls-pwhe20.tst;mpls-pwhe20.tst;success;ethernet over mpls pwhe
+http://sources.freertr.org/cfg/mpls-pwhe21.tst;mpls-pwhe21.tst;success;ethernet over mpls pwhe with cw
+http://sources.freertr.org/cfg/mpls-pwhe22.tst;mpls-pwhe22.tst;success;ethernet over gretap pwhe
+http://sources.freertr.org/cfg/mpls-pwhe23.tst;mpls-pwhe23.tst;success;ethernet over sreth pwhe
+http://sources.freertr.org/cfg/mpls-pwhe24.tst;mpls-pwhe24.tst;success;ethernet over eoip pwhe
 http://sources.freertr.org/cfg/mpls-sr01.tst;mpls-sr01.tst;success;sr in chain
 http://sources.freertr.org/cfg/mpls-sr02.tst;mpls-sr02.tst;success;sr in star
 http://sources.freertr.org/cfg/mpls-sr03.tst;mpls-sr03.tst;success;te over sr

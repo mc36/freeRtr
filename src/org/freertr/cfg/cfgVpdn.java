@@ -14,6 +14,7 @@ import org.freertr.clnt.clntEtherIp;
 import org.freertr.clnt.clntForti;
 import org.freertr.clnt.clntGeneve;
 import org.freertr.clnt.clntGreFr;
+import org.freertr.clnt.clntGreHdlc;
 import org.freertr.clnt.clntGrePpp;
 import org.freertr.clnt.clntGreTap;
 import org.freertr.clnt.clntGtp;
@@ -265,6 +266,10 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
          */
         prPog,
         /**
+         * hdlcogre
+         */
+        prHog,
+        /**
          * frogre
          */
         prFog,
@@ -395,6 +400,8 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
 
     private clntGreFr fog;
 
+    private clntGreHdlc hog;
+
     private clntGreTap tog;
 
     private clntAx25 ax25;
@@ -519,6 +526,8 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
                 return "greppp";
             case prFog:
                 return "grefr";
+            case prHog:
+                return "grehdlc";
             case prTog:
                 return "gretap";
             case prAx25:
@@ -634,6 +643,9 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         }
         if (s.equals("grefr")) {
             return protocolType.prFog;
+        }
+        if (s.equals("grehdlc")) {
+            return protocolType.prHog;
         }
         if (s.equals("gretap")) {
             return protocolType.prTog;
@@ -787,6 +799,7 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "gtp", "select gtp");
         l.add(null, false, 2, new int[]{-1}, "greppp", "select ppp over gre");
         l.add(null, false, 2, new int[]{-1}, "grefr", "select fr over gre");
+        l.add(null, false, 2, new int[]{-1}, "grehdlc", "select hdlc over gre");
         l.add(null, false, 2, new int[]{-1}, "gretap", "select tap over gre");
         l.add(null, false, 2, new int[]{-1}, "ax25", "select ax25");
         l.add(null, false, 2, new int[]{-1}, "pptp", "select pptp");
@@ -1228,6 +1241,10 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
         if (fog != null) {
             fog.workStop();
             fog = null;
+        }
+        if (hog != null) {
+            hog.workStop();
+            hog = null;
         }
         if (tog != null) {
             tog.workStop();
@@ -1740,6 +1757,23 @@ public class cfgVpdn implements Comparable<cfgVpdn>, cfgGeneric {
                 fog.setUpper(ifaceDialer.getEncapProto());
                 fog.workStart();
                 lower = fog;
+                break;
+            case prHog:
+                if (ifaceDialer == null) {
+                    return;
+                }
+                if (proxy.vrf == null) {
+                    return;
+                }
+                hog = new clntGreHdlc();
+                hog.target = target;
+                hog.prefer = prefer;
+                hog.vrf = proxy.vrf;
+                hog.srcIfc = proxy.srcIfc;
+                hog.vcid = vcid;
+                hog.setUpper(ifaceDialer.getEncapProto());
+                hog.workStart();
+                lower = hog;
                 break;
             case prTog:
                 if (ifaceBridge == null) {

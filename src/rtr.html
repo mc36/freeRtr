@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v26.4.27-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2026-04-27 10:03:03, took 00:19:40, with 50 workers, on 4360 cases, 0 failed, 0 traces, 7 retries<br/>
+tested: 2026-04-27 11:18:04, took 00:18:05, with 50 workers, on 4370 cases, 0 failed, 0 traces, 12 retries<br/>
 jvm: ./rtr.bin, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -269,6 +269,15 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-gre26.tst">conn-gre26.tst</a></td><td>success</td><td>sep with grefr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-gre27.tst">conn-gre27.tst</a></td><td>success</td><td>dvbgse with grefr</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-gre28.tst">conn-gre28.tst</a></td><td>success</td><td>smds with grefr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-gre29.tst">conn-gre29.tst</a></td><td>success</td><td>ppp with grehdlc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-gre30.tst">conn-gre30.tst</a></td><td>success</td><td>hdlc with grehdlc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-gre31.tst">conn-gre31.tst</a></td><td>success</td><td>lapb with grehdlc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-gre32.tst">conn-gre32.tst</a></td><td>success</td><td>framerelay with grehdlc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-gre33.tst">conn-gre33.tst</a></td><td>success</td><td>atmdxi with grehdlc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-gre34.tst">conn-gre34.tst</a></td><td>success</td><td>isdn with grehdlc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-gre35.tst">conn-gre35.tst</a></td><td>success</td><td>sep with grehdlc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-gre36.tst">conn-gre36.tst</a></td><td>success</td><td>dvbgse with grehdlc</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-gre37.tst">conn-gre37.tst</a></td><td>success</td><td>smds with grehdlc</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-gtp01.tst">conn-gtp01.tst</a></td><td>success</td><td>ppp over gtp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-gtp02.tst">conn-gtp02.tst</a></td><td>success</td><td>ipv4 over gtp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-gtp03.tst">conn-gtp03.tst</a></td><td>success</td><td>ipv6 over gtp</td></tr>
@@ -1713,13 +1722,14 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe14.tst">mpls-pwhe14.tst</a></td><td>success</td><td>ppp over l2tp2 pwhe</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe15.tst">mpls-pwhe15.tst</a></td><td>success</td><td>ppp over l2tp3 pwhe</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe16.tst">mpls-pwhe16.tst</a></td><td>success</td><td>framerelay over grefr pwhe</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe17.tst">mpls-pwhe17.tst</a></td><td>success</td><td>ethernet over l2tp3 pwhe</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe18.tst">mpls-pwhe18.tst</a></td><td>success</td><td>ppp over mpls pwhe</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe19.tst">mpls-pwhe19.tst</a></td><td>success</td><td>ethernet over mpls pwhe</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe20.tst">mpls-pwhe20.tst</a></td><td>success</td><td>ethernet over mpls pwhe with cw</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe21.tst">mpls-pwhe21.tst</a></td><td>success</td><td>ethernet over gretap pwhe</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe22.tst">mpls-pwhe22.tst</a></td><td>success</td><td>ethernet over sreth pwhe</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe23.tst">mpls-pwhe23.tst</a></td><td>success</td><td>ethernet over eoip pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe17.tst">mpls-pwhe17.tst</a></td><td>success</td><td>hdlc over grehdlc pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe18.tst">mpls-pwhe18.tst</a></td><td>success</td><td>ethernet over l2tp3 pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe19.tst">mpls-pwhe19.tst</a></td><td>success</td><td>ppp over mpls pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe20.tst">mpls-pwhe20.tst</a></td><td>success</td><td>ethernet over mpls pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe21.tst">mpls-pwhe21.tst</a></td><td>success</td><td>ethernet over mpls pwhe with cw</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe22.tst">mpls-pwhe22.tst</a></td><td>success</td><td>ethernet over gretap pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe23.tst">mpls-pwhe23.tst</a></td><td>success</td><td>ethernet over sreth pwhe</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/mpls-pwhe24.tst">mpls-pwhe24.tst</a></td><td>success</td><td>ethernet over eoip pwhe</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-sr01.tst">mpls-sr01.tst</a></td><td>success</td><td>sr in chain</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-sr02.tst">mpls-sr02.tst</a></td><td>success</td><td>sr in star</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/mpls-sr03.tst">mpls-sr03.tst</a></td><td>success</td><td>te over sr</td></tr>

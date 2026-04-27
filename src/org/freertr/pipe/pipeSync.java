@@ -169,13 +169,13 @@ class pipeSyncTx implements Runnable {
             pck.clear();
             byte[] buf = new byte[chnUse];
             for (; pck.dataSize() < payMax;) {
-                pck.putFill(0, chnPre, 0x7e);
+                pck.putFill(0, chnPre, pipeHdlc.charFlag);
                 pck.putSkip(chnPre);
                 resBuf.getCopy(buf, 0, 0, chnUse);
                 resBuf.getSkip(chnUse);
                 pck.putCopy(buf, 0, 0, chnUse);
                 pck.putSkip(chnUse);
-                pck.putFill(0, chnApp, 0x7e);
+                pck.putFill(0, chnApp, pipeHdlc.charFlag);
                 pck.putSkip(chnApp);
                 pck.merge2end();
             }
