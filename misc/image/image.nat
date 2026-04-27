@@ -3,8 +3,8 @@ include ../misc/image/image.beg
 
 select-one zlib1g                        #dependency
 
-exec cp ../misc/image/init.nat %tmp%/init.run
-exec cp rtr.bin %tmp%/rtr/
+copy ../misc/image/init.nat %tmp%/init.run
+copy rtr.bin %tmp%/rtr/
 
 select-lst
 select-sum

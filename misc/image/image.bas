@@ -21,8 +21,8 @@ mkdir %tmp%/usr/sbin
 mkdir %tmp%/usr/lib
 mkdir %tmp%/usr/lib32
 mkdir %tmp%/usr/lib64
-exec ln -s ./usr/bin %tmp%/bin
-exec ln -s ./usr/lib %tmp%/lib
-exec ln -s ./usr/sbin %tmp%/sbin
-exec ln -s ./usr/lib32 %tmp%/lib32
-exec ln -s ./usr/lib64 %tmp%/lib64
+link ./usr/bin %tmp%/bin
+link ./usr/lib %tmp%/lib
+link ./usr/sbin %tmp%/sbin
+link ./usr/lib32 %tmp%/lib32
+link ./usr/lib64 %tmp%/lib64

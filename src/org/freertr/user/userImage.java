@@ -149,6 +149,18 @@ public class userImage {
         return execCmd("rm -rf " + s) != 0;
     }
 
+    private boolean linkFiles(String s, String t) {
+        return execCmd("ln -s " + s + " " + t) != 0;
+    }
+
+    private boolean moveFiles(String s, String t) {
+        return execCmd("mv " + s + " " + t) != 0;
+    }
+
+    private boolean copyFiles(String s, String t) {
+        return execCmd("cp " + s + " " + t) != 0;
+    }
+
     private boolean downloadFile(String url, String fil, int siz) {
         File f = new File(fil);
         switch (downMode) {
@@ -804,6 +816,18 @@ public class userImage {
             }
             if (a.equals("mkdir")) {
                 userFlash.mkdir(s);
+                continue;
+            }
+            if (a.equals("link")) {
+                linkFiles(cmd.word(), cmd.word());
+                continue;
+            }
+            if (a.equals("move")) {
+                moveFiles(cmd.word(), cmd.word());
+                continue;
+            }
+            if (a.equals("copy")) {
+                copyFiles(cmd.word(), cmd.word());
                 continue;
             }
             if (a.equals("del-ifdn")) {

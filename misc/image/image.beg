@@ -1,5 +1,5 @@
 mkdir %tmp%/rtr
-exec cp rtr.ver %tmp%/rtr/
+copy rtr.ver %tmp%/rtr/
 exec cd %tmp%/rtr/ ; tar xfz ../../binImg/rtr-%unam%.tgz
 
 catalog-read exp xz %mirr% experimental main

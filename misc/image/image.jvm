@@ -14,8 +14,8 @@ find-result
 select-one %find%                        #new jdk
 select-dep yes
 
-exec cp ../misc/image/init.jvm %tmp%/init.run
-exec cp rtr.jar %tmp%/rtr/
+copy ../misc/image/init.jvm %tmp%/init.run
+copy rtr.jar %tmp%/rtr/
 
 select-lst
 select-sum

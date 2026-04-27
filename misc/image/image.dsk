@@ -1,10 +1,10 @@
 del-alw %tmp%
 mkdir %tmp%
 
-exec cp %img%.krn %tmp%/rtr.krn
+copy %img%.krn %tmp%/rtr.krn
 exec cd %tmp%/ ; cpio --quiet -H newc -i < %img%.cpio
-exec cp ../misc/image/init.dsk %tmp%/init
-exec cp ../misc/image/init.chr %tmp%/
+copy ../misc/image/init.dsk %tmp%/init
+copy ../misc/image/init.chr %tmp%/
 exec chmod 755 %tmp%/init*
 
 exec cd %tmp%/ ; find init* dev/ sys/ proc/ mnt/ run/ usr/ > filist
@@ -19,10 +19,10 @@ sbin
 exec cd %tmp%/ ; cpio --quiet -H newc -O cpio -o <filist
 del-alw %tmp%/filist
 exec zstd -9 %tmp%/cpio
-exec mv %tmp%/cpio.zst %tmp%/rtr.ird
+move %tmp%/cpio.zst %tmp%/rtr.ird
 del-alw %tmp%/cpio
 del-alw %tmp%/lib/modules
-exec cp ../misc/image/boot.sys %tmp%/syslinux.cfg
+copy ../misc/image/boot.sys %tmp%/syslinux.cfg
 
 exec qemu-img create %img%.img 2G
 exec /sbin/sfdisk -q %img%.img < ../misc/image/native.sfdsk

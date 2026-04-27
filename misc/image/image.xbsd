@@ -9,19 +9,19 @@ mkdir %tmp%/sys
 mkdir %tmp%/usr
 mkdir %tmp%/var
 mkdir %tmp%/tmp
-exec ln -s ../lib %tmp%/usr/lib
-exec ln -s ../libexec %tmp%/usr/libexec
+link ../lib %tmp%/usr/lib
+link ../libexec %tmp%/usr/libexec
 
 exec cpio --quiet -H newc -i -D %tmp%/tmp/ < %img%.cpio
 find-clear
 find-file 1-1111 %tmp%/tmp/usr/lib/ .*-linux-gnu.*
 find-result
 del-alw %tmp%/tmp/usr/lib/%find%/systemd
-exec mv %tmp%/tmp/usr/lib/%find% %tmp%/%boot%/lib
-exec ln -s ./lib %tmp%/%boot%/lib32
-exec ln -s ./lib %tmp%/%boot%/lib64
-exec mv %tmp%/tmp/java %tmp%/
-exec mv %tmp%/tmp/rtr %tmp%/
-exec mv %tmp%/bsdInt.bin %tmp%/rtr/
+move %tmp%/tmp/usr/lib/%find% %tmp%/%boot%/lib
+link ./lib %tmp%/%boot%/lib32
+link ./lib %tmp%/%boot%/lib64
+move %tmp%/tmp/java %tmp%/
+move %tmp%/tmp/rtr %tmp%/
+move %tmp%/bsdInt.bin %tmp%/rtr/
 del-alw %tmp%/tmp
 mkdir %tmp%/tmp
