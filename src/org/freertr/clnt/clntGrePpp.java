@@ -18,7 +18,6 @@ import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
 import org.freertr.util.state;
-import org.freertr.util.state.states;
 
 /**
  * ppp over gre
@@ -295,7 +294,7 @@ public class clntGrePpp implements ifcDn, ifcUp, Runnable {
      *
      * @param stat state
      */
-    public void setState(states stat) {
+    public void setState(state.states stat) {
     }
 
     /**
