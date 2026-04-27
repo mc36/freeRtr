@@ -350,25 +350,6 @@ public class userImage {
         return true;
     }
 
-    private boolean instOneFile(boolean deb, String name) {
-        if (deb) {
-            name = "dpkg-deb " + "--fsys-tarfile " + name;
-        } else {
-            name = "gunzip -c -k " + name;
-        }
-        return execCmd(name + " | tar -x " + "--keep-directory-symlink -C " + tempDir + "/") != 0;
-    }
-
-    private boolean instOneFile(userImagePkg pkg) {
-        String name = getPackageName(pkg);
-        if (pkg.done) {
-            pip.linePut("skipping " + name);
-            return false;
-        }
-        pkg.done = true;
-        return instOneFile(true, name);
-    }
-
     private boolean doIncludeAll(cmds c) {
         boolean res = false;
         for (;;) {
@@ -775,24 +756,45 @@ public class userImage {
                 continue;
             }
             if (a.equals("package-inst")) {
+                s = "";
                 for (i = 0; i < selected.size(); i++) {
                     userImagePkg pkg = selected.get(i);
-                    if (instOneFile(pkg)) {
-                        return true;
+                    a = getPackageName(pkg);
+                    if (pkg.done) {
+                        continue;
                     }
+                    pkg.done = true;
+                    if (s.length() > 0) {
+                        s += " ; ";
+                    }
+                    s += "dpkg-deb " + "--fsys-tarfile " + a + " | tar -x " + "--keep-directory-symlink -C " + tempDir + "/";
+                }
+                if (s.length() < 1) {
+                    continue;
+                }
+                if (execCmd(s) != 0) {
+                    return true;
                 }
                 continue;
             }
             if (a.equals("package-xtra")) {
                 cmd = new cmds("pkg", xtra);
+                s = "";
                 for (;;) {
                     a = cmd.word();
                     if (a.length() < 1) {
                         break;
                     }
-                    if (instOneFile(false, downDir + "/" + arch + "-" + a)) {
-                        return true;
+                    if (s.length() > 0) {
+                        s += " ; ";
                     }
+                    s += "gunzip -c -k " + downDir + "/" + arch + "-" + a + " | tar -x " + "--keep-directory-symlink -C " + tempDir + "/";
+                }
+                if (s.length() < 1) {
+                    continue;
+                }
+                if (execCmd(s) != 0) {
+                    return true;
                 }
                 continue;
             }
