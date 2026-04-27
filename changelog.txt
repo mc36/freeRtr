@@ -18294,3 +18294,6 @@ qc pass: pvrp stub node
 qc pass: pvrp stub interface
 qc pass: integrated pvrp over foreign ipv4
 qc pass: integrated pvrp over foreign ipv6
+---------------------------------- 2026-04-27 04:43:38 26.4.27
+no qc pass: wireguard over ipv4
+failed: wireguard over ipv4
