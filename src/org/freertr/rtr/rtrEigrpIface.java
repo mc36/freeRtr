@@ -20,11 +20,9 @@ import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
-import org.freertr.util.counter.reasons;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.state;
-import org.freertr.util.state.states;
 import org.freertr.enc.encTlv;
 import org.freertr.sec.secInfoCfg;
 import org.freertr.sec.secInfoUtl;
@@ -565,7 +563,7 @@ public class rtrEigrpIface implements Comparable<rtrEigrpIface>, ipPrt {
      * @param iface interface
      * @param stat state
      */
-    public void setState(ipFwdIface iface, states stat) {
+    public void setState(ipFwdIface iface, state.states stat) {
         if (stat == state.states.up) {
             return;
         }
@@ -581,11 +579,11 @@ public class rtrEigrpIface implements Comparable<rtrEigrpIface>, ipPrt {
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);
         if (passiveInt) {
-            cntr.drop(pck, reasons.notUp);
+            cntr.drop(pck, counter.reasons.notUp);
             return;
         }
         if (pck.IPsrc.isEmpty()) {
-            cntr.drop(pck, reasons.badNet);
+            cntr.drop(pck, counter.reasons.badNet);
             return;
         }
         if ((connectedCheck) && (!rxIfc.network.matches(pck.IPsrc))) {
@@ -630,7 +628,7 @@ public class rtrEigrpIface implements Comparable<rtrEigrpIface>, ipPrt {
      * @param rxIfc interface
      * @param pck packet
      */
-    public void errorPack(reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
+    public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
     }
 
     /**

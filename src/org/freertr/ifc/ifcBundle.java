@@ -18,7 +18,6 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
 import org.freertr.util.state;
-import org.freertr.util.state.states;
 
 /**
  * bundles interfaces to one interface
@@ -1194,7 +1193,7 @@ class ifcBundlePeer implements ifcUp, Runnable {
         ifHnd = parent;
     }
 
-    public void setState(states stat) {
+    public void setState(state.states stat) {
     }
 
     public void closeUp() {

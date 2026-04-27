@@ -16,7 +16,6 @@ import org.freertr.ip.ipIfc6;
 import org.freertr.pack.packHolder;
 import org.freertr.util.counter;
 import org.freertr.util.state;
-import org.freertr.util.state.states;
 
 /**
  * v6 to v4 protocol translation
@@ -90,7 +89,7 @@ public class prt6to4 implements ifcDn {
      * @return state
      */
     public state.states getState() {
-        return states.up;
+        return state.states.up;
     }
 
     /**

@@ -3,10 +3,9 @@ package org.freertr.ip;
 import org.freertr.addr.addrIP;
 import org.freertr.pack.packHolder;
 import org.freertr.util.counter;
-import org.freertr.util.counter.reasons;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.state.states;
+import org.freertr.util.state;
 
 /**
  * multicast host (igmp/mld) handler
@@ -130,7 +129,7 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
      * @param iface interface
      * @param stat state
      */
-    public void setState(ipFwdIface iface, states stat) {
+    public void setState(ipFwdIface iface, state.states stat) {
     }
 
     /**
@@ -142,11 +141,11 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
         cntr.rx(pck);
         if (rxIfc.mhostCfg == null) {
-            cntr.drop(pck, reasons.denied);
+            cntr.drop(pck, counter.reasons.denied);
             return;
         }
         if (parsePacket(rxIfc, pck)) {
-            cntr.drop(pck, reasons.badHdr);
+            cntr.drop(pck, counter.reasons.badHdr);
             return;
         }
     }
@@ -170,7 +169,7 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
      * @param rxIfc interface
      * @param pck packet
      */
-    public void errorPack(reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
+    public void errorPack(counter.reasons err, addrIP rtr, ipFwdIface rxIfc, packHolder pck) {
         return;
     }
 

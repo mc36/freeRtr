@@ -10,7 +10,7 @@ import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.state.states;
+import org.freertr.util.state;
 import org.freertr.enc.encTlv;
 
 /**
@@ -569,7 +569,7 @@ public class prtSctp extends prtGen {
      * @param iface interface
      * @param stat state
      */
-    public void setState(ipFwdIface iface, states stat) {
+    public void setState(ipFwdIface iface, state.states stat) {
         connectionSimpleState(iface, stat);
     }
 

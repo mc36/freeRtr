@@ -20,7 +20,7 @@ import org.freertr.util.logger;
 import org.freertr.util.state;
 
 /**
- * ppp over gre
+ * framerelay over gre
  *
  * @author matecsaba
  */

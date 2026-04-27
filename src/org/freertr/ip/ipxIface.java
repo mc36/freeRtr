@@ -10,7 +10,7 @@ import org.freertr.ifc.ifcUp;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.util.counter;
-import org.freertr.util.state.states;
+import org.freertr.util.state;
 
 /**
  * ipx interface
@@ -130,7 +130,7 @@ public class ipxIface extends tabRouteIface implements ifcUp {
      *
      * @param stat state
      */
-    public void setState(states stat) {
+    public void setState(state.states stat) {
         cntr.stateChange(stat);
         upper.ifaceState(this, stat);
     }
