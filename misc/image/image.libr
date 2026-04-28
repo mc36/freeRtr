@@ -11,6 +11,10 @@ catalog-sum
 select-lst
 select-sum
 package-down
+
+if-downed 2-2222
+exit
+
 package-inst
 
 move %tmp%/lib %tmp%/usr

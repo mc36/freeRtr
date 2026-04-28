@@ -42,6 +42,8 @@ public class userImage {
 
     private int hashMode = 3;
 
+    private int downed = 0;
+
     private long regeTim = bits.getTime() - Integer.MAX_VALUE;
 
     private String miro = "http://deb.debian.org/debian/";
@@ -189,6 +191,7 @@ public class userImage {
                 return false;
         }
         userFlash.delete(fil + userUpgrade.tmpExt);
+        downed++;
         if (execCmd("wget -O " + fil + ".tmp " + url) != 0) {
             pip.linePut("error downloading " + fil);
             return true;
@@ -779,7 +782,7 @@ public class userImage {
                     if (s.length() > 0) {
                         s += " ; ";
                     }
-                    s += "dpkg-deb " + "--fsys-tarfile " + a + " | tar -x " + "--keep-directory-symlink -C " + tempDir + "/";
+                    s += "dpkg-deb -x " + a + " " + tempDir + "/";
                 }
                 if (s.length() < 1) {
                     continue;
@@ -800,7 +803,7 @@ public class userImage {
                     if (s.length() > 0) {
                         s += " ; ";
                     }
-                    s += "gunzip -c -k " + downDir + "/" + arch + "-" + a + " | tar -x " + "--keep-directory-symlink -C " + tempDir + "/";
+                    s += "tar xf " + downDir + "/" + arch + "-" + a + " -C " + tempDir + "/";
                 }
                 if (s.length() < 1) {
                     continue;
@@ -812,6 +815,14 @@ public class userImage {
             }
             if (a.equals("binary-down")) {
                 downloadFile(cmd.word(), cmd.word(), -1);
+                continue;
+            }
+            if (a.equals("if-downed")) {
+                tabIntMatcher mod = new tabIntMatcher();
+                mod.fromString(cmd.word());
+                if (mod.matches(downed)) {
+                    cnt++;
+                }
                 continue;
             }
             if (a.equals("mkdir")) {
