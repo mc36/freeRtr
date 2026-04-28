@@ -7,6 +7,6 @@ copy %img%.grb %tmp%/rtr.grb
 copy %img%.flp %tmp%/rtr.flp
 exec xorriso -as mkisofs -o %img%.iso -r -J -l -b isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -c isolinux.cat -eltorito-alt-boot -e rtr.flp -no-emul-boot %tmp%/rtr.krn %tmp%/rtr.ird %tmp%/syslinux.cfg %tmp%/isolinux.bin %tmp%/ldlinux.c32 %tmp%/rtr.flp
 exec isohybrid -u %img%.iso
-del-alw %tmp%/ldlinux.c32
-del-alw %tmp%/isolinux.bin
-del-alw %tmp%/syslinux.cfg
+del %tmp%/ldlinux.c32
+del %tmp%/isolinux.bin
+del %tmp%/syslinux.cfg

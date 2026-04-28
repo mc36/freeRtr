@@ -1,4 +1,4 @@
-del-alw %tmp%
+del %tmp%
 mkdir %tmp%
 
 copy %img%.krn %tmp%/rtr.krn
@@ -17,11 +17,11 @@ sbin
 .
 
 exec cd %tmp%/ ; cpio --quiet -H newc -O cpio -o <filist
-del-alw %tmp%/filist
+del %tmp%/filist
 exec zstd -9 %tmp%/cpio
 move %tmp%/cpio.zst %tmp%/rtr.ird
-del-alw %tmp%/cpio
-del-alw %tmp%/lib/modules
+del %tmp%/cpio
+del %tmp%/lib/modules
 copy ../misc/image/boot.sys %tmp%/syslinux.cfg
 
 exec qemu-img create %img%.img 2G
@@ -31,4 +31,4 @@ exec dd bs=1 conv=notrunc if=/usr/lib/syslinux/mbr/mbr.bin of=%img%.img
 exec dd bs=1K seek=1024 conv=notrunc if=%img%.flp of=%img%.img
 exec guestfish -a %img%.img -m /dev/sda2 extlinux /
 
-del-alw %tmp%
+del %tmp%

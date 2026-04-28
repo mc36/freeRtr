@@ -24,4 +24,4 @@ exec tar cfz %dwn%/%arch%-linux-image-gnu.tgz -C %tmp%/ boot usr
 
 catalog-save lib
 
-del-alw %tmp%
+del %tmp%

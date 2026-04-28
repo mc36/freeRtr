@@ -20,4 +20,4 @@ include ../misc/image/image.cdi
 
 catalog-save bld
 
-del-alw %tmp%
+del %tmp%

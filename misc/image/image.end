@@ -2,35 +2,35 @@ copy ../misc/image/init.lin %tmp%/init
 copy ../misc/image/init.dev %tmp%/init.dev
 copy ../misc/image/init.sys %tmp%/init.sys
 move %tmp%/boot/vmlinu* %img%.krn
-del-alw %tmp%/boot
+del %tmp%/boot
 include ../misc/image/image.cln
 
 find-clear
 find-file 1-1111 %tmp%/usr/lib/ .*-linux-gnu.*
 find-result
-del-alw %tmp%/usr/lib/%find%/gconv
+del %tmp%/usr/lib/%find%/gconv
 
 find-clear
 find-file 1-1111 %tmp%/usr/lib/modules/ .*-%kern%.*
 find-result
-del-alw %tmp%/usr/lib/modules/%find%/kernel/sound %tmp%/usr/lib/modules/%find%/kernel/drivers/atm %tmp%/usr/lib/modules/%find%/kernel/drivers/isdn %tmp%/usr/lib/modules/%find%/kernel/drivers/input %tmp%/usr/lib/modules/%find%/kernel/drivers/video %tmp%/usr/lib/modules/%find%/kernel/drivers/target %tmp%/usr/lib/modules/%find%/kernel/drivers/comedi %tmp%/usr/lib/modules/%find%/kernel/drivers/accessibility %tmp%/usr/lib/modules/%find%/kernel/drivers/bluetooth %tmp%/usr/lib/modules/%find%/kernel/drivers/firewire %tmp%/usr/lib/modules/%find%/kernel/drivers/gpu %tmp%/usr/lib/modules/%find%/kernel/drivers/hid %tmp%/usr/lib/modules/%find%/kernel/drivers/iio %tmp%/usr/lib/modules/%find%/kernel/drivers/infiniband %tmp%/usr/lib/modules/%find%/kernel/drivers/media %tmp%/usr/lib/modules/%find%/kernel/drivers/md %tmp%/usr/lib/modules/%find%/kernel/drivers/nfc %tmp%/usr/lib/modules/%find%/kernel/drivers/soundwire %tmp%/usr/lib/modules/%find%/kernel/drivers/net/wireless %tmp%/usr/lib/modules/%find%/kernel/drivers/net/can
+del %tmp%/usr/lib/modules/%find%/kernel/sound %tmp%/usr/lib/modules/%find%/kernel/drivers/atm %tmp%/usr/lib/modules/%find%/kernel/drivers/isdn %tmp%/usr/lib/modules/%find%/kernel/drivers/input %tmp%/usr/lib/modules/%find%/kernel/drivers/video %tmp%/usr/lib/modules/%find%/kernel/drivers/target %tmp%/usr/lib/modules/%find%/kernel/drivers/comedi %tmp%/usr/lib/modules/%find%/kernel/drivers/accessibility %tmp%/usr/lib/modules/%find%/kernel/drivers/bluetooth %tmp%/usr/lib/modules/%find%/kernel/drivers/firewire %tmp%/usr/lib/modules/%find%/kernel/drivers/gpu %tmp%/usr/lib/modules/%find%/kernel/drivers/hid %tmp%/usr/lib/modules/%find%/kernel/drivers/iio %tmp%/usr/lib/modules/%find%/kernel/drivers/infiniband %tmp%/usr/lib/modules/%find%/kernel/drivers/media %tmp%/usr/lib/modules/%find%/kernel/drivers/md %tmp%/usr/lib/modules/%find%/kernel/drivers/nfc %tmp%/usr/lib/modules/%find%/kernel/drivers/soundwire %tmp%/usr/lib/modules/%find%/kernel/drivers/net/wireless %tmp%/usr/lib/modules/%find%/kernel/drivers/net/can
 
 move %tmp%/usr/lib/modules/%find%/kernel/net/packet %tmp%/tmp/
 move %tmp%/usr/lib/modules/%find%/kernel/net/core %tmp%/tmp/
 move %tmp%/usr/lib/modules/%find%/kernel/net/*.ko* %tmp%/tmp/
-del-alw %tmp%/usr/lib/modules/%find%/kernel/net
+del %tmp%/usr/lib/modules/%find%/kernel/net
 mkdir %tmp%/usr/lib/modules/%find%/kernel/net
 move %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/net
 
 move %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/*.ko* %tmp%/tmp/
-del-alw %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
+del %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
 mkdir %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi
 move %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/drivers/scsi/
 
 move %tmp%/usr/lib/modules/%find%/kernel/fs/isofs %tmp%/tmp/
 move %tmp%/usr/lib/modules/%find%/kernel/fs/ext4 %tmp%/tmp/
 move %tmp%/usr/lib/modules/%find%/kernel/fs/fat %tmp%/tmp/
-del-alw %tmp%/usr/lib/modules/%find%/kernel/fs
+del %tmp%/usr/lib/modules/%find%/kernel/fs
 mkdir %tmp%/usr/lib/modules/%find%/kernel/fs
 move %tmp%/tmp/* %tmp%/usr/lib/modules/%find%/kernel/fs/
 

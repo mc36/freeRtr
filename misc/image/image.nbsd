@@ -3,7 +3,7 @@ reget-time 168
 kern http://cdn.netbsd.org/pub/NetBSD/NetBSD-11.0_RC3/%arch%/binary/sets/
 
 mkdir %dwn%
-del-alw %tmp%
+del %tmp%
 mkdir %tmp%
 
 binary-down %kern%/base.tar.xz %dwn%/nbsd-%arch%-base.txz
@@ -21,8 +21,8 @@ exec tar xf %dwn%/nbsd-%arch%-mods.txz -C %tmp%/
 move %tmp%/stand/%arch%/*/modules/* %tmp%/tmp/
 move %tmp%/tmp/compat_linux %tmp%/stand/%arch%/*/modules/
 move %tmp%/tmp/compat_ossaudio %tmp%/stand/%arch%/*/modules/
-del-alw %tmp%/libdata/firmware
-del-alw %tmp%/tmp/*
+del %tmp%/libdata/firmware
+del %tmp%/tmp/*
 
 move %tmp%/usr/mdec/bootxx_cd9660 %tmp%/cdboot
 move %tmp%/usr/mdec/boot %tmp%/
@@ -37,4 +37,4 @@ include ../misc/image/image.xbsd
 
 exec xorriso -as mkisofs -o %img%-nbsd.iso -r -J -l -b cdboot -no-emul-boot -c isolinux.cat %tmp%/
 
-del-alw %tmp%
+del %tmp%

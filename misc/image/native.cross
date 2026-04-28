@@ -25,8 +25,7 @@ package-inst
 
 catalog-save cmp
 
-mkdir %tmp%/misc
-copy ../misc/* %tmp%/misc/
+copy ../misc %tmp%/
 
 include ../misc/image/native.%comp%
 
@@ -36,4 +35,4 @@ move %tmp%/binImg/*.tgz ../binImg/rtr-%unam%.tgz
 
 exec /usr/bin/qemu-%qemu% -L %tmp%/ %tmp%/binTmp/p4bench.bin
 
-del-alw %tmp%
+del %tmp%

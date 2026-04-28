@@ -1,10 +1,10 @@
-del-alw %tmp%
+del %tmp%
 mkdir %tmp%
 
 exec qemu-img convert -O qcow2 -c %img%.img %img%.qcow2
 exec qemu-img convert -O vmdk -o subformat=streamOptimized %img%.img %img%.vmdk
 
-del-alw %img%.gns3a
+del %img%.gns3a
 
 file-text %img%.gns3a
 {
@@ -476,4 +476,4 @@ file-line %tmp%/package.mf SHA1(package.yaml)= %find%
 exec cd ../binImg/ ; tar cf %img%.ova rtr-%unam%.qcow2 rtr-%unam%.vmdk
 exec cd %tmp% ; tar rf %img%.ova package.yaml package.ovf package.vsh package.ver package.mf
 
-del-alw %tmp%
+del %tmp%

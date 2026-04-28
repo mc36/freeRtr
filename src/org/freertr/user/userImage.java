@@ -147,22 +147,6 @@ public class userImage {
         return sh.resultNum();
     }
 
-    private boolean delFiles(String s) {
-        return execCmd("rm -rf " + s) != 0;
-    }
-
-    private boolean linkFiles(String s, String t) {
-        return execCmd("ln -s " + s + " " + t) != 0;
-    }
-
-    private boolean moveFiles(String s, String t) {
-        return execCmd("mv " + s + " " + t) != 0;
-    }
-
-    private boolean copyFiles(String s, String t) {
-        return execCmd("cp " + s + " " + t) != 0;
-    }
-
     private boolean downloadFile(String url, String fil, int siz) {
         File f = new File(fil);
         switch (downMode) {
@@ -779,17 +763,9 @@ public class userImage {
                         continue;
                     }
                     pkg.done = true;
-                    if (s.length() > 0) {
-                        s += " ; ";
-                    }
-                    s += "dpkg-deb -x " + a + " " + tempDir + "/";
+                    s += "dpkg-deb -x " + a + " " + tempDir + "/ ;";
                 }
-                if (s.length() < 1) {
-                    continue;
-                }
-                if (execCmd(s) != 0) {
-                    return true;
-                }
+                execCmd(s);
                 continue;
             }
             if (a.equals("package-xtra")) {
@@ -800,17 +776,9 @@ public class userImage {
                     if (a.length() < 1) {
                         break;
                     }
-                    if (s.length() > 0) {
-                        s += " ; ";
-                    }
-                    s += "tar xf " + downDir + "/" + arch + "-" + a + " -C " + tempDir + "/";
+                    s += "tar xf " + downDir + "/" + arch + "-" + a + " -C " + tempDir + "/ ;";
                 }
-                if (s.length() < 1) {
-                    continue;
-                }
-                if (execCmd(s) != 0) {
-                    return true;
-                }
+                execCmd(s);
                 continue;
             }
             if (a.equals("binary-down")) {
@@ -830,25 +798,25 @@ public class userImage {
                 continue;
             }
             if (a.equals("link")) {
-                linkFiles(cmd.word(), cmd.word());
+                s = cmd.word();
+                a = cmd.word();
+                execCmd("ln -s " + s + " " + a);
                 continue;
             }
             if (a.equals("move")) {
-                moveFiles(cmd.word(), cmd.word());
+                s = cmd.word();
+                a = cmd.word();
+                execCmd("mv " + s + " " + a);
                 continue;
             }
             if (a.equals("copy")) {
-                copyFiles(cmd.word(), cmd.word());
+                s = cmd.word();
+                a = cmd.word();
+                execCmd("cp -r " + s + " " + a);
                 continue;
             }
-            if (a.equals("del-ifdn")) {
-                if (downMode == 1) {
-                    delFiles(s);
-                }
-                continue;
-            }
-            if (a.equals("del-alw")) {
-                delFiles(s);
+            if (a.equals("del")) {
+                execCmd("rm -rf " + s);
                 continue;
             }
             cmd.error("unknown command: " + a + " " + s);

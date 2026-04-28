@@ -1,6 +1,6 @@
 exec find %tmp%/ -type d -exec chmod 777 {} \;
 exec clang --sysroot %tmp% -I =/usr/include/ -target %kern%-unknown-%unam% -lpthread -o %tmp%/bsdInt.bin ../misc/native/bsdInt.c
-del-alw %tmp%/usr
+del %tmp%/usr
 mkdir %tmp%/%boot%
 mkdir %tmp%/mnt
 mkdir %tmp%/proc
@@ -16,12 +16,12 @@ exec cpio --quiet -H newc -i -D %tmp%/tmp/ < %img%.cpio
 find-clear
 find-file 1-1111 %tmp%/tmp/usr/lib/ .*-linux-gnu.*
 find-result
-del-alw %tmp%/tmp/usr/lib/%find%/systemd
+del %tmp%/tmp/usr/lib/%find%/systemd
 move %tmp%/tmp/usr/lib/%find% %tmp%/%boot%/lib
 link ./lib %tmp%/%boot%/lib32
 link ./lib %tmp%/%boot%/lib64
 move %tmp%/tmp/java %tmp%/
 move %tmp%/tmp/rtr %tmp%/
 move %tmp%/bsdInt.bin %tmp%/rtr/
-del-alw %tmp%/tmp
+del %tmp%/tmp
 mkdir %tmp%/tmp

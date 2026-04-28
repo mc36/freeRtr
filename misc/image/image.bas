@@ -1,9 +1,8 @@
 download 3
 reget-time 8
 
-del-ifdn %dwn%
 mkdir %dwn%
-del-alw %tmp%
+del %tmp%
 mkdir %tmp%
 mkdir %tmp%/sys
 mkdir %tmp%/proc
