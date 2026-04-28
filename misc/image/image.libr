@@ -12,7 +12,7 @@ select-lst
 select-sum
 package-down
 
-if-downed 2-2222
+if-downed 0-1
 exit
 
 package-inst

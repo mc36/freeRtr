@@ -820,7 +820,7 @@ public class userImage {
             if (a.equals("if-downed")) {
                 tabIntMatcher mod = new tabIntMatcher();
                 mod.fromString(cmd.word());
-                if (mod.matches(downed)) {
+                if (!mod.matches(downed)) {
                     cnt++;
                 }
                 continue;
