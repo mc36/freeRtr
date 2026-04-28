@@ -32,7 +32,8 @@ catalog-save cmp
 
 exec for a in `busybox --list`; do ln -s /usr/bin/busybox %tmp%/bin/$a; done
 
-exec cp -r ../misc %tmp%/
+mkdir %tmp%/misc
+copy ../misc/* %tmp%/misc/
 
 exec unshare -r -R %tmp% /usr/bin/qemu-%qemu% /bin/sh /misc/image/native.qemush
 

@@ -25,7 +25,8 @@ package-inst
 
 catalog-save cmp
 
-exec cp -r ../misc %tmp%/
+mkdir %tmp%/misc
+copy ../misc/* %tmp%/misc/
 
 include ../misc/image/native.%comp%
 
