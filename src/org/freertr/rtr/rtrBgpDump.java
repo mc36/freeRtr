@@ -674,7 +674,11 @@ public class rtrBgpDump {
         pck.getSkip(2);
         res.add("withdraw len=" + prt);
         prt = pck.dataSize() - prt;
-        tabRouteEntry<addrIP> ntry;
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        userFormat ufmt = new userFormat("|", "|");
+        ntry.best.fullDump(ufmt, "");
+        List<String> dump2 = ufmt.formatAll(userFormat.tableMode.normal);
+        differ dfr = new differ();
         for (;;) {
             if (pck.dataSize() <= prt) {
                 break;
@@ -701,14 +705,9 @@ public class rtrBgpDump {
             rtrBgpAttr.interpretAttribute(spkr, ntry, hlp.copyBytes(true, true));
             dumpPacketFull(res, spkr.currAdd);
             dumpPacketFull(res, spkr.currDel);
-            userFormat ufmt = new userFormat("|", "|");
-            ntry.best.fullDump(ufmt, "");
-            List<String> dump1 = ufmt.formatAll(userFormat.tableMode.normal);
-            ntry = new tabRouteEntry<addrIP>();
             ufmt = new userFormat("|", "|");
             ntry.best.fullDump(ufmt, "");
-            List<String> dump2 = ufmt.formatAll(userFormat.tableMode.normal);
-            differ dfr = new differ();
+            List<String> dump1 = ufmt.formatAll(userFormat.tableMode.normal);
             dfr.calc1by1(dump1, dump2);
             List<String> dft = dfr.getDiff(true, "    ");
             enc7bit.buf2hex(res, hlp.getCopy(), 0, "    ");
@@ -805,6 +804,8 @@ public class rtrBgpDump {
         prt = pck.msbGetW(0);
         pck.getSkip(2);
         prt = pck.dataSize() - prt;
+        spkr.currAdd.clear();
+        spkr.currDel.clear();
         for (;;) {
             if (pck.dataSize() <= prt) {
                 break;
@@ -812,28 +813,23 @@ public class rtrBgpDump {
             if (rtrBgpAttr.parseAttrib(pck, hlp)) {
                 break;
             }
-            spkr.currAdd.clear();
-            spkr.currDel.clear();
             rtrBgpAttr.interpretAttribute(spkr, ntry, hlp.copyBytes(true, true));
-            if ((spkr.currAdd.size() + spkr.currDel.size()) < 1) {
-                continue;
-            }
-            String b = rtrBgpUtil.attrType2string(hlp.ETHtype);
-            dumpPacketSum(res, target, b, spkr.currAdd);
-            dumpPacketSum(res, target, b, spkr.currDel);
         }
+        a = rtrBgpUtil.attrType2string(rtrBgpUtil.attrUnReach);
+        dumpPacketSum(res, target, a, spkr.currDel);
         a = rtrBgpUtil.attrType2string(rtrBgpUtil.attrReachable);
+        dumpPacketSum(res, target, a, spkr.currAdd);
         for (;;) {
             if (pck.dataSize() < 1) {
                 break;
             }
-            ntry = rtrBgpAfi.ipv4uni.readPrefix(true, pck);
+            tabRouteEntry<addrIP> curr = rtrBgpAfi.ipv4uni.readPrefix(true, pck);
             if (target != null) {
-                if (!ntry.prefix.matches(target)) {
+                if (!curr.prefix.matches(target)) {
                     continue;
                 }
             }
-            res.add(a + "|" + addrPrefix.ip2str(ntry.prefix) + "|");
+            res.add(a + "|" + addrPrefix.ip2str(curr.prefix) + "|");
         }
         String b = bits.time2str(cfgAll.timeZoneName, pck.INTtime + cfgAll.timeServerOffset, 3) + "|" + pck.IPsrc + "|" + pck.IPtrg + "|";
         String c = ntry.best.toShBgpLast();
