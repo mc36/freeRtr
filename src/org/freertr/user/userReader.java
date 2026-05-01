@@ -101,6 +101,10 @@ public class userReader implements Comparator<String> {
          */
         exclude,
         /**
+         * exclude with headers
+         */
+        hexclude,
+        /**
          * remove
          */
         remove,
@@ -613,6 +617,11 @@ public class userReader implements Comparator<String> {
                 return lst;
             case exclude:
                 return doExclude(lst);
+            case hexclude:
+                a = lst.remove(columnL);
+                lst = doExclude(lst);
+                lst.add(0, a);
+                return lst;
             case remove:
                 return doRemove(lst);
             case sort:
@@ -1928,6 +1937,11 @@ public class userReader implements Comparator<String> {
             filterM = mode.exclude;
             return;
         }
+        if (a.equals("hexclude")) {
+            filterS = filter2reg(filterS);
+            filterM = mode.hexclude;
+            return;
+        }
         if (a.equals("remove")) {
             filterM = mode.remove;
             return;
@@ -2002,6 +2016,10 @@ public class userReader implements Comparator<String> {
         }
         if (a.equals("regexc")) {
             filterM = mode.exclude;
+            return;
+        }
+        if (a.equals("hregexc")) {
+            filterM = mode.hexclude;
             return;
         }
         if (a.equals("regbeg")) {

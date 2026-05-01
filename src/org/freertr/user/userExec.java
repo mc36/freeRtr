@@ -1354,6 +1354,8 @@ public class userExec {
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "filter text");
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "exclude", "hide lines that match");
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "filter text");
+        hl.add(null, false, beg + 1, new int[]{beg + 2}, "hexclude", "hide lines that match with header");
+        hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "filter text");
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "begin", "only lines from match");
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "filter text");
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "hbegin", "only lines from match with header");
@@ -1379,6 +1381,8 @@ public class userExec {
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "hreginc", "only lines that match regular expression with header");
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "filter text");
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "regexc", "hide lines that match regular expression");
+        hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "filter text");
+        hl.add(null, false, beg + 1, new int[]{beg + 2}, "hregexc", "hide lines that match regular expression with header");
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "filter text");
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "regbeg", "only lines from match regular expression");
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<text>", "filter text");
