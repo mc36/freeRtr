@@ -831,6 +831,9 @@ public class rtrBgpDump {
             }
             res.add(a + "|" + addrPrefix.ip2str(curr.prefix) + "|");
         }
+        if (res.size() < 1) {
+            return res;
+        }
         String b = bits.time2str(cfgAll.timeZoneName, pck.INTtime + cfgAll.timeServerOffset, 3) + "|" + pck.IPsrc + "|" + pck.IPtrg + "|";
         String c = ntry.best.toShBgpLast();
         for (int i = 0; i < res.size(); i++) {
