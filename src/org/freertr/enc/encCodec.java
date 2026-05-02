@@ -69,26 +69,27 @@ public abstract class encCodec {
             setBuffer(false, decode);
         }
         encode = getBuffer(true);
-        if (encode == null) {
-            encode = new int[32768];
-            for (int i = 0; i < encode.length; i++) {
-                int o = -1;
-                int p = 0x100000;
-                for (int q = 0; q < decode.length; q++) {
-                    int r = i - decode[q];
-                    if (r < 0) {
-                        r = -r;
-                    }
-                    if (r > p) {
-                        continue;
-                    }
-                    o = q;
-                    p = r;
-                }
-                encode[i] = o;
-            }
-            setBuffer(true, encode);
+        if (encode != null) {
+            return;
         }
+        encode = new int[32768];
+        for (int i = 0; i < encode.length; i++) {
+            int o = -1;
+            int p = 0x100000;
+            for (int q = 0; q < decode.length; q++) {
+                int r = i - decode[q];
+                if (r < 0) {
+                    r = -r;
+                }
+                if (r > p) {
+                    continue;
+                }
+                o = q;
+                p = r;
+            }
+            encode[i] = o;
+        }
+        setBuffer(true, encode);
     }
 
     /**
