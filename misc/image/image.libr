@@ -1,5 +1,5 @@
 download 3
-reget-time 72
+reget-time 8
 
 mkdir %tmp%
 catalog-read freesh gz http://ftp.linuxliber.md/freesh/ freesh main
