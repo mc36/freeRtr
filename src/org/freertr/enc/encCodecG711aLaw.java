@@ -45,6 +45,15 @@ public class encCodecG711aLaw extends encCodec {
     }
 
     /**
+     * get iax type
+     *
+     * @return type
+     */
+    public int getIAXtype() {
+        return 8;
+    }
+
+    /**
      * get buffer
      *
      * @param dir direction

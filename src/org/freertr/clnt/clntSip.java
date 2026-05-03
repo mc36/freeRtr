@@ -8,6 +8,7 @@ import org.freertr.cfg.cfgDial;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.enc.encCallConn;
+import org.freertr.enc.encCallHnd;
 import org.freertr.enc.encCallOne;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
@@ -33,7 +34,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class clntSip implements Runnable {
+public class clntSip implements Runnable, encCallHnd {
 
     /**
      * create instance
@@ -401,28 +402,29 @@ public class clntSip implements Runnable {
     /**
      * get number of in calls
      *
+     * @param dir direction, true=in, false=out
      * @return number of calls
      */
-    public int numCallsIn() {
-        return ins.size();
-    }
-
-    /**
-     * get number of out calls
-     *
-     * @return number of calls
-     */
-    public int numCallsOut() {
-        return outs.size();
+    public int numCalls(boolean dir) {
+        if (dir) {
+            return ins.size();
+        } else {
+            return outs.size();
+        }
     }
 
     /**
      * get number of out messages
      *
+     * @param dir direction, true=in, false=out
      * @return number of messages
      */
-    public int numMsgsOut() {
-        return msgs.size();
+    public int numMsgs(boolean dir) {
+        if (dir) {
+            return 0;
+        } else {
+            return msgs.size();
+        }
     }
 
     /**
@@ -576,19 +578,19 @@ public class clntSip implements Runnable {
     /**
      * get call
      *
-     * @param id call id
+     * @param cid call id
      * @return rtp
      */
-    public encCallOne getCall(String id) {
-        if (id == null) {
+    public encCallOne getCall(String cid) {
+        if (cid == null) {
             return null;
         }
-        clntSipIn legI = new clntSipIn(this, id);
+        clntSipIn legI = new clntSipIn(this, cid);
         legI = ins.find(legI);
         if (legI != null) {
             return legI.data;
         }
-        clntSipOut legO = new clntSipOut(this, id);
+        clntSipOut legO = new clntSipOut(this, cid);
         legO = outs.find(legO);
         if (legO == null) {
             return null;

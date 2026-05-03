@@ -36,6 +36,15 @@ public class encCodecPcm extends encCodec {
     }
 
     /**
+     * get iax type
+     *
+     * @return type
+     */
+    public int getIAXtype() {
+        return 32;
+    }
+
+    /**
      * get wav type
      *
      * @return type

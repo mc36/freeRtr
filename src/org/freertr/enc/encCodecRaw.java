@@ -25,6 +25,15 @@ public class encCodecRaw extends encCodec {
         return "RAW";
     }
 
+    /**
+     * get iax type
+     *
+     * @return type
+     */
+    public int getIAXtype() {
+        return 64;
+    }
+
     public int getWAVtype() {
         return 1;
     }

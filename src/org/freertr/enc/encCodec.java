@@ -50,6 +50,13 @@ public abstract class encCodec {
     public abstract String getRTPname();
 
     /**
+     * get iax type
+     *
+     * @return type
+     */
+    public abstract int getIAXtype();
+
+    /**
      * get wav type
      *
      * @return type

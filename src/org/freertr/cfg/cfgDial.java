@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.clnt.clntSip;
+import org.freertr.enc.encCallHnd;
 import org.freertr.enc.encCallOne;
 import org.freertr.pack.packSip;
 import org.freertr.enc.encCodec;
@@ -269,7 +270,7 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
      */
     public long seenTime;
 
-    private clntSip sip;
+    private encCallHnd sip;
 
     public int compareTo(cfgDial o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
@@ -335,9 +336,9 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
             return a + "n/a|n/a";
         }
         if (call) {
-            return a + sip.numCallsIn() + "|" + sip.numCallsOut();
+            return a + sip.numCalls(true) + "|" + sip.numCalls(false);
         } else {
-            return a + "n/a|" + sip.numMsgsOut();
+            return a + sip.numMsgs(true) + "|" + sip.numMsgs(false);
         }
     }
 
@@ -392,7 +393,7 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
         if (!sip.isReady()) {
             return false;
         }
-        if (sip.numCallsOut() >= maxCallsOut) {
+        if (sip.numCalls(false) >= maxCallsOut) {
             return false;
         }
         calling = stripAddr(calling);
@@ -466,7 +467,7 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
             failIn++;
             return null;
         }
-        if (sip.numCallsIn() > maxCallsIn) {
+        if (sip.numCalls(true) > maxCallsIn) {
             failIn++;
             return null;
         }

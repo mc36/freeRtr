@@ -36,6 +36,15 @@ public class encCodecG711uLaw extends encCodec {
     }
 
     /**
+     * get iax type
+     *
+     * @return type
+     */
+    public int getIAXtype() {
+        return 4;
+    }
+
+    /**
      * get wav type
      *
      * @return type
