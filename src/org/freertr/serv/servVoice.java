@@ -433,7 +433,7 @@ class servVoiceConn implements Runnable, Comparable<servVoiceConn> {
             bye();
             return;
         }
-        if (data.startConnect(lower.lower.srvVrf.getUdp(adr), new pipeLine(32768, true), lower.conn.iface, lower.lower.getDataPort(), adr, prt)) {
+        if (data.startConnect(lower.lower.srvVrf.getUdp(adr), new pipeLine(32768, true), lower.getCodec().getRTPtype(), lower.conn.iface, lower.lower.getDataPort(), adr, prt)) {
             bye();
             return;
         }

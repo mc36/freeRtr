@@ -6,13 +6,14 @@ import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGen;
 import org.freertr.util.bits;
+import org.freertr.enc.encCallOne;
 
 /**
  * real time (control) protocol (rfc3550) packet
  *
  * @author matecsaba
  */
-public class packRtp {
+public class packRtp implements encCallOne {
 
     /**
      * create instance
@@ -71,13 +72,16 @@ public class packRtp {
      *
      * @param handler connection handler
      * @param sample pipeline to clone from
+     * @param typ type of codec
      * @param locI local interface, null means pick up one
      * @param locP local port, 0 means pick up one
      * @param remA remote address
      * @param remP remote port
      * @return false on success, true on error
      */
-    public boolean startConnect(prtGen handler, pipeLine sample, ipFwdIface locI, int locP, addrIP remA, int remP) {
+    public boolean startConnect(prtGen handler, pipeLine sample, int typ, ipFwdIface locI, int locP, addrIP remA, int remP) {
+        typeTx = typ;
+        syncTx = bits.randomD();
         locP &= 0xffffe;
         remP &= 0xffffe;
         connData = handler.streamConnect(sample, locI, locP, remA, remP, "rtp", -1, null, -1, -1);
@@ -95,10 +99,13 @@ public class packRtp {
     /**
      * start connection
      *
+     * @param typ type of codec
      * @param data existing connection
      * @param ctrl existing connection
      */
-    public void startConnect(pipeSide data, pipeSide ctrl) {
+    public void startConnect(int typ, pipeSide data, pipeSide ctrl) {
+        typeTx = typ;
+        syncTx = bits.randomD();
         connData = data;
         connCtrl = ctrl;
         lastCtrl = bits.getTime();
@@ -172,9 +179,10 @@ public class packRtp {
      *
      * @param pck buffer to use
      * @param blocking blocking mode
+     * @param enforce check type
      * @return bytes received
      */
-    public int recvPack(packHolder pck, boolean blocking) {
+    public int recvPack(packHolder pck, boolean blocking, boolean enforce) {
         if (connCtrl != null) {
             for (;;) {
                 pck.clear();
@@ -205,6 +213,12 @@ public class packRtp {
         pck.getSkip(12 + ((ver & 0xf) * 4));
         i = pck.dataSize();
         if (i < 1) {
+            return pipeLine.tryLater;
+        }
+        if (!enforce) {
+            return i;
+        }
+        if (typeRx != typeTx) {
             return pipeLine.tryLater;
         }
         return i;

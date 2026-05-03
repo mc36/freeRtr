@@ -7,6 +7,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgVrf;
+import org.freertr.enc.encCallOne;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdTab;
@@ -577,7 +578,7 @@ public class clntSip implements Runnable {
      * @param id call id
      * @return rtp
      */
-    public packRtp getCall(String id) {
+    public encCallOne getCall(String id) {
         if (id == null) {
             return null;
         }
@@ -1004,7 +1005,7 @@ class clntSipOut implements Comparable<clntSipOut> {
             return true;
         }
         callRtp = new packRtp();
-        if (callRtp.startConnect(lower.udp, new pipeLine(65536, true), lower.srcFwd, callPort, remA, remP)) {
+        if (callRtp.startConnect(lower.udp, new pipeLine(65536, true), lower.getCodec().getRTPtype(), lower.srcFwd, callPort, remA, remP)) {
             return true;
         }
         callTrg = callAck.headerGet("To", 1);
@@ -1211,7 +1212,7 @@ class clntSipIn implements Runnable, Comparable<clntSipIn> {
         }
         sendSdp(sip);
         data = new packRtp();
-        if (data.startConnect(lower.udp, new pipeLine(65536, true), lower.srcFwd, callPort, adr, prt)) {
+        if (data.startConnect(lower.udp, new pipeLine(65536, true), lower.getCodec().getRTPtype(), lower.srcFwd, callPort, adr, prt)) {
             sendBye();
             peer.stopCall(rcd);
             lower.upper.stoppedCall(false, newSrc, newTrg, started);

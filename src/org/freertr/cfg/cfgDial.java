@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.auth.authLocal;
 import org.freertr.clnt.clntSip;
-import org.freertr.pack.packRtp;
+import org.freertr.enc.encCallOne;
 import org.freertr.pack.packSip;
 import org.freertr.enc.encCodec;
 import org.freertr.enc.encCodecG711aLaw;
 import org.freertr.enc.encCodecG711uLaw;
 import org.freertr.enc.encUrl;
-import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
@@ -590,7 +589,7 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
      * @param cid call id
      * @return rtp
      */
-    public packRtp getCall(String cid) {
+    public encCallOne getCall(String cid) {
         if (sip == null) {
             return null;
         }

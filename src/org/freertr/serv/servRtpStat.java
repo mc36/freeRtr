@@ -190,17 +190,20 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
         }
         lower.stats.put(this);
         packRtp rtp = new packRtp();
-        rtp.startConnect(conn, null);
+        rtp.startConnect(0, conn, null);
         packHolder pck = new packHolder(true, true);
         try {
-            rtp.recvPack(pck, true);
+            rtp.recvPack(pck, true, false);
             for (;;) {
                 sync = rtp.syncRx;
                 typ = rtp.typeRx;
                 pak++;
                 byt += pck.dataSize();
                 seq = rtp.packRx + 1;
-                if (rtp.recvPack(pck, true) < 1) {
+                if (rtp.isClosed() != 0) {
+                    break;
+                }
+                if (rtp.recvPack(pck, true, false) < 1) {
                     break;
                 }
                 int dif = (short) (rtp.packRx - seq);

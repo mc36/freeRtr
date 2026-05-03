@@ -3,7 +3,7 @@ package org.freertr.clnt;
 import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
-import org.freertr.pack.packRtp;
+import org.freertr.enc.encCallOne;
 import org.freertr.pack.packSip;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
@@ -36,7 +36,7 @@ public class clntVoice {
 
     private String pipeRcd;
 
-    private packRtp pipeRtp;
+    private encCallOne pipeRtp;
 
     private pipeSide pipeUsr;
 

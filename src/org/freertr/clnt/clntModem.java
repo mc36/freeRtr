@@ -2,7 +2,7 @@ package org.freertr.clnt;
 
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
-import org.freertr.pack.packRtp;
+import org.freertr.enc.encCallOne;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeModem;
 import org.freertr.pipe.pipeSide;
@@ -35,7 +35,7 @@ public class clntModem {
 
     private String pipeRcd;
 
-    private packRtp pipeRtp;
+    private encCallOne pipeRtp;
 
     private pipeSide pipeUsr;
 

@@ -500,7 +500,7 @@ class servSipDoer implements Runnable, Comparable<servSipDoer> {
             }
             tx.writeDown();
             packRtp data = new packRtp();
-            if (data.startConnect(lower.srvVrf.getUdp(adr), new pipeLine(32768, true), conn.iface, lower.getDataPort(), adr, prt)) {
+            if (data.startConnect(lower.srvVrf.getUdp(adr), new pipeLine(32768, true), peer.getCodec().getRTPtype(), conn.iface, lower.getDataPort(), adr, prt)) {
                 tx.makeReq("BYE", cnt, trg, src, getMyContact(), via, cid, csq + 1, 0);
                 if (debugger.servSipTraf) {
                     tx.dump("tx");

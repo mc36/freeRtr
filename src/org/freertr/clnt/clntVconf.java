@@ -2,8 +2,8 @@ package org.freertr.clnt;
 
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
+import org.freertr.enc.encCallOne;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packRtp;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.enc.encCodec;
@@ -363,9 +363,7 @@ class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
 
     private String callId;
 
-    private packRtp rtp;
-
-    private int syncSrc;
+    private encCallOne rtp;
 
     public clntVconfPeer(clntVconf parent, String called) {
         lower = parent;
@@ -405,13 +403,10 @@ class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
         if (rtp == null) {
             return;
         }
-        rtp.typeTx = codec.getRTPtype();
-        rtp.syncTx = syncSrc;
         rtp.sendPack(pck);
     }
 
     public void doer() {
-        syncSrc = bits.randomD();
         peer = cfgAll.dialFind(lower.calling, target, null);
         if (peer == null) {
             if (lower.events) {
@@ -439,10 +434,7 @@ class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
             if (rtp.isClosed() != 0) {
                 break;
             }
-            if (rtp.recvPack(pck, true) < 1) {
-                break;
-            }
-            if (rtp.typeRx != codec.getRTPtype()) {
+            if (rtp.recvPack(pck, true, true) < 1) {
                 continue;
             }
             byte[] buf = pck.getCopy();

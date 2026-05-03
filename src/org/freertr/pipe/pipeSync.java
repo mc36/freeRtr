@@ -1,8 +1,8 @@
 package org.freertr.pipe;
 
 import org.freertr.cry.cryHashFcs16;
+import org.freertr.enc.encCallOne;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packRtp;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
 
@@ -27,7 +27,7 @@ public class pipeSync {
      * @param use channels to use
      * @param app channels to append
      */
-    public pipeSync(pipeSide pipe, packRtp rtp, int pre, int use, int app) {
+    public pipeSync(pipeSide pipe, encCallOne rtp, int pre, int use, int app) {
         new pipeSyncTx(pipe, rtp, pre, use, app);
         new pipeSyncRx(pipe, rtp, pre, use, app);
     }
@@ -38,9 +38,7 @@ class pipeSyncTx implements Runnable {
 
     private pipeSide upper;
 
-    private packRtp conn;
-
-    private int syncSrc;
+    private encCallOne conn;
 
     private int seq;
 
@@ -66,13 +64,12 @@ class pipeSyncTx implements Runnable {
 
     private final static int payMax = 1280;
 
-    public pipeSyncTx(pipeSide pipe, packRtp rtp, int pre, int use, int app) {
+    public pipeSyncTx(pipeSide pipe, encCallOne rtp, int pre, int use, int app) {
         upper = pipe;
         conn = rtp;
         chnPre = pre;
         chnUse = use;
         chnApp = app;
-        syncSrc = bits.randomD();
         paySiz = payMax / (pre + use + app);
         payInt = 1000 / (8000 / paySiz);
         paySiz = (paySiz + 1) * use;
@@ -184,8 +181,6 @@ class pipeSyncTx implements Runnable {
             seq++;
             pck.putSkip(pipeSync.size);
             pck.merge2beg();
-            conn.typeTx = 0;
-            conn.syncTx = syncSrc;
             conn.sendPack(pck);
         }
     }
@@ -206,7 +201,7 @@ class pipeSyncRx implements Runnable {
 
     private pipeSide upper;
 
-    private packRtp conn;
+    private encCallOne conn;
 
     private int chnPre;
 
@@ -222,7 +217,7 @@ class pipeSyncRx implements Runnable {
 
     private int resOne;
 
-    public pipeSyncRx(pipeSide pipe, packRtp rtp, int pre, int use, int app) {
+    public pipeSyncRx(pipeSide pipe, encCallOne rtp, int pre, int use, int app) {
         upper = pipe;
         conn = rtp;
         chnPre = pre;
@@ -302,13 +297,13 @@ class pipeSyncRx implements Runnable {
         packHolder pck = new packHolder(true, true);
         for (;;) {
             if (conn.isClosed() != 0) {
-                return;
+                break;
             }
             if (upper.isClosed() != 0) {
-                return;
+                break;
             }
-            if (conn.recvPack(pck, true) < 1) {
-                return;
+            if (conn.recvPack(pck, true, false) < 1) {
+                break;
             }
             pck.getSkip(pipeSync.size);
             for (;;) {

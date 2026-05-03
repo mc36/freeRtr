@@ -1,9 +1,8 @@
 package org.freertr.clnt;
 
+import org.freertr.enc.encCallOne;
 import org.freertr.enc.encCodec;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packRtp;
-import org.freertr.util.bits;
 import org.freertr.util.logger;
 
 /**
@@ -13,8 +12,9 @@ import org.freertr.util.logger;
  */
 public class clntVconn {
 
-    private final packRtp side1;
-    private final packRtp side2;
+    private final encCallOne side1;
+
+    private final encCallOne side2;
 
     /**
      * create connection
@@ -24,7 +24,7 @@ public class clntVconn {
      * @param c1 codec one
      * @param c2 codec two
      */
-    public clntVconn(packRtp s1, packRtp s2, encCodec c1, encCodec c2) {
+    public clntVconn(encCallOne s1, encCallOne s2, encCodec c1, encCodec c2) {
         side1 = s1;
         side2 = s2;
         if (c1.getRTPtype() == c2.getRTPtype()) {
@@ -57,13 +57,13 @@ public class clntVconn {
 
 class clntVconnSmpl implements Runnable {
 
-    private packRtp rx;
+    private encCallOne rx;
 
-    private packRtp tx;
+    private encCallOne tx;
 
     private encCodec codec;
 
-    public clntVconnSmpl(packRtp s1, packRtp s2, encCodec c) {
+    public clntVconnSmpl(encCallOne s1, encCallOne s2, encCodec c) {
         rx = s1;
         tx = s2;
         codec = c;
@@ -80,14 +80,9 @@ class clntVconnSmpl implements Runnable {
                 break;
             }
             pck.clear();
-            if (rx.recvPack(pck, true) < 1) {
-                break;
-            }
-            if (rx.typeRx != codec.getRTPtype()) {
+            if (rx.recvPack(pck, true, true) < 1) {
                 continue;
             }
-            tx.typeTx = rx.typeRx;
-            tx.syncTx = rx.syncRx;
             tx.sendPack(pck);
         }
     }
@@ -106,22 +101,19 @@ class clntVconnSmpl implements Runnable {
 
 class clntVconnTrns implements Runnable {
 
-    private packRtp rxS;
+    private encCallOne rxS;
 
-    private packRtp txS;
+    private encCallOne txS;
 
     private encCodec rxC;
 
     private encCodec txC;
 
-    private int syncSrc;
-
-    public clntVconnTrns(packRtp s1, packRtp s2, encCodec c1, encCodec c2) {
+    public clntVconnTrns(encCallOne s1, encCallOne s2, encCodec c1, encCodec c2) {
         rxS = s1;
         txS = s2;
         rxC = c1;
         txC = c2;
-        syncSrc = bits.randomD();
         logger.startThread(this);
     }
 
@@ -135,10 +127,7 @@ class clntVconnTrns implements Runnable {
                 break;
             }
             pck.clear();
-            if (rxS.recvPack(pck, true) < 1) {
-                break;
-            }
-            if (rxS.typeRx != rxC.getRTPtype()) {
+            if (rxS.recvPack(pck, true, true) < 1) {
                 continue;
             }
             byte[] buf = txC.encodeBuf(rxC.decodeBuf(pck.getCopy()));
@@ -146,8 +135,6 @@ class clntVconnTrns implements Runnable {
             pck.putCopy(buf, 0, 0, buf.length);
             pck.putSkip(buf.length);
             pck.merge2end();
-            txS.typeTx = txC.getRTPtype();
-            txS.syncTx = syncSrc;
             txS.sendPack(pck);
         }
     }

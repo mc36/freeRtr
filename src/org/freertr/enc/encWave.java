@@ -3,7 +3,6 @@ package org.freertr.enc;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packRtp;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
 
@@ -38,7 +37,7 @@ public class encWave {
 
     private final encCodec codr;
 
-    private final packRtp strm;
+    private final encCallOne strm;
 
     /**
      * make wave handler
@@ -46,7 +45,7 @@ public class encWave {
      * @param codec codec to use
      * @param rtp voice connection
      */
-    public encWave(encCodec codec, packRtp rtp) {
+    public encWave(encCodec codec, encCallOne rtp) {
         codr = codec;
         strm = rtp;
         state = 0;
@@ -154,13 +153,11 @@ class encWavePlay implements Runnable {
 
     private encWave lower;
 
-    private int syncSrc;
-
     private packHolder pck;
 
     private encCodec codec;
 
-    private packRtp rtp;
+    private encCallOne rtp;
 
     private int pos;
 
@@ -168,12 +165,11 @@ class encWavePlay implements Runnable {
 
     private final static int payInt = 1000 / (8000 / paySiz);
 
-    public encWavePlay(encWave parent, encCodec codr, packRtp strm) {
+    public encWavePlay(encWave parent, encCodec codr, encCallOne strm) {
         lower = parent;
         rtp = strm;
         codec = codr;
         pck = new packHolder(true, true);
-        syncSrc = bits.randomD();
         pos = encWave.size;
         lower.state = 1;
         logger.startThread(this);
@@ -210,8 +206,6 @@ class encWavePlay implements Runnable {
             pck.clear();
             pck.putCopy(lower.buf, pos, 0, paySiz);
             pck.putSkip(paySiz);
-            rtp.typeTx = codec.getRTPtype();
-            rtp.syncTx = syncSrc;
             rtp.sendPack(pck);
             pos += paySiz;
         }
@@ -227,11 +221,11 @@ class encWaveRec implements Runnable {
 
     private encCodec codec;
 
-    private packRtp rtp;
+    private encCallOne rtp;
 
     private List<Byte> got;
 
-    public encWaveRec(encWave parent, encCodec codr, packRtp strm) {
+    public encWaveRec(encWave parent, encCodec codr, encCallOne strm) {
         lower = parent;
         rtp = strm;
         codec = codr;
@@ -264,10 +258,7 @@ class encWaveRec implements Runnable {
                 break;
             }
             pck.clear();
-            if (rtp.recvPack(pck, true) < 1) {
-                break;
-            }
-            if (rtp.typeRx != codec.getRTPtype()) {
+            if (rtp.recvPack(pck, true, true) < 1) {
                 continue;
             }
             byte[] buf = pck.getCopy();
@@ -294,9 +285,9 @@ class encWaveDtmf implements Runnable {
 
     private encCodec codec;
 
-    private packRtp rtp;
+    private encCallOne rtp;
 
-    public encWaveDtmf(encWave parent, encCodec codr, packRtp strm) {
+    public encWaveDtmf(encWave parent, encCodec codr, encCallOne strm) {
         lower = parent;
         rtp = strm;
         codec = codr;
@@ -324,10 +315,7 @@ class encWaveDtmf implements Runnable {
                 break;
             }
             pck.clear();
-            if (rtp.recvPack(pck, true) < 1) {
-                break;
-            }
-            if (rtp.typeRx != codec.getRTPtype()) {
+            if (rtp.recvPack(pck, true, true) < 1) {
                 continue;
             }
             byte[] buf = pck.getCopy();

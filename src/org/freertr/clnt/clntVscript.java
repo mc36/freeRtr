@@ -2,9 +2,9 @@ package org.freertr.clnt;
 
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
+import org.freertr.enc.encCallOne;
 import org.freertr.enc.encCodec;
 import org.freertr.enc.encWave;
-import org.freertr.pack.packRtp;
 import org.freertr.pipe.pipeModem;
 import org.freertr.pipe.pipeSide;
 import org.freertr.util.bits;
@@ -31,13 +31,13 @@ public class clntVscript implements Runnable {
 
     private pipeSide user;
 
-    private packRtp strm;
+    private encCallOne strm;
 
     private cfgDial per;
 
     private String rcd;
 
-    private packRtp fwd;
+    private encCallOne fwd;
 
     private encWave play;
 
@@ -56,7 +56,7 @@ public class clntVscript implements Runnable {
      * @param calling called number
      * @param called calling number
      */
-    public clntVscript(pipeSide script, encCodec codec, packRtp rtp, String calling, String called) {
+    public clntVscript(pipeSide script, encCodec codec, encCallOne rtp, String calling, String called) {
         user = script;
         codr = codec;
         strm = rtp;

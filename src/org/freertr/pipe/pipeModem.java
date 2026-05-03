@@ -1,7 +1,7 @@
 package org.freertr.pipe;
 
+import org.freertr.enc.encCallOne;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packRtp;
 import org.freertr.enc.encCodec;
 import org.freertr.enc.encFsk;
 import org.freertr.util.bits;
@@ -24,7 +24,7 @@ public class pipeModem {
      * @param codec codec to use
      * @param rtp voice connection
      */
-    public static void answer(pipeSide pipe, encCodec codec, packRtp rtp) {
+    public static void answer(pipeSide pipe, encCodec codec, encCallOne rtp) {
         new pipeModemTx(pipe, codec, rtp, encFsk.ituV21carrier[1]);
         new pipeModemRx(pipe, codec, rtp, encFsk.ituV21carrier[0]);
     }
@@ -36,7 +36,7 @@ public class pipeModem {
      * @param codec codec to use
      * @param rtp voice connection
      */
-    public static void originate(pipeSide pipe, encCodec codec, packRtp rtp) {
+    public static void originate(pipeSide pipe, encCodec codec, encCallOne rtp) {
         new pipeModemTx(pipe, codec, rtp, encFsk.ituV21carrier[0]);
         new pipeModemRx(pipe, codec, rtp, encFsk.ituV21carrier[1]);
     }
@@ -49,13 +49,11 @@ class pipeModemTx implements Runnable {
 
     private encCodec codec;
 
-    private packRtp rtp;
+    private encCallOne rtp;
 
     private encFsk modem = new encFsk();
 
     private packHolder queue = new packHolder(true, true);
-
-    private int syncSrc;
 
     private packHolder pck = new packHolder(true, true);
 
@@ -63,11 +61,10 @@ class pipeModemTx implements Runnable {
 
     private final static int payInt = 1000 / (8000 / paySiz);
 
-    public pipeModemTx(pipeSide line, encCodec sound, packRtp conn, int freq) {
+    public pipeModemTx(pipeSide line, encCodec sound, encCallOne conn, int freq) {
         pipe = line;
         codec = sound;
         rtp = conn;
-        syncSrc = bits.randomD();
         modem.carrier = freq;
         modem.sampDat = new int[1024];
         logger.startThread(this);
@@ -104,8 +101,6 @@ class pipeModemTx implements Runnable {
             pck.clear();
             pck.putCopy(buf, 0, 0, buf.length);
             pck.putSkip(buf.length);
-            rtp.typeTx = codec.getRTPtype();
-            rtp.syncTx = syncSrc;
             rtp.sendPack(pck);
         }
     }
@@ -128,11 +123,11 @@ class pipeModemRx implements Runnable {
 
     private encCodec codec;
 
-    private packRtp rtp;
+    private encCallOne rtp;
 
     private encFsk modem = new encFsk();
 
-    public pipeModemRx(pipeSide line, encCodec sound, packRtp conn, int freq) {
+    public pipeModemRx(pipeSide line, encCodec sound, encCallOne conn, int freq) {
         pipe = line;
         codec = sound;
         rtp = conn;
@@ -145,15 +140,12 @@ class pipeModemRx implements Runnable {
         packHolder pck = new packHolder(true, true);
         for (;;) {
             if (rtp.isClosed() != 0) {
-                return;
+                break;
             }
             if (pipe.isClosed() != 0) {
-                return;
+                break;
             }
-            if (rtp.recvPack(pck, true) < 1) {
-                return;
-            }
-            if (rtp.typeRx != codec.getRTPtype()) {
+            if (rtp.recvPack(pck, true, true) < 1) {
                 continue;
             }
             modem.sampAdd(codec.decodeBuf(pck.getCopy()));

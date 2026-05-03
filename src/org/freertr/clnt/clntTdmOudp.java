@@ -142,7 +142,7 @@ public class clntTdmOudp implements Runnable, ifcDn {
             prtL = defPort;
         }
         conn = new packRtp();
-        if (conn.startConnect(udp, new pipeLine(32768, true), fwdIfc, prtL, trg, prtR)) {
+        if (conn.startConnect(udp, new pipeLine(32768, true), 0, fwdIfc, prtL, trg, prtR)) {
             return;
         }
         pipeLine pip = new pipeLine(65535, true);
