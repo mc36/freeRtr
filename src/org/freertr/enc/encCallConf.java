@@ -1,12 +1,10 @@
-package org.freertr.clnt;
+package org.freertr.enc;
 
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
-import org.freertr.enc.encCallOne;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
-import org.freertr.enc.encCodec;
 import org.freertr.tab.tabGen;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -17,7 +15,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class clntVconf implements Runnable {
+public class encCallConf implements Runnable {
 
     /**
      * time when started
@@ -47,14 +45,14 @@ public class clntVconf implements Runnable {
     /**
      * participants
      */
-    protected final tabGen<clntVconfPeer> peers = new tabGen<clntVconfPeer>();
+    protected final tabGen<encCallConfPeer> peers = new tabGen<encCallConfPeer>();
 
     private pipeSide reported;
 
     /**
      * create instance
      */
-    public clntVconf() {
+    public encCallConf() {
         pipeLine pip = new pipeLine(32768, false);
         reported = pip.getSide();
         user = pip.getSide();
@@ -71,8 +69,8 @@ public class clntVconf implements Runnable {
      * @return false on success, true on error
      */
     public boolean addPeer(String called) {
-        clntVconfPeer ntry = new clntVconfPeer(this, called);
-        clntVconfPeer old = peers.add(ntry);
+        encCallConfPeer ntry = new encCallConfPeer(this, called);
+        encCallConfPeer old = peers.add(ntry);
         if (old != null) {
             return true;
         }
@@ -94,7 +92,7 @@ public class clntVconf implements Runnable {
      */
     public void startWork() {
         logger.startThread(this);
-        new clntVconfWork(this);
+        new encCallConfWork(this);
     }
 
     public void run() {
@@ -193,7 +191,7 @@ public class clntVconf implements Runnable {
             }
             if (a.equals("list")) {
                 for (int i = 0; i < peers.size(); i++) {
-                    clntVconfPeer ntry = peers.get(i);
+                    encCallConfPeer ntry = peers.get(i);
                     if (ntry == null) {
                         continue;
                     }
@@ -206,7 +204,7 @@ public class clntVconf implements Runnable {
                 continue;
             }
             if (a.equals("del")) {
-                clntVconfPeer ntry = new clntVconfPeer(this, cmd.getRemaining());
+                encCallConfPeer ntry = new encCallConfPeer(this, cmd.getRemaining());
                 ntry = peers.find(ntry);
                 if (ntry == null) {
                     user.linePut("error not-found");
@@ -217,7 +215,7 @@ public class clntVconf implements Runnable {
             }
             if (a.equals("vol-in")) {
                 int i = bits.str2num(cmd.word());
-                clntVconfPeer ntry = new clntVconfPeer(this, cmd.getRemaining());
+                encCallConfPeer ntry = new encCallConfPeer(this, cmd.getRemaining());
                 ntry = peers.find(ntry);
                 if (ntry == null) {
                     user.linePut("error not-found");
@@ -228,7 +226,7 @@ public class clntVconf implements Runnable {
             }
             if (a.equals("vol-out")) {
                 int i = bits.str2num(cmd.word());
-                clntVconfPeer ntry = new clntVconfPeer(this, cmd.getRemaining());
+                encCallConfPeer ntry = new encCallConfPeer(this, cmd.getRemaining());
                 ntry = peers.find(ntry);
                 if (ntry == null) {
                     user.linePut("error not-found");
@@ -243,7 +241,7 @@ public class clntVconf implements Runnable {
 
 }
 
-class clntVconfWork implements Runnable {
+class encCallConfWork implements Runnable {
 
     public final static int paySiz = 160;
 
@@ -253,7 +251,7 @@ class clntVconfWork implements Runnable {
 
     public final static int samMax = 32767;
 
-    public final clntVconf lower;
+    public final encCallConf lower;
 
     private packHolder pck = new packHolder(true, true);
 
@@ -261,7 +259,7 @@ class clntVconfWork implements Runnable {
 
     private int[] sam = new int[paySiz];
 
-    public clntVconfWork(clntVconf parent) {
+    public encCallConfWork(encCallConf parent) {
         lower = parent;
         logger.startThread(this);
     }
@@ -294,7 +292,7 @@ class clntVconfWork implements Runnable {
                 sam[i] = 0;
             }
             for (int p = 0; p < lower.peers.size(); p++) {
-                clntVconfPeer ntry = lower.peers.get(p);
+                encCallConfPeer ntry = lower.peers.get(p);
                 if (ntry == null) {
                     continue;
                 }
@@ -315,7 +313,7 @@ class clntVconfWork implements Runnable {
                 }
             }
             for (int p = 0; p < lower.peers.size(); p++) {
-                clntVconfPeer ntry = lower.peers.get(p);
+                encCallConfPeer ntry = lower.peers.get(p);
                 if (ntry == null) {
                     continue;
                 }
@@ -339,9 +337,9 @@ class clntVconfWork implements Runnable {
 
 }
 
-class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
+class encCallConfPeer implements Runnable, Comparable<encCallConfPeer> {
 
-    public final clntVconf lower;
+    public final encCallConf lower;
 
     public final String target;
 
@@ -351,7 +349,7 @@ class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
 
     private final pipeSide pipeOwn;
 
-    public int[] sam = new int[clntVconfWork.paySiz];
+    public int[] sam = new int[encCallConfWork.paySiz];
 
     public encCodec codec;
 
@@ -365,7 +363,7 @@ class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
 
     private encCallOne rtp;
 
-    public clntVconfPeer(clntVconf parent, String called) {
+    public encCallConfPeer(encCallConf parent, String called) {
         lower = parent;
         target = called;
         pipeLine pip = new pipeLine(1024, false);
@@ -373,7 +371,7 @@ class clntVconfPeer implements Runnable, Comparable<clntVconfPeer> {
         pipeOwn = pip.getSide();
     }
 
-    public int compareTo(clntVconfPeer o) {
+    public int compareTo(encCallConfPeer o) {
         return target.compareTo(o.target);
     }
 

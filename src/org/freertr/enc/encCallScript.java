@@ -1,10 +1,7 @@
-package org.freertr.clnt;
+package org.freertr.enc;
 
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
-import org.freertr.enc.encCallOne;
-import org.freertr.enc.encCodec;
-import org.freertr.enc.encWave;
 import org.freertr.pipe.pipeModem;
 import org.freertr.pipe.pipeSide;
 import org.freertr.util.bits;
@@ -16,7 +13,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class clntVscript implements Runnable {
+public class encCallScript implements Runnable {
 
     /**
      * need prompt
@@ -56,7 +53,7 @@ public class clntVscript implements Runnable {
      * @param calling called number
      * @param called calling number
      */
-    public clntVscript(pipeSide script, encCodec codec, encCallOne rtp, String calling, String called) {
+    public encCallScript(pipeSide script, encCodec codec, encCallOne rtp, String calling, String called) {
         user = script;
         codr = codec;
         strm = rtp;
@@ -336,7 +333,7 @@ public class clntVscript implements Runnable {
                     continue;
                 }
                 fwd = per.getCall(rcd);
-                new clntVconn(strm, fwd, codr, per.getCodec());
+                new encCallConn(strm, fwd, codr, per.getCodec());
                 user.linePut("forwarded");
                 continue;
             }

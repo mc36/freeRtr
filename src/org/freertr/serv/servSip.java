@@ -6,7 +6,7 @@ import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
 import org.freertr.cfg.cfgTrnsltn;
-import org.freertr.clnt.clntVconn;
+import org.freertr.enc.encCallConn;
 import org.freertr.pack.packRtp;
 import org.freertr.pack.packSip;
 import org.freertr.pipe.pipeLine;
@@ -509,7 +509,7 @@ class servSipDoer implements Runnable, Comparable<servSipDoer> {
                 peer.stopCall(rcd);
                 continue;
             }
-            clntVconn conner = new clntVconn(data, peer.getCall(rcd), peer.getCodec(), peer.getCodec());
+            encCallConn conner = new encCallConn(data, peer.getCall(rcd), peer.getCodec(), peer.getCodec());
             for (;;) {
                 if (conner.isClosed() != 0) {
                     break;

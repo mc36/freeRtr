@@ -12,7 +12,7 @@ import org.freertr.prt.prtServS;
 import org.freertr.enc.encCodec;
 import org.freertr.enc.encCodecG711aLaw;
 import org.freertr.enc.encCodecG711uLaw;
-import org.freertr.clnt.clntVscript;
+import org.freertr.enc.encCallScript;
 import org.freertr.enc.encUrl;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
@@ -446,7 +446,7 @@ class servVoiceConn implements Runnable, Comparable<servVoiceConn> {
             pipeC.setTime(120000);
             pipeC.lineTx = pipeSide.modTyp.modeCRLF;
             pipeC.lineRx = pipeSide.modTyp.modeCRtryLF;
-            new clntVscript(pipeC, lower.getCodec(), data, encUrl.fromEmail(packSip.removeTag(callInv.headerGet("From", 1))), encUrl.fromEmail(packSip.removeTag(callInv.headerGet("To", 1))));
+            new encCallScript(pipeC, lower.getCodec(), data, encUrl.fromEmail(packSip.removeTag(callInv.headerGet("From", 1))), encUrl.fromEmail(packSip.removeTag(callInv.headerGet("To", 1))));
             pipeS.setTime(120000);
             pipeS.lineTx = pipeSide.modTyp.modeCRLF;
             pipeS.lineRx = pipeSide.modTyp.modeCRorLF;

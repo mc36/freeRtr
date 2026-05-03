@@ -1,7 +1,5 @@
-package org.freertr.clnt;
+package org.freertr.enc;
 
-import org.freertr.enc.encCallOne;
-import org.freertr.enc.encCodec;
 import org.freertr.pack.packHolder;
 import org.freertr.util.logger;
 
@@ -10,7 +8,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class clntVconn {
+public class encCallConn {
 
     private final encCallOne side1;
 
@@ -24,15 +22,15 @@ public class clntVconn {
      * @param c1 codec one
      * @param c2 codec two
      */
-    public clntVconn(encCallOne s1, encCallOne s2, encCodec c1, encCodec c2) {
+    public encCallConn(encCallOne s1, encCallOne s2, encCodec c1, encCodec c2) {
         side1 = s1;
         side2 = s2;
         if (c1.getRTPtype() == c2.getRTPtype()) {
-            new clntVconnSmpl(s1, s2, c1);
-            new clntVconnSmpl(s2, s1, c2);
+            new encCallConnSmpl(s1, s2, c1);
+            new encCallConnSmpl(s2, s1, c2);
         } else {
-            new clntVconnTrns(s1, s2, c1, c2);
-            new clntVconnTrns(s2, s1, c2, c1);
+            new encCallConnTrns(s1, s2, c1, c2);
+            new encCallConnTrns(s2, s1, c2, c1);
         }
     }
 
@@ -55,7 +53,7 @@ public class clntVconn {
 
 }
 
-class clntVconnSmpl implements Runnable {
+class encCallConnSmpl implements Runnable {
 
     private encCallOne rx;
 
@@ -63,7 +61,7 @@ class clntVconnSmpl implements Runnable {
 
     private encCodec codec;
 
-    public clntVconnSmpl(encCallOne s1, encCallOne s2, encCodec c) {
+    public encCallConnSmpl(encCallOne s1, encCallOne s2, encCodec c) {
         rx = s1;
         tx = s2;
         codec = c;
@@ -99,7 +97,7 @@ class clntVconnSmpl implements Runnable {
 
 }
 
-class clntVconnTrns implements Runnable {
+class encCallConnTrns implements Runnable {
 
     private encCallOne rxS;
 
@@ -109,7 +107,7 @@ class clntVconnTrns implements Runnable {
 
     private encCodec txC;
 
-    public clntVconnTrns(encCallOne s1, encCallOne s2, encCodec c1, encCodec c2) {
+    public encCallConnTrns(encCallOne s1, encCallOne s2, encCodec c1, encCodec c2) {
         rxS = s1;
         txS = s2;
         rxC = c1;

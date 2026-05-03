@@ -7,6 +7,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgVrf;
+import org.freertr.enc.encCallConn;
 import org.freertr.enc.encCallOne;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
@@ -1097,7 +1098,7 @@ class clntSipIn implements Runnable, Comparable<clntSipIn> {
 
     public packRtp data;
 
-    public clntVconn conner;
+    public encCallConn conner;
 
     public clntSipIn(clntSip prnt, String id) {
         lower = prnt;
@@ -1219,7 +1220,7 @@ class clntSipIn implements Runnable, Comparable<clntSipIn> {
             lower.delCall(this);
             return;
         }
-        conner = new clntVconn(data, peer.getCall(rcd), lower.getCodec(), peer.getCodec());
+        conner = new encCallConn(data, peer.getCall(rcd), lower.getCodec(), peer.getCodec());
         for (;;) {
             if (conner.isClosed() != 0) {
                 break;

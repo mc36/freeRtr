@@ -1143,25 +1143,26 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
         if (endpt == null) {
             return;
         }
-        sip = new clntSip();
-        sip.protocol = protocol;
-        sip.upper = this;
-        sip.endpt = endpt;
-        sip.portLoc = portLoc;
-        sip.portRem = portRem;
-        sip.aLaw = aLaw;
-        sip.keepalive = keepalive;
-        sip.register = register;
-        sip.subscribe = subscribe;
-        sip.options = options;
-        sip.vrf = vrf;
-        sip.srcIfc = ifc;
-        sip.trgDom = trg;
+        clntSip s = new clntSip();
+        s.protocol = protocol;
+        s.upper = this;
+        s.endpt = endpt;
+        s.portLoc = portLoc;
+        s.portRem = portRem;
+        s.aLaw = aLaw;
+        s.keepalive = keepalive;
+        s.register = register;
+        s.subscribe = subscribe;
+        s.options = options;
+        s.vrf = vrf;
+        s.srcIfc = ifc;
+        s.trgDom = trg;
         if ((usr != null) && (pwd != null)) {
-            sip.usr = usr;
-            sip.pwd = pwd;
+            s.usr = usr;
+            s.pwd = pwd;
         }
-        sip.startWork();
+        s.startWork();
+        sip = s;
     }
 
 }

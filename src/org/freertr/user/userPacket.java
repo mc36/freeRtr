@@ -31,9 +31,9 @@ import org.freertr.clnt.clntRis;
 import org.freertr.clnt.clntSmtp;
 import org.freertr.clnt.clntSnmp;
 import org.freertr.clnt.clntSpeed;
-import org.freertr.clnt.clntVconf;
 import org.freertr.clnt.clntVoice;
 import org.freertr.clnt.clntXotPad;
+import org.freertr.enc.encCallConf;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ifc.ifcEther;
 import org.freertr.ip.ipCor;
@@ -1858,7 +1858,7 @@ public class userPacket {
             return null;
         }
         if (a.equals("conference")) {
-            clntVconf sv = new clntVconf();
+            encCallConf sv = new encCallConf();
             sv.calling = cmd.word();
             boolean bg = false;
             for (;;) {

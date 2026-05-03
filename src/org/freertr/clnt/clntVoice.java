@@ -4,6 +4,7 @@ import java.util.List;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgDial;
 import org.freertr.enc.encCallOne;
+import org.freertr.enc.encCallScript;
 import org.freertr.pack.packSip;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
@@ -42,7 +43,7 @@ public class clntVoice {
 
     private pipeSide pipeScr;
 
-    private clntVscript scr;
+    private encCallScript scr;
 
     /**
      * get pipe side
@@ -97,7 +98,7 @@ public class clntVoice {
         pipeScr.setTime(120000);
         pipeScr.lineTx = pipeSide.modTyp.modeCRLF;
         pipeScr.lineRx = pipeSide.modTyp.modeCRtryLF;
-        scr = new clntVscript(pipeScr, codec, pipeRtp, packSip.removeTag(calling), packSip.removeTag(called));
+        scr = new encCallScript(pipeScr, codec, pipeRtp, packSip.removeTag(calling), packSip.removeTag(called));
         return false;
     }
 
