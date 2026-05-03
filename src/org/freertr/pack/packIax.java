@@ -6,5 +6,10 @@ package org.freertr.pack;
  * @author matecsaba
  */
 public class packIax {
+
+    /**
+     * port number
+     */
+    public final static int port = 4569;
     
 }

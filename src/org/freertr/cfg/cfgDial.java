@@ -3,6 +3,7 @@ package org.freertr.cfg;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.auth.authLocal;
+import org.freertr.clnt.clntIax;
 import org.freertr.clnt.clntSip;
 import org.freertr.enc.encCallHnd;
 import org.freertr.enc.encCallOne;
@@ -91,7 +92,8 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
     public int direction;
 
     /**
-     * protocol: 1=sip-udp, 2=sip-listen, 3=sip-connect
+     * protocol: 1=sip-udp, 2=sip-listen, 3=sip-connect, 101=iax-clnt,
+     * 102=iax-serv
      */
     public int protocol = 1;
 
@@ -683,6 +685,12 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
             case 3:
                 a = "sip-connect";
                 break;
+            case 101:
+                a = "iax-client";
+                break;
+            case 102:
+                a = "iax-server";
+                break;
             default:
                 a = "unknown=" + protocol;
                 break;
@@ -740,6 +748,8 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "sip-udp", "sip over udp");
         l.add(null, false, 2, new int[]{-1}, "sip-listen", "sip over tcp as server");
         l.add(null, false, 2, new int[]{-1}, "sip-connect", "sip over tcp as client");
+        l.add(null, false, 2, new int[]{-1}, "iax-client", "iax client");
+        l.add(null, false, 2, new int[]{-1}, "iax-server", "iax server");
         l.add(null, false, 1, new int[]{2}, "direction", "set peer direction");
         l.add(null, false, 2, new int[]{-1}, "in", "inbound");
         l.add(null, false, 2, new int[]{-1}, "out", "outbound");
@@ -829,6 +839,16 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
             }
             if (a.equals("sip-connect")) {
                 protocol = 3;
+                doStartup();
+                return;
+            }
+            if (a.equals("iax-client")) {
+                protocol = 101;
+                doStartup();
+                return;
+            }
+            if (a.equals("iax-server")) {
+                protocol = 102;
                 doStartup();
                 return;
             }
@@ -1142,6 +1162,26 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
             return;
         }
         if (endpt == null) {
+            return;
+        }
+        if (protocol > 100) {
+            clntIax s = new clntIax();
+            s.client = protocol == 101;
+            s.upper = this;
+            s.portLoc = portLoc;
+            s.portRem = portRem;
+            s.aLaw = aLaw;
+            s.keepalive = keepalive;
+            s.register = register;
+            s.vrf = vrf;
+            s.srcIfc = ifc;
+            s.trgDom = trg;
+            if ((usr != null) && (pwd != null)) {
+                s.usr = usr;
+                s.pwd = pwd;
+            }
+            s.startWork();
+            sip = s;
             return;
         }
         clntSip s = new clntSip();

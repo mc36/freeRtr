@@ -619,6 +619,11 @@ public class debugger {
     public static boolean clntSipTraf = false;
 
     /**
+     * clntIax traffic
+     */
+    public static boolean clntIaxTraf = false;
+
+    /**
      * clntPcep traffic
      */
     public static boolean clntPcepTraf = false;
@@ -1249,6 +1254,7 @@ public class debugger {
         l.add(null, false, b, new int[]{b + 1}, "client", "protocol clients");
         l.add(null, false, b + 1, new int[]{-1}, "ntp", "network time protocol");
         l.add(null, false, b + 1, new int[]{-1}, "sip", "session initiation protocol");
+        l.add(null, false, b + 1, new int[]{-1}, "iax", "inter asterisk exchange");
         l.add(null, false, b + 1, new int[]{-1}, "pcep", "path computation element protocol");
         l.add(null, false, b + 1, new int[]{-1}, "sstp", "secure socket tunneling protocol");
         l.add(null, false, b + 1, new int[]{-1}, "sdwan", "sdwan protocol");
@@ -1981,6 +1987,10 @@ public class debugger {
             }
             if (s.equals("sip")) {
                 clntSipTraf = v;
+                return false;
+            }
+            if (s.equals("iax")) {
+                clntIaxTraf = v;
                 return false;
             }
             if (s.equals("pcep")) {
