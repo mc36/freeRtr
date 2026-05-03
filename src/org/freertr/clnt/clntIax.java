@@ -231,7 +231,7 @@ public class clntIax implements Runnable, encCallHnd {
             return;
         }
 
-    
+
 
     ////////////
     }
@@ -244,7 +244,7 @@ public class clntIax implements Runnable, encCallHnd {
             return;
         }
 
-    
+
 
     ///////////////
     }
@@ -334,7 +334,7 @@ public class clntIax implements Runnable, encCallHnd {
     public String makeCall(String calling, String called) {
         return null;
 
-    
+
 
     /////////
     }
@@ -349,7 +349,7 @@ public class clntIax implements Runnable, encCallHnd {
             return;
         }
 
-    
+
 
     /////////////
     }
@@ -421,7 +421,7 @@ public class clntIax implements Runnable, encCallHnd {
             if (sip.recvPack(pck) < 1) {
                 continue;
             }
-            if (debugger.clntSipTraf) {
+            if (debugger.clntIaxTraf) {
                 sip.dump("rx");
             }
 
@@ -430,7 +430,7 @@ public class clntIax implements Runnable, encCallHnd {
             conn.setClose();
         }
         conn = null;
-        if (debugger.clntSipTraf) {
+        if (debugger.clntIaxTraf) {
             logger.debug("restarting");
         }
     }
@@ -514,7 +514,7 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall> {
 
     public void setClose() {
 
-    
+
 
 ////////////
     }
