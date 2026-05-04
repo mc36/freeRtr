@@ -18319,3 +18319,8 @@ no qc pass: modem with ulaw through peer
 no qc pass: modem with alaw through peer
 qc pass: modem with alaw through sip peer
 qc pass: modem with ulaw through sip peer
+---------------------------------- 2026-05-04 15:22:17 26.5.4
+no qc pass: modem with ulaw through proxy
+no qc pass: modem with alaw through proxy
+qc pass: modem with alaw through sip proxy
+qc pass: modem with ulaw through sip proxy

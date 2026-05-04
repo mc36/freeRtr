@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.5.4-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-05-04 15:05:22, took 00:16:33, with 50 workers, on 4372 cases, 0 failed, 0 traces, 11 retries
+-;-;-;2026-05-04 15:40:20, took 00:18:03, with 50 workers, on 4372 cases, 0 failed, 0 traces, 6 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -388,17 +388,17 @@ http://sources.freertr.org/cfg/conn-minenc03.tst;conn-minenc03.tst;success;minen
 http://sources.freertr.org/cfg/conn-minenc04.tst;conn-minenc04.tst;success;minenc over loopback
 http://sources.freertr.org/cfg/conn-modem01.tst;conn-modem01.tst;success;modem with alaw
 http://sources.freertr.org/cfg/conn-modem02.tst;conn-modem02.tst;success;modem with ulaw
-http://sources.freertr.org/cfg/conn-modem03.tst;conn-modem03.tst;success;modem with alaw through proxy
-http://sources.freertr.org/cfg/conn-modem04.tst;conn-modem04.tst;success;modem with ulaw through proxy
+http://sources.freertr.org/cfg/conn-modem03.tst;conn-modem03.tst;success;modem with alaw through sip proxy
+http://sources.freertr.org/cfg/conn-modem04.tst;conn-modem04.tst;success;modem with ulaw through sip proxy
 http://sources.freertr.org/cfg/conn-modem05.tst;conn-modem05.tst;success;modem with alaw through sip peer
 http://sources.freertr.org/cfg/conn-modem06.tst;conn-modem06.tst;success;modem with ulaw through sip peer
-http://sources.freertr.org/cfg/conn-modem07.tst;conn-modem07.tst;success;modem with alaw and ulaw through peer
-http://sources.freertr.org/cfg/conn-modem08.tst;conn-modem08.tst;success;modem through ipv4 peer
-http://sources.freertr.org/cfg/conn-modem09.tst;conn-modem09.tst;success;modem through ipv6 peer
-http://sources.freertr.org/cfg/conn-modem10.tst;conn-modem10.tst;success;modem through udp peer
-http://sources.freertr.org/cfg/conn-modem11.tst;conn-modem11.tst;success;modem through tcp peer
-http://sources.freertr.org/cfg/conn-modem12.tst;conn-modem12.tst;success;modem with alaw through iax peer
-http://sources.freertr.org/cfg/conn-modem13.tst;conn-modem13.tst;success;modem with ulaw through iax peer
+http://sources.freertr.org/cfg/conn-modem07.tst;conn-modem07.tst;success;modem with alaw through iax peer
+http://sources.freertr.org/cfg/conn-modem08.tst;conn-modem08.tst;success;modem with ulaw through iax peer
+http://sources.freertr.org/cfg/conn-modem09.tst;conn-modem09.tst;success;modem with alaw and ulaw through peer
+http://sources.freertr.org/cfg/conn-modem10.tst;conn-modem10.tst;success;modem through ipv4 peer
+http://sources.freertr.org/cfg/conn-modem11.tst;conn-modem11.tst;success;modem through ipv6 peer
+http://sources.freertr.org/cfg/conn-modem12.tst;conn-modem12.tst;success;modem through udp peer
+http://sources.freertr.org/cfg/conn-modem13.tst;conn-modem13.tst;success;modem through tcp peer
 http://sources.freertr.org/cfg/conn-mplsip01.tst;conn-mplsip01.tst;success;mplsip over ipv4
 http://sources.freertr.org/cfg/conn-mplsip02.tst;conn-mplsip02.tst;success;mplsip over ipv6
 http://sources.freertr.org/cfg/conn-mplsip03.tst;conn-mplsip03.tst;success;mplsip over mplsip
