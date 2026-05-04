@@ -24,6 +24,7 @@ import org.freertr.tab.tabGen;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
+import org.freertr.util.notifier;
 import org.freertr.util.syncInt;
 
 /**
@@ -73,6 +74,16 @@ public class clntIax implements Runnable, encCallHnd {
      * register interval
      */
     public int register = 0;
+
+    /**
+     * number of tries
+     */
+    public int retry = 8;
+
+    /**
+     * timeout in seconds
+     */
+    public int timeout = 5;
 
     /**
      * vrf of target
@@ -180,22 +191,22 @@ public class clntIax implements Runnable, encCallHnd {
         }
     }
 
-    private int findLocCid(int o) {
+    private clntIaxCall findLocCid(int o) {
         for (int i = 0; i < cls.size(); i++) {
-            if (cls.get(i).lid == o) {
-                return i;
+            clntIaxCall ntry = cls.get(i);
+            if (ntry.lid == o) {
+                return ntry;
             }
         }
-        return -1;
+        return null;
     }
 
     private int getLocCid() {
         for (;;) {
             int o = bits.random(0x10, 0x7ff0);
-            if (findLocCid(o) >= 0) {
-                continue;
+            if (findLocCid(o) == null) {
+                return o;
             }
-            return o;
         }
     }
 
@@ -235,6 +246,9 @@ public class clntIax implements Runnable, encCallHnd {
      * @param pau authentication request
      */
     protected void sendReg(String wau, String pau) {
+        if (client) {
+            return;
+        }
         if (conn == null) {
             return;
         }
@@ -314,7 +328,7 @@ public class clntIax implements Runnable, encCallHnd {
             if (ntry.dir != dir) {
                 continue;
             }
-            res.add(ntry.rid + "-" + ntry.lid + "|" + ntry.src + "|" + ntry.trg + "|" + bits.timePast(ntry.started));
+            res.add(ntry.getCid() + "|" + ntry.src + "|" + ntry.trg + "|" + bits.timePast(ntry.started));
         }
         return res;
     }
@@ -339,11 +353,18 @@ public class clntIax implements Runnable, encCallHnd {
      * @return call id, null if error
      */
     public String makeCall(String calling, String called) {
-        return null;
-
-
-
-    /////////
+        clntIaxCall ntry = new clntIaxCall(this, 0);
+        ntry.lid = getLocCid();
+        ntry.rid = -ntry.lid;
+        ntry.dir = false;
+        ntry.src = calling;
+        ntry.trg = called;
+        ntry.alloc();
+        cls.put(ntry);
+        if (ntry.doOut()) {
+            return null;
+        }
+        return ntry.getCid();
     }
 
     /**
@@ -352,15 +373,32 @@ public class clntIax implements Runnable, encCallHnd {
      * @param id call id
      */
     public void stopCall(String id) {
-        if (id == null) {
+        clntIaxCall ntry = findFullCid(id);
+        if (ntry == null) {
             return;
         }
-
-
-
-    /////////////
+        ntry.doHup();
+        ntry.setClose();
     }
 
+    private clntIaxCall findFullCid(String cid) {
+        if (cid == null) {
+            return null;
+        }
+        int i = cid.indexOf("-");
+        if (i < 0) {
+            return null;
+        }
+        clntIaxCall ntry = new clntIaxCall(this, bits.str2num(cid.substring(0, i)));
+        ntry = cls.find(ntry);
+        if (ntry == null) {
+            return null;
+        }
+        if (bits.str2num(cid.substring(i + 1, cid.length())) != ntry.lid) {
+            return null;
+        }
+        return ntry;
+    }
 
     /**
      * get call
@@ -369,11 +407,7 @@ public class clntIax implements Runnable, encCallHnd {
      * @return rtp
      */
     public encCallOne getCall(String cid) {
-        if (cid == null) {
-            return null;
-        }
-        //////
-        return null;
+        return findFullCid(cid);
     }
 
     /**
@@ -398,7 +432,7 @@ public class clntIax implements Runnable, encCallHnd {
         if (srcFwd == null) {
             return;
         }
-        conn = udp.streamConnect(new pipeLine(32768, true), srcFwd, portLoc, trgAdr, portRem, "iax", -1, null, -1, -1);
+        conn = udp.streamConnect(new pipeLine(65536, true), srcFwd, portLoc, trgAdr, portRem, "iax", -1, null, -1, -1);
         if (conn == null) {
             return;
         }
@@ -429,14 +463,37 @@ public class clntIax implements Runnable, encCallHnd {
             }
             clntIaxCall ntry = new clntIaxCall(this, iax.sid);
             clntIaxCall old = cls.find(ntry);
-            if (iax.typ == packIax.typ_voc) {
-                if (old != null) {
-                    if ((iax.tid == -1) || (old.lid == iax.tid)) {
-                        byte[] buf = pck.getCopy();
-                        old.bufT.nonBlockPut(buf, 0, buf.length);
-                        continue;
-                    }
+            if ((iax.typ == packIax.typ_voc) && (old != null)) {
+                if (iax.tid == -1) {
+                    byte[] buf = pck.getCopy();
+                    old.bufT.nonBlockPut(buf, 0, buf.length);
+                    continue;
                 }
+                old.seqI = iax.seqO;
+                old.seqO = iax.seqI;
+                if (iax.tid == old.lid) {
+                    if (debugger.clntIaxTraf) {
+                        iax.dump("rx");
+                    }
+                    byte[] buf = pck.getCopy();
+                    old.bufT.nonBlockPut(buf, 0, buf.length);
+                    iax.typ = packIax.typ_iax;
+                    iax.sub = packIax.iam_ack;
+                    //iax.times = iax.times;
+                    iax.sid = old.lid;
+                    iax.tid = old.rid;
+                    iax.seqI = old.seqI + 1;
+                    iax.seqO = old.seqO;
+                    if (debugger.clntIaxTraf) {
+                        iax.dump("tx");
+                    }
+                    pck.clear();
+                    iax.sendPack(pck);
+                    continue;
+                }
+            }
+            if (iax.tid == -1) {
+                continue;
             }
             if (debugger.clntIaxTraf) {
                 iax.dump("rx");
@@ -476,8 +533,9 @@ public class clntIax implements Runnable, encCallHnd {
                     if (old == null) {
                         continue;
                     }
-                    if (old.que.get() == ((iax.seqI - 1) & 0xffff)) {
-                        old.que.set(-1);
+                    if (old.que == ((iax.seqI - 1) & 0xff)) {
+                        old.que = -1;
+                        old.notif.wakeup();
                     }
                     continue;
                 case (packIax.typ_iax << 8) | packIax.iam_new: // new call
@@ -496,6 +554,7 @@ public class clntIax implements Runnable, encCallHnd {
                         old.src = iax.calling;
                         old.trg = iax.called;
                         old.lid = getLocCid();
+                        old.alloc();
                         old.start();
                         cls.put(old);
                     }
@@ -509,8 +568,32 @@ public class clntIax implements Runnable, encCallHnd {
                     break;
                 case (packIax.typ_iax << 8) | packIax.iam_acc: // accept call
                     if (old == null) {
+                        old = findLocCid(iax.tid);
+                    }
+                    if (old == null) {
                         break;
                     }
+                    if (old.dir) {
+                        break;
+                    }
+                    old.rid = iax.sid;
+                    old.notif.wakeup();
+                    rep = new packIax(conn);
+                    rep.typ = packIax.typ_iax;
+                    rep.sub = packIax.iam_ack;
+                    rep.times = iax.times;
+                    rep.sid = old.lid;
+                    rep.tid = old.rid;
+                    break;
+                case (packIax.typ_ctr << 8) | packIax.ctr_ans: // answer call
+                    if (old == null) {
+                        break;
+                    }
+                    if (old.dir) {
+                        break;
+                    }
+                    old.que = -2;
+                    old.notif.wakeup();
                     rep = new packIax(conn);
                     rep.typ = packIax.typ_iax;
                     rep.sub = packIax.iam_ack;
@@ -553,6 +636,7 @@ public class clntIax implements Runnable, encCallHnd {
             if (debugger.clntIaxTraf) {
                 rep.dump("tx");
             }
+            pck.clear();
             rep.placeTlvs(pck);
             rep.sendPack(pck);
         }
@@ -612,9 +696,9 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
 
     public final clntIax lower;
 
-    public final int rid;
-
     public final long started;
+
+    public notifier notif;
 
     public boolean need2run;
 
@@ -624,7 +708,9 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
 
     public int seqI;
 
-    public syncInt que;
+    public int que;
+
+    public int rid;
 
     public int lid;
 
@@ -672,69 +758,119 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
         return 0;
     }
 
-    public void start() {
+    public void alloc() {
         need2run = true;
-        que = new syncInt(-1);
+        que = -1;
+        notif = new notifier();
         snd = new packIax(lower.conn);
-        bufP = new pipeLine(65535, true);
+        bufP = new pipeLine(32768, true);
         bufR = bufP.getSide();
         bufT = bufP.getSide();
         full = false;
+    }
+
+    public void start() {
         logger.startThread(this);
     }
 
     public void run() {
         try {
-            doer();
+            doIn();
         } catch (Exception e) {
             logger.traceback(e);
         }
     }
 
-    public void doCtr(int typ, boolean ned) {
-        need2run = ned;
+    public String getCid() {
+        return rid + "-" + lid;
+    }
+
+    public boolean doCtr(int typ, int sub) {
         packIax iax = new packIax(lower.conn);
         packHolder pck = new packHolder(true, true);
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < lower.retry; i++) {
             iax.clear();
             pck.clear();
-            iax.typ = packIax.typ_ctr;
-            iax.sub = typ;
+            iax.typ = typ;
+            iax.sub = sub;
             iax.seqI = seqI;
             iax.seqO = seqO;
             iax.sid = lid;
             iax.tid = rid;
             iax.times = (int) (bits.getTime() - started);
-            que.set(seqO);
-            iax.sendPack(pck);
+            que = seqO;
             if (debugger.clntIaxTraf) {
                 iax.dump("tx");
             }
-            bits.sleep(3000);
-            if (que.get() < 0) {
+            iax.sendPack(pck);
+            notif.sleep(lower.timeout * 1000);
+            if (que < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void doHup() {
+        if (!need2run) {
+            return;
+        }
+        need2run = false;
+        doCtr(packIax.typ_iax, packIax.iam_hup);
+    }
+
+    public boolean doOut() {
+        codec = lower.getCodec();
+        packIax iax = new packIax(lower.conn);
+        packHolder pck = new packHolder(true, true);
+        for (int i = 0; i < lower.retry; i++) {
+            iax.clear();
+            pck.clear();
+            iax.typ = packIax.typ_iax;
+            iax.sub = packIax.iam_new;
+            iax.seqI = 0;
+            iax.seqO = 0;
+            iax.sid = lid;
+            iax.tid = 0;
+            iax.times = (int) (bits.getTime() - started);
+            iax.proto = 2;
+            iax.user = "" + lower.usr;
+            iax.calling = "" + src;
+            iax.codecC = codec.getIAXtype();
+            iax.codecD = iax.codecC;
+            iax.called = "" + trg;
+            iax.callnam = "" + src;
+            if (debugger.clntIaxTraf) {
+                iax.dump("tx");
+            }
+            iax.placeTlvs(pck);
+            iax.sendPack(pck);
+            notif.sleep(lower.timeout * 1000);
+            if (rid > 0) {
                 break;
             }
         }
+        return false;
     }
 
-    public void doer() {
+    public void doIn() {
         newSrc = lower.upper.incomeSrc(src);
         newTrg = lower.upper.incomeTrg(trg);
         peer = lower.upper.incomeCall(newSrc, newTrg);
         if (peer == null) {
-            doCtr(packIax.ctr_hng, false);
-            lower.upper.stoppedCall(dir, newSrc, newTrg, started);
+            doHup();
+            lower.upper.stoppedCall(!dir, newSrc, newTrg, started);
             lower.delCall(this);
             return;
         }
         rcd = peer.makeCall(newSrc, newTrg);
         if (rcd == null) {
-            doCtr(packIax.ctr_hng, false);
-            lower.upper.stoppedCall(dir, newSrc, newTrg, started);
+            doHup();
+            lower.upper.stoppedCall(!dir, newSrc, newTrg, started);
             lower.delCall(this);
             return;
         }
-        doCtr(packIax.ctr_ans, true);
+        doCtr(packIax.typ_ctr, packIax.ctr_ans);
         codec = lower.getCodec();
         call = peer.getCall(rcd);
         conner = new encCallConn(this, call, codec, peer.getCodec());
@@ -752,25 +888,30 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
         }
         conner.setClose();
         peer.stopCall(rcd);
-        doCtr(packIax.ctr_hng, false);
-        lower.upper.stoppedCall(dir, newSrc, newTrg, started);
+        doHup();
+        lower.upper.stoppedCall(!dir, newSrc, newTrg, started);
         lower.delCall(this);
     }
 
     public void setClose() {
         need2run = false;
+        if (bufP != null) {
+            bufP.setClose();
+        }
     }
 
     public int isClosed() {
-        if (need2run) {
-            return 0;
-        } else {
+        if (!need2run) {
             return 3;
         }
+        return bufR.isClosed();
     }
 
     public void sendPack(packHolder pck) {
         if (!need2run) {
+            return;
+        }
+        if (conner == null) {
             return;
         }
         snd.clear();
@@ -789,6 +930,9 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
         snd.seqO = seqO;
         full = true;
         seqO++;
+        if (debugger.clntIaxTraf) {
+            snd.dump("tx");
+        }
         snd.sendPack(pck);
     }
 

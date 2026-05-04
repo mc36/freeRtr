@@ -776,7 +776,6 @@ public class packIax {
         pck.putSkip(12);
         pck.merge2beg();
         pck.pipeSend(pipe, 0, pck.dataSize(), 2);
-        return;
     }
 
     private static encTlv getTlv() {
@@ -855,7 +854,6 @@ public class packIax {
             default:
                 return;
         }
-        pck.clear();
         encTlv tlv = getTlv();
         if (user != null) {
             tlv.putBytes(pck, iet_usr, user.getBytes());
