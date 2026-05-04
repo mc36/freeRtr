@@ -1,4 +1,4 @@
-description modem with alaw through peer
+description modem with alaw through sip peer
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -55,6 +55,7 @@ dial-peer 2
  myname 77
  target 1.1.2.2
  port-local 5060
+ protocol sip-udp
  direction in
  exit
 !
@@ -78,6 +79,7 @@ dial-peer 1
  myname 99
  target 1.1.2.1
  port-local 5060
+ protocol sip-udp
  direction out
  exit
 !
