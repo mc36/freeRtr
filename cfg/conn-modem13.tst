@@ -1,4 +1,4 @@
-description modem with ulaw through iax peer
+description modem through tcp peer
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -16,7 +16,6 @@ int eth1
  ipv6 addr 1234::1 ffff::
  exit
 server modem sm
- codec ulaw
  vrf v1
  exit
 !
@@ -39,7 +38,6 @@ int eth2
  ipv6 addr 2345::1 ffff::
  exit
 dial-peer 1
- codec ulaw
  match-calling .*
  match-called .*
  vrf v1
@@ -48,15 +46,13 @@ dial-peer 1
  direction out
  exit
 dial-peer 2
- codec ulaw
  match-calling .*
  match-called .*
  vrf v1
  myname 77
  target 1.1.2.2
- port-local 4569
- port-remote 4569
- protocol iax-server
+ port-local 0
+ protocol sip-conn
  direction in
  exit
 !
@@ -73,21 +69,22 @@ int eth1
  ipv6 addr 2345::2 ffff::
  exit
 dial-peer 1
- codec ulaw
  match-calling .*
  match-called .*
  vrf v1
  myname 99
  target 1.1.2.1
- port-local 4569
- port-remote 4569
- protocol iax-client
+ port-local 5060
+ port-remote 0
+ protocol sip-list
  direction out
  exit
 !
 
 
-r2 tping 100 5 1.1.1.1 vrf v1
 r2 tping 100 5 1.1.2.2 vrf v1
+r2 tping 100 5 1.1.1.1 vrf v1
+r3 tping 100 5 1.1.2.1 vrf v1
+r1 tping 100 5 1.1.1.2 vrf v1
 r3 send pack modem 11 22
 r3 tping 100 5 2.2.2.2 vrf v1

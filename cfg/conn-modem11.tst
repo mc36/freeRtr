@@ -1,4 +1,4 @@
-description modem through tcp peer
+description modem through ipv6 peer
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -50,9 +50,8 @@ dial-peer 2
  match-called .*
  vrf v1
  myname 77
- target 1.1.2.2
- port-local 0
- protocol sip-conn
+ target 2345::2
+ port-local 5060
  direction in
  exit
 !
@@ -73,18 +72,14 @@ dial-peer 1
  match-called .*
  vrf v1
  myname 99
- target 1.1.2.1
+ target 2345::1
  port-local 5060
- port-remote 0
- protocol sip-list
  direction out
  exit
 !
 
 
-r2 tping 100 5 1.1.2.2 vrf v1
 r2 tping 100 5 1.1.1.1 vrf v1
-r3 tping 100 5 1.1.2.1 vrf v1
-r1 tping 100 5 1.1.1.2 vrf v1
+r2 tping 100 5 2345::2 vrf v1
 r3 send pack modem 11 22
 r3 tping 100 5 2.2.2.2 vrf v1

@@ -1,4 +1,4 @@
-description modem through ipv6 peer
+description modem with alaw and ulaw through peer
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -16,6 +16,7 @@ int eth1
  ipv6 addr 1234::1 ffff::
  exit
 server modem sm
+ codec alaw
  vrf v1
  exit
 !
@@ -38,6 +39,7 @@ int eth2
  ipv6 addr 2345::1 ffff::
  exit
 dial-peer 1
+ codec alaw
  match-calling .*
  match-called .*
  vrf v1
@@ -46,11 +48,12 @@ dial-peer 1
  direction out
  exit
 dial-peer 2
+ codec ulaw
  match-calling .*
  match-called .*
  vrf v1
  myname 77
- target 2345::2
+ target 1.1.2.2
  port-local 5060
  direction in
  exit
@@ -68,11 +71,12 @@ int eth1
  ipv6 addr 2345::2 ffff::
  exit
 dial-peer 1
+ codec ulaw
  match-calling .*
  match-called .*
  vrf v1
  myname 99
- target 2345::1
+ target 1.1.2.1
  port-local 5060
  direction out
  exit
@@ -80,6 +84,6 @@ dial-peer 1
 
 
 r2 tping 100 5 1.1.1.1 vrf v1
-r2 tping 100 5 2345::2 vrf v1
+r2 tping 100 5 1.1.2.2 vrf v1
 r3 send pack modem 11 22
 r3 tping 100 5 2.2.2.2 vrf v1

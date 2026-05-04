@@ -18314,3 +18314,8 @@ qc pass: hdlc over grehdlc pwhe
 ---------------------------------- 2026-05-04 12:50:59 26.5.4
 qc pass: modem with alaw through iax peer
 qc pass: modem with ulaw through iax peer
+---------------------------------- 2026-05-04 14:48:48 26.5.4
+no qc pass: modem with ulaw through peer
+no qc pass: modem with alaw through peer
+qc pass: modem with alaw through sip peer
+qc pass: modem with ulaw through sip peer
