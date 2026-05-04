@@ -393,6 +393,8 @@ qc pass: modem through ipv4 peer
 qc pass: modem through ipv6 peer
 qc pass: modem through udp peer
 qc pass: modem through tcp peer
+qc pass: modem with alaw through iax peer
+qc pass: modem with ulaw through iax peer
 qc pass: mplsip over ipv4
 qc pass: mplsip over ipv6
 qc pass: mplsip over mplsip

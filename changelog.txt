@@ -18311,3 +18311,6 @@ qc pass: sep with grehdlc
 qc pass: dvbgse with grehdlc
 qc pass: smds with grehdlc
 qc pass: hdlc over grehdlc pwhe
+---------------------------------- 2026-05-04 12:50:59 26.5.4
+qc pass: modem with alaw through iax peer
+qc pass: modem with ulaw through iax peer
