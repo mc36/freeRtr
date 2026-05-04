@@ -1176,10 +1176,7 @@ public class cfgDial implements Comparable<cfgDial>, cfgGeneric {
             s.vrf = vrf;
             s.srcIfc = ifc;
             s.trgDom = trg;
-            if ((usr != null) && (pwd != null)) {
-                s.usr = usr;
-                s.pwd = pwd;
-            }
+            s.usr = usr;
             s.startWork();
             sip = s;
             return;

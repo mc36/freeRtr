@@ -106,11 +106,6 @@ public class clntIax implements Runnable, encCallHnd {
     public String usr;
 
     /**
-     * password
-     */
-    public String pwd;
-
-    /**
      * udp handler
      */
     protected prtGen udp;
@@ -246,16 +241,26 @@ public class clntIax implements Runnable, encCallHnd {
      * @param pau authentication request
      */
     protected void sendReg(String wau, String pau) {
-        if (client) {
+        if (!client) {
             return;
         }
         if (conn == null) {
             return;
         }
-
-
-
-    ////////////
+        packHolder pck = new packHolder(true, true);
+        packIax rep = new packIax(conn);
+        rep.typ = packIax.typ_iax;
+        rep.sub = packIax.iam_rrq;
+        rep.sid = 0;
+        rep.tid = 0;
+        rep.frsh = register / 1000;
+        rep.user = "" + usr;
+        if (debugger.clntIaxTraf) {
+            rep.dump("tx");
+        }
+        pck.clear();
+        rep.placeTlvs(pck);
+        rep.sendPack(pck);
     }
 
     /**
@@ -265,10 +270,20 @@ public class clntIax implements Runnable, encCallHnd {
         if (conn == null) {
             return;
         }
-
-
-
-    ///////////////
+        packHolder pck = new packHolder(true, true);
+        packIax rep = new packIax(conn);
+        rep.typ = packIax.typ_iax;
+        rep.sub = packIax.iam_pok;
+        rep.sid = 0;
+        rep.tid = 0;
+        rep.frsh = register / 1000;
+        rep.user = "" + usr;
+        if (debugger.clntIaxTraf) {
+            rep.dump("tx");
+        }
+        pck.clear();
+        rep.placeTlvs(pck);
+        rep.sendPack(pck);
     }
 
     /**
@@ -362,6 +377,10 @@ public class clntIax implements Runnable, encCallHnd {
         ntry.alloc();
         cls.put(ntry);
         if (ntry.doOut()) {
+            if (upper != null) {
+                upper.stoppedCall(true, ntry.src, ntry.trg, ntry.started);
+            }
+            delCall(ntry);
             return null;
         }
         return ntry.getCid();
@@ -379,6 +398,13 @@ public class clntIax implements Runnable, encCallHnd {
         }
         ntry.doHup();
         ntry.setClose();
+        if (ntry.dir) {
+            return;
+        }
+        if (upper != null) {
+            upper.stoppedCall(true, ntry.src, ntry.trg, ntry.started);
+        }
+        delCall(ntry);
     }
 
     private clntIaxCall findFullCid(String cid) {
@@ -505,11 +531,10 @@ public class clntIax implements Runnable, encCallHnd {
             }
             packIax rep = null;
             switch ((iax.typ << 8) | iax.sub) {
-                case (packIax.typ_iax << 8) | packIax.iam_rrq: // reg req
+                case (packIax.typ_iax << 8) | packIax.iam_rrq: // register req
                     if (client) {
                         break;
                     }
-                    //// auth
                     rep = new packIax(conn);
                     rep.typ = packIax.typ_iax;
                     rep.sub = packIax.iam_rak;
@@ -522,24 +547,31 @@ public class clntIax implements Runnable, encCallHnd {
                     }
                     rep.user = iax.user;
                     break;
-                case (packIax.typ_iax << 8) | packIax.iam_rrl: // reg rel
+                case (packIax.typ_iax << 8) | packIax.iam_rrl: // register rel
                     rep = new packIax(conn);
                     rep.typ = packIax.typ_iax;
                     rep.sub = packIax.iam_rak;
                     rep.sid = 0;
                     rep.tid = iax.sid;
                     break;
-                case (packIax.typ_iax << 8) | packIax.iam_ack: // ack
+                case (packIax.typ_iax << 8) | packIax.iam_rak: // register ack
+                    rep = new packIax(conn);
+                    rep.typ = packIax.typ_iax;
+                    rep.sub = packIax.iam_ack;
+                    rep.times = iax.times;
+                    rep.sid = iax.tid;
+                    rep.tid = iax.sid;
+                    break;
+                case (packIax.typ_iax << 8) | packIax.iam_ack: // acknowledge
                     if (old == null) {
                         continue;
                     }
-                    if (old.que == ((iax.seqI - 1) & 0xff)) {
+                    if (old.que == iax.seqI) {
                         old.que = -1;
                         old.notif.wakeup();
                     }
                     continue;
                 case (packIax.typ_iax << 8) | packIax.iam_new: // new call
-                    //// auth
                     if (old == null) {
                         old = ntry;
                         if (upper == null) {
@@ -576,7 +608,9 @@ public class clntIax implements Runnable, encCallHnd {
                     if (old.dir) {
                         break;
                     }
+                    delCall(old);
                     old.rid = iax.sid;
+                    cls.put(old);
                     old.notif.wakeup();
                     rep = new packIax(conn);
                     rep.typ = packIax.typ_iax;
@@ -584,6 +618,52 @@ public class clntIax implements Runnable, encCallHnd {
                     rep.times = iax.times;
                     rep.sid = old.lid;
                     rep.tid = old.rid;
+                    break;
+                case (packIax.typ_iax << 8) | packIax.iam_rej: // reject call
+                    if (old == null) {
+                        old = findLocCid(iax.tid);
+                    }
+                    if (old == null) {
+                        break;
+                    }
+                    if (old.dir) {
+                        break;
+                    }
+                    delCall(old);
+                    old.setClose();
+                    old.notif.wakeup();
+                    rep = new packIax(conn);
+                    rep.typ = packIax.typ_iax;
+                    rep.sub = packIax.iam_ack;
+                    rep.times = iax.times;
+                    rep.sid = old.lid;
+                    rep.tid = old.rid;
+                    if (upper != null) {
+                        upper.stoppedCall(true, old.src, old.trg, old.started);
+                    }
+                    delCall(old);
+                    break;
+                case (packIax.typ_iax << 8) | packIax.iam_hup: // hangup call
+                case (packIax.typ_ctr << 8) | packIax.ctr_hng: // soft hangup
+                    if (old == null) {
+                        break;
+                    }
+                    old.setClose();
+                    old.stopping = true;
+                    old.notif.wakeup();
+                    rep = new packIax(conn);
+                    rep.typ = packIax.typ_iax;
+                    rep.sub = packIax.iam_ack;
+                    rep.times = iax.times;
+                    rep.sid = old.lid;
+                    rep.tid = old.rid;
+                    if (old.dir) {
+                        break;
+                    }
+                    if (upper != null) {
+                        upper.stoppedCall(true, old.src, old.trg, old.started);
+                    }
+                    delCall(old);
                     break;
                 case (packIax.typ_ctr << 8) | packIax.ctr_ans: // answer call
                     if (old == null) {
@@ -601,18 +681,8 @@ public class clntIax implements Runnable, encCallHnd {
                     rep.sid = old.lid;
                     rep.tid = old.rid;
                     break;
-                case (packIax.typ_iax << 8) | packIax.iam_pin: // ping call
-                    if (old == null) {
-                        break;
-                    }
-                    rep = new packIax(conn);
-                    rep.typ = packIax.typ_iax;
-                    rep.sub = packIax.iam_pon;
-                    rep.times = (int) (bits.getTime() - old.started);
-                    rep.sid = iax.tid;
-                    rep.tid = iax.sid;
-                    break;
-                case (packIax.typ_iax << 8) | packIax.iam_pon: // pong call
+                case (packIax.typ_ctr << 8) | packIax.ctr_rig: // remote ring
+                case (packIax.typ_ctr << 8) | packIax.ctr_rng: // local ring
                     if (old == null) {
                         break;
                     }
@@ -622,6 +692,67 @@ public class clntIax implements Runnable, encCallHnd {
                     rep.times = iax.times;
                     rep.sid = old.lid;
                     rep.tid = old.rid;
+                    break;
+                case (packIax.typ_iax << 8) | packIax.iam_vnk: // vnak
+                    if (old == null) {
+                        break;
+                    }
+                    old.full = false;
+                    rep = new packIax(conn);
+                    rep.typ = packIax.typ_iax;
+                    rep.sub = packIax.iam_pon;
+                    rep.times = (int) (bits.getTime() - old.started);
+                    rep.sid = old.lid;
+                    rep.tid = old.rid;
+                    break;
+                case (packIax.typ_iax << 8) | packIax.iam_pin: // ping call
+                    if (old == null) {
+                        break;
+                    }
+                    rep = new packIax(conn);
+                    rep.typ = packIax.typ_iax;
+                    rep.sub = packIax.iam_pon;
+                    rep.times = (int) (bits.getTime() - old.started);
+                    rep.sid = old.lid;
+                    rep.tid = old.rid;
+                    break;
+                case (packIax.typ_iax << 8) | packIax.iam_pok: // poke
+                    rep = new packIax(conn);
+                    rep.typ = packIax.typ_iax;
+                    rep.sub = packIax.iam_pon;
+                    rep.times = iax.times;
+                    rep.sid = iax.tid;
+                    rep.tid = iax.sid;
+                    break;
+                case (packIax.typ_iax << 8) | packIax.iam_pon: // pong call
+                    if (old != null) {
+                        rep = new packIax(conn);
+                        rep.typ = packIax.typ_iax;
+                        rep.sub = packIax.iam_ack;
+                        rep.times = iax.times;
+                        rep.sid = old.lid;
+                        rep.tid = old.rid;
+                        break;
+                    }
+                    if (iax.tid != 0) {
+                        break;
+                    }
+                    // pong session
+                    rep = new packIax(conn);
+                    rep.typ = packIax.typ_iax;
+                    rep.sub = packIax.iam_ack;
+                    rep.times = iax.times;
+                    rep.sid = iax.tid;
+                    rep.tid = iax.sid;
+                    break;
+                case (packIax.typ_iax << 8) | packIax.iam_inv: // invalid message
+                case (packIax.typ_iax << 8) | packIax.iam_uns: // unsupported message
+                    rep = new packIax(conn);
+                    rep.typ = packIax.typ_iax;
+                    rep.sub = packIax.iam_ack;
+                    rep.times = iax.times;
+                    rep.sid = iax.tid;
+                    rep.tid = iax.sid;
                     break;
             }
             if (rep == null) {
@@ -742,6 +873,10 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
 
     public boolean full;
 
+    public boolean conned;
+
+    public boolean stopping;
+
     public clntIaxCall(clntIax prnt, int rem) {
         lower = prnt;
         rid = rem;
@@ -798,7 +933,7 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
             iax.sid = lid;
             iax.tid = rid;
             iax.times = (int) (bits.getTime() - started);
-            que = seqO;
+            que = (seqO + 1) & 0xff;
             if (debugger.clntIaxTraf) {
                 iax.dump("tx");
             }
@@ -812,9 +947,10 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
     }
 
     public void doHup() {
-        if (!need2run) {
+        if (stopping) {
             return;
         }
+        stopping = true;
         need2run = false;
         doCtr(packIax.typ_iax, packIax.iam_hup);
     }
@@ -824,6 +960,9 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
         packIax iax = new packIax(lower.conn);
         packHolder pck = new packHolder(true, true);
         for (int i = 0; i < lower.retry; i++) {
+            if (!need2run) {
+                break;
+            }
             iax.clear();
             pck.clear();
             iax.typ = packIax.typ_iax;
@@ -836,10 +975,9 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
             iax.proto = 2;
             iax.user = "" + lower.usr;
             iax.calling = "" + src;
+            iax.called = "" + trg;
             iax.codecC = codec.getIAXtype();
             iax.codecD = iax.codecC;
-            iax.called = "" + trg;
-            iax.callnam = "" + src;
             if (debugger.clntIaxTraf) {
                 iax.dump("tx");
             }
@@ -850,7 +988,21 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
                 break;
             }
         }
-        return false;
+        if (rid < 0) {
+            return true;
+        }
+        for (int i = 0; i < lower.retry; i++) {
+            if (!need2run) {
+                break;
+            }
+            notif.sleep(lower.timeout * 1000);
+            if (que == -2) {
+                conned = true;
+                return false;
+            }
+        }
+        doHup();
+        return true;
     }
 
     public void doIn() {
@@ -859,14 +1011,14 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
         peer = lower.upper.incomeCall(newSrc, newTrg);
         if (peer == null) {
             doHup();
-            lower.upper.stoppedCall(!dir, newSrc, newTrg, started);
+            lower.upper.stoppedCall(false, newSrc, newTrg, started);
             lower.delCall(this);
             return;
         }
         rcd = peer.makeCall(newSrc, newTrg);
         if (rcd == null) {
             doHup();
-            lower.upper.stoppedCall(!dir, newSrc, newTrg, started);
+            lower.upper.stoppedCall(false, newSrc, newTrg, started);
             lower.delCall(this);
             return;
         }
@@ -874,6 +1026,7 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
         codec = lower.getCodec();
         call = peer.getCall(rcd);
         conner = new encCallConn(this, call, codec, peer.getCodec());
+        conned = true;
         for (;;) {
             if (conner.isClosed() != 0) {
                 break;
@@ -889,7 +1042,7 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
         conner.setClose();
         peer.stopCall(rcd);
         doHup();
-        lower.upper.stoppedCall(!dir, newSrc, newTrg, started);
+        lower.upper.stoppedCall(false, newSrc, newTrg, started);
         lower.delCall(this);
     }
 
@@ -911,7 +1064,7 @@ class clntIaxCall implements Runnable, Comparable<clntIaxCall>, encCallOne {
         if (!need2run) {
             return;
         }
-        if (conner == null) {
+        if (!conned) {
             return;
         }
         snd.clear();

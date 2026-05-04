@@ -665,11 +665,6 @@ public class packIax {
     public String calling;
 
     /**
-     * caller name
-     */
-    public String callnam;
-
-    /**
      * called number
      */
     public String called;
@@ -801,7 +796,6 @@ public class packIax {
         codecC = 0;
         codecD = 0;
         calling = null;
-        callnam = null;
         called = null;
         origin = null;
         encTlv tlv = getTlv();
@@ -824,9 +818,6 @@ public class packIax {
                     break;
                 case iet_cli:
                     calling = tlv.getStr();
-                    break;
-                case iet_cln:
-                    callnam = tlv.getStr();
                     break;
                 case iet_ver:
                     proto = bits.msbGetW(tlv.valDat, 0);
@@ -879,9 +870,6 @@ public class packIax {
         }
         if (calling != null) {
             tlv.putBytes(pck, iet_cli, calling.getBytes());
-        }
-        if (callnam != null) {
-            tlv.putBytes(pck, iet_cln, callnam.getBytes());
         }
         if (origin != null) {
             tlv.putBytes(pck, iet_dni, origin.getBytes());
