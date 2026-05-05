@@ -97,6 +97,7 @@ import org.freertr.serv.servTacacs;
 import org.freertr.serv.servTelnet;
 import org.freertr.serv.servTftp;
 import org.freertr.serv.servTime;
+import org.freertr.serv.servTunDst;
 import org.freertr.serv.servTwamp;
 import org.freertr.serv.servUdpFwd;
 import org.freertr.serv.servUdptn;
@@ -396,6 +397,11 @@ public class cfgAll {
      * udpfwd daemons
      */
     public final static servGenList<servUdpFwd> dmnUdpFwd = new servGenList<servUdpFwd>();
+
+    /**
+     * tundst daemons
+     */
+    public final static servGenList<servTunDst> dmnTunDst = new servGenList<servTunDst>();
 
     /**
      * upnpfwd daemons
@@ -4123,6 +4129,7 @@ public class cfgAll {
         dmnCharGen.getShRun(l, filter);
         dmnNetflow.getShRun(l, filter);
         dmnUdpFwd.getShRun(l, filter);
+        dmnTunDst.getShRun(l, filter);
         dmnUpnpFwd.getShRun(l, filter);
         dmnUpnpHub.getShRun(l, filter);
         dmnOpenflow.getShRun(l, filter);

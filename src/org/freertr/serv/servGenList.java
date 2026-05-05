@@ -198,6 +198,7 @@ public class servGenList<T extends servGeneric> {
         srvHelp(l, p, n, e, o, "chargen", cfgAll.dmnCharGen.listServers());
         srvHelp(l, p, n, e, o, "netflow", cfgAll.dmnNetflow.listServers());
         srvHelp(l, p, n, e, o, "udpfwd", cfgAll.dmnUdpFwd.listServers());
+        srvHelp(l, p, n, e, o, "tundst", cfgAll.dmnTunDst.listServers());
         srvHelp(l, p, n, e, o, "upnpfwd", cfgAll.dmnUpnpFwd.listServers());
         srvHelp(l, p, n, e, o, "upnphub", cfgAll.dmnUpnpHub.listServers());
         srvHelp(l, p, n, e, o, "openflow", cfgAll.dmnOpenflow.listServers());
@@ -319,6 +320,9 @@ class servGenEntry {
         }
         if (typ.equals("udpfwd")) {
             return new servGenEntry(new servUdpFwd(), cfgAll.dmnUdpFwd);
+        }
+        if (typ.equals("tundst")) {
+            return new servGenEntry(new servTunDst(), cfgAll.dmnTunDst);
         }
         if (typ.equals("upnpfwd")) {
             return new servGenEntry(new servUpnpFwd(), cfgAll.dmnUpnpFwd);

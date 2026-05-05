@@ -6068,7 +6068,31 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (adr.compareTo(tunTrg) == 0) {
             return;
         }
-        tunTrg = adr;
+        tunTrg = adr.copyBytes();
+        setup2tunnel();
+    }
+
+    /**
+     * update tunnel target
+     *
+     * @param adr address
+     * @param prt port
+     */
+    public void tunnelUpdateTarget(addrIP adr, int prt) {
+        if (type != tabRouteIface.ifaceType.tunnel) {
+            return;
+        }
+        if (tunTrg == null) {
+            return;
+        }
+        if (adr == null) {
+            return;
+        }
+        if (adr.compareTo(tunTrg) == 0) {
+            return;
+        }
+        tunKey = prt;
+        tunTrg = adr.copyBytes();
         setup2tunnel();
     }
 
