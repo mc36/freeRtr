@@ -4369,7 +4369,7 @@ qc pass: sdwan with l2tp2 and ipip
 qc pass: socks4 server
 qc pass: socks5 server
 qc pass: tacacs server
-qc pass: tundst server
+qc pass: tunnel destination server
 qc pass: udp forwarder server
 qc pass: uni2uni server
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes

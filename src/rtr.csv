@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.5.5-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-05-05 14:47:33, took 00:36:52, with 50 workers, on 4374 cases, 0 failed, 0 traces, 7 retries
+-;-;-;2026-05-05 15:23:29, took 00:17:31, with 50 workers, on 4374 cases, 0 failed, 0 traces, 6 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -4373,6 +4373,6 @@ http://sources.freertr.org/cfg/serv-sdwan12.tst;serv-sdwan12.tst;success;sdwan w
 http://sources.freertr.org/cfg/serv-socks4.tst;serv-socks4.tst;success;socks4 server
 http://sources.freertr.org/cfg/serv-socks5.tst;serv-socks5.tst;success;socks5 server
 http://sources.freertr.org/cfg/serv-tacacs.tst;serv-tacacs.tst;success;tacacs server
-http://sources.freertr.org/cfg/serv-tundst.tst;serv-tundst.tst;success;tundst server
-http://sources.freertr.org/cfg/serv-udpforward.tst;serv-udpforward.tst;success;udp forwarder server
+http://sources.freertr.org/cfg/serv-tundst.tst;serv-tundst.tst;success;tunnel destination server
+http://sources.freertr.org/cfg/serv-udpfwd.tst;serv-udpfwd.tst;success;udp forwarder server
 http://sources.freertr.org/cfg/serv-uni2uni.tst;serv-uni2uni.tst;success;uni2uni server

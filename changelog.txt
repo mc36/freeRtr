@@ -18327,3 +18327,6 @@ qc pass: modem with ulaw through sip proxy
 ---------------------------------- 2026-05-05 14:10:40 26.5.5
 qc pass: tundst server
 qc pass: uni2uni server
+---------------------------------- 2026-05-05 15:05:58 26.5.5
+no qc pass: tundst server
+qc pass: tunnel destination server
