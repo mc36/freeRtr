@@ -859,6 +859,15 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     }
 
     /**
+     * calculate labeled peer state
+     *
+     * @return true if yes, false if not
+     */
+    public boolean calcLabelPeer() {
+        return conn.peerAfis[rtrBgpParam.idxLab] || conn.peerAfis[rtrBgpParam.idxCtp] || conn.peerAfis[rtrBgpParam.idxCar];
+    }
+
+    /**
      * calculate reachable state
      *
      * @return true if reachable, false if not
