@@ -286,6 +286,9 @@ public class rtrBgpOther extends ipRtr {
         for (int i = 0; i < chgF.size(); i++) {
             doUpdateRoute(rtrBgpUtil.sfiFlwSpc, chgF.get(i), routerComputedF, parent.computd[rtrBgpParam.idxOflw]);
         }
+        if ((chgU.size() + chgM.size() + chgF.size()) < 1) {
+            return fwd.prefixMode != ipFwd.labelMode.common;
+        }
         fwd.routerChg(this, fwd.prefixMode != ipFwd.labelMode.common);
         if (flowInst && (chgF.size() > 0)) {
             tabRoute<addrIP> tabF = new tabRoute<addrIP>("bgp");
