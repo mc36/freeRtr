@@ -46,6 +46,11 @@ public class servTunDst extends servGeneric implements prtServP {
     public boolean logging;
 
     /**
+     * just address
+     */
+    public boolean justAddr;
+
+    /**
      * script to execute
      */
     public cfgScrpt script;
@@ -58,6 +63,7 @@ public class servTunDst extends servGeneric implements prtServP {
         new userFilter("server tundst .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
         new userFilter("server tundst .*", cmds.tabulator + cmds.negated + cmds.tabulator + "client", null),
         new userFilter("server tundst .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null),
+        new userFilter("server tundst .*", cmds.tabulator + cmds.negated + cmds.tabulator + "just-address", null),
         new userFilter("server tundst .*", cmds.tabulator + cmds.negated + cmds.tabulator + "script", null),};
 
     public userFilter[] srvDefFlt() {
@@ -76,6 +82,7 @@ public class servTunDst extends servGeneric implements prtServP {
             l.add(beg + "script " + script.name);
         }
         cmds.cfgLine(l, !logging, beg, "logging", "");
+        cmds.cfgLine(l, !justAddr, beg, "just-address", "");
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -87,6 +94,10 @@ public class servTunDst extends servGeneric implements prtServP {
         }
         if (s.equals("logging")) {
             logging = !negated;
+            return false;
+        }
+        if (s.equals("just-address")) {
+            justAddr = !negated;
             return false;
         }
         if (s.equals("client")) {
@@ -121,6 +132,7 @@ public class servTunDst extends servGeneric implements prtServP {
         l.add(null, false, 1, new int[]{2}, "client", "specify interface to use");
         l.add(null, false, 2, new int[]{-1}, "<name:ifc>", "name of interface");
         l.add(null, false, 1, new int[]{-1}, "logging", "log translations");
+        l.add(null, false, 1, new int[]{-1}, "just-address", "update only the address");
         l.add(null, false, 1, new int[]{2}, "script", "script to invoke");
         l.add(null, false, 2, new int[]{-1}, "<name:scr>", "name of script");
     }
@@ -166,7 +178,11 @@ public class servTunDst extends servGeneric implements prtServP {
         if (clntIfc == null) {
             return true;
         }
-        clntIfc.tunnelUpdateTarget(id.peerAddr, id.portRem);
+        if (justAddr) {
+            clntIfc.tunnelUpdateTarget(id.peerAddr, -1);
+        } else {
+            clntIfc.tunnelUpdateTarget(id.peerAddr, id.portRem);
+        }
         if (script != null) {
             script.doRound(bits.str2lst("set remote " + id.peerAddr));
         }

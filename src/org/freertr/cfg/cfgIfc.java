@@ -6088,10 +6088,14 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (adr == null) {
             return;
         }
-        if (adr.compareTo(tunTrg) == 0) {
+        boolean same = adr.compareTo(tunTrg) == 0;
+        if (prt > 0) {
+            same &= tunKey == prt;
+            tunKey = prt;
+        }
+        if (same) {
             return;
         }
-        tunKey = prt;
         tunTrg = adr.copyBytes();
         setup2tunnel();
     }
