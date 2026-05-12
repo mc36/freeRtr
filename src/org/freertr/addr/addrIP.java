@@ -259,6 +259,19 @@ public class addrIP extends addrType {
     }
 
     /**
+     * test if this is a link local address
+     *
+     * @return tris if yes
+     */
+    public boolean isLinkLocal() {
+        if (isIPv4()) {
+            return toIPv4().isLinkLocal();
+        } else {
+            return toIPv6().isLinkLocal();
+        }
+    }
+
+    /**
      * test if this is an empty address
      *
      * @return tris if yes
