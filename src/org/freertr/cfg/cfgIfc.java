@@ -58,6 +58,7 @@ import org.freertr.ifc.ifcAtmSar;
 import org.freertr.ifc.ifcBridgeIfc;
 import org.freertr.ifc.ifcBundleIfc;
 import org.freertr.ifc.ifcCdp;
+import org.freertr.ifc.ifcCloner;
 import org.freertr.ifc.ifcConnect;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcDot1ad;
@@ -417,6 +418,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      * iconnect handler
      */
     public cfgIfc iconn;
+
+    /**
+     * cconnect handler
+     */
+    public ifcCloner cconn;
 
     /**
      * pseudowire handler
@@ -4003,6 +4009,19 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     }
 
     /**
+     * clear cconnect
+     */
+    public synchronized void clear2cconnect() {
+        if (cconn == null) {
+            return;
+        }
+        cconn.upper.lower = new ifcNull();
+        cconn.inside.delET(-1);
+        ethtyp.delET(-1);
+        cconn = null;
+    }
+
+    /**
      * clear pseudowire
      */
     public synchronized void clear2pseudowire() {
@@ -7006,6 +7025,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (iconn != null) {
             l.add(cmds.tabulator + "connect " + iconn.name);
         }
+        if (cconn != null) {
+            l.add(cmds.tabulator + "cloner " + cconn.inside + " " + cconn.upper);
+        }
         if (xconn != null) {
             l.add(cmds.tabulator + "xconnect " + xconn.getCfg());
         }
@@ -7644,6 +7666,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "<num>", "ethertype to use");
         l.add(null, false, 1, new int[]{2}, "connect", "cross connect interface");
         l.add(null, false, 2, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, 1, new int[]{2}, "cloner", "clone connect interface");
+        l.add(null, false, 2, new int[]{3}, "<name:ifc>", "name of inside interface");
+        l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of upper interface");
         l.add(null, false, 1, new int[]{2}, "xconnect", "cross connect interface");
         cfgXconnSide.getHelp(l, 2);
         l.add(null, false, 1, new int[]{2}, "pseudowire", "pseudowire of interface");
@@ -8624,6 +8649,40 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             evcs.put(ntry);
             return;
         }
+        if (a.equals("cloner")) {
+            clear2cconnect();
+            cfgIfc ins = cfgAll.ifcFind(cmd.word(), 0);
+            if (ins == null) {
+                cmd.error("no such interface");
+                return;
+            }
+            cfgIfc upp = cfgAll.ifcFind(cmd.word(), 0);
+            if (upp == null) {
+                cmd.error("no such interface");
+                return;
+            }
+            if (upp.type != tabRouteIface.ifaceType.dialer) {
+                cmd.error("not a dialer interface");
+                return;
+            }
+            ifcUp side = upp.getEncapProto();
+            if (side == null) {
+                cmd.error("not encap found");
+                return;
+            }
+            cconn = new ifcCloner(upp, ins.ethtyp, ethtyp);
+            cconn.setUpper(side);
+            side.setState(state.states.up);
+            upp.lower = cconn;
+            side = cconn.getSideO();
+            ethtyp.addET(-1, "cloner", side);
+            ethtyp.updateET(-1, side);
+            side = cconn.getSideI();
+            ins.ethtyp.addET(-1, "cloner", side);
+            ins.ethtyp.updateET(-1, side);
+            cconn.setPromiscous(true);
+            return;
+        }
         if (a.equals("connect")) {
             clear2iconnect();
             cfgIfc rem = cfgAll.ifcFind(cmd.word(), 0);
@@ -9330,6 +9389,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             evcs.del(ntry);
             ntry.stopWork();
             return;
+        }
+        if (a.equals("cloner")) {
+            clear2cconnect();
         }
         if (a.equals("connect")) {
             clear2iconnect();
