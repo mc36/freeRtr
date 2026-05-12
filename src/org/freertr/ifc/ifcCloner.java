@@ -236,6 +236,8 @@ public class ifcCloner implements ifcDn {
                 break;
             default:
                 clnt = upper.vrfFor.getFwd(pck.IPsrc).protos;
+                pck.UDPsrc = pck.IPprt;
+                pck.UDPtrg = pck.IPprt;
                 break;
         }
         if (clnt.get(ifc, pck.IPsrc, pck.UDPtrg, pck.UDPsrc) == null) {
