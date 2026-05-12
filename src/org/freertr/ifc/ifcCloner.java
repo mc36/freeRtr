@@ -8,12 +8,19 @@ import org.freertr.cfg.cfgIfc;
 import org.freertr.ip.ipCor;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
+import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipIfc4;
 import org.freertr.ip.ipIfc6;
 import org.freertr.pack.packHolder;
+import org.freertr.prt.prtDccp;
+import org.freertr.prt.prtLudp;
+import org.freertr.prt.prtSctp;
+import org.freertr.prt.prtTcp;
+import org.freertr.prt.prtUdp;
+import org.freertr.tab.tabConnect;
+import org.freertr.tab.tabConnectLower;
 import org.freertr.tab.tabQos;
 import org.freertr.util.counter;
-import org.freertr.util.logger;
 import org.freertr.util.state;
 
 /**
@@ -186,15 +193,19 @@ public class ifcCloner implements ifcDn {
         pck.ETHtype = pck.msbGetW(0);
         pck.getSkip(2);
         boolean res;
+        ipFwdIface ifc;
         switch (pck.ETHtype) {
             case ipIfc4.type:
                 res = core4.parseIPheader(pck, false);
+                ifc = upper.fwdIf4;
                 break;
             case ipIfc6.type:
                 res = core6.parseIPheader(pck, false);
+                ifc = upper.fwdIf6;
                 break;
             default:
                 res = true;
+                ifc = null;
                 break;
         }
         if (res) {
@@ -206,8 +217,32 @@ public class ifcCloner implements ifcDn {
         tabQos.classifyLayer4(pck);
         pck.getSkip(-pck.IPsiz);
         pck.getSkip(-2);
-
-        inIfc.lower.sendPack(pck);
+        tabConnect<addrIP, ? extends tabConnectLower> clnt;
+        switch (pck.IPprt) {
+            case prtTcp.protoNum:
+                clnt = upper.vrfFor.getTcp(pck.IPsrc).clnts;
+                break;
+            case prtUdp.protoNum:
+                clnt = upper.vrfFor.getUdp(pck.IPsrc).clnts;
+                break;
+            case prtLudp.protoNum:
+                clnt = upper.vrfFor.getLudp(pck.IPsrc).clnts;
+                break;
+            case prtDccp.protoNum:
+                clnt = upper.vrfFor.getDccp(pck.IPsrc).clnts;
+                break;
+            case prtSctp.protoNum:
+                clnt = upper.vrfFor.getSctp(pck.IPsrc).clnts;
+                break;
+            default:
+                clnt = upper.vrfFor.getFwd(pck.IPsrc).protos;
+                break;
+        }
+        if (clnt.get(ifc, pck.IPsrc, pck.UDPtrg, pck.UDPsrc) == null) {
+            inIfc.lower.sendPack(pck);
+        } else {
+            encap.recvPack(pck);
+        }
     }
 
     public void sendPack(packHolder pck) {
