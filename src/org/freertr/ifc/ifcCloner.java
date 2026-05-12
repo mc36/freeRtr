@@ -20,19 +20,29 @@ public class ifcCloner implements ifcDn {
     public final cfgIfc upper;
 
     /**
-     * encap handler
-     */
-    public ifcUp encap  = new ifcNull();
-
-    /**
      * inside handler
      */
-    public final ifcEthTyp inside;
+    public final ifcEthTyp inSide;
 
     /**
      * outside handler
      */
-    public final ifcEthTyp outside;
+    public final ifcEthTyp outSide;
+
+    /**
+     * encap handler
+     */
+    protected ifcUp encap = new ifcNull();
+
+    /**
+     * inside handler
+     */
+    protected final ifcClonerIn inIfc;
+
+    /**
+     * outside handler
+     */
+    protected final ifcClonerOut outIfc;
 
     /**
      * counter of this interface
@@ -47,13 +57,15 @@ public class ifcCloner implements ifcDn {
      * @param out outside to use
      */
     public ifcCloner(cfgIfc upp, ifcEthTyp in, ifcEthTyp out) {
+        inIfc = new ifcClonerIn(this);
+        outIfc = new ifcClonerOut(this);
         upper = upp;
-        inside = in;
-        outside = out;
+        inSide = in;
+        outSide = out;
     }
 
     public String toString() {
-        return "cloner on " + outside;
+        return "cloner on " + outSide;
     }
 
     /**
@@ -62,7 +74,8 @@ public class ifcCloner implements ifcDn {
      * @param prom pormiscous
      */
     public void setPromiscous(boolean prom) {
-
+        inSide.setFilter(prom);
+        outSide.setFilter(prom);
     }
 
     /**
@@ -71,7 +84,7 @@ public class ifcCloner implements ifcDn {
      * @return iface to use
      */
     public ifcUp getSideO() {
-        return new ifcNull();
+        return outIfc;
     }
 
     /**
@@ -80,7 +93,7 @@ public class ifcCloner implements ifcDn {
      * @return iface to use
      */
     public ifcUp getSideI() {
-        return new ifcNull();
+        return inIfc;
     }
 
     public void sendPack(packHolder pck) {
@@ -92,7 +105,6 @@ public class ifcCloner implements ifcDn {
     }
 
     public void setFilter(boolean promisc) {
-        
     }
 
     public state.states getState() {
@@ -100,11 +112,9 @@ public class ifcCloner implements ifcDn {
     }
 
     public void closeDn() {
-        
     }
 
     public void flapped() {
-        
     }
 
     public counter getCounter() {
@@ -112,16 +122,80 @@ public class ifcCloner implements ifcDn {
     }
 
     public int getMTUsize() {
-        return outside.getMTUsize();
+        return outSide.getMTUsize();
     }
 
     public long getBandwidth() {
-        return outside.getBandwidth();
+        return outSide.getBandwidth();
     }
 
     public void setUpper(ifcUp server) {
         encap = server;
         encap.setParent(this);
+    }
+
+}
+
+class ifcClonerIn implements ifcUp {
+
+    public final ifcCloner parent;
+
+    public counter cntr = new counter();
+
+    public ifcClonerIn(ifcCloner lower) {
+        parent = lower;
+    }
+
+    public void recvPack(packHolder pck) {
+
+    }
+
+    public void setParent(ifcDn parent) {
+
+    }
+
+    public void setState(state.states stat) {
+
+    }
+
+    public void closeUp() {
+
+    }
+
+    public counter getCounter() {
+        return cntr;
+    }
+
+}
+
+class ifcClonerOut implements ifcUp {
+
+    public final ifcCloner parent;
+
+    public counter cntr = new counter();
+
+    public ifcClonerOut(ifcCloner lower) {
+        parent = lower;
+    }
+
+    public void recvPack(packHolder pck) {
+
+    }
+
+    public void setParent(ifcDn parent) {
+
+    }
+
+    public void setState(state.states stat) {
+
+    }
+
+    public void closeUp() {
+
+    }
+
+    public counter getCounter() {
+        return cntr;
     }
 
 }

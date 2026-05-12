@@ -4016,7 +4016,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             return;
         }
         cconn.upper.lower = new ifcNull();
-        cconn.inside.delET(-1);
+        cconn.inSide.delET(-1);
         ethtyp.delET(-1);
         cconn = null;
     }
@@ -7026,7 +7026,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             l.add(cmds.tabulator + "connect " + iconn.name);
         }
         if (cconn != null) {
-            l.add(cmds.tabulator + "cloner " + cconn.inside + " " + cconn.upper);
+            l.add(cmds.tabulator + "cloner " + cconn.inSide + " " + cconn.upper.name);
         }
         if (xconn != null) {
             l.add(cmds.tabulator + "xconnect " + xconn.getCfg());
@@ -9392,6 +9392,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (a.equals("cloner")) {
             clear2cconnect();
+            return;
         }
         if (a.equals("connect")) {
             clear2iconnect();
