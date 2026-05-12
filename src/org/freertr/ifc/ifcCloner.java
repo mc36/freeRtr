@@ -97,7 +97,7 @@ public class ifcCloner implements ifcDn {
     }
 
     public void sendPack(packHolder pck) {
-        
+        outIfc.lower.sendPack(pck);
     }
 
     public addrType getHwAddr() {
@@ -140,6 +140,8 @@ class ifcClonerIn implements ifcUp {
 
     public final ifcCloner parent;
 
+    public ifcDn lower = new ifcNull();
+
     public counter cntr = new counter();
 
     public ifcClonerIn(ifcCloner lower) {
@@ -147,19 +149,17 @@ class ifcClonerIn implements ifcUp {
     }
 
     public void recvPack(packHolder pck) {
-
+        parent.outIfc.lower.sendPack(pck);
     }
 
-    public void setParent(ifcDn parent) {
-
+    public void setParent(ifcDn prn) {
+        lower = prn;
     }
 
     public void setState(state.states stat) {
-
     }
 
     public void closeUp() {
-
     }
 
     public counter getCounter() {
@@ -172,6 +172,8 @@ class ifcClonerOut implements ifcUp {
 
     public final ifcCloner parent;
 
+    public ifcDn lower = new ifcNull();
+
     public counter cntr = new counter();
 
     public ifcClonerOut(ifcCloner lower) {
@@ -179,19 +181,17 @@ class ifcClonerOut implements ifcUp {
     }
 
     public void recvPack(packHolder pck) {
-
+        parent.inIfc.lower.sendPack(pck);
     }
 
-    public void setParent(ifcDn parent) {
-
+    public void setParent(ifcDn prn) {
+        lower = prn;
     }
 
     public void setState(state.states stat) {
-
     }
 
     public void closeUp() {
-
     }
 
     public counter getCounter() {
