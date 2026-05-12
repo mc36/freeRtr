@@ -4015,7 +4015,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (cconn == null) {
             return;
         }
-        cconn.upper.lower = new ifcNull();
+        ifcNull nul = new ifcNull();
+        nul.setUpper(cconn.upcap);
+        cconn.upper.lower = nul;
         cconn.inSide.delET(-1);
         ethtyp.delET(-1);
         cconn = null;
@@ -8670,7 +8672,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 cmd.error("not encap found");
                 return;
             }
-            cconn = new ifcCloner(upp, ins.ethtyp, ethtyp);
+            cconn = new ifcCloner(upp, side, ins.ethtyp, ethtyp);
             cconn.setUpper(side);
             side.setState(state.states.up);
             upp.lower = cconn;

@@ -8,6 +8,7 @@ import org.freertr.cfg.cfgIfc;
 import org.freertr.ip.ipCor;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
+import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipIfc4;
 import org.freertr.ip.ipIfc6;
@@ -34,6 +35,11 @@ public class ifcCloner implements ifcDn {
      * upper handler
      */
     public final cfgIfc upper;
+
+    /**
+     * upper handler
+     */
+    public final ifcUp upcap;
 
     /**
      * inside handler
@@ -65,28 +71,53 @@ public class ifcCloner implements ifcDn {
      */
     protected final ifcClonerOut outIfc;
 
-    private addrMac inMac = new addrMac();
+    /**
+     * inside mac
+     */
+    protected addrMac inMac = new addrMac();
 
-    private addrMac outMac = new addrMac();
+    /**
+     * outside mac
+     */
+    protected addrMac outMac = new addrMac();
 
-    private addrIP inIp4 = new addrIP();
+    /**
+     * inside ipv4
+     */
+    protected addrIP inIp4 = new addrIP();
 
-    private addrIP inIp6 = new addrIP();
+    /**
+     * inside ipv6
+     */
+    protected addrIP inIp6 = new addrIP();
 
-    private ipCor core4 = new ipCor4();
+    /**
+     * core ipv4
+     */
+    protected final ipCor core4 = new ipCor4();
 
-    private ipCor core6 = new ipCor6();
+    /**
+     * core ipv6
+     */
+    protected final ipCor core6 = new ipCor6();
+
+    /**
+     * ready to use
+     */
+    protected boolean ready2use = false;
 
     /**
      * create instance
      *
      * @param upp upper to use
+     * @param upc upper to use
      * @param in inside to use
      * @param out outside to use
      */
-    public ifcCloner(cfgIfc upp, ifcEthTyp in, ifcEthTyp out) {
+    public ifcCloner(cfgIfc upp, ifcUp upc, ifcEthTyp in, ifcEthTyp out) {
         inIfc = new ifcClonerIn(this);
         outIfc = new ifcClonerOut(this);
+        upcap = upc;
         upper = upp;
         inSide = in;
         outSide = out;
@@ -124,130 +155,10 @@ public class ifcCloner implements ifcDn {
         return inIfc;
     }
 
-    private void updateMac(addrMac trg, addrMac src) {
-        if (src.isBroadcast()) {
-            return;
-        }
-        if (src.isMulticast()) {
-            return;
-        }
-        if (src.isFilled(0)) {
-            return;
-        }
-        trg.setAddr(src);
-    }
-
-    /**
-     * got one inside packet
-     *
-     * @param pck packet to process
-     */
-    protected void gotInnerPacket(packHolder pck) {
-        updateMac(inMac, pck.ETHsrc);
-        updateMac(outMac, pck.ETHtrg);
-        pck.ETHtype = pck.msbGetW(0);
-        pck.getSkip(2);
-        boolean res;
-        addrIP adr = null;
-        switch (pck.ETHtype) {
-            case ipIfc4.type:
-                res = core4.parseIPheader(pck, false);
-                adr = inIp4;
-                break;
-            case ipIfc6.type:
-                res = core6.parseIPheader(pck, false);
-                adr = inIp6;
-                break;
-            default:
-                res = true;
-                break;
-        }
-        pck.getSkip(-2);
-        if (res) {
-            outIfc.lower.sendPack(pck);
-            return;
-        }
-        res = !pck.IPsrc.isUnicast();
-        res |= pck.IPsrc.isEmpty();
-        res |= pck.IPsrc.isLinkLocal();
-        res |= pck.IPsrc.compareTo(adr) == 0;
-        if (res) {
-            outIfc.lower.sendPack(pck);
-            return;
-        }
-        outIfc.lower.sendPack(pck);
-        adr.setAddr(pck.IPsrc);
-        if (adr.isIPv4()) {
-            upper.addr4changed(adr.toIPv4(), upper.mask4, null);
-        } else {
-            upper.addr6changed(adr.toIPv6(), upper.mask6, null);
-        }
-    }
-
-    /**
-     * got one outside packet
-     *
-     * @param pck packet to process
-     */
-    protected void gotOuterPacket(packHolder pck) {
-        pck.ETHtype = pck.msbGetW(0);
-        pck.getSkip(2);
-        boolean res;
-        ipFwdIface ifc;
-        switch (pck.ETHtype) {
-            case ipIfc4.type:
-                res = core4.parseIPheader(pck, false);
-                ifc = upper.fwdIf4;
-                break;
-            case ipIfc6.type:
-                res = core6.parseIPheader(pck, false);
-                ifc = upper.fwdIf6;
-                break;
-            default:
-                res = true;
-                ifc = null;
-                break;
-        }
-        if (res) {
-            pck.getSkip(-2);
-            inIfc.lower.sendPack(pck);
-            return;
-        }
-        pck.getSkip(pck.IPsiz);
-        tabQos.classifyLayer4(pck);
-        pck.getSkip(-pck.IPsiz);
-        pck.getSkip(-2);
-        tabConnect<addrIP, ? extends tabConnectLower> clnt;
-        switch (pck.IPprt) {
-            case prtTcp.protoNum:
-                clnt = upper.vrfFor.getTcp(pck.IPsrc).clnts;
-                break;
-            case prtUdp.protoNum:
-                clnt = upper.vrfFor.getUdp(pck.IPsrc).clnts;
-                break;
-            case prtLudp.protoNum:
-                clnt = upper.vrfFor.getLudp(pck.IPsrc).clnts;
-                break;
-            case prtDccp.protoNum:
-                clnt = upper.vrfFor.getDccp(pck.IPsrc).clnts;
-                break;
-            case prtSctp.protoNum:
-                clnt = upper.vrfFor.getSctp(pck.IPsrc).clnts;
-                break;
-            default:
-                clnt = upper.vrfFor.getFwd(pck.IPsrc).protos;
-                pck.UDPsrc = pck.IPprt;
-                pck.UDPtrg = pck.IPprt;
-                break;
-        }
-        if (clnt.get(ifc, pck.IPsrc, pck.UDPtrg, pck.UDPsrc) == null) {
-            inIfc.lower.sendPack(pck);
-        } else {
-            encap.recvPack(pck);
-        }
-    }
-
     public void sendPack(packHolder pck) {
+        if (!ready2use) {
+            return;
+        }
         pck.ETHsrc.setAddr(inMac);
         pck.ETHtrg.setAddr(outMac);
         pck.ETHtype = pck.msbGetW(0);
@@ -286,6 +197,7 @@ public class ifcCloner implements ifcDn {
     public void setUpper(ifcUp server) {
         encap = server;
         encap.setParent(this);
+        encap.setState(state.states.up);
     }
 
 }
@@ -302,9 +214,60 @@ class ifcClonerIn implements ifcUp {
         parent = lower;
     }
 
+    private boolean updateMac(addrMac trg, addrMac src) {
+        if (src.isBroadcast()) {
+            return false;
+        }
+        if (src.isMulticast()) {
+            return false;
+        }
+        if (src.isFilled(0)) {
+            return false;
+        }
+        trg.setAddr(src);
+        return true;
+    }
+
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        parent.gotInnerPacket(pck);
+        parent.ready2use |= updateMac(parent.inMac, pck.ETHsrc) & updateMac(parent.outMac, pck.ETHtrg);
+        pck.ETHtype = pck.msbGetW(0);
+        pck.getSkip(2);
+        boolean res;
+        addrIP adr = null;
+        switch (pck.ETHtype) {
+            case ipIfc4.type:
+                res = parent.core4.parseIPheader(pck, false);
+                adr = parent.inIp4;
+                break;
+            case ipIfc6.type:
+                res = parent.core6.parseIPheader(pck, false);
+                adr = parent.inIp6;
+                break;
+            default:
+                res = true;
+                break;
+        }
+        pck.getSkip(-2);
+        if (res) {
+            parent.outIfc.lower.sendPack(pck);
+            return;
+        }
+        res = !pck.IPsrc.isUnicast();
+        res |= pck.IPsrc.isEmpty();
+        res |= pck.IPsrc.isLinkLocal();
+        res |= pck.IPsrc.compareTo(adr) == 0;
+        if (res) {
+            parent.outIfc.lower.sendPack(pck);
+            return;
+        }
+        parent.outIfc.lower.sendPack(pck);
+        adr.setAddr(pck.IPsrc);
+        if (adr.isIPv4()) {
+            parent.upper.addr4changed(adr.toIPv4(), parent.upper.mask4, null);
+        } else {
+            parent.upper.addr6changed(adr.toIPv6(), parent.upper.mask6, null);
+        }
     }
 
     public void setParent(ifcDn prn) {
@@ -337,7 +300,84 @@ class ifcClonerOut implements ifcUp {
 
     public void recvPack(packHolder pck) {
         cntr.rx(pck);
-        parent.gotOuterPacket(pck);
+        pck.ETHtype = pck.msbGetW(0);
+        pck.getSkip(2);
+        boolean res;
+        ipFwdIface ifc = null;
+        addrIP adr = null;
+        ipFwd fwd = null;
+        prtTcp tcp = null;
+        prtUdp udp = null;
+        prtLudp ludp = null;
+        prtDccp dccp = null;
+        prtSctp sctp = null;
+        switch (pck.ETHtype) {
+            case ipIfc4.type:
+                res = parent.core4.parseIPheader(pck, false);
+                fwd = parent.upper.vrfFor.fwd4;
+                tcp = parent.upper.vrfFor.tcp4;
+                udp = parent.upper.vrfFor.udp4;
+                ludp = parent.upper.vrfFor.ludp4;
+                dccp = parent.upper.vrfFor.dccp4;
+                sctp = parent.upper.vrfFor.sctp4;
+                ifc = parent.upper.fwdIf4;
+                adr = parent.inIp4;
+                break;
+            case ipIfc6.type:
+                res = parent.core6.parseIPheader(pck, false);
+                fwd = parent.upper.vrfFor.fwd6;
+                tcp = parent.upper.vrfFor.tcp6;
+                udp = parent.upper.vrfFor.udp6;
+                ludp = parent.upper.vrfFor.ludp6;
+                dccp = parent.upper.vrfFor.dccp6;
+                sctp = parent.upper.vrfFor.sctp6;
+                ifc = parent.upper.fwdIf6;
+                adr = parent.inIp6;
+                break;
+            default:
+                res = true;
+                break;
+        }
+        pck.getSkip(-2);
+        if (res) {
+            parent.inIfc.lower.sendPack(pck);
+            return;
+        }
+        if (pck.IPtrg.compareTo(adr) != 0) {
+            parent.inIfc.lower.sendPack(pck);
+            return;
+        }
+        pck.getSkip(pck.IPsiz + 2);
+        tabQos.classifyLayer4(pck);
+        pck.getSkip(-pck.IPsiz - 2);
+        tabConnect<addrIP, ? extends tabConnectLower> clnt;
+        switch (pck.IPprt) {
+            case prtTcp.protoNum:
+                clnt = tcp.clnts;
+                break;
+            case prtUdp.protoNum:
+                clnt = udp.clnts;
+                break;
+            case prtLudp.protoNum:
+                clnt = ludp.clnts;
+                break;
+            case prtDccp.protoNum:
+                clnt = dccp.clnts;
+                break;
+            case prtSctp.protoNum:
+                clnt = sctp.clnts;
+                break;
+            default:
+                clnt = fwd.protos;
+                pck.UDPtrg = pck.IPprt;
+                pck.UDPsrc = pck.IPprt;
+                break;
+        }
+        if (clnt.get(ifc, pck.IPsrc, pck.UDPtrg, pck.UDPsrc) == null) {
+            parent.inIfc.lower.sendPack(pck);
+        } else {
+            parent.encap.recvPack(pck);
+        }
     }
 
     public void setParent(ifcDn prn) {
