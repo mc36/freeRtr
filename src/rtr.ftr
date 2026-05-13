@@ -77,6 +77,8 @@ qc pass: cloner with ipv4 udp
 qc pass: cloner with ipv6 udp
 qc pass: cloner with ipv4 tcp
 qc pass: cloner with ipv6 tcp
+qc pass: cloner with ipv4 gre
+qc pass: cloner with ipv6 gre
 qc pass: dhcp
 qc pass: dhcp with arp/nd security
 qc pass: dhcp with static allocation
