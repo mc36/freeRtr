@@ -396,6 +396,8 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "<name:ifc>", "name of interface");
         hl.add(null, false, 3, new int[]{4}, "nexthops", "egress router distribution");
         hl.add(null, false, 4, new int[]{-1}, "<name:vrf>", "vrf name");
+        hl.add(null, false, 3, new int[]{4}, "resolvhops", "egress router distribution");
+        hl.add(null, false, 4, new int[]{-1}, "<name:vrf>", "vrf name");
         hl.add(null, false, 3, new int[]{4}, "lookup", "list of paths of prefixes");
         hl.add(null, false, 4, new int[]{5}, "<name:vrf>", "vrf name");
         cfgRtr.getRouterList(hl, 3, " to use");

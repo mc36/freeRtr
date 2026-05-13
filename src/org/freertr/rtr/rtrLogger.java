@@ -6,11 +6,13 @@ import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgRtr;
+import org.freertr.clnt.clntDns;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipRtr;
+import org.freertr.pack.packDnsRec;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
 import org.freertr.tab.tabRoute;
@@ -154,9 +156,10 @@ public class rtrLogger extends ipRtr {
      * count outgoing interfaces
      *
      * @param tab routing table
+     * @param resolv resolve hops
      * @return prefix length report
      */
-    public static userFormat nexthopDistribution(tabRoute<addrIP> tab) {
+    public static userFormat nexthopDistribution(tabRoute<addrIP> tab, boolean resolv) {
         tabGen<rtrLoggerAdr> res = new tabGen<rtrLoggerAdr>();
         for (int o = 0; o < tab.size(); o++) {
             tabRouteEntry<addrIP> ntry = tab.get(o);
@@ -177,9 +180,16 @@ public class rtrLogger extends ipRtr {
                 adr.count++;
             }
         }
-        userFormat lst = new userFormat("|", "nexthop|count");
+        if (!resolv) {
+            userFormat lst = new userFormat("|", "nexthop|count");
+            for (int i = 0; i < res.size(); i++) {
+                lst.add("" + res.get(i));
+            }
+            return lst;
+        }
+        userFormat lst = new userFormat("|", "nexthop|reverse|count");
         for (int i = 0; i < res.size(); i++) {
-            lst.add("" + res.get(i));
+            lst.add("" + res.get(i).toReString());
         }
         return lst;
     }
@@ -688,6 +698,12 @@ class rtrLoggerAdr implements Comparable<rtrLoggerAdr> {
 
     public String toString() {
         return addr + "|" + count;
+    }
+
+    public String toReString() {
+        clntDns clnt = new clntDns();
+        clnt.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(addr), false, packDnsRec.typePTR);
+        return addr + "|" + clnt.getPTR() + "|" + count;
     }
 
 }

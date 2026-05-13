@@ -2910,7 +2910,11 @@ public class userShow {
                 return null;
             }
             if (a.equals("nexthops")) {
-                doShowNexthops(4);
+                doShowNexthops(4, false);
+                return null;
+            }
+            if (a.equals("resolvhops")) {
+                doShowNexthops(4, true);
                 return null;
             }
             if (a.equals("out-interfaces")) {
@@ -3306,7 +3310,11 @@ public class userShow {
                 return null;
             }
             if (a.equals("nexthops")) {
-                doShowNexthops(6);
+                doShowNexthops(6, false);
+                return null;
+            }
+            if (a.equals("resolvhops")) {
+                doShowNexthops(6, true);
                 return null;
             }
             if (a.equals("out-interfaces")) {
@@ -5964,12 +5972,12 @@ public class userShow {
         rdr.putStrTab(rtrLogger.prefixLengths(fwd.actualU, fwd.ipVersion));
     }
 
-    private void doShowNexthops(int ver) {
+    private void doShowNexthops(int ver, boolean res) {
         ipFwd fwd = findVrf(ver);
         if (fwd == null) {
             return;
         }
-        rdr.putStrTab(rtrLogger.nexthopDistribution(fwd.actualU));
+        rdr.putStrTab(rtrLogger.nexthopDistribution(fwd.actualU, res));
     }
 
     private void doShowOutIfaces(int ver) {
