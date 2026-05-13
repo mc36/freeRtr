@@ -18338,3 +18338,6 @@ qc pass: cloner with ipv6 tcp
 ---------------------------------- 2026-05-13 04:44:52 26.5.13
 qc pass: cloner with ipv4 gre
 qc pass: cloner with ipv6 gre
+---------------------------------- 2026-05-13 07:41:39 26.5.13
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
