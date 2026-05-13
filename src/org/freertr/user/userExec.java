@@ -1217,6 +1217,8 @@ public class userExec {
         hl.add(null, false, 6, new int[]{-1}, "nhprefixes", "prefix count of next hops");
         hl.add(null, false, 6, new int[]{-1}, "nhtransit", "transiting ases of next hops");
         hl.add(null, false, 6, new int[]{-1}, "nhorigin", "originating ases of next hops");
+        hl.add(null, false, 6, new int[]{-1}, "nhusage", "egress router distribution");
+        hl.add(null, false, 6, new int[]{-1}, "nhresolv", "egress router distribution");
         hl.add(null, false, 6, new int[]{-1}, "prefix-lengths", "prefix length distribution");
         hl.add(null, false, 6, new int[]{7}, "allroute", "list of specific routes");
         hl.add(null, false, 7, new int[]{8, -1}, "<addr>", "prefix to view");

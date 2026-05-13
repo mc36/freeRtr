@@ -5115,6 +5115,14 @@ public class userShow {
             rdr.putStrTab(r.bgp.getNhOrigin(idx));
             return;
         }
+        if (a.equals("nhusage")) {
+            rdr.putStrTab(rtrLogger.nexthopDistribution(r.bgp.computd[idx], false));
+            return;
+        }
+        if (a.equals("nhresolv")) {
+            rdr.putStrTab(rtrLogger.nexthopDistribution(r.bgp.computd[idx], true));
+            return;
+        }
         if (a.equals("flapstat")) {
             rdr.putStrTab(r.bgp.getFlapstat(idx, bits.str2num(cmd.word())));
             return;
