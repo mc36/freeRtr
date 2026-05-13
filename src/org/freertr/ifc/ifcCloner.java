@@ -235,13 +235,16 @@ class ifcClonerIn implements ifcUp {
         pck.getSkip(2);
         boolean res;
         addrIP adr = null;
+        ipFwdIface ifc = null;
         switch (pck.ETHtype) {
             case ipIfc4.type:
                 res = parent.core4.parseIPheader(pck, false);
+                ifc = parent.upper.fwdIf4;
                 adr = parent.inIp4;
                 break;
             case ipIfc6.type:
                 res = parent.core6.parseIPheader(pck, false);
+                ifc = parent.upper.fwdIf6;
                 adr = parent.inIp6;
                 break;
             default:
@@ -249,6 +252,7 @@ class ifcClonerIn implements ifcUp {
                 break;
         }
         pck.getSkip(-2);
+        res |= ifc == null;
         if (res) {
             parent.outIfc.lower.sendPack(pck);
             return;
@@ -339,6 +343,7 @@ class ifcClonerOut implements ifcUp {
                 break;
         }
         pck.getSkip(-2);
+        res |= ifc == null;
         if (res) {
             parent.inIfc.lower.sendPack(pck);
             return;
