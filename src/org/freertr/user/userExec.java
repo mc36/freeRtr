@@ -2219,6 +2219,7 @@ public class userExec {
         hl.add(null, false, 2, new int[]{3}, "dns", "name server record");
         hl.add(null, false, 2, new int[]{3}, "soa", "authority record");
         hl.add(null, false, 2, new int[]{3}, "srv", "service record");
+        hl.add(null, false, 2, new int[]{3}, "nap", "service record");
         hl.add(null, false, 2, new int[]{3}, "txt", "text record");
         hl.add(null, false, 2, new int[]{3}, "reverse", "reverse of address record");
         hl.add(null, false, 2, new int[]{3}, "recur-ipv4", "ipv4 address record");
@@ -5418,6 +5419,9 @@ public class userExec {
         }
         if (a.equals("srv")) {
             i = packDnsRec.typeSRV;
+        }
+        if (a.equals("nap")) {
+            i = packDnsRec.typeNAPTR;
         }
         if (a.equals("txt")) {
             i = packDnsRec.typeTXT;

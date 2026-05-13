@@ -214,11 +214,18 @@ public class servDns extends servGeneric implements prtServS {
         l.add(null, false, 4, new int[]{5}, "rp", "specify a responsible person");
         l.add(lst, false, 5, new int[]{6}, "<name:loc>", "mail server");
         l.add(null, false, 6, new int[]{-1}, "<str>", "email of author");
-        l.add(null, false, 4, new int[]{5}, "srv", "specify a responsible person");
+        l.add(null, false, 4, new int[]{5}, "srv", "specify a service");
         l.add(null, false, 5, new int[]{6}, "<num>", "priority");
         l.add(null, false, 6, new int[]{7}, "<num>", "weight");
         l.add(null, false, 7, new int[]{8}, "<num>", "port");
         l.add(lst, false, 8, new int[]{-1}, "<name:loc>", "server");
+        l.add(null, false, 4, new int[]{5}, "naptr", "specify a service");
+        l.add(null, false, 5, new int[]{6}, "<num>", "order");
+        l.add(null, false, 6, new int[]{7}, "<num>", "preference");
+        l.add(null, false, 7, new int[]{8}, "<str>", "flags");
+        l.add(null, false, 8, new int[]{9}, "<str>", "services");
+        l.add(null, false, 9, new int[]{10, -1}, "<str>", "regexp");
+        l.add(null, false, 10, new int[]{-1}, "<str>", "replacement");
         l.add(null, false, 4, new int[]{5}, "mx", "specify a mailbox server");
         l.add(null, false, 5, new int[]{6}, "<num>", "preference");
         l.add(lst, false, 6, new int[]{-1}, "<name:loc>", "mail server");
@@ -747,6 +754,7 @@ class servDnsDoer implements Runnable {
                 addAnswer(pckD, zon, req.name, packDnsRec.typeHINFO);
                 addAnswer(pckD, zon, req.name, packDnsRec.typeTXT);
                 addAnswer(pckD, zon, req.name, packDnsRec.typeSRV);
+                addAnswer(pckD, zon, req.name, packDnsRec.typeNAPTR);
                 addAnswer(pckD, zon, req.name, packDnsRec.typeNS);
                 addAnswer(pckD, zon, req.name, packDnsRec.typeMX);
                 addAnswer(pckD, zon, req.name, packDnsRec.typeSOA);

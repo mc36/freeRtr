@@ -897,6 +897,9 @@ public class packDnsRec implements Comparable<packDnsRec> {
         if (s.equals("srv")) {
             typ = typeSRV;
         }
+        if (s.equals("naptr")) {
+            typ = typeNAPTR;
+        }
         if (s.equals("hinfo")) {
             typ = typeHINFO;
         }

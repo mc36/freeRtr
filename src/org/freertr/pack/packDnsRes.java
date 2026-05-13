@@ -1,6 +1,5 @@
 package org.freertr.pack;
 
-
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrIPv6;
@@ -31,6 +30,16 @@ public class packDnsRes implements Comparable<packDnsRes> {
      * email address
      */
     public String email = "";
+
+    /**
+     * extra text
+     */
+    public String extra1 = "";
+
+    /**
+     * extra text
+     */
+    public String extra2 = "";
 
     /**
      * sequence
@@ -68,7 +77,7 @@ public class packDnsRes implements Comparable<packDnsRes> {
     public cfgIfc iface;
 
     public String toString() {
-        return "target=" + target + " os=" + email + " addr=" + addr + " seq=" + sequence + " fresh=" + fresh + " retry=" + retry + " expire=" + expire + " minttl=" + minttl;
+        return "target=" + target + " os=" + email + " ex1=" + extra1 + " ex2=" + extra2 + " addr=" + addr + " seq=" + sequence + " fresh=" + fresh + " retry=" + retry + " expire=" + expire + " minttl=" + minttl;
     }
 
     /**
@@ -80,6 +89,8 @@ public class packDnsRes implements Comparable<packDnsRes> {
         packDnsRes n = new packDnsRes();
         n.target = target;
         n.email = email;
+        n.extra1 = extra1;
+        n.extra2 = extra2;
         n.sequence = sequence;
         n.fresh = fresh;
         n.retry = retry;
@@ -122,6 +133,8 @@ public class packDnsRes implements Comparable<packDnsRes> {
                 return target;
             case packDnsRec.typeSRV:
                 return sequence + " " + fresh + " " + retry + " " + target;
+            case packDnsRec.typeNAPTR:
+                return sequence + " " + fresh + " " + target + " " + email + " " + extra1 + " " + extra2;
             case packDnsRec.typeAAAA:
             case packDnsRec.typeA6:
             case packDnsRec.typeA:
@@ -197,6 +210,14 @@ public class packDnsRes implements Comparable<packDnsRes> {
                 fresh = bits.str2num(cmd.word());
                 retry = bits.str2num(cmd.word());
                 target = cmd.getRemaining();
+                return false;
+            case packDnsRec.typeNAPTR:
+                sequence = bits.str2num(cmd.word());
+                fresh = bits.str2num(cmd.word());
+                target = cmd.word();
+                email = cmd.word();
+                extra1 = cmd.word();
+                extra2 = cmd.getRemaining();
                 return false;
             case packDnsRec.typeHINFO:
                 target = cmd.word();
@@ -275,6 +296,15 @@ public class packDnsRes implements Comparable<packDnsRes> {
                 pck.getSkip(6);
                 target = packDnsRec.getChain(pck, len, 0);
                 return false;
+            case packDnsRec.typeNAPTR:
+                sequence = pck.msbGetW(0);
+                fresh = pck.msbGetW(2);
+                pck.getSkip(4);
+                target = packDnsRec.getString(pck);
+                email = packDnsRec.getString(pck);
+                extra1 = packDnsRec.getString(pck);
+                extra2 = packDnsRec.getChain(pck, len, 0);
+                return false;
             case packDnsRec.typeA:
                 addrIPv4 adr4 = new addrIPv4();
                 pck.getAddr(adr4, 0);
@@ -334,6 +364,15 @@ public class packDnsRes implements Comparable<packDnsRes> {
                 pck.msbPutW(4, retry);
                 pck.putSkip(6);
                 packDnsRec.putDomain(pck, target);
+                break;
+            case packDnsRec.typeNAPTR:
+                pck.msbPutW(0, sequence);
+                pck.msbPutW(2, fresh);
+                pck.putSkip(4);
+                packDnsRec.putString(pck, target);
+                packDnsRec.putString(pck, email);
+                packDnsRec.putString(pck, extra1);
+                packDnsRec.putDomain(pck, extra2);
                 break;
             case packDnsRec.typeNS:
             case packDnsRec.typePTR:
@@ -417,6 +456,14 @@ public class packDnsRes implements Comparable<packDnsRes> {
             return i;
         }
         i = email.compareTo(o.email);
+        if (i != 0) {
+            return i;
+        }
+        i = extra1.compareTo(o.extra1);
+        if (i != 0) {
+            return i;
+        }
+        i = extra2.compareTo(o.extra2);
         if (i != 0) {
             return i;
         }
