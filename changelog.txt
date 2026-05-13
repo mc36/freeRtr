@@ -18330,3 +18330,8 @@ qc pass: uni2uni server
 ---------------------------------- 2026-05-05 15:05:58 26.5.5
 no qc pass: tundst server
 qc pass: tunnel destination server
+---------------------------------- 2026-05-12 21:36:49 26.5.12
+qc pass: cloner with ipv4 udp
+qc pass: cloner with ipv6 udp
+qc pass: cloner with ipv4 tcp
+qc pass: cloner with ipv6 tcp
