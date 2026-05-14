@@ -694,6 +694,7 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
                     return true;
                 }
                 addNeigh(adr, iface, metric, stub, bndwdt, affinity, srlg, mtu, segrouAdj, peerAddr, peerOddr, peerIf);
+                peerAddr = new addrIP();
                 peerOddr = new addrIP();
                 continue;
             }
