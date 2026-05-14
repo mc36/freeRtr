@@ -1,5 +1,6 @@
 package org.freertr.rtr;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -19,7 +20,6 @@ import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdTab;
 import org.freertr.ip.ipRtr;
-import org.freertr.pack.packDnsRec;
 import org.freertr.pipe.pipeShell;
 import org.freertr.prt.prtTcp;
 import org.freertr.prt.prtUdp;
@@ -557,25 +557,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return zonefile
      */
     public userFormat showZoneRev(String d, String s, List<String> r) {
-        userFormat l = new userFormat("|", "cmd|value|cmd|value");
+        List<String> r4 = new ArrayList<String>();
+        List<String> r6 = new ArrayList<String>();
         for (int i = 0; i < database.size(); i++) {
             rtrLsrpData ntry = database.get(i);
-            for (int o = 0; o < ntry.address.size(); o++) {
-                String a = ntry.address.get(o).iface;
-                for (int p = 0; p < r.size(); p += 2) {
-                    a = a.replaceAll(r.get(p), r.get(p + 1));
-                }
-                l.add("rr|" + packDnsRec.generateReverse(ntry.address.get(o).addr) + "|ptr|" + ntry.hostname + s + a + "." + d);
-            }
-            for (int o = 0; o < ntry.network.size(); o++) {
-                l.add("rr|" + packDnsRec.generateReverse(ntry.network.get(o).prefix.network) + "|ptr|" + ntry.hostname + "." + d);
-            }
-            l.add("rr|" + packDnsRec.generateReverse(ntry.mgmtIp) + "|ptr|" + ntry.hostname + "." + d);
-            if (ntry.mgmtOp.isEmpty()) {
-                continue;
-            }
-            l.add("rr|" + packDnsRec.generateReverse(ntry.mgmtOp) + "|ptr|" + ntry.hostname + "." + d);
+            ntry.showZoneRev(r4, r6, d, s, r);
         }
+        userFormat l = new userFormat("|", "cmd|value|cmd|value");
+        l.add(r4);
+        l.add("");
+        l.add(r6);
         return l;
     }
 
@@ -588,28 +579,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
      * @return zonefile
      */
     public userFormat showZoneFwd(String d, String s, List<String> r) {
-        userFormat l = new userFormat("|", "cmd|value|cmd|value");
+        List<String> r4 = new ArrayList<String>();
+        List<String> r6 = new ArrayList<String>();
         for (int i = 0; i < database.size(); i++) {
             rtrLsrpData ntry = database.get(i);
-            String t;
-            if (ntry.mgmtIp.isIPv4()) {
-                t = packDnsRec.type2str(packDnsRec.typeA);
-            } else {
-                t = packDnsRec.type2str(packDnsRec.typeAAAA);
-            }
-            for (int o = 0; o < ntry.address.size(); o++) {
-                String a = ntry.address.get(o).iface;
-                for (int p = 0; p < r.size(); p += 2) {
-                    a = a.replaceAll(r.get(p), r.get(p + 1));
-                }
-                l.add("rr|" + ntry.hostname + s + a + "." + d + "|" + t + "|" + ntry.address.get(o).addr);
-            }
-            l.add("rr|" + ntry.hostname + "." + d + "|" + t + "|" + ntry.mgmtIp);
-            if (ntry.mgmtOp.isEmpty()) {
-                continue;
-            }
-            l.add("rr|" + ntry.hostname + "." + d + "|" + t + "|" + ntry.mgmtOp);
+            ntry.showZoneFwd(r4, r6, d, s, r);
         }
+        userFormat l = new userFormat("|", "cmd|value|cmd|value");
+        l.add(r4);
+        l.add("");
+        l.add(r6);
         return l;
     }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
 import org.freertr.addr.addrPrefix;
+import org.freertr.pack.packDnsRec;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabLabelBier;
 import org.freertr.tab.tabRoute;
@@ -801,6 +802,77 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
         lst.add(dump(dmpCsum));
         lst.add(pwd);
         return userUpgrade.calcTextHash(lst);
+    }
+
+    /**
+     * show zonefile
+     *
+     * @param r4 ipv4 results
+     * @param r6 ipv6 results
+     * @param d domain
+     * @param s separator
+     * @param r replacers
+     */
+    protected void showZoneRev(List<String> r4, List<String> r6, String d, String s, List<String> r) {
+        for (int i = 0; i < address.size(); i++) {
+            rtrLsrpDataAddr cur = address.get(i);
+            String a = cur.iface;
+            for (int o = 0; o < r.size(); o += 2) {
+                a = a.replaceAll(r.get(o), r.get(o + 1));
+            }
+            showZonesRev(r4, r6, cur.addr, s + a + "." + d);
+        }
+        for (int i = 0; i < network.size(); i++) {
+            tabRouteEntry<addrIP> cur = network.get(i);
+            showZonesRev(r4, r6, cur.prefix.network, "." + d);
+        }
+        showZonesRev(r4, r6, mgmtIp, "." + d);
+        if (mgmtOp.isEmpty()) {
+            return;
+        }
+        showZonesRev(r4, r6, mgmtOp, "." + d);
+    }
+
+    private void showZonesRev(List<String> r4, List<String> r6, addrIP adr, String a) {
+        a = "rr|" + packDnsRec.generateReverse(adr) + "|ptr|" + hostname + a;
+        if (adr.isIPv4()) {
+            r4.add(a);
+        } else {
+            r6.add(a);
+        }
+    }
+
+    private void showZoneFwd(List<String> r4, List<String> r6, addrIP adr, String a) {
+        if (adr.isIPv4()) {
+            r4.add("rr|" + hostname + a + "|" + packDnsRec.type2str(packDnsRec.typeA) + "|" + adr);
+        } else {
+            r6.add("rr|" + hostname + a + "|" + packDnsRec.type2str(packDnsRec.typeAAAA) + "|" + adr);
+        }
+    }
+
+    /**
+     * show zonefile
+     *
+     * @param r4 ipv4 results
+     * @param r6 ipv6 results
+     * @param d domain
+     * @param s separator
+     * @param r replacers
+     */
+    protected void showZoneFwd(List<String> r4, List<String> r6, String d, String s, List<String> r) {
+        for (int i = 0; i < address.size(); i++) {
+            rtrLsrpDataAddr cur = address.get(i);
+            String a = cur.iface;
+            for (int o = 0; o < r.size(); o += 2) {
+                a = a.replaceAll(r.get(o), r.get(o + 1));
+            }
+            showZoneFwd(r4, r6, cur.addr, s + a + "." + d);
+        }
+        showZoneFwd(r4, r6, mgmtIp, "." + d);
+        if (mgmtOp.isEmpty()) {
+            return;
+        }
+        showZoneFwd(r4, r6, mgmtOp, "." + d);
     }
 
 }
