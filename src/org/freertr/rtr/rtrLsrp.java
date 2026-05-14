@@ -571,6 +571,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 l.add("rr|" + packDnsRec.generateReverse(ntry.network.get(o).prefix.network) + "|ptr|" + ntry.hostname + "." + d);
             }
             l.add("rr|" + packDnsRec.generateReverse(ntry.mgmtIp) + "|ptr|" + ntry.hostname + "." + d);
+            if (ntry.mgmtOp.isEmpty()) {
+                continue;
+            }
+            l.add("rr|" + packDnsRec.generateReverse(ntry.mgmtOp) + "|ptr|" + ntry.hostname + "." + d);
         }
         return l;
     }
@@ -601,6 +605,10 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 l.add("rr|" + ntry.hostname + s + a + "." + d + "|" + t + "|" + ntry.address.get(o).addr);
             }
             l.add("rr|" + ntry.hostname + "." + d + "|" + t + "|" + ntry.mgmtIp);
+            if (ntry.mgmtOp.isEmpty()) {
+                continue;
+            }
+            l.add("rr|" + ntry.hostname + "." + d + "|" + t + "|" + ntry.mgmtOp);
         }
         return l;
     }
