@@ -776,9 +776,18 @@ public class rtrLsrp extends ipRtr implements Runnable {
                 if (nei.segrouLab != null) {
                     adj = nei.segrouLab.label;
                 }
-                dat.addNeigh(nei.rtrId, "" + ifc.iface, nei.getMetric(), (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, ifc.iface.mtu, adj, nei.peer, nei.inam);
+                addrIP adr;
+                if (other.enabled && ifc.otherEna) {
+                    adr = nei.opeer;
+                } else {
+                    adr = new addrIP();
+                }
+                dat.addNeigh(nei.rtrId, "" + ifc.iface, nei.getMetric(), (stub || ifc.stub) && (!ifc.unstub), ifc.iface.bandwidth / 1000, ifc.affinity, ifc.srlg, ifc.iface.mtu, adj, nei.peer, adr, nei.inam);
             }
             dat.addAddr("" + ifc.iface, ifc.iface.addr);
+            if (other.enabled && ifc.otherEna) {
+                dat.addAddr("" + ifc.oface, ifc.oface.addr);
+            }
             if (other.enabled && ifc.otherEna && (ifc.othUnsuppAddr || (!other.suppressAddr && !ifc.othSuppAddr))) {
                 tabRouteEntry<addrIP> ntry = dat.network.add(tabRoute.addType.better, ifc.oface.network, null);
                 ntry.best.rouTyp = tabRouteAttr.routeType.conn;
@@ -850,7 +859,16 @@ public class rtrLsrp extends ipRtr implements Runnable {
             }
         }
         dat.rtrId = routerID.copyBytes();
-        ipFwdIface mgmtIf = ipFwdTab.findStableIface(fwdCore);
+        ipFwdIface mgmtIf = null;
+        if (other.enabled) {
+            mgmtIf = ipFwdTab.findStableIface(other.fwd);
+        }
+        if (mgmtIf != null) {
+            if (mgmtIf.addr != null) {
+                dat.mgmtOp = mgmtIf.addr.copyBytes();
+            }
+        }
+        mgmtIf = ipFwdTab.findStableIface(fwdCore);
         if (mgmtIf != null) {
             if (mgmtIf.addr != null) {
                 dat.mgmtIp = mgmtIf.addr.copyBytes();

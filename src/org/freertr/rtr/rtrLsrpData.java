@@ -58,6 +58,11 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
     public addrIP mgmtIp;
 
     /**
+     * other management address
+     */
+    public addrIP mgmtOp;
+
+    /**
      * topology summary
      */
     public int topoSum;
@@ -317,6 +322,9 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
                     s += " segrouadj=" + ntry.segrou;
                     segrouAdj = ntry.segrou;
                 }
+                if (!ntry.opeer.isEmpty()) {
+                    s += " peeraddr=" + ntry.opeer;
+                }
                 s += " peeraddr=" + ntry.peer;
                 s += " peeriface=" + ntry.perif;
                 s += " neighbor=" + ntry.rtrid;
@@ -387,6 +395,9 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
             }
         }
         if ((typ & 0x2000) != 0) {
+            if (!mgmtOp.isEmpty()) {
+                s += " mgmtaddr=" + mgmtOp;
+            }
             s += " mgmtaddr=" + mgmtIp;
         }
         if ((typ & 0x4000) != 0) {
@@ -438,8 +449,10 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
         changesTim = 0;
         since = bits.getTime();
         addrIP peerAddr = new addrIP();
+        addrIP peerOddr = new addrIP();
         String peerIf = "unknown";
         mgmtIp = new addrIP();
+        mgmtOp = new addrIP();
         String iface = "unknown";
         boolean stub = false;
         int segrouAdj = 0;
@@ -622,9 +635,12 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
                 continue;
             }
             if (a.equals("mgmtaddr")) {
-                if (mgmtIp.fromString(s)) {
+                addrIP adr = new addrIP();
+                if (adr.fromString(s)) {
                     return true;
                 }
+                mgmtOp = mgmtIp;
+                mgmtIp = adr;
                 continue;
             }
             if (a.equals("address")) {
@@ -645,9 +661,12 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
                 continue;
             }
             if (a.equals("peeraddr")) {
-                if (peerAddr.fromString(s)) {
+                addrIP adr = new addrIP();
+                if (adr.fromString(s)) {
                     return true;
                 }
+                peerOddr = peerAddr;
+                peerAddr = adr;
                 continue;
             }
             if (a.equals("network")) {
@@ -673,7 +692,8 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
                 if (adr.fromString(s)) {
                     return true;
                 }
-                addNeigh(adr, iface, metric, stub, bndwdt, affinity, srlg, mtu, segrouAdj, peerAddr, peerIf);
+                addNeigh(adr, iface, metric, stub, bndwdt, affinity, srlg, mtu, segrouAdj, peerAddr, peerOddr, peerIf);
+                peerOddr = new addrIP();
                 continue;
             }
         }
@@ -705,9 +725,10 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
      * @param mtu mtu
      * @param adj segrout adjacency
      * @param adr adjacency address
+     * @param odr other adjacency address
      * @param pif peer interface
      */
-    protected void addNeigh(addrIPv4 nei, String ifc, int met, boolean stb, long bw, int aff, int srl, int mtu, int adj, addrIP adr, String pif) {
+    protected void addNeigh(addrIPv4 nei, String ifc, int met, boolean stb, long bw, int aff, int srl, int mtu, int adj, addrIP adr, addrIP odr, String pif) {
         rtrLsrpDataNeigh ntry = new rtrLsrpDataNeigh();
         ntry.rtrid = nei.copyBytes();
         ntry.metric = met;
@@ -719,6 +740,7 @@ public class rtrLsrpData implements Comparable<rtrLsrpData> {
         ntry.mtu = mtu;
         ntry.segrou = adj;
         ntry.peer = adr.copyBytes();
+        ntry.opeer = odr.copyBytes();
         ntry.perif = pif;
         rtrLsrpDataNeigh old = neighbor.find(ntry);
         if (old != null) {
@@ -817,6 +839,11 @@ class rtrLsrpDataNeigh implements Comparable<rtrLsrpDataNeigh> {
      * adjacency address
      */
     public addrIP peer;
+
+    /**
+     * other adjacency address
+     */
+    public addrIP opeer;
 
     /**
      * stub flag
