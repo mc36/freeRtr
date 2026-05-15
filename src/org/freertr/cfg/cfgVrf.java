@@ -26,6 +26,7 @@ import org.freertr.tab.tabNatCfgN;
 import org.freertr.tab.tabPbrN;
 import org.freertr.tab.tabQos;
 import org.freertr.tab.tabRateLimit;
+import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
@@ -495,10 +496,13 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         if (a.equals("bier")) {
             return ipFwd.mdtMode.bier;
         }
+        if (a.equals("mvpn")) {
+            return ipFwd.mdtMode.mvpn;
+        }
         return ipFwd.mdtMode.none;
     }
 
-    private static String mdtmod2string(ipFwd.mdtMode mm) {
+    private static String mdtmod2string(ipFwd.mdtMode mm, tabRouteAttr.routeType mt, int mn) {
         switch (mm) {
             case none:
                 return "none";
@@ -506,6 +510,8 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
                 return "mldp";
             case bier:
                 return "bier";
+            case mvpn:
+                return "mvpn " + mt + " " + mn;
             default:
                 return "unknown";
         }
@@ -603,8 +609,8 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(cmds.tabulator + "iface6start " + iface6start);
         l.add(cmds.tabulator + "label4mode " + labmod2string(fwd4.prefixMode));
         l.add(cmds.tabulator + "label6mode " + labmod2string(fwd6.prefixMode));
-        l.add(cmds.tabulator + "mdt4 " + mdtmod2string(fwd4.mdtMod));
-        l.add(cmds.tabulator + "mdt6 " + mdtmod2string(fwd6.mdtMod));
+        l.add(cmds.tabulator + "mdt4 " + mdtmod2string(fwd4.mdtMod, fwd4.mdtTyp, fwd4.mdtNum));
+        l.add(cmds.tabulator + "mdt6 " + mdtmod2string(fwd6.mdtMod, fwd6.mdtTyp, fwd6.mdtNum));
         l.add(cmds.tabulator + "label4common " + label4comm);
         l.add(cmds.tabulator + "label6common " + label6comm);
         l.add(cmds.tabulator + "route4limit " + fwd4.routeLimitU + " " + fwd4.routeLimitL + " " + fwd4.routeLimitM + " " + fwd4.routeLimitF);
@@ -830,6 +836,9 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "none", "no vpn mode");
         l.add(null, false, 2, new int[]{-1}, "mldp", "use mldp");
         l.add(null, false, 2, new int[]{-1}, "bier", "use bier");
+        l.add(null, false, 2, new int[]{3}, "mvpn", "use mvpn");
+        cfgRtr.getRouterList(l, 1, " to use");
+        l.add(null, false, 4, new int[]{-1}, "<num:rtr>", "process id");
         l.add(null, false, 1, new int[]{2}, "label-mode", "specify label allocation mode");
         l.add(null, false, 1, new int[]{2}, "label4mode", "specify label allocation mode");
         l.add(null, false, 1, new int[]{2}, "label6mode", "specify label allocation mode");
@@ -1070,11 +1079,15 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         }
         if (a.equals("mdt4")) {
             fwd4.mdtMod = string2mdtmod(cmd.word());
+            fwd4.mdtTyp = cfgRtr.name2num(cmd.word());
+            fwd4.mdtNum = bits.str2num(cmd.word());
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("mdt6")) {
             fwd6.mdtMod = string2mdtmod(cmd.word());
+            fwd6.mdtTyp = cfgRtr.name2num(cmd.word());
+            fwd6.mdtNum = bits.str2num(cmd.word());
             fwd6.routerStaticChg();
             return;
         }
@@ -1642,11 +1655,15 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         }
         if (a.equals("mdt4")) {
             fwd4.mdtMod = ipFwd.mdtMode.none;
+            fwd4.mdtTyp = null;
+            fwd4.mdtNum = 0;
             fwd4.routerStaticChg();
             return;
         }
         if (a.equals("mdt6")) {
             fwd6.mdtMod = ipFwd.mdtMode.none;
+            fwd6.mdtTyp = null;
+            fwd6.mdtNum = 0;
             fwd6.routerStaticChg();
             return;
         }

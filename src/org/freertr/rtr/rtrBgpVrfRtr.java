@@ -12,6 +12,7 @@ import org.freertr.cfg.cfgPlymp;
 import org.freertr.cfg.cfgRtr;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.ip.ipFwd;
+import org.freertr.ip.ipFwdMcast;
 import org.freertr.ip.ipRtr;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
@@ -326,20 +327,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = parent.defaultRoute(false);
         byte[] buf = new byte[128];
-        if (ipv4) {
-            addrIPv4 adr = mvpn.addr4;
-            if (adr != null) {
-                adr.toBuffer(buf, 2);
-            }
-            buf[0] = addrIPv4.size;
-        } else {
-            addrIPv6 adr = mvpn.addr6;
-            if (adr != null) {
-                adr.toBuffer(buf, 2);
-            }
-            buf[0] = addrIPv6.size;
-        }
-        buf[0]++;
+        buf[0] = (byte) (doWriteSrc(buf, 2) - 1);
         buf[1] = 1; // intra-as pmsi
         ntry.prefix.network.fromBuf(buf, 0);
         ntry.prefix.broadcast.fromBuf(buf, 16);
@@ -350,6 +338,119 @@ public class rtrBgpVrfRtr extends ipRtr {
         ntry.best.extComm.addAll(rt);
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
+        if (fwd.mdtNum != parent.rtrNum) {
+            return;
+        }
+        if (fwd.mdtTyp != parent.rouTyp) {
+            return;
+        }
+        for (int i = 0; i < fwd.groups.size(); i++) {
+            ipFwdMcast grp = fwd.groups.get(i);
+            if (grp == null) {
+                continue;
+            }
+            if (fwd.connedR.route(grp.source) == null) {
+                ntry = new tabRouteEntry<addrIP>();
+                ntry.prefix = parent.defaultRoute(false);
+                bits.msbPutD(buf, 2, parent.localAs);
+                buf[0] = (byte) (doWriteGrp(buf, 6, grp) - 1);
+                buf[1] = 7; // source tree join
+                ntry.prefix.network.fromBuf(buf, 0);
+                ntry.prefix.broadcast.fromBuf(buf, 16);
+                ntry.prefix.wildcard.fromBuf(buf, 32);
+                ntry.prefix.mask.fromBuf(buf, 48);
+                ntry.best.extComm = new ArrayList<Long>();
+                ntry.rouDst = fwd.rd;
+                ntry.best.extComm.addAll(rt);
+                ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
+                continue;
+            }
+            ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = parent.defaultRoute(false);
+            buf[0] = (byte) (doWriteGrp(buf, 2, grp) - 1);
+            buf[1] = 5; // source active
+            ntry.prefix.network.fromBuf(buf, 0);
+            ntry.prefix.broadcast.fromBuf(buf, 16);
+            ntry.prefix.wildcard.fromBuf(buf, 32);
+            ntry.prefix.mask.fromBuf(buf, 48);
+            ntry.best.extComm = new ArrayList<Long>();
+            ntry.rouDst = fwd.rd;
+            ntry.best.extComm.addAll(rt);
+            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
+            ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = parent.defaultRoute(false);
+            int o = doWriteGrp(buf, 2, grp);
+            o = doWriteSrc(buf, o);
+            buf[0] = (byte) (o - 1);
+            buf[1] = 3; // s-pmsi
+            ntry.prefix.network.fromBuf(buf, 0);
+            ntry.prefix.broadcast.fromBuf(buf, 16);
+            ntry.prefix.wildcard.fromBuf(buf, 32);
+            ntry.prefix.mask.fromBuf(buf, 48);
+            ntry.best.extComm = new ArrayList<Long>();
+            ntry.rouDst = fwd.rd;
+            ntry.best.extComm.addAll(rt);
+            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
+            if (ipv4) {
+                buf = new byte[17];
+                bits.msbPutW(buf, 1, 1); // afi
+                buf[3] = addrIPv4.size; // root len
+            } else {
+                buf = new byte[29];
+                bits.msbPutW(buf, 1, 2); // afi
+                buf[3] = addrIPv6.size; // root len
+            }
+            buf[0] = 6; // p2mp
+            doWriteSrc(buf, 4);
+            bits.msbPutW(buf, buf.length - 9, 7); // opaque length
+            buf[buf.length - 7] = 1; // generic lsp id
+            bits.msbPutW(buf, buf.length - 6, 4); // value length
+            o = grp.source.getHashW();
+            o <<= 16;
+            o |= grp.group.getHashW();
+            bits.msbPutD(buf, buf.length - 4, o); // value
+            ntry.best.pmsiTyp = 2; // p2mp mldp
+            ntry.best.pmsiLab = 0;
+            ntry.best.pmsiTun = buf;
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
+        }
+    }
+
+    private int doWriteSrc(byte[] buf, int ofs) {
+        if (ipv4) {
+            addrIPv4 adr = mvpn.addr4;
+            if (adr != null) {
+                adr.toBuffer(buf, ofs);
+            }
+            return ofs + addrIPv4.size;
+        } else {
+            addrIPv6 adr = mvpn.addr6;
+            if (adr != null) {
+                adr.toBuffer(buf, ofs);
+            }
+            return ofs + addrIPv6.size;
+        }
+    }
+
+    private int doWriteGrp(byte[] buf, int ofs, ipFwdMcast grp) {
+        if (ipv4) {
+            buf[ofs] = addrIPv4.size * 8;
+            grp.source.toIPv4().toBuffer(buf, ofs + 1);
+            ofs += addrIPv4.size + 1;
+            buf[ofs] = addrIPv4.size * 8;
+            grp.group.toIPv4().toBuffer(buf, ofs + 1);
+            ofs += addrIPv4.size + 1;
+        } else {
+            buf[ofs] = (byte) (addrIPv6.size * 8);
+            grp.source.toIPv6().toBuffer(buf, ofs + 1);
+            ofs += addrIPv6.size + 1;
+            buf[ofs] = (byte) (addrIPv6.size * 8);
+            grp.group.toIPv6().toBuffer(buf, ofs + 1);
+            ofs += addrIPv6.size + 1;
+        }
+        return ofs;
     }
 
     private List<Long> getRtList() {

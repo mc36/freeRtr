@@ -387,6 +387,16 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     public mdtMode mdtMod = mdtMode.none;
 
     /**
+     * mdt router type
+     */
+    public tabRouteAttr.routeType mdtTyp;
+
+    /**
+     * mdt router number
+     */
+    public int mdtNum;
+
+    /**
      * mpls propagate ip ttl
      */
     public boolean mplsPropTtl = true;
@@ -578,6 +588,10 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
          * bier mode
          */
         bier,
+        /**
+         * mvpn mode
+         */
+        mvpn,
         /**
          * no mdt mode
          */
