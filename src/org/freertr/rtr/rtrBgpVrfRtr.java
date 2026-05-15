@@ -13,6 +13,7 @@ import org.freertr.cfg.cfgRtr;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdMcast;
+import org.freertr.ip.ipFwdMpmp;
 import org.freertr.ip.ipRtr;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
@@ -344,6 +345,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (fwd.mdtTyp != parent.rouTyp) {
             return;
         }
+        tabGen<ipFwdMpmp> now = new tabGen<ipFwdMpmp>();
         for (int i = 0; i < fwd.groups.size(); i++) {
             ipFwdMcast grp = fwd.groups.get(i);
             if (grp == null) {
@@ -396,17 +398,16 @@ public class rtrBgpVrfRtr extends ipRtr {
             if (ipv4) {
                 buf = new byte[17];
                 bits.msbPutW(buf, 1, 1); // afi
-                buf[3] = addrIPv4.size; // root len
             } else {
                 buf = new byte[29];
                 bits.msbPutW(buf, 1, 2); // afi
-                buf[3] = addrIPv6.size; // root len
             }
             buf[0] = 6; // p2mp
-            doWriteSrc(buf, 4);
-            bits.msbPutW(buf, buf.length - 9, 7); // opaque length
-            buf[buf.length - 7] = 1; // generic lsp id
-            bits.msbPutW(buf, buf.length - 6, 4); // value length
+            o = doWriteSrc(buf, 4);
+            buf[3] = (byte) (o - 4); // root size
+            bits.msbPutW(buf, o, 7); // opaque length
+            buf[o + 2] = 1; // generic lsp id
+            bits.msbPutW(buf, o + 3, 4); // value length
             o = grp.source.getHashW();
             o <<= 16;
             o |= grp.group.getHashW();
@@ -415,22 +416,43 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.best.pmsiLab = 0;
             ntry.best.pmsiTun = buf;
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
+            if (grp.label != null) {
+                if (parent.fwdCore.mp2mpLsp.find(grp.label) == null) {
+                    grp.label = null;
+                    continue;
+                }
+                now.add(grp.label);
+                continue;
+            }
+            addrIP adr = new addrIP();
+            if (parent.isIpv6) {
+                if (mvpn.addr6 != null) {
+                    adr.fromIPv6addr(mvpn.addr6);
+                }
+            } else {
+                if (mvpn.addr4 != null) {
+                    adr.fromIPv4addr(mvpn.addr4);
+                }
+            }
+            grp.label = ipFwdMpmp.create4tunnel(false, adr, o);
+            parent.fwdCore.mldpAdd(grp.label);
+            now.add(grp.label);
         }
     }
 
     private int doWriteSrc(byte[] buf, int ofs) {
-        if (ipv4) {
-            addrIPv4 adr = mvpn.addr4;
-            if (adr != null) {
-                adr.toBuffer(buf, ofs);
-            }
-            return ofs + addrIPv4.size;
-        } else {
+        if (parent.isIpv6) {
             addrIPv6 adr = mvpn.addr6;
             if (adr != null) {
                 adr.toBuffer(buf, ofs);
             }
             return ofs + addrIPv6.size;
+        } else {
+            addrIPv4 adr = mvpn.addr4;
+            if (adr != null) {
+                adr.toBuffer(buf, ofs);
+            }
+            return ofs + addrIPv4.size;
         }
     }
 
