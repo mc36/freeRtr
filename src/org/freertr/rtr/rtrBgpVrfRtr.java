@@ -442,7 +442,7 @@ public class rtrBgpVrfRtr extends ipRtr {
      *
      * @param grp group
      * @param rot root
-     * @param p2mp if found, null if not found
+     * @return p2mp if found, null if not found
      */
     public ipFwdMpmp doFindMvpn(ipFwdMcast grp, addrIP rot) {
         addrPrefix<addrIP> need = parent.defaultRoute(false);

@@ -250,6 +250,8 @@ public class ipFwdMcast implements Comparable<ipFwdMcast> {
         res.add("lasted|" + bits.timePast(created));
         res.add("iface|" + iface);
         res.add("upstream|" + upstream);
+        res.add("up vrf|" + upsVrf);
+        res.add("rx label|" + rxLab);
         res.add("local|" + local);
         res.add("configG|" + configG);
         res.add("configI|" + configI);
