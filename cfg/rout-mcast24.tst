@@ -51,11 +51,11 @@ router bgp4 1
  afi-vrf v2 ena
  afi-vrf v2 red conn
  afi-vrf v2 mvpn lo0
- afi-vrf v2 mvsa 232.2.2.2 3.3.3.1
+ afi-vrf v2 adv-sa 232.2.2.2 3.3.3.1
  afi-ovrf v2 ena
  afi-ovrf v2 red conn
  afi-ovrf v2 mvpn lo0
- afi-ovrf v2 mvsa ff06::1 3333::1
+ afi-ovrf v2 adv-sa ff06::1 3333::1
  exit
 router bgp6 1
  vrf v1

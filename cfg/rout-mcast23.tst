@@ -70,7 +70,7 @@ router bgp4 1
  afi-vrf v2 ena
  afi-vrf v2 red conn
  afi-vrf v2 mvpn lo0
- afi-vrf v2 mvsa 232.2.2.2 1.1.1.1
+ afi-vrf v2 adv-sa 232.2.2.2 1.1.1.1
  exit
 router bgp6 1
  vrf v1
@@ -84,7 +84,7 @@ router bgp6 1
  afi-vrf v2 ena
  afi-vrf v2 red conn
  afi-vrf v2 mvpn lo0
- afi-vrf v2 mvsa ff06::1 1234:1::1
+ afi-vrf v2 adv-sa ff06::1 1234:1::1
  exit
 !
 

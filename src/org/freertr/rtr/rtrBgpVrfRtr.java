@@ -66,7 +66,7 @@ public class rtrBgpVrfRtr extends ipRtr {
     /**
      * mvpn source actives
      */
-    public tabGen<ipFwdMcast> mvSa = new tabGen<ipFwdMcast>();
+    public tabGen<ipFwdMcast> advSa = new tabGen<ipFwdMcast>();
 
     /**
      * mdt advertisement source
@@ -348,8 +348,8 @@ public class rtrBgpVrfRtr extends ipRtr {
         ntry.best.extComm.addAll(rt);
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
-        for (int i = 0; i < mvSa.size(); i++) {
-            ipFwdMcast grp = mvSa.get(i);
+        for (int i = 0; i < advSa.size(); i++) {
+            ipFwdMcast grp = advSa.get(i);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = parent.defaultRoute(false);
             buf[0] = (byte) (doWriteGrp(buf, 2, grp) - 1);
@@ -435,7 +435,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             if (grp == null) {
                 continue;
             }
-            if (mvSa.find(grp) != null) {
+            if (advSa.find(grp) != null) {
                 continue;
             }
             ntry = new tabRouteEntry<addrIP>();
@@ -463,7 +463,7 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @return p2mp if found, null if not found
      */
     public ipFwdMpmp doFindMvpn(ipFwdMcast grp, tabRouteEntry<addrIP> rou) {
-        if (mvSa.find(grp) != null) {
+        if (advSa.find(grp) != null) {
             return null;
         }
         addrIP rot;
@@ -822,7 +822,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         l.add(null, false, p + 2, new int[]{-1}, "<addr>", "select group to advertise");
         l.add(null, false, p + 0, new int[]{p + 1}, "mvpn", "mvpn advertisement");
         l.add(null, false, p + 1, new int[]{-1}, "<name:ifc>", "select source to advertise");
-        l.add(null, false, p + 0, new int[]{p + 1}, "mvsa", "mvpn source active");
+        l.add(null, false, p + 0, new int[]{p + 1}, "adv-sa", "mvpn source active");
         l.add(null, false, p + 1, new int[]{p + 2}, "<addr>", "group address");
         l.add(null, false, p + 2, new int[]{-1}, "<addr>", "source address");
         l.add(null, false, p + 0, new int[]{p + 1}, "update-source", "select source to advertise");
@@ -853,9 +853,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (mvpn != null) {
             l.add(beg1 + beg2 + "mvpn " + mvpn.name);
         }
-        for (int i = 0; i < mvSa.size(); i++) {
-            ipFwdMcast grp = mvSa.get(i);
-            l.add(beg1 + beg2 + "mvsa " + grp.group + " " + grp.source);
+        for (int i = 0; i < advSa.size(); i++) {
+            ipFwdMcast grp = advSa.get(i);
+            l.add(beg1 + beg2 + "adv-sa " + grp.group + " " + grp.source);
         }
         if (srv6 != null) {
             l.add(beg1 + beg2 + "srv6 " + srv6.name);
@@ -907,7 +907,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             parent.compute.wakeup();
             return;
         }
-        if (s.equals("mvsa")) {
+        if (s.equals("adv-sa")) {
             addrIP a1 = new addrIP();
             addrIP a2 = new addrIP();
             if (a1.fromString(cmd.word())) {
@@ -924,11 +924,11 @@ public class rtrBgpVrfRtr extends ipRtr {
             }
             ipFwdMcast grp = new ipFwdMcast(a1, a2);
             if (negated) {
-                mvSa.del(grp);
+                advSa.del(grp);
                 fwd.mcastDelFloodIfc(a1, a2, null);
             } else {
                 grp.created = bits.randomD();
-                mvSa.add(grp);
+                advSa.add(grp);
             }
             parent.needFull.add(1);
             parent.compute.wakeup();
