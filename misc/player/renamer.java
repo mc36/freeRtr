@@ -28,6 +28,7 @@ public class renamer {
         String remover = "";
         boolean really = true;
         boolean basic = false;
+        boolean full = false;
         for (int i = 1; i < args.length; i++) {
             String s = args[i].toLowerCase();
             if (s.equals("predir")) {
@@ -63,6 +64,12 @@ public class renamer {
             if (s.equals("basic")) {
                 basic = true;
             }
+            if (s.equals("short")) {
+                full = false;
+            }
+            if (s.equals("full")) {
+                full = true;
+            }
         }
         String s = args[0];
         playerUtil.put("reading " + s + "...");
@@ -76,7 +83,14 @@ public class renamer {
         int failed = 0;
         for (int i = 0; i < l2.size(); i++) {
             s = l2.get(i);
-            String a = guessName(prepend + s, basic);
+            String a = s;
+            if (full && (a.length() > 10)) {
+                if (playerUtil.str2int(a.substring(0, 4) + a.substring(5, 7) + a.substring(8, 10)) > 0) {
+                    a = a.substring(0, 4) + " " + a.substring(10, a.length());
+                }
+            }
+            a = prepend + a;
+            a = guessName(a, basic);
             a = guessName(a, basic);
             a = guessName(a, basic);
             if (a == null) {
