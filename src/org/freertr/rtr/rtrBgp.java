@@ -930,6 +930,32 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     }
 
     /**
+     * find client vrf
+     *
+     * @param fwd forwarder
+     * @return vrf, null if not found
+     */
+    public rtrBgpVrfRtr findClnVrf(ipFwd fwd) {
+        tabGen<rtrBgpVrf> lst;
+        if (fwd.ipVersion == ipCor4.protocolVersion) {
+            lst = vrfs;
+        } else {
+            lst = ovrfs;
+        }
+        for (int i = 0; i < lst.size(); i++) {
+            rtrBgpVrf vrf = lst.get(i);
+            if (vrf == null) {
+                continue;
+            }
+            if (fwd.compareTo(vrf.doer.fwd) != 0) {
+                continue;
+            }
+            return vrf.doer;
+        }
+        return null;
+    }
+
+    /**
      * convert safi to index
      *
      * @param safi safi

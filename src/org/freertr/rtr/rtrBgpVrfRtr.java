@@ -438,6 +438,68 @@ public class rtrBgpVrfRtr extends ipRtr {
             parent.fwdCore.mldpAdd(grp.label);
             now.add(grp.label);
         }
+        logger.debug("here ////"+now.size());
+    }
+
+    /**
+     * find mvpn s-pmsi
+     *
+     * @param grp group
+     * @param rot root
+     * @param p2mp if found, null if not found
+     */
+    public ipFwdMpmp doFindMvpn(ipFwdMcast grp, addrIP rot) {
+        addrPrefix<addrIP> need = parent.defaultRoute(false);
+        byte[] buf = new byte[128];
+        int o = doWriteGrp(buf, 2, grp);
+        if (rot.isIPv4()) {
+            rot.toIPv4().toBuffer(buf, o);
+            o += addrIPv4.size;
+        } else {
+            rot.toIPv6().toBuffer(buf, o);
+            o += addrIPv6.size;
+        }
+        buf[0] = (byte) (o - 1);
+        buf[1] = 3; // s-pmsi
+        need.network.fromBuf(buf, 0);
+        need.broadcast.fromBuf(buf, 16);
+        need.wildcard.fromBuf(buf, 32);
+        need.mask.fromBuf(buf, 48);
+        tabRoute<addrIP> tab = parent.computd[other ? rtrBgpParam.idxMvpo : rtrBgpParam.idxMvpn];
+        final List<Long> rt = getRtList();
+        for (o = 0; o < tab.size(); o++) {
+            tabRouteEntry<addrIP> ntry = tab.get(o);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.best.extComm == null) {
+                continue;
+            }
+            if (ntry.best.pmsiTun == null) {
+                continue;
+            }
+            if (ntry.best.pmsiTun.length < 4) {
+                continue;
+            }
+            if (ntry.best.pmsiTyp != 2) {
+                continue;
+            }
+            if (need.compareTo(ntry.prefix) != 0) {
+                continue;
+            }
+            boolean needed = false;
+            for (int i = 0; i < rt.size(); i++) {
+                needed |= tabRouteUtil.findLongList(ntry.best.extComm, rt.get(i)) >= 0;
+                if (needed) {
+                    break;
+                }
+            }
+            if (!needed) {
+                continue;
+            }
+            return ipFwdMpmp.create4tunnel(false, rot, bits.msbGetD(ntry.best.pmsiTun, ntry.best.pmsiTun.length - 4));
+        }
+        return null;
     }
 
     private int doWriteSrc(byte[] buf, int ofs) {

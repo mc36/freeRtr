@@ -29,6 +29,7 @@ import org.freertr.prt.prtTcp;
 import org.freertr.prt.prtUdp;
 import org.freertr.rtr.rtrBfdNeigh;
 import org.freertr.rtr.rtrBgpUtil;
+import org.freertr.rtr.rtrBgpVrfRtr;
 import org.freertr.rtr.rtrLdpNeigh;
 import org.freertr.rtr.rtrNshIface;
 import org.freertr.tab.tabGen;
@@ -1601,6 +1602,42 @@ public class ipFwdTab {
                     ifc.pimCfg.extra.del(grp);
                 }
                 ifc.pimCfg.sendJoin(grp, grp.upstream, need);
+                return;
+            case mvpn:
+                rou = lower.actualU.route(grp.source);
+                if (rou == null) {
+                    return;
+                }
+                addrIP adr;
+                if (rou.best.oldHop != null) {
+                    adr = rou.best.oldHop;
+                } else {
+                    adr = rou.best.nextHop;
+                }
+                if (adr == null) {
+                    return;
+                }
+                cfgRtr rtr = cfgAll.rtrFind(lower.mdtTyp, lower.mdtNum, false);
+                if (rtr == null) {
+                    return;
+                }
+                if (rtr.bgp == null) {
+                    return;
+                }
+                rtrBgpVrfRtr bVrf = rtr.bgp.findClnVrf(lower);
+                if (bVrf == null) {
+                    return;
+                }
+                ntry = bVrf.doFindMvpn(grp, adr);
+                if (ntry == null) {
+                    return;
+                }
+                ntry.vrfRx = lower;
+                if (need != 0) {
+                    grp.upsVrf.mldpAdd(ntry);
+                } else {
+                    grp.upsVrf.mldpDel(ntry);
+                }
                 return;
             default:
                 return;
