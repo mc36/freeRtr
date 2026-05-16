@@ -18358,3 +18358,6 @@ qc pass: multicast othermvpn between pim and mldp
 ---------------------------------- 2026-05-16 14:41:56 26.5.16
 no qc pass: wireguard over asymmetric ports
 failed: wireguard over asymmetric ports
+---------------------------------- 2026-05-16 15:24:31 26.5.16
+no failed: wireguard over asymmetric ports
+qc pass: wireguard over asymmetric ports
