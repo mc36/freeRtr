@@ -345,7 +345,6 @@ public class rtrBgpVrfRtr extends ipRtr {
         if (fwd.mdtTyp != parent.rouTyp) {
             return;
         }
-        tabGen<ipFwdMpmp> now = new tabGen<ipFwdMpmp>();
         for (int i = 0; i < fwd.groups.size(); i++) {
             ipFwdMcast grp = fwd.groups.get(i);
             if (grp == null) {
@@ -417,12 +416,11 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.best.pmsiTun = buf;
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
             if (grp.label != null) {
-                if (parent.fwdCore.mp2mpLsp.find(grp.label) == null) {
-                    grp.label = null;
+                if (parent.fwdCore.mp2mpLsp.find(grp.label) != null) {
                     continue;
+                } else {
+                    grp.label = null;
                 }
-                now.add(grp.label);
-                continue;
             }
             addrIP adr = new addrIP();
             if (parent.isIpv6) {
@@ -436,9 +434,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             }
             grp.label = ipFwdMpmp.create4tunnel(false, adr, o);
             parent.fwdCore.mldpAdd(grp.label);
-            now.add(grp.label);
         }
-        logger.debug("here ////"+now.size());
     }
 
     /**
