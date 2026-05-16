@@ -18355,3 +18355,6 @@ qc pass: multicast mvpn routing with mldp
 qc pass: multicast mvpn between pim and mldp
 qc pass: multicast othermvpn routing with mldp
 qc pass: multicast othermvpn between pim and mldp
+---------------------------------- 2026-05-16 14:41:56 26.5.16
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
