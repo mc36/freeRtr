@@ -199,15 +199,15 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         if (iface != null) {
             addrIP adr = null;
-            if (ipv4) {
-                if (iface.addr4 != null) {
-                    adr = new addrIP();
-                    adr.fromIPv4addr(iface.addr4);
-                }
-            } else {
+            if (parent.isIpv6) {
                 if (iface.addr6 != null) {
                     adr = new addrIP();
                     adr.fromIPv6addr(iface.addr6);
+                }
+            } else {
+                if (iface.addr4 != null) {
+                    adr = new addrIP();
+                    adr.fromIPv4addr(iface.addr4);
                 }
             }
             if (adr != null) {
@@ -310,12 +310,16 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.best.extComm.addAll(rt);
             byte[] buf1 = new byte[addrIP.size];
             byte[] buf2 = new byte[addrIP.size];
-            if (parent.rouTyp == tabRouteAttr.routeType.bgp4) {
-                mdtI.addr4.toBuffer(buf1, 0);
-                mdtG.toIPv4().toBuffer(buf2, 0);
-            } else {
-                mdtI.addr6.toBuffer(buf1, 0);
+            if (parent.isIpv6) {
+                if (mdtI.addr6 != null) {
+                    mdtI.addr6.toBuffer(buf1, 0);
+                }
                 mdtG.toIPv6().toBuffer(buf2, 0);
+            } else {
+                if (mdtI.addr4 != null) {
+                    mdtI.addr4.toBuffer(buf1, 0);
+                }
+                mdtG.toIPv4().toBuffer(buf2, 0);
             }
             ntry.prefix.network.fromBuf(buf1, 0);
             ntry.prefix.broadcast.fromBuf(buf2, 0);
@@ -500,15 +504,13 @@ public class rtrBgpVrfRtr extends ipRtr {
 
     private int doWriteSrc(byte[] buf, int ofs) {
         if (parent.isIpv6) {
-            addrIPv6 adr = mvpn.addr6;
-            if (adr != null) {
-                adr.toBuffer(buf, ofs);
+            if (mvpn.addr6 != null) {
+                mvpn.addr6.toBuffer(buf, ofs);
             }
             return ofs + addrIPv6.size;
         } else {
-            addrIPv4 adr = mvpn.addr4;
-            if (adr != null) {
-                adr.toBuffer(buf, ofs);
+            if (mvpn.addr4 != null) {
+                mvpn.addr4.toBuffer(buf, ofs);
             }
             return ofs + addrIPv4.size;
         }
