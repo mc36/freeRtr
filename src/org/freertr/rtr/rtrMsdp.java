@@ -68,6 +68,11 @@ public class rtrMsdp extends ipRtr {
     public tabGen<ipFwdMcast> cache = new tabGen<ipFwdMcast>();
 
     /**
+     * static sas
+     */
+    public tabGen<ipFwdMcast> advSa = new tabGen<ipFwdMcast>();
+
+    /**
      * create bgp process
      *
      * @param forwarder forwarder to update
@@ -207,6 +212,10 @@ public class rtrMsdp extends ipRtr {
                 lst.add(ntry);
             }
         }
+        for (int i = 0; i < advSa.size(); i++) {
+            ipFwdMcast ntry = advSa.get(i);
+            lst.add(ntry);
+        }
         cache = lst;
         routerComputedU = new tabRoute<addrIP>("rx");
         routerComputedM = new tabRoute<addrIP>("rx");
@@ -254,6 +263,10 @@ public class rtrMsdp extends ipRtr {
         secInfoUtl.getHelp(l, 3, "ipinfo", "check peers");
         l.add(null, false, 3, new int[]{-1}, "shutdown", "connection disabled for this peer");
         l.add(null, false, 3, new int[]{-1}, "bfd", "enable bfd triggered down");
+        l.add(null, false, 1, new int[]{2}, "adv-sa", "mvpn source active");
+        l.add(null, false, 2, new int[]{3}, "<addr>", "group address");
+        l.add(null, false, 3, new int[]{4}, "<addr>", "source address");
+        l.add(null, false, 4, new int[]{-1}, "<addr>", "rp address");
     }
 
     /**
@@ -271,6 +284,10 @@ public class rtrMsdp extends ipRtr {
             }
             ntry.getCfg(l, beg, filter);
         }
+        for (int i = 0; i < advSa.size(); i++) {
+            ipFwdMcast grp = advSa.get(i);
+            l.add(beg + "adv-sa " + grp.group + " " + grp.source + " " + grp.upstream);
+        }
     }
 
     /**
@@ -285,6 +302,36 @@ public class rtrMsdp extends ipRtr {
         if (s.equals(cmds.negated)) {
             s = cmd.word();
             negated = true;
+        }
+        if (s.equals("adv-sa")) {
+            addrIP a1 = new addrIP();
+            addrIP a2 = new addrIP();
+            addrIP a3 = new addrIP();
+            if (a1.fromString(cmd.word())) {
+                cmd.error("bad group address");
+                return false;
+            }
+            if (!a1.isMulticast()) {
+                cmd.error("not a multicast address");
+                return false;
+            }
+            if (a2.fromString(cmd.word())) {
+                cmd.error("bad source address");
+                return false;
+            }
+            if (a3.fromString(cmd.word())) {
+                cmd.error("bad r[ address");
+                return false;
+            }
+            ipFwdMcast grp = new ipFwdMcast(a1, a2);
+            grp.upstream = a3;
+            if (negated) {
+                advSa.del(grp);
+            } else {
+                advSa.add(grp);
+            }
+            routerCreateComputed();
+            return false;
         }
         if (!s.equals("neighbor")) {
             return true;
