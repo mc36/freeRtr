@@ -106,6 +106,8 @@ public class rtrBgpVrfRtr extends ipRtr {
 
     private final boolean ipv4;
 
+    private tabGen<ipFwdMcast> mSrc = new tabGen<ipFwdMcast>();
+
     private tabGen<addrIP> peers = new tabGen<addrIP>();
 
     /**
@@ -343,34 +345,8 @@ public class rtrBgpVrfRtr extends ipRtr {
         ntry.best.extComm.addAll(rt);
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
-        if (fwd.mdtNum != parent.rtrNum) {
-            return;
-        }
-        if (fwd.mdtTyp != parent.rouTyp) {
-            return;
-        }
-        for (int i = 0; i < fwd.groups.size(); i++) {
-            ipFwdMcast grp = fwd.groups.get(i);
-            if (grp == null) {
-                continue;
-            }
-            if (fwd.connedR.route(grp.source) == null) {
-                ntry = new tabRouteEntry<addrIP>();
-                ntry.prefix = parent.defaultRoute(false);
-                bits.msbPutD(buf, 2, parent.localAs);
-                buf[0] = (byte) (doWriteGrp(buf, 6, grp) - 1);
-                buf[1] = 7; // source tree join
-                ntry.prefix.network.fromBuf(buf, 0);
-                ntry.prefix.broadcast.fromBuf(buf, 16);
-                ntry.prefix.wildcard.fromBuf(buf, 32);
-                ntry.prefix.mask.fromBuf(buf, 48);
-                ntry.best.extComm = new ArrayList<Long>();
-                ntry.rouDst = fwd.rd;
-                ntry.best.extComm.addAll(rt);
-                ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
-                tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
-                continue;
-            }
+        for (int i = 0; i < mSrc.size(); i++) {
+            ipFwdMcast grp = mSrc.get(i);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = parent.defaultRoute(false);
             buf[0] = (byte) (doWriteGrp(buf, 2, grp) - 1);
@@ -399,10 +375,8 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.best.extComm.addAll(rt);
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             if (ipv4) {
-                buf = new byte[17];
                 bits.msbPutW(buf, 1, 1); // afi
             } else {
-                buf = new byte[29];
                 bits.msbPutW(buf, 1, 2); // afi
             }
             buf[0] = 6; // p2mp
@@ -411,19 +385,16 @@ public class rtrBgpVrfRtr extends ipRtr {
             bits.msbPutW(buf, o, 7); // opaque length
             buf[o + 2] = 1; // generic lsp id
             bits.msbPutW(buf, o + 3, 4); // value length
-            o = grp.source.getHashW();
-            o <<= 16;
-            o |= grp.group.getHashW();
-            bits.msbPutD(buf, buf.length - 4, o); // value
+            ntry.best.pmsiTun = new byte[o + 9];
             ntry.best.pmsiTyp = 2; // p2mp mldp
             ntry.best.pmsiLab = 0;
-            ntry.best.pmsiTun = buf;
+            bits.byteCopy(buf, 0, ntry.best.pmsiTun, 0, ntry.best.pmsiTun.length);
+            o = (grp.source.getHashW() << 16) | grp.group.getHashW();
+            bits.msbPutD(ntry.best.pmsiTun, ntry.best.pmsiTun.length - 4, o); // value
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
             if (grp.label != null) {
                 if (parent.fwdCore.mp2mpLsp.find(grp.label) != null) {
                     continue;
-                } else {
-                    grp.label = null;
                 }
             }
             addrIP adr = new addrIP();
@@ -437,7 +408,40 @@ public class rtrBgpVrfRtr extends ipRtr {
                 }
             }
             grp.label = ipFwdMpmp.create4tunnel(false, adr, o);
+            grp.label.vrfUpl = parent.fwdCore;
             parent.fwdCore.mldpAdd(grp.label);
+        }
+        if (fwd.mdtNum != parent.rtrNum) {
+            return;
+        }
+        if (fwd.mdtTyp != parent.rouTyp) {
+            return;
+        }
+        for (int i = 0; i < fwd.groups.size(); i++) {
+            ipFwdMcast grp = fwd.groups.get(i);
+            if (grp == null) {
+                continue;
+            }
+            if (mSrc.find(grp) != null) {
+                continue;
+            }
+            if (fwd.connedR.route(grp.source) != null) {
+                continue;
+            }
+            ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = parent.defaultRoute(false);
+            bits.msbPutD(buf, 2, parent.localAs);
+            buf[0] = (byte) (doWriteGrp(buf, 6, grp) - 1);
+            buf[1] = 7; // source tree join
+            ntry.prefix.network.fromBuf(buf, 0);
+            ntry.prefix.broadcast.fromBuf(buf, 16);
+            ntry.prefix.wildcard.fromBuf(buf, 32);
+            ntry.prefix.mask.fromBuf(buf, 48);
+            ntry.best.extComm = new ArrayList<Long>();
+            ntry.rouDst = fwd.rd;
+            ntry.best.extComm.addAll(rt);
+            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
         }
     }
 
