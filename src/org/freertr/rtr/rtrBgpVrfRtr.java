@@ -352,6 +352,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             ipFwdMcast grp = advSa.get(i);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = parent.defaultRoute(false);
+            buf = new byte[128];
             buf[0] = (byte) (doWriteGrp(buf, 2, grp) - 1);
             buf[1] = 5; // source active
             ntry.prefix.network.fromBuf(buf, 0);
@@ -365,6 +366,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = parent.defaultRoute(false);
+            buf = new byte[128];
             int o = doWriteGrp(buf, 2, grp);
             o = doWriteSrc(buf, o);
             buf[0] = (byte) (o - 1);
@@ -377,6 +379,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.rouDst = fwd.rd;
             ntry.best.extComm.addAll(rt);
             ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
+            buf = new byte[128];
             if (ipv4) {
                 bits.msbPutW(buf, 1, 1); // afi
             } else {
@@ -440,6 +443,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             }
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = parent.defaultRoute(false);
+            buf = new byte[128];
             bits.msbPutD(buf, 2, parent.localAs);
             buf[0] = (byte) (doWriteGrp(buf, 6, grp) - 1);
             buf[1] = 7; // source tree join
