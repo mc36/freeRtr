@@ -1608,15 +1608,6 @@ public class ipFwdTab {
                 if (rou == null) {
                     return;
                 }
-                addrIP adr;
-                if (rou.best.oldHop != null) {
-                    adr = rou.best.oldHop;
-                } else {
-                    adr = rou.best.nextHop;
-                }
-                if (adr == null) {
-                    return;
-                }
                 cfgRtr rtr = cfgAll.rtrFind(lower.mdtTyp, lower.mdtNum, false);
                 if (rtr == null) {
                     return;
@@ -1628,7 +1619,7 @@ public class ipFwdTab {
                 if (bVrf == null) {
                     return;
                 }
-                ntry = bVrf.doFindMvpn(grp, adr);
+                ntry = bVrf.doFindMvpn(grp, rou);
                 if (ntry == null) {
                     return;
                 }

@@ -932,25 +932,25 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * find client vrf
      *
-     * @param fwd forwarder
+     * @param ned forwarder
      * @return vrf, null if not found
      */
-    public rtrBgpVrfRtr findClnVrf(ipFwd fwd) {
+    public rtrBgpVrfRtr findClnVrf(ipFwd ned) {
         tabGen<rtrBgpVrf> lst;
-        if (fwd.ipVersion == ipCor4.protocolVersion) {
+        if (ned.ipVersion == fwdCore.ipVersion) {
             lst = vrfs;
         } else {
             lst = ovrfs;
         }
         for (int i = 0; i < lst.size(); i++) {
-            rtrBgpVrf vrf = lst.get(i);
-            if (vrf == null) {
+            rtrBgpVrf cur = lst.get(i);
+            if (cur == null) {
                 continue;
             }
-            if (fwd.compareTo(vrf.doer.fwd) != 0) {
+            if (ned.compareTo(cur.doer.fwd) != 0) {
                 continue;
             }
-            return vrf.doer;
+            return cur.doer;
         }
         return null;
     }

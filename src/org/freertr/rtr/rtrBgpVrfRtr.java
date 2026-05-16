@@ -64,6 +64,11 @@ public class rtrBgpVrfRtr extends ipRtr {
     public cfgIfc mvpn;
 
     /**
+     * mvpn source actives
+     */
+    public tabGen<ipFwdMcast> mvSa = new tabGen<ipFwdMcast>();
+
+    /**
      * mdt advertisement source
      */
     public cfgIfc mdtI;
@@ -105,8 +110,6 @@ public class rtrBgpVrfRtr extends ipRtr {
     private final boolean other;
 
     private final boolean ipv4;
-
-    private tabGen<ipFwdMcast> mSrc = new tabGen<ipFwdMcast>();
 
     private tabGen<addrIP> peers = new tabGen<addrIP>();
 
@@ -345,8 +348,8 @@ public class rtrBgpVrfRtr extends ipRtr {
         ntry.best.extComm.addAll(rt);
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
         tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
-        for (int i = 0; i < mSrc.size(); i++) {
-            ipFwdMcast grp = mSrc.get(i);
+        for (int i = 0; i < mvSa.size(); i++) {
+            ipFwdMcast grp = mvSa.get(i);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = parent.defaultRoute(false);
             buf[0] = (byte) (doWriteGrp(buf, 2, grp) - 1);
@@ -389,27 +392,37 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.best.pmsiTyp = 2; // p2mp mldp
             ntry.best.pmsiLab = 0;
             bits.byteCopy(buf, 0, ntry.best.pmsiTun, 0, ntry.best.pmsiTun.length);
-            o = (grp.source.getHashW() << 16) | grp.group.getHashW();
-            bits.msbPutD(ntry.best.pmsiTun, ntry.best.pmsiTun.length - 4, o); // value
+            bits.msbPutD(ntry.best.pmsiTun, ntry.best.pmsiTun.length - 4, (int) grp.created); // value
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
+            addrIP rot = new addrIP();
+            if (parent.isIpv6) {
+                if (mvpn.addr6 != null) {
+                    rot.fromIPv6addr(mvpn.addr6);
+                }
+            } else {
+                if (mvpn.addr4 != null) {
+                    rot.fromIPv4addr(mvpn.addr4);
+                }
+            }
+            ipFwdMcast old = fwd.groups.find(grp);
+            if (old == null) {
+                old = grp.copyBytes();
+                old.created = bits.getTime();
+                fwd.groups.add(old);
+                fwd.mcastAddFloodIfc(grp.group, grp.source, null, -3);
+                old = fwd.groups.find(grp);
+                if (old == null) {
+                    continue;
+                }
+                old.label = ipFwdMpmp.create4tunnel(false, rot, (int) grp.created);
+                old.label.vrfUpl = parent.fwdCore;
+            }
             if (grp.label != null) {
                 if (parent.fwdCore.mp2mpLsp.find(grp.label) != null) {
                     continue;
                 }
             }
-            addrIP adr = new addrIP();
-            if (parent.isIpv6) {
-                if (mvpn.addr6 != null) {
-                    adr.fromIPv6addr(mvpn.addr6);
-                }
-            } else {
-                if (mvpn.addr4 != null) {
-                    adr.fromIPv4addr(mvpn.addr4);
-                }
-            }
-            grp.label = ipFwdMpmp.create4tunnel(false, adr, o);
-            grp.label.vrfUpl = parent.fwdCore;
-            parent.fwdCore.mldpAdd(grp.label);
+            parent.fwdCore.mldpAdd(old.label);
         }
         if (fwd.mdtNum != parent.rtrNum) {
             return;
@@ -422,10 +435,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             if (grp == null) {
                 continue;
             }
-            if (mSrc.find(grp) != null) {
-                continue;
-            }
-            if (fwd.connedR.route(grp.source) != null) {
+            if (mvSa.find(grp) != null) {
                 continue;
             }
             ntry = new tabRouteEntry<addrIP>();
@@ -449,10 +459,22 @@ public class rtrBgpVrfRtr extends ipRtr {
      * find mvpn s-pmsi
      *
      * @param grp group
-     * @param rot root
+     * @param rou route to source
      * @return p2mp if found, null if not found
      */
-    public ipFwdMpmp doFindMvpn(ipFwdMcast grp, addrIP rot) {
+    public ipFwdMpmp doFindMvpn(ipFwdMcast grp, tabRouteEntry<addrIP> rou) {
+        if (mvSa.find(grp) != null) {
+            return null;
+        }
+        addrIP rot;
+        if (rou.best.oldHop != null) {
+            rot = rou.best.oldHop;
+        } else {
+            rot = rou.best.nextHop;
+        }
+        if (rot == null) {
+            return null;
+        }
         addrPrefix<addrIP> need = parent.defaultRoute(false);
         byte[] buf = new byte[128];
         int o = doWriteGrp(buf, 2, grp);
@@ -800,6 +822,9 @@ public class rtrBgpVrfRtr extends ipRtr {
         l.add(null, false, p + 2, new int[]{-1}, "<addr>", "select group to advertise");
         l.add(null, false, p + 0, new int[]{p + 1}, "mvpn", "mvpn advertisement");
         l.add(null, false, p + 1, new int[]{-1}, "<name:ifc>", "select source to advertise");
+        l.add(null, false, p + 0, new int[]{p + 1}, "mvsa", "mvpn source active");
+        l.add(null, false, p + 1, new int[]{p + 2}, "<addr>", "group address");
+        l.add(null, false, p + 2, new int[]{-1}, "<addr>", "source address");
         l.add(null, false, p + 0, new int[]{p + 1}, "update-source", "select source to advertise");
         l.add(null, false, p + 1, new int[]{-1}, "<name:ifc>", "name of interface");
         l.add(null, false, p + 0, new int[]{p + 1}, "set-vrf", "configure forwarder override");
@@ -827,6 +852,10 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         if (mvpn != null) {
             l.add(beg1 + beg2 + "mvpn " + mvpn.name);
+        }
+        for (int i = 0; i < mvSa.size(); i++) {
+            ipFwdMcast grp = mvSa.get(i);
+            l.add(beg1 + beg2 + "mvsa " + grp.group + " " + grp.source);
         }
         if (srv6 != null) {
             l.add(beg1 + beg2 + "srv6 " + srv6.name);
@@ -873,6 +902,33 @@ public class rtrBgpVrfRtr extends ipRtr {
                 mvpn = null;
             } else {
                 mvpn = cfgAll.ifcFind(cmd.word(), 0);
+            }
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return;
+        }
+        if (s.equals("mvsa")) {
+            addrIP a1 = new addrIP();
+            addrIP a2 = new addrIP();
+            if (a1.fromString(cmd.word())) {
+                cmd.error("bad group address");
+                return;
+            }
+            if (!a1.isMulticast()) {
+                cmd.error("not a multicast address");
+                return;
+            }
+            if (a2.fromString(cmd.word())) {
+                cmd.error("bad source address");
+                return;
+            }
+            ipFwdMcast grp = new ipFwdMcast(a1, a2);
+            if (negated) {
+                mvSa.del(grp);
+                fwd.mcastDelFloodIfc(a1, a2, null);
+            } else {
+                grp.created = bits.randomD();
+                mvSa.add(grp);
             }
             parent.needFull.add(1);
             parent.compute.wakeup();
