@@ -121,6 +121,21 @@ public class rtrBgpVrfRtr extends ipRtr {
             logger.debug("stop " + vrf);
         }
         fwd.routerDel(this);
+        for (int i = 0; i < advSa.size(); i++) {
+            stopOneSa(advSa.get(i));
+        }
+    }
+
+    private void stopOneSa(ipFwdMcast grp) {
+        ipFwdMcast old = fwd.groups.find(grp);
+        if (old == null) {
+            return;
+        }
+        if (old.label != null) {
+            parent.fwdCore.mldpDel(old.label);
+        }
+        fwd.mcastAddFloodMpls(grp.group, grp.source, null);
+        fwd.mcastDelFloodIfc(grp.group, grp.source, null);
     }
 
     /**
@@ -402,7 +417,7 @@ public class rtrBgpVrfRtr extends ipRtr {
                 old = grp.copyBytes();
                 old.created = bits.getTime();
                 fwd.groups.add(old);
-                fwd.mcastAddFloodIfc(grp.group, grp.source, null, -3);
+                fwd.mcastAddFloodIfc(grp.group, grp.source, null, -1);
                 old = fwd.groups.find(grp);
                 if (old == null) {
                     continue;
@@ -933,8 +948,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             ipFwdMcast grp = new ipFwdMcast(a1, a2);
             if (negated) {
                 advSa.del(grp);
-                fwd.mcastAddFloodMpls(a1, a2, null);
-                fwd.mcastDelFloodIfc(a1, a2, null);
+                stopOneSa(grp);
             } else {
                 grp.created = bits.randomD();
                 advSa.add(grp);
