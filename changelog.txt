@@ -18364,3 +18364,6 @@ qc pass: wireguard over asymmetric ports
 ---------------------------------- 2026-05-16 16:36:28 26.5.16
 qc pass: interop1: mvpn
 qc pass: multicast routing with msdp
+---------------------------------- 2026-05-17 11:58:28 26.5.17
+no qc pass: wireguard over ipv6
+failed: wireguard over ipv6
