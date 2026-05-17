@@ -397,16 +397,6 @@ public class rtrBgpVrfRtr extends ipRtr {
             bits.byteCopy(buf, 0, ntry.best.pmsiTun, 0, ntry.best.pmsiTun.length);
             bits.msbPutD(ntry.best.pmsiTun, ntry.best.pmsiTun.length - 4, (int) grp.created); // value
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
-            addrIP rot = new addrIP();
-            if (parent.isIpv6) {
-                if (mvpn.addr6 != null) {
-                    rot.fromIPv6addr(mvpn.addr6);
-                }
-            } else {
-                if (mvpn.addr4 != null) {
-                    rot.fromIPv4addr(mvpn.addr4);
-                }
-            }
             ipFwdMcast old = fwd.groups.find(grp);
             if (old == null) {
                 old = grp.copyBytes();
@@ -417,13 +407,27 @@ public class rtrBgpVrfRtr extends ipRtr {
                 if (old == null) {
                     continue;
                 }
-                old.label = ipFwdMpmp.create4tunnel(false, rot, (int) grp.created);
-                old.label.vrfUpl = parent.fwdCore;
             }
-            if (grp.label != null) {
-                if (parent.fwdCore.mp2mpLsp.find(grp.label) != null) {
+            if (old.label == null) {
+                addrIP rot = new addrIP();
+                if (parent.isIpv6) {
+                    if (mvpn.addr6 != null) {
+                        rot.fromIPv6addr(mvpn.addr6);
+                    }
+                } else {
+                    if (mvpn.addr4 != null) {
+                        rot.fromIPv4addr(mvpn.addr4);
+                    }
+                }
+                ipFwdMpmp mp = ipFwdMpmp.create4tunnel(false, rot, (int) grp.created);
+                mp.vrfUpl = parent.fwdCore;
+                fwd.mcastAddFloodMpls(grp.group, grp.source, mp);
+                if (old.label == null) {
                     continue;
                 }
+            }
+            if (parent.fwdCore.mp2mpLsp.find(old.label) != null) {
+                continue;
             }
             parent.fwdCore.mldpAdd(old.label);
         }
@@ -929,6 +933,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             ipFwdMcast grp = new ipFwdMcast(a1, a2);
             if (negated) {
                 advSa.del(grp);
+                fwd.mcastAddFloodMpls(a1, a2, null);
                 fwd.mcastDelFloodIfc(a1, a2, null);
             } else {
                 grp.created = bits.randomD();
