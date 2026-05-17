@@ -18367,3 +18367,6 @@ qc pass: multicast routing with msdp
 ---------------------------------- 2026-05-17 11:58:28 26.5.17
 no qc pass: wireguard over ipv6
 failed: wireguard over ipv6
+---------------------------------- 2026-05-17 13:29:15 26.5.17
+no failed: wireguard over ipv6
+qc pass: wireguard over ipv6
