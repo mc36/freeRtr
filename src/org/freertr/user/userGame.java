@@ -623,7 +623,7 @@ public class userGame {
     /**
      * rotating logo
      *
-     * @param cmd command line to use
+     * @param txt text to rotate
      */
     public void doRotLogo(List<String> txt) {
         userGameZbuf gfx = new userGameZbuf(console);
