@@ -160,6 +160,15 @@ public class userGame {
         }
     }
 
+    private List<String> doText(cmds cmd) {
+        String a = cmd.getRemaining();
+        if (a.length() < 1) {
+            return cfgInit.getShLogo(0x08);
+        } else {
+            return pipeScreen.fontText(a, " ", pipeFonts.fontFiller, pipeFonts.font8x16());
+        }
+    }
+
     /**
      * flying logo
      *
@@ -520,6 +529,9 @@ public class userGame {
         if (lst == null) {
             return;
         }
+        rx.clear();
+        ry.clear();
+        rz.clear();
         for (int i = 0; i < lst.size(); i++) {
             String s = lst.get(i);
             cmds cmd = new cmds("f", s);
@@ -535,7 +547,25 @@ public class userGame {
         }
     }
 
-    private void objResize(userGameZbuf gfx, List<Double> rx, List<Double> ry, List<Double> rz) {
+    private void objFromTxt(List<Double> rx, List<Double> ry, List<Double> rz, List<String> lst) {
+        rx.clear();
+        ry.clear();
+        rz.clear();
+        for (int o = 0; o < lst.size(); o++) {
+            String a = lst.get(o);
+            byte[] b = a.getBytes();
+            for (int i = 0; i < b.length; i++) {
+                if (b[i] == 32) {
+                    continue;
+                }
+                rx.add((double) i);
+                ry.add((double) o);
+                rz.add(-1.0);
+            }
+        }
+    }
+
+    private void objReSize(userGameZbuf gfx, List<Double> rx, List<Double> ry, List<Double> rz) {
         if (rx.size() < 1) {
             return;
         }
@@ -591,6 +621,83 @@ public class userGame {
     }
 
     /**
+     * rotating logo
+     *
+     * @param cmd command line to use
+     */
+    public void doRotLogo(List<String> txt) {
+        userGameZbuf gfx = new userGameZbuf(console);
+        List<Double> rx = new ArrayList<Double>();
+        List<Double> ry = new ArrayList<Double>();
+        List<Double> rz = new ArrayList<Double>();
+        objFromTxt(rx, ry, rz, txt);
+        objReSize(gfx, rx, ry, rz);
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            gfx.clear();
+            gfx.rotate();
+            objDraw(gfx, rx, ry, rz);
+            gfx.refresh();
+            bits.sleep(500);
+        }
+    }
+
+    /**
+     * flying clock
+     *
+     * @param font font to use
+     */
+    public void doRotClock(byte[][][] font) {
+        userGameZbuf gfx = new userGameZbuf(console);
+        List<Double> rx = new ArrayList<Double>();
+        List<Double> ry = new ArrayList<Double>();
+        List<Double> rz = new ArrayList<Double>();
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            String s = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 2);
+            s = s.substring(0, 5);
+            List<String> txt = pipeScreen.fontText(s, " ", pipeFonts.fontFiller, font);
+            objFromTxt(rx, ry, rz, txt);
+            objReSize(gfx, rx, ry, rz);
+            gfx.clear();
+            gfx.rotate();
+            objDraw(gfx, rx, ry, rz);
+            gfx.refresh();
+            bits.sleep(500);
+        }
+    }
+
+    /**
+     * flying clock
+     */
+    public void doRotClock() {
+        userGameZbuf gfx = new userGameZbuf(console);
+        List<Double> rx = new ArrayList<Double>();
+        List<Double> ry = new ArrayList<Double>();
+        List<Double> rz = new ArrayList<Double>();
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            String a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
+            drawClock(a, pipeScreen.colBlack, pipeScreen.colWhite);
+            List<String> txt = console.getAscii();
+            console.doClear();
+            objFromTxt(rx, ry, rz, txt);
+            objReSize(gfx, rx, ry, rz);
+            gfx.clear();
+            gfx.rotate();
+            objDraw(gfx, rx, ry, rz);
+            gfx.refresh();
+            bits.sleep(500);
+        }
+    }
+
+    /**
      * rotating object
      *
      * @param cmd command line to use
@@ -601,7 +708,7 @@ public class userGame {
         List<Double> ry = new ArrayList<Double>();
         List<Double> rz = new ArrayList<Double>();
         objReadUp(rx, ry, rz, bits.txt2buf(cmd.getRemaining()));
-        objResize(gfx, rx, ry, rz);
+        objReSize(gfx, rx, ry, rz);
         for (;;) {
             if (console.keyPress()) {
                 break;
@@ -1418,15 +1525,20 @@ public class userGame {
             doText(a);
             return;
         }
+        if (a.equals("rot-logo")) {
+            doRotLogo(doText(cmd));
+            return;
+        }
+        if (a.equals("rot-time")) {
+            doRotClock(pipeFonts.font8x16());
+            return;
+        }
+        if (a.equals("rot-clock")) {
+            doRotClock();
+            return;
+        }
         if (a.equals("logo")) {
-            a = cmd.getRemaining();
-            List<String> txt;
-            if (a.length() < 1) {
-                txt = cfgInit.getShLogo(0x08);
-            } else {
-                txt = pipeScreen.fontText(a, " ", pipeFonts.fontFiller, pipeFonts.font8x16());
-            }
-            doLogo(txt);
+            doLogo(doText(cmd));
             return;
         }
         if (a.equals("time")) {
@@ -1461,7 +1573,7 @@ public class userGame {
             doMaze();
             return;
         }
-        if (a.equals("obj")) {
+        if (a.equals("rot-obj")) {
             doObj(cmd);
             return;
         }

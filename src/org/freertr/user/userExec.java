@@ -2335,7 +2335,7 @@ public class userExec {
             hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
             hl.add(null, false, 2, new int[]{3}, "sixel", "show some art");
             hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
-            hl.add(null, false, 2, new int[]{3}, "obj", "show some art");
+            hl.add(null, false, 2, new int[]{3}, "rot-obj", "show some art");
             hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
         }
         hl.add(null, false, 2, new int[]{-1}, "chat", "chat with others");
@@ -2357,6 +2357,10 @@ public class userExec {
         hl.add(null, false, 2, new int[]{-1}, "minesweep", "play game");
         hl.add(null, false, 2, new int[]{-1}, "time", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "clock", "view demo");
+        hl.add(null, false, 2, new int[]{-1}, "rot-time", "view demo");
+        hl.add(null, false, 2, new int[]{-1}, "rot-clock", "view demo");
+        hl.add(null, false, 2, new int[]{3, -1}, "rot-logo", "view demo");
+        hl.add(null, false, 3, new int[]{3, -1}, "[str]", "text");
         hl.add(null, false, 2, new int[]{-1}, "snake", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "matrix", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "fire", "view demo");
