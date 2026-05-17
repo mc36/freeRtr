@@ -508,7 +508,7 @@ public class userGame {
         }
     }
 
-    private double doObj(String a) {
+    private double objReadUp(String a) {
         try {
             return Double.parseDouble(a);
         } catch (Exception e) {
@@ -516,37 +516,39 @@ public class userGame {
         }
     }
 
-    /**
-     * rotating object
-     *
-     * @param cmd command line to use
-     */
-    public void doObj(cmds cmd) {
-        List<String> lst = bits.txt2buf(cmd.getRemaining());
+    private void objReadUp(List<Double> rx, List<Double> ry, List<Double> rz, List<String> lst) {
         if (lst == null) {
             return;
         }
-        List<Double> rx = new ArrayList<Double>();
-        List<Double> ry = new ArrayList<Double>();
-        List<Double> rz = new ArrayList<Double>();
+        for (int i = 0; i < lst.size(); i++) {
+            String s = lst.get(i);
+            cmds cmd = new cmds("f", s);
+            if (!cmd.word().equals("v")) {
+                continue;
+            }
+            double cx = objReadUp(cmd.word());
+            double cy = objReadUp(cmd.word());
+            double cz = objReadUp(cmd.word());
+            rx.add(cx);
+            ry.add(cy);
+            rz.add(cz);
+        }
+    }
+
+    private void objResize(userGameZbuf gfx, List<Double> rx, List<Double> ry, List<Double> rz) {
+        if (rx.size() < 1) {
+            return;
+        }
         double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
         double minZ = Double.MAX_VALUE;
         double maxX = Double.MIN_VALUE;
         double maxY = Double.MIN_VALUE;
         double maxZ = Double.MIN_VALUE;
-        for (int i = 0; i < lst.size(); i++) {
-            String s = lst.get(i);
-            cmd = new cmds("f", s);
-            if (!cmd.word().equals("v")) {
-                continue;
-            }
-            double cx = doObj(cmd.word());
-            double cy = doObj(cmd.word());
-            double cz = doObj(cmd.word());
-            rx.add(cx);
-            ry.add(cy);
-            rz.add(cz);
+        for (int i = 0; i < rx.size(); i++) {
+            double cx = rx.get(i);
+            double cy = ry.get(i);
+            double cz = rz.get(i);
             if (cx < minX) {
                 minX = cx;
             }
@@ -566,9 +568,6 @@ public class userGame {
                 maxZ = cz;
             }
         }
-        if (rx.size() < 1) {
-            return;
-        }
         maxX -= minX;
         maxY -= minY;
         maxZ -= minZ;
@@ -578,21 +577,38 @@ public class userGame {
         minX += maxX;
         minY += maxY;
         minZ += maxZ;
-        userGameZbuf gfx = new userGameZbuf(console);
         for (int i = 0; i < rx.size(); i++) {
             rx.set(i, (double) gfx.max * (rx.get(i) - minX) / maxX);
             ry.set(i, (double) gfx.max * (ry.get(i) - minY) / maxY);
             rz.set(i, (double) gfx.max * (rz.get(i) - minZ) / maxZ);
         }
+    }
+
+    private void objDraw(userGameZbuf gfx, List<Double> rx, List<Double> ry, List<Double> rz) {
+        for (int i = 0; i < rx.size(); i++) {
+            gfx.pixelR(rx.get(i), ry.get(i), rz.get(i), pipeScreen.colBlack, pipeScreen.colWhite, '*');
+        }
+    }
+
+    /**
+     * rotating object
+     *
+     * @param cmd command line to use
+     */
+    public void doObj(cmds cmd) {
+        userGameZbuf gfx = new userGameZbuf(console);
+        List<Double> rx = new ArrayList<Double>();
+        List<Double> ry = new ArrayList<Double>();
+        List<Double> rz = new ArrayList<Double>();
+        objReadUp(rx, ry, rz, bits.txt2buf(cmd.getRemaining()));
+        objResize(gfx, rx, ry, rz);
         for (;;) {
             if (console.keyPress()) {
                 break;
             }
             gfx.clear();
             gfx.rotate();
-            for (int i = 0; i < rx.size(); i++) {
-                gfx.pixelR(rx.get(i), ry.get(i), rz.get(i), pipeScreen.colBlack, pipeScreen.colWhite, '*');
-            }
+            objDraw(gfx, rx, ry, rz);
             gfx.refresh();
             bits.sleep(500);
         }
