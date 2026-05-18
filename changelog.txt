@@ -18379,3 +18379,6 @@ qc pass: wireguard over ipv4
 qc pass: interop2: mgre
 ---------------------------------- 2026-05-18 08:21:06 26.5.18
 no qc pass: interop2: mgre
+---------------------------------- 2026-05-18 13:15:35 26.5.18
+qc pass: interop2: mgre
+qc pass: interop2: mvpn
