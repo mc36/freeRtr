@@ -517,109 +517,6 @@ public class userGame {
         }
     }
 
-    private double objReadUp(String a) {
-        try {
-            return Double.parseDouble(a);
-        } catch (Exception e) {
-            return 0.0;
-        }
-    }
-
-    private void objReadUp(List<Double> rx, List<Double> ry, List<Double> rz, List<String> lst) {
-        if (lst == null) {
-            return;
-        }
-        rx.clear();
-        ry.clear();
-        rz.clear();
-        for (int i = 0; i < lst.size(); i++) {
-            String s = lst.get(i);
-            cmds cmd = new cmds("f", s);
-            if (!cmd.word().equals("v")) {
-                continue;
-            }
-            double cx = objReadUp(cmd.word());
-            double cy = objReadUp(cmd.word());
-            double cz = objReadUp(cmd.word());
-            rx.add(cx);
-            ry.add(cy);
-            rz.add(cz);
-        }
-    }
-
-    private void objFromTxt(List<Double> rx, List<Double> ry, List<Double> rz, List<String> lst) {
-        rx.clear();
-        ry.clear();
-        rz.clear();
-        for (int o = 0; o < lst.size(); o++) {
-            String a = lst.get(o);
-            byte[] b = a.getBytes();
-            for (int i = 0; i < b.length; i++) {
-                if (b[i] == 32) {
-                    continue;
-                }
-                rx.add((double) i);
-                ry.add((double) o);
-                rz.add(-1.0);
-            }
-        }
-    }
-
-    private void objReSize(userGameZbuf gfx, List<Double> rx, List<Double> ry, List<Double> rz) {
-        if (rx.size() < 1) {
-            return;
-        }
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double minZ = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE;
-        double maxY = Double.MIN_VALUE;
-        double maxZ = Double.MIN_VALUE;
-        for (int i = 0; i < rx.size(); i++) {
-            double cx = rx.get(i);
-            double cy = ry.get(i);
-            double cz = rz.get(i);
-            if (cx < minX) {
-                minX = cx;
-            }
-            if (cy < minY) {
-                minY = cy;
-            }
-            if (cz < minZ) {
-                minZ = cz;
-            }
-            if (cx > maxX) {
-                maxX = cx;
-            }
-            if (cy > maxY) {
-                maxY = cy;
-            }
-            if (cz > maxZ) {
-                maxZ = cz;
-            }
-        }
-        maxX -= minX;
-        maxY -= minY;
-        maxZ -= minZ;
-        maxX /= 2.0;
-        maxY /= 2.0;
-        maxZ /= 2.0;
-        minX += maxX;
-        minY += maxY;
-        minZ += maxZ;
-        for (int i = 0; i < rx.size(); i++) {
-            rx.set(i, (double) gfx.max * (rx.get(i) - minX) / maxX);
-            ry.set(i, (double) gfx.max * (ry.get(i) - minY) / maxY);
-            rz.set(i, (double) gfx.max * (rz.get(i) - minZ) / maxZ);
-        }
-    }
-
-    private void objDraw(userGameZbuf gfx, List<Double> rx, List<Double> ry, List<Double> rz) {
-        for (int i = 0; i < rx.size(); i++) {
-            gfx.pixelR(rx.get(i), ry.get(i), rz.get(i), pipeScreen.colBlack, pipeScreen.colWhite, '*');
-        }
-    }
-
     /**
      * rotating logo
      *
@@ -627,18 +524,16 @@ public class userGame {
      */
     public void doRotLogo(List<String> txt) {
         userGameZbuf gfx = new userGameZbuf(console);
-        List<Double> rx = new ArrayList<Double>();
-        List<Double> ry = new ArrayList<Double>();
-        List<Double> rz = new ArrayList<Double>();
-        objFromTxt(rx, ry, rz, txt);
-        objReSize(gfx, rx, ry, rz);
+        gfx.objFresh();
+        gfx.objFromTxt(txt);
+        gfx.objReSize();
         for (;;) {
             if (console.keyPress()) {
                 break;
             }
             gfx.clear();
             gfx.rotate();
-            objDraw(gfx, rx, ry, rz);
+            gfx.objDraw();
             gfx.refresh();
             bits.sleep(500);
         }
@@ -651,9 +546,6 @@ public class userGame {
      */
     public void doRotClock(byte[][][] font) {
         userGameZbuf gfx = new userGameZbuf(console);
-        List<Double> rx = new ArrayList<Double>();
-        List<Double> ry = new ArrayList<Double>();
-        List<Double> rz = new ArrayList<Double>();
         for (;;) {
             if (console.keyPress()) {
                 break;
@@ -661,11 +553,12 @@ public class userGame {
             String s = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 2);
             s = s.substring(0, 5);
             List<String> txt = pipeScreen.fontText(s, " ", pipeFonts.fontFiller, font);
-            objFromTxt(rx, ry, rz, txt);
-            objReSize(gfx, rx, ry, rz);
+            gfx.objFresh();
+            gfx.objFromTxt(txt);
+            gfx.objReSize();
             gfx.clear();
             gfx.rotate();
-            objDraw(gfx, rx, ry, rz);
+            gfx.objDraw();
             gfx.refresh();
             bits.sleep(500);
         }
@@ -676,22 +569,21 @@ public class userGame {
      */
     public void doRotClock() {
         userGameZbuf gfx = new userGameZbuf(console);
-        List<Double> rx = new ArrayList<Double>();
-        List<Double> ry = new ArrayList<Double>();
-        List<Double> rz = new ArrayList<Double>();
         for (;;) {
             if (console.keyPress()) {
                 break;
             }
+            console.doClear();
             String a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
             drawClock(a, pipeScreen.colBlack, pipeScreen.colWhite);
             List<String> txt = console.getAscii();
             console.doClear();
-            objFromTxt(rx, ry, rz, txt);
-            objReSize(gfx, rx, ry, rz);
+            gfx.objFresh();
+            gfx.objFromTxt(txt);
+            gfx.objReSize();
             gfx.clear();
             gfx.rotate();
-            objDraw(gfx, rx, ry, rz);
+            gfx.objDraw();
             gfx.refresh();
             bits.sleep(500);
         }
@@ -704,18 +596,16 @@ public class userGame {
      */
     public void doObj(cmds cmd) {
         userGameZbuf gfx = new userGameZbuf(console);
-        List<Double> rx = new ArrayList<Double>();
-        List<Double> ry = new ArrayList<Double>();
-        List<Double> rz = new ArrayList<Double>();
-        objReadUp(rx, ry, rz, bits.txt2buf(cmd.getRemaining()));
-        objReSize(gfx, rx, ry, rz);
+        gfx.objFresh();
+        gfx.objReadUp(bits.txt2buf(cmd.getRemaining()));
+        gfx.objReSize();
         for (;;) {
             if (console.keyPress()) {
                 break;
             }
             gfx.clear();
             gfx.rotate();
-            objDraw(gfx, rx, ry, rz);
+            gfx.objDraw();
             gfx.refresh();
             bits.sleep(500);
         }
@@ -1634,6 +1524,12 @@ class userGameZbuf {
 
     public double c = 0;
 
+    public List<Double> rx;
+
+    public List<Double> ry;
+
+    public List<Double> rz;
+
     /**
      * create instance
      *
@@ -1715,6 +1611,109 @@ class userGameZbuf {
         }
         dep[y][x] = z;
         scr.putInt(x, y, bg, fg, false, ch);
+    }
+
+    public void objFresh() {
+        rx = new ArrayList<Double>();
+        ry = new ArrayList<Double>();
+        rz = new ArrayList<Double>();
+    }
+
+    public void objReadUp(List<String> lst) {
+        if (lst == null) {
+            return;
+        }
+        for (int i = 0; i < lst.size(); i++) {
+            String s = lst.get(i);
+            cmds cmd = new cmds("f", s);
+            if (!cmd.word().equals("v")) {
+                continue;
+            }
+            double cx = objReadUp(cmd.word());
+            double cy = objReadUp(cmd.word());
+            double cz = objReadUp(cmd.word());
+            rx.add(cx);
+            ry.add(cy);
+            rz.add(cz);
+        }
+    }
+
+    private static double objReadUp(String a) {
+        try {
+            return Double.parseDouble(a);
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
+
+    public void objFromTxt(List<String> lst) {
+        for (int o = 0; o < lst.size(); o++) {
+            String a = lst.get(o);
+            byte[] b = a.getBytes();
+            for (int i = 0; i < b.length; i++) {
+                if (b[i] == 32) {
+                    continue;
+                }
+                rx.add((double) i);
+                ry.add((double) o);
+                rz.add(-1.0);
+            }
+        }
+    }
+
+    public void objReSize() {
+        if (rx.size() < 1) {
+            return;
+        }
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double minZ = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE;
+        double maxY = Double.MIN_VALUE;
+        double maxZ = Double.MIN_VALUE;
+        for (int i = 0; i < rx.size(); i++) {
+            double cx = rx.get(i);
+            double cy = ry.get(i);
+            double cz = rz.get(i);
+            if (cx < minX) {
+                minX = cx;
+            }
+            if (cy < minY) {
+                minY = cy;
+            }
+            if (cz < minZ) {
+                minZ = cz;
+            }
+            if (cx > maxX) {
+                maxX = cx;
+            }
+            if (cy > maxY) {
+                maxY = cy;
+            }
+            if (cz > maxZ) {
+                maxZ = cz;
+            }
+        }
+        maxX -= minX;
+        maxY -= minY;
+        maxZ -= minZ;
+        maxX /= 2.0;
+        maxY /= 2.0;
+        maxZ /= 2.0;
+        minX += maxX;
+        minY += maxY;
+        minZ += maxZ;
+        for (int i = 0; i < rx.size(); i++) {
+            rx.set(i, (double) scr.sizX * (rx.get(i) - minX) / maxX);
+            ry.set(i, (double) scr.sizY * (ry.get(i) - minY) / maxY);
+            rz.set(i, (double) max * (rz.get(i) - minZ) / maxZ);
+        }
+    }
+
+    public void objDraw() {
+        for (int i = 0; i < rx.size(); i++) {
+            pixelR(rx.get(i), ry.get(i), rz.get(i), pipeScreen.colBlack, pipeScreen.colWhite, '*');
+        }
     }
 
 }
