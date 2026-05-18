@@ -1185,7 +1185,7 @@ qc pass: tls with dsa
 qc pass: tls with rsa
 qc pass: tls with ecdsa
 qc pass: tls with mldsa
-failed: wireguard over ipv4
+qc pass: wireguard over ipv4
 qc pass: wireguard over ipv6
 qc pass: wireguard over wireguard
 qc pass: wireguard over loopback
@@ -1433,6 +1433,7 @@ qc pass: interop2: ldp php lsp
 qc pass: interop2: ldp over point2point ethernet
 qc pass: interop2: igmp3/mld2
 qc pass: interop2: pim
+qc pass: interop2: mgre
 qc pass: interop2: point2point ospf
 qc pass: interop2: ospf dr
 qc pass: interop2: ospf nondr

@@ -18373,3 +18373,7 @@ qc pass: wireguard over ipv6
 ---------------------------------- 2026-05-18 06:49:45 26.5.18
 no qc pass: wireguard over ipv4
 failed: wireguard over ipv4
+---------------------------------- 2026-05-18 07:36:47 26.5.18
+no failed: wireguard over ipv4
+qc pass: wireguard over ipv4
+qc pass: interop2: mgre
