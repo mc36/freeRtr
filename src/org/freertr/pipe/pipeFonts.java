@@ -135,6 +135,11 @@ public class pipeFonts {
     public final static String fontFiller = "X";
 
     /**
+     * terminal graphic filler
+     */
+    public final static char lineFiller = '*';
+
+    /**
      * get terminal font
      *
      * @return converted font

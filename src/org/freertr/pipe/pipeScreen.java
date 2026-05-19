@@ -1259,6 +1259,28 @@ public class pipeScreen {
     }
 
     /**
+     * draw a circle
+     *
+     * @param cx center x
+     * @param cy center y
+     * @param sx size x
+     * @param sy size y
+     * @param bg background color
+     * @param fg foreground color
+     * @param ch character to write
+     */
+    public void drawCircle(int cx, int cy, int sx, int sy, int bg, int fg, int ch) {
+        int step = sizX + sizY;
+        step *= 4;
+        for (int i = -step; i < step; i++) {
+            double v = i * Math.PI / step;
+            int x = (int) (sx * Math.cos(v));
+            int y = (int) (sy * Math.sin(v));
+            putInt(cx + x, cy + y, bg, fg, false, ch);
+        }
+    }
+
+    /**
      * draw a line
      *
      * @param bx begin x
