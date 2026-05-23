@@ -564,8 +564,8 @@ public class userImage {
                     continue;
                 }
                 s = cmd.getRemaining();
-                for (int num = 0; num < xml.data.size(); num++) {
-                    encXmlEntry ntry = xml.data.get(num);
+                for (int o = 0; o < xml.data.size(); o++) {
+                    encXmlEntry ntry = xml.data.get(o);
                     if (!ntry.getTag().trim().toLowerCase().equals("a")) {
                         continue;
                     }
