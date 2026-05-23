@@ -1,16 +1,22 @@
 download 3
 reget-time 168
-kern http://cdn.netbsd.org/pub/NetBSD/NetBSD-11.0_RC4/%arch%/binary/sets/
+kern http://cdn.netbsd.org/pub/NetBSD/
 
 mkdir %dwn%
 del %tmp%
 mkdir %tmp%
 
-binary-down %kern%/base.tar.xz %dwn%/nbsd-%arch%-base.txz
-binary-down %kern%/comp.tar.xz %dwn%/nbsd-%arch%-comp.txz
-binary-down %kern%/etc.tar.xz %dwn%/nbsd-%arch%-etc.txz
-binary-down %kern%/kern-GENERIC.tar.xz %dwn%/nbsd-%arch%-kern.txz
-binary-down %kern%/modules.tar.xz %dwn%/nbsd-%arch%-mods.txz
+binary-down %kern% %dwn%/nbsd-%arch%.html
+find-clear
+find-link 1-1111 %dwn%/nbsd-%arch%.html NetBSD-[0-9][0-9]\.[0-9].*/
+find-result
+kern %kern%%find%%arch%/binary/sets/
+
+binary-down %kern%base.tar.xz %dwn%/nbsd-%arch%-base.txz
+binary-down %kern%comp.tar.xz %dwn%/nbsd-%arch%-comp.txz
+binary-down %kern%etc.tar.xz %dwn%/nbsd-%arch%-etc.txz
+binary-down %kern%kern-GENERIC.tar.xz %dwn%/nbsd-%arch%-kern.txz
+binary-down %kern%modules.tar.xz %dwn%/nbsd-%arch%-mods.txz
 
 exec tar xf %dwn%/nbsd-%arch%-base.txz -C %tmp%/
 exec tar xf %dwn%/nbsd-%arch%-comp.txz -C %tmp%/

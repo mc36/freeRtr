@@ -7,6 +7,8 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryHashSha2256;
 import org.freertr.cry.cryUtils;
+import org.freertr.enc.encXml;
+import org.freertr.enc.encXmlEntry;
 import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
 import org.freertr.sec.secTransform;
@@ -546,6 +548,42 @@ public class userImage {
                         continue;
                     }
                     found = cur.name;
+                }
+                continue;
+            }
+            if (a.equals("find-link")) {
+                tabIntMatcher mod = new tabIntMatcher();
+                mod.fromString(cmd.word());
+                List<String> lst = bits.txt2buf(cmd.word());
+                if (lst == null) {
+                    continue;
+                }
+                encXml xml = new encXml();
+                xml.setup2html();
+                if (xml.fromString(lst, "")) {
+                    continue;
+                }
+                s = cmd.getRemaining();
+                for (int num = 0; num < xml.data.size(); num++) {
+                    encXmlEntry ntry = xml.data.get(num);
+                    if (!ntry.getTag().trim().toLowerCase().equals("a")) {
+                        continue;
+                    }
+                    List<encXmlEntry> par = encXml.decodeParams(ntry.param);
+                    i = encXml.findParam(par, "|href|");
+                    if (i < 0) {
+                        continue;
+                    }
+                    ntry = par.get(i);
+                    a = ntry.data;
+                    if (!a.matches(s)) {
+                        continue;
+                    }
+                    int p = a.compareTo(found);
+                    if (!mod.matches(p)) {
+                        continue;
+                    }
+                    found = a;
                 }
                 continue;
             }
