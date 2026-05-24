@@ -1,22 +1,27 @@
 download 3
-reget-time 168
+reget-time 8
 kern http://cdn.netbsd.org/pub/NetBSD/
 
-mkdir %dwn%
-del %tmp%
 mkdir %tmp%
-
 binary-down %kern% %dwn%/nbsd-%arch%.html
 find-clear
 find-link 1-1111 %dwn%/nbsd-%arch%.html NetBSD-[0-9][0-9]\.[0-9].*/
 find-result
 kern %kern%%find%%arch%/binary/sets/
 
+file-read 0 %dwn%/nbsd-%arch%.txt
+del %dwn%/nbsd-%arch%.txt
+download 1
+if-compare 0 %read% %find%
+download 2
+
 binary-down %kern%base.tar.xz %dwn%/nbsd-%arch%-base.txz
 binary-down %kern%comp.tar.xz %dwn%/nbsd-%arch%-comp.txz
 binary-down %kern%etc.tar.xz %dwn%/nbsd-%arch%-etc.txz
 binary-down %kern%kern-GENERIC.tar.xz %dwn%/nbsd-%arch%-kern.txz
 binary-down %kern%modules.tar.xz %dwn%/nbsd-%arch%-mods.txz
+
+file-line %dwn%/nbsd-%arch%.txt %find%
 
 exec tar xf %dwn%/nbsd-%arch%-base.txz -C %tmp%/
 exec tar xf %dwn%/nbsd-%arch%-comp.txz -C %tmp%/

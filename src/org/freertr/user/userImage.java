@@ -40,6 +40,8 @@ public class userImage {
 
     private String found = "";
 
+    private String read = "";
+
     private int downMode = 1;
 
     private int hashMode = 3;
@@ -398,6 +400,8 @@ public class userImage {
         s = s.replaceAll("%grub%", grub);
         s = s.replaceAll("%uefi%", uefi);
         s = s.replaceAll("%find%", found);
+        s = s.replaceAll("%xtra%", xtra);
+        s = s.replaceAll("%read%", read);
         s = s.replaceAll("%%", "%");
         return s;
     }
@@ -639,6 +643,19 @@ public class userImage {
                 found = userFlash.calcFileHash(secTransform.getHash(i), s);
                 continue;
             }
+            if (a.equals("file-read")) {
+                read = "";
+                i = bits.str2num(cmd.word());
+                List<String> lst = bits.txt2buf(cmd.getRemaining());
+                if (lst == null) {
+                    continue;
+                }
+                if (lst.size() <= i) {
+                    continue;
+                }
+                read = lst.get(i);
+                continue;
+            }
             if (a.equals("file-line")) {
                 a = cmd.word();
                 s = cmd.getRemaining();
@@ -821,6 +838,16 @@ public class userImage {
             }
             if (a.equals("binary-down")) {
                 downloadFile(cmd.word(), cmd.word(), -1);
+                continue;
+            }
+            if (a.equals("if-compare")) {
+                tabIntMatcher mod = new tabIntMatcher();
+                mod.fromString(cmd.word());
+                a = cmd.word();
+                i = a.compareTo(cmd.getRemaining());
+                if (!mod.matches(i)) {
+                    cnt++;
+                }
                 continue;
             }
             if (a.equals("if-downed")) {
