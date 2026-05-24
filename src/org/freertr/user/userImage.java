@@ -836,8 +836,17 @@ public class userImage {
                 execCmd(s);
                 continue;
             }
+            if (a.equals("binary-xtra")) {
+                a = cmd.word();
+                xtra += " " + a + " ";
+                xtra = xtra.trim();
+                a = downDir + "/" + arch + "-" + a;
+                downloadFile(cmd.getRemaining(), a, -1);
+                continue;
+            }
             if (a.equals("binary-down")) {
-                downloadFile(cmd.word(), cmd.word(), -1);
+                a = cmd.word();
+                downloadFile(cmd.getRemaining(), a, -1);
                 continue;
             }
             if (a.equals("if-compare")) {

@@ -3,31 +3,26 @@ reget-time 8
 kern http://cdn.netbsd.org/pub/NetBSD/
 
 mkdir %tmp%
-binary-down %kern% %dwn%/nbsd-%arch%.html
+binary-down %dwn%/%arch%-nbsd.html %kern%
 find-clear
-find-link 1-1111 %dwn%/nbsd-%arch%.html NetBSD-[0-9][0-9]\.[0-9].*/
+find-link 1-1111 %dwn%/%arch%-nbsd.html NetBSD-[0-9][0-9]\.[0-9].*/
 find-result
 kern %kern%%find%%arch%/binary/sets/
 
-file-read 0 %dwn%/nbsd-%arch%.txt
-del %dwn%/nbsd-%arch%.txt
+file-read 0 %dwn%/%arch%-nbsd.txt
+del %dwn%/%arch%-nbsd.txt
 download 1
 if-compare 0 %read% %find%
 download 2
 
-binary-down %kern%base.tar.xz %dwn%/nbsd-%arch%-base.txz
-binary-down %kern%comp.tar.xz %dwn%/nbsd-%arch%-comp.txz
-binary-down %kern%etc.tar.xz %dwn%/nbsd-%arch%-etc.txz
-binary-down %kern%kern-GENERIC.tar.xz %dwn%/nbsd-%arch%-kern.txz
-binary-down %kern%modules.tar.xz %dwn%/nbsd-%arch%-mods.txz
+binary-xtra nbsd-base.txz %kern%base.tar.xz
+binary-xtra nbsd-comp.txz %kern%comp.tar.xz
+binary-xtra nbsd-etc.txz %kern%etc.tar.xz
+binary-xtra nbsd-kern.txz %kern%kern-GENERIC.tar.xz
+binary-xtra nbsd-mods.txz %kern%modules.tar.xz
 
-file-line %dwn%/nbsd-%arch%.txt %find%
-
-exec tar xf %dwn%/nbsd-%arch%-base.txz -C %tmp%/
-exec tar xf %dwn%/nbsd-%arch%-comp.txz -C %tmp%/
-exec tar xf %dwn%/nbsd-%arch%-etc.txz -C %tmp%/
-exec tar xf %dwn%/nbsd-%arch%-kern.txz -C %tmp%/
-exec tar xf %dwn%/nbsd-%arch%-mods.txz -C %tmp%/
+file-line %dwn%/%arch%-nbsd.txt %find%
+package-xtra
 
 move %tmp%/stand/%arch%/*/modules/* %tmp%/tmp/
 move %tmp%/tmp/compat_linux %tmp%/stand/%arch%/*/modules/

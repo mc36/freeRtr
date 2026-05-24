@@ -3,25 +3,23 @@ reget-time 8
 kern http://download.freebsd.org/releases/%arch%/
 
 mkdir %tmp%
-binary-down %kern% %dwn%/fbsd-%arch%.html
+binary-down %dwn%/%arch%-fbsd.html %kern%
 find-clear
-find-link 1-1111 %dwn%/fbsd-%arch%.html [0-9][0-9]\.[0-9].*/
+find-link 1-1111 %dwn%/%arch%-fbsd.html [0-9][0-9]\.[0-9].*/
 find-result
 kern %kern%%find%
 
-file-read 0 %dwn%/fbsd-%arch%.txt
-del %dwn%/fbsd-%arch%.txt
+file-read 0 %dwn%/%arch%-fbsd.txt
+del %dwn%/%arch%-fbsd.txt
 download 1
 if-compare 0 %read% %find%
 download 2
 
-binary-down %kern%base.txz %dwn%/fbsd-%arch%-base.txz
-binary-down %kern%kernel.txz %dwn%/fbsd-%arch%-kern.txz
+binary-xtra fbsd-base.txz %kern%base.txz
+binary-xtra fbsd-kern.txz %kern%kernel.txz
 
-file-line %dwn%/fbsd-%arch%.txt %find%
-
-exec tar xf %dwn%/fbsd-%arch%-base.txz -C %tmp%/
-exec tar xf %dwn%/fbsd-%arch%-kern.txz -C %tmp%/
+file-line %dwn%/%arch%-fbsd.txt %find%
+package-xtra
 
 move %tmp%/boot/kernel/* %tmp%/tmp/
 move %tmp%/tmp/kernel %tmp%/boot/kernel/
