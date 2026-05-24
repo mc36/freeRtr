@@ -18382,3 +18382,6 @@ no qc pass: interop2: mgre
 ---------------------------------- 2026-05-18 13:15:35 26.5.18
 qc pass: interop2: mgre
 qc pass: interop2: mvpn
+---------------------------------- 2026-05-24 15:03:28 26.5.24
+no qc pass: integrated pvrp with labels
+failed: integrated pvrp with labels
