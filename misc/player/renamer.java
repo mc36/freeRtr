@@ -29,6 +29,7 @@ public class renamer {
         boolean really = true;
         boolean basic = false;
         boolean full = false;
+        boolean seq = false;
         for (int i = 1; i < args.length; i++) {
             String s = args[i].toLowerCase();
             if (s.equals("predir")) {
@@ -70,6 +71,12 @@ public class renamer {
             if (s.equals("full")) {
                 full = true;
             }
+            if (s.equals("unseq")) {
+                seq = false;
+            }
+            if (s.equals("seq")) {
+                seq = true;
+            }
         }
         String s = args[0];
         playerUtil.put("reading " + s + "...");
@@ -87,6 +94,11 @@ public class renamer {
             if (full && (a.length() > 10)) {
                 if (playerUtil.str2int(a.substring(0, 4) + a.substring(5, 7) + a.substring(8, 10)) > 0) {
                     a = a.substring(0, 4) + " " + a.substring(10, a.length());
+                }
+            }
+            if (seq && (a.length() > 2)) {
+                if (playerUtil.str2int(a.substring(0, 2)) > 0) {
+                    a = a.substring(2, a.length());
                 }
             }
             a = prepend + a;
