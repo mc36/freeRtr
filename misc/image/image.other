@@ -9,6 +9,3 @@
 
 #catalog-read xan gz http://deb.xanmod.org/ releases main
 #select-dis linux-xanmod                   #xanmod kernel
-
-#catalog-read freesh http://ftp.linuxliber.md/freesh/ freesh main
-#select-dis linux-libre                    #libre kernel
