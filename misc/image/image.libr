@@ -2,7 +2,7 @@ download 3
 reget-time 8
 
 mkdir %tmp%
-catalog-read freesh gz http://www.linux-libre.fsfla.org/pub/linux-libre/ freesh main
+catalog-read freesh gz http://www.linux-libre.fsfla.org/pub/linux-libre/freesh/ freesh main
 
 select-dis freesh-archive-.*
 select-one linux-libre                    #libre kernel
