@@ -1276,7 +1276,16 @@ public class ipFwdTab {
                 ntry.best.labelLoc = lower.commonLabel;
                 continue;
             }
-            tabLabelEntry lab = tabLabel.allocate(tabLabelEntry.owner.vrfUni);
+            tabLabelEntry lab = null;
+            ipFwdRoute sta = new ipFwdRoute();
+            sta.pref = ntry.prefix;
+            sta = lower.staticL.find(sta);
+            if (sta != null) {
+                lab = tabLabel.allocateExact(tabLabelEntry.owner.vrfUni, sta.mpls);
+            }
+            if (lab == null) {
+                lab = tabLabel.allocate(tabLabelEntry.owner.vrfUni);
+            }
             for (int o = 0; o < ntry.alts.size(); o++) {
                 ntry.alts.get(o).labelLoc = lab;
             }

@@ -149,6 +149,65 @@ public class ipFwdRoute implements Comparable<ipFwdRoute> {
         return a;
     }
 
+    private addrIP getMask(int ver, String s) {
+        addrIP a = new addrIP();
+        if (!s.startsWith("/")) {
+            return getAddr(ver, s);
+        }
+        int i = bits.str2num(s.substring(1, s.length()));
+        mask = new addrIP();
+        if (ver == 4) {
+            addrIPv4 m4 = new addrIPv4();
+            m4.fromNetmask(i);
+            a.fromIPv4addr(m4);
+        } else {
+            addrIPv6 m6 = new addrIPv6();
+            m6.fromNetmask(i);
+            a.fromIPv6addr(m6);
+        }
+        return a;
+    }
+
+    private void setPref(int ver) {
+        if (ver == 4) {
+            pref = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(addr.toIPv4(), mask.toIPv4().toNetmask()));
+        } else {
+            pref = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(addr.toIPv6(), mask.toIPv6().toNetmask()));
+        }
+    }
+
+    /**
+     * convert from string
+     *
+     * @param ver protocol version
+     * @param cmd command to read
+     * @return false on success, true on error
+     */
+    public boolean fromLabel(int ver, cmds cmd) {
+        addr = getAddr(ver, cmd.word());
+        if (addr == null) {
+            cmd.error("bad network");
+            return true;
+        }
+        mask = getMask(ver, cmd.word());
+        if (mask == null) {
+            cmd.error("bad mask");
+            return true;
+        }
+        setPref(ver);
+        mpls = bits.str2num(cmd.word());
+        return false;
+    }
+
+    /**
+     * convert to string
+     *
+     * @return string
+     */
+    public String toLabel() {
+        return addr + " " + mask + " " + mpls;
+    }
+
     /**
      * convert from string
      *
@@ -163,33 +222,13 @@ public class ipFwdRoute implements Comparable<ipFwdRoute> {
             cmd.error("bad network");
             return true;
         }
-        int msk;
-        String a = cmd.word();
-        if (a.startsWith("/")) {
-            msk = bits.str2num(a.substring(1, a.length()));
-            mask = new addrIP();
-            if (ver == 4) {
-                addrIPv4 m4 = new addrIPv4();
-                m4.fromNetmask(msk);
-                mask.fromIPv4addr(m4);
-            } else {
-                addrIPv6 m6 = new addrIPv6();
-                m6.fromNetmask(msk);
-                mask.fromIPv6addr(m6);
-            }
-        } else {
-            mask = getAddr(ver, a);
-            if (mask == null) {
-                cmd.error("bad mask");
-                return true;
-            }
-            if (ver == 4) {
-                msk = mask.toIPv4().toNetmask();
-            } else {
-                msk = mask.toIPv6().toNetmask();
-            }
+        mask = getMask(ver, cmd.word());
+        if (mask == null) {
+            cmd.error("bad mask");
+            return true;
         }
-        a = cmd.word();
+        setPref(ver);
+        String a = cmd.word();
         hop = getAddr(ver, a);
         if (hop == null) {
             hop = getAddr(ver ^ 2, a);
@@ -200,11 +239,6 @@ public class ipFwdRoute implements Comparable<ipFwdRoute> {
             ohop = true;
         } else {
             ohop = false;
-        }
-        if (ver == 4) {
-            pref = addrPrefix.ip4toIP(new addrPrefix<addrIPv4>(addr.toIPv4(), msk));
-        } else {
-            pref = addrPrefix.ip6toIP(new addrPrefix<addrIPv6>(addr.toIPv6(), msk));
         }
         dist = 1;
         met = 0;

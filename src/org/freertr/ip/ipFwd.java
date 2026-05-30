@@ -202,6 +202,11 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     public final tabGen<ipFwdRoute> staticM;
 
     /**
+     * the configured static label bind table
+     */
+    public final tabGen<ipFwdRoute> staticL;
+
+    /**
      * the computed connected table
      */
     public tabRoute<addrIP> connedR;
@@ -658,6 +663,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         actualIC = new tabGen<tabIndex<addrIP>>();
         staticU = new tabGen<ipFwdRoute>();
         staticM = new tabGen<ipFwdRoute>();
+        staticL = new tabGen<ipFwdRoute>();
         natTrns = new tabGen<tabNatTraN>();
         pbrCfg = new tabListing<tabPbrN, addrIP>();
         pbrCfg.myCor = ipCore;
