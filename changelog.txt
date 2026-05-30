@@ -18388,3 +18388,8 @@ failed: integrated pvrp with labels
 ---------------------------------- 2026-05-24 16:47:43 26.5.24
 no failed: integrated pvrp with labels
 qc pass: integrated pvrp with labels
+---------------------------------- 2026-05-30 18:14:08 26.5.30
+no qc pass: static routing with labels
+qc pass: static routing with null labels
+qc pass: static routing with custom labels
+qc pass: static switching with custom labels

@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v26.5.30-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2026-05-30 17:28:12, took 00:17:56, with 50 workers, on 4388 cases, 0 failed, 0 traces, 12 retries<br/>
+tested: 2026-05-30 18:31:08, took 00:17:00, with 50 workers, on 4390 cases, 0 failed, 0 traces, 7 retries<br/>
 jvm: ./rtr.bin, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -4347,26 +4347,28 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-static03.tst">rout-static03.tst</a></td><td>success</td><td>static routing with icmp tracker</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-static04.tst">rout-static04.tst</a></td><td>success</td><td>static routing with tcp tracker</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-static05.tst">rout-static05.tst</a></td><td>success</td><td>static routing with bfd tracker</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static06.tst">rout-static06.tst</a></td><td>success</td><td>static routing with labels</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static07.tst">rout-static07.tst</a></td><td>success</td><td>static routing with interface</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static08.tst">rout-static08.tst</a></td><td>success</td><td>static routing over point2point ethernet</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static09.tst">rout-static09.tst</a></td><td>success</td><td>recursive static routing</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static10.tst">rout-static10.tst</a></td><td>success</td><td>recursive static routing with labels</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static11.tst">rout-static11.tst</a></td><td>success</td><td>static routing with ecmp</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static12.tst">rout-static12.tst</a></td><td>success</td><td>static routing with udp tracker</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static13.tst">rout-static13.tst</a></td><td>success</td><td>static routing with twamp tracker</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static14.tst">rout-static14.tst</a></td><td>success</td><td>static routing with interface tracker</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static15.tst">rout-static15.tst</a></td><td>success</td><td>static routing with prefix tracker</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static16.tst">rout-static16.tst</a></td><td>success</td><td>static routing with other tracker</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static17.tst">rout-static17.tst</a></td><td>success</td><td>static routing with check tracker</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static18.tst">rout-static18.tst</a></td><td>success</td><td>static routing with nrpe tracker</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static19.tst">rout-static19.tst</a></td><td>success</td><td>verify source with static routing</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static20.tst">rout-static20.tst</a></td><td>success</td><td>loose verify source with static routing</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static21.tst">rout-static21.tst</a></td><td>success</td><td>static routing with lpm</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static22.tst">rout-static22.tst</a></td><td>success</td><td>static routing over foreign ipv4</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static23.tst">rout-static23.tst</a></td><td>success</td><td>static routing over foreign ipv6</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static24.tst">rout-static24.tst</a></td><td>success</td><td>static routing over foreign ipv4 with interface</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-static25.tst">rout-static25.tst</a></td><td>success</td><td>static routing over foreign ipv6 with interface</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static06.tst">rout-static06.tst</a></td><td>success</td><td>static routing with null labels</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static07.tst">rout-static07.tst</a></td><td>success</td><td>static routing with custom labels</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static08.tst">rout-static08.tst</a></td><td>success</td><td>static switching with custom labels</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static09.tst">rout-static09.tst</a></td><td>success</td><td>static routing with interface</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static10.tst">rout-static10.tst</a></td><td>success</td><td>static routing over point2point ethernet</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static11.tst">rout-static11.tst</a></td><td>success</td><td>recursive static routing</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static12.tst">rout-static12.tst</a></td><td>success</td><td>recursive static routing with labels</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static13.tst">rout-static13.tst</a></td><td>success</td><td>static routing with ecmp</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static14.tst">rout-static14.tst</a></td><td>success</td><td>static routing with udp tracker</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static15.tst">rout-static15.tst</a></td><td>success</td><td>static routing with twamp tracker</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static16.tst">rout-static16.tst</a></td><td>success</td><td>static routing with interface tracker</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static17.tst">rout-static17.tst</a></td><td>success</td><td>static routing with prefix tracker</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static18.tst">rout-static18.tst</a></td><td>success</td><td>static routing with other tracker</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static19.tst">rout-static19.tst</a></td><td>success</td><td>static routing with check tracker</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static20.tst">rout-static20.tst</a></td><td>success</td><td>static routing with nrpe tracker</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static21.tst">rout-static21.tst</a></td><td>success</td><td>verify source with static routing</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static22.tst">rout-static22.tst</a></td><td>success</td><td>loose verify source with static routing</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static23.tst">rout-static23.tst</a></td><td>success</td><td>static routing with lpm</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static24.tst">rout-static24.tst</a></td><td>success</td><td>static routing over foreign ipv4</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static25.tst">rout-static25.tst</a></td><td>success</td><td>static routing over foreign ipv6</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static26.tst">rout-static26.tst</a></td><td>success</td><td>static routing over foreign ipv4 with interface</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-static27.tst">rout-static27.tst</a></td><td>success</td><td>static routing over foreign ipv6 with interface</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/serv-bmp01.tst">serv-bmp01.tst</a></td><td>success</td><td>static bmp peer</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/serv-bmp02.tst">serv-bmp02.tst</a></td><td>success</td><td>dynamic bmp peer</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/serv-dns01.tst">serv-dns01.tst</a></td><td>success</td><td>authoritative dns server</td></tr>

@@ -4331,7 +4331,9 @@ qc pass: static routing with distance
 qc pass: static routing with icmp tracker
 qc pass: static routing with tcp tracker
 qc pass: static routing with bfd tracker
-qc pass: static routing with labels
+qc pass: static routing with null labels
+qc pass: static routing with custom labels
+qc pass: static switching with custom labels
 qc pass: static routing with interface
 qc pass: static routing over point2point ethernet
 qc pass: recursive static routing
