@@ -116,6 +116,11 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     protected final List<servStackFwd> fwds;
 
     /**
+     * label base
+     */
+    protected int labelBase;
+
+    /**
      * backplane
      */
     protected tabLabelEntry[] bckplnLab;
@@ -132,7 +137,8 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         new userFilter("server stack .*", cmds.tabulator + "port " + port, null),
         new userFilter("server stack .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
         new userFilter("server stack .*", cmds.tabulator + "buffer 65536", null),
-        new userFilter("server stack .*", cmds.tabulator + "dataplanes 1", null),
+        new userFilter("server stack .*", cmds.tabulator + "dataplanes 0", null),
+        new userFilter("server stack .*", cmds.tabulator + "label-base 0", null),
         new userFilter("server stack .*", cmds.tabulator + "discovery 1000 5000", null)
     };
 
@@ -142,6 +148,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
 
     public void srvShRun(String beg, List<String> lst, int filter) {
         lst.add(beg + "dataplanes " + fwds.size());
+        lst.add(beg + "label-base " + labelBase);
         lst.add(beg + "discovery " + discoInt + " " + discoTim);
         for (int i = 0; i < fwds.size(); i++) {
             lst.add(beg + cmds.comment);
@@ -164,6 +171,11 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         if (s.equals("discovery")) {
             discoInt = bits.str2num(cmd.word());
             discoTim = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("label-base")) {
+            labelBase = bits.str2num(cmd.word());
+            restartDiscovery(true);
             return false;
         }
         if (s.equals("dataplanes")) {
@@ -273,6 +285,8 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
+        l.add(null, false, 1, new int[]{2}, "label-base", "set label of forwarders");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "limit");
         l.add(null, false, 1, new int[]{2}, "dataplanes", "set number of forwarders");
         l.add(null, false, 2, new int[]{-1}, "<num>", "limit");
         l.add(null, false, 1, new int[]{2}, "discovery", "specify discovery parameters");
@@ -357,9 +371,13 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     private void restartDiscovery(boolean need) {
         dscvry.need2work = false;
         dscvry = new servStackDisc(this);
-        need &= fwds.size() > 1;
         tabLabel.release(bckplnLab, tabLabelEntry.owner.stack);
-        bckplnLab = tabLabel.allocateBlock(tabLabelEntry.owner.stack, fwds.size());
+        if (fwds.size() < 1) {
+            return;
+        }
+        if (need) {
+            bckplnLab = tabLabel.allocateBlock(tabLabelEntry.owner.stack, labelBase, fwds.size());
+        }
         if (srvVrf != null) {
             for (int i = 0; i < bckplnLab.length; i++) {
                 bckplnLab[i].setFwdCommon(tabLabelEntry.owner.stack, srvVrf.fwd6);
