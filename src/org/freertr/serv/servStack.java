@@ -244,20 +244,9 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return false;
         }
         if (s.equals("backplane")) {
-            cfgIfc rif = cfgAll.ifcFind(cmd.word(), 0);
+            cfgIfc rif = getBckIfc(cur, cmd);
             if (rif == null) {
-                cmd.error("no such interface");
                 return false;
-            }
-            if (!cur.findIfc(rif.ethtyp)) {
-                if (rif.vlanNum == 0) {
-                    cmd.error("port not exported");
-                    return false;
-                }
-                if (!cur.findIfc(rif.parent.ethtyp)) {
-                    cmd.error("parent not exported");
-                    return false;
-                }
             }
             servStackIfc ntry = new servStackIfc(cur, rif);
             if (neg) {
@@ -266,7 +255,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                     cmd.error("no such backplane");
                     return false;
                 }
-                ntry.ifc.delET(-1);
+                ntry.stopWork();
                 cur.reindex();
                 return false;
             }
@@ -279,7 +268,59 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             cur.reindex();
             return false;
         }
+        if (s.equals("backroute")) {
+            cfgIfc rif = getBckIfc(cur, cmd);
+            if (rif == null) {
+                return false;
+            }
+            servStackIfc ntry = new servStackIfc(cur, rif);
+            if (neg) {
+                ntry = cur.ifaces.del(ntry);
+                if (ntry == null) {
+                    cmd.error("no such backplane");
+                    return false;
+                }
+                ntry.stopWork();
+                cur.reindex();
+                return false;
+            }
+            ntry.metric = bits.str2num(cmd.word());
+            ntry.bgpAdr = new addrIP();
+            if (ntry.bgpAdr.fromString(cmd.word())) {
+                cmd.error("bad address");
+                return false;
+            }
+            ntry.bgpAsn = bits.str2num(cmd.word());
+            if (ntry.bgpAsn == 0) {
+                cmd.error("bad asn");
+                return false;
+            }
+            ntry.startWork();
+            cur.ifaces.add(ntry);
+            cur.reindex();
+            return false;
+        }
         return true;
+    }
+
+    private cfgIfc getBckIfc(servStackFwd cur, cmds cmd) {
+        cfgIfc rif = cfgAll.ifcFind(cmd.word(), 0);
+        if (rif == null) {
+            cmd.error("no such interface");
+            return null;
+        }
+        if (cur.findIfc(rif.ethtyp)) {
+            return rif;
+        }
+        if (rif.vlanNum == 0) {
+            cmd.error("port not exported");
+            return null;
+        }
+        if (!cur.findIfc(rif.parent.ethtyp)) {
+            cmd.error("parent not exported");
+            return null;
+        }
+        return rif;
     }
 
     public void srvHelp(userHelp l) {
@@ -303,6 +344,11 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         l.add(null, false, 3, new int[]{4}, "backplane", "interface to use");
         l.add(null, false, 4, new int[]{5}, "<name:ifc>", "name of interface");
         l.add(null, false, 5, new int[]{-1}, "<num>", "metric of port");
+        l.add(null, false, 3, new int[]{4}, "backroute", "interface to use");
+        l.add(null, false, 4, new int[]{5}, "<name:ifc>", "name of interface");
+        l.add(null, false, 5, new int[]{6}, "<num>", "metric of port");
+        l.add(null, false, 6, new int[]{7}, "<addr>", "peer address");
+        l.add(null, false, 7, new int[]{-1}, "<num>", "local as number");
     }
 
     public String srvName() {
