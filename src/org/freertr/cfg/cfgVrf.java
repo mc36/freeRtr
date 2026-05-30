@@ -478,6 +478,12 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         }
     }
 
+    private void addCfgBind(List<String> l, int p, ipFwd f) {
+        for (int i = 0; i < f.staticL.size(); i++) {
+            l.add("mpls bind" + p + " " + name + " " + f.staticL.get(i).toLabel());
+        }
+    }
+
     private void addCfgFlow(List<String> l, int p, ipFwd f) {
         if (f.netflow == null) {
             return;
@@ -565,12 +571,6 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         cmds.cfgLine(l, !fwd6.optimize, cmds.tabulator, "optimize6lookup", "");
         l.add(cmds.tabulator + "update4interval " + fwd4.updateInterval);
         l.add(cmds.tabulator + "update6interval " + fwd6.updateInterval);
-        for (int i = 0; i < fwd4.staticL.size(); i++) {
-            l.add(cmds.tabulator + "label4bind " + fwd4.staticL.get(i).toLabel());
-        }
-        for (int i = 0; i < fwd6.staticL.size(); i++) {
-            l.add(cmds.tabulator + "label6bind " + fwd6.staticL.get(i).toLabel());
-        }
         String s = "";
         for (int i = 0; i < fwd4.rtImp.size(); i++) {
             s += " " + tabRouteUtil.rd2string(fwd4.rtImp.get(i));
@@ -678,6 +678,10 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         }
         ipx.getShRun(l);
         l.add(cmds.comment);
+        addCfgBind(l, 4, fwd4);
+        l.add(cmds.comment);
+        addCfgBind(l, 6, fwd6);
+        l.add(cmds.comment);
         addRoutes(l, 4, fwd4);
         l.add(cmds.comment);
         addRoutes(l, 6, fwd6);
@@ -783,14 +787,6 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "<name:pl>", "name of prefix list");
         l.add(null, false, 1, new int[]{2}, "label6filter", "specify ipv6 label filter");
         l.add(null, false, 2, new int[]{-1}, "<name:pl>", "name of prefix list");
-        l.add(null, false, 1, new int[]{2}, "label4bind", "specify ipv4 static label");
-        l.add(null, false, 2, new int[]{3}, "<addr>", "network");
-        l.add(null, false, 3, new int[]{4}, "<addr>", "netmask");
-        l.add(null, false, 4, new int[]{-1}, "<num>", "label value");
-        l.add(null, false, 1, new int[]{2}, "label6bind", "specify ipv6 static label");
-        l.add(null, false, 2, new int[]{3}, "<addr>", "network");
-        l.add(null, false, 3, new int[]{4}, "<addr>", "netmask");
-        l.add(null, false, 4, new int[]{-1}, "<num>", "label value");
         l.add(null, false, 1, new int[]{2}, "label4common", "specify ipv4 common label");
         l.add(null, false, 2, new int[]{-1}, "<num>", "label value");
         l.add(null, false, 1, new int[]{2}, "label6common", "specify ipv6 common label");
@@ -1133,22 +1129,6 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         if (a.equals("iface6start")) {
             iface6start = bits.str2num(cmd.word());
             fwd6.nextIfaceNumber = iface6start;
-            return;
-        }
-        if (a.equals("label4bind")) {
-            ipFwdRoute ntry = new ipFwdRoute();
-            if (ntry.fromLabel(4, cmd)) {
-                return;
-            }
-            fwd4.staticL.put(ntry);
-            return;
-        }
-        if (a.equals("label6bind")) {
-            ipFwdRoute ntry = new ipFwdRoute();
-            if (ntry.fromLabel(6, cmd)) {
-                return;
-            }
-            fwd6.staticL.put(ntry);
             return;
         }
         if (a.equals("label4common")) {
@@ -1769,22 +1749,6 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         }
         if (a.equals("iface6start")) {
             iface6start = 0;
-            return;
-        }
-        if (a.equals("label4bind")) {
-            ipFwdRoute ntry = new ipFwdRoute();
-            if (ntry.fromLabel(4, cmd)) {
-                return;
-            }
-            fwd4.staticL.del(ntry);
-            return;
-        }
-        if (a.equals("label6bind")) {
-            ipFwdRoute ntry = new ipFwdRoute();
-            if (ntry.fromLabel(6, cmd)) {
-                return;
-            }
-            fwd6.staticL.del(ntry);
             return;
         }
         if (a.equals("label4common")) {

@@ -1,4 +1,4 @@
-description static routing with nrpe tracker
+description static routing with other tracker
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -23,25 +23,24 @@ int eth2
  ipv4 addr 1.1.2.1 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
-server nrpe n
- vrf v1
- exit
-check c1
- comm sho inter descr
- train
- exit
 tracker t1
- targ 2.2.2.101/c1
- vrf v1
- mod nrpe
+ targ eth2
+ mod inter
+ inter 1000
+ time 500
+ start
+ exit
+tracker t2
+ targ t1
+ mod other
  inter 1000
  time 500
  start
  exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.2 dist 22
 ipv6 route v1 :: :: 1234:1::2 dist 22
-ipv4 route v1 0.0.0.0 0.0.0.0 1.1.2.2 dist 11 track t1
-ipv6 route v1 :: :: 1234:2::2 dist 11 track t1
+ipv4 route v1 0.0.0.0 0.0.0.0 1.1.2.2 dist 11 track t2
+ipv6 route v1 :: :: 1234:2::2 dist 11 track t2
 !
 
 addrouter r2
@@ -66,25 +65,24 @@ int eth2
  ipv4 addr 1.1.2.2 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
-server nrpe n
- vrf v1
- exit
-check c1
- comm sho inter descr
- train
- exit
 tracker t1
- targ 2.2.2.201/c1
- vrf v1
- mod nrpe
+ targ eth2
+ mod inter
+ inter 1000
+ time 500
+ start
+ exit
+tracker t2
+ targ t1
+ mod other
  inter 1000
  time 500
  start
  exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.1 dist 22
 ipv6 route v1 :: :: 1234:1::1 dist 22
-ipv4 route v1 0.0.0.0 0.0.0.0 1.1.2.1 dist 11 track t1
-ipv6 route v1 :: :: 1234:2::1 dist 11 track t1
+ipv4 route v1 0.0.0.0 0.0.0.0 1.1.2.1 dist 11 track t2
+ipv6 route v1 :: :: 1234:2::1 dist 11 track t2
 !
 
 

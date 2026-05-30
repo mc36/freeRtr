@@ -470,6 +470,16 @@ public class userConfig {
         l.add(null, false, 4, new int[]{5}, "<name:ifc>", "target interface");
         l.add(null, false, 5, new int[]{6}, "<addr>", "target address");
         l.add(null, false, 6, new int[]{-1}, "<num>", "remote label");
+        l.add(null, false, 2, new int[]{3}, "bind4", "specify static local label binding");
+        l.add(null, false, 3, new int[]{4}, "<name:vrf>", "target vrf");
+        l.add(null, false, 4, new int[]{5}, "<addr>", "network");
+        l.add(null, false, 5, new int[]{6}, "<addr>", "netmask");
+        l.add(null, false, 6, new int[]{-1}, "<num>", "label value");
+        l.add(null, false, 2, new int[]{3}, "bind6", "specify static local label binding");
+        l.add(null, false, 3, new int[]{4}, "<name:vrf>", "target vrf");
+        l.add(null, false, 4, new int[]{5}, "<addr>", "network");
+        l.add(null, false, 5, new int[]{6}, "<addr>", "netmask");
+        l.add(null, false, 6, new int[]{-1}, "<num>", "label value");
         l.add(null, false, 2, new int[]{3}, "label-range", "specify label range parameters");
         l.add(null, false, 3, new int[]{4}, "<num>", "beginning");
         l.add(null, false, 4, new int[]{-1}, "<num>", "ending");
@@ -2884,6 +2894,34 @@ public class userConfig {
 
     private void doCmdNoMpls() {
         String a = cmd.word();
+        if (a.equals("bind4")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            ipFwdRoute ntry = new ipFwdRoute();
+            if (ntry.fromLabel(4, cmd)) {
+                return;
+            }
+            vrf.fwd4.staticL.del(ntry);
+            vrf.fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("bind6")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            ipFwdRoute ntry = new ipFwdRoute();
+            if (ntry.fromLabel(6, cmd)) {
+                return;
+            }
+            vrf.fwd6.staticL.del(ntry);
+            vrf.fwd6.routerStaticChg();
+            return;
+        }
         if (a.equals("route")) {
             tabLabelEntry ntry = tabLabelEntry.fromString(cmd);
             if (ntry == null) {
@@ -3112,6 +3150,34 @@ public class userConfig {
 
     private void doCmdMpls() {
         String a = cmd.word();
+        if (a.equals("bind4")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            ipFwdRoute ntry = new ipFwdRoute();
+            if (ntry.fromLabel(4, cmd)) {
+                return;
+            }
+            vrf.fwd4.staticL.put(ntry);
+            vrf.fwd4.routerStaticChg();
+            return;
+        }
+        if (a.equals("bind6")) {
+            cfgVrf vrf = cfgAll.vrfFind(cmd.word(), false);
+            if (vrf == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            ipFwdRoute ntry = new ipFwdRoute();
+            if (ntry.fromLabel(6, cmd)) {
+                return;
+            }
+            vrf.fwd6.staticL.put(ntry);
+            vrf.fwd6.routerStaticChg();
+            return;
+        }
         if (a.equals("route")) {
             tabLabelEntry ntry = tabLabelEntry.fromString(cmd);
             if (ntry == null) {

@@ -4119,6 +4119,7 @@ public class cfgAll {
         for (int i = 0; i < statLabs.size(); i++) {
             l.add(statLabs.get(i).getShRun());
         }
+        l.add(cmds.comment);
         servGenList.listGetRun(l, xconnects, filter);
         servGenList.listGetRun(l, tabNshEntry.services, filter);
         servGenList.listGetRun(l, checks, filter);
