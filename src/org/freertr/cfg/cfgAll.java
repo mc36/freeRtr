@@ -1092,7 +1092,7 @@ public class cfgAll {
     /**
      * label range beginning
      */
-    public static int labelRangeBeg = 0x20;
+    public static int labelRangeBeg = 0x400;
 
     /**
      * label range ending
@@ -1511,7 +1511,7 @@ public class cfgAll {
         // client
         new userFilter("", cmds.negated + cmds.tabulator + "client pastebin", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client capture-path", null),
-        new userFilter("", "mpls label-range 32 1048560", null),
+        new userFilter("", "mpls label-range 1024 1048560", null),
         new userFilter("", "client cpuhog 0", null),
         new userFilter("", "client ifacestall 60000", null),
         new userFilter("", "client redundancy-keepalive 500", null),
