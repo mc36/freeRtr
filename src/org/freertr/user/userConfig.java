@@ -462,12 +462,13 @@ public class userConfig {
         l.add(null, false, 4, new int[]{5}, "switch", "switch service");
         l.add(null, false, 5, new int[]{6}, "<num>", "new service path");
         l.add(null, false, 6, new int[]{4, -1}, "<num>", "new service index");
-        l.add(null, false, 1, new int[]{2}, "client", "specify address of name server");
-        l.add(null, false, 2, new int[]{3}, "cpuhog", "specify cpuhog parameters");
-        l.add(null, false, 3, new int[]{-1}, "<num>", "percentage");
+        l.add(null, false, 1, new int[]{2}, "mpls", "specify multiprotocol label switching parameters");
         l.add(null, false, 2, new int[]{3}, "label-range", "specify label range parameters");
         l.add(null, false, 3, new int[]{4}, "<num>", "beginning");
         l.add(null, false, 4, new int[]{-1}, "<num>", "ending");
+        l.add(null, false, 1, new int[]{2}, "client", "specify address of name server");
+        l.add(null, false, 2, new int[]{3}, "cpuhog", "specify cpuhog parameters");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "percentage");
         l.add(null, false, 2, new int[]{3}, "ifacestall", "specify interface stall check");
         l.add(null, false, 3, new int[]{-1}, "<num>", "timeout in ms");
         l.add(null, false, 2, new int[]{3}, "capture-path", "specify default capture location");
@@ -1455,6 +1456,10 @@ public class userConfig {
         }
         if (a.equals("logging")) {
             doCmdLogging();
+            return;
+        }
+        if (a.equals("mpls")) {
+            doCmdMpls();
             return;
         }
         if (a.equals("client")) {
@@ -3077,6 +3082,16 @@ public class userConfig {
         cmd.badCmd();
     }
 
+    private void doCmdMpls() {
+        String a = cmd.word();
+        if (a.equals("label-range")) {
+            cfgAll.labelRangeBeg = bits.str2num(cmd.word());
+            cfgAll.labelRangeEnd = bits.str2num(cmd.word());
+            return;
+        }
+        cmd.badCmd();
+    }
+
     private void doCmdClient() {
         String a = cmd.word();
         if (a.equals("pastebin")) {
@@ -3111,11 +3126,6 @@ public class userConfig {
                 return;
             }
             cfgAll.clientShamer = ntry;
-            return;
-        }
-        if (a.equals("label-range")) {
-            cfgAll.labelRangeBeg = bits.str2num(cmd.word());
-            cfgAll.labelRangeEnd = bits.str2num(cmd.word());
             return;
         }
         if (a.equals("cpuhog")) {

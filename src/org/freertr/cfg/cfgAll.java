@@ -1086,7 +1086,7 @@ public class cfgAll {
     /**
      * label range beginning
      */
-    public static int labelRangeBeg = 0x20;
+    public static int labelRangeBeg = 0x400;
 
     /**
      * label range ending
@@ -1505,7 +1505,7 @@ public class cfgAll {
         // client
         new userFilter("", cmds.negated + cmds.tabulator + "client pastebin", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client capture-path", null),
-        new userFilter("", "client label-range 32 1048560", null),
+        new userFilter("", "mpls label-range 1024 1048560", null),
         new userFilter("", "client cpuhog 0", null),
         new userFilter("", "client ifacestall 60000", null),
         new userFilter("", "client redundancy-keepalive 500", null),
@@ -3872,7 +3872,7 @@ public class cfgAll {
         cmds.cfgLine(l, bannerMov == null, "", "banner movie", bannerMov);
         cmds.cfgLine(l, bannerMus == null, "", "banner music", bannerMus);
         l.add(cmds.comment);
-        l.add("client label-range " + labelRangeBeg + " " + labelRangeEnd);
+        l.add("mpls label-range " + labelRangeBeg + " " + labelRangeEnd);
         for (int i = 0; i < alwaysDebugs.size(); i++) {
             l.add("logging debug " + alwaysDebugs.get(i));
         }
