@@ -118,7 +118,7 @@ public class tabLabel {
         return null;
     }
 
-    private static tabLabelEntry[] allocBlock(tabLabelEntry.owner key, int beg, int num) {
+    private static tabLabelEntry[] allocOneBlock(tabLabelEntry.owner key, int beg, int num) {
         tabLabelEntry[] res = new tabLabelEntry[num];
         for (int i = 0; i < num; i++) {
             tabLabelEntry ntry = new tabLabelEntry(beg + i);
@@ -143,13 +143,13 @@ public class tabLabel {
      * @param num number of labels
      * @return label list, null if nothing
      */
-    public static tabLabelEntry[] allocate(tabLabelEntry.owner key, int num) {
+    public static tabLabelEntry[] allocateBlock(tabLabelEntry.owner key, int num) {
         if (num < 1) {
             return null;
         }
         for (int retry = 0; retry < 32; retry++) {
             int beg = bits.random(cfgAll.labelRangeBeg, cfgAll.labelRangeEnd - num);
-            tabLabelEntry[] res = allocBlock(key, beg, num);
+            tabLabelEntry[] res = allocOneBlock(key, beg, num);
             if (res != null) {
                 return res;
             }
@@ -166,19 +166,19 @@ public class tabLabel {
      * @param num number of labels
      * @return label list, null if nothing
      */
-    public static tabLabelEntry[] allocate(tabLabelEntry.owner key, int beg, int num) {
+    public static tabLabelEntry[] allocateBlock(tabLabelEntry.owner key, int beg, int num) {
         if (num < 1) {
             return null;
         }
         if (beg < 1) {
-            return allocate(key, num);
+            return tabLabel.allocateBlock(key, num);
         }
-        tabLabelEntry[] res = allocBlock(key, beg, num);
+        tabLabelEntry[] res = allocOneBlock(key, beg, num);
         if (res != null) {
             return res;
         }
         logger.warn("failed to allocate specific label block");
-        return allocate(key, num);
+        return tabLabel.allocateBlock(key, num);
     }
 
     /**

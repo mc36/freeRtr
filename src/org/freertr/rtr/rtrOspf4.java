@@ -440,7 +440,7 @@ public class rtrOspf4 extends ipRtr {
                     continue;
                 }
             }
-            segrouLab = tabLabel.allocate(tabLabelEntry.owner.ospf4srgb, segrouBase, segrouMax);
+            segrouLab = tabLabel.allocateBlock(tabLabelEntry.owner.ospf4srgb, segrouBase, segrouMax);
             genLsas(3);
             return false;
         }
@@ -448,7 +448,7 @@ public class rtrOspf4 extends ipRtr {
             tabLabel.release(bierLab, tabLabelEntry.owner.ospf4bier);
             bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
             bierMax = bits.str2num(cmd.word());
-            bierLab = tabLabel.allocate(tabLabelEntry.owner.ospf4bier, (bierMax + bierLen - 1) / bierLen);
+            bierLab = tabLabel.allocateBlock(tabLabelEntry.owner.ospf4bier, (bierMax + bierLen - 1) / bierLen);
             genLsas(3);
             return false;
         }

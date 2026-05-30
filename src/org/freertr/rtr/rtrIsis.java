@@ -1502,7 +1502,7 @@ public class rtrIsis extends ipRtr {
                     continue;
                 }
             }
-            segrouLab = tabLabel.allocate(tabLabelEntry.owner.isisSrgb, segrouBase, segrouMax);
+            segrouLab = tabLabel.allocateBlock(tabLabelEntry.owner.isisSrgb, segrouBase, segrouMax);
             genLsps(3);
             return false;
         }
@@ -1510,7 +1510,7 @@ public class rtrIsis extends ipRtr {
             tabLabel.release(bierLab, tabLabelEntry.owner.isisBier);
             bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
             bierMax = bits.str2num(cmd.word());
-            bierLab = tabLabel.allocate(tabLabelEntry.owner.isisBier, (bierMax + bierLen - 1) / bierLen);
+            bierLab = tabLabel.allocateBlock(tabLabelEntry.owner.isisBier, (bierMax + bierLen - 1) / bierLen);
             genLsps(3);
             return false;
         }

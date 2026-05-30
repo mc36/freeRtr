@@ -2313,7 +2313,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     continue;
                 }
             }
-            segrouLab = tabLabel.allocate(tabLabelEntry.owner.bgpSrgb, segrouBase, segrouMax);
+            segrouLab = tabLabel.allocateBlock(tabLabelEntry.owner.bgpSrgb, segrouBase, segrouMax);
             needFull.add(1);
             compute.wakeup();
             return false;
@@ -2334,7 +2334,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             bierMax = bits.str2num(cmd.word());
             bierIdx = bits.str2num(cmd.word());
             bierSub = bits.str2num(cmd.word());
-            bierLab = tabLabel.allocate(tabLabelEntry.owner.bgpBier, (bierMax + bierLen - 1) / bierLen);
+            bierLab = tabLabel.allocateBlock(tabLabelEntry.owner.bgpBier, (bierMax + bierLen - 1) / bierLen);
             needFull.add(1);
             compute.wakeup();
             return false;

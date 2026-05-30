@@ -887,7 +887,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
                     continue;
                 }
             }
-            segrouLab = tabLabel.allocate(tabLabelEntry.owner.pvrpSrgb, segrouBase, segrouMax);
+            segrouLab = tabLabel.allocateBlock(tabLabelEntry.owner.pvrpSrgb, segrouBase, segrouMax);
             notif.wakeup();
             return false;
         }
@@ -906,7 +906,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
             bierMax = bits.str2num(cmd.word());
             bierIdx = bits.str2num(cmd.word());
             bierSub = bits.str2num(cmd.word());
-            bierLab = tabLabel.allocate(tabLabelEntry.owner.pvrpBier, (bierMax + bierLen - 1) / bierLen);
+            bierLab = tabLabel.allocateBlock(tabLabelEntry.owner.pvrpBier, (bierMax + bierLen - 1) / bierLen);
             notif.wakeup();
             return false;
         }

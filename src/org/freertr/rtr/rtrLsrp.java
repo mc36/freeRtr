@@ -1493,7 +1493,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
                     continue;
                 }
             }
-            segrouLab = tabLabel.allocate(tabLabelEntry.owner.lsrpSrgb, segrouBase, segrouMax);
+            segrouLab = tabLabel.allocateBlock(tabLabelEntry.owner.lsrpSrgb, segrouBase, segrouMax);
             todo.set(0);
             notif.wakeup();
             return false;
@@ -1514,7 +1514,7 @@ public class rtrLsrp extends ipRtr implements Runnable {
             bierMax = bits.str2num(cmd.word());
             bierIdx = bits.str2num(cmd.word());
             bierSub = bits.str2num(cmd.word());
-            bierLab = tabLabel.allocate(tabLabelEntry.owner.lsrpBier, (bierMax + bierLen - 1) / bierLen);
+            bierLab = tabLabel.allocateBlock(tabLabelEntry.owner.lsrpBier, (bierMax + bierLen - 1) / bierLen);
             todo.set(0);
             notif.wakeup();
             return false;

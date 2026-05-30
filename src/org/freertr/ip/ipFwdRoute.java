@@ -96,7 +96,7 @@ public class ipFwdRoute implements Comparable<ipFwdRoute> {
     public tabListing<tabRtrplcN, addrIP> rouplc;
 
     /**
-     * mpls mode: 0=untagged, 1=implicit, 2=explicit
+     * mpls mode: label value, -1 if untagged
      */
     public int mpls;
 
@@ -209,7 +209,7 @@ public class ipFwdRoute implements Comparable<ipFwdRoute> {
         dist = 1;
         met = 0;
         tag = 0;
-        mpls = 0;
+        mpls = -1;
         recur = 0;
         roumap = null;
         rouplc = null;
@@ -286,12 +286,20 @@ public class ipFwdRoute implements Comparable<ipFwdRoute> {
                 recur = 3;
                 continue;
             }
+            if (a.equals("mplsval")) {
+                mpls = bits.str2num(cmd.word());
+                continue;
+            }
             if (a.equals("mplsimp")) {
-                mpls = 1;
+                mpls = ipMpls.labelImp;
                 continue;
             }
             if (a.equals("mplsexp")) {
-                mpls = 2;
+                if (addr.isIPv4()) {
+                    mpls = ipMpls.labelExp4;
+                } else {
+                    mpls = ipMpls.labelExp6;
+                }
                 continue;
             }
             cmd.badCmd();
@@ -327,11 +335,17 @@ public class ipFwdRoute implements Comparable<ipFwdRoute> {
             s += " tracker " + track.name;
         }
         switch (mpls) {
-            case 1:
+            case ipMpls.labelImp:
                 s += " mplsimp";
                 break;
-            case 2:
+            case ipMpls.labelExp4:
+            case ipMpls.labelExp6:
                 s += " mplsexp";
+                break;
+            case -1:
+                break;
+            default:
+                s += " mplsval " + mpls;
                 break;
         }
         switch (recur) {
@@ -369,21 +383,10 @@ public class ipFwdRoute implements Comparable<ipFwdRoute> {
         prf.best.metric = met;
         prf.best.tag = tag;
         prf.best.ident = id;
-        switch (mpls) {
-            case 1:
-                List<Integer> lab = new ArrayList<Integer>();
-                lab.add(ipMpls.labelImp);
-                prf.best.labelRem = lab;
-                break;
-            case 2:
-                lab = new ArrayList<Integer>();
-                if (addr.isIPv4()) {
-                    lab.add(ipMpls.labelExp4);
-                } else {
-                    lab.add(ipMpls.labelExp6);
-                }
-                prf.best.labelRem = lab;
-                break;
+        if (mpls >= 0) {
+            List<Integer> lab = new ArrayList<Integer>();
+            lab.add(mpls);
+            prf.best.labelRem = lab;
         }
         prf.best.rouTyp = tabRouteAttr.routeType.staticRoute;
         tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(rtrBgpUtil.sfiUnicast, 0, prf, roumap, rouplc, null);

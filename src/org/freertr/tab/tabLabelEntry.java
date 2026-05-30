@@ -1,13 +1,16 @@
 package org.freertr.tab;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgIfc;
 import org.freertr.ifc.ifcUp;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
+import org.freertr.util.cmds;
 import org.freertr.util.counter;
 
 /**
@@ -29,6 +32,10 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
          * vrf unicast
          */
         vrfUni,
+        /**
+         * user config
+         */
+        user,
         /**
          * mpls pwe
          */
@@ -223,6 +230,53 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
     }
 
     /**
+     * convert to config
+     *
+     * @return config line
+     */
+    public String getShRun() {
+        return "mpls route " + label + " " + iface + " " + nextHop + " " + remoteLab.get(0);
+    }
+
+    /**
+     * read up from string
+     *
+     * @param cmd commands to read
+     * @return entry, null on error
+     */
+    public static tabLabelEntry fromString(cmds cmd) {
+        tabLabelEntry ntry = new tabLabelEntry(bits.str2num(cmd.word()));
+        cfgIfc ifc = cfgAll.ifcFind(cmd.word(), 0);
+        if (ifc == null) {
+            cmd.error("no such interface");
+            return null;
+        }
+        if (ifc.vrfFor == null) {
+            cmd.error("vrf not enabled");
+            return null;
+        }
+        ntry.nextHop = new addrIP();
+        if (ntry.nextHop.fromString(cmd.word())) {
+            cmd.error("bad address");
+            return null;
+        }
+        ntry.remoteLab = new ArrayList<Integer>();
+        ntry.remoteLab.add(bits.str2num(cmd.word()));
+        if (ntry.nextHop.isIPv4()) {
+            ntry.forwarder = ifc.vrfFor.fwd4;
+            ntry.iface = ifc.fwdIf4;
+        } else {
+            ntry.forwarder = ifc.vrfFor.fwd6;
+            ntry.iface = ifc.fwdIf6;
+        }
+        if (ntry.iface == null) {
+            cmd.error("nexthop not enabled");
+            return null;
+        }
+        return ntry;
+    }
+
+    /**
      * get label hash
      *
      * @return xor value
@@ -382,6 +436,9 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
             case pwe:
                 s = "mpls pwe";
                 break;
+            case user:
+                s = "user config";
+                break;
             case rsvp:
                 s = "rsvp te";
                 break;
@@ -452,7 +509,7 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
                 s = "pvrp bier";
                 break;
             case mcastRx:
-                s="mcast rx";
+                s = "mcast rx";
                 break;
             default:
                 s = "unknown";

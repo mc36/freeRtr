@@ -110,6 +110,7 @@ import org.freertr.serv.servVxlan;
 import org.freertr.serv.servWhois;
 import org.freertr.serv.servXotPad;
 import org.freertr.tab.tabGen;
+import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabNshEntry;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteIface;
@@ -357,6 +358,11 @@ public class cfgAll {
      * list of ipv6 pools
      */
     public final static tabGen<cfgPool<addrIPv6>> ip6pool = new tabGen<cfgPool<addrIPv6>>();
+
+    /**
+     * list of static labels
+     */
+    public final static tabGen<tabLabelEntry> statLabs = new tabGen<tabLabelEntry>();
 
     /**
      * list of xconnections
@@ -1086,7 +1092,7 @@ public class cfgAll {
     /**
      * label range beginning
      */
-    public static int labelRangeBeg = 0x400;
+    public static int labelRangeBeg = 0x20;
 
     /**
      * label range ending
@@ -1505,7 +1511,7 @@ public class cfgAll {
         // client
         new userFilter("", cmds.negated + cmds.tabulator + "client pastebin", null),
         new userFilter("", cmds.negated + cmds.tabulator + "client capture-path", null),
-        new userFilter("", "mpls label-range 1024 1048560", null),
+        new userFilter("", "mpls label-range 32 1048560", null),
         new userFilter("", "client cpuhog 0", null),
         new userFilter("", "client ifacestall 60000", null),
         new userFilter("", "client redundancy-keepalive 500", null),
@@ -4109,6 +4115,9 @@ public class cfgAll {
         servGenList.listGetRun(l, mtrackers, filter);
         for (int i = 0; i < vrfs.size(); i++) {
             l.addAll(vrfs.get(i).getShRun2(filter));
+        }
+        for (int i = 0; i < statLabs.size(); i++) {
+            l.add(statLabs.get(i).getShRun());
         }
         servGenList.listGetRun(l, xconnects, filter);
         servGenList.listGetRun(l, tabNshEntry.services, filter);

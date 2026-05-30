@@ -74,6 +74,8 @@ import org.freertr.serv.servGeneric;
 import org.freertr.serv.servQuote;
 import org.freertr.serv.servSyslog;
 import org.freertr.tab.tabGen;
+import org.freertr.tab.tabLabel;
+import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabNatCfgN;
 import org.freertr.tab.tabNshEntry;
 import org.freertr.tab.tabPbrN;
@@ -463,6 +465,11 @@ public class userConfig {
         l.add(null, false, 5, new int[]{6}, "<num>", "new service path");
         l.add(null, false, 6, new int[]{4, -1}, "<num>", "new service index");
         l.add(null, false, 1, new int[]{2}, "mpls", "specify multiprotocol label switching parameters");
+        l.add(null, false, 2, new int[]{3}, "route", "specify static label switched path");
+        l.add(null, false, 3, new int[]{4}, "<num>", "local label");
+        l.add(null, false, 4, new int[]{5}, "<name:ifc>", "target interface");
+        l.add(null, false, 5, new int[]{6}, "<addr>", "target address");
+        l.add(null, false, 6, new int[]{-1}, "<num>", "remote label");
         l.add(null, false, 2, new int[]{3}, "label-range", "specify label range parameters");
         l.add(null, false, 3, new int[]{4}, "<num>", "beginning");
         l.add(null, false, 4, new int[]{-1}, "<num>", "ending");
@@ -2009,6 +2016,10 @@ public class userConfig {
             }
             return;
         }
+        if (a.equals("mpls")) {
+            doCmdNoMpls();
+            return;
+        }
         if (a.equals("client")) {
             doCmdNoClient();
             return;
@@ -2400,6 +2411,8 @@ public class userConfig {
         l.add(null, false, 7, new int[]{7, -1}, "recurvpn", "use recursive nexthop");
         l.add(null, false, 7, new int[]{7, -1}, "mplsimp", "use mpls implicit null");
         l.add(null, false, 7, new int[]{7, -1}, "mplsexp", "use mpls explicit null");
+        l.add(null, false, 7, new int[]{7, 8}, "mplsval", "use mpls label value");
+        l.add(null, false, 8, new int[]{7, -1}, "<lab>", "label value");
         l.add(null, false, 7, new int[]{8}, "distance", "set distance metric");
         l.add(null, false, 8, new int[]{7, -1}, "<dist>", "distance value");
         l.add(null, false, 7, new int[]{8}, "metric", "set metric value");
@@ -2869,6 +2882,21 @@ public class userConfig {
         cmd.badCmd();
     }
 
+    private void doCmdNoMpls() {
+        String a = cmd.word();
+        if (a.equals("route")) {
+            tabLabelEntry ntry = tabLabelEntry.fromString(cmd);
+            if (ntry == null) {
+                return;
+            }
+            cfgAll.statLabs.del(ntry);
+            tabLabelEntry lab = tabLabel.find(ntry.label);
+            tabLabel.release(lab, tabLabelEntry.owner.user);
+            return;
+        }
+        cmd.badCmd();
+    }
+
     private void doCmdNoClient() {
         String s = cmd.word();
         if (s.equals("pastebin")) {
@@ -3084,6 +3112,21 @@ public class userConfig {
 
     private void doCmdMpls() {
         String a = cmd.word();
+        if (a.equals("route")) {
+            tabLabelEntry ntry = tabLabelEntry.fromString(cmd);
+            if (ntry == null) {
+                return;
+            }
+            cfgAll.statLabs.put(ntry);
+            tabLabelEntry lab = tabLabel.find(ntry.label);
+            tabLabel.release(lab, tabLabelEntry.owner.user);
+            lab = tabLabel.allocateExact(tabLabelEntry.owner.user, ntry.label);
+            if (lab == null) {
+                return;
+            }
+            lab.setFwdMpls(tabLabelEntry.owner.user, ntry.forwarder, ntry.iface, ntry.nextHop, ntry.remoteLab);
+            return;
+        }
         if (a.equals("label-range")) {
             cfgAll.labelRangeBeg = bits.str2num(cmd.word());
             cfgAll.labelRangeEnd = bits.str2num(cmd.word());

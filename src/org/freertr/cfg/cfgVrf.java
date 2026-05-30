@@ -1123,7 +1123,7 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         }
         if (a.equals("label4common")) {
             label4comm = bits.str2num(cmd.word());
-            tabLabelEntry[] ntry = tabLabel.allocate(tabLabelEntry.owner.vrfComm, label4comm, 1);
+            tabLabelEntry[] ntry = tabLabel.allocateBlock(tabLabelEntry.owner.vrfComm, label4comm, 1);
             if (ntry == null) {
                 return;
             }
@@ -1135,7 +1135,7 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         }
         if (a.equals("label6common")) {
             label6comm = bits.str2num(cmd.word());
-            tabLabelEntry[] ntry = tabLabel.allocate(tabLabelEntry.owner.vrfComm, label6comm, 1);
+            tabLabelEntry[] ntry = tabLabel.allocateBlock(tabLabelEntry.owner.vrfComm, label6comm, 1);
             if (ntry == null) {
                 return;
             }

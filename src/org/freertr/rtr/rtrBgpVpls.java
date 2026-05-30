@@ -149,7 +149,7 @@ public class rtrBgpVpls implements Comparable<rtrBgpVpls> {
             ntry.best.extComm.add(tabRouteUtil.agi2comm(id));
         } else {
             if (veLab == null) {
-                veLab = tabLabel.allocate(tabLabelEntry.owner.vplsVe, veMax);
+                veLab = tabLabel.allocateBlock(tabLabelEntry.owner.vplsVe, veMax);
                 if (veLab == null) {
                     return;
                 }
