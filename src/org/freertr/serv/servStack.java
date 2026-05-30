@@ -284,6 +284,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                 cur.reindex();
                 return false;
             }
+            ntry.ifc = rif.ethtyp;
             ntry.metric = bits.str2num(cmd.word());
             ntry.bgpAdr = new addrIP();
             if (ntry.bgpAdr.fromString(cmd.word())) {
@@ -293,6 +294,11 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             ntry.bgpAsn = bits.str2num(cmd.word());
             if (ntry.bgpAsn == 0) {
                 cmd.error("bad asn");
+                return false;
+            }
+            ntry.bgpAdv = new addrIP();
+            if (ntry.bgpAdv.fromString(cmd.word())) {
+                cmd.error("bad address");
                 return false;
             }
             ntry.startWork();
@@ -348,7 +354,8 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         l.add(null, false, 4, new int[]{5}, "<name:ifc>", "name of interface");
         l.add(null, false, 5, new int[]{6}, "<num>", "metric of port");
         l.add(null, false, 6, new int[]{7}, "<addr>", "peer address");
-        l.add(null, false, 7, new int[]{-1}, "<num>", "local as number");
+        l.add(null, false, 7, new int[]{8}, "<num>", "local as number");
+        l.add(null, false, 8, new int[]{-1}, "<addr>", "address to advertise");
     }
 
     public String srvName() {

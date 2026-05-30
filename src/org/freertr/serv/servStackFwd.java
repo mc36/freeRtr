@@ -116,7 +116,11 @@ public class servStackFwd {
         }
         for (int i = 0; i < ifaces.size(); i++) {
             servStackIfc ntry = ifaces.get(i);
-            l.add(beg + mid + "backplane " + ntry.pi.name + " " + ntry.metric);
+            if (ntry.bgpAsn == 0) {
+                l.add(beg + mid + "backplane " + ntry.pi.name + " " + ntry.metric);
+            } else {
+                l.add(beg + mid + "backroute " + ntry.pi.name + " " + ntry.metric + " " + ntry.bgpAdr + " " + ntry.bgpAsn + " " + ntry.bgpAdv);
+            }
         }
         l.add(beg + mid + "remote " + remote);
     }

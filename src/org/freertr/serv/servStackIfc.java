@@ -70,6 +70,11 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
     protected int bgpAsn;
 
     /**
+     * advert ip
+     */
+    protected addrIP bgpAdv;
+
+    /**
      * pipe if any
      */
     protected pipeSide bgpPip;
@@ -300,17 +305,18 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         bgpPip.setTime(nei.holdTimer);
         spk.sendOpen();
         spk.sendKeepAlive();
-        packHolder pck = new packHolder(true, true);
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         ntry.best.nextHop = fwd.addr.copyBytes();
-        packHolder tmp = new packHolder(true, true);
-        lst.clear();
-        pck.clear();
-        addrIP adr = new addrIP();
-        ntry.prefix = new addrPrefix<addrIP>(fwd.addr, addrIP.size * 8);
+        ntry.best.labelRem = new ArrayList<Integer>();
+        ntry.best.labelRem.add(lower.lower.bckplnLab[lower.id].label);
+        ntry.best.pathSeq = new ArrayList<Integer>();
+        ntry.best.pathSeq.add(bgpAsn);
+        ntry.best.metric = metric;
+        ntry.prefix = new addrPrefix<addrIP>(bgpAdv, addrIP.size * 8);
+        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         lst.add(ntry);
-        rtrBgpUtil.createReachable(spk, pck, tmp, idx, false, lst);
+        packHolder pck = new packHolder(true, true);
+        rtrBgpUtil.createReachable(spk, pck, new packHolder(true, true), idx, false, lst);
         spk.packSend(pck, rtrBgpUtil.msgUpdate);
         for (int o = 1000;; o++) {
             if (o > 30) {
