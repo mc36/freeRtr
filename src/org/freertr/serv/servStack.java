@@ -503,19 +503,17 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             addrIP adr = forwarder2addr(-2);
             spf.addIdent(adr, "net");
         }
+        spf.bidir.set(1);
         cur = fwds.get(0);
         cur.spf = spf;
-        spf.bidir.set(1);
         for (int o = 1; o < fwds.size(); o++) {
-            fwds.get(o).spf = spf.copyBytes();
+            cur = fwds.get(o);
+            cur.spf = spf.copyBytes();
         }
         for (int o = 0; o < fwds.size(); o++) {
             cur = fwds.get(o);
             addrIP adr = forwarder2addr(o);
             cur.spf.doWork(adr);
-        }
-        for (int o = 0; o < fwds.size(); o++) {
-            cur = fwds.get(o);
             for (int i = 0; i < cur.ifaces.size(); i++) {
                 servStackIfc ntry = cur.ifaces.get(i);
                 if (!ntry.ready) {
