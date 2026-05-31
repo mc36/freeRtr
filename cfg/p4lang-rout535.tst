@@ -123,11 +123,12 @@ server p4lang b
 server stack s
  dataplanes 4
  label-base 100
+ advert-base 1.1.7.0
  forwarder 1 p4lang a
- forwarder 1 backroute bun1 1 1.1.8.2 1 1.1.8.3
+ forwarder 1 backroute bun1 1 1.1.8.2 1
  forwarder 1 remote 10.11.12.111
  forwarder 2 p4lang b
- forwarder 2 backroute bun2 1 1.1.9.2 2 1.1.9.3
+ forwarder 2 backroute bun2 1 1.1.9.2 2
  forwarder 2 remote 10.12.13.111
  vrf v9
  exit
@@ -199,10 +200,10 @@ int bun2
  ipv6 addr 1234:9::2 ffff:ffff::
  mpls ena
  exit
-mpls bind4 v1 1.1.8.3 255.255.255.255 101
-mpls bind6 v1 1234:8::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 201
-mpls bind4 v1 1.1.9.3 255.255.255.255 102
-mpls bind6 v1 1234:9::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 202
+mpls bind4 v1 1.1.7.1 255.255.255.255 101
+mpls bind6 v1 1234:7::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 201
+mpls bind4 v1 1.1.7.2 255.255.255.255 102
+mpls bind6 v1 1234:7::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 202
 router bgp4 1
  vrf v1
  address lab

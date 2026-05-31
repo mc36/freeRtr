@@ -70,11 +70,6 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
     protected int bgpAsn;
 
     /**
-     * advert ip
-     */
-    protected addrIP bgpAdv;
-
-    /**
      * pipe if any
      */
     protected pipeSide bgpPip;
@@ -321,7 +316,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         rtrBgpNeigh nei = new rtrBgpNeigh(bgp, bgpAdr);
         nei.localAs = bgpAsn;
         int safi;
-        if (bgpAdv.isIPv4()) {
+        if (lower.lower.advertBase.isIPv4()) {
             safi = rtrBgpUtil.safiIp4lab;
         } else {
             safi = rtrBgpUtil.safiIp6lab;
@@ -340,7 +335,10 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         ntry.best.pathSeq = new ArrayList<Integer>();
         ntry.best.pathSeq.add(bgpAsn);
         ntry.best.metric = metric;
-        ntry.prefix = new addrPrefix<addrIP>(bgpAdv, addrIP.size * 8);
+        addrIP adr = new addrIP();
+        bits.msbPutD(adr.getBytes(), addrIP.size - 4, lower.id);
+        adr.setAdd(adr, lower.lower.advertBase);
+        ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         lst.add(ntry);
         packHolder pck = new packHolder(true, true);

@@ -121,6 +121,11 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     protected int labelBase;
 
     /**
+     * advertisement base
+     */
+    protected addrIP advertBase = new addrIP();
+
+    /**
      * backplane
      */
     protected tabLabelEntry[] bckplnLab;
@@ -139,6 +144,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         new userFilter("server stack .*", cmds.tabulator + "buffer 65536", null),
         new userFilter("server stack .*", cmds.tabulator + "dataplanes 0", null),
         new userFilter("server stack .*", cmds.tabulator + "label-base 0", null),
+        new userFilter("server stack .*", cmds.tabulator + "advert-base ::", null),
         new userFilter("server stack .*", cmds.tabulator + "discovery 1000 5000", null)
     };
 
@@ -149,6 +155,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     public void srvShRun(String beg, List<String> lst, int filter) {
         lst.add(beg + "dataplanes " + fwds.size());
         lst.add(beg + "label-base " + labelBase);
+        lst.add(beg + "advert-base " + advertBase);
         lst.add(beg + "discovery " + discoInt + " " + discoTim);
         for (int i = 0; i < fwds.size(); i++) {
             lst.add(beg + cmds.comment);
@@ -171,6 +178,11 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         if (s.equals("discovery")) {
             discoInt = bits.str2num(cmd.word());
             discoTim = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("advert-base")) {
+            advertBase.fromString(cmd.word());
+            restartDiscovery(true);
             return false;
         }
         if (s.equals("label-base")) {
@@ -296,11 +308,6 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                 cmd.error("bad asn");
                 return false;
             }
-            ntry.bgpAdv = new addrIP();
-            if (ntry.bgpAdv.fromString(cmd.word())) {
-                cmd.error("bad address");
-                return false;
-            }
             ntry.startWork();
             cur.ifaces.add(ntry);
             cur.reindex();
@@ -333,7 +340,9 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
         l.add(null, false, 1, new int[]{2}, "label-base", "set label of forwarders");
-        l.add(null, false, 2, new int[]{-1}, "<num>", "limit");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "label");
+        l.add(null, false, 1, new int[]{2}, "advert-base", "set advertisement of forwarders");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "address");
         l.add(null, false, 1, new int[]{2}, "dataplanes", "set number of forwarders");
         l.add(null, false, 2, new int[]{-1}, "<num>", "limit");
         l.add(null, false, 1, new int[]{2}, "discovery", "specify discovery parameters");
@@ -354,8 +363,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         l.add(null, false, 4, new int[]{5}, "<name:ifc>", "name of interface");
         l.add(null, false, 5, new int[]{6}, "<num>", "metric of port");
         l.add(null, false, 6, new int[]{7}, "<addr>", "peer address");
-        l.add(null, false, 7, new int[]{8}, "<num>", "local as number");
-        l.add(null, false, 8, new int[]{-1}, "<addr>", "address to advertise");
+        l.add(null, false, 7, new int[]{-1}, "<num>", "local as number");
     }
 
     public String srvName() {
