@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.5.31-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-05-31 04:39:00, took 00:13:20, with 50 workers, on 893 cases, 0 failed, 0 traces, 0 retries
+-;-;-;2026-05-31 06:41:10, took 00:11:40, with 50 workers, on 895 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -895,3 +895,5 @@ http://sources.freertr.org/cfg/p4lang-rout531.tst;p4lang-rout531.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout532.tst;p4lang-rout532.tst;success;p4lang: pppoe server mpls over pwhe
 http://sources.freertr.org/cfg/p4lang-rout533.tst;p4lang-rout533.tst;success;p4lang: native ouni with bgp
 http://sources.freertr.org/cfg/p4lang-rout534.tst;p4lang-rout534.tst;success;p4lang: native ouni with bgp over vlan
+http://sources.freertr.org/cfg/p4lang-rout535.tst;p4lang-rout535.tst;success;p4lang: routing over ipv4 backplane
+http://sources.freertr.org/cfg/p4lang-rout536.tst;p4lang-rout536.tst;success;p4lang: routing over ipv6 backplane

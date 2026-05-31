@@ -56,7 +56,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     protected final static addrIP forwarder2addr(int i) {
         addrIP adr = new addrIP();
         byte[] buf = adr.getBytes();
-        bits.msbPutD(buf, 0, 0xfe800bac);
+        bits.msbPutD(buf, 0, 0xfe800bad);
         bits.msbPutD(buf, buf.length - 4, i + 1);
         return adr;
     }
@@ -491,7 +491,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                     continue;
                 }
                 sawNet = true;
-                addrIP nei = forwarder2addr(-1);
+                addrIP nei = forwarder2addr(-2);
                 spf.addConn(adr, nei, ntry.metric, true, false, "prt" + ntry.id);
                 spf.addConn(nei, adr, ntry.metric, true, false, "per" + ntry.bgpAdr);
             }
@@ -500,7 +500,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             spf.addIdent(adr, "fwd" + o);
         }
         if (sawNet) {
-            addrIP adr = forwarder2addr(-1);
+            addrIP adr = forwarder2addr(-2);
             spf.addIdent(adr, "net");
         }
         cur = fwds.get(0);
@@ -521,7 +521,12 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                 if (!ntry.ready) {
                     continue;
                 }
-                addrIP nei = forwarder2addr(ntry.lastFwdr.id);
+                addrIP nei;
+                if (ntry.bgpAdr == null) {
+                    nei = forwarder2addr(ntry.lastFwdr.id);
+                } else {
+                    nei = forwarder2addr(-2);
+                }
                 ipFwdIface ifc = new ipFwdIface(ntry.id, null);
                 cur.spf.addNextHop(ntry.metric, nei, nei, ifc, null, null);
             }
@@ -730,10 +735,10 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        userFormat res = new userFormat("|", "port|metric|ready|remote|peering");
+        userFormat res = new userFormat("|", "port|metric|ready|remote|peering|neighbor|trgmac");
         for (int i = 0; i < cur.ifaces.size(); i++) {
             servStackIfc ntry = cur.ifaces.get(i);
-            res.add(ntry.pi + "|" + ntry.metric + "|" + ntry.ready + "|" + ntry.lastFwdr + "|" + ntry.lastPort);
+            res.add(ntry.getShPorts());
         }
         return res;
     }

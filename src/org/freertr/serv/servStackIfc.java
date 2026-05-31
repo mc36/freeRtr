@@ -365,6 +365,11 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         bgpPip.setClose();
     }
 
+    /**
+     * get current status
+     *
+     * @return timeout in future
+     */
     protected long getState() {
         if (bgpAdr == null) {
             if (ifc.getState() != state.states.up) {
@@ -380,6 +385,15 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
             return -1;
         }
         return lastTime + bgpPip.getTime();
+    }
+
+    /**
+     * get show ports
+     *
+     * @return string
+     */
+    protected String getShPorts() {
+        return pi + "|" + metric + "|" + ready + "|" + lastFwdr + "|" + lastPort + "|" + bgpAdr + "|" + lastMac;
     }
 
 }
