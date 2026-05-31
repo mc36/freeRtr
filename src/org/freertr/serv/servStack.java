@@ -10,6 +10,7 @@ import org.freertr.cfg.cfgIfc;
 import org.freertr.ifc.ifcBridgeIfc;
 import org.freertr.ifc.ifcEthTyp;
 import org.freertr.ip.ipFwdIface;
+import org.freertr.ip.ipIfcLoop;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
@@ -29,7 +30,6 @@ import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
-import org.freertr.util.state;
 
 /**
  * stack handler
@@ -525,7 +525,10 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                 } else {
                     nei = forwarder2addr(-2);
                 }
-                ipFwdIface ifc = new ipFwdIface(ntry.id, null);
+                ipIfcLoop ipi = new ipIfcLoop();
+                ipi.myName = "" + ntry;
+                ipFwdIface ifc = new ipFwdIface(ntry.id, ipi);
+                ipi.setUpper(null, ifc);
                 cur.spf.addNextHop(ntry.metric, nei, nei, ifc, null, null);
             }
             cur.routes = cur.spf.getRoutes(null, null, null, null);

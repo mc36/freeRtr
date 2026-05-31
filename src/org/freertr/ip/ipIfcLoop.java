@@ -37,6 +37,11 @@ public class ipIfcLoop implements ipIfc {
      */
     public final static int defaultRetryTime = 3 * 60 * 1000;
 
+    /**
+     * my name
+     */
+    public String myName = "<loop>";
+
     private counter cntr = new counter();
 
     private ipFwd upper;
@@ -150,7 +155,7 @@ public class ipIfcLoop implements ipIfc {
     }
 
     public String toString() {
-        return "<loop>";
+        return myName;
     }
 
     public void updateL2info(int mod, addrType mac, addrIP nexthop) {

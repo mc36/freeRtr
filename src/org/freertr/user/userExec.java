@@ -1946,7 +1946,8 @@ public class userExec {
         hl.add(null, false, 4, new int[]{5}, "spf", "spf");
         hl.add(null, false, 5, new int[]{-1}, "<num>", "forwarder number");
         hl.add(null, false, 4, new int[]{5}, "topology", "topology");
-        hl.add(null, false, 5, new int[]{-1}, "<num>", "forwarder number");
+        hl.add(null, false, 5, new int[]{6, -1}, "<num>", "forwarder number");
+        hl.add(null, false, 6, new int[]{-1}, "[addr]", "node to view");
         hl.add(null, false, 4, new int[]{5}, "tree", "tree");
         hl.add(null, false, 5, new int[]{-1}, "<num>", "forwarder number");
         hl.add(null, false, 4, new int[]{5}, "graph", "graph");
@@ -1954,6 +1955,10 @@ public class userExec {
         spfLayout.format2help(hl, 6);
         hl.add(null, false, 6, new int[]{7}, "pix", "image path");
         hl.add(null, false, 7, new int[]{6, -1}, "<str>", "file name");
+        hl.add(null, false, 6, new int[]{6, -1}, "nets", "connected networks");
+        hl.add(null, false, 6, new int[]{6, -1}, "ints", "connected interfaces");
+        hl.add(null, false, 6, new int[]{6, -1}, "mets", "connected metrics");
+        hl.add(null, false, 6, new int[]{6, -1}, "half", "one way of connections");
         hl.add(null, false, 4, new int[]{5}, "route", "routes");
         hl.add(null, false, 5, new int[]{6, -1}, "<num>", "forwarder number");
         hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
