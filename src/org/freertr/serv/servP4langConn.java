@@ -1099,7 +1099,7 @@ public class servP4langConn implements Runnable {
         }
         old.vrf = vrf;
         old.viaI = ifc;
-        ntry.mac = bck.lastPort.getMac();
+        ntry.mac = bck.lastMac;
         int outIfc = ifc.id;
         String act;
         if (added || (old.mac == null)) {

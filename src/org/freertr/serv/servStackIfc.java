@@ -100,6 +100,11 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
     protected servStackIfc lastPort;
 
     /**
+     * last mac
+     */
+    protected addrMac lastMac = new addrMac();
+
+    /**
      * ready to use
      */
     protected boolean ready;
@@ -220,6 +225,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
             return;
         }
         lastPort = lastFwdr.ifaces.get(i);
+        lastMac.setAddr(lastPort.getMac());
         int lastRand = pck.msbGetD(20);
         if (lastPort.randId != lastRand) {
             logger.info("got invalid random id on " + ifc);
@@ -253,7 +259,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
      * start work
      */
     protected void stopWork() {
-        if (bgpAsn != 0) {
+        if (bgpAdr != null) {
             ifc.delET(-1);
             return;
         }
@@ -278,14 +284,36 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
     }
 
     private void doRound() {
+        lastTime = 0;
         ipFwdIface fwd = pi.getFwdIfc(bgpAdr);
         if (fwd == null) {
+            logger.info("protocol not enabled on " + ifc);
+            return;
+        }
+        if (!fwd.lower.checkConnected(bgpAdr)) {
+            logger.info("peer not connected on " + ifc);
             return;
         }
         prtTcp tcp = pi.vrfFor.getTcp(bgpAdr);
         bgpPip = tcp.streamConnect(new pipeLine(32768, false), fwd, 0, bgpAdr, rtrBgp.port, "stack", -1, null, -1, -1);
+        if (bgpPip == null) {
+            logger.info("unable to connect on " + ifc);
+            return;
+        }
         bgpPip.setTime(120000);
         if (bgpPip.wait4ready(120000)) {
+            bgpPip.setClose();
+            return;
+        }
+        try {
+            addrType adr = fwd.lower.getL2info(bgpAdr);
+            if (adr == null) {
+                logger.info("got no l2 info on " + ifc);
+                bgpPip.setClose();
+                return;
+            }
+            lastMac.setAddr(adr);
+        } catch (Exception e) {
             bgpPip.setClose();
             return;
         }
@@ -293,7 +321,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         rtrBgpNeigh nei = new rtrBgpNeigh(bgp, bgpAdr);
         nei.localAs = bgpAsn;
         int safi;
-        if (bgpAdr.isIPv4()) {
+        if (bgpAdv.isIPv4()) {
             safi = rtrBgpUtil.safiIp4lab;
         } else {
             safi = rtrBgpUtil.safiIp6lab;
@@ -326,6 +354,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
             int i = bgpPip.ready2rx();
             if (i > 0) {
                 bgpPip.moreSkip(i);
+                lastTime = bits.getTime();
             }
             i = bgpPip.ready2tx();
             if (i < 0) {
@@ -333,7 +362,24 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
             }
             bits.sleep(1000);
         }
+        bgpPip.setClose();
+    }
 
+    protected long getState() {
+        if (bgpAdr == null) {
+            if (ifc.getState() != state.states.up) {
+                return -1;
+            }
+            sendHello();
+            return lastTime + lower.lower.discoTim;
+        }
+        if (bgpPip == null) {
+            return -1;
+        }
+        if (bgpPip.isClosed() != 0) {
+            return -1;
+        }
+        return lastTime + bgpPip.getTime();
     }
 
 }

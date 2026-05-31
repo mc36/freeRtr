@@ -789,7 +789,7 @@ class servOpenflowTx implements Runnable {
                     }
                     continue;
                 }
-                addrMac macR = bck.lastPort.getMac();
+                addrMac macR = bck.lastMac;
                 addrMac macL = (addrMac) oif.ifc.ethtyp.getHwAddr();
                 ntry.prio = 100 + rou.prefix.maskLen;
                 pckB.clear();
@@ -1099,7 +1099,7 @@ class servOpenflowTx implements Runnable {
                     addTable(n, tabMpls, ntry);
                     continue;
                 }
-                addrMac macR = bck.lastPort.getMac();
+                addrMac macR = bck.lastMac;
                 addrMac macL = (addrMac) oif.ifc.ethtyp.getHwAddr();
                 ntry.prio = 2;
                 pckB.clear();
@@ -1237,7 +1237,7 @@ class servOpenflowTx implements Runnable {
                 addTable(n, tabMpls, ntry);
                 continue;
             }
-            addrMac macR = bck.lastPort.getMac();
+            addrMac macR = bck.lastMac;
             addrMac macL = (addrMac) oif.ifc.ethtyp.getHwAddr();
             pckB.clear();
             pckO.createMatchEthTyp(pckB, ipMpls.typeU);

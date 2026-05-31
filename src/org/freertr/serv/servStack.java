@@ -56,7 +56,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     protected final static addrIP forwarder2addr(int i) {
         addrIP adr = new addrIP();
         byte[] buf = adr.getBytes();
-        bits.msbPutD(buf, 0, -25162835);
+        bits.msbPutD(buf, 0, 0xfe800bac);
         bits.msbPutD(buf, buf.length - 4, i + 1);
         return adr;
     }
@@ -453,17 +453,13 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * @return true if changed, false if not
      */
     protected boolean doRound() {
-        long tim = bits.getTime() - discoTim;
+        long tim = bits.getTime();
         boolean chg = false;
         for (int o = 0; o < fwds.size(); o++) {
             servStackFwd cur = fwds.get(o);
             for (int i = 0; i < cur.ifaces.size(); i++) {
                 servStackIfc ntry = cur.ifaces.get(i);
-                boolean res = ntry.ifc.getState() == state.states.up;
-                if (res) {
-                    ntry.sendHello();
-                }
-                res &= ntry.lastTime > tim;
+                boolean res = ntry.getState() > tim;
                 if (ntry.ready == res) {
                     continue;
                 }
@@ -480,6 +476,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     protected void doCalc() {
         servStackFwd cur = fwds.get(0);
         spfCalc<addrIP> spf = new spfCalc<addrIP>(cur.spf);
+        boolean sawNet = false;
         for (int o = 0; o < fwds.size(); o++) {
             cur = fwds.get(o);
             addrIP adr = forwarder2addr(o);
@@ -488,12 +485,23 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                 if (!ntry.ready) {
                     continue;
                 }
-                addrIP nei = forwarder2addr(ntry.lastFwdr.id);
+                if (ntry.bgpAdr == null) {
+                    addrIP nei = forwarder2addr(ntry.lastFwdr.id);
+                    spf.addConn(adr, nei, ntry.metric, true, false, "prt" + ntry.id);
+                    continue;
+                }
+                sawNet = true;
+                addrIP nei = forwarder2addr(-1);
                 spf.addConn(adr, nei, ntry.metric, true, false, "prt" + ntry.id);
+                spf.addConn(nei, adr, ntry.metric, true, false, "per" + ntry.bgpAdr);
             }
             tabRouteEntry<addrIP> rou = forwarder2route(o);
             spf.addPref(adr, rou, false);
             spf.addIdent(adr, "fwd" + o);
+        }
+        if (sawNet) {
+            addrIP adr = forwarder2addr(-1);
+            spf.addIdent(adr, "net");
         }
         cur = fwds.get(0);
         cur.spf = spf;
