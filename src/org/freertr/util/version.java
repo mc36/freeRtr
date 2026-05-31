@@ -43,7 +43,7 @@ public class version {
     /**
      * compile day
      */
-    public final static int day = 30;
+    public final static int day = 31;
 
     /**
      * statement of release
