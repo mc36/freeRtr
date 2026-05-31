@@ -501,6 +501,8 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         }
         if (sawNet) {
             addrIP adr = forwarder2addr(-2);
+            tabRouteEntry<addrIP> rou = forwarder2route(-2);
+            spf.addPref(adr, rou, false);
             spf.addIdent(adr, "net");
         }
         spf.bidir.set(1);

@@ -31,6 +31,7 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
+import org.freertr.tab.tabLabel;
 import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteIface;
@@ -1295,9 +1296,17 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
     /**
      * get mpls show
      *
+     * @param lab label to view
      * @return show
      */
-    public userFormat getShowMpls() {
+    public userFormat getShowMpls(int lab) {
+        if (lab != 0) {
+            tabLabelEntry ntry = tabLabel.find(lab);
+            if (ntry == null) {
+                return null;
+            }
+            return ntry.getShow();
+        }
         userFormat res = new userFormat("|", "label|vrf|iface|hop|label|targets|bytes");
         for (int i = 0; i < conn.labels.size(); i++) {
             tabLabelEntry ntry = conn.labels.get(i);

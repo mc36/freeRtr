@@ -1557,7 +1557,8 @@ public class userShow {
                 return null;
             }
             if (a.equals("done-mpls")) {
-                rdr.putStrTab(srv.getShowMpls());
+                int p = bits.str2num(cmd.word());
+                rdr.putStrTab(srv.getShowMpls(p));
                 return null;
             }
             if (a.equals("done-nsh")) {
