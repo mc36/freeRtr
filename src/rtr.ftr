@@ -2690,6 +2690,7 @@ qc pass: p4lang: native ouni with bgp
 qc pass: p4lang: native ouni with bgp over vlan
 qc pass: p4lang: routing over ipv4 backplane
 qc pass: p4lang: routing over ipv6 backplane
+qc pass: p4lang: routing over mixed backplane
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
@@ -4336,6 +4337,7 @@ qc pass: static routing with bfd tracker
 qc pass: static routing with null labels
 qc pass: static routing with custom labels
 qc pass: static switching with custom labels
+qc pass: static routing with same labels
 qc pass: static routing with interface
 qc pass: static routing over point2point ethernet
 qc pass: recursive static routing

@@ -70,9 +70,29 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
     protected int bgpAsn;
 
     /**
-     * pipe if any
+     * bgp pipe
      */
     protected pipeSide bgpPip;
+
+    /**
+     * bgp interface
+     */
+    protected ipFwdIface bgpIfc;
+
+    /**
+     * bgp speaker
+     */
+    protected rtrBgpSpeak bgpSpk;
+
+    /**
+     * bgp address family
+     */
+    protected int bgpAfi;
+
+    /**
+     * bgp afi index
+     */
+    protected int bgpIdx;
 
     /**
      * random id
@@ -278,19 +298,43 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         }
     }
 
+    private void advertRoute(int id, int met, boolean reach) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.best.nextHop = bgpIfc.addr.copyBytes();
+        ntry.best.labelRem = new ArrayList<Integer>();
+        ntry.best.labelRem.add(lower.lower.bckplnLab[id].label);
+        ntry.best.pathSeq = new ArrayList<Integer>();
+        ntry.best.pathSeq.add(bgpAsn);
+        ntry.best.metric = met;
+        addrIP adr = new addrIP();
+        bits.msbPutD(adr.getBytes(), addrIP.size - 4, id);
+        adr.setAdd(adr, lower.lower.advertBase);
+        ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
+        lst.add(ntry);
+        packHolder pck = new packHolder(true, true);
+        packHolder tmp = new packHolder(true, true);
+        if (!reach) {
+            rtrBgpUtil.createWithdraw(bgpSpk, pck, tmp, bgpIdx, false, lst);
+        } else {
+            rtrBgpUtil.createReachable(bgpSpk, pck, tmp, bgpIdx, false, lst);
+        }
+        bgpSpk.packSend(pck, rtrBgpUtil.msgUpdate);
+    }
+
     private void doRound() {
         lastTime = 0;
-        ipFwdIface fwd = pi.getFwdIfc(bgpAdr);
-        if (fwd == null) {
+        bgpIfc = pi.getFwdIfc(bgpAdr);
+        if (bgpIfc == null) {
             logger.info("protocol not enabled on " + ifc);
             return;
         }
-        if (!fwd.lower.checkConnected(bgpAdr)) {
+        if (!bgpIfc.lower.checkConnected(bgpAdr)) {
             logger.info("peer not connected on " + ifc);
             return;
         }
-        prtTcp tcp = pi.vrfFor.getTcp(bgpAdr);
-        bgpPip = tcp.streamConnect(new pipeLine(32768, false), fwd, 0, bgpAdr, rtrBgp.port, "stack", -1, null, -1, -1);
+        prtTcp bgpTcp = pi.vrfFor.getTcp(bgpAdr);
+        bgpPip = bgpTcp.streamConnect(new pipeLine(32768, false), bgpIfc, 0, bgpAdr, rtrBgp.port, "stack", -1, null, -1, -1);
         if (bgpPip == null) {
             logger.info("unable to connect on " + ifc);
             return;
@@ -301,7 +345,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
             return;
         }
         try {
-            addrType adr = fwd.lower.getL2info(bgpAdr);
+            addrType adr = bgpIfc.lower.getL2info(bgpAdr);
             if (adr == null) {
                 logger.info("got no l2 info on " + ifc);
                 bgpPip.setClose();
@@ -312,41 +356,25 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
             bgpPip.setClose();
             return;
         }
-        rtrBgp bgp = new rtrBgp(pi.vrfFor.getFwd(bgpAdr), pi.vrfFor, null, 0);
-        rtrBgpNeigh nei = new rtrBgpNeigh(bgp, bgpAdr);
-        nei.localAs = bgpAsn;
-        int safi;
+        rtrBgp bgpPrc = new rtrBgp(pi.vrfFor.getFwd(bgpAdr), pi.vrfFor, null, 0);
+        rtrBgpNeigh bgpNei = new rtrBgpNeigh(bgpPrc, bgpAdr);
+        bgpNei.localAs = bgpAsn;
         if (lower.lower.advertBase.isIPv4()) {
-            safi = rtrBgpUtil.safiIp4lab;
+            bgpAfi = rtrBgpUtil.safiIp4lab;
         } else {
-            safi = rtrBgpUtil.safiIp6lab;
+            bgpAfi = rtrBgpUtil.safiIp6lab;
         }
-        nei.addrFams = rtrBgpParam.boolsSet(false);
-        int idx = bgp.safi2idx(safi);
-        nei.addrFams[idx] = true;
-        rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, bgpPip, 0);
-        bgpPip.setTime(nei.holdTimer);
-        spk.sendOpen();
-        spk.sendKeepAlive();
-        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.best.nextHop = fwd.addr.copyBytes();
-        ntry.best.labelRem = new ArrayList<Integer>();
-        ntry.best.labelRem.add(lower.lower.bckplnLab[lower.id].label);
-        ntry.best.pathSeq = new ArrayList<Integer>();
-        ntry.best.pathSeq.add(bgpAsn);
-        ntry.best.metric = metric;
-        addrIP adr = new addrIP();
-        bits.msbPutD(adr.getBytes(), addrIP.size - 4, lower.id);
-        adr.setAdd(adr, lower.lower.advertBase);
-        ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
-        lst.add(ntry);
-        packHolder pck = new packHolder(true, true);
-        rtrBgpUtil.createReachable(spk, pck, new packHolder(true, true), idx, false, lst);
-        spk.packSend(pck, rtrBgpUtil.msgUpdate);
+        bgpNei.addrFams = rtrBgpParam.boolsSet(false);
+        bgpIdx = bgpPrc.safi2idx(bgpAfi);
+        bgpNei.addrFams[bgpIdx] = true;
+        bgpSpk = new rtrBgpSpeak(bgpPrc, bgpNei, bgpPip, 0);
+        bgpPip.setTime(bgpNei.holdTimer);
+        bgpSpk.sendOpen();
+        bgpSpk.sendKeepAlive();
+        advertRoute(lower.id, metric, true);
         for (int o = 1000;; o++) {
             if (o > 30) {
-                spk.sendKeepAlive();
+                bgpSpk.sendKeepAlive();
                 o = 0;
             }
             int i = bgpPip.ready2rx();

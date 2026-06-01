@@ -18396,3 +18396,6 @@ qc pass: static switching with custom labels
 ---------------------------------- 2026-05-31 06:11:57 26.5.31
 qc pass: p4lang: routing over ipv4 backplane
 qc pass: p4lang: routing over ipv6 backplane
+---------------------------------- 2026-06-01 08:16:45 26.6.1
+qc pass: p4lang: routing over mixed backplane
+qc pass: static routing with same labels
