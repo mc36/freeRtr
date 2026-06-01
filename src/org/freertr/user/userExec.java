@@ -1962,7 +1962,11 @@ public class userExec {
         hl.add(null, false, 6, new int[]{6, -1}, "ints", "connected interfaces");
         hl.add(null, false, 6, new int[]{6, -1}, "mets", "connected metrics");
         hl.add(null, false, 6, new int[]{6, -1}, "half", "one way of connections");
-        hl.add(null, false, 4, new int[]{5}, "route", "routes");
+        hl.add(null, false, 4, new int[]{5}, "advertised", "advertised routes");
+        hl.add(null, false, 5, new int[]{6}, "<num>", "forwarder number");
+        hl.add(null, false, 6, new int[]{7, -1}, "<num>", "port number");
+        hl.add(null, false, 7, new int[]{-1}, "[addr]", "prefix to view");
+        hl.add(null, false, 4, new int[]{5}, "route", "calculated routes");
         hl.add(null, false, 5, new int[]{6, -1}, "<num>", "forwarder number");
         hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
         hl.add(null, false, 2, new int[]{3}, "ppp", "ppp protocol information");

@@ -1622,6 +1622,11 @@ public class userShow {
                 rdr.putStrTab(srv.getShowPorts(bits.str2num(cmd.word())));
                 return null;
             }
+            if (a.equals("advertised")) {
+                int i = bits.str2num(cmd.word());
+                doShowRoutes(null, srv.getShowAdvert(i, bits.str2num(cmd.word())), 2);
+                return null;
+            }
             if (a.equals("spf")) {
                 rdr.putStrTab(srv.getShowSpf(bits.str2num(cmd.word())));
                 return null;

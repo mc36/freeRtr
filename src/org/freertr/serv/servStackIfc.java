@@ -81,6 +81,11 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
     protected ipFwdIface bgpIfc;
 
     /**
+     * bgp done routes
+     */
+    protected tabRoute<addrIP> bgpDon;
+
+    /**
      * random id
      */
     protected int randId;
@@ -350,7 +355,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         spk.sendOpen();
         spk.sendKeepAlive();
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
-        tabRoute<addrIP> done = new tabRoute< addrIP>("done");
+        bgpDon = new tabRoute< addrIP>("done");
         packHolder pck = new packHolder(true, true);
         packHolder tmp = new packHolder(true, true);
         int bgpVer = -1;
@@ -392,12 +397,12 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
                 ntry = generateRoute(p, metric + ntry.best.metric);
                 need.add(tabRoute.addType.always, ntry, false, false);
             }
-            for (i = done.size() - 1; i >= 0; i--) {
-                ntry = done.get(i);
+            for (i = bgpDon.size() - 1; i >= 0; i--) {
+                ntry = bgpDon.get(i);
                 if (need.find(ntry) != null) {
                     continue;
                 }
-                done.del(ntry);
+                bgpDon.del(ntry);
                 lst.clear();
                 lst.add(ntry);
                 pck.clear();
@@ -406,10 +411,10 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
             }
             for (i = 0; i < need.size(); i++) {
                 ntry = need.get(i);
-                if (ntry.differs(tabRoute.addType.notyet, done.find(ntry)) == 0) {
+                if (ntry.differs(tabRoute.addType.notyet, bgpDon.find(ntry)) == 0) {
                     continue;
                 }
-                done.add(tabRoute.addType.always, ntry, true, true);
+                bgpDon.add(tabRoute.addType.always, ntry, true, true);
                 lst.clear();
                 lst.add(ntry);
                 pck.clear();
@@ -418,6 +423,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
             }
         }
         bgpPip.setClose();
+        bgpDon = null;
     }
 
     /**
@@ -448,7 +454,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
      * @return string
      */
     protected String getShPorts() {
-        return pi + "|" + metric + "|" + ready + "|" + lastFwdr + "|" + lastPort + "|" + bgpAdr + "|" + lastMac;
+        return id + "|" + pi + "|" + metric + "|" + ready + "|" + lastFwdr + "|" + lastPort + "|" + bgpAdr + "|" + lastMac;
     }
 
 }

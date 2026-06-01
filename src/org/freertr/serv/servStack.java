@@ -760,12 +760,34 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        userFormat res = new userFormat("|", "port|metric|ready|remote|peering|neighbor|trgmac");
+        userFormat res = new userFormat("|", "id|port|metric|ready|remote|peering|neighbor|trgmac");
         for (int i = 0; i < cur.ifaces.size(); i++) {
             servStackIfc ntry = cur.ifaces.get(i);
             res.add(ntry.getShPorts());
         }
         return res;
+    }
+
+    /**
+     * get backplane show
+     *
+     * @param fwd forwarder
+     * @param prt port id
+     * @return show
+     */
+    public tabRoute<addrIP> getShowAdvert(int fwd, int prt) {
+        if ((fwd < 0) || (fwd >= fwds.size())) {
+            return new tabRoute<addrIP>("bp");
+        }
+        servStackFwd cur = fwds.get(fwd);
+        servStackIfc ntry = cur.ifaces.get(prt);
+        if (ntry == null) {
+            return new tabRoute<addrIP>("bp");
+        }
+        if (ntry.bgpDon == null) {
+            return new tabRoute<addrIP>("bp");
+        }
+        return ntry.bgpDon;
     }
 
     /**
