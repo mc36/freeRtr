@@ -23,6 +23,7 @@ import org.freertr.rtr.rtrBgpNeigh;
 import org.freertr.rtr.rtrBgpParam;
 import org.freertr.rtr.rtrBgpSpeak;
 import org.freertr.rtr.rtrBgpUtil;
+import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
@@ -78,21 +79,6 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
      * bgp interface
      */
     protected ipFwdIface bgpIfc;
-
-    /**
-     * bgp speaker
-     */
-    protected rtrBgpSpeak bgpSpk;
-
-    /**
-     * bgp address family
-     */
-    protected int bgpAfi;
-
-    /**
-     * bgp afi index
-     */
-    protected int bgpIdx;
 
     /**
      * random id
@@ -313,20 +299,6 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         return ntry;
     }
 
-    private void advertRoute(int id, int met, boolean reach) {
-        tabRouteEntry<addrIP> ntry = generateRoute(id, met);
-        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
-        lst.add(ntry);
-        packHolder pck = new packHolder(true, true);
-        packHolder tmp = new packHolder(true, true);
-        if (!reach) {
-            rtrBgpUtil.createWithdraw(bgpSpk, pck, tmp, bgpIdx, false, lst);
-        } else {
-            rtrBgpUtil.createReachable(bgpSpk, pck, tmp, bgpIdx, false, lst);
-        }
-        bgpSpk.packSend(pck, rtrBgpUtil.msgUpdate);
-    }
-
     private void doRound() {
         lastTime = 0;
         bgpIfc = pi.getFwdIfc(bgpAdr);
@@ -361,25 +333,31 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
             bgpPip.setClose();
             return;
         }
-        rtrBgp bgpPrc = new rtrBgp(pi.vrfFor.getFwd(bgpAdr), pi.vrfFor, null, 0);
-        rtrBgpNeigh bgpNei = new rtrBgpNeigh(bgpPrc, bgpAdr);
-        bgpNei.localAs = bgpAsn;
+        rtrBgp bgp = new rtrBgp(pi.vrfFor.getFwd(bgpAdr), pi.vrfFor, null, 0);
+        rtrBgpNeigh nei = new rtrBgpNeigh(bgp, bgpAdr);
+        nei.localAs = bgpAsn;
+        int safi;
         if (lower.lower.advertBase.isIPv4()) {
-            bgpAfi = rtrBgpUtil.safiIp4lab;
+            safi = rtrBgpUtil.safiIp4lab;
         } else {
-            bgpAfi = rtrBgpUtil.safiIp6lab;
+            safi = rtrBgpUtil.safiIp6lab;
         }
-        bgpNei.addrFams = rtrBgpParam.boolsSet(false);
-        bgpIdx = bgpPrc.safi2idx(bgpAfi);
-        bgpNei.addrFams[bgpIdx] = true;
-        bgpSpk = new rtrBgpSpeak(bgpPrc, bgpNei, bgpPip, 0);
-        bgpPip.setTime(bgpNei.holdTimer);
-        bgpSpk.sendOpen();
-        bgpSpk.sendKeepAlive();
-        advertRoute(lower.id, metric, true);
+        nei.addrFams = rtrBgpParam.boolsSet(false);
+        int idx = bgp.safi2idx(safi);
+        nei.addrFams[idx] = true;
+        rtrBgpSpeak spk = new rtrBgpSpeak(bgp, nei, bgpPip, 0);
+        bgpPip.setTime(nei.holdTimer);
+        spk.sendOpen();
+        spk.sendKeepAlive();
+        List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
+        tabRoute<addrIP> done = new tabRoute< addrIP>("done");
+        packHolder pck = new packHolder(true, true);
+        packHolder tmp = new packHolder(true, true);
+        int bgpVer = -1;
         for (int o = 1000;; o++) {
+            bits.sleep(1000);
             if (o > 30) {
-                bgpSpk.sendKeepAlive();
+                spk.sendKeepAlive();
                 o = 0;
             }
             int i = bgpPip.ready2rx();
@@ -391,7 +369,50 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
             if (i < 0) {
                 break;
             }
-            bits.sleep(1000);
+            if (bgpVer == lower.lower.vers) {
+                continue;
+            }
+            bgpVer = lower.lower.vers;
+            tabRoute<addrIP> need = new tabRoute< addrIP>("need");
+            tabRouteEntry<addrIP> ntry = generateRoute(lower.id, metric);
+            need.add(tabRoute.addType.always, ntry, false, false);
+            for (i = 0; i < lower.routes.size(); i++) {
+                ntry = lower.routes.get(i);
+                int p = servStack.addr2forwarder(ntry.best.nextHop);
+                if (p < 0) {
+                    continue;
+                }
+                p = servStack.addr2forwarder(ntry.prefix.network);
+                if (p < 0) {
+                    continue;
+                }
+                ntry = generateRoute(p, metric + ntry.best.metric);
+                need.add(tabRoute.addType.always, ntry, false, false);
+            }
+            for (i = done.size() - 1; i >= 0; i--) {
+                ntry = done.get(i);
+                if (need.find(ntry) != null) {
+                    continue;
+                }
+                done.del(ntry);
+                lst.clear();
+                lst.add(ntry);
+                pck.clear();
+                rtrBgpUtil.createWithdraw(spk, pck, tmp, idx, false, lst);
+                spk.packSend(pck, rtrBgpUtil.msgUpdate);
+            }
+            for (i = 0; i < need.size(); i++) {
+                ntry = need.get(i);
+                if (ntry.differs(tabRoute.addType.notyet, done.find(ntry)) == 0) {
+                    continue;
+                }
+                done.add(tabRoute.addType.always, ntry, true, true);
+                lst.clear();
+                lst.add(ntry);
+                pck.clear();
+                rtrBgpUtil.createReachable(spk, pck, tmp, idx, false, lst);
+                spk.packSend(pck, rtrBgpUtil.msgUpdate);
+            }
         }
         bgpPip.setClose();
     }

@@ -5,6 +5,8 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 int eth2 eth 0000.0000.1111 $2b$ $2a$
 int eth3 eth 0000.0000.1111 $7a$ $7b$
 int eth4 eth 0000.0000.1111 $8b$ $8a$
+int eth5 eth 0000.0000.1111 $13a$ $13b$
+int eth6 eth 0000.0000.1111 $14b$ $14a$
 !
 vrf def v1
  rd 1:1
@@ -48,51 +50,102 @@ server dhcp4 eth3
  interface eth3
  vrf v9
  exit
+int eth5
+ vrf for v9
+ ipv4 addr 10.13.14.254 255.255.255.0
+ exit
+int eth6
+ exit
+server dhcp4 eth5
+ pool 10.13.14.1 10.13.14.99
+ gateway 10.13.14.254
+ netmask 255.255.255.0
+ dns-server 10.10.10.227
+ domain-name p4l
+ static 0000.0000.4444 10.13.14.111
+ interface eth5
+ vrf v9
+ exit
 int lo0
  vrf for v1
  ipv4 addr 2.2.2.101 255.255.255.255
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- ipv6 ena
+ exit
+bundle 1
+ exit
+bundle 2
+ exit
+bundle 3
+ exit
+bundle 4
  exit
 int sdn11
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234:1::1 ffff:ffff::
+ ipv6 ena
  exit
 int sdn12
  vrf for v1
  ipv4 addr 1.1.2.1 255.255.255.0
  ipv6 addr 1234:2::1 ffff:ffff::
+ ipv6 ena
+ exit
+int bun1
+ vrf for v1
+ mpls ena
  exit
 int sdn13
- vrf for v1
- ipv4 addr 1.1.8.1 255.255.255.0
- ipv6 addr 1234:8::1 ffff:ffff::
- mpls ena
+ bundle-gr 1
  exit
 int sdn14
- vrf for v1
- mpls ena
+ bundle-gr 1
  exit
 int sdn21
  vrf for v1
  ipv4 addr 1.1.3.1 255.255.255.0
  ipv6 addr 1234:3::1 ffff:ffff::
+ ipv6 ena
  exit
 int sdn22
  vrf for v1
  ipv4 addr 1.1.4.1 255.255.255.0
  ipv6 addr 1234:4::1 ffff:ffff::
+ ipv6 ena
+ exit
+int bun2
+ vrf for v1
+ ipv4 addr 1.1.8.1 255.255.255.0
+ ipv6 addr 1234:8::1 ffff:ffff::
+ mpls ena
  exit
 int sdn23
+ bundle-gr 2
+ exit
+int sdn24
+ bundle-gr 2
+ exit
+int bun3
+ vrf for v1
+ mpls ena
+ exit
+int sdn31
+ bundle-gr 3
+ exit
+int sdn32
+ bundle-gr 3
+ exit
+int bun4
  vrf for v1
  ipv4 addr 1.1.9.1 255.255.255.0
  ipv6 addr 1234:9::1 ffff:ffff::
  mpls ena
  exit
-int sdn24
- vrf for v1
- mpls ena
+int sdn33
+ bundle-gr 4
+ exit
+int sdn34
+ bundle-gr 4
  exit
 server p4lang a
  interconnect eth2
@@ -101,6 +154,7 @@ server p4lang a
  export-port sdn12 2 10
  export-port sdn13 3 10
  export-port sdn14 4 10
+ export-port bun1 dynamic
  exit
 server p4lang b
  interconnect eth4
@@ -109,19 +163,32 @@ server p4lang b
  export-port sdn22 2 10
  export-port sdn23 3 10
  export-port sdn24 4 10
+ export-port bun2 dynamic
+ exit
+server p4lang c
+ interconnect eth6
+ export-vrf v1
+ export-port sdn31 1 10
+ export-port sdn32 2 10
+ export-port sdn33 3 10
+ export-port sdn34 4 10
+ export-port bun3 dynamic
+ export-port bun4 dynamic
  exit
 server stack s
  dataplanes 4
  label-base 100
  advert-base 1.1.7.0
  forwarder 1 p4lang a
- forwarder 1 backroute sdn13 10 1.1.8.2 1
- forwarder 1 backplane sdn14 10
+ forwarder 1 backplane bun1 1
  forwarder 1 remote 10.11.12.111
  forwarder 2 p4lang b
- forwarder 2 backroute sdn23 10 1.1.9.2 2
- forwarder 2 backplane sdn24 10
+ forwarder 2 backroute bun2 1 1.1.8.2 1
  forwarder 2 remote 10.12.13.111
+ forwarder 3 p4lang c
+ forwarder 3 backplane bun3 1
+ forwarder 3 backroute bun4 1 1.1.9.2 2
+ forwarder 3 remote 10.13.14.111
  vrf v9
  exit
 ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.2
@@ -134,7 +201,7 @@ ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2
 ipv6 route v1 4321::106 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::2
 !
 
-addother r2 controller r1 v9 9080 10.11.12.111 feature mpls route
+addother r2 controller r1 v9 9080 10.11.12.111 feature bundle mpls route
 int eth1 eth 0000.0000.2222 $1b$ $1a$
 int eth2 eth 0000.0000.2222 $2a$ $2b$
 int eth3 eth 0000.0000.2222 $3a$ $3b$
@@ -144,56 +211,24 @@ int eth6 eth 0000.0000.2222 $6a$ $6b$
 !
 !
 
-addother r3 controller r1 v9 9080 10.12.13.111 feature mpls route
+addother r3 controller r1 v9 9080 10.12.13.111 feature bundle mpls route
 int eth1 eth 0000.0000.3333 $7b$ $7a$
 int eth2 eth 0000.0000.3333 $8a$ $8b$
 int eth3 eth 0000.0000.3333 $9a$ $9b$
 int eth4 eth 0000.0000.3333 $10a$ $10b$
 int eth5 eth 0000.0000.3333 $11a$ $11b$
-int eth6 eth 0000.0000.3333 $6b$ $6a$
+int eth6 eth 0000.0000.3333 $12a$ $12b$
 !
 !
 
-addrouter r4
-int eth1 eth 0000.0000.4444 $5b$ $5a$
-int eth2 eth 0000.0000.4444 $11b$ $11a$
+addother r4 controller r1 v9 9080 10.13.14.111 feature bundle mpls route
+int eth1 eth 0000.0000.4444 $13b$ $13a$
+int eth2 eth 0000.0000.4444 $14a$ $14b$
+int eth3 eth 0000.0000.4444 $5b$ $5a$
+int eth4 eth 0000.0000.4444 $6b$ $6a$
+int eth5 eth 0000.0000.3333 $15a$ $15b$
+int eth6 eth 0000.0000.3333 $16a$ $16b$
 !
-vrf def v1
- label-same
- label-mode per-prefix
- rd 1:1
- exit
-int eth1
- vrf for v1
- ipv4 addr 1.1.8.2 255.255.255.0
- ipv6 addr 1234:8::2 ffff:ffff::
- mpls ena
- exit
-int eth2
- vrf for v1
- ipv4 addr 1.1.9.2 255.255.255.0
- ipv6 addr 1234:9::2 ffff:ffff::
- mpls ena
- exit
-router bgp4 1
- vrf v1
- address lab
- no safe-ebgp
- local-as 4
- router-id 4.4.4.1
- neigh 1.1.8.1 remote-as 1
- neigh 1.1.9.1 remote-as 2
- exit
-router bgp6 1
- vrf v1
- local-as 4
- no safe-ebgp
- address lab
- router-id 6.6.6.1
- neigh 1234:8::1 remote-as 1
- neigh 1234:9::1 remote-as 2
- red conn
- exit
 !
 
 addrouter r5
@@ -329,6 +364,66 @@ ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
 ipv6 route v1 4321::105 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:4::1
+!
+
+addrouter r9
+int eth1 eth 0000.0000.9999 $11b$ $11a$
+int eth2 eth 0000.0000.9999 $12b$ $12a$
+int eth3 eth 0000.0000.9999 $15b$ $15a$
+int eth4 eth 0000.0000.9999 $16b$ $16a$
+!
+vrf def v1
+ label-same
+ label-mode per-prefix
+ rd 1:1
+ exit
+bundle 1
+ exit
+bundle 2
+ exit
+int eth1
+ bundle-gr 1
+ exit
+int eth2
+ bundle-gr 1
+ exit
+int eth3
+ bundle-gr 2
+ exit
+int eth4
+ bundle-gr 2
+ exit
+int bun1
+ vrf for v1
+ ipv4 addr 1.1.8.2 255.255.255.0
+ ipv6 addr 1234:8::2 ffff:ffff::
+ mpls ena
+ exit
+int bun2
+ vrf for v1
+ ipv4 addr 1.1.9.2 255.255.255.0
+ ipv6 addr 1234:9::2 ffff:ffff::
+ mpls ena
+ exit
+router bgp4 1
+ vrf v1
+ address lab
+ no safe-ebgp
+ local-as 4
+ router-id 4.4.4.1
+ neigh 1.1.8.1 remote-as 1
+ neigh 1.1.9.1 remote-as 2
+ exit
+router bgp6 1
+ vrf v1
+ local-as 4
+ no safe-ebgp
+ address lab
+ router-id 6.6.6.1
+ neigh 1234:8::1 remote-as 1
+ neigh 1234:9::1 remote-as 2
+ red conn
+ exit
 !
 
 

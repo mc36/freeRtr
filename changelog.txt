@@ -18399,3 +18399,6 @@ qc pass: p4lang: routing over ipv6 backplane
 ---------------------------------- 2026-06-01 08:16:45 26.6.1
 qc pass: p4lang: routing over mixed backplane
 qc pass: static routing with same labels
+---------------------------------- 2026-06-01 11:16:30 26.6.1
+no qc pass: ingress label filtering with pvrp
+failed: ingress label filtering with pvrp

@@ -116,6 +116,11 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     protected final List<servStackFwd> fwds;
 
     /**
+     * topology version
+     */
+    protected int vers;
+
+    /**
      * label base
      */
     protected int labelBase;
@@ -482,6 +487,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * calculate spf
      */
     protected void doCalc() {
+        vers++;
         servStackFwd cur = fwds.get(0);
         spfCalc<addrIP> spf = new spfCalc<addrIP>(cur.spf);
         boolean sawNet = false;
