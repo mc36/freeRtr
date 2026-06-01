@@ -1,4 +1,4 @@
-description loose verify source with static routing
+description verify source with static routing
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -16,15 +16,15 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::3 ffff:ffff:ffff:ffff::
- ipv4 verify any
- ipv6 verify any
+ ipv4 verify rx
+ ipv6 verify rx
  exit
 int eth2
  vrf for v1
  ipv4 addr 1.1.1.9 255.255.255.252
  ipv6 addr 1234:3::1 ffff:ffff:ffff:ffff::
- ipv4 verify any
- ipv6 verify any
+ ipv4 verify rx
+ ipv6 verify rx
  exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.2
 ipv6 route v1 :: :: 1234:1::2
@@ -43,15 +43,15 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.252
  ipv6 addr 1234:1::2 ffff:ffff:ffff:ffff::
- ipv4 verify any
- ipv6 verify any
+ ipv4 verify rx
+ ipv6 verify rx
  exit
 int eth2
  vrf for v1
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff:ffff:ffff::
- ipv4 verify any
- ipv6 verify any
+ ipv4 verify rx
+ ipv6 verify rx
  exit
 ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.1
 ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::3
@@ -80,15 +80,15 @@ int eth1
  vrf for v1
  ipv4 addr 1.1.1.5 255.255.255.252
  ipv6 addr 1234:2::3 ffff:ffff:ffff:ffff::
- ipv4 verify any
- ipv6 verify any
+ ipv4 verify rx
+ ipv6 verify rx
  exit
 int eth2
  vrf for v1
  ipv4 addr 1.1.1.10 255.255.255.252
  ipv6 addr 1234:3::3 ffff:ffff:ffff:ffff::
- ipv4 verify any
- ipv6 verify any
+ ipv4 verify rx
+ ipv6 verify rx
  exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.6
 ipv6 route v1 :: :: 1234:2::2

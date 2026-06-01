@@ -1283,6 +1283,9 @@ public class ipFwdTab {
             if (sta != null) {
                 lab = tabLabel.allocateExact(tabLabelEntry.owner.vrfUni, sta.mpls);
             }
+            if (lower.sameLabel && (lab == null) && (ntry.best.labelRem != null)) {
+                lab = tabLabel.allocateExact(tabLabelEntry.owner.vrfUni, ntry.best.labelRem.get(0));
+            }
             if (lab == null) {
                 lab = tabLabel.allocate(tabLabelEntry.owner.vrfUni);
             }

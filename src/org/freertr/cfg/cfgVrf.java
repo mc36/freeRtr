@@ -197,6 +197,8 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         new userFilter("vrf definition .*", cmds.tabulator + "propagate6ttl", null),
         new userFilter("vrf definition .*", cmds.tabulator + "report4labels", null),
         new userFilter("vrf definition .*", cmds.tabulator + "report6labels", null),
+        new userFilter("vrf definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "label4same", null),
+        new userFilter("vrf definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "label6same", null),
         new userFilter("vrf definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "unreach4rate", null),
         new userFilter("vrf definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "unreach6rate", null),
         new userFilter("vrf definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "label4filter", null),
@@ -621,6 +623,8 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(cmds.tabulator + "label6common " + label6comm);
         l.add(cmds.tabulator + "route4limit " + fwd4.routeLimitU + " " + fwd4.routeLimitL + " " + fwd4.routeLimitM + " " + fwd4.routeLimitF);
         l.add(cmds.tabulator + "route6limit " + fwd6.routeLimitU + " " + fwd6.routeLimitL + " " + fwd6.routeLimitM + " " + fwd6.routeLimitF);
+        cmds.cfgLine(l, !fwd4.sameLabel, cmds.tabulator, "label4same", "");
+        cmds.cfgLine(l, !fwd6.sameLabel, cmds.tabulator, "label6same", "");
         cmds.cfgLine(l, !fwd4.mplsPropTtl, cmds.tabulator, "propagate4ttl", "");
         cmds.cfgLine(l, !fwd6.mplsPropTtl, cmds.tabulator, "propagate6ttl", "");
         cmds.cfgLine(l, !fwd4.mplsExtRep, cmds.tabulator, "report4labels", "");
@@ -849,6 +853,9 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(null, false, 2, new int[]{3}, "mvpn", "use mvpn");
         cfgRtr.getRouterList(l, 1, " to use");
         l.add(null, false, 4, new int[]{-1}, "<num:rtr>", "process id");
+        l.add(null, false, 1, new int[]{-1}, "label-same", "specify local label to use remote label");
+        l.add(null, false, 1, new int[]{-1}, "label4same", "specify local label to use remote label");
+        l.add(null, false, 1, new int[]{-1}, "label6same", "specify local label to use remote label");
         l.add(null, false, 1, new int[]{2}, "label-mode", "specify label allocation mode");
         l.add(null, false, 1, new int[]{2}, "label4mode", "specify label allocation mode");
         l.add(null, false, 1, new int[]{2}, "label6mode", "specify label allocation mode");
@@ -1099,6 +1106,19 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
             fwd6.mdtTyp = cfgRtr.name2num(cmd.word());
             fwd6.mdtNum = bits.str2num(cmd.word());
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("label-same")) {
+            fwd4.sameLabel = true;
+            fwd6.sameLabel = true;
+            return;
+        }
+        if (a.equals("label4same")) {
+            fwd4.sameLabel = true;
+            return;
+        }
+        if (a.equals("label6same")) {
+            fwd6.sameLabel = true;
             return;
         }
         if (a.equals("label-mode")) {
@@ -1675,6 +1695,19 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
             fwd6.mdtTyp = null;
             fwd6.mdtNum = 0;
             fwd6.routerStaticChg();
+            return;
+        }
+        if (a.equals("label-same")) {
+            fwd4.sameLabel = false;
+            fwd6.sameLabel = false;
+            return;
+        }
+        if (a.equals("label4same")) {
+            fwd4.sameLabel = false;
+            return;
+        }
+        if (a.equals("label6same")) {
+            fwd6.sameLabel = false;
             return;
         }
         if (a.equals("label-mode")) {

@@ -1,4 +1,4 @@
-description static routing with prefix tracker
+description static routing with interface tracker
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -24,9 +24,8 @@ int eth2
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
 tracker t1
- vrf v1
- targ 1.1.2.0/30
- mod pref
+ targ eth2
+ mod inter
  inter 1000
  time 500
  start
@@ -60,9 +59,8 @@ int eth2
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
 tracker t1
- vrf v1
- targ 1.1.2.0/30
- mod pref
+ targ eth2
+ mod inter
  inter 1000
  time 500
  start

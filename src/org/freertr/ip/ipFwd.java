@@ -387,6 +387,11 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     public labelMode prefixMode = labelMode.common;
 
     /**
+     * same label as remote
+     */
+    public boolean sameLabel;
+
+    /**
      * multicast distribution tree
      */
     public mdtMode mdtMod = mdtMode.none;
