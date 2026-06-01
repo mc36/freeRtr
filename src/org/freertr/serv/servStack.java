@@ -281,12 +281,12 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             ntry.ifc.updateET(-1, ntry);
             ntry.parent.setFilter(true);
             ntry.metric = bits.str2num(cmd.word());
-            ntry = cur.ifaces.put(ntry);
+            servStackIfc old = cur.ifaces.put(ntry);
             cur.reindex();
-            if (ntry == null) {
+            if (old == null) {
                 return false;
             }
-            ntry.stopWork();
+            old.stopWork();
             return false;
         }
         if (s.equals("backroute")) {
@@ -298,7 +298,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             if (neg) {
                 ntry = cur.ifaces.del(ntry);
                 if (ntry == null) {
-                    cmd.error("no such backplane");
+                    cmd.error("no such backroute");
                     return false;
                 }
                 ntry.stopWork();
@@ -318,12 +318,12 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
                 return false;
             }
             ntry.startWork();
-            ntry = cur.ifaces.put(ntry);
+            servStackIfc old = cur.ifaces.put(ntry);
             cur.reindex();
-            if (ntry == null) {
+            if (old == null) {
                 return false;
             }
-            ntry.stopWork();
+            old.stopWork();
             return false;
         }
         return true;

@@ -260,7 +260,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
      * start work
      */
     protected void stopWork() {
-        if (bgpAdr != null) {
+        if (bgpAdr == null) {
             ifc.delET(-1);
             return;
         }
@@ -356,6 +356,9 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         int bgpVer = -1;
         for (int o = 1000;; o++) {
             bits.sleep(1000);
+            if (bgpAsn == 0) {
+                break;
+            }
             if (o > 30) {
                 spk.sendKeepAlive();
                 o = 0;
