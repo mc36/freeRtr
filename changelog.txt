@@ -18402,3 +18402,6 @@ qc pass: static routing with same labels
 ---------------------------------- 2026-06-01 11:16:30 26.6.1
 no qc pass: ingress label filtering with pvrp
 failed: ingress label filtering with pvrp
+---------------------------------- 2026-06-01 12:06:04 26.6.1
+no failed: ingress label filtering with pvrp
+qc pass: ingress label filtering with pvrp
