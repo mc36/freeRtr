@@ -18405,3 +18405,6 @@ failed: ingress label filtering with pvrp
 ---------------------------------- 2026-06-01 12:06:04 26.6.1
 no failed: ingress label filtering with pvrp
 qc pass: ingress label filtering with pvrp
+---------------------------------- 2026-06-01 20:46:15 26.6.1
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
