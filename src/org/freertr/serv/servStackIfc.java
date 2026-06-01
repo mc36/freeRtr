@@ -298,7 +298,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         }
     }
 
-    private void advertRoute(int id, int met, boolean reach) {
+    private tabRouteEntry<addrIP> generateRoute(int id, int met) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.best.nextHop = bgpIfc.addr.copyBytes();
         ntry.best.labelRem = new ArrayList<Integer>();
@@ -310,6 +310,11 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         bits.msbPutD(adr.getBytes(), addrIP.size - 4, id);
         adr.setAdd(adr, lower.lower.advertBase);
         ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+        return ntry;
+    }
+
+    private void advertRoute(int id, int met, boolean reach) {
+        tabRouteEntry<addrIP> ntry = generateRoute(id, met);
         List<tabRouteEntry<addrIP>> lst = new ArrayList<tabRouteEntry<addrIP>>();
         lst.add(ntry);
         packHolder pck = new packHolder(true, true);
