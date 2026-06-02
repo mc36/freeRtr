@@ -1455,7 +1455,9 @@ public class userShow {
                 cmd.error("not enabled");
                 return null;
             }
-            rdr.putStrTab(ntry.ppp.getShow());
+            userFormat res = new userFormat("|", "ncp|state|cntr");
+            res.add(ntry.ppp.getShow());
+            rdr.putStrTab(res);
             return null;
         }
         if (a.equals("vpdn")) {

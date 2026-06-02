@@ -1,5 +1,6 @@
 package org.freertr.tab;
 
+import java.util.List;
 import org.freertr.util.bits;
 
 /**
@@ -19,6 +20,7 @@ public class tabDeviation {
         cnt = 0;
         ak = 0;
         qk = 0;
+        qr = 0;
     }
 
     private long min;
@@ -32,6 +34,8 @@ public class tabDeviation {
     private float ak;
 
     private float qk;
+
+    private float qr;
 
     /**
      * got value
@@ -52,6 +56,7 @@ public class tabDeviation {
         float qk1 = qk;
         ak = ak1 + ((x - ak1) / cnt);
         qk = qk1 + ((x - ak1) * (x - ak));
+        qr = qk / cnt;
     }
 
     /**
@@ -63,7 +68,7 @@ public class tabDeviation {
         if (cnt < 1) {
             return "n/a";
         }
-        return min + "/" + bits.toPrecise(ak) + "/" + max + "/" + bits.toPrecise(qk / (float) cnt);
+        return min + "/" + bits.toPrecise(ak) + "/" + max + "/" + bits.toPrecise(qr);
     }
 
     /**
@@ -117,10 +122,21 @@ public class tabDeviation {
      * @return value
      */
     public float getDev() {
-        if (cnt < 1) {
-            return 0;
-        }
-        return qk / (float) cnt;
+        return qr;
+    }
+
+    /**
+     * get full info
+     *
+     * @param l list to append
+     */
+    public void getFull(List<String> l) {
+        l.add("last|" + lst);
+        l.add("count|" + cnt);
+        l.add("minimum|" + min);
+        l.add("average|" + bits.toPrecise(ak));
+        l.add("maximum|" + max);
+        l.add("deviate|" + bits.toPrecise(qr));
     }
 
 }

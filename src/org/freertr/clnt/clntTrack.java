@@ -622,18 +622,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
      * @return string
      */
     public String getShSum() {
-        return name + "|" + force2string(force) + "|" + mode2string(mode) + "|" + target + "|" + cmds.upDown(getStatus()) + "|" + totalChng + "|" + getRtt() + "|" + bits.timePast(finalTime);
-    }
-
-    private long getRtt() {
-        long i = (stopTime - startTime);
-        if (i < 0) {
-            i = 0;
-        }
-        if (i >= timeout) {
-            i = 0;
-        }
-        return i;
+        return name + "|" + force2string(force) + "|" + mode2string(mode) + "|" + target + "|" + cmds.upDown(getStatus()) + "|" + totalChng + "|" + times.getLst() + "|" + bits.timePast(finalTime);
     }
 
     /**
@@ -651,8 +640,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         l.add("for|" + bits.timePast(finalTime));
         l.add("changes|" + totalChng);
         l.add("measures|" + (totalUp + totalDn));
-        l.add("took|" + getRtt());
-        l.add("stats|" + times);
+        times.getFull(l);
         l.add("last|" + bits.time2str(cfgAll.timeZoneName, stopTime + cfgAll.timeServerOffset, 3));
         l.add("ago|" + bits.timePast(stopTime));
         l.add("ups|" + totalUp);

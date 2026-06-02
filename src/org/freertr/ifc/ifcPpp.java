@@ -1,5 +1,6 @@
 package org.freertr.ifc;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrEui;
@@ -24,7 +25,6 @@ import org.freertr.ip.ipMpls;
 import org.freertr.ip.ipxIface;
 import org.freertr.pack.packHolder;
 import org.freertr.rtr.rtrIsis;
-import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -1682,7 +1682,7 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         }
     }
 
-    private void getShow(userFormat res, ifcPppNcp nc) {
+    private void getShow(List<String> res, ifcPppNcp nc) {
         res.add(nc.getPPPname() + "|" + bits.toHexW(nc.sawBit) + "|" + nc.cntr.getShStat());
     }
 
@@ -1691,12 +1691,12 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      *
      * @return show
      */
-    public userFormat getShow() {
-        userFormat res = new userFormat("|", "ncp|state|cntr");
+    public List<String> getShow() {
+        List<String> res = new ArrayList<String>();
         res.add("lower|-|" + lower);
         res.add("upper|-|" + upper);
         res.add("cfger|-|" + cfger);
-        res.add("rtt|" + ctrlLcp.lastEchoStats.getLst() + "|" + ctrlLcp.lastEchoStats);
+        ctrlLcp.lastEchoStat.getFull(res);
         res.add("auth|" + ctrlAuth);
         getShow(res, ctrlLcp);
         getShow(res, ctrlIp4);

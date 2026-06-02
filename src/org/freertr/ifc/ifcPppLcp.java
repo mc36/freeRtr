@@ -123,7 +123,7 @@ public class ifcPppLcp extends ifcPppNcp {
     /**
      * time statistics
      */
-    protected tabDeviation lastEchoStats = new tabDeviation();
+    protected tabDeviation lastEchoStat = new tabDeviation();
 
     /**
      * get name
@@ -563,7 +563,7 @@ public class ifcPppLcp extends ifcPppNcp {
                 echoesSent = 0;
                 lastEchoId = -1;
                 lastEchoSent = bits.getTime() - lastEchoSent;
-                lastEchoStats.addVal(lastEchoSent);
+                lastEchoStat.addVal(lastEchoSent);
                 break;
             case codeDiscReq:
                 break;
