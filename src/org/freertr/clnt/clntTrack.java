@@ -37,6 +37,7 @@ import org.freertr.util.cmds;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
 import org.freertr.util.state;
+import org.freertr.tab.tabDeviation;
 
 /**
  * tracker worker
@@ -351,6 +352,11 @@ public class clntTrack implements Runnable, rtrBfdClnt {
      */
     protected long stopTime;
 
+    /**
+     * time statistics
+     */
+    protected tabDeviation times = new tabDeviation();
+
     private boolean working = false;
 
     private final notifier notif = new notifier();
@@ -646,6 +652,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
         l.add("changes|" + totalChng);
         l.add("measures|" + (totalUp + totalDn));
         l.add("took|" + getRtt());
+        l.add("stats|" + times);
         l.add("last|" + bits.time2str(cfgAll.timeZoneName, stopTime + cfgAll.timeServerOffset, 3));
         l.add("ago|" + bits.timePast(stopTime));
         l.add("ups|" + totalUp);
@@ -1012,6 +1019,9 @@ public class clntTrack implements Runnable, rtrBfdClnt {
             totalUp++;
         } else {
             totalDn++;
+        }
+        if (succ) {
+            times.addVal(stopTime - startTime);
         }
         if (succ != lastState) {
             lastState = succ;

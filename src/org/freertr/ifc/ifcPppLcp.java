@@ -11,6 +11,7 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
+import org.freertr.tab.tabDeviation;
 
 /**
  * line control protocol for ppp
@@ -117,12 +118,12 @@ public class ifcPppLcp extends ifcPppNcp {
     /**
      * last echoreq sent
      */
-    private long lastEchoSent;
+    protected long lastEchoSent;
 
     /**
-     * last echoreq rtt
+     * time statistics
      */
-    public int lastEchoReply;
+    protected tabDeviation lastEchoStats = new tabDeviation();
 
     /**
      * get name
@@ -561,7 +562,8 @@ public class ifcPppLcp extends ifcPppNcp {
                 }
                 echoesSent = 0;
                 lastEchoId = -1;
-                lastEchoReply = (int) (bits.getTime() - lastEchoSent);
+                lastEchoSent = bits.getTime() - lastEchoSent;
+                lastEchoStats.addVal(lastEchoSent);
                 break;
             case codeDiscReq:
                 break;

@@ -1,5 +1,6 @@
 package org.freertr.user;
 
+import org.freertr.tab.tabDeviation;
 import org.freertr.pipe.pipeGpsEmu;
 import org.freertr.pipe.pipeModEmu;
 import org.freertr.pipe.pipeScreen;
@@ -4879,9 +4880,9 @@ public class userExec {
         int recv = 0;
         int lost = 0;
         int errs = 0;
-        userExecStats timS = new userExecStats(0, timeout * 10);
-        userExecStats ttlS = new userExecStats(0, 256);
-        userExecStats tosS = new userExecStats(0, 256);
+        tabDeviation timS = new tabDeviation();
+        tabDeviation ttlS = new tabDeviation();
+        tabDeviation tosS = new tabDeviation();
         long timBeg = bits.getTime();
         pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", via=" + via + ", cnt=" + repeat + ", len=" + size + ", df=" + dntfrg + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt + ", sweep=" + sweep + ", multi=" + multi + ", mpls=" + mpls);
         size -= prtIcmptun.adjustSize(trg);
@@ -4990,9 +4991,9 @@ public class userExec {
                     continue;
                 }
                 recv++;
-                timS.val(res.tim);
-                ttlS.val(res.ttl);
-                tosS.val(res.tos);
+                timS.addVal(res.tim);
+                ttlS.addVal(res.ttl);
+                tosS.addVal(res.tos);
                 if (detail) {
                     pipe.strPut(res.tim + "ms," + res.ttl + "ttl," + res.tos + "tos@" + res.rtr + " ");
                     continue;
@@ -5004,7 +5005,7 @@ public class userExec {
             }
         }
         pipe.linePut("");
-        pipe.linePut("result=" + bits.percent(recv, sent) + ", recv/sent/lost/err=" + recv + "/" + sent + "/" + lost + "/" + errs + ", took " + (bits.getTime() - timBeg) + ", min/avg/max/dev rtt=" + timS.res() + ", ttl " + ttlS.res() + ", tos " + tosS.res());
+        pipe.linePut("result=" + bits.percent(recv, sent) + ", recv/sent/lost/err=" + recv + "/" + sent + "/" + lost + "/" + errs + ", took " + (bits.getTime() - timBeg) + ", min/avg/max/dev rtt=" + timS + ", ttl " + ttlS + ", tos " + tosS);
     }
 
     private void doListen() {
@@ -5951,47 +5952,6 @@ public class userExec {
         }
         boolean b = bits.buf2txt(true, old, a);
         cmd.error(cmds.doneFail(b));
-    }
-
-}
-
-class userExecStats {
-
-    private long min;
-
-    private long max;
-
-    private long seq;
-
-    private float ak;
-
-    private float qk;
-
-    public userExecStats(int l, int h) {
-        min = h;
-        max = l;
-        seq = 0;
-        ak = 0;
-        qk = 0;
-    }
-
-    public void val(int v) {
-        seq++;
-        if (v < min) {
-            min = v;
-        }
-        if (v > max) {
-            max = v;
-        }
-        float x = v;
-        float ak1 = ak;
-        float qk1 = qk;
-        ak = ak1 + ((x - ak1) / seq);
-        qk = qk1 + ((x - ak1) * (x - ak));
-    }
-
-    public String res() {
-        return min + "/" + bits.toPrecise(ak) + "/" + max + "/" + bits.toPrecise(qk / seq);
     }
 
 }
