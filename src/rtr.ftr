@@ -3794,6 +3794,12 @@ qc pass: native ouni bgp default route
 qc pass: native ouni bgp aggregation
 qc pass: unicast+native ouni with ldp
 qc pass: unicast+native ouni with sr
+qc pass: unicast+unreach over bgp
+qc pass: unicast+unreach over bgp with soft-reconfig
+qc pass: unicast+unreach over bgp with additional path
+qc pass: unicast+ounreach over bgp
+qc pass: unicast+ounreach over bgp with soft-reconfig
+qc pass: unicast+ounreach over bgp with additional path
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

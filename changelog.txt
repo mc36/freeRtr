@@ -18411,3 +18411,10 @@ failed: dhcp with excluded address
 ---------------------------------- 2026-06-01 21:32:19 26.6.1
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2026-06-04 10:36:41 26.6.4
+qc pass: unicast+unreach over bgp
+qc pass: unicast+unreach over bgp with soft-reconfig
+qc pass: unicast+unreach over bgp with additional path
+qc pass: unicast+ounreach over bgp
+qc pass: unicast+ounreach over bgp with soft-reconfig
+qc pass: unicast+ounreach over bgp with additional path
