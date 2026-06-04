@@ -513,7 +513,7 @@ interface null0
 router bgp4 65535 vrf v1
  local-as 65535
  router-id 100.100.3.227
- address-family unicast multicast vpnuni vpnmlt vpls evpn mdt flowspec vpnflw ovpnuni ovpnmlt ovpnflw mvpn omvpn mspw srte linkstate ouni omlt oflw osrt nsh rtfilter rpd mtree omtree spf sdwan mup omup tunnel encap
+ address-family unicast multicast vpnuni vpnmlt vpls evpn mdt flowspec vpnflw ovpnuni ovpnmlt ovpnflw mvpn omvpn mspw srte linkstate ouni omlt oflw osrt nsh rtfilter rpd mtree omtree spf sdwan mup omup tunnel encap unreach ounreach
  flapstat
  nexthop route-policy nht
  nexthop prefix-list nht4
@@ -525,7 +525,7 @@ router bgp4 65535 vrf v1
  template r ipinfo pmtud 512 1024 666
  template r ipinfo router4 bgp4 65535
  template r ipinfo resolve
- template r address-family unicast multicast vpnuni vpnmlt vpls evpn mdt flowspec vpnflw ovpnuni ovpnmlt ovpnflw mvpn omvpn mspw srte linkstate ouni omlt oflw osrt nsh rtfilter rpd mtree omtree spf sdwan mup omup tunnel encap
+ template r address-family unicast multicast vpnuni vpnmlt vpls evpn mdt flowspec vpnflw ovpnuni ovpnmlt ovpnflw mvpn omvpn mspw srte linkstate ouni omlt oflw osrt nsh rtfilter rpd mtree omtree spf sdwan mup omup tunnel encap unreach ounreach
  template r distance 200
  template r connection-mode active
  template r dynamic-capability
@@ -656,6 +656,35 @@ proxy-profile p4
 proxy-profile p5
  vrf v5
  exit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
 !
 !
 !

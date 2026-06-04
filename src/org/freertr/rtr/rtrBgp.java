@@ -642,6 +642,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a[rtrBgpParam.idxSdw] = rtrBgpUtil.safiIp4sdwan;
             a[rtrBgpParam.idxMup] = rtrBgpUtil.safiIp4mup;
             a[rtrBgpParam.idxOmup] = rtrBgpUtil.safiIp6mup;
+            a[rtrBgpParam.idxUnre] = rtrBgpUtil.safiIp4unre;
+            a[rtrBgpParam.idxOunre] = rtrBgpUtil.safiIp6unre;
             a[rtrBgpParam.idxTun] = rtrBgpUtil.safiIp4tun;
             a[rtrBgpParam.idxEnc] = rtrBgpUtil.safiIp4enc;
             a[rtrBgpParam.idxSpf] = rtrBgpUtil.safiIp46spf;
@@ -684,6 +686,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a[rtrBgpParam.idxSdw] = rtrBgpUtil.safiIp6sdwan;
             a[rtrBgpParam.idxMup] = rtrBgpUtil.safiIp6mup;
             a[rtrBgpParam.idxOmup] = rtrBgpUtil.safiIp4mup;
+            a[rtrBgpParam.idxUnre] = rtrBgpUtil.safiIp6unre;
+            a[rtrBgpParam.idxOunre] = rtrBgpUtil.safiIp4unre;
             a[rtrBgpParam.idxTun] = rtrBgpUtil.safiIp6tun;
             a[rtrBgpParam.idxEnc] = rtrBgpUtil.safiIp6enc;
             a[rtrBgpParam.idxSpf] = rtrBgpUtil.safiIp46spf;
@@ -726,6 +730,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a[rtrBgpParam.idxSdw] = rtrBgpAfi.sdWan;
             a[rtrBgpParam.idxMup] = rtrBgpAfi.mup;
             a[rtrBgpParam.idxOmup] = rtrBgpAfi.mup;
+            a[rtrBgpParam.idxUnre] = rtrBgpAfi.ipv4unre;
+            a[rtrBgpParam.idxOunre] = rtrBgpAfi.ipv6unre;
             a[rtrBgpParam.idxTun] = rtrBgpAfi.ipv4tun;
             a[rtrBgpParam.idxEnc] = rtrBgpAfi.ipv4uni;
             a[rtrBgpParam.idxSpf] = rtrBgpAfi.linkState;
@@ -768,6 +774,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a[rtrBgpParam.idxSdw] = rtrBgpAfi.sdWan;
             a[rtrBgpParam.idxMup] = rtrBgpAfi.mup;
             a[rtrBgpParam.idxOmup] = rtrBgpAfi.mup;
+            a[rtrBgpParam.idxUnre] = rtrBgpAfi.ipv6unre;
+            a[rtrBgpParam.idxOunre] = rtrBgpAfi.ipv4unre;
             a[rtrBgpParam.idxTun] = rtrBgpAfi.ipv6tun;
             a[rtrBgpParam.idxEnc] = rtrBgpAfi.ipv6uni;
             a[rtrBgpParam.idxSpf] = rtrBgpAfi.linkState;

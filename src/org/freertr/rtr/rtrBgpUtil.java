@@ -308,6 +308,11 @@ public class rtrBgpUtil {
     public final static int sfiSpf = 0x50;
 
     /**
+     * unreachable address family
+     */
+    public final static int sfiUnreach = 0x51;
+
+    /**
      * color aware routing address family
      */
     public final static int sfiClrAwRtg = 0x53;
@@ -391,6 +396,16 @@ public class rtrBgpUtil {
      * ipv6 classful transport plane address family
      */
     public final static int safiIp6ctp = afiIpv6 | sfiClsTrnPl;
+
+    /**
+     * ipv4 unreachable address family
+     */
+    public final static int safiIp4unre = afiIpv4 | sfiUnreach;
+
+    /**
+     * ipv6 unreachable address family
+     */
+    public final static int safiIp6unre = afiIpv6 | sfiUnreach;
 
     /**
      * ipv4 color aware routing address family

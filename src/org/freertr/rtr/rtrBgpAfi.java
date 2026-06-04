@@ -97,6 +97,16 @@ public interface rtrBgpAfi {
     public rtrBgpAfi mup = new rtrBgpAfiMup();
 
     /**
+     * ipv4 unreach
+     */
+    public rtrBgpAfi ipv4unre = new rtrBgpAfiIpv4unre();
+
+    /**
+     * ipv6 unreach
+     */
+    public rtrBgpAfi ipv6unre = new rtrBgpAfiIpv6unre();
+
+    /**
      * evpn
      */
     public rtrBgpAfi evpn = new rtrBgpAfiEvpn();
@@ -464,6 +474,48 @@ public interface rtrBgpAfi {
         pck.putSkip(9);
         pck.putAddr(0, pfx.network);
         pck.putSkip((pfx.maskLen + 7) / 8);
+    }
+
+    /**
+     * read one ipvX unreach
+     *
+     * @param <T> address kind
+     * @param adr dummy address
+     * @param ntry route entry
+     * @param pck packet to use
+     * @return address read
+     */
+    public static <T extends addrType> addrPrefix<T> readIpvXunre(T adr, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        int i = pck.getByte(0); // nlri length
+        int p = pck.getByte(1); // prefix length
+        int o = (p + 7) / 8;
+        if (o > i) {
+            return null;
+        }
+        pck.getAddr(adr, 2);
+        pck.getSkip(2 + o);
+        ntry.nlri = new byte[i - o];
+        pck.getCopy(ntry.nlri, 0, 0, ntry.nlri.length);
+        pck.getSkip(ntry.nlri.length);
+        return new addrPrefix<T>(adr, p);
+    }
+
+    /**
+     * write one ipvX unreach
+     *
+     * @param <T> address kind
+     * @param pfx address to write
+     * @param ntry route entry
+     * @param pck packet to use
+     */
+    public static <T extends addrType> void writeIpvXunre(addrPrefix<T> pfx, tabRouteEntry<addrIP> ntry, packHolder pck) {
+        int i = (pfx.maskLen + 7) / 8;
+        pck.putByte(0, i + ntry.nlri.length); // nlri length
+        pck.putByte(1, pfx.maskLen); // prefix length
+        pck.putAddr(2, pfx.network); // mask
+        pck.putSkip(2 + i);
+        pck.putCopy(ntry.nlri, 0, 0, ntry.nlri.length);
+        pck.putSkip(ntry.nlri.length);
     }
 
     /**
@@ -1362,6 +1414,36 @@ class rtrBgpAfiMvpn implements rtrBgpAfi {
         pck.putByte(0, o);
         pck.putByte(1, i);
         pck.putSkip(2 + i);
+    }
+
+}
+
+class rtrBgpAfiIpv4unre implements rtrBgpAfi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = addrPrefix.ip4toIP(rtrBgpAfi.readIpvXunre(new addrIPv4(), ntry, pck));
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        addrPrefix<addrIPv4> a4 = addrPrefix.ip2ip4(ntry.prefix);
+        rtrBgpAfi.writeIpvXunre(a4, ntry, pck);
+    }
+
+}
+
+class rtrBgpAfiIpv6unre implements rtrBgpAfi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = addrPrefix.ip6toIP(rtrBgpAfi.readIpvXunre(new addrIPv6(), ntry, pck));
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
+        rtrBgpAfi.writeIpvXunre(a6, ntry, pck);
     }
 
 }
