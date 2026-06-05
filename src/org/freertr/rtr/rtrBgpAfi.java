@@ -107,6 +107,16 @@ public interface rtrBgpAfi {
     public rtrBgpAfi ipv6unre = new rtrBgpAfiIpv6unre();
 
     /**
+     * mplsns
+     */
+    public rtrBgpAfi mpns = new rtrBgpAfiMpns();
+
+    /**
+     * mplsns
+     */
+    public rtrBgpAfi mpvs = new rtrBgpAfiMpvs();
+
+    /**
      * evpn
      */
     public rtrBgpAfi evpn = new rtrBgpAfiEvpn();
@@ -489,11 +499,12 @@ public interface rtrBgpAfi {
         int i = pck.getByte(0); // nlri length
         int p = pck.getByte(1); // prefix length
         int o = (p + 7) / 8;
+        pck.getSkip(2);
         if (o > i) {
             return null;
         }
-        pck.getAddr(adr, 2);
-        pck.getSkip(2 + o);
+        pck.getAddr(adr, 0);
+        pck.getSkip(o);
         ntry.nlri = new byte[i - o];
         pck.getCopy(ntry.nlri, 0, 0, ntry.nlri.length);
         pck.getSkip(ntry.nlri.length);
@@ -1444,6 +1455,65 @@ class rtrBgpAfiIpv6unre implements rtrBgpAfi {
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         addrPrefix<addrIPv6> a6 = addrPrefix.ip2ip6(ntry.prefix);
         rtrBgpAfi.writeIpvXunre(a6, ntry, pck);
+    }
+
+}
+
+class rtrBgpAfiMpns implements rtrBgpAfi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        int i = pck.getByte(0); // length
+        pck.getSkip(1);
+        if (i != 24) {
+            return null;
+        }
+        i = pck.msbGetD(0) >>> 12; // label
+        pck.getSkip(3);
+        addrIP adr = new addrIP();
+        bits.msbPutD(adr.getBytes(), 0, i);
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+        ntry.best.labelRem = new ArrayList<Integer>();
+        ntry.best.labelRem.add(i);
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        pck.putByte(0, 24); // length
+        pck.msbPutD(1, (ntry.best.labelRem.get(0) << 12) | 1); // label
+        pck.putSkip(4);
+    }
+
+}
+
+class rtrBgpAfiMpvs implements rtrBgpAfi {
+
+    public tabRouteEntry<addrIP> readPrefix(boolean oneLab, packHolder pck) {
+        int i = pck.getByte(0); // length
+        pck.getSkip(1);
+        if (i != 112) {
+            return null;
+        }
+        tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+        ntry.best.labelRem = new ArrayList<Integer>();
+        i = pck.msbGetD(0) >>> 12; // label
+        ntry.best.labelRem.add(i);
+        ntry.rouDst = pck.msbGetQ(3); // rd
+        i = pck.msbGetD(11) >>> 12; // private label
+        ntry.best.labelRem.add(i);
+        pck.getSkip(14);
+        addrIP adr = new addrIP();
+        bits.msbPutD(adr.getBytes(), 0, i);
+        ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+        return ntry;
+    }
+
+    public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
+        pck.putByte(0, 112); // length
+        pck.msbPutD(1, (ntry.best.labelRem.get(0) << 12) | 1); // label
+        pck.msbPutQ(4, ntry.rouDst); // rd
+        pck.msbPutD(12, (ntry.best.labelRem.get(1) << 12) | 1); // private label
+        pck.putSkip(15);
     }
 
 }

@@ -408,6 +408,16 @@ public class rtrBgpUtil {
     public final static int safiIp6unre = afiIpv6 | sfiUnreach;
 
     /**
+     * ipv4 mplsns address family
+     */
+    public final static int safiMpns = afiMpls | sfiUnicast;
+
+    /**
+     * ipv6 mplsns address family
+     */
+    public final static int safiMpvs = afiMpls | sfiMplsVpnU;
+
+    /**
      * ipv4 color aware routing address family
      */
     public final static int safiIp4car = afiIpv4 | sfiClrAwRtg;

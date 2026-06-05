@@ -1009,9 +1009,19 @@ public abstract class rtrBgpParam {
     public final static int idxOunre = 39;
 
     /**
+     * mplsns
+     */
+    public final static int idxMpns = 40;
+
+    /**
+     * mplsns
+     */
+    public final static int idxMpvs = 41;
+
+    /**
      * maximum afis
      */
-    public final static int boolsMax = 40;
+    public final static int boolsMax = 42;
 
     /**
      * set value
@@ -1172,6 +1182,12 @@ public abstract class rtrBgpParam {
         if (a.equals("ounreach")) {
             return idxOunre;
         }
+        if (a.equals("mpns")) {
+            return idxMpns;
+        }
+        if (a.equals("mpvs")) {
+            return idxMpvs;
+        }
         if (a.equals("tunnel")) {
             return idxTun;
         }
@@ -1300,6 +1316,10 @@ public abstract class rtrBgpParam {
                 return "unreach";
             case idxOunre:
                 return "ounreach";
+            case idxMpns:
+                return "mpns";
+            case idxMpvs:
+                return "mpvs";
             case idxTun:
                 return "tunnel";
             case idxEnc:
@@ -1484,6 +1504,8 @@ public abstract class rtrBgpParam {
             case idxOmup:
             case idxUnre:
             case idxOunre:
+            case idxMpns:
+            case idxMpvs:
             case idxTun:
             case idxEnc:
             case idxSpf:
@@ -1543,6 +1565,8 @@ public abstract class rtrBgpParam {
             case idxOmup:
             case idxUnre:
             case idxOunre:
+            case idxMpns:
+            case idxMpvs:
             case idxTun:
             case idxEnc:
             case idxSpf:
