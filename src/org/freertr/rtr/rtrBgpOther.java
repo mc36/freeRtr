@@ -10,6 +10,7 @@ import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipRtr;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
+import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabPlcmapN;
 import org.freertr.tab.tabQos;
@@ -46,6 +47,21 @@ public class rtrBgpOther extends ipRtr {
      * install flow specification
      */
     public boolean flowInst;
+
+    /**
+     * install mpls namespaces
+     */
+    protected boolean mpnsInst;
+
+    /**
+     * originate mpls namespaces
+     */
+    protected cfgIfc mpnsOrgn;
+
+    /**
+     * mpls namespaces installed
+     */
+    protected tabGen<tabLabelEntry> mpnsDone;
 
     /**
      * srv6 advertisement source
@@ -366,6 +382,12 @@ public class rtrBgpOther extends ipRtr {
         }
         l.add(beg2 + "vpn-mode " + a);
         l.add(beg2 + "distance " + distance);
+        if (mpnsInst) {
+            l.add(beg2 + "mpns-install");
+        }
+        if (mpnsOrgn != null) {
+            l.add(beg2 + "mpns-advert " + mpnsOrgn.name);
+        }
         if (flowInst) {
             l.add(beg2 + "flowspec-install");
         }

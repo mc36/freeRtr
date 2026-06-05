@@ -1467,20 +1467,19 @@ class rtrBgpAfiMpns implements rtrBgpAfi {
         if (i != 24) {
             return null;
         }
-        i = pck.msbGetD(0) >>> 12; // label
+        i = pck.msbGetD(0) >>> 12; // private label
         pck.getSkip(3);
         addrIP adr = new addrIP();
         bits.msbPutD(adr.getBytes(), 0, i);
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-        ntry.best.labelRem = new ArrayList<Integer>();
-        ntry.best.labelRem.add(i);
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         pck.putByte(0, 24); // length
-        pck.msbPutD(1, (ntry.best.labelRem.get(0) << 12) | 1); // label
+        int i = bits.msbGetD(ntry.prefix.network.getBytes(), 0);
+        pck.msbPutD(1, (i << 12) | 1); // private label
         pck.putSkip(4);
     }
 
@@ -1495,24 +1494,24 @@ class rtrBgpAfiMpvs implements rtrBgpAfi {
             return null;
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.best.labelRem = new ArrayList<Integer>();
-        i = pck.msbGetD(0) >>> 12; // label
-        ntry.best.labelRem.add(i);
+        addrIP adr = new addrIP();
+        i = pck.msbGetD(0) >>> 12; // context label
+        bits.msbPutD(adr.getBytes(), 4, i);
         ntry.rouDst = pck.msbGetQ(3); // rd
         i = pck.msbGetD(11) >>> 12; // private label
-        ntry.best.labelRem.add(i);
-        pck.getSkip(14);
-        addrIP adr = new addrIP();
         bits.msbPutD(adr.getBytes(), 0, i);
+        pck.getSkip(14);
         ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
         return ntry;
     }
 
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         pck.putByte(0, 112); // length
-        pck.msbPutD(1, (ntry.best.labelRem.get(0) << 12) | 1); // label
+        int i = bits.msbGetD(ntry.prefix.network.getBytes(), 4);
+        pck.msbPutD(1, (i << 12) | 1); // context label
         pck.msbPutQ(4, ntry.rouDst); // rd
-        pck.msbPutD(12, (ntry.best.labelRem.get(1) << 12) | 1); // private label
+        i = bits.msbGetD(ntry.prefix.network.getBytes(), 0);
+        pck.msbPutD(12, (i << 12) | 1); // private label
         pck.putSkip(15);
     }
 

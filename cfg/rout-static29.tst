@@ -1,4 +1,4 @@
-description static routing over foreign ipv4 with interface
+description static routing over foreign ipv6 with interface
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -16,8 +16,8 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.252
  ipv6 addr 1234:1::1 ffff:ffff::
  exit
-ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.2 inter eth1
-ipv6 route v1 :: :: 1.1.1.2 inter eth1
+ipv4 route v1 0.0.0.0 0.0.0.0 1234:1::2 inter eth1
+ipv6 route v1 :: :: 1234:1::2 inter eth1
 !
 
 addrouter r2
@@ -37,10 +37,10 @@ int eth2
  ipv4 addr 1.1.1.6 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
-ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.1 inter eth1
-ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1.1.1.1 inter eth1
-ipv4 route v1 2.2.2.201 255.255.255.255 1.1.1.5 inter eth2
-ipv6 route v1 4321::201 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1.1.1.5 inter eth2
+ipv4 route v1 2.2.2.101 255.255.255.255 1234:1::1 inter eth1
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1 inter eth1
+ipv4 route v1 2.2.2.201 255.255.255.255 1234:2::1 inter eth2
+ipv6 route v1 4321::201 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1 inter eth2
 !
 
 addrouter r3
@@ -59,8 +59,8 @@ int eth1
  ipv4 addr 1.1.1.5 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
-ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.6 inter eth1
-ipv6 route v1 :: :: 1.1.1.6 inter eth1
+ipv4 route v1 0.0.0.0 0.0.0.0 1234:2::2 inter eth1
+ipv6 route v1 :: :: 1234:2::2 inter eth1
 !
 
 

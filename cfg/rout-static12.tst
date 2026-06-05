@@ -1,4 +1,4 @@
-description recursive static routing
+description static routing over point2point ethernet
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -11,15 +11,10 @@ int lo0
  ipv4 addr 2.2.2.101 255.255.255.255
  ipv6 addr 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int lo1
- vrf for v1
- ipv4 addr 2.2.2.102 255.255.255.255
- ipv6 addr 4321::102 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.1 255.255.255.252
- ipv6 addr 1234:1::1 ffff:ffff::
+ ipv4 addr 1.1.1.3 255.255.255.254
+ ipv6 addr 1234:1::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe
  exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.2
 ipv6 route v1 :: :: 1234:1::2
@@ -34,22 +29,18 @@ vrf def v1
  exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.2 255.255.255.252
- ipv6 addr 1234:1::2 ffff:ffff::
+ ipv4 addr 1.1.1.2 255.255.255.254
+ ipv6 addr 1234:1::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe
  exit
 int eth2
  vrf for v1
- ipv4 addr 1.1.1.6 255.255.255.252
- ipv6 addr 1234:2::2 ffff:ffff::
+ ipv4 addr 1.1.1.6 255.255.255.254
+ ipv6 addr 1234:2::2 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe
  exit
-ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.1
-ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1
-ipv4 route v1 2.2.2.201 255.255.255.255 1.1.1.5
-ipv6 route v1 4321::201 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1
-ipv4 route v1 2.2.2.102 255.255.255.255 2.2.2.101 recurigp
-ipv6 route v1 4321::102 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 4321::101 recurigp
-ipv4 route v1 2.2.2.202 255.255.255.255 2.2.2.201 recurigp
-ipv6 route v1 4321::202 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 4321::201 recurigp
+ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.3
+ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::3
+ipv4 route v1 2.2.2.201 255.255.255.255 1.1.1.7
+ipv6 route v1 4321::201 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::3
 !
 
 addrouter r3
@@ -63,15 +54,10 @@ int lo0
  ipv4 addr 2.2.2.201 255.255.255.255
  ipv6 addr 4321::201 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
-int lo1
- vrf for v1
- ipv4 addr 2.2.2.202 255.255.255.255
- ipv6 addr 4321::202 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
- exit
 int eth1
  vrf for v1
- ipv4 addr 1.1.1.5 255.255.255.252
- ipv6 addr 1234:2::1 ffff:ffff::
+ ipv4 addr 1.1.1.7 255.255.255.254
+ ipv6 addr 1234:2::3 ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe
  exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.6
 ipv6 route v1 :: :: 1234:2::2
@@ -86,15 +72,6 @@ r1 tping 100 5 2.2.2.201 vrf v1
 r1 tping 100 5 4321::201 vrf v1
 r3 tping 100 5 2.2.2.101 vrf v1
 r3 tping 100 5 4321::101 vrf v1
-
-r2 tping 100 5 2.2.2.202 vrf v1
-r2 tping 100 5 2.2.2.102 vrf v1
-r2 tping 100 5 4321::202 vrf v1
-r2 tping 100 5 4321::102 vrf v1
-r1 tping 100 5 2.2.2.202 vrf v1
-r1 tping 100 5 4321::202 vrf v1
-r3 tping 100 5 2.2.2.102 vrf v1
-r3 tping 100 5 4321::102 vrf v1
 
 r2 output show ipv4 route v1
 r2 output show ipv6 route v1
