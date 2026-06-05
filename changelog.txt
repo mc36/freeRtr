@@ -18418,3 +18418,10 @@ qc pass: unicast+unreach over bgp with additional path
 qc pass: unicast+ounreach over bgp
 qc pass: unicast+ounreach over bgp with soft-reconfig
 qc pass: unicast+ounreach over bgp with additional path
+---------------------------------- 2026-06-05 17:47:59 26.6.5
+qc pass: unicast+mpns over bgp
+qc pass: unicast+mpns over bgp with soft-reconfig
+qc pass: unicast+mpns over bgp with additional path
+qc pass: unicast+mpvs over bgp
+qc pass: unicast+mpvs over bgp with soft-reconfig
+qc pass: unicast+mpvs over bgp with additional path
