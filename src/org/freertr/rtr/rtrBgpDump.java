@@ -734,7 +734,7 @@ public class rtrBgpDump {
             if (rou.prefix == null) {
                 a = "" + rou;
             } else {
-                a = addrPrefix.ip2str(rou.prefix) + " " + tabRouteUtil.rd2string(rou.rouDst);
+                a = addrPrefix.ip2str(rou.prefix) + " rd=" + tabRouteUtil.rd2string(rou.rouDst) + " id=" + rou.best.ident + " nh=" + rou.best.nextHop;
             }
             res.add("    prefix=" + a);
         }

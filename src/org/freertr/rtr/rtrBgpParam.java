@@ -1595,33 +1595,15 @@ public abstract class rtrBgpParam {
     }
 
     /**
-     * alias of index, -1 if none
-     */
-    protected static int[] indexAlias;
-
-    /**
      * create routing tables
      *
      * @return array of tables
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected final static tabRoute<addrIP>[] freshTables() {
-        if (indexAlias == null) {
-            int[] a = new int[boolsMax];
-            for (int i = 0; i < a.length; i++) {
-                a[i] = -1;
-            }
-            a[idxLab] = idxUni;
-            a[idxCtp] = idxUni;
-            a[idxCar] = idxUni;
-            a[idxOlab] = idxOuni;
-            a[idxOctp] = idxOuni;
-            a[idxOcar] = idxOuni;
-            indexAlias = a;
-        }
         tabRoute<addrIP>[] res = new tabRoute[boolsMax];
         for (int i = 0; i < res.length; i++) {
-            int o = indexAlias[i];
+            int o = rtrBgp.indexAlias[i];
             if (o >= 0) {
                 res[i] = res[o];
             } else {

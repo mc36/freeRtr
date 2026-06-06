@@ -76,6 +76,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public final static int port = 179;
 
     /**
+     * alias of index, -1 if none
+     */
+    protected static int[] indexAlias;
+
+    /**
      * local as number
      */
     public int localAs;
@@ -598,6 +603,19 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public rtrBgp(ipFwd forwarder, cfgVrf vrfcfg, prtTcp protoT, int id) {
         if (debugger.rtrBgpEvnt) {
             logger.debug("startup");
+        }
+        if (indexAlias == null) {
+            int[] a = new int[rtrBgpParam.boolsMax];
+            for (int i = 0; i < a.length; i++) {
+                a[i] = -1;
+            }
+            a[rtrBgpParam.idxLab] = rtrBgpParam.idxUni;
+            a[rtrBgpParam.idxCtp] = rtrBgpParam.idxUni;
+            a[rtrBgpParam.idxCar] = rtrBgpParam.idxUni;
+            a[rtrBgpParam.idxOlab] = rtrBgpParam.idxOuni;
+            a[rtrBgpParam.idxOctp] = rtrBgpParam.idxOuni;
+            a[rtrBgpParam.idxOcar] = rtrBgpParam.idxOuni;
+            indexAlias = a;
         }
         vrfCore = vrfcfg;
         fwdCore = forwarder;
@@ -1284,7 +1302,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             evpn.get(i).doAdvertise(freshly);
         }
         for (int i = 0; i < origntd.length; i++) {
-            int o = rtrBgpParam.indexAlias[i];
+            int o = indexAlias[i];
             if (o >= 0) {
                 origntd[i] = origntd[o];
             } else {
@@ -1350,7 +1368,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 logger.debug("round " + compRound + " counquer");
             }
             for (int i = 0; i < computd.length; i++) {
-                if (rtrBgpParam.indexAlias[i] >= 0) {
+                if (indexAlias[i] >= 0) {
                     continue;
                 }
                 computeConquerTable(computd[i], freshly[i]);
@@ -1714,7 +1732,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         tabRoute<addrIP>[] done = rtrBgpParam.freshTables();
         for (int idx = 0; idx < done.length; idx++) {
-            if (rtrBgpParam.indexAlias[idx] >= 0) {
+            if (indexAlias[idx] >= 0) {
                 continue;
             }
             tabRoute<addrIP> chg = changed[idx];
@@ -1862,7 +1880,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         changedCur = 0;
         for (int i = 0; i < changed.length; i++) {
-            if (rtrBgpParam.indexAlias[i] >= 0) {
+            if (indexAlias[i] >= 0) {
                 continue;
             }
             changedCur += changed[i].size();

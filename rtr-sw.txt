@@ -517,6 +517,7 @@ router bgp4 65535 vrf v1
  flapstat
  nexthop route-policy nht
  nexthop prefix-list nht4
+ mpns-install
  monitor bmp p1 100.100.3.227 17971
  dump mrt bgp4.log
  !
@@ -530,8 +531,8 @@ router bgp4 65535 vrf v1
  template r connection-mode active
  template r dynamic-capability
  template r compression both
- template r additional-path-rx unicast multicast vpnuni vpnmlt
- template r additional-path-tx unicast multicast vpnuni vpnmlt
+ template r additional-path-rx unicast multicast vpnuni vpnmlt ovpnuni ovpnmlt ouni omlt
+ template r additional-path-tx unicast multicast vpnuni vpnmlt ovpnuni ovpnmlt ouni omlt
  template r update-source loopback0
  template r monitor bmp
  template r dump mrt
