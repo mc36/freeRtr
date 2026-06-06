@@ -108,15 +108,14 @@ public class rtrBgpMpns {
                 continue;
             }
             old.setFwdMpls(tabLabelEntry.owner.mpns, ntry.forwarder, ntry.iface, ntry.nextHop, ntry.remoteLab);
-            done.put(ntry);
+            done.put(old);
         }
         for (int i = 0; i < done.size(); i++) {
             tabLabelEntry ntry = done.get(i);
             if (need.find(ntry) != null) {
                 continue;
             }
-            tabLabelEntry old = tabLabel.find(ntry.label);
-            tabLabel.release(old, tabLabelEntry.owner.mpns);
+            tabLabel.release(ntry, tabLabelEntry.owner.mpns);
             done.del(ntry);
         }
     }

@@ -18425,3 +18425,5 @@ qc pass: unicast+mpns over bgp with additional path
 qc pass: unicast+mpvs over bgp
 qc pass: unicast+mpvs over bgp with soft-reconfig
 qc pass: unicast+mpvs over bgp with additional path
+---------------------------------- 2026-06-05 22:26:05 26.6.5
+qc pass: static routing with mpns labels
