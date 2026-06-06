@@ -1479,7 +1479,7 @@ class rtrBgpAfiMpns implements rtrBgpAfi {
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         pck.putByte(0, 24); // length
         int i = bits.msbGetD(ntry.prefix.network.getBytes(), 0);
-        pck.msbPutD(1, (i << 12) | 1); // private label
+        pck.msbPutD(1, (i << 12) | 0x100); // private label
         pck.putSkip(4);
     }
 
@@ -1508,10 +1508,10 @@ class rtrBgpAfiMpvs implements rtrBgpAfi {
     public void writePrefix(boolean oneLab, packHolder pck, tabRouteEntry<addrIP> ntry) {
         pck.putByte(0, 112); // length
         int i = bits.msbGetD(ntry.prefix.network.getBytes(), 4);
-        pck.msbPutD(1, (i << 12) | 1); // context label
+        pck.msbPutD(1, (i << 12) | 0x100); // context label
         pck.msbPutQ(4, ntry.rouDst); // rd
         i = bits.msbGetD(ntry.prefix.network.getBytes(), 0);
-        pck.msbPutD(12, (i << 12) | 1); // private label
+        pck.msbPutD(12, (i << 12) | 0x100); // private label
         pck.putSkip(15);
     }
 
