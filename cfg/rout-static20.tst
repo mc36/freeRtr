@@ -1,4 +1,4 @@
-description static routing with other tracker
+description static routing with interface tracker
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -30,17 +30,10 @@ tracker t1
  time 500
  start
  exit
-tracker t2
- targ t1
- mod other
- inter 1000
- time 500
- start
- exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.2 dist 22
 ipv6 route v1 :: :: 1234:1::2 dist 22
-ipv4 route v1 0.0.0.0 0.0.0.0 1.1.2.2 dist 11 track t2
-ipv6 route v1 :: :: 1234:2::2 dist 11 track t2
+ipv4 route v1 0.0.0.0 0.0.0.0 1.1.2.2 dist 11 track t1
+ipv6 route v1 :: :: 1234:2::2 dist 11 track t1
 !
 
 addrouter r2
@@ -72,17 +65,10 @@ tracker t1
  time 500
  start
  exit
-tracker t2
- targ t1
- mod other
- inter 1000
- time 500
- start
- exit
 ipv4 route v1 0.0.0.0 0.0.0.0 1.1.1.1 dist 22
 ipv6 route v1 :: :: 1234:1::1 dist 22
-ipv4 route v1 0.0.0.0 0.0.0.0 1.1.2.1 dist 11 track t2
-ipv6 route v1 :: :: 1234:2::1 dist 11 track t2
+ipv4 route v1 0.0.0.0 0.0.0.0 1.1.2.1 dist 11 track t1
+ipv6 route v1 :: :: 1234:2::1 dist 11 track t1
 !
 
 

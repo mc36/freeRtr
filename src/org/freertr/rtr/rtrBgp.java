@@ -1234,7 +1234,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rtrBgpMpns.doAdvertise(freshly[rtrBgpParam.idxMpns], new tabRouteEntry<addrIP>(), mpnsOrgn, fwdCore, isIpv6);
         }
         if (other.mpnsOrgn != null) {
-            rtrBgpMpns.doAdvertise(freshly[rtrBgpParam.idxMpns], new tabRouteEntry<addrIP>(), other.mpnsOrgn, other.fwd, !isIpv6);
+            rtrBgpMpns.doAdvertise(freshly[rtrBgpParam.idxMpns], new tabRouteEntry<addrIP>(), other.mpnsOrgn, other.fwd, isIpv6);
         }
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(freshly[rtrBgpParam.idxFlw], flowSpec, new tabRouteEntry<addrIP>(), isIpv6, localAs);
@@ -1462,12 +1462,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         otherTrigger |= addrFams[rtrBgpParam.idxCar];
         otherTrigger |= linkStates.size() > 0;
         otherTrigger |= mpnsInst;
-        otherTrigger |= other.mpnsInst;
         if (mpnsInst) {
-            rtrBgpMpns.doInstall(computd[rtrBgpParam.idxMpns], mpnsDone, fwdCore, isIpv6);
-        }
-        if (other.mpnsInst) {
-            rtrBgpMpns.doInstall(computd[rtrBgpParam.idxMpns], other.mpnsDone, other.fwd, !isIpv6);
+            rtrBgpMpns.doInstall(computd[rtrBgpParam.idxMpns], mpnsDone, fwdCore);
         }
         if (flowInst) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, isIpv6));
@@ -1752,10 +1748,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " export");
         }
         if (mpnsInst && (cntMpns > 0)) {
-            rtrBgpMpns.doInstall(computd[rtrBgpParam.idxMpns], mpnsDone, fwdCore, isIpv6);
-        }
-        if (other.mpnsInst && (cntMpns > 0)) {
-            rtrBgpMpns.doInstall(computd[rtrBgpParam.idxMpns], other.mpnsDone, other.fwd, !isIpv6);
+            rtrBgpMpns.doInstall(computd[rtrBgpParam.idxMpns], mpnsDone, fwdCore);
         }
         if (flowInst && (cntFlw > 0)) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, isIpv6));
@@ -2510,7 +2503,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (s.equals("mpns-install")) {
             mpnsInst = !negated;
             if (negated) {
-                rtrBgpMpns.doInstall(new tabRoute<addrIP>("empty"), mpnsDone, fwdCore, isIpv6);
+                rtrBgpMpns.doInstall(new tabRoute<addrIP>("empty"), mpnsDone, fwdCore);
             }
             needFull.add(1);
             compute.wakeup();
@@ -2739,16 +2732,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     other.srv6 = null;
                 } else {
                     other.srv6 = cfgAll.ifcFind(cmd.word(), 0);
-                }
-                needFull.add(1);
-                compute.wakeup();
-                return false;
-            }
-
-            if (s.equals("mpns-install")) {
-                other.mpnsInst = !negated;
-                if (negated) {
-                    rtrBgpMpns.doInstall(new tabRoute<addrIP>("empty"), other.mpnsDone, other.fwd, isIpv6);
                 }
                 needFull.add(1);
                 compute.wakeup();

@@ -71,8 +71,6 @@ int eth2
  ipv4 addr 1.1.1.9 255.255.255.252
  ipv6 addr 1234:3::1 ffff:ffff::
  mpls ena
- mpls ldp4
- mpls ldp6
  exit
 router bgp4 1
  vrf v1
@@ -80,11 +78,10 @@ router bgp4 1
  address lab mpns
  local-as 1
  router-id 4.4.4.2
- neigh 2.2.2.103 remote-as 1
- neigh 2.2.2.103 update lo0
- neigh 2.2.2.103 send-comm both
+ neigh 1.1.1.10 remote-as 1
+ neigh 1.1.1.10 send-comm both
  red conn
- mpns-advert lo0
+ mpns-advert eth2
  mpns-install
  exit
 router bgp6 1
@@ -93,17 +90,14 @@ router bgp6 1
  address lab mpns
  local-as 1
  router-id 6.6.6.2
- neigh 4321::103 remote-as 1
- neigh 4321::103 update lo0
- neigh 4321::103 send-comm both
+ neigh 1234:3::2 remote-as 1
+ neigh 1234:3::2 send-comm both
  red conn
- mpns-advert lo0
+ mpns-advert eth2
  mpns-install
  exit
 mpls route 104 eth1 1.1.1.1 104
 mpls route 106 eth1 1234:1::1 106
-ipv4 route v1 2.2.2.103 255.255.255.255 1.1.1.10
-ipv6 route v1 4321::103 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::2
 ipv4 route v1 2.2.2.101 255.255.255.255 1.1.1.1 mplsval 104
 ipv6 route v1 4321::101 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:1::1 mplsval 106
 !
@@ -136,8 +130,6 @@ int eth1
  ipv4 addr 1.1.1.10 255.255.255.252
  ipv6 addr 1234:3::2 ffff:ffff::
  mpls ena
- mpls ldp4
- mpls ldp6
  exit
 int eth2
  vrf for v1
@@ -153,11 +145,10 @@ router bgp4 1
  address lab mpns
  local-as 1
  router-id 4.4.4.3
- neigh 2.2.2.102 remote-as 1
- neigh 2.2.2.102 update lo0
- neigh 2.2.2.102 send-comm both
+ neigh 1.1.1.9 remote-as 1
+ neigh 1.1.1.9 send-comm both
  red conn
- mpns-advert lo0
+ mpns-advert eth1
  mpns-install
  exit
 router bgp6 1
@@ -166,17 +157,14 @@ router bgp6 1
  address lab mpns
  local-as 1
  router-id 6.6.6.3
- neigh 4321::102 remote-as 1
- neigh 4321::102 update lo0
- neigh 4321::102 send-comm both
+ neigh 1234:3::1 remote-as 1
+ neigh 1234:3::1 send-comm both
  red conn
- mpns-advert lo0
+ mpns-advert eth1
  mpns-install
  exit
 mpls route 404 eth2 1.1.1.5 404
 mpls route 406 eth2 1234:2::1 406
-ipv4 route v1 2.2.2.102 255.255.255.255 1.1.1.9
-ipv6 route v1 4321::102 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:3::1
 ipv4 route v1 2.2.2.104 255.255.255.255 1.1.1.5 mplsval 404
 ipv6 route v1 4321::104 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff 1234:2::1 mplsval 406
 !

@@ -67,16 +67,12 @@ public class rtrBgpMpns {
      * @param tab list of routes
      * @param done labels done
      * @param fwd forwarder to use
-     * @param ipv6 set to ipv6 addresses
      */
-    public static void doInstall(tabRoute<addrIP> tab, tabGen<tabLabelEntry> done, ipFwd fwd, boolean ipv6) {
+    public static void doInstall(tabRoute<addrIP> tab, tabGen<tabLabelEntry> done, ipFwd fwd) {
         tabGen<tabLabelEntry> need = new tabGen<tabLabelEntry>();
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> ntry = tab.get(i);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
-                continue;
-            }
-            if (ntry.best.nextHop.isIPv4() == ipv6) {
                 continue;
             }
             tabRouteEntry<addrIP> rou = fwd.actualU.route(ntry.best.nextHop);

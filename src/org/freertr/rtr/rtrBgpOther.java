@@ -49,11 +49,6 @@ public class rtrBgpOther extends ipRtr {
     public boolean flowInst;
 
     /**
-     * install mpls namespaces
-     */
-    protected boolean mpnsInst;
-
-    /**
      * originate mpls namespaces
      */
     protected cfgIfc mpnsOrgn;
@@ -382,9 +377,6 @@ public class rtrBgpOther extends ipRtr {
         }
         l.add(beg2 + "vpn-mode " + a);
         l.add(beg2 + "distance " + distance);
-        if (mpnsInst) {
-            l.add(beg2 + "mpns-install");
-        }
         if (mpnsOrgn != null) {
             l.add(beg2 + "mpns-advert " + mpnsOrgn.name);
         }
