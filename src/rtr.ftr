@@ -4351,6 +4351,8 @@ qc pass: static routing with custom labels
 qc pass: static switching with custom labels
 qc pass: static routing with same labels
 qc pass: static routing with mpns labels
+qc pass: static routing with other mpns labels
+qc pass: static routing with remote mpns labels
 qc pass: static routing with interface
 qc pass: static routing over point2point ethernet
 qc pass: recursive static routing
