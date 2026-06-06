@@ -2098,7 +2098,6 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 3, new int[]{-1}, "tx", "enable vpn tx mode");
         l.add(null, false, 3, new int[]{-1}, "both", "enable vpn mode");
         l.add(null, false, 3, new int[]{-1}, "none", "disable vpn mode");
-        l.add(null, false, 2, new int[]{-1}, "mpns-install", "specify mpls namespace installation");
         l.add(null, false, 2, new int[]{3}, "mpns-advert", "specify mpls namespace advertisement");
         l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of interface");
         rtrBgpVrfRtr.getHelp(l, 2);

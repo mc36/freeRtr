@@ -18430,3 +18430,5 @@ qc pass: static routing with mpns labels
 ---------------------------------- 2026-06-06 05:46:12 26.6.6
 qc pass: static routing with other mpns labels
 qc pass: static routing with remote mpns labels
+---------------------------------- 2026-06-06 06:38:52 26.6.6
+qc pass: p4lang: routing over mpns backplane

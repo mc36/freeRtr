@@ -128,7 +128,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
     /**
      * advertisement base
      */
-    protected addrIP advertBase = new addrIP();
+    protected addrIP advertBase;
 
     /**
      * backplane
@@ -149,7 +149,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         new userFilter("server stack .*", cmds.tabulator + "buffer 65536", null),
         new userFilter("server stack .*", cmds.tabulator + "dataplanes 0", null),
         new userFilter("server stack .*", cmds.tabulator + "label-base 0", null),
-        new userFilter("server stack .*", cmds.tabulator + "advert-base ::", null),
+        new userFilter("server stack .*", cmds.tabulator + "advert-base null", null),
         new userFilter("server stack .*", cmds.tabulator + "discovery 1000 5000", null)
     };
 
@@ -186,7 +186,11 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return false;
         }
         if (s.equals("advert-base")) {
+            advertBase = new addrIP();
             advertBase.fromString(cmd.word());
+            if (neg) {
+                advertBase = null;
+            }
             restartDiscovery(true);
             return false;
         }

@@ -2691,6 +2691,7 @@ qc pass: p4lang: native ouni with bgp over vlan
 qc pass: p4lang: routing over ipv4 backplane
 qc pass: p4lang: routing over ipv6 backplane
 qc pass: p4lang: routing over mixed backplane
+qc pass: p4lang: routing over mpns backplane
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

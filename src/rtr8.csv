@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.6.6-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-06-06 06:15:47, took 00:11:21, with 50 workers, on 896 cases, 0 failed, 0 traces, 1 retries
+-;-;-;2026-06-06 07:09:10, took 00:12:31, with 50 workers, on 897 cases, 0 failed, 0 traces, 0 retries
 -;-;-;./rtr.bin, udp
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;success;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;success;p4lang: ingress access list
@@ -898,3 +898,4 @@ http://sources.freertr.org/cfg/p4lang-rout534.tst;p4lang-rout534.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout535.tst;p4lang-rout535.tst;success;p4lang: routing over ipv4 backplane
 http://sources.freertr.org/cfg/p4lang-rout536.tst;p4lang-rout536.tst;success;p4lang: routing over ipv6 backplane
 http://sources.freertr.org/cfg/p4lang-rout537.tst;p4lang-rout537.tst;success;p4lang: routing over mixed backplane
+http://sources.freertr.org/cfg/p4lang-rout538.tst;p4lang-rout538.tst;success;p4lang: routing over mpns backplane

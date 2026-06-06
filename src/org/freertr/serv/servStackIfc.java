@@ -298,8 +298,12 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         ntry.best.pathSeq.add(bgpAsn);
         ntry.best.metric = met;
         addrIP adr = new addrIP();
-        bits.msbPutD(adr.getBytes(), addrIP.size - 4, id);
-        adr.setAdd(adr, lower.lower.advertBase);
+        if (lower.lower.advertBase == null) {
+            bits.msbPutD(adr.getBytes(), 0, lower.lower.labelBase + id);
+        } else {
+            bits.msbPutD(adr.getBytes(), addrIP.size - 4, id);
+            adr.setAdd(adr, lower.lower.advertBase);
+        }
         ntry.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
         return ntry;
     }
@@ -342,10 +346,14 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
         rtrBgpNeigh nei = new rtrBgpNeigh(bgp, bgpAdr);
         nei.localAs = bgpAsn;
         int safi;
-        if (lower.lower.advertBase.isIPv4()) {
-            safi = rtrBgpUtil.safiIp4lab;
+        if (lower.lower.advertBase == null) {
+            safi = rtrBgpUtil.safiMpns;
         } else {
-            safi = rtrBgpUtil.safiIp6lab;
+            if (lower.lower.advertBase.isIPv4()) {
+                safi = rtrBgpUtil.safiIp4lab;
+            } else {
+                safi = rtrBgpUtil.safiIp6lab;
+            }
         }
         nei.addrFams = rtrBgpParam.boolsSet(false);
         int idx = bgp.safi2idx(safi);
