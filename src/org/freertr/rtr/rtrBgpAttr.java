@@ -1340,7 +1340,8 @@ class rtrBgpAttrReachable implements rtrBgpAttr {
         len = pck.dataSize() - len;
         addrIP nextHop = null;
         for (; pck.dataSize() > len;) {
-            if ((sfi == rtrBgpUtil.sfiMplsVpnU) || (sfi == rtrBgpUtil.sfiMplsVpnM) || (sfi == rtrBgpUtil.sfiClsTrnPl)) {
+            if (rtrBgp.idxNeedRd[idx]) {
+//////            if ((sfi == rtrBgpUtil.sfiMplsVpnU) || (sfi == rtrBgpUtil.sfiMplsVpnM) || (sfi == rtrBgpUtil.sfiClsTrnPl)) {
                 pck.getSkip(8); // rd
             }
             addrIP adr;

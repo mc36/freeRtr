@@ -81,6 +81,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected static int[] indexAlias;
 
     /**
+     * need rd of index
+     */
+    protected static boolean[] idxNeedRd;
+
+    /**
      * local as number
      */
     public int localAs;
@@ -828,6 +833,21 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             a[rtrBgpParam.idxMtre] = rtrBgpAfi.mvpn;
             a[rtrBgpParam.idxMtro] = rtrBgpAfi.mvpn;
             bgp6safis = a;
+        }
+        if (idxNeedRd == null) {
+            boolean[] a = new boolean[origntd.length];
+            for (int i = 0; i < a.length; i++) {
+                switch (bgp4idxes[i] & rtrBgpUtil.sfiMask) {
+                    case rtrBgpUtil.sfiMplsVpnU:
+                    case rtrBgpUtil.sfiMplsVpnM:
+                    case rtrBgpUtil.sfiClsTrnPl:
+                        break;
+                    default:
+                        continue;
+                }
+                a[i] = true;
+            }
+            idxNeedRd = a;
         }
         if (bgpAttrsRx == null) {
             rtrBgpAttr[] a = new rtrBgpAttr[256];
