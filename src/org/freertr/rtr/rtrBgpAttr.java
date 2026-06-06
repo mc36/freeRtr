@@ -335,14 +335,14 @@ public interface rtrBgpAttr {
             v6nh = !nextHop.isIPv4();
         }
         int i = v6nh ? addrIPv6.size : addrIPv4.size;
-        if ((sfi == rtrBgpUtil.sfiMplsVpnU) || (sfi == rtrBgpUtil.sfiMplsVpnM) || (sfi == rtrBgpUtil.sfiClsTrnPl)) {
+        if (rtrBgp.idx2nhRd[idx]) {
             i += 8;
         }
         hlp.clear();
         hlp.msbPutD(0, rtrBgpUtil.safi2triplet(safi));
         hlp.putByte(3, i);
         hlp.putSkip(4);
-        if ((sfi == rtrBgpUtil.sfiMplsVpnU) || (sfi == rtrBgpUtil.sfiMplsVpnM) || (sfi == rtrBgpUtil.sfiClsTrnPl)) {
+        if (rtrBgp.idx2nhRd[idx]) {
             hlp.msbPutQ(0, 0); // rd
             hlp.putSkip(8);
         }
@@ -1340,8 +1340,7 @@ class rtrBgpAttrReachable implements rtrBgpAttr {
         len = pck.dataSize() - len;
         addrIP nextHop = null;
         for (; pck.dataSize() > len;) {
-            if (rtrBgp.idxNeedRd[idx]) {
-//////            if ((sfi == rtrBgpUtil.sfiMplsVpnU) || (sfi == rtrBgpUtil.sfiMplsVpnM) || (sfi == rtrBgpUtil.sfiClsTrnPl)) {
+            if (rtrBgp.idx2nhRd[idx]) {
                 pck.getSkip(8); // rd
             }
             addrIP adr;
