@@ -884,13 +884,6 @@ public class servP4langConn implements Runnable {
                     }
                     continue;
                 }
-                servP4langIfc ifc = lower.findIfc(ntry.ifc);
-                if (ifc == null) {
-                    servStackFwd oth = lower.parent.findIfc(lower.parid, ntry.ifc);
-                    if (oth != null) {
-                        continue;
-                    }
-                }
                 counter old = ntry.hwCntr;
                 ntry.hwCntr = new counter();
                 ntry.hwCntr.packTx = bits.str2long(cmd.word());
