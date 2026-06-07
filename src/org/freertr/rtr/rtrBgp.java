@@ -86,6 +86,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected static boolean[] idx2nhRd;
 
     /**
+     * use rtfilter in reachability
+     */
+    protected static boolean[] idx2useRtf;
+
+    /**
      * local as number
      */
     public int localAs;
@@ -848,6 +853,18 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 a[i] = true;
             }
             idx2nhRd = a;
+        }
+        if (idx2useRtf == null) {
+            boolean[] a = new boolean[origntd.length];
+            a[rtrBgpParam.idxVpnU] = true;
+            a[rtrBgpParam.idxVpoU] = true;
+            a[rtrBgpParam.idxVpnF] = true;
+            a[rtrBgpParam.idxVpnM] = true;
+            a[rtrBgpParam.idxVpoM] = true;
+            a[rtrBgpParam.idxVpoF] = true;
+            a[rtrBgpParam.idxVpls] = true;
+            a[rtrBgpParam.idxEvpn] = true;
+            idx2useRtf = a;
         }
         if (bgpAttrsRx == null) {
             rtrBgpAttr[] a = new rtrBgpAttr[256];

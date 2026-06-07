@@ -2098,7 +2098,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             default:
                 break;
         }
-        if (neigh.rtfilterIn && neigh.shouldRtfilter(idx)) {
+        if (neigh.rtfilterIn && rtrBgp.idx2useRtf[idx]) {
             if (tabRouteUtil.findRtfilterTab(ntry.best.extComm, neigh.remoteAs, parent.computd[rtrBgpParam.idxRtf], true) && tabRouteUtil.findRtfilterTab(ntry.best.extComm, neigh.localAs, parent.computd[rtrBgpParam.idxRtf], true)) {
                 repPolRej++;
                 return true;

@@ -1826,18 +1826,6 @@ public abstract class rtrBgpParam {
     }
 
     /**
-     * check if rtfilter needed
-     *
-     * @param idx afi in question
-     * @return true if yes, false if not
-     */
-    public boolean shouldRtfilter(int idx) {
-        return (idx == idxVpnU) || (idx == idxVpoU) || (idx == idxVpnF)
-                || (idx == idxVpnM) || (idx == idxVpoM) || (idx == idxVpoF)
-                || (idx == idxVpls) || (idx == idxEvpn);
-    }
-
-    /**
      * check if same output will produced
      *
      * @param src where to compare
