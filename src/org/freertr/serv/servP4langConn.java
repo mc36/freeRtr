@@ -902,9 +902,9 @@ public class servP4langConn implements Runnable {
                 }
                 if ((tim - old.lastChgd) < 1000) {
                     ntry.hwCntr = ntry.hwCntr.plus(old);
+                    ntry.hwCntr.lastDr = old.lastDr;
                     continue;
                 }
-                ntry.hwCntr.lastTx = old.lastDr;
                 ntry.hwCntr.lastDr = old.packTx;
                 if (old.lastDr == old.packTx) {
                     continue;
