@@ -895,13 +895,21 @@ public class servP4langConn implements Runnable {
                 ntry.hwCntr = new counter();
                 ntry.hwCntr.packTx = bits.str2long(cmd.word());
                 ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+                long tim = bits.getTime();
+                ntry.hwCntr.lastChgd = tim;
                 if (old == null) {
                     continue;
                 }
-                if (old.compareTo(ntry.hwCntr) == 0) {
+                if ((tim - old.lastChgd) < 1000) {
+                    ntry.hwCntr = ntry.hwCntr.plus(old);
                     continue;
                 }
-                ntry.time = bits.getTime();
+                ntry.hwCntr.lastTx = old.lastDr;
+                ntry.hwCntr.lastDr = old.packTx;
+                if (old.lastDr == old.packTx) {
+                    continue;
+                }
+                ntry.time = tim;
                 continue;
             }
             if (s.equals("tunnel4_cnt")) {
