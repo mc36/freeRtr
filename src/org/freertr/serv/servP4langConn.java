@@ -861,6 +861,47 @@ public class servP4langConn implements Runnable {
                 continue;
             }
             if (s.equals("neigh_cnt")) {
+                servP4langNei nei = lower.findNei(bits.str2num(cmd.word()));
+                if (nei == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    continue;
+                }
+                if (nei.mac == null) {
+                    continue;
+                }
+                if (nei.iface.ifc == null) {
+                    continue;
+                }
+                if (nei.iface.ifc.bridgeHed == null) {
+                    continue;
+                }
+                ifcBridgeAdr ntry = nei.iface.ifc.bridgeHed.bridgeHed.findMacAddr(nei.mac);
+                if (ntry == null) {
+                    if (debugger.servP4langErr) {
+                        logger.debug("got unneeded report: " + cmd.getOriginal());
+                    }
+                    continue;
+                }
+                servP4langIfc ifc = lower.findIfc(ntry.ifc);
+                if (ifc == null) {
+                    servStackFwd oth = lower.parent.findIfc(lower.parid, ntry.ifc);
+                    if (oth != null) {
+                        continue;
+                    }
+                }
+                counter old = ntry.hwCntr;
+                ntry.hwCntr = new counter();
+                ntry.hwCntr.packTx = bits.str2long(cmd.word());
+                ntry.hwCntr.byteTx = bits.str2long(cmd.word());
+                if (old == null) {
+                    continue;
+                }
+                if (old.compareTo(ntry.hwCntr) == 0) {
+                    continue;
+                }
+                ntry.time = bits.getTime();
                 continue;
             }
             if (s.equals("tunnel4_cnt")) {
