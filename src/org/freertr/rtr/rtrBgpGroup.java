@@ -644,7 +644,8 @@ public class rtrBgpGroup extends rtrBgpParam {
         if (idx != rtrBgpParam.idxUni) {
             return ntry;
         }
-        if (!addrFams[rtrBgpParam.idxLab] && !addrFams[rtrBgpParam.idxCtp] && !addrFams[rtrBgpParam.idxCar]) {
+        if (!rtrBgpParam.isLabeledPeer(addrFams)) {
+            /////        if (!addrFams[rtrBgpParam.idxLab] && !addrFams[rtrBgpParam.idxCtp] && !addrFams[rtrBgpParam.idxCar]) {
             return ntry;
         }
         for (int i = 0; i < ntry.alts.size(); i++) {

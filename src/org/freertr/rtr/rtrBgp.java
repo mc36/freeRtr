@@ -1717,7 +1717,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (nei.calcReachable() != nei.reachable) {
                 return true;
             }
-            labPer |= nei.calcLabelPeer();
+            labPer |= rtrBgpParam.isLabeledPeer(nei.conn.peerAfis);
         }
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
@@ -1730,7 +1730,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             if (nei.calcReachable() != nei.reachable) {
                 return true;
             }
-            labPer |= nei.calcLabelPeer();
+            labPer |= rtrBgpParam.isLabeledPeer(nei.conn.peerAfis);
         }
         if (debugger.rtrBgpComp) {
             logger.debug("round " + compRound + " purge");

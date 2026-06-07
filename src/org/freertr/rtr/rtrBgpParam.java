@@ -1448,6 +1448,16 @@ public abstract class rtrBgpParam {
     }
 
     /**
+     * calculate labeled peer state
+     *
+     * @param afis address family mask
+     * @return true if yes, false if not
+     */
+    public static boolean isLabeledPeer(boolean[] afis) {
+        return afis[rtrBgpParam.idxLab] || afis[rtrBgpParam.idxCtp] || afis[rtrBgpParam.idxCar];
+    }
+
+    /**
      * get list of address families
      *
      * @param hl helping
