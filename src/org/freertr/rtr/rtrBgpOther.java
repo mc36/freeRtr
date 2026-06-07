@@ -51,7 +51,7 @@ public class rtrBgpOther extends ipRtr {
     /**
      * originate mpls namespaces
      */
-    protected cfgIfc mpnsOrgn;
+    protected boolean mpnsOrgn;
 
     /**
      * mpls namespaces installed
@@ -167,8 +167,9 @@ public class rtrBgpOther extends ipRtr {
      * @param nUni unicast table to update
      * @param nMlt multicast table to update
      * @param nFlw flowspec table to update
+     * @param nLab mpns table to update
      */
-    public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw) {
+    public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nLab) {
         if (!enabled) {
             return;
         }
@@ -183,6 +184,9 @@ public class rtrBgpOther extends ipRtr {
         }
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, new tabRouteEntry<addrIP>(), !parent.isIpv6, parent.localAs);
+        }
+        if (mpnsOrgn) {
+            rtrBgpMpns.doAdvertise(nLab, new tabRouteEntry<addrIP>(), fwd);
         }
     }
 
@@ -377,8 +381,8 @@ public class rtrBgpOther extends ipRtr {
         }
         l.add(beg2 + "vpn-mode " + a);
         l.add(beg2 + "distance " + distance);
-        if (mpnsOrgn != null) {
-            l.add(beg2 + "mpns-advert " + mpnsOrgn.name);
+        if (mpnsOrgn) {
+            l.add(beg2 + "mpns-advert");
         }
         if (flowInst) {
             l.add(beg2 + "flowspec-install");

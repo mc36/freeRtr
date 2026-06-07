@@ -28,23 +28,10 @@ public class rtrBgpMpns {
      *
      * @param tab table to update
      * @param attr entry to update
-     * @param src source to use
      * @param fwd forwarder to use
-     * @param ipv6 set to ipv6 addresses
      */
-    public static void doAdvertise(tabRoute<addrIP> tab, tabRouteEntry<addrIP> attr, cfgIfc src, ipFwd fwd, boolean ipv6) {
+    public static void doAdvertise(tabRoute<addrIP> tab, tabRouteEntry<addrIP> attr, ipFwd fwd) {
         attr.best.nextHop = new addrIP();
-        if (ipv6) {
-            if (src.addr6 == null) {
-                return;
-            }
-            attr.best.nextHop.fromIPv6addr(src.addr6);
-        } else {
-            if (src.addr4 == null) {
-                return;
-            }
-            attr.best.nextHop.fromIPv4addr(src.addr4);
-        }
         attr.best.rouSrc = rtrBgpUtil.peerOriginate;
         for (int i = 0; i < cfgAll.statLabs.size(); i++) {
             tabLabelEntry ntry = cfgAll.statLabs.get(i);

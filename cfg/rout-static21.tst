@@ -1,4 +1,4 @@
-description static routing with prefix tracker
+description static routing with nrpe tracker
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -23,10 +23,17 @@ int eth2
  ipv4 addr 1.1.2.1 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
-tracker t1
+server nrpe n
  vrf v1
- targ 1.1.2.0/30
- mod pref
+ exit
+check c1
+ comm sho inter descr
+ train
+ exit
+tracker t1
+ targ 2.2.2.101/c1
+ vrf v1
+ mod nrpe
  inter 1000
  time 500
  start
@@ -59,10 +66,17 @@ int eth2
  ipv4 addr 1.1.2.2 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
-tracker t1
+server nrpe n
  vrf v1
- targ 1.1.2.0/30
- mod pref
+ exit
+check c1
+ comm sho inter descr
+ train
+ exit
+tracker t1
+ targ 2.2.2.201/c1
+ vrf v1
+ mod nrpe
  inter 1000
  time 500
  start

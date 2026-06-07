@@ -308,7 +308,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * originate mpls namespaces
      */
-    protected cfgIfc mpnsOrgn;
+    protected boolean mpnsOrgn;
 
     /**
      * mpls namespaces installed
@@ -1285,11 +1285,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             changed[i].clear();
         }
         tabRoute<addrIP>[] freshly = rtrBgpParam.freshTables();
-        if (mpnsOrgn != null) {
-            rtrBgpMpns.doAdvertise(freshly[rtrBgpParam.idxMpns], new tabRouteEntry<addrIP>(), mpnsOrgn, fwdCore, isIpv6);
-        }
-        if (other.mpnsOrgn != null) {
-            rtrBgpMpns.doAdvertise(freshly[rtrBgpParam.idxMpns], new tabRouteEntry<addrIP>(), other.mpnsOrgn, other.fwd, isIpv6);
+        if (mpnsOrgn) {
+            rtrBgpMpns.doAdvertise(freshly[rtrBgpParam.idxMpns], new tabRouteEntry<addrIP>(), fwdCore);
         }
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(freshly[rtrBgpParam.idxFlw], flowSpec, new tabRouteEntry<addrIP>(), isIpv6, localAs);
@@ -1309,7 +1306,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry.best.distance = distantLoc;
             freshly[rtrBgpParam.idxFlw].add(tabRoute.addType.better, ntry, false, false);
         }
-        other.doAdvertise(freshly[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOflw]);
+        other.doAdvertise(freshly[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOflw], freshly[rtrBgpParam.idxMpns]);
         lspf.doAdvertise(freshly);
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxVpnU], freshly[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnF], freshly[rtrBgpParam.idxMvpn], freshly[rtrBgpParam.idxRtf], freshly[rtrBgpParam.idxMdt]);
@@ -2090,8 +2087,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 3, new int[]{4}, "<num:rtr>", "process id");
         l.add(null, false, 4, new int[]{-1}, "<num>", "area/level number");
         l.add(null, false, 1, new int[]{-1}, "mpns-install", "specify mpls namespace installation");
-        l.add(null, false, 1, new int[]{2}, "mpns-advert", "specify mpls namespace advertisement");
-        l.add(null, false, 2, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, 1, new int[]{-1}, "mpns-advert", "specify mpls namespace advertisement");
         l.add(null, false, 1, new int[]{-1}, "flowspec-install", "specify flowspec installation");
         l.add(null, false, 1, new int[]{2}, "flowspec-advert", "specify flowspec parameter");
         l.add(null, false, 2, new int[]{-1}, "<name:pm>", "name of policy map");
@@ -2153,8 +2149,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 3, new int[]{-1}, "tx", "enable vpn tx mode");
         l.add(null, false, 3, new int[]{-1}, "both", "enable vpn mode");
         l.add(null, false, 3, new int[]{-1}, "none", "disable vpn mode");
-        l.add(null, false, 2, new int[]{3}, "mpns-advert", "specify mpls namespace advertisement");
-        l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of interface");
+        l.add(null, false, 2, new int[]{-1}, "mpns-advert", "specify mpls namespace advertisement");
         rtrBgpVrfRtr.getHelp(l, 2);
         cfgRtr.getRedistHelp(l, 1);
         l.add(null, false, 1, new int[]{2}, "afi-vrf", "select vrf to advertise");
@@ -2255,10 +2250,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + " " + segrouIdx + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx + " " + bierSub);
         cmds.cfgLine(l, !mpnsInst, beg, "mpns-install", "");
-        if (mpnsOrgn == null) {
-            l.add(beg + "no mpns-advert");
+        if (mpnsOrgn) {
+            l.add(beg + "mpns-advert");
         } else {
-            l.add(beg + "mpns-advert " + mpnsOrgn.name);
+            l.add(beg + "no mpns-advert");
         }
         cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
         cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
@@ -2564,10 +2559,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             return false;
         }
         if (s.equals("mpns-advert")) {
-            mpnsOrgn = cfgAll.ifcFind(cmd.word(), 0);
-            if (negated) {
-                mpnsOrgn = null;
-            }
+            mpnsOrgn = !negated;
             needFull.add(1);
             compute.wakeup();
             return false;
@@ -2792,10 +2784,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 return false;
             }
             if (s.equals("mpns-advert")) {
-                other.mpnsOrgn = cfgAll.ifcFind(cmd.word(), 0);
-                if (negated) {
-                    other.mpnsOrgn = null;
-                }
+                other.mpnsOrgn = !negated;
                 needFull.add(1);
                 compute.wakeup();
                 return false;

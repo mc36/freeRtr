@@ -1,4 +1,4 @@
-description static routing with interface tracker
+description static routing with check tracker
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -23,9 +23,13 @@ int eth2
  ipv4 addr 1.1.2.1 255.255.255.252
  ipv6 addr 1234:2::1 ffff:ffff::
  exit
+check c1
+ comm sho inter descr
+ train
+ exit
 tracker t1
- targ eth2
- mod inter
+ targ c1
+ mod check
  inter 1000
  time 500
  start
@@ -58,9 +62,13 @@ int eth2
  ipv4 addr 1.1.2.2 255.255.255.252
  ipv6 addr 1234:2::2 ffff:ffff::
  exit
+check c1
+ comm sho inter descr
+ train
+ exit
 tracker t1
- targ eth2
- mod inter
+ targ c1
+ mod check
  inter 1000
  time 500
  start
