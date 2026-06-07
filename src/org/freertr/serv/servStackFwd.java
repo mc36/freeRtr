@@ -51,6 +51,11 @@ public class servStackFwd {
     protected tabGen<servStackIfc> ifaces = new tabGen<servStackIfc>();
 
     /**
+     * usable interfaces
+     */
+    protected int usables;
+
+    /**
      * last spf
      */
     protected spfCalc<addrIP> spf;

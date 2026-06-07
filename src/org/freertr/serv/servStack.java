@@ -482,12 +482,17 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
         boolean chg = false;
         for (int o = 0; o < fwds.size(); o++) {
             servStackFwd cur = fwds.get(o);
+            cur.usables = 0;
             for (int i = 0; i < cur.ifaces.size(); i++) {
                 servStackIfc ntry = cur.ifaces.get(i);
                 boolean res = ntry.getState() > tim;
+                if (res) {
+                    cur.usables++;
+                }
                 if (ntry.ready == res) {
                     continue;
                 }
+                ntry.changed = tim;
                 ntry.ready = res;
                 chg = true;
             }
@@ -764,7 +769,7 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
             return null;
         }
         servStackFwd cur = fwds.get(fwd);
-        userFormat res = new userFormat("|", "id|port|metric|ready|remote|peering|neighbor|trgmac");
+        userFormat res = new userFormat("|", "id|port|metric|ready|remote|peering|neighbor|trgmac|changed");
         for (int i = 0; i < cur.ifaces.size(); i++) {
             servStackIfc ntry = cur.ifaces.get(i);
             res.add(ntry.getShPorts());
@@ -873,10 +878,10 @@ public class servStack extends servGeneric implements prtServS, servGenFwdr {
      * @return show
      */
     public userFormat getShowBcks() {
-        userFormat res = new userFormat("|", "fwd|name|addr|routes|oneliner");
+        userFormat res = new userFormat("|", "fwd|name|addr|iface|usable|routes|oneliner");
         for (int i = 0; i < fwds.size(); i++) {
             servStackFwd ntry = fwds.get(i);
-            res.add(i + "|" + ntry.getShGetName() + "|" + ntry.remote + "|" + ntry.routes.size() + "|" + ntry.getShGet1liner());
+            res.add(i + "|" + ntry.getShGetName() + "|" + ntry.remote + "|" + ntry.ifaces.size() + "|" + ntry.usables + "|" + ntry.routes.size() + "|" + ntry.getShGet1liner());
         }
         return res;
     }

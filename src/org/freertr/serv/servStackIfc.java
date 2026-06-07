@@ -116,6 +116,11 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
     protected boolean ready;
 
     /**
+     * readiness changed
+     */
+    protected long changed;
+
+    /**
      * interface handler
      */
     protected ifcDn parent = new ifcNull();
@@ -462,7 +467,7 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
      * @return string
      */
     protected String getShPorts() {
-        return id + "|" + pi + "|" + metric + "|" + ready + "|" + lastFwdr + "|" + lastPort + "|" + bgpAdr + "|" + lastMac;
+        return id + "|" + pi + "|" + metric + "|" + ready + "|" + lastFwdr + "|" + lastPort + "|" + bgpAdr + "|" + lastMac + "|" + bits.timePast(changed);
     }
 
 }
