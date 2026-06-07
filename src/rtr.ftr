@@ -3810,6 +3810,8 @@ qc pass: unicast+mpvs over bgp with additional path
 qc pass: static labels over bgp mpns
 qc pass: static other labels over bgp mpns
 qc pass: static labels over remote bgp mpns
+qc pass: static labels over bgp mpvs
+qc pass: static labels over remote bgp mpvs
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

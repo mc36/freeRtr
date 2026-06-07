@@ -18,6 +18,7 @@ import org.freertr.ip.ipRtr;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
 import org.freertr.tab.tabLabel;
+import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabPlcmapN;
 import org.freertr.tab.tabQos;
@@ -52,6 +53,21 @@ public class rtrBgpVrfRtr extends ipRtr {
      * install flow specification
      */
     public boolean flowInst;
+
+    /**
+     * install mpls namespaces
+     */
+    public boolean mpnsInst;
+
+    /**
+     * originate mpls namespaces
+     */
+    public boolean mpnsOrgn;
+
+    /**
+     * mpls namespaces installed
+     */
+    public tabGen<tabLabelEntry> mpnsDone;
 
     /**
      * originating interface
@@ -169,6 +185,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         routerVrx = true;
         routerVtx = true;
         distance = -1;
+        mpnsDone = new tabGen<tabLabelEntry>();
     }
 
     /**
@@ -267,8 +284,9 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param nMvpn mvpn table to update
      * @param nRtf rtfilter table to update
      * @param nMdt mdt table to update
+     * @param nLab mpvs table to update
      */
-    public void doAdvertise(int afi, tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn, tabRoute<addrIP> nRtf, tabRoute<addrIP> nMdt) {
+    public void doAdvertise(int afi, tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMvpn, tabRoute<addrIP> nRtf, tabRoute<addrIP> nMdt, tabRoute<addrIP> nLab) {
         final List<Long> rt = new ArrayList<Long>();
         for (int i = 0; i < fwd.rtExp.size(); i++) {
             rt.add(tabRouteUtil.rt2comm(fwd.rtExp.get(i)));
@@ -321,6 +339,13 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.rouDst = fwd.rd;
             ntry.best.extComm.addAll(rt);
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, ntry, other ^ parent.isIpv6, parent.localAs);
+        }
+        if (mpnsOrgn) {
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.best.extComm = new ArrayList<Long>();
+            ntry.rouDst = fwd.rd;
+            ntry.best.extComm.addAll(rt);
+            rtrBgpMpns.doAdvertise(nLab, ntry, fwd, fwd.commonLabel.label);
         }
         if (mdtI != null) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -666,9 +691,10 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param cmpU unicast table to read
      * @param cmpM multicast table to read
      * @param cmpF flowspec table to read
+     * @param cmpL mpns table to read
      * @return other changes trigger full recomputation
      */
-    public boolean doPeersFull(int afi, tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
+    public boolean doPeersFull(int afi, tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> cmpL) {
         routerChangedU = null;
         routerChangedM = null;
         routerChangedF = null;
@@ -688,6 +714,13 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), other ^ parent.isIpv6, parent.localAs);
+        }
+        if (mpnsInst) {
+            tabRoute<addrIP> tabL = new tabRoute<addrIP>("bgp");
+            for (int i = 0; i < cmpL.size(); i++) {
+                doImportRoute(rtrBgpUtil.sfiFlwSpc, cmpL.get(i), tabL, rt);
+            }
+            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(tabL, parent.fwdCore), mpnsDone);
         }
         if ((!tabU.differs(tabRoute.addType.alters, routerComputedU)) && (!tabU.differs(tabRoute.addType.alters, routerComputedM)) && (!tabF.differs(tabRoute.addType.alters, routerComputedF))) {
             return fwd.prefixMode != ipFwd.labelMode.common;
@@ -751,12 +784,14 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param cmpU unicast table to read
      * @param cmpM multicast table to read
      * @param cmpF flowspec table to read
+     * @param cmpL mpns table to read
      * @param chgU unicast table to process
      * @param chgM multicast table to process
      * @param chgF flowspec table to process
+     * @param chgL flowspec table to process
      * @return other changes trigger full recomputation
      */
-    public boolean doPeersIncr(int afi, tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> chgU, tabRoute<addrIP> chgM, tabRoute<addrIP> chgF) {
+    public boolean doPeersIncr(int afi, tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> cmpL, tabRoute<addrIP> chgU, tabRoute<addrIP> chgM, tabRoute<addrIP> chgF, tabRoute<addrIP> chgL) {
         if ((chgU == null) || (chgM == null) || (chgF == null)) {
             if (debugger.rtrBgpFull) {
                 logger.debug("changes disappeared");
@@ -777,6 +812,13 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         for (int i = 0; i < chgF.size(); i++) {
             doUpdateRoute(rtrBgpUtil.sfiFlwSpc, chgF.get(i), routerChangedF, routerComputedF, cmpF, rt);
+        }
+        if (mpnsInst && (chgL.size() > 0)) {
+            tabRoute<addrIP> tabL = new tabRoute<addrIP>("bgp");
+            for (int i = 0; i < cmpL.size(); i++) {
+                doImportRoute(rtrBgpUtil.sfiFlwSpc, cmpL.get(i), tabL, rt);
+            }
+            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(tabL, parent.fwdCore), mpnsDone);
         }
         if ((routerChangedU.size() + routerChangedM.size() + routerChangedF.size()) < 1) {
             return fwd.prefixMode != ipFwd.labelMode.common;
@@ -837,6 +879,8 @@ public class rtrBgpVrfRtr extends ipRtr {
         l.add(null, false, p + 1, new int[]{-1}, "<name:ifc>", "select source to advertise");
         l.add(null, false, p + 0, new int[]{p + 1}, "distance", "set import distance");
         l.add(null, false, p + 1, new int[]{-1}, "<num>", "distance");
+        l.add(null, false, p + 0, new int[]{-1}, "mpns-install", "specify mpls namespace installation");
+        l.add(null, false, p + 0, new int[]{-1}, "mpns-advert", "specify mpls namespace advertisement");
         l.add(null, false, p + 0, new int[]{-1}, "flowspec-install", "specify flowspec installation");
         l.add(null, false, p + 0, new int[]{p + 1}, "flowspec-advert", "specify flowspec parameter");
         l.add(null, false, p + 1, new int[]{-1}, "<name:pm>", "name of policy map");
@@ -868,6 +912,8 @@ public class rtrBgpVrfRtr extends ipRtr {
         l.add(beg1 + beg2 + "enable");
         l.add(beg1 + beg2 + "distance " + distance);
         cmds.cfgLine(l, !defRou, beg1, beg2 + "default-originate", "");
+        cmds.cfgLine(l, !mpnsInst, beg1, beg2 + "mpns-install", "");
+        cmds.cfgLine(l, !mpnsOrgn, beg1, beg2 + "mpns-advert", "");
         cmds.cfgLine(l, !flowInst, beg1, beg2 + "flowspec-install", "");
         cmds.cfgLine(l, flowSpec == null, beg1, beg2 + "flowspec-advert", "" + flowSpec);
         if (mdtI != null) {
@@ -1015,6 +1061,21 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         if (s.equals("default-originate")) {
             defRou = !negated;
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return;
+        }
+        if (s.equals("mpns-install")) {
+            mpnsInst = !negated;
+            if (negated) {
+                rtrBgpMpns.doInstall(new tabGen<tabLabelEntry>(), mpnsDone);
+            }
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return;
+        }
+        if (s.equals("mpns-advert")) {
+            mpnsOrgn = !negated;
             parent.needFull.add(1);
             parent.compute.wakeup();
             return;

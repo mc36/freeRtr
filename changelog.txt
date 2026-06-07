@@ -18439,3 +18439,6 @@ no qc pass: static routing with mpns labels
 qc pass: static labels over bgp mpns
 qc pass: static other labels over bgp mpns
 qc pass: static labels over remote bgp mpns
+---------------------------------- 2026-06-07 18:04:21 26.6.7
+qc pass: static labels over bgp mpvs
+qc pass: static labels over remote bgp mpvs

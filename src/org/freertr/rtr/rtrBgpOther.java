@@ -51,12 +51,12 @@ public class rtrBgpOther extends ipRtr {
     /**
      * originate mpls namespaces
      */
-    protected boolean mpnsOrgn;
+    public boolean mpnsOrgn;
 
     /**
      * mpls namespaces installed
      */
-    protected tabGen<tabLabelEntry> mpnsDone;
+    public tabGen<tabLabelEntry> mpnsDone;
 
     /**
      * srv6 advertisement source
@@ -111,6 +111,7 @@ public class rtrBgpOther extends ipRtr {
         routerVrx = true;
         routerVtx = true;
         distance = -1;
+        mpnsDone = new tabGen<tabLabelEntry>();
     }
 
     /**
@@ -186,7 +187,7 @@ public class rtrBgpOther extends ipRtr {
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, new tabRouteEntry<addrIP>(), !parent.isIpv6, parent.localAs);
         }
         if (mpnsOrgn) {
-            rtrBgpMpns.doAdvertise(nLab, new tabRouteEntry<addrIP>(), fwd);
+            rtrBgpMpns.doAdvertise(nLab, new tabRouteEntry<addrIP>(), fwd, 0);
         }
     }
 
