@@ -374,6 +374,9 @@ public class userExec {
         hl.add(null, false, 3, new int[]{4}, "just-interface", "unicast routing table by target");
         hl.add(null, false, 4, new int[]{5}, "<name:vrf>", "name of routing table");
         hl.add(null, false, 5, new int[]{-1}, "<name:ifc>", "name of interface");
+        hl.add(null, false, 3, new int[]{4}, "just-metric", "unicast routing table by metric");
+        hl.add(null, false, 4, new int[]{5}, "<name:vrf>", "name of routing table");
+        hl.add(null, false, 5, new int[]{-1}, "<str>", "int matcher");
         hl.add(null, false, 3, new int[]{4}, "just-nexthop", "unicast routing table by target");
         hl.add(null, false, 4, new int[]{5}, "<name:vrf>", "name of routing table");
         hl.add(null, false, 5, new int[]{-1}, "<addr>", "address of next hop");

@@ -2909,6 +2909,10 @@ public class userShow {
                 doShowRouteHop(4);
                 return null;
             }
+            if (a.equals("just-metric")) {
+                doShowRouteMet(4);
+                return null;
+            }
             if (a.equals("just-recursive")) {
                 doShowRouteRec(4);
                 return null;
@@ -3307,6 +3311,10 @@ public class userShow {
             }
             if (a.equals("just-nexthop")) {
                 doShowRouteHop(6);
+                return null;
+            }
+            if (a.equals("just-metric")) {
+                doShowRouteMet(6);
                 return null;
             }
             if (a.equals("just-recursive")) {
@@ -5931,6 +5939,21 @@ public class userShow {
         ntry.action = tabListingEntry.actionType.actPermit;
         ntry.nexthopMatch = new addrIP();
         ntry.nexthopMatch.fromString(cmd.word());
+        roumap.add(ntry);
+        tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
+        tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
+        doShowRoutes(fwd, res, 1);
+    }
+
+    private void doShowRouteMet(int ver) {
+        ipFwd fwd = findVrf(ver);
+        if (fwd == null) {
+            return;
+        }
+        tabListing<tabRtrmapN, addrIP> roumap = new tabListing<tabRtrmapN, addrIP>();
+        tabRtrmapN ntry = new tabRtrmapN();
+        ntry.action = tabListingEntry.actionType.actPermit;
+        ntry.metricMatch.fromString(cmd.word());
         roumap.add(ntry);
         tabRoute<addrIP> res = new tabRoute<addrIP>("dump");
         tabRoute.addUpdatedTable(tabRoute.addType.better, rtrBgpUtil.sfiUnicast, 0, res, fwd.actualU, false, roumap, null, null);
