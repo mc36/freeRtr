@@ -5145,6 +5145,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 lower = tunBier;
                 break;
             case tpP2p:
+                if (tunKey < 1) {
+                    return true;
+                }
                 tunTpP2p = new clntMplsTpP2p();
                 tunTpP2p.fwdCor = tunVrf.getFwd(tunTrg);
                 tunTpP2p.srcIfc = tunSrc.getFwdIfc(tunTrg);

@@ -207,7 +207,7 @@ public class clntMplsTpP2p implements ifcDn {
      * start connection
      */
     public void workStart() {
-        if (srcLab <= 0) {
+        if (srcLab == 0) {
             srcLab = trgLab;
         }
         resLab = tabLabel.allocateExact(tabLabelEntry.owner.trnprf, srcLab);
