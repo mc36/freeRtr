@@ -34,6 +34,7 @@ import org.freertr.clnt.clntMplsPwe;
 import org.freertr.clnt.clntMplsSr;
 import org.freertr.clnt.clntMplsTeP2mp;
 import org.freertr.clnt.clntMplsTeP2p;
+import org.freertr.clnt.clntMplsTpP2p;
 import org.freertr.clnt.clntMplsTrg;
 import org.freertr.clnt.clntMplsUdp;
 import org.freertr.clnt.clntMpolka;
@@ -865,6 +866,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
     public clntMplsLdpP2p tunLdpP2p;
 
     /**
+     * p2p mpls tp tunnel handler
+     */
+    public clntMplsTpP2p tunTpP2p;
+
+    /**
      * mpls ldp te tunnel handler
      */
     public clntMplsLdpTe tunLdpTe;
@@ -1414,6 +1420,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
          * mpls bier tunnel interface
          */
         bier,
+        /**
+         * p2p tp tunnel interface
+         */
+        tpP2p,
         /**
          * p2p ldp tunnel interface
          */
@@ -2552,6 +2562,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 return "p2mpte";
             case bier:
                 return "bier";
+            case tpP2p:
+                return "p2ptp";
             case ldpP2p:
                 return "p2pldp";
             case ldpTe:
@@ -2725,6 +2737,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (s.equals("p2pldp")) {
             return tunnelType.ldpP2p;
+        }
+        if (s.equals("p2ptp")) {
+            return tunnelType.tpP2p;
         }
         if (s.equals("teldp")) {
             return tunnelType.ldpTe;
@@ -4336,6 +4351,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             tunLdpP2p.workStop();
             tunLdpP2p = null;
         }
+        if (tunTpP2p != null) {
+            tunTpP2p.workStop();
+            tunTpP2p = null;
+        }
         if (tunLdpTe != null) {
             tunLdpTe.workStop();
             tunLdpTe = null;
@@ -5124,6 +5143,21 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 tunBier.setUpper(ethtyp);
                 tunBier.workStart();
                 lower = tunBier;
+                break;
+            case tpP2p:
+                tunTpP2p = new clntMplsTpP2p();
+                tunTpP2p.fwdCor = tunVrf.getFwd(tunTrg);
+                tunTpP2p.srcIfc = tunSrc.getFwdIfc(tunTrg);
+                tunTpP2p.trgLab = tunKey;
+                tunTpP2p.srcLab = tunKey2;
+                tunTpP2p.target = tunTrg.copyBytes();
+                tunTpP2p.expr = tunTOS;
+                tunTpP2p.entr = tunFLW;
+                tunTpP2p.mark = tunMRK;
+                tunTpP2p.ttl = tunTTL;
+                tunTpP2p.setUpper(ethtyp);
+                tunTpP2p.workStart();
+                lower = tunTpP2p;
                 break;
             case ldpP2p:
                 tunLdpP2p = new clntMplsLdpP2p();
@@ -7376,6 +7410,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "p2pte", "point to point mpls te tunnel");
         l.add(null, false, 3, new int[]{-1}, "p2mpte", "point to multipoint mpls te tunnel");
         l.add(null, false, 3, new int[]{-1}, "bier", "mpls bier tunnel");
+        l.add(null, false, 3, new int[]{-1}, "p2ptp", "point to point mpls tp tunnel");
         l.add(null, false, 3, new int[]{-1}, "p2pldp", "point to point mpls ldp tunnel");
         l.add(null, false, 3, new int[]{-1}, "teldp", "mpls ldp te tunnel");
         l.add(null, false, 3, new int[]{-1}, "p2mpldp", "point to multipoint mpls ldp tunnel");

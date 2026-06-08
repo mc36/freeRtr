@@ -18452,3 +18452,6 @@ qc pass: static labels over ibgp rr mpvs
 ---------------------------------- 2026-06-08 16:42:54 26.6.8
 qc pass: static labels redistribution over bgp mpns
 qc pass: static labels redistribution over bgp mpvs
+---------------------------------- 2026-06-08 20:01:34 26.6.8
+qc pass: p2p tp tunnel with symmetric labels
+qc pass: p2p tp tunnel with asymmetric labels

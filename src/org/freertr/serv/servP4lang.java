@@ -2027,6 +2027,12 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
                 }
                 rou.best.attribAs = ipMpls.typeU;
                 return ifc.ifc.tunLdpP2p.getResultRoute(rou);
+            case tpP2p:
+                if (ifc.ifc.tunTpP2p == null) {
+                    return null;
+                }
+                rou.best.attribAs = ipMpls.typeU;
+                return ifc.ifc.tunTpP2p.getResultRoute(rou);
             case polka:
                 if (ifc.ifc.tunPolka == null) {
                     return null;

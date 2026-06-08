@@ -37,6 +37,10 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
          */
         user,
         /**
+         * transport profile
+         */
+        trnprf,
+        /**
          * bgp mpls ns
          */
         mpns,
@@ -442,6 +446,9 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
                 break;
             case user:
                 s = "user config";
+                break;
+            case trnprf:
+                s = "mpls tp";
                 break;
             case mpns:
                 s = "bgp mpls ns";
