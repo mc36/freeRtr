@@ -1523,7 +1523,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         otherTrigger |= mpnsInst;
         otherTrigger |= other.mpnsInst;
         if (mpnsInst) {
-            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(computd[rtrBgpParam.idxMpns], fwdCore), mpnsDone);
+            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(computd[rtrBgpParam.idxMpns], fwdCore, fwdCore), mpnsDone);
         }
         if (flowInst) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, isIpv6));
@@ -1808,7 +1808,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             logger.debug("round " + compRound + " export");
         }
         if (mpnsInst && (cntMpns > 0)) {
-            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(computd[rtrBgpParam.idxMpns], fwdCore), mpnsDone);
+            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(computd[rtrBgpParam.idxMpns], fwdCore, fwdCore), mpnsDone);
         }
         if (flowInst && (cntFlw > 0)) {
             fwdCore.flowspec = tabQos.convertPolicy(rtrBgpFlow.doDecode(routerComputedF, isIpv6));

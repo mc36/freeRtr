@@ -87,17 +87,18 @@ public class rtrBgpMpns {
      * decode mpns routes
      *
      * @param tab list of routes
-     * @param fwd forwarder to use
+     * @param fwdT target forwarder to use
+     * @param fwdN nexthop forwarder to use
      * @return labels needed
      */
-    public static tabGen<tabLabelEntry> doDecode(tabRoute<addrIP> tab, ipFwd fwd) {
+    public static tabGen<tabLabelEntry> doDecode(tabRoute<addrIP> tab, ipFwd fwdT, ipFwd fwdN) {
         tabGen<tabLabelEntry> need = new tabGen<tabLabelEntry>();
         for (int i = 0; i < tab.size(); i++) {
             tabRouteEntry<addrIP> ntry = tab.get(i);
             if (ntry.best.rouSrc == rtrBgpUtil.peerOriginate) {
                 continue;
             }
-            tabRouteEntry<addrIP> rou = fwd.actualU.route(ntry.best.nextHop);
+            tabRouteEntry<addrIP> rou = fwdN.actualU.route(ntry.best.nextHop);
             if (rou == null) {
                 continue;
             }
@@ -108,7 +109,7 @@ public class rtrBgpMpns {
             if (o != 0) {
                 res.remoteLab = tabLabel.prependLabel(res.remoteLab, o);
             }
-            res.forwarder = fwd;
+            res.forwarder = fwdT;
             res.iface = (ipFwdIface) rou.best.iface;
             if (rou.best.nextHop == null) {
                 res.nextHop = ntry.best.nextHop.copyBytes();

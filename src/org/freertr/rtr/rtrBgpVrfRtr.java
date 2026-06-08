@@ -731,7 +731,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             for (int i = 0; i < parent.computd[rtrBgpParam.idxMpvs].size(); i++) {
                 doImportRoute(rtrBgpUtil.sfiFlwSpc, parent.computd[rtrBgpParam.idxMpvs].get(i), tabL, rt);
             }
-            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(tabL, parent.fwdCore), mpnsDone);
+            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(tabL, fwd, parent.fwdCore), mpnsDone);
         }
         if ((!tabU.differs(tabRoute.addType.alters, routerComputedU)) && (!tabU.differs(tabRoute.addType.alters, routerComputedM)) && (!tabF.differs(tabRoute.addType.alters, routerComputedF))) {
             return fwd.prefixMode != ipFwd.labelMode.common;
@@ -827,7 +827,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             for (int i = 0; i < parent.computd[rtrBgpParam.idxMpvs].size(); i++) {
                 doImportRoute(rtrBgpUtil.sfiFlwSpc, parent.computd[rtrBgpParam.idxMpvs].get(i), tabL, rt);
             }
-            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(tabL, parent.fwdCore), mpnsDone);
+            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(tabL, fwd, parent.fwdCore), mpnsDone);
         }
         if ((routerChangedU.size() + routerChangedM.size() + routerChangedF.size()) < 1) {
             return fwd.prefixMode != ipFwd.labelMode.common;
