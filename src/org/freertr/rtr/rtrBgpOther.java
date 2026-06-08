@@ -200,7 +200,7 @@ public class rtrBgpOther extends ipRtr {
             rtrBgpMpns.doAdvertise(nLab, new tabRouteEntry<addrIP>(), fwd, 0);
         }
         if (mpnsRdst) {
-    ///////////////////
+            rtrBgpMpns.doRedistribute(nLab, new tabRouteEntry<addrIP>(), fwd, 0, mpnsDone);
         }
     }
 

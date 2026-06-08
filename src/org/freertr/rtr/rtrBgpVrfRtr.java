@@ -353,7 +353,11 @@ public class rtrBgpVrfRtr extends ipRtr {
             rtrBgpMpns.doAdvertise(nLab, ntry, fwd, fwd.commonLabel.label);
         }
         if (mpnsRdst) {
-            ///////////////////
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.best.extComm = new ArrayList<Long>();
+            ntry.rouDst = fwd.rd;
+            ntry.best.extComm.addAll(rt);
+            rtrBgpMpns.doRedistribute(nLab, ntry, fwd, fwd.commonLabel.label, mpnsDone);
         }
         if (mdtI != null) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -886,6 +890,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         l.add(null, false, p + 1, new int[]{-1}, "<num>", "distance");
         l.add(null, false, p + 0, new int[]{-1}, "mpns-install", "specify mpls namespace installation");
         l.add(null, false, p + 0, new int[]{-1}, "mpns-advert", "specify mpls namespace advertisement");
+        l.add(null, false, p + 0, new int[]{-1}, "mpns-readvert", "specify mpls namespace redistribution");
         l.add(null, false, p + 0, new int[]{-1}, "flowspec-install", "specify flowspec installation");
         l.add(null, false, p + 0, new int[]{p + 1}, "flowspec-advert", "specify flowspec parameter");
         l.add(null, false, p + 1, new int[]{-1}, "<name:pm>", "name of policy map");

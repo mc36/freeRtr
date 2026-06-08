@@ -1293,7 +1293,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             rtrBgpMpns.doAdvertise(freshly[rtrBgpParam.idxMpns], new tabRouteEntry<addrIP>(), fwdCore, 0);
         }
         if (mpnsRdst) {
-        ///////////////////
+            rtrBgpMpns.doRedistribute(freshly[rtrBgpParam.idxMpns], new tabRouteEntry<addrIP>(), fwdCore, 0, mpnsDone);
         }
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(freshly[rtrBgpParam.idxFlw], flowSpec, new tabRouteEntry<addrIP>(), isIpv6, localAs);
@@ -2096,6 +2096,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 4, new int[]{-1}, "<num>", "area/level number");
         l.add(null, false, 1, new int[]{-1}, "mpns-install", "specify mpls namespace installation");
         l.add(null, false, 1, new int[]{-1}, "mpns-advert", "specify mpls namespace advertisement");
+        l.add(null, false, 1, new int[]{-1}, "mpns-readvert", "specify mpls namespace redistribution");
         l.add(null, false, 1, new int[]{-1}, "flowspec-install", "specify flowspec installation");
         l.add(null, false, 1, new int[]{2}, "flowspec-advert", "specify flowspec parameter");
         l.add(null, false, 2, new int[]{-1}, "<name:pm>", "name of policy map");
