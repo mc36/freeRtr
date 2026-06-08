@@ -83,7 +83,7 @@ router bgp4 1
  red conn
  afi-other ena
  afi-other mpns-advert
- mpns-install
+ afi-other mpns-install
  exit
 router bgp6 1
  vrf v1
@@ -96,7 +96,7 @@ router bgp6 1
  red conn
  afi-other ena
  afi-other mpns-advert
- mpns-install
+ afi-other mpns-install
  exit
 mpls route 104 eth1 1.1.1.1 104
 mpls route 106 eth1 1234:1::1 106
@@ -152,7 +152,7 @@ router bgp4 1
  red conn
  afi-other ena
  afi-other mpns-advert
- mpns-install
+ afi-other mpns-install
  exit
 router bgp6 1
  vrf v1
@@ -165,7 +165,7 @@ router bgp6 1
  red conn
  afi-other ena
  afi-other mpns-advert
- mpns-install
+ afi-other mpns-install
  exit
 mpls route 404 eth2 1.1.1.5 404
 mpls route 406 eth2 1234:2::1 406

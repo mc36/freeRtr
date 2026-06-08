@@ -691,10 +691,9 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param cmpU unicast table to read
      * @param cmpM multicast table to read
      * @param cmpF flowspec table to read
-     * @param cmpL mpns table to read
      * @return other changes trigger full recomputation
      */
-    public boolean doPeersFull(int afi, tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> cmpL) {
+    public boolean doPeersFull(int afi, tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF) {
         routerChangedU = null;
         routerChangedM = null;
         routerChangedF = null;
@@ -717,8 +716,8 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         if (mpnsInst) {
             tabRoute<addrIP> tabL = new tabRoute<addrIP>("bgp");
-            for (int i = 0; i < cmpL.size(); i++) {
-                doImportRoute(rtrBgpUtil.sfiFlwSpc, cmpL.get(i), tabL, rt);
+            for (int i = 0; i < parent.computd[rtrBgpParam.idxMpvs].size(); i++) {
+                doImportRoute(rtrBgpUtil.sfiFlwSpc, parent.computd[rtrBgpParam.idxMpvs].get(i), tabL, rt);
             }
             rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(tabL, parent.fwdCore), mpnsDone);
         }
@@ -784,14 +783,12 @@ public class rtrBgpVrfRtr extends ipRtr {
      * @param cmpU unicast table to read
      * @param cmpM multicast table to read
      * @param cmpF flowspec table to read
-     * @param cmpL mpns table to read
      * @param chgU unicast table to process
      * @param chgM multicast table to process
      * @param chgF flowspec table to process
-     * @param chgL flowspec table to process
      * @return other changes trigger full recomputation
      */
-    public boolean doPeersIncr(int afi, tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> cmpL, tabRoute<addrIP> chgU, tabRoute<addrIP> chgM, tabRoute<addrIP> chgF, tabRoute<addrIP> chgL) {
+    public boolean doPeersIncr(int afi, tabRoute<addrIP> cmpU, tabRoute<addrIP> cmpM, tabRoute<addrIP> cmpF, tabRoute<addrIP> chgU, tabRoute<addrIP> chgM, tabRoute<addrIP> chgF) {
         if ((chgU == null) || (chgM == null) || (chgF == null)) {
             if (debugger.rtrBgpFull) {
                 logger.debug("changes disappeared");
@@ -813,10 +810,10 @@ public class rtrBgpVrfRtr extends ipRtr {
         for (int i = 0; i < chgF.size(); i++) {
             doUpdateRoute(rtrBgpUtil.sfiFlwSpc, chgF.get(i), routerChangedF, routerComputedF, cmpF, rt);
         }
-        if (mpnsInst && (chgL.size() > 0)) {
+        if (mpnsInst) {
             tabRoute<addrIP> tabL = new tabRoute<addrIP>("bgp");
-            for (int i = 0; i < cmpL.size(); i++) {
-                doImportRoute(rtrBgpUtil.sfiFlwSpc, cmpL.get(i), tabL, rt);
+            for (int i = 0; i < parent.computd[rtrBgpParam.idxMpvs].size(); i++) {
+                doImportRoute(rtrBgpUtil.sfiFlwSpc, parent.computd[rtrBgpParam.idxMpvs].get(i), tabL, rt);
             }
             rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(tabL, parent.fwdCore), mpnsDone);
         }

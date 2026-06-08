@@ -1522,22 +1522,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         other.doPeersFull();
         for (int i = 0; i < vrfs.size(); i++) {
-            otherTrigger |= vrfs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxVpnU], freshly[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnF], freshly[rtrBgpParam.idxMpvs]);
+            otherTrigger |= vrfs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxVpnU], freshly[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnF]);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            otherTrigger |= ovrfs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxVpoU], freshly[rtrBgpParam.idxVpoM], freshly[rtrBgpParam.idxVpoF], freshly[rtrBgpParam.idxMpvs]);
+            otherTrigger |= ovrfs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxVpoU], freshly[rtrBgpParam.idxVpoM], freshly[rtrBgpParam.idxVpoF]);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            otherTrigger |= clrs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxUni], freshly[rtrBgpParam.idxMlt], freshly[rtrBgpParam.idxFlw], freshly[rtrBgpParam.idxMpvs]);
+            otherTrigger |= clrs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxUni], freshly[rtrBgpParam.idxMlt], freshly[rtrBgpParam.idxFlw]);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            otherTrigger |= oclrs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOflw], freshly[rtrBgpParam.idxMpvs]);
+            otherTrigger |= oclrs.get(i).doer.doPeersFull(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOflw]);
         }
         for (int i = 0; i < l3es.size(); i++) {
-            otherTrigger |= l3es.get(i).doer.doPeersFull(rtrBgpUtil.sfiEthVpn, freshly[rtrBgpParam.idxEvpn], freshly[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnF], freshly[rtrBgpParam.idxMpvs]);
+            otherTrigger |= l3es.get(i).doer.doPeersFull(rtrBgpUtil.sfiEthVpn, freshly[rtrBgpParam.idxEvpn], freshly[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnF]);
         }
         for (int i = 0; i < ol3es.size(); i++) {
-            otherTrigger |= ol3es.get(i).doer.doPeersFull(rtrBgpUtil.sfiEthVpn, freshly[rtrBgpParam.idxEvpn], freshly[rtrBgpParam.idxVpoM], freshly[rtrBgpParam.idxVpoF], freshly[rtrBgpParam.idxMpvs]);
+            otherTrigger |= ol3es.get(i).doer.doPeersFull(rtrBgpUtil.sfiEthVpn, freshly[rtrBgpParam.idxEvpn], freshly[rtrBgpParam.idxVpoM], freshly[rtrBgpParam.idxVpoF]);
         }
         for (int i = 0; i < vpls.size(); i++) {
             vpls.get(i).doPeers();
@@ -1807,22 +1807,22 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         other.doPeersIncr();
         for (int i = 0; i < vrfs.size(); i++) {
-            vrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxVpnU], computd[rtrBgpParam.idxVpnM], computd[rtrBgpParam.idxVpnF], computd[rtrBgpParam.idxMpvs], done[rtrBgpParam.idxVpnU], done[rtrBgpParam.idxVpnM], done[rtrBgpParam.idxVpnF], done[rtrBgpParam.idxMpvs]);
+            vrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxVpnU], computd[rtrBgpParam.idxVpnM], computd[rtrBgpParam.idxVpnF], done[rtrBgpParam.idxVpnU], done[rtrBgpParam.idxVpnM], done[rtrBgpParam.idxVpnF]);
         }
         for (int i = 0; i < ovrfs.size(); i++) {
-            ovrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxVpoU], computd[rtrBgpParam.idxVpoM], computd[rtrBgpParam.idxVpoF], computd[rtrBgpParam.idxMpvs], done[rtrBgpParam.idxVpoU], done[rtrBgpParam.idxVpoM], done[rtrBgpParam.idxVpoF], done[rtrBgpParam.idxMpvs]);
+            ovrfs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxVpoU], computd[rtrBgpParam.idxVpoM], computd[rtrBgpParam.idxVpoF], done[rtrBgpParam.idxVpoU], done[rtrBgpParam.idxVpoM], done[rtrBgpParam.idxVpoF]);
         }
         for (int i = 0; i < clrs.size(); i++) {
-            clrs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, routerComputedU, routerComputedM, routerComputedF, computd[rtrBgpParam.idxMpvs], routerChangedU, routerChangedM, routerChangedF, done[rtrBgpParam.idxMpvs]);
+            clrs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, routerComputedU, routerComputedM, routerComputedF, routerChangedU, routerChangedM, routerChangedF);
         }
         for (int i = 0; i < oclrs.size(); i++) {
-            oclrs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxOuni], computd[rtrBgpParam.idxOmlt], computd[rtrBgpParam.idxOflw], computd[rtrBgpParam.idxMpvs], other.routerChangedU, other.routerChangedM, other.routerChangedF, done[rtrBgpParam.idxMpvs]);
+            oclrs.get(i).doer.doPeersIncr(rtrBgpUtil.sfiUnicast, computd[rtrBgpParam.idxOuni], computd[rtrBgpParam.idxOmlt], computd[rtrBgpParam.idxOflw], other.routerChangedU, other.routerChangedM, other.routerChangedF);
         }
         for (int i = 0; i < l3es.size(); i++) {
-            l3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computd[rtrBgpParam.idxEvpn], computd[rtrBgpParam.idxVpnM], computd[rtrBgpParam.idxVpnF], computd[rtrBgpParam.idxMpvs], done[rtrBgpParam.idxEvpn], done[rtrBgpParam.idxVpnM], done[rtrBgpParam.idxVpnF], done[rtrBgpParam.idxMpvs]);
+            l3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computd[rtrBgpParam.idxEvpn], computd[rtrBgpParam.idxVpnM], computd[rtrBgpParam.idxVpnF], done[rtrBgpParam.idxEvpn], done[rtrBgpParam.idxVpnM], done[rtrBgpParam.idxVpnF]);
         }
         for (int i = 0; i < ol3es.size(); i++) {
-            ol3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computd[rtrBgpParam.idxEvpn], computd[rtrBgpParam.idxVpoM], computd[rtrBgpParam.idxVpoF], computd[rtrBgpParam.idxMpvs], done[rtrBgpParam.idxEvpn], done[rtrBgpParam.idxVpoM], done[rtrBgpParam.idxVpoF], done[rtrBgpParam.idxMpvs]);
+            ol3es.get(i).doer.doPeersIncr(rtrBgpUtil.sfiEthVpn, computd[rtrBgpParam.idxEvpn], computd[rtrBgpParam.idxVpoM], computd[rtrBgpParam.idxVpoF], done[rtrBgpParam.idxEvpn], done[rtrBgpParam.idxVpoM], done[rtrBgpParam.idxVpoF]);
         }
         if (cntVpls > 0) {
             for (int i = 0; i < vpls.size(); i++) {
