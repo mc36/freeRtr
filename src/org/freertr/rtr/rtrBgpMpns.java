@@ -109,7 +109,7 @@ public class rtrBgpMpns {
             old.setFwdMpls(tabLabelEntry.owner.mpns, ntry.forwarder, ntry.iface, ntry.nextHop, ntry.remoteLab);
             done.put(old);
         }
-        for (int i = 0; i < done.size(); i++) {
+        for (int i = done.size() - 1; i >= 0; i--) {
             tabLabelEntry ntry = done.get(i);
             if (need.find(ntry) != null) {
                 continue;

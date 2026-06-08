@@ -1513,6 +1513,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         otherTrigger |= addrFams[rtrBgpParam.idxCar];
         otherTrigger |= linkStates.size() > 0;
         otherTrigger |= mpnsInst;
+        otherTrigger |= other.mpnsInst;
         if (mpnsInst) {
             rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(computd[rtrBgpParam.idxMpns], fwdCore), mpnsDone);
         }
@@ -2772,6 +2773,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     other.srv6 = null;
                 } else {
                     other.srv6 = cfgAll.ifcFind(cmd.word(), 0);
+                }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("mpns-install")) {
+                other.mpnsInst = !negated;
+                if (negated) {
+                    rtrBgpMpns.doInstall(new tabGen<tabLabelEntry>(), other.mpnsDone);
                 }
                 needFull.add(1);
                 compute.wakeup();

@@ -49,6 +49,11 @@ public class rtrBgpOther extends ipRtr {
     public boolean flowInst;
 
     /**
+     * install mpls namespaces
+     */
+    protected boolean mpnsInst;
+
+    /**
      * originate mpls namespaces
      */
     public boolean mpnsOrgn;
@@ -244,6 +249,9 @@ public class rtrBgpOther extends ipRtr {
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(tabF, flowSpec, new tabRouteEntry<addrIP>(), !parent.isIpv6, parent.localAs);
         }
+        if (mpnsInst) {
+            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(parent.computd[rtrBgpParam.idxMpns], parent.fwdCore), mpnsDone);
+        }
         if ((!tabU.differs(tabRoute.addType.alters, routerComputedU)) && (!tabU.differs(tabRoute.addType.alters, routerComputedM)) && (!tabF.differs(tabRoute.addType.alters, routerComputedF))) {
             return fwd.prefixMode != ipFwd.labelMode.common;
         }
@@ -301,6 +309,9 @@ public class rtrBgpOther extends ipRtr {
         }
         for (int i = 0; i < chgF.size(); i++) {
             doUpdateRoute(rtrBgpUtil.sfiFlwSpc, chgF.get(i), routerComputedF, parent.computd[rtrBgpParam.idxOflw]);
+        }
+        if (mpnsInst) {
+            rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(parent.computd[rtrBgpParam.idxMpns], parent.fwdCore), mpnsDone);
         }
         if ((chgU.size() + chgM.size() + chgF.size()) < 1) {
             return fwd.prefixMode != ipFwd.labelMode.common;
@@ -382,6 +393,9 @@ public class rtrBgpOther extends ipRtr {
         }
         l.add(beg2 + "vpn-mode " + a);
         l.add(beg2 + "distance " + distance);
+        if (mpnsInst) {
+            l.add(beg2 + "mpns-install");
+        }
         if (mpnsOrgn) {
             l.add(beg2 + "mpns-advert");
         }
