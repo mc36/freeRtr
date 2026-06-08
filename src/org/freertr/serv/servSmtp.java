@@ -57,6 +57,11 @@ public class servSmtp extends servGeneric implements prtServS {
     public String mailFolders = "/data/";
 
     /**
+     * logging
+     */
+    public boolean logging;
+
+    /**
      * recursion available
      */
     public boolean recursEna = false;
@@ -127,7 +132,8 @@ public class servSmtp extends servGeneric implements prtServS {
         new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "dsn", null),
         new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bcc", null),
         new userFilter("server smtp .*", cmds.tabulator + "rbl-threshold 0", null),
-        new userFilter("server smtp .*", cmds.tabulator + "rbl-timeout 5000", null)
+        new userFilter("server smtp .*", cmds.tabulator + "rbl-timeout 5000", null),
+        new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
     };
 
     public userFilter[] srvDefFlt() {
@@ -143,6 +149,7 @@ public class servSmtp extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
+        cmds.cfgLine(lst, !logging, beg, "logging", "");
         lst.add(beg + "rbl-threshold " + rblMin);
         lst.add(beg + "rbl-timeout " + rblTim);
         for (int i = 0; i < rbls.size(); i++) {
@@ -168,6 +175,10 @@ public class servSmtp extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("logging")) {
+            logging = true;
+            return false;
+        }
         if (s.equals("dsn")) {
             dsnEna = true;
             return false;
@@ -238,6 +249,10 @@ public class servSmtp extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
+        if (s.equals("logging")) {
+            logging = false;
+            return false;
+        }
         if (s.equals("dsn")) {
             dsnEna = false;
             return false;
@@ -298,6 +313,7 @@ public class servSmtp extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelp l) {
+        l.add(null, false, 1, new int[]{-1}, "logging", "log queries");
         l.add(null, false, 1, new int[]{-1}, "dsn", "allow delivery notification");
         l.add(null, false, 1, new int[]{2}, "recursion", "recursive parameters");
         l.add(null, false, 2, new int[]{-1}, "enable", "allow recursion");
@@ -955,6 +971,9 @@ class servSmtpDoer implements Runnable {
                 return false;
             }
             doLine("354 start mail input");
+            if (lower.logging) {
+                logger.info(conn.peerAddr + " sent " + trgS + " as " + src);
+            }
             packText pt = new packText(pipe);
             List<String> txt = pt.dottedRecvAll();
             clntSmtp.deleteHead(txt, hdrD);
