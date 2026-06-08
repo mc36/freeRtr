@@ -59,6 +59,11 @@ public class rtrBgpOther extends ipRtr {
     public boolean mpnsOrgn;
 
     /**
+     * redistribute mpls namespaces
+     */
+    public boolean mpnsRdst;
+
+    /**
      * mpls namespaces installed
      */
     public tabGen<tabLabelEntry> mpnsDone;
@@ -193,6 +198,9 @@ public class rtrBgpOther extends ipRtr {
         }
         if (mpnsOrgn) {
             rtrBgpMpns.doAdvertise(nLab, new tabRouteEntry<addrIP>(), fwd, 0);
+        }
+        if (mpnsRdst) {
+    ///////////////////
         }
     }
 
@@ -398,6 +406,9 @@ public class rtrBgpOther extends ipRtr {
         }
         if (mpnsOrgn) {
             l.add(beg2 + "mpns-advert");
+        }
+        if (mpnsRdst) {
+            l.add(beg2 + "mpns-readvert");
         }
         if (flowInst) {
             l.add(beg2 + "flowspec-install");

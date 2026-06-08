@@ -23,6 +23,44 @@ public class rtrBgpMpns {
     }
 
     /**
+     * redistribute mpns routes
+     *
+     * @param tab table to update
+     * @param attr entry to update
+     * @param fwd forwarder to use
+     * @param ctx context label
+     * @param done labels done
+     */
+    public static void doRedistribute(tabRoute<addrIP> tab, tabRouteEntry<addrIP> attr, ipFwd fwd, int ctx, tabGen<tabLabelEntry> done) {
+        attr.best.nextHop = new addrIP();
+        attr.best.rouSrc = rtrBgpUtil.peerOriginate;
+        for (int i = 0; i < tabLabel.labels.size(); i++) {
+            tabLabelEntry ntry = tabLabel.labels.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.forwarder != fwd) {
+                continue;
+            }
+            if (!ntry.checkOwner(tabLabelEntry.owner.mpns)) {
+                continue;
+            }
+            if (done.find(ntry) != null) {
+                continue;
+            }
+            doOnePrefix(tab, attr, ntry.label, ctx);
+        }
+    }
+
+    private static void doOnePrefix(tabRoute<addrIP> tab, tabRouteEntry<addrIP> attr, int svc, int ctx) {
+        addrIP adr = new addrIP();
+        bits.msbPutD(adr.getBytes(), 0, svc);
+        bits.msbPutD(adr.getBytes(), 4, ctx);
+        attr.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
+        tab.add(tabRoute.addType.better, attr, true, true);
+    }
+
+    /**
      * advertise mpns routes
      *
      * @param tab table to update
@@ -41,11 +79,7 @@ public class rtrBgpMpns {
             if (ntry.forwarder != fwd) {
                 continue;
             }
-            addrIP adr = new addrIP();
-            bits.msbPutD(adr.getBytes(), 0, ntry.label);
-            bits.msbPutD(adr.getBytes(), 4, ctx);
-            attr.prefix = new addrPrefix<addrIP>(adr, addrIP.size * 8);
-            tab.add(tabRoute.addType.better, attr, true, true);
+            doOnePrefix(tab, attr, ntry.label, ctx);
         }
     }
 

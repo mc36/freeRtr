@@ -311,6 +311,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     protected boolean mpnsOrgn;
 
     /**
+     * redistribute mpls namespaces
+     */
+    protected boolean mpnsRdst;
+
+    /**
      * mpls namespaces installed
      */
     protected tabGen<tabLabelEntry> mpnsDone;
@@ -1287,6 +1292,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (mpnsOrgn) {
             rtrBgpMpns.doAdvertise(freshly[rtrBgpParam.idxMpns], new tabRouteEntry<addrIP>(), fwdCore, 0);
         }
+        if (mpnsRdst) {
+        ///////////////////
+        }
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(freshly[rtrBgpParam.idxFlw], flowSpec, new tabRouteEntry<addrIP>(), isIpv6, localAs);
         }
@@ -2250,6 +2258,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx + " " + bierSub);
         cmds.cfgLine(l, !mpnsInst, beg, "mpns-install", "");
         cmds.cfgLine(l, !mpnsOrgn, beg, "mpns-advert", "");
+        cmds.cfgLine(l, !mpnsRdst, beg, "mpns-readvert", "");
         cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
         cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
         if (rpkiT == null) {
@@ -2559,6 +2568,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             compute.wakeup();
             return false;
         }
+        if (s.equals("mpns-readvert")) {
+            mpnsRdst = !negated;
+            needFull.add(1);
+            compute.wakeup();
+            return false;
+        }
         if (s.equals("flowspec-install")) {
             flowInst = !negated;
             if (negated) {
@@ -2789,6 +2804,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             }
             if (s.equals("mpns-advert")) {
                 other.mpnsOrgn = !negated;
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("mpns-readvert")) {
+                other.mpnsRdst = !negated;
                 needFull.add(1);
                 compute.wakeup();
                 return false;

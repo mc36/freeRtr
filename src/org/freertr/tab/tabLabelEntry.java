@@ -604,6 +604,16 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
     }
 
     /**
+     * check for the owner
+     *
+     * @param ky key to use for comparison
+     * @return true if matches, false if not
+     */
+    public boolean checkOwner(owner ky) {
+        return ky == key;
+    }
+
+    /**
      * set forwarding for drop
      *
      * @param ky key to use for deallocation

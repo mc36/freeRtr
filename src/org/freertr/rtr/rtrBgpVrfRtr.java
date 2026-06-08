@@ -65,6 +65,11 @@ public class rtrBgpVrfRtr extends ipRtr {
     public boolean mpnsOrgn;
 
     /**
+     * redistribute mpls namespaces
+     */
+    public boolean mpnsRdst;
+
+    /**
      * mpls namespaces installed
      */
     public tabGen<tabLabelEntry> mpnsDone;
@@ -346,6 +351,9 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.rouDst = fwd.rd;
             ntry.best.extComm.addAll(rt);
             rtrBgpMpns.doAdvertise(nLab, ntry, fwd, fwd.commonLabel.label);
+        }
+        if (mpnsRdst) {
+            ///////////////////
         }
         if (mdtI != null) {
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
@@ -911,6 +919,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         cmds.cfgLine(l, !defRou, beg1, beg2 + "default-originate", "");
         cmds.cfgLine(l, !mpnsInst, beg1, beg2 + "mpns-install", "");
         cmds.cfgLine(l, !mpnsOrgn, beg1, beg2 + "mpns-advert", "");
+        cmds.cfgLine(l, !mpnsRdst, beg1, beg2 + "mpns-readvert", "");
         cmds.cfgLine(l, !flowInst, beg1, beg2 + "flowspec-install", "");
         cmds.cfgLine(l, flowSpec == null, beg1, beg2 + "flowspec-advert", "" + flowSpec);
         if (mdtI != null) {
@@ -1073,6 +1082,12 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         if (s.equals("mpns-advert")) {
             mpnsOrgn = !negated;
+            parent.needFull.add(1);
+            parent.compute.wakeup();
+            return;
+        }
+        if (s.equals("mpns-readvert")) {
+            mpnsRdst = !negated;
             parent.needFull.add(1);
             parent.compute.wakeup();
             return;
