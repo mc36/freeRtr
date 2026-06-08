@@ -18449,3 +18449,6 @@ qc pass: multiple static labels over bgp mpvs
 ---------------------------------- 2026-06-08 07:08:25 26.6.8
 qc pass: static labels over ibgp rr mpns
 qc pass: static labels over ibgp rr mpvs
+---------------------------------- 2026-06-08 16:42:54 26.6.8
+qc pass: static labels redistribution over bgp mpns
+qc pass: static labels redistribution over bgp mpvs
