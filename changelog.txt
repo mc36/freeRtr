@@ -18444,3 +18444,5 @@ qc pass: static labels over bgp mpvs
 qc pass: static labels over remote bgp mpvs
 ---------------------------------- 2026-06-08 04:26:43 26.6.8
 qc pass: static other labels over bgp mpvs
+---------------------------------- 2026-06-08 06:36:04 26.6.8
+qc pass: multiple static labels over bgp mpvs
