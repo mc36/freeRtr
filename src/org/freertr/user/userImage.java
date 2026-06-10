@@ -442,8 +442,8 @@ public class userImage {
                 continue;
             }
             if (a.equals("reget-time")) {
-                regeTim = bits.str2long(s) * 3600;
-                regeTim += bits.str2long(s) * 86400;
+                regeTim = bits.str2long(cmd.word()) * 3600;
+                regeTim += bits.str2long(cmd.word()) * 86400;
                 regeTim *= 1000;
                 regeTim = bits.getTime() - regeTim;
                 continue;
