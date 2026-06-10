@@ -442,7 +442,10 @@ public class userImage {
                 continue;
             }
             if (a.equals("reget-time")) {
-                regeTim = bits.getTime() - (bits.str2num(s) * 3600 * 1000);
+                regeTim = bits.str2long(s) * 3600;
+                regeTim += bits.str2long(s) * 86400;
+                regeTim *= 1000;
+                regeTim = bits.getTime() - regeTim;
                 continue;
             }
             if (a.equals("download")) {
