@@ -370,30 +370,6 @@ public class userReader implements Comparator<String> {
         histD = d;
     }
 
-    private int doMorePrompt() {
-        for (;;) {
-            pipe.strPut("\r  -=[more]=-\r");
-            byte[] buf = new byte[1];
-            if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
-                return 3;
-            }
-            pipe.strPut("\r                   \r");
-            switch (buf[0]) {
-                case 13: // enter
-                    return 2;
-                case 32: // space
-                    return 1;
-                case 27: // escape
-                case 3: // ctrl+c
-                case 113: // q
-                case 81: // Q
-                    buf = new byte[32];
-                    pipe.nonBlockGet(buf, 0, buf.length);
-                    return 3;
-            }
-        }
-    }
-
     private void findColumn(List<String> lst) {
         String s = lst.get(columnL);
         columnN = 0;
@@ -976,15 +952,64 @@ public class userReader implements Comparator<String> {
             if (o < height) {
                 continue;
             }
-            o = p;
-            switch (doMorePrompt()) {
-                case 1: // normal listing
-                    break;
-                case 2: // next line
-                    o = height - 1;
-                    break;
-                case 3: // end listing
+            for (;;) {
+                pipe.strPut("\r  -=[more]=-\r");
+                byte[] buf = new byte[1];
+                if (pipe.blockingGet(buf, 0, buf.length) != buf.length) {
                     return true;
+                }
+                pipe.strPut("\r                   \r");
+                boolean done = false;
+                switch (buf[0]) {
+                    case 13: // enter
+                        done = true;
+                        o = height - 1;
+                        break;
+                    case 32: // space
+                    case 102: // f
+                    case 70: // F
+                        done = true;
+                        o = p;
+                        break;
+                    case 98: // b
+                    case 66: // B
+                        done = true;
+                        o = p;
+                        i -= (height-p) * 2;
+                        if (i < 0) {
+                            i = 0;
+                        }
+                        break;
+                    case 63: // ?
+                        pipe.linePut("enter-next line, space-next page, b-previous page, q-quit");
+                        break;
+                    case 47: // /
+                        pipe.strPut("/");
+                        a = pipe.lineGet(0x32);
+                        if (a.length() < 1) {
+                            break;
+                        }
+                        for (o = i; o < lst.size(); o++) {
+                            if (lst.get(o).indexOf(a) < 0) {
+                                continue;
+                            }
+                            i = o - 1;
+                            done = true;
+                            break;
+                        }
+                        o = p;
+                        break;
+                    case 27: // escape
+                    case 3: // ctrl+c
+                    case 113: // q
+                    case 81: // Q
+                        buf = new byte[32];
+                        pipe.nonBlockGet(buf, 0, buf.length);
+                        return true;
+                }
+                if (done) {
+                    break;
+                }
             }
         }
         pipe.linePut("");
