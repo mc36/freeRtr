@@ -408,27 +408,24 @@ public class userImage {
 
     private boolean doOneFile(List<String> res) {
         for (int cnt = 0; cnt < res.size(); cnt++) {
-            String s = res.get(cnt);
-            s = doFixups(s);
-            int i = s.indexOf(" #");
+            String a = res.get(cnt);
+            a = doFixups(a);
+            int i = a.indexOf(" #");
             if (i >= 0) {
-                s = s.substring(0, i);
+                a = a.substring(0, i);
             }
-            s = s.trim();
-            s += " ";
-            i = s.indexOf(" ");
-            String a = s.substring(0, i).trim().toLowerCase();
-            s = s.substring(i, s.length()).trim();
+            a = a.trim();
+            cmds cmd = getCmd(a);
+            a = cmd.word().toLowerCase();
             if (a.length() < 1) {
                 continue;
             }
-            pip.linePut("--> " + a + " " + s + " <--");
+            pip.linePut("--> " + cmd.getOriginal() + " <--");
             if (a.equals("exec")) {
-                execCmd(s);
+                a = cmd.getRemaining();
+                execCmd(a);
                 continue;
             }
-            cmds cmd = getCmd(a + " " + s);
-            cmd.word();
             if (a.equals("include")) {
                 if (doIncludeOne(cmd)) {
                     return true;
@@ -449,75 +446,75 @@ public class userImage {
                 continue;
             }
             if (a.equals("download")) {
-                downMode = bits.str2num(s);
+                downMode = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("hashdown")) {
-                hashMode = bits.str2num(s);
+                hashMode = bits.str2num(cmd.word());
                 continue;
             }
             if (a.equals("mirr")) {
-                miro = s;
+                miro = cmd.getRemaining();
                 continue;
             }
             if (a.equals("qemu")) {
-                qemu = s;
+                qemu = cmd.getRemaining();
                 continue;
             }
             if (a.equals("arch")) {
-                arch = s;
+                arch = cmd.getRemaining();
                 continue;
             }
             if (a.equals("boot")) {
-                boot = s;
+                boot = cmd.getRemaining();
                 continue;
             }
             if (a.equals("kern")) {
-                kern = s;
+                kern = cmd.getRemaining();
                 continue;
             }
             if (a.equals("unam")) {
-                unam = s;
+                unam = cmd.getRemaining();
                 continue;
             }
             if (a.equals("comp")) {
-                comp = s;
+                comp = cmd.getRemaining();
                 continue;
             }
             if (a.equals("cabi")) {
-                cabi = s;
+                cabi = cmd.getRemaining();
                 continue;
             }
             if (a.equals("ctrg")) {
-                ctrg = s;
+                ctrg = cmd.getRemaining();
                 continue;
             }
             if (a.equals("carc")) {
-                carc = s;
+                carc = cmd.getRemaining();
                 continue;
             }
             if (a.equals("grub")) {
-                grub = s;
+                grub = cmd.getRemaining();
                 continue;
             }
             if (a.equals("uefi")) {
-                uefi = s;
+                uefi = cmd.getRemaining();
                 continue;
             }
             if (a.equals("xtra")) {
-                xtra = s;
+                xtra = cmd.getRemaining();
                 continue;
             }
             if (a.equals("temp")) {
-                tempDir = s;
+                tempDir = cmd.getRemaining();
                 continue;
             }
             if (a.equals("down")) {
-                downDir = s;
+                downDir = cmd.getRemaining();
                 continue;
             }
             if (a.equals("image")) {
-                imgName = s;
+                imgName = cmd.getRemaining();
                 continue;
             }
             if (a.equals("exit")) {
@@ -533,21 +530,22 @@ public class userImage {
             }
             if (a.equals("find-replace")) {
                 a = cmd.word();
-                s = cmd.getRemaining();
-                found = found.replaceAll(a, s);
+                String b = cmd.getRemaining();
+                found = found.replaceAll(a, b);
                 continue;
             }
             if (a.equals("find-remove")) {
-                found = found.replaceAll(s, "");
+                a = cmd.getRemaining();
+                found = found.replaceAll(a, "");
                 continue;
             }
             if (a.equals("find-package")) {
                 tabIntMatcher mod = new tabIntMatcher();
                 mod.fromString(cmd.word());
-                s = cmd.getRemaining();
+                a = cmd.getRemaining();
                 for (i = 0; i < allPkgs.size(); i++) {
                     userImagePkg cur = allPkgs.get(i);
-                    if (!cur.name.matches(s)) {
+                    if (!cur.name.matches(a)) {
                         continue;
                     }
                     int p = cur.name.compareTo(found);
@@ -570,7 +568,7 @@ public class userImage {
                 if (xml.fromString(lst, "")) {
                     continue;
                 }
-                s = cmd.getRemaining();
+                String b = cmd.getRemaining();
                 for (int o = 0; o < xml.data.size(); o++) {
                     encXmlEntry ntry = xml.data.get(o);
                     if (!ntry.getTag().trim().toLowerCase().equals("a")) {
@@ -583,7 +581,7 @@ public class userImage {
                     }
                     ntry = par.get(i);
                     a = ntry.data;
-                    if (!a.matches(s)) {
+                    if (!a.matches(b)) {
                         continue;
                     }
                     int p = a.compareTo(found);
@@ -598,7 +596,7 @@ public class userImage {
                 tabIntMatcher mod = new tabIntMatcher();
                 mod.fromString(cmd.word());
                 a = cmd.word();
-                s = cmd.getRemaining();
+                String b = cmd.getRemaining();
                 File[] fl = userFlash.dirList(a);
                 if (fl == null) {
                     cmd.error("error getting list");
@@ -606,7 +604,7 @@ public class userImage {
                 }
                 for (i = 0; i < fl.length; i++) {
                     a = fl[i].getName();
-                    if (!a.matches(s)) {
+                    if (!a.matches(b)) {
                         continue;
                     }
                     int p = a.compareTo(found);
@@ -618,32 +616,36 @@ public class userImage {
                 continue;
             }
             if (a.equals("file-size")) {
-                found = "" + new File(s).length();
+                a = cmd.getRemaining();
+                found = "" + new File(a).length();
                 continue;
             }
             if (a.equals("file-date")) {
-                found = "" + new File(s).lastModified();
+                a = cmd.getRemaining();
+                found = "" + new File(a).lastModified();
                 continue;
             }
             if (a.equals("file-vers")) {
-                found = bits.time2str(cfgAll.timeZoneName, new File(s).lastModified(), 1);
+                a = cmd.getRemaining();
+                found = bits.time2str(cfgAll.timeZoneName, new File(a).lastModified(), 1);
                 found = found.substring(2, found.length()).replaceAll("-", ".");
                 continue;
             }
             if (a.equals("file-path")) {
-                i = s.lastIndexOf("/");
+                a = cmd.getRemaining();
+                i = a.lastIndexOf("/");
                 if (i < 0) {
-                    found = s;
+                    found = a;
                     continue;
                 }
-                found = s.substring(0, i);
+                found = a.substring(0, i);
                 continue;
             }
             if (a.equals("file-hash")) {
                 a = cmd.word();
-                s = cmd.getRemaining();
+                String b = cmd.getRemaining();
                 i = secTransform.str2hash(a);
-                found = userFlash.calcFileHash(secTransform.getHash(i), s);
+                found = userFlash.calcFileHash(secTransform.getHash(i), b);
                 continue;
             }
             if (a.equals("file-read")) {
@@ -661,8 +663,8 @@ public class userImage {
             }
             if (a.equals("file-line")) {
                 a = cmd.word();
-                s = cmd.getRemaining();
-                bits.buf2txt(false, bits.str2lst(s), a);
+                String b = cmd.getRemaining();
+                bits.buf2txt(false, bits.str2lst(b), a);
                 continue;
             }
             if (a.equals("file-text")) {
@@ -676,7 +678,8 @@ public class userImage {
                     a = doFixups(a);
                     lst.add(a);
                 }
-                bits.buf2txt(false, lst, s);
+                a = cmd.getRemaining();
+                bits.buf2txt(false, lst, a);
                 continue;
             }
             if (a.equals("catalog-sum")) {
@@ -691,7 +694,8 @@ public class userImage {
                 continue;
             }
             if (a.equals("catalog-read")) {
-                cmds c = getCmd(s);
+                a = cmd.getRemaining();
+                cmds c = getCmd(a);
                 if (readUpCatalog(c)) {
                     return true;
                 }
@@ -733,7 +737,8 @@ public class userImage {
                 continue;
             }
             if (a.equals("select-one")) {
-                selectOnePackage(0, s, s);
+                a = cmd.getRemaining();
+                selectOnePackage(0, a, a);
                 continue;
             }
             if (a.equals("select-all")) {
@@ -763,11 +768,13 @@ public class userImage {
                 continue;
             }
             if (a.equals("select-dis")) {
-                forbidden.add(new userImagePkg(s));
+                a = cmd.getRemaining();
+                forbidden.add(new userImagePkg(a));
                 continue;
             }
             if (a.equals("select-del")) {
-                selected.del(new userImagePkg(s));
+                a = cmd.getRemaining();
+                selected.del(new userImagePkg(a));
                 continue;
             }
             if (a.equals("select-lst")) {
@@ -813,7 +820,7 @@ public class userImage {
                 continue;
             }
             if (a.equals("package-inst")) {
-                s = "";
+                String b = "";
                 for (i = 0; i < selected.size(); i++) {
                     userImagePkg pkg = selected.get(i);
                     a = getPackageName(pkg);
@@ -821,22 +828,22 @@ public class userImage {
                         continue;
                     }
                     pkg.done = true;
-                    s += "dpkg-deb -x " + a + " " + tempDir + "/ ;";
+                    b += "dpkg-deb -x " + a + " " + tempDir + "/ ;";
                 }
-                execCmd(s);
+                execCmd(b);
                 continue;
             }
             if (a.equals("package-xtra")) {
-                cmd = new cmds("pkg", xtra);
-                s = "";
+                cmd = getCmd(xtra);
+                String b = "";
                 for (;;) {
                     a = cmd.word();
                     if (a.length() < 1) {
                         break;
                     }
-                    s += "tar xf " + downDir + "/" + arch + "-" + a + " -C " + tempDir + "/ ;";
+                    b += "tar xf " + downDir + "/" + arch + "-" + a + " -C " + tempDir + "/ ;";
                 }
-                execCmd(s);
+                execCmd(b);
                 continue;
             }
             if (a.equals("binary-xtra")) {
@@ -871,32 +878,34 @@ public class userImage {
                 continue;
             }
             if (a.equals("mkdir")) {
-                userFlash.mkdir(s);
+                a = cmd.getRemaining();
+                userFlash.mkdir(a);
                 continue;
             }
             if (a.equals("link")) {
-                s = cmd.word();
-                a = cmd.word();
-                execCmd("ln -s " + s + " " + a);
+                String b = cmd.word();
+                a = cmd.getRemaining();
+                execCmd("ln -s " + b + " " + a);
                 continue;
             }
             if (a.equals("move")) {
-                s = cmd.word();
-                a = cmd.word();
-                execCmd("mv " + s + " " + a);
+                String b = cmd.word();
+                a = cmd.getRemaining();
+                execCmd("mv " + b + " " + a);
                 continue;
             }
             if (a.equals("copy")) {
-                s = cmd.word();
-                a = cmd.word();
-                execCmd("cp -r " + s + " " + a);
+                String b = cmd.word();
+                a = cmd.getRemaining();
+                execCmd("cp -r " + b + " " + a);
                 continue;
             }
             if (a.equals("del")) {
-                execCmd("rm -rf " + s);
+                a = cmd.getRemaining();
+                execCmd("rm -rf " + a);
                 continue;
             }
-            cmd.error("unknown command: " + a + " " + s);
+            cmd.error("unknown command: " + cmd.getOriginal());
             return true;
         }
         return false;
