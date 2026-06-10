@@ -975,7 +975,7 @@ public class userReader implements Comparator<String> {
                     case 66: // B
                         done = true;
                         o = p;
-                        i -= (height-p) * 2;
+                        i -= (height - p) * 2;
                         if (i < 0) {
                             i = 0;
                         }
