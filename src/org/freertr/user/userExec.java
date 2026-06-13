@@ -2379,6 +2379,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{3, -1}, "[str]", "text");
         hl.add(null, false, 2, new int[]{-1}, "snake", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "matrix", "view demo");
+        hl.add(null, false, 2, new int[]{-1}, "snow", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "fire", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "plasma", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "donut", "view demo");

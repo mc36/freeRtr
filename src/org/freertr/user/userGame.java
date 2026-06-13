@@ -265,16 +265,8 @@ public class userGame {
         }
     }
 
-    private byte[] getMatrixStr() {
-        byte[] res = new byte[bits.random(4, console.curY * 3)];
-        for (int i = 0; i < res.length; i++) {
-            res[i] = (byte) bits.random(32, 127);
-        }
-        return res;
-    }
-
-    private boolean doMatrix(int x, int pos, byte[] str) {
-        int len = str.length;
+    private boolean doMatrix(int x, int pos, byte[] res) {
+        int len = res.length;
         for (int o = 0; o < console.sizY; o++) {
             int i = o + pos;
             if (i < 0) {
@@ -290,7 +282,7 @@ public class userGame {
             if (i >= (len - 1)) {
                 c = pipeScreen.colBrWhite;
             }
-            console.putInt(x, o, pipeScreen.colBlack, c, false, str[i]);
+            console.putInt(x, o, pipeScreen.colBlack, c, false, res[i]);
         }
         return pos > -len;
     }
@@ -301,10 +293,8 @@ public class userGame {
     public void doMatrix() {
         int[] poss = new int[console.sizX / 2];
         byte[][] strs = new byte[poss.length][];
-        for (int i = 0; i < strs.length; i++) {
-            strs[i] = getMatrixStr();
-            int len = strs[i].length;
-            poss[i] = bits.random(-len, +len);
+        for (int i = 0; i < poss.length; i++) {
+            strs[i] = new byte[0];
         }
         for (;;) {
             if (console.keyPress()) {
@@ -316,9 +306,49 @@ public class userGame {
                 if (doMatrix(i * 2, poss[i], strs[i])) {
                     continue;
                 }
-                strs[i] = getMatrixStr();
-                int len = strs[i].length;
+                byte[] res = new byte[bits.random(4, console.curY * 3)];
+                for (int o = 0; o < res.length; o++) {
+                    res[o] = (byte) bits.random(32, 127);
+                }
+                strs[i] = res;
+                int len = res.length;
                 poss[i] = bits.random(-len, +len);
+            }
+            console.refresh();
+            bits.sleep(500);
+        }
+    }
+
+    /**
+     * falling stars
+     */
+    public void doSnow() {
+        int[] okChrs = new int[]{'@', '#', '*', ' '};
+        int[] okCols = new int[]{pipeScreen.colBrWhite, pipeScreen.colBrBlue};
+        int[] poss = new int[console.sizX];
+        int[] spds = new int[poss.length];
+        int[] cols = new int[poss.length];
+        int[] chrs = new int[poss.length];
+        for (int i = 0; i < poss.length; i++) {
+            poss[i] = console.sizY * 20;
+            chrs[i] = ' ';
+        }
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            console.doClear();
+            for (int i = 0; i < poss.length; i++) {
+                poss[i] += spds[i];
+                int o = poss[i] / 10;
+                console.putInt(i, o, pipeScreen.colBlack, cols[i], false, chrs[i]);
+                if (o < console.sizY) {
+                    continue;
+                }
+                spds[i] = bits.random(5, 10);
+                poss[i] = bits.random(1, console.sizY * 10);
+                cols[i] = okCols[bits.random(0, okCols.length)];
+                chrs[i] = okChrs[bits.random(0, okChrs.length)];
             }
             console.refresh();
             bits.sleep(500);
@@ -1439,6 +1469,10 @@ public class userGame {
         }
         if (a.equals("matrix")) {
             doMatrix();
+            return;
+        }
+        if (a.equals("snow")) {
+            doSnow();
             return;
         }
         if (a.equals("fire")) {
