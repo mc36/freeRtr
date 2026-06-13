@@ -14,7 +14,6 @@ import org.freertr.pipe.pipeProgress;
 import org.freertr.pipe.pipeShell;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servHttp;
-import org.freertr.spf.spfCalc;
 import org.freertr.spf.spfLayout;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIntMatcher;
@@ -2438,7 +2437,7 @@ class userTesterOne {
                 p.putLine("write");
             }
             if (!wait) {
-                p.putLine("reload in 10");
+                p.putLine("reload in 5");
                 p.putLine("y");
             }
             for (i = 0; i < reapply; i++) {

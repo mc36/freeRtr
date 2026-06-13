@@ -25,7 +25,7 @@ int lo0
  exit
 int lo2
  vrf for v2
-  ipv4 addr 9.9.2.1 255.255.255.255
+ ipv4 addr 9.9.2.1 255.255.255.255
  ipv6 addr 9992::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
  exit
 int lo3
