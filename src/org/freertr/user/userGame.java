@@ -161,7 +161,7 @@ public class userGame {
         }
     }
 
-    private List<String> doText(cmds cmd) {
+    private List<String> convText(cmds cmd) {
         String a = cmd.getRemaining();
         if (a.length() < 1) {
             return cfgInit.getShLogo(0x08);
@@ -213,15 +213,15 @@ public class userGame {
         int hlfX = console.sizX / 2;
         int hlfY = console.sizY / 2;
         console.drawCircle(hlfX, hlfY, hlfX, hlfY, bg, fg, '*');
-        drawClock(bg, fg, hlfX, hlfY, 0.6, bits.str2num(a.substring(0, 2)) / 12.0, '@');
-        drawClock(bg, fg, hlfX, hlfY, 0.8, bits.str2num(a.substring(3, 5)) / 60.0, '#');
+        drawClockLine(bg, fg, hlfX, hlfY, 0.6, bits.str2num(a.substring(0, 2)) / 12.0, '@');
+        drawClockLine(bg, fg, hlfX, hlfY, 0.8, bits.str2num(a.substring(3, 5)) / 60.0, '#');
         if (a.length() < 8) {
             return;
         }
-        drawClock(bg, fg, hlfX, hlfY, 1.0, bits.str2num(a.substring(6, 8)) / 60.0, '%');
+        drawClockLine(bg, fg, hlfX, hlfY, 1.0, bits.str2num(a.substring(6, 8)) / 60.0, '%');
     }
 
-    private void drawClock(int bg, int fg, int bx, int by, double scl, double val, int ch) {
+    private void drawClockLine(int bg, int fg, int bx, int by, double scl, double val, int ch) {
         val *= Math.PI * 2.0;
         val += Math.PI * 1.5;
         double px = bx * Math.cos(val) * scl;
@@ -238,7 +238,8 @@ public class userGame {
                 break;
             }
             console.doClear();
-            drawClock(bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2), pipeScreen.colBlack, bits.random(1, 15));
+            String a = bits.time2str(cfgAll.timeZoneName, bits.getTime(), 2);
+            drawClock(a, pipeScreen.colBlack, bits.random(1, 15));
             console.refresh();
             bits.sleep(5000);
         }
@@ -249,7 +250,7 @@ public class userGame {
      *
      * @param font font to use
      */
-    public void doClock(byte[][][] font) {
+    public void doTime(byte[][][] font) {
         int maxX = console.sizX - (font[0][0].length * 5);
         int maxY = console.sizY - font[0].length;
         for (;;) {
@@ -263,28 +264,6 @@ public class userGame {
             console.refresh();
             bits.sleep(5000);
         }
-    }
-
-    private boolean doMatrix(int x, int pos, byte[] res) {
-        int len = res.length;
-        for (int o = 0; o < console.sizY; o++) {
-            int i = o + pos;
-            if (i < 0) {
-                continue;
-            }
-            if (i >= len) {
-                continue;
-            }
-            int c = pipeScreen.colGreen;
-            if (i >= (len - 2)) {
-                c = pipeScreen.colBrGreen;
-            }
-            if (i >= (len - 1)) {
-                c = pipeScreen.colBrWhite;
-            }
-            console.putInt(x, o, pipeScreen.colBlack, c, false, res[i]);
-        }
-        return pos > -len;
     }
 
     /**
@@ -303,15 +282,35 @@ public class userGame {
             console.doClear();
             for (int i = 0; i < poss.length; i++) {
                 poss[i]--;
-                if (doMatrix(i * 2, poss[i], strs[i])) {
+                int pos = poss[i];
+                byte[] res = strs[i];
+                int len = res.length;
+                for (int o = 0; o < console.sizY; o++) {
+                    int p = o + pos;
+                    if (p < 0) {
+                        continue;
+                    }
+                    if (p >= len) {
+                        continue;
+                    }
+                    int c = pipeScreen.colGreen;
+                    if (p >= (len - 2)) {
+                        c = pipeScreen.colBrGreen;
+                    }
+                    if (p >= (len - 1)) {
+                        c = pipeScreen.colBrWhite;
+                    }
+                    console.putInt(i * 2, o, pipeScreen.colBlack, c, false, res[p]);
+                }
+                if (pos > -len) {
                     continue;
                 }
-                byte[] res = new byte[bits.random(4, console.curY * 3)];
+                res = new byte[bits.random(4, console.curY * 3)];
                 for (int o = 0; o < res.length; o++) {
                     res[o] = (byte) bits.random(32, 127);
                 }
                 strs[i] = res;
-                int len = res.length;
+                len = res.length;
                 poss[i] = bits.random(-len, +len);
             }
             console.refresh();
@@ -568,7 +567,7 @@ public class userGame {
      *
      * @param font font to use
      */
-    public void doRotClock(byte[][][] font) {
+    public void doRotTime(byte[][][] font) {
         pipeZbuffer gfx = new pipeZbuffer(console);
         for (;;) {
             if (console.keyPress()) {
@@ -1440,11 +1439,11 @@ public class userGame {
             return;
         }
         if (a.equals("rot-logo")) {
-            doRotLogo(doText(cmd));
+            doRotLogo(convText(cmd));
             return;
         }
         if (a.equals("rot-time")) {
-            doRotClock(pipeFonts.font8x16());
+            doRotTime(pipeFonts.font8x16());
             return;
         }
         if (a.equals("rot-clock")) {
@@ -1452,11 +1451,11 @@ public class userGame {
             return;
         }
         if (a.equals("logo")) {
-            doLogo(doText(cmd));
+            doLogo(convText(cmd));
             return;
         }
         if (a.equals("time")) {
-            doClock(pipeFonts.font8x16());
+            doTime(pipeFonts.font8x16());
             return;
         }
         if (a.equals("clock")) {
