@@ -2355,6 +2355,8 @@ public class userExec {
             hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
             hl.add(null, false, 2, new int[]{3}, "rot-ansi", "show some art");
             hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
+            hl.add(null, false, 2, new int[]{3}, "spot-ansi", "show some art");
+            hl.add(null, false, 3, new int[]{-1}, "<str>", "filename");
         }
         hl.add(null, false, 2, new int[]{-1}, "chat", "chat with others");
         hl.add(null, false, 2, new int[]{3, -1}, "send", "chat with others");
@@ -2375,6 +2377,10 @@ public class userExec {
         hl.add(null, false, 2, new int[]{-1}, "minesweep", "play game");
         hl.add(null, false, 2, new int[]{-1}, "time", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "clock", "view demo");
+        hl.add(null, false, 2, new int[]{3, -1}, "spot-logo", "view demo");
+        hl.add(null, false, 3, new int[]{3, -1}, "[str]", "text");
+        hl.add(null, false, 2, new int[]{3}, "spot-bin", "view demo");
+        getSecretHelp(hl, 3);
         hl.add(null, false, 2, new int[]{3}, "rot-bin", "view demo");
         getSecretHelp(hl, 3);
         hl.add(null, false, 2, new int[]{-1}, "rot-time", "view demo");

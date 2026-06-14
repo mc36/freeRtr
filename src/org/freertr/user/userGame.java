@@ -170,16 +170,7 @@ public class userGame {
         }
     }
 
-    /**
-     * flying logo
-     *
-     * @param s text to use
-     */
-    public void doLogo(List<String> s) {
-        int maxY = console.sizY - s.size();
-        if (maxY < 1) {
-            return;
-        }
+    private static int textWidth(List<String> s) {
         int maxX = 0;
         for (int i = 0; i < s.size(); i++) {
             int o = s.get(i).length();
@@ -187,16 +178,29 @@ public class userGame {
                 maxX = o;
             }
         }
-        maxX = console.sizX - maxX;
+        return maxX;
+    }
+
+    /**
+     * flying logo
+     *
+     * @param txt text to use
+     */
+    public void doLogo(List<String> txt) {
+        int maxY = console.sizY - txt.size();
+        if (maxY < 1) {
+            maxY = 1;
+        }
+        int maxX = console.sizX - textWidth(txt);
         if (maxX < 1) {
-            return;
+            maxX = 1;
         }
         for (;;) {
             if (console.keyPress()) {
                 break;
             }
             console.doClear();
-            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), pipeScreen.colBlack, bits.random(1, 15), false, s);
+            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), pipeScreen.colBlack, bits.random(1, 15), false, txt);
             console.refresh();
             bits.sleep(5000);
         }
@@ -648,17 +652,129 @@ public class userGame {
      * @param cmd command line to use
      */
     public void doRotSec(cmds cmd) {
-        if (drawSecret(cmd.word())) {
+        List<String> txt = cfgInit.secretsFind(cmd.word());
+        if (txt == null) {
             cmd.badCmd();
             return;
         }
-        List<String> txt = console.getAscii();
+        drawSecret(0, 0, txt);
+        txt = console.getAscii();
         int[][][] col = console.getColor();
         pipeZbuffer gfx = new pipeZbuffer(console);
         gfx.objFresh();
         gfx.objFromAns(txt, col);
         gfx.objReSize();
         doRotate(gfx);
+    }
+
+    /**
+     * spotlight art
+     *
+     * @param cmd command line to use
+     */
+    public void doSpotSec(cmds cmd) {
+        List<String> txt = cfgInit.secretsFind(cmd.word());
+        if (txt == null) {
+            cmd.badCmd();
+            return;
+        }
+        drawSecret((console.sizX - textWidth(txt)) / 2, (console.sizY - txt.size()) / 2, txt);
+        txt = console.getAscii();
+        int[][][] col = console.getColor();
+        doSpotLight(txt, col, pipeScreen.colBlue);
+    }
+
+    /**
+     * spotlight art
+     *
+     * @param cmd command line to use
+     */
+    public void doSpotAnsi(cmds cmd) {
+        userFlash.ansiArt(cmd.getRemaining(), console);
+        List<String> txt = console.getAscii();
+        int[][][] col = console.getColor();
+        doSpotLight(txt, col, pipeScreen.colBlue);
+    }
+
+    /**
+     * spotlight art
+     *
+     * @param cmd command line to use
+     */
+    public void doSpotLogo(cmds cmd) {
+        List<String> txt = convText(cmd);
+        int maxY = console.sizY - txt.size();
+        if (maxY < 1) {
+            maxY = 1;
+        }
+        int maxX = console.sizX - textWidth(txt);
+        if (maxX < 1) {
+            maxX = 1;
+        }
+        console.putStrs(bits.random(0, maxX), bits.random(0, maxY), pipeScreen.colBlack, bits.random(1, 15), false, txt);
+        txt = console.getAscii();
+        int[][][] col = console.getColor();
+        doSpotLight(txt, col, bits.random(1, 7));
+    }
+
+    private void doSpotLight(List<String> txt, int[][][] col, int bg) {
+        console.doClear();
+        int sptX = console.sizX / 8;
+        int sptY = console.sizY / 8;
+        if (sptX > sptY) {
+            sptX = sptY;
+        } else {
+            sptY = sptX;
+        }
+        sptX <<= 1;
+        console.drawCircle(sptX, sptY, sptX, sptY, pipeScreen.colBlack, pipeScreen.colWhite, '@');
+        console.drawFill(sptX, sptY, pipeScreen.colBlack, pipeScreen.colWhite, '#');
+        List<String> sptT = console.getAscii();
+        sptX <<= 1;
+        sptY <<= 1;
+        int posX = console.sizX / 2;
+        int posY = console.sizY / 2;
+        int dirX = bits.random(-3, 3);
+        int dirY = bits.random(-3, 3);
+        int maxX = console.sizX - sptX;
+        int maxY = console.sizY - sptY;
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            console.doClear();
+            console.putArts(0, 0, col[0], col[1], false, txt);
+            for (int i = 0; i < sptY; i++) {
+                String s = sptT.get(i);
+                byte[] buf = s.getBytes();
+                for (int o = 0; o < buf.length; o++) {
+                    if (buf[o] == 32) {
+                        continue;
+                    }
+                    console.putColBg(posX + o, posY + i, bg);
+                }
+            }
+            posX += dirX;
+            posY += dirY;
+            if (posX < 0) {
+                dirX = bits.random(0, 3);
+            }
+            if (posY < 0) {
+                dirY = bits.random(0, 3);
+            }
+            if (posX >= maxX) {
+                dirX = -bits.random(0, 3);
+            }
+            if (posY >= maxY) {
+                dirY = -bits.random(0, 3);
+            }
+            if ((dirX == 0) && (dirY == 0)) {
+                dirX = bits.random(0, 3);
+                dirY = bits.random(0, 3);
+            }
+            console.refresh();
+            bits.sleep(500);
+        }
     }
 
     /**
@@ -1349,11 +1465,7 @@ public class userGame {
         }
     }
 
-    private boolean drawSecret(String a) {
-        List<String> lst = cfgInit.secretsFind(a);
-        if (lst == null) {
-            return true;
-        }
+    private void drawSecret(int bx, int by, List<String> lst) {
         int[] god = new int[]{pipeScreen.colBrCyan, pipeScreen.colBrWhite, pipeScreen.colBrYellow,
             pipeScreen.colBrGreen, pipeScreen.colBrBlue, pipeScreen.colBrRed};
         console.doClear();
@@ -1363,10 +1475,9 @@ public class userGame {
             for (int i = 0; i < b.length; i++) {
                 int ch = b[i];
                 int cl = userFormat.zeroesColor(ch, pipeScreen.colBrGreen, god);
-                console.putInt(i, o, false, cl, ch);
+                console.putInt(bx + i, by + o, false, cl, ch);
             }
         }
-        return false;
     }
 
     /**
@@ -1485,6 +1596,18 @@ public class userGame {
             doText(a);
             return;
         }
+        if (a.equals("spot-bin")) {
+            doSpotSec(cmd);
+            return;
+        }
+        if (a.equals("spot-ansi")) {
+            doSpotAnsi(cmd);
+            return;
+        }
+        if (a.equals("spot-logo")) {
+            doSpotLogo(cmd);
+            return;
+        }
         if (a.equals("rot-bin")) {
             doRotSec(cmd);
             return;
@@ -1569,12 +1692,28 @@ public class userGame {
             doAntBall();
             return;
         }
-        if (drawSecret(a)) {
+        List<String> txt = cfgInit.secretsFind(a);
+        if (txt == null) {
             cmd.badCmd();
             return;
         }
-        console.refresh();
-        pipeScreen.getKey(console.pipe);
+        int maxY = console.sizY - txt.size();
+        if (maxY < 1) {
+            maxY = 1;
+        }
+        int maxX = console.sizX - textWidth(txt);
+        if (maxX < 1) {
+            maxX = 1;
+        }
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            console.doClear();
+            drawSecret(bits.random(0, maxX), bits.random(0, maxY), txt);
+            console.refresh();
+            bits.sleep(5000);
+        }
     }
 
 }

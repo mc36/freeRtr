@@ -1023,8 +1023,8 @@ public class pipeScreen {
         for (int y = 0; y < sizY; y++) {
             for (int x = 0; x < sizX; x++) {
                 int i = atrs[y][x];
-                res[0][y][x] = (i >>> 16) & 0xf;
-                res[1][y][x] = i & 0xf;
+                res[0][y][x] = (i >>> 16) & 0xffff;
+                res[1][y][x] = i & 0xffff;
             }
         }
         return res;
@@ -1143,6 +1143,34 @@ public class pipeScreen {
     }
 
     /**
+     * put one background color
+     *
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param v color
+     */
+    public void putColBg(int x, int y, int v) {
+        if (range(x, y)) {
+            return;
+        }
+        atrs[y][x] = setBackground(atrs[y][x], v);
+    }
+
+    /**
+     * put one foreground color
+     *
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param v color
+     */
+    public void putColFg(int x, int y, int v) {
+        if (range(x, y)) {
+            return;
+        }
+        atrs[y][x] = setForeground(atrs[y][x], v);
+    }
+
+    /**
      * put one color
      *
      * @param x x coordinate
@@ -1233,6 +1261,39 @@ public class pipeScreen {
     public void putStrs(int x, int y, int bg, int fg, boolean cr, List<String> l) {
         for (int i = 0; i < l.size(); i++) {
             putStr(x, y + i, bg, fg, cr, l.get(i));
+        }
+    }
+
+    /**
+     * put one string
+     *
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param bg background colors
+     * @param fg foreground colors
+     * @param cr set true to update cursor
+     * @param s string to write
+     */
+    public void putArt(int x, int y, int bg[], int fg[], boolean cr, String s) {
+        byte[] buf = s.getBytes();
+        for (int i = 0; i < buf.length; i++) {
+            putInt(x + i, y, bg[i], fg[i], cr, buf[i]);
+        }
+    }
+
+    /**
+     * put more lines
+     *
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param bg background colors
+     * @param fg foreground colors
+     * @param cr set true to update cursor
+     * @param l lines to write
+     */
+    public void putArts(int x, int y, int bg[][], int fg[][], boolean cr, List<String> l) {
+        for (int i = 0; i < l.size(); i++) {
+            putArt(x, y + i, bg[i], fg[i], cr, l.get(i));
         }
     }
 
