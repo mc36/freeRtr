@@ -104,6 +104,7 @@ public class rtrBgpMpns {
             }
             byte[] buf = ntry.prefix.network.getBytes();
             tabLabelEntry res = new tabLabelEntry(bits.msbGetD(buf, 0));
+            res.initOwner(tabLabelEntry.owner.mpns);
             res.remoteLab = tabLabel.int2labels(res.label);
             int o = bits.msbGetD(buf, 4);
             if (o != 0) {

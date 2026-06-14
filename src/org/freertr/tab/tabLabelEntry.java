@@ -621,6 +621,20 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
     }
 
     /**
+     * initialize for the owner
+     *
+     * @param ky key to use for comparison
+     * @return true if set, false if not
+     */
+    public boolean initOwner(owner ky) {
+        if (key != null) {
+            return false;
+        }
+        key = ky;
+        return true;
+    }
+
+    /**
      * set forwarding for drop
      *
      * @param ky key to use for deallocation

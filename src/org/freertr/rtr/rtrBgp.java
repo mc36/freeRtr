@@ -1520,8 +1520,8 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         otherTrigger |= addrFams[rtrBgpParam.idxCtp];
         otherTrigger |= addrFams[rtrBgpParam.idxCar];
         otherTrigger |= linkStates.size() > 0;
-        otherTrigger |= mpnsInst;
-        otherTrigger |= other.mpnsInst;
+        otherTrigger |= mpnsOrgn | other.mpnsOrgn;
+        otherTrigger |= mpnsRdst | other.mpnsRdst;
         if (mpnsInst) {
             rtrBgpMpns.doInstall(rtrBgpMpns.doDecode(computd[rtrBgpParam.idxMpns], fwdCore, fwdCore), mpnsDone);
         }
