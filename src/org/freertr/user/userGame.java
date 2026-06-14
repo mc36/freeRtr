@@ -9,7 +9,10 @@ import java.util.List;
 import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
+import org.freertr.pack.packText;
+import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
+import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servQuote;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
@@ -161,6 +164,30 @@ public class userGame {
         }
     }
 
+    private List<String> convShow(cmds cmd) {
+        pipeLine pl = new pipeLine(1024 * 1024, false);
+        pipeSide pip = pl.getSide();
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        pip.lineRx = pipeSide.modTyp.modeCRorLF;
+        userReader rdr = new userReader(pip, null);
+        pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.normal);
+        pip.settingsPut(pipeSetting.height, 0);
+        userExec exe = new userExec(pip, rdr);
+        exe.privileged = false;
+        pip.setTime(120000);
+        String a = "show " + cmd.getRemaining();
+        a = exe.repairCommand(a);
+        exe.executeCommand(a);
+        pip = pl.getSide();
+        pl.setClose();
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        pip.lineRx = pipeSide.modTyp.modeCRtryLF;
+        List<String> lst = new ArrayList<String>();
+        packText pt = new packText(pip);
+        pt.recvAll(lst);
+        return lst;
+    }
+
     private List<String> convText(cmds cmd) {
         String a = cmd.getRemaining();
         if (a.length() < 1) {
@@ -200,7 +227,7 @@ public class userGame {
                 break;
             }
             console.doClear();
-            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), pipeScreen.colBlack, bits.random(1, 15), false, txt);
+            console.putStrs(bits.random(0, maxX), bits.random(0, maxY), pipeScreen.colBlack, bits.random(1, 15), false, txt);
             console.refresh();
             bits.sleep(5000);
         }
@@ -264,7 +291,7 @@ public class userGame {
             String s = bits.time2str(cfgAll.timeZoneName, bits.getTime() + cfgAll.timeServerOffset, 2);
             s = s.substring(0, 5);
             console.doClear();
-            console.putMaps(bits.random(0, maxX), bits.random(0, maxY), pipeScreen.colBlack, bits.random(1, 15), false, pipeScreen.fontText(s, " ", pipeFonts.fontFiller, font));
+            console.putStrs(bits.random(0, maxX), bits.random(0, maxY), pipeScreen.colBlack, bits.random(1, 15), false, pipeScreen.fontText(s, " ", pipeFonts.fontFiller, font));
             console.refresh();
             bits.sleep(5000);
         }
@@ -699,10 +726,9 @@ public class userGame {
     /**
      * spotlight art
      *
-     * @param cmd command line to use
+     * @param txt text to rotate
      */
-    public void doSpotLogo(cmds cmd) {
-        List<String> txt = convText(cmd);
+    public void doSpotLogo(List<String> txt) {
         int maxY = console.sizY - txt.size();
         if (maxY < 1) {
             maxY = 1;
@@ -1604,12 +1630,20 @@ public class userGame {
             doSpotAnsi(cmd);
             return;
         }
+        if (a.equals("spot-show")) {
+            doSpotLogo(convShow(cmd));
+            return;
+        }
         if (a.equals("spot-logo")) {
-            doSpotLogo(cmd);
+            doSpotLogo(convText(cmd));
             return;
         }
         if (a.equals("rot-bin")) {
             doRotSec(cmd);
+            return;
+        }
+        if (a.equals("rot-show")) {
+            doRotLogo(convShow(cmd));
             return;
         }
         if (a.equals("rot-logo")) {
@@ -1622,6 +1656,10 @@ public class userGame {
         }
         if (a.equals("rot-clock")) {
             doRotClock();
+            return;
+        }
+        if (a.equals("show")) {
+            doLogo(convShow(cmd));
             return;
         }
         if (a.equals("logo")) {
