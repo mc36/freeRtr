@@ -790,8 +790,7 @@ public class pipeScreen {
         }
         int p = 0;
         for (int y = 0; y < sy; y++) {
-            char b = (char) (1 << (y % 6));
-            b += 63;
+            char b = (char) (63 + (1 << (y % 6)));
             int o = -1;
             String a = "";
             for (int x = 0; x < sx; x++) {
@@ -1316,6 +1315,50 @@ public class pipeScreen {
             int x = (ex * i) / step;
             int y = (ey * i) / step;
             putInt(bx + x, by + y, bg, fg, false, ch);
+        }
+    }
+
+    /**
+     * fill up area
+     *
+     * @param x begin x
+     * @param y begin y
+     * @param bg background color
+     * @param fg foreground color
+     * @param ch character to write
+     */
+    public void drawFill(int x, int y, int bg, int fg, int ch) {
+        List<Integer> nx = new ArrayList<Integer>();
+        List<Integer> ny = new ArrayList<Integer>();
+        nx.add(x);
+        ny.add(y);
+        for (int i = 0; i < nx.size(); i++) {
+            x = nx.get(i);
+            y = ny.get(i);
+            if (x < 0) {
+                continue;
+            }
+            if (y < 0) {
+                continue;
+            }
+            if (x >= sizX) {
+                continue;
+            }
+            if (y >= sizY) {
+                continue;
+            }
+            if (chrs[y][x] != 32) {
+                continue;
+            }
+            putInt(x, y, bg, fg, false, ch);
+            nx.add(x - 1);
+            ny.add(y);
+            nx.add(x + 1);
+            ny.add(y);
+            nx.add(x);
+            ny.add(y - 1);
+            nx.add(x);
+            ny.add(y + 1);
         }
     }
 
