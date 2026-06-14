@@ -142,7 +142,9 @@ public class pipeWindow extends JPanel {
             if (img1 == null) {
                 img1 = img2;
             } else {
-                img1.getGraphics().drawImage(img2, 0, 0, null);
+                int x = (img1.getWidth() - img2.getWidth()) / 2;
+                int y = (img1.getHeight() - img2.getHeight()) / 2;
+                img1.getGraphics().drawImage(img2, x, y, null);
             }
             image2scr(img1, scr, pipeFonts.colorData, pipeFonts.ditherData);
             scr.refresh();
