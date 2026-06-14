@@ -58,6 +58,21 @@ public class pipeZbuffer {
     protected List<Double> rz;
 
     /**
+     * model text
+     */
+    protected List<Integer> tb;
+
+    /**
+     * model text
+     */
+    protected List<Integer> tf;
+
+    /**
+     * model text
+     */
+    protected List<Integer> tc;
+
+    /**
      * create instance
      *
      * @param s screen to use
@@ -165,14 +180,20 @@ public class pipeZbuffer {
         rx = new ArrayList<Double>();
         ry = new ArrayList<Double>();
         rz = new ArrayList<Double>();
+        tb = new ArrayList<Integer>();
+        tf = new ArrayList<Integer>();
+        tc = new ArrayList<Integer>();
     }
 
     /**
      * read up model
      *
      * @param lst obj text file
+     * @param bg background color
+     * @param fg foreground color
+     * @param ch character to write
      */
-    public void objReadUp(List<String> lst) {
+    public void objReadUp(List<String> lst, int bg, int fg, int ch) {
         if (lst == null) {
             return;
         }
@@ -188,6 +209,9 @@ public class pipeZbuffer {
             rx.add(cx);
             ry.add(cy);
             rz.add(cz);
+            tb.add(bg);
+            tf.add(fg);
+            tc.add(ch);
         }
     }
 
@@ -200,21 +224,50 @@ public class pipeZbuffer {
     }
 
     /**
-     * read up model
+     * read up text
      *
      * @param lst text to read
+     * @param bg background color
+     * @param fg foreground color
+     * @param ch character to write
      */
-    public void objFromTxt(List<String> lst) {
+    public void objFromTxt(List<String> lst, int bg, int fg, int ch) {
         for (int o = 0; o < lst.size(); o++) {
-            String a = lst.get(o);
-            byte[] b = a.getBytes();
-            for (int i = 0; i < b.length; i++) {
-                if (b[i] == 32) {
+            byte[] buf = lst.get(o).getBytes();
+            for (int i = 0; i < buf.length; i++) {
+                if (buf[i] == 32) {
                     continue;
                 }
                 rx.add((double) i);
                 ry.add((double) o);
                 rz.add(-1.0);
+                tb.add(bg);
+                tf.add(fg);
+                tc.add(ch);
+            }
+        }
+    }
+
+    /**
+     * read up text
+     *
+     * @param lst text to read
+     * @param col colors
+     */
+    public void objFromAns(List<String> lst, int[][][] col) {
+        for (int o = 0; o < lst.size(); o++) {
+            byte[] buf = lst.get(o).getBytes();
+            for (int i = 0; i < buf.length; i++) {
+                int ch = buf[i];
+                if (ch == 32) {
+                    continue;
+                }
+                rx.add((double) i);
+                ry.add((double) o);
+                rz.add(-1.0);
+                tb.add(col[0][o][i]);
+                tf.add(col[1][o][i]);
+                tc.add(ch);
             }
         }
     }
@@ -273,14 +326,10 @@ public class pipeZbuffer {
 
     /**
      * draw model
-     *
-     * @param bg background color
-     * @param fg foreground color
-     * @param ch character to write
      */
-    public void objDraw(int bg, int fg, int ch) {
+    public void objDraw() {
         for (int i = 0; i < rx.size(); i++) {
-            pixel(rx.get(i), ry.get(i), rz.get(i), bg, fg, ch);
+            pixel(rx.get(i), ry.get(i), rz.get(i), tb.get(i), tf.get(i), tc.get(i));
         }
     }
 

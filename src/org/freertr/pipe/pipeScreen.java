@@ -1015,6 +1015,23 @@ public class pipeScreen {
     }
 
     /**
+     * get current screen
+     *
+     * @return ascii colors, [bg,fg[y][x]
+     */
+    public int[][][] getColor() {
+        int[][][] res = new int[2][sizY][sizX];
+        for (int y = 0; y < sizY; y++) {
+            for (int x = 0; x < sizX; x++) {
+                int i = atrs[y][x];
+                res[0][y][x] = (i >>> 16) & 0xf;
+                res[1][y][x] = i & 0xf;
+            }
+        }
+        return res;
+    }
+
+    /**
      * refresh terminal
      */
     public void refresh() {

@@ -271,10 +271,7 @@ public class userGame {
      */
     public void doMatrix() {
         int[] poss = new int[console.sizX / 2];
-        byte[][] strs = new byte[poss.length][];
-        for (int i = 0; i < poss.length; i++) {
-            strs[i] = new byte[0];
-        }
+        byte[][] strs = new byte[poss.length][0];
         for (;;) {
             if (console.keyPress()) {
                 break;
@@ -548,15 +545,19 @@ public class userGame {
     public void doRotLogo(List<String> txt) {
         pipeZbuffer gfx = new pipeZbuffer(console);
         gfx.objFresh();
-        gfx.objFromTxt(txt);
+        gfx.objFromTxt(txt, pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
         gfx.objReSize();
+        doRotate(gfx);
+    }
+
+    private void doRotate(pipeZbuffer gfx) {
         for (;;) {
             if (console.keyPress()) {
                 break;
             }
             gfx.clear();
             gfx.rotate();
-            gfx.objDraw(pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
+            gfx.objDraw();
             gfx.refresh();
             bits.sleep(500);
         }
@@ -577,11 +578,11 @@ public class userGame {
             s = s.substring(0, 5);
             List<String> txt = pipeScreen.fontText(s, " ", pipeFonts.fontFiller, font);
             gfx.objFresh();
-            gfx.objFromTxt(txt);
+            gfx.objFromTxt(txt, pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
             gfx.objReSize();
             gfx.clear();
             gfx.rotate();
-            gfx.objDraw(pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
+            gfx.objDraw();
             gfx.refresh();
             bits.sleep(500);
         }
@@ -602,11 +603,11 @@ public class userGame {
             List<String> txt = console.getAscii();
             console.doClear();
             gfx.objFresh();
-            gfx.objFromTxt(txt);
+            gfx.objFromTxt(txt, pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
             gfx.objReSize();
             gfx.clear();
             gfx.rotate();
-            gfx.objDraw(pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
+            gfx.objDraw();
             gfx.refresh();
             bits.sleep(500);
         }
@@ -617,21 +618,28 @@ public class userGame {
      *
      * @param cmd command line to use
      */
-    public void doObj(cmds cmd) {
+    public void doRobj(cmds cmd) {
         pipeZbuffer gfx = new pipeZbuffer(console);
         gfx.objFresh();
-        gfx.objReadUp(bits.txt2buf(cmd.getRemaining()));
+        gfx.objReadUp(bits.txt2buf(cmd.getRemaining()), pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
         gfx.objReSize();
-        for (;;) {
-            if (console.keyPress()) {
-                break;
-            }
-            gfx.clear();
-            gfx.rotate();
-            gfx.objDraw(pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
-            gfx.refresh();
-            bits.sleep(500);
-        }
+        doRotate(gfx);
+    }
+
+    /**
+     * rotating ansi
+     *
+     * @param cmd command line to use
+     */
+    public void doRans(cmds cmd) {
+        userFlash.ansiArt(cmd.getRemaining(), console);
+        List<String> txt = console.getAscii();
+        int[][][] col = console.getColor();
+        pipeZbuffer gfx = new pipeZbuffer(console);
+        gfx.objFresh();
+        gfx.objFromAns(txt, col);
+        gfx.objReSize();
+        doRotate(gfx);
     }
 
     /**
@@ -1491,7 +1499,11 @@ public class userGame {
             return;
         }
         if (a.equals("rot-obj")) {
-            doObj(cmd);
+            doRobj(cmd);
+            return;
+        }
+        if (a.equals("rot-ansi")) {
+            doRans(cmd);
             return;
         }
         if (a.equals("cube")) {
