@@ -9,6 +9,7 @@ import org.freertr.clnt.clntDns;
 import org.freertr.cry.cryHashCrc32;
 import org.freertr.pack.packDnsRec;
 import org.freertr.pack.packNrpe;
+import org.freertr.pack.packText;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
@@ -464,16 +465,8 @@ public class cfgCheck implements Comparable<cfgCheck>, cfgGeneric {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRtryLF;
         List<String> lst = new ArrayList<String>();
-        for (;;) {
-            if (pip.ready2rx() < 1) {
-                break;
-            }
-            a = pip.lineGet(1);
-            if (a.length() < 1) {
-                continue;
-            }
-            lst.add(a);
-        }
+        packText pt = new packText(pip);
+        pt.recvAll(lst);
         return lst;
     }
 

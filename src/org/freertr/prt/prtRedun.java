@@ -14,6 +14,7 @@ import org.freertr.ip.ipIfc4;
 import org.freertr.ip.ipIfc4arp;
 import org.freertr.util.cmds;
 import org.freertr.pack.packHolder;
+import org.freertr.pack.packText;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
@@ -1105,16 +1106,8 @@ class prtRedunExec implements Runnable {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRtryLF;
         List<String> txt = new ArrayList<String>();
-        for (;;) {
-            if (pip.ready2rx() < 1) {
-                break;
-            }
-            a = pip.lineGet(1);
-            if (a.length() < 1) {
-                continue;
-            }
-            txt.add(a);
-        }
+        packText pt = new packText(pip);
+        pt.recvAll(txt);
         a = cfgInit.getRWpath() + "exe" + bits.randomD() + userUpgrade.tmpExt;
         if (bits.buf2txt(true, txt, a)) {
             logger.error("unable to save file");

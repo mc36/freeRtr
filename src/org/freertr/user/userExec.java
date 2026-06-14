@@ -5839,7 +5839,7 @@ public class userExec {
      * @param col use colors
      * @return converted pipe
      */
-    public final pipeSide getShPipe(boolean col) {
+    public pipeSide getShPipe(boolean col) {
         pipeLine pl = new pipeLine(1024 * 1024, false);
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;

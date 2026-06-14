@@ -24,6 +24,7 @@ import org.freertr.util.logFil;
 import org.freertr.util.logger;
 import org.freertr.enc.encPrtbuf;
 import org.freertr.enc.encPrtbufEntry;
+import org.freertr.pack.packText;
 import org.freertr.pipe.pipeScreen;
 import org.freertr.util.version;
 
@@ -632,16 +633,8 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRtryLF;
         List<String> lst = new ArrayList<String>();
-        for (;;) {
-            if (pip.ready2rx() < 1) {
-                break;
-            }
-            a = pip.lineGet(1);
-            if (a.length() < 1) {
-                continue;
-            }
-            lst.add(a);
-        }
+        packText pt = new packText(pip);
+        pt.recvAll(lst);
         return lst;
     }
 
