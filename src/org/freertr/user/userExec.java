@@ -2375,6 +2375,8 @@ public class userExec {
         hl.add(null, false, 2, new int[]{-1}, "minesweep", "play game");
         hl.add(null, false, 2, new int[]{-1}, "time", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "clock", "view demo");
+        hl.add(null, false, 2, new int[]{3}, "rot-bin", "view demo");
+        getSecretHelp(hl, 3);
         hl.add(null, false, 2, new int[]{-1}, "rot-time", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "rot-clock", "view demo");
         hl.add(null, false, 2, new int[]{3, -1}, "rot-logo", "view demo");

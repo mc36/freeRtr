@@ -54,15 +54,20 @@ public class pipeWindow extends JPanel {
      *
      * @param pip pipe to use
      * @param fil file
+     * @return true on error, false on success
      */
-    public static void midiAnsi(pipeSide pip, File fil) {
-        Track ts[];
+    public static boolean midiAnsi(pipeSide pip, File fil) {
+        Track ts[] = null;
         try {
             Sequence seq = MidiSystem.getSequence(fil);
             ts = seq.getTracks();
         } catch (Exception e) {
-            logger.traceback(e);
-            return;
+        }
+        if (ts == null) {
+            return true;
+        }
+        if (ts.length < 1) {
+            return true;
         }
         Track tr = ts[0];
         for (int i = 1; i < ts.length; i++) {
@@ -95,6 +100,7 @@ public class pipeWindow extends JPanel {
             a += notes[o % notes.length];
         }
         pipeScreen.sendMusicAnsi(pip, a);
+        return false;
     }
 
     /**
@@ -102,8 +108,9 @@ public class pipeWindow extends JPanel {
      *
      * @param scr console to draw
      * @param fil file
+     * @return true on error, false on success
      */
-    public static void imageAnim(pipeScreen scr, File fil) {
+    public static boolean imageAnim(pipeScreen scr, File fil) {
         String a = fil.getName();
         int i = a.lastIndexOf(".");
         if (i < 0) {
@@ -120,8 +127,7 @@ public class pipeWindow extends JPanel {
             ir.setInput(is, false);
             n = ir.getNumImages(true);
         } catch (Exception e) {
-            logger.traceback(e);
-            return;
+            return true;
         }
         BufferedImage img1 = null;
         for (i = 0; i < n; i++) {
@@ -129,7 +135,6 @@ public class pipeWindow extends JPanel {
             try {
                 img2 = ir.read(i);
             } catch (Exception e) {
-                logger.traceback(e);
             }
             if (img2 == null) {
                 continue;
@@ -146,6 +151,7 @@ public class pipeWindow extends JPanel {
                 break;
             }
         }
+        return false;
     }
 
     /**
@@ -153,19 +159,20 @@ public class pipeWindow extends JPanel {
      *
      * @param scr console to draw
      * @param fil file to convert
+     * @return true on error, false on success
      */
-    public static void imageAnsi(pipeScreen scr, File fil) {
+    public static boolean imageAnsi(pipeScreen scr, File fil) {
         BufferedImage img1 = null;
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
-            logger.traceback(e);
         }
         if (img1 == null) {
-            return;
+            return true;
         }
         image2scr(img1, scr, pipeFonts.colorData, pipeFonts.ditherData);
         scr.refresh();
+        return false;
     }
 
     /**
@@ -173,18 +180,19 @@ public class pipeWindow extends JPanel {
      *
      * @param scr console to draw
      * @param fil file
+     * @return true on error, false on success
      */
-    public static void imageAscii(pipeScreen scr, File fil) {
+    public static boolean imageAscii(pipeScreen scr, File fil) {
         BufferedImage img1 = null;
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
-            logger.traceback(e);
         }
         if (img1 == null) {
-            return;
+            return true;
         }
         image2scr(img1, scr, pipeFonts.colorMono, pipeFonts.ditherData);
+        return false;
     }
 
     /**
@@ -192,16 +200,16 @@ public class pipeWindow extends JPanel {
      *
      * @param scr console to draw
      * @param fil file
+     * @return true on error, false on success
      */
-    public static void imageTable(pipeScreen scr, File fil) {
+    public static boolean imageTable(pipeScreen scr, File fil) {
         BufferedImage img1 = null;
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
-            logger.traceback(e);
         }
         if (img1 == null) {
-            return;
+            return true;
         }
         int maxX = scr.sizX;
         int maxY = scr.sizY;
@@ -215,6 +223,7 @@ public class pipeWindow extends JPanel {
         maxY = img1.getHeight() / p;
         byte[] img3 = image2idx(img1, maxX, maxY, pipeFonts.colorData, pipeFonts.ditherMono);
         pipeScreen.sendImageTable(scr.pipe, pipeFonts.colorIdxd, pipeFonts.ditherMono, img3, maxX, maxY);
+        return false;
     }
 
     /**
@@ -222,16 +231,16 @@ public class pipeWindow extends JPanel {
      *
      * @param scr console to draw
      * @param fil file
+     * @return true on error, false on success
      */
-    public static void imageSixel(pipeScreen scr, File fil) {
+    public static boolean imageSixel(pipeScreen scr, File fil) {
         BufferedImage img1 = null;
         try {
             img1 = ImageIO.read(fil);
         } catch (Exception e) {
-            logger.traceback(e);
         }
         if (img1 == null) {
-            return;
+            return true;
         }
         int maxX = scr.sizX * 16;
         int maxY = scr.sizY * 16;
@@ -245,6 +254,7 @@ public class pipeWindow extends JPanel {
         maxY = img1.getHeight() / p;
         byte[] img3 = image2idx(img1, maxX, maxY, pipeFonts.colorData, pipeFonts.ditherMono);
         pipeScreen.sendImageSixel(scr.pipe, pipeFonts.colorIdxd, pipeFonts.ditherMono, img3, maxX, maxY);
+        return false;
     }
 
     private static byte[] image2idx(BufferedImage img1, int maxX, int maxY, int[] col, char chr[]) {

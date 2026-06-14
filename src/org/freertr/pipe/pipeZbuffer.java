@@ -229,13 +229,13 @@ public class pipeZbuffer {
      * @param lst text to read
      * @param bg background color
      * @param fg foreground color
-     * @param ch character to write
      */
-    public void objFromTxt(List<String> lst, int bg, int fg, int ch) {
+    public void objFromTxt(List<String> lst, int bg, int fg) {
         for (int o = 0; o < lst.size(); o++) {
             byte[] buf = lst.get(o).getBytes();
             for (int i = 0; i < buf.length; i++) {
-                if (buf[i] == 32) {
+                int ch = buf[i];
+                if (ch == 32) {
                     continue;
                 }
                 rx.add((double) i);

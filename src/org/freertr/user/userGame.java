@@ -545,7 +545,7 @@ public class userGame {
     public void doRotLogo(List<String> txt) {
         pipeZbuffer gfx = new pipeZbuffer(console);
         gfx.objFresh();
-        gfx.objFromTxt(txt, pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
+        gfx.objFromTxt(txt, pipeScreen.colBlack, pipeScreen.colWhite);
         gfx.objReSize();
         doRotate(gfx);
     }
@@ -578,7 +578,7 @@ public class userGame {
             s = s.substring(0, 5);
             List<String> txt = pipeScreen.fontText(s, " ", pipeFonts.fontFiller, font);
             gfx.objFresh();
-            gfx.objFromTxt(txt, pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
+            gfx.objFromTxt(txt, pipeScreen.colBlack, pipeScreen.colWhite);
             gfx.objReSize();
             gfx.clear();
             gfx.rotate();
@@ -603,7 +603,7 @@ public class userGame {
             List<String> txt = console.getAscii();
             console.doClear();
             gfx.objFresh();
-            gfx.objFromTxt(txt, pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
+            gfx.objFromTxt(txt, pipeScreen.colBlack, pipeScreen.colWhite);
             gfx.objReSize();
             gfx.clear();
             gfx.rotate();
@@ -633,6 +633,25 @@ public class userGame {
      */
     public void doRans(cmds cmd) {
         userFlash.ansiArt(cmd.getRemaining(), console);
+        List<String> txt = console.getAscii();
+        int[][][] col = console.getColor();
+        pipeZbuffer gfx = new pipeZbuffer(console);
+        gfx.objFresh();
+        gfx.objFromAns(txt, col);
+        gfx.objReSize();
+        doRotate(gfx);
+    }
+
+    /**
+     * rotating art
+     *
+     * @param cmd command line to use
+     */
+    public void doRotSec(cmds cmd) {
+        if (drawSecret(cmd.word())) {
+            cmd.badCmd();
+            return;
+        }
         List<String> txt = console.getAscii();
         int[][][] col = console.getColor();
         pipeZbuffer gfx = new pipeZbuffer(console);
@@ -1330,6 +1349,26 @@ public class userGame {
         }
     }
 
+    private boolean drawSecret(String a) {
+        List<String> lst = cfgInit.secretsFind(a);
+        if (lst == null) {
+            return true;
+        }
+        int[] god = new int[]{pipeScreen.colBrCyan, pipeScreen.colBrWhite, pipeScreen.colBrYellow,
+            pipeScreen.colBrGreen, pipeScreen.colBrBlue, pipeScreen.colBrRed};
+        console.doClear();
+        for (int o = 0; o < lst.size(); o++) {
+            String s = lst.get(o);
+            byte[] b = s.getBytes();
+            for (int i = 0; i < b.length; i++) {
+                int ch = b[i];
+                int cl = userFormat.zeroesColor(ch, pipeScreen.colBrGreen, god);
+                console.putInt(i, o, false, cl, ch);
+            }
+        }
+        return false;
+    }
+
     /**
      * do one command
      *
@@ -1446,6 +1485,10 @@ public class userGame {
             doText(a);
             return;
         }
+        if (a.equals("rot-bin")) {
+            doRotSec(cmd);
+            return;
+        }
         if (a.equals("rot-logo")) {
             doRotLogo(convText(cmd));
             return;
@@ -1526,22 +1569,9 @@ public class userGame {
             doAntBall();
             return;
         }
-        List<String> lst = cfgInit.secretsFind(a);
-        if (lst == null) {
+        if (drawSecret(a)) {
             cmd.badCmd();
             return;
-        }
-        int[] god = new int[]{pipeScreen.colBrCyan, pipeScreen.colBrWhite, pipeScreen.colBrYellow,
-            pipeScreen.colBrGreen, pipeScreen.colBrBlue, pipeScreen.colBrRed};
-        console.doClear();
-        for (int o = 0; o < lst.size(); o++) {
-            String s = lst.get(o);
-            byte[] b = s.getBytes();
-            for (int i = 0; i < b.length; i++) {
-                int ch = b[i];
-                int cl = userFormat.zeroesColor(ch, pipeScreen.colBrGreen, god);
-                console.putInt(i, o, false, cl, ch);
-            }
         }
         console.refresh();
         pipeScreen.getKey(console.pipe);
