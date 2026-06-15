@@ -18459,3 +18459,7 @@ qc pass: p2p tp tunnel with asymmetric labels
 no qc pass: dhcp with excluded address
 failed: dhcp with excluded address
 qc pass: ethernet trill-bas encapsulation
+---------------------------------- 2026-06-15 18:53:13 26.6.15
+no failed: dhcp with excluded address
+qc pass: dhcp with excluded address
+qc pass: ethernet vntag encapsulation

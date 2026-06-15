@@ -82,7 +82,7 @@ qc pass: cloner with ipv6 gre
 qc pass: dhcp
 qc pass: dhcp with arp/nd security
 qc pass: dhcp with static allocation
-failed: dhcp with excluded address
+qc pass: dhcp with excluded address
 qc pass: dhcp with upgraded server
 qc pass: dhcp with interface server
 qc pass: dhcp relay
@@ -172,6 +172,7 @@ qc pass: secure arp/nd
 qc pass: ethernet trill-mt encapsulation
 qc pass: ethernet trill-fgl encapsulation
 qc pass: ethernet trill-bas encapsulation
+qc pass: ethernet vntag encapsulation
 qc pass: secondary networks over ethernet
 qc pass: secondary networks over dot1q vlan
 qc pass: etherip over ipv4

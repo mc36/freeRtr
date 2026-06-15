@@ -34,7 +34,7 @@ public class ifcTrillBas extends ifcVlan {
         if ((pck.getByte(2) & 0xc0) != 0) {
             return true;
         }
-        pck.ETHcos = pck.getByte(3) & 0x1f; // ttl
+        // pck.getByte(3) & 0x1f; // ttl
         int i = pck.msbGetW(4); // egress
         int o = pck.msbGetW(6); // ingress
         pck.ETHvlan = (o << 16) | i;

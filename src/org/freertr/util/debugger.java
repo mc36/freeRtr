@@ -914,6 +914,16 @@ public class debugger {
     public static boolean ifcDot1ahTraf = false;
 
     /**
+     * ifcDot1br packets
+     */
+    public static boolean ifcDot1brTraf = false;
+
+    /**
+     * ifcVnTag packets
+     */
+    public static boolean ifcVnTagTraf = false;
+
+    /**
      * ifcTrillMt packets
      */
     public static boolean ifcTrillMtTraf = false;
@@ -1325,6 +1335,8 @@ public class debugger {
         l.add(null, false, b + 1, new int[]{-1}, "dot1q", "802.1q vlan");
         l.add(null, false, b + 1, new int[]{-1}, "dot1ad", "802.1ad vlan");
         l.add(null, false, b + 1, new int[]{-1}, "dot1ah", "802.1ah vlan");
+        l.add(null, false, b + 1, new int[]{-1}, "dot1br", "802.1br vlan");
+        l.add(null, false, b + 1, new int[]{-1}, "vntag", "vntag vlan");
         l.add(null, false, b + 1, new int[]{-1}, "trill-mt", "trill-mt vlan");
         l.add(null, false, b + 1, new int[]{-1}, "trill-fgl", "trill-fgl vlan");
         l.add(null, false, b + 1, new int[]{-1}, "trill-bas", "trill-bas vlan");
@@ -2257,6 +2269,14 @@ public class debugger {
             }
             if (s.equals("dot1ah")) {
                 ifcDot1ahTraf = v;
+                return false;
+            }
+            if (s.equals("dot1br")) {
+                ifcDot1brTraf = v;
+                return false;
+            }
+            if (s.equals("vntag")) {
+                ifcVnTagTraf = v;
                 return false;
             }
             if (s.equals("trill-mt")) {

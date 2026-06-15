@@ -5,21 +5,21 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 
 /**
- * vn tag protocol
+ * ieee 802.1br protocol
  *
  * @author matecsaba
  */
-public class ifcVnTag extends ifcVlan {
+public class ifcDot1br extends ifcVlan {
 
     /**
      * ethertype of these packets
      */
-    public final static int type = 0x8926;
+    public final static int type = 0x893f;
 
     /**
      * size of header
      */
-    public final static int size = 6;
+    public final static int size = 8;
 
     /**
      * parse header
@@ -31,11 +31,15 @@ public class ifcVnTag extends ifcVlan {
         if (pck.msbGetW(0) != type) {
             return true;
         }
-        int i = pck.msbGetW(2) & 0xfff; // target
-        int o = pck.msbGetW(4) & 0xfff; // source
-        pck.ETHvlan = (o << 12) | i;
+        int i = pck.msbGetW(2) & 0xfff; // ingress
+        int o = pck.msbGetW(4) & 0xfff; // egress
+        i <<= 8;
+        o <<= 8;
+        i |= pck.getByte(6); // ingress
+        o |= pck.getByte(7); // egress
+        pck.ETHvlan = (o << 20) | i;
         pck.getSkip(size);
-        if (debugger.ifcVnTagTraf) {
+        if (debugger.ifcDot1brTraf) {
             logger.debug("rx vlan=" + pck.ETHvlan);
         }
         return false;
@@ -47,13 +51,15 @@ public class ifcVnTag extends ifcVlan {
      * @param pck packet to update
      */
     public void createHeader(packHolder pck) {
-        if (debugger.ifcVnTagTraf) {
+        if (debugger.ifcDot1brTraf) {
             logger.debug("tx vlan=" + pck.ETHvlan);
         }
         pck.merge2beg();
         pck.msbPutW(0, type);
-        pck.msbPutW(2, pck.ETHvlan & 0xfff); // target
-        pck.msbPutW(4, (pck.ETHvlan >>> 12) & 0xfff); // source
+        pck.msbPutW(2, (pck.ETHvlan >>> 8) & 0xfff); // ingress
+        pck.msbPutW(4, (pck.ETHvlan >>> 28) & 0xfff); // egress
+        pck.putByte(6, pck.ETHvlan); // ingress
+        pck.putByte(7, pck.ETHvlan >>> 20); // egress
         pck.putSkip(size);
         pck.merge2beg();
     }
@@ -64,7 +70,7 @@ public class ifcVnTag extends ifcVlan {
      * @return string
      */
     public String toString() {
-        return "vntag on " + lower;
+        return "dot1br on " + lower;
     }
 
     /**
@@ -74,7 +80,7 @@ public class ifcVnTag extends ifcVlan {
      */
     public void reg2ethTyp(ifcEthTyp ethtyp) {
         cntr.dropper = ethtyp.getCounter();
-        ethtyp.addET(type, "vntag", this);
+        ethtyp.addET(type, "dot1br", this);
         ethtyp.updateET(type, this);
     }
 
@@ -91,8 +97,8 @@ public class ifcVnTag extends ifcVlan {
     /**
      * create new multiplexer
      */
-    public ifcVnTag() {
-        if (debugger.ifcVnTagTraf) {
+    public ifcDot1br() {
+        if (debugger.ifcDot1brTraf) {
             logger.debug("started");
         }
     }

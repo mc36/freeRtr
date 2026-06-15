@@ -64,6 +64,7 @@ import org.freertr.ifc.ifcConnect;
 import org.freertr.ifc.ifcDn;
 import org.freertr.ifc.ifcDot1ad;
 import org.freertr.ifc.ifcDot1ah;
+import org.freertr.ifc.ifcDot1br;
 import org.freertr.ifc.ifcDot1q;
 import org.freertr.ifc.ifcDvbGse;
 import org.freertr.ifc.ifcEapOLclnt;
@@ -108,6 +109,7 @@ import org.freertr.ifc.ifcThread;
 import org.freertr.ifc.ifcTrillFgl;
 import org.freertr.ifc.ifcTrillBas;
 import org.freertr.ifc.ifcTrillMt;
+import org.freertr.ifc.ifcVnTag;
 import org.freertr.ifc.ifcUdld;
 import org.freertr.ifc.ifcUp;
 import org.freertr.ifc.ifcVlan;
@@ -3661,6 +3663,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             initVlan(new ifcDot1ah());
             return false;
         }
+        if (a.equals("dot1br")) {
+            initVlan(new ifcDot1br());
+            return false;
+        }
         if (a.equals("trill-mt")) {
             initVlan(new ifcTrillMt());
             return false;
@@ -3671,6 +3677,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         if (a.equals("trill-bas")) {
             initVlan(new ifcTrillBas());
+            return false;
+        }
+        if (a.equals("vntag")) {
+            initVlan(new ifcVnTag());
             return false;
         }
         if (a.equals("qinq1")) {
@@ -7196,9 +7206,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "dot1q", "set to 802.1q encapsulation");
         l.add(null, false, 2, new int[]{-1}, "dot1ad", "set to 802.1ad encapsulation");
         l.add(null, false, 2, new int[]{-1}, "dot1ah", "set to 802.1ah encapsulation");
+        l.add(null, false, 2, new int[]{-1}, "dot1br", "set to 802.1br encapsulation");
         l.add(null, false, 2, new int[]{-1}, "trill-mt", "set to trill multi-topology encapsulation");
         l.add(null, false, 2, new int[]{-1}, "trill-fgl", "set to trill fine-grained label encapsulation");
         l.add(null, false, 2, new int[]{-1}, "trill-bas", "set to trill basic encapsulation");
+        l.add(null, false, 2, new int[]{-1}, "vntag", "set to vntag encapsulation");
         l.add(null, false, 2, new int[]{-1}, "qinq1", "set to qinq1 encapsulation");
         l.add(null, false, 2, new int[]{-1}, "qinq2", "set to qinq2 encapsulation");
         l.add(null, false, 2, new int[]{-1}, "qinq3", "set to qinq3 encapsulation");
