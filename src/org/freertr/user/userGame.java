@@ -170,8 +170,13 @@ public class userGame {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, null);
-        pip.settingsPut(pipeSetting.tabMod, userFormat.tableMode.normal);
+        pip.settingsPut(pipeSetting.width, cmd.pipe.settingsGet(pipeSetting.width, 80));
         pip.settingsPut(pipeSetting.height, 0);
+        pip.settingsPut(pipeSetting.tabMod, cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
+        pip.settingsPut(pipeSetting.boxer, cmd.pipe.settingsGet(pipeSetting.boxer, userFormat.boxerMode.normal));
+        pip.settingsPut(pipeSetting.times, cmd.pipe.settingsGet(pipeSetting.times, false));
+        pip.settingsPut(pipeSetting.colors, userFormat.colorMode.normal);
+        pip.settingsPut(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
         userExec exe = new userExec(pip, rdr);
         exe.privileged = false;
         pip.setTime(120000);
@@ -751,6 +756,9 @@ public class userGame {
             sptX = sptY;
         } else {
             sptY = sptX;
+        }
+        if (sptX < 1) {
+            sptX = 1;
         }
         sptX <<= 1;
         console.drawCircle(sptX, sptY, sptX, sptY, pipeScreen.colBlack, pipeScreen.colWhite, '@');
