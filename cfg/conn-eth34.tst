@@ -1,4 +1,4 @@
-description secondary networks over ethernet
+description secondary networks over dot1q vlan
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -6,7 +6,7 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 vrf def v1
  rd 1:1
  exit
-int eth1
+int eth1.123
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
@@ -31,7 +31,7 @@ vrf def v1
  exit
 bridge 1
  exit
-int eth1
+int eth1.123
  bridge-gr 1
  exit
 int eth2

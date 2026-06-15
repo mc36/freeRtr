@@ -106,6 +106,7 @@ import org.freertr.ifc.ifcSmds;
 import org.freertr.ifc.ifcSyncE;
 import org.freertr.ifc.ifcThread;
 import org.freertr.ifc.ifcTrillFgl;
+import org.freertr.ifc.ifcTrillBas;
 import org.freertr.ifc.ifcTrillMt;
 import org.freertr.ifc.ifcUdld;
 import org.freertr.ifc.ifcUp;
@@ -3668,6 +3669,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             initVlan(new ifcTrillFgl());
             return false;
         }
+        if (a.equals("trill-bas")) {
+            initVlan(new ifcTrillBas());
+            return false;
+        }
         if (a.equals("qinq1")) {
             initVlan(new ifcQinq1());
             return false;
@@ -7193,6 +7198,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "dot1ah", "set to 802.1ah encapsulation");
         l.add(null, false, 2, new int[]{-1}, "trill-mt", "set to trill multi-topology encapsulation");
         l.add(null, false, 2, new int[]{-1}, "trill-fgl", "set to trill fine-grained label encapsulation");
+        l.add(null, false, 2, new int[]{-1}, "trill-bas", "set to trill basic encapsulation");
         l.add(null, false, 2, new int[]{-1}, "qinq1", "set to qinq1 encapsulation");
         l.add(null, false, 2, new int[]{-1}, "qinq2", "set to qinq2 encapsulation");
         l.add(null, false, 2, new int[]{-1}, "qinq3", "set to qinq3 encapsulation");

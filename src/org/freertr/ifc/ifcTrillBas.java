@@ -1,16 +1,15 @@
 package org.freertr.ifc;
 
-import org.freertr.addr.addrType;
 import org.freertr.pack.packHolder;
-import org.freertr.util.counter;
-import org.freertr.util.state;
+import org.freertr.util.debugger;
+import org.freertr.util.logger;
 
 /**
  * trill (rfc6325) base header
  *
  * @author matecsaba
  */
-public class ifcTrillBas implements ifcUp, ifcDn {
+public class ifcTrillBas extends ifcVlan {
 
     /**
      * ethertype
@@ -20,102 +19,100 @@ public class ifcTrillBas implements ifcUp, ifcDn {
     /**
      * size
      */
-    public final static int size = 8;
-
-    private ifcUp upper = new ifcNull();
-
-    private ifcDn lower = new ifcNull();
-
-    private counter cntr = new counter();
+    public final static int size = 20;
 
     /**
-     * create new encapsulater
+     * parse header
      *
-     * @param upp upper layer
+     * @param pck packet to parse
+     * @return false on success, true on error
      */
-    public ifcTrillBas(ifcUp upp) {
-        upper = upp;
-        upper.setParent(this);
-    }
-
-    public void recvPack(packHolder pck) {
-        cntr.rx(pck);
+    public boolean parseHeader(packHolder pck) {
         if (pck.msbGetW(0) != type) {
-            return;
+            return true;
         }
         if ((pck.getByte(2) & 0xc0) != 0) {
-            return;
+            return true;
         }
-        pck.NSHttl = pck.getByte(3) & 0x1f;
-        pck.NSHsi = pck.msbGetW(4);
-        pck.NSHsp = pck.msbGetW(6);
+        pck.ETHcos = pck.getByte(3) & 0x1f; // ttl
+        int i = pck.msbGetW(4); // egress
+        int o = pck.msbGetW(6); // ingress
+        pck.ETHvlan = (o << 16) | i;
+        pck.getAddr(pck.ETHtrg, 8); // c-dst
+        pck.getAddr(pck.ETHsrc, 14); // c-src
         pck.getSkip(size);
-        upper.recvPack(pck);
-    }
-
-    public void sendPack(packHolder pck) {
-        cntr.tx(pck);
-        pck.merge2beg();
-        pck.msbPutW(0, type);
-        pck.msbPutW(2, pck.NSHttl & 0x1f);
-        pck.msbPutW(4, pck.NSHsi);
-        pck.msbPutW(6, pck.NSHsp);
-        pck.putSkip(size);
-        pck.merge2beg();
-        lower.sendPack(pck);
-    }
-
-    public void setParent(ifcDn parent) {
-        lower = parent;
+        if (debugger.ifcTrillBasTraf) {
+            logger.debug("rx vlan=" + pck.ETHvlan);
+        }
+        return false;
     }
 
     /**
-     * set upper layer
+     * create header
      *
-     * @param server upper layer
+     * @param pck packet to update
      */
-    public void setUpper(ifcUp server) {
-        upper = server;
+    public void createHeader(packHolder pck) {
+        if (debugger.ifcTrillBasTraf) {
+            logger.debug("tx vlan=" + pck.ETHvlan);
+        }
+        pck.merge2beg();
+        pck.msbPutW(0, type);
+        pck.msbPutW(2, 0x1f); // ttl
+        pck.msbPutW(4, pck.ETHvlan); // egress
+        pck.msbPutW(6, pck.ETHvlan >>> 16); // ingress
+        pck.putAddr(8, pck.ETHtrg); // c dst
+        pck.putAddr(14, pck.ETHsrc); // c src
+        pck.putSkip(size);
+        pck.merge2beg();
     }
 
-    public void setState(state.states stat) {
-        upper.setState(stat);
+    /**
+     * convert to string
+     *
+     * @return string
+     */
+    public String toString() {
+        return "trill-bas on " + lower;
     }
 
-    public void closeUp() {
-        upper.closeUp();
+    /**
+     * register ethertype
+     *
+     * @param ethtyp handler
+     */
+    public void reg2ethTyp(ifcEthTyp ethtyp) {
+        cntr.dropper = ethtyp.getCounter();
+        ethtyp.addET(type, "trill-bas", this);
+        ethtyp.updateET(type, this);
     }
 
-    public counter getCounter() {
-        return cntr;
+    /**
+     * unregister ethertype
+     *
+     * @param ethtyp handler
+     */
+    public void unreg2ethTyp(ifcEthTyp ethtyp) {
+        vLans.clear();
+        ethtyp.delET(type);
     }
 
-    public addrType getHwAddr() {
-        return lower.getHwAddr();
+    /**
+     * create new multiplexer
+     */
+    public ifcTrillBas() {
+        if (debugger.ifcTrillBasTraf) {
+            logger.debug("started");
+        }
     }
 
-    public void setFilter(boolean promisc) {
-        lower.setFilter(promisc);
-    }
-
-    public state.states getState() {
-        return lower.getState();
-    }
-
-    public void closeDn() {
-        lower.closeDn();
-    }
-
-    public void flapped() {
-        lower.flapped();
-    }
-
-    public int getMTUsize() {
-        return lower.getMTUsize();
-    }
-
-    public long getBandwidth() {
-        return lower.getBandwidth();
+    /**
+     * get size of mtu
+     *
+     * @return mtu size
+     */
+    public int remainingMtu() {
+        return lower.getMTUsize() - size;
     }
 
 }

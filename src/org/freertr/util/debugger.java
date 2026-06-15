@@ -924,6 +924,11 @@ public class debugger {
     public static boolean ifcTrillFglTraf = false;
 
     /**
+     * ifcTrillBas packets
+     */
+    public static boolean ifcTrillBasTraf = false;
+
+    /**
      * ifcQinq1 packets
      */
     public static boolean ifcQinq1Traf = false;
@@ -1322,6 +1327,7 @@ public class debugger {
         l.add(null, false, b + 1, new int[]{-1}, "dot1ah", "802.1ah vlan");
         l.add(null, false, b + 1, new int[]{-1}, "trill-mt", "trill-mt vlan");
         l.add(null, false, b + 1, new int[]{-1}, "trill-fgl", "trill-fgl vlan");
+        l.add(null, false, b + 1, new int[]{-1}, "trill-bas", "trill-bas vlan");
         l.add(null, false, b + 1, new int[]{-1}, "qinq1", "qinq1 vlan");
         l.add(null, false, b + 1, new int[]{-1}, "qinq2", "qinq2 vlan");
         l.add(null, false, b + 1, new int[]{-1}, "qinq3", "qinq3 vlan");
@@ -2259,6 +2265,10 @@ public class debugger {
             }
             if (s.equals("trill-fgl")) {
                 ifcTrillFglTraf = v;
+                return false;
+            }
+            if (s.equals("trill-bas")) {
+                ifcTrillBasTraf = v;
                 return false;
             }
             if (s.equals("qinq1")) {

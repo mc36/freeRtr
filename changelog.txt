@@ -18455,3 +18455,7 @@ qc pass: static labels redistribution over bgp mpvs
 ---------------------------------- 2026-06-08 20:01:34 26.6.8
 qc pass: p2p tp tunnel with symmetric labels
 qc pass: p2p tp tunnel with asymmetric labels
+---------------------------------- 2026-06-15 17:55:57 26.6.15
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
+qc pass: ethernet trill-bas encapsulation
