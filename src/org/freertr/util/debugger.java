@@ -924,6 +924,11 @@ public class debugger {
     public static boolean ifcVnTagTraf = false;
 
     /**
+     * ifcP4cpu packets
+     */
+    public static boolean ifcP4cpuTraf = false;
+
+    /**
      * ifcTrillMt packets
      */
     public static boolean ifcTrillMtTraf = false;
@@ -1337,6 +1342,7 @@ public class debugger {
         l.add(null, false, b + 1, new int[]{-1}, "dot1ah", "802.1ah vlan");
         l.add(null, false, b + 1, new int[]{-1}, "dot1br", "802.1br vlan");
         l.add(null, false, b + 1, new int[]{-1}, "vntag", "vntag vlan");
+        l.add(null, false, b + 1, new int[]{-1}, "p4cpu", "p4cpu vlan");
         l.add(null, false, b + 1, new int[]{-1}, "trill-mt", "trill-mt vlan");
         l.add(null, false, b + 1, new int[]{-1}, "trill-fgl", "trill-fgl vlan");
         l.add(null, false, b + 1, new int[]{-1}, "trill-bas", "trill-bas vlan");
@@ -2277,6 +2283,10 @@ public class debugger {
             }
             if (s.equals("vntag")) {
                 ifcVnTagTraf = v;
+                return false;
+            }
+            if (s.equals("p4cpu")) {
+                ifcP4cpuTraf = v;
                 return false;
             }
             if (s.equals("trill-mt")) {

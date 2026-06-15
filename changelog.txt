@@ -18463,3 +18463,5 @@ qc pass: ethernet trill-bas encapsulation
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
 qc pass: ethernet vntag encapsulation
+---------------------------------- 2026-06-15 19:16:26 26.6.15
+qc pass: ethernet dot1br encapsulation

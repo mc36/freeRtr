@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.6.15-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-06-15 19:09:58, took 00:16:45, with 50 workers, on 4422 cases, 0 failed, 0 traces, 2 retries
+-;-;-;2026-06-15 19:37:43, took 00:21:17, with 50 workers, on 4423 cases, 0 failed, 0 traces, 6 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -177,8 +177,9 @@ http://sources.freertr.org/cfg/conn-eth30.tst;conn-eth30.tst;success;ethernet tr
 http://sources.freertr.org/cfg/conn-eth31.tst;conn-eth31.tst;success;ethernet trill-fgl encapsulation
 http://sources.freertr.org/cfg/conn-eth32.tst;conn-eth32.tst;success;ethernet trill-bas encapsulation
 http://sources.freertr.org/cfg/conn-eth33.tst;conn-eth33.tst;success;ethernet vntag encapsulation
-http://sources.freertr.org/cfg/conn-eth34.tst;conn-eth34.tst;success;secondary networks over ethernet
-http://sources.freertr.org/cfg/conn-eth35.tst;conn-eth35.tst;success;secondary networks over dot1q vlan
+http://sources.freertr.org/cfg/conn-eth34.tst;conn-eth34.tst;success;ethernet dot1br encapsulation
+http://sources.freertr.org/cfg/conn-eth35.tst;conn-eth35.tst;success;secondary networks over ethernet
+http://sources.freertr.org/cfg/conn-eth36.tst;conn-eth36.tst;success;secondary networks over dot1q vlan
 http://sources.freertr.org/cfg/conn-etherip01.tst;conn-etherip01.tst;success;etherip over ipv4
 http://sources.freertr.org/cfg/conn-etherip02.tst;conn-etherip02.tst;success;etherip over ipv6
 http://sources.freertr.org/cfg/conn-etherip03.tst;conn-etherip03.tst;success;etherip over loopback

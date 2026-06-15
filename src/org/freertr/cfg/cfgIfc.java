@@ -110,6 +110,7 @@ import org.freertr.ifc.ifcTrillFgl;
 import org.freertr.ifc.ifcTrillBas;
 import org.freertr.ifc.ifcTrillMt;
 import org.freertr.ifc.ifcVnTag;
+import org.freertr.ifc.ifcP4cpu;
 import org.freertr.ifc.ifcUdld;
 import org.freertr.ifc.ifcUp;
 import org.freertr.ifc.ifcVlan;
@@ -3683,6 +3684,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             initVlan(new ifcVnTag());
             return false;
         }
+        if (a.equals("p4cpu")) {
+            initVlan(new ifcP4cpu());
+            return false;
+        }
         if (a.equals("qinq1")) {
             initVlan(new ifcQinq1());
             return false;
@@ -7211,6 +7216,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "trill-fgl", "set to trill fine-grained label encapsulation");
         l.add(null, false, 2, new int[]{-1}, "trill-bas", "set to trill basic encapsulation");
         l.add(null, false, 2, new int[]{-1}, "vntag", "set to vntag encapsulation");
+        l.add(null, false, 2, new int[]{-1}, "p4cpu", "set to p4cpu encapsulation");
         l.add(null, false, 2, new int[]{-1}, "qinq1", "set to qinq1 encapsulation");
         l.add(null, false, 2, new int[]{-1}, "qinq2", "set to qinq2 encapsulation");
         l.add(null, false, 2, new int[]{-1}, "qinq3", "set to qinq3 encapsulation");

@@ -173,6 +173,7 @@ qc pass: ethernet trill-mt encapsulation
 qc pass: ethernet trill-fgl encapsulation
 qc pass: ethernet trill-bas encapsulation
 qc pass: ethernet vntag encapsulation
+qc pass: ethernet dot1br encapsulation
 qc pass: secondary networks over ethernet
 qc pass: secondary networks over dot1q vlan
 qc pass: etherip over ipv4
