@@ -40,8 +40,7 @@ copy ../misc/default.cfg %tmp%/rtr/rtr-sw.txt
 exec for a in `busybox --list`; do ln -s /usr/bin/busybox %tmp%/bin/$a; done
 
 exec du -sh %tmp%
-exec cd %tmp% ; find . | cpio --quiet -H newc --owner root:root -O ../cpio -o
-move %tmp%/../cpio %img%.cpio
+exec cd %tmp% ; find . | cpio --quiet -H newc --owner root:root -O %img%.cpio -o
 exec zstd -9 %img%.cpio
 move %img%.cpio.zst %img%.ird
 exec wraplinux -M -l -i %img%.ird -o %img%.wrp %img%.krn
