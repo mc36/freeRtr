@@ -5842,6 +5842,7 @@ public class userExec {
     /**
      * get a show from a pipeline
      *
+     * @param cmd command
      * @param col use colors
      * @return converted pipe
      */
