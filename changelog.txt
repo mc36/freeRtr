@@ -18467,3 +18467,6 @@ qc pass: ethernet vntag encapsulation
 qc pass: ethernet dot1br encapsulation
 ---------------------------------- 2026-06-15 19:41:05 26.6.15
 qc pass: p4lang as vlan
+---------------------------------- 2026-06-16 12:09:28 26.6.16
+no qc pass: ingress label filtering with integrated pvrp
+failed: ingress label filtering with integrated pvrp
