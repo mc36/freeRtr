@@ -5845,26 +5845,25 @@ public class userExec {
      * @param col use colors
      * @return converted pipe
      */
-    public pipeSide getShPipe(boolean col) {
+    public static pipeSide getShPipe(cmds cmd, boolean col) {
         pipeLine pl = new pipeLine(1024 * 1024, false);
         pipeSide pip = pl.getSide();
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRorLF;
         userReader rdr = new userReader(pip, null);
-        pipeTerm.setTermWdt(pip, pipe.settingsGet(pipeSetting.width, 80));
+        pipeTerm.setTermWdt(pip, cmd.pipe.settingsGet(pipeSetting.width, 80));
         pipeTerm.setTermLen(pip, 0);
-        pip.settingsPut(pipeSetting.tabMod, pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
-        pip.settingsPut(pipeSetting.boxer, pipe.settingsGet(pipeSetting.boxer, userFormat.boxerMode.normal));
-        pip.settingsPut(pipeSetting.times, pipe.settingsGet(pipeSetting.times, false));
+        pip.settingsPut(pipeSetting.tabMod, cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
+        pip.settingsPut(pipeSetting.boxer, cmd.pipe.settingsGet(pipeSetting.boxer, userFormat.boxerMode.normal));
+        pip.settingsPut(pipeSetting.times, cmd.pipe.settingsGet(pipeSetting.times, false));
         if (col) {
-            pip.settingsPut(pipeSetting.colors, pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
-            pip.settingsPut(pipeSetting.ansiMode, pipe.settingsGet(pipeSetting.ansiMode, pipeScreen.ansiMode.normal));
+            pip.settingsPut(pipeSetting.colors, cmd.pipe.settingsGet(pipeSetting.colors, userFormat.colorMode.normal));
+            pip.settingsPut(pipeSetting.ansiMode, cmd.pipe.settingsGet(pipeSetting.ansiMode, pipeScreen.ansiMode.normal));
         } else {
             pip.settingsPut(pipeSetting.colors, userFormat.colorMode.normal);
             pip.settingsPut(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
         }
         userExec exe = new userExec(pip, rdr);
-        exe.privileged = privileged;
         pip.setTime(60000);
         String a = "show " + cmd.getRemaining();
         a = exe.repairCommand(a);
@@ -5878,7 +5877,7 @@ public class userExec {
 
     private void doView() {
         List<String> lst = new ArrayList<String>();
-        packText pt = new packText(getShPipe(false));
+        packText pt = new packText(getShPipe(cmd, false));
         pt.recvAll(lst);
         userEditor edtr = new userEditor(new pipeScreen(pipe), lst, getHstNam() + "#show " + cmd.getRemaining(), false);
         edtr.doView();
@@ -5893,7 +5892,8 @@ public class userExec {
             if (pipe.isClosed() != 0) {
                 break;
             }
-            String a = getShPipe(true).strGet(1024 * 1024);
+            pipeSide pip = getShPipe(cmd, true);
+            String a = pip.strGet(pip.getBufSize());
             pipeScreen.sendCur(pipe, 0, 0);
             pipeScreen.sendCls(pipe);
             if (color) {
@@ -5921,7 +5921,7 @@ public class userExec {
         userEditor edtr = new userEditor(new pipeScreen(pipe), lst, getHstNam() + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             lst.clear();
-            packText pt = new packText(getShPipe(false));
+            packText pt = new packText(getShPipe(cmd, false));
             pt.recvAll(lst);
             if (edtr.doTimed(1000, false)) {
                 break;
@@ -5933,20 +5933,21 @@ public class userExec {
 
     private void doCompare() {
         String curr = cmd.getRemaining();
-        List<String> r2 = new packText(getShPipe(false)).recvAll();
+        List<String> r2 = new packText(getShPipe(cmd, false)).recvAll();
         cmd = new cmds("cmp", compareBase);
-        List<String> r1 = new packText(getShPipe(false)).recvAll();
+        cmd.pipe = pipe;
+        List<String> r1 = new packText(getShPipe(cmd, false)).recvAll();
         List<String> lst = differ.calcAny(r1, r2, compareBase, curr);
         reader.putStrArr(lst);
     }
 
     private void doDiffers() {
-        List<String> r1 = new packText(getShPipe(false)).recvAll();
+        List<String> r1 = new packText(getShPipe(cmd, false)).recvAll();
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
         userEditor edtr = new userEditor(new pipeScreen(pipe), lst, getHstNam() + "#watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
-            List<String> r2 = new packText(getShPipe(false)).recvAll();
+            List<String> r2 = new packText(getShPipe(cmd, false)).recvAll();
             differ df = new differ();
             df.calc1by1(r1, r2);
             lst.clear();

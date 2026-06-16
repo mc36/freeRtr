@@ -165,28 +165,7 @@ public class userGame {
     }
 
     private List<String> convShow(cmds cmd) {
-        pipeLine pl = new pipeLine(1024 * 1024, false);
-        pipeSide pip = pl.getSide();
-        pip.lineTx = pipeSide.modTyp.modeCRLF;
-        pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        userReader rdr = new userReader(pip, null);
-        pip.settingsPut(pipeSetting.width, cmd.pipe.settingsGet(pipeSetting.width, 80));
-        pip.settingsPut(pipeSetting.height, 0);
-        pip.settingsPut(pipeSetting.tabMod, cmd.pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal));
-        pip.settingsPut(pipeSetting.boxer, cmd.pipe.settingsGet(pipeSetting.boxer, userFormat.boxerMode.normal));
-        pip.settingsPut(pipeSetting.times, cmd.pipe.settingsGet(pipeSetting.times, false));
-        pip.settingsPut(pipeSetting.colors, userFormat.colorMode.normal);
-        pip.settingsPut(pipeSetting.ansiMode, pipeScreen.ansiMode.normal);
-        userExec exe = new userExec(pip, rdr);
-        exe.privileged = false;
-        pip.setTime(120000);
-        String a = "show " + cmd.getRemaining();
-        a = exe.repairCommand(a);
-        exe.executeCommand(a);
-        pip = pl.getSide();
-        pl.setClose();
-        pip.lineTx = pipeSide.modTyp.modeCRLF;
-        pip.lineRx = pipeSide.modTyp.modeCRtryLF;
+        pipeSide pip = userExec.getShPipe(cmd, false);
         List<String> lst = new ArrayList<String>();
         packText pt = new packText(pip);
         pt.recvAll(lst);
