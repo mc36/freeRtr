@@ -137,6 +137,11 @@ public class userLine {
     public String fakePrompt;
 
     /**
+     * fake enable
+     */
+    public boolean fakeEnable;
+
+    /**
      * password stars
      */
     public boolean passStars = false;
@@ -275,6 +280,57 @@ public class userLine {
      * previous user
      */
     protected String prevUserLoc = "you are the first on this line";
+
+    /**
+     * line defaults text
+     */
+    public final static userFilter[] linedefF = {
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec interface", null),
+        new userFilter(".*", cmds.tabulator + "exec timeout 300000", null),
+        new userFilter(".*", cmds.tabulator + "exec width 79", null),
+        new userFilter(".*", cmds.tabulator + "exec height 24", null),
+        new userFilter(".*", cmds.tabulator + "exec history 64", null),
+        new userFilter(".*", cmds.tabulator + "exec riblines 8192", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec timestamp", null),
+        new userFilter(".*", cmds.tabulator + "exec colorize normal", null),
+        new userFilter(".*", cmds.tabulator + "exec boxer normal", null),
+        new userFilter(".*", cmds.tabulator + "exec background black", null),
+        new userFilter(".*", cmds.tabulator + "exec foreground white", null),
+        new userFilter(".*", cmds.tabulator + "exec prompt bright-green", null),
+        new userFilter(".*", cmds.tabulator + "exec header bright-yellow", null),
+        new userFilter(".*", cmds.tabulator + "exec ansimode normal", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec spacetab", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec capslock", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec bells", null),
+        new userFilter(".*", cmds.tabulator + "exec tablemode normal", null),
+        new userFilter(".*", cmds.tabulator + "exec welcome welcome", null),
+        new userFilter(".*", cmds.tabulator + "exec before before:", null),
+        new userFilter(".*", cmds.tabulator + "exec ready line ready", null),
+        new userFilter(".*", cmds.tabulator + "exec bye see you later", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec logging", null),
+        new userFilter(".*", cmds.tabulator + "exec privilege 15", null),
+        new userFilter(".*", cmds.tabulator + "exec autocommand ", null),
+        new userFilter(".*", cmds.tabulator + "exec banner", null),
+        new userFilter(".*", cmds.tabulator + "exec title", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec fakenable", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec fakeprompt", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec detect", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec expirity", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec monitor", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec autohangup", null),
+        new userFilter(".*", cmds.tabulator + "login timeout 60000", null),
+        new userFilter(".*", cmds.tabulator + "login retry 3", null),
+        new userFilter(".*", cmds.tabulator + "login delay 3000", null),
+        new userFilter(".*", cmds.tabulator + "login user username:", null),
+        new userFilter(".*", cmds.tabulator + "login pass password:", null),
+        new userFilter(".*", cmds.tabulator + "login fail authentication failed", null),
+        new userFilter(".*", cmds.tabulator + "login activate 13", null),
+        new userFilter(".*", cmds.tabulator + "login deactivate 65536", null),
+        new userFilter(".*", cmds.tabulator + "login escape 3", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "login stars", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "login logging", null),
+        new userFilter(".*", cmds.tabulator + "login last none", null)
+    };
 
     private static void convLine(List<Integer> bts, String a) {
         byte[] b = a.getBytes();
@@ -459,6 +515,7 @@ public class userLine {
         cmds.cfgLine(lst, !title, beg, "exec title", "");
         cmds.cfgLine(lst, !expirity, beg, "exec expirity", "");
         cmds.cfgLine(lst, !monitor, beg, "exec monitor", "");
+        cmds.cfgLine(lst, !fakeEnable, beg, "exec fakenable", "");
         cmds.cfgLine(lst, fakePrompt == null, beg, "exec fakeprompt", fakePrompt);
         lst.add(beg + "exec privilege " + promptPrivilege);
         if (authorizeList == null) {
@@ -504,7 +561,7 @@ public class userLine {
         if ((filter & 1) == 0) {
             return;
         }
-        List<String> res = userFilter.filterText(lst, userReader.linedefF);
+        List<String> res = userFilter.filterText(lst, linedefF);
         lst.clear();
         lst.addAll(res);
     }
@@ -654,6 +711,10 @@ public class userLine {
             }
             if (s.equals("autohangup")) {
                 autoHangup = true;
+                return false;
+            }
+            if (s.equals("fakenable")) {
+                fakeEnable = true;
                 return false;
             }
             if (s.equals("fakeprompt")) {
@@ -816,6 +877,10 @@ public class userLine {
                 autoHangup = false;
                 return false;
             }
+            if (s.equals("fakenable")) {
+                fakeEnable = false;
+                return false;
+            }
             if (s.equals("fakeprompt")) {
                 fakePrompt = null;
                 return false;
@@ -931,6 +996,7 @@ public class userLine {
         l.add(null, false, 3, new int[]{3, -1}, "<text>", "text to display");
         l.add(null, false, 2, new int[]{3}, "autocommand", "set automatic command");
         l.add(null, false, 3, new int[]{3, -1}, "<text>", "autocommand of user");
+        l.add(null, false, 2, new int[]{-1}, "fakenable", "set fake enable");
         l.add(null, false, 2, new int[]{3}, "fakeprompt", "set fake prompt");
         l.add(null, false, 3, new int[]{3, -1}, "<text>", "prompt to use");
         l.add(null, false, 2, new int[]{-1}, "banner", "display banner");
@@ -1224,6 +1290,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         pipe.settingsPut(pipeSetting.origin, remote);
         pipe.settingsPut(pipeSetting.authed, user);
         exe = new userExec(pipe, rdr);
+        exe.fakeEnable = parent.fakeEnable;
         exe.fakePrompt = parent.fakePrompt;
         exe.privileged = user.privilege >= 15;
         exe.framedIface = parent.execIface;

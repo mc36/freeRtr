@@ -111,6 +111,11 @@ public class userExec {
     public String fakePrompt = null;
 
     /**
+     * fake enable prompt
+     */
+    public boolean fakeEnable = false;
+
+    /**
      * authenticated username
      */
     public String username = "<nobody>";
@@ -3397,20 +3402,28 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("enable")) {
-            if (cfgAll.enaPass == null) {
-                cmd.error("no enable configured");
-                return cmdRes.command;
-            }
-            pipe.strPut("password:");
             int i;
             if (pipe.settingsGet(pipeSetting.passStar, false)) {
                 i = 0x33;
             } else {
                 i = 0x31;
             }
+            if (fakeEnable) {
+                pipe.strPut("password:");
+                a = pipe.lineGet(i);
+                logger.info("fake enable " + a + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
+                bits.sleep(1000);
+                cmd.error("access denied");
+                return cmdRes.command;
+            }
+            if (cfgAll.enaPass == null) {
+                cmd.error("no enable configured");
+                return cmdRes.command;
+            }
+            pipe.strPut("password:");
             a = pipe.lineGet(i);
             if (authLocal.secretTest(cfgAll.enaPass, a)) {
-                cmd.error("invalid password");
+                cmd.error("access denied");
                 return cmdRes.command;
             }
             privileged = true;

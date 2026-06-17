@@ -212,56 +212,6 @@ public class userReader implements Comparator<String> {
     }
 
     /**
-     * line defaults text
-     */
-    public final static userFilter[] linedefF = {
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec interface", null),
-        new userFilter(".*", cmds.tabulator + "exec timeout 300000", null),
-        new userFilter(".*", cmds.tabulator + "exec width 79", null),
-        new userFilter(".*", cmds.tabulator + "exec height 24", null),
-        new userFilter(".*", cmds.tabulator + "exec history 64", null),
-        new userFilter(".*", cmds.tabulator + "exec riblines 8192", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec timestamp", null),
-        new userFilter(".*", cmds.tabulator + "exec colorize normal", null),
-        new userFilter(".*", cmds.tabulator + "exec boxer normal", null),
-        new userFilter(".*", cmds.tabulator + "exec background black", null),
-        new userFilter(".*", cmds.tabulator + "exec foreground white", null),
-        new userFilter(".*", cmds.tabulator + "exec prompt bright-green", null),
-        new userFilter(".*", cmds.tabulator + "exec header bright-yellow", null),
-        new userFilter(".*", cmds.tabulator + "exec ansimode normal", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec spacetab", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec capslock", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec bells", null),
-        new userFilter(".*", cmds.tabulator + "exec tablemode normal", null),
-        new userFilter(".*", cmds.tabulator + "exec welcome welcome", null),
-        new userFilter(".*", cmds.tabulator + "exec before before:", null),
-        new userFilter(".*", cmds.tabulator + "exec ready line ready", null),
-        new userFilter(".*", cmds.tabulator + "exec bye see you later", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec logging", null),
-        new userFilter(".*", cmds.tabulator + "exec privilege 15", null),
-        new userFilter(".*", cmds.tabulator + "exec autocommand ", null),
-        new userFilter(".*", cmds.tabulator + "exec banner", null),
-        new userFilter(".*", cmds.tabulator + "exec title", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec fakeprompt", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec detect", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec expirity", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec monitor", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec autohangup", null),
-        new userFilter(".*", cmds.tabulator + "login timeout 60000", null),
-        new userFilter(".*", cmds.tabulator + "login retry 3", null),
-        new userFilter(".*", cmds.tabulator + "login delay 3000", null),
-        new userFilter(".*", cmds.tabulator + "login user username:", null),
-        new userFilter(".*", cmds.tabulator + "login pass password:", null),
-        new userFilter(".*", cmds.tabulator + "login fail authentication failed", null),
-        new userFilter(".*", cmds.tabulator + "login activate 13", null),
-        new userFilter(".*", cmds.tabulator + "login deactivate 65536", null),
-        new userFilter(".*", cmds.tabulator + "login escape 3", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "login stars", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "login logging", null),
-        new userFilter(".*", cmds.tabulator + "login last none", null)
-    };
-
-    /**
      * constructs new reader for a pipeline
      *
      * @param pip pipeline to use as input
