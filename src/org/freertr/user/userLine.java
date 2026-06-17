@@ -1405,6 +1405,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         if (parent.loginLogging) {
             logger.info(user.user + " logged out from " + remote);
         }
+        logger.pipeStop(pipe);
     }
 
     public boolean doExpire() {
