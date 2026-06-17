@@ -147,9 +147,14 @@ public class userLine {
     public boolean fakeAnyPass;
 
     /**
-     * fake privilege level
+     * fake no password
      */
-    public boolean fakePrivLvl;
+    public boolean fakeNoPass;
+
+    /**
+     * fake hashmark
+     */
+    public boolean fakeHashMark;
 
     /**
      * password stars
@@ -328,7 +333,8 @@ public class userLine {
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec autohangup", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "fake enable", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "fake anypass", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "fake privilege", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "fake nopass", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "fake hashmark", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "fake prompt", null),
         new userFilter(".*", cmds.tabulator + "login timeout 60000", null),
         new userFilter(".*", cmds.tabulator + "login retry 3", null),
@@ -529,7 +535,8 @@ public class userLine {
         cmds.cfgLine(lst, !monitor, beg, "exec monitor", "");
         cmds.cfgLine(lst, !fakeEnable, beg, "fake enable", "");
         cmds.cfgLine(lst, !fakeAnyPass, beg, "fake anypass", "");
-        cmds.cfgLine(lst, !fakePrivLvl, beg, "fake privilege", "");
+        cmds.cfgLine(lst, !fakeNoPass, beg, "fake nopass", "");
+        cmds.cfgLine(lst, !fakeHashMark, beg, "fake hashmark", "");
         cmds.cfgLine(lst, fakePrompt == null, beg, "fake prompt", fakePrompt);
         lst.add(beg + "exec privilege " + promptPrivilege);
         if (authorizeList == null) {
@@ -756,8 +763,12 @@ public class userLine {
                 fakeAnyPass = true;
                 return false;
             }
-            if (s.equals("privilege")) {
-                fakePrivLvl = true;
+            if (s.equals("nopass")) {
+                fakeNoPass = true;
+                return false;
+            }
+            if (s.equals("hashmark")) {
+                fakeHashMark = true;
                 return false;
             }
             if (s.equals("prompt")) {
@@ -907,6 +918,10 @@ public class userLine {
                 autoCommand = "";
                 return false;
             }
+            if (s.equals("privilege")) {
+                promptPrivilege = 15;
+                return false;
+            }
             if (s.equals("authorization")) {
                 authorizeList = null;
                 return false;
@@ -935,8 +950,12 @@ public class userLine {
                 fakeAnyPass = false;
                 return false;
             }
-            if (s.equals("privilege")) {
-                fakePrivLvl = false;
+            if (s.equals("nopass")) {
+                fakeNoPass = false;
+                return false;
+            }
+            if (s.equals("hashmark")) {
+                fakeHashMark = false;
                 return false;
             }
             if (s.equals("prompt")) {
@@ -1047,7 +1066,8 @@ public class userLine {
         l.add(null, false, 1, new int[]{2}, "fake", "set fake parameters");
         l.add(null, false, 2, new int[]{-1}, "enable", "set fake enable");
         l.add(null, false, 2, new int[]{-1}, "anypass", "set fake any password");
-        l.add(null, false, 2, new int[]{-1}, "privilege", "set fake privileges");
+        l.add(null, false, 2, new int[]{-1}, "nopass", "set fake no password");
+        l.add(null, false, 2, new int[]{-1}, "hashmark", "set fake hashmark");
         l.add(null, false, 2, new int[]{3}, "prompt", "set fake prompt");
         l.add(null, false, 3, new int[]{3, -1}, "<text>", "prompt to use");
         l.add(null, false, 1, new int[]{2}, "login", "set login parameters");
@@ -1333,7 +1353,8 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         exe = new userExec(pipe, rdr);
         exe.fakeEnable = parent.fakeEnable;
         exe.fakeAnyPass = parent.fakeAnyPass;
-        exe.fakePrivLvl = parent.fakePrivLvl;
+        exe.fakeNoPass = parent.fakeNoPass;
+        exe.fakeHashMark = parent.fakeHashMark;
         exe.fakePrompt = parent.fakePrompt;
         exe.privileged = user.privilege >= 15;
         exe.framedIface = parent.execIface;
