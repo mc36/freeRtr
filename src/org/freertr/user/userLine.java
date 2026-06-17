@@ -142,6 +142,16 @@ public class userLine {
     public boolean fakeEnable;
 
     /**
+     * fake any password
+     */
+    public boolean fakeAnyPass;
+
+    /**
+     * fake privilege level
+     */
+    public boolean fakePrivLvl;
+
+    /**
      * password stars
      */
     public boolean passStars = false;
@@ -312,12 +322,14 @@ public class userLine {
         new userFilter(".*", cmds.tabulator + "exec autocommand ", null),
         new userFilter(".*", cmds.tabulator + "exec banner", null),
         new userFilter(".*", cmds.tabulator + "exec title", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec fakenable", null),
-        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec fakeprompt", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec detect", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec expirity", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec monitor", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec autohangup", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "fake enable", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "fake anypass", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "fake privilege", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "fake prompt", null),
         new userFilter(".*", cmds.tabulator + "login timeout 60000", null),
         new userFilter(".*", cmds.tabulator + "login retry 3", null),
         new userFilter(".*", cmds.tabulator + "login delay 3000", null),
@@ -515,8 +527,10 @@ public class userLine {
         cmds.cfgLine(lst, !title, beg, "exec title", "");
         cmds.cfgLine(lst, !expirity, beg, "exec expirity", "");
         cmds.cfgLine(lst, !monitor, beg, "exec monitor", "");
-        cmds.cfgLine(lst, !fakeEnable, beg, "exec fakenable", "");
-        cmds.cfgLine(lst, fakePrompt == null, beg, "exec fakeprompt", fakePrompt);
+        cmds.cfgLine(lst, !fakeEnable, beg, "fake enable", "");
+        cmds.cfgLine(lst, !fakeAnyPass, beg, "fake anypass", "");
+        cmds.cfgLine(lst, !fakePrivLvl, beg, "fake privilege", "");
+        cmds.cfgLine(lst, fakePrompt == null, beg, "fake prompt", fakePrompt);
         lst.add(beg + "exec privilege " + promptPrivilege);
         if (authorizeList == null) {
             lst.add(beg + "no exec authorization");
@@ -713,14 +727,6 @@ public class userLine {
                 autoHangup = true;
                 return false;
             }
-            if (s.equals("fakenable")) {
-                fakeEnable = true;
-                return false;
-            }
-            if (s.equals("fakeprompt")) {
-                fakePrompt = cmd.getRemaining();
-                return false;
-            }
             if (s.equals("autocommand")) {
                 autoCommand = cmd.getRemaining();
                 return false;
@@ -736,6 +742,26 @@ public class userLine {
                     return false;
                 }
                 authorizeList = lst.getAuther();
+                return false;
+            }
+            return true;
+        }
+        if (s.equals("fake")) {
+            s = cmd.word();
+            if (s.equals("enable")) {
+                fakeEnable = true;
+                return false;
+            }
+            if (s.equals("anypass")) {
+                fakeAnyPass = true;
+                return false;
+            }
+            if (s.equals("privilege")) {
+                fakePrivLvl = true;
+                return false;
+            }
+            if (s.equals("prompt")) {
+                fakePrompt = cmd.getRemaining();
                 return false;
             }
             return true;
@@ -877,14 +903,6 @@ public class userLine {
                 autoHangup = false;
                 return false;
             }
-            if (s.equals("fakenable")) {
-                fakeEnable = false;
-                return false;
-            }
-            if (s.equals("fakeprompt")) {
-                fakePrompt = null;
-                return false;
-            }
             if (s.equals("autocommand")) {
                 autoCommand = "";
                 return false;
@@ -903,6 +921,26 @@ public class userLine {
             }
             if (s.equals("tablemode")) {
                 execTables = userFormat.tableMode.normal;
+                return false;
+            }
+            return true;
+        }
+        if (s.equals("fake")) {
+            s = cmd.word();
+            if (s.equals("enable")) {
+                fakeEnable = false;
+                return false;
+            }
+            if (s.equals("anypass")) {
+                fakeAnyPass = false;
+                return false;
+            }
+            if (s.equals("privilege")) {
+                fakePrivLvl = false;
+                return false;
+            }
+            if (s.equals("prompt")) {
+                fakePrompt = null;
                 return false;
             }
             return true;
@@ -996,9 +1034,6 @@ public class userLine {
         l.add(null, false, 3, new int[]{3, -1}, "<text>", "text to display");
         l.add(null, false, 2, new int[]{3}, "autocommand", "set automatic command");
         l.add(null, false, 3, new int[]{3, -1}, "<text>", "autocommand of user");
-        l.add(null, false, 2, new int[]{-1}, "fakenable", "set fake enable");
-        l.add(null, false, 2, new int[]{3}, "fakeprompt", "set fake prompt");
-        l.add(null, false, 3, new int[]{3, -1}, "<text>", "prompt to use");
         l.add(null, false, 2, new int[]{-1}, "banner", "display banner");
         l.add(null, false, 2, new int[]{-1}, "detect", "detect terminal size");
         l.add(null, false, 2, new int[]{-1}, "title", "send hostname");
@@ -1009,6 +1044,12 @@ public class userLine {
         l.add(null, false, 3, new int[]{-1}, "<num>", "privilege of terminal");
         l.add(null, false, 2, new int[]{3}, "authorization", "set authorization");
         l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authentication list");
+        l.add(null, false, 1, new int[]{2}, "fake", "set fake parameters");
+        l.add(null, false, 2, new int[]{-1}, "enable", "set fake enable");
+        l.add(null, false, 2, new int[]{-1}, "anypass", "set fake any password");
+        l.add(null, false, 2, new int[]{-1}, "privilege", "set fake privileges");
+        l.add(null, false, 2, new int[]{3}, "prompt", "set fake prompt");
+        l.add(null, false, 3, new int[]{3, -1}, "<text>", "prompt to use");
         l.add(null, false, 1, new int[]{2}, "login", "set login parameters");
         l.add(null, false, 2, new int[]{3, -1}, "last", "display last login line");
         l.add(null, false, 3, new int[]{-1}, "none", "nothing");
@@ -1291,6 +1332,8 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         pipe.settingsPut(pipeSetting.authed, user);
         exe = new userExec(pipe, rdr);
         exe.fakeEnable = parent.fakeEnable;
+        exe.fakeAnyPass = parent.fakeAnyPass;
+        exe.fakePrivLvl = parent.fakePrivLvl;
         exe.fakePrompt = parent.fakePrompt;
         exe.privileged = user.privilege >= 15;
         exe.framedIface = parent.execIface;

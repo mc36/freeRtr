@@ -116,6 +116,16 @@ public class userExec {
     public boolean fakeEnable = false;
 
     /**
+     * fake any password
+     */
+    public boolean fakeAnyPass = false;
+
+    /**
+     * fake privilege level
+     */
+    public boolean fakePrivLvl = false;
+
+    /**
      * authenticated username
      */
     public String username = "<nobody>";
@@ -3213,7 +3223,7 @@ public class userExec {
         rollback = false;
         committed = false;
         String s = getHstNam();
-        s += privileged ? "#" : ">";
+        s += (privileged || fakePrivLvl) ? "#" : ">";
         reader.setContext(getHelping(), s);
         s = reader.readLine(null);
         if (s == null) {
@@ -3412,6 +3422,10 @@ public class userExec {
                 pipe.strPut("password:");
                 a = pipe.lineGet(i);
                 logger.info("fake enable " + a + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
+                if (fakeAnyPass) {
+                    fakePrivLvl = true;
+                    return cmdRes.command;
+                }
                 bits.sleep(1000);
                 cmd.error("access denied");
                 return cmdRes.command;
@@ -3430,6 +3444,7 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("disable")) {
+            fakePrivLvl = false;
             privileged = false;
             return cmdRes.command;
         }
