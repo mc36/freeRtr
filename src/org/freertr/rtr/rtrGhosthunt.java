@@ -413,7 +413,7 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
                 if (rtr == null) {
                     return;
                 }
-                ipRtr ipr = rtr.getRouter();
+                ipRtr ipr = rtr.getRouter(fwdCore.ipVersion);
                 if (ipr == null) {
                     return;
                 }

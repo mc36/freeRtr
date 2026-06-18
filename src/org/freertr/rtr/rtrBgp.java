@@ -413,7 +413,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     /**
      * other afi router
      */
-    protected rtrBgpOther other;
+    public rtrBgpOther other;
 
     /**
      * spf afi router
@@ -1362,7 +1362,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (rpkiT != null) {
             cfgRtr rtrCfg = cfgAll.rtrFind(rpkiT, rpkiN, false);
             if (rtrCfg != null) {
-                rpkiR = (rtrRpki) rtrCfg.getRouter();
+                rpkiR = (rtrRpki) rtrCfg.getRouter(0);
             }
         }
         if (rpkiR != null) {
@@ -2539,7 +2539,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                 cmd.error("no such router");
                 return false;
             }
-            ls.rtr = rtr.getRouter();
+            ls.rtr = rtr.getRouter(0);
             if (ls.rtr == null) {
                 cmd.error("not initialized");
                 return false;

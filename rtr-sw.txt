@@ -322,7 +322,7 @@ router logger6 1 vrf v1
 !
 router logger6 65535 vrf v1
  flapstat
- redistribute bgp6 65535
+ redistribute bgp4 65535
  exit
 !
 interface template1
@@ -1020,7 +1020,7 @@ server http web vrf v1 interface loopback0
  host sid.mchome.nop.hu script exec config
  host sid.mchome.nop.hu api exec config ipinfo show script
  host sid.mchome.nop.hu ipinfo router4 bgp4 65535
- host sid.mchome.nop.hu ipinfo router6 bgp6 65535
+ host sid.mchome.nop.hu ipinfo router6 bgp4 65535
  host sid.mchome.nop.hu ipinfo details
  host sid.mchome.nop.hu ipinfo single
  host sid.mchome.nop.hu ipinfo style background-color:#000000;color:#00FFFF;
@@ -1075,7 +1075,7 @@ server honeypot hp1 vrf v1 interface loopback0
  tiny-http
  info pmtud 512 1024 666
  info router4 bgp4 65535
- info router6 bgp6 65535
+ info router6 bgp4 65535
  info single
  info style background-color:#000000;color:#00FFFF;
  info script logger
@@ -1086,7 +1086,7 @@ server honeypot hp2 vrf v1 interface loopback0
  tiny-http
  info pmtud 512 1024 666
  info router4 bgp4 65535
- info router6 bgp6 65535
+ info router6 bgp4 65535
  info details
  info single
  info style background-color:#000000;color:#00FFFF;
@@ -1097,7 +1097,7 @@ server honeypot hp3 vrf v1 interface loopback0
  port 8883
  info pmtud 512 1024 666
  info router4 bgp4 65535
- info router6 bgp6 65535
+ info router6 bgp4 65535
  info details
  info single
  info resolve

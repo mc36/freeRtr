@@ -406,7 +406,7 @@ public class rtrLogger extends ipRtr {
         if (rtr == null) {
             return "";
         }
-        ipRtr ipr = rtr.getRouter();
+        ipRtr ipr = rtr.getRouter(fwdCore.ipVersion);
         if (ipr == null) {
             return "";
         }

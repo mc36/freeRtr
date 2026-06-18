@@ -1308,7 +1308,7 @@ public class cfgInit implements Runnable {
             if (c == null) {
                 continue;
             }
-            ipRtr r = c.getRouter();
+            ipRtr r = c.getRouter(0);
             if (r == null) {
                 continue;
             }
@@ -1338,7 +1338,7 @@ public class cfgInit implements Runnable {
             if (c == null) {
                 continue;
             }
-            ipRtr e = c.getRouter();
+            ipRtr e = c.getRouter(0);
             if (e == null) {
                 continue;
             }

@@ -330,7 +330,7 @@ class servRpkiConn implements Runnable, Comparable<servRpkiConn> {
                 if (lower.rpkiT != null) {
                     cfgRtr rtrCfg = cfgAll.rtrFind(lower.rpkiT, lower.rpkiN, false);
                     if (rtrCfg != null) {
-                        rpkiR = (rtrRpki) rtrCfg.getRouter();
+                        rpkiR = (rtrRpki) rtrCfg.getRouter(0);
                     }
                 }
                 if (pck.doOneServRnd(lower.sequence, sess, lower.cfged4, lower.cfged6, lower.cfgedA, lower.cfgedK, rpkiR, lower.jsonN)) {

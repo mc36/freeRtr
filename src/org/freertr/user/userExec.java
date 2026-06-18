@@ -4321,7 +4321,8 @@ public class userExec {
         int port = 33440;
         int proto = 0;
         boolean resolv = false;
-        ipRtr rtr = null;
+        cfgRtr rtrC = null;
+        ipRtr rtrI = null;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -4373,11 +4374,7 @@ public class userExec {
                 if (typ == null) {
                     continue;
                 }
-                cfgRtr cfg = cfgAll.rtrFind(typ, bits.str2num(cmd.word()), false);
-                if (cfg == null) {
-                    continue;
-                }
-                rtr = cfg.getRouter();
+                rtrC = cfgAll.rtrFind(typ, bits.str2num(cmd.word()), false);
                 continue;
             }
             if (a.equals("lookup")) {
@@ -4388,6 +4385,9 @@ public class userExec {
         if (vrf == null) {
             cmd.error("vrf not specified");
             return;
+        }
+        if (rtrC != null) {
+            rtrI = rtrC.getRouter(ipver);
         }
         addrIP trg = clntDns.resolveAddr(pipe, rem, ipver);
         if (trg == null) {
@@ -4406,7 +4406,7 @@ public class userExec {
             trc.domainCln = new clntDns();
             trc.domainLst = cfgAll.nameServerAddr;
         }
-        trc.routerPrc = rtr;
+        trc.routerPrc = rtrI;
         if (trc.register2ip()) {
             cmd.error("bind error");
             return;
@@ -4510,7 +4510,8 @@ public class userExec {
         int port = 33440;
         int proto = 0;
         boolean resolv = false;
-        ipRtr rtr = null;
+        cfgRtr rtrC = null;
+        ipRtr rtrI = null;
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -4566,11 +4567,7 @@ public class userExec {
                 if (typ == null) {
                     continue;
                 }
-                cfgRtr cfg = cfgAll.rtrFind(typ, bits.str2num(cmd.word()), false);
-                if (cfg == null) {
-                    continue;
-                }
-                rtr = cfg.getRouter();
+                rtrC = cfgAll.rtrFind(typ, bits.str2num(cmd.word()), false);
                 continue;
             }
             if (a.equals("lookup")) {
@@ -4581,6 +4578,9 @@ public class userExec {
         if (vrf == null) {
             cmd.error("vrf not specified");
             return;
+        }
+        if (rtrC != null) {
+            rtrI = rtrC.getRouter(ipver);
         }
         addrIP trg = clntDns.resolveAddr(pipe, rem, ipver);
         if (trg == null) {
@@ -4600,7 +4600,7 @@ public class userExec {
             trc.domainCln = new clntDns();
             trc.domainLst = cfgAll.nameServerAddr;
         }
-        trc.routerPrc = rtr;
+        trc.routerPrc = rtrI;
         if (trc.register2ip()) {
             cmd.error("bind error");
             return;

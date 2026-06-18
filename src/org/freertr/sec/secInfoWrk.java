@@ -410,9 +410,12 @@ public class secInfoWrk implements Runnable {
             if (rtrCfg == null) {
                 return;
             }
-            rtrIp = rtrCfg.getRouter();
             if (fwd == null) {
                 fwd = rtrCfg.fwd;
+            }
+            rtrIp = rtrCfg.getRouter(secInfoUtl.getIPvers(addr));
+            if (rtrIp == null) {
+                return;
             }
             sizeF = rtrIp.routerComputedU.size();
             ntry = secInfoUtl.findOneRoute(addr, rtrIp, fwd);
@@ -423,7 +426,7 @@ public class secInfoWrk implements Runnable {
             if (vldCfg == null) {
                 return;
             }
-            vldIp = vldCfg.getRouter();
+            vldIp = vldCfg.getRouter(0);
             tabGen<tabRpkiRoa> rpkiV = secInfoUtl.findOneValidRoa(ntry, vldIp, fwd);
             tabGen<tabRpkiAspa> aspaV = secInfoUtl.findOneValidAspa(vldIp, fwd);
             sizeR = rpkiV.size();

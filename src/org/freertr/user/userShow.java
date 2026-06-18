@@ -2507,7 +2507,7 @@ public class userShow {
                 cmd.error("no such process");
                 return null;
             }
-            ipRtr rtr = rcfg.getRouter();
+            ipRtr rtr = rcfg.getRouter(0);
             if (rtr == null) {
                 cmd.error("not running");
                 return null;
@@ -3515,7 +3515,7 @@ public class userShow {
                 cmd.error("no such router");
                 return;
             }
-            ipRtr ipr = rtr.getRouter();
+            ipRtr ipr = rtr.getRouter(r.logger.fwdCore.ipVersion);
             if (ipr == null) {
                 cmd.error("not initialized");
                 return;
@@ -4493,7 +4493,7 @@ public class userShow {
             cmd.error("no such process");
             return null;
         }
-        ipRtr ri = rc.getRouter();
+        ipRtr ri = rc.getRouter(0);
         if (ri == null) {
             cmd.error("process not initialized");
             return null;
@@ -6043,7 +6043,7 @@ public class userShow {
             cmd.error("no such router");
             return;
         }
-        ipRtr ipr = rtr.getRouter();
+        ipRtr ipr = rtr.getRouter(ver);
         if (ipr == null) {
             cmd.error("not initialized");
             return;

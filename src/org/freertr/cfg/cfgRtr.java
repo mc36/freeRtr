@@ -36,7 +36,6 @@ import org.freertr.rtr.rtrRip6;
 import org.freertr.rtr.rtrRpki;
 import org.freertr.rtr.rtrUni2flow;
 import org.freertr.rtr.rtrUni2multi;
-import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIntUpdater;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.user.userFilter;
@@ -1713,9 +1712,10 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
     /**
      * get routing process
      *
+     * @param ipVer ip version, 0 if default
      * @return routing process
      */
-    public synchronized ipRtr getRouter() {
+    public synchronized ipRtr getRouter(int ipVer) {
         switch (type) {
             case rip4:
                 return rip4;
@@ -1751,7 +1751,17 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
                 return eigrp;
             case bgp4:
             case bgp6:
-                return bgp;
+                if (ipVer < 1) {
+                    return bgp;
+                }
+                if (bgp == null) {
+                    return null;
+                }
+                if (ipVer == bgp.fwdCore.ipVersion) {
+                    return bgp;
+                } else {
+                    return bgp.other;
+                }
             case msdp4:
             case msdp6:
                 return msdp;
@@ -2031,7 +2041,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
                 l.add(cmds.tabulator + "vrf " + vrf.name);
             }
         }
-        ipRtr rtr = getRouter();
+        ipRtr rtr = getRouter(0);
         if (rtr != null) {
             rtr.routerGetConfig(l, cmds.tabulator, filter);
             getShRedist(l, cmds.tabulator, rtr);
@@ -2218,14 +2228,14 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         l.add(null, false, 2, new int[]{-1}, "<name:pl>", "name of prefix list");
         l.add(null, false, 1, new int[]{-1}, cmds.upgradeCli, "embed vrf name to router knob");
         getRedistHelp(l, 0);
-        ipRtr rtr = getRouter();
+        ipRtr rtr = getRouter(0);
         if (rtr != null) {
             rtr.routerGetHelp(l);
         }
     }
 
     public synchronized void doCfgStr(cmds cmd) {
-        ipRtr rtr = getRouter();
+        ipRtr rtr = getRouter(0);
         if (rtr != null) {
             if (!rtr.routerConfigure(cmd.copyBytes(false))) {
                 return;

@@ -285,7 +285,7 @@ public class rtrRpki extends ipRtr implements Runnable {
             if (rtrC == null) {
                 continue;
             }
-            ipRtr rtrI = rtrC.getRouter();
+            ipRtr rtrI = rtrC.getRouter(0);
             if (rtrI == null) {
                 continue;
             }

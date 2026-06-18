@@ -15,6 +15,8 @@ import org.freertr.cfg.cfgTrack;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.clnt.clntPmtud;
 import org.freertr.enc.enc7bit;
+import org.freertr.ip.ipCor4;
+import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipRtr;
 import org.freertr.pipe.pipeLine;
@@ -830,6 +832,23 @@ public class secInfoUtl {
             return fwd4;
         } else {
             return fwd6;
+        }
+    }
+
+    /**
+     * find one version
+     *
+     * @param adr address to check
+     * @return proper one, 0 if nothing
+     */
+    public final static int getIPvers(addrIP adr) {
+        if (adr == null) {
+            return 0;
+        }
+        if (adr.isIPv4()) {
+            return ipCor4.protocolVersion;
+        } else {
+            return ipCor6.protocolVersion;
         }
     }
 
