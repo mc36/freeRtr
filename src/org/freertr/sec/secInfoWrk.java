@@ -233,15 +233,15 @@ public class secInfoWrk implements Runnable {
     }
 
     /**
-     * get one liner information
+     * get simple information
      *
      * @return single line of information
      */
-    public List<String> getRoute1liner() {
+    public List<String> getRouteSimple() {
         if (justip) {
             return bits.str2lst("" + addr);
         }
-        List<String> res = secInfoUtl.getRoute1liner(this);
+        List<String> res = secInfoUtl.getRouteSimple(this);
         if (!hack) {
             return res;
         }
@@ -591,7 +591,7 @@ public class secInfoWrk implements Runnable {
     public List<String> getRouteInfos() {
         List<String> res = new ArrayList<String>();
         if (single) {
-            res.addAll(getRoute1liner());
+            res.addAll(getRouteSimple());
         }
         if (!detail) {
             return res;

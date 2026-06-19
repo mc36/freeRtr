@@ -108,7 +108,6 @@ clntportscan to have udp knob then portscan to have the knob finally
 
 server smtp / tag messages by subject
 server smtp / collect-failures
-server smtp / check reverse of the sender and put the info to received field...
 server smtp / auto-reply editor/text/etc
 
 client buggy-trigger <trigger>

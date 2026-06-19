@@ -486,12 +486,25 @@ public class secInfoUtl {
     }
 
     /**
-     * one liner of the route
+     * as path of the route
      *
      * @param wrk worker to use
      * @return one liner of the route
      */
-    public final static List<String> getRoute1liner(secInfoWrk wrk) {
+    public final static String getRouteAspath(secInfoWrk wrk) {
+        if (wrk.ntry == null) {
+            return "n/a";
+        }
+        return addrPrefix.ip2str(wrk.ntry.prefix) + " " + wrk.ntry.best.asMixedStr();
+    }
+
+    /**
+     * simple of the route
+     *
+     * @param wrk worker to use
+     * @return simple of the route
+     */
+    public final static List<String> getRouteSimple(secInfoWrk wrk) {
         String s = "";
         if (wrk.client) {
             s += wrk.addr;

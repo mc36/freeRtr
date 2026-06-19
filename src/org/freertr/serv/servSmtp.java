@@ -155,9 +155,7 @@ public class servSmtp extends servGeneric implements prtServS {
         for (int i = 0; i < rbls.size(); i++) {
             lst.add(beg + "rbl-server " + rbls.get(i));
         }
-        if (recursAcl != null) {
-            secInfoUtl.getConfig(lst, recursAcl, beg + "recursion access-");
-        }
+        secInfoUtl.getConfig(lst, recursAcl, beg + "recursion access-");
         if (recursAut == null) {
             lst.add(beg + "no recursion authentication");
         } else {

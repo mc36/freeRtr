@@ -18473,3 +18473,5 @@ failed: ingress label filtering with integrated pvrp
 ---------------------------------- 2026-06-16 13:06:07 26.6.16
 no failed: ingress label filtering with integrated pvrp
 qc pass: ingress label filtering with integrated pvrp
+---------------------------------- 2026-06-19 09:23:06 26.6.19
+no todo: server smtp / check reverse of the sender and put the info to received field...

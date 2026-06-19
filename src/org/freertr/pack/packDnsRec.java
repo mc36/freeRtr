@@ -534,6 +534,76 @@ public class packDnsRec implements Comparable<packDnsRec> {
     }
 
     /**
+     * decode ptr for ipv4 address
+     *
+     * @param a string to decode
+     * @return decoded address on success, null on failure
+     */
+    public static addrIPv4 decodeReverse4(String a) {
+        cmds cmd = new cmds("ptr", a);
+        addrIPv4 adr = new addrIPv4();
+        byte[] buf = adr.getBytes();
+        for (int i = buf.length - 1; i >= 0; i--) {
+            buf[i] = (byte) bits.str2num(cmd.word("."));
+        }
+        if (adr.isEmpty()) {
+            return null;
+        }
+        return adr;
+    }
+
+    /**
+     * decode ptr for ipv6 address
+     *
+     * @param a string to decode
+     * @return decoded address on success, null on failure
+     */
+    public static addrIPv6 decodeReverse6(String a) {
+        cmds cmd = new cmds("ptr", a);
+        addrIPv6 adr = new addrIPv6();
+        byte[] buf = adr.getBytes();
+        for (int i = buf.length - 1; i >= 0; i--) {
+            a = cmd.word(".");
+            a = cmd.word(".") + a;
+            buf[i] = (byte) bits.fromHex(a);
+        }
+        if (adr.isEmpty()) {
+            return null;
+        }
+        return adr;
+    }
+
+    /**
+     * decode ptr for ipv6 address
+     *
+     * @param a string to decode
+     * @return decoded address on success, null on failure
+     */
+    public static addrIP decodeReverse(String a) {
+        int o = 0;
+        for (int i = 0; i < a.length(); i++) {
+            if (a.substring(i, i + 1).compareTo(".") == 0) {
+                o++;
+            }
+        }
+        addrIP adr = new addrIP();
+        if (o < 32) {
+            addrIPv4 a4 = decodeReverse4(a);
+            if (a4 == null) {
+                return null;
+            }
+            adr.fromIPv4addr(a4);
+        } else {
+            addrIPv6 a6 = decodeReverse6(a);
+            if (a6 == null) {
+                return null;
+            }
+            adr.fromIPv6addr(a6);
+        }
+        return adr;
+    }
+
+    /**
      * convert class to string
      *
      * @param i opcode
@@ -971,6 +1041,32 @@ public class packDnsRec implements Comparable<packDnsRec> {
             pck.putSkip(6);
             res.get(i).createHeader(typ, pck);
         }
+    }
+
+    /**
+     * update as text
+     *
+     * @param a text
+     */
+    public void updateText(String a) {
+        packDnsRes r = new packDnsRes();
+        r.target = a;
+        res.add(r);
+        typ = packDnsRec.typeTXT;
+    }
+
+    /**
+     * update as 6to4
+     *
+     * @param p prefix
+     */
+    public void update6to4(addrIP p) {
+        for (int i = 0; i < res.size(); i++) {
+            addrIP adr = res.get(i).addr;
+            bits.byteFill(adr.getBytes(), 0, addrIP.size - addrIPv4.size, 0);
+            adr.setOr(adr, p);
+        }
+        typ = packDnsRec.typeAAAA;
     }
 
     public int compareTo(packDnsRec o) {

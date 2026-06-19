@@ -390,9 +390,7 @@ public class servHttpHost implements Comparable<servHttpHost> {
         if (authenticList != null) {
             l.add(a + " authentication " + authenticList.autName);
         }
-        if (accessControl != null) {
-            secInfoUtl.getConfig(l, accessControl, a + " access-");
-        }
+        secInfoUtl.getConfig(l, accessControl, a + " access-");
     }
 
     /**

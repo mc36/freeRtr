@@ -3,7 +3,6 @@ package org.freertr.serv;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
-import org.freertr.addr.addrIPv4;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgProxy;
 import org.freertr.clnt.clntDns;
@@ -73,6 +72,21 @@ public class servDns extends servGeneric implements prtServS {
     protected boolean recursEna = false;
 
     /**
+     * info to use
+     */
+    protected secInfoCfg bgpCfg;
+
+    /**
+     * info suffix
+     */
+    protected String bgpZon = null;
+
+    /**
+     * info ttl
+     */
+    protected int bgpTtl = 3600;
+
+    /**
      * access list to use
      */
     protected secInfoCfg recursAcl;
@@ -88,8 +102,10 @@ public class servDns extends servGeneric implements prtServS {
     public final static userFilter[] defaultF = {
         new userFilter("server dns .*", cmds.tabulator + "port " + packDns.portNum, null),
         new userFilter("server dns .*", cmds.tabulator + "protocol " + proto2string(protoAll), null),
-        new userFilter("server dns .*", cmds.tabulator + "recursion 6to4nothing", null),
         new userFilter("server dns .*", cmds.tabulator + "recursion disable", null),
+        new userFilter("server dns .*", cmds.tabulator + "recursion bgpttl 3600", null),
+        new userFilter("server dns .*", cmds.tabulator + cmds.negated + cmds.tabulator + "recursion bgpzone", null),
+        new userFilter("server dns .*", cmds.tabulator + cmds.negated + cmds.tabulator + "recursion 6to4prefix", null),
         new userFilter("server dns .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
     };
 
@@ -126,14 +142,11 @@ public class servDns extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst, int filter) {
         cmds.cfgLine(lst, !logging, beg, "logging", "");
-        if (recursAcl != null) {
-            secInfoUtl.getConfig(lst, recursAcl, beg + "recursion access-");
-        }
-        if (recurs6to4 != null) {
-            lst.add(beg + "recursion 6to4prefix " + recurs6to4);
-        } else {
-            lst.add(beg + "recursion 6to4nothing");
-        }
+        secInfoUtl.getConfig(lst, recursAcl, beg + "recursion access-");
+        secInfoUtl.getConfig(lst, bgpCfg, beg + "recursion bgp-");
+        cmds.cfgLine(lst, bgpZon == null, beg, "recursion bgpzone", bgpZon);
+        lst.add(beg + "recursion bgpttl " + bgpTtl);
+        cmds.cfgLine(lst, recurs6to4 == null, beg, "recursion 6to4prefix", "" + recurs6to4);
         if (recursEna) {
             lst.add(beg + "recursion enable");
         } else {
@@ -161,7 +174,11 @@ public class servDns extends servGeneric implements prtServS {
         secInfoUtl.getHelp(l, 1, "access-", null);
         l.add(null, false, 2, new int[]{3}, "6to4prefix", "setup 6to4 prefix");
         l.add(null, false, 3, new int[]{-1}, "<addr>", "address to prepend");
-        l.add(null, false, 2, new int[]{-1}, "6to4nothing", "clear 6to4 prefix");
+        secInfoUtl.getHelp(l, 1, "bgp-", null);
+        l.add(null, false, 2, new int[]{3}, "bgpzone", "setup bgp ipinfo zone");
+        l.add(null, false, 3, new int[]{-1}, "<str>", "name of zone");
+        l.add(null, false, 2, new int[]{3}, "bgpttl", "setup bgp ipinfo ttl");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "time to live");
         l.add(null, false, 2, new int[]{3}, "via", "define root");
         l.add(null, false, 3, new int[]{4}, "<str>", "zone name");
         l.add(null, false, 4, new int[]{5}, "<name:prx>", "proxy to use");
@@ -293,6 +310,26 @@ public class servDns extends servGeneric implements prtServS {
                 recursEna = negated;
                 return false;
             }
+            if (s.startsWith("bgpttl")) {
+                bgpTtl = bits.str2num(cmd.word());
+                return false;
+            }
+            if (s.startsWith("bgpzone")) {
+                if (negated) {
+                    bgpZon = null;
+                    return false;
+                }
+                bgpZon = cmd.word();
+                return false;
+            }
+            if (s.startsWith("bgp-")) {
+                s = s.substring(4, s.length());
+                s += " " + cmd.getRemaining();
+                s = s.trim();
+                cmd = new cmds("info", s);
+                bgpCfg = secInfoUtl.doCfgStr(bgpCfg, cmd, negated);
+                return false;
+            }
             if (s.startsWith("access-")) {
                 s = s.substring(7, s.length());
                 s += " " + cmd.getRemaining();
@@ -308,10 +345,6 @@ public class servDns extends servGeneric implements prtServS {
                 }
                 recurs6to4 = new addrIP();
                 recurs6to4.fromString(cmd.word());
-                return false;
-            }
-            if (s.equals("6to4nothing")) {
-                recurs6to4 = null;
                 return false;
             }
             cmd.badCmd();
@@ -561,6 +594,27 @@ class servDnsDoer implements Runnable {
             }
         }
         if (zon == null) {
+            if ((parent.bgpZon != null) && (parent.bgpCfg != null)) {
+                if (old.endsWith("." + parent.bgpZon)) {
+                    addrIP adr = packDnsRec.decodeReverse(old);
+                    if (adr == null) {
+                        return true;
+                    }
+                    if (typ != packDnsRec.typeTXT) {
+                        return true;
+                    }
+                    secInfoCls cls = new secInfoCls(null, null, null, parent.srvVrf.getFwd(adr), adr, prtTcp.protoNum, conn.iface.addr);
+                    secInfoWrk ipi = new secInfoWrk(parent.bgpCfg, cls);
+                    ipi.doWork(false);
+                    ipi.need2drop();
+                    packDnsRec rr = new packDnsRec();
+                    rr.updateText(secInfoUtl.getRouteAspath(ipi));
+                    rr.name = old;
+                    rr.ttl = parent.bgpTtl;
+                    res.add(rr);
+                    return true;
+                }
+            }
             if (rslvr != null) {
                 doSlaves(rslvr, res, typ, old);
                 return true;
@@ -603,12 +657,7 @@ class servDnsDoer implements Runnable {
                 return false;
             }
             rr = rr.copyBytes();
-            for (int i = 0; i < rr.res.size(); i++) {
-                addrIP adr = rr.res.get(i).addr;
-                bits.byteFill(adr.getBytes(), 0, addrIP.size - addrIPv4.size, 0);
-                adr.setOr(adr, parent.recurs6to4);
-            }
-            rr.typ = packDnsRec.typeAAAA;
+            rr.update6to4(parent.recurs6to4);
             rr.name = old;
             res.add(rr);
             return false;
