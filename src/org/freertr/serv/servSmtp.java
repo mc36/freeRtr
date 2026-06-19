@@ -62,6 +62,21 @@ public class servSmtp extends servGeneric implements prtServS {
     public boolean logging;
 
     /**
+     * reverse
+     */
+    public boolean reverse;
+
+    /**
+     * aspath domain
+     */
+    public String aspathD;
+
+    /**
+     * aspath server
+     */
+    public String aspathF;
+
+    /**
      * recursion available
      */
     public boolean recursEna = false;
@@ -133,6 +148,8 @@ public class servSmtp extends servGeneric implements prtServS {
         new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bcc", null),
         new userFilter("server smtp .*", cmds.tabulator + "rbl-threshold 0", null),
         new userFilter("server smtp .*", cmds.tabulator + "rbl-timeout 5000", null),
+        new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "reverse", null),
+        new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "aspath", null),
         new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
     };
 
@@ -150,6 +167,8 @@ public class servSmtp extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst, int filter) {
         cmds.cfgLine(lst, !logging, beg, "logging", "");
+        cmds.cfgLine(lst, aspathF == null, beg, "aspath", aspathD + " " + aspathF);
+        cmds.cfgLine(lst, !reverse, beg, "reverse", "");
         lst.add(beg + "rbl-threshold " + rblMin);
         lst.add(beg + "rbl-timeout " + rblTim);
         for (int i = 0; i < rbls.size(); i++) {
@@ -175,6 +194,15 @@ public class servSmtp extends servGeneric implements prtServS {
         String s = cmd.word();
         if (s.equals("logging")) {
             logging = true;
+            return false;
+        }
+        if (s.equals("aspath")) {
+            aspathD = cmd.word();
+            aspathF = cmd.word();
+            return false;
+        }
+        if (s.equals("reverse")) {
+            reverse = true;
             return false;
         }
         if (s.equals("dsn")) {
@@ -251,6 +279,15 @@ public class servSmtp extends servGeneric implements prtServS {
             logging = false;
             return false;
         }
+        if (s.equals("aspath")) {
+            aspathD = null;
+            aspathF = null;
+            return false;
+        }
+        if (s.equals("reverse")) {
+            reverse = false;
+            return false;
+        }
         if (s.equals("dsn")) {
             dsnEna = false;
             return false;
@@ -312,6 +349,10 @@ public class servSmtp extends servGeneric implements prtServS {
 
     public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "logging", "log queries");
+        l.add(null, false, 1, new int[]{2}, "aspath", "generate aspath header");
+        l.add(null, false, 2, new int[]{3}, "<str>", "domain suffix");
+        l.add(null, false, 3, new int[]{-1}, "<str>", "name server");
+        l.add(null, false, 1, new int[]{-1}, "reverse", "generate reverse header");
         l.add(null, false, 1, new int[]{-1}, "dsn", "allow delivery notification");
         l.add(null, false, 1, new int[]{2}, "recursion", "recursive parameters");
         l.add(null, false, 2, new int[]{-1}, "enable", "allow recursion");
@@ -979,9 +1020,8 @@ class servSmtpDoer implements Runnable {
             hdrA.clear();
             long tim = bits.getTime();
             hdrA.add("Received: from " + conn.peerAddr + " (helo " + helo + ")");
-            clntDns dnsCln = new clntDns();
-            dnsCln.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(conn.peerAddr), false, packDnsRec.typePTR);
-            hdrA.add("    (reverse as " + dnsCln.getPTR() + ")");
+            doAsp(hdrA);
+            doRev(hdrA);
             hdrA.add("    by " + conn.iface.addr + " (helo " + cfgAll.getFqdn() + ")");
             hdrA.add("    (envelope-from " + src + ") with smtp (" + cfgInit.versionName + ")");
             hdrA.add("    for " + trgS + "; " + bits.time2str(cfgAll.timeZoneName, tim + cfgAll.timeServerOffset, 4));
@@ -1110,6 +1150,30 @@ class servSmtpDoer implements Runnable {
                     break;
             }
         }
+    }
+
+    public void doAsp(List<String> l) {
+        if (lower.aspathF == null) {
+            return;
+        }
+        addrIP srvA = clntDns.justResolv(lower.aspathF, 0);
+        if (srvA == null) {
+            return;
+        }
+        clntDns dns = new clntDns();
+        List<addrIP> srvL = new ArrayList<addrIP>();
+        srvL.add(srvA);
+        dns.doResolvList(srvL, packDnsRec.generateReverse(conn.peerAddr, lower.aspathD), false, packDnsRec.typeTXT);
+        l.add("    (aspath as " + dns.getTXT() + ")");
+    }
+
+    public void doRev(List<String> l) {
+        if (!lower.reverse) {
+            return;
+        }
+        clntDns dns = new clntDns();
+        dns.doResolvList(cfgAll.nameServerAddr, packDnsRec.generateReverse(conn.peerAddr), false, packDnsRec.typePTR);
+        l.add("    (reverse as " + dns.getPTR() + ")");
     }
 
     public void run() {
