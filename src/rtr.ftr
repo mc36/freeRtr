@@ -4238,7 +4238,7 @@ qc pass: integrated pvrp ingress route filtering with routepolicy
 qc pass: integrated pvrp egress route filtering with routepolicy
 qc pass: integrated pvrp default route
 qc pass: integrated pvrp with bfd
-qc pass: integrated pvrp with labels
+failed: integrated pvrp with labels
 qc pass: integrated pvrp default address suppression
 qc pass: integrated pvrp address unsuppression
 qc pass: ingress label filtering with integrated pvrp
