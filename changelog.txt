@@ -18478,3 +18478,6 @@ no todo: server smtp / check reverse of the sender and put the info to received 
 ---------------------------------- 2026-06-20 12:42:13 26.6.20
 no qc pass: integrated pvrp with labels
 failed: integrated pvrp with labels
+---------------------------------- 2026-06-20 13:22:26 26.6.20
+no failed: integrated pvrp with labels
+qc pass: integrated pvrp with labels
