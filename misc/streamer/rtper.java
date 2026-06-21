@@ -3,8 +3,11 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.util.Random;
 
 public class rtper {
+
+    public final static int size = 12;
 
     private ByteBuffer buffer;
 
@@ -21,7 +24,7 @@ public class rtper {
         target.socket().connect(group, port);
         ((MulticastSocket) target.socket()).setTimeToLive(255);
         buffer = ByteBuffer.allocate(4096);
-        src = (int) ProcessHandle.current().pid();
+        src = new Random().nextInt();
         seq = 0;
         clk = 0;
     }
@@ -31,9 +34,9 @@ public class rtper {
         putMsb(buffer, 0, 0x800a0000 | seq);
         putMsb(buffer, 4, clk);
         putMsb(buffer, 8, src);
-        buffer.put(12, buf, 0, len);
+        buffer.put(size, buf, 0, len);
         buffer.position(0);
-        buffer.limit(len + 12);
+        buffer.limit(len + size);
         target.write(buffer);
         seq++;
         seq &= 0xffff;

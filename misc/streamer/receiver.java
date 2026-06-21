@@ -37,7 +37,7 @@ public class receiver {
         for (;;) {
             buffer.clear();
             channel.receive(buffer);
-            dataLine.write(buffer.array(), 12, buffer.position() - 12);
+            dataLine.write(buffer.array(), rtper.size, buffer.position() - rtper.size);
         }
     }
 
