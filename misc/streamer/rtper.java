@@ -25,9 +25,10 @@ public class rtper {
         InetAddress group = InetAddress.getByName(grp);
         int port = Integer.parseInt(prt);
         target = DatagramChannel.open();
-        MulticastSocket socket = (MulticastSocket) target.socket();
-        socket.connect(group, port);
-        socket.setTimeToLive(255);
+        DatagramSocket scket = target.socket();
+        MulticastSocket mcast = (MulticastSocket) scket;
+        mcast.connect(group, port);
+        mcast.setTimeToLive(255);
         buffer = ByteBuffer.allocate(4096);
         src = new Random().nextInt();
         seq = 0;
@@ -62,14 +63,23 @@ public class rtper {
         return res;
     }
 
+    public static DatagramChannel receive(String src, String prt) throws Exception {
+        InetAddress addr = InetAddress.getByName(src);
+        int port = Integer.parseInt(prt);
+        DatagramChannel channel = DatagramChannel.open();
+        channel.socket().bind(new InetSocketAddress(addr, port));
+        return channel;
+    }
+    
     public static DatagramChannel receive(String grp, String src, String prt) throws Exception {
         InetAddress group = InetAddress.getByName(grp);
         InetAddress source = InetAddress.getByName(src);
         int port = Integer.parseInt(prt);
         DatagramChannel channel = DatagramChannel.open();
-        MulticastSocket socket = (MulticastSocket) channel.socket();
+        DatagramSocket scket = channel.socket();
+        MulticastSocket mcast = (MulticastSocket) scket;
         channel.socket().bind(new InetSocketAddress(port));
-        channel.join(group, socket.getNetworkInterface(), source);
+        channel.join(group, mcast.getNetworkInterface(), source);
         return channel;
     }
 

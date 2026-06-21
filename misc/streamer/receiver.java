@@ -1,26 +1,13 @@
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
 
 public class receiver {
 
     public static void main(String[] args) throws Exception {
-        Mixer.Info mixer = devicer.findDevice(args[0]);
-
+        SourceDataLine dataLine = devicer.getPlayback(args[0]);
         DatagramChannel channel = rtper.receive(args[1], args[2], args[3]);
-
-        AudioFormat format = devicer.getFormat();
-        SourceDataLine dataLine = AudioSystem.getSourceDataLine(format, mixer);
-        dataLine.open(format);
-        dataLine.start();
-
         ByteBuffer buffer = ByteBuffer.allocate(4096);
         for (;;) {
             buffer.clear();
