@@ -1,5 +1,7 @@
 
+import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
@@ -23,8 +25,9 @@ public class rtper {
         InetAddress group = InetAddress.getByName(grp);
         int port = Integer.parseInt(prt);
         target = DatagramChannel.open();
-        target.socket().connect(group, port);
-        ((MulticastSocket) target.socket()).setTimeToLive(255);
+        MulticastSocket socket = (MulticastSocket) target.socket();
+        socket.connect(group, port);
+        socket.setTimeToLive(255);
         buffer = ByteBuffer.allocate(4096);
         src = new Random().nextInt();
         seq = 0;
@@ -50,6 +53,24 @@ public class rtper {
         buf.put(ofs + 1, (byte) (val >>> 16));
         buf.put(ofs + 2, (byte) (val >>> 8));
         buf.put(ofs + 3, (byte) val);
+    }
+
+    public static byte[] decode(ByteBuffer buf) {
+        int len = buf.position() - size;
+        byte[] res = new byte[len];
+        buf.get(size, res, 0, res.length);
+        return res;
+    }
+
+    public static DatagramChannel receive(String grp, String src, String prt) throws Exception {
+        InetAddress group = InetAddress.getByName(grp);
+        InetAddress source = InetAddress.getByName(src);
+        int port = Integer.parseInt(prt);
+        DatagramChannel channel = DatagramChannel.open();
+        MulticastSocket socket = (MulticastSocket) channel.socket();
+        channel.socket().bind(new InetSocketAddress(port));
+        channel.join(group, socket.getNetworkInterface(), source);
+        return channel;
     }
 
 }
