@@ -1,19 +1,14 @@
 
 import java.io.InputStream;
 import java.net.InetAddress;
-import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
 
 public class sender {
 
     public static void main(String[] args) throws Exception {
         InetAddress group = InetAddress.getByName(args[2]);
         int port = Integer.parseInt(args[3]);
-        DatagramChannel target = DatagramChannel.open();
-        target.socket().connect(group, port);
-        ((MulticastSocket) target.socket()).setTimeToLive(255);
-        ByteBuffer buffer = ByteBuffer.allocate(4096);
+        rtper rtp = new rtper(group, port);
 
         String[] cmd = {
             "ffmpeg",
@@ -29,9 +24,6 @@ public class sender {
         Process process = Runtime.getRuntime().exec(cmd);
         InputStream stream = process.getInputStream();
 
-        int seq = 0;
-        int clk = 0;
-        int src = (int) process.pid();
         for (;;) {
             byte[] buf = new byte[1024];
             int i = stream.read(buf, 0, buf.length);
@@ -44,25 +36,8 @@ public class sender {
                 }
                 continue;
             }
-            buffer.clear();
-            putMsb(buffer, 0, 0x800a0000 | seq);
-            putMsb(buffer, 4, clk);
-            putMsb(buffer, 8, src);
-            buffer.put(12, buf, 0, i);
-            buffer.position(0);
-            buffer.limit(i + 12);
-            target.write(buffer);
-            seq++;
-            seq &= 0xffff;
-            clk += i / 4;
+            rtp.write(buf, i);
         }
-    }
-
-    private static void putMsb(ByteBuffer buf, int ofs, int val) {
-        buf.put(ofs + 0, (byte) (val >>> 24));
-        buf.put(ofs + 1, (byte) (val >>> 16));
-        buf.put(ofs + 2, (byte) (val >>> 8));
-        buf.put(ofs + 3, (byte) val);
     }
 
 }

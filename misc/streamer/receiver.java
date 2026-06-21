@@ -25,9 +25,9 @@ public class receiver {
         int port = Integer.parseInt(args[3]);
 
         AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, true);
-        SourceDataLine sourceDataLine = AudioSystem.getSourceDataLine(audioFormat, mixers[mixerc]);
-        sourceDataLine.open(audioFormat);
-        sourceDataLine.start();
+        SourceDataLine dataLine = AudioSystem.getSourceDataLine(audioFormat, mixers[mixerc]);
+        dataLine.open(audioFormat);
+        dataLine.start();
 
         MulticastSocket mcstsck = new MulticastSocket();
         DatagramChannel channel = DatagramChannel.open();
@@ -37,7 +37,7 @@ public class receiver {
         for (;;) {
             buffer.clear();
             channel.receive(buffer);
-            sourceDataLine.write(buffer.array(), 12, buffer.position() - 12);
+            dataLine.write(buffer.array(), 12, buffer.position() - 12);
         }
     }
 
