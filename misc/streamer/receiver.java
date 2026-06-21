@@ -12,21 +12,14 @@ import javax.sound.sampled.SourceDataLine;
 public class receiver {
 
     public static void main(String[] args) throws Exception {
-        Mixer.Info[] mixers = AudioSystem.getMixerInfo();
-        int mixerc = -1;
-        for (int i = 0; i < mixers.length; i++) {
-            if (mixers[i].getName().contains(args[0])) {
-                mixerc = i;
-            }
-            System.out.println(mixers[i].getName() + " - " + mixers[i].getDescription());
-        }
+        Mixer.Info mixer = devicer.findDevice(args[0]);
         InetAddress group = InetAddress.getByName(args[1]);
         InetAddress source = InetAddress.getByName(args[2]);
         int port = Integer.parseInt(args[3]);
 
-        AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, true);
-        SourceDataLine dataLine = AudioSystem.getSourceDataLine(audioFormat, mixers[mixerc]);
-        dataLine.open(audioFormat);
+        AudioFormat format = devicer.getFormat();
+        SourceDataLine dataLine = AudioSystem.getSourceDataLine(format, mixer);
+        dataLine.open(format);
         dataLine.start();
 
         MulticastSocket mcstsck = new MulticastSocket();

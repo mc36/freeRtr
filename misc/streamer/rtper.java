@@ -19,7 +19,9 @@ public class rtper {
 
     private int clk;
 
-    public rtper(InetAddress group, int port) throws Exception {
+    public rtper(String grp, String prt) throws Exception {
+        InetAddress group = InetAddress.getByName(grp);
+        int port = Integer.parseInt(prt);
         target = DatagramChannel.open();
         target.socket().connect(group, port);
         ((MulticastSocket) target.socket()).setTimeToLive(255);
