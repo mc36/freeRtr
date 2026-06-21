@@ -7,7 +7,7 @@ import javax.sound.sampled.TargetDataLine;
 
 public class devicer {
 
-    public static int rate = 48000;
+    public final static int rate = 48000;
 
     public static Mixer.Info findDevice(String dev) {
         Mixer.Info[] mixers = AudioSystem.getMixerInfo();

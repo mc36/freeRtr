@@ -10,7 +10,7 @@ import java.util.Random;
 public class rtper {
 
     public final static int size = 12;
-    
+
     public final static int payload = 1280;
 
     private ByteBuffer buffer;
@@ -48,7 +48,7 @@ public class rtper {
         target.write(buffer);
         seq++;
         seq &= 0xffff;
-        clk += len / 4;
+        clk += len >>> 2;
     }
 
     private static void putMsb(ByteBuffer buf, int ofs, int val) {
@@ -72,7 +72,7 @@ public class rtper {
         channel.socket().bind(new InetSocketAddress(addr, port));
         return channel;
     }
-    
+
     public static DatagramChannel receive(String grp, String src, String prt) throws Exception {
         InetAddress group = InetAddress.getByName(grp);
         InetAddress source = InetAddress.getByName(src);
