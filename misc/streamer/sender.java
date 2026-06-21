@@ -1,6 +1,7 @@
 
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
@@ -9,8 +10,9 @@ public class sender {
     public static void main(String[] args) throws Exception {
         InetAddress group = InetAddress.getByName(args[2]);
         int port = Integer.parseInt(args[3]);
-        DatagramChannel channel = DatagramChannel.open();
-        channel.socket().connect(group, port);
+        DatagramChannel target = DatagramChannel.open();
+        target.socket().connect(group, port);
+        ((MulticastSocket) target.socket()).setTimeToLive(255);
         ByteBuffer buffer = ByteBuffer.allocate(4096);
 
         String[] cmd = {
@@ -49,7 +51,7 @@ public class sender {
             buffer.put(12, buf, 0, i);
             buffer.position(0);
             buffer.limit(i + 12);
-            channel.write(buffer);
+            target.write(buffer);
             seq++;
             seq &= 0xffff;
             clk += i / 4;
