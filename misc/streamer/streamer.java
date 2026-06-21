@@ -7,7 +7,7 @@ public class streamer {
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         rtper rtp = new rtper(args[1], args[2]);
         for (;;) {
-            byte[] buf = new byte[1024];
+            byte[] buf = new byte[rtper.payload];
             int i = dataLine.read(buf, 0, buf.length);
             if (i < 1) {
                 break;

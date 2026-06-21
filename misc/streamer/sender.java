@@ -5,7 +5,7 @@ public class sender {
         decoder dec = new decoder(args[0], args[1]);
         rtper rtp = new rtper(args[2], args[3]);
         for (;;) {
-            byte[] buf = new byte[1024];
+            byte[] buf = new byte[rtper.payload];
             int i = dec.read(buf);
             if (i < 0) {
                 break;

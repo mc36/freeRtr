@@ -10,6 +10,8 @@ import java.util.Random;
 public class rtper {
 
     public final static int size = 12;
+    
+    public final static int payload = 1280;
 
     private ByteBuffer buffer;
 

@@ -7,7 +7,7 @@ public class player {
         decoder dec = new decoder(args[1], args[2]);
         SourceDataLine dataLine = devicer.getPlayback(args[0]);
         for (;;) {
-            byte[] buf = new byte[1024];
+            byte[] buf = new byte[rtper.payload];
             int i = dec.read(buf);
             if (i < 0) {
                 break;
