@@ -29,7 +29,7 @@ public class devicer {
         Mixer.Info mixer = devicer.findDevice(dev);
         AudioFormat format = devicer.getFormat();
         SourceDataLine dataLine = AudioSystem.getSourceDataLine(format, mixer);
-        dataLine.open(format);
+        dataLine.open(format, rtper.payload);
         dataLine.start();
         return dataLine;
     }
@@ -38,7 +38,7 @@ public class devicer {
         Mixer.Info mixer = devicer.findDevice(dev);
         AudioFormat format = devicer.getFormat();
         TargetDataLine dataLine = AudioSystem.getTargetDataLine(format, mixer);
-        dataLine.open(format);
+        dataLine.open(format, rtper.payload);
         dataLine.start();
         return dataLine;
     }
