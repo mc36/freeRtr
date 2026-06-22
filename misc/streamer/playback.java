@@ -1,7 +1,7 @@
 
 import javax.sound.sampled.SourceDataLine;
 
-public class player {
+public class playback {
 
     public static void main(String[] args) throws Exception {
         decoder dec = new decoder(args[1], args[2]);
