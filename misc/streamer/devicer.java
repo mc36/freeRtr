@@ -13,12 +13,18 @@ public class devicer {
         Mixer.Info[] mixers = AudioSystem.getMixerInfo();
         int mixerc = -1;
         for (int i = 0; i < mixers.length; i++) {
-            if (mixers[i].getName().contains(dev)) {
+            String a = mixer2name(mixers[i]);
+            if (a.matches(dev)) {
                 mixerc = i;
             }
-            System.out.println(mixers[i].getName() + " - " + mixers[i].getDescription());
+            System.out.println(a);
         }
+        System.out.println("selected: " + mixer2name(mixers[mixerc]));
         return mixers[mixerc];
+    }
+
+    public static String mixer2name(Mixer.Info mixer) {
+        return mixer.getName() + " - " + mixer.getDescription();
     }
 
     public static AudioFormat getFormat() {

@@ -162,6 +162,10 @@ public class player implements Runnable {
 
     private synchronized void stopProc(long p) {
         String[] cmd = new String[3];
+        cmd[0] = "pkill";
+        cmd[1] = "-P";
+        cmd[2] = "" + p;
+        runProc(cmd);
         cmd[0] = "kill";
         cmd[1] = "-9";
         cmd[2] = "" + p;
@@ -170,12 +174,7 @@ public class player implements Runnable {
 
     private synchronized void replaceCurrProc(String[] cmd) {
         if (currProc != null) {
-            long p = currProc.pid();
-            try {
-                currProc.destroy();
-            } catch (Exception e) {
-            }
-            stopProc(p);
+            stopProc(currProc.pid());
         }
         currProc = null;
         if (cmd == null) {
