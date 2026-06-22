@@ -62,8 +62,8 @@ public class player implements Runnable {
     private final static Object sleeper = new Object();
 
     private String mixer = "Master";
-
-    private String srate = "44100";
+    
+    private String device = ".*default.*";
 
     private boolean headEnd = false;
 
@@ -271,8 +271,9 @@ public class player implements Runnable {
         currTime = new Date().getTime();
         currLyrc = new playerLyric();
         currLyrc.add("multicast receiver");
-        String[] cmd = new String[1];
+        String[] cmd = new String[2];
         cmd[0] = path + ".rcvr";
+        cmd[1] = device;
         replaceCurrProc(cmd);
     }
 
@@ -301,9 +302,9 @@ public class player implements Runnable {
         runProc(cmd);
         String ply;
         if (headEnd) {
-            ply = path + ".strm {} 0";
+            ply = path + ".strm {} 0 " + device;
         } else {
-            ply = "mplayer -ao alsa -vo none -srate " + srate + " {}";
+            ply = path + ".play {} 0 " + device;
         }
         cmd = new String[7];
         cmd[0] = "yt-dlp";
@@ -357,22 +358,17 @@ public class player implements Runnable {
         }
         String[] cmd;
         if (headEnd) {
-            cmd = new String[3];
+            cmd = new String[4];
             cmd[0] = path + ".strm";
             cmd[1] = playlist.get(ntry).file;
             cmd[2] = ss;
+            cmd[3] = device;
         } else {
-            cmd = new String[10];
-            cmd[0] = "mplayer";
-            cmd[1] = "-ao";
-            cmd[2] = "alsa";
-            cmd[3] = "-vo";
-            cmd[4] = "none";
-            cmd[5] = "-srate";
-            cmd[6] = srate;
-            cmd[7] = "-ss";
-            cmd[8] = ss;
-            cmd[9] = playlist.get(ntry).file;
+            cmd = new String[4];
+            cmd[0] = path + ".play";
+            cmd[1] = playlist.get(ntry).file;
+            cmd[2] = ss;
+            cmd[3] = device;
         }
         replaceCurrProc(cmd);
         currTime = new Date().getTime() - (playerUtil.str2int(ss) * 1000);
@@ -410,6 +406,10 @@ public class player implements Runnable {
                     mixer = b;
                     continue;
                 }
+                if (a.equals("device")) {
+                    device = b;
+                    continue;
+                }
                 if (a.equals("locked")) {
                     locked = true;
                     continue;
@@ -428,10 +428,6 @@ public class player implements Runnable {
                 }
                 if (a.equals("loclist")) {
                     locList.add(b);
-                    continue;
-                }
-                if (a.equals("srate")) {
-                    srate = b;
                     continue;
                 }
                 if (a.equals("volmin")) {
@@ -980,7 +976,7 @@ public class player implements Runnable {
                 String a = "<a href=\"" + urlR + "?cmd=list&song=" + (i + 1) + "\">" + playlists.get(i) + "</a><br/>";
                 buf.write(a.getBytes());
             }
-            String a = "<br/>locked=" + locked + ", headend=" + headEnd + ", mixer=" + mixer + ", rate=" + srate + ", songs=" + playlist.size() + ", volmin=" + volMin + ", volmax=" + volMax + ", lists=" + playlists.size() + "<br/><br/>";
+            String a = "<br/>locked=" + locked + ", headend=" + headEnd + ", device=" + device + ", mixer=" + mixer + ", songs=" + playlist.size() + ", volmin=" + volMin + ", volmax=" + volMax + ", lists=" + playlists.size() + "<br/><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=fullstop\">!full stop!</a><br/>";
             buf.write(a.getBytes());

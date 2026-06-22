@@ -1,0 +1,4 @@
+#!/bin/sh
+sudo -u mc36 mplayer -ao alsa -vo none -ss $2 "$1"
+#ffmpeg -i "$1" -f alsa default
+#java playback "$1" $2 "$3"
