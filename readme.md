@@ -73,6 +73,7 @@ the following directories will appear here:
 * gallery: web based album viewer
 * motion: web based alarm/recorder
 * player: web based music player/streamer/receiver
+* streamer: low latency workers for the above
 * temper: web based thermostat/controller
 * trackmap: web based monitoring
 * position: web based location service
