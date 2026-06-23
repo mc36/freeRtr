@@ -29,13 +29,12 @@ public class decoder {
     }
 
     public int read(byte[] buf) throws Exception {
-        int i = stream.read(buf, 0, buf.length);
-        if (i > 0) {
-            return i;
-        }
         if (!process.isAlive()) {
-            return -2;
+            if (stream.available() < buf.length) {
+                return -2;
+            }
         }
+        int i = stream.read(buf, 0, buf.length);
         return i;
     }
 
