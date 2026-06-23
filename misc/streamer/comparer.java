@@ -16,76 +16,61 @@ public class comparer {
         comparerOne dev = new comparerDev(dataLine, sec);
         DatagramChannel channel = rtper.receive(args[1], args[2], args[3]);
         comparerOne net = new comparerNet(channel, sec);
-        dev.doStart();
-        net.doStart();
+        comparerOne d = new comparerOne(sec);
+        comparerOne n = new comparerOne(sec);
         for (;;) {
             Thread.sleep(1000);
-            dev.getBuf(0);
-            net.getBuf(0);
-            int m = dev.getDiff(net);
-            int p = 0;
-            for (int i = 1; i < rtper.payload * sec; i++) {
-                dev.getBuf(i);
-                int o = dev.getDiff(net);
-                if (o >= m) {
-                    continue;
-                }
-                p = i;
-                m = o;
-            }
-            m /= sec;
-            System.out.println(m + " @ " + p + " dev=" + dev + " net=" + net);
+            dev.doCopy(d);
+            net.doCopy(n);
+            d.doFull(n);
         }
     }
 
 }
 
-abstract class comparerOne implements Runnable {
+class comparerOne {
 
-    public volatile byte[] old;
+    public volatile byte[] cur;
 
     public volatile int pos;
-
-    public byte[] cur;
 
     public byte max;
 
     public float div;
 
     public comparerOne(int sec) {
-        old = new byte[rtper.payload * sec * 2];
+        cur = new byte[devicer.rate * sec];
         pos = 0;
-        cur = new byte[rtper.payload * sec];
     }
 
-    public void doStart() {
-        new Thread(this).start();
+    public void doCopy(comparerOne r) {
+        System.arraycopy(cur, 0, r.cur, 0, cur.length);
+        r.pos = pos;
     }
 
     public void addBuf(byte[] buf, int len) {
         int o = pos;
         for (int i = 0; i < len; i += 4) {
-            int p = (int) buf[i] + (int) buf[i + 2];
+            int p = (int) buf[i];
+            p += (int) buf[i + 2];
             if (p < 0) {
                 p = -p;
             }
             p /= 2;
-            old[o] = (byte) p;
-            o = (o + 1) % old.length;
+            cur[o] = (byte) p;
+            o = (o + 1) % cur.length;
         }
         pos = o;
     }
 
-    public void getBuf(int beg) {
-        int o = pos + beg;
+    public void getBuf() {
         max = Byte.MIN_VALUE;
         for (int i = 0; i < cur.length; i++) {
-            o = (o + 1) % old.length;
-            byte p = old[o];
-            cur[i] = p;
-            if (p > max) {
-                max = p;
+            byte p = cur[i];
+            if (p < max) {
+                continue;
             }
+            max = p;
         }
         div = (float) max / 120.0f;
         for (int i = 0; i < cur.length; i++) {
@@ -95,16 +80,42 @@ abstract class comparerOne implements Runnable {
         }
     }
 
-    public int getDiff(comparerOne o) {
+    public int getDiff(comparerOne oth, int beg) {
         int r = 0;
-        for (int i = 0; i < cur.length; i++) {
-            int p = (int) cur[i] - (int) o.cur[i];
-            if (p < 0) {
-                p = -p;
+        int p = (beg + pos) % cur.length;
+        int o = oth.pos;
+        for (int i = 0; i < (cur.length / 2); i++) {
+            int q = (int) cur[p] - (int) oth.cur[o];
+            if (p >= cur.length) {
+                p = 0;
             }
-            r += p;
+            if (o >= cur.length) {
+                o = 0;
+            }
+            if (q < 0) {
+                q = -q;
+            }
+            r += q;
         }
         return r;
+    }
+
+    public void doFull(comparerOne oth) {
+        getBuf();
+        oth.getBuf();
+        int m = getDiff(oth, 0);
+        int p = 0;
+        for (int i = 1; i < (cur.length / 2); i++) {
+            int o = getDiff(oth, i);
+            if (o >= m) {
+                continue;
+            }
+            p = i;
+            m = o;
+        }
+        m /= cur.length / devicer.rate;
+        int q = (p * 1000) / devicer.rate;
+        System.out.println(m + " @ " + p + " (" + q + "ms) dev=" + this + " net=" + oth);
     }
 
     public String toString() {
@@ -113,13 +124,14 @@ abstract class comparerOne implements Runnable {
 
 }
 
-class comparerDev extends comparerOne {
+class comparerDev extends comparerOne implements Runnable {
 
     private TargetDataLine dataLine;
 
     public comparerDev(TargetDataLine dl, int sec) {
         super(sec);
         dataLine = dl;
+        new Thread(this).start();
     }
 
     public void run() {
@@ -135,13 +147,14 @@ class comparerDev extends comparerOne {
 
 }
 
-class comparerNet extends comparerOne {
+class comparerNet extends comparerOne implements Runnable {
 
     private DatagramChannel channel;
 
     public comparerNet(DatagramChannel ch, int sec) {
         super(sec);
         channel = ch;
+        new Thread(this).start();
     }
 
     public void run() {
