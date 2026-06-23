@@ -16,6 +16,25 @@ public class comparer {
         comparerOne dev = new comparerDev(dataLine, sec);
         DatagramChannel channel = rtper.receive(args[1], args[2], args[3]);
         comparerOne net = new comparerNet(channel, sec);
+        dev.doStart();
+        net.doStart();
+        for (;;) {
+            Thread.sleep(sec * 1000);
+            dev.getBuf(0);
+            net.getBuf(0);
+            int m = dev.getDiff(net, Integer.MAX_VALUE);
+            int p = 0;
+            for (int i = 1; i < rtper.payload; i++) {
+                net.getBuf(p);
+                int o = dev.getDiff(net, m);
+                if (o > m) {
+                    continue;
+                }
+                p = i;
+                m = o;
+            }
+            System.out.println(dev + " - " + net+" - "+p+" "+m);
+        }
     }
 
 }
@@ -26,9 +45,18 @@ abstract class comparerOne implements Runnable {
 
     public volatile int pos;
 
+    public byte[] cur;
+
+    public byte min;
+
+    public byte max;
+
+    public float div;
+
     public comparerOne(int sec) {
-        old = new byte[rtper.payload * sec];
+        old = new byte[rtper.payload * sec * 2];
         pos = 0;
+        cur = new byte[rtper.payload * sec];
     }
 
     public void doStart() {
@@ -37,11 +65,55 @@ abstract class comparerOne implements Runnable {
 
     public void addBuf(byte[] buf, int len) {
         int o = pos;
-        for (int i = 0; i < len; i++) {
-            old[o] = buf[i];
-            o++;
+        for (int i = 0; i < len; i += 4) {
+            int p = (int) buf[i] + (int) buf[i + 2];
+            p /= 2;
+            old[o] = (byte) p;
+            o = (o + 1) % old.length;
         }
-        pos = o % old.length;
+        pos = o;
+    }
+
+    public void getBuf(int beg) {
+        int o = pos + beg;
+        min = Byte.MAX_VALUE;
+        max = Byte.MIN_VALUE;
+        for (int i = 0; i < cur.length; i++) {
+            o = (o + 1) % old.length;
+            byte p = old[o];
+            cur[i] = p;
+            if (p < min) {
+                min = p;
+            }
+            if (p > max) {
+                max = p;
+            }
+        }
+        div = ((float) max - (float) min) / 100.0f;
+        for (int i = 0; i < cur.length; i++) {
+            float p = (float) (cur[i] - min);
+            p /= div;
+            cur[i] = (byte) p;
+        }
+    }
+
+    public int getDiff(comparerOne o, int m) {
+        int r = 0;
+        for (int i = 0; i < cur.length; i++) {
+            int p = (int) cur[i] - (int) o.cur[i];
+            if (p < 0) {
+                p = -p;
+            }
+            r += p;
+            if (r > m) {
+                return r;
+            }
+        }
+        return r;
+    }
+
+    public String toString() {
+        return min + " " + max + " " + div;
     }
 
 }
