@@ -27,12 +27,13 @@ public class comparer {
             for (int i = 1; i < rtper.payload * sec; i++) {
                 dev.getBuf(i);
                 int o = dev.getDiff(net);
-                if (o > m) {
+                if (o >= m) {
                     continue;
                 }
                 p = i;
                 m = o;
             }
+            m /= sec;
             System.out.println(m + " @ " + p + " dev=" + dev + " net=" + net);
         }
     }
@@ -46,8 +47,6 @@ abstract class comparerOne implements Runnable {
     public volatile int pos;
 
     public byte[] cur;
-
-    public byte min;
 
     public byte max;
 
@@ -67,6 +66,9 @@ abstract class comparerOne implements Runnable {
         int o = pos;
         for (int i = 0; i < len; i += 4) {
             int p = (int) buf[i] + (int) buf[i + 2];
+            if (p < 0) {
+                p = -p;
+            }
             p /= 2;
             old[o] = (byte) p;
             o = (o + 1) % old.length;
@@ -76,22 +78,18 @@ abstract class comparerOne implements Runnable {
 
     public void getBuf(int beg) {
         int o = pos + beg;
-        min = Byte.MAX_VALUE;
         max = Byte.MIN_VALUE;
         for (int i = 0; i < cur.length; i++) {
             o = (o + 1) % old.length;
             byte p = old[o];
             cur[i] = p;
-            if (p < min) {
-                min = p;
-            }
             if (p > max) {
                 max = p;
             }
         }
-        div = ((float) max - (float) min) / 100.0f;
+        div = (float) max / 120.0f;
         for (int i = 0; i < cur.length; i++) {
-            float p = (float) (cur[i] - min);
+            float p = (float) cur[i];
             p /= div;
             cur[i] = (byte) p;
         }
@@ -110,7 +108,7 @@ abstract class comparerOne implements Runnable {
     }
 
     public String toString() {
-        return min + ".." + max;
+        return "" + max;
     }
 
 }
