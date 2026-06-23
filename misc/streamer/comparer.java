@@ -19,7 +19,7 @@ public class comparer {
         comparerOne d = new comparerOne(sec);
         comparerOne n = new comparerOne(sec);
         for (;;) {
-            Thread.sleep(1000);
+            Thread.sleep(100);
             dev.doCopy(d);
             net.doCopy(n);
             d.doFull(n);
@@ -63,7 +63,7 @@ class comparerOne {
         pos = o;
     }
 
-    public void getBuf() {
+    public void doBuf() {
         max = Byte.MIN_VALUE;
         for (int i = 0; i < cur.length; i++) {
             byte p = cur[i];
@@ -101,8 +101,8 @@ class comparerOne {
     }
 
     public void doFull(comparerOne oth) {
-        getBuf();
-        oth.getBuf();
+        doBuf();
+        oth.doBuf();
         int m = getDiff(oth, 0);
         int p = 0;
         for (int i = 1; i < (cur.length / 2); i++) {
