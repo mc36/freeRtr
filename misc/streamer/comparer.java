@@ -19,21 +19,21 @@ public class comparer {
         dev.doStart();
         net.doStart();
         for (;;) {
-            Thread.sleep(sec * 1000);
+            Thread.sleep(1000);
             dev.getBuf(0);
             net.getBuf(0);
-            int m = dev.getDiff(net, Integer.MAX_VALUE);
+            int m = dev.getDiff(net);
             int p = 0;
-            for (int i = 1; i < rtper.payload; i++) {
-                net.getBuf(p);
-                int o = dev.getDiff(net, m);
+            for (int i = 1; i < rtper.payload * sec; i++) {
+                dev.getBuf(i);
+                int o = dev.getDiff(net);
                 if (o > m) {
                     continue;
                 }
                 p = i;
                 m = o;
             }
-            System.out.println(dev + " - " + net+" - "+p+" "+m);
+            System.out.println(m + " @ " + p + " dev=" + dev + " net=" + net);
         }
     }
 
@@ -97,7 +97,7 @@ abstract class comparerOne implements Runnable {
         }
     }
 
-    public int getDiff(comparerOne o, int m) {
+    public int getDiff(comparerOne o) {
         int r = 0;
         for (int i = 0; i < cur.length; i++) {
             int p = (int) cur[i] - (int) o.cur[i];
@@ -105,15 +105,12 @@ abstract class comparerOne implements Runnable {
                 p = -p;
             }
             r += p;
-            if (r > m) {
-                return r;
-            }
         }
         return r;
     }
 
     public String toString() {
-        return min + " " + max + " " + div;
+        return min + ".." + max;
     }
 
 }
