@@ -5,6 +5,11 @@ import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 
+/**
+ * device helpers
+ *
+ * @author matecsaba
+ */
 public class devicer {
 
     public final static int rate = 48000;

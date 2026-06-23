@@ -1,6 +1,11 @@
 
 import java.io.InputStream;
 
+/**
+ * file helpers
+ *
+ * @author matecsaba
+ */
 public class decoder {
 
     private Process process;

@@ -7,6 +7,11 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.Random;
 
+/**
+ * rtp helpers
+ *
+ * @author matecsaba
+ */
 public class rtper {
 
     public final static int size = 12;
@@ -58,11 +63,10 @@ public class rtper {
         buf.put(ofs + 3, (byte) val);
     }
 
-    public static byte[] decode(ByteBuffer buf) {
+    public static int decode(ByteBuffer buf, byte[]res) {
         int len = buf.position() - size;
-        byte[] res = new byte[len];
-        buf.get(size, res, 0, res.length);
-        return res;
+        buf.get(size, res, 0, len);
+        return len;
     }
 
     public static DatagramChannel receive(String src, String prt) throws Exception {
