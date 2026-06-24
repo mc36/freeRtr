@@ -20,7 +20,7 @@ if which clang > /dev/null ; then
   CS="llvm-strip"
   BC="clang -target bpf"
   BS="llvm-strip"
-  PR="p4emu_profil"
+  PR="p4prof"
 else
   CC="gcc"
   CS="strip"
@@ -102,6 +102,7 @@ touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
 
 
+
 profProto()
 {
 echo -n "$1: "
@@ -118,7 +119,7 @@ if [ "$PR" != "" ]; then
   profProto mpls
   rm $TR/$PR
   llvm-profdata merge -output=$TR/$PR.res $TR/$PR-*.raw
-  PR="-Wno-backend-plugin -fprofile-use=$TR/$PR.res"
+  PR="-fprofile-use=$TR/$PR.res -Wno-backend-plugin"
 fi
 
 
@@ -136,7 +137,7 @@ for fn in p4mnl_user; do
 done
 
 for fn in p4emu_full p4emu_tiny p4emu_huge p4emu_dbg p4emu_nocr p4emu_none p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_raw p4emu_xsk p4emu_urng syncEmu; do
-  compileLib $fn "" $PR
+  compileLib $fn "" "$PR"
 done
 
 for fn in p4emu_dpdk; do
