@@ -496,10 +496,10 @@ public interface rtrBgpAfi {
      * @return address read
      */
     public static <T extends addrType> addrPrefix<T> readIpvXunre(T adr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        int i = pck.getByte(0); // nlri length
-        int p = pck.getByte(1); // prefix length
+        int i = pck.msbGetW(0); // nlri length
+        int p = pck.getByte(2); // prefix length
         int o = (p + 7) / 8;
-        pck.getSkip(2);
+        pck.getSkip(3);
         if (o > i) {
             return null;
         }
@@ -521,10 +521,10 @@ public interface rtrBgpAfi {
      */
     public static <T extends addrType> void writeIpvXunre(addrPrefix<T> pfx, tabRouteEntry<addrIP> ntry, packHolder pck) {
         int i = (pfx.maskLen + 7) / 8;
-        pck.putByte(0, i + ntry.nlri.length); // nlri length
-        pck.putByte(1, pfx.maskLen); // prefix length
-        pck.putAddr(2, pfx.network); // mask
-        pck.putSkip(2 + i);
+        pck.msbPutW(0, i + ntry.nlri.length); // nlri length
+        pck.putByte(2, pfx.maskLen); // prefix length
+        pck.putAddr(3, pfx.network); // mask
+        pck.putSkip(3 + i);
         pck.putCopy(ntry.nlri, 0, 0, ntry.nlri.length);
         pck.putSkip(ntry.nlri.length);
     }
