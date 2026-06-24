@@ -80,7 +80,7 @@ class comparerOne {
         }
     }
 
-    public int getDiff(comparerOne oth, int beg) {
+    public int doDiff(comparerOne oth, int beg, int max) {
         int r = 0;
         int p = (beg + pos) % cur.length;
         int o = oth.pos;
@@ -96,6 +96,9 @@ class comparerOne {
                 q = -q;
             }
             r += q;
+            if (r > max) {
+                return r;
+            }
         }
         return r;
     }
@@ -103,10 +106,10 @@ class comparerOne {
     public void doFull(comparerOne oth) {
         doBuf();
         oth.doBuf();
-        int m = getDiff(oth, 0);
+        int m = doDiff(oth, 0, Integer.MAX_VALUE);
         int p = 0;
         for (int i = 1; i < (cur.length / 2); i++) {
-            int o = getDiff(oth, i);
+            int o = doDiff(oth, i, m);
             if (o >= m) {
                 continue;
             }

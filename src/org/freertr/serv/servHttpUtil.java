@@ -319,9 +319,21 @@ public class servHttpUtil {
             cn.sendRespError(502, "bad server");
             return false;
         }
+        return sendOneWebSck(cn, ntry, l.get(2));
+    }
+
+    /**
+     * send one websocket
+     *
+     * @param cn connection to use
+     * @param srv server
+     * @param prt protocol
+     * @return true on error, false on success
+     */
+    protected final static boolean sendOneWebSck(servHttpConn cn, servGeneric srv, String prt) {
         secWebsock wsk = new secWebsock(cn.pipe, new pipeLine(cn.lower.bufSiz, false));
-        wsk.binary = l.get(2).equals("binary");
-        if (ntry.srvDoAcc(wsk.getPipe(), cn.conn)) {
+        wsk.binary = prt.equals("binary");
+        if (srv.srvDoAcc(wsk.getPipe(), cn.conn)) {
             cn.sendRespError(502, "server refused");
             return false;
         }
@@ -329,7 +341,7 @@ public class servHttpUtil {
         cn.sendLn("Upgrade: websocket");
         cn.sendLn("Connection: Upgrade");
         cn.sendLn("Sec-WebSocket-Accept: " + secWebsock.calcHash(cn.gotWebsock));
-        cn.sendLn("Sec-WebSocket-Protocol: " + l.get(2));
+        cn.sendLn("Sec-WebSocket-Protocol: " + prt);
         cn.sendLn("");
         wsk.startServer();
         cn.gotKeep = false;

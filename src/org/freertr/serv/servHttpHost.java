@@ -211,6 +211,16 @@ public class servHttpHost implements Comparable<servHttpHost> {
     public boolean allowWebSck;
 
     /**
+     * ws2server allowed server
+     */
+    public servGeneric allowWs2srvSrv;
+
+    /**
+     * ws2server allowed protocol
+     */
+    public String allowWs2srvPrt;
+
+    /**
      * image streaming allowed
      */
     public boolean allowMediaStrm;
@@ -362,6 +372,9 @@ public class servHttpHost implements Comparable<servHttpHost> {
         }
         if (allowWebSck) {
             l.add(a + " websock");
+        }
+        if (allowWs2srvSrv != null) {
+            l.add(a + " ws2server " + allowWs2srvPrt + " " + allowWs2srvSrv.srvName() + " " + allowWs2srvSrv.srvName);
         }
         if (allowWebDav) {
             l.add(a + " webdav");
@@ -633,6 +646,21 @@ public class servHttpHost implements Comparable<servHttpHost> {
         }
         if (a.equals("imagemap")) {
             allowImgMap = !negated;
+            return false;
+        }
+        if (a.equals("ws2server")) {
+            if (negated) {
+                allowWs2srvPrt = null;
+                allowWs2srvSrv = null;
+                return false;
+            }
+            allowWs2srvPrt = cmd.word();
+            a = cmd.word();
+            allowWs2srvSrv = servGenList.srvFind(a, cmd.word(), false);
+            if (allowWs2srvSrv == null) {
+                cmd.error("invalid server");
+                return false;
+            }
             return false;
         }
         if (a.equals("websock")) {
@@ -1077,6 +1105,12 @@ public class servHttpHost implements Comparable<servHttpHost> {
         servHttpUtil.updateVisitors(cn, pn);
         if (allowWebSck && (cn.gotWebsock != null)) {
             if (!servHttpUtil.sendOneWebSck(cn, pn)) {
+                return;
+            }
+            return;
+        }
+        if ((allowWs2srvSrv != null) && (cn.gotWebsock != null)) {
+            if (!servHttpUtil.sendOneWebSck(cn, allowWs2srvSrv, allowWs2srvPrt)) {
                 return;
             }
             return;

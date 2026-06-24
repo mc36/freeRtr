@@ -446,6 +446,9 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, false, 3, new int[]{4}, "search-script", "allow scripts defined in configuration");
         l.add(null, false, 4, new int[]{-1}, "<str>", "prefix");
         l.add(null, false, 3, new int[]{-1}, "imagemap", "allow image map processing");
+        l.add(null, false, 3, new int[]{4}, "ws2server", "allow websocket processing");
+        l.add(null, false, 4, new int[]{5}, "<str>", "protocol");
+        servGenList.srvHelp(l, 5, "to forward to", null);
         l.add(null, false, 3, new int[]{-1}, "websock", "allow websocket processing");
         l.add(null, false, 3, new int[]{-1}, "webdav", "allow webdav processing");
         l.add(null, false, 3, new int[]{-1}, "mediastream", "allow media streaming");
