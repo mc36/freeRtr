@@ -62,7 +62,7 @@ public class player implements Runnable {
     private final static Object sleeper = new Object();
 
     private String mixer = "Master";
-    
+
     private String device = ".*default.*";
 
     private boolean headEnd = false;
@@ -826,10 +826,11 @@ public class player implements Runnable {
                 String a = "volume set to " + currVlme + " percent.<br/>";
                 buf.write(a.getBytes());
             }
-            buf.write("<br/>volume:".getBytes());
+            String a = "<!-- currently " + currVlme + " --><br/>volume:";
+            buf.write(a.getBytes());
             for (i = 0; i < 11; i++) {
                 int o = i * 10;
-                String a = "" + o;
+                a = "" + o;
                 if ((o / 10) == (currVlme / 10)) {
                     a = "*" + a + "*";
                 }
@@ -844,7 +845,7 @@ public class player implements Runnable {
                 if (o > 100) {
                     continue;
                 }
-                String a = "" + o;
+                a = "" + o;
                 if (o == currVlme) {
                     a = "*" + a + "*";
                 }
