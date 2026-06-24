@@ -20,11 +20,13 @@ if which clang > /dev/null ; then
   CS="llvm-strip"
   BC="clang -target bpf"
   BS="llvm-strip"
+  PR="p4emu_profil"
 else
   CC="gcc"
   CS="strip"
   BC="bpf-gcc"
   BS="bpf-strip"
+  PR=""
 fi
 
 while [ $# -gt 0 ]; do
@@ -53,6 +55,9 @@ while [ $# -gt 0 ]; do
     bs)
       BS=$2
       ;;
+    pr)
+      PR=$2
+      ;;
   esac
   shift 2
 done
@@ -61,7 +66,7 @@ if [ "$UM" = "x86_64" ]; then
   MF="-march=corei7"
 fi
 
-echo arch=$UM, abi=$AB, sys=$SR, cc=$CC, cs=$CS, bc=$BC, bs=$BS, mode=$MD, flag=$MF, out=$TR
+echo arch=$UM, abi=$AB, sys=$SR, cc=$CC, cs=$CS, bc=$BC, bs=$BS, mode=$MD, flag=$MF, prof=$PR, out=$TR
 
 compileBpf()
 {
@@ -97,6 +102,26 @@ touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
 
 
+profProto()
+{
+echo -n "$1: "
+$TR/$PR p4emu_bench_cmds.txt p4emu_bench_$1.txt $TR/$PR-$1.raw
+}
+
+if [ "$PR" != "" ]; then
+  echo profiling
+  clang $MD -o $TR/$PR -fprofile-generate -o $TR/$PR -lcrypto p4emu_profiler.c
+  profProto ipv4
+  profProto ipv6
+  profProto vlan
+  profProto pppoe
+  profProto mpls
+  rm $TR/$PR
+  llvm-profdata merge -output=$TR/$PR.res $TR/$PR-*.raw
+  PR="-Wno-backend-plugin -fprofile-use=$TR/$PR.res"
+fi
+
+
 
 for fn in p4xdp_pass p4xdp_drop p4xdp_kern p4xdp_krno p4mnl_kern; do
   compileBpf $fn
@@ -111,7 +136,7 @@ for fn in p4mnl_user; do
 done
 
 for fn in p4emu_full p4emu_tiny p4emu_huge p4emu_dbg p4emu_nocr p4emu_none p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_raw p4emu_xsk p4emu_urng syncEmu; do
-  compileLib $fn "" ""
+  compileLib $fn "" $PR
 done
 
 for fn in p4emu_dpdk; do
