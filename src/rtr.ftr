@@ -445,6 +445,7 @@ qc pass: ppp with packet over tcp
 qc pass: ppp with packet over tls
 qc pass: ppp with packet over txt
 qc pass: ppp with packet over txtls
+qc pass: ppp with packet over ws
 qc pass: ppp with packet over udp
 qc pass: ethernet with packet over udp
 qc pass: hdlc tunneling with packet over udp
@@ -551,6 +552,7 @@ qc pass: sep with tdmoudp
 qc pass: dvbgse with tdmoudp
 qc pass: smds with tdmoudp
 qc pass: ppp over telnet
+qc pass: ppp over telnet over ws
 qc pass: ppp over tls
 qc pass: tmux over ipv4
 qc pass: tmux over ipv6

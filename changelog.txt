@@ -18481,3 +18481,6 @@ failed: integrated pvrp with labels
 ---------------------------------- 2026-06-20 13:22:26 26.6.20
 no failed: integrated pvrp with labels
 qc pass: integrated pvrp with labels
+---------------------------------- 2026-06-24 06:47:01 26.6.24
+qc pass: ppp with packet over ws
+qc pass: ppp over telnet over ws
