@@ -106,20 +106,23 @@ touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
 profProto()
 {
 echo -n "$1: "
-$TR/$PR p4emu_bench_cmds.txt p4emu_bench_$1.txt $TR/$PR-$1.raw
+$TR/p4emu_profiler.bin p4emu_bench_cmds.txt p4emu_bench_$1.txt $TR/$PR-$1.raw || true
 }
 
 if [ "$PR" != "" ]; then
-  echo profiling
-  clang $MD -o $TR/$PR -fprofile-generate -o $TR/$PR -lcrypto p4emu_profiler.c
+  compileFile p4emu_profiler "" "-lcrypto" "-fprofile-generate"
   profProto ipv4
   profProto ipv6
   profProto vlan
   profProto pppoe
   profProto mpls
-  rm $TR/$PR
-  llvm-profdata merge -output=$TR/$PR.res $TR/$PR-*.raw
-  PR="-fprofile-use=$TR/$PR.res -Wno-backend-plugin"
+  rm $TR/p4emu_profiler.bin || true
+  llvm-profdata merge -output=$TR/$PR.res $TR/$PR-*.raw || true
+  if [ -e $TR/$PR.res ]; then
+    PR="-fprofile-use=$TR/$PR.res -Wno-backend-plugin"
+  else
+    PR=""
+  fi
 fi
 
 
