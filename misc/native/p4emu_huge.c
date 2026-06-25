@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#define HAVE_DEBUG
+#undef HAVE_DEBUG
 #undef HAVE_NOCRYPTO
 #undef HAVE_NOCACHE
 #undef HAVE_NOHASH
