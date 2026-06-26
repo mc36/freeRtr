@@ -19,7 +19,7 @@ public class comparer {
         comparerOne d = new comparerOne(sec);
         comparerOne n = new comparerOne(sec);
         for (;;) {
-            Thread.sleep(100);
+            Thread.sleep(250);
             dev.doCopy(d);
             net.doCopy(n);
             d.doFull(n);
@@ -30,9 +30,11 @@ public class comparer {
 
 class comparerOne {
 
-    public volatile byte[] cur;
+    public byte[] cur;
 
-    public volatile int pos;
+    public int pos;
+
+    public long tot;
 
     public byte max;
 
@@ -41,11 +43,13 @@ class comparerOne {
     public comparerOne(int sec) {
         cur = new byte[devicer.rate * sec];
         pos = 0;
+        tot = 0;
     }
 
     public void doCopy(comparerOne r) {
         System.arraycopy(cur, 0, r.cur, 0, cur.length);
         r.pos = pos;
+        r.tot = tot;
     }
 
     public void addBuf(byte[] buf, int len) {
@@ -61,6 +65,7 @@ class comparerOne {
             o = (o + 1) % cur.length;
         }
         pos = o;
+        tot += len;
     }
 
     public void doBuf() {
@@ -82,16 +87,17 @@ class comparerOne {
 
     public int doDiff(comparerOne oth, int beg, int max) {
         int r = 0;
-        int p = (beg + pos) % cur.length;
+        int p = beg + pos;
         int o = oth.pos;
         for (int i = 0; i < (cur.length / 2); i++) {
-            int q = (int) cur[p] - (int) oth.cur[o];
             if (p >= cur.length) {
                 p = 0;
             }
             if (o >= cur.length) {
                 o = 0;
             }
+            int q = (int) cur[p];
+            q -= (int) oth.cur[o];
             if (q < 0) {
                 q = -q;
             }
@@ -99,6 +105,8 @@ class comparerOne {
             if (r > max) {
                 return r;
             }
+            o++;
+            p++;
         }
         return r;
     }
@@ -122,7 +130,7 @@ class comparerOne {
     }
 
     public String toString() {
-        return "" + max;
+        return tot + " " + max;
     }
 
 }

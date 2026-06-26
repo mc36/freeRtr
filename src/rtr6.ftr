@@ -567,7 +567,7 @@ qc pass: p4lang: l3vpn over bundle vlan mpls
 qc pass: p4lang: l3vpn over pppoe mpls
 qc pass: p4lang: l3vpn over gre mpls
 qc pass: p4lang: l3vpn over l2tp mpls
-qc pass: p4lang: routing over backplane
+failed: p4lang: routing over backplane
 qc pass: p4lang: bridging over backplane
 qc pass: p4lang: mpls core over backplane
 qc pass: p4lang: mpls vpn over backplane
@@ -934,7 +934,6 @@ todo: nrpe to have followtracker support
 todo: clntportscan to have udp knob then portscan to have the knob finally
 todo: server smtp / tag messages by subject
 todo: server smtp / collect-failures
-todo: server smtp / check reverse of the sender and put the info to received field...
 todo: server smtp / auto-reply editor/text/etc
 todo: client buggy-trigger <trigger>
 todo: client log-boot to be emailed error.log
