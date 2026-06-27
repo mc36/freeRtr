@@ -10,19 +10,24 @@ public class measurer {
 
     public static void main(String[] args) throws Exception {
         int per = Integer.parseInt(args[3]);
+        int mul = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         rtper rtp = new rtper(args[1], args[2]);
         byte[] buf = new byte[rtper.payload];
         byte[] sln = new byte[buf.length];
         byte[] snd = new byte[buf.length];
         for (int i = 0; i < snd.length; i += 4) {
-            int o = (int) (32767 * Math.sin(i * Math.PI * rtper.payload / devicer.rate));
-            byte h = (byte) (o >> 8);
-            byte l = (byte) (o & 0xff);
-            snd[i + 0] = h;
-            snd[i + 1] = l;
-            snd[i + 2] = h;
-            snd[i + 3] = l;
+            int val = (int) (32767 * Math.sin(i * Math.PI * rtper.payload / devicer.rate));
+            byte hi = (byte) (val >> 8);
+            byte lo = (byte) (val & 0xff);
+            snd[i + 0] = hi;
+            snd[i + 1] = lo;
+            snd[i + 2] = hi;
+            snd[i + 3] = lo;
+            sln[i + 0] = 0;
+            sln[i + 1] = hi;
+            sln[i + 2] = 0;
+            sln[i + 3] = hi;
         }
         int pos = 0;
         int ned = Integer.MAX_VALUE;
@@ -52,7 +57,7 @@ public class measurer {
             if (pos > per) {
                 rtp.write(snd, len);
                 pos = 0;
-                ned = avg * 3;
+                ned = avg * mul;
             } else {
                 rtp.write(sln, len);
             }

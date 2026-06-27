@@ -55,7 +55,7 @@ class comparerOne {
     public void addBuf(byte[] buf, int len) {
         int o = pos;
         for (int i = 0; i < len; i += 4) {
-            int p = (int) buf[i];
+            int p = (int) buf[i + 0];
             p += (int) buf[i + 2];
             if (p < 0) {
                 p = -p;
