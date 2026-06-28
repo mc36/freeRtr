@@ -9,7 +9,7 @@ import javax.sound.sampled.TargetDataLine;
 public class measurer {
 
     public static void main(String[] args) throws Exception {
-        int per = Integer.parseInt(args[3]);
+        int per = (Integer.parseInt(args[3]) * 4 * devicer.rate) / rtper.payload;
         int mul = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         rtper rtp = new rtper(args[1], args[2]);
@@ -50,6 +50,7 @@ public class measurer {
             }
             if (avg > ned) {
                 int i = pos * len;
+                i >>= 2;
                 int q = (i * 1000) / devicer.rate;
                 System.out.println(avg + " > " + ned + " @ " + pos + " [" + i + "] (" + q + "ms)");
                 ned = Integer.MAX_VALUE;
