@@ -18,17 +18,6 @@ struct tree_head {
     struct tree_node root;
 };
 
-int bitVals[] = {
-    0x80000000, 0x40000000, 0x20000000, 0x10000000,
-    0x8000000, 0x4000000, 0x2000000, 0x1000000,
-    0x800000, 0x400000, 0x200000, 0x100000,
-    0x80000, 0x40000, 0x20000, 0x10000,
-    0x8000, 0x4000, 0x2000, 0x1000,
-    0x800, 0x400, 0x200, 0x100,
-    0x80, 0x40, 0x20, 0x10,
-    0x8, 0x4, 0x2, 0x1
-};
-
 
 void tree_init(struct tree_head *tab, int reclen) {
     tab->reclen = reclen;
@@ -39,7 +28,7 @@ void tree_deinit(struct tree_head *tab) {
     tab->reclen = 0;
 }
 
-#define tree_bit(p) (val->addr[p >> 5] & bitVals[p & 0x1f])
+#define tree_bit(p) (val->addr[p >> 5] & (1 << (31 - (p & 0x1f))))
 
 #ifdef HAVE_NOCACHE
 

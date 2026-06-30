@@ -2312,7 +2312,7 @@ bridgelayer3:
         struct packetContext ctx2;
         unsigned char *bufC = ctx->bufC;
         for (int i = 0; i < vrf2rib_res->plk.size; i++) {
-            if ((tmp & bitVals[30 - i]) == 0) continue;
+            if ((tmp & (2 << (i & 0x1f))) == 0) continue;
             if (shiftContext(&ctx2, ctx, bufC) != 0) break;
             polkaIdx_res = table_get(&vrf2rib_res->plk, i);
             polkaIdx_res->pack++;
