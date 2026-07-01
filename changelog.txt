@@ -18484,3 +18484,6 @@ qc pass: integrated pvrp with labels
 ---------------------------------- 2026-06-24 06:47:01 26.6.24
 qc pass: ppp with packet over ws
 qc pass: ppp over telnet over ws
+---------------------------------- 2026-07-01 20:38:40 26.7.1
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard
