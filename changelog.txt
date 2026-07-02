@@ -18487,3 +18487,6 @@ qc pass: ppp over telnet over ws
 ---------------------------------- 2026-07-01 20:38:40 26.7.1
 no qc pass: wireguard over wireguard
 failed: wireguard over wireguard
+---------------------------------- 2026-07-02 04:26:01 26.7.2
+no failed: wireguard over wireguard
+qc pass: wireguard over wireguard
