@@ -18,6 +18,7 @@ void err(char*buf) {
 #include "p4emu_tab.h"
 #include "p4emu_fwd.h"
 #include "p4emu_msg.h"
+#include "p4emu_tester.h"
 
 
 
@@ -57,15 +58,6 @@ int LLVMFuzzerInitialize(int *argc, char ***argv) {
     initTables();
     ctx.stat = ifaceStat[0];
     initContext(&ctx);
-    FILE* fil = fopen(&(*argv)[1][2], "r");
-    if (fil == NULL) err("error opening commands");
-    for (;;) {
-        char* lin = NULL;
-        size_t len = 0;
-        if (getline(&lin, &len, fil) < 0) break;
-        doOneCommand(&ctx, (unsigned char*) lin);
-        free(lin);
-    }
-    fclose(fil);
+    readTestCommands(&(*argv)[1][2], &ctx);
     return 0;
 }

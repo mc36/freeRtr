@@ -29,6 +29,7 @@ void err(char*buf) {
 #include "p4emu_tab.h"
 #include "p4emu_fwd.h"
 #include "p4emu_msg.h"
+#include "p4emu_tester.h"
 
 void sendPack(unsigned char *bufD, int bufS, int port) {
 }
@@ -60,32 +61,8 @@ int main(int argc, char **argv) {
     fflush(stdout);
     int origS = 0;
     if (argc < 3) err("usage: <commands> <bytes> <result>");
-    FILE* fil = fopen(argv[1], "r");
-    if (fil == NULL) err("error opening commands");
-    for (;;) {
-        char* lin = NULL;
-        size_t len = 0;
-        if (getline(&lin, &len, fil) < 0) break;
-        doOneCommand(&ctx, (unsigned char*) lin);
-        free(lin);
-    }
-    fclose(fil);
-    fil = fopen(argv[2], "r");
-    if (fil == NULL) err("error opening bytes");
-    for (;;) {
-        char* lin = NULL;
-        size_t len = 0;
-        if (getline(&lin, &len, fil) < 0) break;
-        for (int i = 0;; i++) {
-            if (lin[i] == 0) break;
-            if (lin[i] == 32) continue;
-            if (sscanf(&lin[i], "%hhx", &origD[origS]) != 1) continue;
-            origS++;
-            i++;
-        }
-        free(lin);
-    }
-    fclose(fil);
+    readTestCommands(argv[1], &ctx);
+    origS = readTestBytes(argv[2], origD);
     memcpy(&ctx.bufD[preBuff], &origD[0], origS);
     __llvm_profile_reset_counters();
     processDataPacket(&ctx, origS, 0);

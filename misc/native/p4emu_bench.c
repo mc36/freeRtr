@@ -9,7 +9,7 @@
 #include <time.h>
 
 #include "p4emu_hdr.h"
-#include "dump.h"
+#include "p4emu_tester.h"
 
 long packs = 0;
 long bytes = 0;
@@ -63,33 +63,9 @@ int main(int argc, char **argv) {
     int origS = 0;
     if (argc < 3) err("usage: <commands> <count> <bytes>");
     int count = atoi(argv[2]);
-    FILE* fil = fopen(argv[1], "r");
-    if (fil == NULL) err("error opening commands");
-    for (;;) {
-        char* lin = NULL;
-        size_t len = 0;
-        if (getline(&lin, &len, fil) < 0) break;
-        doOneCommand(&ctx, (unsigned char*) lin);
-        free(lin);
-    }
-    fclose(fil);
-    fil = fopen(argv[3], "r");
-    if (fil == NULL) err("error opening bytes");
-    for (;;) {
-        char* lin = NULL;
-        size_t len = 0;
-        if (getline(&lin, &len, fil) < 0) break;
-        for (int i = 0;; i++) {
-            if (lin[i] == 0) break;
-            if (lin[i] == 32) continue;
-            if (sscanf(&lin[i], "%hhx", &origD[origS]) != 1) continue;
-            origS++;
-            i++;
-        }
-        free(lin);
-    }
-    fclose(fil);
-    hexdump(origD, 0, origS);
+    readTestCommands(argv[1], &ctx);
+    origS = readTestBytes(argv[3], origD);
+    dumpOnePacket(origD, 0, origS);
     printf("input=%i, rounds=%i", origS, count);
     sleep(1);
     clock_t beg = clock();
@@ -101,7 +77,7 @@ int main(int argc, char **argv) {
     double spent = (double)(end - beg) / (double)CLOCKS_PER_SEC;
     if (spent <= 0) spent = 1;
     printf(", output=%i, packets=%li, bytes=%li, time=%f\n", lastS, packs, bytes, spent);
-    hexdump(lastB, 0, lastS);
+    dumpOnePacket(lastB, 0, lastS);
     double prn = (double)packs / spent;
     printf("pps=%f, %f mpps, ", prn, prn / 1000000.0);
     prn = (double)bytes * 8.0 / spent;
