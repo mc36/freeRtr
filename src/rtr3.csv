@@ -1,5 +1,5 @@
 url;file;udp;dpdk;xdp;bmv2;tofino;test
--;-;-;-;-;-;-;freeRouter v26.7.2-cur, done by sprscc13@mrn0b0dy.
+-;-;-;-;-;-;-;freeRouter v26.7.3-cur, done by sprscc13@mrn0b0dy.
 http://sources.freertr.org/cfg/p4lang-acl001.tst;p4lang-acl001.tst;ok;ok;not ok;ok;ok;p4lang: copp
 http://sources.freertr.org/cfg/p4lang-acl002.tst;p4lang-acl002.tst;ok;ok;not ok;ok;ok;p4lang: ingress access list
 http://sources.freertr.org/cfg/p4lang-acl003.tst;p4lang-acl003.tst;ok;ok;not ok;ok;ok;p4lang: egress access list
@@ -569,8 +569,8 @@ http://sources.freertr.org/cfg/p4lang-rout207.tst;p4lang-rout207.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout208.tst;p4lang-rout208.tst;ok;ok;ok;ok;ok;p4lang: l3vpn over pppoe mpls
 http://sources.freertr.org/cfg/p4lang-rout209.tst;p4lang-rout209.tst;ok;ok;ok;ok;ok;p4lang: l3vpn over gre mpls
 http://sources.freertr.org/cfg/p4lang-rout210.tst;p4lang-rout210.tst;ok;ok;ok;ok;ok;p4lang: l3vpn over l2tp mpls
-http://sources.freertr.org/cfg/p4lang-rout211.tst;p4lang-rout211.tst;ok;ok;ok;ok;not ok;p4lang: routing over backplane
-http://sources.freertr.org/cfg/p4lang-rout212.tst;p4lang-rout212.tst;ok;ok;ok;ok;ok;p4lang: bridging over backplane
+http://sources.freertr.org/cfg/p4lang-rout211.tst;p4lang-rout211.tst;ok;ok;ok;ok;ok;p4lang: routing over backplane
+http://sources.freertr.org/cfg/p4lang-rout212.tst;p4lang-rout212.tst;ok;ok;ok;ok;not ok;p4lang: bridging over backplane
 http://sources.freertr.org/cfg/p4lang-rout213.tst;p4lang-rout213.tst;ok;ok;ok;ok;ok;p4lang: mpls core over backplane
 http://sources.freertr.org/cfg/p4lang-rout214.tst;p4lang-rout214.tst;ok;ok;ok;ok;ok;p4lang: mpls vpn over backplane
 http://sources.freertr.org/cfg/p4lang-rout215.tst;p4lang-rout215.tst;ok;ok;ok;ok;ok;p4lang: local connect
