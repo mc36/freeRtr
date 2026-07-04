@@ -509,7 +509,7 @@ public class authLocalMenu {
             console.putCls();
             console.refresh();
             for (int i = 0; i < console.sizY; i++) {
-                putFill(i, pipeScreen.colWhite, pipeScreen.colBlack, 32);
+                console.fillLine(i, pipeScreen.colWhite, pipeScreen.colBlack, 32);
             }
             console.refresh();
         }
@@ -523,12 +523,12 @@ public class authLocalMenu {
     }
 
     private void putHeader() {
-        putFill(0, pipeScreen.colGreen, pipeScreen.colWhite, 32);
+        console.fillLine(0, pipeScreen.colGreen, pipeScreen.colWhite, 32);
         console.putStr(0, 0, pipeScreen.colGreen, pipeScreen.colBrYellow, false, cfgInit.versionName);
     }
 
     private void putFooter() {
-        putFill(console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, 32);
+        console.fillLine(console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, 32);
         console.putStr(0, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colBrWhite, false, (cur + 1) + "/" + buf.size());
         console.putStr(8, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colBrWhite, false, flt);
         console.putStr(console.sizX - 8, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, false, "f1=help");
@@ -545,7 +545,7 @@ public class authLocalMenu {
             bg = pipeScreen.colBlack;
             fg = pipeScreen.colWhite;
         }
-        putFill(ln + 1, bg, fg, 32);
+        console.fillLine(ln + 1, bg, fg, 32);
         if (lin < 0) {
             return;
         }
@@ -556,12 +556,6 @@ public class authLocalMenu {
         console.putStr(0, ln + 1, bg, fg, false, "" + ent.group);
         console.putStr(max + 1, ln + 1, bg, fg, false, "" + ent.remark);
         console.putStr(usr + max + 1, ln + 1, bg, fg, false, " " + ent.description);
-    }
-
-    private void putFill(int ln, int bg, int fg, int ch) {
-        for (int i = 0; i < console.sizX; i++) {
-            console.putInt(i, ln, bg, fg, false, ch);
-        }
     }
 
 }

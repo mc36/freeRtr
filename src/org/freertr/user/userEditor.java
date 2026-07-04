@@ -597,7 +597,7 @@ public class userEditor {
             console.putCls();
             console.refresh();
             for (int i = 0; i < console.sizY; i++) {
-                putFill(i, pipeScreen.colWhite, pipeScreen.colBlack, 32);
+                console.fillLine(i, pipeScreen.colWhite, pipeScreen.colBlack, 32);
             }
             console.refresh();
         }
@@ -611,7 +611,7 @@ public class userEditor {
     }
 
     private void putHeader() {
-        putFill(0, pipeScreen.colGreen, pipeScreen.colWhite, 32);
+        console.fillLine(0, pipeScreen.colGreen, pipeScreen.colWhite, 32);
         console.putStr(0, 0, pipeScreen.colGreen, pipeScreen.colBrYellow, false, cfgInit.versionName);
         if (!clock) {
             return;
@@ -621,7 +621,7 @@ public class userEditor {
     }
 
     private void putFooter() {
-        putFill(console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, 32);
+        console.fillLine(console.sizY - 1, pipeScreen.colBlue, pipeScreen.colWhite, 32);
         console.putStr(0, console.sizY - 1, pipeScreen.colBlue, pipeScreen.colBrWhite, false, curY + ":" + curX + " " + (insert ? "ins" : "ovr") + " (" + begY + ":" + begX + ")");
         String s = "";
         if (changed) {
@@ -632,7 +632,7 @@ public class userEditor {
     }
 
     private void putLine(int ln) {
-        putFill(ln + 1, pipeScreen.colBlack, pipeScreen.colWhite, 32);
+        console.fillLine(ln + 1, pipeScreen.colBlack, pipeScreen.colWhite, 32);
         int lin = ln + begY;
         if (lin < 0) {
             return;
@@ -646,12 +646,6 @@ public class userEditor {
         }
         s = s.substring(begX, s.length());
         console.putStr(0, ln + 1, pipeScreen.colBlack, pipeScreen.colWhite, false, s);
-    }
-
-    private void putFill(int ln, int bg, int fg, int ch) {
-        for (int i = 0; i < console.sizX; i++) {
-            console.putInt(i, ln, bg, fg, false, ch);
-        }
     }
 
 }

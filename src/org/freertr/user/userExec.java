@@ -2142,6 +2142,7 @@ public class userExec {
         hl.add(null, false, 1, new int[]{-1}, "gpsemu", "start gps emulation session");
         hl.add(null, false, 1, new int[]{-1}, "gpstime", "start gps session");
         hl.add(null, false, 1, new int[]{2}, "menu", "start menu session");
+        hl.add(null, false, 2, new int[]{-1}, "exec", "exec based");
         hl.add(null, false, 2, new int[]{3}, "key", "letter based");
         hl.add(null, false, 3, new int[]{-1}, "<name:mnk>", "name of menu");
         hl.add(null, false, 2, new int[]{3}, "tui", "tui based");
@@ -3398,6 +3399,10 @@ public class userExec {
         }
         if (a.equals("menu")) {
             a = cmd.word();
+            if (a.equals("exec")) {
+                doMenuE();
+                return cmdRes.command;
+            }
             if (a.equals("key")) {
                 doMenuK();
                 return cmdRes.command;
@@ -4121,6 +4126,11 @@ public class userExec {
         exe.executeCommand(s);
     }
 
+    private void doMenuE() {
+        userMenu m = new userMenu(this, getHstNam(true));
+        m.doWork();
+    }
+
     private void doMenuT() {
         String a = cmd.word();
         cfgMenuT ntry = cfgAll.menuTfind(a, false);
@@ -4152,7 +4162,7 @@ public class userExec {
             return;
         }
         userExec exe = new userExec(pipe, reader);
-        exe.privileged = true;
+        copy2exec(exe);
         exe.executeCommand("write memory");
     }
 

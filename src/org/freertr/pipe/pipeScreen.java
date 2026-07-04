@@ -1439,6 +1439,20 @@ public class pipeScreen {
     }
 
     /**
+     * fill line
+     *
+     * @param y line to fill
+     * @param bg background color
+     * @param fg foreground color
+     * @param ch character
+     */
+    public void fillLine(int y, int bg, int fg, int ch) {
+        for (int x = 0; x < sizX; x++) {
+            putInt(x, y, bg, fg, false, ch);
+        }
+    }
+
+    /**
      * fill lines
      *
      * @param by begin y

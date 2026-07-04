@@ -226,9 +226,7 @@ public class userTmux {
 
     private void doRound() {
         for (int o = 0; o < cons.sizY; o++) {
-            for (int i = 0; i < cons.sizX; i++) {
-                cons.putInt(i, o, pipeScreen.colWhite, pipeScreen.colBlack, false, 32);
-            }
+            cons.fillLine(o, pipeScreen.colWhite, pipeScreen.colBlack, 32);
         }
         for (int i = 0; i < scr.length; i++) {
             orig.updateLast(exe[i]);
