@@ -63,8 +63,10 @@ int main(int argc, char **argv) {
     if (argc < 3) err("usage: <commands> <bytes> <result>");
     readTestCommands(argv[1], &ctx);
     origS = readTestBytes(argv[2], origD);
-    memcpy(&ctx.bufD[preBuff], &origD[0], origS);
     __llvm_profile_reset_counters();
-    processDataPacket(&ctx, origS, 0);
+    for (int i = 0; i < 1024; i++) {
+        memcpy(&ctx.bufD[preBuff], &origD[0], origS);
+        processDataPacket(&ctx, origS, 0);
+    }
     __llvm_profile_set_filename(argv[3]);
 }

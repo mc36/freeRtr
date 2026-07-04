@@ -2768,10 +2768,10 @@ public class userExec {
         hl.add(null, false, 2, new int[]{-1}, "terminal", "to this terminal");
         hl.add(null, false, 2, new int[]{-1}, "memory", "to persistent storage");
         hl.add(null, false, 2, new int[]{-1}, "erase", "clear persistent storage");
-        hl.add(null, false, 1, new int[]{2}, "screenrec", "record terminal session");
-        hl.add(null, false, 2, new int[]{-1}, "<file>", "name of file");
         hl.add(null, false, 1, new int[]{2}, "attach", "connect to system resources");
         hl.add(null, false, 2, new int[]{-1}, "chat", "discuss with other admins");
+        hl.add(null, false, 2, new int[]{3}, "record", "record terminal session");
+        hl.add(null, false, 3, new int[]{-1}, "<file>", "name of file");
         hl.add(null, false, 2, new int[]{3}, "vdc", "manage virtual device context");
         hl.add(null, false, 3, new int[]{-1}, "<name:vdc>", "name of vdc");
         hl.add(null, false, 2, new int[]{3}, "process", "manage external process");
@@ -3546,14 +3546,6 @@ public class userExec {
             cmd.error("not enough privilege");
             return cmdRes.command;
         }
-        if (a.equals("screenrec")) {
-            a = cmd.word();
-            reader.keyFlush();
-            userRecord t = new userRecord(a, this);
-            t.doWork();
-            reader.keyFlush();
-            return cmdRes.command;
-        }
         if (a.equals("attach")) {
             doAttach();
             return cmdRes.command;
@@ -4120,7 +4112,7 @@ public class userExec {
             return;
         }
         userExec exe = new userExec(pipe, reader);
-        exe.privileged = privileged;
+        copy2exec(exe);
         s = exe.repairCommand(s);
         pipe.linePut(a + " - " + s);
         if (pipe.settingsGet(pipeSetting.logging, false)) {
@@ -5377,6 +5369,14 @@ public class userExec {
         if (a.equals("chat")) {
             userChat c = new userChat(pipe, reader);
             c.doChat();
+            return;
+        }
+        if (a.equals("record")) {
+            a = cmd.word();
+            reader.keyFlush();
+            userRecord t = new userRecord(a, this);
+            t.doWork();
+            reader.keyFlush();
             return;
         }
         if (a.equals("script")) {
