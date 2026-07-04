@@ -278,6 +278,9 @@ public class userMenu {
 
     private void doFilter() {
         buf = hlp.getHelp(cmd, false);
+        for (int i = 0; i < buf.size(); i++) {
+            buf.set(i, buf.get(i).trim());
+        }
         Collections.sort(buf);
     }
 
