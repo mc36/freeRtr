@@ -1,7 +1,5 @@
 -O3
 
---no-fallback
-
 -jar rtr2.jar
 
 -o rtr.bin
