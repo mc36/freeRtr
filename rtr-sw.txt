@@ -61,6 +61,7 @@ aaa userlist access
  allowed interface .*
  allowed description .*
  allowed telnet .*
+ allowed menu .*
  exit
 !
 aaa radius rad
