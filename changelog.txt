@@ -18499,3 +18499,6 @@ qc pass: wireguard over ipv4
 ---------------------------------- 2026-07-05 06:36:28 26.7.5
 no qc pass: integrated pvrp with labels
 failed: integrated pvrp with labels
+---------------------------------- 2026-07-05 08:31:40 26.7.5
+no failed: integrated pvrp with labels
+qc pass: integrated pvrp with labels
