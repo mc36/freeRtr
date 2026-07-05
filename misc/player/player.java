@@ -555,6 +555,8 @@ public class player implements Runnable {
         buf.write(s.getBytes());
         s = "song: " + sng.title + "<br/>";
         buf.write(s.getBytes());
+        s = "genre: " + sng.genre + "<br/>";
+        buf.write(s.getBytes());
         putLink(buf, urlR + "?cmd=play&song=" + currSong, "replay");
         putLink(buf, urlR + "?cmd=artistsong&song=" + currSong, "artist");
         putLink(buf, urlR + "?cmd=albumsong&song=" + currSong, "album");

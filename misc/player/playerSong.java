@@ -21,6 +21,11 @@ public class playerSong implements Comparator<playerSong> {
      */
     public String title;
 
+    /**
+     * genre
+     */
+    public String genre;
+
     public String toString() {
         return file + "|" + title;
     }
@@ -89,7 +94,9 @@ public class playerSong implements Comparator<playerSong> {
      */
     public playerLyric plsEntry(int num) {
         playerLyric res = new playerLyric();
+        res.add("");
         res.add("File" + num + "=" + file);
+        res.add("Genre" + num + "=" + genre);
         res.add("Title" + num + "=" + title);
         return res;
     }
@@ -102,6 +109,7 @@ public class playerSong implements Comparator<playerSong> {
     public playerLyric m3uEntry() {
         playerLyric res = new playerLyric();
         res.add("");
+        res.add("#EXTGENRE:" + genre);
         res.add("#EXTINF:0," + title);
         res.add(file);
         return res;
@@ -152,6 +160,10 @@ public class playerSong implements Comparator<playerSong> {
             a = a.substring(0, o).toLowerCase();
             if (a.startsWith("file")) {
                 cur.file = b;
+                continue;
+            }
+            if (a.startsWith("genre")) {
+                cur.genre = b;
                 continue;
             }
             if (a.startsWith("title")) {
@@ -257,7 +269,7 @@ public class playerSong implements Comparator<playerSong> {
     public static int find(List<playerSong> lst, playerSong val) {
         int lower = 0;
         int upper = lst.size() - 1;
-        for (;lower <= upper;) {
+        for (; lower <= upper;) {
             int mid = (lower + upper) >>> 1;
             int cmp = val.compare(lst.get(mid), val);
             if (cmp < 0) {

@@ -32,6 +32,11 @@ public class findSongs {
     protected String dat;
 
     /**
+     * genre
+     */
+    protected String gen;
+
+    /**
      * title
      */
     protected String tit;
@@ -66,7 +71,7 @@ public class findSongs {
             playerUtil.put("diffing");
             frs.doMerge(fs.lst, old.lst);
             playerUtil.put(frs.lst.size() + " new");
-            frs.doTitle();
+            frs.doTitle(true);
             if (args.length > 3) {
                 String a = args[3];
                 playerUtil.put("writing " + a);
@@ -143,6 +148,7 @@ public class findSongs {
             playerSong sng = new playerSong();
             sng.file = s + "/" + a;
             sng.title = a.substring(0, o);
+            sng.genre = "";
             lst.add(sng);
         }
     }
@@ -163,15 +169,18 @@ public class findSongs {
             }
             playerSong res = old.get(o);
             ntry.title = res.title;
+            ntry.genre = res.genre;
         }
     }
 
     /**
      * fetch titles
+     *
+     * @param cln clean findings
      */
-    protected void doTitle() {
+    protected void doTitle(boolean cln) {
         for (int i = 0; i < lst.size(); i++) {
-            doTitle(lst.get(i), true);
+            doTitle(lst.get(i), cln);
         }
     }
 
@@ -225,6 +234,7 @@ public class findSongs {
             art = null;
             alb = null;
             dat = null;
+            gen = null;
             tit = null;
         }
         for (int i = 0; i < res.size(); i++) {
@@ -247,6 +257,10 @@ public class findSongs {
                 dat = b;
                 continue;
             }
+            if (a.equals("genre")) {
+                gen = b;
+                continue;
+            }
             if (a.equals("title")) {
                 tit = b;
                 continue;
@@ -260,6 +274,9 @@ public class findSongs {
                 break;
             }
         }
+        if (gen != null) {
+            sng.genre = gen;
+        }
         if (art == null) {
             playerUtil.put("no artist!");
             return true;
@@ -269,7 +286,7 @@ public class findSongs {
             return true;
         }
         sng.title = art + " - " + tit;
-        playerUtil.put("got: " + sng.title);
+        playerUtil.put("got: " + sng.title + " (" + gen + ")");
         return false;
     }
 
