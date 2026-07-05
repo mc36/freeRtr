@@ -106,6 +106,7 @@ touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
 profProto()
 {
 echo -n "$1: "
+rm $TR/$PR-$1.raw 2> /dev/null || true
 $TR/p4emu_profiler.bin p4emu_bench_cmds.txt p4emu_bench_$1.txt $TR/$PR-$1.raw || true
 }
 

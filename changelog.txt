@@ -18496,3 +18496,6 @@ failed: wireguard over ipv4
 ---------------------------------- 2026-07-04 21:03:49 26.7.4
 no failed: wireguard over ipv4
 qc pass: wireguard over ipv4
+---------------------------------- 2026-07-05 06:36:28 26.7.5
+no qc pass: integrated pvrp with labels
+failed: integrated pvrp with labels
