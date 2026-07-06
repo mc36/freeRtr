@@ -194,6 +194,9 @@ public class playerSong implements Comparator<playerSong> {
         }
         for (int i = 0; i < src.size(); i++) {
             String a = src.get(i);
+            if (a.length() < 1) {
+                continue;
+            }
             if (a.startsWith("#EXTGENRE:")) {
                 cur.genre = a.substring(10, a.length());
                 continue;
@@ -226,6 +229,7 @@ public class playerSong implements Comparator<playerSong> {
     public static playerLyric pls2txt(List<playerSong> src) {
         playerLyric res = new playerLyric();
         res.add("[playlist]");
+        res.add("Version=2");
         res.add("NumberOfEntries=" + src.size());
         for (int i = 0; i < src.size(); i++) {
             res.addAll(src.get(i).plsEntry(i + 1));
