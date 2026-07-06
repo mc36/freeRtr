@@ -584,15 +584,16 @@ public class player implements Runnable {
         buf.write("</form>".getBytes());
     }
 
+    
     /**
-     * find songs
+     * list found songs
      *
      * @param buf buffer to use
      * @param sng song to find
      * @param res results found
      * @throws Exception on error
      */
-    public void doFind(ByteArrayOutputStream buf, String sng, List<String> res) throws Exception {
+    public void doFound(ByteArrayOutputStream buf, String sng, List<String> res) throws Exception {
         final int max = 100;
         putStart(buf, -1);
         putMenu(buf);
@@ -706,7 +707,7 @@ public class player implements Runnable {
                 }
                 res.add(toFound1(i, ntry));
             }
-            doFind(buf, song, res);
+            doFound(buf, song, res);
             return -1;
         }
         if (cmd.equals("albums")) {
@@ -728,7 +729,7 @@ public class player implements Runnable {
                 res.add(a);
                 old = a;
             }
-            doFind(buf, song, res);
+            doFound(buf, song, res);
             return -1;
         }
         if (cmd.equals("album")) {
@@ -741,7 +742,7 @@ public class player implements Runnable {
                 }
                 res.add(toFound1(i, ntry));
             }
-            doFind(buf, song, res);
+            doFound(buf, song, res);
             return -1;
         }
         if (cmd.equals("lock")) {
@@ -886,7 +887,7 @@ public class player implements Runnable {
                 String a = "((<a href=\"" + urlR + "?cmd=dequeue&song=" + num + "\">R</a>))";
                 a += "((<a href=\"" + urlR + "?cmd=moveup&song=" + num + "\">U</a>))";
                 a += "((<a href=\"" + urlR + "?cmd=movedn&song=" + num + "\">D</a>))";
-                a += ntry.title + "<br/>";
+                a += ntry.title + " (" + ntry.genre + ")<br/>";
                 buf.write(a.getBytes());
             }
             buf.write("<br/>previous songs:<br/>".getBytes());
@@ -896,7 +897,7 @@ public class player implements Runnable {
                     continue;
                 }
                 playerSong ntry = playlist.get(num);
-                String a = "((<a href=\"" + urlR + "?cmd=play&song=" + num + "\">R</a>))" + ntry.title + "<br/>";
+                String a = "((<a href=\"" + urlR + "?cmd=play&song=" + num + "\">R</a>))" + ntry.title + " (" + ntry.genre + ")<br/>";
                 buf.write(a.getBytes());
             }
             return -1;
