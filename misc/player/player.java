@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -558,6 +559,7 @@ public class player implements Runnable {
         s = "genre: " + sng.genre + "<br/>";
         buf.write(s.getBytes());
         putLink(buf, urlR + "?cmd=play&song=" + currSong, "replay");
+        putLink(buf, urlR + "?cmd=genresong&song=" + currSong, "genre");
         putLink(buf, urlR + "?cmd=artistsong&song=" + currSong, "artist");
         putLink(buf, urlR + "?cmd=albumsong&song=" + currSong, "album");
         putLink(buf, urlR + "?cmd=download&song=" + currSong, "download");
@@ -575,16 +577,18 @@ public class player implements Runnable {
      * @throws Exception on error
      */
     public void putFind(ByteArrayOutputStream buf, String flt) throws Exception {
-        String s = "<form action=\"" + urlR + "\" method=get><input type=text name=song value=\"" + flt + "\">";
+        String s = "<form action=\"" + urlR + "\" method=get><input type=text name=song value=\"" + flt + "\"><br/>";
         buf.write(s.getBytes());
         buf.write("<input type=submit name=cmd value=\"song\">".getBytes());
         buf.write("<input type=submit name=cmd value=\"album\">".getBytes());
         buf.write("<input type=submit name=cmd value=\"lock\">".getBytes());
         buf.write("<input type=submit name=cmd value=\"albums\">".getBytes());
+        buf.write("<br/><input type=submit name=cmd value=\"genre\">".getBytes());
+        buf.write("<input type=submit name=cmd value=\"glock\">".getBytes());
+        buf.write("<input type=submit name=cmd value=\"genres\">".getBytes());
         buf.write("</form>".getBytes());
     }
 
-    
     /**
      * list found songs
      *
@@ -617,12 +621,23 @@ public class player implements Runnable {
     /**
      * to found line
      *
+     * @param ntry entry value
+     * @return string to add
+     */
+    public String toFoundGenre(playerSong ntry) {
+        String a = ntry.genre;
+        return "<a href=\"" + urlR + "?cmd=genre&song=" + a + "\">" + a + "</a><br/>";
+    }
+
+    /**
+     * to found line
+     *
      * @param num number of entry
      * @param ntry entry value
      * @return string to add
      */
-    public String toFound1(int num, playerSong ntry) {
-        return "((<a href=\"" + urlR + "?cmd=enqueue&song=" + num + "\">Q</a>))<a href=\"" + urlR + "?cmd=play&song=" + num + "\">" + ntry.title + "</a><br/>";
+    public String toFoundSong(int num, playerSong ntry) {
+        return "((<a href=\"" + urlR + "?cmd=enqueue&song=" + num + "\">Q</a>))<a href=\"" + urlR + "?cmd=play&song=" + num + "\">" + ntry.title + "</a> (" + ntry.genre + ")<br/>";
     }
 
     /**
@@ -631,7 +646,7 @@ public class player implements Runnable {
      * @param ntry entry value
      * @return string to add
      */
-    public String toFound2(playerSong ntry) {
+    public String toFoundDir(playerSong ntry) {
         String a = ntry.justPath();
         return "<a href=\"" + urlR + "?cmd=album&song=" + a + "\">" + a + "</a><br/>";
     }
@@ -687,6 +702,12 @@ public class player implements Runnable {
             song = new File(sng.file).getParent();
             cmd = "album";
         }
+        if (cmd.equals("genresong")) {
+            int i = playerUtil.str2int(song);
+            playerSong sng = playlist.get(i);
+            song = sng.genre;
+            cmd = "genre";
+        }
         if (cmd.equals("artistsong")) {
             int i = playerUtil.str2int(song);
             playerSong sng = playlist.get(i);
@@ -705,7 +726,7 @@ public class player implements Runnable {
                 if (!ntry.title.toLowerCase().matches(cmd)) {
                     continue;
                 }
-                res.add(toFound1(i, ntry));
+                res.add(toFoundSong(i, ntry));
             }
             doFound(buf, song, res);
             return -1;
@@ -719,10 +740,7 @@ public class player implements Runnable {
                 if (!ntry.file.toLowerCase().matches(cmd)) {
                     continue;
                 }
-                if (!ntry.justPath().toLowerCase().matches(cmd)) {
-                    continue;
-                }
-                String a = toFound2(ntry);
+                String a = toFoundDir(ntry);
                 if (a.equals(old)) {
                     continue;
                 }
@@ -740,7 +758,7 @@ public class player implements Runnable {
                 if (!ntry.file.toLowerCase().matches(cmd)) {
                     continue;
                 }
-                res.add(toFound1(i, ntry));
+                res.add(toFoundSong(i, ntry));
             }
             doFound(buf, song, res);
             return -1;
@@ -753,6 +771,56 @@ public class player implements Runnable {
             for (int i = 0; i < playlist.size(); i++) {
                 playerSong ntry = playlist.get(i);
                 if (!ntry.file.toLowerCase().matches(cmd)) {
+                    continue;
+                }
+                res.add(ntry);
+            }
+            if (setPlaylist(res, false)) {
+                buf.write("nothing selected!<br/>".getBytes());
+                return -1;
+            }
+            buf.write("lockin successfully finished!<br/>".getBytes());
+            return -1;
+        }
+        if (cmd.equals("genres")) {
+            cmd = ".*" + song.trim().toLowerCase().replaceAll(" ", ".*") + ".*";
+            List<String> res = new ArrayList<String>();
+            for (int i = 0; i < playlist.size(); i++) {
+                playerSong ntry = playlist.get(i);
+                if (!ntry.genre.toLowerCase().matches(cmd)) {
+                    continue;
+                }
+                String a = toFoundGenre(ntry);
+                int o = Collections.binarySearch(res, a);
+                if (o >= 0) {
+                    continue;
+                }
+                res.add(-o - 1, a);
+            }
+            doFound(buf, song, res);
+            return -1;
+        }
+        if (cmd.equals("genre")) {
+            cmd = ".*" + song.trim().toLowerCase().replaceAll(" ", ".*") + ".*";
+            List<String> res = new ArrayList<String>();
+            for (int i = 0; i < playlist.size(); i++) {
+                playerSong ntry = playlist.get(i);
+                if (!ntry.genre.toLowerCase().matches(cmd)) {
+                    continue;
+                }
+                res.add(toFoundSong(i, ntry));
+            }
+            doFound(buf, song, res);
+            return -1;
+        }
+        if (cmd.equals("glock")) {
+            putStart(buf, 5);
+            putMenu(buf);
+            cmd = ".*" + song.trim().toLowerCase().replaceAll(" ", ".*") + ".*";
+            List<playerSong> res = new ArrayList<playerSong>();
+            for (int i = 0; i < playlist.size(); i++) {
+                playerSong ntry = playlist.get(i);
+                if (!ntry.genre.toLowerCase().matches(cmd)) {
                     continue;
                 }
                 res.add(ntry);
