@@ -127,6 +127,7 @@ public class playerSong implements Comparator<playerSong> {
         res.add("  TRACK " + num + " AUDIO");
         res.add("    TITLE \"" + justTitle() + "\"");
         res.add("    PERFORMER \"" + justArtist() + "\"");
+        res.add("    REM GENRE \"" + genre + "\"");
         res.add("    INDEX 01 00:00:00");
         return res;
     }
@@ -187,20 +188,31 @@ public class playerSong implements Comparator<playerSong> {
         if (res == null) {
             res = new ArrayList<playerSong>();
         }
+        playerSong cur = new playerSong();
+        if (src == null) {
+            return res;
+        }
         for (int i = 0; i < src.size(); i++) {
             String a = src.get(i);
-            if (!a.startsWith("#EXTINF:")) {
+            if (a.startsWith("#EXTGENRE:")) {
+                cur.genre = a.substring(10, a.length());
                 continue;
             }
-            int o = a.indexOf(",");
-            if (o < 0) {
+            if (a.startsWith("#EXTINF:")) {
+                int o = a.indexOf(",");
+                if (o < 0) {
+                    continue;
+                }
+                a = a.substring(o + 1, a.length());
+                cur.title = a;
                 continue;
             }
-            a = a.substring(o + 1, a.length());
-            playerSong cur = new playerSong();
-            cur.title = a;
-            cur.file = src.get(i + 1);
-            res.add(cur);
+            if (!a.startsWith("#")) {
+                cur.file = a;
+                res.add(cur);
+                cur = new playerSong();
+                continue;
+            }
         }
         return res;
     }
