@@ -70,6 +70,8 @@ public class player implements Runnable {
 
     private boolean locked = false;
 
+    private String volRem = "";
+
     private int volMin = 0;
 
     private int volMax = 100;
@@ -199,6 +201,20 @@ public class player implements Runnable {
         stopProc("vlc");
         stopProc("yt-dlp");
         stopProc("amixer");
+    }
+
+    private synchronized void remVolume(int vol) {
+        currVlme = vol;
+        String s = volRem + " ";
+        for (;;) {
+            int i = s.indexOf(" ");
+            if (i < 0) {
+                break;
+            }
+            String a = s.substring(0, i);
+            s = s.substring(i + 1, s.length());
+            playerUtil.download(a + "/player.class?cmd=vol&song=" + vol);
+        }
     }
 
     private synchronized void setVolume(int vol) {
@@ -429,6 +445,10 @@ public class player implements Runnable {
                 }
                 if (a.equals("loclist")) {
                     locList.add(b);
+                    continue;
+                }
+                if (a.equals("volrem")) {
+                    volRem = b;
                     continue;
                 }
                 if (a.equals("volmin")) {
@@ -880,7 +900,9 @@ public class player implements Runnable {
                 return -1;
             }
             String s = playlists.get(0);
+            playerUtil.append(s, "");
             playerUtil.append(s, "File1=" + sng.file);
+            playerUtil.append(s, "Genre1=" + sng.genre);
             playerUtil.append(s, "Title1=" + sng.title);
             buf.write("saved to favorites<br/>".getBytes());
             return -1;
@@ -891,9 +913,10 @@ public class player implements Runnable {
             int i = playerUtil.str2int(song);
             if (i >= 0) {
                 if (headEnd) {
-                    return -1;
+                    remVolume(i);
+                } else {
+                    setVolume(i);
                 }
-                setVolume(i);
                 String a = "volume set to " + currVlme + " percent.<br/>";
                 buf.write(a.getBytes());
             }

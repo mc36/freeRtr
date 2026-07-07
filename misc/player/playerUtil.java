@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URI;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -165,7 +166,10 @@ public class playerUtil {
             put("getting " + pat + "...");
         }
         try {
-            playerLyric res = doRead(new URI(pat).toURL().openStream());
+            URLConnection conn = new URI(pat).toURL().openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+            playerLyric res = doRead(conn.getInputStream());
             if (res == null) {
                 return null;
             }
