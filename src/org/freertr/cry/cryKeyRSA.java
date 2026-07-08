@@ -88,6 +88,15 @@ public class cryKeyRSA extends cryKeyGeneric {
     }
 
     /**
+     * get cert algorithm
+     *
+     * @return type
+     */
+    public int certType() {
+        return cryCertificate.typRsaSha256;
+    }
+
+    /**
      * get ssh hash
      *
      * @return hasher

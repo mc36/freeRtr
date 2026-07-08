@@ -73,6 +73,22 @@ public class cryKeyECDSA extends cryKeyGeneric {
     }
 
     /**
+     * get cert algorithm
+     *
+     * @return type
+     */
+    public int certType() {
+        int i = curve.byteSize();
+        if (i <= 32) {
+            return cryCertificate.typEcDssSha256;
+        }
+        if (i <= 48) {
+            return cryCertificate.typEcDssSha384;
+        }
+        return cryCertificate.typEcDssSha512;
+    }
+
+    /**
      * read private key
      *
      * @param pck packet

@@ -51,6 +51,10 @@ public class cryKeyECDH extends cryKeyGeneric {
         return "ecdh";
     }
 
+    public int certType() {
+        return 0;
+    }
+
     public String sshName() {
         return "ecdh-sha2-" + curve.sshName();
     }

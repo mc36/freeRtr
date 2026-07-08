@@ -348,6 +348,10 @@ public class cryKeyCurve25519 extends cryKeyGeneric {
         return "curve25519";
     }
 
+    public int certType() {
+        return 0;
+    }
+
     public String sshName() {
         return "curve25519-sha256";
     }

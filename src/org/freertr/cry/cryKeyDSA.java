@@ -81,6 +81,15 @@ public class cryKeyDSA extends cryKeyGeneric {
     }
 
     /**
+     * get cert algorithm
+     *
+     * @return type
+     */
+    public int certType() {
+        return cryCertificate.typDssSha1;
+    }
+
+    /**
      * get ssh name
      *
      * @return name

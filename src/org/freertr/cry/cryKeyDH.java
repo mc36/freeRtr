@@ -75,6 +75,10 @@ public class cryKeyDH extends cryKeyGeneric {
         return "dh";
     }
 
+    public int certType() {
+        return 0;
+    }
+
     public String sshName() {
         return "diffe-hellman-group" + idNum + "-sha256";
     }

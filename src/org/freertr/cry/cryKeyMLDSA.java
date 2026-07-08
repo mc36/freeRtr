@@ -519,6 +519,10 @@ public class cryKeyMLDSA extends cryKeyGeneric {
         return "mldsa";
     }
 
+    public int certType() {
+        return cryCertificate.typMlDss44sha512 + (DilithiumCTilde >>> 4) - 2;
+    }
+
     public boolean privReader(packHolder pck) {
         encAsn1 a = new encAsn1();
         if (a.tagRead(pck)) {
@@ -605,7 +609,7 @@ public class cryKeyMLDSA extends cryKeyGeneric {
     }
 
     private int[] getOid() {
-        return cryCertificate.int2objId(cryCertificate.typMlDss44sha512 + (DilithiumCTilde >>> 4) - 2);
+        return cryCertificate.int2objId(certType());
     }
 
     private boolean useOid(int oid) {

@@ -35,6 +35,13 @@ public abstract class cryKeyGeneric implements Comparable<cryKeyGeneric> {
     public abstract String algName();
 
     /**
+     * return type of algorithm
+     *
+     * @return type of algorithm
+     */
+    public abstract int certType();
+
+    /**
      * get ssh name
      *
      * @return name

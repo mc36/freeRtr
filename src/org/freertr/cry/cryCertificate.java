@@ -913,20 +913,7 @@ public class cryCertificate {
      * create signature algorithm
      */
     public void setSignAlgo() {
-        String s = key.algName();
-        decAlgo = 0;
-        if (s.equals(new cryKeyRSA().algName())) {
-            decAlgo = typRsaSha256;
-        }
-        if (s.equals(new cryKeyDSA().algName())) {
-            decAlgo = typDssSha1;
-        }
-        if (s.equals(new cryKeyECDSA().algName())) {
-            decAlgo = typEcDssSha256;
-        }
-        if (s.equals(new cryKeyMLDSA().algName())) {
-            decAlgo = typMlDss44sha512;
-        }
+        decAlgo = key.certType();
         binAlgo = new packHolder(true, true);
         encAsn1.writeObjectId(binAlgo, int2objId(decAlgo));
         encAsn1.writeNull(binAlgo);

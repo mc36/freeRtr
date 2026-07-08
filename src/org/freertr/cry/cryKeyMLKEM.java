@@ -344,6 +344,10 @@ public class cryKeyMLKEM extends cryKeyGeneric {
         return "mlkem";
     }
 
+    public int certType() {
+        return 0;
+    }
+
     public String sshName() {
         return "mlkem" + keySize() + "-sha" + (keySize() < 1024 ? 256 : 384);
     }
