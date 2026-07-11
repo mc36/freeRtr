@@ -2142,6 +2142,7 @@ public class userExec {
         hl.add(null, false, 1, new int[]{-1}, "gpsemu", "start gps emulation session");
         hl.add(null, false, 1, new int[]{-1}, "gpstime", "start gps session");
         hl.add(null, false, 1, new int[]{2}, "menu", "start menu session");
+        hl.add(null, false, 2, new int[]{-1}, "dash", "dashboard based");
         hl.add(null, false, 2, new int[]{-1}, "exec", "exec based");
         hl.add(null, false, 2, new int[]{3}, "key", "letter based");
         hl.add(null, false, 3, new int[]{-1}, "<name:mnk>", "name of menu");
@@ -3399,6 +3400,10 @@ public class userExec {
         }
         if (a.equals("menu")) {
             a = cmd.word();
+            if (a.equals("dash")) {
+                doMenuD();
+                return cmdRes.command;
+            }
             if (a.equals("exec")) {
                 doMenuE();
                 return cmdRes.command;
@@ -4124,6 +4129,11 @@ public class userExec {
             logger.info("command menu:" + s + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
         }
         exe.executeCommand(s);
+    }
+
+    private void doMenuD() {
+        userDash m = new userDash(pipe, getHstNam(true));
+        m.doWork();
     }
 
     private void doMenuE() {

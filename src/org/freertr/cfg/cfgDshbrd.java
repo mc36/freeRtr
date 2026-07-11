@@ -170,6 +170,22 @@ public class cfgDshbrd implements Comparable<cfgDshbrd>, cfgGeneric {
     }
 
     /**
+     * get description
+     *
+     * @return description
+     */
+    public String getDescr() {
+        for (int i = 0; i < actions.size(); i++) {
+            cfgDshbrdNtry t = actions.get(i);
+            if (t.act != cfgDshbrdNtry.command.descr) {
+                continue;
+            }
+            return t.str;
+        }
+        return "";
+    }
+
+    /**
      * get result
      *
      * @param m table mode
