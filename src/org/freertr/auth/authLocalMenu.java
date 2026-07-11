@@ -2,10 +2,12 @@ package org.freertr.auth;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.freertr.cfg.cfgAuther;
 import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeScreen;
 import org.freertr.pipe.pipeSide;
 import org.freertr.user.userEditor;
+import org.freertr.user.userExec;
 import org.freertr.util.bits;
 
 /**
@@ -36,26 +38,34 @@ public class authLocalMenu {
     /**
      * create instance
      *
-     * @param loc database to use
+     * @param ntry database to use
      * @param pipe pipe to use
      */
-    public authLocalMenu(authLocal loc, pipeSide pipe) {
-        database = loc;
+    public authLocalMenu(cfgAuther ntry, pipeSide pipe) {
         console = new pipeScreen(pipe);
+        authLocal loc = null;
+        try {
+            loc = (authLocal) ntry.getAuther();
+        } catch (Exception e) {
+        }
+        database = loc;
     }
 
     /**
      * do menu
      *
-     * @param prv privileged
-     * @return true to save config, false if no changes made
+     * @param exe exec to use
      */
-    public boolean doMenu(boolean prv) {
-        if (!database.menuEna) {
-            return false;
+    public void doMenu(userExec exe) {
+        if (database == null) {
+            console.pipe.linePut("not local aaa");
+            return;
         }
-        if (!prv && !database.menuGst) {
-            return false;
+        if (!database.menuEna) {
+            return;
+        }
+        if (!exe.privileged && !database.menuGst) {
+            return;
         }
         usr = 0;
         for (int i = 0; i < database.users.size(); i++) {
@@ -78,7 +88,13 @@ public class authLocalMenu {
             }
         }
         doClear();
-        return changed & database.menuAsv;
+        if (!changed) {
+            return;
+        }
+        if (!database.menuAsv) {
+            return;
+        }
+        exe.executeCommand("write memory");
     }
 
     private boolean doKey() {

@@ -2146,9 +2146,12 @@ public class userExec {
         hl.add(null, false, 1, new int[]{-1}, "gpsemu", "start gps emulation session");
         hl.add(null, false, 1, new int[]{-1}, "gpstime", "start gps session");
         hl.add(null, false, 1, new int[]{2}, "menu", "start menu session");
-        hl.add(null, false, 2, new int[]{-1}, "dash", "dashboard based");
+        hl.add(null, false, 2, new int[]{-1}, "dashboard", "dashboard based");
         hl.add(null, false, 2, new int[]{-1}, "exec", "exec based");
         hl.add(null, false, 2, new int[]{-1}, "show", "show based");
+        hl.add(null, false, 2, new int[]{-1}, "view", "view based");
+        hl.add(null, false, 2, new int[]{-1}, "watch", "watch based");
+        hl.add(null, false, 2, new int[]{-1}, "display", "display based");
         hl.add(null, false, 2, new int[]{3}, "key", "letter based");
         hl.add(null, false, 3, new int[]{-1}, "<name:mnk>", "name of menu");
         hl.add(null, false, 2, new int[]{3}, "tui", "tui based");
@@ -4096,18 +4099,33 @@ public class userExec {
 
     private void doMenu() {
         String a = cmd.word();
-        if (a.equals("dash")) {
+        if (a.equals("dashboard")) {
             userDash m = new userDash(pipe, getHstNam(true));
             m.doWork();
             return;
         }
         if (a.equals("exec")) {
-            userMenu m = new userMenu(this, getHstNam(true), "");
+            userMenu m = new userMenu(this, getHstNam(true), true, "");
             m.doWork();
             return;
         }
         if (a.equals("show")) {
-            userMenu m = new userMenu(this, getHstNam(true), a + " ");
+            userMenu m = new userMenu(this, getHstNam(true), true, a + " ");
+            m.doWork();
+            return;
+        }
+        if (a.equals("view")) {
+            userMenu m = new userMenu(this, getHstNam(true), false, a + " ");
+            m.doWork();
+            return;
+        }
+        if (a.equals("watch")) {
+            userMenu m = new userMenu(this, getHstNam(true), false, a + " ");
+            m.doWork();
+            return;
+        }
+        if (a.equals("display")) {
+            userMenu m = new userMenu(this, getHstNam(true), false, a + " ");
             m.doWork();
             return;
         }
@@ -4135,25 +4153,11 @@ public class userExec {
             a = cmd.word();
             cfgAuther ntry = cfgAll.autherFind(a, null);
             if (ntry == null) {
-                cmd.error("no such auth list");
+                cmd.error("no such aaa");
                 return;
             }
-            authLocal loc = null;
-            try {
-                loc = (authLocal) ntry.getAuther();
-            } catch (Exception e) {
-            }
-            if (loc == null) {
-                cmd.error("not local auth list");
-                return;
-            }
-            authLocalMenu mnu = new authLocalMenu(loc, pipe);
-            if (!mnu.doMenu(privileged)) {
-                return;
-            }
-            userExec exe = new userExec(pipe, reader);
-            copy2exec(exe);
-            exe.executeCommand("write memory");
+            authLocalMenu mnu = new authLocalMenu(ntry, pipe);
+            mnu.doMenu(this);
             return;
         }
         cmd.badCmd();

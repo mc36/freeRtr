@@ -27,6 +27,8 @@ public class userMenu {
 
     private final String frc;
 
+    private final boolean pau;
+
     private int beg;
 
     private int cur;
@@ -40,14 +42,16 @@ public class userMenu {
      *
      * @param e exec to use
      * @param h hostname to use
+     * @param p pause after
      * @param f force beginning
      */
-    public userMenu(userExec e, String h, String f) {
+    public userMenu(userExec e, String h, boolean p, String f) {
         hst = h;
         prm = h.length();
         console = new pipeScreen(e.pipe);
         hlp = e.getHelping();
         exe = e;
+        pau = p;
         frc = "" + f;
         cmd = "" + f;
     }
@@ -177,8 +181,10 @@ public class userMenu {
         }
         console.pipe.linePut(hst + cmd);
         exe.executeCommand(cmd);
-        console.pipe.strPut("press any key");
-        pipeScreen.getKey(console.pipe);
+        if (pau) {
+            console.pipe.strPut("press any key");
+            pipeScreen.getKey(console.pipe);
+        }
         doReset();
         doFilter();
         doClear();
