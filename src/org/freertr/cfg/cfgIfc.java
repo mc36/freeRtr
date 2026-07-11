@@ -8,6 +8,7 @@ import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrIpx;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrPrefix;
+import org.freertr.addr.addrType;
 import org.freertr.clnt.clntAmt;
 import org.freertr.clnt.clntCapwap;
 import org.freertr.clnt.clntDhcp4;
@@ -1702,6 +1703,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] autoroute", null),
         new userFilter("interface .*", cmds.tabulator + "ipv[46] host-learn", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] host-remote", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] host-event", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] host-watch", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] host-rate", null),
         new userFilter("interface .*", cmds.tabulator + "ipv[46] host-reach 360000", null),
@@ -3019,6 +3021,16 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         ethtyp.setState(state.states.down);
     }
 
+    private <T extends addrType> boolean sameAddrs(T a1, T a2) {
+        if ((a1 == null) && (a2 == null)) {
+            return true;
+        }
+        if ((a1 == null) || (a2 == null)) {
+            return false;
+        }
+        return a1.compareTo(a2) == 0;
+    }
+
     /**
      * notified when new address negotiated
      *
@@ -3034,8 +3046,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             fwdIf4.gateAddr = null;
             return;
         }
-        addr4 = adr.copyBytes();
-        mask4 = msk.copyBytes();
         if (gw != null) {
             if (gw.isEmpty()) {
                 gw = null;
@@ -3046,6 +3056,11 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 gw = null;
             }
         }
+        if (sameAddrs(gw, fwdIf4.gateAddr) && sameAddrs(adr, addr4) && sameAddrs(msk, mask4)) {
+            return;
+        }
+        addr4 = adr.copyBytes();
+        mask4 = msk.copyBytes();
         if (gw == null) {
             fwdIf4.gateAddr = null;
         } else {
@@ -3054,6 +3069,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         ipIf4.setIPv4addr(adr, mask4.toNetmask());
         vrfFor.fwd4.routerStaticChg();
+        if (fwdIf4.hostEvent) {
+            logger.info("interface " + name + " acquired address " + adr);
+        }
     }
 
     /**
@@ -3071,13 +3089,6 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
             fwdIf6.gateAddr = null;
             return;
         }
-        addr6 = adr.copyBytes();
-        mask6 = msk.copyBytes();
-        if (adr.isLinkLocal()) {
-            addrIP ad = new addrIP();
-            ad.fromIPv6addr(adr);
-            ipIf6.setLinkLocalAddr(ad);
-        }
         if (gw != null) {
             if (gw.isEmpty()) {
                 gw = null;
@@ -3088,6 +3099,16 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 gw = null;
             }
         }
+        if (sameAddrs(gw, fwdIf6.gateAddr) && sameAddrs(adr, addr6) && sameAddrs(msk, mask6)) {
+            return;
+        }
+        addr6 = adr.copyBytes();
+        mask6 = msk.copyBytes();
+        if (adr.isLinkLocal()) {
+            addrIP ad = new addrIP();
+            ad.fromIPv6addr(adr);
+            ipIf6.setLinkLocalAddr(ad);
+        }
         if (gw == null) {
             fwdIf6.gateAddr = null;
         } else {
@@ -3096,6 +3117,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         }
         ipIf6.setIPv6addr(adr, mask6.toNetmask());
         vrfFor.fwd6.routerStaticChg();
+        if (fwdIf6.hostEvent) {
+            logger.info("interface " + name + " acquired address " + adr);
+        }
     }
 
     /**

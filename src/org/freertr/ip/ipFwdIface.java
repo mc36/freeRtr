@@ -400,6 +400,11 @@ public class ipFwdIface extends tabRouteIface {
     public ipHostWatch hostWatch;
 
     /**
+     * set true to log address events
+     */
+    public boolean hostEvent = false;
+
+    /**
      * dlep configuration
      */
     public ipDlepIface dlepCfg;
@@ -705,6 +710,7 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, false, 4, new int[]{-1}, "<addr>", "mac address");
         l.add(null, false, 2, new int[]{3}, "host-remote", "set static remote peer");
         l.add(null, false, 3, new int[]{-1}, "<addr>", "address");
+        l.add(null, false, 2, new int[]{-1}, "host-event", "monitor address changes");
         l.add(null, false, 2, new int[]{-1}, "host-learn", "allow next hop learn");
         l.add(null, false, 2, new int[]{3}, "dlep", "local next hop changes");
         l.add(null, false, 3, new int[]{-1}, "client", "report next hop changes");
@@ -929,6 +935,7 @@ public class ipFwdIface extends tabRouteIface {
             a += " include-policy " + autRouRoupol.listName;
         }
         cmds.cfgLine(l, autRouTyp == null, cmds.tabulator, beg + "autoroute", "" + autRouTyp + " " + autRouPrt + " " + autRouRtr + " " + autRouHop + a);
+        cmds.cfgLine(l, !hostEvent, cmds.tabulator, beg + "host-event", "");
         cmds.cfgLine(l, !lower.getCacheDynmc(), cmds.tabulator, beg + "host-learn", "");
         cmds.cfgLine(l, hostWatch == null, cmds.tabulator, beg + "host-watch", "" + hostWatch);
         cmds.cfgLine(l, dlepCfg == null, cmds.tabulator, beg + "dlep", "" + dlepCfg);
@@ -1138,6 +1145,10 @@ public class ipFwdIface extends tabRouteIface {
             hostRemote = new addrIP();
             hostRemote.fromString(cmd.word());
             fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("host-event")) {
+            hostEvent = true;
             return false;
         }
         if (a.equals("host-learn")) {
@@ -1863,6 +1874,10 @@ public class ipFwdIface extends tabRouteIface {
         if (a.equals("host-remote")) {
             hostRemote = null;
             fwd.routerStaticChg();
+            return false;
+        }
+        if (a.equals("host-event")) {
+            hostEvent = false;
             return false;
         }
         if (a.equals("host-learn")) {

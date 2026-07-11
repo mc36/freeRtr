@@ -459,11 +459,13 @@ interface bvi9
  vrf forwarding freenet
  ipv4 address dynamic dynamic
  ipv4 gateway-prefix def4
+ ipv4 host-event
  ipv4 host-watch
  ipv4 dhcp-client enable
  ipv4 dhcp-client early
  ipv6 address dynamic dynamic
  ipv6 gateway-prefix def6
+ ipv6 host-event
  ipv6 host-watch
  ipv6 slaac-client enable
  ipv6 slaac-client follow-changes
