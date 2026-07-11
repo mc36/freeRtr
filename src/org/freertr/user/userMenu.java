@@ -165,6 +165,8 @@ public class userMenu {
             return;
         }
         doClear();
+        cmd = exe.repairCommand(cmd);
+        console.pipe.linePut(hst + cmd);
         exe.executeCommand(cmd);
         console.pipe.strPut("press a key");
         pipeScreen.getKey(console.pipe);
