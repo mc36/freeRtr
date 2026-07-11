@@ -107,9 +107,6 @@ public class cfgDshbrd implements Comparable<cfgDshbrd>, cfgGeneric {
     public void doCfgStr(cmds cmd) {
         String s = cmd.word();
         boolean neg = s.equals(cmds.negated);
-        if (!neg) {
-            cmd = cmd.copyBytes(true);
-        }
         if (s.equals("rename")) {
             s = cmd.word();
             cfgDshbrd v = cfgAll.dshbrdFind(s, false);
@@ -124,6 +121,9 @@ public class cfgDshbrd implements Comparable<cfgDshbrd>, cfgGeneric {
             int i = bits.str2num(cmd.word());
             reindex(i, bits.str2num(cmd.word()));
             return;
+        }
+        if (!neg) {
+            cmd = cmd.copyBytes(true);
         }
         cfgDshbrdNtry ntry = new cfgDshbrdNtry();
         if (ntry.fromString(cmd)) {

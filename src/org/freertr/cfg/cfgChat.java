@@ -69,9 +69,6 @@ public class cfgChat implements Comparable<cfgChat>, cfgGeneric {
     public void doCfgStr(cmds cmd) {
         String s = cmd.word();
         boolean neg = s.equals(cmds.negated);
-        if (!neg) {
-            cmd = cmd.copyBytes(true);
-        }
         if (s.equals("rename")) {
             s = cmd.word();
             cfgChat v = cfgAll.chatFind(s, false);
@@ -87,6 +84,9 @@ public class cfgChat implements Comparable<cfgChat>, cfgGeneric {
             int i = bits.str2num(cmd.word());
             script.reindex(i, bits.str2num(cmd.word()));
             return;
+        }
+        if (!neg) {
+            cmd = cmd.copyBytes(true);
         }
         if (script.doCfg(cmd, neg)) {
             cmd.badCmd();
