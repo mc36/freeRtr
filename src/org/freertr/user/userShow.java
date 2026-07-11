@@ -862,6 +862,16 @@ public class userShow {
                 rdr.putStrArr(r.getShRun(filt));
                 return null;
             }
+            if (a.equals("aaa")) {
+                cfgAuther v = cfgAll.autherFind(cmd.word(), null);
+                if (v == null) {
+                    cmd.error("no such aaa");
+                    return null;
+                }
+                int filt = getConfigFilter(null, cmd);
+                rdr.putStrArr(v.getShRun(filt));
+                return null;
+            }
             if (a.equals("vrf")) {
                 cfgVrf v = cfgAll.vrfFind(cmd.word(), false);
                 if (v == null) {

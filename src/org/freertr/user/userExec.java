@@ -1750,6 +1750,10 @@ public class userExec {
         hl.add(null, false, 4, new int[]{5, -1}, "<name:ifc>", "name of interface");
         hl.add(null, false, 5, new int[]{5, -1}, "all", "do not hide defaults");
         hl.add(null, false, 5, new int[]{5, -1}, "hide", "hide passwords");
+        hl.add(null, false, 3, new int[]{4}, "aaa", "specified aaa");
+        hl.add(null, false, 4, new int[]{5, -1}, "<name:aaa>", "name of aaa");
+        hl.add(null, false, 5, new int[]{5, -1}, "all", "do not hide defaults");
+        hl.add(null, false, 5, new int[]{5, -1}, "hide", "hide passwords");
         hl.add(null, false, 3, new int[]{4}, "vrf", "specified vrf");
         hl.add(null, false, 4, new int[]{5, -1}, "<name:vrf>", "name of vrf");
         hl.add(null, false, 5, new int[]{5, -1}, "all", "do not hide defaults");
