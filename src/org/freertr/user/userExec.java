@@ -3403,28 +3403,7 @@ public class userExec {
             return cmdRes.command;
         }
         if (a.equals("menu")) {
-            a = cmd.word();
-            if (a.equals("dash")) {
-                doMenuD();
-                return cmdRes.command;
-            }
-            if (a.equals("exec")) {
-                doMenuE();
-                return cmdRes.command;
-            }
-            if (a.equals("key")) {
-                doMenuK();
-                return cmdRes.command;
-            }
-            if (a.equals("tui")) {
-                doMenuT();
-                return cmdRes.command;
-            }
-            if (a.equals("aaa")) {
-                doMenuA();
-                return cmdRes.command;
-            }
-            cmd.badCmd();
+            doMenu();
             return cmdRes.command;
         }
         if (a.equals("portscan")) {
@@ -4114,70 +4093,64 @@ public class userExec {
         cfg.executeCommand(a);
     }
 
-    private void doMenuK() {
+    private void doMenu() {
         String a = cmd.word();
-        cfgMenuK ntry = cfgAll.menuKfind(a, false);
-        if (ntry == null) {
-            cmd.error("no such menu");
+        if (a.equals("dash")) {
+            userDash m = new userDash(pipe, getHstNam(true));
+            m.doWork();
             return;
         }
-        String s = ntry.doMenu(pipe);
-        if (s == null) {
+        if (a.equals("exec")) {
+            userMenu m = new userMenu(this, getHstNam(true));
+            m.doWork();
             return;
         }
-        userExec exe = new userExec(pipe, reader);
-        copy2exec(exe);
-        s = exe.repairCommand(s);
-        pipe.linePut(a + " - " + s);
-        if (pipe.settingsGet(pipeSetting.logging, false)) {
-            logger.info("command menu:" + s + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
-        }
-        exe.executeCommand(s);
-    }
-
-    private void doMenuD() {
-        userDash m = new userDash(pipe, getHstNam(true));
-        m.doWork();
-    }
-
-    private void doMenuE() {
-        userMenu m = new userMenu(this, getHstNam(true));
-        m.doWork();
-    }
-
-    private void doMenuT() {
-        String a = cmd.word();
-        cfgMenuT ntry = cfgAll.menuTfind(a, false);
-        if (ntry == null) {
-            cmd.error("no such menu");
+        if (a.equals("key")) {
+            a = cmd.word();
+            cfgMenuK ntry = cfgAll.menuKfind(a, false);
+            if (ntry == null) {
+                cmd.error("no such menu");
+                return;
+            }
+            ntry.doMenu(this, pipe);
             return;
         }
-        ntry.doMenu(pipe, reader, privileged);
-    }
-
-    private void doMenuA() {
-        String a = cmd.word();
-        cfgAuther ntry = cfgAll.autherFind(a, null);
-        if (ntry == null) {
-            cmd.error("no such auth list");
+        if (a.equals("tui")) {
+            a = cmd.word();
+            cfgMenuT ntry = cfgAll.menuTfind(a, false);
+            if (ntry == null) {
+                cmd.error("no such menu");
+                return;
+            }
+            ntry.doMenu(pipe, reader, privileged);
             return;
         }
-        authLocal loc = null;
-        try {
-            loc = (authLocal) ntry.getAuther();
-        } catch (Exception e) {
-        }
-        if (loc == null) {
-            cmd.error("not local auth list");
+        if (a.equals("aaa")) {
+            a = cmd.word();
+            cfgAuther ntry = cfgAll.autherFind(a, null);
+            if (ntry == null) {
+                cmd.error("no such auth list");
+                return;
+            }
+            authLocal loc = null;
+            try {
+                loc = (authLocal) ntry.getAuther();
+            } catch (Exception e) {
+            }
+            if (loc == null) {
+                cmd.error("not local auth list");
+                return;
+            }
+            authLocalMenu mnu = new authLocalMenu(loc, pipe);
+            if (!mnu.doMenu(privileged)) {
+                return;
+            }
+            userExec exe = new userExec(pipe, reader);
+            copy2exec(exe);
+            exe.executeCommand("write memory");
             return;
         }
-        authLocalMenu mnu = new authLocalMenu(loc, pipe);
-        if (!mnu.doMenu(privileged)) {
-            return;
-        }
-        userExec exe = new userExec(pipe, reader);
-        copy2exec(exe);
-        exe.executeCommand("write memory");
+        cmd.badCmd();
     }
 
     private void doPortscan() {

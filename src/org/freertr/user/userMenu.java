@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import org.freertr.cfg.cfgInit;
 import org.freertr.pipe.pipeScreen;
+import org.freertr.pipe.pipeSetting;
+import org.freertr.util.logger;
 
 /**
  * run tui based menu
@@ -166,6 +168,9 @@ public class userMenu {
         }
         doClear();
         cmd = exe.repairCommand(cmd);
+        if (console.pipe.settingsGet(pipeSetting.logging, false)) {
+            logger.info("command exec:" + cmd + " from " + console.pipe.settingsGet(pipeSetting.origin, "?"));
+        }
         console.pipe.linePut(hst + cmd);
         exe.executeCommand(cmd);
         console.pipe.strPut("press a key");

@@ -3,11 +3,14 @@ package org.freertr.cfg;
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.auth.authLocal;
+import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
+import org.freertr.user.userExec;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.util.cmds;
+import org.freertr.util.logger;
 
 /**
  * one key based menu configuration
@@ -184,18 +187,24 @@ public class cfgMenuK implements Comparable<cfgMenuK>, cfgGeneric {
     /**
      * do menu
      *
+     * @param exe exec to use
      * @param pipe pipe to use
      * @return key pressed, null if nothing
      */
-    public String doMenu(pipeSide pipe) {
+    public void doMenu(userExec exe, pipeSide pipe) {
         putMenu(pipe);
         String k = getKeys();
         String a = pipe.strChr("choose:", k);
         String s = findKey(a);
         if (s.length() < 1) {
-            return null;
+            return;
         }
-        return s;
+        a = exe.repairCommand(s);
+        pipe.linePut(name + " - " + a);
+        if (pipe.settingsGet(pipeSetting.logging, false)) {
+            logger.info("command menu:" + a + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
+        }
+        exe.executeCommand(a);
     }
 
     /**

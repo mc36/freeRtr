@@ -521,8 +521,7 @@ public class userUpgrade {
             cmd.pipe.settingsPut(pipeSetting.height, 0);
             userExec exe = new userExec(cmd.pipe, rdr);
             exe.privileged = true;
-            String s = exe.repairCommand("write");
-            exe.executeCommand(s);
+            exe.executeCommand("write memory");
         }
         logger.info("upgrading to " + blb.head);
         if (upgradeFiles(blb, server, tmp, userUpgradeNtry.flgBefore)) {
