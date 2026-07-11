@@ -18502,3 +18502,6 @@ failed: integrated pvrp with labels
 ---------------------------------- 2026-07-05 08:31:40 26.7.5
 no failed: integrated pvrp with labels
 qc pass: integrated pvrp with labels
+---------------------------------- 2026-07-11 15:22:56 26.7.11
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard
