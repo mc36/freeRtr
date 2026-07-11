@@ -25,6 +25,8 @@ public class userMenu {
 
     private final pipeScreen console;
 
+    private final String frc;
+
     private int beg;
 
     private int cur;
@@ -38,14 +40,16 @@ public class userMenu {
      *
      * @param e exec to use
      * @param h hostname to use
+     * @param f force beginning
      */
-    public userMenu(userExec e, String h) {
+    public userMenu(userExec e, String h, String f) {
         hst = h;
         prm = h.length();
         console = new pipeScreen(e.pipe);
         hlp = e.getHelping();
         exe = e;
-        cmd = "";
+        frc = "" + f;
+        cmd = "" + f;
     }
 
     /**
@@ -173,7 +177,7 @@ public class userMenu {
         }
         console.pipe.linePut(hst + cmd);
         exe.executeCommand(cmd);
-        console.pipe.strPut("press a key");
+        console.pipe.strPut("press any key");
         pipeScreen.getKey(console.pipe);
         doReset();
         doFilter();
@@ -274,7 +278,7 @@ public class userMenu {
     private void doReset() {
         beg = 0;
         cur = 0;
-        cmd = "";
+        cmd = "" + frc;
     }
 
     private void doClear() {
@@ -284,6 +288,9 @@ public class userMenu {
     }
 
     private void doFilter() {
+        if (!cmd.startsWith(frc)) {
+            cmd = "" + frc;
+        }
         buf = hlp.getHelp(cmd, false);
         for (int i = 0; i < buf.size(); i++) {
             buf.set(i, buf.get(i).trim());

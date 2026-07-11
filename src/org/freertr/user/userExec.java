@@ -2148,6 +2148,7 @@ public class userExec {
         hl.add(null, false, 1, new int[]{2}, "menu", "start menu session");
         hl.add(null, false, 2, new int[]{-1}, "dash", "dashboard based");
         hl.add(null, false, 2, new int[]{-1}, "exec", "exec based");
+        hl.add(null, false, 2, new int[]{-1}, "show", "show based");
         hl.add(null, false, 2, new int[]{3}, "key", "letter based");
         hl.add(null, false, 3, new int[]{-1}, "<name:mnk>", "name of menu");
         hl.add(null, false, 2, new int[]{3}, "tui", "tui based");
@@ -4101,7 +4102,12 @@ public class userExec {
             return;
         }
         if (a.equals("exec")) {
-            userMenu m = new userMenu(this, getHstNam(true));
+            userMenu m = new userMenu(this, getHstNam(true), "");
+            m.doWork();
+            return;
+        }
+        if (a.equals("show")) {
+            userMenu m = new userMenu(this, getHstNam(true), a + " ");
             m.doWork();
             return;
         }

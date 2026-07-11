@@ -189,7 +189,6 @@ public class cfgMenuK implements Comparable<cfgMenuK>, cfgGeneric {
      *
      * @param exe exec to use
      * @param pipe pipe to use
-     * @return key pressed, null if nothing
      */
     public void doMenu(userExec exe, pipeSide pipe) {
         putMenu(pipe);
@@ -199,8 +198,8 @@ public class cfgMenuK implements Comparable<cfgMenuK>, cfgGeneric {
         if (s.length() < 1) {
             return;
         }
+        pipe.linePut(name + " - " + a + " - " + s);
         a = exe.repairCommand(s);
-        pipe.linePut(name + " - " + a);
         if (pipe.settingsGet(pipeSetting.logging, false)) {
             logger.info("command menu:" + a + " from " + pipe.settingsGet(pipeSetting.origin, "?"));
         }
