@@ -1,4 +1,4 @@
-description vlan over l2tp3
+description ethernet over l2tp3
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -16,7 +16,7 @@ int eth1
  exit
 bridge 1
  exit
-int bvi1.111
+int bvi1
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  ipv6 addr 4321::1 ffff:ffff::
@@ -27,7 +27,7 @@ vpdn l2tp
  tar 1.1.1.2
  vcid 1234
  dir out
- pwt vlan
+ pwt eth
  prot l2tp3
  exit
 !
@@ -50,7 +50,7 @@ int eth1
 bridge 1
  mac-learn
  exit
-int bvi1.111
+int bvi1
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  ipv6 addr 4321::2 ffff:ffff::
@@ -64,7 +64,7 @@ vpdn l2tp
  tar 1.1.1.1
  vcid 1234
  dir in
- pwt vlan
+ pwt eth
  prot l2tp3
  exit
 !
@@ -75,7 +75,7 @@ int eth1 eth 0000.0000.2222 $2b$ $2a$
 vrf def v1
  rd 1:1
  exit
-int eth1.111
+int eth1
  vrf for v1
  ipv4 addr 2.2.2.3 255.255.255.0
  ipv6 addr 4321::3 ffff:ffff::

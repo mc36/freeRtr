@@ -1,4 +1,4 @@
-description gre with everything
+description gre with key
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -14,8 +14,6 @@ int eth1
 int tun1
  tunnel vrf v1
  tunnel mode gre
- tunnel checksum
- tunnel sequence
  tunnel key 12345678
  tunnel source ethernet1
  tunnel destination 1.1.1.2
@@ -39,8 +37,6 @@ int eth1
 int tun1
  tunnel vrf v1
  tunnel mode gre
- tunnel checksum
- tunnel sequence
  tunnel key 12345678
  tunnel source ethernet1
  tunnel destination 1.1.1.1

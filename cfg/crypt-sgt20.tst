@@ -1,4 +1,4 @@
-description sgt over macsec ethernet encapsulation
+description sgt tunnel map out encapsulation
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -6,20 +6,12 @@ int eth1 eth 0000.0000.1111 $1a$ $1b$
 vrf def v1
  rd 1:1
  exit
-crypto ipsec ips
- role init
- group 02
- cipher des
- hash md5
- key tester
- exit
 policy-map p1
  seq 10 act drop
   match sgt 123
  seq 20 act trans
  exit
 int eth1
- macsec ips
  sgt ena
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
@@ -37,21 +29,22 @@ int eth2 eth 0000.0000.2222 $2a$ $2b$
 vrf def v1
  rd 1:1
  exit
-crypto ipsec ips
- role init
- group 02
- cipher des
- hash md5
- key tester
- exit
 int eth1
- macsec ips
  sgt ena
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
  exit
 int eth2
+ vrf for v1
+ ipv4 addr 3.3.3.1 255.255.255.0
+ ipv6 addr 3333::1 ffff::
+ exit
+int tun1
+ tun vrf v1
+ tun sou eth2
+ tun dest 3.3.3.2
+ tun mod gre
  sgt ena
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
@@ -73,6 +66,15 @@ policy-map p1
   set sgt 122
  exit
 int eth1
+ vrf for v1
+ ipv4 addr 3.3.3.2 255.255.255.0
+ ipv6 addr 3333::2 ffff::
+ exit
+int tun1
+ tun vrf v1
+ tun sou eth1
+ tun dest 3.3.3.1
+ tun mod gre
  sgt ena
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
@@ -84,17 +86,17 @@ ipv6 route v1 :: :: 4321::1
 !
 
 
-r1 tping 100 30 2.2.2.2 vrf v1 siz 200
-r3 tping 100 30 1.1.1.1 vrf v1 siz 200
-r1 tping 100 30 4321::2 vrf v1 siz 200
-r3 tping 100 30 1234::1 vrf v1 siz 200
+r1 tping 100 5 2.2.2.2 vrf v1 siz 200
+r3 tping 100 5 1.1.1.1 vrf v1 siz 200
+r1 tping 100 5 4321::2 vrf v1 siz 200
+r3 tping 100 5 1234::1 vrf v1 siz 200
 
-r1 tping 0 30 2.2.2.2 vrf v1 siz 400
-r3 tping 0 30 1.1.1.1 vrf v1 siz 400
-r1 tping 0 30 4321::2 vrf v1 siz 400
-r3 tping 0 30 1234::1 vrf v1 siz 400
+r1 tping 0 5 2.2.2.2 vrf v1 siz 400
+r3 tping 0 5 1.1.1.1 vrf v1 siz 400
+r1 tping 0 5 4321::2 vrf v1 siz 400
+r3 tping 0 5 1234::1 vrf v1 siz 400
 
-r1 tping 100 30 2.2.2.2 vrf v1 siz 600
-r3 tping 100 30 1.1.1.1 vrf v1 siz 600
-r1 tping 100 30 4321::2 vrf v1 siz 600
-r3 tping 100 30 1234::1 vrf v1 siz 600
+r1 tping 100 5 2.2.2.2 vrf v1 siz 600
+r3 tping 100 5 1.1.1.1 vrf v1 siz 600
+r1 tping 100 5 4321::2 vrf v1 siz 600
+r3 tping 100 5 1234::1 vrf v1 siz 600

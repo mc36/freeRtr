@@ -1,20 +1,12 @@
-description ppp with packet over dtls
+description interworking with packet over dtls
 
 addrouter r1
-int ser1 ser - $1a$ $1b$
+int eth1 eth 0000.0000.1111 $1a$ $1b$
 !
-crypto rsakey rsa generate 1024
-crypto dsakey dsa generate 1024
-crypto ecdsakey ecdsa generate 256
-crypto mldsakey mldsa generate 44
-crypto certificate dsa generate dsa dsa
-crypto certificate rsa generate rsa rsa
-crypto certificate ecdsa generate ecdsa ecdsa
-crypto certificate mldsa generate mldsa mldsa
 vrf def v1
  rd 1:1
  exit
-int ser1
+int eth1
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
@@ -34,35 +26,20 @@ int di1
  exit
 server pckodtls pou
  clone di1
- security rsakey rsa
- security dsakey dsa
- security ecdsakey ecdsa
- security mldsakey mldsa
- security rsacert rsa
- security dsacert dsa
- security ecdsacert ecdsa
- security mldsacert mldsa
- security protocol dtls
- vrf v1
- exit
-server dns dns
- zone test.corp defttl 43200
- rr www.test.corp ip4a 1.1.1.1
  vrf v1
  exit
 !
 
 addrouter r2
-int ser1 ser - $1b$ $1a$
+int eth1 eth 0000.0000.2222 $1b$ $1a$
 !
 vrf def v1
  rd 1:1
  exit
 proxy-profile p1
  vrf v1
- security dtls
  exit
-int ser1
+int eth1
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff::
@@ -81,15 +58,9 @@ int di1
 vpdn pou
  int di1
  proxy p1
- tar www.test.corp
- vcid 2554
- prot pckodtls
+ tar 1.1.1.1
+ prot pckoudp
  exit
-proxy-profile p2
- vrf v1
- exit
-client proxy p2
-client name-server 1.1.1.1
 !
 
 

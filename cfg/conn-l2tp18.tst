@@ -1,4 +1,4 @@
-description lapb tunneling with l2tp3
+description ppp tunneling with l2tp3
 
 addrouter r1
 int ser1 ser - $1a$ $1b$
@@ -7,8 +7,9 @@ vrf def v1
  rd 1:1
  exit
 int ser1
- enc lapb
- lapb mode dce
+ enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
  ipv6 addr 4321::1 ffff::
@@ -29,7 +30,7 @@ int eth1
  exit
 int ser1
  enc raw
- xconnect v1 eth1 l2tp3 1.1.1.2 1234 vlan
+ xconnect v1 eth1 l2tp3 1.1.1.2 1234
  exit
 !
 
@@ -47,7 +48,7 @@ int eth1
  exit
 int ser1
  enc raw
- xconnect v1 eth1 l2tp3 1.1.1.1 1234 vlan
+ xconnect v1 eth1 l2tp3 1.1.1.1 1234
  exit
 !
 
@@ -58,7 +59,9 @@ vrf def v1
  rd 1:1
  exit
 int ser1
- enc lapb
+ enc ppp
+ ppp ip4cp close
+ ppp ip6cp close
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
  ipv6 addr 4321::2 ffff::

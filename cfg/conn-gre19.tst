@@ -1,4 +1,4 @@
-description gre with asymmetric key
+description gre with everything
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -14,7 +14,9 @@ int eth1
 int tun1
  tunnel vrf v1
  tunnel mode gre
- tunnel key 12345678 87654321
+ tunnel checksum
+ tunnel sequence
+ tunnel key 12345678
  tunnel source ethernet1
  tunnel destination 1.1.1.2
  vrf for v1
@@ -37,7 +39,9 @@ int eth1
 int tun1
  tunnel vrf v1
  tunnel mode gre
- tunnel key 87654321 12345678
+ tunnel checksum
+ tunnel sequence
+ tunnel key 12345678
  tunnel source ethernet1
  tunnel destination 1.1.1.1
  vrf for v1

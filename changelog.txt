@@ -18508,3 +18508,30 @@ failed: wireguard over wireguard
 ---------------------------------- 2026-07-11 16:18:21 26.7.11
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
+---------------------------------- 2026-07-12 13:26:11 26.7.12
+no qc pass: ethernet tunneling with l2tp3
+no qc pass: sep tunneling with l2tp3
+no qc pass: isdn with grehdlc
+no qc pass: hdlc with grehdlc
+no qc pass: ppp with grehdlc
+no qc pass: framerelay with grefr
+no qc pass: hdlc with grefr
+no qc pass: tunnel interface with geneve
+no qc pass: vlan tunneling with etherip
+no qc pass: vlan tunneling with erspan
+no qc pass: tunnel interface with eoip
+no qc pass: vlan tunneling with dlsw
+no qc pass: capwap server
+qc pass: tunnel interface with capwap
+qc pass: ethernet tunneling with dlsw
+qc pass: dvbmpe tunneling with eoip
+qc pass: ethernet tunneling with erspan
+qc pass: dvbmpe tunneling with etherip
+qc pass: vlan tunneling with geneve
+qc pass: ppp with grefr
+qc pass: lapb with grefr
+qc pass: smds with grefr
+qc pass: dvbmpe with grefr
+qc pass: unnamed
+qc pass: isdn tunneling with l2tp3
+qc pass: smds tunneling with l2tp3

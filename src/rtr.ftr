@@ -72,7 +72,7 @@ qc pass: smds tunneling with capwap
 qc pass: ethernet tunneling with capwap
 qc pass: vlan tunneling with capwap
 qc pass: tunnel interface with capwap
-qc pass: capwap server
+qc pass: tunnel interface with capwap
 qc pass: cloner with ipv4 udp
 qc pass: cloner with ipv6 udp
 qc pass: cloner with ipv4 tcp
@@ -102,7 +102,7 @@ qc pass: sep tunneling with dlsw
 qc pass: dvbgse tunneling with dlsw
 qc pass: smds tunneling with dlsw
 qc pass: ethernet tunneling with dlsw
-qc pass: vlan tunneling with dlsw
+qc pass: ethernet tunneling with dlsw
 qc pass: tunnel interface with dlsw
 qc pass: dvbgse without fragmentation
 qc pass: dvbgse with fragmentation
@@ -120,9 +120,9 @@ qc pass: isdn tunneling with eoip
 qc pass: sep tunneling with eoip
 qc pass: dvbgse tunneling with eoip
 qc pass: smds tunneling with eoip
+qc pass: dvbmpe tunneling with eoip
 qc pass: ethernet tunneling with eoip
 qc pass: vlan tunneling with eoip
-qc pass: tunnel interface with eoip
 qc pass: eoip server
 qc pass: erspan over ipv4
 qc pass: erspan over ipv6
@@ -137,7 +137,7 @@ qc pass: sep tunneling with erspan
 qc pass: dvbgse tunneling with erspan
 qc pass: smds tunneling with erspan
 qc pass: ethernet tunneling with erspan
-qc pass: vlan tunneling with erspan
+qc pass: ethernet tunneling with erspan
 qc pass: tunnel interface with erspan
 qc pass: erspan server
 qc pass: ethernet encapsulation
@@ -188,8 +188,8 @@ qc pass: isdn tunneling with etherip
 qc pass: sep tunneling with etherip
 qc pass: dvbgse tunneling with etherip
 qc pass: smds tunneling with etherip
+qc pass: dvbmpe tunneling with etherip
 qc pass: ethernet tunneling with etherip
-qc pass: vlan tunneling with etherip
 qc pass: tunnel interface with etherip
 qc pass: etherip server
 qc pass: ppp over forti
@@ -232,7 +232,7 @@ qc pass: dvbgse tunneling with geneve
 qc pass: smds tunneling with geneve
 qc pass: ethernet tunneling with geneve
 qc pass: vlan tunneling with geneve
-qc pass: tunnel interface with geneve
+qc pass: vlan tunneling with geneve
 qc pass: multipoint ethernet over geneve
 qc pass: gre over ipv4
 qc pass: gre over ipv6
@@ -254,20 +254,20 @@ qc pass: gre with key
 qc pass: gre with everything
 qc pass: gre with asymmetric key
 qc pass: ppp with grefr
-qc pass: hdlc with grefr
+qc pass: ppp with grefr
 qc pass: lapb with grefr
-qc pass: framerelay with grefr
+qc pass: lapb with grefr
 qc pass: atmdxi with grefr
 qc pass: isdn with grefr
 qc pass: sep with grefr
 qc pass: dvbgse with grefr
 qc pass: smds with grefr
-qc pass: ppp with grehdlc
-qc pass: hdlc with grehdlc
+qc pass: smds with grefr
+qc pass: dvbmpe with grefr
 qc pass: lapb with grehdlc
 qc pass: framerelay with grehdlc
 qc pass: atmdxi with grehdlc
-qc pass: isdn with grehdlc
+qc pass: unnamed
 qc pass: sep with grehdlc
 qc pass: dvbgse with grehdlc
 qc pass: smds with grehdlc
@@ -339,10 +339,10 @@ qc pass: lapb tunneling with l2tp3
 qc pass: framerelay tunneling with l2tp3
 qc pass: atmdxi tunneling with l2tp3
 qc pass: isdn tunneling with l2tp3
-qc pass: sep tunneling with l2tp3
+qc pass: isdn tunneling with l2tp3
 qc pass: dvbgse tunneling with l2tp3
 qc pass: smds tunneling with l2tp3
-qc pass: ethernet tunneling with l2tp3
+qc pass: smds tunneling with l2tp3
 qc pass: vlan tunneling with l2tp3
 qc pass: tunnel interface with l2tp3
 qc pass: ppp over authenticated l2tp2
