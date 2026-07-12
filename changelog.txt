@@ -18586,3 +18586,7 @@ qc pass: dvbmpe tunneling with mpls
 no failed: sgt dvbmpe encapsulation
 no qc pass: dvbmpe encapsulation
 qc pass: unnamed
+---------------------------------- 2026-07-12 15:14:10 26.7.12
+no qc pass: unnamed
+failed: dvbmpe encapsulation
+qc pass: dvbmpe custom pid
