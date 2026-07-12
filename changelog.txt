@@ -18535,3 +18535,50 @@ qc pass: dvbmpe with grefr
 qc pass: unnamed
 qc pass: isdn tunneling with l2tp3
 qc pass: smds tunneling with l2tp3
+---------------------------------- 2026-07-12 14:18:06 26.7.12
+no qc pass: smds tunneling with l2tp3
+no qc pass: isdn tunneling with l2tp3
+no qc pass: unnamed
+no qc pass: smds with grefr
+no qc pass: lapb with grefr
+no qc pass: ppp with grefr
+no qc pass: vlan tunneling with geneve
+no qc pass: ethernet tunneling with erspan
+no qc pass: ethernet tunneling with dlsw
+no qc pass: tunnel interface with capwap
+qc pass: dvbmpe with ax25
+qc pass: dvbmpe tunneling with capwap
+qc pass: capwap server
+qc pass: dvbmpe tunneling with dlsw
+qc pass: vlan tunneling with dlsw
+qc pass: dvbmpe encapsulation
+qc pass: tunnel interface with eoip
+qc pass: dvbmpe tunneling with erspan
+qc pass: vlan tunneling with erspan
+qc pass: vlan tunneling with etherip
+qc pass: dvbmpe tunneling with geneve
+qc pass: tunnel interface with geneve
+qc pass: dvbmpe with greppp
+qc pass: hdlc with grefr
+qc pass: framerelay with grefr
+qc pass: ppp with grehdlc
+qc pass: hdlc with grehdlc
+qc pass: isdn with grehdlc
+qc pass: dvbmpe with grehdlc
+qc pass: dvbmpe over l2tp3
+qc pass: sep tunneling with l2tp3
+qc pass: dvbmpe tunneling with l2tp3
+qc pass: ethernet tunneling with l2tp3
+qc pass: dvbmpe tunneling with llcudp
+qc pass: dvbmpe tunneling with lwapp
+qc pass: dvbmpe tunneling with nvgre
+qc pass: dvbmpe tunneling with packet over udp
+qc pass: dvbmpe tunneling with sreth
+qc pass: dvbmpe with tdmoudp
+qc pass: dvbmpe tunneling with tzsp
+qc pass: dvbmpe tunneling with uti
+qc pass: dvbmpe tunneling with vxlan
+qc pass: cross connect dvbmpe interfaces
+failed: sgt dvbmpe encapsulation
+qc pass: dvbmpe over mpls
+qc pass: dvbmpe tunneling with mpls
