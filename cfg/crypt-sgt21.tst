@@ -1,4 +1,4 @@
-description sgt over macsec ethernet encapsulation
+description sgt over macsec vlan encapsulation
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -20,6 +20,8 @@ policy-map p1
  exit
 int eth1
  macsec ips
+ exit
+int eth1.123
  sgt ena
  vrf for v1
  ipv4 addr 1.1.1.1 255.255.255.0
@@ -46,6 +48,8 @@ crypto ipsec ips
  exit
 int eth1
  macsec ips
+ exit
+int eth1.123
  sgt ena
  vrf for v1
  ipv4 addr 1.1.1.2 255.255.255.0

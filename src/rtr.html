@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v26.7.12-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2026-07-12 14:35:22, took 00:17:16, with 50 workers, on 4452 cases, 1 failed, 0 traces, 15 retries<br/>
+tested: 2026-07-12 15:12:33, took 00:16:48, with 50 workers, on 4451 cases, 0 failed, 0 traces, 10 retries<br/>
 jvm: ./rtr.bin, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -127,7 +127,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-dvbgse02.tst">conn-dvbgse02.tst</a></td><td>success</td><td>dvbgse with fragmentation</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-dvbgse03.tst">conn-dvbgse03.tst</a></td><td>success</td><td>dvbgse without baseband</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-dvbgse04.tst">conn-dvbgse04.tst</a></td><td>success</td><td>dvbgse with baseband</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/conn-dvbmpe.tst">conn-dvbmpe.tst</a></td><td>success</td><td>dvbmpe encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/conn-dvbmpe.tst">conn-dvbmpe.tst</a></td><td>success</td><td>unnamed</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-eoip01.tst">conn-eoip01.tst</a></td><td>success</td><td>eoip over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-eoip02.tst">conn-eoip02.tst</a></td><td>success</td><td>eoip over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/conn-eoip03.tst">conn-eoip03.tst</a></td><td>success</td><td>eoip over loopback</td></tr>
@@ -1123,24 +1123,23 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt10.tst">crypt-sgt10.tst</a></td><td>success</td><td>sgt sep encapsulation</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt11.tst">crypt-sgt11.tst</a></td><td>success</td><td>sgt dvbgse encapsulation</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt12.tst">crypt-sgt12.tst</a></td><td>success</td><td>sgt smds encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt13.tst">crypt-sgt13.tst</a></td><td>#6-run-r1 tping 100 5 1.1.1.2 vrf v1</td><td>sgt dvbmpe encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt14.tst">crypt-sgt14.tst</a></td><td>success</td><td>sgt gre encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt15.tst">crypt-sgt15.tst</a></td><td>success</td><td>sgt ipip encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt16.tst">crypt-sgt16.tst</a></td><td>success</td><td>sgt ipsec encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt17.tst">crypt-sgt17.tst</a></td><td>success</td><td>sgt ethernet chain encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt18.tst">crypt-sgt18.tst</a></td><td>success</td><td>sgt vlan chain encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt19.tst">crypt-sgt19.tst</a></td><td>success</td><td>sgt vlan map out encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt20.tst">crypt-sgt20.tst</a></td><td>success</td><td>sgt tunnel map out encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt21.tst">crypt-sgt21.tst</a></td><td>success</td><td>sgt over macsec ethernet encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt22.tst">crypt-sgt22.tst</a></td><td>success</td><td>sgt over macsec vlan encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt23.tst">crypt-sgt23.tst</a></td><td>success</td><td>sgt hairpin encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt24.tst">crypt-sgt24.tst</a></td><td>success</td><td>no sgt ethernet encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt25.tst">crypt-sgt25.tst</a></td><td>success</td><td>sgt encapsulation with ingress allow</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt26.tst">crypt-sgt26.tst</a></td><td>success</td><td>sgt encapsulation with egress allow</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt27.tst">crypt-sgt27.tst</a></td><td>success</td><td>sgt encapsulation with ingress forbid</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt28.tst">crypt-sgt28.tst</a></td><td>success</td><td>sgt encapsulation with egress forbid</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt29.tst">crypt-sgt29.tst</a></td><td>success</td><td>sgt tmux encapsulation</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt30.tst">crypt-sgt30.tst</a></td><td>success</td><td>sgt l2tp3 encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt13.tst">crypt-sgt13.tst</a></td><td>success</td><td>sgt gre encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt14.tst">crypt-sgt14.tst</a></td><td>success</td><td>sgt ipip encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt15.tst">crypt-sgt15.tst</a></td><td>success</td><td>sgt ipsec encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt16.tst">crypt-sgt16.tst</a></td><td>success</td><td>sgt ethernet chain encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt17.tst">crypt-sgt17.tst</a></td><td>success</td><td>sgt vlan chain encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt18.tst">crypt-sgt18.tst</a></td><td>success</td><td>sgt vlan map out encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt19.tst">crypt-sgt19.tst</a></td><td>success</td><td>sgt tunnel map out encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt20.tst">crypt-sgt20.tst</a></td><td>success</td><td>sgt over macsec ethernet encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt21.tst">crypt-sgt21.tst</a></td><td>success</td><td>sgt over macsec vlan encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt22.tst">crypt-sgt22.tst</a></td><td>success</td><td>sgt hairpin encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt23.tst">crypt-sgt23.tst</a></td><td>success</td><td>no sgt ethernet encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt24.tst">crypt-sgt24.tst</a></td><td>success</td><td>sgt encapsulation with ingress allow</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt25.tst">crypt-sgt25.tst</a></td><td>success</td><td>sgt encapsulation with egress allow</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt26.tst">crypt-sgt26.tst</a></td><td>success</td><td>sgt encapsulation with ingress forbid</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt27.tst">crypt-sgt27.tst</a></td><td>success</td><td>sgt encapsulation with egress forbid</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt28.tst">crypt-sgt28.tst</a></td><td>success</td><td>sgt tmux encapsulation</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/crypt-sgt29.tst">crypt-sgt29.tst</a></td><td>success</td><td>sgt l2tp3 encapsulation</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-skip01.tst">crypt-skip01.tst</a></td><td>success</td><td>skip over ipv4</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-skip02.tst">crypt-skip02.tst</a></td><td>success</td><td>skip over ipv6</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/crypt-skip03.tst">crypt-skip03.tst</a></td><td>success</td><td>skip over skip</td></tr>

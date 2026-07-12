@@ -111,7 +111,7 @@ qc pass: dvbgse without fragmentation
 qc pass: dvbgse with fragmentation
 qc pass: dvbgse without baseband
 qc pass: dvbgse with baseband
-qc pass: dvbmpe encapsulation
+qc pass: unnamed
 qc pass: eoip over ipv4
 qc pass: eoip over ipv6
 qc pass: eoip over loopback
@@ -1107,7 +1107,6 @@ qc pass: sgt isdn encapsulation
 qc pass: sgt sep encapsulation
 qc pass: sgt dvbgse encapsulation
 qc pass: sgt smds encapsulation
-failed: sgt dvbmpe encapsulation
 qc pass: sgt gre encapsulation
 qc pass: sgt ipip encapsulation
 qc pass: sgt ipsec encapsulation

@@ -1,4 +1,4 @@
-description sgt ipip encapsulation
+description sgt ipsec encapsulation
 
 addrouter r1
 int eth1 eth 0000.0000.1111 $1a$ $1b$
@@ -11,11 +11,23 @@ int eth1
  ipv4 addr 1.1.1.1 255.255.255.0
  ipv6 addr 1234::1 ffff::
  exit
+crypto ipsec ips
+ group 02
+ cipher des
+ hash md5
+ seconds 3600
+ bytes 1024000
+ key tester
+ role static
+ isakmp 1
+ protected ipv4
+ exit
 int tun1
- tun vrf v1
+ tunnel vrf v1
+ tunnel prot ips
  tun sou eth1
  tun dest 1.1.1.2
- tun mod ipip
+ tun mod ipsec
  sgt ena
  vrf for v1
  ipv4 addr 2.2.2.1 255.255.255.0
@@ -34,11 +46,23 @@ int eth1
  ipv4 addr 1.1.1.2 255.255.255.0
  ipv6 addr 1234::2 ffff:ffff::
  exit
+crypto ipsec ips
+ group 02
+ cipher des
+ hash md5
+ seconds 3600
+ bytes 1024000
+ key tester
+ role static
+ isakmp 1
+ protected ipv4
+ exit
 int tun1
- tun vrf v1
+ tunnel vrf v1
+ tunnel prot ips
  tun sou eth1
  tun dest 1.1.1.1
- tun mod ipip
+ tun mod ipsec
  sgt ena
  vrf for v1
  ipv4 addr 2.2.2.2 255.255.255.0
