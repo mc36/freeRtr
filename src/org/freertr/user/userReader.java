@@ -161,6 +161,10 @@ public class userReader implements Comparator<String> {
          */
         pastebin,
         /**
+         * no more
+         */
+        nomore,
+        /**
          * text viewer
          */
         viewer,
@@ -732,6 +736,11 @@ public class userReader implements Comparator<String> {
                 return res.formatAll(tabMod);
             case headers:
                 return userFilter.getSecList(userFilter.text2section(lst), null, null);
+            case nomore:
+                for (int i = 0; i < lst.size(); i++) {
+                    pipe.linePut(lst.get(i));
+                }
+                return new ArrayList<String>();
             case viewer:
                 userEditor edtr = new userEditor(new pipeScreen(pipe), lst, "result", false);
                 edtr.doView();
@@ -1843,6 +1852,10 @@ public class userReader implements Comparator<String> {
         }
         if (a.equals("pastebin")) {
             filterM = mode.pastebin;
+            return;
+        }
+        if (a.equals("nomore")) {
+            filterM = mode.nomore;
             return;
         }
         if (a.equals("headers")) {

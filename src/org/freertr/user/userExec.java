@@ -1429,6 +1429,7 @@ public class userExec {
         hl.add(null, false, beg + 1, new int[]{beg + 2}, "hlast", "only last some lines with header");
         hl.add(null, false, beg + 2, new int[]{beg, -1}, "<num>", "number of lines");
         hl.add(null, false, beg + 1, new int[]{-1}, "viewer", "display in viewer");
+        hl.add(null, false, beg + 1, new int[]{-1}, "nomore", "show without prompt");
         hl.add(null, false, beg + 1, new int[]{-1}, "pastebin", "redirect output to pastebin service");
         if (!privi) {
             return;
