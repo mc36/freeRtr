@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
+#include "utils.h"
 #include "fcs16.h"
 
 #define PPP_FLAG 0x7e
@@ -83,7 +84,7 @@ void doRawLoop() {
             }
             buf1s -= 2;
             i = doFcsCalc(buf1d, buf1s);
-            if (((buf1d[buf1s] & 0xff) != (i & 0xff)) || ((buf1d[buf1s + 1] & 0xff) != (i >> 8))) {
+            if (get16lsb(buf1d, buf1s) != i) {
                 packBd++;
                 byteBd += buf1s;
                 buf1s = 0;
@@ -122,8 +123,7 @@ void doUdpLoop() {
             memmove(&buf1d, &buf1d[2], buf1s);
         }
         i = doFcsCalc(buf1d, buf1s);
-        buf1d[buf1s + 0] = i & 0xff;
-        buf1d[buf1s + 1] = i >> 8;
+        put16lsb(buf1d, buf1s, i);
         buf1s += 2;
         buf2d[0] = PPP_FLAG;
         buf2s = 1;

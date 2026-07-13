@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
+#include "utils.h"
 #include "fcs16.h"
 
 #define BANG_CK (TIOCM_CD | TIOCM_DSR)
@@ -135,7 +136,7 @@ void doRawLoop() {
             continue;
         }
         int i = doFcsCalc(rxD, rxS);
-        if (((rxD[rxS] & 0xff) != (i & 0xff)) || ((rxD[rxS + 1] & 0xff) != (i >> 8))) {
+        if (get16lsb(rxD, rxS) != i) {
             packBd++;
             byteBd += rxS;
             rxS = 0;
@@ -150,21 +151,19 @@ void doRawLoop() {
 }
 
 void doUdpLoop() {
-    int i;
     for (;;) {
         if (txS > 0) {
             usleep(1000);
             continue;
         }
-        i = sizeof (txD);
+        int i = sizeof (txD);
         i = recv(commSock, txD, i, 0);
         if (i < 0) break;
         packTx++;
         byteTx += i;
         txS = i;
         i = doFcsCalc(txD, txS);
-        txD[txS] = i & 0xff;
-        txD[txS + 1] = i >> 8;
+        put16lsb(txD, txS, i);
         txS += 2;
     }
     err("udp thread exited");
