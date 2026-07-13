@@ -1009,7 +1009,7 @@ public class player implements Runnable {
         if (cmd.equals("movedn")) {
             int i = playerUtil.str2int(song);
             int o = nextSong.indexOf(Integer.valueOf(i));
-            if ((o >= 0) && (o < nextSong.size())) {
+            if ((o >= 0) && ((o + 1) < nextSong.size())) {
                 nextSong.remove(o);
                 nextSong.add(o + 1, Integer.valueOf(i));
             }
