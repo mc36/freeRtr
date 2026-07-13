@@ -153,7 +153,7 @@ void doUdpLoop() {
     int i;
     for (;;) {
         if (txS > 0) {
-            usleep(1);
+            usleep(1000);
             continue;
         }
         i = sizeof (txD);

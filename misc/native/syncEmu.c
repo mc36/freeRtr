@@ -8,7 +8,7 @@
 
 unsigned char *sharedMem = NULL;
 
-int myVal;
+int myVal = -1;
 
 #define BANG_CK TIOCM_CD
 #define BANG_RX TIOCM_RI
@@ -20,7 +20,7 @@ int clrs[] = {0xfe, 0xfd, 0xfb, 0xff};
 int gets[] = {0x00, 0x04, 0x02, 0x00};
 
 int ioctl(int fd, unsigned long op, unsigned int*par) {
-    if (!sharedMem) {
+    if (myVal < 0) {
         ftruncate(fd, 2);
         sharedMem =  mmap(NULL, 2, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
         if (sharedMem == NULL) return -1;
