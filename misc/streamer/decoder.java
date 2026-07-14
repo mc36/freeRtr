@@ -15,6 +15,8 @@ public class decoder {
     public decoder(String fil, String pos) throws Exception {
         String[] cmd = {
             "ffmpeg",
+            "-hide_banner",
+            "-loglevel", "quiet",
             "-ss", pos,
             "-re",
             "-i", fil,
