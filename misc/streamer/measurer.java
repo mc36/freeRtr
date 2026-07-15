@@ -31,12 +31,21 @@ public class measurer {
         }
         int pos = 0;
         int ned = Integer.MAX_VALUE;
+        int avg = 0;
         for (;;) {
             int len = dataLine.read(buf, 0, buf.length);
             if (len < 1) {
                 break;
             }
-            int avg = 0;
+            if (pos > per) {
+                rtp.write(snd, len);
+                pos = 0;
+                ned = avg * mul;
+            } else {
+                rtp.write(sln, len);
+            }
+            pos++;
+            avg = 0;
             for (int i = 0; i < len; i += 2) {
                 int o = buf[i + 0];
                 if (o < 0) {
@@ -48,21 +57,14 @@ public class measurer {
             if (avg < 1) {
                 avg = 1;
             }
-            if (avg > ned) {
-                int i = pos * len;
-                i >>= 2;
-                int q = (i * 1000) / devicer.rate;
-                System.out.println(avg + " > " + ned + " @ " + pos + " [" + i + "] (" + q + "ms)");
-                ned = Integer.MAX_VALUE;
+            if (avg < ned) {
+                continue;
             }
-            if (pos > per) {
-                rtp.write(snd, len);
-                pos = 0;
-                ned = avg * mul;
-            } else {
-                rtp.write(sln, len);
-            }
-            pos++;
+            int i = pos * len;
+            i >>= 2;
+            int q = (i * 1000) / devicer.rate;
+            System.out.println(avg + " > " + ned + " @ " + pos + " [" + i + "] (" + q + "ms)");
+            ned = Integer.MAX_VALUE;
         }
     }
 
