@@ -5,7 +5,7 @@ void ply_init(char*dev) {
     if (snd_pcm_open(&plyHnd, dev, SND_PCM_STREAM_PLAYBACK, 0) < 0) err("cannot open pcm device");
     snd_pcm_hw_params_alloca(&prm);
     snd_pcm_hw_params_any(plyHnd, prm);
-    if (snd_pcm_set_params(plyHnd, SND_PCM_FORMAT_S16_LE, SND_PCM_ACCESS_RW_INTERLEAVED, 2, srate, 1, 50000) < 0) err("unable to set params");
+    if (snd_pcm_set_params(plyHnd, SND_PCM_FORMAT_S16_LE, SND_PCM_ACCESS_RW_INTERLEAVED, 2, srate, 0, 1000) < 0) err("unable to set params");
     if (snd_pcm_hw_params_set_access(plyHnd, prm, SND_PCM_ACCESS_RW_INTERLEAVED) < 0) err("unable to set mode");
     if (snd_pcm_hw_params_set_format(plyHnd, prm, SND_PCM_FORMAT_S16_LE) < 0) err("unable to set format");
     if (snd_pcm_hw_params_set_channels(plyHnd, prm, 2) < 0) err("unable to set channel");

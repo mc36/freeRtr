@@ -48,13 +48,13 @@ public class badLyric {
                 String b = a.toLowerCase();
                 b = b.replaceAll("-", " ");
                 b = b.trim();
-                if (b.matches("cd\s*[0-9].*")) {
+                if (b.matches("cd\\s*[0-9].*")) {
                     moveFiles(s + "/" + a + "/", s + "/");
                 }
-                if (b.matches("dvd\s*[0-9].*")) {
+                if (b.matches("dvd\\s*[0-9].*")) {
                     moveFiles(s + "/" + a + "/", s + "/");
                 }
-                if (b.matches("disc\s*[0-9].*")) {
+                if (b.matches("disc\\s*[0-9].*")) {
                     moveFiles(s + "/" + a + "/", s + "/");
                 }
                 if (b.matches("bonus.*")) {
