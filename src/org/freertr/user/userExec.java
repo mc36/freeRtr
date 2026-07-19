@@ -2442,6 +2442,8 @@ public class userExec {
         hl.add(null, false, 3, new int[]{3, -1}, "[str]", "text");
         hl.add(null, false, 2, new int[]{3}, "show", "view demo");
         hl.add(null, false, 3, new int[]{3, -1}, "[str]", "command");
+        hl.add(null, false, 2, new int[]{3}, "morph", "view demo");
+        hl.add(null, false, 3, new int[]{3, -1}, "[str]", "command");
         hl.add(null, false, 1, new int[]{2}, "listen", "start listen session");
         hl.add(null, false, 2, new int[]{3, -1}, "<port>", "port number");
         hl.add(null, false, 3, new int[]{3, -1}, "tcp", "transmission control protocol");

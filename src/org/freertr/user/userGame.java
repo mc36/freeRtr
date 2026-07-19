@@ -10,7 +10,6 @@ import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
 import org.freertr.pack.packText;
-import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servQuote;
@@ -215,6 +214,86 @@ public class userGame {
             console.refresh();
             bits.sleep(5000);
         }
+    }
+
+    private List<String> doMorpher(List<String> old, List<String> txt) {
+        for (;;) {
+            List<String> cur = new ArrayList<String>();
+            console.doClear();
+            boolean chg = false;
+            for (int o = 0; o < console.sizY; o++) {
+                byte[] b1 = new byte[0];
+                byte[] b2 = new byte[0];
+                if (o < old.size()) {
+                    b1 = old.get(o).getBytes();
+                }
+                if (o < txt.size()) {
+                    b2 = txt.get(o).getBytes();
+                }
+                byte[] b3 = new byte[console.sizX];
+                for (int i = 0; i < b3.length; i++) {
+                    int c1 = 32;
+                    int c2 = 32;
+                    if (i < b1.length) {
+                        c1 = b1[i] & 0xff;
+                    }
+                    if (i < b2.length) {
+                        c2 = b2[i] & 0xff;
+                    }
+                    if (c1 == c2) {
+                        b3[i] = (byte) c1;
+                        console.putInt(i, o, pipeScreen.colBlack, pipeScreen.colWhite, false, c1);
+                        continue;
+                    }
+                    int d = c2 - c1;
+                    if (d > 0) {
+                        if (d > 5) {
+                            d = bits.random(2, d / 2);
+                        } else {
+                            d = 1;
+                        }
+                    } else {
+                        if (d < -5) {
+                            d = bits.random(d / 2, -2);
+                        } else {
+                            d = -1;
+                        }
+                    }
+                    d += c1;
+                    chg = true;
+                    b3[i] = (byte) d;
+                    console.putInt(i, o, pipeScreen.colBlack, pipeScreen.colGreen, false, d);
+                }
+                cur.add(new String(b3));
+            }
+            old = cur;
+            if (!chg) {
+                break;
+            }
+            console.refresh();
+            bits.sleep(500);
+        }
+        return old;
+    }
+
+    /**
+     * morphing show
+     *
+     * @param cmd commands
+     */
+    public void doMorph(cmds cmd) {
+        List<String> old = new ArrayList<String>();
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            List<String> txt = convShow(cmd);
+            old = doMorpher(old, txt);
+            console.putStrs(0, 0, pipeScreen.colBlack, pipeScreen.colWhite, false, txt);
+            console.refresh();
+            bits.sleep(5000);
+        }
+        doMorpher(old, new ArrayList<String>());
     }
 
     /**
@@ -1643,6 +1722,10 @@ public class userGame {
         }
         if (a.equals("rot-clock")) {
             doRotClock();
+            return;
+        }
+        if (a.equals("morph")) {
+            doMorph(cmd);
             return;
         }
         if (a.equals("show")) {
