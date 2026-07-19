@@ -1,5 +1,6 @@
 package org.freertr.rtr;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
@@ -65,6 +66,16 @@ public class rtrLogger extends ipRtr {
      * flaps
      */
     protected tabGen<rtrBgpDamp> flaps;
+
+    /**
+     * last data
+     */
+    protected List<rtrBgpDamp> lastD;
+
+    /**
+     * last limit
+     */
+    protected int lastM;
 
     /**
      * logging
@@ -339,6 +350,26 @@ public class rtrLogger extends ipRtr {
     }
 
     /**
+     * get last changes
+     *
+     * @return list of statistics
+     */
+    public userFormat getLastChg() {
+        userFormat l = new userFormat("|", "afi|prefix|ago|last");
+        if (lastD == null) {
+            return l;
+        }
+        for (int i = 0; i < lastD.size(); i++) {
+            rtrBgpDamp ntry = lastD.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            l.add(ntry.toChgRes());
+        }
+        return l;
+    }
+
+    /**
      * get flap stats
      *
      * @param cnt minimum counter
@@ -421,16 +452,26 @@ public class rtrLogger extends ipRtr {
         if (logging) {
             logger.info(act + " " + afi2str(afi) + " " + prf2str(afi, ntry.prefix) + lookupAddr(ntry.prefix.network));
         }
-        if (flaps == null) {
+        if ((flaps == null) && (lastD == null)) {
             return;
         }
         rtrBgpDamp stat = new rtrBgpDamp(afi, 0, ntry.prefix);
-        rtrBgpDamp old = flaps.add(stat);
-        if (old != null) {
-            stat = old;
+        if (flaps != null) {
+            rtrBgpDamp old = flaps.add(stat);
+            if (old != null) {
+                stat = old;
+            }
         }
         stat.penalty++;
         stat.last = bits.getTime();
+        if (lastD == null) {
+            return;
+        }
+        lastD.add(0, stat);
+        int i = lastD.size();
+        if (i > lastM) {
+            lastD.remove(i - 1);
+        }
     }
 
     private void doDiff(int afi, tabRoute<addrIP> o, tabRoute<addrIP> n) {
@@ -501,6 +542,8 @@ public class rtrLogger extends ipRtr {
      */
     public void routerGetHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "flapstat", "count flap statistics");
+        l.add(null, false, 1, new int[]{2}, "lastchg", "note recent changes");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "number of events");
         l.add(null, false, 1, new int[]{-1}, "logging", "log events");
         l.add(null, false, 1, new int[]{2}, "lookup", "set lookup");
         cfgRtr.getRouterList(l, 0, " to use");
@@ -523,6 +566,7 @@ public class rtrLogger extends ipRtr {
         if (lookTyp != null) {
             l.add(beg + "lookup " + cfgRtr.num2name(lookTyp) + " " + lookNum);
         }
+        cmds.cfgLine(l, lastD == null, beg, "lastchg", "" + lastM);
         cmds.cfgLine(l, flaps == null, beg, "flapstat", "");
         cmds.cfgLine(l, !logging, beg, "logging", "");
     }
@@ -564,6 +608,19 @@ public class rtrLogger extends ipRtr {
                 return true;
             }
             lookNum = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("lastchg")) {
+            lastM = bits.str2num(cmd.word());
+            if (negated) {
+                lastM = 0;
+            }
+            if (lastM > 0) {
+                lastD = new ArrayList<rtrBgpDamp>();
+                return false;
+            }
+            lastD = null;
+            lastM = 0;
             return false;
         }
         if (s.equals("flapstat")) {

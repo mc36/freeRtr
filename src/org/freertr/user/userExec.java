@@ -1341,6 +1341,7 @@ public class userExec {
         hl.add(null, false, 6, new int[]{-1}, "[addr]", "entry to view");
         hl.add(null, false, 5, new int[]{6, -1}, "flapstat", "prefix flap statistics");
         hl.add(null, false, 6, new int[]{-1}, "[num]", "minimum count");
+        hl.add(null, false, 5, new int[]{-1}, "lastchg", "list of recent changes");
         hl.add(null, false, 3, new int[]{4}, "ghosthunt", "ghost route hunter");
         hl.add(null, false, 4, new int[]{5}, "<num:rtr>", "process id");
         hl.add(null, false, 5, new int[]{-1}, "status", "current status");

@@ -626,6 +626,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         // router logger
         new userFilter("router logger[46] .*", cmds.tabulator + "afi unicast", null),
         new userFilter("router logger[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "flapstat", null),
+        new userFilter("router logger[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "lastchg", null),
         new userFilter("router logger[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
     };
 

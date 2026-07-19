@@ -311,6 +311,12 @@ router logger4 1 vrf v1
  redistribute lsrp4 1
  exit
 !
+router logger4 42 vrf dn42
+ lastchg 20
+ flapstat
+ redistribute bgp4 65535
+ exit
+!
 router logger4 65535 vrf v1
  flapstat
  redistribute bgp4 65535
@@ -319,6 +325,12 @@ router logger4 65535 vrf v1
 router logger6 1 vrf v1
  flapstat
  redistribute lsrp4 1
+ exit
+!
+router logger6 42 vrf dn42
+ lastchg 20
+ flapstat
+ redistribute bgp4 65535
  exit
 !
 router logger6 65535 vrf v1

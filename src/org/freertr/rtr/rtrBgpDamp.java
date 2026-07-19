@@ -85,4 +85,13 @@ public class rtrBgpDamp implements Comparable<rtrBgpDamp> {
         return rtrLogger.afi2str(idx) + "|" + rtrLogger.prf2str(idx, prefix) + "|" + penalty + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
     }
 
+    /**
+     * logger result
+     *
+     * @return string
+     */
+    public String toChgRes() {
+        return rtrLogger.afi2str(idx) + "|" + rtrLogger.prf2str(idx, prefix) + "|" + bits.timePast(last) + "|" + bits.time2str(cfgAll.timeZoneName, last + cfgAll.timeServerOffset, 3);
+    }
+
 }

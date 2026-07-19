@@ -3501,6 +3501,10 @@ public class userShow {
             rdr.putStrTab(r.logger.getFlapstat(bits.str2num(cmd.word())));
             return;
         }
+        if (a.equals("lastchg")) {
+            rdr.putStrTab(r.logger.getLastChg());
+            return;
+        }
         if (a.equals("database")) {
             doShowRoutes(r.logger.fwdCore, r.logger.getRoutes(), r.logger.getDispMod());
             return;
