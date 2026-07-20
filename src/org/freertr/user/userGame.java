@@ -246,18 +246,17 @@ public class userGame {
                         continue;
                     }
                     int d = c2 - c1;
-                    if (d > 0) {
-                        if (d > 5) {
-                            d = bits.random(2, d / 2);
-                        } else {
-                            d = 1;
-                        }
+                    boolean n = d < 0;
+                    if (n) {
+                        d = -d;
+                    }
+                    if (d > 5) {
+                        d = bits.random(2, d / 2);
                     } else {
-                        if (d < -5) {
-                            d = bits.random(d / 2, -2);
-                        } else {
-                            d = -1;
-                        }
+                        d = 1;
+                    }
+                    if (n) {
+                        d = -d;
                     }
                     d += c1;
                     chg = true;
