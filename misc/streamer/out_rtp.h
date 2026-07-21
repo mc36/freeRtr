@@ -26,7 +26,6 @@ void ply_init(char*grp, char*src, char* prt) {
 void iou_write() {
     bufS += padln;
     iou_bswp();
-    int* bufH = (int*) &bufD;
     iou_pmsb(0, 0x800a0000 | plySeq);
     iou_pmsb(4, plyClk);
     iou_pmsb(8, plySrc);
