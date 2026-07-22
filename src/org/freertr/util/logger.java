@@ -458,7 +458,7 @@ public class logger {
      */
     public static Thread startThread(Runnable r) {
         if (debugger.tabThreadEvnt) {
-            logger.debug("starting " + r.getClass());
+            debug("starting " + r.getClass());
         }
         threadCreated++;
         if (cfgAll.virtThrds) {
@@ -614,19 +614,23 @@ public class logger {
     }
 
     /**
-     * get process cpu load
-     *
-     * @return cpu load
+     * check cpu hog
      */
-    public static int getProcCpuLoad() {
+    public static void checkCpuHog() {
+        if (cfgAll.cpuhogCheck < 1) {
+            return;
+        }
+        int res = 0;
         try {
             MBeanServer mb = ManagementFactory.getPlatformMBeanServer();
             double val = (Double) mb.getAttribute(ObjectName.getInstance("java.lang:type=OperatingSystem"), "ProcessCpuLoad");
             val = val * Runtime.getRuntime().availableProcessors();
             val = val * 100;
-            return (int) val;
+            res = (int) val;
         } catch (Exception e) {
-            return -1;
+        }
+        if (res > cfgAll.cpuhogCheck) {
+            info("cpuhog detected at " + res + "% usage");
         }
     }
 

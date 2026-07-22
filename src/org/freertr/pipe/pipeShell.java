@@ -64,19 +64,19 @@ public class pipeShell {
      * @return pid
      */
     public static long myProcessNum() {
-        List<String> txt = bits.txt2buf("/proc/self/stat");
-        if (txt == null) {
-            return 0;
-        }
-        if (txt.size() < 1) {
-            return 0;
-        }
-        String s = txt.get(0);
-        int i = s.indexOf(" ");
-        if (i < 1) {
-            return 0;
-        }
-        return bits.str2long(s.substring(0, i));
+        return ProcessHandle.current().pid();
+    }
+
+    /**
+     * get process cpu usage
+     *
+     * @param prc process
+     * @return millis
+     */
+    public static long getProcessCpu(ProcessHandle prc) {
+        ProcessHandle.Info nfo = prc.info();
+        Duration dur = nfo.totalCpuDuration().get();
+        return (dur.getSeconds() * 1000) + (dur.getNano() / 1000000);
     }
 
     /**
@@ -279,19 +279,12 @@ public class pipeShell {
      * @return return info
      */
     public String info() {
-        String a = "0|0";
+        String a = "0|0|0";
         String b = "0";
-        String c = "0";
         ProcessHandle hnd = null;
         try {
             hnd = process.toHandle();
-            a = hnd.pid() + "|" + hnd.descendants().count();
-        } catch (Exception e) {
-        }
-        try {
-            ProcessHandle.Info nfo = hnd.info();
-            Duration dur = nfo.totalCpuDuration().get();
-            b = dur.getSeconds() + "." + dur.getNano();
+            a = hnd.pid() + "|" + hnd.descendants().count() + "|" + getProcessCpu(hnd);
         } catch (Exception e) {
         }
         List<String> txt = bits.txt2buf("/proc/" + hnd.pid() + "/status");
@@ -305,10 +298,10 @@ public class pipeShell {
                 if (!s.endsWith("kb")) {
                     continue;
                 }
-                c = s.substring(6, s.length() - 2).trim();
+                b = s.substring(6, s.length() - 2).trim();
             }
         }
-        return a + "|" + b + "|" + c;
+        return a + "|" + b;
     }
 
     /**

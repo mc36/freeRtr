@@ -674,6 +674,10 @@ public class userShow {
                 rdr.putStrTab(ifcThread.showStalls());
                 return null;
             }
+            if (a.equals("cpu")) {
+                doShowHistory("history", cfgInit.cpuHistory);
+                return null;
+            }
             if (a.equals("timer")) {
                 doShowHistory("history", cfgInit.timerHistory);
                 return null;

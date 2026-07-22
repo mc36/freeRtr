@@ -92,12 +92,6 @@ public abstract class ifcThread implements ifcDn, Runnable {
             logger.info(ifcEthTyp.loopDrops + " looping packets dropped");
             ifcEthTyp.loopDrops = 0;
         }
-        if (cfgAll.cpuhogCheck > 0) {
-            int i = logger.getProcCpuLoad();
-            if (i > cfgAll.cpuhogCheck) {
-                logger.info("cpuhog detected at " + i + "% usage");
-            }
-        }
         String s = "";
         long t = bits.getTime();
         for (int i = cfgAll.ifaces.size() - 1; i >= 0; i--) {

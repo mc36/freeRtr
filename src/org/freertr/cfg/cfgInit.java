@@ -152,6 +152,11 @@ public class cfgInit implements Runnable {
     public static String jvmParam = "";
 
     /**
+     * cpu history
+     */
+    public static history cpuHistory;
+
+    /**
      * timer history
      */
     public static history timerHistory;
@@ -1689,7 +1694,7 @@ public class cfgInit implements Runnable {
     }
 
     public void run() {
-        cfgInit.mainLoop();
+        mainLoop();
     }
 
     private final static void mainLoop() {
@@ -1700,6 +1705,9 @@ public class cfgInit implements Runnable {
         Runtime rt = Runtime.getRuntime();
         cntr.byteRx = rt.freeMemory() / 8;
         memoryHistory = new history(cntr);
+        ProcessHandle prc = ProcessHandle.current();
+        cntr.byteRx = pipeShell.getProcessCpu(prc) / 8;
+        cpuHistory = new history(cntr);
         for (;;) {
             try {
                 rnd += 1;
@@ -1710,9 +1718,12 @@ public class cfgInit implements Runnable {
                 timerHistory.update(cntr, true);
                 cntr.byteRx = rt.freeMemory() / 8;
                 memoryHistory.update(cntr, false);
+                cntr.byteRx = pipeShell.getProcessCpu(prc) / 8;
+                cpuHistory.update(cntr, true);
                 if ((rnd % 60) != 0) {
                     continue;
                 }
+                logger.checkCpuHog();
                 ifcThread.alertIfaces();
                 ipFwdTab.alertVrfs();
                 clntDns.purgeLocalCache(false);
