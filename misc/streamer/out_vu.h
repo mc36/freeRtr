@@ -65,21 +65,21 @@ double vuAng(double vu) {
 
 #define vuBarC(chr) {out[pos]=chr;pos++;}
 
-#define vuBarM for (int i = 0; i < cur; i++) vuBarC(42)
+#define vuBarM for (int i = 0; i < cur; i++) vuBarC('*')
 
-#define vuBarS for (int i = cur; i < 50; i++) vuBarC(32)
+#define vuBarE for (int i = cur; i < 50; i++) vuBarC(' ')
 
 void vuBars(double l, double r, char e) {
-    char out[80];
+    char out[200];
     int pos = 0;
-    int cur = 25+(int)l;
-    vuBarS;
+    int cur = 25 + (int)l;
+    vuBarE;
     vuBarM;
-    vuBarC(32);
-    vuBarC(32);
-    cur = 25+(int)r;
+    vuBarC(' ');
+    vuBarC(' ');
+    cur = 25 + (int)r;
     vuBarM;
-    vuBarS;
+    vuBarE;
     vuBarC(e);
     write(STDOUT_FILENO, out, pos);
 }
