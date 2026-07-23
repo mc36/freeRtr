@@ -92,8 +92,8 @@ public class vuDoer {
 
     public void doer(byte[] buf, int len) {
         if (cnt >= devicer.rate) {
-            avgL /= (devicer.rate / rtper.payload);
-            avgR /= (devicer.rate / rtper.payload);
+            avgL /= ((double) devicer.rate / (double) rtper.payload);
+            avgR /= ((double) devicer.rate / (double) rtper.payload);
             System.out.println(barL(avgL) + "  " + barR(avgR));
             avgL = 0.0;
             avgR = 0.0;
