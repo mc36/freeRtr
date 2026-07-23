@@ -1,13 +1,16 @@
 
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
-
 /**
- * measure live level
+ * measure vu level
  *
  * @author matecsaba
  */
-public class vumeter {
+public class vuDoer {
+
+    private double avgL = 0.0;
+
+    private double avgR = 0.0;
+
+    private int cnt = 0;
 
     private static double getSam(byte[] buf, int ofs) {
         int i = (buf[ofs + 0] << 8) + (buf[ofs + 1] & 0xff);
@@ -15,7 +18,7 @@ public class vumeter {
     }
 
     private static double getVu(double sum, int len) {
-        double rms = Math.sqrt((double) sum * 4.0 / (double) len);
+        double rms = Math.sqrt(sum * 4.0 / (double) len);
         return (20.0 * Math.log10(rms)) + 3.8;
     }
 
@@ -63,41 +66,53 @@ public class vumeter {
         }
     }
 
-    private static String vuBar(double val) {
+    private static String barL(double val) {
         String a = "";
         int cur = 25 + (int) val;
-        for (int i = 0; i < cur; i++) {
-            a += "#";
-        }
         for (int i = cur; i < 50; i++) {
-            a += " ";
+            a += ' ';
+        }
+        for (int i = 0; i < cur; i++) {
+            a += '*';
         }
         return a;
     }
 
-    public static void main(String[] args) throws Exception {
-        DatagramChannel channel = rtper.receive(args[0], args[1], args[2]);
-        ByteBuffer buffer = ByteBuffer.allocate(4096);
-        byte[] buf = new byte[rtper.payload];
-        for (;;) {
-            buffer.clear();
-            channel.receive(buffer);
-            int len = rtper.decode(buffer, buf);
-            if (len < 1) {
-                break;
-            }
-            double sumL = 0;
-            double sumR = 0;
-            for (int i = 0; i < len; i += 4) {
-                double o = getSam(buf, i + 0);
-                sumL += o * o;
-                o = getSam(buf, i + 2);
-                sumR += o * o;
-            }
-            sumL = getAng(getVu(sumL, len));
-            sumR = getAng(getVu(sumR, len));
-            System.out.print(vuBar(sumL) + " " + vuBar(sumR) + "\r");
+    private static String barR(double val) {
+        String a = "";
+        int cur = 25 + (int) val;
+        for (int i = 0; i < cur; i++) {
+            a += '*';
         }
+        for (int i = cur; i < 50; i++) {
+            a += ' ';
+        }
+        return a;
+    }
+
+    public void doer(byte[] buf, int len) {
+        if (cnt >= devicer.rate) {
+            avgL /= (devicer.rate / rtper.payload);
+            avgR /= (devicer.rate / rtper.payload);
+            System.out.println(barL(avgL) + "  " + barR(avgR));
+            avgL = 0.0;
+            avgR = 0.0;
+            cnt = 0;
+        }
+        double sumL = 0;
+        double sumR = 0;
+        for (int i = 0; i < len; i += 4) {
+            double o = getSam(buf, i + 0);
+            sumL += o * o;
+            o = getSam(buf, i + 2);
+            sumR += o * o;
+        }
+        sumL = getAng(getVu(sumL, len));
+        sumR = getAng(getVu(sumR, len));
+        avgL += sumL;
+        avgR += sumR;
+        cnt += len;
+        System.out.print(barL(sumL) + "  " + barR(sumR) + "\r");
     }
 
 }

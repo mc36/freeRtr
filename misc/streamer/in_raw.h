@@ -7,4 +7,5 @@ void rec_init(char*fil) {
 
 void iou_read() {
     bufS = read(recHnd, &bufD[padln], pktln);
+    usleep(1000000 / (srate / pktln));
 }
