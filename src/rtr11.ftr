@@ -35,15 +35,15 @@ qc pass: interop8: ldp lsp
 qc pass: interop8: ldp php lsp
 qc pass: interop8: igmp3/mld2
 qc pass: interop8: pim
-qc pass: interop8: point2point ospf
-qc pass: interop8: ospf dr
-qc pass: interop8: ospf nondr
-qc pass: interop8: ospf transit area
-qc pass: interop8: ospf stub area
+failed: interop8: point2point ospf
+failed: interop8: ospf dr
+failed: interop8: ospf nondr
+failed: interop8: ospf transit area
+failed: interop8: ospf stub area
 qc pass: interop8: ospf nssa area
-qc pass: interop8: ospf prefix withdraw
-qc pass: interop8: ospf text authentication
-qc pass: interop8: ospf md5 authentication
+failed: interop8: ospf prefix withdraw
+failed: interop8: ospf text authentication
+failed: interop8: ospf md5 authentication
 qc pass: interop8: rip
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4

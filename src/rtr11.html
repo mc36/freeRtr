@@ -9,8 +9,8 @@
 .bad { color: red }
 </style>
 <title>tester</title></head><body>
-release: freeRouter v26.7.16-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2026-07-17 00:24:15, took 00:03:30, with 10 workers, on 47 cases, 0 failed, 0 traces, 0 retries<br/>
+release: freeRouter v26.7.23-cur, done by sprscc13@mrn0b0dy.<br/>
+tested: 2026-07-24 02:09:17, took 00:19:04, with 10 workers, on 47 cases, 8 failed, 0 traces, 56 retries<br/>
 jvm: java -Xmx256m -jar rtr.jar, other: frr<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -51,14 +51,14 @@ jvm: java -Xmx256m -jar rtr.jar, other: frr<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/intop8-ldp02.tst">intop8-ldp02.tst</a></td><td>success</td><td>interop8: ldp php lsp</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop8-mcast01.tst">intop8-mcast01.tst</a></td><td>success</td><td>interop8: igmp3/mld2</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop8-mcast02.tst">intop8-mcast02.tst</a></td><td>success</td><td>interop8: pim</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf01.tst">intop8-ospf01.tst</a></td><td>success</td><td>interop8: point2point ospf</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf02.tst">intop8-ospf02.tst</a></td><td>success</td><td>interop8: ospf dr</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf03.tst">intop8-ospf03.tst</a></td><td>success</td><td>interop8: ospf nondr</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf04.tst">intop8-ospf04.tst</a></td><td>success</td><td>interop8: ospf transit area</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf05.tst">intop8-ospf05.tst</a></td><td>success</td><td>interop8: ospf stub area</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf01.tst">intop8-ospf01.tst</a></td><td>#6-run-r1 tping 100 60 4321::2 vrf v1 sou lo0</td><td>interop8: point2point ospf</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf02.tst">intop8-ospf02.tst</a></td><td>#6-run-r1 tping 100 60 4321::2 vrf v1 sou lo0</td><td>interop8: ospf dr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf03.tst">intop8-ospf03.tst</a></td><td>#6-run-r1 tping 100 60 4321::2 vrf v1 sou lo0</td><td>interop8: ospf nondr</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf04.tst">intop8-ospf04.tst</a></td><td>#6-run-r1 tping 100 60 4321::2 vrf v1 sou lo0</td><td>interop8: ospf transit area</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf05.tst">intop8-ospf05.tst</a></td><td>#6-run-r1 tping 100 60 4321::2 vrf v1 sou lo0</td><td>interop8: ospf stub area</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf06.tst">intop8-ospf06.tst</a></td><td>success</td><td>interop8: ospf nssa area</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf07.tst">intop8-ospf07.tst</a></td><td>success</td><td>interop8: ospf prefix withdraw</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf08.tst">intop8-ospf08.tst</a></td><td>success</td><td>interop8: ospf text authentication</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf09.tst">intop8-ospf09.tst</a></td><td>success</td><td>interop8: ospf md5 authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf07.tst">intop8-ospf07.tst</a></td><td>#6-run-r1 tping 100 60 4321::2 vrf v1 sou lo0</td><td>interop8: ospf prefix withdraw</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf08.tst">intop8-ospf08.tst</a></td><td>#6-run-r1 tping 100 60 4321::2 vrf v1 sou lo0</td><td>interop8: ospf text authentication</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/intop8-ospf09.tst">intop8-ospf09.tst</a></td><td>#6-run-r1 tping 100 60 4321::2 vrf v1 sou lo0</td><td>interop8: ospf md5 authentication</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/intop8-rip01.tst">intop8-rip01.tst</a></td><td>success</td><td>interop8: rip</td></tr>
 </tbody></table></body></html>
