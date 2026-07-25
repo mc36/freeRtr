@@ -14,6 +14,7 @@ import org.freertr.clnt.clntWhois;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdTab;
 import org.freertr.pack.packDnsRec;
+import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtAccept;
@@ -262,6 +263,38 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
             l.add("" + ntry);
         }
         return l;
+    }
+
+    /**
+     * get memory
+     *
+     * @param num sequence
+     * @param pck packet to update
+     * @return true on error, false on success
+     */
+    public boolean getMemory(int num, packHolder pck) {
+        pck.clear();
+        if (memory == null) {
+            return true;
+        }
+        if (num < 0) {
+            return true;
+        }
+        if (num >= memory.sent.length) {
+            return true;
+        }
+        num = (num + memory.next) % memory.sent.length;
+        pck.putCopy(memory.data[num], 0, 0, memory.data[num].length);
+        pck.putSkip(memory.data[num].length);
+        pck.merge2beg();
+        rtrBgpUtil.createHeader(pck, memory.type[num]);
+        pck.INTtime = memory.time[num];
+        if (memory.sent[num]) {
+            pck.IPtrg.setAddr(peerAddr);
+        } else {
+            pck.IPsrc.setAddr(peerAddr);
+        }
+        return false;
     }
 
     /**

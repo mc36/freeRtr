@@ -551,6 +551,7 @@ router bgp4 65535 vrf v1
  template r update-source loopback0
  template r monitor bmp
  template r dump mrt
+ template r memory 20
  template r hostname domain
  template r software
  template r extended-open

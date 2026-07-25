@@ -715,6 +715,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
                 if (neigh.monitor != null) {
                     neigh.monitor.gotMessage(false, typ, this, neigh, pckRx.getCopy());
                 }
+                if (neigh.memory != null) {
+                    neigh.memory.gotMessage(false, typ, pckRx.getCopy());
+                }
                 if (neigh.dump != null) {
                     neigh.dump.gotMessage(false, typ, neigh, pckRx.getCopy());
                 }
@@ -780,6 +783,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             if (neigh.monitor != null) {
                 neigh.monitor.gotMessage(true, typ, this, neigh, pck.getCopy());
             }
+            if (neigh.memory != null) {
+                neigh.memory.gotMessage(true, typ, pck.getCopy());
+            }
             if (neigh.dump != null) {
                 neigh.dump.gotMessage(true, typ, neigh, pck.getCopy());
             }
@@ -805,6 +811,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (neigh.monitor != null) {
             neigh.monitor.gotMessage(true, typ, this, neigh, pck.getCopy());
+        }
+        if (neigh.memory != null) {
+            neigh.memory.gotMessage(true, typ, pck.getCopy());
         }
         if (neigh.dump != null) {
             neigh.dump.gotMessage(true, typ, neigh, pck.getCopy());
@@ -847,6 +856,9 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
         }
         if (neigh.monitor != null) {
             neigh.monitor.gotMessage(false, typ, this, neigh, pck.getCopy());
+        }
+        if (neigh.memory != null) {
+            neigh.memory.gotMessage(false, typ, pck.getCopy());
         }
         if (neigh.dump != null) {
             neigh.dump.gotMessage(false, typ, neigh, pck.getCopy());

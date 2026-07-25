@@ -684,6 +684,11 @@ public abstract class rtrBgpParam {
     public rtrBgpMrt dump;
 
     /**
+     * memory to use
+     */
+    public rtrBgpMem memory;
+
+    /**
      * other address
      */
     public addrIP otherAdr;
@@ -1786,6 +1791,11 @@ public abstract class rtrBgpParam {
         dampenSupp = src.dampenSupp;
         dampenReus = src.dampenReus;
         dampenHalf = src.dampenHalf;
+        if (src.memory == null) {
+            memory = null;
+        } else {
+            memory = new rtrBgpMem(src.memory.sent.length);
+        }
         if (src.lengthChanges == null) {
             lengthChanges = null;
         } else {
@@ -2166,6 +2176,8 @@ public abstract class rtrBgpParam {
         l.add(null, false, 4, new int[]{-1}, "<str>", "name of bmp");
         l.add(null, false, 3, new int[]{4}, "other-address", "address of peer in the other afi");
         l.add(null, false, 4, new int[]{-1}, "<addr>", "other address");
+        l.add(null, false, 3, new int[]{4}, "memory", "memory for this peer");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "number of messages");
         l.add(null, false, 3, new int[]{4}, "dump", "bgp dump for this peer");
         l.add(null, false, 4, new int[]{-1}, "<str>", "name of mrt");
         l.add(null, false, 3, new int[]{4}, "buffer-size", "size of buffer");
@@ -2514,6 +2526,11 @@ public abstract class rtrBgpParam {
         } else {
             l.add(beg + nei + "dump " + dump.dumpName);
         }
+        if (memory == null) {
+            l.add(beg + cmds.negated + cmds.tabulator + nei + "memory");
+        } else {
+            l.add(beg + nei + "memory " + memory.sent.length);
+        }
         cmds.cfgLine(l, otherAdr == null, beg, nei + "other-address", "" + otherAdr);
         cmds.cfgLine(l, backupPeer == null, beg, nei + "backup-peer", "" + backupPeer);
         cmds.cfgLine(l, proxy2use == null, beg, nei + "proxy-profile", proxy2use + " " + proxy2adr + " " + proxy2prt);
@@ -2827,6 +2844,14 @@ public abstract class rtrBgpParam {
             }
             otherAdr = new addrIP();
             otherAdr.fromString(cmd.word());
+            return false;
+        }
+        if (s.equals("memory")) {
+            if (negated) {
+                memory = null;
+                return false;
+            }
+            memory = new rtrBgpMem(bits.str2num(cmd.word()));
             return false;
         }
         if (s.equals("dump")) {

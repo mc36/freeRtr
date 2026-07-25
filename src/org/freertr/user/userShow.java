@@ -5028,6 +5028,33 @@ public class userShow {
                 rdr.putStrTab(nei.getStatus());
                 return;
             }
+            if (a.equals("memory")) {
+                boolean sum = !cmd.word().equals("full");
+                packHolder tmp = new packHolder(true, true);
+                packHolder pck = new packHolder(true, true);
+                cfgVrf vrf = new cfgVrf("bgp");
+                vrf.allocThisVrf();
+                rtrBgp bgp = new rtrBgp(vrf.fwd4, vrf, null, 0);
+                rtrBgpNeigh neig = new rtrBgpNeigh(bgp, new addrIP());
+                rtrBgpSpeak spk = new rtrBgpSpeak(bgp, neig, null, 0);
+                tabGen<tabSessionEntry> ses = new tabGen<tabSessionEntry>();
+                List<String> txt;
+                for (int i = 0;; i++) {
+                    if (nei.getMemory(i, pck)) {
+                        break;
+                    }
+                    if (sum) {
+                        txt = rtrBgpDump.dumpPacketSum(spk, vrf.core4, vrf.core6, tmp, pck, null);
+                    } else {
+                        txt = rtrBgpDump.dumpPacketFull(spk, vrf.core4, vrf.core6, ses, tmp, pck);
+                    }
+                    if (txt.size() < 1) {
+                        continue;
+                    }
+                    rdr.putStrArr(txt);
+                }
+                return;
+            }
             if (a.equals("tables")) {
                 rdr.putStrTab(nei.getTables());
                 return;

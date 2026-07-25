@@ -467,11 +467,11 @@ public class rtrLogger extends ipRtr {
         if (lastD == null) {
             return;
         }
-        lastD.add(0, stat);
-        int i = lastD.size();
-        if (i > lastM) {
-            lastD.remove(i - 1);
+        lastD.add(stat);
+        if (lastD.size() < lastM) {
+            return;
         }
+        lastD.remove(0);
     }
 
     private void doDiff(int afi, tabRoute<addrIP> o, tabRoute<addrIP> n) {
