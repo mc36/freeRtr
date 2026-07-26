@@ -334,24 +334,32 @@ public class userFlash {
             rdr.putStrArr(getFileInfo(a));
             return null;
         }
-        if (a.equals("cleanbak")) {
-            a = cmd.getRemaining();
-            List<String> lst = cleanBackups(a);
-            rdr.putStrArr(lst);
-            return null;
-        }
-        if (a.equals("cleanold")) {
-            long v = bits.str2long(cmd.word());
-            a = cmd.getRemaining();
-            List<String> lst = cleanOlder(v, a);
-            rdr.putStrArr(lst);
-            return null;
-        }
-        if (a.equals("cleansml")) {
-            long v = bits.str2long(cmd.word());
-            a = cmd.getRemaining();
-            List<String> lst = cleanSmaller(v, a);
-            rdr.putStrArr(lst);
+        if (a.equals("cleanup")) {
+            a = cmd.word();
+            if (a.equals("")) {
+                a = "backup";
+            }
+            if (a.equals("backup")) {
+                a = cmd.getRemaining();
+                List<String> lst = cleanBackups(a);
+                rdr.putStrArr(lst);
+                return null;
+            }
+            if (a.equals("older")) {
+                long v = bits.str2long(cmd.word());
+                a = cmd.getRemaining();
+                List<String> lst = cleanOlder(v, a);
+                rdr.putStrArr(lst);
+                return null;
+            }
+            if (a.equals("small")) {
+                long v = bits.str2long(cmd.word());
+                a = cmd.getRemaining();
+                List<String> lst = cleanSmaller(v, a);
+                rdr.putStrArr(lst);
+                return null;
+            }
+            cmd.badCmd();
             return null;
         }
         if (a.equals("peer")) {
@@ -450,7 +458,19 @@ public class userFlash {
             rdr.putStrTab(dir2txt(dirList(cmd.getRemaining())));
             return null;
         }
-        if (a.equals("count")) {
+        if (a.equals("recopy")) {
+            a = cmd.word();
+            int i = recursiveCopy(a, cmd.word());
+            pip.linePut(i + " files copied");
+            return null;
+        }
+        if (a.equals("recompare")) {
+            a = cmd.word();
+            int i = recursiveComp(new cryHashSha2256(), a, cmd.word());
+            pip.linePut(i + " files differ");
+            return null;
+        }
+        if (a.equals("recount")) {
             rdr.putStrTab(dirUsage(cmd.getRemaining()));
             return null;
         }
@@ -1409,6 +1429,87 @@ public class userFlash {
                 continue;
             }
             res += recursiveUsage(nl);
+        }
+        return res;
+    }
+
+    /**
+     * recursive copy
+     *
+     * @param src source
+     * @param trg target
+     */
+    protected int recursiveCopy(String src, String trg) {
+        File[] fl = dirList(src);
+        if (fl == null) {
+            return 0;
+        }
+        int res = 0;
+        for (int i = 0; i < fl.length; i++) {
+            File sf = fl[i];
+            if (sf == null) {
+                continue;
+            }
+            String a = sf.getName();
+            if (sf.isDirectory()) {
+                a = trg + a;
+                pip.linePut(a);
+                mkdir(a);
+                res += recursiveCopy(sf.getAbsolutePath(), a + "/");
+                continue;
+            }
+            File tf = new File(trg + a);
+            if ((tf.lastModified() == sf.lastModified()) && (tf.length() == sf.length())) {
+                continue;
+            }
+            pip.linePut(trg + a);
+            copy(sf.getAbsolutePath(), tf.getAbsolutePath(), true);
+            tf.setLastModified(sf.lastModified());
+            res++;
+        }
+        return res;
+    }
+
+    /**
+     * recursive compare
+     *
+     * @param src source
+     * @param trg target
+     */
+    protected int recursiveComp(cryHashGeneric h, String src, String trg) {
+        File[] fl = dirList(src);
+        if (fl == null) {
+            return 0;
+        }
+        int res = 0;
+        for (int i = 0; i < fl.length; i++) {
+            File sf = fl[i];
+            if (sf == null) {
+                continue;
+            }
+            String a = sf.getName();
+            if (sf.isDirectory()) {
+                res += recursiveComp(h, sf.getAbsolutePath(), trg + a + "/");
+                continue;
+            }
+            pip.linePut(trg + a);
+            File tf = new File(trg + a);
+            if (tf.length() != sf.length()) {
+                res++;
+                continue;
+            }
+            h.init();
+            cryUtils.hashFile(h, sf);
+            byte[] buf1 = h.finish();
+            h.init();
+            cryUtils.hashFile(h, tf);
+            byte[] buf2 = h.finish();
+            if (bits.byteComp(buf1, 0, buf2, 0, buf1.length) == 0) {
+                continue;
+            }
+            tf.setLastModified(sf.lastModified() - 86400000);
+            pip.linePut("  hash differs");
+            res++;
         }
         return res;
     }
