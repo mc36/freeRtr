@@ -1128,7 +1128,7 @@ public class userExec {
         hl.add(null, false, 7, new int[]{-1}, "tables", "tables status");
         hl.add(null, false, 7, new int[]{8}, "memory", "message memory");
         hl.add(null, false, 8, new int[]{-1}, "full", "full dump");
-        hl.add(null, false, 8, new int[]{-1}, "sum", "summary dump");
+        hl.add(null, false, 8, new int[]{-1}, "brief", "summary dump");
         rtrBgpParam.getAfiList(hl, 7, new int[]{8}, "show", false);
         hl.add(null, false, 8, new int[]{9, -1}, "learned", "routes learned from neighbor");
         hl.add(null, false, 9, new int[]{10, -1}, "[addr]", "prefix to view");
