@@ -18,7 +18,7 @@ public class vuDoer {
     }
 
     private static double getVu(double sum, int len) {
-        double rms = Math.sqrt(sum * 4.0 / (double) len);
+        double rms = Math.sqrt(sum * (double) (2 * devicer.smpb) / (double) len);
         return (20.0 * Math.log10(rms)) + 3.8;
     }
 
@@ -92,8 +92,8 @@ public class vuDoer {
 
     public void doer(byte[] buf, int len) {
         if (cnt >= devicer.rate) {
-            avgL /= ((double) devicer.rate / (double) rtper.payload);
-            avgR /= ((double) devicer.rate / (double) rtper.payload);
+            avgL /= ((double) devicer.rate / (double) devicer.payl);
+            avgR /= ((double) devicer.rate / (double) devicer.payl);
             System.out.println(barL(avgL) + "  " + barR(avgR));
             avgL = 0.0;
             avgR = 0.0;
@@ -101,10 +101,10 @@ public class vuDoer {
         }
         double sumL = 0;
         double sumR = 0;
-        for (int i = 0; i < len; i += 4) {
+        for (int i = 0; i < len; i += devicer.smpb * 2) {
             double o = getSam(buf, i + 0);
             sumL += o * o;
-            o = getSam(buf, i + 2);
+            o = getSam(buf, i + devicer.smpb);
             sumR += o * o;
         }
         sumL = getAng(getVu(sumL, len));

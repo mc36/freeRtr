@@ -30,7 +30,7 @@ void iou_write() {
     iou_pmsb(4, plyClk);
     iou_pmsb(8, plySrc);
     plySeq = (plySeq + 1) & 0xffff;
-    plyClk += (bufS - padln) >> 2;
+    plyClk += (bufS - padln) / (2 * smpbt);
     if (send(plyHnd, bufD, bufS, 0) != bufS) err("error sending");
 }
 

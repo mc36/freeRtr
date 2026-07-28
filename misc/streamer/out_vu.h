@@ -15,7 +15,7 @@ double vuSam(int ofs) {
 }
 
 double vuRms(double sum) {
-    double rms = sqrt(sum * 4.0 / (double) bufS);
+    double rms = sqrt(sum * (double) (2 * smpbt) / (double) bufS);
     return (20.0 * log10l(rms)) + 3.8;
 }
 
@@ -95,10 +95,10 @@ void iou_write() {
     }
     double sumL = 0;
     double sumR = 0;
-    for (int i=0; i < bufS; i+=4) {
+    for (int i = 0; i < bufS; i += 2 * smpbt) {
         double o = vuSam(i + 0);
         sumL += o * o;
-        o = vuSam(i + 2);
+        o = vuSam(i + smpbt);
         sumR += o * o;
     }
     sumL = vuAng(vuRms(sumL));

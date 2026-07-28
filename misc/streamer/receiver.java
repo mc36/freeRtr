@@ -14,7 +14,7 @@ public class receiver {
         SourceDataLine dataLine = devicer.getPlayback(args[0]);
         DatagramChannel channel = rtper.receive(args[1], args[2], args[3]);
         ByteBuffer buffer = ByteBuffer.allocate(4096);
-        byte[] buf = new byte[rtper.payload];
+        byte[] buf = new byte[devicer.payl];
         for (;;) {
             buffer.clear();
             channel.receive(buffer);

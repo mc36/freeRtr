@@ -1,21 +1,25 @@
 
+import javax.sound.sampled.SourceDataLine;
+
 /**
- * stream from file
+ * play and vu file
  *
  * @author matecsaba
  */
-public class sender {
+public class vuPlayback {
 
     public static void main(String[] args) throws Exception {
         decoder dec = new decoder(args[0], args[1]);
-        rtper rtp = new rtper(args[2], args[3]);
+        SourceDataLine dataLine = devicer.getPlayback(args[2]);
         byte[] buf = new byte[devicer.payl];
+        vuDoer vu = new vuDoer();
         for (;;) {
             int i = dec.read(buf);
-            if (i < 1) {
+            if (i < 0) {
                 break;
             }
-            rtp.write(buf, i);
+            dataLine.write(buf, 0, i);
+            vu.doer(buf, i);
         }
     }
 

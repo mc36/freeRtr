@@ -23,8 +23,8 @@ public class decoder {
             "-vn", "-sn",
             "-ar", "" + devicer.rate,
             "-ac", "2",
-            "-c:a", "pcm_s16be",
-            "-f", "s16be",
+            "-c:a", "pcm_s" + (devicer.smpb * 8) + "be",
+            "-f", "s" + (devicer.smpb * 8) + "be",
             "-"};
         process = Runtime.getRuntime().exec(cmd);
         stream = process.getInputStream();

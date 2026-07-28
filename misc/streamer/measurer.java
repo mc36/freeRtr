@@ -9,25 +9,23 @@ import javax.sound.sampled.TargetDataLine;
 public class measurer {
 
     public static void main(String[] args) throws Exception {
-        int per = (Integer.parseInt(args[3]) * 4 * devicer.rate) / rtper.payload;
+        int per = (Integer.parseInt(args[3]) * devicer.smpb * 2 * devicer.rate) / devicer.payl;
         int mul = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         rtper rtp = new rtper(args[1], args[2]);
-        byte[] buf = new byte[rtper.payload];
+        byte[] buf = new byte[devicer.payl];
         byte[] sln = new byte[buf.length];
         byte[] snd = new byte[buf.length];
-        for (int i = 0; i < snd.length; i += 4) {
-            int val = (int) (32767 * Math.sin(i * Math.PI * rtper.payload / devicer.rate));
+        for (int i = 0; i < snd.length; i += devicer.smpb * 2) {
+            int val = (int) (32767 * Math.sin(i * Math.PI * devicer.payl / devicer.rate));
             byte hi = (byte) (val >> 8);
             byte lo = (byte) (val & 0xff);
             snd[i + 0] = hi;
             snd[i + 1] = lo;
-            snd[i + 2] = hi;
-            snd[i + 3] = lo;
-            sln[i + 0] = 0;
+            snd[i + 0 + devicer.smpb] = hi;
+            snd[i + 1 + devicer.smpb] = lo;
             sln[i + 1] = hi;
-            sln[i + 2] = 0;
-            sln[i + 3] = hi;
+            sln[i + 1 + devicer.smpb] = hi;
         }
         int pos = 0;
         int ned = Integer.MAX_VALUE;
@@ -46,22 +44,21 @@ public class measurer {
             }
             pos++;
             avg = 0;
-            for (int i = 0; i < len; i += 2) {
+            for (int i = 0; i < len; i += devicer.smpb) {
                 int o = buf[i + 0];
                 if (o < 0) {
                     o = -o;
                 }
                 avg += o;
             }
-            avg /= buf.length >> 1;
+            avg /= buf.length / 2;
             if (avg < 1) {
                 avg = 1;
             }
             if (avg < ned) {
                 continue;
             }
-            int i = pos * len;
-            i >>= 2;
+            int i = (pos * len) / (2 * devicer.smpb);
             int q = (i * 1000) / devicer.rate;
             System.out.println(avg + " > " + ned + " @ " + pos + " [" + i + "] (" + q + "ms)");
             ned = Integer.MAX_VALUE;

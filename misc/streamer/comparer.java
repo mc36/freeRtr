@@ -54,9 +54,9 @@ class comparerOne {
 
     public void addBuf(byte[] buf, int len) {
         int o = pos;
-        for (int i = 0; i < len; i += 4) {
+        for (int i = 0; i < len; i += devicer.smpb * 2) {
             int p = (int) buf[i + 0];
-            p += (int) buf[i + 2];
+            p += (int) buf[i + devicer.smpb];
             if (p < 0) {
                 p = -p;
             }
@@ -146,7 +146,7 @@ class comparerDev extends comparerOne implements Runnable {
     }
 
     public void run() {
-        byte[] buf = new byte[rtper.payload];
+        byte[] buf = new byte[devicer.payl];
         for (;;) {
             int i = dataLine.read(buf, 0, buf.length);
             if (i < 1) {
@@ -170,7 +170,7 @@ class comparerNet extends comparerOne implements Runnable {
 
     public void run() {
         ByteBuffer buffer = ByteBuffer.allocate(4096);
-        byte[] buf = new byte[rtper.payload];
+        byte[] buf = new byte[devicer.payl];
         for (;;) {
             buffer.clear();
             try {

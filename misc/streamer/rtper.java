@@ -14,10 +14,6 @@ import java.util.Random;
  */
 public class rtper {
 
-    public final static int size = 12;
-
-    public final static int payload = 1280;
-
     private ByteBuffer buffer;
 
     private DatagramChannel target;
@@ -47,13 +43,13 @@ public class rtper {
         putMsb(buffer, 0, 0x800a0000 | seq);
         putMsb(buffer, 4, clk);
         putMsb(buffer, 8, src);
-        buffer.put(size, buf, 0, len);
+        buffer.put(devicer.rtpl, buf, 0, len);
         buffer.position(0);
-        buffer.limit(len + size);
+        buffer.limit(len + devicer.rtpl);
         target.write(buffer);
         seq++;
         seq &= 0xffff;
-        clk += len >>> 2;
+        clk += len / (2 * devicer.smpb);
     }
 
     private static void putMsb(ByteBuffer buf, int ofs, int val) {
@@ -63,9 +59,9 @@ public class rtper {
         buf.put(ofs + 3, (byte) val);
     }
 
-    public static int decode(ByteBuffer buf, byte[]res) {
-        int len = buf.position() - size;
-        buf.get(size, res, 0, len);
+    public static int decode(ByteBuffer buf, byte[] res) {
+        int len = buf.position() - devicer.rtpl;
+        buf.get(devicer.rtpl, res, 0, len);
         return len;
     }
 

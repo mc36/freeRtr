@@ -10,7 +10,7 @@ public class vuMeterLoc {
 
     public static void main(String[] args) throws Exception {
         TargetDataLine dataLine = devicer.getRecord(args[0]);
-        byte[] buf = new byte[rtper.payload];
+        byte[] buf = new byte[devicer.payl];
         vuDoer vu = new vuDoer();
         for (;;) {
             int i = dataLine.read(buf, 0, buf.length);
