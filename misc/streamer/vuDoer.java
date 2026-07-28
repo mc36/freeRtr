@@ -19,82 +19,51 @@ public class vuDoer {
 
     private static double getVu(double sum, int len) {
         double rms = Math.sqrt(sum * (double) (2 * devicer.smpb) / (double) len);
-        return (20.0 * Math.log10(rms)) + 3.8;
+        return Math.max(0.0, Math.min(50.0, (50.0 * Math.log10(rms)) + 50.0));
     }
 
-    private static double getAng(double vu) {
-        if (vu <= -20) {
-            return -25;
-        }
-        if (vu >= 3) {
-            return 25;
-        }
-        if (vu <= -20) {
-            return -23;
-        }
-        if (vu <= -10) {
-            return -23 + ((vu + 20) / 10) * 7;
-        }
-        if (vu <= -7) {
-            return -16 + ((vu + 10) / 3) * 4;
-        }
-        if (vu <= -5) {
-            return -12 + ((vu + 7) / 2) * 4;
-        }
-        if (vu <= -3) {
-            return -8 + ((vu + 5) / 2) * 5;
-        }
-        if (vu <= -2) {
-            return -3 + ((vu + 3) / 1) * 3;
-        }
-        if (vu <= -1) {
-            return 0 + ((vu + 2) / 1) * 3.5;
-        }
-        if (vu <= 0) {
-            return 3.5 + ((vu + 1) / 1) * 4.5;
-        }
-        if (vu <= 1) {
-            return 8 + (vu / 1) * 5;
-        }
-        if (vu <= 2) {
-            return 13 + ((vu - 1) / 1) * 5;
-        }
-        if (vu <= 3) {
-            return 18 + ((vu - 2) / 1) * 7;
-        } else {
-            return 25;
-        }
-    }
-
-    private static String barL(double val) {
-        String a = "";
-        int cur = 25 + (int) val;
+    private static int barE(byte[] out, int pos, double val) {
+        int cur = (int) val;
         for (int i = cur; i < 50; i++) {
-            a += ' ';
+            out[pos] = ' ';
+            pos++;
         }
-        for (int i = 0; i < cur; i++) {
-            a += '*';
-        }
-        return a;
+        return pos;
     }
 
-    private static String barR(double val) {
-        String a = "";
-        int cur = 25 + (int) val;
+    private static int barM(byte[] out, int pos, double val) {
+        int cur = (int) val;
         for (int i = 0; i < cur; i++) {
-            a += '*';
+            out[pos] = '*';
+            pos++;
         }
-        for (int i = cur; i < 50; i++) {
-            a += ' ';
-        }
-        return a;
+        return pos;
+    }
+
+    private static int barC(byte[] out, int pos, byte c) {
+        out[pos] = c;
+        pos++;
+        return pos;
+    }
+
+    private static String bars(double l, double r, byte e) {
+        byte[] out = new byte[200];
+        int pos = 0;
+        pos = barE(out, pos, l);
+        pos = barM(out, pos, l);
+        pos = barC(out, pos, (byte) 32);
+        pos = barC(out, pos, (byte) 32);
+        pos = barM(out, pos, r);
+        pos = barE(out, pos, r);
+        pos = barC(out, pos, e);
+        return new String(out, 0, pos);
     }
 
     public void doer(byte[] buf, int len) {
         if (cnt >= devicer.rate) {
             avgL /= ((double) devicer.rate / (double) devicer.payl);
             avgR /= ((double) devicer.rate / (double) devicer.payl);
-            System.out.println(barL(avgL) + "  " + barR(avgR));
+            System.out.print(bars(avgL, avgR, (byte) 10));
             avgL = 0.0;
             avgR = 0.0;
             cnt = 0;
@@ -107,12 +76,12 @@ public class vuDoer {
             o = getSam(buf, i + devicer.smpb);
             sumR += o * o;
         }
-        sumL = getAng(getVu(sumL, len));
-        sumR = getAng(getVu(sumR, len));
+        sumL = getVu(sumL, len);
+        sumR = getVu(sumR, len);
         avgL += sumL;
         avgR += sumR;
         cnt += len;
-        System.out.print(barL(sumL) + "  " + barR(sumR) + "\r");
+        System.out.print(bars(sumL, sumR, (byte) 13));
     }
 
 }

@@ -10,57 +10,13 @@ void ply_init() {
 
 
 double vuSam(int ofs) {
-    int i = ((char)bufD[ofs + padln + 1] << 8) + bufD[ofs + padln + 0];
+    int i = ((char)bufD[ofs + padln + smpbt - 1] << 8) + bufD[ofs + padln + smpbt - 2];
     return (double) i / 32768.0;
 }
 
 double vuRms(double sum) {
     double rms = sqrt(sum * (double) (2 * smpbt) / (double) bufS);
-    return (20.0 * log10l(rms)) + 3.8;
-}
-
-double vuAng(double vu) {
-    if (vu <= -20) {
-        return -25;
-    }
-    if (vu >= 3) {
-        return 25;
-    }
-    if (vu <= -20) {
-        return -23;
-    }
-    if (vu <= -10) {
-        return -23 + ((vu + 20) / 10) * 7;
-    }
-    if (vu <= -7) {
-        return -16 + ((vu + 10) / 3) * 4;
-    }
-    if (vu <= -5) {
-        return -12 + ((vu + 7) / 2) * 4;
-    }
-    if (vu <= -3) {
-        return -8 + ((vu + 5) / 2) * 5;
-    }
-    if (vu <= -2) {
-        return -3 + ((vu + 3) / 1) * 3;
-    }
-    if (vu <= -1) {
-        return 0 + ((vu + 2) / 1) * 3.5;
-    }
-    if (vu <= 0) {
-        return 3.5 + ((vu + 1) / 1) * 4.5;
-    }
-    if (vu <= 1) {
-        return 8 + (vu / 1) * 5;
-    }
-    if (vu <= 2) {
-        return 13 + ((vu - 1) / 1) * 5;
-    }
-    if (vu <= 3) {
-        return 18 + ((vu - 2) / 1) * 7;
-    } else {
-        return 25;
-    }
+    return fmax(0.0, fmin(50.0, (50.0 * log10(rms)) + 50.0));
 }
 
 #define vuBarC(chr) {out[pos]=chr;pos++;}
@@ -72,12 +28,12 @@ double vuAng(double vu) {
 void vuBars(double l, double r, char e) {
     char out[200];
     int pos = 0;
-    int cur = 25 + (int)l;
+    int cur = (int)l;
     vuBarE;
     vuBarM;
     vuBarC(' ');
     vuBarC(' ');
-    cur = 25 + (int)r;
+    cur = (int)r;
     vuBarM;
     vuBarE;
     vuBarC(e);
@@ -101,8 +57,8 @@ void iou_write() {
         o = vuSam(i + smpbt);
         sumR += o * o;
     }
-    sumL = vuAng(vuRms(sumL));
-    sumR = vuAng(vuRms(sumR));
+    sumL = vuRms(sumL);
+    sumR = vuRms(sumR);
     plyAvgL += sumL;
     plyAvgR += sumR;
     plyCnt += bufS;
