@@ -18593,3 +18593,6 @@ qc pass: dvbmpe custom pid
 ---------------------------------- 2026-07-12 16:54:26 26.7.12
 no failed: dvbmpe encapsulation
 qc pass: dvbmpe encapsulation
+---------------------------------- 2026-07-29 13:06:12 26.7.29
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
