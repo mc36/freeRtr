@@ -9,7 +9,13 @@ public class visDoer {
 
     private final double[] vr = new double[2048];
 
+    public visDoer() {
+        System.out.print("\033[0;0H");
+        System.out.print("\033[2J");
+    }
+
     public void doer(byte[] buf, int len) {
+        System.out.print("\033[0;0H");
         int num = len / (devicer.smpb * 2);
         int pos = vl.length - num;
         System.arraycopy(vl, num, vl, 0, pos);
@@ -30,12 +36,6 @@ public class visDoer {
         sl = fft(vl);
         sr = fft(vr);
         print(sl, sr);
-        System.out.print("\033[0;0H");
-    }
-
-    public visDoer() {
-        System.out.print("\033[0;0H");
-        System.out.print("\033[2J");
     }
 
     private static void print(char[][] sl, char[][] sr) {
@@ -79,9 +79,9 @@ public class visDoer {
             for (int k = 0; k < num; k += n2) {
                 for (int i = 1; i <= n2; i++) {
                     p = bitrev(k >> nu1, nu);
-                    arg = 2 * (double) Math.PI * p / num;
-                    c = (double) Math.cos(arg);
-                    s = (double) Math.sin(arg);
+                    arg = 2 * Math.PI * p / num;
+                    c = Math.cos(arg);
+                    s = Math.sin(arg);
                     tr = xre[k + n2] * c + xim[k + n2] * s;
                     ti = xim[k + n2] * c - xre[k + n2] * s;
                     xre[k + n2] = xre[k] - tr;
@@ -105,9 +105,9 @@ public class visDoer {
                 xim[r] = ti;
             }
         }
-        mag[0] = (double) (Math.sqrt(xre[0] * xre[0] + xim[0] * xim[0])) / num;
+        mag[0] = Math.sqrt(xre[0] * xre[0] + xim[0] * xim[0]) / num;
         for (int i = 1; i < num / 2; i++) {
-            mag[i] = 2 * (double) (Math.sqrt(xre[i] * xre[i] + xim[i] * xim[i])) / num;
+            mag[i] = 2 * Math.sqrt(xre[i] * xre[i] + xim[i] * xim[i]) / num;
         }
         double bin[] = new double[maxX];
         double max = Double.MIN_VALUE;
