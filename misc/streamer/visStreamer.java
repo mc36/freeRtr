@@ -6,13 +6,13 @@ import javax.sound.sampled.TargetDataLine;
  *
  * @author mc36
  */
-public class vuStreamer {
+public class visStreamer {
 
     public static void main(String[] args) throws Exception {
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         rtper rtp = new rtper(args[1], args[2]);
         byte[] buf = new byte[devicer.payl];
-        vuDoer vu = new vuDoer();
+        visDoer vu = new visDoer();
         for (;;) {
             int i = dataLine.read(buf, 0, buf.length);
             if (i < 1) {

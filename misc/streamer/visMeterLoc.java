@@ -2,16 +2,16 @@
 import javax.sound.sampled.TargetDataLine;
 
 /**
- * measure vu level
+ * measure local level
  *
  * @author matecsaba
  */
-public class vuMeterLoc {
+public class visMeterLoc {
 
     public static void main(String[] args) throws Exception {
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         byte[] buf = new byte[devicer.payl];
-        vuDoer vu = new vuDoer();
+        visDoer vu = new visDoer();
         for (;;) {
             int i = dataLine.read(buf, 0, buf.length);
             if (i < 1) {

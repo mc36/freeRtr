@@ -1,19 +1,21 @@
 
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import javax.sound.sampled.SourceDataLine;
 
 /**
- * measure vu level
+ * play and show stream
  *
  * @author matecsaba
  */
-public class vuMeterRem {
+public class visReceiver {
 
     public static void main(String[] args) throws Exception {
-        DatagramChannel channel = rtper.receive(args[0], args[1], args[2]);
+        SourceDataLine dataLine = devicer.getPlayback(args[0]);
+        DatagramChannel channel = rtper.receive(args[1], args[2], args[3]);
         ByteBuffer buffer = ByteBuffer.allocate(4096);
         byte[] buf = new byte[devicer.payl];
-        vuDoer vu = new vuDoer();
+        visDoer vu = new visDoer();
         for (;;) {
             buffer.clear();
             channel.receive(buffer);
@@ -21,6 +23,7 @@ public class vuMeterRem {
             if (i < 1) {
                 break;
             }
+            dataLine.write(buf, 0, i);
             vu.doer(buf, i);
         }
     }
