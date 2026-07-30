@@ -57,6 +57,11 @@ public class userLine {
     public int execHistory = 64;
 
     /**
+     * save command history to file, name is auto generated per user
+     */
+    public boolean execHistFile = false;
+
+    /**
      * rib lines
      */
     public int execRibLines = 8192;
@@ -305,6 +310,7 @@ public class userLine {
         new userFilter(".*", cmds.tabulator + "exec width 79", null),
         new userFilter(".*", cmds.tabulator + "exec height 24", null),
         new userFilter(".*", cmds.tabulator + "exec history 64", null),
+        new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec histfile", null),
         new userFilter(".*", cmds.tabulator + "exec riblines 8192", null),
         new userFilter(".*", cmds.tabulator + cmds.negated + cmds.tabulator + "exec timestamp", null),
         new userFilter(".*", cmds.tabulator + "exec colorize normal", null),
@@ -508,6 +514,7 @@ public class userLine {
         lst.add(beg + "exec width " + execWidth);
         lst.add(beg + "exec height " + execHeight);
         lst.add(beg + "exec history " + execHistory);
+        cmds.cfgLine(lst, !execHistFile, beg, "exec histfile", "");
         lst.add(beg + "exec riblines " + execRibLines);
         cmds.cfgLine(lst, !execTimes, beg, "exec timestamp", "");
         cmds.cfgLine(lst, !execSpace, beg, "exec spacetab", "");
@@ -626,6 +633,10 @@ public class userLine {
             }
             if (s.equals("history")) {
                 execHistory = bits.str2num(cmd.word());
+                return false;
+            }
+            if (s.equals("histfile")) {
+                execHistFile = true;
                 return false;
             }
             if (s.equals("riblines")) {
@@ -918,6 +929,10 @@ public class userLine {
                 autoCommand = "";
                 return false;
             }
+            if (s.equals("histfile")) {
+                execHistFile = false;
+                return false;
+            }
             if (s.equals("privilege")) {
                 promptPrivilege = 15;
                 return false;
@@ -1041,6 +1056,7 @@ public class userLine {
         l.add(null, false, 3, new int[]{-1}, "<num>", "number of lines");
         l.add(null, false, 2, new int[]{3}, "history", "set history size");
         l.add(null, false, 3, new int[]{-1}, "<num>", "number of lines");
+        l.add(null, false, 2, new int[]{-1}, "histfile", "save history to file per user");
         l.add(null, false, 2, new int[]{3}, "riblines", "set rib buffer size");
         l.add(null, false, 3, new int[]{-1}, "<num>", "number of lines");
         l.add(null, false, 2, new int[]{3}, "ready", "set ready message");
@@ -1347,7 +1363,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         userLine.prevUserGlb = s;
         parent.prevUserLoc = s;
         pipe.setTime(parent.execTimeOut);
-        userReader rdr = new userReader(pipe, parent);
+        userReader rdr = new userReader(pipe, parent, user.user);
         pipe.settingsPut(pipeSetting.origin, remote);
         pipe.settingsPut(pipeSetting.authed, user);
         exe = new userExec(pipe, rdr);

@@ -35,6 +35,8 @@ public class userReader implements Comparator<String> {
 
     private String[] histD; // history data
 
+    private String histF = ""; // history file, empty means no saving
+
     private int histN; // history number
 
     private String curr; // current line
@@ -222,6 +224,17 @@ public class userReader implements Comparator<String> {
      * @param parent line to use
      */
     public userReader(pipeSide pip, userLine parent) {
+        this(pip, parent, null);
+    }
+
+    /**
+     * constructs new reader for a pipeline
+     *
+     * @param pip pipeline to use as input
+     * @param parent line to use
+     * @param user logged in user, used for per-user history file
+     */
+    public userReader(pipeSide pip, userLine parent, String user) {
         pipe = pip;
         clip = "";
         filterS = "";
@@ -248,6 +261,8 @@ public class userReader implements Comparator<String> {
             return;
         }
         setHistory(parent.execHistory);
+        histF = histFileName(parent.execHistFile, user);
+        loadHistory();
         pipe.settingsAdd(pipeSetting.spacTab, parent.execSpace);
         pipe.settingsAdd(pipeSetting.capsLock, parent.execCaps);
         pipe.settingsAdd(pipeSetting.ansiMode, parent.ansiMode);
@@ -322,6 +337,48 @@ public class userReader implements Comparator<String> {
             }
         }
         histD = d;
+    }
+
+    private static String histFileName(boolean save, String user) {
+        if (!save) {
+            return "";
+        }
+        if (user == null) {
+            user = "";
+        }
+        String s = "";
+        for (int i = 0; i < user.length(); i++) {
+            char c = user.charAt(i);
+            if (!(Character.isLetterOrDigit(c) || (c == '.') || (c == '-') || (c == '_'))) {
+                c = '_';
+            }
+            s += c;
+        }
+        if (s.length() < 1) {
+            s = "_";
+        }
+        return cfgInit.getRWpath() + "hist-" + s + ".txt";
+    }
+
+    private void loadHistory() {
+        if (histF.length() < 1) {
+            return;
+        }
+        List<String> l = bits.txt2buf(histF);
+        if (l == null) {
+            return;
+        }
+        int i = l.size();
+        for (int o = 0; (o < i) && (o < histD.length); o++) {
+            histD[o] = l.get(i - o - 1);
+        }
+    }
+
+    private void saveHistory() {
+        if (histF.length() < 1) {
+            return;
+        }
+        bits.buf2txt(true, getHistory(), histF);
     }
 
     private void findColumn(List<String> lst) {
@@ -1283,6 +1340,7 @@ public class userReader implements Comparator<String> {
                 histD[i + 1] = histD[i];
             }
             histD[0] = a;
+            saveHistory();
         }
         String b = help.repairLine(a);
         if (!help.endOfCmd(b)) {
