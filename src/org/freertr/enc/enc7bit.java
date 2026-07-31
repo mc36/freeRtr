@@ -185,6 +185,25 @@ public class enc7bit {
     }
 
     /**
+     * decode safe byte
+     *
+     * @param i byte to decode
+     * @return decoded byte
+     */
+    public static byte decodeSafeByte(int i) {
+        if ((i >= 0x41) && (i <= 0x5a)) { // upper case
+            return (byte) i;
+        }
+        if ((i >= 0x61) && (i <= 0x7a)) { // lower case
+            return (byte) i;
+        }
+        if ((i >= 0x30) && (i <= 0x39)) { // numbers
+            return (byte) i;
+        }
+        return 0x5f;
+    }
+
+    /**
      * decode extended byte
      *
      * @param i byte to decode
@@ -419,6 +438,23 @@ public class enc7bit {
             default:
                 return '?';
         }
+    }
+
+    /**
+     * decode safe ascii string
+     *
+     * @param s string to decode
+     * @return decoded string
+     */
+    public final static String decodeSafeStr(String s) {
+        byte[] org = s.getBytes();
+        byte[] res = new byte[org.length];
+        for (int i = 0; i < org.length; i++) {
+            byte c = org[i];
+            byte r = decodeSafeByte(c);
+            res[i] = r;
+        }
+        return new String(res);
     }
 
     /**

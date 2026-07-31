@@ -57,7 +57,7 @@ public class userLine {
     public int execHistory = 64;
 
     /**
-     * save command history to file, name is auto generated per user
+     * save command history to file
      */
     public boolean execHistFile = false;
 
@@ -1363,7 +1363,7 @@ class userLineHandler implements Runnable, Comparable<userLineHandler> {
         userLine.prevUserGlb = s;
         parent.prevUserLoc = s;
         pipe.setTime(parent.execTimeOut);
-        userReader rdr = new userReader(pipe, parent, user.user);
+        userReader rdr = new userReader(pipe, parent);
         pipe.settingsPut(pipeSetting.origin, remote);
         pipe.settingsPut(pipeSetting.authed, user);
         exe = new userExec(pipe, rdr);
