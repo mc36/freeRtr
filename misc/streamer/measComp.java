@@ -4,20 +4,20 @@ import java.nio.channels.DatagramChannel;
 import javax.sound.sampled.TargetDataLine;
 
 /**
- * compare streams
+ * compare live stream
  *
  * @author matecsaba
  */
-public class comparer {
+public class measComp {
 
     public static void main(String[] args) throws Exception {
         int sec = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
-        comparerOne dev = new comparerDev(dataLine, sec);
+        measCompOne dev = new measCompDev(dataLine, sec);
         DatagramChannel channel = rtper.receive(args[1], args[2], args[3]);
-        comparerOne net = new comparerNet(channel, sec);
-        comparerOne d = new comparerOne(sec);
-        comparerOne n = new comparerOne(sec);
+        measCompOne net = new measCompNet(channel, sec);
+        measCompOne d = new measCompOne(sec);
+        measCompOne n = new measCompOne(sec);
         for (;;) {
             Thread.sleep(250);
             dev.doCopy(d);
@@ -28,7 +28,7 @@ public class comparer {
 
 }
 
-class comparerOne {
+class measCompOne {
 
     public byte[] cur;
 
@@ -40,13 +40,13 @@ class comparerOne {
 
     public float div;
 
-    public comparerOne(int sec) {
+    public measCompOne(int sec) {
         cur = new byte[devicer.rate * sec];
         pos = 0;
         tot = 0;
     }
 
-    public void doCopy(comparerOne r) {
+    public void doCopy(measCompOne r) {
         System.arraycopy(cur, 0, r.cur, 0, cur.length);
         r.pos = pos;
         r.tot = tot;
@@ -85,7 +85,7 @@ class comparerOne {
         }
     }
 
-    public int doDiff(comparerOne oth, int beg, int max) {
+    public int doDiff(measCompOne oth, int beg, int max) {
         int r = 0;
         int p = beg + pos;
         int o = oth.pos;
@@ -111,7 +111,7 @@ class comparerOne {
         return r;
     }
 
-    public void doFull(comparerOne oth) {
+    public void doFull(measCompOne oth) {
         doBuf();
         oth.doBuf();
         int m = doDiff(oth, 0, Integer.MAX_VALUE);
@@ -135,11 +135,11 @@ class comparerOne {
 
 }
 
-class comparerDev extends comparerOne implements Runnable {
+class measCompDev extends measCompOne implements Runnable {
 
     private TargetDataLine dataLine;
 
-    public comparerDev(TargetDataLine dl, int sec) {
+    public measCompDev(TargetDataLine dl, int sec) {
         super(sec);
         dataLine = dl;
         new Thread(this).start();
@@ -158,11 +158,11 @@ class comparerDev extends comparerOne implements Runnable {
 
 }
 
-class comparerNet extends comparerOne implements Runnable {
+class measCompNet extends measCompOne implements Runnable {
 
     private DatagramChannel channel;
 
-    public comparerNet(DatagramChannel ch, int sec) {
+    public measCompNet(DatagramChannel ch, int sec) {
         super(sec);
         channel = ch;
         new Thread(this).start();

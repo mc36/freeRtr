@@ -2,11 +2,11 @@
 import javax.sound.sampled.TargetDataLine;
 
 /**
- * measure live delay
+ * measure beep delay
  *
  * @author matecsaba
  */
-public class measurer {
+public class measBeep {
 
     public static void main(String[] args) throws Exception {
         int per = (Integer.parseInt(args[3]) * devicer.smpb * 2 * devicer.rate) / devicer.payl;
