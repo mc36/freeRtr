@@ -21,6 +21,7 @@ public class devicer {
     public static final int rtpl = 12;
 
     public static Mixer.Info findDevice(String dev) {
+        dev = ".*" + dev + ".*";
         Mixer.Info[] mixers = AudioSystem.getMixerInfo();
         int mixerc = -1;
         for (int i = 0; i < mixers.length; i++) {

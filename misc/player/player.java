@@ -678,10 +678,11 @@ public class player implements Runnable {
      * @throws Exception on error
      */
     public static void flushStream(InputStream strm) throws Exception {
-        byte[] buf = new byte[strm.available()];
-        if (buf.length < 1) {
+        int i = strm.available();
+        if (i < 1) {
             return;
         }
+        byte[] buf = new byte[i];
         strm.read(buf);
     }
 

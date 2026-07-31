@@ -27,6 +27,8 @@ public class decoder {
             "-f", "s" + (devicer.smpb * 8) + "be",
             "-"};
         process = Runtime.getRuntime().exec(cmd);
+        stream = process.getErrorStream();
+        stream.close();
         stream = process.getInputStream();
     }
 
