@@ -16,17 +16,8 @@ public class measBeep {
         byte[] buf = new byte[devicer.payl];
         byte[] sln = new byte[buf.length];
         byte[] snd = new byte[buf.length];
-        for (int i = 0; i < snd.length; i += devicer.smpb * 2) {
-            int val = (int) (32767 * Math.sin(i * Math.PI * devicer.payl / devicer.rate));
-            byte hi = (byte) (val >> 8);
-            byte lo = (byte) (val & 0xff);
-            snd[i + 0] = hi;
-            snd[i + 1] = lo;
-            snd[i + 0 + devicer.smpb] = hi;
-            snd[i + 1 + devicer.smpb] = lo;
-            sln[i + 1] = hi;
-            sln[i + 1 + devicer.smpb] = hi;
-        }
+        measFreq.toneGen(snd, 0, 1000, 32767);
+        measFreq.toneGen(sln, 0, 1000, 127);
         int pos = 0;
         int ned = Integer.MAX_VALUE;
         int avg = 0;
@@ -36,15 +27,15 @@ public class measBeep {
                 break;
             }
             if (pos > per) {
-                rtp.write(snd, len);
+                rtp.write(snd, snd.length);
                 pos = 0;
                 ned = avg * mul;
             } else {
-                rtp.write(sln, len);
+                rtp.write(sln, sln.length);
             }
             pos++;
             avg = 0;
-            for (int i = 0; i < len; i += devicer.smpb) {
+            for (int i = 0; i < buf.length; i += devicer.smpb) {
                 int o = buf[i + 0];
                 if (o < 0) {
                     o = -o;
@@ -58,7 +49,7 @@ public class measBeep {
             if (avg < ned) {
                 continue;
             }
-            int i = (pos * len) / (2 * devicer.smpb);
+            int i = (pos * buf.length) / (2 * devicer.smpb);
             int q = (i * 1000) / devicer.rate;
             System.out.println(avg + " > " + ned + " @ " + pos + " [" + i + "] (" + q + "ms)");
             ned = Integer.MAX_VALUE;

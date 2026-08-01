@@ -4,7 +4,7 @@ import java.nio.channels.DatagramChannel;
 import javax.sound.sampled.TargetDataLine;
 
 /**
- * compare live stream
+ * measure stream delay
  *
  * @author matecsaba
  */
