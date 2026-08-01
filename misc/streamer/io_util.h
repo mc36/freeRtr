@@ -1,7 +1,7 @@
-#define srate 48000
-#define pktln 1280
+#define srate 96000
+#define pktln 1200
 #define padln 12
-#define smpbt 2
+#define smpbt 3
 
 unsigned char bufD[padln + pktln + padln];
 int bufS;

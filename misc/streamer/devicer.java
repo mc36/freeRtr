@@ -12,11 +12,11 @@ import javax.sound.sampled.TargetDataLine;
  */
 public class devicer {
 
-    public static final int rate = 48000;
+    public static final int rate = 96000;
 
-    public static final int smpb = 2;
+    public static final int smpb = 3;
 
-    public static final int payl = 1280;
+    public static final int payl = 1200;
 
     public static final int rtpl = 12;
 
