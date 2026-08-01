@@ -39,7 +39,10 @@ public class devicer {
         return mixer.getName() + " - " + mixer.getDescription();
     }
 
-    public static AudioFormat getFormat() {
+    public static AudioFormat getFormat() throws Exception {
+        if ((payl % (smpb * 2)) != 0) {
+            throw new Exception("samples not fully fit");
+        }
         return new AudioFormat(rate, smpb * 8, 2, true, true);
     }
 

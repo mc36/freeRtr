@@ -59,6 +59,7 @@ void iou_loop() {
 }
 
 int iou_frmt() {
+    if ((pktln % (smpbt * 2)) != 0) err("samples not fully fit");
 #if smpbt == 1
     return SND_PCM_FORMAT_S8;
 #endif
