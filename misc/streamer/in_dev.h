@@ -21,7 +21,7 @@ void iou_read() {
         return;
     }
     bufS = snd_pcm_recover(recHnd, bufS, 0);
-    if (bufS != 0) err("error reading");
+    if (bufS != 0) err("error recovering");
     bufS = snd_pcm_readi(recHnd, &bufD[padln], pktln / (2 * smpbt));
     bufS = bufS * (2 * smpbt);
 }
