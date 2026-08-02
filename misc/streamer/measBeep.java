@@ -31,7 +31,11 @@ public class measBeep {
                 pos = 0;
                 ned = avg * mul;
             } else {
-                rtp.write(sln, sln.length);
+                if (pos < (io_cnst.rate / io_cnst.payl)) {
+                    rtp.write(snd, snd.length);
+                } else {
+                    rtp.write(sln, sln.length);
+                }
             }
             pos++;
             avg = 0;
