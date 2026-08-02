@@ -1,14 +1,13 @@
 #!/bin/sh
 ./d.sh
 
-echo '
-#include "io_cnst.h"
-public class io_cnst {
+echo '#include "io_cnst.h"
+public class consts {
 public static final int rate = srate;
 public static final int smpb = smpbt;
 public static final int payl = pktln;
 public static final int rtpl = padln; }
-' | clang -E - | grep public > io_cnst.java
+' | clang -E - | grep public > consts.java
 
 
 javac -source 11 -target 11 -Xlint:all -deprecation *.java

@@ -11,7 +11,7 @@ public class visPlayback {
     public static void main(String[] args) throws Exception {
         decoder dec = new decoder(args[0], args[1]);
         SourceDataLine dataLine = devicer.getPlayback(args[2]);
-        byte[] buf = new byte[io_cnst.payl];
+        byte[] buf = new byte[consts.payl];
         visDoer vu = new visDoer();
         for (;;) {
             int i = dec.read(buf);

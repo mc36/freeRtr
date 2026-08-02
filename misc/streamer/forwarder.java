@@ -13,7 +13,7 @@ public class forwarder {
         DatagramChannel source = rtper.receive(args[0], args[1]);
         rtper rtp = new rtper(args[2], args[3]);
         ByteBuffer buffer = ByteBuffer.allocate(4096);
-        byte[] buf = new byte[io_cnst.payl];
+        byte[] buf = new byte[consts.payl];
         for (;;) {
             buffer.clear();
             source.receive(buffer);

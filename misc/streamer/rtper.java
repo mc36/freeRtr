@@ -43,13 +43,13 @@ public class rtper {
         putMsb(buffer, 0, 0x800a0000 | seq);
         putMsb(buffer, 4, clk);
         putMsb(buffer, 8, src);
-        buffer.put(io_cnst.rtpl, buf, 0, len);
+        buffer.put(consts.rtpl, buf, 0, len);
         buffer.position(0);
-        buffer.limit(len + io_cnst.rtpl);
+        buffer.limit(len + consts.rtpl);
         target.write(buffer);
         seq++;
         seq &= 0xffff;
-        clk += len / (2 * io_cnst.smpb);
+        clk += len / (2 * consts.smpb);
     }
 
     private static void putMsb(ByteBuffer buf, int ofs, int val) {
@@ -60,8 +60,8 @@ public class rtper {
     }
 
     public static int decode(ByteBuffer buf, byte[] res) {
-        int len = buf.position() - io_cnst.rtpl;
-        buf.get(io_cnst.rtpl, res, 0, len);
+        int len = buf.position() - consts.rtpl;
+        buf.get(consts.rtpl, res, 0, len);
         return len;
     }
 

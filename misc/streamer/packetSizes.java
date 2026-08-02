@@ -9,8 +9,8 @@ public class packetSizes {
     public static void main(String[] args) throws Exception {
         for (int i = 100; i < 2000; i++) {
             double a = i;
-            double b = io_cnst.rate * 2.0 * io_cnst.smpb / a;
-            double c = a / (2 * io_cnst.smpb);
+            double b = consts.rate * 2.0 * consts.smpb / a;
+            double c = a / (2 * consts.smpb);
             if (b != (int) b) {
                 continue;
             }
