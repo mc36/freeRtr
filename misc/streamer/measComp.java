@@ -41,7 +41,7 @@ class measCompOne {
     public float div;
 
     public measCompOne(int sec) {
-        cur = new byte[devicer.rate * sec];
+        cur = new byte[io_cnst.rate * sec];
         pos = 0;
         tot = 0;
     }
@@ -54,9 +54,9 @@ class measCompOne {
 
     public void addBuf(byte[] buf, int len) {
         int o = pos;
-        for (int i = 0; i < len; i += devicer.smpb * 2) {
+        for (int i = 0; i < len; i += io_cnst.smpb * 2) {
             int p = (int) buf[i + 0];
-            p += (int) buf[i + devicer.smpb];
+            p += (int) buf[i + io_cnst.smpb];
             if (p < 0) {
                 p = -p;
             }
@@ -124,8 +124,8 @@ class measCompOne {
             p = i;
             m = o;
         }
-        m /= cur.length / devicer.rate;
-        int q = (p * 1000) / devicer.rate;
+        m /= cur.length / io_cnst.rate;
+        int q = (p * 1000) / io_cnst.rate;
         System.out.println(m + " @ " + p + " (" + q + "ms) dev=" + this + " net=" + oth);
     }
 
@@ -146,7 +146,7 @@ class measCompDev extends measCompOne implements Runnable {
     }
 
     public void run() {
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[io_cnst.payl];
         for (;;) {
             int i = dataLine.read(buf, 0, buf.length);
             if (i < 1) {
@@ -170,7 +170,7 @@ class measCompNet extends measCompOne implements Runnable {
 
     public void run() {
         ByteBuffer buffer = ByteBuffer.allocate(4096);
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[io_cnst.payl];
         for (;;) {
             buffer.clear();
             try {

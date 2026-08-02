@@ -9,11 +9,11 @@ import javax.sound.sampled.TargetDataLine;
 public class measBeep {
 
     public static void main(String[] args) throws Exception {
-        int per = (Integer.parseInt(args[3]) * devicer.smpb * 2 * devicer.rate) / devicer.payl;
+        int per = (Integer.parseInt(args[3]) * io_cnst.smpb * 2 * io_cnst.rate) / io_cnst.payl;
         int mul = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         rtper rtp = new rtper(args[1], args[2]);
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[io_cnst.payl];
         byte[] sln = new byte[buf.length];
         byte[] snd = new byte[buf.length];
         measFreq.toneGen(snd, 0, 1000, 32767);
@@ -35,7 +35,7 @@ public class measBeep {
             }
             pos++;
             avg = 0;
-            for (int i = 0; i < buf.length; i += devicer.smpb) {
+            for (int i = 0; i < buf.length; i += io_cnst.smpb) {
                 int o = buf[i + 0];
                 if (o < 0) {
                     o = -o;
@@ -49,8 +49,8 @@ public class measBeep {
             if (avg < ned) {
                 continue;
             }
-            int i = (pos * buf.length) / (2 * devicer.smpb);
-            int q = (i * 1000) / devicer.rate;
+            int i = (pos * buf.length) / (2 * io_cnst.smpb);
+            int q = (i * 1000) / io_cnst.rate;
             System.out.println(avg + " > " + ned + " @ " + pos + " [" + i + "] (" + q + "ms)");
             ned = Integer.MAX_VALUE;
         }

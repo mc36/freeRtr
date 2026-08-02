@@ -13,10 +13,10 @@ public class measFreq {
         int vol = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         rtper rtp = new rtper(args[1], args[2]);
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[io_cnst.payl];
         byte[] nxt = new byte[buf.length];
         long pos = 0;
-        int[] rcv = new int[(devicer.rate / devicer.payl) * devicer.payl];
+        int[] rcv = new int[(io_cnst.rate / io_cnst.payl) * io_cnst.payl];
         int got = 0;
         int top = -1;
         for (;;) {
@@ -33,7 +33,7 @@ public class measFreq {
                     continue;
                 }
             }
-            for (int i = 0; i < buf.length; i += devicer.smpb * 2) {
+            for (int i = 0; i < buf.length; i += io_cnst.smpb * 2) {
                 rcv[got] = readSmp(buf, i);
                 got++;
             }
@@ -72,7 +72,7 @@ public class measFreq {
             for (got = 0; got < rcv.length;) {
                 measFreq.toneGen(buf, syn, frq, vol);
                 syn += buf.length;
-                for (int i = 0; i < buf.length; i += devicer.smpb * 2) {
+                for (int i = 0; i < buf.length; i += io_cnst.smpb * 2) {
                     int p = rcv[got] - readSmp(buf, i);
                     if (p > max) {
                         max = p;
@@ -81,7 +81,7 @@ public class measFreq {
                     got++;
                 }
             }
-            syn -= rcv.length * devicer.smpb * 2;
+            syn -= rcv.length * io_cnst.smpb * 2;
             System.out.println("syn=" + syn + " all=" + all + " max=" + max + " avg=" + (all / rcv.length));
             got = 0;
             top = -1;
@@ -89,22 +89,22 @@ public class measFreq {
     }
 
     public static void toneGen(byte[] buf, long beg, int freq, int amp) {
-        for (int i = 0; i < buf.length; i += devicer.smpb * 2) {
-            int val = (int) (amp * Math.sin((beg + i) * Math.PI * freq / (devicer.rate * devicer.smpb)));
+        for (int i = 0; i < buf.length; i += io_cnst.smpb * 2) {
+            int val = (int) (amp * Math.sin((beg + i) * Math.PI * freq / (io_cnst.rate * io_cnst.smpb)));
             byte hi = (byte) (val >> 8);
             byte lo = (byte) (val & 0xff);
             buf[i + 0] = hi;
             buf[i + 1] = lo;
-            buf[i + 0 + devicer.smpb] = hi;
-            buf[i + 1 + devicer.smpb] = lo;
+            buf[i + 0 + io_cnst.smpb] = hi;
+            buf[i + 1 + io_cnst.smpb] = lo;
         }
     }
 
     public static int readSmp(byte[] buf, int ofs) {
-        int i = buf[ofs] + buf[devicer.smpb + ofs];
+        int i = buf[ofs] + buf[io_cnst.smpb + ofs];
         i <<= 8;
         ofs++;
-        return i + buf[ofs] + buf[devicer.smpb + ofs];
+        return i + buf[ofs] + buf[io_cnst.smpb + ofs];
     }
 
     public static int findTop(byte[] buf) {
@@ -112,7 +112,7 @@ public class measFreq {
         int cntU = 0;
         int cntD = 0;
         final int need = 50;
-        for (int i = devicer.smpb * 2; i < buf.length; i += devicer.smpb * 2) {
+        for (int i = io_cnst.smpb * 2; i < buf.length; i += io_cnst.smpb * 2) {
             int cur = readSmp(buf, i);
             if (old < cur) {
                 cntU++;

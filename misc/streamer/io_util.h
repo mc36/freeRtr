@@ -1,7 +1,4 @@
-#define srate 96000
-#define pktln 1200
-#define padln 12
-#define smpbt 3
+#include "io_cnst.h"
 
 unsigned char bufD[padln + pktln + padln];
 int bufS;

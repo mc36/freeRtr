@@ -21,10 +21,10 @@ public class decoder {
             "-re",
             "-i", fil,
             "-vn", "-sn",
-            "-ar", "" + devicer.rate,
+            "-ar", "" + io_cnst.rate,
             "-ac", "2",
-            "-c:a", "pcm_s" + (devicer.smpb * 8) + "be",
-            "-f", "s" + (devicer.smpb * 8) + "be",
+            "-c:a", "pcm_s" + (io_cnst.smpb * 8) + "be",
+            "-f", "s" + (io_cnst.smpb * 8) + "be",
             "-"};
         process = Runtime.getRuntime().exec(cmd);
         stream = process.getErrorStream();

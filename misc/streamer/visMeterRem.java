@@ -12,7 +12,7 @@ public class visMeterRem {
     public static void main(String[] args) throws Exception {
         DatagramChannel channel = rtper.receive(args[0], args[1], args[2]);
         ByteBuffer buffer = ByteBuffer.allocate(4096);
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[io_cnst.payl];
         visDoer vu = new visDoer();
         for (;;) {
             buffer.clear();

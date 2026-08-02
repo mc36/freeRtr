@@ -12,14 +12,6 @@ import javax.sound.sampled.TargetDataLine;
  */
 public class devicer {
 
-    public static final int rate = 96000;
-
-    public static final int smpb = 3;
-
-    public static final int payl = 1200;
-
-    public static final int rtpl = 12;
-
     public static Mixer.Info findDevice(String dev) {
         dev = ".*" + dev + ".*";
         Mixer.Info[] mixers = AudioSystem.getMixerInfo();
@@ -40,17 +32,17 @@ public class devicer {
     }
 
     public static AudioFormat getFormat() throws Exception {
-        if ((payl % (smpb * 2)) != 0) {
+        if ((io_cnst.payl % (io_cnst.smpb * 2)) != 0) {
             throw new Exception("samples not fully fit");
         }
-        return new AudioFormat(rate, smpb * 8, 2, true, true);
+        return new AudioFormat(io_cnst.rate, io_cnst.smpb * 8, 2, true, true);
     }
 
     public static SourceDataLine getPlayback(String dev) throws Exception {
         Mixer.Info mixer = devicer.findDevice(dev);
         AudioFormat format = devicer.getFormat();
         SourceDataLine dataLine = AudioSystem.getSourceDataLine(format, mixer);
-        dataLine.open(format, payl);
+        dataLine.open(format, io_cnst.payl);
         dataLine.start();
         return dataLine;
     }
@@ -59,7 +51,7 @@ public class devicer {
         Mixer.Info mixer = devicer.findDevice(dev);
         AudioFormat format = devicer.getFormat();
         TargetDataLine dataLine = AudioSystem.getTargetDataLine(format, mixer);
-        dataLine.open(format, payl);
+        dataLine.open(format, io_cnst.payl);
         dataLine.start();
         return dataLine;
     }

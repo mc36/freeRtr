@@ -11,11 +11,11 @@ public class delayer {
 
     public static void main(String[] args) throws Exception {
         int i = Integer.parseInt(args[4]);
-        byte[][] buf = new byte[i][devicer.payl];
+        byte[][] buf = new byte[i][io_cnst.payl];
         int[] len = new int[i];
         int pos = 0;
         for (i = 0; i < len.length; i++) {
-            len[i] = devicer.payl;
+            len[i] = io_cnst.payl;
         }
         DatagramChannel source = rtper.receive(args[0], args[1]);
         rtper rtp = new rtper(args[2], args[3]);
