@@ -517,6 +517,13 @@ public class userImage {
                 imgName = cmd.getRemaining();
                 continue;
             }
+            if (a.equals("noop")) {
+                continue;
+            }
+            if (a.equals("echo")) {
+                pip.linePut(cmd.getRemaining());
+                continue;
+            }
             if (a.equals("exit")) {
                 break;
             }
@@ -646,6 +653,19 @@ public class userImage {
                 String b = cmd.getRemaining();
                 i = secTransform.str2hash(a);
                 found = userFlash.calcFileHash(secTransform.getHash(i), b);
+                continue;
+            }
+            if (a.equals("file-exist")) {
+                File f = new File(cmd.getRemaining());
+                read = "0";
+                if (!f.exists()) {
+                    continue;
+                }
+                read = "1";
+                if (!f.isDirectory()) {
+                    continue;
+                }
+                read = "2";
                 continue;
             }
             if (a.equals("file-read")) {
