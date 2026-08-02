@@ -62,7 +62,7 @@ public class encIde implements Comparable<encIde> {
         }
         try {
             File fh = new File(name);
-            if (!fh.isFile()) {
+            if (fh.isDirectory()) {
                 return;
             }
             hndl = new RandomAccessFile(fh, "rw");

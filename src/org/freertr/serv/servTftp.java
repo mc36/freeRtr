@@ -193,7 +193,7 @@ class servTftpConn implements Runnable {
                     sendError(1, "file not exists");
                     return;
                 }
-                if (!fh.isFile()) {
+                if (fh.isDirectory()) {
                     sendError(2, "not a file");
                     return;
                 }
@@ -216,7 +216,7 @@ class servTftpConn implements Runnable {
                     sendError(1, "file not exists");
                     return;
                 }
-                if (!fh.isFile()) {
+                if (fh.isDirectory()) {
                     sendError(2, "not a file");
                     return;
                 }

@@ -364,7 +364,7 @@ class servFtpDoer implements Runnable {
             doLine("550 not exists");
             return false;
         }
-        if (!f.isFile()) {
+        if (f.isDirectory()) {
             doLine("550 not file");
             return false;
         }
@@ -421,7 +421,7 @@ class servFtpDoer implements Runnable {
             doLine("550 not exists");
             return false;
         }
-        if (!f.isFile()) {
+        if (f.isDirectory()) {
             doLine("550 not file");
             return false;
         }

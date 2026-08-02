@@ -95,7 +95,7 @@ public class encScsi implements Comparable<encScsi> {
         }
         try {
             File fh = new File(file);
-            if (!fh.isFile()) {
+            if (fh.isDirectory()) {
                 return;
             }
             hndl = new RandomAccessFile(fh, "rw");
