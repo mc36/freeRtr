@@ -365,6 +365,26 @@ public class ipFwdIface extends tabRouteIface {
     public addrIP mcastSrcOut;
 
     /**
+     * in multicast router type in
+     */
+    public tabRouteAttr.routeType mcastTypIn;
+
+    /**
+     * multicast router number in
+     */
+    public int mcastNumIn;
+
+    /**
+     * multicast router type out
+     */
+    public tabRouteAttr.routeType mcastTypOut;
+
+    /**
+     * multicast router number out
+     */
+    public int mcastNumOut;
+
+    /**
      * minimal multicast ttl in
      */
     public int mcastTtlIn;
@@ -739,6 +759,12 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, false, 4, new int[]{-1}, "<num>", "ttl");
         l.add(null, false, 3, new int[]{4}, "ttl-threshold-out", "ttl threshold for sent multicast packets");
         l.add(null, false, 4, new int[]{-1}, "<num>", "ttl");
+        l.add(null, false, 3, new int[]{4}, "source-lookup-in", "find received source for groups");
+        cfgRtr.getRouterList(l, 2, " to use");
+        l.add(null, false, 5, new int[]{-1}, "<num:rtr>", "process id");
+        l.add(null, false, 3, new int[]{4}, "source-lookup-out", "find sent source for groups");
+        cfgRtr.getRouterList(l, 2, " to use");
+        l.add(null, false, 5, new int[]{-1}, "<num:rtr>", "process id");
         l.add(null, false, 3, new int[]{4}, "source-override-in", "override received source for groups");
         l.add(null, false, 4, new int[]{-1}, "<addr>", "source");
         l.add(null, false, 3, new int[]{4}, "source-override-out", "override sent source for groups");
@@ -1005,6 +1031,8 @@ public class ipFwdIface extends tabRouteIface {
         }
         l.add(cmds.tabulator + beg + "multicast ttl-threshold-in " + mcastTtlIn);
         l.add(cmds.tabulator + beg + "multicast ttl-threshold-out " + mcastTtlOut);
+        cmds.cfgLine(l, mcastTypIn == null, cmds.tabulator, beg + "multicast source-lookup-in", mcastTypIn + " " + mcastNumIn);
+        cmds.cfgLine(l, mcastTypOut == null, cmds.tabulator, beg + "multicast source-lookup-out", mcastTypOut + " " + mcastNumOut);
         cmds.cfgLine(l, mcastSrcIn == null, cmds.tabulator, beg + "multicast source-override-in", "" + mcastSrcIn);
         cmds.cfgLine(l, mcastSrcOut == null, cmds.tabulator, beg + "multicast source-override-out", "" + mcastSrcOut);
         if (pimCfg != null) {
@@ -1492,6 +1520,16 @@ public class ipFwdIface extends tabRouteIface {
             }
             if (a.equals("unicast")) {
                 mcastAsUcast = true;
+                return false;
+            }
+            if (a.equals("source-lookup-in")) {
+                mcastTypIn = cfgRtr.name2num(cmd.word());
+                mcastNumIn = bits.str2num(cmd.word());
+                return false;
+            }
+            if (a.equals("source-lookup-out")) {
+                mcastTypOut = cfgRtr.name2num(cmd.word());
+                mcastNumOut = bits.str2num(cmd.word());
                 return false;
             }
             if (a.equals("source-override-in")) {
@@ -2065,6 +2103,16 @@ public class ipFwdIface extends tabRouteIface {
             }
             if (a.equals("unicast")) {
                 mcastAsUcast = false;
+                return false;
+            }
+            if (a.equals("source-lookup-in")) {
+                mcastTypIn = null;
+                mcastNumIn = 0;
+                return false;
+            }
+            if (a.equals("source-lookup-out")) {
+                mcastTypOut = null;
+                mcastNumOut = 0;
                 return false;
             }
             if (a.equals("source-override-in")) {

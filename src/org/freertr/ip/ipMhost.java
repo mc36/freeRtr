@@ -1,6 +1,8 @@
 package org.freertr.ip;
 
 import org.freertr.addr.addrIP;
+import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgRtr;
 import org.freertr.pack.packHolder;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -232,6 +234,16 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
             logger.debug("rx report need=" + need + " src=" + src + " grp=" + grp + " ifc=" + ifc);
         }
         ipFwdIface rxIfc = (ipFwdIface) ifc;
+        if (rxIfc.mcastTypIn != null) {
+            cfgRtr rtr = cfgAll.rtrFind(rxIfc.mcastTypIn, rxIfc.mcastNumIn, false);
+            if (rtr == null) {
+                return;
+            }
+            if (rtr.msdp == null) {
+                return;
+            }
+            src = rtr.msdp.getSrcGrp(grp);
+        }
         if (rxIfc.mcastSrcIn != null) {
             src = rxIfc.mcastSrcIn.copyBytes();
         }
@@ -280,6 +292,16 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
     public void sendReport(ipFwdIface rxIfc, addrIP grp, addrIP src, boolean need) {
         if (debugger.ipMhostTraf) {
             logger.debug("tx report need=" + need + " src=" + src + " grp=" + grp);
+        }
+        if (rxIfc.mcastTypOut != null) {
+            cfgRtr rtr = cfgAll.rtrFind(rxIfc.mcastTypOut, rxIfc.mcastNumOut, false);
+            if (rtr == null) {
+                return;
+            }
+            if (rtr.msdp == null) {
+                return;
+            }
+            src = rtr.msdp.getSrcGrp(grp);
         }
         if (rxIfc.mcastSrcOut != null) {
             src = rxIfc.mcastSrcOut.copyBytes();

@@ -487,4 +487,24 @@ public class rtrMsdp extends ipRtr {
         return neighs.find(nei);
     }
 
+    /**
+     * find source for group
+     *
+     * @param grp group
+     * @return copy of source, null if not found
+     */
+    public addrIP getSrcGrp(addrIP grp) {
+        for (int i = 0; i < cache.size(); i++) {
+            ipFwdMcast ntry = cache.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (grp.compareTo(ntry.group) != 0) {
+                continue;
+            }
+            return ntry.source.copyBytes();
+        }
+        return null;
+    }
+
 }

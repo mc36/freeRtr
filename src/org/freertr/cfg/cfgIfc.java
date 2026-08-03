@@ -1767,6 +1767,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         // multicast
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast broadcast", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast unicast", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast source-lookup-in", null),
+        new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast source-lookup-out", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast source-override-in", null),
         new userFilter("interface .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ipv[46] multicast source-override-out", null),
         new userFilter("interface .*", cmds.tabulator + "ipv[46] multicast ttl-threshold-in 0", null),
