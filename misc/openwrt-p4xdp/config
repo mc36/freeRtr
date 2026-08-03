@@ -1,2 +1,0 @@
-config p4xdp
-    option param '10.1.11.12 9080 0 skb gre4t-cpuport wlan0 wlan0-1 wlan1'

@@ -1,6 +1,0 @@
-#!/bin/sh
-/sbin/ldconfig
-cd /misc/native
-./c.sh
-./p.sh
-/binTmp/p4bench.bin

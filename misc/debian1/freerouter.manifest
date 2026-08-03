@@ -1,3 +1,0 @@
-usr/share/java/freerouter.jar:
- Main-Class: router
- Debian-Java-Home: /usr/lib/jvm/default-java

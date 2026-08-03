@@ -1,9 +1,0 @@
--O3
-
--jar rtr2.jar
-
--o rtr.bin
-
--H:+UnlockExperimentalVMOptions
-
--H:-ReduceImplicitExceptionStackTraceInformation
