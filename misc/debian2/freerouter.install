@@ -1,0 +1,2 @@
+debian/rtr-sw.txt /etc/freerouter
+debian/rtr-hw.txt /etc/freerouter

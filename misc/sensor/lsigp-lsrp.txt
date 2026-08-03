@@ -1,0 +1,102 @@
+sensor lsigp4int
+path lsigp4int/peer/peer
+prefix freertr-lsigp4int
+key name lsigp4int/peer
+command sho ipv4 lsrp 1 interface
+prepend lsigp4_iface_
+name 0 proto="lsrp1",ifc=
+replace \. _
+column 1 name neighbors
+.
+exit
+
+sensor lsigp4peer
+path lsigp4peer/peer/peer
+prefix freertr-lsigp4peer
+key name lsigp4peer/peer
+command sho ipv4 lsrp 1 topology | inc reach
+prepend lsigp4_peers_
+name 0 proto="lsrp1",node=
+replace \. _
+column 2 name reachable
+column 2 replace false 0
+column 2 replace true 1
+column 3 name neighbors
+.
+exit
+
+sensor lsigp4perf
+path lsigp4perf/peer/peer
+prefix freertr-lsigp4perf
+key name lsigp4perf/peer
+command sho ipv4 lsrp 1 spf | inc reachable|fill|calc|run
+prepend lsigp4_perf_
+labels proto="lsrp1"
+skip 0
+column 1 name val
+.
+exit
+
+sensor lsigp6int
+path lsigp6int/peer/peer
+prefix freertr-lsigp6int
+key name lsigp6int/peer
+command sho ipv6 lsrp 1 interface
+prepend lsigp6_iface_
+name 0 proto="lsrp1",ifc=
+replace \. _
+column 1 name neighbors
+.
+exit
+
+sensor lsigp6peer
+path lsigp6peer/peer/peer
+prefix freertr-lsigp6peer
+key name lsigp6peer/peer
+command sho ipv6 lsrp 1 topology | inc reach
+prepend lsigp6_peers_
+name 0 proto="lsrp1",node=
+replace \. _
+column 2 name reachable
+column 2 replace false 0
+column 2 replace true 1
+column 3 name neighbors
+.
+exit
+
+sensor lsigp6perf
+path lsigp6perf/peer/peer
+prefix freertr-lsigp6perf
+key name lsigp6perf/peer
+command sho ipv6 lsrp 1 spf | inc reachable|fill|calc|run
+prepend lsigp6_perf_
+labels proto="lsrp1"
+skip 0
+column 1 name val
+.
+exit
+
+sensor lsigp4metric
+path lsigp4metric/peer/peer
+prefix freertr-lsigp4metric
+prepend lsigp4_metric_
+command show ipv4 lsrp 1 metric
+name 0 proto="lsrp1",ifc=
+key name lsigp4metric/peer
+replace \. _
+column 4 name metric
+.
+exit
+
+sensor lsigp6metric
+path lsigp6metric/peer/peer
+prefix freertr-lsigp6metric
+prepend lsigp6_metric_
+command show ipv6 lsrp 1 metric
+name 0 proto="lsrp1",ifc=
+key name lsigp6metric/peer
+replace \. _
+column 4 name metric
+.
+exit
+

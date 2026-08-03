@@ -1,0 +1,23 @@
+include ../misc/image/image.bas
+include ../misc/image/image.beg
+
+select-one zlib1g                        #dependency
+
+copy ../misc/image/init.nat %tmp%/init.run
+copy rtr.bin %tmp%/rtr/
+
+select-lst
+select-sum
+package-down
+package-xtra
+package-inst
+
+include ../misc/image/image.end
+
+include ../misc/image/image.grb
+
+include ../misc/image/image.cdi
+
+catalog-save bld
+
+del %tmp%

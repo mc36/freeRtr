@@ -1,0 +1,31 @@
+sensor bfd4
+path bfd4/peer/peer
+prefix freertr-bfd4
+key name bfd4/peer
+command sho ipv4 bfd inet neighbor
+prepend bfd4_
+name 1 ip=
+replace \. _
+column 2 name state
+column 2 replace down 0
+column 2 replace init 1
+column 2 replace shut -1
+column 2 replace up 2
+.
+exit
+
+sensor bfd6
+path bfd6/peer/peer
+prefix freertr-bfd6
+key name bfd6/peer
+command sho ipv6 bfd inet neighbor
+prepend bfd6_
+name 1 ip=
+replace \: _
+column 2 name state
+column 2 replace down 0
+column 2 replace init 1
+column 2 replace shut -1
+column 2 replace up 2
+.
+exit

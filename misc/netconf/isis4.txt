@@ -1,0 +1,12 @@
+config isis4
+config/router/isis4/1
+freertr-isis4
+vrf def 187156390
+ exit
+router isis4 187156390
+ vrf 187156390
+!
+ exit
+no router isis4 187156390
+no vrf def 187156390
+.

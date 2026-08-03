@@ -1,0 +1,43 @@
+sensor routing4
+path routing4/peer/peer
+prefix freertr-routing4
+key name routing4/peer
+command sho ipv4 protocol inet | beg computed
+prepend routing4_
+name 0 proto=
+addname 1 * id=
+skip 2
+column 2 name ifaces
+column 3 name neighbors
+column 4 name computed_unicast
+column 5 name computed_multicast
+column 6 name computed_flowspec
+column 7 name computed_changed
+column 9 name redisted_unicast
+column 10 name redisted_multicast
+column 11 name redisted_flowspec
+column 12 name redisted_changed
+.
+exit
+
+sensor routing6
+path routing6/peer/peer
+prefix freertr-routing6
+key name routing6/peer
+command sho ipv6 protocol inet | beg computed
+prepend routing6_
+name 0 proto=
+addname 1 * id=
+skip 2
+column 2 name ifaces
+column 3 name neighbors
+column 4 name computed_unicast
+column 5 name computed_multicast
+column 6 name computed_flowspec
+column 7 name computed_changed
+column 9 name redisted_unicast
+column 10 name redisted_multicast
+column 11 name redisted_flowspec
+column 12 name redisted_changed
+.
+exit

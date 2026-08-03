@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CiscoIPPhoneMenu>
+<Title>mchome phonebook</Title>
+<Prompt>select subbook</Prompt>
+<MenuItem><Name>favorite numbers</Name><URL>http://www.mchome.nop.hu/phonebook2.xml</URL></MenuItem>
+<MenuItem><Name>searchable numbers</Name><URL>http://www.mchome.nop.hu/phoneBook.class</URL></MenuItem>
+<MenuItem><Name>centrex phonebook</Name><URL>http://10.51.0.11/phonebook/</URL></MenuItem>
+<MenuItem><Name>client numbers</Name><URL>http://www.mchome.nop.hu/phonebook3.xml</URL></MenuItem>
+<MenuItem><Name>infra numbers</Name><URL>http://www.mchome.nop.hu/phonebook4.xml</URL></MenuItem>
+</CiscoIPPhoneMenu>

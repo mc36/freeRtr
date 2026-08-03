@@ -1,0 +1,5 @@
+banner=
+menu=rtr:consdev com0;root cd0a;boot
+default=1
+timeout=0
+clear=1

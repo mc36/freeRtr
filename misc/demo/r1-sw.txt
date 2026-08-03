@@ -1,0 +1,87 @@
+hostname r1
+buggy
+!
+logging file debug ../binTmp/zzz0r1-log.run
+!
+vrf definition tester
+ exit
+!
+vrf definition v1
+ rd 1:1
+ exit
+!
+interface loopback0
+ vrf forwarding v1
+ ipv4 address 2.2.2.1 255.255.255.255
+ ipv6 address 4321::1 ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+ no shutdown
+ no log-link-change
+ exit
+!
+interface ethernet1
+ description r2 e1
+ lldp enable
+ vrf forwarding v1
+ ipv4 address 1.1.1.1 255.255.255.252
+ ipv6 address 1234:1::1 ffff:ffff::
+ no shutdown
+ no log-link-change
+ exit
+!
+interface ethernet2
+ description r3 e2
+ lldp enable
+ vrf forwarding v1
+ ipv4 address 1.1.1.5 255.255.255.252
+ ipv6 address 1234:2::1 ffff:ffff::
+ no shutdown
+ no log-link-change
+ exit
+!
+proxy-profile p1
+ vrf v1
+ exit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+server telnet tel
+ security protocol telnet
+ no exec authorization
+ no login authentication
+ vrf v1
+ exit
+!
+server telnet tester
+ security protocol telnet
+ no exec authorization
+ no login authentication
+ vrf tester
+ exit
+!
+client proxy p1
+!
+end

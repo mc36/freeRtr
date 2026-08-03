@@ -1,0 +1,21 @@
+sensor ghosts4
+path ghosts/peer/peer
+prefix freertr-ghosts
+key name ghosts/peer
+command show ipv4 ghosthunt 1 status
+prepend ghosts_ipv4_
+name 0 category=
+column 2 name count
+.
+exit
+
+sensor ghosts6
+path ghosts/peer/peer
+prefix freertr-ghosts
+key name ghosts/peer
+command show ipv6 ghosthunt 1 status
+prepend ghosts_ipv6_
+name 0 category=
+column 2 name count
+.
+exit

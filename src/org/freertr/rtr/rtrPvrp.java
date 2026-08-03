@@ -1,0 +1,1066 @@
+package org.freertr.rtr;
+
+import java.util.List;
+import org.freertr.addr.addrIP;
+import org.freertr.addr.addrIPv4;
+import org.freertr.addr.addrPrefix;
+import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgIfc;
+import org.freertr.cfg.cfgRtr;
+import org.freertr.ip.ipCor4;
+import org.freertr.ip.ipCor6;
+import org.freertr.ip.ipFwd;
+import org.freertr.ip.ipFwdIface;
+import org.freertr.ip.ipRtr;
+import org.freertr.prt.prtTcp;
+import org.freertr.prt.prtUdp;
+import org.freertr.tab.tabGen;
+import org.freertr.tab.tabIndex;
+import org.freertr.tab.tabLabel;
+import org.freertr.tab.tabLabelBier;
+import org.freertr.tab.tabLabelBierN;
+import org.freertr.tab.tabLabelEntry;
+import org.freertr.tab.tabRoute;
+import org.freertr.tab.tabRouteAttr;
+import org.freertr.tab.tabRouteEntry;
+import org.freertr.user.userFormat;
+import org.freertr.user.userHelp;
+import org.freertr.util.bits;
+import org.freertr.util.cmds;
+import org.freertr.util.debugger;
+import org.freertr.util.keyword;
+import org.freertr.util.logger;
+import org.freertr.util.notifier;
+import org.freertr.util.state;
+
+/**
+ * path vector routing protocol
+ *
+ * @author matecsaba
+ */
+public class rtrPvrp extends ipRtr implements Runnable {
+
+    /**
+     * port number
+     */
+    public final static int port = 1547;
+
+    /**
+     * forwarding core
+     */
+    public final ipFwd fwdCore;
+
+    /**
+     * udp core
+     */
+    protected final prtUdp udpCore;
+
+    /**
+     * tcp core
+     */
+    protected final prtTcp tcpCore;
+
+    /**
+     * other afi router
+     */
+    public final rtrPvrpOther other;
+
+    /**
+     * route type
+     */
+    protected final tabRouteAttr.routeType rouTyp;
+
+    /**
+     * router number
+     */
+    protected final int rtrNum;
+
+    /**
+     * is over ipv4
+     */
+    protected final boolean isIpv4;
+
+    /**
+     * router id
+     */
+    public addrIPv4 routerID;
+
+    /**
+     * stub flag
+     */
+    public boolean stub;
+
+    /**
+     * routes needed to advertise
+     */
+    public tabRoute<addrIP> need2adv;
+
+    /**
+     * other routes needed to advertise
+     */
+    public tabRoute<addrIP> othr2adv;
+
+    /**
+     * list of interfaces
+     */
+    protected tabGen<rtrPvrpIface> ifaces;
+
+    /**
+     * advertise labels
+     */
+    public boolean labels = false;
+
+    /**
+     * segment routing index
+     */
+    public int segrouIdx = 0;
+
+    /**
+     * segment routing maximum
+     */
+    public int segrouMax = 0;
+
+    /**
+     * segment routing base
+     */
+    public int segrouBase = 0;
+
+    /**
+     * bier index
+     */
+    public int bierIdx = 0;
+
+    /**
+     * bier subdomain
+     */
+    public int bierSub = 0;
+
+    /**
+     * bier length
+     */
+    public int bierLen = 0;
+
+    /**
+     * bier maximum
+     */
+    public int bierMax = 0;
+
+    /**
+     * suppress interface addresses
+     */
+    public boolean suppressAddr = false;
+
+    /**
+     * segment routing labels
+     */
+    protected tabLabelEntry[] segrouLab;
+
+    /**
+     * bier labels
+     */
+    protected tabLabelEntry[] bierLab;
+
+    /**
+     * notified on route change
+     */
+    protected notifier notif = new notifier();
+
+    private boolean need2run = true;
+
+    /**
+     * create one pvrp process
+     *
+     * @param forwarder the ip protocol
+     * @param otherfwd the other ip protocol
+     * @param udp the udp protocol
+     * @param tcp the tcp protocol
+     * @param id process id
+     */
+    public rtrPvrp(ipFwd forwarder, ipFwd otherfwd, prtUdp udp, prtTcp tcp, int id) {
+        fwdCore = forwarder;
+        udpCore = udp;
+        tcpCore = tcp;
+        routerID = new addrIPv4();
+        ifaces = new tabGen<rtrPvrpIface>();
+        rtrNum = id;
+        switch (fwdCore.ipVersion) {
+            case ipCor4.protocolVersion:
+                isIpv4 = true;
+                rouTyp = tabRouteAttr.routeType.pvrp4;
+                break;
+            case ipCor6.protocolVersion:
+                isIpv4 = false;
+                rouTyp = tabRouteAttr.routeType.pvrp6;
+                break;
+            default:
+                isIpv4 = true;
+                rouTyp = null;
+                break;
+        }
+        other = new rtrPvrpOther(this, otherfwd);
+        routerCreateComputed();
+        fwdCore.routerAdd(this, rouTyp, id);
+        logger.startThread(this);
+    }
+
+    /**
+     * convert to string
+     *
+     * @return string
+     */
+    public String toString() {
+        return "pvrp on " + fwdCore;
+    }
+
+    /**
+     * add one interface to work on
+     *
+     * @param ifc ip forwarder interface
+     * @param oifc the other ip interface to work on
+     * @return false if successful, true if error happened
+     */
+    public rtrPvrpIface addInterface(ipFwdIface ifc, ipFwdIface oifc) {
+        if (debugger.rtrPvrpEvnt) {
+            logger.debug("add iface " + ifc);
+        }
+        if (ifc == null) {
+            return null;
+        }
+        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc, oifc);
+        rtrPvrpIface old = ifaces.add(ntry);
+        if (old != null) {
+            ntry = old;
+        }
+        ntry.register2udp();
+        notif.wakeup();
+        return ntry;
+    }
+
+    /**
+     * delete one interface
+     *
+     * @param ifc interface to delete
+     * @param oifc the other ip interface to work on
+     */
+    public void delInterface(ipFwdIface ifc, ipFwdIface oifc) {
+        if (debugger.rtrPvrpEvnt) {
+            logger.debug("del iface " + ifc);
+        }
+        if (ifc == null) {
+            return;
+        }
+        rtrPvrpIface ntry = new rtrPvrpIface(this, ifc, oifc);
+        ntry = ifaces.del(ntry);
+        if (ntry == null) {
+            return;
+        }
+        ntry.unregister2udp();
+        ntry.closeNeighbors();
+        notif.wakeup();
+    }
+
+    /**
+     * list of neighbors
+     *
+     * @param brief only briefly
+     * @return list
+     */
+    public userFormat showNeighs(boolean brief) {
+        userFormat res;
+        if (brief) {
+            res = new userFormat("|", "router|name|uptime");
+        } else {
+            res = new userFormat("|", "iface|router|name|peerif|peer|other|learned|adverted|uptime");
+        }
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrPvrpIface ifc = ifaces.get(i);
+            ifc.showNeighs(res, brief);
+        }
+        return res;
+    }
+
+    /**
+     * list of neighbors
+     *
+     * @return list
+     */
+    public userFormat showMetrics() {
+        userFormat res = new userFormat("|", "iface|router|name|peer|metric|gotmet|delay");
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrPvrpIface ifc = ifaces.get(i);
+            ifc.showMetrics(res);
+        }
+        return res;
+    }
+
+    /**
+     * find one neighbor
+     *
+     * @param adr address of peer
+     * @return neighbor, null if not found
+     */
+    public rtrPvrpNeigh findNeigh(addrIP adr) {
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrPvrpIface ifc = ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
+            rtrPvrpNeigh r = ifc.findNeigh(adr);
+            if (r != null) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * list statistics
+     *
+     * @param iface forwarding interface
+     * @return list of interfaces
+     */
+    public userFormat showStats(ipFwdIface iface) {
+        if (iface == null) {
+            return null;
+        }
+        rtrPvrpIface ifc = new rtrPvrpIface(this, iface, null);
+        ifc = ifaces.find(ifc);
+        if (ifc == null) {
+            return null;
+        }
+        return keyword.dump(ifc.msgStatRx, ifc.msgStatTx);
+    }
+
+    /**
+     * list interfaces
+     *
+     * @return list of interfaces
+     */
+    public userFormat showIfaces() {
+        userFormat l = new userFormat("|", "interface|neighbors");
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrPvrpIface ifc = ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
+            l.add(ifc.iface + "|" + ifc.neighs.size());
+        }
+        return l;
+    }
+
+    /**
+     * create computed
+     */
+    public synchronized void routerCreateComputed() {
+        if (debugger.rtrPvrpEvnt) {
+            logger.debug("create table");
+        }
+        tabRoute<addrIP> tab1 = new tabRoute<addrIP>("lernd");
+        tabRoute<addrIP> tab3 = new tabRoute<addrIP>("lernd");
+        tabRouteEntry<addrIP> ntry;
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrPvrpIface ifc = ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
+            if (ifc.iface.lower.getState() != state.states.up) {
+                continue;
+            }
+            if (other.enabled && ifc.otherEna && (ifc.othUnsuppAddr || (!other.suppressAddr && !ifc.othSuppAddr))) {
+                ntry = tab3.add(tabRoute.addType.better, ifc.oface.network, null);
+                ntry.best.rouTyp = tabRouteAttr.routeType.conn;
+                ntry.best.iface = ifc.oface;
+                ntry.best.distance = tabRouteAttr.distanIfc;
+                if (ifc.srOthIdx >= 0) {
+                    ntry.best.segrouIdx = ifc.srOthIdx;
+                } else {
+                    ntry.best.segrouIdx = other.segrouIdx;
+                }
+                if (ifc.brOthIdx >= 0) {
+                    ntry.best.bierIdx = ifc.brOthIdx;
+                    ntry.best.bierSub = ifc.brOthSub;
+                } else {
+                    ntry.best.bierIdx = other.bierIdx;
+                    ntry.best.bierSub = other.bierSub;
+                }
+            }
+            if ((suppressAddr || ifc.suppressAddr) && (!ifc.unsuppressAddr)) {
+                continue;
+            }
+            ntry = tab1.add(tabRoute.addType.better, ifc.iface.network, null);
+            ntry.best.rouTyp = tabRouteAttr.routeType.conn;
+            ntry.best.iface = ifc.iface;
+            ntry.best.distance = tabRouteAttr.distanIfc;
+            if (ifc.segrouIdx >= 0) {
+                ntry.best.segrouIdx = ifc.segrouIdx;
+            } else {
+                ntry.best.segrouIdx = segrouIdx;
+            }
+            if (ifc.bierIdx >= 0) {
+                ntry.best.bierIdx = ifc.bierIdx;
+                ntry.best.bierSub = ifc.bierSub;
+            } else {
+                ntry.best.bierIdx = bierIdx;
+                ntry.best.bierSub = bierSub;
+            }
+        }
+        for (int o = 0; o < ifaces.size(); o++) {
+            rtrPvrpIface ifc = ifaces.get(o);
+            if (ifc == null) {
+                continue;
+            }
+            if (ifc.iface.lower.getState() != state.states.up) {
+                continue;
+            }
+            for (int i = 0; i < ifc.neighs.size(); i++) {
+                rtrPvrpNeigh nei = ifc.neighs.get(i);
+                if (nei == null) {
+                    continue;
+                }
+                tab1.mergeFrom(tabRoute.addType.ecmp, nei.learned, tabRouteAttr.distanLim);
+                if (!other.enabled) {
+                    continue;
+                }
+                if (!ifc.otherEna) {
+                    continue;
+                }
+                tab3.mergeFrom(tabRoute.addType.ecmp, nei.othLrnd, tabRouteAttr.distanLim);
+            }
+        }
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab1, tab1, fwdCore.commonLabel, null, 0);
+        tabRoute<addrIP> tab2 = tab1;
+        tab1 = new tabRoute<addrIP>("ned2adv");
+        tab1.mergeFrom(tabRoute.addType.ecmp, tab2, tabRouteAttr.distanLim);
+        for (int i = 0; i < routerRedistedU.size(); i++) {
+            ntry = routerRedistedU.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
+            ntry.best.distance = tabRouteAttr.distanIfc + 1;
+            ntry.best.rouSrc = 1;
+            ntry.best.segrouIdx = segrouIdx;
+            ntry.best.bierIdx = bierIdx;
+            ntry.best.bierSub = bierSub;
+            tab1.add(tabRoute.addType.better, ntry, false, false);
+        }
+        if (labels) {
+            for (int i = 0; i < tab1.size(); i++) {
+                ntry = tab1.get(i);
+                tabRouteEntry<addrIP> org = fwdCore.labeldR.find(ntry);
+                if (org == null) {
+                    continue;
+                }
+                ntry.best.labelLoc = org.best.labelLoc;
+            }
+        }
+        need2adv = tab1;
+        routerDoAggregates(rtrBgpUtil.sfiUnicast, tab3, tab3, other.fwd.commonLabel, null, 0);
+        tabRoute<addrIP> tab4 = tab3;
+        tab3 = new tabRoute<addrIP>("ned2adv");
+        tab3.mergeFrom(tabRoute.addType.ecmp, tab4, tabRouteAttr.distanLim);
+        for (int i = 0; i < other.routerRedistedU.size(); i++) {
+            ntry = other.routerRedistedU.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            ntry = ntry.copyBytes(tabRoute.addType.notyet);
+            ntry.best.distance = tabRouteAttr.distanIfc + 1;
+            ntry.best.rouSrc = 1;
+            ntry.best.segrouIdx = other.segrouIdx;
+            ntry.best.bierIdx = other.bierIdx;
+            ntry.best.bierSub = other.bierSub;
+            tab3.add(tabRoute.addType.better, ntry, false, false);
+        }
+        if (labels) {
+            for (int i = 0; i < tab3.size(); i++) {
+                ntry = tab3.get(i);
+                tabRouteEntry<addrIP> org = other.fwd.labeldR.find(ntry);
+                if (org == null) {
+                    continue;
+                }
+                ntry.best.labelLoc = org.best.labelLoc;
+            }
+        }
+        othr2adv = tab3;
+        for (int o = 0; o < ifaces.size(); o++) {
+            rtrPvrpIface ifc = ifaces.get(o);
+            if (ifc == null) {
+                continue;
+            }
+            tab1 = new tabRoute<addrIP>("ned2adv");
+            tab3 = new tabRoute<addrIP>("ned2adv");
+            tabRoute.addUpdatedTable(tabRoute.addType.always, rtrBgpUtil.sfiUnicast, 0, tab1, need2adv, true, ifc.roumapOut, ifc.roupolOut, ifc.prflstOut);
+            if (other.enabled && ifc.otherEna) {
+                tabRoute.addUpdatedTable(tabRoute.addType.always, rtrBgpUtil.sfiUnicast, 0, tab3, othr2adv, true, ifc.othRmapOut, ifc.othRpolOut, ifc.othPrfOut);
+            }
+            if (ifc.defOrigin) {
+                ntry = new tabRouteEntry<addrIP>();
+                ntry.prefix = addrPrefix.defaultRoute(fwdCore.ipVersion);
+                if (labels) {
+                    ntry.best.labelLoc = fwdCore.commonLabel;
+                }
+                if (ifc.segrouIdx >= 0) {
+                    ntry.best.segrouIdx = ifc.segrouIdx;
+                } else {
+                    ntry.best.segrouIdx = segrouIdx;
+                }
+                if (ifc.bierIdx >= 0) {
+                    ntry.best.bierIdx = ifc.bierIdx;
+                    ntry.best.bierSub = ifc.bierSub;
+                } else {
+                    ntry.best.bierIdx = bierIdx;
+                    ntry.best.bierSub = bierSub;
+                }
+                tab1.add(tabRoute.addType.always, ntry, true, true);
+            }
+            if (other.enabled && ifc.otherEna && ifc.othDefOrig) {
+                ntry = new tabRouteEntry<addrIP>();
+                ntry.prefix = addrPrefix.defaultRoute(other.fwd.ipVersion);
+                if (labels) {
+                    ntry.best.labelLoc = fwdCore.commonLabel;
+                }
+                if (ifc.srOthIdx >= 0) {
+                    ntry.best.segrouIdx = ifc.srOthIdx;
+                } else {
+                    ntry.best.segrouIdx = other.segrouIdx;
+                }
+                if (ifc.brOthIdx >= 0) {
+                    ntry.best.bierIdx = ifc.brOthIdx;
+                    ntry.best.bierSub = ifc.brOthSub;
+                } else {
+                    ntry.best.bierIdx = other.bierIdx;
+                    ntry.best.bierSub = other.bierSub;
+                }
+                tab3.add(tabRoute.addType.always, ntry, true, true);
+            }
+            if (ifc.splitHorizon) {
+                tab1.delIface(ifc.iface);
+            }
+            if (ifc.othSpltHrzn) {
+                tab3.delIface(ifc.oface);
+            }
+            if ((stub || ifc.stub) && (!ifc.unstub)) {
+                for (int i = tab1.size() - 1; i >= 0; i--) {
+                    ntry = tab1.get(i);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    if (ntry.best.clustList == null) {
+                        continue;
+                    }
+                    if (ntry.best.clustList.size() < 1) {
+                        continue;
+                    }
+                    tab1.del(ntry);
+                }
+            }
+            if ((other.stub || ifc.othStub) && (!ifc.othUnstub)) {
+                for (int i = tab3.size() - 1; i >= 0; i--) {
+                    ntry = tab3.get(i);
+                    if (ntry == null) {
+                        continue;
+                    }
+                    if (ntry.best.clustList == null) {
+                        continue;
+                    }
+                    if (ntry.best.clustList.size() < 1) {
+                        continue;
+                    }
+                    tab3.del(ntry);
+                }
+            }
+            ifc.need2adv = tab1;
+            ifc.othr2adv = tab3;
+            for (int i = 0; i < ifc.neighs.size(); i++) {
+                rtrPvrpNeigh nei = ifc.neighs.get(i);
+                if (nei == null) {
+                    continue;
+                }
+                nei.notif.wakeup();
+            }
+        }
+        tab2.setProto(routerProtoTyp, routerProcNum);
+        tab4.setProto(routerProtoTyp, routerProcNum);
+        boolean same = tab2.preserveTime(routerComputedU);
+        same &= tab4.preserveTime(other.routerComputedU);
+        if (same) {
+            return;
+        }
+        tabGen<tabIndex<addrIP>> segrouUsd = new tabGen<tabIndex<addrIP>>();
+        if (segrouLab != null) {
+            for (int i = 0; i < tab2.size(); i++) {
+                ntry = tab2.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.best.segrouBeg < 1) {
+                    continue;
+                }
+                if ((ntry.best.segrouIdx <= 0) || (ntry.best.segrouIdx >= segrouMax)) {
+                    continue;
+                }
+                List<Integer> lab = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
+                segrouLab[ntry.best.segrouIdx].setFwdMpls(tabLabelEntry.owner.pvrpSrgb, fwdCore, (ipFwdIface) ntry.best.iface, ntry.best.nextHop, lab);
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ntry.best.segrouIdx, ntry.prefix));
+            }
+            for (int i = 0; i < tab4.size(); i++) {
+                ntry = tab4.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.best.segrouBeg < 1) {
+                    continue;
+                }
+                if ((ntry.best.segrouIdx <= 0) || (ntry.best.segrouIdx >= segrouMax)) {
+                    continue;
+                }
+                List<Integer> lab = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
+                segrouLab[ntry.best.segrouIdx].setFwdMpls(tabLabelEntry.owner.pvrpSrgb, fwdCore, (ipFwdIface) ntry.best.iface, ntry.best.nextHop, lab);
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ntry.best.segrouIdx, ntry.prefix));
+            }
+            if (segrouIdx > 0) {
+                segrouLab[segrouIdx].setFwdCommon(tabLabelEntry.owner.pvrpSrgb, fwdCore);
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+            }
+            if (other.segrouIdx > 0) {
+                segrouLab[other.segrouIdx].setFwdCommon(tabLabelEntry.owner.pvrpSrgb, other.fwd);
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(other.segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+            }
+            for (int o = 0; o < ifaces.size(); o++) {
+                rtrPvrpIface ifc = ifaces.get(o);
+                if (ifc == null) {
+                    continue;
+                }
+                if (ifc.iface.lower.getState() != state.states.up) {
+                    continue;
+                }
+                if (other.enabled && ifc.otherEna && (ifc.srOthIdx > 0)) {
+                    segrouLab[ifc.srOthIdx].setFwdCommon(tabLabelEntry.owner.pvrpSrgb, other.fwd);
+                    tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.srOthIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+                }
+                if (ifc.segrouIdx < 1) {
+                    continue;
+                }
+                segrouLab[ifc.segrouIdx].setFwdCommon(tabLabelEntry.owner.pvrpSrgb, fwdCore);
+                tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ifc.segrouIdx, new addrPrefix<addrIP>(new addrIP(), 0)));
+            }
+            for (int i = 0; i < segrouLab.length; i++) {
+                if (segrouUsd.find(new tabIndex<addrIP>(i, null)) != null) {
+                    continue;
+                }
+                segrouLab[i].setFwdDrop(tabLabelEntry.owner.pvrpSrgb);
+            }
+        }
+        if (bierLab != null) {
+            tabLabelBier res = new tabLabelBier(bierLab[0].label, tabLabelBier.num2bsl(bierLen));
+            res.idx = bierIdx;
+            res.idx2 = other.bierIdx;
+            for (int o = 0; o < ifaces.size(); o++) {
+                rtrPvrpIface ifc = ifaces.get(o);
+                if (ifc == null) {
+                    continue;
+                }
+                if (ifc.iface.lower.getState() != state.states.up) {
+                    continue;
+                }
+                if (ifc.bierIdx > 0) {
+                    res.idx = ifc.bierIdx;
+                }
+                if (ifc.brOthIdx > 0) {
+                    res.idx2 = ifc.brOthIdx;
+                }
+            }
+            for (int i = 0; i < tab2.size(); i++) {
+                ntry = tab2.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.best.bierBeg < 1) {
+                    continue;
+                }
+                if ((ntry.best.bierIdx <= 0) || (ntry.best.bierIdx >= bierMax)) {
+                    continue;
+                }
+                tabLabelBierN per = new tabLabelBierN(fwdCore, ntry.best.iface, ntry.best.nextHop, ntry.best.bierBeg, 0);
+                tabLabelBierN old = res.peers.add(per);
+                if (old != null) {
+                    per = old;
+                }
+                per.setBit(ntry.best.bierIdx - 1);
+            }
+            for (int i = 0; i < tab4.size(); i++) {
+                ntry = tab4.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                if (ntry.best.bierBeg < 1) {
+                    continue;
+                }
+                if ((ntry.best.bierIdx <= 0) || (ntry.best.bierIdx >= bierMax)) {
+                    continue;
+                }
+                tabLabelBierN per = new tabLabelBierN(fwdCore, ntry.best.iface, ntry.best.nextHop, ntry.best.bierBeg, 0);
+                tabLabelBierN old = res.peers.add(per);
+                if (old != null) {
+                    per = old;
+                }
+                per.setBit(ntry.best.bierIdx - 1);
+            }
+            for (int i = 0; i < bierLab.length; i++) {
+                bierLab[i].setBierMpls(tabLabelEntry.owner.pvrpBier, fwdCore, res);
+            }
+        }
+        routerComputedU = tab2;
+        routerComputedM = tab2;
+        routerComputedF = new tabRoute<addrIP>("rx");
+        routerComputedI = segrouUsd;
+        fwdCore.routerChg(this, false);
+        other.routerComputedU = tab4;
+        other.routerComputedM = tab4;
+        other.routerComputedF = new tabRoute<addrIP>("rx");
+        other.fwd.routerChg(other, false);
+    }
+
+    /**
+     * redistribution changed
+     */
+    public void routerRedistChanged() {
+        notif.wakeup();
+    }
+
+    /**
+     * others changed
+     */
+    public void routerOthersChanged() {
+        if (labels) {
+            notif.wakeup();
+            return;
+        }
+    }
+
+    /**
+     * stop work
+     */
+    public void routerCloseNow() {
+        if (debugger.rtrPvrpEvnt) {
+            logger.debug("shutdown");
+        }
+        need2run = false;
+        other.unregister2ip();
+        for (int i = 0; i < ifaces.size(); i++) {
+            rtrPvrpIface ifc = ifaces.get(i);
+            if (ifc == null) {
+                continue;
+            }
+            ifc.unregister2udp();
+            ifc.closeNeighbors();
+        }
+        tabLabel.release(segrouLab, tabLabelEntry.owner.pvrpSrgb);
+        tabLabel.release(bierLab, tabLabelEntry.owner.pvrpBier);
+        fwdCore.routerDel(this);
+    }
+
+    /**
+     * get help
+     *
+     * @param l list
+     */
+    public void routerGetHelp(userHelp l) {
+        l.add(null, false, 1, new int[]{2}, "router-id", "specify router id");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
+        l.add(null, false, 1, new int[]{-1}, "labels", "specify label mode");
+        l.add(null, false, 1, new int[]{-1}, "stub", "stub router");
+        l.add(null, false, 1, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
+        l.add(null, false, 1, new int[]{2}, "segrout", "segment routing parameters");
+        l.add(null, false, 2, new int[]{3}, "<num>", "maximum index");
+        l.add(null, false, 3, new int[]{4, -1}, "<num>", "this node index");
+        l.add(null, false, 4, new int[]{5}, "base", "specify base");
+        l.add(null, false, 5, new int[]{4, -1}, "<num>", "label base");
+        l.add(null, false, 1, new int[]{2}, "bier", "bier parameters");
+        l.add(null, false, 2, new int[]{3}, "<num>", "bitstring length");
+        l.add(null, false, 3, new int[]{4}, "<num>", "maximum index");
+        l.add(null, false, 4, new int[]{5, -1}, "<num>", "node index");
+        l.add(null, false, 5, new int[]{-1}, "<num>", "node subdomain");
+        l.add(null, false, 1, new int[]{2}, "afi-other", "select other to advertise");
+        l.add(null, false, 2, new int[]{-1}, "enable", "enable processing");
+        l.add(null, false, 2, new int[]{-1}, "foreign", "use foreign nexthop for routes");
+        cfgRtr.getRedistHelp(l, 1);
+        l.add(null, false, 2, new int[]{-1}, "stub", "stub router");
+        l.add(null, false, 2, new int[]{-1}, "suppress-prefix", "do not advertise interfaces");
+        l.add(null, false, 2, new int[]{3}, "segrout", "segment routing parameters");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "this node index");
+        l.add(null, false, 2, new int[]{3}, "bier", "bier parameters");
+        l.add(null, false, 3, new int[]{4, -1}, "<num>", "node index");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "node subdomain");
+    }
+
+    /**
+     * get config
+     *
+     * @param l list
+     * @param beg beginning
+     * @param filter filter
+     */
+    public void routerGetConfig(List<String> l, String beg, int filter) {
+        l.add(beg + "router-id " + routerID);
+        cmds.cfgLine(l, !stub, beg, "stub", "");
+        cmds.cfgLine(l, !labels, beg, "labels", "");
+        cmds.cfgLine(l, !suppressAddr, beg, "suppress-prefix", "");
+        String a = "";
+        if (segrouBase != 0) {
+            a += " base " + segrouBase;
+        }
+        cmds.cfgLine(l, segrouMax < 1, beg, "segrout", segrouMax + " " + segrouIdx + a);
+        cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax + " " + bierIdx + " " + bierSub);
+        cmds.cfgLine(l, !other.enabled, beg, "afi-other enable", "");
+        cmds.cfgLine(l, !other.foreign, beg, "afi-other foreign", "");
+        cmds.cfgLine(l, !other.stub, beg, "afi-other stub", "");
+        cmds.cfgLine(l, !other.suppressAddr, beg, "afi-other suppress-prefix", "");
+        cmds.cfgLine(l, other.segrouIdx < 1, beg, "afi-other segrout", "" + other.segrouIdx);
+        cmds.cfgLine(l, other.bierIdx < 1, beg, "afi-other bier", other.bierIdx + " " + other.bierSub);
+        cfgRtr.getShRedist(l, beg + "afi-other ", other);
+    }
+
+    /**
+     * configure
+     *
+     * @param cmd command
+     * @return false if success, true if error
+     */
+    public boolean routerConfigure(cmds cmd) {
+        String s = cmd.word();
+        boolean negated = false;
+        if (s.equals(cmds.negated)) {
+            s = cmd.word();
+            negated = true;
+        }
+        if (s.equals("router-id")) {
+            s = cmd.word();
+            routerID.fromString(s);
+            cfgIfc ifc = cfgAll.ifcFind(s, 0);
+            if (ifc != null) {
+                if (ifc.addr4 != null) {
+                    routerID.setAddr(ifc.addr4);
+                }
+            }
+            if (negated) {
+                routerID = new addrIPv4();
+            }
+            return false;
+        }
+        if (s.equals("labels")) {
+            labels = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("stub")) {
+            stub = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("suppress-prefix")) {
+            suppressAddr = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("segrout")) {
+            tabLabel.release(segrouLab, tabLabelEntry.owner.pvrpSrgb);
+            segrouLab = null;
+            if (negated) {
+                segrouIdx = 0;
+                segrouMax = 0;
+                segrouBase = 0;
+                notif.wakeup();
+                return false;
+            }
+            segrouMax = bits.str2num(cmd.word());
+            segrouIdx = bits.str2num(cmd.word());
+            segrouBase = 0;
+            for (;;) {
+                s = cmd.word();
+                if (s.length() < 1) {
+                    break;
+                }
+                if (s.equals("base")) {
+                    segrouBase = bits.str2num(cmd.word());
+                    continue;
+                }
+            }
+            segrouLab = tabLabel.allocateBlock(tabLabelEntry.owner.pvrpSrgb, segrouBase, segrouMax);
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("bier")) {
+            tabLabel.release(bierLab, tabLabelEntry.owner.pvrpBier);
+            bierLab = null;
+            if (negated) {
+                bierIdx = 0;
+                bierSub = 0;
+                bierMax = 0;
+                bierLen = 0;
+                notif.wakeup();
+                return false;
+            }
+            bierLen = tabLabelBier.normalizeBsl(bits.str2num(cmd.word()));
+            bierMax = bits.str2num(cmd.word());
+            bierIdx = bits.str2num(cmd.word());
+            bierSub = bits.str2num(cmd.word());
+            bierLab = tabLabel.allocateBlock(tabLabelEntry.owner.pvrpBier, (bierMax + bierLen - 1) / bierLen);
+            notif.wakeup();
+            return false;
+        }
+        if (!s.equals("afi-other")) {
+            return true;
+        }
+        s = cmd.word();
+        if (s.equals("enable")) {
+            if (negated) {
+                other.unregister2ip();
+            } else {
+                other.register2ip();
+            }
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("foreign")) {
+            other.foreign = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("stub")) {
+            other.stub = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("suppress-prefix")) {
+            other.suppressAddr = !negated;
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("segrout")) {
+            if (negated) {
+                other.segrouIdx = 0;
+                notif.wakeup();
+                return false;
+            }
+            other.segrouIdx = bits.str2num(cmd.word());
+            notif.wakeup();
+            return false;
+        }
+        if (s.equals("bier")) {
+            if (negated) {
+                other.bierIdx = 0;
+                other.bierSub = 0;
+                notif.wakeup();
+                return false;
+            }
+            other.bierIdx = bits.str2num(cmd.word());
+            other.bierSub = bits.str2num(cmd.word());
+            notif.wakeup();
+            return false;
+        }
+        return cfgRtr.doCfgRedist(other, other.fwd, negated, s, cmd);
+    }
+
+    public void run() {
+        for (;;) {
+            notif.misleep(30000);
+            if (!need2run) {
+                return;
+            }
+            try {
+                routerCreateComputed();
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
+        }
+    }
+
+    /**
+     * get neighbor count
+     *
+     * @return count
+     */
+    public int routerNeighCount() {
+        int o = 0;
+        for (int i = 0; i < ifaces.size(); i++) {
+            o += ifaces.get(i).neighs.size();
+        }
+        return o;
+    }
+
+    /**
+     * list neighbors
+     *
+     * @param tab list
+     */
+    public void routerNeighList(tabRoute<addrIP> tab) {
+        for (int o = 0; o < ifaces.size(); o++) {
+            rtrPvrpIface ifc = ifaces.get(o);
+            if (ifc == null) {
+                continue;
+            }
+            if (ifc.iface.lower.getState() != state.states.up) {
+                continue;
+            }
+            for (int i = 0; i < ifc.neighs.size(); i++) {
+                rtrPvrpNeigh nei = ifc.neighs.get(i);
+                if (nei == null) {
+                    continue;
+                }
+                tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+                ntry.prefix = new addrPrefix<addrIP>(nei.peer, addrIP.size * 8);
+                tabRoute.addUpdatedEntry(tabRoute.addType.better, tab, rtrBgpUtil.sfiUnicast, 0, ntry, true, null, null, routerAutoMesh);
+            }
+        }
+    }
+
+    /**
+     * get interface count
+     *
+     * @return count
+     */
+    public int routerIfaceCount() {
+        return ifaces.size();
+    }
+
+    /**
+     * maximum recursion depth
+     *
+     * @return allowed number
+     */
+    public int routerRecursions() {
+        return 1;
+    }
+
+    /**
+     * get list of link states
+     *
+     * @param tab table to update
+     * @param par parameter
+     * @param asn asn
+     * @param adv advertiser
+     */
+    public void routerLinkStates(tabRoute<addrIP> tab, int par, int asn, addrIPv4 adv) {
+    }
+
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public void routerStateGet(List<String> lst) {
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     * @return true on error, false on success
+     */
+    public boolean routerStateSet(cmds cmd) {
+        return true;
+    }
+
+}

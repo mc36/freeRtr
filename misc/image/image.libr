@@ -1,0 +1,27 @@
+download 3
+reget-time 8
+
+mkdir %tmp%
+catalog-read freesh gz http://www.linux-libre.fsfla.org/pub/linux-libre/freesh/ freesh main
+
+select-dis freesh-archive-.*
+select-one linux-libre                    #libre kernel
+catalog-sum
+
+select-lst
+select-sum
+package-down
+
+if-downed 0-1
+exit
+
+package-inst
+
+move %tmp%/lib %tmp%/usr
+
+move %dwn%/%arch%-linux-image-gnu.tgz %dwn%/%arch%-linux-image-gnu.bak
+exec tar cfz %dwn%/%arch%-linux-image-gnu.tgz -C %tmp%/ boot usr
+
+catalog-save lib
+
+del %tmp%

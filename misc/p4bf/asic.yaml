@@ -1,0 +1,7 @@
+global-options:
+  asic: true
+features:
+  drivers:
+    grpc: true
+architectures:
+- tofino
