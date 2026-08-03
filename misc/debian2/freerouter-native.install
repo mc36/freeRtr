@@ -1,3 +1,0 @@
-binTmp/*.bin /usr/bin
-debian/interface.sh usr/share/freerouter
-debian/interface.cpu_port etc/freerouter/interfaces

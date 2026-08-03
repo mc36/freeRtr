@@ -1,8 +1,0 @@
-config iface-sdn1
-config/interface/sdn1
-freertr-iface-sdn1
-interface sdn187156390
-!
- exit
-no interface sdn187156390
-.

@@ -1,2 +1,0 @@
--b tofino2 -a t2na -DDUAL_PIPE
--b tofino2 -a t2na -DQUAD_PIPE

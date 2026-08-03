@@ -1,9 +1,0 @@
-arch ppc64el
-unam ppc64le
-qemu ppc64el
-ctrg powerpc64le
-kern powerpc64le
-grub ieee1275-bin
-boot powerpc-ieee1275
-uefi bootieee.efi
-image ../binImg/rtr-ppc64

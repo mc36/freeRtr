@@ -1,5 +1,0 @@
-menu "Configuration"
-	depends on PACKAGE_p4emu
-
-
-endmenu
