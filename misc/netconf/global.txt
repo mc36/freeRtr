@@ -1,0 +1,5 @@
+config global
+config
+freertr-global
+!
+.

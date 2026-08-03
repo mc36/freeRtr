@@ -1,0 +1,9 @@
+arch amd64
+unam x86_64
+qemu x86_64
+ctrg x86_64
+kern cloud-amd64
+grub efi-amd64-bin
+boot x86_64-efi
+uefi bootx64.efi
+image ../binImg/rtr-x86_64

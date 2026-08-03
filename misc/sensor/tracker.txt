@@ -1,0 +1,13 @@
+sensor tracker
+path tracker/peer/peer
+prefix freertr-tracker
+key name tracker/peer
+command sho tracker
+prepend tracker_
+name 0 name=
+replace \- _
+column 4 name state
+column 4 replace down 0
+column 4 replace up 1
+.
+exit

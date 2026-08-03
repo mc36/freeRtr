@@ -1,0 +1,25 @@
+sensor flaps4
+path flaps/peer/peer
+prefix freertr-flaps
+key name flaps/peer
+command show ipv4 logger 1 flapstat 100
+prepend flaps_ipv4_
+name 1 prefix=
+replace \. _
+replace \- _
+column 2 name count
+.
+exit
+
+sensor flaps6
+path flaps/peer/peer
+prefix freertr-flaps
+key name flaps/peer
+command show ipv6 logger 1 flapstat 100
+prepend flaps_ipv6_
+name 1 prefix=
+replace \. _
+replace \- _
+column 2 name count
+.
+exit

@@ -1,0 +1,12 @@
+config rip6
+config/router/rip6/1
+freertr-rip6
+vrf def 187156390
+ exit
+router rip6 187156390
+ vrf 187156390
+!
+ exit
+no router rip6 187156390
+no vrf def 187156390
+.

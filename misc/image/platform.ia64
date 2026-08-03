@@ -1,0 +1,11 @@
+arch ia64
+unam ia64
+qemu ia64
+ctrg ia64
+comp gcc
+kern itanium
+grub ieee1275-bin
+boot ia64-ieee1275
+uefi bootia64.efi
+mirr http://deb.debian.org/debian-ports/
+image ../binImg/rtr-ia64

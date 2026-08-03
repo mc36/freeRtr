@@ -1,0 +1,63 @@
+
+import javax.sound.sampled.TargetDataLine;
+
+/**
+ * measure beep delay
+ *
+ * @author matecsaba
+ */
+public class measBeep {
+
+    public static void main(String[] args) throws Exception {
+        int per = (Integer.parseInt(args[3]) * consts.smpb * 2 * consts.rate) / consts.payl;
+        int mul = Integer.parseInt(args[4]);
+        TargetDataLine dataLine = devicer.getRecord(args[0]);
+        rtper rtp = new rtper(args[1], args[2]);
+        byte[] buf = new byte[consts.payl];
+        byte[] sln = new byte[buf.length];
+        byte[] snd = new byte[buf.length];
+        measFreq.toneGen(snd, 0, 1000, 32767);
+        measFreq.toneGen(sln, 0, 1000, 127);
+        int pos = 0;
+        int ned = Integer.MAX_VALUE;
+        int avg = 0;
+        for (;;) {
+            int len = dataLine.read(buf, 0, buf.length);
+            if (len < 1) {
+                break;
+            }
+            if (pos > per) {
+                rtp.write(snd, snd.length);
+                pos = 0;
+                ned = avg * mul;
+            } else {
+                if (pos < (consts.rate / consts.payl)) {
+                    rtp.write(snd, snd.length);
+                } else {
+                    rtp.write(sln, sln.length);
+                }
+            }
+            pos++;
+            avg = 0;
+            for (int i = 0; i < buf.length; i += consts.smpb) {
+                int o = buf[i + 0];
+                if (o < 0) {
+                    o = -o;
+                }
+                avg += o;
+            }
+            avg /= buf.length / 2;
+            if (avg < 1) {
+                avg = 1;
+            }
+            if (avg < ned) {
+                continue;
+            }
+            int i = (pos * buf.length) / (2 * consts.smpb);
+            int q = (i * 1000) / consts.rate;
+            System.out.println(avg + " > " + ned + " @ " + pos + " [" + i + "] (" + q + "ms)");
+            ned = Integer.MAX_VALUE;
+        }
+    }
+
+}

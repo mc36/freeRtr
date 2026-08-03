@@ -1,0 +1,46 @@
+download 3
+reget-time 8
+kern http://cdn.netbsd.org/pub/NetBSD/
+
+mkdir %tmp%
+binary-down %dwn%/%arch%-nbsd.html %kern%
+find-clear
+find-link 1-1111 %dwn%/%arch%-nbsd.html NetBSD-[0-9][0-9]\.[0-9].*/
+find-result
+kern %kern%%find%%arch%/binary/sets/
+
+file-read 0 %dwn%/%arch%-nbsd.txt
+del %dwn%/%arch%-nbsd.txt
+download 1
+if-compare 0 %read% %find%
+download 2
+
+binary-xtra nbsd-base.txz %kern%base.tar.xz
+binary-xtra nbsd-comp.txz %kern%comp.tar.xz
+binary-xtra nbsd-etc.txz %kern%etc.tar.xz
+binary-xtra nbsd-kern.txz %kern%kern-GENERIC.tar.xz
+binary-xtra nbsd-mods.txz %kern%modules.tar.xz
+
+file-line %dwn%/%arch%-nbsd.txt %find%
+package-xtra
+
+move %tmp%/stand/%arch%/*/modules/* %tmp%/tmp/
+move %tmp%/tmp/compat_linux %tmp%/stand/%arch%/*/modules/
+move %tmp%/tmp/compat_ossaudio %tmp%/stand/%arch%/*/modules/
+del %tmp%/libdata/firmware
+del %tmp%/tmp/*
+
+move %tmp%/usr/mdec/bootxx_cd9660 %tmp%/cdboot
+move %tmp%/usr/mdec/boot %tmp%/
+move %tmp%/usr/sbin/ndp %tmp%/sbin/
+copy ../misc/image/boot.nbsd %tmp%/boot.cfg
+copy ../misc/image/init.nbsd %tmp%/etc/rc
+mkdir %tmp%/emul
+kern netbsd
+boot emul/linux
+
+include ../misc/image/image.xbsd
+
+exec xorriso -as mkisofs -o %img%-nbsd.iso -r -J -l -b cdboot -no-emul-boot -c isolinux.cat %tmp%/
+
+del %tmp%

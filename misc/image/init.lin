@@ -1,0 +1,4 @@
+#!/bin/sh
+sh /init.sys
+sh /init.dev
+exec sh /init.run

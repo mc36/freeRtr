@@ -1,0 +1,45 @@
+hostname freertr
+buggy
+!
+logging buffered debug 10240
+logging file debug zzz.log
+!
+vrf definition v1
+ rd 1:1
+ exit
+!
+interface ethernet1
+ no description
+ no shutdown
+ no log-link-change
+ exit
+!
+proxy-profile p1
+ vrf v1
+ exit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+server telnet tel
+ security protocol telnet
+ no exec authorization
+ no login authentication
+ vrf v1
+ exit
+!
+client proxy p1
+client name-server 8.8.8.8
+client time-zone CET
+!
+end

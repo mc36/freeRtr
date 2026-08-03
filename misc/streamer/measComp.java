@@ -1,0 +1,189 @@
+
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
+import javax.sound.sampled.TargetDataLine;
+
+/**
+ * measure stream delay
+ *
+ * @author matecsaba
+ */
+public class measComp {
+
+    public static void main(String[] args) throws Exception {
+        int sec = Integer.parseInt(args[4]);
+        TargetDataLine dataLine = devicer.getRecord(args[0]);
+        measCompOne dev = new measCompDev(dataLine, sec);
+        DatagramChannel channel = rtper.receive(args[1], args[2], args[3]);
+        measCompOne net = new measCompNet(channel, sec);
+        measCompOne d = new measCompOne(sec);
+        measCompOne n = new measCompOne(sec);
+        for (;;) {
+            Thread.sleep(250);
+            dev.doCopy(d);
+            net.doCopy(n);
+            d.doFull(n);
+        }
+    }
+
+}
+
+class measCompOne {
+
+    public byte[] cur;
+
+    public int pos;
+
+    public long tot;
+
+    public byte max;
+
+    public float div;
+
+    public measCompOne(int sec) {
+        cur = new byte[consts.rate * sec];
+        pos = 0;
+        tot = 0;
+    }
+
+    public void doCopy(measCompOne r) {
+        System.arraycopy(cur, 0, r.cur, 0, cur.length);
+        r.pos = pos;
+        r.tot = tot;
+    }
+
+    public void addBuf(byte[] buf, int len) {
+        int o = pos;
+        for (int i = 0; i < len; i += consts.smpb * 2) {
+            int p = (int) buf[i + 0];
+            p += (int) buf[i + consts.smpb];
+            if (p < 0) {
+                p = -p;
+            }
+            p /= 2;
+            cur[o] = (byte) p;
+            o = (o + 1) % cur.length;
+        }
+        pos = o;
+        tot += len;
+    }
+
+    public void doBuf() {
+        max = Byte.MIN_VALUE;
+        for (int i = 0; i < cur.length; i++) {
+            byte p = cur[i];
+            if (p < max) {
+                continue;
+            }
+            max = p;
+        }
+        div = (float) max / 120.0f;
+        for (int i = 0; i < cur.length; i++) {
+            float p = (float) cur[i];
+            p /= div;
+            cur[i] = (byte) p;
+        }
+    }
+
+    public int doDiff(measCompOne oth, int beg, int max) {
+        int r = 0;
+        int p = beg + pos;
+        int o = oth.pos;
+        for (int i = 0; i < (cur.length / 2); i++) {
+            if (p >= cur.length) {
+                p = 0;
+            }
+            if (o >= cur.length) {
+                o = 0;
+            }
+            int q = (int) cur[p];
+            q -= (int) oth.cur[o];
+            if (q < 0) {
+                q = -q;
+            }
+            r += q;
+            if (r > max) {
+                return r;
+            }
+            o++;
+            p++;
+        }
+        return r;
+    }
+
+    public void doFull(measCompOne oth) {
+        doBuf();
+        oth.doBuf();
+        int m = doDiff(oth, 0, Integer.MAX_VALUE);
+        int p = 0;
+        for (int i = 1; i < (cur.length / 2); i++) {
+            int o = doDiff(oth, i, m);
+            if (o >= m) {
+                continue;
+            }
+            p = i;
+            m = o;
+        }
+        m /= cur.length / consts.rate;
+        int q = (p * 1000) / consts.rate;
+        System.out.println(m + " @ " + p + " (" + q + "ms) dev=" + this + " net=" + oth);
+    }
+
+    public String toString() {
+        return tot + " " + max;
+    }
+
+}
+
+class measCompDev extends measCompOne implements Runnable {
+
+    private TargetDataLine dataLine;
+
+    public measCompDev(TargetDataLine dl, int sec) {
+        super(sec);
+        dataLine = dl;
+        new Thread(this).start();
+    }
+
+    public void run() {
+        byte[] buf = new byte[consts.payl];
+        for (;;) {
+            int i = dataLine.read(buf, 0, buf.length);
+            if (i < 1) {
+                break;
+            }
+            addBuf(buf, i);
+        }
+    }
+
+}
+
+class measCompNet extends measCompOne implements Runnable {
+
+    private DatagramChannel channel;
+
+    public measCompNet(DatagramChannel ch, int sec) {
+        super(sec);
+        channel = ch;
+        new Thread(this).start();
+    }
+
+    public void run() {
+        ByteBuffer buffer = ByteBuffer.allocate(4096);
+        byte[] buf = new byte[consts.payl];
+        for (;;) {
+            buffer.clear();
+            try {
+                channel.receive(buffer);
+            } catch (Exception e) {
+            }
+            int i = rtper.decode(buffer, buf);
+            if (i < 1) {
+                break;
+            }
+            addBuf(buf, i);
+        }
+
+    }
+
+}

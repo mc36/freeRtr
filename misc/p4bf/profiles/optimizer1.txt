@@ -1,0 +1,2 @@
+-Xp4c="--disable-parse-depth-limit" -DDUAL_PIPE
+-Xp4c="--disable-parse-depth-limit" -DQUAD_PIPE

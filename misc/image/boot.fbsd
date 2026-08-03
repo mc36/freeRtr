@@ -1,0 +1,5 @@
+autoboot_delay="0"
+console="comconsole"
+comconsole_speed="115200"
+beastie_disable="YES"
+vfs.root.mountfrom="cd9660:/dev/cd0"

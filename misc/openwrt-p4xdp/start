@@ -1,0 +1,9 @@
+#!/bin/sh
+ulimit -l 65536
+#echo 1 > /proc/sys/net/core/bpf_jit_enable
+export p4emuNOCMDS=1
+export p4emuNOCONS=1
+while (true); do
+  sleep 1
+  /usr/sbin/p4xdp_user.bin $@
+  done
