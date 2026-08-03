@@ -6,7 +6,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * rename files
+ * rename files using
+ *
+ * https://raw.githubusercontent.com/anyascii/anyascii/refs/heads/master/unidecode/unidecode.tsv
  *
  * @author matecsaba
  */
@@ -102,6 +104,9 @@ public class renamer {
                 }
             }
             a = prepend + a;
+            a = unidecode(a);
+            a = unidecode(a);
+            a = unidecode(a);
             a = guessName(a, basic);
             a = guessName(a, basic);
             a = guessName(a, basic);
@@ -153,108 +158,9 @@ public class renamer {
         if (s.indexOf(sep) >= 0) {
             return null;
         }
-        s = s.replaceAll("á", "a");
-        s = s.replaceAll("Á", "a");
-        s = s.replaceAll("é", "e");
-        s = s.replaceAll("É", "e");
-        s = s.replaceAll("í", "i");
-        s = s.replaceAll("Í", "i");
-        s = s.replaceAll("ó", "o");
-        s = s.replaceAll("Ó", "o");
-        s = s.replaceAll("ö", "o");
-        s = s.replaceAll("Ö", "o");
-        s = s.replaceAll("ú", "u");
-        s = s.replaceAll("Ú", "u");
-        s = s.replaceAll("ü", "u");
-        s = s.replaceAll("Ü", "u");
-        s = s.replaceAll("ű", "u");
-        s = s.replaceAll("Ű", "u");
-        s = s.replaceAll("ő", "o");
-        s = s.replaceAll("Ő", "o");
-        s = s.replaceAll("А", "a");
-        s = s.replaceAll("Д", "A");
-        s = s.replaceAll("д", "A");
-        s = s.replaceAll("В", "B");
-        s = s.replaceAll("в", "B");
-        s = s.replaceAll("ь", "b");
-        s = s.replaceAll("е", "e");
-        s = s.replaceAll("а", "a");
-        s = s.replaceAll("с", "c");
-        s = s.replaceAll("С", "C");
-        s = s.replaceAll("о", "o");
-        s = s.replaceAll("О", "O");
-        s = s.replaceAll("Р", "P");
-        s = s.replaceAll("р", "P");
-        s = s.replaceAll("я", "r");
-        s = s.replaceAll("Я", "r");
-        s = s.replaceAll("ё", "e");
-        s = s.replaceAll("ы", "bi");
-        s = s.replaceAll("ю", "10");
-        s = s.replaceAll("ф", "0");
-        s = s.replaceAll("Г", "F");
-        s = s.replaceAll("г", "r");
-        s = s.replaceAll("П", "N");
-        s = s.replaceAll("й", "N");
-        s = s.replaceAll("щ", "w");
-        s = s.replaceAll("ш", "w");
-        s = s.replaceAll("у", "y");
-        s = s.replaceAll("У", "y");
-        s = s.replaceAll("Ц", "y");
-        s = s.replaceAll("ц", "y");
-        s = s.replaceAll("Х", "X");
-        s = s.replaceAll("х", "x");
-        s = s.replaceAll("к", "k");
-        s = s.replaceAll("К", "K");
-        s = s.replaceAll("и", "N");
-        s = s.replaceAll("О", "O");
-        s = s.replaceAll("З", "3");
-        s = s.replaceAll("Э", "3");
-        s = s.replaceAll("з", "3");
-        s = s.replaceAll("б", "6");
-        s = s.replaceAll("Б", "6");
-        s = s.replaceAll("Ч", "4");
-        s = s.replaceAll("ч", "4");
-        s = s.replaceAll("т", "T");
-        s = s.replaceAll("Т", "T");
-        s = s.replaceAll("м", "M");
-        s = s.replaceAll("М", "M");
-        s = s.replaceAll("Ж", "X");
-        s = s.replaceAll("Н", "H");
-        s = s.replaceAll("н", "H");
-        s = s.replaceAll("л", "n");
-        s = s.replaceAll("п", "n");
-        s = s.replaceAll("ä", "a");
-        s = s.replaceAll("Ä", "a");
-        s = s.replaceAll("Μ", "M");
-        s = s.replaceAll("π", "n");
-        s = s.replaceAll("ύ", "v");
-        s = s.replaceAll("ρ", "p");
-        s = s.replaceAll("α", "a");
-        s = s.replaceAll("ß", "s");
-        s = s.replaceAll("Ø", "0");
-        s = s.replaceAll("Š", "s");
-        s = s.replaceAll("š", "s");
-        s = s.replaceAll("à", "a");
-        s = s.replaceAll("ð", "o");
-        s = s.replaceAll("č", "c");
-        s = s.replaceAll("Č", "c");
-        s = s.replaceAll("ž", "z");
-        s = s.replaceAll("̸", "");
-        s = s.replaceAll("∕", "");
-        s = s.replaceAll("ː", "");
-        s = s.replaceAll("꞉", "");
-        s = s.replaceAll("∶", "");
-        s = s.replaceAll("：", "");
-        s = s.replaceAll("？", "");
-        s = s.replaceAll("…", "");
-        s = s.replaceAll("”", "");
-        s = s.replaceAll("´", "");
-        s = s.replaceAll("“", "");
-        s = s.replaceAll("’", "");
         s = s.replaceAll("=", " ");
         s = s.replaceAll("_", " ");
         s = s.replaceAll("~", " ");
-        s = s.replaceAll("–", "-");
         s = s.replaceAll("&", " ");
         s = s.replaceAll("@", " ");
         s = s.replaceAll("#", " ");
@@ -375,6 +281,56 @@ public class renamer {
             return false;
         }
         return true;
+    }
+
+    private static List<String> unidecoder = null;
+
+    /**
+     * use unidecode table
+     *
+     * @param a string
+     * @return decoded
+     */
+    public static String unidecode(String a) {
+        String b = "";
+        int s = a.codePointCount(0, a.length());
+        for (int i = 0; i < s; i++) {
+            int o = a.codePointAt(i);
+            if ((o >= 32) && (o < 127)) {
+                b += (char) o;
+                continue;
+            }
+            if (unidecoder == null) {
+                unidecoder = new ArrayList<String>();
+                playerLyric res = playerUtil.download("" + renamer.class.getResource("unidecode.tsv"));
+                if (res == null) {
+                    return a;
+                }
+                for (int p = 0; p < res.size(); p++) {
+                    String q = res.get(p);
+                    if (q.codePointCount(0, q.length()) < 3) {
+                        continue;
+                    }
+                    if (q.codePointAt(1) != 9) {
+                        continue;
+                    }
+                    int r = q.codePointAt(0);
+                    for (; unidecoder.size() < r;) {
+                        unidecoder.add(null);
+                    }
+                    unidecoder.add(q.substring(2, q.length()));
+                }
+            }
+            if ((o < 0) || (o >= unidecoder.size())) {
+                return a;
+            }
+            String q = unidecoder.get(o);
+            if (q == null) {
+                return a;
+            }
+            b += q;
+        }
+        return b;
     }
 
 }

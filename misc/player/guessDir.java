@@ -21,7 +21,12 @@ public class guessDir {
         fs.doFindSongs(s);
         fs.doSort();
         fs.doDir();
-        playerUtil.put(fs.art + " - " + fs.dat + " - " + fs.alb);
+        String a = fs.art + " - " + fs.dat + " - " + fs.alb;
+        playerUtil.put(a);
+        a = renamer.unidecode(a);
+        playerUtil.put(a);
+        a = renamer.guessName(a, false);
+        playerUtil.put(a);
     }
 
 }
