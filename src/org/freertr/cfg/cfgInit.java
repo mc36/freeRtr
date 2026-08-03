@@ -674,6 +674,7 @@ public class cfgInit implements Runnable {
         types.add(new cfgInitMime("oga", "audio/ogg"));
         types.add(new cfgInitMime("flac", "audio/flac"));
         types.add(new cfgInitMime("aac", "audio/aac"));
+        types.add(new cfgInitMime("sdp", "application/sdp"));
         types.add(new cfgInitMime("bin", "application/octet-stream"));
         types.add(new cfgInitMime("jar", "application/java-archive"));
         types.add(new cfgInitMime("doc", "application/msword"));

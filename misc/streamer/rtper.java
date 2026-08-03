@@ -5,6 +5,8 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -29,6 +31,7 @@ public class rtper {
         int port = Integer.parseInt(prt);
         target = DatagramChannel.open();
         DatagramSocket scket = target.socket();
+        scket.bind(new InetSocketAddress(port));
         MulticastSocket mcast = (MulticastSocket) scket;
         mcast.connect(group, port);
         mcast.setTimeToLive(255);
@@ -71,6 +74,24 @@ public class rtper {
         DatagramChannel channel = DatagramChannel.open();
         channel.socket().bind(new InetSocketAddress(addr, port));
         return channel;
+    }
+
+    public static List<String> genSdp(String grp, String src, String prt) {
+        List<String> res = new ArrayList<String>();
+        res.add("v=0");
+        res.add("o=Node 0 0 IN IP4 " + src);
+        res.add("s=None");
+        res.add("c=IN IP4 " + grp);
+        res.add("t=0 0");
+        res.add("m=audio " + prt + " RTP/AVP 10");
+        res.add("a=rtpmap:10 L" + (consts.smpb * 8) + "/" + consts.rate + "/2");
+        res.add("a=source-filter: incl IN IP4 " + grp + " " + src);
+        return res;
+    }
+
+    public static void sdp2cli(List<String> res) {
+        res.add(0, "echo \"");
+        res.add("\" | ffplay -protocol_whitelist file,fd,udp,rtp -");
     }
 
     public static DatagramChannel receive(String grp, String src, String prt) throws Exception {
