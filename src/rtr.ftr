@@ -4076,6 +4076,7 @@ qc pass: integrated lsrp over foreign ipv6
 qc pass: multicast routing with static flooding
 qc pass: multicast routing with pim ssm
 qc pass: multicast routing with igmp/mld
+qc pass: multicast routing between pim and igmp/mld
 qc pass: multicast routing with mldp
 qc pass: multicast between pim and mldp
 qc pass: multicast vpn routing with mldp
@@ -4083,7 +4084,7 @@ qc pass: multicast vpn between pim and mldp
 qc pass: multicast othervpn routing with mldp
 qc pass: multicast othervpn between pim and mldp
 qc pass: egress multicast routing ttl treshold
-qc pass: inress multicast routing ttl treshold
+qc pass: ingress multicast routing ttl treshold
 qc pass: multicast routing decoupled from unicast
 qc pass: multicast routing with pim join source
 qc pass: multicast routing with pim over bier
@@ -4100,6 +4101,10 @@ qc pass: multicast mvpn between pim and mldp
 qc pass: multicast othermvpn routing with mldp
 qc pass: multicast othermvpn between pim and mldp
 qc pass: multicast routing with msdp
+qc pass: multicast routing with ingress static override
+qc pass: multicast routing with egress static override
+qc pass: multicast routing with ingress msdp override
+qc pass: multicast routing with egress msdp override
 qc pass: olsr on one subnet
 qc pass: olsr in chain
 qc pass: olsr ingress route filtering with prefixlist

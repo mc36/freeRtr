@@ -18603,3 +18603,11 @@ qc pass: wireguard over asymmetric ports
 no qc pass: multicast routing ttl treshold
 qc pass: egress multicast routing ttl treshold
 qc pass: inress multicast routing ttl treshold
+---------------------------------- 2026-08-03 21:50:42 26.8.3
+no qc pass: inress multicast routing ttl treshold
+qc pass: multicast routing between pim and igmp/mld
+qc pass: ingress multicast routing ttl treshold
+qc pass: multicast routing with ingress static override
+qc pass: multicast routing with egress static override
+qc pass: multicast routing with ingress msdp override
+qc pass: multicast routing with egress msdp override
