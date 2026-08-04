@@ -769,7 +769,7 @@ public class userGame {
      *
      * @param cmd command line to use
      */
-    public void doRobj(cmds cmd) {
+    public void doRotObj(cmds cmd) {
         pipeZbuffer gfx = new pipeZbuffer(console);
         gfx.objFresh();
         gfx.objReadUp(bits.txt2buf(cmd.getRemaining()), pipeScreen.colBlack, pipeScreen.colWhite, pipeFonts.lineFiller);
@@ -782,7 +782,7 @@ public class userGame {
      *
      * @param cmd command line to use
      */
-    public void doRans(cmds cmd) {
+    public void doRotAns(cmds cmd) {
         userFlash.ansiArt(cmd.getRemaining(), console);
         List<String> txt = console.getAscii();
         int[][][] col = console.getColor();
@@ -1834,11 +1834,11 @@ public class userGame {
             return;
         }
         if (a.equals("rot-obj")) {
-            doRobj(cmd);
+            doRotObj(cmd);
             return;
         }
         if (a.equals("rot-ansi")) {
-            doRans(cmd);
+            doRotAns(cmd);
             return;
         }
         if (a.equals("cube")) {
