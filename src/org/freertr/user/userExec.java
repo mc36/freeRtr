@@ -2428,6 +2428,7 @@ public class userExec {
         hl.add(null, false, 2, new int[]{-1}, "rot-time", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "rot-clock", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "snake", "view demo");
+        hl.add(null, false, 2, new int[]{-1}, "lines", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "matrix", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "snow", "view demo");
         hl.add(null, false, 2, new int[]{-1}, "fire", "view demo");

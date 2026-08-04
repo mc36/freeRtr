@@ -445,6 +445,64 @@ public class userGame {
     }
 
     /**
+     * moving lines
+     */
+    public void doLines() {
+        int[] cols = new int[6];
+        int[] posX = new int[cols.length];
+        int[] posY = new int[cols.length];
+        int[] movX = new int[cols.length];
+        int[] movY = new int[cols.length];
+        for (int i = 0; i < cols.length; i++) {
+            posX[i] = -1;
+            posY[i] = -1;
+        }
+        for (;;) {
+            if (console.keyPress()) {
+                break;
+            }
+            for (int i = 0; i < cols.length; i++) {
+                posX[i] += movX[i];
+                posY[i] += movY[i];
+                if (posX[i] >= (console.sizX * 10)) {
+                    cols[i] = bits.random(1, 16);
+                    posX[i] = console.sizX * 10;
+                    movX[i] = -bits.random(5, 30);
+                }
+                if (posY[i] >= (console.sizY * 10)) {
+                    cols[i] = bits.random(1, 16);
+                    posY[i] = console.sizY * 10;
+                    movY[i] = -bits.random(5, 30);
+                }
+                if (posX[i] <= 0) {
+                    cols[i] = bits.random(1, 16);
+                    posX[i] = 0;
+                    movX[i] = bits.random(5, 30);
+                }
+                if (posY[i] <= 0) {
+                    cols[i] = bits.random(1, 16);
+                    posY[i] = 0;
+                    movY[i] = bits.random(5, 30);
+                }
+            }
+            console.doClear();
+            for (int i = 0; i < cols.length; i++) {
+                int o = i - 1;
+                if (o < 0) {
+                    o = cols.length - 1;
+                }
+                int bx = posX[o] / 10;
+                int by = posY[o] / 10;
+                int ex = posX[i] / 10;
+                int ey = posY[i] / 10;
+                console.drawLine(bx, by, ex, ey, pipeScreen.colBlack, cols[i], pipeFonts.lineFiller);
+            }
+            console.refresh();
+            bits.sleep(500);
+        }
+    }
+
+    /**
      * moving snake
      */
     public void doSnake() {
@@ -1745,6 +1803,10 @@ public class userGame {
         }
         if (a.equals("snake")) {
             doSnake();
+            return;
+        }
+        if (a.equals("lines")) {
+            doLines();
             return;
         }
         if (a.equals("matrix")) {
