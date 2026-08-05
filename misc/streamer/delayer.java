@@ -1,7 +1,4 @@
 
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
-
 /**
  * delayed forward stream
  *
@@ -17,13 +14,10 @@ public class delayer {
         for (i = 0; i < len.length; i++) {
             len[i] = devicer.payl;
         }
-        DatagramChannel source = rtper.receive(args[0], args[1]);
-        rtper rtp = new rtper(args[2], args[3]);
-        ByteBuffer buffer = ByteBuffer.allocate(4096);
+        rtper source = rtper.receive(args[0], args[1]);
+        rtper rtp = rtper.sender(args[2], args[3]);
         for (;;) {
-            buffer.clear();
-            source.receive(buffer);
-            i = rtper.decode(buffer, buf[pos]);
+            i = source.read(buf[pos]);
             if (i < 1) {
                 break;
             }

@@ -16,9 +16,11 @@ import java.util.Random;
  */
 public class rtper {
 
-    private ByteBuffer buffer;
+    private final ByteBuffer buffer = ByteBuffer.allocate(4096);
 
     private DatagramChannel target;
+
+    private DatagramChannel source;
 
     private int src;
 
@@ -26,24 +28,28 @@ public class rtper {
 
     private int clk;
 
-    public rtper(String grp, String prt) throws Exception {
+    private rtper() {
+    }
+
+    public static rtper sender(String grp, String prt) throws Exception {
+        rtper r = new rtper();
         InetAddress group = InetAddress.getByName(grp);
         int port = Integer.parseInt(prt);
-        target = DatagramChannel.open();
-        DatagramSocket scket = target.socket();
+        r.target = DatagramChannel.open();
+        DatagramSocket scket = r.target.socket();
         scket.bind(new InetSocketAddress(port));
         MulticastSocket mcast = (MulticastSocket) scket;
         mcast.connect(group, port);
         mcast.setTimeToLive(255);
-        buffer = ByteBuffer.allocate(4096);
-        src = new Random().nextInt();
-        seq = 0;
-        clk = 0;
+        r.src = new Random().nextInt();
+        r.seq = 0;
+        r.clk = 0;
+        return r;
     }
 
     public void write(byte[] buf, int len) throws Exception {
         buffer.clear();
-        putMsb(buffer, 0, 0x800a0000 | seq);
+        putMsb(buffer, 0, 0x80000000 | (devicer.rtpt << 16) | seq);
         putMsb(buffer, 4, clk);
         putMsb(buffer, 8, src);
         buffer.put(devicer.rtpl, buf, 0, len);
@@ -62,18 +68,30 @@ public class rtper {
         buf.put(ofs + 3, (byte) val);
     }
 
-    public static int decode(ByteBuffer buf, byte[] res) {
-        int len = buf.position() - devicer.rtpl;
-        buf.get(devicer.rtpl, res, 0, len);
+    public int read(byte[] buf) throws Exception {
+        int len;
+        for (;;) {
+            buffer.clear();
+            source.receive(buffer);
+            len = buffer.position() - devicer.rtpl;
+            if (len < devicer.rtpl) {
+                break;
+            }
+            if ((buffer.get(1) & 0xff) == devicer.rtpt) {
+                break;
+            }
+        }
+        buffer.get(devicer.rtpl, buf, 0, len);
         return len;
     }
 
-    public static DatagramChannel receive(String src, String prt) throws Exception {
+    public static rtper receive(String src, String prt) throws Exception {
+        rtper r = new rtper();
         InetAddress addr = InetAddress.getByName(src);
         int port = Integer.parseInt(prt);
-        DatagramChannel channel = DatagramChannel.open();
-        channel.socket().bind(new InetSocketAddress(addr, port));
-        return channel;
+        r.source = DatagramChannel.open();
+        r.source.socket().bind(new InetSocketAddress(addr, port));
+        return r;
     }
 
     public static byte[] genSdp(String grp, String src, String prt) {
@@ -83,8 +101,8 @@ public class rtper {
         res.add("s=None");
         res.add("c=IN IP4 " + grp);
         res.add("t=0 0");
-        res.add("m=audio " + prt + " RTP/AVP 10");
-        res.add("a=rtpmap:10 L" + (devicer.smpb * 8) + "/" + devicer.rate + "/2");
+        res.add("m=audio " + prt + " RTP/AVP " + devicer.rtpt);
+        res.add("a=rtpmap:" + devicer.rtpt + " L" + (devicer.smpb * 8) + "/" + devicer.rate + "/2");
         res.add("a=source-filter: incl IN IP4 " + grp + " " + src);
         int o = res.size() * 2;
         for (int i = 0; i < res.size(); i++) {
@@ -116,16 +134,17 @@ public class rtper {
         target.write(buffer);
     }
 
-    public static DatagramChannel receive(String grp, String src, String prt) throws Exception {
+    public static rtper receive(String grp, String src, String prt) throws Exception {
+        rtper r = new rtper();
         InetAddress group = InetAddress.getByName(grp);
         InetAddress source = InetAddress.getByName(src);
         int port = Integer.parseInt(prt);
-        DatagramChannel channel = DatagramChannel.open();
-        DatagramSocket scket = channel.socket();
+        r.source = DatagramChannel.open();
+        DatagramSocket scket = r.source.socket();
         MulticastSocket mcast = (MulticastSocket) scket;
-        channel.socket().bind(new InetSocketAddress(port));
-        channel.join(group, mcast.getNetworkInterface(), source);
-        return channel;
+        r.source.socket().bind(new InetSocketAddress(port));
+        r.source.join(group, mcast.getNetworkInterface(), source);
+        return r;
     }
 
 }

@@ -12,7 +12,7 @@ public class measBeep {
         int per = (Integer.parseInt(args[3]) * devicer.smpb * 2 * devicer.rate) / devicer.payl;
         int mul = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
-        rtper rtp = new rtper(args[1], args[2]);
+        rtper rtp = rtper.sender(args[1], args[2]);
         byte[] buf = new byte[devicer.payl];
         byte[] sln = new byte[buf.length];
         byte[] snd = new byte[buf.length];

@@ -11,6 +11,7 @@ public class packetSizes {
         System.err.println("#define smpbt " + devicer.smpb);
         System.err.println("#define pktln " + devicer.payl);
         System.err.println("#define padln " + devicer.rtpl);
+        System.err.println("#define payty " + devicer.rtpt);
         for (int i = 100; i < 2000; i++) {
             double a = i;
             double b = devicer.rate * 2.0 * devicer.smpb / a;

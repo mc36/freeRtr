@@ -12,7 +12,7 @@ public class measFreq {
         int frq = Integer.parseInt(args[3]);
         int vol = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
-        rtper rtp = new rtper(args[1], args[2]);
+        rtper rtp = rtper.sender(args[1], args[2]);
         byte[] buf = new byte[devicer.payl];
         byte[] nxt = new byte[buf.length];
         long pos = 0;

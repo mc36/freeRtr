@@ -1,6 +1,4 @@
 
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
 import javax.sound.sampled.TargetDataLine;
 
 /**
@@ -14,7 +12,7 @@ public class measComp {
         int sec = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         measCompOne dev = new measCompDev(dataLine, sec);
-        DatagramChannel channel = rtper.receive(args[1], args[2], args[3]);
+        rtper channel = rtper.receive(args[1], args[2], args[3]);
         measCompOne net = new measCompNet(channel, sec);
         measCompOne d = new measCompOne(sec);
         measCompOne n = new measCompOne(sec);
@@ -160,24 +158,22 @@ class measCompDev extends measCompOne implements Runnable {
 
 class measCompNet extends measCompOne implements Runnable {
 
-    private DatagramChannel channel;
+    private rtper channel;
 
-    public measCompNet(DatagramChannel ch, int sec) {
+    public measCompNet(rtper ch, int sec) {
         super(sec);
         channel = ch;
         new Thread(this).start();
     }
 
     public void run() {
-        ByteBuffer buffer = ByteBuffer.allocate(4096);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
-            buffer.clear();
+            int i = 0;
             try {
-                channel.receive(buffer);
+                i = channel.read(buf);
             } catch (Exception e) {
             }
-            int i = rtper.decode(buffer, buf);
             if (i < 1) {
                 break;
             }

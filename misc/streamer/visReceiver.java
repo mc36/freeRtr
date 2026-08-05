@@ -1,6 +1,4 @@
 
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
 import javax.sound.sampled.SourceDataLine;
 
 /**
@@ -12,14 +10,11 @@ public class visReceiver {
 
     public static void main(String[] args) throws Exception {
         SourceDataLine dataLine = devicer.getPlayback(args[0]);
-        DatagramChannel channel = rtper.receive(args[1], args[2], args[3]);
-        ByteBuffer buffer = ByteBuffer.allocate(4096);
+        rtper channel = rtper.receive(args[1], args[2], args[3]);
         byte[] buf = new byte[devicer.payl];
         visDoer vu = new visDoer();
         for (;;) {
-            buffer.clear();
-            channel.receive(buffer);
-            int i = rtper.decode(buffer, buf);
+            int i = channel.read(buf);
             if (i < 1) {
                 break;
             }

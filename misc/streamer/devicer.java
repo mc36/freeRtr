@@ -32,6 +32,11 @@ public class devicer {
      */
     public static final int rtpl = 12;
 
+    /**
+     * type in rtp header
+     */
+    public static final int rtpt = 96;
+
     public static Mixer.Info findDevice(String dev) {
         dev = ".*" + dev + ".*";
         Mixer.Info[] mixers = AudioSystem.getMixerInfo();

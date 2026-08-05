@@ -1,7 +1,4 @@
 
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
-
 /**
  * forward stream
  *
@@ -10,14 +7,11 @@ import java.nio.channels.DatagramChannel;
 public class forwarder {
 
     public static void main(String[] args) throws Exception {
-        DatagramChannel source = rtper.receive(args[0], args[1]);
-        rtper rtp = new rtper(args[2], args[3]);
-        ByteBuffer buffer = ByteBuffer.allocate(4096);
+        rtper source = rtper.receive(args[0], args[1]);
+        rtper rtp = rtper.sender(args[2], args[3]);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
-            buffer.clear();
-            source.receive(buffer);
-            int i = rtper.decode(buffer, buf);
+            int i = source.read(buf);
             if (i < 1) {
                 break;
             }
