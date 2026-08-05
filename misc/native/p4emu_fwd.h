@@ -1357,7 +1357,6 @@ mpls_rou:
                 bufD[bufP + 3] = ttl + 1;
                 goto mpls_rx;
             }
-mpls_rout:
             vrf2rib_ntry.vrf = mpls_res->vrf;
             switch (mpls_res->ver) {
             case 4:
@@ -1423,13 +1422,17 @@ neigh_tx:
             ttl = bufD[bufP + 5] & 0x3f;
             bufP += 8;
             bufP += 32;
+            vrf2rib_ntry.vrf = mpls_res->vrf;
             switch (ttl) {
             case 1: // downstream
             case 2: // upstream
                 goto mpls_rx;
-            case 4: // ipv4
-            case 6: // ipv6
-                goto mpls_rout;
+            case 4:
+                ethtyp = ETHERTYPE_IPV4;
+                goto ipv4_rx;
+            case 6:
+                ethtyp = ETHERTYPE_IPV6;
+                goto ipv6_rx;
             }
             doDropper;
         case 9: // push
