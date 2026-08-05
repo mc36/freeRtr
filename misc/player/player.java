@@ -203,8 +203,7 @@ public class player implements Runnable {
         stopProc("amixer");
     }
 
-    private synchronized void remVolume(int vol) {
-        currVlme = vol;
+    private synchronized void remCommand(String cmd, String sng) {
         String s = volRem + " ";
         for (;;) {
             int i = s.indexOf(" ");
@@ -213,7 +212,7 @@ public class player implements Runnable {
             }
             String a = s.substring(0, i);
             s = s.substring(i + 1, s.length());
-            playerUtil.download(a + "/player.class?cmd=vol&song=" + vol);
+            playerUtil.download(a + "/player.class?cmd=" + cmd + "&song=" + sng);
         }
     }
 
@@ -913,10 +912,9 @@ public class player implements Runnable {
             putMenu(buf);
             int i = playerUtil.str2int(song);
             if (i >= 0) {
+                setVolume(i);
                 if (headEnd) {
-                    remVolume(i);
-                } else {
-                    setVolume(i);
+                    remCommand("vol", "" + i);
                 }
                 String a = "volume set to " + currVlme + " percent.<br/>";
                 buf.write(a.getBytes());
@@ -954,6 +952,14 @@ public class player implements Runnable {
             String a = "<br/>unlock successful.<br/>";
             buf.write(a.getBytes());
             setPlaylist(prelock, false);
+            return -1;
+        }
+        if (cmd.equals("remstop")) {
+            remCommand("play", "-1");
+            return -1;
+        }
+        if (cmd.equals("remstart")) {
+            remCommand("receive", "-1");
             return -1;
         }
         if (cmd.equals("resync")) {
@@ -1091,6 +1097,10 @@ public class player implements Runnable {
             a = "<a href=\"" + urlR + "?cmd=pendrive\">!pendrive!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=resync&song=" + rndSeed.nextInt() + "\">!resync!</a><br/>";
+            buf.write(a.getBytes());
+            a = "<a href=\"" + urlR + "?cmd=remstop&song=" + rndSeed.nextInt() + "\">!stop remotes!</a><br/>";
+            buf.write(a.getBytes());
+            a = "<a href=\"" + urlR + "?cmd=remstart&song=" + rndSeed.nextInt() + "\">!start remotes!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=unlock\">!unlock!</a><br/>";
             buf.write(a.getBytes());
