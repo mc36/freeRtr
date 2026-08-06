@@ -18,6 +18,7 @@ void ply_init(char*grp, char*src, char* prt) {
     if (connect(plyHnd, (struct sockaddr *) &addrTmp, sizeof (addrTmp)) < 0) err("failed to connect socket");
     plySrc = 255;
     if (setsockopt(plyHnd, IPPROTO_IP, IP_MULTICAST_TTL, &plySrc, sizeof(plySrc)) < 0) err("failed to set ttl");
+    srand(getpid());
     plySeq = 0;
     plySrc = rand();
     plyClk = 0;
