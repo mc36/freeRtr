@@ -206,6 +206,16 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
                 if (rtp.recvPack(pck, true, false) < 1) {
                     break;
                 }
+                if (sync != rtp.syncRx) {
+                    if (lower.logging) {
+                        logger.info("new ssrc " + peer + " " + port + " with " + mis + " missing packets in " + gap + " gaps");
+                    }
+                    seq = rtp.packRx + 1;
+                    pak = 0;
+                    byt = 0;
+                    mis = 0;
+                    gap = 0;
+                }
                 int dif = (short) (rtp.packRx - seq);
                 if (dif < 0) {
                     dif = -dif;
