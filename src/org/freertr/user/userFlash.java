@@ -1438,6 +1438,7 @@ public class userFlash {
      *
      * @param src source
      * @param trg target
+     * @return number of copied files
      */
     protected int recursiveCopy(String src, String trg) {
         File[] fl = dirList(src);
@@ -1473,8 +1474,10 @@ public class userFlash {
     /**
      * recursive compare
      *
+     * @param h hash to use
      * @param src source
      * @param trg target
+     * @return number of differring files
      */
     protected int recursiveComp(cryHashGeneric h, String src, String trg) {
         File[] fl = dirList(src);

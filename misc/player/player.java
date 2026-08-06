@@ -956,10 +956,18 @@ public class player implements Runnable {
         }
         if (cmd.equals("remstop")) {
             remCommand("play", "-1");
+            putStart(buf, 5);
+            putMenu(buf);
+            String a = "<br/>all remote players stopped.<br/>";
+            buf.write(a.getBytes());
             return -1;
         }
         if (cmd.equals("remstart")) {
             remCommand("receive", "-1");
+            putStart(buf, 5);
+            putMenu(buf);
+            String a = "<br/>all remote players started receiving.<br/>";
+            buf.write(a.getBytes());
             return -1;
         }
         if (cmd.equals("resync")) {
