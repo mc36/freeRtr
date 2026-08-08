@@ -9,12 +9,14 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
+import org.freertr.tab.tabWindow;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
+import org.freertr.util.history;
 import org.freertr.util.logger;
 
 /**
@@ -42,6 +44,7 @@ public class servRtpStat extends servGeneric implements prtServS {
         new userFilter("server rtpstat .*", cmds.tabulator + "port " + port, null),
         new userFilter("server rtpstat .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
         new userFilter("server rtpstat .*", cmds.tabulator + "timeout 60000", null),
+        new userFilter("server rtpstat .*", cmds.tabulator + "window 0", null),
         new userFilter("server rtpstat .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
     };
 
@@ -49,6 +52,11 @@ public class servRtpStat extends servGeneric implements prtServS {
      * timeout on connection
      */
     public int timeOut = 60 * 1000;
+
+    /**
+     * replay window
+     */
+    public int window = 0;
 
     /**
      * logging
@@ -66,6 +74,7 @@ public class servRtpStat extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst, int filter) {
         cmds.cfgLine(lst, !logging, beg, "logging", "");
+        lst.add(beg + "window " + window);
         lst.add(beg + "timeout " + timeOut);
     }
 
@@ -79,12 +88,20 @@ public class servRtpStat extends servGeneric implements prtServS {
             timeOut = bits.str2num(cmd.word());
             return false;
         }
+        if (a.equals("window")) {
+            window = bits.str2num(cmd.word());
+            return false;
+        }
         if (!a.equals(cmds.negated)) {
             return true;
         }
         a = cmd.word();
         if (a.equals("logging")) {
             logging = false;
+            return false;
+        }
+        if (a.equals("window")) {
+            window = 0;
             return false;
         }
         return false;
@@ -94,6 +111,8 @@ public class servRtpStat extends servGeneric implements prtServS {
         l.add(null, false, 1, new int[]{-1}, "logging", "set logging");
         l.add(null, false, 1, new int[]{2}, "timeout", "set timeout on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");
+        l.add(null, false, 1, new int[]{2}, "window", "set replay window size");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "number of packets");
     }
 
     public String srvName() {
@@ -109,7 +128,7 @@ public class servRtpStat extends servGeneric implements prtServS {
     }
 
     public boolean srvInit() {
-        return genStrmStart(this, new pipeLine(32768, false), 0);
+        return genStrmStart(this, new pipeLine(32768, true), 0);
     }
 
     public boolean srvDeinit() {
@@ -130,11 +149,35 @@ public class servRtpStat extends servGeneric implements prtServS {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "peer|port|type|gap|ord|lost|ssrc|seq|pack|byte");
+        userFormat res = new userFormat("|", "peer|port|type|gap|ord|lost|dup|ssrc|seq|pack|byte|time");
         for (int i = 0; i < stats.size(); i++) {
             res.add("" + stats.get(i));
         }
         return res;
+    }
+
+    /**
+     * get show
+     *
+     * @param adr address
+     * @param prt port
+     * @return history, null if none
+     */
+    public history getShow(addrIP adr, int prt) {
+        for (int i = 0; i < stats.size(); i++) {
+            servRtpStatOne cur = stats.get(i);
+            if (cur == null) {
+                continue;
+            }
+            if (cur.port != prt) {
+                continue;
+            }
+            if (adr.compareTo(cur.peer) != 0) {
+                continue;
+            }
+            return cur.hist;
+        }
+        return null;
     }
 
 }
@@ -150,6 +193,10 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
     public final int port;
 
     public final counter cntr;
+
+    public final history hist;
+
+    private tabWindow<packHolder> win;
 
     public int sync;
 
@@ -167,6 +214,11 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
         peer = id.peerAddr.copyBytes();
         port = id.portRem;
         cntr = new counter();
+        hist = new history();
+        hist.update(cntr, true, false);
+        if (parent.window > 0) {
+            win = new tabWindow<packHolder>(parent.window);
+        }
         logger.startThread(this);
     }
 
@@ -181,11 +233,11 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
     }
 
     public String toString() {
-        return peer + "|" + port + "|" + typ + "|" + cntr.packDr + "|" + cntr.byteDr + "|" + getModif() + "|" + bits.toHexD(sync) + "|" + seq + "|" + cntr.packRx + "|" + cntr.byteRx + "|" + bits.timePast(tim);
+        return peer + "|" + port + "|" + typ + "|" + cntr.packTx + "|" + cntr.byteTx + "|" + getModif() + "|" + cntr.packDr + "|" + bits.toHexD(sync) + "|" + seq + "|" + cntr.packRx + "|" + cntr.byteRx + "|" + bits.timePast(tim);
     }
 
     private String getLog() {
-        return " with " + cntr.byteDr + " reorder in " + cntr.packDr + " gaps, " + getModif() + " lost of " + cntr.packRx + " packets and " + cntr.byteRx + " bytes after " + bits.timePast(tim);
+        return " with " + cntr.byteTx + " reorders in " + cntr.packTx + " gaps, " + cntr.packDr + " duplicates and " + getModif() + " lost of " + cntr.packRx + " packets, saw " + cntr.byteRx + " bytes after " + bits.timePast(tim);
     }
 
     private int getModif() {
@@ -208,6 +260,7 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
                 sync = rtp.syncRx;
                 typ = rtp.typeRx;
                 cntr.rx(pck);
+                hist.update(cntr, false, true);
                 seq = rtp.packRx + 1;
                 if (rtp.isClosed() != 0) {
                     break;
@@ -219,10 +272,22 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
                     if (lower.logging) {
                         logger.info("new ssrc " + peer + " " + port + getLog());
                     }
+                    if (lower.window > 0) {
+                        win = new tabWindow<packHolder>(lower.window);
+                    } else {
+                        win = null;
+                    }
                     ini = rtp.packRx;
                     tim = bits.getTime();
                     seq = rtp.packRx;
+                    hist.update(cntr, true, true);
                     cntr.clear();
+                    hist.update(cntr, true, false);
+                }
+                if (win != null) {
+                    if (win.gotDat((int) cntr.packRx + getModif())) {
+                        cntr.drop(pck, counter.reasons.badRxSeq);
+                    }
                 }
                 int dif = (short) (rtp.packRx - seq);
                 if (dif < 0) {
@@ -231,8 +296,8 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
                 if (dif == 0) {
                     continue;
                 }
-                cntr.byteDr += dif;
-                cntr.packDr++;
+                cntr.byteTx += dif;
+                cntr.packTx++;
             }
         } catch (Exception e) {
             logger.traceback(e);

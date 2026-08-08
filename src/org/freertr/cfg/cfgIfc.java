@@ -6254,7 +6254,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      * update interface history
      */
     public void updateHistory() {
-        ethtyp.getHistory().update(ethtyp.getCounter(), true);
+        ethtyp.getHistory().update(ethtyp.getCounter(), true, true);
     }
 
     /**

@@ -73,12 +73,16 @@ public class history {
      * update counter
      *
      * @param cur current counter
+     * @param frc forced update
      * @param inc value increasing
      */
-    public void update(counter cur, boolean inc) {
+    public void update(counter cur, boolean frc, boolean inc) {
         long tim = bits.getTime();
         int pst = (int) ((tim - otim) / 1000);
         if (pst < 1) {
+            if (!frc) {
+                return;
+            }
             pst = 1;
         }
         if (pst > limit) {

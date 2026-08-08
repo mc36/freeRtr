@@ -1671,7 +1671,20 @@ public class userShow {
                 cmd.error("no such server");
                 return null;
             }
-            rdr.putStrTab(srv.getShow());
+            if (cmd.size() < 1) {
+                rdr.putStrTab(srv.getShow());
+                return null;
+            }
+            a = cmd.word();
+            addrIP frm = new addrIP();
+            frm.fromString(a);
+            history h = srv.getShow(frm, bits.str2num(cmd.word()));
+            if (h == null) {
+                cmd.error("no such peer");
+                return null;
+            }
+            a = cmd.word();
+            doShowHistory(a, h);
             return null;
         }
         if (a.equals("bmp")) {

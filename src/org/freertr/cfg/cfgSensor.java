@@ -819,7 +819,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         counter cntr = new counter();
         cntr.packRx = bits.str2long(val) * mul;
         cntr.packTx = cntr.packRx;
-        ntry.hist.update(cntr, false);
+        ntry.hist.update(cntr, true, false);
         String a = ntry.hist.threshold(thr);
         if (a != null) {
             logger.info("sensor " + name + " " + beg + " column " + col + " " + a);

@@ -1716,11 +1716,11 @@ public class cfgInit implements Runnable {
                 ifcThread.checkIfaces();
                 ipFwdTab.checkVrfs();
                 cntr.byteRx = bits.getTime() / 8;
-                timerHistory.update(cntr, true);
+                timerHistory.update(cntr, true, true);
                 cntr.byteRx = rt.freeMemory() / 8;
-                memoryHistory.update(cntr, false);
+                memoryHistory.update(cntr, true, false);
                 cntr.byteRx = pipeShell.getProcessCpu(prc) / 8;
-                cpuHistory.update(cntr, true);
+                cpuHistory.update(cntr, true, true);
                 if ((rnd % 60) != 0) {
                     continue;
                 }

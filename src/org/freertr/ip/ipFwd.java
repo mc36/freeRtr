@@ -720,16 +720,16 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
      * update vrf history
      */
     public void updateHistory() {
-        hstryH.update(cntrH, true);
-        hstryT.update(cntrT, true);
-        hstryL.update(cntrL, true);
+        hstryH.update(cntrH, true, true);
+        hstryT.update(cntrT, true, true);
+        hstryL.update(cntrL, true, true);
         cntrR.byteRx = actualU.size() / 8;
         cntrR.byteTx = actualM.size() / 8;
         cntrR.byteDr = actualF.size() / 8;
         cntrR.packRx = labeldR.size() / 8;
         cntrR.packTx = natTrns.size() / 8;
         cntrR.packDr = groups.size() / 8;
-        hstryR.update(cntrR, false);
+        hstryR.update(cntrR, true, false);
     }
 
     /**
