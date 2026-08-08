@@ -14,6 +14,7 @@ import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.counter;
 import org.freertr.util.logger;
 
 /**
@@ -129,7 +130,7 @@ public class servRtpStat extends servGeneric implements prtServS {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "peer|port|type|gap|miss|ssrc|seq|pack|byte");
+        userFormat res = new userFormat("|", "peer|port|type|gap|ord|lost|ssrc|seq|pack|byte");
         for (int i = 0; i < stats.size(); i++) {
             res.add("" + stats.get(i));
         }
@@ -148,30 +149,25 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
 
     public final int port;
 
+    public final counter cntr;
+
     public int sync;
 
     public int typ;
 
-    public int pak;
-
-    public int byt;
+    public int ini;
 
     public int seq;
 
-    public int mis;
-
-    public int gap;
+    public long tim;
 
     public servRtpStatOne(servRtpStat parent, pipeSide pipe, prtGenConn id) {
         lower = parent;
         conn = pipe;
         peer = id.peerAddr.copyBytes();
         port = id.portRem;
+        cntr = new counter();
         logger.startThread(this);
-    }
-
-    public String toString() {
-        return peer + "|" + port + "|" + typ + "|" + gap + "|" + mis + "|" + sync + "|" + seq + "|" + pak + "|" + byt;
     }
 
     public int compareTo(servRtpStatOne o) {
@@ -184,6 +180,18 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
         return peer.compareTo(o.peer);
     }
 
+    public String toString() {
+        return peer + "|" + port + "|" + typ + "|" + cntr.packDr + "|" + cntr.byteDr + "|" + getModif() + "|" + bits.toHexD(sync) + "|" + seq + "|" + cntr.packRx + "|" + cntr.byteRx + "|" + bits.timePast(tim);
+    }
+
+    private String getLog() {
+        return " with " + cntr.byteDr + " reorder in " + cntr.packDr + " gaps, " + getModif() + " lost of " + cntr.packRx + " packets and " + cntr.byteRx + " bytes after " + bits.timePast(tim);
+    }
+
+    private int getModif() {
+        return (seq - ini - (int) cntr.packRx) & 0xffff;
+    }
+
     public void run() {
         if (lower.logging) {
             logger.info("accepting " + peer + " " + port);
@@ -194,11 +202,12 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
         packHolder pck = new packHolder(true, true);
         try {
             rtp.recvPack(pck, true, false);
+            ini = rtp.packRx;
+            tim = bits.getTime();
             for (;;) {
                 sync = rtp.syncRx;
                 typ = rtp.typeRx;
-                pak++;
-                byt += pck.dataSize();
+                cntr.rx(pck);
                 seq = rtp.packRx + 1;
                 if (rtp.isClosed() != 0) {
                     break;
@@ -208,29 +217,29 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
                 }
                 if (sync != rtp.syncRx) {
                     if (lower.logging) {
-                        logger.info("new ssrc " + peer + " " + port + " with " + mis + " missing packets in " + gap + " gaps");
+                        logger.info("new ssrc " + peer + " " + port + getLog());
                     }
-                    seq = rtp.packRx + 1;
-                    pak = 0;
-                    byt = 0;
-                    mis = 0;
-                    gap = 0;
+                    ini = rtp.packRx;
+                    tim = bits.getTime();
+                    seq = rtp.packRx;
+                    cntr.clear();
                 }
                 int dif = (short) (rtp.packRx - seq);
                 if (dif < 0) {
                     dif = -dif;
                 }
-                if (dif != 0) {
-                    mis += dif;
-                    gap++;
+                if (dif == 0) {
+                    continue;
                 }
+                cntr.byteDr += dif;
+                cntr.packDr++;
             }
         } catch (Exception e) {
             logger.traceback(e);
         }
         lower.stats.del(this);
         if (lower.logging) {
-            logger.info("stopped " + peer + " " + port + " with " + mis + " missing packets in " + gap + " gaps");
+            logger.info("stopped " + peer + " " + port + getLog());
         }
     }
 
