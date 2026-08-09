@@ -12,6 +12,7 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.rtr.rtrRpki;
+import org.freertr.sec.secTelnet;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabRpkiRoa;
 import org.freertr.tab.tabRouteAttr;
@@ -60,6 +61,11 @@ public class servRpki extends servGeneric implements prtServS {
     public final tabGen<tabRpkiKey> cfgedK = new tabGen<tabRpkiKey>();
 
     /**
+     * location
+     */
+    public boolean location = false;
+
+    /**
      * sequence
      */
     protected int sequence;
@@ -90,6 +96,7 @@ public class servRpki extends servGeneric implements prtServS {
     public final static userFilter[] defaultF = {
         new userFilter("server rpki .*", cmds.tabulator + "port " + rtrRpkiSpeak.portNum, null),
         new userFilter("server rpki .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server rpki .*", cmds.tabulator + cmds.negated + cmds.tabulator + "location", null),
         new userFilter("server rpki .*", cmds.tabulator + cmds.negated + cmds.tabulator + "json", null),
         new userFilter("server rpki .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rpki", null)
     };
@@ -124,6 +131,7 @@ public class servRpki extends servGeneric implements prtServS {
         } else {
             lst.add(beg + "rpki " + cfgRtr.num2name(rpkiT) + " " + rpkiN);
         }
+        cmds.cfgLine(lst, !location, beg, "location", "");
         cmds.cfgLine(lst, jsonN == null, beg, "json", jsonN);
         for (int i = 0; i < cfged4.size(); i++) {
             lst.add(beg + "prefix " + cfged4.get(i).toConfig());
@@ -141,6 +149,10 @@ public class servRpki extends servGeneric implements prtServS {
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("location")) {
+            location = true;
+            return false;
+        }
         if (s.equals("prefix")) {
             tabRpkiRoa prf = new tabRpkiRoa();
             if (prf.fromString(cmd)) {
@@ -199,6 +211,10 @@ public class servRpki extends servGeneric implements prtServS {
             return true;
         }
         s = cmd.word();
+        if (s.equals("location")) {
+            location = false;
+            return false;
+        }
         if (s.equals("prefix")) {
             tabRpkiRoa prf = new tabRpkiRoa();
             if (prf.fromString(cmd)) {
@@ -254,6 +270,7 @@ public class servRpki extends servGeneric implements prtServS {
         l.add(null, false, 2, new int[]{3}, "<net/mask>", "network in perfix/mask format");
         l.add(null, false, 3, new int[]{4}, "<num>", "maximum prefix length");
         l.add(null, false, 4, new int[]{4, -1}, "<num>", "as number");
+        l.add(null, false, 1, new int[]{-1}, "location", "receive source in telnet location");
         l.add(null, false, 1, new int[]{2}, "provider", "setup providers");
         l.add(null, false, 2, new int[]{3}, "<num>", "customer asn");
         l.add(null, false, 3, new int[]{3, -1}, "<num>", "as number");
@@ -305,6 +322,8 @@ class servRpkiConn implements Runnable, Comparable<servRpkiConn> {
 
     public final counter cntr;
 
+    private String remote;
+
     public servRpkiConn(servRpki parent, pipeSide pipe, addrIP rem) {
         lower = parent;
         conn = pipe;
@@ -319,11 +338,19 @@ class servRpkiConn implements Runnable, Comparable<servRpkiConn> {
     }
 
     public void run() {
+        remote = "" + peer;
         if (debugger.servRpkiTraf) {
             logger.debug("starting " + peer);
         }
         lower.neighs.put(this);
         try {
+            if (lower.location) {
+                String b = secTelnet.recvLocation(conn);
+                if (b != null) {
+                    remote = b + " via " + peer;
+                }
+            }
+            logger.warn("neighbor " + remote + " up");
             rtrRpkiSpeak pck = new rtrRpkiSpeak(new packHolder(true, true), conn, cntr);
             for (;;) {
                 rtrRpki rpkiR = null;
@@ -342,6 +369,7 @@ class servRpkiConn implements Runnable, Comparable<servRpkiConn> {
         }
         conn.setClose();
         lower.neighs.del(this);
+        logger.error("neighbor " + remote + " down");
         if (debugger.servRpkiTraf) {
             logger.debug("stoping " + peer);
         }

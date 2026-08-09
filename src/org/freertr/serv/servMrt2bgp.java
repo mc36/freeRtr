@@ -16,6 +16,7 @@ import org.freertr.rtr.rtrBgpNeigh;
 import org.freertr.rtr.rtrBgpParam;
 import org.freertr.rtr.rtrBgpSpeak;
 import org.freertr.rtr.rtrBgpUtil;
+import org.freertr.sec.secTelnet;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
@@ -40,7 +41,8 @@ public class servMrt2bgp extends servGeneric implements prtServS {
      */
     public final static userFilter[] defaultF = {
         new userFilter("server mrt2bgp .*", cmds.tabulator + "port " + rtrBgp.port, null),
-        new userFilter("server mrt2bgp .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null)
+        new userFilter("server mrt2bgp .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server mrt2bgp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "location", null)
     };
 
     /**
@@ -52,6 +54,11 @@ public class servMrt2bgp extends servGeneric implements prtServS {
      * router id
      */
     public addrIPv4 routerID = new addrIPv4();
+
+    /**
+     * location
+     */
+    public boolean location = false;
 
     /**
      * mrt file
@@ -74,6 +81,7 @@ public class servMrt2bgp extends servGeneric implements prtServS {
         l.add(beg + "router-id " + routerID);
         l.add(beg + "local-as " + bits.num2str(localAs));
         cmds.cfgLine(l, mrtFile == null, beg, "mrt-file", mrtFile);
+        cmds.cfgLine(l, !location, beg, "location", "");
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -90,6 +98,18 @@ public class servMrt2bgp extends servGeneric implements prtServS {
             localAs = bits.str2num(cmd.word());
             return false;
         }
+        if (s.equals("location")) {
+            location = true;
+            return false;
+        }
+        if (!s.equals(cmds.negated)) {
+            return true;
+        }
+        s = cmd.word();
+        if (s.equals("location")) {
+            location = false;
+            return false;
+        }
         return true;
     }
 
@@ -100,6 +120,7 @@ public class servMrt2bgp extends servGeneric implements prtServS {
         l.add(null, false, 2, new int[]{-1}, "<addr>", "router id");
         l.add(null, false, 1, new int[]{2}, "mrt-file", "set data to serve");
         l.add(null, false, 2, new int[]{-1}, "<nam>", "file name");
+        l.add(null, false, 1, new int[]{-1}, "location", "receive source in telnet location");
     }
 
     public String srvName() {
@@ -131,6 +152,8 @@ class servMrt2bgpConn implements Runnable {
     private pipeSide pipe;
 
     private addrIP peer;
+
+    private String remote;
 
     private int idx;
 
@@ -179,8 +202,15 @@ class servMrt2bgpConn implements Runnable {
     }
 
     public void run() {
-        logger.warn("neighbor " + peer + " up");
+        remote = "" + peer;
         try {
+            if (lower.location) {
+                String b = secTelnet.recvLocation(pipe);
+                if (b != null) {
+                    remote = b + " via " + peer;
+                }
+            }
+            logger.warn("neighbor " + remote + " up");
             if (peer.isIPv4()) {
                 safi = rtrBgpUtil.safiIp4uni;
             } else {
@@ -225,7 +255,7 @@ class servMrt2bgpConn implements Runnable {
             logger.traceback(e);
         }
         pipe.setClose();
-        logger.error("neighbor " + peer + " down");
+        logger.error("neighbor " + remote + " down");
     }
 
 }

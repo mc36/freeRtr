@@ -576,7 +576,7 @@ public class rtrRpkiSpeak {
         if (recvPack()) {
             return true;
         }
-        if (debugger.rtrRpkiTraf) {
+        if (debugger.servRpkiTraf) {
             logger.debug("rx " + dump());
         }
         int csq = getJsonSeq(jsn) + getRpkiSeq(rtr) + seq;
