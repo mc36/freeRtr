@@ -1,6 +1,6 @@
 download 3
 reget-time 8
-kern http://download.freebsd.org/releases/%arch%/
+kern http://download.freebsd.org/snapshots/%arch%/
 
 mkdir %tmp%
 binary-down %dwn%/%arch%-fbsd.html %kern%
@@ -10,6 +10,11 @@ find-result
 kern %kern%%find%
 
 file-read 0 %dwn%/%arch%-fbsd.txt
+find-set %read%
+download 1
+binary-down %dwn%/%arch%-fbsd.txt %kern%BUILDDATE
+file-read 0 %dwn%/%arch%-fbsd.txt
+
 del %dwn%/%arch%-fbsd.txt
 download 1
 if-compare 0 %read% %find%
@@ -18,7 +23,7 @@ download 2
 binary-xtra fbsd-base.txz %kern%base.txz
 binary-xtra fbsd-kern.txz %kern%kernel.txz
 
-file-line %dwn%/%arch%-fbsd.txt %find%
+file-line %dwn%/%arch%-fbsd.txt %read%
 package-xtra
 
 move %tmp%/boot/kernel/* %tmp%/tmp/

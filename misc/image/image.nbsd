@@ -1,11 +1,11 @@
 download 3
 reget-time 8
-kern http://cdn.netbsd.org/pub/NetBSD/
+kern http://nycdn.netbsd.org/pub/NetBSD-daily/HEAD/
 
 mkdir %tmp%
 binary-down %dwn%/%arch%-nbsd.html %kern%
 find-clear
-find-link 1-1111 %dwn%/%arch%-nbsd.html NetBSD-[0-9][0-9]\.[0-9].*/
+find-link 1-1111 %dwn%/%arch%-nbsd.html [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].*/
 find-result
 kern %kern%%find%%arch%/binary/sets/
 

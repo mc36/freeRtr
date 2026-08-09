@@ -531,6 +531,10 @@ public class userImage {
                 found = "";
                 continue;
             }
+            if (a.equals("find-set")) {
+                found = cmd.getRemaining();
+                continue;
+            }
             if (a.equals("find-result")) {
                 cmd.error("result='" + found + "'");
                 continue;
