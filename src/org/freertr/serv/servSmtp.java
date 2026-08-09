@@ -862,7 +862,7 @@ class servSmtpDoer implements Runnable {
             if (lower.dsnEna) {
                 doLine("250-DSN");
             }
-            doLine("250 8BITMIME");
+            doLine("250-8BITMIME");
             doLine("250 PIPELINING");
             return false;
         }
