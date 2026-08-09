@@ -862,6 +862,7 @@ class servSmtpDoer implements Runnable {
             if (lower.dsnEna) {
                 doLine("250-DSN");
             }
+            doLine("250 8BITMIME");
             doLine("250 PIPELINING");
             return false;
         }
@@ -1015,6 +1016,7 @@ class servSmtpDoer implements Runnable {
             }
             packText pt = new packText(pipe);
             List<String> txt = pt.dottedRecvAll();
+            doLine("250 ok");
             clntSmtp.deleteHead(txt, hdrD);
             clntSmtp.prependHead(txt, hdrA);
             hdrA.clear();
@@ -1026,12 +1028,9 @@ class servSmtpDoer implements Runnable {
             hdrA.add("    (envelope-from " + src + ") with smtp (" + cfgInit.versionName + ")");
             hdrA.add("    for " + trgS + "; " + bits.time2str(cfgAll.timeZoneName, tim + cfgAll.timeServerOffset, 4));
             clntSmtp.prependHead(txt, hdrA);
-            int o = 0;
             for (int i = 0; i < trgL.size(); i++) {
                 servSmtpLoc usr = trgL.get(i);
-                if (!bits.buf2txt(true, txt, lower.mailFolders + usr.user + "/" + tim + ".msg")) {
-                    o++;
-                }
+                bits.buf2txt(true, txt, lower.mailFolders + usr.user + "/" + tim + ".msg");
                 if (usr.bcc.length() < 1) {
                     continue;
                 }
@@ -1049,7 +1048,6 @@ class servSmtpDoer implements Runnable {
                 sm.putBody(txt);
                 sm.startSend();
             }
-            doLine("250 mail saved in " + o + " local and " + trgR.size() + " remote mailboxes");
             if (!dsn) {
                 doClear();
                 return false;
