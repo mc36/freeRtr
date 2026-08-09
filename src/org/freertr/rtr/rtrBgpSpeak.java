@@ -476,7 +476,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             return;
         }
         if (resumed) {
-            if (packScan()) {
+            if (rtrBgpUtil.scanForHeader(pipe)) {
                 closeNow();
                 return;
             }
@@ -864,30 +864,6 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             neigh.dump.gotMessage(false, typ, neigh, pck.getCopy());
         }
         return typ;
-    }
-
-    /**
-     * scan for header
-     *
-     * @return true on error, false on success
-     */
-    public boolean packScan() {
-        packHolder pck = new packHolder(true, true);
-        byte[] buf = new byte[rtrBgpUtil.sizeU];
-        for (;;) {
-            pck.clear();
-            if (pck.pipeRecv(pipe, 0, buf.length, 141) != buf.length) {
-                if (pipe.isClosed() != 0) {
-                    return true;
-                }
-                bits.sleep(100);
-                continue;
-            }
-            if (!rtrBgpUtil.checkHeader(pck)) {
-                return false;
-            }
-            pck.pipeRecv(pipe, 0, 1, 144);
-        }
     }
 
     /**

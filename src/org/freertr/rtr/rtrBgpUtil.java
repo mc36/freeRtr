@@ -9,6 +9,7 @@ import org.freertr.util.bits;
 import org.freertr.enc.encTlv;
 import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
+import org.freertr.pipe.pipeSide;
 import org.freertr.tab.tabGen;
 import org.freertr.util.counter;
 
@@ -1669,6 +1670,30 @@ public class rtrBgpUtil {
         pck.putByte(18, typ);
         pck.putSkip(sizeU);
         pck.merge2beg();
+    }
+
+    /**
+     * scan for header
+     *
+     * @param pipe pipeline to use
+     * @return true on error, false on success
+     */
+    public static boolean scanForHeader(pipeSide pipe) {
+        packHolder pck = new packHolder(true, true);
+        for (;;) {
+            pck.clear();
+            if (pck.pipeRecv(pipe, 0, sizeU, 141) != sizeU) {
+                if (pipe.isClosed() != 0) {
+                    return true;
+                }
+                bits.sleep(100);
+                continue;
+            }
+            if (!checkHeader(pck)) {
+                return false;
+            }
+            pck.pipeRecv(pipe, 0, 1, 144);
+        }
     }
 
     /**
