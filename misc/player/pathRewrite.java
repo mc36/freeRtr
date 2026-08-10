@@ -26,7 +26,7 @@ public class pathRewrite {
         return s;
     }
 
-    public final static int doRewrite(List<playerSong> need, String src, String trg) {
+    private final static int doRewrite(List<playerSong> need, String src, String trg) {
         playerUtil.put("rewriting " + src + " to " + trg + "...");
         int done = 0;
         int srcl = src.length();

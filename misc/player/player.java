@@ -493,6 +493,9 @@ public class player implements Runnable {
         ready = true;
     }
 
+    /**
+     * background runner
+     */
     public void run() {
         for (;;) {
             try {
@@ -689,6 +692,7 @@ public class player implements Runnable {
      * do one request
      *
      * @param par parameters
+     * @param peer peer address
      * @param buf buffer to use
      * @return -1 on html result
      * @throws Exception on error

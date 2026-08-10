@@ -8,6 +8,12 @@ import javax.sound.sampled.SourceDataLine;
  */
 public class playback {
 
+    /**
+     * the main
+     *
+     * @param args arguments
+     * @throws Exception on error
+     */
     public static void main(String[] args) throws Exception {
         decoder dec = new decoder(args[0], args[1]);
         SourceDataLine dataLine = devicer.getPlayback(args[2]);

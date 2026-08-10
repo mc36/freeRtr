@@ -8,11 +8,17 @@ import javax.sound.sampled.TargetDataLine;
  */
 public class measFreq {
 
+    /**
+     * the main
+     *
+     * @param args arguments
+     * @throws Exception on error
+     */
     public static void main(String[] args) throws Exception {
         int frq = Integer.parseInt(args[3]);
         int vol = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
-        rtper rtp = rtper.sender(args[1], args[2]);
+        packer rtp = packer.sender(args[1], args[2]);
         byte[] buf = new byte[devicer.payl];
         byte[] nxt = new byte[buf.length];
         long pos = 0;
@@ -24,7 +30,7 @@ public class measFreq {
             if (len < 1) {
                 break;
             }
-            rtp.write(nxt, nxt.length);
+            rtp.rtp_write(nxt, nxt.length);
             pos += nxt.length;
             measFreq.toneGen(nxt, pos, frq, vol);
             if (got < 1) {
@@ -88,6 +94,14 @@ public class measFreq {
         }
     }
 
+    /**
+     * generate tone
+     *
+     * @param buf buffer
+     * @param beg bytes already written
+     * @param freq frequency
+     * @param amp amplitude
+     */
     public static void toneGen(byte[] buf, long beg, int freq, int amp) {
         for (int i = 0; i < buf.length; i += devicer.smpb * 2) {
             int val = (int) (amp * Math.sin((beg + i) * Math.PI * freq / (devicer.rate * devicer.smpb)));
@@ -100,14 +114,14 @@ public class measFreq {
         }
     }
 
-    public static int readSmp(byte[] buf, int ofs) {
+    private static int readSmp(byte[] buf, int ofs) {
         int i = buf[ofs] + buf[devicer.smpb + ofs];
         i <<= 8;
         ofs++;
         return i + buf[ofs] + buf[devicer.smpb + ofs];
     }
 
-    public static int findTop(byte[] buf) {
+    private static int findTop(byte[] buf) {
         int old = readSmp(buf, 0);
         int cntU = 0;
         int cntD = 0;

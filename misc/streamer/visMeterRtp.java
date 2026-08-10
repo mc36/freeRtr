@@ -1,10 +1,10 @@
 
 /**
- * forward stream
+ * measure remote level
  *
  * @author matecsaba
  */
-public class forwarder {
+public class visMeterRtp {
 
     /**
      * the main
@@ -13,15 +13,15 @@ public class forwarder {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        packer source = packer.receiver(args[0], args[1]);
-        packer rtp = packer.sender(args[2], args[3]);
+        packer channel = packer.receiver(args[0], args[1], args[2]);
         byte[] buf = new byte[devicer.payl];
+        visDoer vu = new visDoer();
         for (;;) {
-            int i = source.rtp_read(buf);
+            int i = channel.rtp_read(buf);
             if (i < 1) {
                 break;
             }
-            rtp.rtp_write(buf, i);
+            vu.doer(buf, i);
         }
     }
 

@@ -37,6 +37,13 @@ public class duplicates implements Comparator<String> {
         }
     }
 
+    /**
+     * compare strings
+     *
+     * @param o1 first
+     * @param o2 second
+     * @return result
+     */
     public int compare(String o1, String o2) {
         return o1.compareTo(o2);
     }

@@ -1,10 +1,12 @@
 
+import javax.sound.sampled.SourceDataLine;
+
 /**
- * forward stream
+ * play back stream
  *
  * @author matecsaba
  */
-public class forwarder {
+public class receiverRtp {
 
     /**
      * the main
@@ -13,15 +15,15 @@ public class forwarder {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        packer source = packer.receiver(args[0], args[1]);
-        packer rtp = packer.sender(args[2], args[3]);
+        SourceDataLine dataLine = devicer.getPlayback(args[0]);
+        packer channel = packer.receiver(args[1], args[2], args[3]);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
-            int i = source.rtp_read(buf);
+            int i = channel.rtp_read(buf);
             if (i < 1) {
                 break;
             }
-            rtp.rtp_write(buf, i);
+            dataLine.write(buf, 0, i);
         }
     }
 

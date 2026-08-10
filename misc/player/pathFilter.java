@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class pathFilter {
 
-    public final static int doFilter(List<playerSong> src, List<playerSong> trg, String flt) {
+    private final static int doFilter(List<playerSong> src, List<playerSong> trg, String flt) {
         playerUtil.put("filtering with " + flt + "...");
         int done = 0;
         for (int i = 0; i < src.size(); i++) {

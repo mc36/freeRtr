@@ -1,10 +1,12 @@
 
+import javax.sound.sampled.TargetDataLine;
+
 /**
- * forward stream
+ * stream live capture
  *
- * @author matecsaba
+ * @author mc36
  */
-public class forwarder {
+public class visStreamerRtp {
 
     /**
      * the main
@@ -13,15 +15,17 @@ public class forwarder {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        packer source = packer.receiver(args[0], args[1]);
-        packer rtp = packer.sender(args[2], args[3]);
+        TargetDataLine dataLine = devicer.getRecord(args[0]);
+        packer rtp = packer.sender(args[1], args[2]);
         byte[] buf = new byte[devicer.payl];
+        visDoer vu = new visDoer();
         for (;;) {
-            int i = source.rtp_read(buf);
+            int i = dataLine.read(buf, 0, buf.length);
             if (i < 1) {
                 break;
             }
             rtp.rtp_write(buf, i);
+            vu.doer(buf, i);
         }
     }
 

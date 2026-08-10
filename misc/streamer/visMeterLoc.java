@@ -8,6 +8,12 @@ import javax.sound.sampled.TargetDataLine;
  */
 public class visMeterLoc {
 
+    /**
+     * the main
+     *
+     * @param args arguments
+     * @throws Exception on error
+     */
     public static void main(String[] args) throws Exception {
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         byte[] buf = new byte[devicer.payl];

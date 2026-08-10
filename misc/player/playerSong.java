@@ -26,6 +26,11 @@ public class playerSong implements Comparator<playerSong> {
      */
     public String genre;
 
+    /**
+     * convert to string
+     *
+     * @return string
+     */
     public String toString() {
         return file + "|" + title;
     }
@@ -132,6 +137,13 @@ public class playerSong implements Comparator<playerSong> {
         return res;
     }
 
+    /**
+     * compare songs
+     *
+     * @param o1 first
+     * @param o2 second
+     * @return result
+     */
     public int compare(playerSong o1, playerSong o2) {
         return o1.file.compareTo(o2.file);
     }

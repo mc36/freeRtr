@@ -2,11 +2,11 @@
 import javax.sound.sampled.SourceDataLine;
 
 /**
- * play and show file
+ * play and show stream
  *
  * @author matecsaba
  */
-public class visPlayback {
+public class visReceiverRtp {
 
     /**
      * the main
@@ -15,13 +15,13 @@ public class visPlayback {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        decoder dec = new decoder(args[0], args[1]);
-        SourceDataLine dataLine = devicer.getPlayback(args[2]);
+        SourceDataLine dataLine = devicer.getPlayback(args[0]);
+        packer channel = packer.receiver(args[1], args[2], args[3]);
         byte[] buf = new byte[devicer.payl];
         visDoer vu = new visDoer();
         for (;;) {
-            int i = dec.read(buf);
-            if (i < 0) {
+            int i = channel.rtp_read(buf);
+            if (i < 1) {
                 break;
             }
             dataLine.write(buf, 0, i);

@@ -8,11 +8,17 @@ import javax.sound.sampled.TargetDataLine;
  */
 public class measBeep {
 
+    /**
+     * the main
+     *
+     * @param args arguments
+     * @throws Exception on error
+     */
     public static void main(String[] args) throws Exception {
         int per = (Integer.parseInt(args[3]) * devicer.smpb * 2 * devicer.rate) / devicer.payl;
         int mul = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
-        rtper rtp = rtper.sender(args[1], args[2]);
+        packer rtp = packer.sender(args[1], args[2]);
         byte[] buf = new byte[devicer.payl];
         byte[] sln = new byte[buf.length];
         byte[] snd = new byte[buf.length];
@@ -27,14 +33,14 @@ public class measBeep {
                 break;
             }
             if (pos > per) {
-                rtp.write(snd, snd.length);
+                rtp.rtp_write(snd, snd.length);
                 pos = 0;
                 ned = avg * mul;
             } else {
                 if (pos < (devicer.rate / devicer.payl)) {
-                    rtp.write(snd, snd.length);
+                    rtp.rtp_write(snd, snd.length);
                 } else {
-                    rtp.write(sln, sln.length);
+                    rtp.rtp_write(sln, sln.length);
                 }
             }
             pos++;

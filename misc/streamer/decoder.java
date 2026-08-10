@@ -12,6 +12,13 @@ public class decoder {
 
     private InputStream stream;
 
+    /**
+     * create instance
+     *
+     * @param fil file
+     * @param pos position
+     * @throws Exception on error
+     */
     public decoder(String fil, String pos) throws Exception {
         String[] cmd = {
             "ffmpeg",
@@ -32,6 +39,13 @@ public class decoder {
         stream = process.getInputStream();
     }
 
+    /**
+     * read data
+     *
+     * @param buf buffer
+     * @return bytes read
+     * @throws Exception on error
+     */
     public int read(byte[] buf) throws Exception {
         if (!process.isAlive()) {
             if (stream.available() < buf.length) {

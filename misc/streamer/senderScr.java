@@ -1,10 +1,10 @@
 
 /**
- * forward stream
+ * stream from file
  *
  * @author matecsaba
  */
-public class forwarder {
+public class senderScr {
 
     /**
      * the main
@@ -13,15 +13,15 @@ public class forwarder {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        packer source = packer.receiver(args[0], args[1]);
+        decoder dec = new decoder(args[0], args[1]);
         packer rtp = packer.sender(args[2], args[3]);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
-            int i = source.rtp_read(buf);
+            int i = dec.read(buf);
             if (i < 1) {
                 break;
             }
-            rtp.rtp_write(buf, i);
+            rtp.scr_write(buf, i);
         }
     }
 

@@ -6,6 +6,12 @@
  */
 public class delayer {
 
+    /**
+     * the main
+     *
+     * @param args arguments
+     * @throws Exception on error
+     */
     public static void main(String[] args) throws Exception {
         int i = Integer.parseInt(args[4]);
         byte[][] buf = new byte[i][devicer.payl];
@@ -14,16 +20,16 @@ public class delayer {
         for (i = 0; i < len.length; i++) {
             len[i] = devicer.payl;
         }
-        rtper source = rtper.receive(args[0], args[1]);
-        rtper rtp = rtper.sender(args[2], args[3]);
+        packer source = packer.receiver(args[0], args[1]);
+        packer rtp = packer.sender(args[2], args[3]);
         for (;;) {
-            i = source.read(buf[pos]);
+            i = source.rtp_read(buf[pos]);
             if (i < 1) {
                 break;
             }
             len[pos] = i;
             i = (pos + 1) % len.length;
-            rtp.write(buf[i], len[i]);
+            rtp.rtp_write(buf[i], len[i]);
             pos = i;
         }
     }

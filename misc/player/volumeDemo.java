@@ -8,18 +8,33 @@ import java.util.Random;
  */
 public class volumeDemo {
 
+    /**
+     * minimum
+     */
     public int min;
 
+    /**
+     * maximum
+     */
     public int max;
 
+    /**
+     * movement
+     */
     public int mov;
 
-    public int tim;
+    private int tim;
 
-    public volumeOne[] dev;
+    private volumeOne[] dev;
 
-    public Random rnd = new Random();
+    private Random rnd = new Random();
 
+    /**
+     * the main
+     *
+     * @param args arguments
+     * @throws Exception on error
+     */
     public static void main(String[] args) throws Exception {
         volumeDemo a = new volumeDemo();
         a.init(args);
@@ -41,7 +56,7 @@ public class volumeDemo {
         }
     }
 
-    public void round() {
+    private void round() {
         for (;;) {
             playerUtil.sleep(tim);
             System.out.print("now:");
@@ -62,7 +77,7 @@ public class volumeDemo {
         }
     }
 
-    public void doer() {
+    private void doer() {
         for (;;) {
             int d = rnd.nextInt(dev.length);
             System.out.println("round for " + (d + 1));

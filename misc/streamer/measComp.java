@@ -8,11 +8,17 @@ import javax.sound.sampled.TargetDataLine;
  */
 public class measComp {
 
+    /**
+     * the main
+     *
+     * @param args arguments
+     * @throws Exception on error
+     */
     public static void main(String[] args) throws Exception {
         int sec = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         measCompOne dev = new measCompDev(dataLine, sec);
-        rtper channel = rtper.receive(args[1], args[2], args[3]);
+        packer channel = packer.receiver(args[1], args[2], args[3]);
         measCompOne net = new measCompNet(channel, sec);
         measCompOne d = new measCompOne(sec);
         measCompOne n = new measCompOne(sec);
@@ -158,9 +164,9 @@ class measCompDev extends measCompOne implements Runnable {
 
 class measCompNet extends measCompOne implements Runnable {
 
-    private rtper channel;
+    private packer channel;
 
-    public measCompNet(rtper ch, int sec) {
+    public measCompNet(packer ch, int sec) {
         super(sec);
         channel = ch;
         new Thread(this).start();
@@ -171,7 +177,7 @@ class measCompNet extends measCompOne implements Runnable {
         for (;;) {
             int i = 0;
             try {
-                i = channel.read(buf);
+                i = channel.rtp_read(buf);
             } catch (Exception e) {
             }
             if (i < 1) {

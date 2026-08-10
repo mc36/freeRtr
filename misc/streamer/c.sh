@@ -3,7 +3,7 @@
 
 javac -source 11 -target 11 -Xlint:all -deprecation *.java
 
-java packetSizes > /dev/null 2> io_cnst.h
+java packets > /dev/null 2> io_cnst.h
 
 for a in *.c ; do
   b="${a%.*}"

@@ -15,17 +15,17 @@ public class devicer {
     /**
      * sampling rate
      */
-    public static final int rate = 96000;
+    public static final int rate = 48000;///96000;
 
     /**
      * bytes per sample
      */
-    public static final int smpb = 3;
+    public static final int smpb = 2;///3;
 
     /**
      * bytes per payload
      */
-    public static final int payl = 1200;
+    public static final int payl = 1152;///1200;
 
     /**
      * bytes in rtp header
@@ -37,6 +37,27 @@ public class devicer {
      */
     public static final int rtpt = 96;
 
+    /**
+     * bytes in scream header
+     */
+    public static final int scrl = 5;
+
+    /**
+     * scream rate bits
+     */
+    public static final int scrb = (rate % 44100) != 0 ? rate / 48000 : 128 | (rate / 44100);
+
+    /**
+     * scream layout bits
+     */
+    public static final int scrt = 3;
+
+    /**
+     * find device
+     *
+     * @param dev regex
+     * @return device
+     */
     public static Mixer.Info findDevice(String dev) {
         dev = ".*" + dev + ".*";
         Mixer.Info[] mixers = AudioSystem.getMixerInfo();
@@ -52,10 +73,22 @@ public class devicer {
         return mixers[mixerc];
     }
 
+    /**
+     * device name
+     *
+     * @param mixer mixer
+     * @return name
+     */
     public static String mixer2name(Mixer.Info mixer) {
         return mixer.getName() + " - " + mixer.getDescription();
     }
 
+    /**
+     * get format
+     *
+     * @return format
+     * @throws Exception on error
+     */
     public static AudioFormat getFormat() throws Exception {
         if ((payl % (smpb * 2)) != 0) {
             throw new Exception("samples not fully fit");
@@ -63,6 +96,13 @@ public class devicer {
         return new AudioFormat(rate, smpb * 8, 2, true, true);
     }
 
+    /**
+     * get playback device
+     *
+     * @param dev regex
+     * @return device
+     * @throws Exception on error
+     */
     public static SourceDataLine getPlayback(String dev) throws Exception {
         Mixer.Info mixer = devicer.findDevice(dev);
         AudioFormat format = devicer.getFormat();
@@ -72,6 +112,13 @@ public class devicer {
         return dataLine;
     }
 
+    /**
+     * get recorder device
+     *
+     * @param dev regex
+     * @return device
+     * @throws Exception on error
+     */
     public static TargetDataLine getRecord(String dev) throws Exception {
         Mixer.Info mixer = devicer.findDevice(dev);
         AudioFormat format = devicer.getFormat();

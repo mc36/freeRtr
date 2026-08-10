@@ -4,8 +4,14 @@
  *
  * @author matecsaba
  */
-public class packetSizes {
+public class packets {
 
+    /**
+     * the main
+     *
+     * @param args arguments
+     * @throws Exception on error
+     */
     public static void main(String[] args) throws Exception {
         System.err.println("#define srate " + devicer.rate);
         System.err.println("#define smpbt " + devicer.smpb);

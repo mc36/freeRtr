@@ -1,4 +1,10 @@
 
+
+/**
+ * visualize stream
+ *
+ * @author matecsaba
+ */
 public class visDoer {
 
     private final static int maxX = 52;
@@ -9,11 +15,19 @@ public class visDoer {
 
     private final double[] vr = new double[2048];
 
+    /**
+     * create instance
+     */
     public visDoer() {
         System.out.print("\033[0;0H");
         System.out.print("\033[2J");
     }
 
+    /**
+     * do one round
+     * @param buf buffer
+     * @param len length
+     */
     public void doer(byte[] buf, int len) {
         System.out.print("\033[0;0H");
         int num = len / (devicer.smpb * 2);
