@@ -104,7 +104,7 @@ public class packer {
      * @param prt port
      * @return sdp payload
      */
-    public static byte[] sdp_generate(String grp, String src, String prt) {
+    public static byte[] generateSdp(String grp, String src, String prt) {
         List<String> res = new ArrayList<String>();
         res.add("v=0");
         res.add("o=Node 0 0 IN IP4 " + src);
@@ -140,7 +140,7 @@ public class packer {
      * @param id identification
      * @throws Exception on error
      */
-    public void sap_announce(byte[] buf, int len, String src, String id) throws Exception {
+    public void announceSap(byte[] buf, int len, String src, String id) throws Exception {
         byte[] mime = {'a', 'p', 'p', 'l', 'i', 'c', 'a', 't', 'i', 'o', 'n', '/', 's', 'd', 'p', 0};
         byte[] source = InetAddress.getByName(src).getAddress();
         buffer.clear();
@@ -167,7 +167,7 @@ public class packer {
      * @param len length
      * @throws Exception on error
      */
-    public void rtp_write(byte[] buf, int len) throws Exception {
+    public void writeRtp(byte[] buf, int len) throws Exception {
         buffer.clear();
         putMsb(buffer, 0, 0x80000000 | (devicer.rtpt << 16) | seq);
         putMsb(buffer, 4, clk);
@@ -188,7 +188,7 @@ public class packer {
      * @return bytes
      * @throws Exception on error
      */
-    public int rtp_read(byte[] buf) throws Exception {
+    public int readRtp(byte[] buf) throws Exception {
         int len;
         for (;;) {
             buffer.clear();
@@ -212,7 +212,7 @@ public class packer {
      * @param len length
      * @throws Exception on error
      */
-    public void scr_write(byte[] buf, int len) throws Exception {
+    public void writeScr(byte[] buf, int len) throws Exception {
         swapper.byteSwap(buf, len);
         buffer.clear();
         buffer.put(0, (byte) devicer.scrb);
@@ -233,7 +233,7 @@ public class packer {
      * @return bytes
      * @throws Exception on error
      */
-    public int scr_read(byte[] buf) throws Exception {
+    public int readScr(byte[] buf) throws Exception {
         int len;
         for (;;) {
             buffer.clear();

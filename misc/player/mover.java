@@ -15,6 +15,10 @@ public class mover {
      * @param args arguments
      */
     public static void main(String[] args) {
+        if (args.length < 1) {
+            playerUtil.put("usage: java this <target> [source]");
+            return;
+        }
         String s = "./";
         String t = args[0];
         if (args.length > 1) {

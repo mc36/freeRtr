@@ -53,6 +53,10 @@ public class pathRewrite {
      * @param args arguments
      */
     public static void main(String[] args) {
+        if (args.length < 3) {
+            playerUtil.put("usage: java this <playlist> <source> <target>");
+            return;
+        }
         String fn = args[0];
         String src = doOnePath(args[1]);
         String trg = doOnePath(args[2]);

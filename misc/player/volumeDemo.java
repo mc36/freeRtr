@@ -42,6 +42,10 @@ public class volumeDemo {
     }
 
     private void init(String[] args) throws Exception {
+        if (args.length < 5) {
+            playerUtil.put("usage: java this <min> <max> <adjust> <time> <url> [url] ...");
+            return;
+        }
         min = Integer.parseInt(args[0]);
         max = Integer.parseInt(args[1]);
         mov = Integer.parseInt(args[2]);

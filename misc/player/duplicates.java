@@ -18,7 +18,10 @@ public class duplicates implements Comparator<String> {
      * @param args arguments
      */
     public static void main(String[] args) {
-        String s = args[0];
+        String s = "./";
+        if (args.length > 0) {
+            s = args[0];
+        }
         playerUtil.put("reading " + s + "...");
         String[] l1 = new File(s).list();
         List<String> lst = new ArrayList<String>();

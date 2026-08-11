@@ -8,9 +8,9 @@
 
 #include "io_util.h"
 #include "in_udp.h"
-#include "in_rtp.h"
+#include "in_scr.h"
 #include "out_udp.h"
-#include "out_rtp.h"
+#include "out_scr.h"
 
 
 int main(int argc, char**argv) {

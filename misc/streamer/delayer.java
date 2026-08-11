@@ -13,6 +13,10 @@ public class delayer {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
+        if (args.length < 5) {
+            System.out.println("usage: java this <source> <port> <group> <port> <packets>");
+            return;
+        }
         int i = Integer.parseInt(args[4]);
         byte[][] buf = new byte[i][devicer.payl];
         int[] len = new int[i];
@@ -23,13 +27,13 @@ public class delayer {
         packer source = packer.receiver(args[0], args[1]);
         packer rtp = packer.sender(args[2], args[3]);
         for (;;) {
-            i = source.rtp_read(buf[pos]);
+            i = source.readRtp(buf[pos]);
             if (i < 1) {
                 break;
             }
             len[pos] = i;
             i = (pos + 1) % len.length;
-            rtp.rtp_write(buf[i], len[i]);
+            rtp.writeRtp(buf[i], len[i]);
             pos = i;
         }
     }

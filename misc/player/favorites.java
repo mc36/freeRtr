@@ -17,6 +17,10 @@ public class favorites {
      */
     public static void main(String[] args) {
         String path = null;
+        if (args.length < 1) {
+            playerUtil.put("usage: java this <paylist> [target]");
+            return;
+        }
         String favf = args[0];
         if (args.length > 1) {
             path = args[1];

@@ -14,6 +14,10 @@ public class findTitles {
      * @param args arguments
      */
     public static void main(String[] args) {
+        if (args.length < 1) {
+            playerUtil.put("usage: java this <paylist>");
+            return;
+        }
         playerUtil.put("reading " + args[0]);
         playerLyric txt = playerUtil.readup(args[0]);
         playerUtil.put("converting " + txt.size() + " lines");

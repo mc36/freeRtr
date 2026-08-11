@@ -15,6 +15,10 @@ public class measComp {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
+        if (args.length < 5) {
+            System.out.println("usage: java this <device> <group> <source> <port> <seconds>");
+            return;
+        }
         int sec = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         measCompOne dev = new measCompDev(dataLine, sec);
@@ -177,7 +181,7 @@ class measCompNet extends measCompOne implements Runnable {
         for (;;) {
             int i = 0;
             try {
-                i = channel.rtp_read(buf);
+                i = channel.readRtp(buf);
             } catch (Exception e) {
             }
             if (i < 1) {

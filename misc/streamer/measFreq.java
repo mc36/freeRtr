@@ -15,6 +15,10 @@ public class measFreq {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
+        if (args.length < 5) {
+            System.out.println("usage: java this <device> <group> <port> <frequency> <volume>");
+            return;
+        }
         int frq = Integer.parseInt(args[3]);
         int vol = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
@@ -30,7 +34,7 @@ public class measFreq {
             if (len < 1) {
                 break;
             }
-            rtp.rtp_write(nxt, nxt.length);
+            rtp.writeRtp(nxt, nxt.length);
             pos += nxt.length;
             measFreq.toneGen(nxt, pos, frq, vol);
             if (got < 1) {

@@ -15,17 +15,17 @@ public class devicer {
     /**
      * sampling rate
      */
-    public static final int rate = 48000;///96000;
+    public static final int rate = 48000;//96000;
 
     /**
      * bytes per sample
      */
-    public static final int smpb = 2;///3;
+    public static final int smpb = 2;//3;
 
     /**
      * bytes per payload
      */
-    public static final int payl = 1152;///1200;
+    public static final int payl = 1152;//1200;
 
     /**
      * bytes in rtp header
@@ -48,7 +48,7 @@ public class devicer {
     public static final int scrb = (rate % 44100) != 0 ? rate / 48000 : 128 | (rate / 44100);
 
     /**
-     * scream layout bits
+     * scream channel layout
      */
     public static final int scrt = 3;
 

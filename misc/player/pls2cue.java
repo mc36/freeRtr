@@ -14,7 +14,7 @@ public class pls2cue {
      * @param args arguments
      */
     public static void main(String[] args) {
-        if (args.length != 2) {
+        if (args.length < 2) {
             playerUtil.put("usage: pls2cue <source.pls> <target.cue>");
             return;
         }

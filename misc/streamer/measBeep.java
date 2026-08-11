@@ -15,6 +15,10 @@ public class measBeep {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
+        if (args.length < 5) {
+            System.out.println("usage: java this <device> <group> <port> <period> <multiplier>");
+            return;
+        }
         int per = (Integer.parseInt(args[3]) * devicer.smpb * 2 * devicer.rate) / devicer.payl;
         int mul = Integer.parseInt(args[4]);
         TargetDataLine dataLine = devicer.getRecord(args[0]);
@@ -33,14 +37,14 @@ public class measBeep {
                 break;
             }
             if (pos > per) {
-                rtp.rtp_write(snd, snd.length);
+                rtp.writeRtp(snd, snd.length);
                 pos = 0;
                 ned = avg * mul;
             } else {
                 if (pos < (devicer.rate / devicer.payl)) {
-                    rtp.rtp_write(snd, snd.length);
+                    rtp.writeRtp(snd, snd.length);
                 } else {
-                    rtp.rtp_write(sln, sln.length);
+                    rtp.writeRtp(sln, sln.length);
                 }
             }
             pos++;

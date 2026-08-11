@@ -16,6 +16,10 @@ public class unrenamer {
      * @param args arguments
      */
     public static void main(String[] args) {
+        if (args.length < 1) {
+            playerUtil.put("usage: java this <logfile>");
+            return;
+        }
         try {
             BufferedReader br = new BufferedReader(new FileReader(args[0]));
             for (;;) {

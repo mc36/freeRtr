@@ -13,6 +13,10 @@ public class senderScr {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
+        if (args.length < 4) {
+            System.out.println("usage: java this <file> <seek> <group> <port>");
+            return;
+        }
         decoder dec = new decoder(args[0], args[1]);
         packer rtp = packer.sender(args[2], args[3]);
         byte[] buf = new byte[devicer.payl];
@@ -21,7 +25,7 @@ public class senderScr {
             if (i < 1) {
                 break;
             }
-            rtp.scr_write(buf, i);
+            rtp.writeScr(buf, i);
         }
     }
 

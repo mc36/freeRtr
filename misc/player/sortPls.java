@@ -14,7 +14,7 @@ public class sortPls {
      * @param args arguments
      */
     public static void main(String[] args) {
-        if (args.length != 2) {
+        if (args.length < 2) {
             playerUtil.put("usage: sortpls <source.pls> <target.pls>");
             return;
         }

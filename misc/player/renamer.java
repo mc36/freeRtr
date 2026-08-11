@@ -25,6 +25,10 @@ public class renamer {
      * @param args arguments
      */
     public static void main(String[] args) {
+        if (args.length < 1) {
+            playerUtil.put("usage: java this <directory> [predir] [prepend text] [remover text] [demo] [really] [extended] [basic] [short] [full] [seq]");
+            return;
+        }
         year = LocalDateTime.now().getYear();
         String prepend = "";
         String remover = "";

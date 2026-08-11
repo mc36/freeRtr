@@ -15,6 +15,10 @@ public class visStreamerRtp {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
+        if (args.length < 3) {
+            System.out.println("usage: java this <device> <group> <port>");
+            return;
+        }
         TargetDataLine dataLine = devicer.getRecord(args[0]);
         packer rtp = packer.sender(args[1], args[2]);
         byte[] buf = new byte[devicer.payl];
@@ -24,7 +28,7 @@ public class visStreamerRtp {
             if (i < 1) {
                 break;
             }
-            rtp.rtp_write(buf, i);
+            rtp.writeRtp(buf, i);
             vu.doer(buf, i);
         }
     }

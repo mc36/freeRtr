@@ -30,6 +30,10 @@ public class pathFilter {
      * @param args arguments
      */
     public static void main(String[] args) {
+        if (args.length < 3) {
+            playerUtil.put("usage: java this <source> <target> <regexp>");
+            return;
+        }
         String fn = args[0];
         playerUtil.put("reading " + fn + "...");
         List<playerSong> src = playerSong.txt2pls(null, playerUtil.readup(fn));
