@@ -36,6 +36,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
     public final static userFilter[] defaultF = {
         new userFilter("server upnpfwd .*", cmds.tabulator + "port " + packUpnp.portNum, null),
         new userFilter("server upnpfwd .*", cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp), null),
+        new userFilter("server upnpfwd .*", cmds.tabulator + "group null", null),
         new userFilter("server upnpfwd .*", cmds.tabulator + "target null", null)
     };
 
@@ -55,6 +56,8 @@ public class servUpnpFwd extends servGeneric implements prtServS {
 
     private pipeSide trgt;
 
+    private addrIP group;
+
     private ipFwd fwd;
 
     private ipFwdIface ifc;
@@ -67,6 +70,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst, int filter) {
         lst.add(beg + "target " + target);
+        lst.add(beg + "group " + group);
     }
 
     public boolean srvCfgStr(cmds cmd) {
@@ -75,6 +79,19 @@ public class servUpnpFwd extends servGeneric implements prtServS {
             target = new addrIP();
             if (target.fromString(cmd.word())) {
                 target = null;
+                cmd.error("bad address");
+                return false;
+            }
+            if (group != null) {
+                return false;
+            }
+            group = packUpnp.getGroup(target.isIPv4());
+            return false;
+        }
+        if (a.equals("group")) {
+            group = new addrIP();
+            if (group.fromString(cmd.word())) {
+                group = null;
                 cmd.error("bad address");
                 return false;
             }
@@ -88,12 +105,18 @@ public class servUpnpFwd extends servGeneric implements prtServS {
             target = null;
             return false;
         }
+        if (a.equals("group")) {
+            group = null;
+            return false;
+        }
         return true;
     }
 
     public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{2}, "target", "hub address to forward");
         l.add(null, false, 2, new int[]{-1}, "<addr>", "address of hub");
+        l.add(null, false, 1, new int[]{2}, "group", "hub group to forward");
+        l.add(null, false, 2, new int[]{-1}, "<addr>", "address of group");
     }
 
     public String srvName() {
@@ -185,10 +208,8 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         }
         packUpnp pckF = new packUpnp();
         pckF.typ = packUpnp.typData;
-        pckF.adrS.setAddr(conn.peerAddr);
-        pckF.adrT.setAddr(conn.iface.addr);
-        pckF.prtS = conn.portRem;
-        pckF.prtT = conn.portLoc;
+        pckF.addr.setAddr(conn.peerAddr);
+        pckF.port = conn.portRem;
         pckF.createPacket(pck);
         pck.pipeSend(trgt, 0, pck.dataSize(), 2);
     }
@@ -199,6 +220,9 @@ public class servUpnpFwd extends servGeneric implements prtServS {
      * @param pck packet
      */
     protected void doPackSrv(packHolder pck) {
+        if (group == null) {
+            return;
+        }
         packUpnp pckF = new packUpnp();
         pckF.parsePacket(pck);
         if (pckF.typ != packUpnp.typData) {
@@ -208,10 +232,10 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         pck.IPttl = 2;
         pck.IPtos = 0;
         pck.IPid = 0;
-        pck.IPsrc.setAddr(pckF.adrS);
-        pck.IPtrg.setAddr(pckF.adrT);
-        pck.UDPsrc = pckF.prtS;
-        pck.UDPtrg = pckF.prtT;
+        pck.IPsrc.setAddr(pckF.addr);
+        pck.IPtrg.setAddr(group);
+        pck.UDPsrc = pckF.port;
+        pck.UDPtrg = srvPort;
         prtUdp.createUDPheader(pck);
         fwd.protoPack(ifc, null, pck);
     }

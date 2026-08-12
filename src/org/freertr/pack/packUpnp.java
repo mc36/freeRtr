@@ -31,34 +31,35 @@ public class packUpnp {
     public final static int typData = 2;
 
     /**
-     * header
-     */
-    public final static int size = 37;
-
-    /**
      * packet type
      */
     public int typ;
 
     /**
-     * source port
+     * port
      */
-    public int prtS;
+    public int port;
 
     /**
-     * target port
+     * address
      */
-    public int prtT;
+    public addrIP addr = new addrIP();
 
     /**
-     * source address
+     * get group address
+     *
+     * @param ip4 true of ipv4, false for ipv6
+     * @return group to use
      */
-    public addrIP adrS = new addrIP();
-
-    /**
-     * target address
-     */
-    public addrIP adrT = new addrIP();
+    public static addrIP getGroup(boolean ip4) {
+        addrIP grp = new addrIP();
+        if (ip4) {
+            grp.fromString("239.255.255.250");
+        } else {
+            grp.fromString("ff02::c");
+        }
+        return grp;
+    }
 
     /**
      * parse one packet
@@ -67,11 +68,11 @@ public class packUpnp {
      */
     public void parsePacket(packHolder pck) {
         typ = pck.getByte(0); // type
-        prtS = pck.msbGetW(1); // source port
-        prtT = pck.msbGetW(3); // target port
-        pck.getAddr(adrS, 5); // source address
-        pck.getAddr(adrT, 21); // target address
-        pck.getSkip(size);
+        port = pck.msbGetW(1); // port
+        pck.getSkip(3);
+        addr = new addrIP();
+        pck.getAddr(addr, 0); // address
+        pck.getSkip(addrIP.size);
     }
 
     /**
@@ -81,11 +82,10 @@ public class packUpnp {
      */
     public void createPacket(packHolder pck) {
         pck.putByte(0, typ); // type
-        pck.msbPutW(1, prtS); // source port
-        pck.msbPutW(3, prtT); // target port
-        pck.putAddr(5, adrS); // source address
-        pck.putAddr(5, adrT); // target address
-        pck.putSkip(size);
+        pck.msbPutW(1, port); // port
+        pck.putSkip(3);
+        pck.putAddr(0, addr); // address
+        pck.putSkip(addrIP.size);
         pck.merge2beg();
     }
 
