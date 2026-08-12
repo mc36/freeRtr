@@ -33,7 +33,7 @@ public class packUpnp {
     /**
      * header
      */
-    public final static int size = 21;
+    public final static int size = 37;
 
     /**
      * packet type
@@ -41,19 +41,24 @@ public class packUpnp {
     public int typ;
 
     /**
-     * client port
-     */
-    public int prtC;
-
-    /**
-     * server port
+     * source port
      */
     public int prtS;
 
     /**
-     * address
+     * target port
      */
-    public addrIP addr = new addrIP();
+    public int prtT;
+
+    /**
+     * source address
+     */
+    public addrIP adrS = new addrIP();
+
+    /**
+     * target address
+     */
+    public addrIP adrT = new addrIP();
 
     /**
      * parse one packet
@@ -62,9 +67,10 @@ public class packUpnp {
      */
     public void parsePacket(packHolder pck) {
         typ = pck.getByte(0); // type
-        prtC = pck.msbGetW(1); // client port
-        prtS = pck.msbGetW(3); // server port
-        pck.getAddr(addr, 5); // address
+        prtS = pck.msbGetW(1); // source port
+        prtT = pck.msbGetW(3); // target port
+        pck.getAddr(adrS, 5); // source address
+        pck.getAddr(adrT, 21); // target address
         pck.getSkip(size);
     }
 
@@ -75,9 +81,10 @@ public class packUpnp {
      */
     public void createPacket(packHolder pck) {
         pck.putByte(0, typ); // type
-        pck.msbPutW(1, prtC); // client port
-        pck.msbPutW(3, prtS); // server port
-        pck.putAddr(5, addr); // address
+        pck.msbPutW(1, prtS); // source port
+        pck.msbPutW(3, prtT); // target port
+        pck.putAddr(5, adrS); // source address
+        pck.putAddr(5, adrT); // target address
         pck.putSkip(size);
         pck.merge2beg();
     }

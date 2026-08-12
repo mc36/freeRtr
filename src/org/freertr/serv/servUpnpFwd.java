@@ -55,8 +55,6 @@ public class servUpnpFwd extends servGeneric implements prtServS {
 
     private pipeSide trgt;
 
-    private addrIP grp = new addrIP();
-
     private ipFwd fwd;
 
     private ipFwdIface ifc;
@@ -154,11 +152,6 @@ public class servUpnpFwd extends servGeneric implements prtServS {
             if (srvIface == null) {
                 return;
             }
-            if (target.isIPv4()) {
-                grp.fromString("239.255.255.250");
-            } else {
-                grp.fromString("ff02::c");
-            }
             fwd = srvVrf.getFwd(target);
             ifc = srvIface.getFwdIfc(target);
             prtUdp udp = srvVrf.getUdp(target);
@@ -192,9 +185,10 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         }
         packUpnp pckF = new packUpnp();
         pckF.typ = packUpnp.typData;
-        pckF.addr.setAddr(conn.peerAddr);
-        pckF.prtC = conn.portRem;
-        pckF.prtS = conn.portLoc;
+        pckF.adrS.setAddr(conn.peerAddr);
+        pckF.adrT.setAddr(conn.iface.addr);
+        pckF.prtS = conn.portRem;
+        pckF.prtT = conn.portLoc;
         pckF.createPacket(pck);
         pck.pipeSend(trgt, 0, pck.dataSize(), 2);
     }
@@ -214,10 +208,10 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         pck.IPttl = 2;
         pck.IPtos = 0;
         pck.IPid = 0;
-        pck.IPsrc.setAddr(pckF.addr);
-        pck.IPtrg.setAddr(grp);
-        pck.UDPsrc = pckF.prtC;
-        pck.UDPtrg = pckF.prtS;
+        pck.IPsrc.setAddr(pckF.adrS);
+        pck.IPtrg.setAddr(pckF.adrT);
+        pck.UDPsrc = pckF.prtS;
+        pck.UDPtrg = pckF.prtT;
         prtUdp.createUDPheader(pck);
         fwd.protoPack(ifc, null, pck);
     }
