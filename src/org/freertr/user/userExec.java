@@ -47,7 +47,7 @@ import org.freertr.ip.ipRtr;
 import org.freertr.pipe.pipeHdlc;
 import org.freertr.pack.packDnsRec;
 import org.freertr.pack.packDnsZone;
-import org.freertr.pack.packText;
+import org.freertr.pipe.pipeText;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeShell;
@@ -5956,7 +5956,7 @@ public class userExec {
 
     private void doView() {
         List<String> lst = new ArrayList<String>();
-        packText pt = new packText(getShPipe(cmd, false));
+        pipeText pt = new pipeText(getShPipe(cmd, false));
         pt.recvAll(lst);
         userEditor edtr = new userEditor(new pipeScreen(pipe), lst, getHstNam(true) + "show " + cmd.getRemaining(), false);
         edtr.doView();
@@ -6000,7 +6000,7 @@ public class userExec {
         userEditor edtr = new userEditor(new pipeScreen(pipe), lst, getHstNam(true) + "watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
             lst.clear();
-            packText pt = new packText(getShPipe(cmd, false));
+            pipeText pt = new pipeText(getShPipe(cmd, false));
             pt.recvAll(lst);
             if (edtr.doTimed(1000, false)) {
                 break;
@@ -6012,21 +6012,21 @@ public class userExec {
 
     private void doCompare() {
         String curr = cmd.getRemaining();
-        List<String> r2 = new packText(getShPipe(cmd, false)).recvAll();
+        List<String> r2 = new pipeText(getShPipe(cmd, false)).recvAll();
         cmd = new cmds("cmp", compareBase);
         cmd.pipe = pipe;
-        List<String> r1 = new packText(getShPipe(cmd, false)).recvAll();
+        List<String> r1 = new pipeText(getShPipe(cmd, false)).recvAll();
         List<String> lst = differ.calcAny(r1, r2, compareBase, curr);
         reader.putStrArr(lst);
     }
 
     private void doDiffers() {
-        List<String> r1 = new packText(getShPipe(cmd, false)).recvAll();
+        List<String> r1 = new pipeText(getShPipe(cmd, false)).recvAll();
         reader.keyFlush();
         List<String> lst = new ArrayList<String>();
         userEditor edtr = new userEditor(new pipeScreen(pipe), lst, getHstNam(true) + "watch " + cmd.getRemaining(), pipe.settingsGet(pipeSetting.times, false));
         for (;;) {
-            List<String> r2 = new packText(getShPipe(cmd, false)).recvAll();
+            List<String> r2 = new pipeText(getShPipe(cmd, false)).recvAll();
             differ df = new differ();
             df.calc1by1(r1, r2);
             lst.clear();

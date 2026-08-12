@@ -8,7 +8,7 @@ import org.freertr.addr.addrIPv6;
 import org.freertr.cfg.cfgAll;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdTab;
-import org.freertr.pack.packText;
+import org.freertr.pipe.pipeText;
 import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeProgress;
@@ -98,7 +98,7 @@ public class clntFtp implements prtServS {
     }
 
     private String getLine() {
-        packText pck = new packText(pipe);
+        pipeText pck = new pipeText(pipe);
         String s = pck.codedRecv();
         if (s == null) {
             s = "";

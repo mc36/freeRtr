@@ -12,7 +12,7 @@ import org.freertr.clnt.clntDns;
 import org.freertr.clnt.clntSmtp;
 import org.freertr.enc.encBase64;
 import org.freertr.pack.packDnsRec;
-import org.freertr.pack.packText;
+import org.freertr.pipe.pipeText;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
@@ -1014,7 +1014,7 @@ class servSmtpDoer implements Runnable {
             if (lower.logging) {
                 logger.info(conn.peerAddr + " sent " + trgS + " as " + src);
             }
-            packText pt = new packText(pipe);
+            pipeText pt = new pipeText(pipe);
             List<String> txt = pt.dottedRecvAll();
             doLine("250 ok");
             clntSmtp.deleteHead(txt, hdrD);

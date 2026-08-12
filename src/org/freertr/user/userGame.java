@@ -9,7 +9,7 @@ import java.util.List;
 import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgInit;
-import org.freertr.pack.packText;
+import org.freertr.pipe.pipeText;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servQuote;
@@ -166,7 +166,7 @@ public class userGame {
     private List<String> convShow(cmds cmd) {
         pipeSide pip = userExec.getShPipe(cmd, false);
         List<String> lst = new ArrayList<String>();
-        packText pt = new packText(pip);
+        pipeText pt = new pipeText(pip);
         pt.recvAll(lst);
         return lst;
     }

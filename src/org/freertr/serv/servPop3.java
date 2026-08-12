@@ -8,7 +8,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgAuther;
 import org.freertr.cry.cryHashMd5;
 import org.freertr.cry.cryUtils;
-import org.freertr.pack.packText;
+import org.freertr.pipe.pipeText;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
@@ -391,7 +391,7 @@ class servPop3doer implements Runnable {
                 doLine("-ERR read error");
                 return false;
             }
-            packText pt = new packText(pipe);
+            pipeText pt = new pipeText(pipe);
             doLine("+OK " + txt.size() + " lines");
             for (int i = 0; i < txt.size(); i++) {
                 pt.dottedSend(txt.get(i));
@@ -427,7 +427,7 @@ class servPop3doer implements Runnable {
                 return false;
             }
             int siz = txt.size();
-            packText pt = new packText(pipe);
+            pipeText pt = new pipeText(pipe);
             doLine("+OK " + siz + " lines");
             int o = headSize(txt) + 1 + bits.str2num(cmd.word());
             if (o > siz) {

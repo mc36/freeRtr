@@ -1,5 +1,6 @@
 package org.freertr.serv;
 
+import org.freertr.pack.packUpnp;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.ip.ipFwd;
@@ -33,7 +34,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
      * defaults text
      */
     public final static userFilter[] defaultF = {
-        new userFilter("server upnpfwd .*", cmds.tabulator + "port " + servUpnpPck.portNum, null),
+        new userFilter("server upnpfwd .*", cmds.tabulator + "port " + packUpnp.portNum, null),
         new userFilter("server upnpfwd .*", cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp), null),
         new userFilter("server upnpfwd .*", cmds.tabulator + "target null", null)
     };
@@ -102,7 +103,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
     }
 
     public int srvPort() {
-        return servUpnpPck.portNum;
+        return packUpnp.portNum;
     }
 
     public int srvProto() {
@@ -173,8 +174,8 @@ public class servUpnpFwd extends servGeneric implements prtServS {
             new servUpnpFwdServ(this, trgt);
         }
         packHolder pckB = new packHolder(true, true);
-        servUpnpPck pckF = new servUpnpPck();
-        pckF.typ = servUpnpPck.typKeep;
+        packUpnp pckF = new packUpnp();
+        pckF.typ = packUpnp.typKeep;
         pckF.createPacket(pckB);
         pckB.pipeSend(trgt, 0, pckB.dataSize(), 2);
     }
@@ -189,10 +190,11 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         if (trgt == null) {
             return;
         }
-        servUpnpPck pckF = new servUpnpPck();
-        pckF.typ = servUpnpPck.typData;
+        packUpnp pckF = new packUpnp();
+        pckF.typ = packUpnp.typData;
         pckF.addr.setAddr(conn.peerAddr);
-        pckF.port = conn.portRem;
+        pckF.prtC = conn.portRem;
+        pckF.prtS = conn.portLoc;
         pckF.createPacket(pck);
         pck.pipeSend(trgt, 0, pck.dataSize(), 2);
     }
@@ -203,9 +205,9 @@ public class servUpnpFwd extends servGeneric implements prtServS {
      * @param pck packet
      */
     protected void doPackSrv(packHolder pck) {
-        servUpnpPck pckF = new servUpnpPck();
+        packUpnp pckF = new packUpnp();
         pckF.parsePacket(pck);
-        if (pckF.typ != servUpnpPck.typData) {
+        if (pckF.typ != packUpnp.typData) {
             return;
         }
         pck.putDefaults();
@@ -214,8 +216,8 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         pck.IPid = 0;
         pck.IPsrc.setAddr(pckF.addr);
         pck.IPtrg.setAddr(grp);
-        pck.UDPsrc = pckF.port;
-        pck.UDPtrg = srvPort;
+        pck.UDPsrc = pckF.prtC;
+        pck.UDPtrg = pckF.prtS;
         prtUdp.createUDPheader(pck);
         fwd.protoPack(ifc, null, pck);
     }

@@ -14,7 +14,7 @@ import org.freertr.ip.ipIfc4;
 import org.freertr.ip.ipIfc4arp;
 import org.freertr.util.cmds;
 import org.freertr.pack.packHolder;
-import org.freertr.pack.packText;
+import org.freertr.pipe.pipeText;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
@@ -1106,7 +1106,7 @@ class prtRedunExec implements Runnable {
         pip.lineTx = pipeSide.modTyp.modeCRLF;
         pip.lineRx = pipeSide.modTyp.modeCRtryLF;
         List<String> txt = new ArrayList<String>();
-        packText pt = new packText(pip);
+        pipeText pt = new pipeText(pip);
         pt.recvAll(txt);
         a = cfgInit.getRWpath() + "exe" + bits.randomD() + userUpgrade.tmpExt;
         if (bits.buf2txt(true, txt, a)) {

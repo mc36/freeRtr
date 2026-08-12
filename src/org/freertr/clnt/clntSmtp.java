@@ -8,7 +8,7 @@ import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.enc.encBase64;
 import org.freertr.pack.packDnsRec;
-import org.freertr.pack.packText;
+import org.freertr.pipe.pipeText;
 import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeProgress;
 import org.freertr.pipe.pipeSide;
@@ -108,7 +108,7 @@ public class clntSmtp implements Runnable {
     }
 
     private String getLine() {
-        packText pck = new packText(pipe);
+        pipeText pck = new pipeText(pipe);
         String s = pck.codedRecv();
         if (s == null) {
             s = "";
@@ -478,7 +478,7 @@ public class clntSmtp implements Runnable {
         cons.setMax(body.size());
         cons.debugStat("sending " + cons.getMax() + " lines");
         for (int i = 0; i < body.size(); i++) {
-            packText t = new packText(pipe);
+            pipeText t = new pipeText(pipe);
             t.dottedSend(body.get(i));
             cons.setCurr(i);
         }

@@ -1,8 +1,7 @@
-package org.freertr.pack;
+package org.freertr.pipe;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.freertr.pipe.pipeSide;
 import org.freertr.util.bits;
 
 /**
@@ -10,7 +9,7 @@ import org.freertr.util.bits;
  *
  * @author matecsaba
  */
-public class packText {
+public class pipeText {
 
     private pipeSide pipe; // pipeline side
 
@@ -19,7 +18,7 @@ public class packText {
      *
      * @param stream stream to use
      */
-    public packText(pipeSide stream) {
+    public pipeText(pipeSide stream) {
         pipe = stream;
     }
 

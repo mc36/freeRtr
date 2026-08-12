@@ -6,7 +6,7 @@ import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
 import org.freertr.enc.encUrl;
-import org.freertr.pack.packText;
+import org.freertr.pipe.pipeText;
 import org.freertr.pipe.pipeDiscard;
 import org.freertr.pipe.pipeProgress;
 import org.freertr.pipe.pipeSide;
@@ -47,7 +47,7 @@ public class clntPop3 {
     }
 
     private String getLine() {
-        packText pck = new packText(pipe);
+        pipeText pck = new pipeText(pipe);
         String s = pck.codedRecv();
         if (s == null) {
             s = "";
@@ -64,7 +64,7 @@ public class clntPop3 {
         if (!getLine().toLowerCase().startsWith("+ok")) {
             return true;
         }
-        packText pt = new packText(pipe);
+        pipeText pt = new pipeText(pipe);
         List<String> txt = pt.dottedRecvAll();
         cons.debugStat("got " + txt.size() + " lines");
         if (bits.buf2txt(true, txt, trg.getAbsolutePath() + num + ".msg")) {
