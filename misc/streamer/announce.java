@@ -21,7 +21,7 @@ public class announce {
         System.out.println("echo \"");
         System.out.println(new String(res));
         System.out.println("\" | ffplay -protocol_whitelist file,fd,udp,rtp -");
-        packer rtp = packer.sender("224.2.127.254", "9875");
+        packer rtp = packer.sender("239.255.255.255", "9875");
         for (;;) {
             rtp.announceSap(res, res.length, args[1], args[2]);
             Thread.sleep(15000);

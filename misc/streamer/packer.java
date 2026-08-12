@@ -114,6 +114,7 @@ public class packer {
         res.add("m=audio " + prt + " RTP/AVP " + devicer.rtpt);
         res.add("a=rtpmap:" + devicer.rtpt + " L" + (devicer.smpb * 8) + "/" + devicer.rate + "/2");
         res.add("a=source-filter: incl IN IP4 " + grp + " " + src);
+        res.add("a=recvonly");
         int o = res.size() * 2;
         for (int i = 0; i < res.size(); i++) {
             o += res.get(i).length();
