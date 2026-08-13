@@ -355,6 +355,16 @@ public class ipFwdIface extends tabRouteIface {
     public rtrNshIface nshCfg;
 
     /**
+     * multicast ingress acl
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> mcastBoundIn;
+
+    /**
+     * multicast egress acl
+     */
+    public tabListing<tabAceslstN<addrIP>, addrIP> mcastBoundOut;
+
+    /**
      * multicast source override in
      */
     public addrIP mcastSrcIn;
@@ -759,6 +769,10 @@ public class ipFwdIface extends tabRouteIface {
         l.add(null, false, 4, new int[]{-1}, "<num>", "ttl");
         l.add(null, false, 3, new int[]{4}, "ttl-threshold-out", "ttl threshold for sent multicast packets");
         l.add(null, false, 4, new int[]{-1}, "<num>", "ttl");
+        l.add(null, false, 3, new int[]{4}, "boundary-in", "filter received join");
+        l.add(null, false, 4, new int[]{-1}, "<name:acl>", "access list name");
+        l.add(null, false, 3, new int[]{4}, "boundary-out", "filter sent join");
+        l.add(null, false, 4, new int[]{-1}, "<name:acl>", "access list name");
         l.add(null, false, 3, new int[]{4}, "source-lookup-in", "find received source for groups");
         cfgRtr.getRouterList(l, 2, " to use");
         l.add(null, false, 5, new int[]{-1}, "<num:rtr>", "process id");
@@ -1031,6 +1045,8 @@ public class ipFwdIface extends tabRouteIface {
         }
         l.add(cmds.tabulator + beg + "multicast ttl-threshold-in " + mcastTtlIn);
         l.add(cmds.tabulator + beg + "multicast ttl-threshold-out " + mcastTtlOut);
+        cmds.cfgLine(l, mcastBoundIn == null, cmds.tabulator, beg + "multicast boundary-in", "" + mcastBoundIn);
+        cmds.cfgLine(l, mcastBoundOut == null, cmds.tabulator, beg + "multicast boundary-out", "" + mcastBoundOut);
         cmds.cfgLine(l, mcastTypIn == null, cmds.tabulator, beg + "multicast source-lookup-in", mcastTypIn + " " + mcastNumIn);
         cmds.cfgLine(l, mcastTypOut == null, cmds.tabulator, beg + "multicast source-lookup-out", mcastTypOut + " " + mcastNumOut);
         cmds.cfgLine(l, mcastSrcIn == null, cmds.tabulator, beg + "multicast source-override-in", "" + mcastSrcIn);
@@ -1540,6 +1556,28 @@ public class ipFwdIface extends tabRouteIface {
             if (a.equals("source-override-out")) {
                 mcastSrcOut = new addrIP();
                 mcastSrcOut.fromString(cmd.word());
+                return false;
+            }
+            if (a.equals("boundary-in")) {
+                cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such access list");
+                    return false;
+                }
+                ntry.aceslst.myCor = cor;
+                ntry.aceslst.myIcmp = fwd.icmpCore;
+                mcastBoundIn = ntry.aceslst;
+                return false;
+            }
+            if (a.equals("boundary-out")) {
+                cfgAceslst ntry = cfgAll.aclsFind(cmd.word(), false);
+                if (ntry == null) {
+                    cmd.error("no such access list");
+                    return false;
+                }
+                ntry.aceslst.myCor = cor;
+                ntry.aceslst.myIcmp = fwd.icmpCore;
+                mcastBoundOut = ntry.aceslst;
                 return false;
             }
             if (a.equals("ttl-threshold-in")) {
@@ -2121,6 +2159,14 @@ public class ipFwdIface extends tabRouteIface {
             }
             if (a.equals("source-override-out")) {
                 mcastSrcOut = null;
+                return false;
+            }
+            if (a.equals("boundary-in")) {
+                mcastBoundIn = null;
+                return false;
+            }
+            if (a.equals("boundary-out")) {
+                mcastBoundOut = null;
                 return false;
             }
             if (a.equals("ttl-threshold-in")) {

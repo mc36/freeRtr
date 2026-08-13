@@ -253,6 +253,14 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
         if (grp == null) {
             return;
         }
+        if (rxIfc.mcastBoundIn != null) {
+            packHolder pck = new packHolder(true, true);
+            pck.IPsrc.setAddr(src);
+            pck.IPtrg.setAddr(grp);
+            if (!rxIfc.mcastBoundIn.matches(false, false, pck)) {
+                return;
+            }
+        }
         if (need) {
             fwdCore.mcastAddFloodIfc(grp, src, rxIfc, rxIfc.mhostCfg.queryInterval * 3);
         } else {
@@ -305,6 +313,14 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
         }
         if (rxIfc.mcastSrcOut != null) {
             src = rxIfc.mcastSrcOut.copyBytes();
+        }
+        if (rxIfc.mcastBoundOut != null) {
+            packHolder pck = new packHolder(true, true);
+            pck.IPsrc.setAddr(src);
+            pck.IPtrg.setAddr(grp);
+            if (!rxIfc.mcastBoundOut.matches(false, false, pck)) {
+                return;
+            }
         }
         packHolder pck = new packHolder(true, true);
         createReport(pck, grp, src, need);
