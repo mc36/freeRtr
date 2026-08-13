@@ -14,16 +14,22 @@ public class announce {
      */
     public static void main(String[] args) throws Exception {
         if (args.length < 3) {
-            System.out.println("usage: java this <group> <source> <port>");
+            System.out.println("usage: java this <group> <source> <port> [sap-group]");
             return;
         }
-        byte[] res = packer.generateSdp(args[0], args[1], args[2]);
+        String a = args[0];
+        byte[] res = packer.generateSdp(a, args[1], args[2]);
         System.out.println("echo \"");
         System.out.println(new String(res));
         System.out.println("\" | ffplay -protocol_whitelist file,fd,udp,rtp -");
-        packer rtp = packer.sender("239.255.255.255", "9875");
+        if (args.length > 3) {
+            a = args[3];
+        }
+        System.out.println("announcing to " + a + "...");
+        packer rtp = packer.sender(a, "9875");
         for (;;) {
             rtp.announceSap(res, res.length, args[1], args[2]);
+            System.out.print(".");
             Thread.sleep(15000);
         }
     }
