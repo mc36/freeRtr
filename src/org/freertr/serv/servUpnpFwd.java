@@ -37,7 +37,8 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         new userFilter("server upnpfwd .*", cmds.tabulator + "port " + packUpnp.portNum, null),
         new userFilter("server upnpfwd .*", cmds.tabulator + "protocol " + proto2string(protoNets + protoUdp), null),
         new userFilter("server upnpfwd .*", cmds.tabulator + "group null", null),
-        new userFilter("server upnpfwd .*", cmds.tabulator + "target null", null)
+        new userFilter("server upnpfwd .*", cmds.tabulator + "target null", null),
+        new userFilter("server upnpfwd .*", cmds.tabulator + "time2live 2", null)
     };
 
     public userFilter[] srvDefFlt() {
@@ -50,13 +51,21 @@ public class servUpnpFwd extends servGeneric implements prtServS {
     public addrIP target;
 
     /**
+     * group
+     */
+    public addrIP group;
+
+    /**
+     * ttl
+     */
+    public int time2live = 2;
+
+    /**
      * purge
      */
     protected servUpnpFwdKeep purgeTimer;
 
     private pipeSide trgt;
-
-    private addrIP group;
 
     private ipFwd fwd;
 
@@ -71,10 +80,15 @@ public class servUpnpFwd extends servGeneric implements prtServS {
     public void srvShRun(String beg, List<String> lst, int filter) {
         lst.add(beg + "target " + target);
         lst.add(beg + "group " + group);
+        lst.add(beg + "time2live " + time2live);
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String a = cmd.word();
+        if (a.equals("time2live")) {
+            time2live = bits.str2num(cmd.word());
+            return false;
+        }
         if (a.equals("target")) {
             target = new addrIP();
             if (target.fromString(cmd.word())) {
@@ -117,6 +131,8 @@ public class servUpnpFwd extends servGeneric implements prtServS {
         l.add(null, false, 2, new int[]{-1}, "<addr>", "address of hub");
         l.add(null, false, 1, new int[]{2}, "group", "hub group to forward");
         l.add(null, false, 2, new int[]{-1}, "<addr>", "address of group");
+        l.add(null, false, 1, new int[]{2}, "time2live", "hub ttl to forward");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "value");
     }
 
     public String srvName() {
@@ -215,7 +231,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
     }
 
     /**
-     * got packet from interface
+     * got packet from server
      *
      * @param pck packet
      */
@@ -229,7 +245,7 @@ public class servUpnpFwd extends servGeneric implements prtServS {
             return;
         }
         pck.putDefaults();
-        pck.IPttl = 2;
+        pck.IPttl = time2live;
         pck.IPtos = 0;
         pck.IPid = 0;
         pck.IPsrc.setAddr(pckF.addr);
