@@ -7,6 +7,7 @@ int recRem;
 float recBuf[4096];
 float recOut[4096];
 int recRes[4096];
+int recTim;
 
 void rec_init(char*fil, char*pos) {
     int error;
@@ -23,6 +24,9 @@ void rec_init(char*fil, char*pos) {
     recDat.output_frames = sizeof(recOut) / (sizeof(float) * 2);
     recDat.src_ratio = (double)srate / recInf.samplerate;
     recRem = 0;
+    struct timeval timval;
+    gettimeofday(&timval, NULL);
+    recTim = timval.tv_usec;
 }
 
 void iou_read() {
@@ -65,5 +69,12 @@ void iou_read() {
             bufS += smpbt;
         }
     }
-    usleep(500000 * pktln / (srate * smpbt) - 500);
+    struct timeval timval;
+    gettimeofday(&timval, NULL);
+    int need = (timval.tv_usec - recTim + 10) % 5000;
+    if (need < 0) need += 5000;
+    recTim = timval.tv_usec;
+    need = 500000 * pktln / (srate * smpbt) - need;
+    usleep(need);
+    recTim += need;
 }
