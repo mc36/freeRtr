@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <alsa/asoundlib.h>
-
+#include "io_incl.h"
 #include "io_util.h"
 #include "in_raw.h"
 #include "out_dev.h"
