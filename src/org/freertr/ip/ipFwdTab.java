@@ -1539,6 +1539,31 @@ public class ipFwdTab {
     }
 
     /**
+     * count mcast rxlab usage
+     *
+     * @param lower forwarder
+     * @param lab label
+     * @return groups
+     */
+    protected static int countMcastRxLab(ipFwd lower, int lab) {
+        int o = 0;
+        for (int i = 0; i < lower.groups.size(); i++) {
+            ipFwdMcast cur = lower.groups.get(i);
+            if (cur == null) {
+                continue;
+            }
+            if (cur.rxLab == null) {
+                continue;
+            }
+            if (cur.rxLab.label != lab) {
+                continue;
+            }
+            o++;
+        }
+        return o;
+    }
+
+    /**
      * send join to one group
      *
      * @param lower forwarder
@@ -1595,12 +1620,18 @@ public class ipFwdTab {
                 }
                 if (grp.rxLab != null) {
                     if (grp.rxLab.label != lab) {
-                        tabLabel.release(grp.rxLab, tabLabelEntry.owner.mcastRx);
+                        if (countMcastRxLab(lower, grp.rxLab.label) < 1) {
+                            tabLabel.release(grp.rxLab, tabLabelEntry.owner.mcastRx);
+                        }
                         grp.rxLab = null;
                     }
                 }
                 if ((grp.rxLab == null) && (lab != 0)) {
-                    grp.rxLab = tabLabel.allocateExact(tabLabelEntry.owner.mcastRx, lab);
+                    if (countMcastRxLab(lower, lab) < 1) {
+                        grp.rxLab = tabLabel.allocateExact(tabLabelEntry.owner.mcastRx, lab);
+                    } else {
+                        grp.rxLab = tabLabel.find(lab);
+                    }
                     if (grp.rxLab == null) {
                         return;
                     }
