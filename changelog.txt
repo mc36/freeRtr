@@ -18611,3 +18611,6 @@ qc pass: multicast routing with ingress static override
 qc pass: multicast routing with egress static override
 qc pass: multicast routing with ingress msdp override
 qc pass: multicast routing with egress msdp override
+---------------------------------- 2026-08-14 07:18:29 26.8.14
+no qc pass: ingress label filtering with integrated pvrp
+failed: ingress label filtering with integrated pvrp
