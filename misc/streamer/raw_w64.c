@@ -1,13 +1,13 @@
 #include "io_incl.h"
 #include "io_util.h"
-#include "in_dev.h"
+#include "in_nil.h"
 #include "out_raw.h"
 
 
 int main(int argc, char**argv) {
-    if (argc <= 2) err("usage this <device> <file>");
-    rec_init(argv[1]);
-    ply_init(argv[2]);
+    if (argc <= 1) err("usage this <file>");
+    ply_init(argv[1]);
+    rec_init();
     iou_loop();
     return 0;
 }

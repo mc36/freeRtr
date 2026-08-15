@@ -5,7 +5,7 @@
 
 
 int main(int argc, char**argv) {
-    if (argc <= 1) err("usage this <file>");
+    if (argc <= 1) err("usage this <device>");
     rec_init(argv[1]);
     ply_init();
     iou_loop();
