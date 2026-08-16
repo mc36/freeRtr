@@ -4105,6 +4105,10 @@ qc pass: multicast routing with ingress static override
 qc pass: multicast routing with egress static override
 qc pass: multicast routing with ingress msdp override
 qc pass: multicast routing with egress msdp override
+qc pass: multicast routing with ingress bgp mtree override
+qc pass: multicast routing with egress bgp mtree override
+qc pass: multicast routing with ingress bgp othermtree override
+qc pass: multicast routing with egress bgp othermtree override
 qc pass: olsr on one subnet
 qc pass: olsr in chain
 qc pass: olsr ingress route filtering with prefixlist

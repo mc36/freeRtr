@@ -700,6 +700,58 @@ public interface rtrBgpAfi {
         ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
     }
 
+    /**
+     * write multicast source
+     *
+     * @param ipv4 ipv4
+     * @param ntry buffer to use
+     * @param grp group to check
+     * @return source, null if not found
+     */
+    public static addrIP readSAsource(boolean ipv4, tabRouteEntry<addrIP> ntry, addrIP grp) {
+        byte[] buf = new byte[128];
+        ntry.prefix.network.toBuffer(buf, 0);
+        ntry.prefix.broadcast.toBuffer(buf, 16);
+        ntry.prefix.wildcard.toBuffer(buf, 32);
+        ntry.prefix.mask.toBuffer(buf, 48);
+        if (buf[1] != 5) {
+            return null;
+        }
+        int siz;
+        if (ipv4) {
+            siz = addrIPv4.size;
+        } else {
+            siz = addrIPv6.size;
+        }
+        if ((buf[0] - 3) != (siz * 2)) {
+            return null;
+        }
+        addrType cur;
+        addrType ned;
+        if (ipv4) {
+            cur = new addrIPv4();
+            ned = grp.toIPv4();
+        } else {
+            cur = new addrIPv6();
+            ned = grp.toIPv6();
+        }
+        cur.fromBuf(buf, 4 + siz);
+        if (cur.compareTo(ned) != 0) {
+            return null;
+        }
+        addrIP fin = new addrIP();
+        if (ipv4) {
+            addrIPv4 res = new addrIPv4();
+            res.fromBuf(buf, 3);
+            fin.fromIPv4addr(res);
+        } else {
+            addrIPv6 res = new addrIPv6();
+            res.fromBuf(buf, 3);
+            fin.fromIPv6addr(res);
+        }
+        return fin;
+    }
+
 }
 
 class rtrBgpAfiIpv4uni implements rtrBgpAfi {

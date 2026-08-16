@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.8.16-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-08-16 14:55:59, took 00:21:16, with 50 workers, on 4458 cases, 0 failed, 0 traces, 11 retries
+-;-;-;2026-08-16 17:08:48, took 00:18:18, with 50 workers, on 4462 cases, 0 failed, 0 traces, 9 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -4109,6 +4109,10 @@ http://sources.freertr.org/cfg/rout-mcast29.tst;rout-mcast29.tst;success;multica
 http://sources.freertr.org/cfg/rout-mcast30.tst;rout-mcast30.tst;success;multicast routing with egress static override
 http://sources.freertr.org/cfg/rout-mcast31.tst;rout-mcast31.tst;success;multicast routing with ingress msdp override
 http://sources.freertr.org/cfg/rout-mcast32.tst;rout-mcast32.tst;success;multicast routing with egress msdp override
+http://sources.freertr.org/cfg/rout-mcast33.tst;rout-mcast33.tst;success;multicast routing with ingress bgp mtree override
+http://sources.freertr.org/cfg/rout-mcast34.tst;rout-mcast34.tst;success;multicast routing with egress bgp mtree override
+http://sources.freertr.org/cfg/rout-mcast35.tst;rout-mcast35.tst;success;multicast routing with ingress bgp othermtree override
+http://sources.freertr.org/cfg/rout-mcast36.tst;rout-mcast36.tst;success;multicast routing with egress bgp othermtree override
 http://sources.freertr.org/cfg/rout-olsr01.tst;rout-olsr01.tst;success;olsr on one subnet
 http://sources.freertr.org/cfg/rout-olsr02.tst;rout-olsr02.tst;success;olsr in chain
 http://sources.freertr.org/cfg/rout-olsr03.tst;rout-olsr03.tst;success;olsr ingress route filtering with prefixlist

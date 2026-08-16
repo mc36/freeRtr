@@ -18617,3 +18617,8 @@ failed: ingress label filtering with integrated pvrp
 ---------------------------------- 2026-08-14 13:26:18 26.8.14
 no failed: ingress label filtering with integrated pvrp
 qc pass: ingress label filtering with integrated pvrp
+---------------------------------- 2026-08-16 16:50:30 26.8.16
+qc pass: multicast routing with ingress bgp mtree override
+qc pass: multicast routing with egress bgp mtree override
+qc pass: multicast routing with ingress bgp othermtree override
+qc pass: multicast routing with egress bgp othermtree override
