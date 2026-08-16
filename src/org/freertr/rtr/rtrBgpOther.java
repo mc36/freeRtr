@@ -184,9 +184,10 @@ public class rtrBgpOther extends ipRtr {
      * @param nUni unicast table to update
      * @param nMlt multicast table to update
      * @param nFlw flowspec table to update
+     * @param nMtr mtree table to update
      * @param nLab mpns table to update
      */
-    public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nLab) {
+    public void doAdvertise(tabRoute<addrIP> nUni, tabRoute<addrIP> nMlt, tabRoute<addrIP> nFlw, tabRoute<addrIP> nMtr, tabRoute<addrIP> nLab) {
         if (!enabled) {
             return;
         }
@@ -201,6 +202,13 @@ public class rtrBgpOther extends ipRtr {
         }
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(nFlw, flowSpec, new tabRouteEntry<addrIP>(), !parent.isIpv6, parent.localAs);
+        }
+        for (int i = 0; i < advSa.size(); i++) {
+            ipFwdMcast grp = advSa.get(i);
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = parent.defaultRoute(false);
+            rtrBgpAfi.writeSAgroup(!parent.isIpv6, ntry, grp);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, nMtr, parent.idx2safi[rtrBgpParam.idxMtro], 0, ntry, true, null, null, null);
         }
         if (mpnsOrgn) {
             rtrBgpMpns.doAdvertise(nLab, new tabRouteEntry<addrIP>(), fwd, 0);

@@ -1304,6 +1304,13 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (flowSpec != null) {
             rtrBgpFlow.doAdvertise(freshly[rtrBgpParam.idxFlw], flowSpec, new tabRouteEntry<addrIP>(), isIpv6, localAs);
         }
+        for (int i = 0; i < advSa.size(); i++) {
+            ipFwdMcast grp = advSa.get(i);
+            tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
+            ntry.prefix = defaultRoute(false);
+            rtrBgpAfi.writeSAgroup(!isIpv6, ntry, grp);
+            tabRoute.addUpdatedEntry(tabRoute.addType.better, freshly[rtrBgpParam.idxMtre], idx2safi[rtrBgpParam.idxMtre], 0, ntry, true, null, null, null);
+        }
         for (int i = 0; i < linkStates.size(); i++) {
             rtrBgpLnkst ls = linkStates.get(i);
             ls.rtr.routerLinkStates(freshly[rtrBgpParam.idxLnks], ls.par, localAs, routerID);
@@ -1319,7 +1326,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             ntry.best.distance = distantLoc;
             freshly[rtrBgpParam.idxFlw].add(tabRoute.addType.better, ntry, false, false);
         }
-        other.doAdvertise(freshly[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOflw], freshly[rtrBgpParam.idxMpns]);
+        other.doAdvertise(freshly[rtrBgpParam.idxOuni], freshly[rtrBgpParam.idxOmlt], freshly[rtrBgpParam.idxOflw], freshly[rtrBgpParam.idxMtro], freshly[rtrBgpParam.idxMpns]);
         lspf.doAdvertise(freshly);
         for (int i = 0; i < vrfs.size(); i++) {
             vrfs.get(i).doer.doAdvertise(rtrBgpUtil.sfiUnicast, freshly[rtrBgpParam.idxVpnU], freshly[rtrBgpParam.idxVpnM], freshly[rtrBgpParam.idxVpnF], freshly[rtrBgpParam.idxMvpn], freshly[rtrBgpParam.idxRtf], freshly[rtrBgpParam.idxMdt], freshly[rtrBgpParam.idxMpvs]);
