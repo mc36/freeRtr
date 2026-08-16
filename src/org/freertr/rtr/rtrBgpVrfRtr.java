@@ -404,22 +404,15 @@ public class rtrBgpVrfRtr extends ipRtr {
             ipFwdMcast grp = advSa.get(i);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = parent.defaultRoute(false);
-            buf = new byte[128];
-            buf[0] = (byte) (doWriteGrp(buf, 2, grp) - 1);
-            buf[1] = 5; // source active
-            ntry.prefix.network.fromBuf(buf, 0);
-            ntry.prefix.broadcast.fromBuf(buf, 16);
-            ntry.prefix.wildcard.fromBuf(buf, 32);
-            ntry.prefix.mask.fromBuf(buf, 48);
+            rtrBgpAfi.writeSAgroup(ipv4, ntry, grp);
             ntry.best.extComm = new ArrayList<Long>();
             ntry.rouDst = fwd.rd;
             ntry.best.extComm.addAll(rt);
-            ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
             ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = parent.defaultRoute(false);
             buf = new byte[128];
-            int o = doWriteGrp(buf, 2, grp);
+            int o = rtrBgpAfi.writeSAgroup(ipv4, buf, 2, grp);
             o = doWriteSrc(buf, o);
             buf[0] = (byte) (o - 1);
             buf[1] = 3; // s-pmsi
@@ -501,7 +494,7 @@ public class rtrBgpVrfRtr extends ipRtr {
             ntry.prefix = parent.defaultRoute(false);
             buf = new byte[128];
             bits.msbPutD(buf, 2, parent.localAs);
-            buf[0] = (byte) (doWriteGrp(buf, 6, grp) - 1);
+            buf[0] = (byte) (rtrBgpAfi.writeSAgroup(ipv4, buf, 6, grp) - 1);
             buf[1] = 7; // source tree join
             ntry.prefix.network.fromBuf(buf, 0);
             ntry.prefix.broadcast.fromBuf(buf, 16);
@@ -537,7 +530,7 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
         addrPrefix<addrIP> need = parent.defaultRoute(false);
         byte[] buf = new byte[128];
-        int o = doWriteGrp(buf, 2, grp);
+        int o = rtrBgpAfi.writeSAgroup(ipv4, buf, 2, grp);
         if (rot.isIPv4()) {
             rot.toIPv4().toBuffer(buf, o);
             o += addrIPv4.size;
@@ -602,24 +595,6 @@ public class rtrBgpVrfRtr extends ipRtr {
         }
     }
 
-    private int doWriteGrp(byte[] buf, int ofs, ipFwdMcast grp) {
-        if (ipv4) {
-            buf[ofs] = addrIPv4.size * 8;
-            grp.source.toIPv4().toBuffer(buf, ofs + 1);
-            ofs += addrIPv4.size + 1;
-            buf[ofs] = addrIPv4.size * 8;
-            grp.group.toIPv4().toBuffer(buf, ofs + 1);
-            ofs += addrIPv4.size + 1;
-        } else {
-            buf[ofs] = (byte) (addrIPv6.size * 8);
-            grp.source.toIPv6().toBuffer(buf, ofs + 1);
-            ofs += addrIPv6.size + 1;
-            buf[ofs] = (byte) (addrIPv6.size * 8);
-            grp.group.toIPv6().toBuffer(buf, ofs + 1);
-            ofs += addrIPv6.size + 1;
-        }
-        return ofs;
-    }
 
     private List<Long> getRtList() {
         final List<Long> rt = new ArrayList<Long>();

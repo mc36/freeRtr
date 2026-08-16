@@ -7,6 +7,7 @@ import org.freertr.addr.addrPrefix;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgRtr;
 import org.freertr.ip.ipFwd;
+import org.freertr.ip.ipFwdMcast;
 import org.freertr.ip.ipRtr;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
@@ -67,6 +68,11 @@ public class rtrBgpOther extends ipRtr {
      * mpls namespaces installed
      */
     public tabGen<tabLabelEntry> mpnsDone;
+
+    /**
+     * mvpn source actives
+     */
+    public tabGen<ipFwdMcast> advSa = new tabGen<ipFwdMcast>();
 
     /**
      * srv6 advertisement source
@@ -415,6 +421,10 @@ public class rtrBgpOther extends ipRtr {
         }
         if (flowSpec != null) {
             l.add(beg2 + "flowspec-advert " + flowSpec);
+        }
+        for (int i = 0; i < advSa.size(); i++) {
+            ipFwdMcast grp = advSa.get(i);
+            l.add(beg1 + beg2 + "adv-sa " + grp.group + " " + grp.source);
         }
         if (srv6 != null) {
             l.add(beg2 + "srv6 " + srv6.name);

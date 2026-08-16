@@ -9,6 +9,7 @@ import org.freertr.addr.addrMac;
 import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
 import org.freertr.cry.cryHashMd5;
+import org.freertr.ip.ipFwdMcast;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
@@ -651,6 +652,53 @@ public interface rtrBgpAfi {
                 logger.info("unknown safi (" + safi + ") requested");
                 break;
         }
+    }
+
+    /**
+     * write multicast group
+     *
+     * @param ipv4 ipv4
+     * @param buf buffer to use
+     * @param ofs offset to use
+     * @param grp group to write
+     * @return updated offset
+     */
+    public static int writeSAgroup(boolean ipv4, byte[] buf, int ofs, ipFwdMcast grp) {
+        if (ipv4) {
+            buf[ofs] = addrIPv4.size * 8;
+            grp.source.toIPv4().toBuffer(buf, ofs + 1);
+            ofs += addrIPv4.size + 1;
+            buf[ofs] = addrIPv4.size * 8;
+            grp.group.toIPv4().toBuffer(buf, ofs + 1);
+            ofs += addrIPv4.size + 1;
+        } else {
+            buf[ofs] = (byte) (addrIPv6.size * 8);
+            grp.source.toIPv6().toBuffer(buf, ofs + 1);
+            ofs += addrIPv6.size + 1;
+            buf[ofs] = (byte) (addrIPv6.size * 8);
+            grp.group.toIPv6().toBuffer(buf, ofs + 1);
+            ofs += addrIPv6.size + 1;
+        }
+        return ofs;
+    }
+
+    /**
+     * write multicast group
+     *
+     * @param ipv4 ipv4
+     * @param ntry buffer to use
+     * @param grp group to write
+     * @return updated offset
+     */
+    public static void writeSAgroup(boolean ipv4, tabRouteEntry<addrIP> ntry, ipFwdMcast grp) {
+        byte[] buf = new byte[128];
+        buf[0] = (byte) (rtrBgpAfi.writeSAgroup(ipv4, buf, 2, grp) - 1);
+        buf[1] = 5; // source active
+        ntry.prefix.network.fromBuf(buf, 0);
+        ntry.prefix.broadcast.fromBuf(buf, 16);
+        ntry.prefix.wildcard.fromBuf(buf, 32);
+        ntry.prefix.mask.fromBuf(buf, 48);
+        ntry.best.rouSrc = rtrBgpUtil.peerOriginate;
     }
 
 }

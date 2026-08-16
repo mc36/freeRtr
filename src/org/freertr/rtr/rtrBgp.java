@@ -23,6 +23,7 @@ import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
+import org.freertr.ip.ipFwdMcast;
 import org.freertr.ip.ipRtr;
 import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
@@ -319,6 +320,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * mpls namespaces installed
      */
     protected tabGen<tabLabelEntry> mpnsDone;
+
+    /**
+     * mvpn source actives
+     */
+    public tabGen<ipFwdMcast> advSa = new tabGen<ipFwdMcast>();
 
     /**
      * rpki type configured
@@ -2100,6 +2106,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 1, new int[]{-1}, "flowspec-install", "specify flowspec installation");
         l.add(null, false, 1, new int[]{2}, "flowspec-advert", "specify flowspec parameter");
         l.add(null, false, 2, new int[]{-1}, "<name:pm>", "name of policy map");
+        l.add(null, false, 1, new int[]{2}, "adv-sa", "mvpn source active");
+        l.add(null, false, 2, new int[]{3}, "<addr>", "group address");
+        l.add(null, false, 3, new int[]{-1}, "<addr>", "source address");
         l.add(null, false, 1, new int[]{2}, "neighbor", "specify neighbor parameters");
         l.add(neis, false, 2, new int[]{3}, "<addr:loc>", "address of peer");
         l.add(null, false, 3, new int[]{4}, "template", "get configuration from template");
@@ -2262,6 +2271,10 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         cmds.cfgLine(l, !mpnsRdst, beg, "mpns-readvert", "");
         cmds.cfgLine(l, !flowInst, beg, "flowspec-install", "");
         cmds.cfgLine(l, flowSpec == null, beg, "flowspec-advert", "" + flowSpec);
+        for (int i = 0; i < advSa.size(); i++) {
+            ipFwdMcast grp = advSa.get(i);
+            l.add(beg + "adv-sa " + grp.group + " " + grp.source);
+        }
         if (rpkiT == null) {
             l.add(beg + "no rpki");
         } else {
@@ -2554,6 +2567,32 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             compute.wakeup();
             return false;
         }
+        if (s.equals("adv-sa")) {
+            addrIP a1 = new addrIP();
+            addrIP a2 = new addrIP();
+            if (a1.fromString(cmd.word())) {
+                cmd.error("bad group address");
+                return false;
+            }
+            if (!a1.isMulticast()) {
+                cmd.error("not a multicast address");
+                return false;
+            }
+            if (a2.fromString(cmd.word())) {
+                cmd.error("bad source address");
+                return false;
+            }
+            ipFwdMcast grp = new ipFwdMcast(a1, a2);
+            if (negated) {
+                advSa.del(grp);
+            } else {
+                grp.created = bits.randomD();
+                advSa.add(grp);
+            }
+            needFull.add(1);
+            compute.wakeup();
+            return false;
+        }
         if (s.equals("mpns-install")) {
             mpnsInst = !negated;
             if (negated) {
@@ -2789,6 +2828,32 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
                     other.srv6 = null;
                 } else {
                     other.srv6 = cfgAll.ifcFind(cmd.word(), 0);
+                }
+                needFull.add(1);
+                compute.wakeup();
+                return false;
+            }
+            if (s.equals("adv-sa")) {
+                addrIP a1 = new addrIP();
+                addrIP a2 = new addrIP();
+                if (a1.fromString(cmd.word())) {
+                    cmd.error("bad group address");
+                    return false;
+                }
+                if (!a1.isMulticast()) {
+                    cmd.error("not a multicast address");
+                    return false;
+                }
+                if (a2.fromString(cmd.word())) {
+                    cmd.error("bad source address");
+                    return false;
+                }
+                ipFwdMcast grp = new ipFwdMcast(a1, a2);
+                if (negated) {
+                    other.advSa.del(grp);
+                } else {
+                    grp.created = bits.randomD();
+                    other.advSa.add(grp);
                 }
                 needFull.add(1);
                 compute.wakeup();
