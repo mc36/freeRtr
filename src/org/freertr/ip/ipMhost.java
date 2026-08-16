@@ -239,10 +239,7 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
             if (rtr == null) {
                 return;
             }
-            if (rtr.msdp == null) {
-                return;
-            }
-            src = rtr.msdp.getSrcGrp(grp);
+            src = rtr.findSrcGrp(grp);
         }
         if (rxIfc.mcastSrcIn != null) {
             src = rxIfc.mcastSrcIn.copyBytes();
@@ -306,10 +303,7 @@ public abstract class ipMhost implements ipPrt, ipMhostHndl {
             if (rtr == null) {
                 return;
             }
-            if (rtr.msdp == null) {
-                return;
-            }
-            src = rtr.msdp.getSrcGrp(grp);
+            src = rtr.findSrcGrp(grp);
         }
         if (rxIfc.mcastSrcOut != null) {
             src = rxIfc.mcastSrcOut.copyBytes();

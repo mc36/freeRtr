@@ -1712,6 +1712,22 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
     }
 
     /**
+     * find source for group
+     *
+     * @param grp group
+     * @return copy of source, null if not found
+     */
+    public addrIP findSrcGrp(addrIP grp) {
+        if (bgp != null) {
+            return bgp.findSrcGrp(grp);
+        }
+        if (msdp != null) {
+            return msdp.findSrcGrp(grp);
+        }
+        return null;
+    }
+
+    /**
      * get routing process
      *
      * @param ipVer ip version, 0 if default

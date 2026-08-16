@@ -207,7 +207,7 @@ public class rtrBgpOther extends ipRtr {
             ipFwdMcast grp = advSa.get(i);
             tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
             ntry.prefix = parent.defaultRoute(false);
-            rtrBgpAfi.writeSAgroup(!parent.isIpv6, ntry, grp);
+            rtrBgpAfi.writeSAgroup(parent.isIpv6, ntry, grp);
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMtr, parent.idx2safi[rtrBgpParam.idxMtro], 0, ntry, true, null, null, null);
         }
         if (mpnsOrgn) {

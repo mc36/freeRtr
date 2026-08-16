@@ -493,7 +493,7 @@ public class rtrMsdp extends ipRtr {
      * @param grp group
      * @return copy of source, null if not found
      */
-    public addrIP getSrcGrp(addrIP grp) {
+    public addrIP findSrcGrp(addrIP grp) {
         for (int i = 0; i < cache.size(); i++) {
             ipFwdMcast ntry = cache.get(i);
             if (ntry == null) {

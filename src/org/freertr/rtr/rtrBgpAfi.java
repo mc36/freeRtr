@@ -688,7 +688,6 @@ public interface rtrBgpAfi {
      * @param ipv4 ipv4
      * @param ntry buffer to use
      * @param grp group to write
-     * @return updated offset
      */
     public static void writeSAgroup(boolean ipv4, tabRouteEntry<addrIP> ntry, ipFwdMcast grp) {
         byte[] buf = new byte[128];

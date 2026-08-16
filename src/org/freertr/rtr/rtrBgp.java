@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.addr.addrIPv4;
+import org.freertr.addr.addrIPv6;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrPrefix;
+import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgAceslst;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
@@ -1025,6 +1027,64 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         } else {
             return addrPrefix.ip4toIP(addrPrefix.defaultRoute4());
         }
+    }
+
+    /**
+     * find source for group
+     *
+     * @param grp group
+     * @return copy of source, null if not found
+     */
+    public addrIP findSrcGrp(addrIP grp) {
+        boolean ipv4 = grp.isIPv4();
+        tabRoute<addrIP> tab;
+        int siz;
+        addrType cur;
+        addrType ned;
+        if (ipv4) {
+            tab = computd[isIpv6 ? rtrBgpParam.idxMtro : rtrBgpParam.idxMtre];
+            siz = addrIPv4.size;
+            cur = new addrIPv4();
+            ned = grp.toIPv4();
+        } else {
+            tab = computd[isIpv6 ? rtrBgpParam.idxMtre : rtrBgpParam.idxMtro];
+            siz = addrIPv6.size;
+            cur = new addrIPv6();
+            ned = grp.toIPv6();
+        }
+        for (int i = 0; i < tab.size(); i++) {
+            tabRouteEntry<addrIP> ntry = tab.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            byte[] buf = new byte[128];
+            ntry.prefix.network.toBuffer(buf, 0);
+            ntry.prefix.broadcast.toBuffer(buf, 16);
+            ntry.prefix.wildcard.toBuffer(buf, 32);
+            ntry.prefix.mask.toBuffer(buf, 48);
+            if (buf[1] != 5) {
+                continue;
+            }
+            if ((buf[0] - 3) != (siz * 2)) {
+                continue;
+            }
+            cur.fromBuf(buf, 4 + siz);
+            if (cur.compareTo(ned) != 0) {
+                continue;
+            }
+            addrIP fin = new addrIP();
+            if (ipv4) {
+                addrIPv4 res = new addrIPv4();
+                res.fromBuf(buf, 3);
+                fin.fromIPv4addr(res);
+            } else {
+                addrIPv6 res = new addrIPv6();
+                res.fromBuf(buf, 3);
+                fin.fromIPv6addr(res);
+            }
+            return fin;
+        }
+        return null;
     }
 
     /**
