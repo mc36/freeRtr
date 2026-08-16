@@ -20,7 +20,7 @@ public class devicer {
     /**
      * bytes per sample
      */
-    public static final int smpb = 2;
+    public static final int smpb = 3;
 
     /**
      * bytes per payload

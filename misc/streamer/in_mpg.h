@@ -24,9 +24,7 @@ void rec_init(char*fil, char*pos) {
     recDat.output_frames = sizeof(recOut) / (sizeof(float) * 2);
     recDat.src_ratio = (double)srate / recInf.samplerate;
     recRem = 0;
-    struct timeval timval;
-    gettimeofday(&timval, NULL);
-    recTim = timval.tv_usec;
+    recTim = 0;
 }
 
 void iou_read() {
@@ -71,10 +69,10 @@ void iou_read() {
     }
     struct timeval timval;
     gettimeofday(&timval, NULL);
-    int need = (timval.tv_usec - recTim + 10) % 5000;
-    if (need < 0) need += 5000;
+    int need = (timval.tv_usec - recTim + 1000010) % 100000;
     recTim = timval.tv_usec;
     need = 500000 * pktln / (srate * smpbt) - need;
+    if (need < 1) return;
     usleep(need);
     recTim += need;
 }

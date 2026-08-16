@@ -9,12 +9,11 @@ find-link 1-1111 %dwn%/%arch%-fbsd.html [0-9][0-9]\.[0-9].*/
 find-result
 kern %kern%%find%
 
-file-read 0 %dwn%/%arch%-fbsd.txt
+binary-down %dwn%/%arch%-fbsd.text %kern%BUILDDATE
+file-read 0 %dwn%/%arch%-fbsd.text
 find-set %read%
-download 1
-binary-down %dwn%/%arch%-fbsd.txt %kern%BUILDDATE
-file-read 0 %dwn%/%arch%-fbsd.txt
 
+file-read 0 %dwn%/%arch%-fbsd.txt
 del %dwn%/%arch%-fbsd.txt
 download 1
 if-compare 0 %read% %find%

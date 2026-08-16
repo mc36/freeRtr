@@ -108,13 +108,14 @@ public class packer {
         List<String> res = new ArrayList<String>();
         res.add("v=0");
         res.add("o=Node 0 0 IN IP4 " + src);
-        res.add("s=None");
+        res.add("s=Noname");
         res.add("c=IN IP4 " + grp);
         res.add("t=0 0");
         res.add("m=audio " + prt + " RTP/AVP " + devicer.rtpt);
         res.add("a=rtpmap:" + devicer.rtpt + " L" + (devicer.smpb * 8) + "/" + devicer.rate + "/2");
         res.add("a=source-filter: incl IN IP4 " + grp + " " + src);
         res.add("a=recvonly");
+        res.add("a=type:broadcast");
         int o = res.size() * 2;
         for (int i = 0; i < res.size(); i++) {
             o += res.get(i).length();

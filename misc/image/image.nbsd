@@ -1,6 +1,6 @@
 download 3
 reget-time 8
-kern http://nycdn.netbsd.org/pub/NetBSD-daily/HEAD/
+kern http://nycdn.netbsd.org/pub/NetBSD-daily/HEAD-llvm/
 
 mkdir %tmp%
 binary-down %dwn%/%arch%-nbsd.html %kern%
