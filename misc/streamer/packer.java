@@ -51,6 +51,7 @@ public class packer {
         MulticastSocket mcast = (MulticastSocket) scket;
         mcast.connect(group, port);
         mcast.setTimeToLive(255);
+        mcast.setTrafficClass(46 << 2);
         r.src = new Random().nextInt();
         r.seq = 0;
         r.clk = 0;
