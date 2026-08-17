@@ -81,23 +81,6 @@ public class packer {
     }
 
     /**
-     * create receiver
-     *
-     * @param src source
-     * @param prt port
-     * @return instance
-     * @throws Exception on error
-     */
-    public static packer receiver(String src, String prt) throws Exception {
-        packer r = new packer();
-        InetAddress addr = InetAddress.getByName(src);
-        int port = Integer.parseInt(prt);
-        r.source = DatagramChannel.open();
-        r.source.socket().bind(new InetSocketAddress(addr, port));
-        return r;
-    }
-
-    /**
      * generate sdp payload
      *
      * @param grp group
