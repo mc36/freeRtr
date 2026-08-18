@@ -177,6 +177,11 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     public int routeLimitF;
 
     /**
+     * groups route limit
+     */
+    public int routeLimitG;
+
+    /**
      * current list of routers
      */
     public final tabGen<ipRtr> routers;
@@ -944,6 +949,10 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         if (og != null) {
             g = og;
         } else {
+            if ((routeLimitG > 0) && (groups.size() >= routeLimitG)) {
+                groups.del(g);
+                return;
+            }
             ipFwdTab.updateOneGroup(this, g);
             ipFwdTab.joinOneGroup(this, g, 1);
         }
@@ -967,6 +976,10 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         if (og != null) {
             g = og;
         } else {
+            if ((routeLimitG > 0) && (groups.size() >= routeLimitG)) {
+                groups.del(g);
+                return;
+            }
             ipFwdTab.updateOneGroup(this, g);
             ipFwdTab.joinOneGroup(this, g, 1);
         }
@@ -1022,6 +1035,10 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         if (og != null) {
             g = og;
         } else {
+            if ((routeLimitG > 0) && (groups.size() >= routeLimitG)) {
+                groups.del(g);
+                return;
+            }
             ipFwdTab.updateOneGroup(this, g);
             ipFwdTab.joinOneGroup(this, g, 1);
         }

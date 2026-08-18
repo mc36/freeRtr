@@ -207,8 +207,8 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         new userFilter("vrf definition .*", cmds.tabulator + "label6common 0", null),
         new userFilter("vrf definition .*", cmds.tabulator + "iface4start 0", null),
         new userFilter("vrf definition .*", cmds.tabulator + "iface6start 0", null),
-        new userFilter("vrf definition .*", cmds.tabulator + "route4limit 0 0 0 0", null),
-        new userFilter("vrf definition .*", cmds.tabulator + "route6limit 0 0 0 0", null),
+        new userFilter("vrf definition .*", cmds.tabulator + "route4limit 0 0 0 0 0", null),
+        new userFilter("vrf definition .*", cmds.tabulator + "route6limit 0 0 0 0 0", null),
         new userFilter("vrf definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "import4list", null),
         new userFilter("vrf definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "import6list", null),
         new userFilter("vrf definition .*", cmds.tabulator + cmds.negated + cmds.tabulator + "export4list", null),
@@ -621,8 +621,8 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(cmds.tabulator + "mdt6 " + mdtmod2string(fwd6.mdtMod, fwd6.mdtTyp, fwd6.mdtNum));
         l.add(cmds.tabulator + "label4common " + label4comm);
         l.add(cmds.tabulator + "label6common " + label6comm);
-        l.add(cmds.tabulator + "route4limit " + fwd4.routeLimitU + " " + fwd4.routeLimitL + " " + fwd4.routeLimitM + " " + fwd4.routeLimitF);
-        l.add(cmds.tabulator + "route6limit " + fwd6.routeLimitU + " " + fwd6.routeLimitL + " " + fwd6.routeLimitM + " " + fwd6.routeLimitF);
+        l.add(cmds.tabulator + "route4limit " + fwd4.routeLimitU + " " + fwd4.routeLimitL + " " + fwd4.routeLimitM + " " + fwd4.routeLimitF + " " + fwd4.routeLimitG);
+        l.add(cmds.tabulator + "route6limit " + fwd6.routeLimitU + " " + fwd6.routeLimitL + " " + fwd6.routeLimitM + " " + fwd6.routeLimitF + " " + fwd6.routeLimitG);
         cmds.cfgLine(l, !fwd4.sameLabel, cmds.tabulator, "label4same", "");
         cmds.cfgLine(l, !fwd6.sameLabel, cmds.tabulator, "label6same", "");
         cmds.cfgLine(l, !fwd4.mplsPropTtl, cmds.tabulator, "propagate4ttl", "");
@@ -781,12 +781,14 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         l.add(null, false, 2, new int[]{3}, "<num>", "number of unicast routes");
         l.add(null, false, 3, new int[]{4}, "<num>", "number of labeled routes");
         l.add(null, false, 4, new int[]{5}, "<num>", "number of multicast routes");
-        l.add(null, false, 5, new int[]{-1}, "<num>", "number of flowspec routes");
+        l.add(null, false, 5, new int[]{6}, "<num>", "number of flowspec routes");
+        l.add(null, false, 6, new int[]{-1}, "<num>", "number of group routes");
         l.add(null, false, 1, new int[]{2}, "route6limit", "maximum ipv6 routes allowed");
         l.add(null, false, 2, new int[]{3}, "<num>", "number of unicast routes");
         l.add(null, false, 3, new int[]{4}, "<num>", "number of labeled routes");
         l.add(null, false, 4, new int[]{5}, "<num>", "number of multicast routes");
-        l.add(null, false, 5, new int[]{-1}, "<num>", "number of flowspec routes");
+        l.add(null, false, 5, new int[]{6}, "<num>", "number of flowspec routes");
+        l.add(null, false, 6, new int[]{-1}, "<num>", "number of group routes");
         l.add(null, false, 1, new int[]{2}, "label4filter", "specify ipv4 label filter");
         l.add(null, false, 2, new int[]{-1}, "<name:pl>", "name of prefix list");
         l.add(null, false, 1, new int[]{2}, "label6filter", "specify ipv6 label filter");
@@ -1083,6 +1085,7 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
             fwd4.routeLimitL = bits.str2num(cmd.word());
             fwd4.routeLimitM = bits.str2num(cmd.word());
             fwd4.routeLimitF = bits.str2num(cmd.word());
+            fwd4.routeLimitG = bits.str2num(cmd.word());
             fwd4.routerStaticChg();
             return;
         }
@@ -1091,6 +1094,7 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
             fwd6.routeLimitL = bits.str2num(cmd.word());
             fwd6.routeLimitM = bits.str2num(cmd.word());
             fwd6.routeLimitF = bits.str2num(cmd.word());
+            fwd6.routeLimitG = bits.str2num(cmd.word());
             fwd6.routerStaticChg();
             return;
         }
@@ -1668,6 +1672,7 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
             fwd4.routeLimitL = 0;
             fwd4.routeLimitM = 0;
             fwd4.routeLimitF = 0;
+            fwd4.routeLimitG = 0;
             fwd4.routerStaticChg();
             return;
         }
@@ -1676,6 +1681,7 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
             fwd6.routeLimitL = 0;
             fwd6.routeLimitM = 0;
             fwd6.routeLimitF = 0;
+            fwd6.routeLimitG = 0;
             fwd6.routerStaticChg();
             return;
         }
