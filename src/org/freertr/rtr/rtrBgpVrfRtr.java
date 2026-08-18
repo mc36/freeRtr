@@ -444,9 +444,6 @@ public class rtrBgpVrfRtr extends ipRtr {
             tabRoute.addUpdatedEntry(tabRoute.addType.better, nMvpn, parent.idx2safi[other ? rtrBgpParam.idxVpoM : rtrBgpParam.idxVpnM], 0, ntry, true, fwd.exportMap, fwd.exportPol, fwd.exportList);
             ipFwdMcast old = fwd.groups.find(grp);
             if (old == null) {
-                old = grp.copyBytes();
-                old.created = bits.getTime();
-                fwd.groups.add(old);
                 fwd.mcastAddFloodIfc(grp.group, grp.source, null, -1);
                 old = fwd.groups.find(grp);
                 if (old == null) {
