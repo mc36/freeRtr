@@ -18622,3 +18622,6 @@ qc pass: multicast routing with ingress bgp mtree override
 qc pass: multicast routing with egress bgp mtree override
 qc pass: multicast routing with ingress bgp othermtree override
 qc pass: multicast routing with egress bgp othermtree override
+---------------------------------- 2026-08-18 17:47:06 26.8.18
+no qc pass: integrated pvrp with labels
+failed: integrated pvrp with labels
