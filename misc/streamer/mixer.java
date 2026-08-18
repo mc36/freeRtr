@@ -28,7 +28,6 @@ public class mixer {
             new Thread(source[i]).start();
         }
         byte[] buf = new byte[devicer.payl];
-        samples smp = samples.getSamples();
         int cur[] = new int[buf.length / devicer.smpb];
         long res[] = new long[cur.length];
         for (;;) {
@@ -37,7 +36,7 @@ public class mixer {
                 res[i] = 0;
             }
             for (int o = 0; o < source.length; o++) {
-                smp.decode(cur, source[o].lst, buf.length);
+                target.coder.decode(cur, source[o].lst, buf.length);
                 for (int i = 0; i < res.length; i++) {
                     res[i] += cur[i];
                 }
@@ -45,7 +44,7 @@ public class mixer {
             for (int i = 0; i < res.length; i++) {
                 cur[i] = (int) (res[i] / source.length);
             }
-            smp.encode(cur, buf, buf.length);
+            target.coder.encode(cur, buf, buf.length);
             target.writeRtp(buf, buf.length);
         }
     }

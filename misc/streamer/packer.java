@@ -18,7 +18,10 @@ public class packer {
 
     private final ByteBuffer buffer = ByteBuffer.allocate(4096);
 
-    private final codec swapper = codec.getCodec();
+    /**
+     * the codec
+     */
+    public final codec coder = codec.getCodec();
 
     private DatagramChannel target;
 
@@ -199,7 +202,7 @@ public class packer {
      * @throws Exception on error
      */
     public void writeScr(byte[] buf, int len) throws Exception {
-        swapper.byteSwap(buf, len);
+        coder.byteSwap(buf, len);
         buffer.clear();
         buffer.put(0, (byte) devicer.scrb);
         buffer.put(1, (byte) (devicer.smpb * 8));
@@ -239,7 +242,7 @@ public class packer {
             }
         }
         buffer.get(devicer.scrl, buf, 0, len);
-        swapper.byteSwap(buf, len);
+        coder.byteSwap(buf, len);
         return len;
     }
 
