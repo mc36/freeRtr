@@ -4,7 +4,7 @@
  *
  * @author matecsaba
  */
-public class forwardScr {
+public class forwardRtp2rtp {
 
     /**
      * the main
@@ -21,11 +21,11 @@ public class forwardScr {
         packer rtp = packer.sender(args[3], args[4]);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
-            int i = source.readScr(buf);
+            int i = source.readRtp(buf);
             if (i < 1) {
                 break;
             }
-            rtp.writeScr(buf, i);
+            rtp.writeRtp(buf, i);
         }
     }
 

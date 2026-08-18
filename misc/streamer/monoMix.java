@@ -4,7 +4,7 @@
  *
  * @author matecsaba
  */
-public class tomono {
+public class monoMix {
 
     /**
      * the main

@@ -4,7 +4,7 @@
  *
  * @author matecsaba
  */
-public class unmono {
+public class monoDup {
 
     /**
      * the main
