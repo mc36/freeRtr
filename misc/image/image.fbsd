@@ -22,7 +22,7 @@ download 2
 binary-xtra fbsd-base.txz %kern%base.txz
 binary-xtra fbsd-kern.txz %kern%kernel.txz
 
-file-line %dwn%/%arch%-fbsd.txt %read%
+file-line %dwn%/%arch%-fbsd.txt %find%
 package-xtra
 
 move %tmp%/boot/kernel/* %tmp%/tmp/
