@@ -362,6 +362,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router bgp[46] .*", cmds.tabulator + "scandelay 1000", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + "nexthop recursion 1", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + "incremental 1000", null),
+        new userFilter("router bgp[46] .*", cmds.tabulator + "bestpath", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "conquer", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rpki", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + "safe-ebgp", null),

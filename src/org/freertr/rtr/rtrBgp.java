@@ -112,6 +112,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
     public boolean safeEbgp;
 
     /**
+     * select bestpath
+     */
+    public boolean bestpath;
+
+    /**
      * client reflection
      */
     public boolean clientReflect;
@@ -968,6 +973,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         incrLimit = 1000;
         conquer = false;
+        bestpath = true;
         flaps = null;
         scanTime = 1000;
         scanDelay = 1000;
@@ -1617,6 +1623,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         if (best == null) {
             return ntry.copyBytes(tabRoute.addType.lnkEcmp);
         }
+        if (!bestpath) {
+            ntry = ntry.copyBytes(tabRoute.addType.lnkEcmp);
+            best.addAlt(ntry.alts);
+            return best;
+        }
         if (best.best.isOtherBetter(ntry.best)) {
             return ntry.copyBytes(tabRoute.addType.lnkEcmp);
         }
@@ -2096,6 +2107,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 1, new int[]{-1}, "conquer", "conquer bestpath advertisements");
         l.add(null, false, 1, new int[]{-1}, "flapstat", "count flap statistics");
         l.add(null, false, 1, new int[]{-1}, "safe-ebgp", "enforce safe ebgp policy");
+        l.add(null, false, 1, new int[]{-1}, "bestpath", "select bestpath locally");
         l.add(null, false, 1, new int[]{-1}, "client-reflect", "perform client to client reflection");
         l.add(null, false, 1, new int[]{2}, "incremental", "limit on incremental bestpath calculation");
         l.add(null, false, 2, new int[]{-1}, "<num>", "maximum prefixes");
@@ -2280,6 +2292,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(beg + "local-as " + bits.num2str(localAs));
         l.add(beg + "router-id " + routerID);
         cmds.cfgLine(l, !safeEbgp, beg, "safe-ebgp", "");
+        cmds.cfgLine(l, !bestpath, beg, "bestpath", "");
         cmds.cfgLine(l, !clientReflect, beg, "client-reflect", "");
         l.add(beg + "address-family" + rtrBgpParam.bools2string(addrFams));
         l.add(beg + "distance " + distantExt + " " + distantInt + " " + distantLoc);
@@ -2404,6 +2417,12 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         }
         if (s.equals("safe-ebgp")) {
             safeEbgp = !negated;
+            return false;
+        }
+        if (s.equals("bestpath")) {
+            bestpath = !negated;
+            needFull.add(1);
+            compute.wakeup();
             return false;
         }
         if (s.equals("client-reflect")) {

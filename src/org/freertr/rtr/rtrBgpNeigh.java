@@ -1020,6 +1020,9 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
         } else {
             mod = tabRoute.addType.lnkBcmp;
         }
+        if (!lower.bestpath) {
+            mod = tabRoute.addType.lnkAlters;
+        }
         for (int i = 0; i < acceptd.length; i++) {
             if (!conn.peerAfis[i]) {
                 continue;
