@@ -4,12 +4,14 @@ SRC_STATE *recSta;
 SRC_DATA recDat;
 int *recPos;
 int recRem;
+float recVol;
 float recBuf[4096];
 float recOut[4096];
 int recRes[4096];
 int recTim;
 
-void rec_init(char*fil, char*pos) {
+void rec_init(char*fil, char*pos, char*vol) {
+    recVol = atof(vol);
     int error;
     recFil = sf_open(fil, SFM_READ, &recInf);
     if (recFil == NULL) err("error opening source");
@@ -34,6 +36,8 @@ void iou_read() {
             recDat.input_frames = sf_readf_float(recFil, recBuf, 256);
             recDat.data_in = recBuf;
             if (recDat.input_frames < 1) break;
+            int need = recDat.input_frames * 2;
+            for (int pos = 0; pos < need; pos++) recBuf[pos] *= recVol;
         }
         if (recRem < 1) {
             if (src_process(recSta, &recDat) != 0) err("error resampling");

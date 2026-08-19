@@ -6,9 +6,9 @@
 
 
 int main(int argc, char**argv) {
-    if (argc <= 5) err("usage this <file> <seek> <group> <source> <port>");
-    ply_init(argv[3], argv[4], argv[5]);
-    rec_init(argv[1], argv[2]);
+    if (argc <= 6) err("usage this <file> <seek> <vol> <group> <source> <port>");
+    ply_init(argv[4], argv[5], argv[6]);
+    rec_init(argv[1], argv[2], argv[3]);
     iou_loop();
     return 0;
 }
