@@ -44,17 +44,18 @@ public class pipeText {
      * @return line readed, null on error
      */
     public String dottedRecv() {
-        if (pipe.isClosed() != 0) {
-            return null;
-        }
         String s = pipe.lineGet(1);
+        if (s.length() < 1) {
+            if (pipe.isClosed() != 0) {
+                return null;
+            }
+            return s;
+        }
         if (s.equals(".")) {
             return null;
         }
-        if (s.length() > 0) {
-            if (s.substring(0, 1).equals(".")) {
-                s = s.substring(1, s.length());
-            }
+        if (s.substring(0, 1).equals(".")) {
+            s = s.substring(1, s.length());
         }
         return s;
     }

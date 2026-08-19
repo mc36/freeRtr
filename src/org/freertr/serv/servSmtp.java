@@ -57,6 +57,16 @@ public class servSmtp extends servGeneric implements prtServS {
     public String mailFolders = "/data/";
 
     /**
+     * timeout on connection
+     */
+    public int timeOut = 120 * 1000;
+
+    /**
+     * buffer size
+     */
+    public int bufSiz = 65536;
+
+    /**
      * logging
      */
     public boolean logging;
@@ -148,6 +158,8 @@ public class servSmtp extends servGeneric implements prtServS {
         new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bcc", null),
         new userFilter("server smtp .*", cmds.tabulator + "rbl-threshold 0", null),
         new userFilter("server smtp .*", cmds.tabulator + "rbl-timeout 5000", null),
+        new userFilter("server smtp .*", cmds.tabulator + "timeout 120000", null),
+        new userFilter("server smtp .*", cmds.tabulator + "buffer 65536", null),
         new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "reverse", null),
         new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "aspath", null),
         new userFilter("server smtp .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
@@ -158,7 +170,7 @@ public class servSmtp extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.setTime(120000);
+        pipe.setTime(timeOut);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         new servSmtpDoer(this, pipe, id);
@@ -166,6 +178,8 @@ public class servSmtp extends servGeneric implements prtServS {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
+        lst.add(beg + "timeout " + timeOut);
+        lst.add(beg + "buffer " + bufSiz);
         cmds.cfgLine(lst, !logging, beg, "logging", "");
         cmds.cfgLine(lst, aspathF == null, beg, "aspath", aspathD + " " + aspathF);
         cmds.cfgLine(lst, !reverse, beg, "reverse", "");
@@ -194,6 +208,14 @@ public class servSmtp extends servGeneric implements prtServS {
         String s = cmd.word();
         if (s.equals("logging")) {
             logging = true;
+            return false;
+        }
+        if (s.equals("timeout")) {
+            timeOut = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("buffer")) {
+            bufSiz = bits.str2num(cmd.word());
             return false;
         }
         if (s.equals("aspath")) {
@@ -349,6 +371,10 @@ public class servSmtp extends servGeneric implements prtServS {
 
     public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "logging", "log queries");
+        l.add(null, false, 1, new int[]{2}, "timeout", "set timeout on connection");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");
+        l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
         l.add(null, false, 1, new int[]{2}, "aspath", "generate aspath header");
         l.add(null, false, 2, new int[]{3}, "<str>", "domain suffix");
         l.add(null, false, 3, new int[]{-1}, "<str>", "name server");
@@ -398,7 +424,7 @@ public class servSmtp extends servGeneric implements prtServS {
     }
 
     public boolean srvInit() {
-        return genStrmStart(this, new pipeLine(32768, false), 0);
+        return genStrmStart(this, new pipeLine(bufSiz, false), 0);
     }
 
     public boolean srvDeinit() {
