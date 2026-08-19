@@ -3852,6 +3852,12 @@ qc pass: static labels over ibgp rr mpns
 qc pass: static labels over ibgp rr mpvs
 qc pass: static labels redistribution over bgp mpns
 qc pass: static labels redistribution over bgp mpvs
+qc pass: ibgp dumb addpath rr in subnet
+qc pass: ibgp dumb addpath rr in subnet with soft-reconfig
+qc pass: ibgp dumb addpath rr prefix withdraw
+qc pass: ibgp dumb addpath rr prefix withdraw with soft-reconfig
+qc pass: ibgp dumb addpath rr prefix movement
+qc pass: ibgp dumb addpath rr prefix movement with soft-reconfig
 qc pass: eigrp point2point connection
 qc pass: eigrp point2multipoint connection
 qc pass: eigrp point2point chain

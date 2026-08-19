@@ -18628,3 +18628,10 @@ failed: integrated pvrp with labels
 ---------------------------------- 2026-08-19 01:59:30 26.8.19
 no failed: integrated pvrp with labels
 qc pass: integrated pvrp with labels
+---------------------------------- 2026-08-19 09:04:22 26.8.19
+qc pass: ibgp dumb addpath rr in subnet
+qc pass: ibgp dumb addpath rr in subnet with soft-reconfig
+qc pass: ibgp dumb addpath rr prefix withdraw
+qc pass: ibgp dumb addpath rr prefix withdraw with soft-reconfig
+qc pass: ibgp dumb addpath rr prefix movement
+qc pass: ibgp dumb addpath rr prefix movement with soft-reconfig
