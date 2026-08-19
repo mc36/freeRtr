@@ -17,9 +17,10 @@ public class decoder {
      *
      * @param fil file
      * @param pos position
+     * @param vol volume
      * @throws Exception on error
      */
-    public decoder(String fil, String pos) throws Exception {
+    public decoder(String fil, String pos, String vol) throws Exception {
         String[] cmd = {
             "ffmpeg",
             "-hide_banner",
@@ -28,6 +29,7 @@ public class decoder {
             "-re",
             "-i", fil,
             "-vn", "-sn",
+            "-af", "volume=" + vol,
             "-ar", "" + devicer.rate,
             "-ac", "2",
             "-c:a", "pcm_s" + (devicer.smpb * 8) + "be",

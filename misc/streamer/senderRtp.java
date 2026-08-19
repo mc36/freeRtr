@@ -13,12 +13,12 @@ public class senderRtp {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 4) {
-            System.out.println("usage: java this <file> <seek> <group> <port>");
+        if (args.length < 5) {
+            System.out.println("usage: java this <file> <seek> <vol> <group> <port>");
             return;
         }
-        decoder dec = new decoder(args[0], args[1]);
-        packer rtp = packer.sender(args[2], args[3]);
+        decoder dec = new decoder(args[0], args[1], args[2]);
+        packer rtp = packer.sender(args[3], args[4]);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
             int i = dec.read(buf);
