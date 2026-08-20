@@ -64,7 +64,7 @@ public class player implements Runnable {
 
     private String mixer = "Master";
 
-    private String device = ".*default.*";
+    private String device = "default";
 
     private boolean headEnd = false;
 
@@ -216,8 +216,18 @@ public class player implements Runnable {
         }
     }
 
+    private String volume2multiplier() {
+        if (mixer.length() > 0) {
+            return "1.0";
+        }
+        return (currVlme / 100) + "." + ((currVlme / 10) % 10) + (currVlme % 10);
+    }
+
     private synchronized void setVolume(int vol) {
         currVlme = vol;
+        if (mixer.length() < 1) {
+            return;
+        }
         int fvol = volMin + ((vol * (volMax - volMin)) / 100);
         String[] cmd = new String[4];
         cmd[0] = "amixer";
@@ -246,7 +256,7 @@ public class player implements Runnable {
 
     private synchronized void startPlayAirplay() {
         currSong = 0;
-        currTime = new Date().getTime();
+        currTime = playerUtil.getTime();
         currLyrc = new playerLyric();
         currLyrc.add("airplay receiver");
         String[] cmd = new String[1];
@@ -256,7 +266,7 @@ public class player implements Runnable {
 
     private synchronized void startPlayRoc() {
         currSong = 0;
-        currTime = new Date().getTime();
+        currTime = playerUtil.getTime();
         currLyrc = new playerLyric();
         currLyrc.add("roc receiver");
         String[] cmd = new String[5];
@@ -270,7 +280,7 @@ public class player implements Runnable {
 
     private synchronized void startPlayDlna() {
         currSong = 0;
-        currTime = new Date().getTime();
+        currTime = playerUtil.getTime();
         currLyrc = new playerLyric();
         currLyrc.add("dlna receiver");
         String[] cmd = new String[5];
@@ -284,7 +294,7 @@ public class player implements Runnable {
 
     private synchronized void startPlayRcvr() {
         currSong = 0;
-        currTime = new Date().getTime();
+        currTime = playerUtil.getTime();
         currLyrc = new playerLyric();
         currLyrc.add("multicast receiver");
         String[] cmd = new String[2];
@@ -295,7 +305,7 @@ public class player implements Runnable {
 
     private synchronized void startPlayRestream(String clnt) {
         currSong = 0;
-        currTime = new Date().getTime();
+        currTime = playerUtil.getTime();
         currLyrc = new playerLyric();
         currLyrc.add("multicast restreamer from " + clnt);
         if (clnt.indexOf(":") >= 0) {
@@ -318,9 +328,9 @@ public class player implements Runnable {
         runProc(cmd);
         String ply;
         if (headEnd) {
-            ply = path + ".strm {} 0 " + device;
+            ply = path + ".strm {} 0 " + volume2multiplier() + " " + device;
         } else {
-            ply = path + ".play {} 0 " + device;
+            ply = path + ".play {} 0 " + volume2multiplier() + " " + device;
         }
         cmd = new String[7];
         cmd[0] = "yt-dlp";
@@ -331,7 +341,7 @@ public class player implements Runnable {
         cmd[5] = ply;
         cmd[6] = "" + url;
         currSong = 0;
-        currTime = new Date().getTime();
+        currTime = playerUtil.getTime();
         currLyrc = new playerLyric();
         currLyrc.add("downloading " + url);
         replaceCurrProc(cmd);
@@ -372,27 +382,27 @@ public class player implements Runnable {
         if (ntry < 0) {
             return;
         }
-        String[] cmd;
+        String[] cmd = new String[5];
         if (headEnd) {
-            cmd = new String[4];
             cmd[0] = path + ".strm";
-            cmd[1] = playlist.get(ntry).file;
-            cmd[2] = ss;
-            cmd[3] = device;
         } else {
-            cmd = new String[4];
             cmd[0] = path + ".play";
-            cmd[1] = playlist.get(ntry).file;
-            cmd[2] = ss;
-            cmd[3] = device;
         }
+        cmd[1] = playlist.get(ntry).file;
+        cmd[2] = ss;
+        cmd[3] = volume2multiplier();
+        cmd[4] = device;
         replaceCurrProc(cmd);
-        currTime = new Date().getTime() - (playerUtil.str2int(ss) * 1000);
+        currTime = playerUtil.getTime() - (playerUtil.str2int(ss) * 1000);
         try {
             playerSong sng = playlist.get(currSong);
             currLyrc = playerUtil.readup(sng.lyrFile());
         } catch (Exception e) {
         }
+    }
+
+    private int secondsPlaying() {
+        return (int) ((playerUtil.getTime() - currTime) / 1000);
     }
 
     /**
@@ -873,7 +883,7 @@ public class player implements Runnable {
                 buf.write(a.getBytes());
                 startPlayNormal(currSong, song);
             }
-            int tim = (int) ((new Date().getTime() - currTime) / 1000);
+            int tim = secondsPlaying();
             buf.write("<br/>seek:".getBytes());
             for (i = 0; i < 30; i++) {
                 int o = (i + 1) * 10;
@@ -911,6 +921,15 @@ public class player implements Runnable {
             buf.write("saved to favorites<br/>".getBytes());
             return -1;
         }
+        if (cmd.equals("remvol")) {
+            putStart(buf, -1);
+            putMenu(buf);
+            int i = playerUtil.str2int(song);
+            if (i >= 0) {
+                setVolume(i);
+            }
+            return -1;
+        }
         if (cmd.equals("vol")) {
             putStart(buf, -1);
             putMenu(buf);
@@ -918,7 +937,10 @@ public class player implements Runnable {
             if (i >= 0) {
                 setVolume(i);
                 if (headEnd) {
-                    remCommand("vol", "" + i);
+                    remCommand("remvol", "" + i);
+                }
+                if (mixer.length() < 1) {
+                    startPlayNormal(currSong, "" + secondsPlaying());
                 }
                 String a = "volume set to " + currVlme + " percent.<br/>";
                 buf.write(a.getBytes());
