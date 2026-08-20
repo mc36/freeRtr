@@ -18635,3 +18635,6 @@ qc pass: ibgp dumb addpath rr prefix withdraw
 qc pass: ibgp dumb addpath rr prefix withdraw with soft-reconfig
 qc pass: ibgp dumb addpath rr prefix movement
 qc pass: ibgp dumb addpath rr prefix movement with soft-reconfig
+---------------------------------- 2026-08-20 04:40:24 26.8.20
+no qc pass: integrated pvrp with labels
+failed: integrated pvrp with labels
