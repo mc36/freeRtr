@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -191,6 +190,11 @@ public class player implements Runnable {
     }
 
     private synchronized void stopFull() {
+        stopProc("rtp_send.bin");
+        stopProc("scr_send.bin");
+        stopProc("playback.bin");
+        stopProc("rtp_play.bin");
+        stopProc("scr_play.bin");
         stopProc("roc-recv");
         stopProc("shairport-sync");
         stopProc("gmediarender");
@@ -981,7 +985,7 @@ public class player implements Runnable {
             return -1;
         }
         if (cmd.equals("remstop")) {
-            remCommand("play", "-1");
+            remCommand("fullstop", "-1");
             putStart(buf, 5);
             putMenu(buf);
             String a = "<br/>all remote players stopped.<br/>";
