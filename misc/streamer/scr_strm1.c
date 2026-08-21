@@ -8,9 +8,9 @@
 
 
 int main(int argc, char**argv) {
-    if (argc <= 4) err("usage this <device> <group> <source> <port>");
-    ply_init(argv[2], argv[3], argv[4]);
-    rec_init(argv[1]);
+    if (argc <= 5) err("usage this <device> <volume> <group> <source> <port>");
+    ply_init(argv[3], argv[4], argv[5]);
+    rec_init(argv[1], argv[2]);
     iou_loop();
     return 0;
 }

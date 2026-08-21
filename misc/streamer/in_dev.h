@@ -1,6 +1,8 @@
 snd_pcm_t *recHnd = NULL;
+int recVol = 100;
 
-void rec_init(char*dev) {
+void rec_init(char*dev, char*vol) {
+    recVol = atof(vol)*100.0;
     snd_pcm_hw_params_t *prm = NULL;
     if (snd_pcm_open(&recHnd, dev, SND_PCM_STREAM_CAPTURE, 0) < 0) err("cannot open pcm device");
     snd_pcm_hw_params_alloca(&prm);
