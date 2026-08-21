@@ -53,6 +53,40 @@ public class devicer {
     public static final int scrt = 3;
 
     /**
+     * bytes in vban header
+     */
+    public static final int vbal = 28;
+
+    /**
+     * vban magit bytes
+     */
+    public static final int vbam = 0x5642414e;
+
+    private static int vbac = -1; // cached result
+
+    /**
+     * vban rate bits
+     */
+    public static final int vbab() {
+        if (vbac >= 0) {
+            return vbac;
+        }
+        int[] vals = {
+            6000, 12000, 24000, 48000, 96000, 192000, 384000,
+            8000, 16000, 32000, 64000, 128000, 256000, 512000,
+            11025, 22050, 44100, 88200, 176400, 352800, 705600
+        };
+        vbac = 256;
+        for (int i = 0; i < vals.length; i++) {
+            if (vals[i] == rate) {
+                vbac = i;
+                break;
+            }
+        }
+        return vbac;
+    }
+
+    /**
      * find device
      *
      * @param dev regex

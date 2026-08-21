@@ -1,10 +1,10 @@
 
 /**
- * make stream mono
+ * make stream stereo
  *
  * @author matecsaba
  */
-public class monoMix {
+public class monoForwardDup {
 
     /**
      * the main
@@ -13,12 +13,15 @@ public class monoMix {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 5) {
-            System.out.println("usage: java this <group> <source> <port> <group> <port>");
+        if (args.length < 7) {
+            System.out.println("usage: java this <group> <source> <port> <group> <port> <volume> <channel>");
             return;
         }
         packer source = packer.receiver(args[0], args[1], args[2]);
         packer rtp = packer.sender(args[3], args[4]);
+        int vol = (int) (Float.parseFloat(args[5]) * 100);
+        int chS = Integer.parseInt(args[6]) & 1;
+        int chT = (chS + 1) & 1;
         byte[] buf = new byte[devicer.payl];
         int cur[] = new int[buf.length / devicer.smpb];
         for (;;) {
@@ -27,14 +30,7 @@ public class monoMix {
                 break;
             }
             rtp.coder.decode(cur, buf, o);
-            int p = o / devicer.smpb;
-            for (int i = 0; i < p; i += 2) {
-                long res = cur[i];
-                res += cur[i + 1];
-                res /= 2;
-                cur[i + 0] = (int) res;
-                cur[i + 1] = (int) res;
-            }
+            monoDoer.duplicate(cur, chS, chT, vol);
             rtp.coder.encode(cur, buf, o);
             rtp.writeRtp(buf, o);
         }

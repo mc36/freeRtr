@@ -1,10 +1,10 @@
 
 /**
- * make stream stereo
+ * make stream mono
  *
  * @author matecsaba
  */
-public class monoDup {
+public class monoForwardMix {
 
     /**
      * the main
@@ -14,13 +14,12 @@ public class monoDup {
      */
     public static void main(String[] args) throws Exception {
         if (args.length < 6) {
-            System.out.println("usage: java this <group> <source> <port> <group> <port> <channel>");
+            System.out.println("usage: java this <group> <source> <port> <group> <port> <volume>");
             return;
         }
         packer source = packer.receiver(args[0], args[1], args[2]);
         packer rtp = packer.sender(args[3], args[4]);
-        int chS = Integer.parseInt(args[5]) & 1;
-        int chT = (chS + 1) & 1;
+        int vol = (int) (Float.parseFloat(args[5]) * 100);
         byte[] buf = new byte[devicer.payl];
         int cur[] = new int[buf.length / devicer.smpb];
         for (;;) {
@@ -29,10 +28,7 @@ public class monoDup {
                 break;
             }
             rtp.coder.decode(cur, buf, o);
-            int p = o / devicer.smpb;
-            for (int i = 0; i < p; i += 2) {
-                cur[i + chT] = cur[i + chS];
-            }
+            monoDoer.mixer(cur, vol);
             rtp.coder.encode(cur, buf, o);
             rtp.writeRtp(buf, o);
         }

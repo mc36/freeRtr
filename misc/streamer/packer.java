@@ -149,6 +149,14 @@ public class packer {
         buf.put(ofs + 3, (byte) val);
     }
 
+    private static int getMsb(ByteBuffer buf, int ofs) {
+        int val = buf.get(ofs + 3) & 0xff;
+        val |= (buf.get(ofs + 2) & 0xff) << 8;
+        val |= (buf.get(ofs + 1) & 0xff) << 16;
+        val |= (buf.get(ofs + 0) & 0xff) << 24;
+        return val;
+    }
+
     /**
      * write rtp data
      *
@@ -242,6 +250,64 @@ public class packer {
             }
         }
         buffer.get(devicer.scrl, buf, 0, len);
+        coder.byteSwap(buf, len);
+        return len;
+    }
+
+    /**
+     * write vban data
+     *
+     * @param buf msb bytes
+     * @param len length
+     * @throws Exception on error
+     */
+    public void writeVba(byte[] buf, int len) throws Exception {
+        coder.byteSwap(buf, len);
+        buffer.clear();
+        putMsb(buffer, 0, devicer.vbam);
+        buffer.put(4, (byte) devicer.vbab());
+        buffer.put(5, (byte) ((len / (2 * devicer.smpb)) - 1));
+        buffer.put(6, (byte) 1);
+        buffer.put(7, (byte) (devicer.smpb - 1));
+        putMsb(buffer, 8, 0x6e6f6e65);
+        putMsb(buffer, 12, 0);
+        putMsb(buffer, 16, 0);
+        putMsb(buffer, 20, 0);
+        putMsb(buffer, 24, seq);
+        buffer.put(devicer.vbal, buf, 0, len);
+        buffer.position(0);
+        buffer.limit(len + devicer.vbal);
+        target.write(buffer);
+        seq++;
+    }
+
+    /**
+     * read vban data
+     *
+     * @param buf msb bytes
+     * @return bytes
+     * @throws Exception on error
+     */
+    public int readVba(byte[] buf) throws Exception {
+        int len;
+        for (;;) {
+            buffer.clear();
+            source.receive(buffer);
+            len = buffer.position() - devicer.vbal;
+            if (len < devicer.vbal) {
+                break;
+            }
+            if (getMsb(buffer, 0) != devicer.vbam) {
+                continue;
+            }
+            if ((buffer.get(4) & 0xff) != devicer.vbab()) {
+                continue;
+            }
+            if ((buffer.get(7) & 0xff) == (devicer.smpb - 1)) {
+                break;
+            }
+        }
+        buffer.get(devicer.vbal, buf, 0, len);
         coder.byteSwap(buf, len);
         return len;
     }
