@@ -1,4 +1,5 @@
 #!/bin/sh
+#sudo apt-get install libasound-dev libsndfile-dev libsamplerate-dev
 ./d.sh
 
 javac -source 11 -target 11 -Xlint:all -deprecation *.java

@@ -31,6 +31,7 @@ public class monoForwardDup {
             }
             rtp.coder.decode(cur, buf, o);
             monoDoer.duplicate(cur, chS, chT, vol);
+            monoDoer.duplicate(cur, chS, chS, vol);
             rtp.coder.encode(cur, buf, o);
             rtp.writeRtp(buf, o);
         }
