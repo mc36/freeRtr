@@ -1,9 +1,9 @@
 void iou_read() {
     for (;;) {
-        bufS = recv(recHnd, bufD, sizeof (bufD), 0);
+        bufS = recv(recHnd, &bufD[padln - rtpln], sizeof (bufD) - padln, 0);
         if (bufS < padln) break;
-        if (bufD[1] == payty) break;
+        if (bufD[padln - rtpln + 1] == rtpty) break;
     }
+    bufS -= rtpln;
     iou_bswp();
-    bufS -= padln;
 }

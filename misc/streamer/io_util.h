@@ -23,26 +23,26 @@ void iou_pmsb(int ofs, int val) {
 
 void iou_bswp() {
     for (int p = 0; p < bufS; p += smpbt) {
-        unsigned char b0 = bufD[p + 0];
+        unsigned char b0 = bufD[p + padln + 0];
 #if smpbt > 1
-        unsigned char b1 = bufD[p + 1];
+        unsigned char b1 = bufD[p + padln + 1];
 #endif
 #if smpbt > 2
-        unsigned char b2 = bufD[p + 2];
+        unsigned char b2 = bufD[p + padln + 2];
 #endif
 #if smpbt > 3
-        unsigned char b3 = bufD[p + 3];
+        unsigned char b3 = bufD[p + padln + 3];
 #endif
 #if smpbt > 3
-        bufD[p + smpbt - 4] = b3;
+        bufD[p + padln + smpbt - 4] = b3;
 #endif
 #if smpbt > 2
-        bufD[p + smpbt - 3] = b2;
+        bufD[p + padln + smpbt - 3] = b2;
 #endif
 #if smpbt > 1
-        bufD[p + smpbt - 2] = b1;
+        bufD[p + padln + smpbt - 2] = b1;
 #endif
-        bufD[p + smpbt - 1] = b0;
+        bufD[p + padln + smpbt - 1] = b0;
     }
 }
 

@@ -13,14 +13,18 @@ public class packets {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
+        System.err.println("#define padln 64");
         System.err.println("#define srate " + devicer.rate);
         System.err.println("#define smpbt " + devicer.smpb);
         System.err.println("#define pktln " + devicer.payl);
-        System.err.println("#define padln " + devicer.rtpl);
-        System.err.println("#define payty " + devicer.rtpt);
+        System.err.println("#define rtpln " + devicer.rtpl);
+        System.err.println("#define rtpty " + devicer.rtpt);
         System.err.println("#define scrbr " + devicer.scrb);
         System.err.println("#define scrln " + devicer.scrl);
         System.err.println("#define scrtp " + devicer.scrt);
+        System.err.println("#define vbabr " + devicer.vbab());
+        System.err.println("#define vbaln " + devicer.vbal);
+        System.err.println("#define vbamg " + devicer.vbam);
         for (int i = 100; i < 2000; i++) {
             double a = i;
             double b = devicer.rate * 2.0 * devicer.smpb / a;
