@@ -1,3 +1,4 @@
+int monoVol = 100;
 unsigned char bufD[padln + pktln + padln];
 int bufS;
 
@@ -48,34 +49,39 @@ void iou_bswp() {
     }
 }
 
-
 void iou_mono(int src, int trg) {
     for (int p = 0; p < bufS; p += smpbt * 2) {
-        unsigned char b0 = bufD[p + padln + src + 0];
+        int val = bufD[p + padln + src + 0];
 #if smpbt > 1
-        unsigned char b1 = bufD[p + padln + src + 1];
+        val |= bufD[p + padln + src + 1] << 8;
 #endif
 #if smpbt > 2
-        unsigned char b2 = bufD[p + padln + src + 2];
+        val |= bufD[p + padln + src + 2] << 16;
 #endif
 #if smpbt > 3
-        unsigned char b3 = bufD[p + padln + src + 3];
+        val |= bufD[p + padln + src + 3] << 24;
 #endif
-        bufD[p + padln + trg + 0] = b0;
+        val <<= (4 - smpbt) * 8;
+        long res = val;
+        res *= monoVol;
+        res /= 100;
+        val = res;
+        val >>= (4 - smpbt) * 8;
+        bufD[p + padln + trg + 0] = val;
 #if smpbt > 1
-        bufD[p + padln + trg + 1] = b1;
+        bufD[p + padln + trg + 1] = val >> 8;
 #endif
 #if smpbt > 2
-        bufD[p + padln + trg + 2] = b2;
+        bufD[p + padln + trg + 2] = val >> 16;
 #endif
 #if smpbt > 3
-        bufD[p + padln + trg + 3] = b3;
+        bufD[p + padln + trg + 3] = val >> 24;
 #endif
     }
 }
 
-
 void iou_loop() {
+    printf("payload=%i samplen=%i rate=%i\n", pktln, smpbt, srate);
     for (;;) {
         iou_read();
         if (bufS < 1) break;

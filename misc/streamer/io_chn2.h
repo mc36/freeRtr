@@ -1,2 +1,1 @@
-void iou_chan() {
-}
+#define iou_chan() ;
