@@ -1,4 +1,6 @@
 #include "io_incl.h"
+#include "io_cnst.h"
+#include "io_chn2.h"
 #include "io_util.h"
 #include "in_mpg.h"
 #include "out_dev.h"

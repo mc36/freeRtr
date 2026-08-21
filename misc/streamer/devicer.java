@@ -69,6 +69,8 @@ public class devicer {
 
     /**
      * vban rate bits
+     *
+     * @return value
      */
     public static final int vbab() {
         if (vbac >= 0) {

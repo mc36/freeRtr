@@ -1,5 +1,3 @@
-#include "io_cnst.h"
-
 unsigned char bufD[padln + pktln + padln];
 int bufS;
 
@@ -50,10 +48,38 @@ void iou_bswp() {
     }
 }
 
+
+void iou_mono(int src, int trg) {
+    for (int p = 0; p < bufS; p += smpbt * 2) {
+        unsigned char b0 = bufD[p + padln + src + 0];
+#if smpbt > 1
+        unsigned char b1 = bufD[p + padln + src + 1];
+#endif
+#if smpbt > 2
+        unsigned char b2 = bufD[p + padln + src + 2];
+#endif
+#if smpbt > 3
+        unsigned char b3 = bufD[p + padln + src + 3];
+#endif
+        bufD[p + padln + trg + 0] = b0;
+#if smpbt > 1
+        bufD[p + padln + trg + 1] = b1;
+#endif
+#if smpbt > 2
+        bufD[p + padln + trg + 2] = b2;
+#endif
+#if smpbt > 3
+        bufD[p + padln + trg + 3] = b3;
+#endif
+    }
+}
+
+
 void iou_loop() {
     for (;;) {
         iou_read();
         if (bufS < 1) break;
+        iou_chan();
         iou_write();
     }
     iou_stop();
