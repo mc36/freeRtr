@@ -1,6 +1,4 @@
 
-import javax.sound.sampled.TargetDataLine;
-
 /**
  * measure local level
  *
@@ -19,11 +17,11 @@ public class visMeterLoc {
             System.out.println("usage: java this <device>");
             return;
         }
-        TargetDataLine dataLine = devicer.getRecord(args[0]);
+        devicer dataLine = devicer.getRecord(args[0]);
         byte[] buf = new byte[devicer.payl];
         visDoer vu = new visDoer();
         for (;;) {
-            int i = dataLine.read(buf, 0, buf.length);
+            int i = dataLine.read(buf);
             if (i < 1) {
                 break;
             }

@@ -1,6 +1,4 @@
 
-import javax.sound.sampled.SourceDataLine;
-
 /**
  * play back file
  *
@@ -20,14 +18,14 @@ public class playback {
             return;
         }
         decoder dec = new decoder(args[0], args[1], args[2]);
-        SourceDataLine dataLine = devicer.getPlayback(args[3]);
+        devicer dataLine = devicer.getPlayback(args[3]);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
             int i = dec.read(buf);
             if (i < 0) {
                 break;
             }
-            dataLine.write(buf, 0, i);
+            dataLine.write(buf, i);
         }
     }
 

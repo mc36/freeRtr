@@ -68,6 +68,19 @@ public class devicer {
     private static int vbac = -1;
 
     /**
+     * playback line
+     */
+    private SourceDataLine playLine;
+
+    /**
+     * record line
+     */
+    private TargetDataLine recLine;
+
+    private devicer() {
+    }
+
+    /**
      * vban rate bits
      *
      * @return value
@@ -142,13 +155,14 @@ public class devicer {
      * @return device
      * @throws Exception on error
      */
-    public static SourceDataLine getPlayback(String dev) throws Exception {
+    public static devicer getPlayback(String dev) throws Exception {
+        devicer r = new devicer();
         Mixer.Info mixer = devicer.findDevice(dev);
         AudioFormat format = devicer.getFormat();
-        SourceDataLine dataLine = AudioSystem.getSourceDataLine(format, mixer);
-        dataLine.open(format, payl);
-        dataLine.start();
-        return dataLine;
+        r.playLine = AudioSystem.getSourceDataLine(format, mixer);
+        r.playLine.open(format, payl);
+        r.playLine.start();
+        return r;
     }
 
     /**
@@ -158,13 +172,34 @@ public class devicer {
      * @return device
      * @throws Exception on error
      */
-    public static TargetDataLine getRecord(String dev) throws Exception {
+    public static devicer getRecord(String dev) throws Exception {
+        devicer r = new devicer();
         Mixer.Info mixer = devicer.findDevice(dev);
         AudioFormat format = devicer.getFormat();
-        TargetDataLine dataLine = AudioSystem.getTargetDataLine(format, mixer);
-        dataLine.open(format, payl);
-        dataLine.start();
-        return dataLine;
+        r.recLine = AudioSystem.getTargetDataLine(format, mixer);
+        r.recLine.open(format, payl);
+        r.recLine.start();
+        return r;
+    }
+
+    /**
+     * write sample data
+     *
+     * @param buf msb bytes
+     * @param len length
+     */
+    public void write(byte[] buf, int len) {
+        playLine.write(buf, 0, len);
+    }
+
+    /**
+     * read sample data
+     *
+     * @param buf msb bytes
+     * @return bytes
+     */
+    public int read(byte[] buf) {
+        return recLine.read(buf, 0, buf.length);
     }
 
 }

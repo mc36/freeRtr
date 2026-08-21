@@ -1,6 +1,4 @@
 
-import javax.sound.sampled.TargetDataLine;
-
 /**
  * measure beep delay
  *
@@ -21,7 +19,7 @@ public class measBeep {
         }
         int per = (Integer.parseInt(args[3]) * devicer.smpb * 2 * devicer.rate) / devicer.payl;
         int mul = Integer.parseInt(args[4]);
-        TargetDataLine dataLine = devicer.getRecord(args[0]);
+        devicer dataLine = devicer.getRecord(args[0]);
         packer rtp = packer.sender(args[1], args[2]);
         byte[] buf = new byte[devicer.payl];
         byte[] sln = new byte[buf.length];
@@ -32,7 +30,7 @@ public class measBeep {
         int ned = Integer.MAX_VALUE;
         int avg = 0;
         for (;;) {
-            int len = dataLine.read(buf, 0, buf.length);
+            int len = dataLine.read(buf);
             if (len < 1) {
                 break;
             }

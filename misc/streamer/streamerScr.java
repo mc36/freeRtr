@@ -1,6 +1,4 @@
 
-import javax.sound.sampled.TargetDataLine;
-
 /**
  * stream live capture
  *
@@ -19,11 +17,11 @@ public class streamerScr {
             System.out.println("usage: java this <device> <group> <port>");
             return;
         }
-        TargetDataLine dataLine = devicer.getRecord(args[0]);
+        devicer dataLine = devicer.getRecord(args[0]);
         packer rtp = packer.sender(args[1], args[2]);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
-            int i = dataLine.read(buf, 0, buf.length);
+            int i = dataLine.read(buf);
             if (i < 1) {
                 break;
             }

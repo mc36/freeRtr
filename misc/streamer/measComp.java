@@ -1,6 +1,4 @@
 
-import javax.sound.sampled.TargetDataLine;
-
 /**
  * measure stream delay
  *
@@ -20,7 +18,7 @@ public class measComp {
             return;
         }
         int sec = Integer.parseInt(args[4]);
-        TargetDataLine dataLine = devicer.getRecord(args[0]);
+        devicer dataLine = devicer.getRecord(args[0]);
         measCompOne dev = new measCompDev(dataLine, sec);
         packer channel = packer.receiver(args[1], args[2], args[3]);
         measCompOne net = new measCompNet(channel, sec);
@@ -145,9 +143,9 @@ class measCompOne {
 
 class measCompDev extends measCompOne implements Runnable {
 
-    private TargetDataLine dataLine;
+    private devicer dataLine;
 
-    public measCompDev(TargetDataLine dl, int sec) {
+    public measCompDev(devicer dl, int sec) {
         super(sec);
         dataLine = dl;
         new Thread(this).start();
@@ -156,7 +154,7 @@ class measCompDev extends measCompOne implements Runnable {
     public void run() {
         byte[] buf = new byte[devicer.payl];
         for (;;) {
-            int i = dataLine.read(buf, 0, buf.length);
+            int i = dataLine.read(buf);
             if (i < 1) {
                 break;
             }

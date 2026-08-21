@@ -1,6 +1,4 @@
 
-import javax.sound.sampled.SourceDataLine;
-
 /**
  * play back stream
  *
@@ -19,7 +17,7 @@ public class receiverScr {
             System.out.println("usage: java this <device> <group> <source> <port>");
             return;
         }
-        SourceDataLine dataLine = devicer.getPlayback(args[0]);
+        devicer dataLine = devicer.getPlayback(args[0]);
         packer channel = packer.receiver(args[1], args[2], args[3]);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
@@ -27,7 +25,7 @@ public class receiverScr {
             if (i < 1) {
                 break;
             }
-            dataLine.write(buf, 0, i);
+            dataLine.write(buf, i);
         }
     }
 

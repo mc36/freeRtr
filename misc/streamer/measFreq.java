@@ -1,6 +1,4 @@
 
-import javax.sound.sampled.TargetDataLine;
-
 /**
  * measure tone accuracy
  *
@@ -21,7 +19,7 @@ public class measFreq {
         }
         int frq = Integer.parseInt(args[3]);
         int vol = Integer.parseInt(args[4]);
-        TargetDataLine dataLine = devicer.getRecord(args[0]);
+        devicer dataLine = devicer.getRecord(args[0]);
         packer rtp = packer.sender(args[1], args[2]);
         byte[] buf = new byte[devicer.payl];
         byte[] nxt = new byte[buf.length];
@@ -30,7 +28,7 @@ public class measFreq {
         int got = 0;
         int top = -1;
         for (;;) {
-            int len = dataLine.read(buf, 0, buf.length);
+            int len = dataLine.read(buf);
             if (len < 1) {
                 break;
             }

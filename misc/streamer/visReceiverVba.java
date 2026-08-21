@@ -1,6 +1,4 @@
 
-import javax.sound.sampled.SourceDataLine;
-
 /**
  * play and show stream
  *
@@ -19,7 +17,7 @@ public class visReceiverVba {
             System.out.println("usage: java this <device> <group> <source> <port>");
             return;
         }
-        SourceDataLine dataLine = devicer.getPlayback(args[0]);
+        devicer dataLine = devicer.getPlayback(args[0]);
         packer channel = packer.receiver(args[1], args[2], args[3]);
         byte[] buf = new byte[devicer.payl];
         visDoer vu = new visDoer();
@@ -28,7 +26,7 @@ public class visReceiverVba {
             if (i < 1) {
                 break;
             }
-            dataLine.write(buf, 0, i);
+            dataLine.write(buf, i);
             vu.doer(buf, i);
         }
     }

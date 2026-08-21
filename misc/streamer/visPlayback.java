@@ -1,6 +1,4 @@
 
-import javax.sound.sampled.SourceDataLine;
-
 /**
  * play and show file
  *
@@ -20,7 +18,7 @@ public class visPlayback {
             return;
         }
         decoder dec = new decoder(args[0], args[1], args[2]);
-        SourceDataLine dataLine = devicer.getPlayback(args[3]);
+        devicer dataLine = devicer.getPlayback(args[3]);
         byte[] buf = new byte[devicer.payl];
         visDoer vu = new visDoer();
         for (;;) {
@@ -28,7 +26,7 @@ public class visPlayback {
             if (i < 0) {
                 break;
             }
-            dataLine.write(buf, 0, i);
+            dataLine.write(buf, i);
             vu.doer(buf, i);
         }
     }
