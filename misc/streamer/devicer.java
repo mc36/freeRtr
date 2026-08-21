@@ -58,11 +58,14 @@ public class devicer {
     public static final int vbal = 28;
 
     /**
-     * vban magit bytes
+     * vban magic bytes
      */
     public static final int vbam = 0x5642414e;
 
-    private static int vbac = -1; // cached result
+    /**
+     * vbab cached result
+     */
+    private static int vbac = -1;
 
     /**
      * vban rate bits

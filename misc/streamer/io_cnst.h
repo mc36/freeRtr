@@ -7,3 +7,6 @@
 #define scrbr 1
 #define scrln 5
 #define scrtp 3
+#define vbabr 3
+#define vbaln 28
+#define vbamg 1447182670

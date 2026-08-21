@@ -21,6 +21,10 @@ void iou_pmsb(int ofs, int val) {
     bufD[ofs + 3] = val;
 }
 
+int iou_gmsb(int ofs) {
+    return (bufD[ofs + 0] << 24) | (bufD[ofs + 1] << 16) | (bufD[ofs + 2] << 8) | bufD[ofs + 3];
+}
+
 void iou_bswp() {
     for (int p = 0; p < bufS; p += smpbt) {
         unsigned char b0 = bufD[p + padln + 0];
