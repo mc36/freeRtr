@@ -1,6 +1,6 @@
 void iou_write() {
     iou_pmsb(padln - wfaln + 0, wfamg);
-    iou_pmsb(padln - wfaln + 2, 0x02000000 | plySeq);
+    iou_pmsb(padln - wfaln + 2, ((wfamg & 0xffff) << 16) | plySeq);
     iou_pmsb(padln - wfaln + 6, plyClk);
     plySeq = (plySeq + 1) & 0xffff;
     plyClk += bufS / (2 * smpbt);

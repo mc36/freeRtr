@@ -323,8 +323,9 @@ public class packer {
         coder.byteSwap(buf, len);
         buffer.clear();
         putMsb(buffer, 0, devicer.wfam);
-        putMsb(buffer, 2, 0x02000000 | seq);
+        putMsb(buffer, 2, (devicer.wfam << 16) | seq);
         putMsb(buffer, 6, clk);
+        buffer.put(devicer.wfal, buf, 0, len);
         buffer.position(0);
         buffer.limit(len + devicer.wfal);
         target.write(buffer);
