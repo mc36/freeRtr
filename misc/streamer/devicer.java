@@ -20,12 +20,12 @@ public class devicer {
     /**
      * bytes per sample
      */
-    public static final int smpb = 2; //3;
+    public static final int smpb = 3;
 
     /**
      * bytes per payload
      */
-    public static final int payl = 1400; //1200;
+    public static final int payl = 1200;
 
     /**
      * bytes in rtp header
