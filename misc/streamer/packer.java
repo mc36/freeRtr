@@ -312,4 +312,50 @@ public class packer {
         return len;
     }
 
+    /**
+     * write wfas data
+     *
+     * @param buf msb bytes
+     * @param len length
+     * @throws Exception on error
+     */
+    public void writeWfa(byte[] buf, int len) throws Exception {
+        coder.byteSwap(buf, len);
+        buffer.clear();
+        putMsb(buffer, 0, devicer.wfam);
+        putMsb(buffer, 2, 0x02000000 | seq);
+        putMsb(buffer, 6, clk);
+        buffer.position(0);
+        buffer.limit(len + devicer.wfal);
+        target.write(buffer);
+        seq++;
+        seq &= 0xffff;
+        clk += len / (2 * devicer.smpb);
+    }
+
+    /**
+     * read wfas data
+     *
+     * @param buf msb bytes
+     * @return bytes
+     * @throws Exception on error
+     */
+    public int readWfa(byte[] buf) throws Exception {
+        int len;
+        for (;;) {
+            buffer.clear();
+            source.receive(buffer);
+            len = buffer.position() - devicer.wfal;
+            if (len < devicer.wfal) {
+                break;
+            }
+            if (getMsb(buffer, 0) == devicer.wfam) {
+                break;
+            }
+        }
+        buffer.get(devicer.wfal, buf, 0, len);
+        coder.byteSwap(buf, len);
+        return len;
+    }
+
 }

@@ -25,6 +25,8 @@ public class packets {
         System.err.println("#define vbabr " + devicer.vbab());
         System.err.println("#define vbaln " + devicer.vbal);
         System.err.println("#define vbamg " + devicer.vbam);
+        System.err.println("#define wfaln " + devicer.wfal);
+        System.err.println("#define wfamg " + devicer.wfam);
         for (int i = 100; i < 2000; i++) {
             double a = i;
             double b = devicer.rate * 2.0 * devicer.smpb / a;
