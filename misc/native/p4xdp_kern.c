@@ -234,7 +234,7 @@ struct {
 
 
 #define routeMpls()                                                 \
-    vrfp->vrf = resm->vrf;                                          \
+    vrfk = resm->vrf;                                               \
     switch (resm->ver) {                                            \
     case 4:                                                         \
         ethtyp = ETHERTYPE_IPV4;                                    \
@@ -539,12 +539,14 @@ __u32 xdp_router(struct xdp_md *ctx) {
     hash ^= get32msb(macaddr, 4);
     hash ^= get32msb(macaddr, 8);
     __u32 sgt = 0;
+    __u32 vrfn = 0;
 
     for (__u32 rounds = 0; rounds < 6; rounds++) {
 
         __u64 bufP = sizeof(macaddr) + 2;
         revalidatePacket(bufP);
         __u32 ethtyp = get16msb(bufD, bufP - 2);
+        __u32 vrfk = 0;
         __u32 neik = 0;
         __s32 ttl = 0;
         __u32 tmp = 0;
@@ -562,6 +564,12 @@ __u32 xdp_router(struct xdp_md *ctx) {
 
         struct vrfp_res* vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
         if (vrfp == NULL) goto etyped_rx;
+        if (vrfn != 0) {
+            vrfk = vrfn;
+            vrfn = 0;
+            goto etyped_rx;
+        }
+        vrfk = vrfp->vrf;
         vrfp->packRx++;
         vrfp->byteRx += bufE - bufD;
         if (vrfp->sgtTag != 0) {
@@ -681,7 +689,7 @@ ipv4_rx:
             update_chksum(bufP + 10, -1);
             ttl |= vrfp->pttl4;
             u.rou4.bits = (sizeof(u.rou4) * 8) - routes_bits;
-            u.rou4.vrf = vrfp->vrf;
+            u.rou4.vrf = vrfk;
             if (vrfp->verify4 > 0) {
                 __builtin_memcpy(u.rou4.addr, &bufD[bufP + 12], sizeof(u.rou4.addr));
                 struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &u.rou4);
@@ -699,7 +707,7 @@ ipv4_rx:
             hash ^= get32msb(bufD, bufP + 12);
             hash ^= get32msb(bufD, bufP + 16);
             doRouted(res4);
-            u.tun4.vrf = vrfp->vrf;
+            u.tun4.vrf = vrfk;
             u.tun4.prot = bufD[bufP + 9];
             __builtin_memcpy(u.tun4.srcAddr, &bufD[bufP + 12], sizeof(u.tun4.srcAddr));
             __builtin_memcpy(u.tun4.trgAddr, &bufD[bufP + 16], sizeof(u.tun4.trgAddr));
@@ -721,7 +729,7 @@ ipv6_rx:
             bufD[bufP + 7] = ttl;
             ttl |= vrfp->pttl6;
             u.rou6.bits = (sizeof(u.rou6) * 8) - routes_bits;
-            u.rou6.vrf = vrfp->vrf;
+            u.rou6.vrf = vrfk;
             if (vrfp->verify6 > 0) {
                 __builtin_memcpy(u.rou6.addr, &bufD[bufP + 8], sizeof(u.rou6.addr));
                 struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &u.rou6);
@@ -745,7 +753,7 @@ ipv6_rx:
             hash ^= get32msb(bufD, bufP + 32);
             hash ^= get32msb(bufD, bufP + 36);
             doRouted(res6);
-            u.tun6.vrf = vrfp->vrf;
+            u.tun6.vrf = vrfk;
             u.tun6.prot = bufD[bufP + 6];
             __builtin_memcpy(u.tun6.srcAddr, &bufD[bufP + 8], sizeof(u.tun6.srcAddr));
             __builtin_memcpy(u.tun6.trgAddr, &bufD[bufP + 24], sizeof(u.tun6.trgAddr));
@@ -912,7 +920,7 @@ nsh_rx:
                 if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
                 continue;
             }
-            u.polk.vrf = vrfp->vrf;
+            u.polk.vrf = vrfk;
             u.polk.idx = tmp;
             res = bpf_map_lookup_elem(&polidxs, &u.polk);
             if (res == NULL) goto drop;

@@ -1,0 +1,277 @@
+    bufE = (__u8*)(__u64)ctx->data_end;                             \
+    bufD = (__u8*)(__u64)ctx->data;                                 \
+    tmp -= val;                                                     \
+    res->pack++;                                                    \
+    res->byte += bufE - bufD;                                       \
+    switch (res->cmd) {                                             \
+        neik = res->nexthop;                                        \
+        bufP -= 4;                                                  \
+        tmp = (res->label1 << 12) | 0x100 | ttl;                    \
+        neik = res->nexthop;                                        \
+        bufP -= 4;                                                  \
+        tmp = (res->label2 << 12) | 0x100 | ttl;                    \
+        bufP -= 4;                                                  \
+        tmp = (res->label1 << 12) | ttl;                            \
+        neik = res->nexthop;                                        \
+        bufP -= 3 * sizeof(macaddr);                                \
+        bufP -= 20;                                                 \
+        __builtin_memcpy(&bufD[bufP + 4], res->polka, 16);          \
+        neik = res->nexthop;                                        \
+    ttl = (label & 0xff) - 1;                                       \
+    resm->pack++;                                                   \
+    resm->byte += bufE - bufD;
+    vrfp->vrf = resm->vrf;                                          \
+    switch (resm->ver) {                                            \
+        neik = resm->nexthop;                                       \
+        switch (resm->ver) {                                        \
+        bufP -= 4;                                                  \
+        label = (tmp & 0xf00) | ttl | (resm->swap << 12);           \
+        neik = resm->nexthop;                                       \
+        prt = resm->port;                                           \
+        tmp = resm->port;                                           \
+        bufP -= 4;                                                  \
+        label = (tmp & 0xf00) | ttl | (resm->push << 12);           \
+        bufP -= 4;                                                  \
+        label = (tmp & 0xe00) | ttl | (resm->swap << 12);           \
+        neik = resm->nexthop;                                       \
+        prt = resm->port;                                           \
+        bufP -= 2;                                              \
+    if (vrfp->sgtTag != 0) {                                    \
+        bufP -= 2 * sizeof(macaddr);                            \
+        bufP -= 8;                                              \
+    bufP -= 20;                                                 \
+    ethtyp = bufE - bufD  - bufP;                               \
+    ethtyp += get16msb(ntry->srcAddr, 0);                       \
+    ethtyp += get16msb(ntry->srcAddr, 2);                       \
+    ethtyp += get16msb(ntry->trgAddr, 0);                       \
+    ethtyp += get16msb(ntry->trgAddr, 2);                       \
+    __builtin_memcpy(&bufD[bufP + 12], &ntry->srcAddr, 4);      \
+    __builtin_memcpy(&bufD[bufP + 16], &ntry->trgAddr, 4);      \
+    bufP -= 2;                                                  \
+    bufP -= 40;                                                 \
+    ethtyp = bufE - bufD - bufP - 40;                           \
+    __builtin_memcpy(&bufD[bufP + 8], &ntry->srcAddr, 16);      \
+    __builtin_memcpy(&bufD[bufP + 24], &ntry->trgAddr, 16);     \
+    bufP -= 2;                                                  \
+    bufP -= 8;                                                  \
+    put16msb(bufD, bufP + 0, ntry->srcPort);                    \
+    put16msb(bufD, bufP + 2, ntry->trgPort);                    \
+    ethtyp = bufE - bufD - bufP;                                \
+    tmp = (bufE - bufD) - bufP;                                 \
+    bufP -= sizeof(macaddr);                                    \
+    bufP -= 6;                                                  \
+    put16msb(bufD, bufP + 2, neir->sess);                       \
+    bufP -= 2;                                                  \
+    prt = ctx->ingress_ifindex;
+    rxport->pack++;
+    rxport->byte += bufE - bufD;
+        txport->pack++;
+        txport->byte += bufE - bufD;
+        return bpf_redirect(txport->idx, 0);
+    prt = rxport->idx;
+        __u32 ethtyp = get16msb(bufD, bufP - 2);
+        vrfp->packRx++;
+        vrfp->byteRx += bufE - bufD;
+        if (vrfp->sgtTag != 0) {
+        if (vrfp->sgtSet >= 0) {
+            sgt = vrfp->sgtSet;
+        switch (vrfp->cmd) {
+            tmp = vrfp->bridge;
+                if (vrfp->pmtud4 > 0) {
+                    if ((bufE - bufD - bufP) > vrfp->pmtud4) goto punt;
+                if (vrfp->pmtud6 > 0) {
+                    if ((bufE - bufD - bufP) > vrfp->pmtud6) goto punt;
+            bufP -= 2;
+            bufP -= 12;
+            bufP -= 2 * sizeof(macaddr);
+            bufP -= 4;
+            ttl = 0x1ff | (vrfp->label2 << 12);
+            bufP -= 4;
+            ttl = 0xff | (vrfp->label1 << 12);
+            neik = vrfp->nexthop;
+            prt = vrfp->label1;
+            bufP -= 2;
+            neik = vrfp->label1;
+            bufP -= 2;
+            bufP -= 12;
+            bufP -= 2 * sizeof(macaddr);
+            bufP -= 8;
+            tmp = (vrfp->label1 << 8) | vrfp->label2;
+            if (vrfp->mpls == 0) goto drop;
+            switch (resm->cmd) {
+                    switch (resm->cmd) {
+            if (vrfp->pmtud4 > 0) {
+                if ((bufE - bufD - bufP) > vrfp->pmtud4) goto punt;
+            ttl = bufD[bufP + 8] - 1;
+            update_chksum(bufP + 10, -1);
+            ttl |= vrfp->pttl4;
+            u.rou4.bits = (sizeof(u.rou4) * 8) - routes_bits;
+            u.rou4.vrf = vrfp->vrf;
+            if (vrfp->verify4 > 0) {
+                if (vrfp->verify4 > 1) {
+                    neik = res4->nexthop;
+                    if (neir->aclport != prt) goto punt;
+            u.tun4.vrf = vrfp->vrf;
+            if (vrfp->pmtud6 > 0) {
+                if ((bufE - bufD - bufP) > vrfp->pmtud6) goto punt;
+            ttl = bufD[bufP + 7] - 1;
+            ttl |= vrfp->pttl6;
+            u.rou6.bits = (sizeof(u.rou6) * 8) - routes_bits;
+            u.rou6.vrf = vrfp->vrf;
+            if (vrfp->verify6 > 0) {
+                if (vrfp->verify6 > 1) {
+                    neik = res6->nexthop;
+                    if (neir->aclport != prt) goto punt;
+            u.tun6.vrf = vrfp->vrf;
+            tunr->pack++;
+            tunr->byte += bufE - bufD;
+            switch (tunr->cmd) {
+                bufP -= 2;
+                bufP -= 2;
+                bufP -= 2;
+            prt = tunr->aclport;
+            if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr)) != 0) goto drop;
+            if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr) - 2) != 0) goto drop;
+            put16msb(bufD, bufP - 2, ethtyp);
+            if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr) - 2) != 0) goto drop;
+            if (vrfp->nsh == 0) goto drop;
+            nshr->pack++;
+            nshr->byte += bufE - bufD;
+            switch (nshr->cmd) {
+                ttl = ttl - 0x40;
+                put32msb(bufD, bufP + 4, nshr->trg);
+                bufP -= 2;
+                __builtin_memcpy(&macaddr[0], &nshr->macs, 12);
+                prt = nshr->port;
+                bufP -= 2;
+                bufP -= sizeof(macaddr);
+                ttl = ttl - 0x40;
+                put32msb(bufD, bufP + 4, nshr->trg);
+                neik = nshr->port;
+            polr->pack++;
+            polr->byte += bufE - bufD;
+            ttl--;
+            crc16calc(tmp, polr->tab, bufD, bufP + 4, 14);
+                bufP -= 2;
+                bufP -= sizeof(macaddr);
+            u.polk.vrf = vrfp->vrf;
+            if (vrfp->cmd != 2) goto drop;
+            tmp = vrfp->bridge;
+            brdr->packRx++;
+            brdr->byteRx += bufE - bufD;
+            brdr->packTx++;
+            brdr->byteTx += bufE - bufD;
+            bufP -= 2;
+            switch (brdr->cmd) {
+                prt = brdr->port;
+                bufP -= 12;
+                bufP -= 2 * sizeof(macaddr);
+                bufP -= 4;
+                tmp = 0x1ff | (brdr->label2 << 12);
+                bufP -= 4;
+                tmp = 0xff | (brdr->label1 << 12);
+                neik = brdr->nexthop;
+                bufP -= 12;
+                bufP -= 2 * sizeof(macaddr);
+                neik = brdr->nexthop;
+                bufP -= 2 * sizeof(macaddr);
+                bufP -= 12;
+                bufP -= 3 * sizeof(macaddr);
+                bufP -= 12;
+                bufP -= 8;
+                tmp = brdr->label1 << 8;
+            bufP -= sizeof(macaddr) + 60;
+            neik = brdr->nexthop;
+            if (brdr->cmd2 == 1) {
+        bufP -= 2;
+        neir->pack++;
+        neir->byte += bufE - bufD;
+        __builtin_memcpy(&macaddr[0], neir->macs, sizeof(neir->macs));
+        prt = neir->aclport;
+        if ((neir->cmd > 1) && (vrfp != NULL)) {
+            vrfp->packTx++;
+            vrfp->byteTx += bufE - bufD;
+        prt = neir->port;
+        switch (neir->cmd) {
+            bufP -= 2;
+            bufP -= 2 * sizeof(macaddr);
+            bufP -= 10;
+            put32msb(bufD, bufP + 2, neir->sess);
+            bufP -= 4;
+            put32msb(bufD, bufP + 0, neir->sess);
+            bufP -= 2 * sizeof(macaddr);
+            bufP -= 6;
+            ethtyp = bufE - bufD - bufP - 8;
+            put32msb(bufD, bufP + 4, neir->sess);
+            bufP -= sizeof(macaddr) + 16;
+            bufP -= sizeof(macaddr);
+            bufP -= 4;
+            tmp = 0x1ff | (neir->trgPort << 12);
+            bufP -= 4;
+            tmp = 0xff | (neir->srcPort << 12);
+            bufP -= 2;
+            __builtin_memcpy(&macaddr[0], neir->mac2, sizeof(neir->mac2));
+            bufP -= sizeof(macaddr) + 44;
+            if (neir->sess >= 1) {
+                bufP -= 4;
+                tmp = 0xff | (neir->trgPort << 12);
+            if (neir->sess >= 2) {
+                bufP -= 4;
+                tmp = 0xff | (neir->srcPort << 12);
+            if (neir->sess >= 3) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->srcAddr[0]) << 12);
+            if (neir->sess >= 4) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->srcAddr[4]) << 12);
+            if (neir->sess >= 5) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->srcAddr[8]) << 12);
+            if (neir->sess >= 6) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->srcAddr[12]) << 12);
+            if (neir->sess >= 7) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->trgAddr[0]) << 12);
+            if (neir->sess >= 8) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->trgAddr[4]) << 12);
+            if (neir->sess >= 9) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->trgAddr[8]) << 12);
+            if (neir->sess >= 10) {
+                bufP -= 4;
+                tmp = 0xff | (*((int*)&neir->trgAddr[12]) << 12);
+            bufP -= 2;
+        bufP -= sizeof(macaddr) + 60;
+        if (neir->cmd2 == 1) {
+            vrfp->packTx++;
+            vrfp->byteTx += bufE - bufD;
+            hash ^= vlnr->vlan;
+            bufP -= 2;
+            put16msb(bufD, bufP, vlnr->vlan);
+            bufP -= 2;
+            if (vlnr->vlan2 > 0) {
+                prt = vlnr->port2;
+                    vrfp->packTx++;
+                    vrfp->byteTx += bufE - bufD;
+                bufP -= sizeof(macaddr);
+                hash ^= vlnr->vlan2;
+                bufP -= 2;
+                put16msb(bufD, bufP, vlnr->vlan2);
+                bufP -= 2;
+            prt = vlnr->port;
+            vlnr->pack++;
+            vlnr->byte += bufE - bufD;
+                vrfp->packTx++;
+                vrfp->byteTx += bufE - bufD;
+        bufP -= sizeof(macaddr);
+        bunr->pack++;
+        bunr->byte += bufE - bufD;
+        prt = bunr->out[hash];
+        if (bunr->cmd != 2) goto done;
+    txport->pack++;
+    txport->byte += bufE - bufD;
+    return bpf_redirect(txport->idx, 0);
+    (*remain)--;
+    if (bpf_xdp_adjust_head(ctx, -4) != 0) goto drop;
