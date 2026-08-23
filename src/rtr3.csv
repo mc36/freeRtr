@@ -370,8 +370,8 @@ http://sources.freertr.org/cfg/p4lang-rout008.tst;p4lang-rout008.tst;ok;ok;ok;ok
 http://sources.freertr.org/cfg/p4lang-rout009.tst;p4lang-rout009.tst;ok;ok;ok;ok;ok;p4lang: vpls/ldp with bgp
 http://sources.freertr.org/cfg/p4lang-rout010.tst;p4lang-rout010.tst;ok;ok;ok;ok;ok;p4lang: evpn/cmac with bgp
 http://sources.freertr.org/cfg/p4lang-rout011.tst;p4lang-rout011.tst;ok;ok;ok;ok;ok;p4lang: eompls
-http://sources.freertr.org/cfg/p4lang-rout012.tst;p4lang-rout012.tst;ok;ok;not ok;ok;ok;p4lang: vpn with bgp over srv6
-http://sources.freertr.org/cfg/p4lang-rout013.tst;p4lang-rout013.tst;ok;ok;not ok;ok;not ok;p4lang: evpn/cmac with bgp over srv6
+http://sources.freertr.org/cfg/p4lang-rout012.tst;p4lang-rout012.tst;ok;ok;ok;ok;ok;p4lang: vpn with bgp over srv6
+http://sources.freertr.org/cfg/p4lang-rout013.tst;p4lang-rout013.tst;ok;ok;ok;ok;not ok;p4lang: evpn/cmac with bgp over srv6
 http://sources.freertr.org/cfg/p4lang-rout014.tst;p4lang-rout014.tst;ok;ok;ok;ok;ok;p4lang: bundle routing
 http://sources.freertr.org/cfg/p4lang-rout015.tst;p4lang-rout015.tst;ok;ok;ok;ok;ok;p4lang: bundle mpls
 http://sources.freertr.org/cfg/p4lang-rout016.tst;p4lang-rout016.tst;ok;ok;ok;ok;ok;p4lang: bundle vlan routing
