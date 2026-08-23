@@ -171,7 +171,7 @@ struct {
 
 
 
-#define doRouted(res, proto, ihl)                                   \
+#define doRouted(res, proto)                                        \
     res->pack++;                                                    \
     res->byte += bufE - bufD;                                       \
     switch (res->cmd) {                                             \
@@ -219,23 +219,19 @@ struct {
         revalidatePacket(bufP);                                     \
         putIpv6header(proto, res->polka, res->polka);               \
         neik = res->nexthop;                                        \
-        goto ethtyp_tx;                                             \
+        goto nethtyp_tx;                                            \
     case 8:                                                         \
-        bufP += ihl;                                                \
-        ethtyp = ETHERTYPE_IPV4;                                    \
         put16msb(bufD, bufP - 2, ethtyp);                           \
         if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr) - 2) != 0) goto drop;   \
         vrfn = res->label1;                                         \
         continue;                                                   \
     case 9:                                                         \
-        bufP += ihl;                                                \
-        ethtyp = ETHERTYPE_IPV6;                                    \
         put16msb(bufD, bufP - 2, ethtyp);                           \
         if (bpf_xdp_adjust_head(ctx, bufP - sizeof(macaddr) - 2) != 0) goto drop;   \
-        vrfn = res->label1;                                         \
+        vrfn = -res->label1;                                        \
         continue;                                                   \
     case 10:                                                        \
-        bufP += ihl;                                                \
+        bufP += 40;                                                 \
         revalidatePacket(bufP + 14);                                \
         __builtin_memcpy(&macaddr[0], &bufD[bufP], sizeof(macaddr));\
         bufP += 12;                                                 \
@@ -570,7 +566,7 @@ __u32 xdp_router(struct xdp_md *ctx) {
     hash ^= get32msb(macaddr, 4);
     hash ^= get32msb(macaddr, 8);
     __u32 sgt = 0;
-    __u32 vrfn = 0;
+    __s32 vrfn = 0;
 
     for (__u32 rounds = 0; rounds < 6; rounds++) {
 
@@ -595,10 +591,19 @@ __u32 xdp_router(struct xdp_md *ctx) {
 
         struct vrfp_res* vrfp = bpf_map_lookup_elem(&vrf_port, &prt);
         if (vrfp == NULL) goto etyped_rx;
-        if (vrfn != 0) {
+        if (vrfn < 0) {
+            vrfk = -vrfn;
+            vrfn = 0;
+            bufP += 40;
+            ethtyp = ETHERTYPE_IPV6;
+            goto ipv6_rx;
+        }
+        if (vrfn > 0) {
             vrfk = vrfn;
             vrfn = 0;
-            goto etyped_rx;
+            bufP += 40;
+            ethtyp = ETHERTYPE_IPV4;
+            goto ipv4_rx;
         }
         vrfk = vrfp->vrf;
         vrfp->packRx++;
@@ -737,7 +742,7 @@ ipv4_rx:
             if (res4 == NULL) goto punt;
             hash ^= get32msb(bufD, bufP + 12);
             hash ^= get32msb(bufD, bufP + 16);
-            doRouted(res4, IP_PROTOCOL_IPV4, 20);
+            doRouted(res4, IP_PROTOCOL_IPV4);
             u.tun4.vrf = vrfk;
             u.tun4.prot = bufD[bufP + 9];
             __builtin_memcpy(u.tun4.srcAddr, &bufD[bufP + 12], sizeof(u.tun4.srcAddr));
@@ -783,7 +788,7 @@ ipv6_rx:
             hash ^= get32msb(bufD, bufP + 28);
             hash ^= get32msb(bufD, bufP + 32);
             hash ^= get32msb(bufD, bufP + 36);
-            doRouted(res6, IP_PROTOCOL_IPV6, 40);
+            doRouted(res6, IP_PROTOCOL_IPV6);
             u.tun6.vrf = vrfk;
             u.tun6.prot = bufD[bufP + 6];
             __builtin_memcpy(u.tun6.srcAddr, &bufD[bufP + 8], sizeof(u.tun6.srcAddr));
@@ -1034,12 +1039,17 @@ bridge_rx:
                 tmp = brdr->label1 << 8;
                 put32msb(bufD, bufP + 4, tmp);
                 goto bridgelayer4;
+            case 6: // srv
+                bufP -= 12;
+                __builtin_memcpy(&bufD[bufP], &macaddr[0], sizeof(macaddr));
+                tmp = IP_PROTOCOL_SRL2;
+                goto bridgelayer3;
             }
             goto drop;
 bridgelayer4:
             putUdpHeader(brdr);
             tmp = IP_PROTOCOL_UDP;
-//bridgelayer3:
+bridgelayer3:
             bufP -= sizeof(macaddr) + 60;
             if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;
             bufP = sizeof(macaddr) + 60;
@@ -1315,4 +1325,3 @@ cpu:
 drop:
     return XDP_DROP;
 }
- 

@@ -113,7 +113,7 @@ struct bridge_key {
 };
 
 struct bridge_res {
-    __u32 cmd; // 1=port, 2=vpls, 3=route, 4=pckoudp, 5=vxlan
+    __u32 cmd; // 1=port, 2=vpls, 3=route, 4=pckoudp, 5=vxlan, 6=srv
     __u32 cmd2; // 1=ipv4, 2=ipv6
     __u32 port;
     __u32 nexthop;
