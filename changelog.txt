@@ -18647,3 +18647,6 @@ failed: bgp with process redundancy
 ---------------------------------- 2026-08-24 10:20:39 26.8.24
 no failed: bgp with process redundancy
 qc pass: bgp with process redundancy
+---------------------------------- 2026-08-24 10:48:31 26.8.24
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports

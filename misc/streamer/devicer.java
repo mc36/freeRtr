@@ -15,7 +15,7 @@ public class devicer {
     /**
      * sampling rate
      */
-    public static final int rate = 96000;
+    public static final int rate = 48000;
 
     /**
      * bytes per sample
