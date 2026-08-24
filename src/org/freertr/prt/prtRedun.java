@@ -18,6 +18,7 @@ import org.freertr.pipe.pipeText;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSetting;
 import org.freertr.pipe.pipeSide;
+import org.freertr.tab.tabGen;
 import org.freertr.user.userExec;
 import org.freertr.user.userFlash;
 import org.freertr.user.userFormat;
@@ -164,7 +165,9 @@ public class prtRedun implements Runnable {
      */
     protected static long started = 0;
 
-    private final static List<prtRedunIfc> ifaces = new ArrayList<prtRedunIfc>();
+    private final static tabGen<prtRedunIfc> ifaces = new tabGen<prtRedunIfc>();
+
+    private final static tabGen<prtRedunStor> clients = new tabGen<prtRedunStor>();
 
     public void run() {
         try {
@@ -200,6 +203,27 @@ public class prtRedun implements Runnable {
     }
 
     /**
+     * add one client
+     *
+     * @param clnt client to add
+     * @param nam name of client
+     * @return false if now added, true if already
+     */
+    public static boolean clientAdd(prtRedunClnt clnt, String nam) {
+        return clients.add(new prtRedunStor(clnt, nam)) != null;
+    }
+
+    /**
+     * delete one client
+     *
+     * @param clnt client to delete
+     * @return true if deleted, false if not
+     */
+    public static boolean clientDel(prtRedunClnt clnt) {
+        return clients.del(new prtRedunStor(clnt, "")) != null;
+    }
+
+    /**
      * get list of interfaces
      *
      * @return list
@@ -210,6 +234,23 @@ public class prtRedun implements Runnable {
             res.add(ifaces.get(i).name);
         }
         return res;
+    }
+
+    /**
+     * generate show output
+     *
+     * @return output
+     */
+    public static userFormat doShowClient() {
+        userFormat l = new userFormat("|", "client|lines");
+        List<String> t = new ArrayList<String>();
+        for (int i = 0; i < clients.size(); i++) {
+            prtRedunStor ifc = clients.get(i);
+            t.clear();
+            ifc.clnt.routerStateGet(t);
+            l.add(ifc.name + "|" + t.size());
+        }
+        return l;
     }
 
     /**
@@ -313,8 +354,8 @@ public class prtRedun implements Runnable {
      * @param desc description
      */
     public static void ifcAdd(String name, ifcThread thrd, String desc) {
-        prtRedunIfc ifc = new prtRedunIfc();
-        ifc.doInit(name, thrd, desc);
+        prtRedunIfc ifc = new prtRedunIfc(name, thrd, desc);
+        ifc.doInit();
         ifaces.add(ifc);
     }
 
@@ -453,13 +494,7 @@ public class prtRedun implements Runnable {
     }
 
     private static prtRedunIfc findIface(String ifc) {
-        for (int i = 0; i < ifaces.size(); i++) {
-            prtRedunIfc cur = ifaces.get(i);
-            if (ifc.equals(cur.name)) {
-                return cur;
-            }
-        }
-        return null;
+        return ifaces.find(new prtRedunIfc(ifc, null, null));
     }
 
     /**
@@ -623,13 +658,13 @@ public class prtRedun implements Runnable {
 
 }
 
-class prtRedunIfc implements ifcUp {
+class prtRedunIfc implements ifcUp, Comparable<prtRedunIfc> {
 
     private final static int magic1 = 0x00010000 | ipIfc4.type;
 
     private final static int magic2 = 0x06040c0d;
 
-    private ifcThread lower;
+    private final ifcThread lower;
 
     private counter cntr = new counter();
 
@@ -639,9 +674,9 @@ class prtRedunIfc implements ifcUp {
 
     private String filNm;
 
-    public String name;
+    public final String name;
 
-    public String descr;
+    public final String descr;
 
     public String lastFileHash;
 
@@ -659,15 +694,22 @@ class prtRedunIfc implements ifcUp {
 
     public int ackRx;
 
+    public int compareTo(prtRedunIfc o) {
+        return name.compareTo(o.name);
+    }
+
     public String toString() {
         return "" + name;
     }
 
-    public void doInit(String nam, ifcThread thrd, String desc) {
-        reach.set(0);
+    public prtRedunIfc(String nam, ifcThread thrd, String desc) {
         name = nam;
         descr = desc;
         lower = thrd;
+    }
+
+    public void doInit() {
+        reach.set(0);
         last.state = prtRedun.statInit;
         heard = 0;
         dualAct = 0;
@@ -1204,6 +1246,32 @@ class prtRedunPack {
 
     public String toString() {
         return "type=" + prtRedun.typ2str(type) + " state=" + prtRedun.stat2str(state) + " magic=" + magic + " peer=" + peer + " priority=" + priority + " uptime=" + uptime;
+    }
+
+}
+
+class prtRedunStor implements Comparable<prtRedunStor> {
+
+    public final prtRedunClnt clnt;
+
+    public final String name;
+
+    public final int hsh;
+
+    public prtRedunStor(prtRedunClnt client, String nam) {
+        clnt = client;
+        name = nam;
+        hsh = clnt.hashCode();
+    }
+
+    public int compareTo(prtRedunStor o) {
+        if (hsh < o.hsh) {
+            return -1;
+        }
+        if (hsh > o.hsh) {
+            return +1;
+        }
+        return 0;
     }
 
 }

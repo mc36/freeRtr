@@ -51,6 +51,8 @@ import org.freertr.util.logger;
 import org.freertr.spf.spfCalc;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
+import org.freertr.prt.prtRedun;
+import org.freertr.prt.prtRedunClnt;
 import org.freertr.tab.tabPrfxlstN;
 
 /**
@@ -58,7 +60,7 @@ import org.freertr.tab.tabPrfxlstN;
  *
  * @author matecsaba
  */
-public class rtrIsis extends ipRtr {
+public class rtrIsis extends ipRtr implements prtRedunClnt {
 
     /**
      * llc type
@@ -124,6 +126,11 @@ public class rtrIsis extends ipRtr {
      * traffic engineering id
      */
     public addrIP traffEngID = new addrIP();
+
+    /**
+     * ha mode
+     */
+    public boolean haMode;
 
     /**
      * segment routing maximum
@@ -1285,6 +1292,7 @@ public class rtrIsis extends ipRtr {
         l.add(null, false, 1, new int[]{2}, "distance", "specify default distance");
         l.add(null, false, 2, new int[]{3}, "<num>", "intra-area distance");
         l.add(null, false, 3, new int[]{-1}, "<num>", "external distance");
+        l.add(null, false, 1, new int[]{-1}, "ha-mode", "save state");
         l.add(null, false, 1, new int[]{-1}, "metric-wide", "advertise wide metrics");
         l.add(null, false, 1, new int[]{-1}, "multi-topology", "advertise multi topology");
         l.add(null, false, 1, new int[]{2}, "srv6", "advertise srv6 locator");
@@ -1394,6 +1402,7 @@ public class rtrIsis extends ipRtr {
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax);
+        cmds.cfgLine(l, !haMode, beg, "ha-mode", "");
         l.add(beg + "distance " + distantInt + " " + distantExt);
         getConfig(level2, l, beg, filter);
         getConfig(level1, l, beg, filter);
@@ -1451,6 +1460,11 @@ public class rtrIsis extends ipRtr {
         if (s.equals("traffeng-id")) {
             traffEngID.fromString(cmd.word());
             genLsps(3);
+            return false;
+        }
+        if (s.equals("ha-mode")) {
+            haMode = true;
+            prtRedun.clientAdd(this, routerGetName());
             return false;
         }
         if (s.equals("distance")) {
@@ -1576,6 +1590,11 @@ public class rtrIsis extends ipRtr {
                 alg = oalgos.del(alg);
             }
             genLsps(3);
+            return false;
+        }
+        if (s.equals("ha-mode")) {
+            haMode = false;
+            prtRedun.clientDel(this);
             return false;
         }
         if (s.equals("metric-wide")) {
@@ -2640,6 +2659,9 @@ public class rtrIsis extends ipRtr {
      * @param lst list to append
      */
     public void routerStateGet(List<String> lst) {
+        if (!haMode) {
+            return;
+        }
         String a = routerGetName() + " ";
         level1.stateGet(lst, a);
         level2.stateGet(lst, a);

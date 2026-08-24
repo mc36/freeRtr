@@ -21,6 +21,8 @@ import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdTab;
 import org.freertr.ip.ipRtr;
 import org.freertr.pipe.pipeShell;
+import org.freertr.prt.prtRedun;
+import org.freertr.prt.prtRedunClnt;
 import org.freertr.prt.prtTcp;
 import org.freertr.prt.prtUdp;
 import org.freertr.tab.tabGen;
@@ -54,7 +56,7 @@ import org.freertr.util.syncInt;
  *
  * @author matecsaba
  */
-public class rtrLsrp extends ipRtr implements Runnable {
+public class rtrLsrp extends ipRtr implements Runnable, prtRedunClnt {
 
     /**
      * port number
@@ -1380,6 +1382,11 @@ public class rtrLsrp extends ipRtr implements Runnable {
         }
         if (s.equals("ha-mode")) {
             haMode = !negated;
+            if (haMode) {
+                prtRedun.clientAdd(this, routerGetName());
+            } else {
+                prtRedun.clientDel(this);
+            }
             return false;
         }
         if (s.equals("stub")) {

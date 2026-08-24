@@ -16,6 +16,8 @@ import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipRtr;
 import org.freertr.pack.packHolder;
+import org.freertr.prt.prtRedun;
+import org.freertr.prt.prtRedunClnt;
 import org.freertr.prt.prtUdp;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabIndex;
@@ -42,7 +44,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class rtrOspf4 extends ipRtr {
+public class rtrOspf4 extends ipRtr implements prtRedunClnt {
 
     /**
      * protocol number
@@ -68,6 +70,11 @@ public class rtrOspf4 extends ipRtr {
      * traffic engineering id
      */
     public addrIPv4 traffEngID;
+
+    /**
+     * ha mode
+     */
+    public boolean haMode;
 
     /**
      * segment routing maximum
@@ -335,6 +342,7 @@ public class rtrOspf4 extends ipRtr {
         l.add(null, false, 2, new int[]{3}, "<num>", "intra-area distance");
         l.add(null, false, 3, new int[]{4}, "<num>", "inter-area distance");
         l.add(null, false, 4, new int[]{-1}, "<num>", "external distance");
+        l.add(null, false, 1, new int[]{-1}, "ha-mode", "save state");
         l.add(null, false, 1, new int[]{2}, "flexalgo", "flexalgo parameters");
         l.add(null, false, 2, new int[]{3}, "<num>", "algorithm id");
         l.add(null, false, 3, new int[]{-1}, "<name:vrf>", "vrf to use");
@@ -356,6 +364,7 @@ public class rtrOspf4 extends ipRtr {
         }
         cmds.cfgLine(l, segrouMax < 1, beg, "segrout", "" + segrouMax + a);
         cmds.cfgLine(l, bierMax < 1, beg, "bier", bierLen + " " + bierMax);
+        cmds.cfgLine(l, !haMode, beg, "ha-mode", "");
         for (int i = 0; i < areas.size(); i++) {
             rtrOspf4area ntry = areas.get(i);
             String s = "area " + ntry.area + " ";
@@ -424,6 +433,11 @@ public class rtrOspf4 extends ipRtr {
         if (s.equals("traffeng-id")) {
             traffEngID.fromString(cmd.word());
             genLsas(3);
+            return false;
+        }
+        if (s.equals("ha-mode")) {
+            haMode = true;
+            prtRedun.clientAdd(this, routerGetName());
             return false;
         }
         if (s.equals("segrout")) {
@@ -630,6 +644,11 @@ public class rtrOspf4 extends ipRtr {
             }
             alg.vrf.unregister2ip();
             genLsas(3);
+            return false;
+        }
+        if (s.equals("ha-mode")) {
+            haMode = false;
+            prtRedun.clientDel(this);
             return false;
         }
         if (s.equals("segrout")) {
@@ -1345,6 +1364,9 @@ public class rtrOspf4 extends ipRtr {
      * @param lst list to append
      */
     public void routerStateGet(List<String> lst) {
+        if (!haMode) {
+            return;
+        }
         String a = routerGetName() + " ";
         for (int i = 0; i < areas.size(); i++) {
             rtrOspf4area dat = areas.get(i);

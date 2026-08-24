@@ -281,6 +281,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router rip[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "suppress-prefix", null),
         // router ospf
         new userFilter("router ospf[46] .*", cmds.tabulator + "distance 110 110 110", null),
+        new userFilter("router ospf[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ha-mode", null),
         new userFilter("router ospf[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "segrout", null),
         new userFilter("router ospf[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bier", null),
         new userFilter("router ospf[46] .*", cmds.tabulator + "area .* spf-log 0", null),
@@ -308,6 +309,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         // router isis
         new userFilter("router isis[46] .*", cmds.tabulator + "max-area-addrs 3", null),
         new userFilter("router isis[46] .*", cmds.tabulator + "distance 115 115", null),
+        new userFilter("router isis[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ha-mode", null),
         new userFilter("router isis[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other enable", null),
         new userFilter("router isis[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "afi-other multi-topology", null),
         new userFilter("router isis[46] .*", cmds.tabulator + "afi-other distance 115 115", null),
@@ -363,6 +365,7 @@ public class cfgRtr implements Comparable<cfgRtr>, cfgGeneric {
         new userFilter("router bgp[46] .*", cmds.tabulator + "nexthop recursion 1", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + "incremental 1000", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + "bestpath", null),
+        new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ha-mode", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "conquer", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + cmds.negated + cmds.tabulator + "rpki", null),
         new userFilter("router bgp[46] .*", cmds.tabulator + "safe-ebgp", null),

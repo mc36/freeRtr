@@ -18641,3 +18641,6 @@ failed: integrated pvrp with labels
 ---------------------------------- 2026-08-20 05:19:08 26.8.20
 no failed: integrated pvrp with labels
 qc pass: integrated pvrp with labels
+---------------------------------- 2026-08-24 07:52:22 26.8.24
+no qc pass: bgp with process redundancy
+failed: bgp with process redundancy

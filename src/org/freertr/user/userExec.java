@@ -1523,6 +1523,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "status", "current status");
         hl.add(null, false, 3, new int[]{-1}, "description", "interface description");
         hl.add(null, false, 3, new int[]{-1}, "core", "core hash");
+        hl.add(null, false, 3, new int[]{-1}, "client", "state clients");
         hl.add(null, false, 3, new int[]{-1}, "state-hash", "state hash");
         hl.add(null, false, 3, new int[]{-1}, "state-save", "saved state data");
         hl.add(null, false, 3, new int[]{-1}, "state-data", "current state data");

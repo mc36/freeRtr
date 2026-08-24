@@ -558,6 +558,10 @@ public class userShow {
         }
         if (a.equals("redundancy")) {
             a = cmd.word();
+            if (a.equals("client")) {
+                rdr.putStrTab(prtRedun.doShowClient());
+                return null;
+            }
             if (a.equals("status")) {
                 rdr.putStrTab(prtRedun.doShowStatus());
                 return null;

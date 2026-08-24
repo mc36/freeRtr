@@ -29,6 +29,8 @@ import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
+import org.freertr.prt.prtRedun;
+import org.freertr.prt.prtRedunClnt;
 import org.freertr.prt.prtServS;
 import org.freertr.prt.prtTcp;
 import org.freertr.tab.tabGen;
@@ -69,7 +71,7 @@ import org.freertr.util.syncInt;
  *
  * @author matecsaba
  */
-public class rtrBgp extends ipRtr implements prtServS, Runnable {
+public class rtrBgp extends ipRtr implements prtServS, Runnable, prtRedunClnt {
 
     /**
      * port to use
@@ -115,6 +117,11 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * select bestpath
      */
     public boolean bestpath;
+
+    /**
+     * ha mode
+     */
+    public boolean haMode;
 
     /**
      * client reflection
@@ -974,6 +981,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         incrLimit = 1000;
         conquer = false;
         bestpath = true;
+        haMode = false;
         flaps = null;
         scanTime = 1000;
         scanDelay = 1000;
@@ -2108,6 +2116,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(null, false, 1, new int[]{-1}, "flapstat", "count flap statistics");
         l.add(null, false, 1, new int[]{-1}, "safe-ebgp", "enforce safe ebgp policy");
         l.add(null, false, 1, new int[]{-1}, "bestpath", "select bestpath locally");
+        l.add(null, false, 1, new int[]{-1}, "ha-mode", "save state");
         l.add(null, false, 1, new int[]{-1}, "client-reflect", "perform client to client reflection");
         l.add(null, false, 1, new int[]{2}, "incremental", "limit on incremental bestpath calculation");
         l.add(null, false, 2, new int[]{-1}, "<num>", "maximum prefixes");
@@ -2293,6 +2302,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
         l.add(beg + "router-id " + routerID);
         cmds.cfgLine(l, !safeEbgp, beg, "safe-ebgp", "");
         cmds.cfgLine(l, !bestpath, beg, "bestpath", "");
+        cmds.cfgLine(l, !haMode, beg, "ha-mode", "");
         cmds.cfgLine(l, !clientReflect, beg, "client-reflect", "");
         l.add(beg + "address-family" + rtrBgpParam.bools2string(addrFams));
         l.add(beg + "distance " + distantExt + " " + distantInt + " " + distantLoc);
@@ -2423,6 +2433,15 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
             bestpath = !negated;
             needFull.add(1);
             compute.wakeup();
+            return false;
+        }
+        if (s.equals("ha-mode")) {
+            haMode = !negated;
+            if (haMode) {
+                prtRedun.clientAdd(this, routerGetName());
+            } else {
+                prtRedun.clientDel(this);
+            }
             return false;
         }
         if (s.equals("client-reflect")) {
@@ -3899,6 +3918,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable {
      * @param lst list to append
      */
     public void routerStateGet(List<String> lst) {
+        if (!haMode) {
+            return;
+        }
         String a = routerGetName() + " ";
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
