@@ -79,6 +79,7 @@ router ospf4 1
  area 0 ena
  red conn
  area 0 ha-mode
+ ha-mode
  exit
 router ospf6 1
  vrf v1
@@ -86,6 +87,7 @@ router ospf6 1
  area 0 ena
  red conn
  area 0 ha-mode
+ ha-mode
  exit
 int lo0
  vrf for v1
@@ -120,6 +122,7 @@ router ospf4 1
  area 0 ena
  red conn
  area 0 ha-mode
+ ha-mode
  exit
 router ospf6 1
  vrf v1
@@ -127,6 +130,7 @@ router ospf6 1
  area 0 ena
  red conn
  area 0 ha-mode
+ ha-mode
  exit
 int eth1
  vrf for v1

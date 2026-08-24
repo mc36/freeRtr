@@ -97,6 +97,7 @@ router bgp4 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 ha-mode
+ ha-mode
  red conn
  exit
 router bgp6 1
@@ -107,6 +108,7 @@ router bgp6 1
  router-id 6.6.6.2
  neigh 1234::1 remote-as 1
  neigh 1234::1 ha-mode
+ ha-mode
  red conn
  exit
 !
@@ -137,6 +139,7 @@ router bgp4 1
  router-id 4.4.4.2
  neigh 1.1.1.1 remote-as 1
  neigh 1.1.1.1 ha-mode
+ ha-mode
  neigh 1.1.1.1 connection-mode passive
  red conn
  exit
@@ -148,6 +151,7 @@ router bgp6 1
  router-id 6.6.6.2
  neigh 1234::1 remote-as 1
  neigh 1234::1 ha-mode
+ ha-mode
  neigh 1234::1 connection-mode passive
  red conn
  exit

@@ -521,7 +521,7 @@ qc pass: process redundancy
 qc pass: lsrp with process redundancy
 qc pass: ospf with process redundancy
 qc pass: isis with process redundancy
-failed: bgp with process redundancy
+qc pass: bgp with process redundancy
 qc pass: ppp over rlogin
 qc pass: sep
 qc pass: slaac
