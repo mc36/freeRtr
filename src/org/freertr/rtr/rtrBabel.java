@@ -263,24 +263,6 @@ public class rtrBabel extends ipRtr implements prtServP {
     }
 
     /**
-     * get state information
-     *
-     * @param lst list to append
-     */
-    public void routerStateGet(List<String> lst) {
-    }
-
-    /**
-     * set state information
-     *
-     * @param cmd string to append
-     * @return true on error, false on success
-     */
-    public boolean routerStateSet(cmds cmd) {
-        return true;
-    }
-
-    /**
      * update sequence number
      */
     protected void incSeq() {

@@ -203,6 +203,56 @@ public class prtRedun implements Runnable {
     }
 
     /**
+     * generate state data
+     *
+     * @return list of states
+     */
+    public static List<String> stateData() {
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i < clients.size(); i++) {
+            prtRedunStor c = clients.get(i);
+            if (c == null) {
+                continue;
+            }
+            c.clnt.redunStateGet(res);
+        }
+        return res;
+    }
+
+    /**
+     * restore state
+     *
+     * @param txt text
+     */
+    public static void stateRestore(List<String> txt) {
+        if (txt == null) {
+            return;
+        }
+        int o = 0;
+        for (int i = 0; i < txt.size(); i++) {
+            cmds cmd = new cmds("rst", txt.get(i));
+            String a = cmd.word();
+            a = a + " " + cmd.word();
+            prtRedunStor c = new prtRedunStor(null, a);
+            c = clients.find(c);
+            if (c == null) {
+                continue;
+            }
+            boolean b = true;
+            try {
+                b = c.clnt.redunStateSet(cmd);
+            } catch (Exception e) {
+                logger.traceback(e);
+            }
+            if (b) {
+                continue;
+            }
+            o++;
+        }
+        logger.info("restored " + o + " of " + txt.size());
+    }
+
+    /**
      * add one client
      *
      * @param clnt client to add
@@ -217,10 +267,11 @@ public class prtRedun implements Runnable {
      * delete one client
      *
      * @param clnt client to delete
+     * @param nam name of client
      * @return true if deleted, false if not
      */
-    public static boolean clientDel(prtRedunClnt clnt) {
-        return clients.del(new prtRedunStor(clnt, "")) != null;
+    public static boolean clientDel(prtRedunClnt clnt, String nam) {
+        return clients.del(new prtRedunStor(clnt, nam)) != null;
     }
 
     /**
@@ -247,7 +298,7 @@ public class prtRedun implements Runnable {
         for (int i = 0; i < clients.size(); i++) {
             prtRedunStor ifc = clients.get(i);
             t.clear();
-            ifc.clnt.routerStateGet(t);
+            ifc.clnt.redunStateGet(t);
             l.add(ifc.name + "|" + t.size());
         }
         return l;
@@ -1256,22 +1307,13 @@ class prtRedunStor implements Comparable<prtRedunStor> {
 
     public final String name;
 
-    public final int hsh;
-
     public prtRedunStor(prtRedunClnt client, String nam) {
         clnt = client;
         name = nam;
-        hsh = clnt.hashCode();
     }
 
     public int compareTo(prtRedunStor o) {
-        if (hsh < o.hsh) {
-            return -1;
-        }
-        if (hsh > o.hsh) {
-            return +1;
-        }
-        return 0;
+        return name.compareTo(o.name);
     }
 
 }

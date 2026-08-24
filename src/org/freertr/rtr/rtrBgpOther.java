@@ -488,24 +488,6 @@ public class rtrBgpOther extends ipRtr {
     }
 
     /**
-     * get state information
-     *
-     * @param lst list to append
-     */
-    public void routerStateGet(List<String> lst) {
-    }
-
-    /**
-     * set state information
-     *
-     * @param cmd string to append
-     * @return true on error, false on success
-     */
-    public boolean routerStateSet(cmds cmd) {
-        return true;
-    }
-
-    /**
      * get peer list
      *
      * @param tab list to append

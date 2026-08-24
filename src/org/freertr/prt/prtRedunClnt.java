@@ -15,7 +15,7 @@ public interface prtRedunClnt {
      *
      * @param lst list to append
      */
-    public abstract void routerStateGet(List<String> lst);
+    public abstract void redunStateGet(List<String> lst);
 
     /**
      * set state information
@@ -23,6 +23,6 @@ public interface prtRedunClnt {
      * @param cmd string to append
      * @return true on error, false on success
      */
-    public abstract boolean routerStateSet(cmds cmd);
+    public abstract boolean redunStateSet(cmds cmd);
 
 }

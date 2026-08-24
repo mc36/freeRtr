@@ -1385,7 +1385,7 @@ public class rtrLsrp extends ipRtr implements Runnable, prtRedunClnt {
             if (haMode) {
                 prtRedun.clientAdd(this, routerGetName());
             } else {
-                prtRedun.clientDel(this);
+                prtRedun.clientDel(this, routerGetName());
             }
             return false;
         }
@@ -1736,7 +1736,7 @@ public class rtrLsrp extends ipRtr implements Runnable, prtRedunClnt {
      *
      * @param lst list to append
      */
-    public void routerStateGet(List<String> lst) {
+    public void redunStateGet(List<String> lst) {
         if (!haMode) {
             return;
         }
@@ -1756,7 +1756,7 @@ public class rtrLsrp extends ipRtr implements Runnable, prtRedunClnt {
      * @param cmd string to append
      * @return true on error, false on success
      */
-    public boolean routerStateSet(cmds cmd) {
+    public boolean redunStateSet(cmds cmd) {
         rtrLsrpData ntry = new rtrLsrpData();
         if (ntry.fromString(cmd)) {
             return true;

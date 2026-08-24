@@ -587,7 +587,7 @@ public class userShow {
                 return null;
             }
             if (a.equals("state-data")) {
-                rdr.putStrArr(cfgInit.stateData());
+                rdr.putStrArr(prtRedun.stateData());
                 return null;
             }
             if (a.equals("remote")) {

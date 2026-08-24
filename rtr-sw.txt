@@ -528,6 +528,7 @@ interface null0
 router bgp4 65535 vrf v1
  local-as 65535
  router-id 100.100.3.227
+ ha-mode
  address-family unicast multicast vpnuni vpnmlt vpls evpn mdt flowspec vpnflw ovpnuni ovpnmlt ovpnflw mvpn omvpn mspw srte linkstate ouni omlt oflw osrt nsh rtfilter rpd mtree omtree spf sdwan mup omup tunnel encap unreach ounreach mpns mpvs
  flapstat
  nexthop route-policy nht

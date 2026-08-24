@@ -27,11 +27,9 @@ import org.freertr.prt.prtRedun;
 import org.freertr.serv.servOpenflow;
 import org.freertr.serv.servP4lang;
 import org.freertr.enc.encUrl;
-import org.freertr.ip.ipRtr;
 import org.freertr.pipe.pipeShell;
 import org.freertr.serv.servStack;
 import org.freertr.tab.tabGen;
-import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteIface;
 import org.freertr.user.userConfig;
 import org.freertr.user.userExec;
@@ -1291,73 +1289,19 @@ public class cfgInit implements Runnable {
         } catch (Exception e) {
             logger.exception(e);
         }
-        stateLoad();
+        List<String> sav = bits.txt2buf(cfgInit.myStateFile());
+        userFlash.delete(cfgInit.myStateFile());
+        prtRedun.stateRestore(sav);
         started = bits.getTime();
         booting = false;
         logger.info("boot completed");
-    }
-
-    private final static void stateLoad() {
-        List<String> txt = bits.txt2buf(myStateFile());
-        if (txt == null) {
-            return;
-        }
-        userFlash.delete(myStateFile());
-        int o = 0;
-        for (int i = 0; i < txt.size(); i++) {
-            cmds cmd = new cmds("rst", txt.get(i));
-            tabRouteAttr.routeType t = cfgRtr.name2num(cmd.word());
-            if (t == null) {
-                continue;
-            }
-            cfgRtr c = cfgAll.rtrFind(t, bits.str2num(cmd.word()), false);
-            if (c == null) {
-                continue;
-            }
-            ipRtr r = c.getRouter(0);
-            if (r == null) {
-                continue;
-            }
-            boolean b = true;
-            try {
-                b = r.routerStateSet(cmd);
-            } catch (Exception e) {
-                logger.traceback(e);
-            }
-            if (b) {
-                continue;
-            }
-            o++;
-        }
-        logger.info("restored " + o + " of " + txt.size());
-    }
-
-    /**
-     * generate state data
-     *
-     * @return list of states
-     */
-    public final static List<String> stateData() {
-        List<String> res = new ArrayList<String>();
-        for (int i = 0; i < cfgAll.routers.size(); i++) {
-            cfgRtr c = cfgAll.routers.get(i);
-            if (c == null) {
-                continue;
-            }
-            ipRtr e = c.getRouter(0);
-            if (e == null) {
-                continue;
-            }
-            e.routerStateGet(res);
-        }
-        return res;
     }
 
     /**
      * save state
      */
     public final static void stateSave() {
-        List<String> res = stateData();
+        List<String> res = prtRedun.stateData();
         boolean e = res.size() == stateLast.size();
         if (e) {
             for (int i = 0; i < res.size(); i++) {

@@ -2440,7 +2440,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable, prtRedunClnt {
             if (haMode) {
                 prtRedun.clientAdd(this, routerGetName());
             } else {
-                prtRedun.clientDel(this);
+                prtRedun.clientDel(this, routerGetName());
             }
             return false;
         }
@@ -3917,7 +3917,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable, prtRedunClnt {
      *
      * @param lst list to append
      */
-    public void routerStateGet(List<String> lst) {
+    public void redunStateGet(List<String> lst) {
         if (!haMode) {
             return;
         }
@@ -3952,7 +3952,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable, prtRedunClnt {
      * @param cmd string to append
      * @return true on error, false on success
      */
-    public boolean routerStateSet(cmds cmd) {
+    public boolean redunStateSet(cmds cmd) {
         addrIP adr = new addrIP();
         if (adr.fromString(cmd.word())) {
             return true;

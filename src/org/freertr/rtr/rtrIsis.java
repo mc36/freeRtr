@@ -1594,7 +1594,7 @@ public class rtrIsis extends ipRtr implements prtRedunClnt {
         }
         if (s.equals("ha-mode")) {
             haMode = false;
-            prtRedun.clientDel(this);
+            prtRedun.clientDel(this, routerGetName());
             return false;
         }
         if (s.equals("metric-wide")) {
@@ -2658,7 +2658,7 @@ public class rtrIsis extends ipRtr implements prtRedunClnt {
      *
      * @param lst list to append
      */
-    public void routerStateGet(List<String> lst) {
+    public void redunStateGet(List<String> lst) {
         if (!haMode) {
             return;
         }
@@ -2673,7 +2673,7 @@ public class rtrIsis extends ipRtr implements prtRedunClnt {
      * @param cmd string to append
      * @return true on error, false on success
      */
-    public boolean routerStateSet(cmds cmd) {
+    public boolean redunStateSet(cmds cmd) {
         rtrIsisLevel lev = getLevel(bits.str2num(cmd.word()));
         return lev.stateSet(cmd);
     }
