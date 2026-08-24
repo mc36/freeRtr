@@ -680,7 +680,7 @@ public class rtrOspf6 extends ipRtr implements prtRedunClnt {
         }
         if (s.equals("ha-mode")) {
             haMode = false;
-            prtRedun.clientDel(this, routerGetName());
+            prtRedun.clientDel(this);
             return false;
         }
         if (s.equals("srv6")) {
@@ -1414,7 +1414,6 @@ public class rtrOspf6 extends ipRtr implements prtRedunClnt {
         if (!haMode) {
             return;
         }
-        String a = routerGetName() + " ";
         for (int i = 0; i < areas.size(); i++) {
             rtrOspf6area dat = areas.get(i);
             if (dat == null) {
@@ -1423,7 +1422,7 @@ public class rtrOspf6 extends ipRtr implements prtRedunClnt {
             if (!dat.haMode) {
                 continue;
             }
-            dat.stateGet(lst, a);
+            dat.stateGet(lst);
         }
     }
 

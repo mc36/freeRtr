@@ -1594,7 +1594,7 @@ public class rtrIsis extends ipRtr implements prtRedunClnt {
         }
         if (s.equals("ha-mode")) {
             haMode = false;
-            prtRedun.clientDel(this, routerGetName());
+            prtRedun.clientDel(this);
             return false;
         }
         if (s.equals("metric-wide")) {
@@ -2662,9 +2662,8 @@ public class rtrIsis extends ipRtr implements prtRedunClnt {
         if (!haMode) {
             return;
         }
-        String a = routerGetName() + " ";
-        level1.stateGet(lst, a);
-        level2.stateGet(lst, a);
+        level1.stateGet(lst);
+        level2.stateGet(lst);
     }
 
     /**

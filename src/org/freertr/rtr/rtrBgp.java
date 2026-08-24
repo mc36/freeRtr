@@ -2440,7 +2440,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable, prtRedunClnt {
             if (haMode) {
                 prtRedun.clientAdd(this, routerGetName());
             } else {
-                prtRedun.clientDel(this, routerGetName());
+                prtRedun.clientDel(this);
             }
             return false;
         }
@@ -3921,28 +3921,19 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable, prtRedunClnt {
         if (!haMode) {
             return;
         }
-        String a = routerGetName() + " ";
         for (int i = 0; i < neighs.size(); i++) {
             rtrBgpNeigh nei = neighs.get(i);
             if (nei == null) {
                 continue;
             }
-            String b = nei.stateGet();
-            if (b == null) {
-                continue;
-            }
-            lst.add(a + b);
+            nei.stateGet(lst);
         }
         for (int i = 0; i < lstnNei.size(); i++) {
             rtrBgpNeigh nei = lstnNei.get(i);
             if (nei == null) {
                 continue;
             }
-            String b = nei.stateGet();
-            if (b == null) {
-                continue;
-            }
-            lst.add(a + b);
+            nei.stateGet(lst);
         }
     }
 

@@ -214,7 +214,9 @@ public class prtRedun implements Runnable {
             if (c == null) {
                 continue;
             }
+            res.add(c.name);
             c.clnt.redunStateGet(res);
+            res.add("");
         }
         return res;
     }
@@ -228,28 +230,49 @@ public class prtRedun implements Runnable {
         if (txt == null) {
             return;
         }
-        int o = 0;
+        int don = 0;
+        prtRedunStor cln = null;
         for (int i = 0; i < txt.size(); i++) {
-            cmds cmd = new cmds("rst", txt.get(i));
-            String a = cmd.word();
-            a = a + " " + cmd.word();
-            prtRedunStor c = new prtRedunStor(null, a);
-            c = clients.find(c);
-            if (c == null) {
+            String a = txt.get(i);
+            if (a.length() < 1) {
+                cln = null;
+                don++;
                 continue;
             }
+            if (cln == null) {
+                cln = clientFind(a);
+                if (cln == null) {
+                    continue;
+                }
+                don++;
+                continue;
+            }
+            cmds cmd = new cmds("rst", a);
             boolean b = true;
             try {
-                b = c.clnt.redunStateSet(cmd);
+                b = cln.clnt.redunStateSet(cmd);
             } catch (Exception e) {
                 logger.traceback(e);
             }
             if (b) {
                 continue;
             }
-            o++;
+            don++;
         }
-        logger.info("restored " + o + " of " + txt.size());
+        logger.info("restored " + don + " of " + txt.size());
+    }
+
+    private static prtRedunStor clientFind(String nam) {
+        for (int i = 0; i < clients.size(); i++) {
+            prtRedunStor c = clients.get(i);
+            if (c == null) {
+                continue;
+            }
+            if (nam.equals(c.name)) {
+                return c;
+            }
+        }
+        return null;
     }
 
     /**
@@ -267,11 +290,10 @@ public class prtRedun implements Runnable {
      * delete one client
      *
      * @param clnt client to delete
-     * @param nam name of client
      * @return true if deleted, false if not
      */
-    public static boolean clientDel(prtRedunClnt clnt, String nam) {
-        return clients.del(new prtRedunStor(clnt, nam)) != null;
+    public static boolean clientDel(prtRedunClnt clnt) {
+        return clients.del(new prtRedunStor(clnt, null)) != null;
     }
 
     /**
@@ -1307,13 +1329,22 @@ class prtRedunStor implements Comparable<prtRedunStor> {
 
     public final String name;
 
+    public final int hsh;
+
     public prtRedunStor(prtRedunClnt client, String nam) {
         clnt = client;
         name = nam;
+        hsh = clnt.hashCode();
     }
 
     public int compareTo(prtRedunStor o) {
-        return name.compareTo(o.name);
+        if (hsh < o.hsh) {
+            return -1;
+        }
+        if (hsh > o.hsh) {
+            return +1;
+        }
+        return 0;
     }
 
 }

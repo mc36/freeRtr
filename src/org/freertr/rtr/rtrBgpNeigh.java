@@ -1292,33 +1292,33 @@ public class rtrBgpNeigh extends rtrBgpParam implements Comparable<rtrBgpNeigh>,
     /**
      * get state information
      *
-     * @return state
+     * @param lst list to append
      */
-    public String stateGet() {
+    public void stateGet(List<String> lst) {
         if (!haMode) {
-            return null;
+            return;
         }
         if (!conn.ready2adv) {
-            return null;
+            return;
         }
         if (!conn.peer32bitAS) {
-            return null;
+            return;
         }
         if (!conn.peerRefreshOld) {
-            return null;
+            return;
         }
         if (!conn.peerRefreshNew) {
-            return null;
+            return;
         }
         if ((conn.compressRx != null) && (conn.compressTx != null)) {
-            return null;
+            return;
         }
         prtGenConn sock = lower.tcpCore.findOneConn(conn.pipe);
         if (sock == null) {
-            return null;
+            return;
         }
         sock.restartable = true;
-        return peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + bits.num2str(remoteAs) + " " + conn.peerHold + " " + conn.upTime + " " + stateGet(conn.peerAfis) + " " + stateGet(conn.addpathRx) + " " + stateGet(conn.addpathTx) + " " + stateGet(conn.peerMltLab) + " " + conn.peerDynCap + " " + conn.peerRouterID;
+        lst.add(peerAddr + " " + template + " " + sock.portLoc + " " + sock.portRem + " " + sock.iface + " " + bits.num2str(remoteAs) + " " + conn.peerHold + " " + conn.upTime + " " + stateGet(conn.peerAfis) + " " + stateGet(conn.addpathRx) + " " + stateGet(conn.addpathTx) + " " + stateGet(conn.peerMltLab) + " " + conn.peerDynCap + " " + conn.peerRouterID);
     }
 
     private String stateGet(boolean[] afi) {

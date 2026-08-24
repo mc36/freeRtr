@@ -1363,10 +1363,8 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
      * get state information
      *
      * @param lst list to append
-     * @param beg beginning to use
      */
-    public void stateGet(List<String> lst, String beg) {
-        beg += area + " ";
+    public void stateGet(List<String> lst) {
         packHolder pck = new packHolder(true, true);
         for (int i = 0; i < lsas.size(); i++) {
             rtrOspf6lsa ntry = lsas.get(i);
@@ -1378,7 +1376,7 @@ public class rtrOspf6area implements Comparable<rtrOspf6area>, Runnable {
             pck.msbPutW(0, 1800); // remaining
             pck.putSkip(o);
             pck.merge2beg();
-            lst.add(beg + encBase64.encodeBytes(pck.getCopy()));
+            lst.add(area + " " + encBase64.encodeBytes(pck.getCopy()));
         }
     }
 

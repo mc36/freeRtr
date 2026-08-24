@@ -1156,13 +1156,11 @@ public class rtrIsisLevel implements Runnable {
      * get state information
      *
      * @param lst list to append
-     * @param beg beginning to use
      */
-    public void stateGet(List<String> lst, String beg) {
+    public void stateGet(List<String> lst) {
         if (!haMode) {
             return;
         }
-        beg += level + " ";
         packHolder pck = new packHolder(true, true);
         for (int i = 0; i < lsps.size(); i++) {
             rtrIsisLsp ntry = lsps.get(i);
@@ -1174,7 +1172,7 @@ public class rtrIsisLevel implements Runnable {
             pck.msbPutW(2, 1800); // remaining
             pck.putSkip(o);
             pck.merge2beg();
-            lst.add(beg + encBase64.encodeBytes(pck.getCopy()));
+            lst.add(level + " " + encBase64.encodeBytes(pck.getCopy()));
         }
     }
 

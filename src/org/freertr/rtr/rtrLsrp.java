@@ -1385,7 +1385,7 @@ public class rtrLsrp extends ipRtr implements Runnable, prtRedunClnt {
             if (haMode) {
                 prtRedun.clientAdd(this, routerGetName());
             } else {
-                prtRedun.clientDel(this, routerGetName());
+                prtRedun.clientDel(this);
             }
             return false;
         }
@@ -1740,13 +1740,12 @@ public class rtrLsrp extends ipRtr implements Runnable, prtRedunClnt {
         if (!haMode) {
             return;
         }
-        String a = routerGetName() + " time=1800000 ";
         for (int i = 0; i < database.size(); i++) {
             rtrLsrpData ntry = database.get(i);
             if (ntry == null) {
                 continue;
             }
-            lst.add(a + ntry.dump(rtrLsrpData.dmpSave));
+            lst.add("time=1800000 " + ntry.dump(rtrLsrpData.dmpSave));
         }
     }
 
