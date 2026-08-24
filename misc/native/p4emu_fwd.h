@@ -1029,7 +1029,10 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
         bufD[bufP + 0] = 0;                                         \
         bufD[bufP + 1] = ttl;                                       \
         put16msb(bufD, bufP + 2, ethtyp);                           \
-        memcpy(&bufD[bufP + 4], route_res->polka, 16);              \
+        put32msb(bufD, bufP + 4, route_res->srv1);                  \
+        put32msb(bufD, bufP + 8, route_res->srv2);                  \
+        put32msb(bufD, bufP + 12, route_res->srv3);                 \
+        put32msb(bufD, bufP + 16, route_res->srv4);                 \
         neigh_ntry.id = route_res->nexthop;                         \
         ethtyp = ETHERTYPE_POLKA;                                   \
         goto ethtyp_tx;                                             \
@@ -1038,7 +1041,10 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
         bufD[bufP + 0] = 1;                                         \
         bufD[bufP + 1] = ttl;                                       \
         put16msb(bufD, bufP + 2, ethtyp);                           \
-        memcpy(&bufD[bufP + 4], route_res->polka, 16);              \
+        put32msb(bufD, bufP + 4, route_res->srv1);                  \
+        put32msb(bufD, bufP + 8, route_res->srv2);                  \
+        put32msb(bufD, bufP + 12, route_res->srv3);                 \
+        put32msb(bufD, bufP + 16, route_res->srv4);                 \
         neigh_ntry.id = route_res->nexthop;                         \
         ethtyp = ETHERTYPE_POLKA;                                   \
         goto ethtyp_tx;                                             \

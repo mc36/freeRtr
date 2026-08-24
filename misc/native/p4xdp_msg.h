@@ -812,7 +812,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou4.addr, buf2, sizeof(rou4.addr));
         rou4.bits = routes_bits + atoi(arg[3]);
         rour.nexthop = atoi(arg[4]);
-        str2key(arg[7], rour.polka);
+        str2key(arg[7], rour.srv);
         rour.cmd = 6;
         if (del == 0) {
             if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
@@ -827,7 +827,7 @@ int doOneCommand(unsigned char* buf) {
         memcpy(rou6.addr, buf2, sizeof(rou6.addr));
         rou6.bits = routes_bits + atoi(arg[3]);
         rour.nexthop = atoi(arg[4]);
-        str2key(arg[7], rour.polka);
+        str2key(arg[7], rour.srv);
         rour.cmd = 6;
         if (del == 0) {
             if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");
@@ -843,7 +843,7 @@ int doOneCommand(unsigned char* buf) {
         rou4.bits = routes_bits + atoi(arg[3]);
         rour.nexthop = atoi(arg[4]);
         inet_pton(AF_INET6, arg[7], buf2);
-        memcpy(rour.polka, buf2, sizeof(rour.polka));
+        memcpy(rour.srv, buf2, sizeof(rour.srv));
         rour.cmd = 7;
         if (del == 0) {
             if (bpf_map_delete_elem(route4_fd, &rou4) != 0) warn("error removing entry");
@@ -859,7 +859,7 @@ int doOneCommand(unsigned char* buf) {
         rou6.bits = routes_bits + atoi(arg[3]);
         rour.nexthop = atoi(arg[4]);
         inet_pton(AF_INET6, arg[7], buf2);
-        memcpy(rour.polka, buf2, sizeof(rour.polka));
+        memcpy(rour.srv, buf2, sizeof(rour.srv));
         rour.cmd = 7;
         if (del == 0) {
             if (bpf_map_delete_elem(route6_fd, &rou6) != 0) warn("error removing entry");

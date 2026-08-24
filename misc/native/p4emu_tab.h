@@ -256,7 +256,6 @@ struct route4_entry {
     int srv2;
     int srv3;
     int srv4;
-    unsigned char polka[16];
 };
 
 
@@ -275,7 +274,6 @@ struct route6_entry {
     int srv2;
     int srv3;
     int srv4;
-    unsigned char polka[16];
 };
 
 

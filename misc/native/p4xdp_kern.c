@@ -208,7 +208,7 @@ struct {
         bufD[bufP + 0] = 0;                                         \
         bufD[bufP + 1] = ttl;                                       \
         put16msb(bufD, bufP + 2, ethtyp);                           \
-        __builtin_memcpy(&bufD[bufP + 4], res->polka, 16);          \
+        __builtin_memcpy(&bufD[bufP + 4], res->srv, 16);            \
         neik = res->nexthop;                                        \
         ethtyp = ETHERTYPE_POLKA;                                   \
         goto ethtyp_tx;                                             \
@@ -217,7 +217,7 @@ struct {
         if (bpf_xdp_adjust_head(ctx, bufP) != 0) goto drop;         \
         bufP = sizeof(macaddr) + 60;                                \
         revalidatePacket(bufP);                                     \
-        putIpv6header(proto, res->polka, res->polka);               \
+        putIpv6header(proto, res->srv, res->srv);                   \
         neik = res->nexthop;                                        \
         goto nethtyp_tx;                                            \
     case 8:                                                         \

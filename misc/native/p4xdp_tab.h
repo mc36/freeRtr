@@ -48,7 +48,7 @@ struct routes_res {
     __u32 nexthop;
     __u32 label1;
     __u32 label2;
-    __u8 polka[16];
+    __u8 srv[16];
     __u64 pack;
     __u64 byte;
 };
