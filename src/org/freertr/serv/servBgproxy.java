@@ -309,7 +309,7 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "peer|loc|rem|loc|rem|tx|rx|dr|tx|rx|dr|since|ago", "1|2open|2close|3pack|3byte|2time");
+        userFormat res = new userFormat("|", "peer|afi|loc|rem|loc|rem|tx|rx|dr|tx|rx|dr|since|ago", "2|2open|2close|3pack|3byte|2time");
         for (int i = 0; i < neighs.size(); i++) {
             res.add("" + neighs.get(i));
         }
@@ -451,7 +451,7 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
     }
 
     public String toString() {
-        return peer + "|" + openLoc.length + "|" + openRem.length + "|" + pipeLoc.isClosed() + "|" + pipeRem.isClosed() + "|" + cntr.getShPsum() + "|" + cntr.getShBsum() + "|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(created);
+        return peer + "|" + afis.size() + "|" + openLoc.length + "|" + openRem.length + "|" + pipeLoc.isClosed() + "|" + pipeRem.isClosed() + "|" + cntr.getShPsum() + "|" + cntr.getShBsum() + "|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(created);
     }
 
     public int compareTo(servBgproxyNei o) {
