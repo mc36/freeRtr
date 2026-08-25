@@ -792,6 +792,9 @@ public class rtrOspf4 extends ipRtr implements prtRedunClnt {
      * stop work
      */
     public void routerCloseNow() {
+        if (haMode) {
+            prtRedun.clientDel(this);
+        }
         for (int i = 0; i < areas.size(); i++) {
             rtrOspf4area ntry = areas.get(i);
             if (ntry == null) {

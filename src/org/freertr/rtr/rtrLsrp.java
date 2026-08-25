@@ -1121,6 +1121,9 @@ public class rtrLsrp extends ipRtr implements Runnable, prtRedunClnt {
             logger.debug("shutdown");
         }
         need2run = false;
+        if (haMode) {
+            prtRedun.clientDel(this);
+        }
         other.unregister2ip();
         for (int i = 0; i < ifaces.size(); i++) {
             rtrLsrpIface ifc = ifaces.get(i);

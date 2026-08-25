@@ -839,6 +839,9 @@ public class rtrOspf6 extends ipRtr implements prtRedunClnt {
      * stop work
      */
     public void routerCloseNow() {
+        if (haMode) {
+            prtRedun.clientDel(this);
+        }
         for (int i = 0; i < areas.size(); i++) {
             rtrOspf6area ntry = areas.get(i);
             if (ntry == null) {

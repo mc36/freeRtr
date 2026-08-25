@@ -2148,6 +2148,9 @@ public class rtrIsis extends ipRtr implements prtRedunClnt {
      * stop work
      */
     public void routerCloseNow() {
+        if (haMode) {
+            prtRedun.clientDel(this);
+        }
         level1.stopNow();
         level2.stopNow();
         other.unregister2ip();

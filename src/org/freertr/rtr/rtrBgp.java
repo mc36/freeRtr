@@ -2028,6 +2028,9 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable, prtRedunClnt {
         }
         need2run = false;
         compute.wakeup();
+        if (haMode) {
+            prtRedun.clientDel(this);
+        }
         for (int i = 0; i < mons.size(); i++) {
             rtrBgpMon ntry = mons.get(i);
             ntry.stopNow();
