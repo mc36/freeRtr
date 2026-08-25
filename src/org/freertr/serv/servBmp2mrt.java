@@ -49,7 +49,6 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      */
     public final static int size = 6;
 
-
     /**
      * timeout on connection
      */
@@ -59,7 +58,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      * buffer size
      */
     public int bufSiz = 65536;
-    
+
     /**
      * relays
      */

@@ -24,9 +24,11 @@ import org.freertr.rtr.rtrBgp;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
+import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.counter;
 import org.freertr.util.logger;
 
 /**
@@ -83,16 +85,6 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
     public boolean logging = false;
 
     /**
-     * rewrite nexthop
-     */
-    public boolean nexthopIn = true;
-
-    /**
-     * rewrite nexthop
-     */
-    public boolean nexthopOut = true;
-
-    /**
      * neighbors
      */
     protected tabGen<servBgproxyNei> neighs = new tabGen<servBgproxyNei>();
@@ -106,8 +98,6 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
         new userFilter("server bgproxy .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ha-mode", null),
         new userFilter("server bgproxy .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target", null),
         new userFilter("server bgproxy .*", cmds.tabulator + cmds.negated + cmds.tabulator + "source", null),
-        new userFilter("server bgproxy .*", cmds.tabulator + "nexthop-in", null),
-        new userFilter("server bgproxy .*", cmds.tabulator + "nexthop-out", null),
         new userFilter("server bgproxy .*", cmds.tabulator + "timeout 60000", null),
         new userFilter("server bgproxy .*", cmds.tabulator + "keepalive 30000", null),
         new userFilter("server bgproxy .*", cmds.tabulator + "buffer 65536", null),
@@ -141,8 +131,6 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
     public void srvShRun(String beg, List<String> lst, int filter) {
         cmds.cfgLine(lst, !logging, beg, "logging", "");
         cmds.cfgLine(lst, !haMode, beg, "ha-mode", "");
-        cmds.cfgLine(lst, !nexthopIn, beg, "nexthop-in", "");
-        cmds.cfgLine(lst, !nexthopOut, beg, "nexthop-out", "");
         if (trgVrf == null) {
             lst.add(beg + "no target");
         } else {
@@ -175,14 +163,6 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
             } else {
                 prtRedun.clientDel(this);
             }
-            return false;
-        }
-        if (a.equals("nexthop-in")) {
-            nexthopIn = !neg;
-            return false;
-        }
-        if (a.equals("nexthop-out")) {
-            nexthopOut = !neg;
             return false;
         }
         if (a.equals("target")) {
@@ -237,8 +217,6 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
         l.add(null, false, 2, new int[]{-1}, "<name:vrf>", "name of vrf");
         l.add(null, false, 1, new int[]{2}, "source", "set interface to use");
         l.add(null, false, 2, new int[]{-1}, "<name:ifc>", "name of interface");
-        l.add(null, false, 1, new int[]{2}, "nexthop-in", "rewrite nexthop toward inside");
-        l.add(null, false, 1, new int[]{2}, "nexthop-out", "rewrite nexthop toward outside");
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
@@ -249,7 +227,7 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
         pipe.lineTx = pipeSide.modTyp.modeCRLF;
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
         pipe.setReady();
-        new servBgproxyClnt(this, pipe);
+        new servBgproxyClnt(this, pipe).startWork();
         return false;
     }
 
@@ -278,52 +256,64 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
      * @return true on error, false on success
      */
     public boolean redunStateSet(cmds cmd) {
-
-    /*
+        addrIP adr = new addrIP();
+        if (adr.fromString(cmd.word())) {
+            return true;
+        }
+        servBgproxyNei nei = new servBgproxyNei(this, adr);
         int i = bits.str2num(cmd.word());
         int o = bits.str2num(cmd.word());
         cfgIfc cfg = cfgAll.ifcFind(cmd.word(), 0);
         if (cfg == null) {
             return true;
         }
-        ipFwdIface ifc = cfg.getFwdIfc(peerAddr);
-        if (ifc == null) {
+        nei.ifc = cfg.getFwdIfc(adr);
+        if (nei.ifc == null) {
             return true;
         }
-        updateAddr(ifc);
-        pipeSide pip = lower.tcpCore.streamResume(new pipeLine(bufferSize, false), localIfc, i, peerAddr, o, "bgp", keyId, passwd, ttlSecurity, tosValue);
-        if (pip == null) {
+        if (trgVrf == null) {
             return true;
         }
-        conn = new rtrBgpSpeak(lower, this, pip, 2);
-        i = bits.str2num(cmd.word());
-        if (remoteAny) {
-            remoteAs = i;
-        }
-        i = bits.str2num(cmd.word());
-        conn.peerHold = i;
-        conn.peerKeep = i / 3;
-        pip.setTime(i);
-        conn.upTime = bits.str2long(cmd.word());
-        conn.peerAfis = stateSet(cmd.word());
-        conn.addpathRx = stateSet(cmd.word());
-        conn.addpathTx = stateSet(cmd.word());
-        conn.peerMltLab = stateSet(cmd.word());
-        conn.peerDynCap = cmd.word().equals("true");
-        conn.peerRouterID = new addrIPv4();
-        if (conn.peerRouterID.fromString(cmd.word())) {
-            pip.setClose();
+        nei.fwd = trgVrf.getFwd(adr);
+        nei.tcp = trgVrf.getTcp(adr);
+        nei.pipeRem = nei.tcp.streamResume(new pipeLine(bufSiz, false), nei.ifc, i, adr, o, "bgproxy", -1, null, -1, -1);
+        if (nei.pipeRem == null) {
             return true;
         }
-        conn.peer32bitAS = true;
-        conn.peerRefreshOld = true;
-        conn.peerRefreshNew = true;
+        nei.pipeRem.setTime(timeOut);
+        nei.created = bits.str2long(cmd.word());
+        nei.openLoc = encBase64.decodeBytes(cmd.word());
+        if (nei.openLoc == null) {
+            return true;
+        }
+        nei.openRem = encBase64.decodeBytes(cmd.word());
+        if (nei.openRem == null) {
+            return true;
+        }
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            nei.afis.add(bits.str2num(a));
+        }
+        nei.resume = true;
+        nei.startWork();
+        neighs.put(nei);
         return false;
-    */
+    }
 
-
-
-        return false;
+    /**
+     * get show
+     *
+     * @return result
+     */
+    public userFormat getShow() {
+        userFormat res = new userFormat("|", "peer|loc|rem|loc|rem|tx|rx|dr|tx|rx|dr|since|ago", "1|2open|2close|3pack|3byte|2time");
+        for (int i = 0; i < neighs.size(); i++) {
+            res.add("" + neighs.get(i));
+        }
+        return res;
     }
 
 }
@@ -337,6 +327,9 @@ class servBgproxyClnt implements Runnable {
     public servBgproxyClnt(servBgproxy lower, pipeSide conn) {
         parent = lower;
         pipe = conn;
+    }
+
+    public void startWork() {
         logger.startThread(this);
     }
 
@@ -367,6 +360,10 @@ class servBgproxyClnt implements Runnable {
         a = cmd.word();
         encUrl gotUrl = new encUrl();
         gotUrl.fromString("tcp://" + a);
+        a = cmd.word().toLowerCase();
+        if (!a.startsWith("http/")) {
+            return false;
+        }
         addrIP adr = clntDns.justResolv(gotUrl.server, 0);
         if (adr == null) {
             return false;
@@ -422,25 +419,39 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
 
     protected pipeSide pipeRem;
 
+    protected counter cntr = new counter();
+
     protected byte[] openLoc = new byte[0];
 
     protected byte[] openRem = new byte[0];
 
-    protected long recvLoc;
-
-    protected long recvRem;
+    protected long keeped;
 
     protected long created;
 
-    private ipFwd fwd;
+    protected ipFwd fwd;
 
-    private prtTcp tcp;
+    protected prtTcp tcp;
 
-    private ipFwdIface ifc;
+    protected ipFwdIface ifc;
+
+    protected boolean resume;
 
     public servBgproxyNei(servBgproxy lower, addrIP adr) {
         parent = lower;
         peer = adr.copyBytes();
+        pipeLine pl = new pipeLine(parent.bufSiz, false);
+        pipeLoc = pl.getSide();
+        pipeRem = pl.getSide();
+        pipeLoc.setReady();
+        pipeRem.setReady();
+        pipeLoc.setClose();
+        pipeRem.setClose();
+        pl.setClose();
+    }
+
+    public String toString() {
+        return peer + "|" + openLoc.length + "|" + openRem.length + "|" + pipeLoc.isClosed() + "|" + pipeRem.isClosed() + "|" + cntr.getShPsum() + "|" + cntr.getShBsum() + "|" + bits.time2str(cfgAll.timeZoneName, created + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(created);
     }
 
     public int compareTo(servBgproxyNei o) {
@@ -451,16 +462,15 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
         if (parent.logging) {
             logger.info("starting for " + peer);
         }
-        pipeLine pl = new pipeLine(parent.bufSiz, false);
-        pipeLoc = pl.getSide();
-        pipeRem = pl.getSide();
-        pl.setClose();
         logger.startThread(this);
     }
 
     public void run() {
         try {
             packHolder pck = new packHolder(true, true);
+            if (doWorkRes(pck)) {
+                pipeRem.setClose();
+            }
             for (;;) {
                 if (doWorkLoc(pck)) {
                     continue;
@@ -482,13 +492,14 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
                 pipeRem.nonBlockSkip(i);
             }
             long tim = bits.getTime();
-            if ((tim - recvLoc) < parent.keepAlive) {
+            if ((tim - keeped) < parent.keepAlive) {
                 return false;
             }
-            recvLoc = tim;
+            keeped = tim;
             pck.clear();
             rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgKeepLiv);
-            pck.pipeSend(pipeLoc, 0, pck.dataSize(), 2);
+            cntr.drop(pck, counter.reasons.notUp);
+            pck.pipeSend(pipeRem, 0, pck.dataSize(), 2);
             return false;
         }
         if (pipeLoc.ready2rx() < 1) {
@@ -501,7 +512,6 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
         if (rtrBgpUtil.checkHeader(pck)) {
             return false;
         }
-        recvLoc = bits.getTime();
         int len = pck.IPsiz;
         int typ = pck.IPprt;
         pck.clear();
@@ -510,6 +520,7 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
                 return false;
             }
         }
+        cntr.tx(pck);
         switch (typ) {
             case rtrBgpUtil.msgOpen:
                 openLoc = pck.getCopy();
@@ -518,9 +529,6 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
                 processFrsh(pck);
                 break;
             case rtrBgpUtil.msgUpdate:
-                if (parent.nexthopOut) {
-                    processUpdt(pck, ifc.addr);
-                }
                 break;
             default:
                 break;
@@ -528,6 +536,22 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
         rtrBgpUtil.createHeader(pck, typ);
         pck.pipeSend(pipeRem, 0, pck.dataSize(), 2);
         return true;
+    }
+
+    public boolean doWorkRes(packHolder pck) {
+        if (!resume) {
+            return false;
+        }
+        resume = false;
+        pipeRem.setReady();
+        pipeRem.wait4ready(parent.timeOut);
+        if (pipeRem.isReady() != 3) {
+            return true;
+        }
+        if (rtrBgpUtil.scanForHeader(pipeRem)) {
+            return true;
+        }
+        return false;
     }
 
     public boolean doWorkRem(packHolder pck) {
@@ -554,6 +578,11 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
             }
             res.setTime(parent.timeOut);
             res.setReady();
+            res.wait4ready(parent.timeOut);
+            if (res.isReady() != 3) {
+                res.setClose();
+                return false;
+            }
             pipeRem = res;
             pipeLoc.setClose();
             pck.clear();
@@ -574,7 +603,6 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
         if (rtrBgpUtil.checkHeader(pck)) {
             return false;
         }
-        recvRem = bits.getTime();
         int len = pck.IPsiz;
         int typ = pck.IPprt;
         pck.clear();
@@ -583,17 +611,16 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
                 return false;
             }
         }
+        cntr.rx(pck);
         switch (typ) {
             case rtrBgpUtil.msgOpen:
                 openRem = pck.getCopy();
+                pipeLoc.setClose();
                 return false;
             case rtrBgpUtil.msgRefrsh:
                 processFrsh(pck);
                 break;
             case rtrBgpUtil.msgUpdate:
-                if (parent.nexthopIn) {
-                    processUpdt(pck, peer);
-                }
                 break;
             default:
                 break;
@@ -609,17 +636,14 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
         afis.add(i);
     }
 
-    public void processUpdt(packHolder pck, addrIP adr) {
-    }
-
     public void stateGet(List<String> lst) {
-        if (pipeRem.isClosed() != 0) {
-            return;
-        }
         if (openRem.length < 1) {
             return;
         }
         if (openLoc.length < 1) {
+            return;
+        }
+        if ((pipeRem.isClosed() != 0) && (pipeLoc.isClosed() != 0)) {
             return;
         }
         prtGenConn sock = tcp.findOneConn(pipeRem);

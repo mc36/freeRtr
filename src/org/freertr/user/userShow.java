@@ -110,6 +110,7 @@ import org.freertr.rtr.rtrBgpDump;
 import org.freertr.rtr.rtrBgpSpeak;
 import org.freertr.rtr.rtrRpki;
 import org.freertr.rtr.rtrRpkiNeigh;
+import org.freertr.serv.servBgproxy;
 import org.freertr.serv.servCapwap;
 import org.freertr.serv.servEoIp;
 import org.freertr.serv.servErspan;
@@ -1689,6 +1690,15 @@ public class userShow {
             }
             a = cmd.word();
             doShowHistory(a, h);
+            return null;
+        }
+        if (a.equals("bgproxy")) {
+            servBgproxy srv = cfgAll.srvrFind(new servBgproxy(), cfgAll.dmnBgproxy, cmd.word());
+            if (srv == null) {
+                cmd.error("no such server");
+                return null;
+            }
+            rdr.putStrTab(srv.getShow());
             return null;
         }
         if (a.equals("bmp")) {
