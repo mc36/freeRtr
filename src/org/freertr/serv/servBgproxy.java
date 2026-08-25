@@ -3,16 +3,24 @@ package org.freertr.serv;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgInit;
 import org.freertr.cfg.cfgVrf;
 import org.freertr.clnt.clntDns;
 import org.freertr.enc.encUrl;
+import org.freertr.ip.ipFwd;
+import org.freertr.ip.ipFwdIface;
+import org.freertr.ip.ipFwdTab;
+import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtRedun;
 import org.freertr.prt.prtRedunClnt;
 import org.freertr.prt.prtServS;
+import org.freertr.prt.prtTcp;
+import org.freertr.rtr.rtrBgp;
+import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
@@ -39,9 +47,14 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
     public final static int port = 17980;
 
     /**
-     * group number
+     * target vrf
      */
     public cfgVrf trgVrf;
+
+    /**
+     * target interface
+     */
+    public cfgIfc srcIfc;
 
     /**
      * ha mode
@@ -86,6 +99,7 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
         new userFilter("server bgproxy .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
         new userFilter("server bgproxy .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ha-mode", null),
         new userFilter("server bgproxy .*", cmds.tabulator + cmds.negated + cmds.tabulator + "target", null),
+        new userFilter("server bgproxy .*", cmds.tabulator + cmds.negated + cmds.tabulator + "source", null),
         new userFilter("server bgproxy .*", cmds.tabulator + "nexthop-in", null),
         new userFilter("server bgproxy .*", cmds.tabulator + "nexthop-out", null),
         new userFilter("server bgproxy .*", cmds.tabulator + "timeout 60000", null),
@@ -126,6 +140,11 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
             lst.add(beg + "no target");
         } else {
             lst.add(beg + "target " + trgVrf.name);
+        }
+        if (srcIfc == null) {
+            lst.add(beg + "no source");
+        } else {
+            lst.add(beg + "source " + srcIfc.name);
         }
         lst.add(beg + "timeout " + timeOut);
         lst.add(beg + "buffer " + bufSiz);
@@ -170,6 +189,18 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
             }
             return false;
         }
+        if (a.equals("source")) {
+            if (neg) {
+                srcIfc = null;
+                return false;
+            }
+            srcIfc = cfgAll.ifcFind(cmd.word(), 0);
+            if (srcIfc == null) {
+                cmd.error("no such interface");
+                return false;
+            }
+            return false;
+        }
         if (a.equals("timeout")) {
             timeOut = bits.str2num(cmd.word());
             return false;
@@ -190,6 +221,8 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
         l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
         l.add(null, false, 1, new int[]{2}, "target", "set vrf to use");
         l.add(null, false, 2, new int[]{-1}, "<name:vrf>", "name of vrf");
+        l.add(null, false, 1, new int[]{2}, "source", "set interface to use");
+        l.add(null, false, 2, new int[]{-1}, "<name:ifc>", "name of interface");
         l.add(null, false, 1, new int[]{2}, "nexthop-in", "rewrite nexthop toward inside");
         l.add(null, false, 1, new int[]{2}, "nexthop-out", "rewrite nexthop toward outside");
     }
@@ -278,16 +311,21 @@ class servBgproxyClnt implements Runnable {
         servBgproxyNei nei = new servBgproxyNei(parent, adr);
         servBgproxyNei old = parent.neighs.add(nei);
         if (old != null) {
-            old.client.setClose();
             nei = old;
         } else {
             nei.startWork();
         }
-        nei.client = pipe;
-        nei.newly = true;
+        nei.pipeLoc.setClose();
+        nei.pipeLoc = pipe;
         pipe.linePut("HTTP/1.1 200 connected");
         pipe.linePut("Server: " + cfgInit.versionAgent);
         pipe.linePut("");
+        packHolder pck = new packHolder(true, true);
+        pck.putCopy(nei.openRem, 0, 0, nei.openRem.length);
+        pck.putSkip(nei.openRem.length);
+        pck.merge2beg();
+        rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgOpen);
+        pck.pipeSend(nei.pipeLoc, 0, pck.dataSize(), 2);
         return true;
     }
 
@@ -299,15 +337,17 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
 
     private final addrIP peer;
 
-    protected pipeSide client;
+    protected pipeSide pipeLoc;
 
-    protected boolean newly;
+    protected pipeSide pipeRem;
 
-    private pipeSide remote;
+    protected byte[] openLoc = new byte[0];
 
-    private byte[] openCln;
+    protected byte[] openRem = new byte[0];
 
-    private byte[] openRem;
+    protected long recvLoc;
+
+    protected long recvRem;
 
     public servBgproxyNei(servBgproxy lower, addrIP adr) {
         parent = lower;
@@ -322,10 +362,128 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
         if (parent.logging) {
             logger.info("starting for " + peer);
         }
+        pipeLine pl = new pipeLine(parent.bufSiz, false);
+        pipeLoc = pl.getSide();
+        pipeRem = pl.getSide();
+        pl.setClose();
         logger.startThread(this);
     }
 
     public void run() {
+        try {
+            packHolder pck = new packHolder(true, true);
+            for (;;) {
+                doWorkLoc(pck);
+                doWorkRem(pck);
+                bits.sleep(1000);
+            }
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
+    }
+
+    public void doWorkLoc(packHolder pck) {
+        if (pipeLoc.isClosed() != 0) {
+            int i = pipeRem.ready2rx();
+            if (i > 0) {
+                pipeRem.nonBlockSkip(i);
+            }
+            long tim = bits.getTime();
+            if ((tim - recvLoc) < parent.timeOut) {
+                return;
+            }
+            recvLoc = tim;
+            pck.clear();
+            rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgKeepLiv);
+            pck.pipeSend(pipeLoc, 0, pck.dataSize(), 2);
+            return;
+        }
+        if (pipeLoc.ready2rx() < 1) {
+            return;
+        }
+        pck.clear();
+        if (pck.pipeRecv(pipeLoc, 0, rtrBgpUtil.sizeU, 144) != rtrBgpUtil.sizeU) {
+            return;
+        }
+        if (rtrBgpUtil.checkHeader(pck)) {
+            return;
+        }
+        recvLoc = bits.getTime();
+        int len = pck.IPsiz;
+        int typ = pck.IPprt;
+        pck.clear();
+        if (len > 0) {
+            if (pck.pipeRecv(pipeLoc, 0, len, 144) != len) {
+                return;
+            }
+        }
+        if (typ == rtrBgpUtil.msgOpen) {
+            openLoc = pck.getCopy();
+            return;
+        }
+        rtrBgpUtil.createHeader(pck, typ);
+        pck.pipeSend(pipeRem, 0, pck.dataSize(), 2);
+    }
+
+    public void doWorkRem(packHolder pck) {
+        if (pipeRem.isClosed() != 0) {
+            if (parent.trgVrf == null) {
+                return;
+            }
+            if (openLoc.length < 1) {
+                return;
+            }
+            ipFwd fwd = parent.trgVrf.getFwd(peer);
+            prtTcp tcp = parent.trgVrf.getTcp(peer);
+            ipFwdIface ifc = null;
+            if (parent.srcIfc != null) {
+                ifc = parent.srcIfc.getFwdIfc(peer);
+            } else {
+                ifc = ipFwdTab.findSendingIface(fwd, peer);
+            }
+            if (ifc == null) {
+                return;
+            }
+            pipeSide res = tcp.streamConnect(new pipeLine(parent.bufSiz, false), ifc, 0, peer.copyBytes(), rtrBgp.port, "bgproxy", -1, null, -1, -1);
+            if (res == null) {
+                return;
+            }
+            res.setTime(parent.timeOut);
+            res.setReady();
+            pipeRem = res;
+            pck.clear();
+            pck.putCopy(openLoc, 0, 0, openLoc.length);
+            pck.putSkip(openLoc.length);
+            pck.merge2beg();
+            rtrBgpUtil.createHeader(pck, rtrBgpUtil.msgOpen);
+            pck.pipeSend(pipeRem, 0, pck.dataSize(), 2);
+            return;
+        }
+        if (pipeRem.ready2rx() < 1) {
+            return;
+        }
+        pck.clear();
+        if (pck.pipeRecv(pipeRem, 0, rtrBgpUtil.sizeU, 144) != rtrBgpUtil.sizeU) {
+            return;
+        }
+        if (rtrBgpUtil.checkHeader(pck)) {
+            return;
+        }
+        recvRem = bits.getTime();
+        int len = pck.IPsiz;
+        int typ = pck.IPprt;
+        pck.clear();
+        if (len > 0) {
+            if (pck.pipeRecv(pipeRem, 0, len, 144) != len) {
+                return;
+            }
+        }
+        if (typ == rtrBgpUtil.msgOpen) {
+            openRem = pck.getCopy();
+            return;
+        }
+        rtrBgpUtil.createHeader(pck, typ);
+        pck.pipeSend(pipeLoc, 0, pck.dataSize(), 2);
     }
 
 }

@@ -1617,24 +1617,11 @@ public class rtrBgpUtil {
      * @param pck packet to read
      * @return true if error, false if ok
      */
-    public static boolean checkMarker(packHolder pck) {
+    public static boolean checkHeader(packHolder pck) {
         for (int i = 0; i < markS; i++) {
             if (pck.getByte(i) != markV) {
                 return true;
             }
-        }
-        return false;
-    }
-
-    /**
-     * check if valid header received
-     *
-     * @param pck packet to read
-     * @return true if error, false if ok
-     */
-    public static boolean checkHeader(packHolder pck) {
-        if (checkMarker(pck)) {
-            return true;
         }
         pck.IPsiz = pck.msbGetW(16) - sizeU;
         pck.IPprt = pck.getByte(18);
@@ -1651,21 +1638,12 @@ public class rtrBgpUtil {
      * create message header
      *
      * @param pck packet to update
-     */
-    public static void createMarker(packHolder pck) {
-        for (int i = 0; i < markS; i++) {
-            pck.putByte(i, markV);
-        }
-    }
-
-    /**
-     * create message header
-     *
-     * @param pck packet to update
      * @param typ message type
      */
     public static void createHeader(packHolder pck, int typ) {
-        createMarker(pck);
+        for (int i = 0; i < markS; i++) {
+            pck.putByte(i, markV);
+        }
         pck.msbPutW(16, pck.dataSize() + sizeU);
         pck.putByte(18, typ);
         pck.putSkip(sizeU);
