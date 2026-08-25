@@ -1,1 +1,1 @@
-#define iou_chan() iou_mono(smpbt, 0);iou_mono(smpbt, smpbt);
+#define iou_chan() iou_mono(0, smpbt);iou_mono(0, 0);
