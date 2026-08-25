@@ -158,6 +158,36 @@ public class packer {
     }
 
     /**
+     * write udp data
+     *
+     * @param buf msb bytes
+     * @param len length
+     * @throws Exception on error
+     */
+    public void writeUdp(byte[] buf, int len) throws Exception {
+        buffer.clear();
+        buffer.put(0, buf, 0, len);
+        buffer.position(0);
+        buffer.limit(len);
+        target.write(buffer);
+    }
+
+    /**
+     * read rtp data
+     *
+     * @param buf msb bytes
+     * @return bytes
+     * @throws Exception on error
+     */
+    public int readUdp(byte[] buf) throws Exception {
+        buffer.clear();
+        source.receive(buffer);
+        int len = buffer.position();
+        buffer.get(0, buf, 0, len);
+        return len;
+    }
+
+    /**
      * write rtp data
      *
      * @param buf msb bytes
