@@ -90,7 +90,7 @@ public class servHoneyPot extends servGeneric implements prtServS {
     }
 
     public boolean srvInit() {
-        return genStrmStart(this, new pipeLine(128 * 1024, false), 0);
+        return genStrmStart(this, new pipeLine(32768, false), 0);
     }
 
     public boolean srvDeinit() {

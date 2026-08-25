@@ -49,6 +49,17 @@ public class servBmp2mrt extends servGeneric implements prtServS {
      */
     public final static int size = 6;
 
+
+    /**
+     * timeout on connection
+     */
+    public int timeOut = 120 * 1000;
+
+    /**
+     * buffer size
+     */
+    public int bufSiz = 65536;
+    
     /**
      * relays
      */
@@ -96,6 +107,8 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     public final static userFilter[] defaultF = {
         new userFilter("server bmp2mrt .*", cmds.tabulator + "port " + port, null),
         new userFilter("server bmp2mrt .*", cmds.tabulator + "protocol " + proto2string(protoAllStrm), null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + "timeout 120000", null),
+        new userFilter("server bmp2mrt .*", cmds.tabulator + "buffer 65536", null),
         new userFilter("server bmp2mrt .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local", null),
         new userFilter("server bmp2mrt .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bulk-down", null),
         new userFilter("server bmp2mrt .*", cmds.tabulator + "rate-down 0 0", null),
@@ -155,10 +168,20 @@ public class servBmp2mrt extends servGeneric implements prtServS {
             }
             l.add(beg + "relay " + rly);
         }
+        l.add(beg + "timeout " + timeOut);
+        l.add(beg + "buffer " + bufSiz);
     }
 
     public boolean srvCfgStr(cmds cmd) {
         String s = cmd.word();
+        if (s.equals("timeout")) {
+            timeOut = bits.str2num(cmd.word());
+            return false;
+        }
+        if (s.equals("buffer")) {
+            bufSiz = bits.str2num(cmd.word());
+            return false;
+        }
         if (s.equals("relay")) {
             servBmp2mrtRelay rly = new servBmp2mrtRelay();
             if (rly.fromString(cmd)) {
@@ -384,6 +407,10 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     public void srvHelp(userHelp l) {
+        l.add(null, false, 1, new int[]{2}, "timeout", "set timeout on connection");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");
+        l.add(null, false, 1, new int[]{2}, "buffer", "set buffer size on connection");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "buffer in bytes");
         l.add(null, false, 1, new int[]{-1}, "bulk-down", "down peers on speaker loss");
         l.add(null, false, 1, new int[]{2}, "rate-down", "down peers on inactivity");
         l.add(null, false, 2, new int[]{3}, "<num>", "ms between checks");
@@ -441,10 +468,10 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     public boolean srvInit() {
-        genStrmStart(this, new pipeLine(32768, false), listenBmp);
-        genStrmStart(this, new pipeLine(32768, false), listenRis);
-        genStrmStart(this, new pipeLine(32768, false), listenBgp);
-        genStrmStart(this, new pipeLine(32768, false), 0);
+        genStrmStart(this, new pipeLine(bufSiz, false), listenBmp);
+        genStrmStart(this, new pipeLine(bufSiz, false), listenRis);
+        genStrmStart(this, new pipeLine(bufSiz, false), listenBgp);
+        genStrmStart(this, new pipeLine(bufSiz, false), 0);
         return false;
     }
 
@@ -457,7 +484,7 @@ public class servBmp2mrt extends servGeneric implements prtServS {
     }
 
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
-        pipe.setTime(120000);
+        pipe.setTime(timeOut);
         if (id.portLoc == listenBmp) {
             new servBmp2mrtBmp(pipe, this, id);
             return false;

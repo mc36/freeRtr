@@ -250,6 +250,7 @@ public class servGenList<T extends servGeneric> {
         srvHelp(l, p, n, e, o, "prometheus", cfgAll.dmnPrometheus.listServers());
         srvHelp(l, p, n, e, o, "streamingmdt", cfgAll.dmnStreamingMdt.listServers());
         srvHelp(l, p, n, e, o, "bstun", cfgAll.dmnBStun.listServers());
+        srvHelp(l, p, n, e, o, "bgproxy", cfgAll.dmnBgproxy.listServers());
         srvHelp(l, p, n, e, o, "mrt2bgp", cfgAll.dmnMrt2bgp.listServers());
         srvHelp(l, p, n, e, o, "stun", cfgAll.dmnStun.listServers());
         srvHelp(l, p, n, e, o, "capwap", cfgAll.dmnCapwap.listServers());
@@ -473,6 +474,9 @@ class servGenEntry {
         }
         if (typ.equals("mrt2bgp")) {
             return new servGenEntry(new servMrt2bgp(), cfgAll.dmnMrt2bgp);
+        }
+        if (typ.equals("bgproxy")) {
+            return new servGenEntry(new servBgproxy(), cfgAll.dmnBgproxy);
         }
         if (typ.equals("bstun")) {
             return new servGenEntry(new servBstun(), cfgAll.dmnBStun);

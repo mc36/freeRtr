@@ -21,6 +21,7 @@ import org.freertr.ifc.ifcHairpin;
 import org.freertr.ifc.ifcThread;
 import org.freertr.pipe.pipeThread;
 import org.freertr.serv.servAmt;
+import org.freertr.serv.servBgproxy;
 import org.freertr.serv.servBmp2mrt;
 import org.freertr.serv.servBstun;
 import org.freertr.serv.servCapwap;
@@ -663,6 +664,11 @@ public class cfgAll {
      * bstun daemons
      */
     public final static servGenList<servBstun> dmnBStun = new servGenList<servBstun>();
+
+    /**
+     * bgproxy daemons
+     */
+    public final static servGenList<servBgproxy> dmnBgproxy = new servGenList<servBgproxy>();
 
     /**
      * stun daemons
@@ -4186,6 +4192,7 @@ public class cfgAll {
         dmnPrometheus.getShRun(l, filter);
         dmnStreamingMdt.getShRun(l, filter);
         dmnMrt2bgp.getShRun(l, filter);
+        dmnBgproxy.getShRun(l, filter);
         dmnBStun.getShRun(l, filter);
         dmnStun.getShRun(l, filter);
         dmnPckOudp.getShRun(l, filter);
