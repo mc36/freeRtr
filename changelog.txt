@@ -18656,3 +18656,6 @@ qc pass: wireguard over asymmetric ports
 ---------------------------------- 2026-08-26 06:34:04 26.8.26
 qc pass: bgproxy with ibgp
 qc pass: bgproxy with ebgp
+---------------------------------- 2026-08-26 13:37:46 26.8.26
+qc pass: bgproxy with ingress nexthop
+qc pass: bgproxy with egress nexthop

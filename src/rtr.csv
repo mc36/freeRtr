@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.8.26-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-08-26 13:07:04, took 00:17:40, with 50 workers, on 4470 cases, 0 failed, 0 traces, 12 retries
+-;-;-;2026-08-26 13:57:36, took 00:19:50, with 50 workers, on 4472 cases, 0 failed, 0 traces, 10 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -4437,6 +4437,8 @@ http://sources.freertr.org/cfg/rout-static27.tst;rout-static27.tst;success;stati
 http://sources.freertr.org/cfg/rout-static28.tst;rout-static28.tst;success;static routing over foreign ipv6 with interface
 http://sources.freertr.org/cfg/serv-bgproxy01.tst;serv-bgproxy01.tst;success;bgproxy with ibgp
 http://sources.freertr.org/cfg/serv-bgproxy02.tst;serv-bgproxy02.tst;success;bgproxy with ebgp
+http://sources.freertr.org/cfg/serv-bgproxy03.tst;serv-bgproxy03.tst;success;bgproxy with ingress nexthop
+http://sources.freertr.org/cfg/serv-bgproxy04.tst;serv-bgproxy04.tst;success;bgproxy with egress nexthop
 http://sources.freertr.org/cfg/serv-bmp01.tst;serv-bmp01.tst;success;static bmp peer
 http://sources.freertr.org/cfg/serv-bmp02.tst;serv-bmp02.tst;success;dynamic bmp peer
 http://sources.freertr.org/cfg/serv-dns01.tst;serv-dns01.tst;success;authoritative dns server
