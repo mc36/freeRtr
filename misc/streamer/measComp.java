@@ -18,10 +18,10 @@ public class measComp {
             return;
         }
         int sec = Integer.parseInt(args[4]);
-        devicer dataLine = devicer.getRecord(args[0]);
-        measCompOne dev = new measCompDev(dataLine, sec);
-        packer channel = packer.receiver(args[1], args[2], args[3]);
-        measCompOne net = new measCompNet(channel, sec);
+        devicer lin = devicer.getRecord(args[0]);
+        measCompOne dev = new measCompDev(lin, sec);
+        packet chn = packer.receiver(args[1], args[2], args[3]).string2kind(null);
+        measCompOne net = new measCompNet(chn, sec);
         measCompOne d = new measCompOne(sec);
         measCompOne n = new measCompOne(sec);
         for (;;) {
@@ -166,9 +166,9 @@ class measCompDev extends measCompOne implements Runnable {
 
 class measCompNet extends measCompOne implements Runnable {
 
-    private packer channel;
+    private packet channel;
 
-    public measCompNet(packer ch, int sec) {
+    public measCompNet(packet ch, int sec) {
         super(sec);
         channel = ch;
         new Thread(this).start();
@@ -179,7 +179,7 @@ class measCompNet extends measCompOne implements Runnable {
         for (;;) {
             int i = 0;
             try {
-                i = channel.readRtp(buf);
+                i = channel.readKind(buf);
             } catch (Exception e) {
             }
             if (i < 1) {

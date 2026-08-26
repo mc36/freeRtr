@@ -17,11 +17,11 @@ public class mixer {
             System.out.println("usage: java this <group> <port>  <group> <source> <port>  <group> <source> <port>  ...");
             return;
         }
-        packer target = packer.sender(args[0], args[1]);
+        packet target = packer.sender(args[0], args[1]).string2kind(null);
         mixerOne source[] = new mixerOne[(args.length - 2) / 3];
         for (int i = 0; i < source.length; i++) {
             int p = (i * 3) + 2;
-            packer s = packer.receiver(args[p + 0], args[p + 1], args[p + 2]);
+            packet s = packer.receiver(args[p + 0], args[p + 1], args[p + 2]).string2kind(null);
             source[i] = new mixerOne(s);
         }
         for (int i = 1; i < source.length; i++) {
@@ -45,7 +45,7 @@ public class mixer {
                 cur[i] = (int) (res[i] / source.length);
             }
             target.coder.encode(cur, buf, buf.length);
-            target.writeRtp(buf, buf.length);
+            target.writeKind(buf, buf.length);
         }
     }
 
@@ -53,7 +53,7 @@ public class mixer {
 
 class mixerOne implements Runnable {
 
-    private final packer src;
+    private final packet src;
 
     private final byte[][] buf;
 
@@ -61,7 +61,7 @@ class mixerOne implements Runnable {
 
     public byte[] lst;
 
-    public mixerOne(packer s) {
+    public mixerOne(packet s) {
         src = s;
         buf = new byte[3][devicer.payl];
         pos = 0;
@@ -72,7 +72,7 @@ class mixerOne implements Runnable {
         lst = buf[pos];
         pos = (pos + 1) % buf.length;
         byte[] cur = buf[pos];
-        int o = src.readRtp(cur);
+        int o = src.readKind(cur);
         if (o < 1) {
             throw new Exception("read failed");
         }

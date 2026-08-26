@@ -33,7 +33,10 @@ public class packer {
 
     private int clk;
 
-    private packer() {
+    /**
+     * create instance
+     */
+    protected packer() {
     }
 
     /**
@@ -81,6 +84,34 @@ public class packer {
         r.source.socket().bind(new InetSocketAddress(port));
         r.source.join(group, mcast.getNetworkInterface(), source);
         return r;
+    }
+
+    /**
+     * get kind
+     *
+     * @param a string
+     * @return kind
+     */
+    public packet string2kind(String a) throws Exception {
+        if (a == null) {
+            return new packetRtp(this);
+        }
+        if (a.equals("rtp")) {
+            return new packetRtp(this);
+        }
+        if (a.equals("scr")) {
+            return new packetScr(this);
+        }
+        if (a.equals("vba")) {
+            return new packetVba(this);
+        }
+        if (a.equals("wfa")) {
+            return new packetWfa(this);
+        }
+        if (a.equals("udp")) {
+            return new packetUdp(this);
+        }
+        throw new Exception("unknown kind");
     }
 
     /**
@@ -387,6 +418,86 @@ public class packer {
         buffer.get(devicer.wfal, buf, 0, len);
         coder.byteSwap(buf, len);
         return len;
+    }
+
+}
+
+class packetRtp extends packet {
+
+    public packetRtp(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readRtp(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeRtp(buf, len);
+    }
+
+}
+
+class packetScr extends packet {
+
+    public packetScr(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readScr(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeScr(buf, len);
+    }
+
+}
+
+class packetVba extends packet {
+
+    public packetVba(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readVba(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeVba(buf, len);
+    }
+
+}
+
+class packetWfa extends packet {
+
+    public packetWfa(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readWfa(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeWfa(buf, len);
+    }
+
+}
+
+class packetUdp extends packet {
+
+    public packetUdp(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readUdp(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeUdp(buf, len);
     }
 
 }

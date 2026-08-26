@@ -17,17 +17,15 @@ public class forwarder {
             System.out.println("usage: java this <kind> <group> <source> <port> <kind> <group> <port>");
             return;
         }
-        packer srcNet = packer.receiver(args[1], args[2], args[3]);
-        packet srcKnd = packet.string2kind(args[0], srcNet);
-        packer trgNet = packer.sender(args[5], args[6]);
-        packet trgKnd = packet.string2kind(args[4], trgNet);
+        packet src = packer.receiver(args[1], args[2], args[3]).string2kind(args[0]);
+        packet trg = packer.sender(args[5], args[6]).string2kind(args[4]);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
-            int i = srcKnd.readKind(buf);
+            int i = src.readKind(buf);
             if (i < 1) {
                 break;
             }
-            trgKnd.writeKind(buf, i);
+            trg.writeKind(buf, i);
         }
     }
 

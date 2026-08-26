@@ -18,8 +18,7 @@ public class sender {
             return;
         }
         decoder dec = new decoder(args[0], args[1], args[2]);
-        packer chn = packer.sender(args[4], args[5]);
-        packet knd = packet.string2kind(args[3], chn);
+        packet knd = packer.sender(args[4], args[5]).string2kind(args[3]);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
             int i = dec.read(buf);

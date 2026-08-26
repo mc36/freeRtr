@@ -21,7 +21,7 @@ public class monoStreamDup {
         int vol = (int) (Float.parseFloat(args[1]) * 100);
         int chS = Integer.parseInt(args[2]) & 1;
         int chT = (chS + 1) & 1;
-        packer rtp = packer.sender(args[3], args[4]);
+        packet trg = packer.sender(args[3], args[4]).string2kind(null);
         byte[] buf = new byte[devicer.payl];
         int cur[] = new int[buf.length / devicer.smpb];
         for (;;) {
@@ -29,11 +29,11 @@ public class monoStreamDup {
             if (o < 1) {
                 break;
             }
-            rtp.coder.decode(cur, buf, o);
+            trg.coder.decode(cur, buf, o);
             monoDoer.duplicate(cur, chS, chT, vol);
             monoDoer.duplicate(cur, chS, chS, vol);
-            rtp.coder.encode(cur, buf, o);
-            rtp.writeRtp(buf, o);
+            trg.coder.encode(cur, buf, o);
+            trg.writeKind(buf, o);
         }
     }
 

@@ -19,7 +19,7 @@ public class monoStreamVol {
         }
         devicer dataLine = devicer.getRecord(args[0]);
         int vol = (int) (Float.parseFloat(args[1]) * 100);
-        packer rtp = packer.sender(args[2], args[3]);
+        packet trg = packer.sender(args[2], args[3]).string2kind(null);
         byte[] buf = new byte[devicer.payl];
         int cur[] = new int[buf.length / devicer.smpb];
         for (;;) {
@@ -27,11 +27,11 @@ public class monoStreamVol {
             if (o < 1) {
                 break;
             }
-            rtp.coder.decode(cur, buf, o);
+            trg.coder.decode(cur, buf, o);
             monoDoer.duplicate(cur, 0, 0, vol);
             monoDoer.duplicate(cur, 1, 1, vol);
-            rtp.coder.encode(cur, buf, o);
-            rtp.writeRtp(buf, o);
+            trg.coder.encode(cur, buf, o);
+            trg.writeKind(buf, o);
         }
     }
 

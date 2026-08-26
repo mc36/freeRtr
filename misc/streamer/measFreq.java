@@ -19,8 +19,8 @@ public class measFreq {
         }
         int frq = Integer.parseInt(args[3]);
         int vol = Integer.parseInt(args[4]);
-        devicer dataLine = devicer.getRecord(args[0]);
-        packer rtp = packer.sender(args[1], args[2]);
+        devicer lin = devicer.getRecord(args[0]);
+        packet trg = packer.sender(args[1], args[2]).string2kind(null);
         byte[] buf = new byte[devicer.payl];
         byte[] nxt = new byte[buf.length];
         long pos = 0;
@@ -28,11 +28,11 @@ public class measFreq {
         int got = 0;
         int top = -1;
         for (;;) {
-            int len = dataLine.read(buf);
+            int len = lin.read(buf);
             if (len < 1) {
                 break;
             }
-            rtp.writeRtp(nxt, nxt.length);
+            trg.writeKind(nxt, nxt.length);
             pos += nxt.length;
             measFreq.toneGen(nxt, pos, frq, vol);
             if (got < 1) {

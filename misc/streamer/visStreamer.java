@@ -18,8 +18,7 @@ public class visStreamer {
             return;
         }
         devicer lin = devicer.getRecord(args[0]);
-        packer chn = packer.sender(args[2], args[3]);
-        packet knd = packet.string2kind(args[1], chn);
+        packet knd = packer.sender(args[2], args[3]).string2kind(args[1]);
         byte[] buf = new byte[devicer.payl];
         visDoer vu = new visDoer();
         for (;;) {

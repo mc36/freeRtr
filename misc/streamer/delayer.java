@@ -24,16 +24,16 @@ public class delayer {
         for (i = 0; i < len.length; i++) {
             len[i] = devicer.payl;
         }
-        packer source = packer.receiver(args[0], args[1], args[2]);
-        packer rtp = packer.sender(args[3], args[4]);
+        packet src = packer.receiver(args[0], args[1], args[2]).string2kind(null);
+        packet trg = packer.sender(args[3], args[4]).string2kind(null);
         for (;;) {
-            i = source.readRtp(buf[pos]);
+            i = src.readKind(buf[pos]);
             if (i < 1) {
                 break;
             }
             len[pos] = i;
             i = (pos + 1) % len.length;
-            rtp.writeRtp(buf[i], len[i]);
+            trg.writeKind(buf[i], len[i]);
             pos = i;
         }
     }

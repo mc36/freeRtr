@@ -19,8 +19,8 @@ public class measBeep {
         }
         int per = (Integer.parseInt(args[3]) * devicer.smpb * 2 * devicer.rate) / devicer.payl;
         int mul = Integer.parseInt(args[4]);
-        devicer dataLine = devicer.getRecord(args[0]);
-        packer rtp = packer.sender(args[1], args[2]);
+        devicer lin = devicer.getRecord(args[0]);
+        packet trg = packer.sender(args[1], args[2]).string2kind(null);
         byte[] buf = new byte[devicer.payl];
         byte[] sln = new byte[buf.length];
         byte[] snd = new byte[buf.length];
@@ -30,19 +30,19 @@ public class measBeep {
         int ned = Integer.MAX_VALUE;
         int avg = 0;
         for (;;) {
-            int len = dataLine.read(buf);
+            int len = lin.read(buf);
             if (len < 1) {
                 break;
             }
             if (pos > per) {
-                rtp.writeRtp(snd, snd.length);
+                trg.writeKind(snd, snd.length);
                 pos = 0;
                 ned = avg * mul;
             } else {
                 if (pos < (devicer.rate / devicer.payl)) {
-                    rtp.writeRtp(snd, snd.length);
+                    trg.writeKind(snd, snd.length);
                 } else {
-                    rtp.writeRtp(sln, sln.length);
+                    trg.writeKind(sln, sln.length);
                 }
             }
             pos++;

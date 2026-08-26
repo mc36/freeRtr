@@ -17,12 +17,11 @@ public class visMeterRem {
             System.out.println("usage: java this <kind> <group> <source> <port>");
             return;
         }
-        packer chn = packer.receiver(args[1], args[2], args[3]);
-        packet knd = packet.string2kind(args[0], chn);
+        packet knd = packer.receiver(args[1], args[2], args[3]).string2kind(args[0]);
         byte[] buf = new byte[devicer.payl];
         visDoer vu = new visDoer();
         for (;;) {
-            int i = chn.readRtp(buf);
+            int i = knd.readKind(buf);
             if (i < 1) {
                 break;
             }
