@@ -45,7 +45,7 @@ public abstract class packet {
      * @param p packer
      * @return kind
      */
-    public static packet string2kind(String a, packer p) {
+    public static packet string2kind(String a, packer p) throws Exception {
         if (a.equals("rtp")) {
             return new kindRtp(p);
         }
@@ -61,7 +61,7 @@ public abstract class packet {
         if (a.equals("udp")) {
             return new kindUdp(p);
         }
-        return null;
+        throw new Exception("unknown kind");
     }
 
 }
