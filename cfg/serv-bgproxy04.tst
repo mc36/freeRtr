@@ -123,8 +123,8 @@ r2 tping 100 60 1234:1::1 vrf v1
 r2 tping 100 60 1.1.2.3 vrf v1
 r2 tping 100 60 1234:2::3 vrf v1
 
-r1 send clear ipv4 bgp 1 peer 1.1.2.3 in unicast
-r1 send clear ipv6 bgp 1 peer 1234:2::3 in unicast
+r1 send clear ipv4 bgp 1 peer 1.1.1.3 in unicast
+r1 send clear ipv6 bgp 1 peer 1234::3 in unicast
 
 r1 tping 100 60 2.2.2.3 vrf v1
 r1 tping 100 60 4321::3 vrf v1

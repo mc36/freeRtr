@@ -4434,7 +4434,7 @@ qc pass: static routing over foreign ipv6 with interface
 qc pass: bgproxy with ibgp
 qc pass: bgproxy with ebgp
 qc pass: bgproxy with ingress nexthop
-failed: bgproxy with egress nexthop
+qc pass: bgproxy with egress nexthop
 qc pass: static bmp peer
 qc pass: dynamic bmp peer
 qc pass: authoritative dns server

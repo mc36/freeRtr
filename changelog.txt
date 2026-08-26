@@ -18662,3 +18662,6 @@ qc pass: bgproxy with egress nexthop
 ---------------------------------- 2026-08-26 15:22:33 26.8.26
 no qc pass: bgproxy with egress nexthop
 failed: bgproxy with egress nexthop
+---------------------------------- 2026-08-26 15:49:10 26.8.26
+no failed: bgproxy with egress nexthop
+qc pass: bgproxy with egress nexthop
