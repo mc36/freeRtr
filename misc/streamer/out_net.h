@@ -10,9 +10,7 @@ void iou_write() {
 }
 
 
-void ply_udp() {
-    iou_bswp();
-    if (send(plyHnd, &bufD[padln], bufS, 0) != bufS) err("error sending");
+void iou_stop() {
 }
 
 
@@ -67,7 +65,9 @@ void ply_wfa() {
 }
 
 
-void iou_stop() {
+void ply_udp() {
+    iou_bswp();
+    if (send(plyHnd, &bufD[padln], bufS, 0) != bufS) err("error sending");
 }
 
 
