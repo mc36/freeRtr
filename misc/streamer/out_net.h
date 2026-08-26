@@ -65,8 +65,13 @@ void ply_wfa() {
 }
 
 
-void ply_udp() {
+void ply_udpm() {
     iou_bswp();
+    if (send(plyHnd, &bufD[padln], bufS, 0) != bufS) err("error sending");
+}
+
+
+void ply_udpl() {
     if (send(plyHnd, &bufD[padln], bufS, 0) != bufS) err("error sending");
 }
 
@@ -77,7 +82,8 @@ void ply_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"scr") == 0) plyFnc = &ply_scr;
     if (strcmp(knd,"vba") == 0) plyFnc = &ply_vba;
     if (strcmp(knd,"wfa") == 0) plyFnc = &ply_wfa;
-    if (strcmp(knd,"udp") == 0) plyFnc = &ply_udp;
+    if (strcmp(knd,"udpm") == 0) plyFnc = &ply_udpm;
+    if (strcmp(knd,"udpl") == 0) plyFnc = &ply_udpl;
     if (plyFnc == NULL) err("no such kind");
     struct sockaddr_in addrTmp;
     memset(&addrTmp, 0, sizeof (addrTmp));

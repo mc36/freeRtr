@@ -108,8 +108,11 @@ public class packer {
         if (a.equals("wfa")) {
             return new packetWfa(this);
         }
-        if (a.equals("udp")) {
-            return new packetUdp(this);
+        if (a.equals("udpm")) {
+            return new packetUdpMsb(this);
+        }
+        if (a.equals("udpl")) {
+            return new packetUdpLsb(this);
         }
         throw new Exception("unknown kind");
     }
@@ -195,7 +198,7 @@ public class packer {
      * @param len length
      * @throws Exception on error
      */
-    public void writeUdp(byte[] buf, int len) throws Exception {
+    public void writeUdpMsb(byte[] buf, int len) throws Exception {
         buffer.clear();
         buffer.put(0, buf, 0, len);
         buffer.position(0);
@@ -204,17 +207,49 @@ public class packer {
     }
 
     /**
-     * read rtp data
+     * read udp data
      *
      * @param buf msb bytes
      * @return bytes
      * @throws Exception on error
      */
-    public int readUdp(byte[] buf) throws Exception {
+    public int readUdpMsb(byte[] buf) throws Exception {
         buffer.clear();
         source.receive(buffer);
         int len = buffer.position();
         buffer.get(0, buf, 0, len);
+        return len;
+    }
+
+    /**
+     * write udp data
+     *
+     * @param buf msb bytes
+     * @param len length
+     * @throws Exception on error
+     */
+    public void writeUdpLsb(byte[] buf, int len) throws Exception {
+        coder.byteSwap(buf, len);
+        buffer.clear();
+        buffer.put(0, buf, 0, len);
+        buffer.position(0);
+        buffer.limit(len);
+        target.write(buffer);
+    }
+
+    /**
+     * read udp data
+     *
+     * @param buf msb bytes
+     * @return bytes
+     * @throws Exception on error
+     */
+    public int readUdpLsb(byte[] buf) throws Exception {
+        buffer.clear();
+        source.receive(buffer);
+        int len = buffer.position();
+        buffer.get(0, buf, 0, len);
+        coder.byteSwap(buf, len);
         return len;
     }
 
@@ -486,18 +521,34 @@ class packetWfa extends packet {
 
 }
 
-class packetUdp extends packet {
+class packetUdpMsb extends packet {
 
-    public packetUdp(packer p) {
+    public packetUdpMsb(packer p) {
         super(p);
     }
 
     public int readKind(byte[] buf) throws Exception {
-        return pck.readUdp(buf);
+        return pck.readUdpMsb(buf);
     }
 
     public void writeKind(byte[] buf, int len) throws Exception {
-        pck.writeUdp(buf, len);
+        pck.writeUdpMsb(buf, len);
+    }
+
+}
+
+class packetUdpLsb extends packet {
+
+    public packetUdpLsb(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readUdpLsb(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeUdpLsb(buf, len);
     }
 
 }

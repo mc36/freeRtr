@@ -52,9 +52,14 @@ void rec_wfa() {
 }
 
 
-void rec_udp() {
+void rec_udpm() {
     bufS = recv(recHnd, &bufD[padln], sizeof (bufD) - padln, 0);
     iou_bswp();
+}
+
+
+void rec_udpl() {
+    bufS = recv(recHnd, &bufD[padln], sizeof (bufD) - padln, 0);
 }
 
 
@@ -64,7 +69,8 @@ void rec_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"scr") == 0) recFnc = &rec_scr;
     if (strcmp(knd,"vba") == 0) recFnc = &rec_vba;
     if (strcmp(knd,"wfa") == 0) recFnc = &rec_wfa;
-    if (strcmp(knd,"udp") == 0) recFnc = &rec_udp;
+    if (strcmp(knd,"udpm") == 0) recFnc = &rec_udpm;
+    if (strcmp(knd,"udpl") == 0) recFnc = &rec_udpl;
     if (recFnc == NULL) err("no such kind");
     struct sockaddr_in addrTmp;
     struct ip_mreq_source mcgrReq;
