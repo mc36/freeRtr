@@ -2,6 +2,8 @@ package org.freertr.serv;
 
 import java.util.List;
 import org.freertr.addr.addrIP;
+import org.freertr.addr.addrIPv4;
+import org.freertr.addr.addrIPv6;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgInit;
@@ -21,6 +23,7 @@ import org.freertr.prt.prtRedunClnt;
 import org.freertr.prt.prtServS;
 import org.freertr.prt.prtTcp;
 import org.freertr.rtr.rtrBgp;
+import org.freertr.rtr.rtrBgpAttr;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFilter;
@@ -80,6 +83,16 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
     public int bufSiz = 65536;
 
     /**
+     * set nexthop ingress
+     */
+    public boolean nextHopIn = false;
+
+    /**
+     * set nexthop egress
+     */
+    public boolean nextHopOut = false;
+
+    /**
      * logging
      */
     public boolean logging = false;
@@ -101,6 +114,8 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
         new userFilter("server bgproxy .*", cmds.tabulator + "timeout 60000", null),
         new userFilter("server bgproxy .*", cmds.tabulator + "keepalive 30000", null),
         new userFilter("server bgproxy .*", cmds.tabulator + "buffer 65536", null),
+        new userFilter("server bgproxy .*", cmds.tabulator + cmds.negated + cmds.tabulator + "nexthop-in", null),
+        new userFilter("server bgproxy .*", cmds.tabulator + cmds.negated + cmds.tabulator + "nexthop-out", null),
         new userFilter("server bgproxy .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
     };
 
@@ -129,6 +144,8 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
     }
 
     public void srvShRun(String beg, List<String> lst, int filter) {
+        cmds.cfgLine(lst, !nextHopIn, beg, "nexthop-in", "");
+        cmds.cfgLine(lst, !nextHopOut, beg, "nexthop-out", "");
         cmds.cfgLine(lst, !logging, beg, "logging", "");
         cmds.cfgLine(lst, !haMode, beg, "ha-mode", "");
         if (trgVrf == null) {
@@ -151,6 +168,14 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
         boolean neg = a.equals(cmds.negated);
         if (neg) {
             a = cmd.word();
+        }
+        if (a.equals("nexthop-in")) {
+            nextHopIn = !neg;
+            return false;
+        }
+        if (a.equals("nexthop-out")) {
+            nextHopOut = !neg;
+            return false;
         }
         if (a.equals("logging")) {
             logging = !neg;
@@ -205,6 +230,8 @@ public class servBgproxy extends servGeneric implements prtServS, prtRedunClnt {
     }
 
     public void srvHelp(userHelp l) {
+        l.add(null, false, 1, new int[]{-1}, "nexthop-in", "update nexthop inbound");
+        l.add(null, false, 1, new int[]{-1}, "nexthop-out", "update nexthop outbound");
         l.add(null, false, 1, new int[]{-1}, "logging", "log the hits");
         l.add(null, false, 1, new int[]{-1}, "ha-mode", "save state");
         l.add(null, false, 1, new int[]{2}, "timeout", "set timeout on connection");
@@ -468,14 +495,15 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
     public void run() {
         try {
             packHolder pck = new packHolder(true, true);
+            packHolder hlp = new packHolder(true, true);
             if (doWorkRes(pck)) {
                 pipeRem.setClose();
             }
             for (;;) {
-                if (doWorkLoc(pck)) {
+                if (doWorkLoc(pck, hlp)) {
                     continue;
                 }
-                if (doWorkRem(pck)) {
+                if (doWorkRem(pck, hlp)) {
                     continue;
                 }
                 bits.sleep(1000);
@@ -485,7 +513,7 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
         }
     }
 
-    public static int doWorkPack(pipeSide pip, packHolder pck) {
+    public static int doGetPack(pipeSide pip, packHolder pck) {
         if (pip.ready2rx() < rtrBgpUtil.sizeU) {
             return -1;
         }
@@ -507,9 +535,9 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
         return typ;
     }
 
-    public boolean doWorkLoc(packHolder pck) {
+    public boolean doWorkLoc(packHolder pck, packHolder hlp) {
         if (pipeLoc.isClosed() != 0) {
-            if (doWorkPack(pipeRem, pck) >= 0) {
+            if (doGetPack(pipeRem, pck) >= 0) {
                 cntr.rx(pck);
             }
             long tim = bits.getTime();
@@ -523,7 +551,7 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
             pck.pipeSend(pipeRem, 0, pck.dataSize(), 2);
             return false;
         }
-        int typ = doWorkPack(pipeLoc, pck);
+        int typ = doGetPack(pipeLoc, pck);
         if (typ < 0) {
             return false;
         }
@@ -536,6 +564,9 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
                 processFrsh(pck);
                 break;
             case rtrBgpUtil.msgUpdate:
+                if (parent.nextHopOut) {
+                    processUpdt(pck, hlp, ifc.addr);
+                }
                 break;
             default:
                 break;
@@ -561,7 +592,7 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
         return false;
     }
 
-    public boolean doWorkRem(packHolder pck) {
+    public boolean doWorkRem(packHolder pck, packHolder hlp) {
         if (pipeRem.isClosed() != 0) {
             if (parent.trgVrf == null) {
                 return false;
@@ -600,7 +631,7 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
             pck.pipeSend(pipeRem, 0, pck.dataSize(), 2);
             return false;
         }
-        int typ = doWorkPack(pipeRem, pck);
+        int typ = doGetPack(pipeRem, pck);
         if (typ < 0) {
             return false;
         }
@@ -614,6 +645,9 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
                 processFrsh(pck);
                 break;
             case rtrBgpUtil.msgUpdate:
+                if (parent.nextHopIn) {
+                    processUpdt(pck, hlp, peer);
+                }
                 break;
             default:
                 break;
@@ -627,6 +661,62 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
         int i = pck.msbGetD(0);
         i &= rtrBgpUtil.frsMask;
         afis.add(i);
+    }
+
+    public void processUpdt(packHolder pck, packHolder hlp, addrIP adr) {
+        pck = pck.copyBytes(false, false);
+        int i = pck.msbGetW(0);
+        pck.getSkip(2);
+        pck.getSkip(i);
+        i = pck.msbGetW(0);
+        pck.getSkip(2);
+        pck.setDataSize(i);
+        for (;;) {
+            i = pck.dataSize();
+            if (i <= 0) {
+                break;
+            }
+            if (rtrBgpAttr.parseAttrib(pck, hlp)) {
+                break;
+            }
+            switch (hlp.ETHtype) {
+                case rtrBgpUtil.attrNextHop:
+                    if (!adr.isIPv4()) {
+                        break;
+                    }
+                    afis.add(rtrBgpUtil.safiIp4uni);
+                    packHolder cur = pck.copyBytes(false, false);
+                    cur.getSkip(-hlp.dataSize());
+                    cur.unMergeBytes(addrIPv4.size);
+                    cur.putAddr(-addrIPv4.size, adr.toIPv4());
+                    cur.merge2beg();
+                    break;
+                case rtrBgpUtil.attrReachable:
+                    cur = pck.copyBytes(false, false);
+                    cur.getSkip(-hlp.dataSize());
+                    i = rtrBgpUtil.triplet2safi(cur.msbGetD(0));
+                    i &= rtrBgpUtil.frsMask;
+                    afis.add(i);
+                    i = cur.getByte(3);
+                    cur.getSkip(4);
+                    if (adr.isIPv4()) {
+                        if (i > addrIPv4.size) {
+                            break;
+                        }
+                        cur.unMergeBytes(addrIPv4.size);
+                        cur.putAddr(-addrIPv4.size, adr.toIPv4());
+                        cur.merge2beg();
+                    } else {
+                        if (i < addrIPv6.size) {
+                            break;
+                        }
+                        cur.unMergeBytes(addrIPv6.size);
+                        cur.putAddr(-addrIPv6.size, adr.toIPv6());
+                        cur.merge2beg();
+                    }
+                    break;
+            }
+        }
     }
 
     public void stateGet(List<String> lst) {
