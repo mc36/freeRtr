@@ -4431,6 +4431,8 @@ qc pass: static routing over foreign ipv4
 qc pass: static routing over foreign ipv6
 qc pass: static routing over foreign ipv4 with interface
 qc pass: static routing over foreign ipv6 with interface
+qc pass: bgproxy with ibgp
+qc pass: bgproxy with ebgp
 qc pass: static bmp peer
 qc pass: dynamic bmp peer
 qc pass: authoritative dns server
