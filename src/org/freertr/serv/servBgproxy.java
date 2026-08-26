@@ -485,11 +485,32 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
         }
     }
 
+    public static int doWorkPack(pipeSide pip, packHolder pck) {
+        if (pip.ready2rx() < rtrBgpUtil.sizeU) {
+            return -1;
+        }
+        pck.clear();
+        if (pck.pipeRecv(pip, 0, rtrBgpUtil.sizeU, 144) != rtrBgpUtil.sizeU) {
+            return -1;
+        }
+        if (rtrBgpUtil.checkHeader(pck)) {
+            return -1;
+        }
+        int len = pck.IPsiz;
+        int typ = pck.IPprt;
+        pck.clear();
+        if (len > 0) {
+            if (pck.pipeRecv(pip, 0, len, 144) != len) {
+                return -1;
+            }
+        }
+        return typ;
+    }
+
     public boolean doWorkLoc(packHolder pck) {
         if (pipeLoc.isClosed() != 0) {
-            int i = pipeRem.ready2rx();
-            if (i > 0) {
-                pipeRem.nonBlockSkip(i);
+            if (doWorkPack(pipeRem, pck) >= 0) {
+                cntr.rx(pck);
             }
             long tim = bits.getTime();
             if ((tim - keeped) < parent.keepAlive) {
@@ -502,23 +523,9 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
             pck.pipeSend(pipeRem, 0, pck.dataSize(), 2);
             return false;
         }
-        if (pipeLoc.ready2rx() < 1) {
+        int typ = doWorkPack(pipeLoc, pck);
+        if (typ < 0) {
             return false;
-        }
-        pck.clear();
-        if (pck.pipeRecv(pipeLoc, 0, rtrBgpUtil.sizeU, 144) != rtrBgpUtil.sizeU) {
-            return false;
-        }
-        if (rtrBgpUtil.checkHeader(pck)) {
-            return false;
-        }
-        int len = pck.IPsiz;
-        int typ = pck.IPprt;
-        pck.clear();
-        if (len > 0) {
-            if (pck.pipeRecv(pipeLoc, 0, len, 144) != len) {
-                return false;
-            }
         }
         cntr.tx(pck);
         switch (typ) {
@@ -593,23 +600,9 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
             pck.pipeSend(pipeRem, 0, pck.dataSize(), 2);
             return false;
         }
-        if (pipeRem.ready2rx() < 1) {
+        int typ = doWorkPack(pipeRem, pck);
+        if (typ < 0) {
             return false;
-        }
-        pck.clear();
-        if (pck.pipeRecv(pipeRem, 0, rtrBgpUtil.sizeU, 144) != rtrBgpUtil.sizeU) {
-            return false;
-        }
-        if (rtrBgpUtil.checkHeader(pck)) {
-            return false;
-        }
-        int len = pck.IPsiz;
-        int typ = pck.IPprt;
-        pck.clear();
-        if (len > 0) {
-            if (pck.pipeRecv(pipeRem, 0, len, 144) != len) {
-                return false;
-            }
         }
         cntr.rx(pck);
         switch (typ) {

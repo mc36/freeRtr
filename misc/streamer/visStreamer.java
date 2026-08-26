@@ -2,7 +2,7 @@
 /**
  * stream live capture
  *
- * @author mc36
+ * @author matecsaba
  */
 public class visStreamer {
 
