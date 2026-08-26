@@ -564,6 +564,9 @@ class servBgproxyNei implements Runnable, Comparable<servBgproxyNei> {
                 processFrsh(pck);
                 break;
             case rtrBgpUtil.msgUpdate:
+                if (ifc == null) {
+                    break;
+                }
                 if (parent.nextHopOut) {
                     processUpdt(pck, hlp, ifc.addr);
                 }
