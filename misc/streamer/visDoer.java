@@ -30,13 +30,13 @@ public class visDoer {
      */
     public void doer(byte[] buf, int len) {
         System.out.print("\033[0;0H");
-        int num = len / (devicer.smpb * 2);
+        int num = len / (consts.smpb * 2);
         int pos = vl.length - num;
         System.arraycopy(vl, num, vl, 0, pos);
         System.arraycopy(vr, num, vr, 0, pos);
-        for (int i = 0; i < len; i += devicer.smpb * 2) {
+        for (int i = 0; i < len; i += consts.smpb * 2) {
             vl[pos] = sample(buf, i + 0);
-            vr[pos] = sample(buf, i + devicer.smpb);
+            vr[pos] = sample(buf, i + consts.smpb);
             pos++;
         }
         char[][] sl;

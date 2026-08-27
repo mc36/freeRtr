@@ -22,8 +22,8 @@ public class monoForwardDup {
         int vol = (int) (Float.parseFloat(args[5]) * 100);
         int chS = Integer.parseInt(args[6]) & 1;
         int chT = (chS + 1) & 1;
-        byte[] buf = new byte[devicer.payl];
-        int cur[] = new int[buf.length / devicer.smpb];
+        byte[] buf = new byte[consts.payl];
+        int cur[] = new int[buf.length / consts.smpb];
         for (;;) {
             int o = src.readKind(buf);
             if (o < 1) {

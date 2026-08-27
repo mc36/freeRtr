@@ -18,11 +18,11 @@ public class delayer {
             return;
         }
         int i = Integer.parseInt(args[5]);
-        byte[][] buf = new byte[i][devicer.payl];
+        byte[][] buf = new byte[i][consts.payl];
         int[] len = new int[i];
         int pos = 0;
         for (i = 0; i < len.length; i++) {
-            len[i] = devicer.payl;
+            len[i] = consts.payl;
         }
         packet src = packer.receiver(args[0], args[1], args[2]).string2kind(null);
         packet trg = packer.sender(args[3], args[4]).string2kind(null);

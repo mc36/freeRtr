@@ -19,7 +19,7 @@ public class streamer {
         }
         devicer lin = devicer.getRecord(args[0]);
         packet knd = packer.sender(args[2], args[3]).string2kind(args[1]);
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[consts.payl];
         for (;;) {
             int i = lin.read(buf);
             if (i < 1) {

@@ -19,7 +19,7 @@ public class receiver {
         }
         devicer lin = devicer.getPlayback(args[0]);
         packet knd = packer.receiver(args[2], args[3], args[4]).string2kind(args[1]);
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[consts.payl];
         for (;;) {
             int i = knd.readKind(buf);
             if (i < 1) {

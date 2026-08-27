@@ -19,7 +19,7 @@ public class playback {
         }
         decoder src = decoder.getPlayback(args[0], args[1], args[2]);
         devicer trg = devicer.getPlayback(args[3]);
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[consts.payl];
         for (;;) {
             int i = src.read(buf);
             if (i < 0) {

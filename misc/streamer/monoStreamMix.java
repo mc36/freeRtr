@@ -20,8 +20,8 @@ public class monoStreamMix {
         devicer lin = devicer.getRecord(args[0]);
         int vol = (int) (Float.parseFloat(args[1]) * 100);
         packet trg = packer.sender(args[2], args[3]).string2kind(null);
-        byte[] buf = new byte[devicer.payl];
-        int cur[] = new int[buf.length / devicer.smpb];
+        byte[] buf = new byte[consts.payl];
+        int cur[] = new int[buf.length / consts.smpb];
         for (;;) {
             int o = lin.read(buf);
             if (o < 1) {

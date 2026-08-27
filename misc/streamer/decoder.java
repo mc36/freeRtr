@@ -43,10 +43,10 @@ public class decoder {
             "-i", fil,
             "-vn", "-sn",
             "-af", "volume=" + vol,
-            "-ar", "" + devicer.rate,
+            "-ar", "" + consts.rate,
             "-ac", "2",
-            "-c:a", "pcm_s" + (devicer.smpb * 8) + "be",
-            "-f", "s" + (devicer.smpb * 8) + "be",
+            "-c:a", "pcm_s" + (consts.smpb * 8) + "be",
+            "-f", "s" + (consts.smpb * 8) + "be",
             "-"};
         r.process = Runtime.getRuntime().exec(cmd);
         r.stream = r.process.getErrorStream();
@@ -65,6 +65,7 @@ public class decoder {
     public static decoder getRecord(String fil) throws Exception {
         decoder r = new decoder();
         r.fil = new FileOutputStream(fil, false);
+        r.fil.write(new byte[consts.wavl]);
         return r;
     }
 

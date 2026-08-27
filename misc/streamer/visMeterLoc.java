@@ -18,7 +18,7 @@ public class visMeterLoc {
             return;
         }
         devicer dataLine = devicer.getRecord(args[0]);
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[consts.payl];
         visDoer vu = new visDoer();
         for (;;) {
             int i = dataLine.read(buf);

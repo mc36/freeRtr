@@ -133,8 +133,8 @@ public class packer {
         res.add("s=Noname");
         res.add("c=IN IP4 " + grp);
         res.add("t=0 0");
-        res.add("m=audio " + prt + " RTP/AVP " + devicer.rtpt);
-        res.add("a=rtpmap:" + devicer.rtpt + " L" + (devicer.smpb * 8) + "/" + devicer.rate + "/2");
+        res.add("m=audio " + prt + " RTP/AVP " + consts.rtpt);
+        res.add("a=rtpmap:" + consts.rtpt + " L" + (consts.smpb * 8) + "/" + consts.rate + "/2");
         res.add("a=source-filter: incl IN IP4 " + grp + " " + src);
         res.add("a=recvonly");
         res.add("a=type:broadcast");
@@ -263,16 +263,16 @@ public class packer {
      */
     public void writeRtp(byte[] buf, int len) throws Exception {
         buffer.clear();
-        putMsb(buffer, 0, 0x80000000 | (devicer.rtpt << 16) | seq);
+        putMsb(buffer, 0, 0x80000000 | (consts.rtpt << 16) | seq);
         putMsb(buffer, 4, clk);
         putMsb(buffer, 8, src);
-        buffer.put(devicer.rtpl, buf, 0, len);
+        buffer.put(consts.rtpl, buf, 0, len);
         buffer.position(0);
-        buffer.limit(len + devicer.rtpl);
+        buffer.limit(len + consts.rtpl);
         target.write(buffer);
         seq++;
         seq &= 0xffff;
-        clk += len / (2 * devicer.smpb);
+        clk += len / (2 * consts.smpb);
     }
 
     /**
@@ -287,15 +287,15 @@ public class packer {
         for (;;) {
             buffer.clear();
             source.receive(buffer);
-            len = buffer.position() - devicer.rtpl;
-            if (len < devicer.rtpl) {
+            len = buffer.position() - consts.rtpl;
+            if (len < consts.rtpl) {
                 break;
             }
-            if ((buffer.get(1) & 0xff) == devicer.rtpt) {
+            if ((buffer.get(1) & 0xff) == consts.rtpt) {
                 break;
             }
         }
-        buffer.get(devicer.rtpl, buf, 0, len);
+        buffer.get(consts.rtpl, buf, 0, len);
         return len;
     }
 
@@ -309,14 +309,14 @@ public class packer {
     public void writeScr(byte[] buf, int len) throws Exception {
         coder.byteSwap(buf, len);
         buffer.clear();
-        buffer.put(0, (byte) devicer.scrb);
-        buffer.put(1, (byte) (devicer.smpb * 8));
+        buffer.put(0, (byte) consts.scrb);
+        buffer.put(1, (byte) (consts.smpb * 8));
         buffer.put(2, (byte) 2);
-        buffer.put(3, (byte) devicer.scrt);
+        buffer.put(3, (byte) consts.scrt);
         buffer.put(4, (byte) 0);
-        buffer.put(devicer.scrl, buf, 0, len);
+        buffer.put(consts.scrl, buf, 0, len);
         buffer.position(0);
-        buffer.limit(len + devicer.scrl);
+        buffer.limit(len + consts.scrl);
         target.write(buffer);
     }
 
@@ -332,21 +332,21 @@ public class packer {
         for (;;) {
             buffer.clear();
             source.receive(buffer);
-            len = buffer.position() - devicer.scrl;
-            if (len < devicer.scrl) {
+            len = buffer.position() - consts.scrl;
+            if (len < consts.scrl) {
                 break;
             }
-            if ((buffer.get(0) & 0xff) != devicer.scrb) {
+            if ((buffer.get(0) & 0xff) != consts.scrb) {
                 continue;
             }
-            if ((buffer.get(1) & 0xff) != (devicer.smpb * 8)) {
+            if ((buffer.get(1) & 0xff) != (consts.smpb * 8)) {
                 continue;
             }
-            if ((buffer.get(3) & 0xff) == devicer.scrt) {
+            if ((buffer.get(3) & 0xff) == consts.scrt) {
                 break;
             }
         }
-        buffer.get(devicer.scrl, buf, 0, len);
+        buffer.get(consts.scrl, buf, 0, len);
         coder.byteSwap(buf, len);
         return len;
     }
@@ -361,19 +361,19 @@ public class packer {
     public void writeVba(byte[] buf, int len) throws Exception {
         coder.byteSwap(buf, len);
         buffer.clear();
-        putMsb(buffer, 0, devicer.vbam);
-        buffer.put(4, (byte) devicer.vbab());
-        buffer.put(5, (byte) ((len / (2 * devicer.smpb)) - 1));
+        putMsb(buffer, 0, consts.vbam);
+        buffer.put(4, (byte) consts.vbab());
+        buffer.put(5, (byte) ((len / (2 * consts.smpb)) - 1));
         buffer.put(6, (byte) 1);
-        buffer.put(7, (byte) (devicer.smpb - 1));
+        buffer.put(7, (byte) (consts.smpb - 1));
         putMsb(buffer, 8, 0x6e6f6e65);
         putMsb(buffer, 12, 0);
         putMsb(buffer, 16, 0);
         putMsb(buffer, 20, 0);
         putMsb(buffer, 24, seq);
-        buffer.put(devicer.vbal, buf, 0, len);
+        buffer.put(consts.vbal, buf, 0, len);
         buffer.position(0);
-        buffer.limit(len + devicer.vbal);
+        buffer.limit(len + consts.vbal);
         target.write(buffer);
         seq++;
     }
@@ -390,21 +390,21 @@ public class packer {
         for (;;) {
             buffer.clear();
             source.receive(buffer);
-            len = buffer.position() - devicer.vbal;
-            if (len < devicer.vbal) {
+            len = buffer.position() - consts.vbal;
+            if (len < consts.vbal) {
                 break;
             }
-            if (getMsb(buffer, 0) != devicer.vbam) {
+            if (getMsb(buffer, 0) != consts.vbam) {
                 continue;
             }
-            if ((buffer.get(4) & 0xff) != devicer.vbab()) {
+            if ((buffer.get(4) & 0xff) != consts.vbab()) {
                 continue;
             }
-            if ((buffer.get(7) & 0xff) == (devicer.smpb - 1)) {
+            if ((buffer.get(7) & 0xff) == (consts.smpb - 1)) {
                 break;
             }
         }
-        buffer.get(devicer.vbal, buf, 0, len);
+        buffer.get(consts.vbal, buf, 0, len);
         coder.byteSwap(buf, len);
         return len;
     }
@@ -419,16 +419,16 @@ public class packer {
     public void writeWfa(byte[] buf, int len) throws Exception {
         coder.byteSwap(buf, len);
         buffer.clear();
-        putMsb(buffer, 0, devicer.wfam);
-        putMsb(buffer, 2, (devicer.wfam << 16) | seq);
+        putMsb(buffer, 0, consts.wfam);
+        putMsb(buffer, 2, (consts.wfam << 16) | seq);
         putMsb(buffer, 6, clk);
-        buffer.put(devicer.wfal, buf, 0, len);
+        buffer.put(consts.wfal, buf, 0, len);
         buffer.position(0);
-        buffer.limit(len + devicer.wfal);
+        buffer.limit(len + consts.wfal);
         target.write(buffer);
         seq++;
         seq &= 0xffff;
-        clk += len / (2 * devicer.smpb);
+        clk += len / (2 * consts.smpb);
     }
 
     /**
@@ -443,15 +443,15 @@ public class packer {
         for (;;) {
             buffer.clear();
             source.receive(buffer);
-            len = buffer.position() - devicer.wfal;
-            if (len < devicer.wfal) {
+            len = buffer.position() - consts.wfal;
+            if (len < consts.wfal) {
                 break;
             }
-            if (getMsb(buffer, 0) == devicer.wfam) {
+            if (getMsb(buffer, 0) == consts.wfam) {
                 break;
             }
         }
-        buffer.get(devicer.wfal, buf, 0, len);
+        buffer.get(consts.wfal, buf, 0, len);
         coder.byteSwap(buf, len);
         return len;
     }

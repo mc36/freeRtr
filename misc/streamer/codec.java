@@ -38,7 +38,7 @@ public abstract interface codec {
      * @return codec to use
      */
     public static codec getCodec() {
-        switch (devicer.smpb) {
+        switch (consts.smpb) {
             case 1:
                 return new codec1b();
             case 2:

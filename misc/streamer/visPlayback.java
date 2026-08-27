@@ -19,7 +19,7 @@ public class visPlayback {
         }
         decoder src = decoder.getPlayback(args[0], args[1], args[2]);
         devicer trg = devicer.getPlayback(args[3]);
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[consts.payl];
         visDoer vu = new visDoer();
         for (;;) {
             int i = src.read(buf);

@@ -3,6 +3,7 @@ int plyHnd;
 void ply_init(char*fil) {
     plyHnd = open(fil, O_WRONLY | O_CREAT);
     if (plyHnd < 0) err("error creating");
+    write(plyHnd, &bufD[padln], wavln);
 }
 
 void iou_write() {

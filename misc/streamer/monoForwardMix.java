@@ -20,8 +20,8 @@ public class monoForwardMix {
         packet src = packer.receiver(args[0], args[1], args[2]).string2kind(null);
         packet rtp = packer.sender(args[3], args[4]).string2kind(null);
         int vol = (int) (Float.parseFloat(args[5]) * 100);
-        byte[] buf = new byte[devicer.payl];
-        int cur[] = new int[buf.length / devicer.smpb];
+        byte[] buf = new byte[consts.payl];
+        int cur[] = new int[buf.length / consts.smpb];
         for (;;) {
             int o = src.readKind(buf);
             if (o < 1) {

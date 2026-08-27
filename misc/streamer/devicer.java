@@ -13,71 +13,6 @@ import javax.sound.sampled.TargetDataLine;
 public class devicer {
 
     /**
-     * sampling rate
-     */
-    public static final int rate = 48000;
-
-    /**
-     * bytes per sample
-     */
-    public static final int smpb = 4;
-
-    /**
-     * bytes per payload
-     */
-    public static final int payl = 1200;
-
-    /**
-     * bytes in rtp header
-     */
-    public static final int rtpl = 12;
-
-    /**
-     * type in rtp header
-     */
-    public static final int rtpt = 96;
-
-    /**
-     * bytes in scream header
-     */
-    public static final int scrl = 5;
-
-    /**
-     * scream rate bits
-     */
-    public static final int scrb = (rate % 44100) != 0 ? rate / 48000 : 128 | (rate / 44100);
-
-    /**
-     * scream channel layout
-     */
-    public static final int scrt = 3;
-
-    /**
-     * bytes in vban header
-     */
-    public static final int vbal = 28;
-
-    /**
-     * vban magic bytes
-     */
-    public static final int vbam = 0x5642414e;
-
-    /**
-     * vbab cached result
-     */
-    private static int vbac = -1;
-
-    /**
-     * bytes in wfas header
-     */
-    public static final int wfal = 10;
-
-    /**
-     * wfas magic bytes
-     */
-    public static final int wfam = 0x57460200;
-
-    /**
      * playback line
      */
     private SourceDataLine playLine;
@@ -88,30 +23,6 @@ public class devicer {
     private TargetDataLine recLine;
 
     private devicer() {
-    }
-
-    /**
-     * vban rate bits
-     *
-     * @return value
-     */
-    public static final int vbab() {
-        if (vbac >= 0) {
-            return vbac;
-        }
-        int[] vals = {
-            6000, 12000, 24000, 48000, 96000, 192000, 384000,
-            8000, 16000, 32000, 64000, 128000, 256000, 512000,
-            11025, 22050, 44100, 88200, 176400, 352800, 705600
-        };
-        vbac = 256;
-        for (int i = 0; i < vals.length; i++) {
-            if (vals[i] == rate) {
-                vbac = i;
-                break;
-            }
-        }
-        return vbac;
     }
 
     /**
@@ -152,10 +63,10 @@ public class devicer {
      * @throws Exception on error
      */
     public static AudioFormat getFormat() throws Exception {
-        if ((payl % (smpb * 2)) != 0) {
+        if ((consts.payl % (consts.smpb * 2)) != 0) {
             throw new Exception("samples not fully fit");
         }
-        return new AudioFormat(rate, smpb * 8, 2, true, true);
+        return new AudioFormat(consts.rate, consts.smpb * 8, 2, true, true);
     }
 
     /**
@@ -170,7 +81,7 @@ public class devicer {
         Mixer.Info mixer = devicer.findDevice(dev);
         AudioFormat format = devicer.getFormat();
         r.playLine = AudioSystem.getSourceDataLine(format, mixer);
-        r.playLine.open(format, payl);
+        r.playLine.open(format, consts.payl);
         r.playLine.start();
         return r;
     }
@@ -187,7 +98,7 @@ public class devicer {
         Mixer.Info mixer = devicer.findDevice(dev);
         AudioFormat format = devicer.getFormat();
         r.recLine = AudioSystem.getTargetDataLine(format, mixer);
-        r.recLine.open(format, payl);
+        r.recLine.open(format, consts.payl);
         r.recLine.start();
         return r;
     }

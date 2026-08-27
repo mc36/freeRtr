@@ -27,8 +27,8 @@ public class mixer {
         for (int i = 1; i < source.length; i++) {
             new Thread(source[i]).start();
         }
-        byte[] buf = new byte[devicer.payl];
-        int cur[] = new int[buf.length / devicer.smpb];
+        byte[] buf = new byte[consts.payl];
+        int cur[] = new int[buf.length / consts.smpb];
         long res[] = new long[cur.length];
         for (;;) {
             source[0].readRound();
@@ -63,7 +63,7 @@ class mixerOne implements Runnable {
 
     public mixerOne(packet s) {
         src = s;
-        buf = new byte[3][devicer.payl];
+        buf = new byte[3][consts.payl];
         pos = 0;
         lst = buf[0];
     }

@@ -18,7 +18,7 @@ public class visMeterRem {
             return;
         }
         packet knd = packer.receiver(args[1], args[2], args[3]).string2kind(args[0]);
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[consts.payl];
         visDoer vu = new visDoer();
         for (;;) {
             int i = knd.readKind(buf);

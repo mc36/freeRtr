@@ -18,7 +18,7 @@ public class recorder {
         }
         packet src = packer.receiver(args[2], args[3], args[4]).string2kind(args[1]);
         decoder trg = decoder.getRecord(args[0]);
-        byte[] buf = new byte[devicer.payl];
+        byte[] buf = new byte[consts.payl];
         for (;;) {
             int i = src.readKind(buf);
             if (i < 0) {
