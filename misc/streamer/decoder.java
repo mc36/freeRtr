@@ -1,4 +1,5 @@
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
 
 /**
@@ -8,19 +9,31 @@ import java.io.InputStream;
  */
 public class decoder {
 
+    /**
+     * the codec
+     */
+    public final codec coder = codec.getCodec();
+
     private Process process;
 
     private InputStream stream;
 
+    private FileOutputStream fil;
+
+    private decoder() {
+    }
+
     /**
-     * create instance
+     * get playback
      *
      * @param fil file
      * @param pos position
      * @param vol volume
+     * @return instance
      * @throws Exception on error
      */
-    public decoder(String fil, String pos, String vol) throws Exception {
+    public static decoder getPlayback(String fil, String pos, String vol) throws Exception {
+        decoder r = new decoder();
         String[] cmd = {
             "ffmpeg",
             "-hide_banner",
@@ -35,10 +48,36 @@ public class decoder {
             "-c:a", "pcm_s" + (devicer.smpb * 8) + "be",
             "-f", "s" + (devicer.smpb * 8) + "be",
             "-"};
-        process = Runtime.getRuntime().exec(cmd);
-        stream = process.getErrorStream();
-        stream.close();
-        stream = process.getInputStream();
+        r.process = Runtime.getRuntime().exec(cmd);
+        r.stream = r.process.getErrorStream();
+        r.stream.close();
+        r.stream = r.process.getInputStream();
+        return r;
+    }
+
+    /**
+     * get recorder
+     *
+     * @param fil file
+     * @return instance
+     * @throws Exception on error
+     */
+    public static decoder getRecord(String fil) throws Exception {
+        decoder r = new decoder();
+        r.fil = new FileOutputStream(fil, false);
+        return r;
+    }
+
+    /**
+     * write sample data
+     *
+     * @param buf msb bytes
+     * @param len length
+     * @throws Exception on error
+     */
+    public void write(byte[] buf, int len) throws Exception {
+        coder.byteSwap(buf, len);
+        fil.write(buf, 0, len);
     }
 
     /**

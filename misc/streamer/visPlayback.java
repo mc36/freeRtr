@@ -17,16 +17,16 @@ public class visPlayback {
             System.out.println("usage: java this <file> <seek> <vol> <device>");
             return;
         }
-        decoder dec = new decoder(args[0], args[1], args[2]);
-        devicer dataLine = devicer.getPlayback(args[3]);
+        decoder src = decoder.getPlayback(args[0], args[1], args[2]);
+        devicer trg = devicer.getPlayback(args[3]);
         byte[] buf = new byte[devicer.payl];
         visDoer vu = new visDoer();
         for (;;) {
-            int i = dec.read(buf);
+            int i = src.read(buf);
             if (i < 0) {
                 break;
             }
-            dataLine.write(buf, i);
+            trg.write(buf, i);
             vu.doer(buf, i);
         }
     }

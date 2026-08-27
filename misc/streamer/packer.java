@@ -91,6 +91,7 @@ public class packer {
      *
      * @param a string
      * @return kind
+     * @throws Exception on error
      */
     public packet string2kind(String a) throws Exception {
         if (a == null) {

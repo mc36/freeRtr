@@ -1,10 +1,9 @@
 
 /**
- * play back file
  *
- * @author matecsaba
+ * @author mc36
  */
-public class playback {
+public class recorder {
 
     /**
      * the main
@@ -13,15 +12,15 @@ public class playback {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 4) {
-            System.out.println("usage: java this <file> <seek> <vol> <device>");
+        if (args.length < 5) {
+            System.out.println("usage: java this <file> <kind> <group> <source> <port>");
             return;
         }
-        decoder src = decoder.getPlayback(args[0], args[1], args[2]);
-        devicer trg = devicer.getPlayback(args[3]);
+        packet src = packer.receiver(args[2], args[3], args[4]).string2kind(args[1]);
+        decoder trg = decoder.getRecord(args[0]);
         byte[] buf = new byte[devicer.payl];
         for (;;) {
-            int i = src.read(buf);
+            int i = src.readKind(buf);
             if (i < 0) {
                 break;
             }

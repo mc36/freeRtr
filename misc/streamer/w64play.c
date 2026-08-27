@@ -7,7 +7,7 @@
 
 
 int main(int argc, char**argv) {
-    if (argc <= 2) err("usage this <file> <device>");
+    if (argc <= 2) err("usage this <device> <file>");
     ply_init(argv[1]);
     rec_init(argv[2]);
     iou_loop();
