@@ -18665,3 +18665,6 @@ failed: bgproxy with egress nexthop
 ---------------------------------- 2026-08-26 15:49:10 26.8.26
 no failed: bgproxy with egress nexthop
 qc pass: bgproxy with egress nexthop
+---------------------------------- 2026-08-29 17:14:25 26.8.29
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
