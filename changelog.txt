@@ -18674,3 +18674,6 @@ qc pass: dhcp with excluded address
 ---------------------------------- 2026-08-30 05:56:33 26.8.30
 no qc pass: wireguard over wireguard
 failed: wireguard over wireguard
+---------------------------------- 2026-08-30 07:51:48 26.8.30
+no failed: wireguard over wireguard
+qc pass: wireguard over wireguard
