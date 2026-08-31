@@ -4157,6 +4157,7 @@ public class cfgAll {
         dmnSyslog.getShRun(l, filter);
         dmnLoadBalancer.getShRun(l, filter);
         dmnMultiplexer.getShRun(l, filter);
+        dmnRtpStat.getShRun(l, filter);
         dmnSocks.getShRun(l, filter);
         dmnHttp.getShRun(l, filter);
         dmnFtp.getShRun(l, filter);
@@ -4166,7 +4167,6 @@ public class cfgAll {
         dmnNtp.getShRun(l, filter);
         dmnDaytime.getShRun(l, filter);
         dmnRexec.getShRun(l, filter);
-        dmnRtpStat.getShRun(l, filter);
         dmnTime.getShRun(l, filter);
         dmnSnmp.getShRun(l, filter);
         dmnIscsi.getShRun(l, filter);
