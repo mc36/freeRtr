@@ -18677,3 +18677,6 @@ failed: wireguard over wireguard
 ---------------------------------- 2026-08-30 07:51:48 26.8.30
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
+---------------------------------- 2026-08-31 04:46:16 26.8.31
+no qc pass: wireguard over asymmetric ports
+failed: wireguard over asymmetric ports
