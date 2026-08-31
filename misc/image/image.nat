@@ -4,7 +4,7 @@ include ../misc/image/image.beg
 select-one zlib1g                        #dependency
 
 copy ../misc/image/init.nat %tmp%/init.run
-copy rtr.bin %tmp%/rtr/
+copy %img%.bin %tmp%/rtr/rtr.bin
 
 select-lst
 select-sum
