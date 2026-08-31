@@ -132,19 +132,56 @@ public class encWave {
      * @param codec codec value
      */
     public static void makeHeader(byte[] buf, int codec) {
+        makeHeader(buf, buf.length, codec, 1, 8000, 1);
+    }
+
+    /**
+     * make header
+     *
+     * @param buf buffer to use
+     * @param len length of buffer
+     * @param codec codec value
+     * @param chans channels
+     * @param srate sample rate
+     * @param depth bytes per sample
+     */
+    public static void makeHeader(byte[] buf, int len, int codec, int chans, int srate, int depth) {
         bits.msbPutD(buf, 0, 0x52494646);
-        bits.lsbPutD(buf, 4, buf.length - 8);
+        bits.lsbPutD(buf, 4, len < 0 ? -1 : len - 8);
         bits.msbPutD(buf, 8, 0x57415645);
         bits.msbPutD(buf, 12, 0x666D7420);
         bits.lsbPutD(buf, 16, 0x10);
         bits.lsbPutW(buf, 20, codec);
-        bits.lsbPutW(buf, 22, 1); // channels
-        bits.lsbPutD(buf, 24, 8000); // sample rate
-        bits.lsbPutD(buf, 28, 8000); // bytes / sec
-        bits.lsbPutW(buf, 32, 1); // align
-        bits.lsbPutW(buf, 34, 8); // bits / sample
+        bits.lsbPutW(buf, 22, chans);
+        bits.lsbPutD(buf, 24, srate);
+        bits.lsbPutD(buf, 28, srate * chans * depth); // bytes / sec
+        bits.lsbPutW(buf, 32, chans * depth); // align
+        bits.lsbPutW(buf, 34, depth * 8); // bits / sample
         bits.msbPutD(buf, 36, 0x64617461);
-        bits.lsbPutD(buf, 40, buf.length - 44);
+        bits.lsbPutD(buf, 40, len < 0 ? -1 : len - 44);
+    }
+
+    /**
+     * byte swap
+     *
+     * @param buf bytes
+     * @param depth bytes per sample
+     * @return swapped bytes
+     */
+    public static byte[] byteSwap(byte[] buf, int depth) {
+        byte[] res = new byte[(buf.length / depth) * depth];
+        int o = 0;
+        int p = depth - 1;
+        for (int i = 0; i < res.length; i++) {
+            res[i] = buf[o + p];
+            p--;
+            if (p >= 0) {
+                continue;
+            }
+            o += depth;
+            p = depth - 1;
+        }
+        return res;
     }
 
 }

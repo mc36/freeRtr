@@ -111,6 +111,11 @@ public class servHttpHost implements Comparable<servHttpHost> {
     public List<cfgTrnsltn> translate;
 
     /**
+     * rtpstat server
+     */
+    public servRtpStat rtpStatS;
+
+    /**
      * proxy for stream
      */
     public clntProxy streamP;
@@ -325,6 +330,9 @@ public class servHttpHost implements Comparable<servHttpHost> {
             String s = servHttpUtil.subconn2string(subconn);
             l.add(a + " subconn" + s);
         }
+        if (rtpStatS != null) {
+            l.add(a + " rtpstat " + rtpStatS.srvName);
+        }
         if (streamT != null) {
             l.add(a + " stream " + streamM + " " + streamP.name + " " + streamT);
         }
@@ -516,6 +524,20 @@ public class servHttpHost implements Comparable<servHttpHost> {
         }
         if (a.equals("subconn")) {
             subconn = servHttpUtil.string2subconn(negated, cmd);
+            return false;
+        }
+        if (a.equals("rtpstat")) {
+            if (negated) {
+                rtpStatS = null;
+                return false;
+            }
+            rtpStatS = new servRtpStat();
+            rtpStatS.srvName = cmd.word();
+            rtpStatS = cfgAll.dmnRtpStat.find(rtpStatS, false);
+            if (rtpStatS == null) {
+                cmd.error("no such server");
+                return false;
+            }
             return false;
         }
         if (a.equals("stream")) {
@@ -875,6 +897,10 @@ public class servHttpHost implements Comparable<servHttpHost> {
             cn.gotAuth = servHttpUtil.decodeAuth(cn.gotAuth, true);
         } else {
             cn.gotAuth = null;
+        }
+        if (rtpStatS != null) {
+            servHttpUtil.rtpStat(cn);
+            return;
         }
         if (streamT != null) {
             servHttpUtil.reStream(cn);

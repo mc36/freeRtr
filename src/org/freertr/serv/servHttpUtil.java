@@ -694,6 +694,18 @@ public class servHttpUtil {
      *
      * @param cn connection to use
      */
+    protected final static void rtpStat(servHttpConn cn) {
+        cn.gotKeep = false;
+        cn.sendRespHeader("200 streaming", -1, "audio/wav");
+        cn.gotHost.rtpStatS.addListener(cn.pipe);
+        cn.pipe = null;
+    }
+
+    /**
+     * start streaming
+     *
+     * @param cn connection to use
+     */
     protected final static void reStream(servHttpConn cn) {
         cn.gotKeep = false;
         cn.sendRespHeader("200 restreaming", -1, cn.gotHost.streamM);

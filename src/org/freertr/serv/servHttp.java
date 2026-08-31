@@ -419,6 +419,8 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, false, 4, new int[]{4, -1}, "<num:trn>", "translation rule to use");
         l.add(null, false, 3, new int[]{4}, "subconn", "reconnect only to the url");
         getSubconnHelp(4, l);
+        l.add(null, false, 3, new int[]{4}, "rtpstat", "stream from receiver");
+        l.add(cfgAll.dmnRtpStat.listServers(), false, 4, new int[]{-1}, "<name:loc>", "name of server");
         l.add(null, false, 3, new int[]{4}, "stream", "stream from server");
         l.add(null, false, 4, new int[]{5}, "<str>", "content type");
         l.add(null, false, 5, new int[]{6}, "<name:prx>", "proxy profile");

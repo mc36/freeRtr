@@ -1,7 +1,9 @@
 package org.freertr.serv;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.freertr.addr.addrIP;
+import org.freertr.enc.encWave;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packRtp;
 import org.freertr.pipe.pipeLine;
@@ -45,6 +47,7 @@ public class servRtpStat extends servGeneric implements prtServS {
         new userFilter("server rtpstat .*", cmds.tabulator + "protocol " + proto2string(protoAllDgrm), null),
         new userFilter("server rtpstat .*", cmds.tabulator + "timeout 60000", null),
         new userFilter("server rtpstat .*", cmds.tabulator + "window 0", null),
+        new userFilter("server rtpstat .*", cmds.tabulator + "format 2 8000 1", null),
         new userFilter("server rtpstat .*", cmds.tabulator + cmds.negated + cmds.tabulator + "logging", null)
     };
 
@@ -64,9 +67,41 @@ public class servRtpStat extends servGeneric implements prtServS {
     public boolean logging = false;
 
     /**
+     * channels
+     */
+    public int chans = 2;
+
+    /**
+     * rate
+     */
+    public int srate = 8000;
+
+    /**
+     * bytes
+     */
+    public int depth = 1;
+
+    /**
      * clients
      */
     protected final tabGen<servRtpStatOne> stats = new tabGen<servRtpStatOne>();
+
+    /**
+     * clients
+     */
+    protected final List<pipeSide> clnts = new ArrayList<pipeSide>();
+
+    /**
+     * add listener
+     *
+     * @param c pipe side
+     */
+    public void addListener(pipeSide c) {
+        byte[] buf = new byte[44];
+        encWave.makeHeader(buf, -1, 1, chans, srate, depth);
+        c.blockingPut(buf, 0, buf.length);
+        clnts.add(c);
+    }
 
     public userFilter[] srvDefFlt() {
         return defaultF;
@@ -74,6 +109,7 @@ public class servRtpStat extends servGeneric implements prtServS {
 
     public void srvShRun(String beg, List<String> lst, int filter) {
         cmds.cfgLine(lst, !logging, beg, "logging", "");
+        lst.add(beg + "format " + chans + " " + srate + " " + depth);
         lst.add(beg + "window " + window);
         lst.add(beg + "timeout " + timeOut);
     }
@@ -90,6 +126,12 @@ public class servRtpStat extends servGeneric implements prtServS {
         }
         if (a.equals("window")) {
             window = bits.str2num(cmd.word());
+            return false;
+        }
+        if (a.equals("format")) {
+            chans = bits.str2num(cmd.word());
+            srate = bits.str2num(cmd.word());
+            depth = bits.str2num(cmd.word());
             return false;
         }
         if (!a.equals(cmds.negated)) {
@@ -109,6 +151,10 @@ public class servRtpStat extends servGeneric implements prtServS {
 
     public void srvHelp(userHelp l) {
         l.add(null, false, 1, new int[]{-1}, "logging", "set logging");
+        l.add(null, false, 1, new int[]{2}, "format", "set payload format");
+        l.add(null, false, 2, new int[]{3}, "<num>", "channels");
+        l.add(null, false, 3, new int[]{4}, "<num>", "sample rate");
+        l.add(null, false, 4, new int[]{-1}, "<num>", "bytes per sample");
         l.add(null, false, 1, new int[]{2}, "timeout", "set timeout on connection");
         l.add(null, false, 2, new int[]{-1}, "<num>", "timeout in ms");
         l.add(null, false, 1, new int[]{2}, "window", "set replay window size");
@@ -267,6 +313,21 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
                 }
                 if (rtp.recvPack(pck, true, false) < 1) {
                     break;
+                }
+                if (lower.clnts.size() > 0) {
+                    byte[] buf = pck.getCopy();
+                    buf = encWave.byteSwap(buf, lower.depth);
+                    for (int i = lower.clnts.size() - 1; i >= 0; i--) {
+                        pipeSide pip = lower.clnts.get(i);
+                        if (pip == null) {
+                            continue;
+                        }
+                        pip.nonBlockPut(buf, 0, buf.length);
+                        if (pip.isClosed() == 0) {
+                            continue;
+                        }
+                        lower.clnts.remove(i);
+                    }
                 }
                 if (sync != rtp.syncRx) {
                     if (lower.logging) {
