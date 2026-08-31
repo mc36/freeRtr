@@ -190,13 +190,10 @@ public class player implements Runnable {
     }
 
     private synchronized void stopFull() {
-        stopProc("rtp_send.bin");
-        stopProc("scr_send.bin");
-        stopProc("vba_send.bin");
+        stopProc("sender.bin");
         stopProc("playback.bin");
-        stopProc("rtp_play.bin");
-        stopProc("scr_play.bin");
-        stopProc("vba_play.bin");
+        stopProc("receiver.bin");
+        stopProc("forwarder.bin");
         stopProc("roc-recv");
         stopProc("shairport-sync");
         stopProc("gmediarender");
