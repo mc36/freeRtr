@@ -73,6 +73,11 @@ public class servHttpStrmC implements Runnable {
         for (int i = cfg.allowClassC.size() - 1; i >= 0; i--) {
             cfg.allowClassC.get(i).setClose();
         }
+        try {
+            cfg.allowClassM.invoke(cfg.allowClassO, null, null, null, null, null, null, null);
+        } catch (Exception e) {
+            logger.traceback(e);
+        }
         if (debugger.servHttpTraf) {
             logger.debug("stopped");
         }

@@ -87,6 +87,20 @@ public class packer {
     }
 
     /**
+     * close the channels
+     *
+     * @throws Exception on error
+     */
+    public void stopper() throws Exception {
+        if (source != null) {
+            source.close();
+        }
+        if (target != null) {
+            target.close();
+        }
+    }
+
+    /**
      * get kind
      *
      * @param a string

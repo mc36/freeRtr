@@ -79,6 +79,11 @@ public class caster {
             write32(buf, -1); // length
             return "//stream//" + mime;
         }
+        if (buf == null) {
+            pack.pck.stopper();
+            pack = null;
+            return null;
+        }
         byte[] res = new byte[consts.payl];
         int siz;
         try {
