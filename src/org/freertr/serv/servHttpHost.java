@@ -1,6 +1,7 @@
 package org.freertr.serv;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -143,7 +144,7 @@ public class servHttpHost implements Comparable<servHttpHost> {
     /**
      * streamer handler
      */
-    public servHttpStrm streamR;
+    public servHttpStrmH streamR;
 
     /**
      * proxy for multiple access
@@ -233,7 +234,22 @@ public class servHttpHost implements Comparable<servHttpHost> {
     /**
      * class running allowed
      */
-    public URLClassLoader allowClass;
+    public URLClassLoader allowClassL;
+
+    /**
+     * class streaming receivers
+     */
+    public List<pipeSide> allowClassC;
+
+    /**
+     * class streaming method
+     */
+    public Method allowClassM;
+
+    /**
+     * class streaming object
+     */
+    public Object allowClassO;
 
     /**
      * uploading allowed
@@ -390,7 +406,7 @@ public class servHttpHost implements Comparable<servHttpHost> {
         if (allowMediaStrm) {
             l.add(a + " mediastream");
         }
-        if (allowClass != null) {
+        if (allowClassL != null) {
             l.add(a + " class");
         }
         if (allowUpload) {
@@ -699,16 +715,16 @@ public class servHttpHost implements Comparable<servHttpHost> {
         }
         if (a.equals("class")) {
             if (negated) {
-                allowClass = null;
+                allowClassL = null;
                 return false;
             }
             try {
                 URL url = new URI("file://" + path).toURL();
                 URL[] urls = new URL[1];
                 urls[0] = url;
-                allowClass = new URLClassLoader(urls);
+                allowClassL = new URLClassLoader(urls);
             } catch (Exception e) {
-                allowClass = null;
+                allowClassL = null;
             }
             return false;
         }
@@ -830,7 +846,7 @@ public class servHttpHost implements Comparable<servHttpHost> {
                 return servHttpUtil.sendOneScript(cn, this, l);
             }
         }
-        if (allowClass != null) {
+        if (allowClassL != null) {
             if (a.equals(".class")) {
                 return servHttpUtil.sendOneClass(cn, s);
             }

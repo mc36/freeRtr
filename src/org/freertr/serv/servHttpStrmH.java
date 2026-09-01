@@ -14,7 +14,7 @@ import org.freertr.util.logger;
  *
  * @author matecsaba
  */
-public class servHttpStrm implements Runnable {
+public class servHttpStrmH implements Runnable {
 
     private final servHttpHost cfg;
 
@@ -23,7 +23,7 @@ public class servHttpStrm implements Runnable {
      *
      * @param host config to use
      */
-    protected servHttpStrm(servHttpHost host) {
+    protected servHttpStrmH(servHttpHost host) {
         cfg = host;
     }
 

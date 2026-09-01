@@ -719,7 +719,7 @@ public class servHttpUtil {
         if (cn.gotHost.streamR != null) {
             return;
         }
-        cn.gotHost.streamR = new servHttpStrm(cn.gotHost);
+        cn.gotHost.streamR = new servHttpStrmH(cn.gotHost);
         cn.gotHost.streamR.doStart();
     }
 
@@ -873,22 +873,23 @@ public class servHttpUtil {
      * @return false on success, true on error
      */
     protected final static boolean sendOneClass(servHttpConn cn, String s) {
+        Method mth = null;
+        Object obj = null;
         byte[] res = null;
         try {
             if (!new File(cn.gotHost.path + s).exists()) {
                 return true;
             }
-            Class<?> cls = cn.gotHost.allowClass.loadClass(cn.gotUrl.filPath + cn.gotUrl.filName);
+            Class<?> cls = cn.gotHost.allowClassL.loadClass(cn.gotUrl.filPath + cn.gotUrl.filName);
             Class<?>[] mpl = {String.class, String.class, String.class, String.class, String.class, String[].class, ByteArrayOutputStream.class};
-            Method mth = cls.getDeclaredMethod("httpRequest", mpl);
-            Object obj = cls.getDeclaredConstructor().newInstance();
+            mth = cls.getDeclaredMethod("httpRequest", mpl);
+            obj = cls.getDeclaredConstructor().newInstance();
             String[] par = new String[cn.gotUrl.param.size()];
             for (int i = 0; i < par.length; i++) {
                 par[i] = "" + cn.gotUrl.param.get(i);
             }
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            obj = mth.invoke(obj, cn.gotUrl.toURL(true, false, false, true), cn.gotHost.path + s, "" + cn.peer, cn.gotAgent, cn.gotAuth, par, buf);
-            s = (String) obj;
+            s = (String) mth.invoke(obj, cn.gotUrl.toURL(true, false, false, true), cn.gotHost.path + s, "" + cn.peer, cn.gotAgent, cn.gotAuth, par, buf);
             res = buf.toByteArray();
         } catch (Exception e) {
             logger.traceback(e);
@@ -899,6 +900,23 @@ public class servHttpUtil {
         }
         if (s == null) {
             return true;
+        }
+        if (s.startsWith("//stream//")) {
+            s = s.substring(10, s.length());
+            cn.sendRespHeader("200 streaming", -1, cfgInit.findMimeType(s));
+            cn.pipe.blockingPut(res, 0, res.length);
+            if (cn.gotHost.allowClassC != null) {
+                cn.gotHost.allowClassC.add(cn.pipe);
+                cn.pipe = null;
+                return false;
+            }
+            cn.gotHost.allowClassC = new ArrayList<pipeSide>();
+            cn.gotHost.allowClassC.add(cn.pipe);
+            cn.gotHost.allowClassM = mth;
+            cn.gotHost.allowClassO = obj;
+            new servHttpStrmC(cn.gotHost).doStart();
+            cn.pipe = null;
+            return false;
         }
         if (!s.equals("//file//")) {
             s = parseFileName(cn, s);
