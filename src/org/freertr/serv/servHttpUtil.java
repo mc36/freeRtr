@@ -903,6 +903,7 @@ public class servHttpUtil {
         }
         if (s.startsWith("//stream//")) {
             s = s.substring(10, s.length());
+            cn.gotKeep = false;
             cn.sendRespHeader("200 streaming", -1, cfgInit.findMimeType(s));
             cn.pipe.blockingPut(res, 0, res.length);
             if (cn.gotHost.allowClassC != null) {
