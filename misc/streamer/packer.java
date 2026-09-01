@@ -206,6 +206,35 @@ public class packer {
         return val;
     }
 
+    private static void putLsb(byte[] buf, int ofs, int val) {
+        buf[ofs + 0] = (byte) val;
+        buf[ofs + 1] = (byte) (val >>> 8);
+        buf[ofs + 2] = (byte) (val >>> 16);
+        buf[ofs + 3] = (byte) (val >>> 24);
+    }
+
+    /**
+     * generate wav header
+     *
+     * @return wav header
+     */
+    public static byte[] generateWav() {
+        byte[] buf = new byte[44];
+        putLsb(buf, 0, 0x46464952); // riff
+        putLsb(buf, 4, -1); // length
+        putLsb(buf, 8, 0x45564157); // wave
+        putLsb(buf, 12, 0x20746d66); // fmt
+        putLsb(buf, 16, 0x10); // chunk
+        putLsb(buf, 20, 0x00020001); // codec, channels
+        putLsb(buf, 24, consts.rate); // sample rate
+        putLsb(buf, 28, consts.rate * 2 * consts.smpb); // bytes per sec
+        putLsb(buf, 32, 2 * consts.smpb); // alignment
+        putLsb(buf, 34, consts.smpb * 8); // bit depth
+        putLsb(buf, 36, 0x61746164); // data
+        putLsb(buf, 40, -1); // length
+        return buf;
+    }
+
     /**
      * write udp data
      *

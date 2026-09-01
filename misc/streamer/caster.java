@@ -64,19 +64,7 @@ public class caster {
             }
         }
         if (par != null) {
-            buf.write(new byte[]{0x52, 0x49, 0x46, 0x46}); // riff
-            write32(buf, -1); // length
-            buf.write(new byte[]{0x57, 0x41, 0x56, 0x45}); // wave
-            buf.write(new byte[]{0x66, 0x6d, 0x74, 0x20}); // fmt
-            write32(buf, 0x10); // chunk
-            write16(buf, 1); // codec
-            write16(buf, 2); // channels
-            write32(buf, consts.rate); // sample rate
-            write32(buf, consts.rate * 2 * consts.smpb); // bytes per sec
-            write16(buf, 2 * consts.smpb); // alignment
-            write16(buf, consts.smpb * 8); // bit depth
-            buf.write(new byte[]{0x64, 0x61, 0x74, 0x61}); // data
-            write32(buf, -1); // length
+            buf.write(packer.generateWav());
             return "//stream//" + mime;
         }
         if (buf == null) {
@@ -97,16 +85,6 @@ public class caster {
         }
         buf.write(res);
         return mime;
-    }
-
-    private static void write32(ByteArrayOutputStream output, int value) {
-        write16(output, value);
-        write16(output, value >>> 16);
-    }
-
-    private static void write16(ByteArrayOutputStream output, int value) {
-        output.write(value);
-        output.write(value >>> 8);
     }
 
 }
