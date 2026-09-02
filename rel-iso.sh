@@ -1,5 +1,6 @@
 #!/bin/sh
 cd misc/image/
-./cj.sh
+./cn.sh
 ./ci.sh
+./cb.sh
 ./ca.sh

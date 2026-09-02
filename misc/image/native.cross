@@ -23,7 +23,7 @@ select-sum
 package-down
 package-inst
 
-catalog-save cmp
+catalog-save crs
 
 copy ../misc %tmp%/
 

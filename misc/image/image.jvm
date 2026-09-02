@@ -44,6 +44,6 @@ include ../misc/image/image.grb
 
 include ../misc/image/image.cdi
 
-catalog-save bld
+catalog-save jvm
 
 del %tmp%
