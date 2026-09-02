@@ -467,6 +467,8 @@ public class servHttp extends servGeneric implements prtServS {
         l.add(null, false, 4, new int[]{-1}, "<name:ifc>", "name of interface");
         l.add(null, false, 3, new int[]{4}, "authentication", "require authentication to access");
         l.add(null, false, 4, new int[]{-1}, "<name:aaa>", "authentication list");
+        l.add(null, false, 3, new int[]{4}, "authorization", "require authorization to access");
+        l.add(null, false, 4, new int[]{-1}, "<name:aaa>", "authorization list");
         l.add(null, false, 3, new int[]{4}, "style", "set page style tags");
         l.add(null, false, 4, new int[]{4, -1}, "<text>", "text to send");
         secInfoUtl.getHelp(l, 2, "access-", null);

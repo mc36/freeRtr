@@ -282,6 +282,11 @@ public class servHttpHost implements Comparable<servHttpHost> {
     public authGeneric authenticList;
 
     /**
+     * authorization list
+     */
+    public authGeneric authorizeList;
+
+    /**
      * gather info per accesses
      */
     protected secInfoCfg accessControl;
@@ -426,6 +431,9 @@ public class servHttpHost implements Comparable<servHttpHost> {
         }
         if (authenticList != null) {
             l.add(a + " authentication " + authenticList.autName);
+        }
+        if (authorizeList != null) {
+            l.add(a + " authorization " + authorizeList.autName);
         }
         secInfoUtl.getConfig(l, accessControl, a + " access-");
     }
@@ -814,6 +822,19 @@ public class servHttpHost implements Comparable<servHttpHost> {
             authenticList = lst.getAuther();
             return false;
         }
+        if (a.equals("authorization")) {
+            if (negated) {
+                authorizeList = null;
+                return false;
+            }
+            cfgAuther lst = cfgAll.autherFind(cmd.word(), null);
+            if (lst == null) {
+                cmd.error("no such auth list");
+                return false;
+            }
+            authorizeList = lst.getAuther();
+            return false;
+        }
         return true;
     }
 
@@ -907,12 +928,17 @@ public class servHttpHost implements Comparable<servHttpHost> {
         if (authenticList != null) {
             if (servHttpUtil.checkUserAuth(cn)) {
                 cn.addHdr("WWW-Authenticate: Basic realm=login");
-                cn.sendRespError(401, "unauthorized");
+                cn.sendRespError(401, "unauthenticated");
                 return;
             }
             cn.gotAuth = servHttpUtil.decodeAuth(cn.gotAuth, true);
         } else {
             cn.gotAuth = null;
+        }
+        if (authorizeList != null) {
+            if (servHttpUtil.checkPathAuth(cn)) {
+                cn.sendRespError(401, "unauthorized");
+            }
         }
         if (rtpStatS != null) {
             servHttpUtil.rtpStat(cn);

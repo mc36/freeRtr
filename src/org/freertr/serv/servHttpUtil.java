@@ -476,6 +476,20 @@ public class servHttpUtil {
     }
 
     /**
+     * check path auth data
+     *
+     * @param cn connection to use
+     * @return false on success, true on error
+     */
+    protected final static boolean checkPathAuth(servHttpConn cn) {
+        authResult res = cn.gotHost.authorizeList.authUserCommand("" + cn.peer, cn.gotUrl.toURL(false, false, true, true));
+        if (res.result != authResult.authSuccessful) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * apply translations
      *
      * @param cn connection to use
