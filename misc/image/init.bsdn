@@ -1,0 +1,8 @@
+#!/bin/sh
+/rtr/rtr.bin test hwdet path /rtr/ iface bsd line raw busywait binary
+chmod 755 /rtr/*.sh
+sh /rtr/hwdet-all.sh
+while (true); do
+  sleep 1
+  done
+exit 0

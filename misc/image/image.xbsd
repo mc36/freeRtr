@@ -26,3 +26,8 @@ move %tmp%/tmp/rtr %tmp%/
 move %tmp%/bsdInt.bin %tmp%/rtr/
 del %tmp%/tmp
 mkdir %tmp%/tmp
+
+file-exist %tmp%/rtr/rtr.bin
+copy ../misc/image/init.bsdj %tmp%/init.run
+if-compare 0 %read% 1
+copy ../misc/image/init.bsdn %tmp%/init.run
