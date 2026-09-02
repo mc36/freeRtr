@@ -43,15 +43,14 @@ public class servHttpStrmC implements Runnable {
         if (debugger.servHttpTraf) {
             logger.debug("serving");
         }
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
         for (;;) {
-            byte[] res = null;
+            buf.reset();
             try {
-                ByteArrayOutputStream buf = new ByteArrayOutputStream();
                 String s = (String) cfg.allowClassM.invoke(cfg.allowClassO, null, null, null, null, null, null, buf);
                 if (s == null) {
                     break;
                 }
-                res = buf.toByteArray();
             } catch (Exception e) {
                 logger.traceback(e);
                 break;
@@ -60,6 +59,7 @@ public class servHttpStrmC implements Runnable {
             if (i < 0) {
                 break;
             }
+            byte[] res = buf.toByteArray();
             for (; i >= 0; i--) {
                 pipeSide pip = cfg.allowClassC.get(i);
                 if (pip.isClosed() == 0) {
