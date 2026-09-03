@@ -1,9 +1,11 @@
 package org.freertr.ifc;
 
+import java.util.List;
 import org.freertr.addr.addrEmpty;
 import org.freertr.addr.addrMac;
 import org.freertr.addr.addrType;
 import org.freertr.cfg.cfgIfc;
+import org.freertr.cfg.cfgInit;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packPppOE;
 import org.freertr.util.counter;
@@ -11,15 +13,18 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
+import org.freertr.prt.prtRedun;
+import org.freertr.prt.prtRedunClnt;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
+import org.freertr.util.cmds;
 
 /**
  * ppp over ethernet (rfc2516) protocol client handler
  *
  * @author matecsaba
  */
-public class ifcP2pOEclnt implements ifcUp, ifcDn {
+public class ifcP2pOEclnt implements ifcUp, ifcDn, prtRedunClnt {
 
     /**
      * last known state
@@ -72,6 +77,11 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
     public cfgIfc clnIfc;
 
     /**
+     * ha mode
+     */
+    public boolean haMode;
+
+    /**
      * keepalive
      */
     protected ifcP2pOEclntTxKeep keepTimer;
@@ -82,7 +92,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
 
     private int currState = 0; // saw: 1-pado, 2-pads, 3-conn, 4-wait
 
-    private int roundsWait;
+    private int roundsWait; // rounds before clear
 
     private byte[] acCookie; // current ac cookie
 
@@ -111,6 +121,9 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
     public void setParent(ifcDn parent) {
         lower = parent;
         hwAddr = (addrMac) parent.getHwAddr();
+        if (haMode) {
+            prtRedun.clientAdd(this, "pppoec " + lower);
+        }
     }
 
     /**
@@ -154,8 +167,11 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
 
     /**
      * create new instance
+     *
+     * @param ha ha mode
      */
-    public ifcP2pOEclnt() {
+    public ifcP2pOEclnt(boolean ha) {
+        haMode = ha;
         clearState();
         restartTimer(false);
     }
@@ -174,7 +190,11 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
     }
 
     public String toString() {
-        return "pppoeC on " + lower;
+        String a = "";
+        if (haMode) {
+            a += " ha-mode";
+        }
+        return clnIfc.name + a;
     }
 
     public int getMTUsize() {
@@ -241,6 +261,9 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
             return;
         }
         if (shutdown) {
+            if (haMode) {
+                prtRedun.clientDel(this);
+            }
             return;
         }
         if (keepaliveInterval < 1) {
@@ -313,6 +336,9 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
      * send keepalive packet
      */
     public void sendKeepalive() {
+        if (cfgInit.booting) {
+            return;
+        }
         switch (currState) {
             case 0:
                 sendPADi();
@@ -438,7 +464,7 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
 
     public void sendPack(packHolder pck) {
         cntr.tx(pck);
-        if ((lastState != state.states.up) || (sessionId == -1)) {
+        if ((lastState != state.states.up) || (sessionId < 0)) {
             cntr.drop(pck, counter.reasons.notUp);
             return;
         }
@@ -459,6 +485,50 @@ public class ifcP2pOEclnt implements ifcUp, ifcDn {
     public int getSession(addrMac mac) {
         mac.setAddr(acAddr);
         return sessionId;
+    }
+
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public void redunStateGet(List<String> lst) {
+        if (lastState != state.states.up) {
+            return;
+        }
+        if (sessionId < 0) {
+            return;
+        }
+        if (clnIfc.ppp == null) {
+            return;
+        }
+        String a = clnIfc.ppp.redunStateGet();
+        if (a == null) {
+            return;
+        }
+        lst.add(sessionId + " " + acAddr + " " + a);
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     * @return true on error, false on success
+     */
+    public boolean redunStateSet(cmds cmd) {
+        sessionId = bits.str2num(cmd.word());
+        if (acAddr.fromString(cmd.word())) {
+            return true;
+        }
+        if (clnIfc.ppp == null) {
+            return true;
+        }
+        if (clnIfc.ppp.redunStateSet(cmd)) {
+            return true;
+        }
+        currState = 3;
+        checkPeerState(state.states.up);
+        return false;
     }
 
 }

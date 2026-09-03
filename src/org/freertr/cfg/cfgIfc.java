@@ -5632,9 +5632,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      * setup interface pppoe client
      *
      * @param dialer dialer interface to use
+     * @param ha ha mode
      * @return false on success, true on error
      */
-    public synchronized boolean setup2pppoeClnt(cfgIfc dialer) {
+    public synchronized boolean setup2pppoeClnt(cfgIfc dialer, boolean ha) {
         if (pppoeC != null) {
             pppoeC.sendPADt();
             pppoeC.clnIfc.lower = new ifcNull();
@@ -5653,7 +5654,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (enc == null) {
             return true;
         }
-        pppoeC = new ifcP2pOEclnt();
+        pppoeC = new ifcP2pOEclnt(ha);
         pppoeC.clnIfc = dialer;
         dialer.lower = pppoeC;
         pppoeC.setUpper(enc);
@@ -6852,7 +6853,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (pppoeC == null) {
             l.add(cmds.tabulator + "no p2poe client");
         } else {
-            l.add(cmds.tabulator + "p2poe client " + pppoeC.clnIfc.name);
+            l.add(cmds.tabulator + "p2poe client " + pppoeC);
         }
         if (ataoeS == null) {
             l.add(cmds.tabulator + "no ataoe");
@@ -7295,7 +7296,8 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 4, new int[]{-1}, "<str>", "file name");
         l.add(null, false, 1, new int[]{2}, "p2poe", "pppoe parameters on the interface");
         l.add(null, false, 2, new int[]{3}, "client", "start pppoe client");
-        l.add(null, false, 3, new int[]{-1}, "<name:ifc>", "name of dialer interface");
+        l.add(null, false, 3, new int[]{4, -1}, "<name:ifc>", "name of dialer interface");
+        l.add(null, false, 4, new int[]{-1}, "ha-mode", "save state");
         l.add(null, false, 2, new int[]{3}, "server", "start pppoe server");
         l.add(null, false, 3, new int[]{4, -1}, "<name:ifc>", "name of dialer interface");
         l.add(null, false, 4, new int[]{5}, "name", "set service name");
@@ -8034,7 +8036,9 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (a.equals("p2poe")) {
             a = cmd.word();
             if (a.equals("client")) {
-                if (setup2pppoeClnt(cfgAll.ifcFind(cmd.word(), 0))) {
+                a = cmd.word();
+                boolean b = cmd.word().equals("ha-mode");
+                if (setup2pppoeClnt(cfgAll.ifcFind(a, 0), b)) {
                     cmd.error("failed to setup encapsulation");
                     return;
                 }
@@ -9056,7 +9060,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         if (a.equals("p2poe")) {
             a = cmd.word();
             if (a.equals("client")) {
-                setup2pppoeClnt(null);
+                setup2pppoeClnt(null, false);
                 return;
             }
             if (a.equals("server")) {

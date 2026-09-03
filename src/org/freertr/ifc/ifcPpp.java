@@ -19,6 +19,7 @@ import org.freertr.auth.autherPap;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgAuther;
 import org.freertr.cfg.cfgIfc;
+import org.freertr.cfg.cfgInit;
 import org.freertr.ip.ipIfc4;
 import org.freertr.ip.ipIfc6;
 import org.freertr.ip.ipMpls;
@@ -1290,6 +1291,9 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
      * send keepalive over lcp
      */
     public void sendKeepReq() {
+        if (cfgInit.booting) {
+            return;
+        }
         int oldMod = curMode;
         switch (curMode) {
             case modeLcp:
@@ -1710,6 +1714,52 @@ public class ifcPpp implements ifcUp, ifcDn, authenDown {
         getShow(res, ctrlSgt);
         getShow(res, ctrlPolka);
         return res;
+    }
+
+    /**
+     * get state information
+     *
+     * @return state string, null if not yet
+     */
+    public String redunStateGet() {
+        if (curMode != modeUp) {
+            return null;
+        }
+        return ctrlLcp.sawBit + " " + ctrlIp4.sawBit + " " + ctrlIp6.sawBit + " " + ctrlIp4.locAddrCur + " " + ctrlIp4.remAddrCur + " " + ctrlIp6.locAddrCur + " " + ctrlIp6.remAddrCur + " " + cfger.addr4 + " " + cfger.addr6;
+    }
+
+    private static <T extends addrType> T redunStateSet(T adr, String s) {
+        if (adr.fromString(s)) {
+            return null;
+        }
+        return adr;
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     * @return true on error, false on success
+     */
+    public boolean redunStateSet(cmds cmd) {
+        ctrlLcp.sawBit = bits.str2num(cmd.word());
+        ctrlIp4.sawBit = bits.str2num(cmd.word());
+        ctrlIp6.sawBit = bits.str2num(cmd.word());
+        ctrlIp4.locAddrCur = redunStateSet(new addrIPv4(), cmd.word());
+        ctrlIp4.remAddrCur = redunStateSet(new addrIPv4(), cmd.word());
+        ctrlIp6.locAddrCur = redunStateSet(new addrEui(), cmd.word());
+        ctrlIp6.remAddrCur = redunStateSet(new addrEui(), cmd.word());
+        addrIPv4 adr4 = redunStateSet(new addrIPv4(), cmd.word());
+        addrIPv6 adr6 = redunStateSet(new addrIPv6(), cmd.word());
+        cfger.addr4changed(ctrlIp4.locAddrCur, cfger.mask4, ctrlIp4.remAddrCur);
+        cfger.addr4changed(adr4, cfger.mask4, ctrlIp4.remAddrCur);
+        cfger.addr6changed(ctrlIp6.locAddrCur.toIPv6(null), cfger.mask6, ctrlIp6.remAddrCur.toIPv6(null));
+        cfger.addr6changed(adr6, cfger.mask6, ctrlIp6.remAddrCur.toIPv6(null));
+        curMode = modeUp;
+        lastState = state.states.up;
+        cntr.stateChange(state.states.up);
+        upper.setState(state.states.up);
+        return false;
     }
 
 }
