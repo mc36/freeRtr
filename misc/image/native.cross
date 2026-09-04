@@ -2,8 +2,8 @@ include ../misc/image/image.bas
 
 mkdir %tmp%/binImg
 
-catalog-read sid xz %mirr% sid main
 catalog-read exp xz %mirr% experimental main
+catalog-read sid xz %mirr% sid main
 catalog-sum
 
 select-dis librte-.*-.*
