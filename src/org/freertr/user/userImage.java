@@ -265,7 +265,7 @@ public class userImage {
 
     private boolean readUpCatalog(cmds cmd) {
         String name = cmd.word();
-        String comp = cmd.word();
+        String cmpr = cmd.word();
         String mirr = cmd.word();
         String dist = cmd.word();
         for (;;) {
@@ -273,22 +273,22 @@ public class userImage {
             if (pool.length() < 1) {
                 break;
             }
-            userImageCat cat = new userImageCat(name + "-" + pool);
+            userImageCat cat = new userImageCat(pool + "-" + name);
             cat.url = mirr;
             cat.arch = arch;
             catalogs.add(cat);
             cmd.error("reading " + name + " " + pool + " list");
-            String cat1 = tempDir + "/" + name + "-" + pool + ".txt";
-            String cat2 = downDir + "/" + arch + "--" + name + "-" + pool + "." + comp;
+            String cat1 = tempDir + "/" + pool + "-" + name + ".txt";
+            String cat2 = downDir + "/" + arch + "--" + pool + "-" + name + "." + cmpr;
             userFlash.delete(cat1);
-            if (downloadFile(mirr + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages." + comp, cat2, -1)) {
+            if (downloadFile(mirr + "dists/" + dist + "/" + pool + "/binary-" + arch + "/Packages." + cmpr, cat2, -1)) {
                 return true;
             }
-            if (comp.equals("xz")) {
+            if (cmpr.equals("xz")) {
                 execCmd("cp " + cat2 + " " + cat1 + ".xz");
                 execCmd("xz -d " + cat1 + ".xz");
             }
-            if (comp.equals("gz")) {
+            if (cmpr.equals("gz")) {
                 execCmd("cp " + cat2 + " " + cat1 + ".gz");
                 execCmd("gzip -d " + cat1 + ".gz");
             }
