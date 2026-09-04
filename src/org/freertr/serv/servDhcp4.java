@@ -15,6 +15,8 @@ import org.freertr.pack.packHolder;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
+import org.freertr.prt.prtRedun;
+import org.freertr.prt.prtRedunClnt;
 import org.freertr.prt.prtServP;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
@@ -33,7 +35,7 @@ import org.freertr.util.state;
  *
  * @author matecsaba
  */
-public class servDhcp4 extends servGeneric implements prtServS, prtServP {
+public class servDhcp4 extends servGeneric implements prtServS, prtServP, prtRedunClnt {
 
     /**
      * create instance
@@ -140,7 +142,10 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
 
     private tabGen<servDhcp4bind> forbidden = new tabGen<servDhcp4bind>();
 
-    private String bindFile;
+    /**
+     * ha mode
+     */
+    public boolean haMode;
 
     /**
      * purge
@@ -200,9 +205,9 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         new userFilter("server dhcp4 .*", cmds.tabulator + "lease 43200000", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + "renew 21600000", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + "remember 0", null),
-        new userFilter("server dhcp4 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "bind-file", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + "circuit-id-template interface-name", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + "remote-id-template hostname", null),
+        new userFilter("server dhcp4 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "ha-mode", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "link-selection-address", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + cmds.negated + cmds.tabulator + "subscriber-id", null),
         new userFilter("server dhcp4 .*", cmds.tabulator + "max-hop-count 10", null),
@@ -232,6 +237,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         l.add(beg + "mode " + mode);
 
         if (mode == dhcpMode.server) {
+            cmds.cfgLine(l, !haMode, beg, "ha-mode", "");
             if ((poolLo == null) || (poolHi == null)) {
                 l.add(beg + cmds.negated + " pool");
             } else {
@@ -284,7 +290,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             for (int o = 0; o < options.size(); o++) {
                 l.add(beg + "option " + options.get(o));
             }
-            cmds.cfgLine(l, bindFile == null, beg, "bind-file", bindFile);
         } else {
             // Relay mode configuration
             String a = "";
@@ -675,6 +680,11 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
             return false;
         }
+        if (a.equals("ha-mode")) {
+            haMode = true;
+            prtRedun.clientAdd(this, srvName() + " " + srvName);
+            return false;
+        }
         if (a.equals("helper-addresses")) {
             helperAddresses.clear();
             for (;;) {
@@ -747,26 +757,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             }
             if (a.equals("discard")) {
                 agentRelayMode = 4;
-            }
-            return false;
-        }
-        if (a.equals("bind-file")) {
-            bindFile = cmd.getRemaining();
-            List<String> res = bits.txt2buf(bindFile);
-            if (res == null) {
-                return false;
-            }
-            long tim = bits.getTime();
-            for (int i = 0; i < res.size(); i++) {
-                servDhcp4bind ntry = new servDhcp4bind();
-                if (ntry.fromString(new cmds("b", res.get(i)))) {
-                    continue;
-                }
-                ntry = findBinding(ntry.mac, 1, ntry.ip);
-                if (ntry == null) {
-                    continue;
-                }
-                ntry.reqd = tim;
             }
             return false;
         }
@@ -899,8 +889,9 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
             return true;
         }
         a = cmd.word();
-        if (a.equals("bind-file")) {
-            bindFile = null;
+        if (a.equals("ha-mode")) {
+            haMode = false;
+            prtRedun.clientDel(this);
             return false;
         }
         if (a.equals("pool")) {
@@ -1032,8 +1023,7 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         l.add(null, false, 2, new int[]{-1}, "discard", "discard packets with existing agent options");
 
         // Server mode commands
-        l.add(null, false, 1, new int[]{2}, "bind-file", "save bindings");
-        l.add(null, false, 2, new int[]{2, -1}, "<str>", "file name");
+        l.add(null, false, 1, new int[]{-1}, "ha-mode", "save state");
         l.add(null, false, 1, new int[]{2}, "pool", "address pool to use");
         l.add(null, false, 2, new int[]{3}, "<addr>", "first address to delegate");
         l.add(null, false, 3, new int[]{-1}, "<addr>", "last address to delegate");
@@ -1350,29 +1340,6 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
                 bindings.remove(i);
             }
         }
-        if (bindFile == null) {
-            return;
-        }
-        List<String> txt = bits.txt2buf(bindFile);
-        if (txt == null) {
-            txt = new ArrayList<String>();
-        }
-        if (txt.size() == bindings.size()) {
-            return;
-        }
-        txt = new ArrayList<String>();
-        synchronized (bindings) {
-            for (int i = 0; i < bindings.size(); i++) {
-                servDhcp4bind ntry = bindings.get(i);
-                if (ntry == null) {
-                    continue;
-                }
-                txt.add("" + ntry);
-            }
-        }
-        if (bits.buf2txt(true, txt, bindFile)) {
-            logger.error("error saving bindings");
-        }
     }
 
     /**
@@ -1431,6 +1398,45 @@ public class servDhcp4 extends servGeneric implements prtServS, prtServP {
         if (debugger.servDhcp6traf) {
             logger.debug("dhcp6 relay: removed interface " + iface.name + " from relay list. total interfaces: " + relayInterfaces.size());
         }
+    }
+
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public void redunStateGet(List<String> lst) {
+        if (!haMode) {
+            return;
+        }
+        synchronized (bindings) {
+            for (int i = 0; i < bindings.size(); i++) {
+                servDhcp4bind ntry = bindings.get(i);
+                if (ntry == null) {
+                    continue;
+                }
+                lst.add("" + ntry);
+            }
+        }
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     * @return true on error, false on success
+     */
+    public boolean redunStateSet(cmds cmd) {
+        servDhcp4bind ntry = new servDhcp4bind();
+        if (ntry.fromString(cmd)) {
+            return true;
+        }
+        ntry = findBinding(ntry.mac, 1, ntry.ip);
+        if (ntry == null) {
+            return true;
+        }
+        ntry.reqd = bits.getTime();
+        return false;
     }
 
 }
