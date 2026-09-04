@@ -1,5 +1,6 @@
 package org.freertr.ifc;
 
+import java.util.List;
 import org.freertr.addr.addrMac;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
@@ -13,13 +14,16 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
+import org.freertr.prt.prtRedun;
+import org.freertr.prt.prtRedunClnt;
+import org.freertr.util.cmds;
 
 /**
  * ppp over ethernet (rfc2516) protocol server handler
  *
  * @author matecsaba
  */
-public class ifcP2pOEserv implements ifcUp {
+public class ifcP2pOEserv implements ifcUp, prtRedunClnt {
 
     /**
      * create instance
@@ -63,6 +67,11 @@ public class ifcP2pOEserv implements ifcUp {
     public cfgIfc pktIfc;
 
     /**
+     * ha mode
+     */
+    public boolean haMode;
+
+    /**
      * list of clients
      */
     public tabGen<ifcP2pOEservSess> clnts = new tabGen<ifcP2pOEservSess>();
@@ -76,6 +85,9 @@ public class ifcP2pOEserv implements ifcUp {
         String a = "";
         if (!serviceNam.equals("pppoe")) {
             a += " name " + serviceNam;
+        }
+        if (haMode) {
+            a += " ha-mode";
         }
         if (serviceDly > 0) {
             a += " delay " + serviceDly;
@@ -264,6 +276,76 @@ public class ifcP2pOEserv implements ifcUp {
             default:
                 return;
         }
+    }
+
+    /**
+     * update ha mode
+     *
+     * @param start true for start false for stop
+     */
+    public void updateHaMode(boolean start) {
+        if (!haMode) {
+            return;
+        }
+        if (start) {
+            prtRedun.clientAdd(this, "pppoes " + lower);
+        } else {
+            prtRedun.clientDel(this);
+        }
+    }
+
+    /**
+     * get state information
+     *
+     * @param lst list to append
+     */
+    public void redunStateGet(List<String> lst) {
+        for (int i = 0; i < clnts.size(); i++) {
+            ifcP2pOEservSess ntry = clnts.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.ifc.ppp == null) {
+                continue;
+            }
+            String a = ntry.ifc.ppp.redunStateGet();
+            if (a == null) {
+                continue;
+            }
+            lst.add(ntry.mac + " " + ntry.sessid + " " + a);
+        }
+    }
+
+    /**
+     * set state information
+     *
+     * @param cmd string to append
+     * @return true on error, false on success
+     */
+    public boolean redunStateSet(cmds cmd) {
+        addrMac adr = new addrMac();
+        if (adr.fromString(cmd.word())) {
+            return true;
+        }
+        ifcP2pOEservSess ntry = new ifcP2pOEservSess(this, adr);
+        ntry.sessid = bits.str2num(cmd.word());
+        if (findSessId(ntry.sessid) != null) {
+            return true;
+        }
+        if (clnts.add(ntry) != null) {
+            return true;
+        }
+        ntry.startUpper();
+        if (ntry.ifc == null) {
+            return true;
+        }
+        if (ntry.ifc.ppp == null) {
+            return true;
+        }
+        if (ntry.ifc.ppp.redunStateSet(cmd)) {
+            return true;
+        }
+        return false;
     }
 
 }

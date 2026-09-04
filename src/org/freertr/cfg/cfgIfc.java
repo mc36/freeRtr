@@ -5675,6 +5675,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      */
     public synchronized boolean setup2pppoeServ(cfgIfc dialer, cmds cmd) {
         if (pppoeS != null) {
+            pppoeS.updateHaMode(false);
             pppoeS.closeUp();
             pppoeS = null;
             ethtyp.delET(packPppOE.typeCtr);
@@ -5703,6 +5704,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 pppoeS.serviceNam = cmd.word();
                 continue;
             }
+            if (a.equals("ha-mode")) {
+                pppoeS.haMode = true;
+                continue;
+            }
             if (a.equals("delay")) {
                 pppoeS.serviceDly = bits.str2num(cmd.word());
                 continue;
@@ -5712,6 +5717,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 continue;
             }
         }
+        pppoeS.updateHaMode(true);
         return false;
     }
 
@@ -7302,6 +7308,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         l.add(null, false, 3, new int[]{4, -1}, "<name:ifc>", "name of dialer interface");
         l.add(null, false, 4, new int[]{5}, "name", "set service name");
         l.add(null, false, 5, new int[]{4, -1}, "<str>", "text");
+        l.add(null, false, 4, new int[]{4, -1}, "ha-mode", "save state");
         l.add(null, false, 4, new int[]{5}, "delay", "set pado delay");
         l.add(null, false, 5, new int[]{4, -1}, "<num>", "time");
         l.add(null, false, 4, new int[]{5}, "sessions", "set session limit");
