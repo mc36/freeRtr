@@ -522,6 +522,8 @@ qc pass: lsrp with process redundancy
 qc pass: ospf with process redundancy
 qc pass: isis with process redundancy
 qc pass: bgp with process redundancy
+qc pass: pppoe client with process redundancy
+qc pass: pppoe server with process redundancy
 qc pass: ppp over rlogin
 qc pass: sep
 qc pass: slaac
