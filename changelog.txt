@@ -18686,3 +18686,8 @@ qc pass: wireguard over asymmetric ports
 ---------------------------------- 2026-09-04 18:15:06 26.9.4
 qc pass: pppoe client with process redundancy
 qc pass: pppoe server with process redundancy
+---------------------------------- 2026-09-05 16:37:55 26.9.5
+no qc pass: integrated pvrp with labels
+no qc pass: qos ingress shaper action
+failed: qos ingress shaper action
+failed: integrated pvrp with labels

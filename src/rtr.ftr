@@ -2738,7 +2738,7 @@ qc pass: qos ingress priority action
 qc pass: qos egress priority action
 qc pass: qos ingress bandwidth action
 qc pass: qos egress bandwidth action
-qc pass: qos ingress shaper action
+failed: qos ingress shaper action
 qc pass: qos egress shaper action
 qc pass: qos ingress hierarchical action
 qc pass: qos egress hierarchical action
@@ -4284,7 +4284,7 @@ qc pass: integrated pvrp ingress route filtering with routepolicy
 qc pass: integrated pvrp egress route filtering with routepolicy
 qc pass: integrated pvrp default route
 qc pass: integrated pvrp with bfd
-qc pass: integrated pvrp with labels
+failed: integrated pvrp with labels
 qc pass: integrated pvrp default address suppression
 qc pass: integrated pvrp address unsuppression
 qc pass: ingress label filtering with integrated pvrp

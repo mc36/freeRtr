@@ -10,7 +10,7 @@
 </style>
 <title>tester</title></head><body>
 release: freeRouter v26.9.5-cur, done by sprscc13@mrn0b0dy.<br/>
-tested: 2026-09-05 13:20:43, took 00:18:36, with 50 workers, on 4474 cases, 0 failed, 0 traces, 10 retries<br/>
+tested: 2026-09-05 16:57:51, took 00:19:55, with 50 workers, on 4474 cases, 2 failed, 0 traces, 17 retries<br/>
 jvm: ./rtr.bin, other: null<br/>
 <br/>
 <table><thead><tr><td><b>file</b></td><td><b>result</b></td><td><b>test</b></td></tr></thead><tbody>
@@ -2754,7 +2754,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action08.tst">qos-action08.tst</a></td><td>success</td><td>qos egress priority action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action09.tst">qos-action09.tst</a></td><td>success</td><td>qos ingress bandwidth action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action10.tst">qos-action10.tst</a></td><td>success</td><td>qos egress bandwidth action</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/qos-action11.tst">qos-action11.tst</a></td><td>success</td><td>qos ingress shaper action</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/qos-action11.tst">qos-action11.tst</a></td><td>#6-run-r2 tping 100 5 1234::1 vrf v1 rep 100 tim 500 siz 100</td><td>qos ingress shaper action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action12.tst">qos-action12.tst</a></td><td>success</td><td>qos egress shaper action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action13.tst">qos-action13.tst</a></td><td>success</td><td>qos ingress hierarchical action</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/qos-action14.tst">qos-action14.tst</a></td><td>success</td><td>qos egress hierarchical action</td></tr>
@@ -4300,7 +4300,7 @@ jvm: ./rtr.bin, other: null<br/>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp65.tst">rout-pvrp65.tst</a></td><td>success</td><td>integrated pvrp egress route filtering with routepolicy</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp66.tst">rout-pvrp66.tst</a></td><td>success</td><td>integrated pvrp default route</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp67.tst">rout-pvrp67.tst</a></td><td>success</td><td>integrated pvrp with bfd</td></tr>
-<tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp68.tst">rout-pvrp68.tst</a></td><td>success</td><td>integrated pvrp with labels</td></tr>
+<tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp68.tst">rout-pvrp68.tst</a></td><td>#6-run-r1 tping 100 20 4321::3 vrf v1 sou lo1</td><td>integrated pvrp with labels</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp69.tst">rout-pvrp69.tst</a></td><td>success</td><td>integrated pvrp default address suppression</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp70.tst">rout-pvrp70.tst</a></td><td>success</td><td>integrated pvrp address unsuppression</td></tr>
 <tr><td><a href="http://sources.freertr.org/cfg/rout-pvrp71.tst">rout-pvrp71.tst</a></td><td>success</td><td>ingress label filtering with integrated pvrp</td></tr>
