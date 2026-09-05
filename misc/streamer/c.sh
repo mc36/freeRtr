@@ -9,5 +9,5 @@ java packets > /dev/null 2> io_cnst.h
 for a in *.c ; do
   b="${a%.*}"
   echo compiling $b
-  clang -O3 -Wall $b.c -o $b.bin -lasound -lsndfile -lsamplerate -lm
+  gcc -O3 -Wall $b.c -o $b.bin -lasound -lsndfile -lsamplerate -lm
   done
