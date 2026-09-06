@@ -29,7 +29,7 @@ copy ../misc %tmp%/
 
 include ../misc/image/native.%comp%
 
-exec cd %tmp%/misc/native/ ; ./p.sh
+exec cd %tmp%/misc/native/ ; ./c.sh %find% ; ./p.sh
 
 move %tmp%/binImg/*.tgz ../binImg/rtr-%unam%.tgz
 
