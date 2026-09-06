@@ -1,7 +1,5 @@
 #!/bin/sh
 
-#sudo apt-get install libasound-dev libsndfile-dev libsamplerate-dev
-
 . ../native/i.sh
 
 for fn in playback w64mpg; do
