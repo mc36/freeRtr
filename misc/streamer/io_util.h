@@ -24,31 +24,6 @@ int iou_gmsb(int ofs) {
     return (bufD[ofs + 0] << 24) | (bufD[ofs + 1] << 16) | (bufD[ofs + 2] << 8) | bufD[ofs + 3];
 }
 
-void iou_bswp() {
-    for (int p = 0; p < bufS; p += smpbt) {
-        unsigned char b0 = bufD[p + padln + 0];
-#if smpbt > 1
-        unsigned char b1 = bufD[p + padln + 1];
-#endif
-#if smpbt > 2
-        unsigned char b2 = bufD[p + padln + 2];
-#endif
-#if smpbt > 3
-        unsigned char b3 = bufD[p + padln + 3];
-#endif
-#if smpbt > 3
-        bufD[p + padln + smpbt - 4] = b3;
-#endif
-#if smpbt > 2
-        bufD[p + padln + smpbt - 3] = b2;
-#endif
-#if smpbt > 1
-        bufD[p + padln + smpbt - 2] = b1;
-#endif
-        bufD[p + padln + smpbt - 1] = b0;
-    }
-}
-
 void iou_mono(int src, int trg) {
     for (int p = 0; p < bufS; p += smpbt * 2) {
         int val = bufD[p + padln + src + 0];
@@ -106,3 +81,35 @@ int iou_frmt() {
     return SND_PCM_FORMAT_S32_LE;
 #endif
 }
+
+#if __BYTE_ORDER == __LITTLE_ENDIAN
+void iou_bswp2lsb() {}
+void iou_bswp2msb() {
+#endif
+#if __BYTE_ORDER == __BIG_ENDIAN
+    void iou_bswp2msb() {}
+    void iou_bswp2lsb() {
+#endif
+        for (int p = 0; p < bufS; p += smpbt) {
+            unsigned char b0 = bufD[p + padln + 0];
+#if smpbt > 1
+            unsigned char b1 = bufD[p + padln + 1];
+#endif
+#if smpbt > 2
+            unsigned char b2 = bufD[p + padln + 2];
+#endif
+#if smpbt > 3
+            unsigned char b3 = bufD[p + padln + 3];
+#endif
+#if smpbt > 3
+            bufD[p + padln + smpbt - 4] = b3;
+#endif
+#if smpbt > 2
+            bufD[p + padln + smpbt - 3] = b2;
+#endif
+#if smpbt > 1
+            bufD[p + padln + smpbt - 2] = b1;
+#endif
+            bufD[p + padln + smpbt - 1] = b0;
+        }
+    }

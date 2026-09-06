@@ -15,7 +15,7 @@ void iou_stop() {
 
 
 void ply_rtp() {
-    iou_bswp();
+    iou_bswp2msb();
     iou_pmsb(padln - rtpln + 0, 0x80000000 | (rtpty << 16) | plySeq);
     iou_pmsb(padln - rtpln + 4, plyClk);
     iou_pmsb(padln - rtpln + 8, plySrc);
@@ -27,6 +27,7 @@ void ply_rtp() {
 
 
 void ply_scr() {
+    iou_bswp2lsb();
     bufD[padln - scrln + 0] = scrbr;
     bufD[padln - scrln + 1] = smpbt * 8;
     bufD[padln - scrln + 2] = 2;
@@ -38,6 +39,7 @@ void ply_scr() {
 
 
 void ply_vba() {
+    iou_bswp2lsb();
     iou_pmsb(padln - vbaln + 0, vbamg);
     bufD[padln - vbaln + 4] = vbabr;
     bufD[padln - vbaln + 5] = (bufS  / (2 * smpbt)) - 1;
@@ -55,6 +57,7 @@ void ply_vba() {
 
 
 void ply_wfa() {
+    iou_bswp2lsb();
     iou_pmsb(padln - wfaln + 0, wfamg);
     iou_pmsb(padln - wfaln + 2, ((wfamg & 0xffff) << 16) | plySeq);
     iou_pmsb(padln - wfaln + 6, plyClk);
@@ -66,12 +69,13 @@ void ply_wfa() {
 
 
 void ply_udpm() {
-    iou_bswp();
+    iou_bswp2msb();
     if (send(plyHnd, &bufD[padln], bufS, 0) != bufS) err("error sending");
 }
 
 
 void ply_udpl() {
+    iou_bswp2lsb();
     if (send(plyHnd, &bufD[padln], bufS, 0) != bufS) err("error sending");
 }
 

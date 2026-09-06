@@ -14,7 +14,7 @@ void rec_rtp() {
         if (bufD[padln - rtpln + 1] == rtpty) break;
     }
     bufS -= rtpln;
-    iou_bswp();
+    iou_bswp2msb();
 }
 
 
@@ -27,6 +27,7 @@ void rec_scr() {
         if (bufD[padln - scrln + 3] == scrtp) break;
     }
     bufS -= scrln;
+    iou_bswp2lsb();
 }
 
 
@@ -39,6 +40,7 @@ void rec_vba() {
         if (bufD[padln - vbaln + 7] == (smpbt - 1)) break;
     }
     bufS -= vbaln;
+    iou_bswp2lsb();
 }
 
 
@@ -49,17 +51,19 @@ void rec_wfa() {
         if (iou_gmsb(padln - wfaln + 0) == wfamg) break;
     }
     bufS -= wfaln;
+    iou_bswp2lsb();
 }
 
 
 void rec_udpm() {
     bufS = recv(recHnd, &bufD[padln], sizeof (bufD) - padln, 0);
-    iou_bswp();
+    iou_bswp2msb();
 }
 
 
 void rec_udpl() {
     bufS = recv(recHnd, &bufD[padln], sizeof (bufD) - padln, 0);
+    iou_bswp2lsb();
 }
 
 
