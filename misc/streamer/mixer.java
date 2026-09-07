@@ -85,6 +85,7 @@ class mixerCon implements Runnable {
             case '5':
             case '6':
             case '7':
+            case '8':
             case '9':
                 cur = i - '0';
                 if (cur < src.length) {
@@ -93,10 +94,10 @@ class mixerCon implements Runnable {
                 cur = src.length - 1;
                 break;
             case '+':
-                src[cur].vol += 1;
+                src[cur].vol++;
                 break;
             case '-':
-                src[cur].vol -= 1;
+                src[cur].vol--;
                 break;
             case 'x':
                 System.exit(0);
@@ -144,7 +145,6 @@ class mixerOne implements Runnable {
     public void readRound() throws Exception {
         lst = buf[pos];
         pos = (pos + 1) % buf.length;
-        int[] now = buf[pos];
         int o = src.readKind(cur);
         if (o < 1) {
             throw new Exception("read failed");
@@ -152,7 +152,7 @@ class mixerOne implements Runnable {
         for (int i = o; i < cur.length; i++) {
             cur[i] = 0;
         }
-        src.coder.decode(now, cur, cur.length);
+        src.coder.decode(buf[pos], cur, cur.length);
     }
 
     public void run() {
