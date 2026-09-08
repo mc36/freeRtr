@@ -1,2 +1,2 @@
 #!/bin/sh
-java -cp /nfs/own/web/player measFreq .*plughw:0,0.* 232.2.3.2 1234 900 6000
+java -cp /nfs/own/web/player measFreq .*plughw:0,0.* 232.2.3.2 10.5.255.1 1234 900 6000

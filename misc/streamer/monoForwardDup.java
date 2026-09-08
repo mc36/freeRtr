@@ -13,14 +13,14 @@ public class monoForwardDup {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 7) {
-            System.out.println("usage: java this <group> <source> <port> <group> <port> <volume> <channel>");
+        if (args.length < 8) {
+            System.out.println("usage: java this <group> <source> <port> <group> <source> <port> <volume> <channel>");
             return;
         }
         packet src = packer.receiver(args[0], args[1], args[2]).string2kind(null);
-        packet trg = packer.sender(args[3], args[4]).string2kind(null);
-        int vol = (int) (Float.parseFloat(args[5]) * 100);
-        int chS = Integer.parseInt(args[6]) & 1;
+        packet trg = packer.sender(args[3], args[4], args[5]).string2kind(null);
+        int vol = (int) (Float.parseFloat(args[6]) * 100);
+        int chS = Integer.parseInt(args[7]) & 1;
         int chT = (chS + 1) & 1;
         byte[] buf = new byte[consts.payl];
         int cur[] = new int[buf.length / consts.smpb];

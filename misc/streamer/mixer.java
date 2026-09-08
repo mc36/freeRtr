@@ -25,16 +25,16 @@ public class mixer implements Runnable {
     private int selected;
 
     private void doer(String[] args) throws Exception {
-        if (args.length < 7) {
-            System.out.println("usage: java this <group> <port> <vol>  <group> <source> <port> <vol>   <group> <source> <port> <vol>  ...");
+        if (args.length < 8) {
+            System.out.println("usage: java this <group> <source> <port> <vol>  <group> <source> <port> <vol>   <group> <source> <port> <vol>  ...");
             return;
         }
         source = new mixerOne[(args.length - 2) / 4];
-        target = packer.sender(args[0], args[1]).string2kind(null);
-        outVol = Integer.parseInt(args[2]);
+        target = packer.sender(args[0], args[1], args[2]).string2kind(null);
+        outVol = Integer.parseInt(args[3]);
         selected = -1;
         for (int i = 0; i < source.length; i++) {
-            int p = (i * 4) + 3;
+            int p = (i * 4) + 4;
             packet s = packer.receiver(args[p + 0], args[p + 1], args[p + 2]).string2kind(null);
             source[i] = new mixerOne(s, args[p + 3]);
         }

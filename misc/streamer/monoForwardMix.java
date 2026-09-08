@@ -13,13 +13,13 @@ public class monoForwardMix {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 6) {
-            System.out.println("usage: java this <group> <source> <port> <group> <port> <volume>");
+        if (args.length < 7) {
+            System.out.println("usage: java this <group> <source> <port> <group> <source> <port> <volume>");
             return;
         }
         packet src = packer.receiver(args[0], args[1], args[2]).string2kind(null);
-        packet rtp = packer.sender(args[3], args[4]).string2kind(null);
-        int vol = (int) (Float.parseFloat(args[5]) * 100);
+        packet rtp = packer.sender(args[3], args[4], args[5]).string2kind(null);
+        int vol = (int) (Float.parseFloat(args[6]) * 100);
         byte[] buf = new byte[consts.payl];
         int cur[] = new int[buf.length / consts.smpb];
         for (;;) {

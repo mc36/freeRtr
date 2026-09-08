@@ -17,18 +17,19 @@ public class announce {
             System.out.println("usage: java this <group> <source> <port> [sap-group]");
             return;
         }
-        String a = args[0];
-        byte[] res = packer.generateSdp(a, args[1], args[2]);
+        String grp = args[0];
+        String src = args[1];
+        byte[] res = packer.generateSdp(grp, src, args[2]);
         System.out.println("echo \"");
         System.out.println(new String(res));
         System.out.println("\" | ffplay -protocol_whitelist file,fd,udp,rtp -");
         if (args.length > 3) {
-            a = args[3];
+            grp = args[3];
         }
-        System.out.println("announcing to " + a + "...");
-        packer rtp = packer.sender(a, "9875");
+        System.out.println("announcing to " + grp + "...");
+        packer rtp = packer.sender(grp, src, "9875");
         for (;;) {
-            rtp.announceSap(res, res.length, args[1], args[2]);
+            rtp.announceSap(res, res.length, src, args[2]);
             System.out.print(".");
             Thread.sleep(15000);
         }

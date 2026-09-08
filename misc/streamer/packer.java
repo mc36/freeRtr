@@ -43,17 +43,19 @@ public class packer {
      * create sender
      *
      * @param grp group
+     * @param src source
      * @param prt port
      * @return instance
      * @throws Exception on error
      */
-    public static packer sender(String grp, String prt) throws Exception {
+    public static packer sender(String grp, String src, String prt) throws Exception {
         packer r = new packer();
         InetAddress group = InetAddress.getByName(grp);
+        InetAddress source = InetAddress.getByName(src);
         int port = Integer.parseInt(prt);
         r.target = DatagramChannel.open();
         DatagramSocket scket = r.target.socket();
-        scket.bind(new InetSocketAddress(port));
+        scket.bind(new InetSocketAddress(source, port));
         MulticastSocket mcast = (MulticastSocket) scket;
         mcast.connect(group, port);
         mcast.setTimeToLive(255);
@@ -180,10 +182,10 @@ public class packer {
      */
     public void announceSap(byte[] buf, int len, String src, String id) throws Exception {
         byte[] mime = {'a', 'p', 'p', 'l', 'i', 'c', 'a', 't', 'i', 'o', 'n', '/', 's', 'd', 'p', 0};
-        byte[] source = InetAddress.getByName(src).getAddress();
+        byte[] sadr = InetAddress.getByName(src).getAddress();
         buffer.clear();
         putMsb(buffer, 0, 0x20000000 | Integer.parseInt(id));
-        buffer.put(4, source, source.length - 4, source.length);
+        buffer.put(4, sadr, sadr.length - 4, sadr.length);
         buffer.put(8, mime, 0, mime.length);
         buffer.put(8 + mime.length, buf, 0, len);
         buffer.position(0);

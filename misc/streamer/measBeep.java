@@ -13,14 +13,14 @@ public class measBeep {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 5) {
-            System.out.println("usage: java this <device> <group> <port> <period> <multiplier>");
+        if (args.length < 6) {
+            System.out.println("usage: java this <device> <group> <source> <port> <period> <multiplier>");
             return;
         }
-        int per = (Integer.parseInt(args[3]) * consts.smpb * 2 * consts.rate) / consts.payl;
-        int mul = Integer.parseInt(args[4]);
+        int per = (Integer.parseInt(args[4]) * consts.smpb * 2 * consts.rate) / consts.payl;
+        int mul = Integer.parseInt(args[5]);
         devicer lin = devicer.getRecord(args[0]);
-        packet trg = packer.sender(args[1], args[2]).string2kind(null);
+        packet trg = packer.sender(args[1], args[2], args[3]).string2kind(null);
         byte[] buf = new byte[consts.payl];
         byte[] sln = new byte[buf.length];
         byte[] snd = new byte[buf.length];

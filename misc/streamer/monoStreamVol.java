@@ -13,13 +13,13 @@ public class monoStreamVol {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 4) {
-            System.out.println("usage: java this <device> <volume> <group> <port>");
+        if (args.length < 5) {
+            System.out.println("usage: java this <device> <volume> <group> <source> <port>");
             return;
         }
         devicer dataLine = devicer.getRecord(args[0]);
         int vol = (int) (Float.parseFloat(args[1]) * 100);
-        packet trg = packer.sender(args[2], args[3]).string2kind(null);
+        packet trg = packer.sender(args[2], args[3], args[4]).string2kind(null);
         byte[] buf = new byte[consts.payl];
         int cur[] = new int[buf.length / consts.smpb];
         for (;;) {

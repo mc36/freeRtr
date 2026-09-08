@@ -13,14 +13,14 @@ public class measFreq {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 5) {
-            System.out.println("usage: java this <device> <group> <port> <frequency> <volume>");
+        if (args.length < 6) {
+            System.out.println("usage: java this <device> <group> <source> <port> <frequency> <volume>");
             return;
         }
-        int frq = Integer.parseInt(args[3]);
-        int vol = Integer.parseInt(args[4]);
+        int frq = Integer.parseInt(args[4]);
+        int vol = Integer.parseInt(args[5]);
         devicer lin = devicer.getRecord(args[0]);
-        packet trg = packer.sender(args[1], args[2]).string2kind(null);
+        packet trg = packer.sender(args[1], args[2], args[3]).string2kind(null);
         byte[] buf = new byte[consts.payl];
         byte[] nxt = new byte[buf.length];
         long pos = 0;

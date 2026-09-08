@@ -13,12 +13,12 @@ public class forwarder {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 7) {
-            System.out.println("usage: java this <kind> <group> <source> <port> <kind> <group> <port>");
+        if (args.length < 8) {
+            System.out.println("usage: java this <kind> <group> <source> <port> <kind> <group> <source> <port>");
             return;
         }
         packet src = packer.receiver(args[1], args[2], args[3]).string2kind(args[0]);
-        packet trg = packer.sender(args[5], args[6]).string2kind(args[4]);
+        packet trg = packer.sender(args[5], args[6], args[7]).string2kind(args[4]);
         byte[] buf = new byte[consts.payl];
         for (;;) {
             int i = src.readKind(buf);

@@ -13,12 +13,12 @@ public class streamer {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 4) {
-            System.out.println("usage: java this <device> <kind> <group> <port>");
+        if (args.length < 5) {
+            System.out.println("usage: java this <device> <kind> <group> <source> <port>");
             return;
         }
         devicer lin = devicer.getRecord(args[0]);
-        packet knd = packer.sender(args[2], args[3]).string2kind(args[1]);
+        packet knd = packer.sender(args[2], args[3], args[4]).string2kind(args[1]);
         byte[] buf = new byte[consts.payl];
         for (;;) {
             int i = lin.read(buf);
