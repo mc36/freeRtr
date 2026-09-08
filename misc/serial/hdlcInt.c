@@ -10,7 +10,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
-#include "../native/utils.h"
+#include "../forward/utils.h"
 #include "fcs16.h"
 
 #define PPP_FLAG 0x7e

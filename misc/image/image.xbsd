@@ -1,5 +1,5 @@
 exec find %tmp%/ -type d -exec chmod 777 {} \;
-exec clang --sysroot %tmp% -I =/usr/include/ -target %kern%-unknown-%unam% -lpthread -o %tmp%/bsdInt.bin ../misc/native/bsdInt.c
+exec clang --sysroot %tmp% -I =/usr/include/ -target %kern%-unknown-%unam% -lpthread -o %tmp%/bsdInt.bin ../misc/iface/bsdInt.c
 del %tmp%/usr
 del %tmp%/rescue
 mkdir %tmp%/%boot%

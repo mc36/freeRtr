@@ -8,7 +8,9 @@
 #include <netinet/in.h>
 #include <tuntap.h>
 
-#include "utils.h"
+#include "../forward/utils.h"
+
+
 
 struct sockaddr_in addrLoc;
 struct sockaddr_in addrRem;

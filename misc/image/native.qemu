@@ -22,6 +22,9 @@ select-one libbpf-dev                     #dataplane
 select-one libxdp-dev                     #dataplane
 select-one liburing-dev                   #dataplane
 select-one libmnl-dev                     #dataplane
+select-one libasound-dev                  #sound
+select-one libsndfile-dev                 #sound
+select-one libsamplerate-dev              #sound
 
 select-lst
 select-sum
@@ -36,4 +39,4 @@ copy ../misc %tmp%/
 
 exec unshare -r -R %tmp% /usr/bin/qemu-%qemu% /bin/sh /misc/image/native.qemush
 
-move %tmp%/binImg/*.tgz ../binImg/rtr-%unam%.tgz
+move %tmp%/binImg/*.tgz ../binImg/all-%unam%.tgz

@@ -61,7 +61,8 @@ the following directories will appear here:
 
 ## directories under misc folder
 
-* native: dpdk, xdp, pcap, xsk, io uring, raw socket, mnl and sai based dataplanes
+* forward: dpdk, xdp, pcap, xsk, io uring, raw socket, mnl and sai based dataplanes
+* iface: interface handlers with the above
 * p4bf: tofino based dataplane
 * p4bmv2: bmv2 based dataplane
 * bogon: web based bogon originator
@@ -74,6 +75,7 @@ the following directories will appear here:
 * motion: web based alarm/recorder
 * player: web based music player/streamer/receiver
 * streamer: low latency workers for the above
+* sound: native workers for the above
 * utils: create and manipulate interfaces
 * serial: sync and async serial handling
 * temper: web based thermostat/controller

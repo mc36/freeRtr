@@ -35,7 +35,7 @@ define Build/Prepare
 	$(CP) ./config $(PKG_BUILD_DIR)/etc/config/p4xdp
 	$(CP) ./maker $(PKG_BUILD_DIR)/Makefile
 	$(CP) ./start $(PKG_BUILD_DIR)/p4xdp.sh
-	$(CP) ./native/* $(PKG_BUILD_DIR)/
+	$(CP) ./forward/* $(PKG_BUILD_DIR)/
 	chmod +x $(PKG_BUILD_DIR)/etc/init.d/p4xdp
 	chmod +x $(PKG_BUILD_DIR)/p4xdp.sh
 endef

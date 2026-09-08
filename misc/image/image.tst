@@ -13,5 +13,5 @@ package-down
 package-inst
 
 mkdir %tmp%/rtr
-exec cd %tmp%/rtr/ ; tar xfz ../../binImg/rtr-%unam%.tgz
+exec cd %tmp%/rtr/ ; tar xfz ../../binImg/fwd-%unam%.tgz
 exec /usr/bin/qemu-%qemu% -L %tmp%/ %tmp%/rtr/p4bench.bin

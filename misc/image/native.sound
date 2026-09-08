@@ -9,9 +9,9 @@ catalog-sum
 select-one libc6-dev                      #library
 select-one gcc                            #compiler
 select-one gcc-multilib                   #compiler
-select-one libasound-dev                  #alsa
-select-one libsndfile-dev                 #sndfile
-select-one libsamplerate-dev              #resample
+select-one libasound-dev                  #sound
+select-one libsndfile-dev                 #sound
+select-one libsamplerate-dev              #sound
 
 select-lst
 select-sum
@@ -24,7 +24,7 @@ copy ../misc %tmp%/
 
 include ../misc/image/native.%comp%
 
-exec cd %tmp%/misc/streamer/ ; ./cn.sh %find% ; ./p.sh
+exec cd %tmp%/misc/sound/ ; ./c.sh %find% ; ./p.sh
 
 move %tmp%/binImg/*.tgz ../binImg/snd-%unam%.tgz
 
