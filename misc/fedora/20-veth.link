@@ -1,0 +1,6 @@
+[Match]
+Driver=veth
+
+[Link]
+TransmitChecksumOffload=false
+TransmitVLANCTAGHardwareAcceleration=false

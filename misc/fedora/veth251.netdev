@@ -1,0 +1,8 @@
+[NetDev]
+Name=veth251
+Kind=veth
+MACAddress=00:16:3e:00:01:01
+
+[Peer]
+Name=veth250
+MACAddress=00:16:3e:00:01:02

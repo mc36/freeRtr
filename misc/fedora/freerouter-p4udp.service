@@ -1,0 +1,38 @@
+[Unit]
+Description=p4udp specific process of freerouter
+Requires=freerouter.service network.target
+After=freerouter.service network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/p4udp.bin 127.0.0.1 9080 2 127.0.0.1 127.0.0.1  1101 1102  1103 1104  22709 22710
+# remote UDP sockets
+# qemu1: -netdev socket,id=net0,udp=127.0.0.1:1101,localaddr=127.0.0.1:1102
+# qemu2: -netdev socket,id=net0,udp=127.0.0.1:1103,localaddr=127.0.0.1:1104
+# or
+# socat interface:eth1 udp4-connect:127.0.0.1:1101,bind=127.0.0.1:1102
+# socat interface:eth2 udp4-connect:127.0.0.1:1103,bind=127.0.0.1:1104
+Restart=always
+RestartSec=5
+WorkingDirectory=/var/lib/freerouter
+User=freerouter
+Group=freerouter
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/freerouter /etc/freerouter
+PrivateTmp=true
+# PrivateDevices is not possible because some types need access to a physical device.
+PrivateDevices=false
+PrivateNetwork=false
+# Private Users clears all capabilities.
+PrivateUsers=false
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+LockPersonality=true
+RemoveIPC=true
+
+[Install]
+WantedBy=multi-user.target

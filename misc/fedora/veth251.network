@@ -1,0 +1,14 @@
+[Match]
+Name=veth251
+
+[Network]
+ConfigureWithoutCarrier=true
+IgnoreCarrierLoss=true
+LinkLocalAddressing=no
+IPv6AcceptRA=no
+IPv6SendRA=no
+DHCP=no
+
+[Link]
+MTUBytes=65535
+Promiscuous=true

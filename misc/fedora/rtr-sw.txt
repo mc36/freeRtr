@@ -1,0 +1,85 @@
+hostname rtr
+buggy
+!
+logging buffered debug 10240
+logging file debug core1.log
+!
+vrf definition host
+ exit
+!
+vrf definition test
+ exit
+!
+interface ethernet0
+ no shutdown
+ no log-link-change
+ exit
+!
+interface sdn1
+ mtu 1500
+ macaddr 0000.0000.1111
+ vrf forwarding test
+ ipv4 address dynamic dynamic
+ ipv4 dhcp-client enable
+ no shutdown
+ no log-link-change
+ exit
+!
+interface sdn2
+ mtu 1500
+ macaddr 0000.0000.2222
+ vrf forwarding test
+ no shutdown
+ no log-link-change
+ exit
+!
+console0
+ no exec authorization
+ no login authentication
+ exit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+server telnet host
+ security protocol telnet
+ exec timeout 0
+ exec colorize header
+ no exec authorization
+ no login authentication
+ vrf host
+ exit
+!
+server p4lang p4
+ export-vrf test
+ export-port sdn1 0 0 0 0 0
+ export-port sdn2 1 0 0 0 0
+ interconnect ethernet0
+ vrf host
+ exit
+!
+!
+end

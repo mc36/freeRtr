@@ -1,0 +1,34 @@
+[Unit]
+Description=p4dpdk specific process of freerouter
+Requires=freerouter.service freerouter-native@cpu_port.service network.target sys-subsystem-net-devices-veth250.device
+After=freerouter.service freerouter-native@cpu_port.service network.target sys-subsystem-net-devices-veth250.device
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/p4dpdk.bin -m 2048 --no-huge --no-pci --no-telemetry --vdev=net_af_packet0,iface=eth1,blocksz=16384,framesz=16384 --vdev=net_af_packet1,iface=eth2,blocksz=16384,framesz=16384 --vdev=net_af_packet2,iface=veth250,blocksz=16384,framesz=16384 -- 127.0.0.1 9080 2  0 1 2  1 3 4  -2 65407 0  -9 256 0  -4 512 0
+Restart=always
+RestartSec=5
+WorkingDirectory=/var/lib/freerouter
+User=freerouter
+Group=freerouter
+CapabilityBoundingSet=CAP_NET_RAW CAP_NET_ADMIN CAP_IPC_LOCK
+AmbientCapabilities=CAP_NET_RAW CAP_NET_ADMIN CAP_IPC_LOCK
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/freerouter /etc/freerouter
+PrivateTmp=true
+# PrivateDevices is not possible because some types need access to a physical device.
+PrivateDevices=false
+PrivateNetwork=false
+# Private Users clears all capabilities.
+PrivateUsers=false
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+LockPersonality=true
+RemoveIPC=true
+
+[Install]
+WantedBy=multi-user.target

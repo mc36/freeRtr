@@ -1,0 +1,5 @@
+[Match]
+Driver=virtio_net
+
+[Link]
+GenericReceiveOffload=false

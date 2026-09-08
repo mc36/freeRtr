@@ -1,0 +1,7 @@
+hwid emu
+! cpu_port
+int eth0 eth 0000.1111.00fb 127.0.0.1 22710 127.0.0.1 22709
+! freerouter cli
+tcp2vrf 2323 host 23 127.0.0.1
+! freerouter control port for message
+tcp2vrf 9080 host 9080 127.0.0.1

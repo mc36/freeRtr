@@ -1,0 +1,14 @@
+[Match]
+Name=eth1
+
+[Network]
+ConfigureWithoutCarrier=true
+IgnoreCarrierLoss=true
+DHCP=no
+LinkLocalAddressing=no
+IPv6AcceptRA=no
+
+[Link]
+MTUBytes=9000
+Promiscuous=true
+ActivationPolicy=always-up

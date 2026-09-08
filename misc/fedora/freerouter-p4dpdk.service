@@ -1,0 +1,19 @@
+[Unit]
+Description=p4dpdk specific process of freerouter
+Requires=freerouter.service freerouter-native@cpu_port.service network.target sys-subsystem-net-devices-veth250.device
+After=freerouter.service freerouter-native@cpu_port.service network.target sys-subsystem-net-devices-veth250.device
+
+[Service]
+Type=simple
+StandardOutput=file:/var/log/p4dpdk.log
+ExecStartPre=-/sbin/modprobe uio_pci_generic
+ExecStartPre=-/usr/bin/dpdk-devbind.py -b uio_pci_generic 0000:00:05.0
+ExecStartPre=-/usr/bin/dpdk-devbind.py -b uio_pci_generic 0000:00:06.0
+ExecStart=/usr/bin/p4dpdk.bin --in-memory --no-telemetry -a 0000:00:05.0 -a 0000:00:06.0 --vdev=net_af_packet0,iface=veth250,blocksz=16384,framesz=16384 -- 127.0.0.1 9080 2  0 0 1  1 2 3  -2 65407 0  -9 256 0  -4 512 0
+ExecStopPost=-/usr/bin/dpdk-devbind.py -b virtio-pci 0000:00:05.0
+ExecStopPost=-/usr/bin/dpdk-devbind.py -b virtio-pci 0000:00:06.0
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
