@@ -1,6 +1,6 @@
 #!/bin/sh
 cd misc/image/
-#./cc.sh
+./cc.sh
 cd ../serial/
 ../native/d.sh
 ./c.sh

@@ -1,4 +1,4 @@
 #!/bin/sh
-cd ../misc/native
+cd ../misc/forward
 ./c.sh
 cd ../../src
