@@ -10,7 +10,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
-#include "utils.h"
+#include "../native/utils.h"
 #include "fcs16.h"
 
 #define BANG_CK (TIOCM_CD | TIOCM_DSR)

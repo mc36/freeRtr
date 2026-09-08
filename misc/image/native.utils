@@ -1,0 +1,30 @@
+include ../misc/image/image.bas
+
+mkdir %tmp%/binImg
+
+catalog-read exp xz %mirr% experimental main
+catalog-read sid xz %mirr% sid main
+catalog-sum
+
+select-one libc6-dev                      #library
+select-one gcc                            #compiler
+select-one gcc-multilib                   #compiler
+select-one libmnl-dev                     #netlink
+select-one libpcap-dev                    #pcap
+
+select-lst
+select-sum
+package-down
+package-inst
+
+catalog-save utl
+
+copy ../misc %tmp%/
+
+include ../misc/image/native.%comp%
+
+exec cd %tmp%/misc/utils/ ; ./c.sh %find% ; ./p.sh
+
+move %tmp%/binImg/*.tgz ../binImg/utl-%unam%.tgz
+
+del %tmp%

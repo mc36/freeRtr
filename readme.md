@@ -74,6 +74,8 @@ the following directories will appear here:
 * motion: web based alarm/recorder
 * player: web based music player/streamer/receiver
 * streamer: low latency workers for the above
+* utils: create and manipulate interfaces
+* serial: sync and async serial handling
 * temper: web based thermostat/controller
 * trackmap: web based monitoring
 * position: web based location service

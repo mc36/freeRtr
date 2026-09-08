@@ -43,7 +43,7 @@ for fn in p4emu_full p4emu_tiny p4emu_huge p4emu_dbg p4emu_nocr p4emu_none; do
   compileLib $fn "" "$PR"
 done
 
-for fn in p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_raw p4emu_xsk p4emu_urng syncEmu; do
+for fn in p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_raw p4emu_xsk p4emu_urng; do
   compileLib $fn "" ""
 done
 
@@ -127,7 +127,7 @@ linkTwoLibs "p4urngPln" "p4emu_urng" "p4emu_nocr" "-lpthread -luring"
 
 linkTwoLibs "p4urngTin" "p4emu_urng" "p4emu_tiny" "-lpthread -luring"
 
-for fn in pcapInt pcap2pcap sender; do
+for fn in pcapInt; do
   compileFile $fn "" "-lpthread -lpcap" ""
 done
 
@@ -139,18 +139,6 @@ for fn in urngInt; do
   compileFile $fn "" "-lpthread -luring" ""
 done
 
-for fn in veth; do
-  compileFile $fn "" "-lmnl" ""
-done
-
-for fn in mapInt cmp1int cmp2int rawInt tapInt bundle vlan fileInt hdlcInt syncInt syncClk asyncLin stdLin ttyCtr ttyLin modem; do
+for fn in mapInt cmp1int cmp2int rawInt tapInt fileInt; do
   compileFile $fn "" "-lpthread" ""
-done
-
-for fn in ptyRun; do
-  compileFile $fn "" "-lutil" ""
-done
-
-for fn in seth rexec dummyCon daemonRun dirRun; do
-  compileFile $fn "" "" ""
 done

@@ -7,8 +7,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#include "utils.h"
-#include "types.h"
+#include "../native/utils.h"
+#include "../native/types.h"
 
 #define vlanMax 32
 
