@@ -4,6 +4,7 @@ exec cd %tmp%/rtr/ ; tar xfz ../../binImg/fwd-%unam%.tgz
 exec cd %tmp%/rtr/ ; tar xfz ../../binImg/ifc-%unam%.tgz
 exec cd %tmp%/rtr/ ; tar xfz ../../binImg/ser-%unam%.tgz
 exec cd %tmp%/rtr/ ; tar xfz ../../binImg/snd-%unam%.tgz
+exec cd %tmp%/rtr/ ; tar xfz ../../binImg/utl-%unam%.tgz
 
 catalog-read exp xz %mirr% experimental main
 catalog-read sid xz %mirr% sid main

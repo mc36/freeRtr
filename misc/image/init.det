@@ -1,0 +1,3 @@
+#!/bin/sh
+grep "rx:" /proc/tty/driver/serial* | sed "s/^/\/dev\/ttyS/" > /rtr/hwdet.ser
+ip link show > /rtr/hwdet.eth

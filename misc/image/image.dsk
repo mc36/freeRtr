@@ -5,6 +5,7 @@ copy %img%.krn %tmp%/rtr.krn
 exec cd %tmp%/ ; cpio --quiet -H newc -i < %img%.cpio
 copy ../misc/image/init.dsk %tmp%/init
 copy ../misc/image/init.chr %tmp%/
+copy ../misc/image/init.det %tmp%/
 exec chmod 755 %tmp%/init*
 
 exec cd %tmp%/ ; find init* dev/ sys/ proc/ mnt/ run/ usr/ > filist

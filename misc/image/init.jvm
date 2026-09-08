@@ -1,4 +1,5 @@
 #!/bin/sh
+cd /rtr/
 if [ ! -f /rtr/hwdet-all.sh ] ; then
   /java/bin/java -jar /rtr/rtr.jar test hwdet tuntap 10.255.255.1/24 10.255.255.254 tcpvrf 23 host 23 path /rtr/ java /java/bin/ iface map line raw inline
   fi

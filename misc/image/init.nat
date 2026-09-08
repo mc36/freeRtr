@@ -1,4 +1,5 @@
 #!/bin/sh
+cd /rtr/
 if [ ! -f /rtr/hwdet-all.sh ] ; then
   /rtr/rtr.bin test hwdet binary tuntap 10.255.255.1/24 10.255.255.254 tcpvrf 23 host 23 path /rtr/ iface map line raw inline
   fi

@@ -1,6 +1,7 @@
 copy ../misc/image/init.lin %tmp%/init
-copy ../misc/image/init.dev %tmp%/init.dev
-copy ../misc/image/init.sys %tmp%/init.sys
+copy ../misc/image/init.det %tmp%/
+copy ../misc/image/init.dev %tmp%/
+copy ../misc/image/init.sys %tmp%/
 move %tmp%/boot/vmlinu* %img%.krn
 del %tmp%/boot
 include ../misc/image/image.cln
