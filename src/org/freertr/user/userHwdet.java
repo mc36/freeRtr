@@ -322,7 +322,7 @@ public class userHwdet {
             case socat:
                 return "socat INTERFACE:" + nam1 + " INTERFACE:" + nam2;
             case pcap:
-                return path + "pcap2pcap.bin " + nam1 + " " + nam2;
+                return path + "pcapCon.bin " + nam1 + " " + nam2;
             default:
                 return null;
         }

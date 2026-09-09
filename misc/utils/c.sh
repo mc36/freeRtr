@@ -18,6 +18,6 @@ for fn in seth rexec daemonRun dirRun; do
   compileFile $fn "" "" ""
 done
 
-for fn in connect flood; do
+for fn in pcapCon pcapFld; do
   compileFile $fn "" "-lpthread -lpcap" ""
 done
