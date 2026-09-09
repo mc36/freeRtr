@@ -78,9 +78,9 @@ public class mixer implements Runnable {
     public void run() {
         for (;;) {
             try {
-                String a = "\ro:" + outVol + "  ";
+                String a = "\ro:" + outVol + "%  ";
                 for (int i = 0; i < source.length; i++) {
-                    a += i + ":" + source[i].vol + "  ";
+                    a += i + ":" + source[i].vol + "%  ";
                 }
                 System.out.print(a);
                 int i = System.in.read();

@@ -1,0 +1,15 @@
+#define padln 64
+#define srate 48000
+#define smpbt 4
+#define pktln 1200
+#define wavln 104
+#define rtpln 12
+#define rtpty 96
+#define scrbr 1
+#define scrln 5
+#define scrtp 3
+#define vbabr 3
+#define vbaln 28
+#define vbamg 1447182670
+#define wfaln 10
+#define wfamg 1464205824
