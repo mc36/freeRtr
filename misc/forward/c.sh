@@ -6,17 +6,17 @@ profProto()
 {
 echo -n "$1: "
 rm $TR/$PR-$1.raw 2> /dev/null || true
-$TR/p4emu_profiler.bin p4emu_bench_cmds.txt p4emu_bench_$1.txt $TR/$PR-$1.raw || true
+$TR/p4profiler.bin p4bench_cmds.txt p4bench_$1.txt $TR/$PR-$1.raw || true
 }
 
 if [ "$PR" != "" ]; then
-  compileFile p4emu_profiler "" "-lcrypto" "-fprofile-generate"
+  compileFile p4profiler "" "-lcrypto" "-fprofile-generate"
   profProto ipv4
   profProto ipv6
   profProto vlan
   profProto pppoe
   profProto mpls
-  rm $TR/p4emu_profiler.bin || true
+  rm $TR/p4profiler.bin || true
   llvm-profdata merge -output=$TR/$PR.res $TR/$PR-*.raw || true
   if [ -e $TR/$PR.res ]; then
     PR="-fprofile-use=$TR/$PR.res -Wno-backend-plugin"
@@ -43,12 +43,16 @@ for fn in p4emu_full p4emu_tiny p4emu_huge p4emu_dbg p4emu_nocr p4emu_none; do
   compileLib $fn "" "$PR"
 done
 
-for fn in p4emu_pcap p4emu_bench p4emu_udp p4emu_map p4emu_raw p4emu_xsk p4emu_urng; do
+for fn in p4emu_pcap  p4emu_map p4emu_raw p4emu_xsk p4emu_urng; do
   compileLib $fn "" ""
 done
 
 for fn in p4emu_dpdk; do
   compileLib $fn "-I =/usr/include/dpdk/ -I =/usr/include/$UM-linux-$AB/dpdk" $MF
+done
+
+for fn in p4bench p4udp; do
+  compileWith $fn "p4emu_full" "-lcrypto" ""
 done
 
 linkTwoLibs "p4emu" "p4emu_pcap" "p4emu_full" "-lpthread -lpcap -lcrypto"
@@ -75,9 +79,6 @@ linkTwoLibs "p4dpdkPln" "p4emu_dpdk" "p4emu_nocr" "-lpthread -lrte_eal -lrte_mem
 
 linkTwoLibs "p4dpdkTin" "p4emu_dpdk" "p4emu_tiny" "-lpthread -lrte_eal -lrte_mempool -lrte_mbuf -lrte_ring -lrte_ethdev"
 
-linkTwoLibs "p4bench" "p4emu_bench" "p4emu_full" "-lcrypto"
-
-linkTwoLibs "p4udp" "p4emu_udp" "p4emu_full" "-lcrypto"
 
 linkTwoLibs "p4map" "p4emu_map" "p4emu_full" "-lpthread -lcrypto"
 

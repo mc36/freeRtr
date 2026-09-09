@@ -93,6 +93,14 @@ $CS $TR/$1.bin || true
 touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
 }
 
+compileWith()
+{
+echo compiling $1.
+$CC --sysroot $SR -Wall -Wl,-rpath='$ORIGIN/' -Wl,--build-id=none $MD -o$TR/$1.bin -L$TR $1.c $3 -l$2 $4
+$CS $TR/$1.bin || true
+touch -c -d "2010-01-01 00:00:00" $TR/$1.bin || true
+}
+
 compileFile()
 {
 echo compiling $1.
