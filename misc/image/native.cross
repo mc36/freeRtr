@@ -17,6 +17,9 @@ select-one libbpf-dev                     #dataplane
 select-one libxdp-dev                     #dataplane
 select-one liburing-dev                   #dataplane
 select-one libmnl-dev                     #dataplane
+select-one libasound-dev                  #sound
+select-one libsndfile-dev                 #sound
+select-one libsamplerate-dev              #sound
 
 select-lst
 select-sum
@@ -29,8 +32,19 @@ copy ../misc %tmp%/
 
 include ../misc/image/native.%comp%
 
-exec cd %tmp%/misc/forward/ ; ./c.sh %find% ; ./p.sh
+exec cd %tmp%/misc/sound/ ; ../native/d.sh ; ./c.sh %find% ; ./p.sh
+move %tmp%/binImg/*.tgz ../binImg/snd-%unam%.tgz
 
+exec cd %tmp%/misc/utils/ ; ../native/d.sh ; ./c.sh %find% ; ./p.sh
+move %tmp%/binImg/*.tgz ../binImg/utl-%unam%.tgz
+
+exec cd %tmp%/misc/serial/ ; ../native/d.sh ; ./c.sh %find% ; ./p.sh
+move %tmp%/binImg/*.tgz ../binImg/ser-%unam%.tgz
+
+exec cd %tmp%/misc/iface/ ; ../native/d.sh ; ./c.sh %find% ; ./p.sh
+move %tmp%/binImg/*.tgz ../binImg/ifc-%unam%.tgz
+
+exec cd %tmp%/misc/forward/ ; ../native/d.sh ; ./c.sh %find% ; ./p.sh
 move %tmp%/binImg/*.tgz ../binImg/fwd-%unam%.tgz
 
 exec /usr/bin/qemu-%qemu% -L %tmp%/ %tmp%/binTmp/p4bench.bin

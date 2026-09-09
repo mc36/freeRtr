@@ -1,14 +1,23 @@
 #!/bin/sh
 /sbin/ldconfig
-cd /misc/serial
-./c.sh
 cd /misc/sound
+../native/d.sh
 ./c.sh
-cd /misc/iface
-./c.sh
+./p.sh
 cd /misc/utils
+../native/d.sh
 ./c.sh
+./p.sh
+cd /misc/serial
+../native/d.sh
+./c.sh
+./p.sh
+cd /misc/iface
+../native/d.sh
+./c.sh
+./p.sh
 cd /misc/forward
+../native/d.sh
 ./c.sh
 ./p.sh
 /binTmp/p4bench.bin
