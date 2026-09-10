@@ -43,7 +43,7 @@ for fn in p4emu_full p4emu_tiny p4emu_huge p4emu_dbg p4emu_nocr p4emu_none; do
   compileLib $fn "" "$PR"
 done
 
-for fn in p4emu_pcap  p4emu_map p4emu_raw p4emu_xsk p4emu_urng; do
+for fn in p4emu_pcap p4emu_map p4raw p4emu_xsk p4emu_urng; do
   compileLib $fn "" ""
 done
 
@@ -51,7 +51,7 @@ for fn in p4emu_dpdk; do
   compileLib $fn "-I =/usr/include/dpdk/ -I =/usr/include/$UM-linux-$AB/dpdk" $MF
 done
 
-for fn in p4bench p4udp; do
+for fn in p4bench p4udp p4min; do
   compileWith $fn "p4emu_full" "-lcrypto" ""
 done
 
@@ -92,17 +92,17 @@ linkTwoLibs "p4mapPln" "p4emu_map" "p4emu_nocr" "-lpthread"
 
 linkTwoLibs "p4mapTin" "p4emu_map" "p4emu_tiny" "-lpthread"
 
-linkTwoLibs "p4raw" "p4emu_raw" "p4emu_full" "-lpthread -lcrypto"
+linkTwoLibs "p4raw" "p4raw" "p4emu_full" "-lpthread -lcrypto"
 
-linkTwoLibs "p4rawDbg" "p4emu_raw" "p4emu_dbg" "-lpthread -lcrypto"
+linkTwoLibs "p4rawDbg" "p4raw" "p4emu_dbg" "-lpthread -lcrypto"
 
-linkTwoLibs "p4rawHug" "p4emu_raw" "p4emu_huge" "-lpthread -lcrypto"
+linkTwoLibs "p4rawHug" "p4raw" "p4emu_huge" "-lpthread -lcrypto"
 
-linkTwoLibs "p4rawPkt" "p4emu_raw" "p4emu_none" "-lpthread"
+linkTwoLibs "p4rawPkt" "p4raw" "p4emu_none" "-lpthread"
 
-linkTwoLibs "p4rawPln" "p4emu_raw" "p4emu_nocr" "-lpthread"
+linkTwoLibs "p4rawPln" "p4raw" "p4emu_nocr" "-lpthread"
 
-linkTwoLibs "p4rawTin" "p4emu_raw" "p4emu_tiny" "-lpthread"
+linkTwoLibs "p4rawTin" "p4raw" "p4emu_tiny" "-lpthread"
 
 linkTwoLibs "p4xsk" "p4emu_xsk" "p4emu_full" "-lpthread -lxdp -lcrypto"
 
