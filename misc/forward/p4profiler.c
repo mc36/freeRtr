@@ -29,7 +29,7 @@ void err(char*buf) {
 #include "p4emu_tab.h"
 #include "p4emu_fwd.h"
 #include "p4emu_msg.h"
-#include "p4emu_tester.h"
+#include "p4tester.h"
 
 void sendPack(unsigned char *bufD, int bufS, int port) {
 }

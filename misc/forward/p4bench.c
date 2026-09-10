@@ -9,7 +9,7 @@
 #include <time.h>
 
 #include "p4emu_hdr.h"
-#include "p4emu_tester.h"
+#include "p4tester.h"
 
 long packs = 0;
 long bytes = 0;
