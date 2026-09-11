@@ -28,18 +28,19 @@ public class mixer implements Runnable {
 
     private void doer(String[] args) throws Exception {
         if (args.length < 8) {
-            System.out.println("usage: java this <group> <source> <port> <vol>  <group> <source> <port> <vol>   <group> <source> <port> <vol>  ...");
+            System.out.println("usage: java this <group> <source> <port> <vol>  <group> <source> <port> <volL> <volR>   <group> <source> <port> <volL> <volR>  ...");
             return;
         }
-        source = new mixerOne[(args.length - 2) / 4];
+        source = new mixerOne[(args.length - 2) / 5];
         target = packer.sender(args[0], args[1], args[2]).string2kind(null);
         outVol = volume2range(Integer.parseInt(args[3]), 0);
         selected = -1;
         for (int i = 0; i < source.length; i++) {
-            int p = (i * 4) + 4;
+            int p = (i * 5) + 4;
             packet s = packer.receiver(args[p + 0], args[p + 1], args[p + 2]).string2kind(null);
-            long v = volume2range(Integer.parseInt(args[p + 3]), 0);
-            source[i] = new mixerOne(s, v);
+            long vl = volume2range(Integer.parseInt(args[p + 3]), 0);
+            long vr = volume2range(Integer.parseInt(args[p + 4]), 0);
+            source[i] = new mixerOne(s, vl, vr);
         }
         for (int i = 1; i < source.length; i++) {
             new Thread(source[i]).start();
@@ -47,28 +48,44 @@ public class mixer implements Runnable {
         new Thread(this).start();
         byte[] buf = new byte[consts.payl];
         outLst = new int[buf.length / consts.smpb];
-        long res[] = new long[outLst.length];
+        long resL[] = new long[outLst.length / 2];
+        long resR[] = new long[resL.length];
         for (;;) {
-            source[0].readRound();
-            for (int i = 0; i < res.length; i++) {
-                res[i] = 0;
+            for (int i = 0; i < resL.length; i++) {
+                resL[i] = 0;
+                resR[i] = 0;
             }
-            for (int o = 0; o < source.length; o++) {
-                int[] now = source[o].lst;
-                long vol = source[o].vol;
-                for (int i = 0; i < res.length; i++) {
-                    long val = now[i];
-                    val *= vol;
+            source[0].readRound();
+            for (int p = 0; p < source.length; p++) {
+                int[] now = source[p].lst;
+                long volL = source[p].volL;
+                long volR = source[p].volR;
+                int o = 0;
+                for (int i = 0; i < outLst.length; i += 2) {
+                    long val = now[i + 0];
+                    val *= volL;
                     val /= 100;
-                    res[i] += val;
+                    resL[o] += val;
+                    val = now[i + 1];
+                    val *= volR;
+                    val /= 100;
+                    resR[o] += val;
+                    o++;
                 }
             }
-            for (int i = 0; i < res.length; i++) {
-                long val = res[i];
+            int o = 0;
+            for (int i = 0; i < outLst.length; i += 2) {
+                long val = resL[o];
                 val /= source.length;
                 val *= outVol;
                 val /= 100;
-                outLst[i] = (int) val;
+                outLst[i + 0] = (int) val;
+                val = resR[o];
+                val /= source.length;
+                val *= outVol;
+                val /= 100;
+                outLst[i + 1] = (int) val;
+                o++;
             }
             target.coder.encode(outLst, buf, buf.length);
             target.writeKind(buf, buf.length);
@@ -105,7 +122,7 @@ public class mixer implements Runnable {
             try {
                 String a = "\ro:" + outVol + "%  ";
                 for (int i = 0; i < source.length; i++) {
-                    a += i + ":" + source[i].vol + "%  ";
+                    a += i + ":" + source[i].volL + "%," + source[i].volR + "%  ";
                 }
                 System.out.print(a);
                 int i = System.in.read();
@@ -142,14 +159,30 @@ public class mixer implements Runnable {
                             outVol = volume2range(outVol, +1);
                             break;
                         }
-                        source[selected].vol = volume2range(source[selected].vol, +1);
+                        source[selected].volL = volume2range(source[selected].volL, +1);
+                        source[selected].volR = volume2range(source[selected].volR, +1);
                         break;
                     case '-':
                         if (selected < 0) {
                             outVol = volume2range(outVol, -1);
                             break;
                         }
-                        source[selected].vol = volume2range(source[selected].vol, -1);
+                        source[selected].volL = volume2range(source[selected].volL, -1);
+                        source[selected].volR = volume2range(source[selected].volR, -1);
+                        break;
+                    case '[':
+                        if (selected < 0) {
+                            break;
+                        }
+                        source[selected].volL = volume2range(source[selected].volL, +1);
+                        source[selected].volR = volume2range(source[selected].volR, -1);
+                        break;
+                    case ']':
+                        if (selected < 0) {
+                            break;
+                        }
+                        source[selected].volL = volume2range(source[selected].volL, -1);
+                        source[selected].volR = volume2range(source[selected].volR, +1);
                         break;
                     case ' ':
                         System.out.println("\r");
@@ -181,17 +214,20 @@ class mixerOne implements Runnable {
 
     public int pkt;
 
-    public long vol;
+    public long volL;
+
+    public long volR;
 
     public int[] lst;
 
-    public mixerOne(packet s, long v) {
+    public mixerOne(packet s, long vl, long vr) {
         src = s;
         cur = new byte[consts.payl];
         buf = new int[3][cur.length / consts.smpb];
         pos = 0;
         lst = buf[0];
-        vol = v;
+        volL = vl;
+        volR = vr;
     }
 
     public void readRound() throws Exception {
