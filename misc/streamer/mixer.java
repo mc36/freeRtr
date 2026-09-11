@@ -20,6 +20,8 @@ public class mixer implements Runnable {
 
     private long outVol;
 
+    private int outLst[];
+
     private packet target;
 
     private int selected;
@@ -44,8 +46,8 @@ public class mixer implements Runnable {
         }
         new Thread(this).start();
         byte[] buf = new byte[consts.payl];
-        int cur[] = new int[buf.length / consts.smpb];
-        long res[] = new long[cur.length];
+        outLst = new int[buf.length / consts.smpb];
+        long res[] = new long[outLst.length];
         for (;;) {
             source[0].readRound();
             for (int i = 0; i < res.length; i++) {
@@ -66,9 +68,9 @@ public class mixer implements Runnable {
                 val /= source.length;
                 val *= outVol;
                 val /= 100;
-                cur[i] = (int) val;
+                outLst[i] = (int) val;
             }
-            target.coder.encode(cur, buf, buf.length);
+            target.coder.encode(outLst, buf, buf.length);
             target.writeKind(buf, buf.length);
         }
     }
@@ -132,7 +134,7 @@ public class mixer implements Runnable {
                     case 'X':
                     case 'q':
                     case 'Q':
-                        System.out.println();
+                        System.out.println("\r");
                         System.exit(0);
                         break;
                     case '+':
@@ -149,8 +151,17 @@ public class mixer implements Runnable {
                         }
                         source[selected].vol = volume2range(source[selected].vol, -1);
                         break;
+                    case ' ':
+                        System.out.println("\r");
+                        System.out.println("\ro " + visDoer.rms(outLst));
+                        for (i = 0; i < source.length; i++) {
+                            System.out.println("\r" + i + " " + visDoer.rms(source[i].lst) + " " + source[i].pkt);
+                        }
+                        System.out.println("\r");
+                        break;
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 break;
             }
         }
@@ -167,6 +178,8 @@ class mixerOne implements Runnable {
     private final byte[] cur;
 
     private int pos;
+
+    public int pkt;
 
     public long vol;
 
@@ -192,6 +205,7 @@ class mixerOne implements Runnable {
             cur[i] = 0;
         }
         src.coder.decode(buf[pos], cur, cur.length);
+        pkt++;
     }
 
     public void run() {
@@ -199,6 +213,7 @@ class mixerOne implements Runnable {
             try {
                 readRound();
             } catch (Exception e) {
+                e.printStackTrace();
                 break;
             }
         }

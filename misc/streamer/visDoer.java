@@ -1,5 +1,4 @@
 
-
 /**
  * visualize stream
  *
@@ -25,6 +24,7 @@ public class visDoer {
 
     /**
      * do one round
+     *
      * @param buf buffer
      * @param len length
      */
@@ -150,6 +150,34 @@ public class visDoer {
             }
         }
         return scr;
+    }
+
+    /**
+     * calculate rms
+     *
+     * @param sam samples
+     * @return rms vu asstring
+     */
+    public static String rms(int sam[]) {
+        double rms = 0;
+        for (int i = 0; i < sam.length; i++) {
+            double o = sam[i] >> 16;
+            o /= 32768.0;
+            rms += o * o;
+        }
+        rms = Math.sqrt(rms / (double) sam.length);
+        char[] scr = new char[maxX];
+        rms = (scr.length * Math.log10(rms)) + scr.length;
+        rms = Math.max(0, rms);
+        rms = Math.min(scr.length, rms);
+        int cur = (int) rms;
+        for (int i = 0; i < cur; i++) {
+            scr[i] = '#';
+        }
+        for (int i = cur; i < scr.length; i++) {
+            scr[i] = '-';
+        }
+        return new String(scr);
     }
 
     private static char[][] rms(double sam[], int beg, int dir) {
