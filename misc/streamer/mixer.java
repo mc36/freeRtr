@@ -48,44 +48,21 @@ public class mixer implements Runnable {
         new Thread(this).start();
         byte[] buf = new byte[consts.payl];
         outLst = new int[buf.length / consts.smpb];
-        long resL[] = new long[outLst.length / 2];
-        long resR[] = new long[resL.length];
+        long res[] = new long[outLst.length];
         for (;;) {
-            for (int i = 0; i < resL.length; i++) {
-                resL[i] = 0;
-                resR[i] = 0;
+            for (int i = 0; i < outLst.length; i++) {
+                res[i] = 0;
             }
             source[0].readRound();
-            for (int p = 0; p < source.length; p++) {
-                int[] now = source[p].lst;
-                long volL = source[p].volL;
-                long volR = source[p].volR;
-                int o = 0;
-                for (int i = 0; i < outLst.length; i += 2) {
-                    long val = now[i + 0];
-                    val *= volL;
-                    val /= 100;
-                    resL[o] += val;
-                    val = now[i + 1];
-                    val *= volR;
-                    val /= 100;
-                    resR[o] += val;
-                    o++;
-                }
+            for (int i = 0; i < source.length; i++) {
+                source[i].mixRound(res);
             }
-            int o = 0;
-            for (int i = 0; i < outLst.length; i += 2) {
-                long val = resL[o];
+            for (int i = 0; i < outLst.length; i++) {
+                long val = res[i];
                 val /= source.length;
                 val *= outVol;
                 val /= 100;
-                outLst[i + 0] = (int) val;
-                val = resR[o];
-                val /= source.length;
-                val *= outVol;
-                val /= 100;
-                outLst[i + 1] = (int) val;
-                o++;
+                outLst[i] = (int) val;
             }
             target.coder.encode(outLst, buf, buf.length);
             target.writeKind(buf, buf.length);
@@ -122,7 +99,7 @@ public class mixer implements Runnable {
             try {
                 String a = "\ro:" + outVol + "%  ";
                 for (int i = 0; i < source.length; i++) {
-                    a += i + ":" + source[i].volL + "%," + source[i].volR + "%  ";
+                    a += (i + 1) + ":" + source[i].volL + "%," + source[i].volR + "%  ";
                 }
                 System.out.print(a);
                 int i = System.in.read();
@@ -137,7 +114,7 @@ public class mixer implements Runnable {
                     case '7':
                     case '8':
                     case '9':
-                        selected = i - '0';
+                        selected = (i - '1' + 10) % 10;
                         if (selected < source.length) {
                             break;
                         }
@@ -185,10 +162,9 @@ public class mixer implements Runnable {
                         source[selected].volR = volume2range(source[selected].volR, +1);
                         break;
                     case ' ':
-                        System.out.println("\r");
-                        System.out.println("\ro " + visDoer.rms(outLst));
+                        System.out.println("\r\n\r\n\ro " + visDoer.rms(outLst));
                         for (i = 0; i < source.length; i++) {
-                            System.out.println("\r" + i + " " + visDoer.rms(source[i].lst) + " " + source[i].pkt);
+                            System.out.println("\r" + (i + 1) + " " + visDoer.rms(source[i].lst) + " " + source[i].pkt);
                         }
                         System.out.println("\r");
                         break;
@@ -242,6 +218,20 @@ class mixerOne implements Runnable {
         }
         src.coder.decode(buf[pos], cur, cur.length);
         pkt++;
+    }
+
+    public void mixRound(long[] res) {
+        int[] now = lst;
+        for (int i = 0; i < now.length; i += 2) {
+            long val = now[i + 0];
+            val *= volL;
+            val /= 100;
+            res[i + 0] += val;
+            val = now[i + 1];
+            val *= volR;
+            val /= 100;
+            res[i + 1] += val;
+        }
     }
 
     public void run() {
