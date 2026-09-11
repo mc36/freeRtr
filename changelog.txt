@@ -18714,3 +18714,6 @@ failed: qos ingress shaper action
 ---------------------------------- 2026-09-10 11:36:26 26.9.10
 no failed: qos ingress shaper action
 qc pass: qos ingress shaper action
+---------------------------------- 2026-09-11 03:50:31 26.9.11
+no qc pass: wireguard over ipv6
+failed: wireguard over ipv6

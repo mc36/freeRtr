@@ -23,7 +23,7 @@ public class userHwext {
     }
 
     private enum dpTyp {
-        opnflw, p4emu, p4map, p4raw, p4xsk, p4udp, p4urng, p4xdp, p4dpdk, p4sw
+        opnflw, p4emu, p4map, p4raw, p4xsk, p4udp, p4min, p4urng, p4xdp, p4dpdk, p4sw
     }
 
     private String pref = "./rtr-";
@@ -74,6 +74,10 @@ public class userHwext {
                 }
                 if (s.equals("p4udp")) {
                     dpt = dpTyp.p4udp;
+                    continue;
+                }
+                if (s.equals("p4min")) {
+                    dpt = dpTyp.p4min;
                     continue;
                 }
                 if (s.equals("p4urng")) {
@@ -264,6 +268,7 @@ public class userHwext {
             case p4map:
             case p4raw:
             case p4udp:
+            case p4min:
             case p4xsk:
             case p4urng:
             case p4xdp:
@@ -321,6 +326,7 @@ public class userHwext {
             case p4map:
             case p4raw:
             case p4udp:
+            case p4min:
             case p4xsk:
             case p4urng:
             case p4xdp:
@@ -340,8 +346,13 @@ public class userHwext {
                 for (i = 0; i < brd.size(); i++) {
                     swc.add(cmds.tabulator + "export-bridge " + brd.get(i));
                 }
+                if (dpt != dpTyp.p4min) {
+                    o = 0;
+                } else {
+                    o = 1;
+                }
                 for (i = 0; i < ifr.size(); i++) {
-                    swc.add(cmds.tabulator + "export-port " + ifr.get(i) + " " + i);
+                    swc.add(cmds.tabulator + "export-port " + ifr.get(i) + " " + (i + o));
                 }
                 swc.add(cmds.tabulator + "interconnect ethernet0");
                 swc.add(cmds.tabulator + "vrf " + dpv);
@@ -410,6 +421,13 @@ public class userHwext {
                             a += " " + o + " " + (o + 1);
                         }
                         hwc.add("proc p4emu " + path + "p4udp.bin 127.0.0.1 " + servP4lang.port + " " + ifl.size() + " 127.0.0.1 127.0.0.1" + a + " 19998 19999");
+                        break;
+                    case p4min:
+                        a = "";
+                        for (i = 0; i < ifp.size(); i++) {
+                            a += " " + ifp.get(i);
+                        }
+                        hwc.add("proc p4emu " + path + "p4min.bin 127.0.0.1 19998 127.0.0.1 19999 127.0.0.1 " + servP4lang.port + " " + a);
                         break;
                     case p4xsk:
                         ifn = "veth0a";
