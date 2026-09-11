@@ -31,12 +31,13 @@ public class mixer implements Runnable {
         }
         source = new mixerOne[(args.length - 2) / 4];
         target = packer.sender(args[0], args[1], args[2]).string2kind(null);
-        outVol = Integer.parseInt(args[3]);
+        outVol = volume2range(Integer.parseInt(args[3]), 0);
         selected = -1;
         for (int i = 0; i < source.length; i++) {
             int p = (i * 4) + 4;
             packet s = packer.receiver(args[p + 0], args[p + 1], args[p + 2]).string2kind(null);
-            source[i] = new mixerOne(s, args[p + 3]);
+            long v = volume2range(Integer.parseInt(args[p + 3]), 0);
+            source[i] = new mixerOne(s, v);
         }
         for (int i = 1; i < source.length; i++) {
             new Thread(source[i]).start();
@@ -70,6 +71,28 @@ public class mixer implements Runnable {
             target.coder.encode(cur, buf, buf.length);
             target.writeKind(buf, buf.length);
         }
+    }
+
+    /**
+     * update volume
+     *
+     * @param cur currently
+     * @param dir direction
+     * @return updated
+     */
+    public static long volume2range(long cur, int dir) {
+        long mov = cur / 10;
+        if (mov < 1) {
+            mov = 1;
+        }
+        cur += dir * mov;
+        if (cur < 0) {
+            cur = 0;
+        }
+        if (cur > 999) {
+            cur = 999;
+        }
+        return cur;
     }
 
     /**
@@ -114,17 +137,17 @@ public class mixer implements Runnable {
                         break;
                     case '+':
                         if (selected < 0) {
-                            outVol++;
+                            outVol = volume2range(outVol, +1);
                             break;
                         }
-                        source[selected].vol++;
+                        source[selected].vol = volume2range(source[selected].vol, +1);
                         break;
                     case '-':
                         if (selected < 0) {
-                            outVol--;
+                            outVol = volume2range(outVol, -1);
                             break;
                         }
-                        source[selected].vol--;
+                        source[selected].vol = volume2range(source[selected].vol, -1);
                         break;
                 }
             } catch (Exception e) {
@@ -149,13 +172,13 @@ class mixerOne implements Runnable {
 
     public int[] lst;
 
-    public mixerOne(packet s, String v) {
+    public mixerOne(packet s, long v) {
         src = s;
         cur = new byte[consts.payl];
         buf = new int[3][cur.length / consts.smpb];
         pos = 0;
         lst = buf[0];
-        vol = Integer.parseInt(v);
+        vol = v;
     }
 
     public void readRound() throws Exception {
