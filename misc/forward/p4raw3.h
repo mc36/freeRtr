@@ -23,6 +23,6 @@ if (setsockopt(ifaceSock[o], SOL_PACKET, PACKET_ADD_MEMBERSHIP, &pmr, sizeof (pm
 int val = 1;
 if (setsockopt(ifaceSock[o], SOL_PACKET, PACKET_AUXDATA, &val, sizeof(val)) < 0) err("failed to set auxdata");
 int sockOpt = 524288;
-setsockopt(sockets[i], SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt));
-setsockopt(sockets[i], SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt));
+setsockopt(ifaceSock[o], SOL_SOCKET, SO_RCVBUF, &sockOpt, sizeof(sockOpt));
+setsockopt(ifaceSock[o], SOL_SOCKET, SO_SNDBUF, &sockOpt, sizeof(sockOpt));
 ifaceId[o] = o;

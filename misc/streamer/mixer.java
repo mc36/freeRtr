@@ -42,6 +42,7 @@ public class mixer implements Runnable {
             long vr = volume2range(Integer.parseInt(args[p + 4]), 0);
             source[i] = new mixerOne(i, s, vl, vr);
         }
+        System.out.println("control: q,x=exit, space=status, 1..9=input, o=output, +,-,u,d=volume up/down, ],[,l,r=balance left/right");
         for (int i = 1; i < source.length; i++) {
             new Thread(source[i]).start();
         }
@@ -132,6 +133,8 @@ public class mixer implements Runnable {
                         System.exit(0);
                         break;
                     case '+':
+                    case 'u':
+                    case 'U':
                         if (selected < 0) {
                             outVol = volume2range(outVol, +1);
                             break;
@@ -140,6 +143,8 @@ public class mixer implements Runnable {
                         source[selected].volR = volume2range(source[selected].volR, +1);
                         break;
                     case '-':
+                    case 'd':
+                    case 'D':
                         if (selected < 0) {
                             outVol = volume2range(outVol, -1);
                             break;
@@ -148,6 +153,8 @@ public class mixer implements Runnable {
                         source[selected].volR = volume2range(source[selected].volR, -1);
                         break;
                     case '[':
+                    case 'l':
+                    case 'L':
                         if (selected < 0) {
                             break;
                         }
@@ -155,6 +162,8 @@ public class mixer implements Runnable {
                         source[selected].volR = volume2range(source[selected].volR, -1);
                         break;
                     case ']':
+                    case 'r':
+                    case 'R':
                         if (selected < 0) {
                             break;
                         }
