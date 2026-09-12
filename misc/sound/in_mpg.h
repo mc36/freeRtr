@@ -75,7 +75,7 @@ void iou_read() {
     gettimeofday(&timval, NULL);
     int need = (timval.tv_usec - recTim + 1000000) % 100000;
     recTim = timval.tv_usec;
-    need = 500000 * pktln / (srate * smpbt) - need;
+    need = (500000 * pktln / (srate * smpbt)) - need;
     if (need < 1) return;
     usleep(need);
     recTim += need;
