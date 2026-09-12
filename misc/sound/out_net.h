@@ -95,6 +95,8 @@ void ply_init(char*knd, char*grp, char*src, char* prt) {
     addrTmp.sin_addr.s_addr = inet_addr(src);
     addrTmp.sin_port = htons(atoi(prt));
     if ((plyHnd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
+    int val = 1;
+    setsockopt(plyHnd, SOL_SOCKET, SO_REUSEADDR, (void *)&val, sizeof(val));
     if (bind(plyHnd, (struct sockaddr *) &addrTmp, sizeof (addrTmp)) < 0) err("failed to bind socket");
     memset(&addrTmp, 0, sizeof (addrTmp));
     addrTmp.sin_family = AF_INET;

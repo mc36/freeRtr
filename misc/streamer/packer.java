@@ -55,6 +55,7 @@ public class packer {
         int port = Integer.parseInt(prt);
         r.target = DatagramChannel.open();
         DatagramSocket scket = r.target.socket();
+        scket.setReuseAddress(true);
         scket.bind(new InetSocketAddress(source, port));
         MulticastSocket mcast = (MulticastSocket) scket;
         mcast.connect(group, port);
@@ -82,8 +83,9 @@ public class packer {
         int port = Integer.parseInt(prt);
         r.source = DatagramChannel.open();
         DatagramSocket scket = r.source.socket();
+        scket.setReuseAddress(true);
+        scket.bind(new InetSocketAddress(port));
         MulticastSocket mcast = (MulticastSocket) scket;
-        r.source.socket().bind(new InetSocketAddress(port));
         r.source.join(group, mcast.getNetworkInterface(), source);
         return r;
     }

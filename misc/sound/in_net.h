@@ -84,6 +84,8 @@ void rec_init(char*knd, char*grp, char*src, char* prt) {
     addrTmp.sin_addr.s_addr = htonl(INADDR_ANY);
     addrTmp.sin_port = htons(atoi(prt));
     if ((recHnd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
+    int val = 1;
+    setsockopt(recHnd, SOL_SOCKET, SO_REUSEADDR, (void *)&val, sizeof(val));
     if (bind(recHnd, (struct sockaddr *) &addrTmp, sizeof (addrTmp)) < 0) err("failed to bind socket");
     mcgrReq.imr_multiaddr.s_addr = inet_addr(grp);
     mcgrReq.imr_interface.s_addr = htonl(INADDR_ANY);
