@@ -197,11 +197,11 @@ class mixerOne implements Runnable {
 
     private final byte[] cur;
 
-    private int pos;
+    private int posW;
+
+    private int posR;
 
     private int pkt;
-
-    private int[] lst;
 
     public long volL;
 
@@ -212,14 +212,14 @@ class mixerOne implements Runnable {
         src = s;
         cur = new byte[consts.payl];
         buf = new int[3][cur.length / consts.smpb];
-        pos = 0;
-        lst = buf[0];
+        posW = 0;
+        posR = buf.length;
         volL = vl;
         volR = vr;
     }
 
     public String getDet() {
-        return (num + 1) + " " + visDoer.rms(lst) + " " + pkt;
+        return (num + 1) + " " + visDoer.rms(buf[posR]) + " " + pkt;
     }
 
     public String getSum() {
@@ -227,8 +227,6 @@ class mixerOne implements Runnable {
     }
 
     public void readRound() throws Exception {
-        lst = buf[pos];
-        pos = (pos + 1) % buf.length;
         int o = src.readKind(cur);
         if (o < 1) {
             throw new Exception("read failed");
@@ -236,12 +234,14 @@ class mixerOne implements Runnable {
         for (int i = o; i < cur.length; i++) {
             cur[i] = 0;
         }
-        src.coder.decode(buf[pos], cur, cur.length);
+        src.coder.decode(buf[posW], cur, cur.length);
+        posW = (posW + 1) % buf.length;
         pkt++;
     }
 
     public void mixRound(long[] res) {
-        int[] now = lst;
+        posR = (posR + 1) % buf.length;
+        int[] now = buf[posR];
         for (int i = 0; i < now.length; i += 2) {
             long val = now[i + 0];
             val *= volL;
