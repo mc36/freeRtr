@@ -213,7 +213,7 @@ class mixerOne implements Runnable {
         cur = new byte[consts.payl];
         buf = new int[3][cur.length / consts.smpb];
         posW = 0;
-        posR = buf.length;
+        posR = 1;
         volL = vl;
         volR = vr;
     }
