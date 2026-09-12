@@ -31,6 +31,9 @@ fi
 
 while [ $# -gt 0 ]; do
   case $1 in
+    tr)
+      TR=$2
+      ;;
     md)
       MD=$2
       ;;

@@ -40,7 +40,7 @@ public class mixer implements Runnable {
             packet s = packer.receiver(args[p + 0], args[p + 1], args[p + 2]).string2kind(null);
             long vl = volume2range(Integer.parseInt(args[p + 3]), 0);
             long vr = volume2range(Integer.parseInt(args[p + 4]), 0);
-            source[i] = new mixerOne(s, vl, vr);
+            source[i] = new mixerOne(i, s, vl, vr);
         }
         for (int i = 1; i < source.length; i++) {
             new Thread(source[i]).start();
@@ -99,7 +99,7 @@ public class mixer implements Runnable {
             try {
                 String a = "\ro:" + outVol + "%  ";
                 for (int i = 0; i < source.length; i++) {
-                    a += (i + 1) + ":" + source[i].volL + "%," + source[i].volR + "%  ";
+                    a += source[i].getSum();
                 }
                 System.out.print(a);
                 int i = System.in.read();
@@ -164,7 +164,7 @@ public class mixer implements Runnable {
                     case ' ':
                         System.out.println("\r\n\r\n\ro " + visDoer.rms(outLst));
                         for (i = 0; i < source.length; i++) {
-                            System.out.println("\r" + (i + 1) + " " + visDoer.rms(source[i].lst) + " " + source[i].pkt);
+                            System.out.println("\r" + source[i].getDet());
                         }
                         System.out.println("\r");
                         break;
@@ -180,6 +180,8 @@ public class mixer implements Runnable {
 
 class mixerOne implements Runnable {
 
+    private final int num;
+
     private final packet src;
 
     private final int[][] buf;
@@ -188,15 +190,16 @@ class mixerOne implements Runnable {
 
     private int pos;
 
-    public int pkt;
+    private int pkt;
+
+    private int[] lst;
 
     public long volL;
 
     public long volR;
 
-    public int[] lst;
-
-    public mixerOne(packet s, long vl, long vr) {
+    public mixerOne(int n, packet s, long vl, long vr) {
+        num = n;
         src = s;
         cur = new byte[consts.payl];
         buf = new int[3][cur.length / consts.smpb];
@@ -204,6 +207,14 @@ class mixerOne implements Runnable {
         lst = buf[0];
         volL = vl;
         volR = vr;
+    }
+
+    public String getDet() {
+        return (num + 1) + " " + visDoer.rms(lst) + " " + pkt;
+    }
+
+    public String getSum() {
+        return (num + 1) + ":" + volL + "%," + volR + "%  ";
     }
 
     public void readRound() throws Exception {
