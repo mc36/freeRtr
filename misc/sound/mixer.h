@@ -34,7 +34,11 @@ int **mixBuf;
 
 
 long vol2rng(long cur, int dir) {
-    cur += dir;
+    long mov = cur / 10;
+    if (mov < 1) {
+        mov = 1;
+    }
+    cur += dir * mov;
     if (cur < 0) {
         cur = 0;
     }
@@ -74,7 +78,7 @@ void iou_chan() {
         }
         if (don < 1) mixUnd[i]++;
         if (don > 1) mixExc[i] += don-1;
-        if (don >= (mixDly - 1)) mixOvr[i]++;
+        if (don >= mixDly) mixOvr[i]++;
     }
     recHnd = mixHnd[0];
     long res[mixLen];
@@ -191,6 +195,7 @@ void iou_chan() {
         break;
     case 'c':
     case 'C':
+        printf("\r\ncounters cleared\r\n");
         memset(mixPkt, 0, sizeof(mixPkt));
         memset(mixOvr, 0, sizeof(mixPkt));
         memset(mixUnd, 0, sizeof(mixPkt));
@@ -198,14 +203,14 @@ void iou_chan() {
         memset(mixTrn, 0, sizeof(mixPkt));
         break;
     case ' ':
-        printf("\r\n\r\n\r        channel         packets          missed       truncated         overrun        underrun       excessive\r\n");
+        printf("\r\n\r\n\r    channel     packets      missed   truncated     overrun    underrun   excessive\r\n");
         for (i = 0; i < mixSrc; i++) {
-            printf("\r%15i %15i %15i %15i %15i %15i %15i\r\n", i + 1, mixPkt[i], mixPkt[0] - mixPkt[i],  mixTrn[i], mixOvr[i], mixUnd[i], mixExc[i]);
+            printf("\r%11i %11i %11i %11i %11i %11i %11i\r\n", i + 1, mixPkt[i], mixPkt[0] - mixPkt[i],  mixTrn[i], mixOvr[i], mixUnd[i], mixExc[i]);
         }
         printf("\r\n");
         break;
     }
-    printf("\rsel:");
+    printf("\rchange:");
     if (mixSel < 0) {
         printf("out");
     }    else {

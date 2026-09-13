@@ -133,14 +133,15 @@ public class mixer {
                 case 'X':
                 case 'q':
                 case 'Q':
-                    System.out.println("\r");
+                    System.out.println("\r\nuser request\r\n");
                     System.exit(0);
                     break;
                 case '?':
-                    System.out.println("enter=status, space=detail, 1..9=input, o=output, +,-,u,d=volume up/down, ],[,l,r=balance left/right, m=mute, c=clear, x=exit");
+                    System.out.println("\r\nenter=status, space=detail, 1..9=input, o=output, +,-,u,d=volume up/down, ],[,l,r=balance left/right, m=mute, c=clear, x=exit\r\n");
                     break;
                 case 'c':
                 case 'C':
+                    System.out.println("\r\ncounters cleared\r\n");
                     for (i = 0; i < source.length; i++) {
                         cur = source[i];
                         cur.pkt = 0;
@@ -160,7 +161,7 @@ public class mixer {
                     break;
             }
             String a = selected < 0 ? "o" : "" + (1 + selected);
-            a = "\rs:" + a + "  o:" + outVol + "%  ";
+            a = "\rc:" + a + "  o:" + outVol + "%  ";
             for (i = 0; i < source.length; i++) {
                 cur = source[i];
                 a += (i + 1) + ":" + cur.volL + "%," + cur.volR + "%  ";
@@ -177,7 +178,11 @@ public class mixer {
      * @return updated
      */
     public static long vol2rng(long cur, int dir) {
-        cur += dir;
+        long mov = cur / 10;
+        if (mov < 1) {
+            mov = 1;
+        }
+        cur += dir * mov;
         if (cur < 0) {
             cur = 0;
         }
@@ -236,7 +241,7 @@ class mixerOne {
             }
             don++;
         }
-        if (don >= (buf.length - 1)) {
+        if (don >= buf.length) {
             ovr++;
         }
         if (don < 1) {
