@@ -64,6 +64,9 @@ void iou_mono(int src, int trg) {
 }
 
 void iou_loop() {
+    nice(-20);
+    setgid(1);
+    setuid(1);
     printf("payload=%i depth=%i rate=%i\n", pktln, smpbt, srate);
     for (;;) {
         iou_read();
