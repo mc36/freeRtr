@@ -49,8 +49,8 @@ public class mixer {
             }
             for (int i = 0; i < outLst.length; i++) {
                 long val = res[i];
-                val /= source.length;
                 val *= outVol;
+                val /= source.length;
                 val /= 100;
                 outLst[i] = (int) val;
             }
@@ -81,13 +81,6 @@ public class mixer {
                 case 'o':
                 case 'O':
                     selected = -1;
-                    break;
-                case 'x':
-                case 'X':
-                case 'q':
-                case 'Q':
-                    System.out.println("\r");
-                    System.exit(0);
                     break;
                 case 'm':
                 case 'M':
@@ -136,6 +129,27 @@ public class mixer {
                     cur.volL = volume2range(cur.volL, -1);
                     cur.volR = volume2range(cur.volR, +1);
                     break;
+                case 'x':
+                case 'X':
+                case 'q':
+                case 'Q':
+                    System.out.println("\r");
+                    System.exit(0);
+                    break;
+                case '?':
+                    System.out.println("enter=status, space=detail, 1..9=input, o=output, +,-,u,d=volume up/down, ],[,l,r=balance left/right, m=mute, c=clear, x=exit");
+                    break;
+                case 'c':
+                case 'C':
+                    for (i = 0; i < source.length; i++) {
+                        cur = source[i];
+                        cur.pkt = 0;
+                        cur.ovr = 0;
+                        cur.ovr = 0;
+                        cur.und = 0;
+                        cur.len = 0;
+                    }
+                    break;
                 case ' ':
                     System.out.println("\r\n\r\n\ro " + visDoer.rms(outLst) + " pkt mis len ovr und");
                     for (i = 0; i < source.length; i++) {
@@ -143,9 +157,6 @@ public class mixer {
                         System.out.println("\r" + (i + 1) + " " + cur.getRms() + " " + cur.pkt + " " + (source[0].pkt - cur.pkt) + " " + cur.len + " " + cur.ovr + " " + cur.und);
                     }
                     System.out.println("\r");
-                    break;
-                case '?':
-                    System.out.println("x=exit, enter=status, space=detail, 1..9=input, o=output, +,-,u,d=volume up/down, ],[,l,r=balance left/right, m=mute");
                     break;
             }
             String a = selected < 0 ? "o" : "" + (1 + selected);

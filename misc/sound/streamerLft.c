@@ -1,5 +1,6 @@
 #include "io_incl.h"
 #include "io_cnst.h"
+#include "io_tim1.h"
 #include "io_chn1.h"
 #include "io_util.h"
 #include "in_dev.h"

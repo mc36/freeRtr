@@ -1,6 +1,7 @@
 #include "io_incl.h"
 #include "io_cnst.h"
-#include "io_chn.h"
+#include "io_tim0.h"
+#include "io_chn0.h"
 #include "io_util.h"
 #include "in_net.h"
 #include "out_vu.h"

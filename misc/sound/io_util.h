@@ -67,6 +67,7 @@ void iou_loop() {
         iou_read();
         if (bufS < 1) break;
         iou_chan();
+        iou_timr();
         iou_write();
     }
     iou_stop();
