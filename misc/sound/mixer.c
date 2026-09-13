@@ -20,7 +20,8 @@ int main(int argc, char**argv) {
         if (mixBuf[i] == NULL) err("error allocating");
     }
     mixVolO = vol2rng(atoi(argv[6]), 0);
-    for (int i = mixSrc-1 ; i>=0 ; i--) {
+    mixSel = -1;
+    for (int i = mixSrc - 1 ; i >= 0 ; i--) {
         int p = (i * 5) + 7;
         rec_init(argv[2], argv[p + 0], argv[p + 1], argv[p + 2]);
         mixVolL[i] = vol2rng(atoi(argv[p + 3]), 0);

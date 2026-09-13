@@ -5,6 +5,7 @@
 #include <math.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <sys/time.h>
 #include <samplerate.h>

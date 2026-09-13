@@ -145,16 +145,16 @@ public class mixer {
                         cur = source[i];
                         cur.pkt = 0;
                         cur.ovr = 0;
-                        cur.ovr = 0;
                         cur.und = 0;
+                        cur.exc = 0;
                         cur.trn = 0;
                     }
                     break;
                 case ' ':
-                    System.out.println("\r\n\r\n\ro " + visDoer.rms(outLst) + " pkt mis len ovr und");
+                    System.out.println("\r\n\r\n\ro " + visDoer.rms(outLst) + " pkt mis trn ovr und exc");
                     for (i = 0; i < source.length; i++) {
                         cur = source[i];
-                        System.out.println("\r" + (i + 1) + " " + cur.getRms() + " " + cur.pkt + " " + (source[0].pkt - cur.pkt) + " " + cur.trn + " " + cur.ovr + " " + cur.und);
+                        System.out.println("\r" + (i + 1) + " " + cur.getRms() + " " + cur.pkt + " " + (source[0].pkt - cur.pkt) + " " + cur.trn + " " + cur.ovr + " " + cur.und + " " + cur.exc);
                     }
                     System.out.println("\r");
                     break;
@@ -211,6 +211,8 @@ class mixerOne {
 
     public int und;
 
+    public int exc;
+
     public int trn;
 
     public long volL;
@@ -243,6 +245,9 @@ class mixerOne {
         }
         if (don < 1) {
             und++;
+        }
+        if (don > 1) {
+            exc++;
         }
     }
 
