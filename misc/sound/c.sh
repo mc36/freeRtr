@@ -22,6 +22,6 @@ for fn in visMeterRem; do
   compileFile $fn "" "-lm" ""
 done
 
-for fn in forwarder w64fix; do
+for fn in forwarder w64fix mixer; do
   compileFile $fn "" "" ""
 done

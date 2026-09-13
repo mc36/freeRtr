@@ -1,8 +1,8 @@
 #include "io_incl.h"
 #include "io_cnst.h"
 #include "io_tim0.h"
-#include "io_chn3.h"
 #include "io_util.h"
+#include "io_chn3.h"
 #include "in_dev.h"
 #include "out_raw.h"
 

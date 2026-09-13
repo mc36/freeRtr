@@ -13,6 +13,8 @@ void iou_write();
 
 void iou_stop();
 
+void iou_chan();
+
 void iou_pmsb(int ofs, int val) {
     bufD[ofs + 0] = val >> 24;
     bufD[ofs + 1] = val >> 16;

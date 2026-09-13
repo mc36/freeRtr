@@ -13,19 +13,19 @@ public class mixer {
      * @throws Exception on error
      */
     public static void main(String[] args) throws Exception {
-        if (args.length < 9) {
+        if (args.length < 11) {
             System.out.println("usage: java this  <bufs> <kind>  <group> <source> <port> <vol>  <group> <source> <port> <volL> <volR>   <group> <source> <port> <volL> <volR>  ...");
             return;
         }
         mixerOne[] source = new mixerOne[(args.length - 6) / 5];
         packet target = packer.sender(args[2], args[3], args[4]).string2kind(args[1]);
-        long outVol = volume2range(Integer.parseInt(args[5]), 0);
+        long outVol = vol2rng(Integer.parseInt(args[5]), 0);
         int selected = Integer.parseInt(args[0]);
         for (int i = 0; i < source.length; i++) {
             int p = (i * 5) + 6;
             packet s = packer.receiver(args[p + 0], args[p + 1], args[p + 2]).string2kind(args[1]);
-            long vl = volume2range(Integer.parseInt(args[p + 3]), 0);
-            long vr = volume2range(Integer.parseInt(args[p + 4]), 0);
+            long vl = vol2rng(Integer.parseInt(args[p + 3]), 0);
+            long vr = vol2rng(Integer.parseInt(args[p + 4]), 0);
             source[i] = new mixerOne(selected, s, vl, vr);
         }
         source[0].src.pck.setBlock(true);
@@ -95,21 +95,21 @@ public class mixer {
                 case 'u':
                 case 'U':
                     if (cur == null) {
-                        outVol = volume2range(outVol, +1);
+                        outVol = vol2rng(outVol, +1);
                         break;
                     }
-                    cur.volL = volume2range(cur.volL, +1);
-                    cur.volR = volume2range(cur.volR, +1);
+                    cur.volL = vol2rng(cur.volL, +1);
+                    cur.volR = vol2rng(cur.volR, +1);
                     break;
                 case '-':
                 case 'd':
                 case 'D':
                     if (cur == null) {
-                        outVol = volume2range(outVol, -1);
+                        outVol = vol2rng(outVol, -1);
                         break;
                     }
-                    cur.volL = volume2range(cur.volL, -1);
-                    cur.volR = volume2range(cur.volR, -1);
+                    cur.volL = vol2rng(cur.volL, -1);
+                    cur.volR = vol2rng(cur.volR, -1);
                     break;
                 case '[':
                 case 'l':
@@ -117,8 +117,8 @@ public class mixer {
                     if (cur == null) {
                         break;
                     }
-                    cur.volL = volume2range(cur.volL, +1);
-                    cur.volR = volume2range(cur.volR, -1);
+                    cur.volL = vol2rng(cur.volL, +1);
+                    cur.volR = vol2rng(cur.volR, -1);
                     break;
                 case ']':
                 case 'r':
@@ -126,8 +126,8 @@ public class mixer {
                     if (cur == null) {
                         break;
                     }
-                    cur.volL = volume2range(cur.volL, -1);
-                    cur.volR = volume2range(cur.volR, +1);
+                    cur.volL = vol2rng(cur.volL, -1);
+                    cur.volR = vol2rng(cur.volR, +1);
                     break;
                 case 'x':
                 case 'X':
@@ -147,14 +147,14 @@ public class mixer {
                         cur.ovr = 0;
                         cur.ovr = 0;
                         cur.und = 0;
-                        cur.len = 0;
+                        cur.trn = 0;
                     }
                     break;
                 case ' ':
                     System.out.println("\r\n\r\n\ro " + visDoer.rms(outLst) + " pkt mis len ovr und");
                     for (i = 0; i < source.length; i++) {
                         cur = source[i];
-                        System.out.println("\r" + (i + 1) + " " + cur.getRms() + " " + cur.pkt + " " + (source[0].pkt - cur.pkt) + " " + cur.len + " " + cur.ovr + " " + cur.und);
+                        System.out.println("\r" + (i + 1) + " " + cur.getRms() + " " + cur.pkt + " " + (source[0].pkt - cur.pkt) + " " + cur.trn + " " + cur.ovr + " " + cur.und);
                     }
                     System.out.println("\r");
                     break;
@@ -176,7 +176,7 @@ public class mixer {
      * @param dir direction
      * @return updated
      */
-    public static long volume2range(long cur, int dir) {
+    public static long vol2rng(long cur, int dir) {
         long mov = cur / 10;
         if (mov < 1) {
             mov = 1;
@@ -211,7 +211,7 @@ class mixerOne {
 
     public int und;
 
-    public int len;
+    public int trn;
 
     public long volL;
 
@@ -255,7 +255,7 @@ class mixerOne {
             for (int i = o; i < cur.length; i++) {
                 cur[i] = 0;
             }
-            len++;
+            trn++;
         }
         src.coder.decode(buf[posW], cur, cur.length);
         posW = (posW + 1) % buf.length;

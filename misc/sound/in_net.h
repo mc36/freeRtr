@@ -7,6 +7,19 @@ void iou_read() {
 }
 
 
+
+void rec_blk(int mod) {
+    int flags = fcntl(recHnd, F_GETFL, 0);
+    if (flags < 0) return;
+    if (mod == 0) {
+        flags |= O_NONBLOCK;
+    } else {
+        flags &= ~O_NONBLOCK;
+    }
+    fcntl(recHnd, F_SETFL, flags);
+}
+
+
 void rec_rtp() {
     for (;;) {
         bufS = recv(recHnd, &bufD[padln - rtpln], sizeof (bufD) - padln, 0);

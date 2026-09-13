@@ -1,1 +1,1 @@
-#define iou_chan() ;
+void iou_chan() {}
