@@ -1,12 +1,14 @@
 #define mixMax 64
 
+#define mixLen (pktln / smpbt)
+
 int mixDly;
 
-int mixNum;
+int mixSrc;
 
 int mixHnd[mixMax];
 
-long mixVol;
+long mixVolO;
 
 long mixVolL[mixMax];
 
@@ -24,8 +26,7 @@ int mixUnd[mixMax];
 
 int mixTrn[mixMax];
 
-
-unsigned char *mixBuf[mixMax];
+int **mixBuf;
 
 
 long vol2rng(long cur, int dir) {
@@ -45,25 +46,56 @@ long vol2rng(long cur, int dir) {
 
 
 
-void mixDec(int n) {
-    if (bufS < 0) {
+int mixDec(int n) {
+    if (bufS < 1) {
         mixUnd[n]++;
-        return;
+        return 0;
     }
     if (bufS < pktln) {
         for (int i = bufS; i < pktln; i++) bufD[padln + i] = 0;
         mixTrn[n]++;
     }
-    memcpy(mixBuf[n], &bufD[padln], pktln);
+    int* o = mixBuf[mixPosW[n] + (n * mixDly)];
+    for (int i = 0; i < pktln; i += smpbt) {
+        *o = iou_gsam(i);
+        o++;
+    }
+    mixPosW[n] = (mixPosW[n] + 1) % mixDly;
+    mixPkt[n]++;
+    return 1;
 }
 
 
 void iou_chan() {
     mixDec(0);
-    for (int i = 1; i < mixNum; i++) {
+    for (int i = 1; i < mixSrc; i++) {
         recHnd = mixHnd[i];
-        recFnc();
-        mixDec(i);
+        int don = 0;
+        for (;; don++) {
+            recFnc();
+            if (mixDec(i) == 0) break;
+        }
+        if (don >= mixDly) mixOvr[i]++;
     }
     recHnd = mixHnd[0];
+    long res[mixLen];
+    memset(&res, 0, sizeof(res));
+    for (int n = 0; n < mixSrc; n++) {
+        int* p = mixBuf[mixPosR[n] + (n * mixDly)];
+        mixPosR[n] = (mixPosR[n] + 1) % mixDly;
+        for (int i = 0; i < mixLen; i++) {
+            res[i] += *p;
+            p++;
+        }
+    }
+    long* p = res;
+    for (int i = 0; i < pktln; i += smpbt) {
+        long val = *p;
+        p++;
+        val *= mixVolO;
+        val /= mixSrc;
+        val /= 100;
+        iou_psam(i, val);
+    }
+    bufS = pktln;
 }
