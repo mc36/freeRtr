@@ -177,11 +177,7 @@ public class mixer {
      * @return updated
      */
     public static long vol2rng(long cur, int dir) {
-        long mov = cur / 10;
-        if (mov < 1) {
-            mov = 1;
-        }
-        cur += dir * mov;
+        cur += dir;
         if (cur < 0) {
             cur = 0;
         }
@@ -240,14 +236,14 @@ class mixerOne {
             }
             don++;
         }
-        if (don >= buf.length) {
+        if (don >= (buf.length - 1)) {
             ovr++;
         }
         if (don < 1) {
             und++;
         }
         if (don > 1) {
-            exc++;
+            exc += don - 1;
         }
     }
 

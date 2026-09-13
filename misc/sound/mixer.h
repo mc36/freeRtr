@@ -34,11 +34,7 @@ int **mixBuf;
 
 
 long vol2rng(long cur, int dir) {
-    long mov = cur / 10;
-    if (mov < 1) {
-        mov = 1;
-    }
-    cur += dir * mov;
+    cur += dir;
     if (cur < 0) {
         cur = 0;
     }
@@ -77,8 +73,8 @@ void iou_chan() {
             if (mixDec(i) == 0) break;
         }
         if (don < 1) mixUnd[i]++;
-        if (don > 1) mixExc[i]++;
-        if (don >= mixDly) mixOvr[i]++;
+        if (don > 1) mixExc[i] += don-1;
+        if (don >= (mixDly - 1)) mixOvr[i]++;
     }
     recHnd = mixHnd[0];
     long res[mixLen];
@@ -87,17 +83,18 @@ void iou_chan() {
         int* p = mixBuf[mixPosR[n] + (n * mixDly)];
         mixPosR[n] = (mixPosR[n] + 1) % mixDly;
         long volL = mixVolL[n];
-        long volR = mixVolL[n];
+        long volR = mixVolR[n];
         for (int i = 0; i < mixLen; i += 2) {
             long val = *p;
+            p++;
             val *= volL;
             val /= 100;
-            p++;
+            res[i + 0] += val;
             val = *p;
+            p++;
             val *= volR;
             val /= 100;
-            p++;
-            res[i] += val;
+            res[i + 1] += val;
         }
     }
     long* p = res;
@@ -208,15 +205,15 @@ void iou_chan() {
         printf("\r\n");
         break;
     }
-    printf("\rs:");
+    printf("\rsel:");
     if (mixSel < 0) {
-        printf("o");
+        printf("out");
     }    else {
-        printf("%i", mixSel + 1);
+        printf("in%i", mixSel + 1);
     }
-    printf("  o:%li  ", mixVolO);
+    printf("  out:%li  ", mixVolO);
     for (i = 0; i < mixSrc; i++) {
-        printf("%i: %li,%li  ", i+1, mixVolL[i], mixVolR[i]);
+        printf("in%i: %li,%li  ", i+1, mixVolL[i], mixVolR[i]);
     }
     printf("    \r");
     fflush(stdout);
