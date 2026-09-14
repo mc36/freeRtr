@@ -1,7 +1,5 @@
 #define mixMax 64
 
-#define mixLen (pktln / smpbt)
-
 int mixDly;
 
 int mixSrc;
@@ -56,12 +54,12 @@ int mixDec(int n) {
         for (int i = bufS; i < pktln; i++) bufD[padln + i] = 0;
         mixTrn[n]++;
     }
+    mixPosW[n] = (mixPosW[n] + 1) % mixDly;
     int* o = mixBuf[mixPosW[n] + (n * mixDly)];
     for (int i = 0; i < pktln; i += smpbt) {
         *o = iou_gsam(i);
         o++;
     }
-    mixPosW[n] = (mixPosW[n] + 1) % mixDly;
     mixPkt[n]++;
     return 1;
 }
@@ -81,14 +79,14 @@ void iou_chan() {
         if (don >= mixDly) mixOvr[i]++;
     }
     recHnd = mixHnd[0];
-    long res[mixLen];
+    long res[pktln / smpbt];
     memset(&res, 0, sizeof(res));
     for (int n = 0; n < mixSrc; n++) {
-        int* p = mixBuf[mixPosR[n] + (n * mixDly)];
         mixPosR[n] = (mixPosR[n] + 1) % mixDly;
+        int* p = mixBuf[mixPosR[n] + (n * mixDly)];
         long volL = mixVolL[n];
         long volR = mixVolR[n];
-        for (int i = 0; i < mixLen; i += 2) {
+        for (int i = 0; i < (pktln / smpbt); i += 2) {
             long val = *p;
             p++;
             val *= volL;
@@ -114,9 +112,9 @@ void iou_chan() {
     int i = 0;
     ioctl(STDIN_FILENO, FIONREAD, &i);
     if (i < 1) return;
-    i = 0;
-    read(STDIN_FILENO, &i, 1);
-    switch (i) {
+    char ch = 0;
+    read(STDIN_FILENO, &ch, sizeof(ch));
+    switch (ch) {
     case '0':
     case '1':
     case '2':

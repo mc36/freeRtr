@@ -100,6 +100,8 @@ void rec_init(char*knd, char*grp, char*src, char* prt) {
     int val = 1;
     setsockopt(recHnd, SOL_SOCKET, SO_REUSEADDR, (void *)&val, sizeof(val));
     if (bind(recHnd, (struct sockaddr *) &addrTmp, sizeof (addrTmp)) < 0) err("failed to bind socket");
+    val = 0;
+    setsockopt(recHnd, IPPROTO_IP, IP_MULTICAST_ALL, (void *)&val, sizeof(val));
     mcgrReq.imr_multiaddr.s_addr = inet_addr(grp);
     mcgrReq.imr_interface.s_addr = htonl(INADDR_ANY);
     mcgrReq.imr_sourceaddr.s_addr = inet_addr(src);

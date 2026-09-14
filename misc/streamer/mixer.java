@@ -263,15 +263,15 @@ class mixerOne {
             }
             trn++;
         }
-        src.coder.decode(buf[posW], cur, cur.length);
         posW = (posW + 1) % buf.length;
+        src.coder.decode(buf[posW], cur, cur.length);
         pkt++;
         return false;
     }
 
     public void mixRound(long[] res) {
-        int[] now = buf[posR];
         posR = (posR + 1) % buf.length;
+        int[] now = buf[posR];
         for (int i = 0; i < now.length; i += 2) {
             long val = now[i + 0];
             val *= volL;

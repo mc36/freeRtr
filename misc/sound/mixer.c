@@ -15,9 +15,11 @@ int main(int argc, char**argv) {
     mixVolO = mixSrc * mixDly;
     mixBuf = malloc(sizeof(int*) * mixVolO);
     if (mixBuf == NULL) err("error allocating");
+    mixSel = sizeof(int) * (pktln / smpbt);
     for (int i = 0; i < mixVolO; i++) {
-        mixBuf[i] = malloc(sizeof(int) * mixLen);
+        mixBuf[i] = malloc(mixSel);
         if (mixBuf[i] == NULL) err("error allocating");
+        memset(mixBuf[i], 0, mixSel);
     }
     mixVolO = vol2rng(atoi(argv[6]), 0);
     mixSel = -1;
