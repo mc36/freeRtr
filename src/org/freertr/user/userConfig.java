@@ -142,6 +142,15 @@ public class userConfig {
     }
 
     /**
+     * check if currently in a sub mode
+     *
+     * @return true if in sub mode, false if in global config
+     */
+    public boolean inSubmode() {
+        return submode != null;
+    }
+
+    /**
      * get help text for exec commands
      *
      * @param needEdit need editor

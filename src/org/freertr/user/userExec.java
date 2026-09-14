@@ -3277,7 +3277,7 @@ public class userExec {
         committed = false;
         String s = getHstNam(true);
         reader.setContext(getHelping(), s);
-        s = reader.readLine(null);
+        s = reader.readLine(null, "show running-config");
         if (s == null) {
             return cmdRes.logout;
         }
