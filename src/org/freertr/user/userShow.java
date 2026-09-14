@@ -785,6 +785,7 @@ public class userShow {
             a = cmd.getRemaining().trim();
             if (a.equals("this")) {
                 if (cfg == null) {
+                    rdr.putStrArr(userFilter.getDiffs(cfgAll.getShRun(1), lst));
                     return null;
                 }
                 List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
@@ -800,6 +801,7 @@ public class userShow {
             a = cmd.getRemaining().trim();
             if (a.equals("this")) {
                 if (cfg == null) {
+                    rdr.putStrArr(userFilter.getDiffs(lst, cfgAll.getShRun(1)));
                     return null;
                 }
                 List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
@@ -822,10 +824,10 @@ public class userShow {
             a = cmd.word();
             if (a.equals("this")) {
                 if (cfg == null) {
+                    rdr.putStrArr(cfgAll.getShRun(getConfigFilter(null, cmd)));
                     return null;
                 }
-                List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));
-                rdr.putStrArr(cur);
+                rdr.putStrArr(cfg.getShRun(getConfigFilter(null, cmd)));
                 return null;
             }
             if (cfgAll.evalVdcPrivs()) {
@@ -6607,6 +6609,7 @@ public class userShow {
         a = cmd.getRemaining().trim();
         if (a.equals("this")) {
             if (cfg == null) {
+                rdr.putStrArr(lst);
                 return;
             }
             List<String> cur = cfg.getShRun(getConfigFilter(null, cmd));

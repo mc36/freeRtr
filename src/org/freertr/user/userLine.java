@@ -456,8 +456,7 @@ public class userLine {
                 exe.last = bits.getTime();
                 String s = cfgAll.hostName + cfg.getPrompt() + "#";
                 rdr.setContext(cfg.getHelping(cfg.commits == null, true, true), s);
-                String shw = cfg.inSubmode() ? "show running-config this" : "show running-config";
-                s = rdr.readLine(cmds.finish, shw);
+                s = rdr.readLine(cmds.finish);
                 if (s == null) {
                     break;
                 }

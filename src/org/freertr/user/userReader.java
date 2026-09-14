@@ -1598,17 +1598,6 @@ public class userReader implements Comparator<String> {
      * @return string readed, null if error happened
      */
     public String readLine(String exit) {
-        return readLine(exit, null);
-    }
-
-    /**
-     * read up one line
-     *
-     * @param exit exit command to return on ctrl+z
-     * @param show command to return on ctrl+g, null to disable
-     * @return string readed, null if error happened
-     */
-    public String readLine(String exit, String show) {
         final int deactivate = pipe.settingsGet(pipeSetting.deactive, 65536);
         final boolean spacetab = pipe.settingsGet(pipeSetting.spacTab, false);
         final boolean bells = pipe.settingsGet(pipeSetting.termBells, false);
@@ -1745,13 +1734,9 @@ public class userReader implements Comparator<String> {
                         pipe.linePut("");
                         return exit;
                     case 0x0267: // ctrl + g
-                        cmdRefreshLine(false);
-                        cmdClear();
-                        if (show == null) {
-                            break;
-                        }
+                        putCurrLine(true);
                         pipe.linePut("");
-                        return show;
+                        return "show running-config this";
                     case 0x0462: // alt + b
                         cmdBackward(bells);
                         break;
