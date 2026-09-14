@@ -824,6 +824,10 @@ public class userShow {
             a = cmd.word();
             if (a.equals("this")) {
                 if (cfg == null) {
+                    if (cfgAll.evalVdcPrivs()) {
+                        cmd.error("not in a vdc");
+                        return null;
+                    }
                     rdr.putStrArr(cfgAll.getShRun(getConfigFilter(null, cmd)));
                     return null;
                 }
