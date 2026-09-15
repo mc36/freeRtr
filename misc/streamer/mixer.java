@@ -14,24 +14,25 @@ public class mixer {
      */
     public static void main(String[] args) throws Exception {
         if (args.length < 11) {
-            System.out.println("usage: java this  <bufs> <kind>  <group> <source> <port> <vol>  <group> <source> <port> <volL> <volR>   <group> <source> <port> <volL> <volR>  ...");
+            System.out.println("usage: java this  <bufs> <thrs> <kind>  <group> <source> <port> <vol>  <group> <source> <port> <volL> <volR>   <group> <source> <port> <volL> <volR>  ...");
             return;
         }
-        mixerOne[] source = new mixerOne[(args.length - 6) / 5];
-        packet target = packer.sender(args[2], args[3], args[4]).string2kind(args[1]);
-        long outVol = vol2rng(Integer.parseInt(args[5]), 0);
+        mixerOne[] source = new mixerOne[(args.length - 7) / 5];
+        packet target = packer.sender(args[3], args[4], args[5]).string2kind(args[2]);
         int selected = Integer.parseInt(args[0]);
+        long outVol = Integer.parseInt(args[1]);
         for (int i = 0; i < source.length; i++) {
-            int p = (i * 5) + 6;
-            packet s = packer.receiver(args[p + 0], args[p + 1], args[p + 2]).string2kind(args[1]);
+            int p = (i * 5) + 7;
+            packet s = packer.receiver(args[p + 0], args[p + 1], args[p + 2]).string2kind(args[2]);
             long vl = vol2rng(Integer.parseInt(args[p + 3]), 0);
             long vr = vol2rng(Integer.parseInt(args[p + 4]), 0);
-            source[i] = new mixerOne(selected, s, vl, vr);
+            source[i] = new mixerOne(selected, (int) outVol, s, vl, vr);
         }
         source[0].src.pck.setBlock(true);
         for (int i = 1; i < source.length; i++) {
             source[i].src.pck.setBlock(false);
         }
+        outVol = vol2rng(Integer.parseInt(args[6]), 0);
         selected = -1;
         byte[] buf = new byte[consts.payl];
         int outLst[] = new int[buf.length / consts.smpb];
@@ -143,19 +144,14 @@ public class mixer {
                 case 'C':
                     System.out.println("\r\ncounters cleared\r\n");
                     for (i = 0; i < source.length; i++) {
-                        cur = source[i];
-                        cur.pkt = 0;
-                        cur.ovr = 0;
-                        cur.und = 0;
-                        cur.exc = 0;
-                        cur.trn = 0;
+                        source[i].clear();
                     }
                     break;
                 case ' ':
-                    System.out.println("\r\n\r\n\ro " + visDoer.rms(outLst) + " pkt mis trn ovr und exc");
+                    System.out.println("\r\n\r\n\ro  packets   missed truncate  overrun underrun   excess     gaps  silence");
                     for (i = 0; i < source.length; i++) {
                         cur = source[i];
-                        System.out.println("\r" + (i + 1) + " " + cur.getRms() + " " + cur.pkt + " " + (source[0].pkt - cur.pkt) + " " + cur.trn + " " + cur.ovr + " " + cur.und + " " + cur.exc);
+                        System.out.println(String.format("%d %8d %8d %8d %8d %8d %8d %8d %8d", (i + 1), cur.pkt, (source[0].pkt - cur.pkt), cur.trn, cur.ovr, cur.und, cur.exc, cur.gap, cur.sln));
                     }
                     System.out.println("\r");
                     break;
@@ -202,9 +198,21 @@ class mixerOne {
 
     private final int[][] buf;
 
+    private final int thr;
+
+    private boolean stp;
+
     private int posW;
 
     private int posR;
+
+    public long volL;
+
+    public long volR;
+
+    public int gap;
+
+    public int sln;
 
     public int pkt;
 
@@ -216,20 +224,24 @@ class mixerOne {
 
     public int trn;
 
-    public long volL;
-
-    public long volR;
-
-    public mixerOne(int b, packet s, long vl, long vr) {
+    public mixerOne(int b, int t, packet s, long vl, long vr) {
         src = s;
+        thr = t;
         cur = new byte[consts.payl];
         buf = new int[b][cur.length / consts.smpb];
         volL = vl;
         volR = vr;
+        stp = true;
     }
 
-    public String getRms() {
-        return visDoer.rms(buf[posR]);
+    public void clear() {
+        gap = 0;
+        sln = 0;
+        pkt = 0;
+        ovr = 0;
+        und = 0;
+        exc = 0;
+        trn = 0;
     }
 
     public void readRounds() throws Exception {
@@ -270,6 +282,21 @@ class mixerOne {
     }
 
     public void mixRound(long[] res) {
+        if (thr >= 0) {
+            int used = (posW - posR + buf.length) % buf.length;
+            if (stp) {
+                if (used < thr) {
+                    sln++;
+                    return;
+                }
+                stp = false;
+            }
+            if (used < 1) {
+                stp = true;
+                gap++;
+                return;
+            }
+        }
         posR = (posR + 1) % buf.length;
         int[] now = buf[posR];
         for (int i = 0; i < now.length; i += 2) {
