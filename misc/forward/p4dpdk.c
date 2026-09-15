@@ -148,8 +148,7 @@ static int doPacketLoop(__rte_unused void *arg) {
     struct lcore_conf *myconf = &lcore_conf[lcore];
     printf("lcore %i started with %i rx and %i tx ports and %i processing!\n", lcore, myconf->rx_num, myconf->tx_num, myconf->justProcessor);
     if ((myconf->rx_num + myconf->tx_num + myconf->justProcessor) < 1) return 0;
-    struct rte_mbuf **mbufs = malloc(burst_size * sizeof(struct rte_mbuf*));
-    if (mbufs == NULL) err("error allocating mbufptrs");
+    struct rte_mbuf *mbufs[burst_size];
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
     unsigned char *bufD = ctx.bufD;
@@ -281,7 +280,7 @@ int main(int argc, char **argv) {
     int desc_tx = 1024;
     int ring_tx = 512;
     int ring_fwd = 512;
-    burst_size = 32;
+    burst_size = 256;
     burst_sleep = 100;
     for (int i = 4;; i += 3) {
         if ((i+2) >= argc) break;
