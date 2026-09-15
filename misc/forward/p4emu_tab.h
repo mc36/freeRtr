@@ -780,18 +780,12 @@ int initContext(struct packetContext *ctx) {
     ctx->dgst = EVP_MD_CTX_new();
     if (ctx->dgst == NULL) return 1;
 #endif
-    ctx->bufB3 = malloc(totBuff);
-    if (ctx->bufB3 == NULL) return 1;
-    ctx->bufB2 = malloc(totBuff);
-    if (ctx->bufB2 == NULL) return 1;
-    ctx->bufB1 = malloc(totBuff);
-    if (ctx->bufB1 == NULL) return 1;
-    ctx->bufC = malloc(totBuff);
-    if (ctx->bufC == NULL) return 1;
-    ctx->bufD = malloc(totBuff);
-    if (ctx->bufD == NULL) return 1;
-    ctx->bufH = malloc(preBuff);
-    if (ctx->bufH == NULL) return 1;
+    ctx->bufB3 = ctx->realB3;
+    ctx->bufB2 = ctx->realB2;
+    ctx->bufB1 = ctx->realB2;
+    ctx->bufC = ctx->realC;
+    ctx->bufD = ctx->realD;
+    ctx->bufH = ctx->realH;
     return 0;
 }
 
