@@ -2,6 +2,8 @@
 
 int mixDly;
 
+int mixThr;
+
 int mixSrc;
 
 int mixSel;
@@ -18,6 +20,8 @@ int mixPosW[mixMax];
 
 int mixPosR[mixMax];
 
+char mixStp[mixMax];
+
 int mixPkt[mixMax];
 
 int mixOvr[mixMax];
@@ -28,11 +32,15 @@ int mixUnd[mixMax];
 
 int mixTrn[mixMax];
 
+int mixGap[mixMax];
+
+int mixSln[mixMax];
+
 int **mixBuf;
 
 
 long vol2rng(long cur, int dir) {
-    long mov = cur / 10;
+    long mov = cur / 50;
     if (mov < 1) {
         mov = 1;
     }
@@ -45,7 +53,6 @@ long vol2rng(long cur, int dir) {
     }
     return cur;
 }
-
 
 
 int mixDec(int n) {
@@ -82,6 +89,22 @@ void iou_chan() {
     long res[pktln / smpbt];
     memset(&res, 0, sizeof(res));
     for (int n = 0; n < mixSrc; n++) {
+        if (mixThr >= 0) {
+            int used = (mixPosW[n] - mixPosR[n] + mixDly) % mixDly;
+            if (mixStp[n] != 0) {
+                if (used < mixThr) {
+                    mixSln[n]++;
+                    continue;
+                }
+                mixStp[n] = 0;
+            }
+
+            if (used < 1) {
+                mixStp[n] = 1;
+                mixGap[n]++;
+                continue;
+            }
+        }
         mixPosR[n] = (mixPosR[n] + 1) % mixDly;
         int* p = mixBuf[mixPosR[n] + (n * mixDly)];
         long volL = mixVolL[n];
@@ -125,7 +148,7 @@ void iou_chan() {
     case '7':
     case '8':
     case '9':
-        mixSel = (i - '1' + 10) % 10;
+        mixSel = (ch - '1' + 10) % 10;
         if (mixSel < mixSrc) {
             break;
         }
@@ -199,11 +222,13 @@ void iou_chan() {
         memset(mixUnd, 0, sizeof(mixPkt));
         memset(mixExc, 0, sizeof(mixPkt));
         memset(mixTrn, 0, sizeof(mixPkt));
+        memset(mixGap, 0, sizeof(mixPkt));
+        memset(mixSln, 0, sizeof(mixPkt));
         break;
     case ' ':
-        printf("\r\n\r\n\r    channel     packets      missed   truncated     overrun    underrun   excessive\r\n");
+        printf("\r\n\r\n\rchn  packets   missed truncate  overrun underrun   excess     gaps  silence\r\n");
         for (i = 0; i < mixSrc; i++) {
-            printf("\r%11i %11i %11i %11i %11i %11i %11i\r\n", i + 1, mixPkt[i], mixPkt[0] - mixPkt[i],  mixTrn[i], mixOvr[i], mixUnd[i], mixExc[i]);
+            printf("\r%3d %8d %8d %8d %8d %8d %8d %8d %8d\r\n", i + 1, mixPkt[i], mixPkt[0] - mixPkt[i],  mixTrn[i], mixOvr[i], mixUnd[i], mixExc[i], mixGap[i], mixSln[i]);
         }
         printf("\r\n");
         break;

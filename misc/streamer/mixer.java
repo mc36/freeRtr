@@ -148,10 +148,10 @@ public class mixer {
                     }
                     break;
                 case ' ':
-                    System.out.println("\r\n\r\n\ro  packets   missed truncate  overrun underrun   excess     gaps  silence");
+                    System.out.println("\r\n\r\n\rchn  packets   missed truncate  overrun underrun   excess     gaps  silence");
                     for (i = 0; i < source.length; i++) {
                         cur = source[i];
-                        System.out.println(String.format("%d %8d %8d %8d %8d %8d %8d %8d %8d", (i + 1), cur.pkt, (source[0].pkt - cur.pkt), cur.trn, cur.ovr, cur.und, cur.exc, cur.gap, cur.sln));
+                        System.out.println(String.format("%3d %8d %8d %8d %8d %8d %8d %8d %8d", (i + 1), cur.pkt, (source[0].pkt - cur.pkt), cur.trn, cur.ovr, cur.und, cur.exc, cur.gap, cur.sln));
                     }
                     System.out.println("\r");
                     break;
@@ -174,7 +174,7 @@ public class mixer {
      * @return updated
      */
     public static long vol2rng(long cur, int dir) {
-        long mov = cur / 10;
+        long mov = cur / 50;
         if (mov < 1) {
             mov = 1;
         }
