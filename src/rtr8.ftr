@@ -518,8 +518,8 @@ qc pass: p4lang: bier core over gre
 qc pass: p4lang: bier core over l2tp
 qc pass: p4lang: bier bundle core
 qc pass: p4lang: bier bundle vlan core
-failed: p4lang: hairpin bier core
-failed: p4lang: hairpin vlan bier core
+qc pass: p4lang: hairpin bier core
+qc pass: p4lang: hairpin vlan bier core
 qc pass: p4lang: bier egress edge
 qc pass: p4lang: bier vlan egress edge
 qc pass: p4lang: bier ingress edge

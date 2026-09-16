@@ -23,13 +23,6 @@ struct ifaceStat_entry {
     long packNsh;
 };
 
-#define maxPorts 128
-#define preBuff 512
-#define minBuff 128
-#define maxBuff 1024
-#define totBuff 69632
-#define maxKeys 384
-
 struct packetContext {
     struct ifaceStat_entry *stat;
     int hash;
@@ -40,15 +33,16 @@ struct packetContext {
     unsigned char *bufC;
     unsigned char *bufD;
     unsigned char *bufH;
-    unsigned char realB3[totBuff];
-    unsigned char realB2[totBuff];
-    unsigned char realB1[totBuff];
-    unsigned char realC[totBuff];
-    unsigned char realD[totBuff];
-    unsigned char realH[preBuff];
     void *encr; // EVP_CIPHER_CTX
     void *dgst; // EVP_MD_CTX
 };
+
+#define maxPorts 128
+#define preBuff 512
+#define minBuff 128
+#define maxBuff 1024
+#define totBuff 69632
+#define maxKeys 384
 
 extern int commandSock;
 extern int dataPorts;
