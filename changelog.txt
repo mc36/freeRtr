@@ -18728,3 +18728,8 @@ no qc pass: integrated pvrp with labels
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
 failed: integrated pvrp with labels
+---------------------------------- 2026-09-16 09:40:46 26.9.16
+no failed: integrated pvrp with labels
+no qc pass: dhcp with excluded address
+failed: dhcp with excluded address
+qc pass: integrated pvrp with labels

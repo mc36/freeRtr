@@ -84,7 +84,7 @@ qc pass: cloner with ipv6 gre
 qc pass: dhcp
 qc pass: dhcp with arp/nd security
 qc pass: dhcp with static allocation
-qc pass: dhcp with excluded address
+failed: dhcp with excluded address
 qc pass: dhcp with upgraded server
 qc pass: dhcp with interface server
 qc pass: dhcp relay
@@ -4284,7 +4284,7 @@ qc pass: integrated pvrp ingress route filtering with routepolicy
 qc pass: integrated pvrp egress route filtering with routepolicy
 qc pass: integrated pvrp default route
 qc pass: integrated pvrp with bfd
-failed: integrated pvrp with labels
+qc pass: integrated pvrp with labels
 qc pass: integrated pvrp default address suppression
 qc pass: integrated pvrp address unsuppression
 qc pass: ingress label filtering with integrated pvrp
