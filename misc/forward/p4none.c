@@ -109,9 +109,9 @@ void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
         int prt = get32msb(bufD, preBuff);
         if (prt < 0) return;
         if (prt >= dataPorts) return;
-        sendPack(NULL, &bufD[preBuff + 4], bufS - 4, prt);
+        sendPack(&bufD[preBuff + 4], bufS - 4, prt);
     } else {
         put32msb(bufD, preBuff - 4, prt);
-        sendPack(NULL, &bufD[preBuff - 4], bufS + 4, cpuPort);
+        sendPack(&bufD[preBuff - 4], bufS + 4, cpuPort);
     }
 }

@@ -13,7 +13,7 @@
 
 pcap_t *ifacePcap[maxPorts];
 
-void sendPack(void*sidecar, unsigned char *bufD, int bufS, int port) {
+void sendPack(unsigned char *bufD, int bufS, int port) {
     pcap_sendpacket(ifacePcap[port], bufD, bufS);
 }
 

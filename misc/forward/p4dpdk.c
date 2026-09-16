@@ -27,14 +27,14 @@ struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 
 int port2pool[RTE_MAX_ETHPORTS];
 
-
-struct rte_mbuf  sidecar; // dpdk mbuf
-
-
-
-void sendPack(void*sidecar, unsigned char *bufD, int bufS, int port) {
-    struct rte_mbuf *mbuf = sidecar;
+void sendPack(unsigned char *bufD, int bufS, int port) {
+    struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool[port2pool[port]]);
+    if (mbuf == NULL) return;
+    char * pack = rte_pktmbuf_append(mbuf, bufS);
+    if (pack == NULL) goto err;
+    memcpy(pack, bufD, bufS);
     if (rte_ring_mp_enqueue(tx_ring[port], mbuf) == 0) return;
+err:
     rte_pktmbuf_free(mbuf);
 }
 
@@ -119,9 +119,18 @@ int lcore_procs;
 #endif
 
 #define mbuf2mybuf(mbuf)                                        \
-    ctx.bufD = rte_pktmbuf_mtod(mbuf, void *) - preBuff;        \
-    ctx.sidecar = mbuf;                                         \
     bufS = rte_pktmbuf_pkt_len(mbuf);                           \
+    bufP = rte_pktmbuf_mtod(mbuf, void *);                      \
+    if ((mbuf->ol_flags & RTE_MBUF_F_RX_VLAN_STRIPPED) != 0) {  \
+        memcpy(&bufD[preBuff], bufP, 12);                       \
+        put16msb(bufD, preBuff + 12, ETHERTYPE_VLAN);           \
+        put16msb(bufD, preBuff + 14, mbuf->vlan_tci);           \
+        memcpy(&bufD[preBuff + 16], bufP + 12, bufS - 12);      \
+        bufS += 4;                                              \
+    } else {                                                    \
+        memcpy(&bufD[preBuff], bufP, bufS);                     \
+    }                                                           \
+    rte_pktmbuf_free(mbuf);
 
 
 
@@ -142,6 +151,7 @@ static int doPacketLoop(__rte_unused void *arg) {
     struct rte_mbuf *mbufs[burst_size];
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
+    unsigned char *bufD = ctx.bufD;
 
     if (lcore_procs < 1) {
         for (;;) {
@@ -186,7 +196,6 @@ static int doPacketLoop(__rte_unused void *arg) {
                 ctx.stat = ifaceStat[port];
                 mbuf2mybuf(mbufs[i]);
                 processDataPacket(&ctx, bufS, port);
-                rte_pktmbuf_free(mbufs[i]);
             }
         }
         goto fail;

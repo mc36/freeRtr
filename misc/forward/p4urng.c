@@ -38,7 +38,7 @@ struct iovec *ifaceIovTx[maxPorts];
 unsigned char *ifaceMemTx[maxPorts];
 struct sockaddr_ll addrIfc[maxPorts];
 
-void sendPack(void*sidecar, unsigned char *bufD, int bufS, int port) {
+void sendPack(unsigned char *bufD, int bufS, int port) {
     pthread_mutex_lock(&ifaceLock[port]);
     struct io_uring_sqe *sqe = io_uring_get_sqe(&ifaceRingTx[port]);
     if (sqe == NULL) {

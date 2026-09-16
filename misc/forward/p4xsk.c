@@ -27,7 +27,7 @@ struct xsk_ring_prod ifaceTx[maxPorts];
 char *ifaceBuf[maxPorts];
 struct pollfd ifacePfd[maxPorts];
 
-void sendPack(void*sidecar, unsigned char *bufD, int bufS, int port) {
+void sendPack(unsigned char *bufD, int bufS, int port) {
     unsigned int idx;
     pthread_mutex_lock(&ifaceLock[port]);
     idx = xsk_ring_cons__peek(&ifaceCq[port], 16, &idx);
