@@ -8,107 +8,127 @@ int mixSrc;
 
 int mixSel;
 
-int mixHnd[mixMax];
-
 long mixVolO;
 
-long mixVolL[mixMax];
+struct mixOne {
 
-long mixVolR[mixMax];
+    int src;
 
-int mixPosW[mixMax];
+    int *buf;
 
-int mixPosR[mixMax];
+    int posW;
 
-char mixStp[mixMax];
+    int posR;
 
-int mixPkt[mixMax];
+    char stp;
 
-int mixOvr[mixMax];
+    long volL;
 
-int mixExc[mixMax];
+    long volR;
 
-int mixUnd[mixMax];
+    int pkt;
 
-int mixTrn[mixMax];
+    int ovr;
 
-int mixGap[mixMax];
+    int exc;
 
-int mixSln[mixMax];
+    int und;
 
-int **mixBuf;
+    int trn;
+
+    int gap;
+
+    int sln;
+
+};
+
+struct mixOne mixChn[mixMax];
 
 
-long vol2rng(long cur, int dir) {
-    long mov = cur / 50;
+
+void vol2rng(long *cur, int dir) {
+    long mov = *cur / 50;
     if (mov < 1) {
         mov = 1;
     }
-    cur += dir * mov;
-    if (cur < 0) {
-        cur = 0;
+    *cur += dir * mov;
+    if (*cur < 0) {
+        *cur = 0;
     }
-    if (cur > 999) {
-        cur = 999;
+    if (*cur > 999) {
+        *cur = 999;
     }
-    return cur;
 }
 
+void mixIni(struct mixOne *d, long vl, long vr) {
+    memset(d, 0, sizeof(*d));
+    d->src = recHnd;
+    d->stp = 1;
+    d->volL = vl;
+    d->volR = vr;
+    vol2rng(&d->volL, 0);
+    vol2rng(&d->volR, 0);
+    int len = mixDly * sizeof(int) * (pktln / smpbt);
+    d->buf = malloc(len);
+    if (d->buf == NULL) err("error allocating");
+    memset(d->buf, 0, len);
+}
 
-int mixDec(int n) {
+int mixDec(struct mixOne *d) {
     if (bufS < 1) return 0;
     if (bufS < pktln) {
         for (int i = bufS; i < pktln; i++) bufD[padln + i] = 0;
-        mixTrn[n]++;
+        d->trn++;
     }
-    mixPosW[n] = (mixPosW[n] + 1) % mixDly;
-    int* o = mixBuf[mixPosW[n] + (n * mixDly)];
+    d->posW = (d->posW + 1) % mixDly;
+    int* o = &d->buf[d->posW * (pktln / smpbt)];
     for (int i = 0; i < pktln; i += smpbt) {
         *o = iou_gsam(i);
         o++;
     }
-    mixPkt[n]++;
+    d->pkt++;
     return 1;
 }
 
 
 void iou_chan() {
-    mixDec(0);
+    mixDec(&mixChn[0]);
     for (int i = 1; i < mixSrc; i++) {
-        recHnd = mixHnd[i];
+        struct mixOne *d = &mixChn[i];
+        recHnd = mixChn[i].src;
         int don = 0;
         for (;; don++) {
             recFnc();
-            if (mixDec(i) == 0) break;
+            if (mixDec(&mixChn[i]) == 0) break;
         }
-        if (don < 1) mixUnd[i]++;
-        if (don > 1) mixExc[i] += don-1;
-        if (don >= mixDly) mixOvr[i]++;
+        if (don < 1) d->und++;
+        if (don > 1) d->exc += don-1;
+        if (don >= mixDly) d->ovr++;
     }
-    recHnd = mixHnd[0];
+    recHnd = mixChn[0].src;
     long res[pktln / smpbt];
     memset(&res, 0, sizeof(res));
     for (int n = 0; n < mixSrc; n++) {
+        struct mixOne *d = &mixChn[n];
         if (mixThr >= 0) {
-            int used = (mixPosW[n] - mixPosR[n] + mixDly) % mixDly;
-            if (mixStp[n] != 0) {
+            int used = (d->posW - d->posR + mixDly) % mixDly;
+            if (d->stp != 0) {
                 if (used < mixThr) {
-                    mixSln[n]++;
+                    d->sln++;
                     continue;
                 }
-                mixStp[n] = 0;
+                d->stp = 0;
             }
-
             if (used < 1) {
-                mixStp[n] = 1;
-                mixGap[n]++;
+                d->stp = 1;
+                d->gap++;
                 continue;
             }
         }
-        mixPosR[n] = (mixPosR[n] + 1) % mixDly;
-        int* p = mixBuf[mixPosR[n] + (n * mixDly)];
-        long volL = mixVolL[n];
-        long volR = mixVolR[n];
+        d->posR = (d->posR + 1) % mixDly;
+        int* p = &d->buf[d->posR * (pktln / smpbt)];
+        long volL = d->volL;
+        long volR = d->volR;
         for (int i = 0; i < (pktln / smpbt); i += 2) {
             long val = *p;
             p++;
@@ -164,28 +184,28 @@ void iou_chan() {
             mixVolO = 0;
             break;
         }
-        mixVolL[mixSel] = 0;
-        mixVolR[mixSel] = 0;
+        mixChn[mixSel].volL = 0;
+        mixChn[mixSel].volR = 0;
         break;
     case '+':
     case 'u':
     case 'U':
         if (mixSel < 0) {
-            mixVolO = vol2rng(mixVolO, +1);
+            vol2rng(&mixVolO, +1);
             break;
         }
-        mixVolL[mixSel] = vol2rng(mixVolL[mixSel], +1);
-        mixVolR[mixSel] = vol2rng(mixVolR[mixSel], +1);
+        vol2rng(&mixChn[mixSel].volL, +1);
+        vol2rng(&mixChn[mixSel].volR, +1);
         break;
     case '-':
     case 'd':
     case 'D':
         if (mixSel < 0) {
-            mixVolO = vol2rng(mixVolO, -1);
+            vol2rng(&mixVolO, -1);
             break;
         }
-        mixVolL[mixSel] = vol2rng(mixVolL[mixSel], -1);
-        mixVolR[mixSel] = vol2rng(mixVolR[mixSel], -1);
+        vol2rng(&mixChn[mixSel].volL, -1);
+        vol2rng(&mixChn[mixSel].volR, -1);
         break;
     case '[':
     case 'l':
@@ -193,8 +213,8 @@ void iou_chan() {
         if (mixSel < 0) {
             break;
         }
-        mixVolL[mixSel] = vol2rng(mixVolL[mixSel], +1);
-        mixVolR[mixSel] = vol2rng(mixVolR[mixSel], -1);
+        vol2rng(&mixChn[mixSel].volL, +1);
+        vol2rng(&mixChn[mixSel].volR, -1);
         break;
     case ']':
     case 'r':
@@ -202,8 +222,8 @@ void iou_chan() {
         if (mixSel < 0) {
             break;
         }
-        mixVolL[mixSel] = vol2rng(mixVolL[mixSel], -1);
-        mixVolR[mixSel] = vol2rng(mixVolR[mixSel], +1);
+        vol2rng(&mixChn[mixSel].volL, -1);
+        vol2rng(&mixChn[mixSel].volR, +1);
         break;
     case 'x':
     case 'X':
@@ -217,18 +237,22 @@ void iou_chan() {
     case 'c':
     case 'C':
         printf("\r\ncounters cleared\r\n");
-        memset(mixPkt, 0, sizeof(mixPkt));
-        memset(mixOvr, 0, sizeof(mixPkt));
-        memset(mixUnd, 0, sizeof(mixPkt));
-        memset(mixExc, 0, sizeof(mixPkt));
-        memset(mixTrn, 0, sizeof(mixPkt));
-        memset(mixGap, 0, sizeof(mixPkt));
-        memset(mixSln, 0, sizeof(mixPkt));
+        for (i = 0; i < mixSrc; i++) {
+            struct mixOne *d = &mixChn[i];
+            d->pkt = 0;
+            d->ovr = 0;
+            d->exc = 0;
+            d->und = 0;
+            d->trn = 0;
+            d->gap = 0;
+            d->sln = 0;
+        }
         break;
     case ' ':
         printf("\r\n\r\n\rchn  packets   missed truncate  overrun underrun   excess     gaps  silence\r\n");
         for (i = 0; i < mixSrc; i++) {
-            printf("\r%3d %8d %8d %8d %8d %8d %8d %8d %8d\r\n", i + 1, mixPkt[i], mixPkt[0] - mixPkt[i],  mixTrn[i], mixOvr[i], mixUnd[i], mixExc[i], mixGap[i], mixSln[i]);
+            struct mixOne *d = &mixChn[i];
+            printf("\r%3d %8d %8d %8d %8d %8d %8d %8d %8d\r\n", i + 1, d->pkt, mixChn[0].pkt - d->pkt,  d->trn, d->ovr, d->und, d->exc, d->gap, d->sln);
         }
         printf("\r\n");
         break;
@@ -241,7 +265,8 @@ void iou_chan() {
     }
     printf("  out:%li  ", mixVolO);
     for (i = 0; i < mixSrc; i++) {
-        printf("in%i: %li,%li  ", i+1, mixVolL[i], mixVolR[i]);
+        struct mixOne *d = &mixChn[i];
+        printf("in%i: %li,%li  ", i+1, d->volL, d->volR);
     }
     printf("    \r");
     fflush(stdout);
