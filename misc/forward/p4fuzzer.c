@@ -22,7 +22,7 @@ void err(char*buf) {
 
 
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+void sendPack(void*sidecar, unsigned char *bufD, int bufS, int port) {
 }
 
 void setMtu(int port, int mtu) {

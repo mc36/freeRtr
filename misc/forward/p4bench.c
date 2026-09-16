@@ -17,7 +17,7 @@ unsigned char *lastB = NULL;
 int lastS = 0;
 
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+void sendPack(void*sidecar, unsigned char *bufD, int bufS, int port) {
     packs++;
     bytes += bufS;
     lastB = bufD;

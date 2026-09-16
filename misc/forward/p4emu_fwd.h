@@ -67,7 +67,7 @@ int hashDataPacket(unsigned char *bufP) {
     if (prt >= dataPorts) return;                               \
     ifaceStat[prt]->packTx++;                                   \
     ifaceStat[prt]->byteTx += bufS - bufP + preBuff;            \
-    sendPack(&bufD[bufP], bufS - bufP + preBuff, prt);
+    sendPack(ctx->sidecar, &bufD[bufP], bufS - bufP + preBuff, prt);
 
 
 

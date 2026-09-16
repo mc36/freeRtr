@@ -16,7 +16,7 @@ int sockets[maxPorts];
 int ifaceId[maxPorts];
 
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+void sendPack(void*sidecar, unsigned char *bufD, int bufS, int port) {
     sendto(sockets[port], bufD, bufS, 0, (struct sockaddr *) &peers[port], sizeof(peers[port]));
 }
 

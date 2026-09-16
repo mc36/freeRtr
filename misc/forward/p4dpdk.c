@@ -27,14 +27,14 @@ struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 
 int port2pool[RTE_MAX_ETHPORTS];
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
-    struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool[port2pool[port]]);
-    if (mbuf == NULL) return;
-    char * pack = rte_pktmbuf_append(mbuf, bufS);
-    if (pack == NULL) goto err;
-    memcpy(pack, bufD, bufS);
+
+struct rte_mbuf  sidecar; // dpdk mbuf
+
+
+
+void sendPack(void*sidecar, unsigned char *bufD, int bufS, int port) {
+    struct rte_mbuf *mbuf = sidecar;
     if (rte_ring_mp_enqueue(tx_ring[port], mbuf) == 0) return;
-err:
     rte_pktmbuf_free(mbuf);
 }
 
@@ -120,6 +120,7 @@ int lcore_procs;
 
 #define mbuf2mybuf(mbuf)                                        \
     ctx.bufD = rte_pktmbuf_mtod(mbuf, void *) - preBuff;        \
+    ctx.sidecar = mbuf;                                         \
     bufS = rte_pktmbuf_pkt_len(mbuf);                           \
 
 
@@ -163,7 +164,6 @@ static int doPacketLoop(__rte_unused void *arg) {
                 for (i = 0; i < num; i++) {
                     mbuf2mybuf(mbufs[i]);
                     processDataPacket(&ctx, bufS, port);
-                    rte_pktmbuf_free(mbufs[i]);
                 }
             }
             if ((pkts < 1) && (burst_sleep > 0)) usleep(burst_sleep);

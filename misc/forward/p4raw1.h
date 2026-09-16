@@ -4,7 +4,7 @@ int ifaceId[maxPorts];
 struct sockaddr_ll addrIfc[maxPorts];
 
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+void sendPack(void*sidecar, unsigned char *bufD, int bufS, int port) {
     send(ifaceSock[port], bufD, bufS, 0);
 }
 

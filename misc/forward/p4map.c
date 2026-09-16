@@ -29,7 +29,7 @@ struct pollfd ifacePfd[maxPorts];
 struct sockaddr_ll addrIfc[maxPorts];
 int blockNxt[maxPorts];
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+void sendPack(void*sidecar, unsigned char *bufD, int bufS, int port) {
     pthread_mutex_lock(&ifaceLock[port]);
     struct tpacket2_hdr *ppd;
     ppd = (struct tpacket2_hdr *) ifaceTiv[port][blockNxt[port]].iov_base;

@@ -33,6 +33,7 @@ struct packetContext {
     unsigned char *bufC;
     unsigned char *bufD;
     unsigned char *bufH;
+    void *sidecar; // dpdk mbuf
     void *encr; // EVP_CIPHER_CTX
     void *dgst; // EVP_MD_CTX
 };
@@ -51,7 +52,7 @@ extern char *ifaceName[maxPorts];
 extern struct ifaceStat_entry *ifaceStat[maxPorts];
 
 void err(char*buf);
-void sendPack(unsigned char *bufD, int bufS, int port);
+void sendPack(void*sidecar, unsigned char *bufD, int bufS, int port);
 void setMtu(int port, int mtu);
 void setState(int port, int sta);
 int getState(int port);
