@@ -773,17 +773,6 @@ int initTables() {
 }
 
 
-int readyContext(struct packetContext *ctx) {
-    int res = 0;
-    if (ctx->bufB3 == NULL) res |= allocPack(&ctx->scarB3, &ctx->bufB3, totBuff, ctx->scarX);
-    if (ctx->bufB2 == NULL) res |= allocPack(&ctx->scarB2, &ctx->bufB2, totBuff, ctx->scarX);
-    if (ctx->bufB1 == NULL) res |= allocPack(&ctx->scarB1, &ctx->bufB1, totBuff, ctx->scarX);
-    if (ctx->bufC == NULL) res |= allocPack(&ctx->scarC, &ctx->bufC, totBuff, ctx->scarX);
-    if (ctx->bufD == NULL) res |= allocPack(&ctx->scarD, &ctx->bufD, totBuff, ctx->scarX);
-    return res;
-}
-
-
 int initContext(struct packetContext *ctx) {
 #ifndef HAVE_NOCRYPTO
     ctx->encr = EVP_CIPHER_CTX_new();
@@ -797,7 +786,7 @@ int initContext(struct packetContext *ctx) {
     if (allocPack(&ctx->scarC, &ctx->bufC, totBuff, ctx->scarX) != 0) return 1;
     if (allocPack(&ctx->scarD, &ctx->bufD, totBuff, ctx->scarX) != 0) return 1;
     if (allocPack(&ctx->scarH, &ctx->bufH, preBuff, ctx->scarX) != 0) return 1;
-    return readyContext(ctx);
+    return 0;
 }
 
 void unshiftContext(struct packetContext *trg, struct packetContext *src) {
@@ -808,6 +797,10 @@ void unshiftContext(struct packetContext *trg, struct packetContext *src) {
 }
 
 int shiftContext(struct packetContext *trg, struct packetContext *src) {
+    if (src->bufB1 == NULL) return 1;
+    if (src->bufC == NULL) {
+        if (allocPack(&src->scarC, &src->bufC, totBuff, src->scarX) != 0) return 1;
+    }
     trg->sgt = src->sgt;
     trg->hash = src->hash;
     trg->stat = src->stat;
@@ -821,7 +814,7 @@ int shiftContext(struct packetContext *trg, struct packetContext *src) {
     trg->encr = src->encr;
     trg->dgst = src->dgst;
 #endif
-    return (trg->bufD == NULL) || (trg->bufC == NULL);
+    return 0;
 }
 
 

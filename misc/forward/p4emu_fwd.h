@@ -70,7 +70,6 @@ int hashDataPacket(unsigned char *bufP) {
     if (sendPack(ctx->scarD, &bufD[bufP], bufS - bufP + preBuff, prt) != 0) {   \
         ctx->bufD = NULL;                                       \
         ctx->scarD = NULL;                                      \
-        if (readyContext(ctx) != 0) return;                     \
     }
 
 
