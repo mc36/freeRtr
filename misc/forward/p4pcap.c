@@ -13,8 +13,9 @@
 
 pcap_t *ifacePcap[maxPorts];
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     pcap_sendpacket(ifacePcap[port], bufD, bufS);
+    return 0;
 }
 
 void setMtu(int port, int mtu) {

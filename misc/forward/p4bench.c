@@ -17,11 +17,12 @@ unsigned char *lastB = NULL;
 int lastS = 0;
 
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     packs++;
     bytes += bufS;
     lastB = bufD;
     lastS = bufS;
+    return 0;
 }
 
 void setMtu(int port, int mtu) {

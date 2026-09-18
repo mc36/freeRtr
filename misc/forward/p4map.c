@@ -29,13 +29,13 @@ struct pollfd ifacePfd[maxPorts];
 struct sockaddr_ll addrIfc[maxPorts];
 int blockNxt[maxPorts];
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     pthread_mutex_lock(&ifaceLock[port]);
     struct tpacket2_hdr *ppd;
     ppd = (struct tpacket2_hdr *) ifaceTiv[port][blockNxt[port]].iov_base;
     if (ppd->tp_status != TP_STATUS_AVAILABLE) {
         pthread_mutex_unlock(&ifaceLock[port]);
-        return;
+        return 0;
     }
     memcpy(ifaceTiv[port][blockNxt[port]].iov_base + TPACKET_ALIGN(sizeof(struct tpacket2_hdr)), bufD, bufS);
     ppd->tp_len = bufS;
@@ -43,6 +43,7 @@ void sendPack(unsigned char *bufD, int bufS, int port) {
     blockNxt[port] = (blockNxt[port] + 1) % blocksMax;
     pthread_mutex_unlock(&ifaceLock[port]);
     sendto(ifaceSock[port], NULL, 0, 0, (struct sockaddr *) &addrIfc[port], sizeof (addrIfc[port]));
+    return 0;
 }
 
 void setMtu(int port, int mtu) {

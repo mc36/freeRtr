@@ -31,7 +31,8 @@ void err(char*buf) {
 #include "p4emu_msg.h"
 #include "p4tester.h"
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
+    return 0;
 }
 
 void setMtu(int port, int mtu) {

@@ -27,15 +27,16 @@ struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 
 int port2pool[RTE_MAX_ETHPORTS];
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool[port2pool[port]]);
-    if (mbuf == NULL) return;
+    if (mbuf == NULL) return 0;
     char * pack = rte_pktmbuf_append(mbuf, bufS);
     if (pack == NULL) goto err;
     memcpy(pack, bufD, bufS);
-    if (rte_ring_mp_enqueue(tx_ring[port], mbuf) == 0) return;
+    if (rte_ring_mp_enqueue(tx_ring[port], mbuf) == 0) return 0;
 err:
     rte_pktmbuf_free(mbuf);
+    return 0;
 }
 
 

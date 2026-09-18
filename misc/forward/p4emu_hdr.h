@@ -51,7 +51,8 @@ extern char *ifaceName[maxPorts];
 extern struct ifaceStat_entry *ifaceStat[maxPorts];
 
 void err(char*buf);
-void sendPack(unsigned char *bufD, int bufS, int port);
+void allocPack(void** scar, unsigned char **bufD, int bufS, int port);
+int sendPack(void* scar, unsigned char *bufD, int bufS, int port); // 0=done, 1=alloc
 void setMtu(int port, int mtu);
 void setState(int port, int sta);
 int getState(int port);

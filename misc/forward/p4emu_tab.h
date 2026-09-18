@@ -773,13 +773,7 @@ int initTables() {
 }
 
 
-int initContext(struct packetContext *ctx) {
-#ifndef HAVE_NOCRYPTO
-    ctx->encr = EVP_CIPHER_CTX_new();
-    if (ctx->encr == NULL) return 1;
-    ctx->dgst = EVP_MD_CTX_new();
-    if (ctx->dgst == NULL) return 1;
-#endif
+int readyContext(struct packetContext *ctx) {
     ctx->bufB3 = malloc(totBuff);
     if (ctx->bufB3 == NULL) return 1;
     ctx->bufB2 = malloc(totBuff);
@@ -793,6 +787,17 @@ int initContext(struct packetContext *ctx) {
     ctx->bufH = malloc(preBuff);
     if (ctx->bufH == NULL) return 1;
     return 0;
+}
+
+
+int initContext(struct packetContext *ctx) {
+#ifndef HAVE_NOCRYPTO
+    ctx->encr = EVP_CIPHER_CTX_new();
+    if (ctx->encr == NULL) return 1;
+    ctx->dgst = EVP_MD_CTX_new();
+    if (ctx->dgst == NULL) return 1;
+#endif
+    return readyContext(ctx);
 }
 
 void unshiftContext(struct packetContext *trg, struct packetContext *src) {

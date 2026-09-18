@@ -27,14 +27,14 @@ struct xsk_ring_prod ifaceTx[maxPorts];
 char *ifaceBuf[maxPorts];
 struct pollfd ifacePfd[maxPorts];
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     unsigned int idx;
     pthread_mutex_lock(&ifaceLock[port]);
     idx = xsk_ring_cons__peek(&ifaceCq[port], 16, &idx);
     xsk_ring_cons__release(&ifaceCq[port], idx);
     if (xsk_ring_prod__reserve(&ifaceTx[port], 1, &idx) < 1) {
         pthread_mutex_unlock(&ifaceLock[port]);
-        return;
+        return 0;
     }
     struct xdp_desc *dsc = xsk_ring_prod__tx_desc(&ifaceTx[port], idx);
     dsc->addr = (framesNum + (idx % framesNum)) * XSK_UMEM__DEFAULT_FRAME_SIZE;
@@ -43,8 +43,9 @@ void sendPack(unsigned char *bufD, int bufS, int port) {
     memcpy(ifaceBuf[port] + dsc->addr, bufD, bufS);
     xsk_ring_prod__submit(&ifaceTx[port], 1);
     pthread_mutex_unlock(&ifaceLock[port]);
-    if (!xsk_ring_prod__needs_wakeup(&ifaceTx[port])) return;
+    if (!xsk_ring_prod__needs_wakeup(&ifaceTx[port])) return 0;
     sendto(xsk_socket__fd(ifaceXsk[port]), NULL, 0, MSG_DONTWAIT, NULL, 0);
+    return 0;
 }
 
 void setMtu(int port, int mtu) {

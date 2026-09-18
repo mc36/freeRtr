@@ -38,12 +38,12 @@ struct iovec *ifaceIovTx[maxPorts];
 unsigned char *ifaceMemTx[maxPorts];
 struct sockaddr_ll addrIfc[maxPorts];
 
-void sendPack(unsigned char *bufD, int bufS, int port) {
+int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     pthread_mutex_lock(&ifaceLock[port]);
     struct io_uring_sqe *sqe = io_uring_get_sqe(&ifaceRingTx[port]);
     if (sqe == NULL) {
         pthread_mutex_unlock(&ifaceLock[port]);
-        return;
+        return 0;
     }
     int idx = ifaceIdx[port] = (ifaceIdx[port] + 1) % queueMax;
     pthread_mutex_unlock(&ifaceLock[port]);
@@ -60,6 +60,7 @@ void sendPack(unsigned char *bufD, int bufS, int port) {
     io_uring_prep_sendmsg(sqe, ifaceSock[port], &ifaceMsgTx[port][idx], 0);
     io_uring_sqe_set_data(sqe, ifaceMemTx[port] + (idx * totBuff));
     io_uring_submit(&ifaceRingTx[port]);
+    return 0;
 }
 
 void setMtu(int port, int mtu) {
