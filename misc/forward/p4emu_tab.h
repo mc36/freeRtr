@@ -795,12 +795,19 @@ int initContext(struct packetContext *ctx) {
     return 0;
 }
 
-int shiftContext(struct packetContext *trg, struct packetContext *src, unsigned char *bufD) {
+void unshiftContext(struct packetContext *trg, struct packetContext *src) {
+    if (trg->bufD == NULL) src->bufC = NULL;
+    if (trg->bufC == NULL) src->bufB1 = NULL;
+    if (trg->bufB1 == NULL) src->bufB2 = NULL;
+    if (trg->bufB2 == NULL) src->bufB3 = NULL;
+}
+
+int shiftContext(struct packetContext *trg, struct packetContext *src) {
     trg->sgt = src->sgt;
     trg->hash = src->hash;
     trg->stat = src->stat;
     trg->bufH = src->bufH;
-    trg->bufD = bufD;
+    trg->bufD = src->bufC;
     trg->bufC = src->bufB1;
     trg->bufB1 = src->bufB2;
     trg->bufB2 = src->bufB3;
@@ -809,7 +816,7 @@ int shiftContext(struct packetContext *trg, struct packetContext *src, unsigned 
     trg->encr = src->encr;
     trg->dgst = src->dgst;
 #endif
-    return trg->bufC == NULL;
+    return (trg->bufD == NULL) || (trg->bufC == NULL);
 }
 
 

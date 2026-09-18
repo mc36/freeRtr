@@ -539,8 +539,9 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
         struct packetContext ctx2;
         unsigned char *bufC = ctx->bufC;
         memcpy(&bufC[preBuff], &bufD[bufP], bufS);
-        if (shiftContext(&ctx2, ctx, bufC) != 0) return;
+        if (shiftContext(&ctx2, ctx) != 0) return;
         processDataPacket(&ctx2, bufS, prt);
+        unshiftContext(&ctx2, ctx);
         return;
     }
     if (macsec_apply(ctx, prt, &bufP, &bufS, &ethtyp) != 0) return;
@@ -861,7 +862,7 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
     unsigned char *bufH = ctx->bufH;
     unsigned char *bufC = ctx->bufC;
     for (int i = 0; i < flood->size; i++) {
-        if (shiftContext(&ctx2, ctx, bufC) != 0) break;
+        if (shiftContext(&ctx2, ctx) != 0) break;
         flood_res = table_get(flood, i);
         int tmpP = preBuff;
         int tmpE;
@@ -979,6 +980,7 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
             send2neigh(&ctx2, neigh_res, tmpP, tmpS, tmpE);
             break;
         }
+        unshiftContext(&ctx2, ctx);
     }
 }
 
@@ -1231,7 +1233,10 @@ ethtyp_rx:
             if (tmp > port2vrf_res->monTruncate) tmp = port2vrf_res->monTruncate;
             memcpy(&bufC[preBuff], &bufD[bufP - 2], tmp);
             memcpy(&bufH[0], &bufD[preBuff], 12);
-            if (shiftContext(&ctx2, ctx, bufC) == 0) send2subif(&ctx2, port2vrf_res->monTarget, preBuff, tmp, ethtyp);
+            if (shiftContext(&ctx2, ctx) == 0) {
+                send2subif(&ctx2, port2vrf_res->monTarget, preBuff, tmp, ethtyp);
+                unshiftContext(&ctx2, ctx);
+            }
         }
     }
     switch (port2vrf_res->command) {
@@ -2322,7 +2327,7 @@ bridgelayer3:
         unsigned char *bufC = ctx->bufC;
         for (int i = 0; i < vrf2rib_res->plk.size; i++) {
             if ((tmp & (2 << (i & 0x1f))) == 0) continue;
-            if (shiftContext(&ctx2, ctx, bufC) != 0) break;
+            if (shiftContext(&ctx2, ctx) != 0) break;
             polkaIdx_res = table_get(&vrf2rib_res->plk, i);
             polkaIdx_res->pack++;
             polkaIdx_res->byte += bufS;
@@ -2335,6 +2340,7 @@ bridgelayer3:
             put16msb(bufC, preBuff, tmpE);
             memcpy(&bufC[preBuff + 2], &bufD[bufP], tmpS);
             send2neigh(&ctx2, neigh_res, tmpP, tmpS, tmpE);
+            unshiftContext(&ctx2, ctx);
         }
         if ((tmp & 1) == 0) return;
         ethtyp = get16msb(bufD, bufP + 2);
