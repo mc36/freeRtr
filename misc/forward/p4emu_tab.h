@@ -790,10 +790,10 @@ int initContext(struct packetContext *ctx) {
 }
 
 void unshiftContext(struct packetContext *trg, struct packetContext *src) {
-    if (trg->bufD == NULL) src->bufC = NULL;
-    if (trg->bufC == NULL) src->bufB1 = NULL;
-    if (trg->bufB1 == NULL) src->bufB2 = NULL;
-    if (trg->bufB2 == NULL) src->bufB3 = NULL;
+    if (trg->bufD == NULL) src->bufC = src->scarC = NULL;
+    if (trg->bufC == NULL) src->bufB1 = src->scarB1 = NULL;
+    if (trg->bufB1 == NULL) src->bufB2 = src->scarB2 = NULL;
+    if (trg->bufB2 == NULL) src->bufB3 = src->scarB3 = NULL;
 }
 
 int shiftContext(struct packetContext *trg, struct packetContext *src) {
@@ -810,6 +810,13 @@ int shiftContext(struct packetContext *trg, struct packetContext *src) {
     trg->bufB1 = src->bufB2;
     trg->bufB2 = src->bufB3;
     trg->bufB3 = NULL;
+    trg->scarH = src->scarH;
+    trg->scarD = src->scarC;
+    trg->scarC = src->scarB1;
+    trg->scarB1 = src->scarB2;
+    trg->scarB2 = src->scarB3;
+    trg->scarB3 = NULL;
+    trg->scarX = src->scarX;
 #ifndef HAVE_NOCRYPTO
     trg->encr = src->encr;
     trg->dgst = src->dgst;
