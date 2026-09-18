@@ -2986,12 +2986,13 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         ctx->sgt = atoi(arg[6]);
         ctx->hash = atoi(arg[7]);
         unsigned char orig[totBuff];
-        unsigned char *bufD = ctx->bufD;
         unsigned char *bufH = ctx->bufH;
         memset(&orig, 0, totBuff);
         str2key(arg[8], orig);
         bufS -= 12;
         for (i=0; i<cntr; i++) {
+            if (refillContext(ctx) != 0) break;
+            unsigned char *bufD = ctx->bufD;
             memcpy(&bufD[preBuff], &orig[12], bufS);
             memcpy(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
@@ -3008,7 +3009,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         ctx->sgt = atoi(arg[6]);
         ctx->hash = atoi(arg[7]);
         unsigned char orig[totBuff];
-        unsigned char *bufD = ctx->bufD;
         unsigned char *bufH = ctx->bufH;
         memset(&orig, 0, totBuff);
         str2key(arg[8], orig);
@@ -3017,6 +3017,8 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_res = hasht_find(&neigh_table, &neigh_ntry);
         if (neigh_res == NULL) return 0;
         for (i=0; i<cntr; i++) {
+            if (refillContext(ctx) != 0) break;
+            unsigned char *bufD = ctx->bufD;
             memcpy(&bufD[preBuff], &orig[12], bufS);
             memcpy(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
@@ -3406,10 +3408,6 @@ void doSockLoop() {
     if (initContext(&ctx) != 0) err("error initializing context");
     unsigned char buf[16384];
     for (;;) {
-        if (refillContext(&ctx) != 0) {
-            sleep(1);
-            continue;
-        }
         memset(&buf, 0, sizeof(buf));
         if (fgets((char*)&buf[0], sizeof(buf), commandRx) == NULL) break;
         if (doOneCommand(&ctx, &buf[0]) != 0) break;
