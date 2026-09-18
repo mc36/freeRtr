@@ -38,6 +38,12 @@ struct iovec *ifaceIovTx[maxPorts];
 unsigned char *ifaceMemTx[maxPorts];
 struct sockaddr_ll addrIfc[maxPorts];
 
+int allocPack(void** scar, unsigned char **bufD, int bufS, void* ctx) {
+    *scar = NULL;
+    *bufD = malloc(bufS);
+    return *bufD == NULL;
+}
+
 int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     pthread_mutex_lock(&ifaceLock[port]);
     struct io_uring_sqe *sqe = io_uring_get_sqe(&ifaceRingTx[port]);

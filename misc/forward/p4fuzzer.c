@@ -22,6 +22,12 @@ void err(char*buf) {
 
 
 
+int allocPack(void** scar, unsigned char **bufD, int bufS, void* ctx) {
+    *scar = NULL;
+    *bufD = malloc(bufS);
+    return *bufD == NULL;
+}
+
 int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     return 0;
 }

@@ -33,6 +33,13 @@ struct packetContext {
     unsigned char *bufC;
     unsigned char *bufD;
     unsigned char *bufH;
+    void *scarB3;
+    void *scarB2;
+    void *scarB1;
+    void *scarC;
+    void *scarD;
+    void *scarH;
+    void *scarX;
     void *encr; // EVP_CIPHER_CTX
     void *dgst; // EVP_MD_CTX
 };
@@ -51,7 +58,7 @@ extern char *ifaceName[maxPorts];
 extern struct ifaceStat_entry *ifaceStat[maxPorts];
 
 void err(char*buf);
-void allocPack(void** scar, unsigned char **bufD, int bufS, int port);
+int allocPack(void** scar, unsigned char **bufD, int bufS, void* ctx); // 0=done, 1=err
 int sendPack(void* scar, unsigned char *bufD, int bufS, int port); // 0=done, 1=alloc
 void setMtu(int port, int mtu);
 void setState(int port, int sta);

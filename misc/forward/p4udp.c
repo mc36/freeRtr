@@ -16,6 +16,12 @@ int sockets[maxPorts];
 int ifaceId[maxPorts];
 
 
+int allocPack(void** scar, unsigned char **bufD, int bufS, void* ctx) {
+    *scar = NULL;
+    *bufD = malloc(bufS);
+    return *bufD == NULL;
+}
+
 int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     sendto(sockets[port], bufD, bufS, 0, (struct sockaddr *) &peers[port], sizeof(peers[port]));
     return 0;

@@ -17,6 +17,12 @@ unsigned char *lastB = NULL;
 int lastS = 0;
 
 
+int allocPack(void** scar, unsigned char **bufD, int bufS, void* ctx) {
+    *scar = NULL;
+    *bufD = malloc(bufS);
+    return *bufD == NULL;
+}
+
 int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     packs++;
     bytes += bufS;

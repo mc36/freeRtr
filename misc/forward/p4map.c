@@ -29,6 +29,12 @@ struct pollfd ifacePfd[maxPorts];
 struct sockaddr_ll addrIfc[maxPorts];
 int blockNxt[maxPorts];
 
+int allocPack(void** scar, unsigned char **bufD, int bufS, void* ctx) {
+    *scar = NULL;
+    *bufD = malloc(bufS);
+    return *bufD == NULL;
+}
+
 int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     pthread_mutex_lock(&ifaceLock[port]);
     struct tpacket2_hdr *ppd;

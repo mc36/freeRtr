@@ -27,6 +27,12 @@ struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 
 int port2pool[RTE_MAX_ETHPORTS];
 
+int allocPack(void** scar, unsigned char **bufD, int bufS, void* ctx) {
+    *scar = NULL;
+    *bufD = malloc(bufS);
+    return *bufD == NULL;
+}
+
 int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool[port2pool[port]]);
     if (mbuf == NULL) return 0;

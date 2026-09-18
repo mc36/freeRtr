@@ -105,13 +105,17 @@ int hashDataPacket(unsigned char *bufP) {
 
 void processDataPacket(struct packetContext *ctx, int bufS, int prt) {
     unsigned char *bufD = ctx->bufD;
+    int res;
     if (prt == cpuPort) {
         int prt = get32msb(bufD, preBuff);
         if (prt < 0) return;
         if (prt >= dataPorts) return;
-        sendPack(NULL, &bufD[preBuff + 4], bufS - 4, prt);
+        res = sendPack(NULL, &bufD[preBuff + 4], bufS - 4, prt);
     } else {
         put32msb(bufD, preBuff - 4, prt);
-        sendPack(NULL, &bufD[preBuff - 4], bufS + 4, cpuPort);
+        res = sendPack(NULL, &bufD[preBuff - 4], bufS + 4, cpuPort);
     }
+    if (res == 0) return;
+    ctx->bufD = NULL;
+    ctx->scarD = NULL;
 }

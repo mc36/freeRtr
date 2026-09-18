@@ -4,6 +4,12 @@ int ifaceId[maxPorts];
 struct sockaddr_ll addrIfc[maxPorts];
 
 
+int allocPack(void** scar, unsigned char **bufD, int bufS, void* ctx) {
+    *scar = NULL;
+    *bufD = malloc(bufS);
+    return *bufD == NULL;
+}
+
 int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     send(ifaceSock[port], bufD, bufS, 0);
     return 0;
