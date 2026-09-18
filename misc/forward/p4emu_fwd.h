@@ -863,9 +863,9 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
     struct packetContext ctx2;
     unsigned char *bufD = ctx->bufD;
     unsigned char *bufH = ctx->bufH;
-    unsigned char *bufC = ctx->bufC;
     for (int i = 0; i < flood->size; i++) {
         if (shiftContext(&ctx2, ctx) != 0) break;
+        unsigned char *bufC = ctx->bufC;
         flood_res = table_get(flood, i);
         int tmpP = preBuff;
         int tmpE;
@@ -2327,10 +2327,10 @@ bridgelayer3:
         crc16calc(tmp, polkaPoly_res->tab, bufD, bufP + 4, 14);
         tmp ^= get16msb(bufD, bufP + 18);
         struct packetContext ctx2;
-        unsigned char *bufC = ctx->bufC;
         for (int i = 0; i < vrf2rib_res->plk.size; i++) {
             if ((tmp & (2 << (i & 0x1f))) == 0) continue;
             if (shiftContext(&ctx2, ctx) != 0) break;
+            unsigned char *bufC = ctx->bufC;
             polkaIdx_res = table_get(&vrf2rib_res->plk, i);
             polkaIdx_res->pack++;
             polkaIdx_res->byte += bufS;
