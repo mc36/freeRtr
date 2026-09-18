@@ -2,6 +2,7 @@ unsigned char portStatsBuf[16384];
 int portStatsLen = 0;
 int printCmds = 0;
 int commandSock;
+void *commandScar;
 FILE *commandRx;
 FILE *commandTx;
 
@@ -3401,9 +3402,14 @@ void doNegotiate(char*name) {
 void doSockLoop() {
     printCmds = getenv("p4emuNOCMDS") == NULL;
     struct packetContext ctx;
+    ctx.scarX = commandScar;
     if (initContext(&ctx) != 0) err("error initializing context");
     unsigned char buf[16384];
     for (;;) {
+        if (refillContext(&ctx) != 0) {
+            sleep(1);
+            continue;
+        }
         memset(&buf, 0, sizeof(buf));
         if (fgets((char*)&buf[0], sizeof(buf), commandRx) == NULL) break;
         if (doOneCommand(&ctx, &buf[0]) != 0) break;

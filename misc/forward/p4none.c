@@ -12,6 +12,7 @@
 
 
 int commandSock;
+void *commandScar;
 FILE *commandRx;
 FILE *commandTx;
 int dataPorts;
@@ -44,6 +45,9 @@ int initContext(struct packetContext *ctx) {
     return 0;
 }
 
+int refillContext(struct packetContext *ctx) {
+    return 0;
+}
 
 int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     return 0;

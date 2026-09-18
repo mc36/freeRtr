@@ -52,6 +52,7 @@ struct packetContext {
 #define maxKeys 384
 
 extern int commandSock;
+extern void *commandScar;
 extern int dataPorts;
 extern int cpuPort;
 extern char *ifaceName[maxPorts];
@@ -71,6 +72,7 @@ extern int hashDataPacket(unsigned char *bufP);
 extern void processDataPacket(struct packetContext *ctx, int bufS, int prt);
 extern int doOneCommand(struct packetContext *ctx, unsigned char* buf);
 extern int initContext(struct packetContext *ctx);
+extern int refillContext(struct packetContext *ctx);
 extern void doNegotiate(char*name);
 extern void doSockLoop();
 extern void doStatLoop();

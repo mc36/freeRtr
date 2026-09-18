@@ -28,20 +28,24 @@ struct rte_ring *tx_ring[RTE_MAX_ETHPORTS];
 int port2pool[RTE_MAX_ETHPORTS];
 
 int allocPack(void** scar, unsigned char **bufD, int bufS, void* ctx) {
-    *scar = NULL;
-    *bufD = malloc(bufS);
+    struct rte_mempool *pool = ctx;
+    struct rte_mbuf *mbuf = rte_pktmbuf_alloc(pool);
+    if (mbuf == NULL) return 1;
+    *scar = mbuf;
+    *bufD = rte_pktmbuf_mtod(mbuf, void *);
     return *bufD == NULL;
 }
 
 int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
-    struct rte_mbuf *mbuf = rte_pktmbuf_alloc(mbuf_pool[port2pool[port]]);
-    if (mbuf == NULL) return 0;
-    char * pack = rte_pktmbuf_append(mbuf, bufS);
-    if (pack == NULL) goto err;
-    memcpy(pack, bufD, bufS);
-    if (rte_ring_mp_enqueue(tx_ring[port], mbuf) == 0) return 0;
-err:
-    rte_pktmbuf_free(mbuf);
+    struct rte_mbuf *mbuf = scar;
+    rte_pktmbuf_reset(mbuf);
+    int i = rte_pktmbuf_mtod(mbuf, void *) - (void*)bufD;
+    mbuf->data_off -= i;
+    mbuf->data_len += bufS;
+    mbuf->pkt_len += bufS;
+//    if (rte_pktmbuf_prepend(mbuf, i) == NULL) return 0;
+//    if (rte_pktmbuf_append(mbuf, bufS - i) == NULL) return 0;
+    if (rte_ring_mp_enqueue(tx_ring[port], mbuf) == 0) return 1;
     return 0;
 }
 
@@ -112,6 +116,7 @@ struct lcore_conf {
     int tx_num;
     int tx_list[RTE_MAX_ETHPORTS];
     int justProcessor;
+    int socket;
 } __rte_cache_aligned;
 struct lcore_conf lcore_conf[RTE_MAX_LCORE];
 struct rte_ring *lcore_ring[RTE_MAX_LCORE];
@@ -127,23 +132,22 @@ int lcore_procs;
 
 #define mbuf2mybuf(mbuf)                                        \
     bufS = rte_pktmbuf_pkt_len(mbuf);                           \
-    bufP = rte_pktmbuf_mtod(mbuf, void *);                      \
+    ctx.bufD = rte_pktmbuf_mtod(mbuf, void *);                  \
+    ctx.scarD = mbuf;                                           \
     if ((mbuf->ol_flags & RTE_MBUF_F_RX_VLAN_STRIPPED) != 0) {  \
-        memcpy(&bufD[preBuff], bufP, 12);                       \
-        put16msb(bufD, preBuff + 12, ETHERTYPE_VLAN);           \
-        put16msb(bufD, preBuff + 14, mbuf->vlan_tci);           \
-        memcpy(&bufD[preBuff + 16], bufP + 12, bufS - 12);      \
         bufS += 4;                                              \
-    } else {                                                    \
-        memcpy(&bufD[preBuff], bufP, bufS);                     \
+        ctx.bufD -= 4;                                          \
+        memmove(&ctx.bufD[0], &ctx.bufD[4], 12);                \
+        put16msb(ctx.bufD, 16, ETHERTYPE_VLAN);                 \
+        put16msb(ctx.bufD, 18, mbuf->vlan_tci);                 \
     }                                                           \
-    rte_pktmbuf_free(mbuf);
+    ctx.bufD -= preBuff;
+
 
 
 
 
 static int doPacketLoop(__rte_unused void *arg) {
-    unsigned char * bufP;
     int bufS;
     int port;
     int pkts;
@@ -157,8 +161,8 @@ static int doPacketLoop(__rte_unused void *arg) {
     if ((myconf->rx_num + myconf->tx_num + myconf->justProcessor) < 1) return 0;
     struct rte_mbuf *mbufs[burst_size];
     struct packetContext ctx;
+    ctx.scarX = mbuf_pool[myconf->socket];
     if (initContext(&ctx) != 0) err("error initializing context");
-    unsigned char *bufD = ctx.bufD;
 
     if (lcore_procs < 1) {
         for (;;) {
@@ -179,8 +183,14 @@ static int doPacketLoop(__rte_unused void *arg) {
                 num = rte_eth_rx_burst(port, 0, mbufs, burst_size);
                 pkts += num;
                 for (i = 0; i < num; i++) {
+                    if (refillContext(&ctx) != 0) {
+                        rte_pktmbuf_free(mbufs[i]);
+                        continue;
+                    }
                     mbuf2mybuf(mbufs[i]);
                     processDataPacket(&ctx, bufS, port);
+                    if (ctx.bufD == NULL) continue;
+                    rte_pktmbuf_free(mbufs[i]);
                 }
             }
             if ((pkts < 1) && (burst_sleep > 0)) usleep(burst_sleep);
@@ -199,10 +209,16 @@ static int doPacketLoop(__rte_unused void *arg) {
                 continue;
             }
             for (i = 0; i < num; i++) {
+                if (refillContext(&ctx) != 0) {
+                    rte_pktmbuf_free(mbufs[i]);
+                    continue;
+                }
                 port = mbufs[i]->port;
                 ctx.stat = ifaceStat[port];
                 mbuf2mybuf(mbufs[i]);
                 processDataPacket(&ctx, bufS, port);
+                if (ctx.bufD == NULL) continue;
+                rte_pktmbuf_free(mbufs[i]);
             }
         }
         goto fail;
@@ -225,8 +241,7 @@ static int doPacketLoop(__rte_unused void *arg) {
             num = rte_eth_rx_burst(port, 0, mbufs, burst_size);
             pkts += num;
             for (i = 0; i < num; i++) {
-                bufP = rte_pktmbuf_mtod(mbufs[i], void *);
-                port = hashDataPacket(bufP) % lcore_procs;
+                port = hashDataPacket(rte_pktmbuf_mtod(mbufs[i], void *)) % lcore_procs;
                 if (rte_ring_mp_enqueue(lcore_ring[port], mbufs[i]) != 0) rte_pktmbuf_free(mbufs[i]);
             }
         }
@@ -370,9 +385,10 @@ int main(int argc, char **argv) {
     }
 
     for (int i = 0; i < RTE_MAX_LCORE; i++) {
+        int sock = rte_lcore_to_socket_id(i);
+        lcore_conf[i].socket = sock;
         if (lcore_conf[i].justProcessor < 1) continue;
         int o = lcore_conf[i].justProcessor - 1;
-        int sock = rte_lcore_to_socket_id(i);
         printf("opening forwarder %i on lcore %i on socket %i...\n", o, i, sock);
         unsigned char buf[128];
         sprintf((char*)&buf[0], "dpdk-pack%i", i);
@@ -480,6 +496,7 @@ int main(int argc, char **argv) {
         if (ret != 0) printf("error setting promiscuous mode\n");
     }
 
+    commandScar = mbuf_pool[0];
     doNegotiate("dpdk");
     pthread_t threadSock;
     if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) err("error creating socket thread");

@@ -789,6 +789,14 @@ int initContext(struct packetContext *ctx) {
     return 0;
 }
 
+int refillContext(struct packetContext *ctx) {
+    if (ctx->bufB3 == NULL) if (allocPack(&ctx->scarB3, &ctx->bufB3, totBuff, ctx->scarX) != 0) return 1;
+    if (ctx->bufB2 == NULL) if (allocPack(&ctx->scarB2, &ctx->bufB2, totBuff, ctx->scarX) != 0) return 1;
+    if (ctx->bufB1 == NULL) if (allocPack(&ctx->scarB1, &ctx->bufB1, totBuff, ctx->scarX) != 0) return 1;
+    if (ctx->bufC == NULL) if (allocPack(&ctx->scarC, &ctx->bufC, totBuff, ctx->scarX) != 0) return 1;
+    return 0;
+}
+
 void unshiftContext(struct packetContext *trg, struct packetContext *src) {
     if (trg->bufD == NULL) src->bufC = src->scarC = NULL;
     if (trg->bufC == NULL) src->bufB1 = src->scarB1 = NULL;
