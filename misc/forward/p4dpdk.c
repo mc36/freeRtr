@@ -381,7 +381,7 @@ int main(int argc, char **argv) {
         sprintf((char*)&buf[0], "dpdk-pool%i", i);
         printf("opening mempool on socket %i...\n", i);
         mbuf_pool[i] = rte_pktmbuf_pool_create((char*)&buf[0], mbuf_num * dataPorts, mbuf_cache, 0, (mbuf_size + (RTE_MBUF_DEFAULT_BUF_SIZE - RTE_MBUF_DEFAULT_DATAROOM)), i);
-        if (mbuf_pool[i] == NULL) err("cannot create mbuf pool");
+        if (mbuf_pool[i] == NULL) printf("cannot create mbuf pool\n");
     }
 
     for (int i = 0; i < RTE_MAX_LCORE; i++) {
@@ -390,6 +390,7 @@ int main(int argc, char **argv) {
         if (lcore_conf[i].justProcessor < 1) continue;
         int o = lcore_conf[i].justProcessor - 1;
         printf("opening forwarder %i on lcore %i on socket %i...\n", o, i, sock);
+        if (mbuf_pool[sock] == NULL) err("no pool for lcore");
         unsigned char buf[128];
         sprintf((char*)&buf[0], "dpdk-pack%i", i);
         lcore_ring[o] = rte_ring_create((char*)&buf[0], ring_fwd, sock, RING_F_SC_DEQ);
@@ -409,6 +410,7 @@ int main(int argc, char **argv) {
         }
         port2pool[port] = sock;
         printf("opening port %i named %s on socket %i on lcore %i for rx and %i for tx...\n", port, (char*)&buf[0], sock, port2rx[port], port2tx[port]);
+        if (mbuf_pool[sock] == NULL) err("no pool for port");
         initIface(port, (char*)&buf[0]);
         sprintf((char*)&buf[0], "dpdk-port%i", port);
 
@@ -497,6 +499,7 @@ int main(int argc, char **argv) {
     }
 
     commandScar = mbuf_pool[0];
+    if (commandScar == NULL) err("no default pool");
     doNegotiate("dpdk");
     pthread_t threadSock;
     if (pthread_create(&threadSock, NULL, (void*) & doSockLoop, NULL)) err("error creating socket thread");
