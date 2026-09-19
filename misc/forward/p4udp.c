@@ -14,17 +14,20 @@
 struct sockaddr_in peers[maxPorts];
 int sockets[maxPorts];
 int ifaceId[maxPorts];
+int packetMalloc;
 
 
 int allocPack(void** scar, unsigned char **bufD, int bufS, void* ctx) {
-    *scar = NULL;
     *bufD = malloc(bufS);
+    *scar = *bufD;
     return *bufD == NULL;
 }
 
 int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
     sendto(sockets[port], bufD, bufS, 0, (struct sockaddr *) &peers[port], sizeof(peers[port]));
-    return 0;
+    if (packetMalloc == 0) return 0;
+    free(scar);
+    return 1;
 }
 
 
@@ -60,9 +63,15 @@ void doIfaceLoop(int * param) {
     int bufS;
     struct packetContext ctx;
     if (initContext(&ctx) != 0) err("error initializing context");
-    unsigned char *bufD = ctx.bufD;
     ctx.stat = ifaceStat[port];
     for (;;) {
+        if (packetMalloc != 0) {
+            if (ctx.bufD == NULL) {
+                if (allocPack(&ctx.scarD, &ctx.bufD, totBuff, ctx.scarX) != 0) err("unable to malloc");
+            }
+            if (refillContext(&ctx) != 0) err("unable to refill");
+        }
+        unsigned char *bufD = ctx.bufD;
         addrLen = sizeof(addrTmp);
         bufS = totBuff - preBuff;
         bufS = recvfrom(commSock, &bufD[preBuff], bufS, 0, (struct sockaddr *) &addrTmp, &addrLen);
@@ -78,6 +87,7 @@ int main(int argc, char **argv) {
     dataPorts = (argc - 5) / 2;
     if (dataPorts < 2) err("using: dp <addr> <port> <cpuport> <laddr> <raddr> <lport1> <rport1> [lportN] [rportN]");
     if (dataPorts > maxPorts) dataPorts = maxPorts;
+    packetMalloc = getenv("p4emuMALLOC") != NULL;
     struct sockaddr_in addrLoc;
     memset(&addrLoc, 0, sizeof(addrLoc));
     if (inet_aton(argv[4], &addrLoc.sin_addr) == 0) err("bad laddr address");
