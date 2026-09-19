@@ -1061,6 +1061,9 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
 #define doSampler                                                   \
     if (vrf2rib_res->samp > 0) {                                    \
         if ((vrf2rib_res->pack%vrf2rib_res->samp) == 0) {           \
+            struct packetContext ctx2;                              \
+            if (shiftContext(&ctx2, ctx) != 0) doDropper;           \
+            struct packetContext *ctx3 = ctx;                       \
             bufP -= 2;                                              \
             bufE = bufP;                                            \
             put16msb(bufD, bufP, ethtyp);                           \
@@ -1069,8 +1072,14 @@ void doFlood(struct packetContext *ctx, struct table_head *flood, int bufP, int 
             bufP -= 4;                                              \
             tmp = 0x80000000 | prt;                                 \
             put32msb(bufD, bufP, tmp);                              \
+            ctx = &ctx2;                                            \
+            bufD = ctx2.bufD;                                       \
+            memcpy(&bufD[bufP], &ctx3->bufD[bufP], bufS - bufP + preBuff);  \
             send2port(cpuPort);                                     \
             bufP += 18;                                             \
+            ctx = ctx3;                                             \
+            bufD = ctx3->bufD;                                      \
+            unshiftContext(&ctx2, ctx);                             \
         }                                                           \
     }
 

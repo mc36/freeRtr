@@ -2991,13 +2991,15 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         str2key(arg[8], orig);
         bufS -= 12;
         for (i=0; i<cntr; i++) {
-            if (refillContext(ctx) != 0) break;
-            unsigned char *bufD = ctx->bufD;
+            struct packetContext ctx2;
+            if (shiftContext(&ctx2, ctx) != 0) break;
+            unsigned char *bufD = ctx2.bufD;
             memcpy(&bufD[preBuff], &orig[12], bufS);
             memcpy(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
-            send2subif(ctx, prt, bufP, bufS, ethtyp);
+            send2subif(&ctx2, prt, bufP, bufS, ethtyp);
+            unshiftContext(&ctx2, ctx);
         }
         return 0;
     }
@@ -3017,13 +3019,15 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         neigh_res = hasht_find(&neigh_table, &neigh_ntry);
         if (neigh_res == NULL) return 0;
         for (i=0; i<cntr; i++) {
-            if (refillContext(ctx) != 0) break;
-            unsigned char *bufD = ctx->bufD;
+            struct packetContext ctx2;
+            if (shiftContext(&ctx2, ctx) != 0) break;
+            unsigned char *bufD = ctx2.bufD;
             memcpy(&bufD[preBuff], &orig[12], bufS);
             memcpy(&bufH[0], &orig[0], 16);
             int ethtyp = get16msb(orig, 12);
             int bufP = preBuff;
-            send2neigh(ctx, neigh_res, bufP, bufS, ethtyp);
+            send2neigh(&ctx2, neigh_res, bufP, bufS, ethtyp);
+            unshiftContext(&ctx2, ctx);
         }
         return 0;
     }
