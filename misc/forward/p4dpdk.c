@@ -157,11 +157,12 @@ static int doPacketLoop(__rte_unused void *arg) {
     int i;
     int lcore = rte_lcore_id();
     struct lcore_conf *myconf = &lcore_conf[lcore];
-    printf("lcore %i started with %i rx and %i tx ports and %i processing!\n", lcore, myconf->rx_num, myconf->tx_num, myconf->justProcessor);
+    printf("lcore %i on socket %i started with %i rx and %i tx ports and %i processing!\n", lcore, myconf->socket, myconf->rx_num, myconf->tx_num, myconf->justProcessor);
     if ((myconf->rx_num + myconf->tx_num + myconf->justProcessor) < 1) return 0;
     struct rte_mbuf *mbufs[burst_size];
     struct packetContext ctx;
     ctx.scarX = mbuf_pool[myconf->socket];
+    if (ctx.scarX == NULL) err("no pool for lcore");
     if (initContext(&ctx) != 0) err("error initializing context");
 
     if (lcore_procs < 1) {
