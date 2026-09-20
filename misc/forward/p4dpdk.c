@@ -269,10 +269,12 @@ int main(int argc, char **argv) {
     argv += ret;
 
     dataPorts = rte_eth_dev_count_avail();
-    if (dataPorts < 2) err("at least 2 ports needed");
     int cores = rte_lcore_count();
+    int sockets = rte_socket_count();
+    printf("%i sockets %i lcores and %i ports detected...\n", sockets, cores, dataPorts);
     if (cores < 1) err("at least 1 cores needed");
-    printf("%i cores and %i ports detected...\n", cores, dataPorts);
+    if (sockets < 1) err("at least 1 cores needed");
+    if (dataPorts < 2) err("at least 2 ports needed");
     if (dataPorts > maxPorts) dataPorts = maxPorts;
 
     if (argc < 4) err("using: dp [dpdk options] -- <host> <rport> <cpuport> [port rxcore txcore] [-1 fwdcore fwdcore] [-2 mbufsiz 0] [-3 mbufnum 0] [-4 mbufcache 0] [-5 desctx 0] [-6 descrx 0] [-7 ringrx 0] [-8 ringfwd 0] [-9 brstsiz 0] [-10 brstslp 0]");
@@ -376,8 +378,7 @@ int main(int argc, char **argv) {
     printf("there will be %i mbufs, each %i bytes, %i cached...\n", mbuf_num, mbuf_size, mbuf_cache);
     printf("there will be %i rx and %i tx descriptors, %i tx and %i fwd mbufs...\n", desc_rx, desc_tx, ring_tx, ring_fwd);
     printf("there will be %i bursts and maybe %i sleeps...\n", burst_size, burst_sleep);
-    ret = rte_socket_count();
-    for (int i = 0; i < ret; i++) {
+    for (int i = 0; i < sockets; i++) {
         unsigned char buf[128];
         sprintf((char*)&buf[0], "dpdk-pool%i", i);
         printf("opening mempool on socket %i...\n", i);
@@ -412,6 +413,8 @@ int main(int argc, char **argv) {
         port2pool[port] = sock;
         printf("opening port %i named %s on socket %i on lcore %i for rx and %i for tx...\n", port, (char*)&buf[0], sock, port2rx[port], port2tx[port]);
         if (mbuf_pool[sock] == NULL) err("no pool for port");
+        if (sock != lcore_conf[port2rx[port]].socket) printf("rx on remote socket\n");
+        if (sock != lcore_conf[port2tx[port]].socket) printf("tx on remote socket\n");
         initIface(port, (char*)&buf[0]);
         sprintf((char*)&buf[0], "dpdk-port%i", port);
 

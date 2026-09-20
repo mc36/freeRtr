@@ -18736,3 +18736,6 @@ qc pass: integrated pvrp with labels
 ---------------------------------- 2026-09-16 11:06:15 26.9.16
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2026-09-20 03:03:55 26.9.20
+no qc pass: wireguard over ipv6
+failed: wireguard over ipv6
