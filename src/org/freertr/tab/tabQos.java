@@ -244,11 +244,9 @@ public class tabQos {
                 break;
             case ipIcmp4.protoNum:
                 ipIcmp4.parseICMPports(pck);
-                pck.UDPtrg = pck.UDPsrc;
                 break;
             case ipIcmp6.protoNum:
                 ipIcmp6.parseICMPports(pck);
-                pck.UDPtrg = pck.UDPsrc;
                 break;
         }
     }
