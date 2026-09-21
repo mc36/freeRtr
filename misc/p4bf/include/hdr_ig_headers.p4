@@ -133,6 +133,7 @@ struct headers {
 #endif
     tcp_t tcp;
     udp_t udp;
+    icmp_t icmp;
 #ifdef HAVE_L2TP
     l2tp_t l2tp;
 #endif

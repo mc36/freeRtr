@@ -26,6 +26,7 @@ control ig_ctl_dprs(packet_out pkt, inout headers hdr, in ingress_metadata_t ig_
 #ifdef HAVE_NAT
     Checksum() tcp_checksum;
     Checksum() udp_checksum;
+    Checksum() icmp_checksum;
 #endif
 
     apply {
@@ -82,6 +83,8 @@ control ig_ctl_dprs(packet_out pkt, inout headers hdr, in ingress_metadata_t ig_
             }, zeros_as_ones = true);
         }
 
+        //if (ig_md.natted_ipv4icmp==1) {}
+
         if (ig_md.natted_ipv6tcp==1) {
             hdr.tcp.checksum = tcp_checksum.update(data = {
                 hdr.ipv6.src_addr,
@@ -99,6 +102,15 @@ control ig_ctl_dprs(packet_out pkt, inout headers hdr, in ingress_metadata_t ig_
                 hdr.udp.src_port,
                 hdr.udp.dst_port,
                 ig_md.checksum_udp_tmp
+            }, zeros_as_ones = true);
+        }
+
+        if (ig_md.natted_ipv6icmp==1) {
+            hdr.icmp.checksum = icmp_checksum.update(data = {
+                hdr.ipv6.src_addr,
+                hdr.ipv6.dst_addr,
+                hdr.icmp.id,
+                ig_md.checksum_icmp_tmp
             }, zeros_as_ones = true);
         }
 

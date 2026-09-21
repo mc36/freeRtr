@@ -55,6 +55,7 @@ ig_md.srv_target = 0;
 #ifdef HAVE_NAT
 ig_md.checksum_tcp_tmp = 0;
 ig_md.checksum_udp_tmp = 0;
+ig_md.checksum_icmp_tmp = 0;
 #endif
 ig_md.mpls_op_type = 0;
 ig_md.srv_op_type = 0;
@@ -84,8 +85,10 @@ ig_md.mpls1_valid = 0;
 #ifdef HAVE_NAT
 ig_md.natted_ipv4tcp = 0;
 ig_md.natted_ipv4udp = 0;
+ig_md.natted_ipv4icmp = 0;
 ig_md.natted_ipv6tcp = 0;
 ig_md.natted_ipv6udp = 0;
+ig_md.natted_ipv6icmp = 0;
 #endif
 ig_md.arp_valid = 0;
 ig_md.ipv4_valid = 0;

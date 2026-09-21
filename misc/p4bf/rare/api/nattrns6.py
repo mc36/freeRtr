@@ -10,6 +10,8 @@ def writeNatTrnsRules6(
         name = "tcp"
     elif proto == 17:
         name = "udp"
+    elif proto == 58:
+        name = "icmp"
     else:
         name = "oth"
     tbl_global_path = "ig_ctl.ig_ctl_nat"

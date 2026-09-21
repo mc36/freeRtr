@@ -121,10 +121,13 @@ struct ingress_metadata_t {
 #ifdef HAVE_NAT
     bit<1> natted_ipv4tcp;
     bit<1> natted_ipv4udp;
+    bit<1> natted_ipv4icmp;
     bit<1> natted_ipv6tcp;
     bit<1> natted_ipv6udp;
+    bit<1> natted_ipv6icmp;
     checksum_t checksum_tcp_tmp;
     checksum_t checksum_udp_tmp;
+    checksum_t checksum_icmp_tmp;
 #endif
 }
 #endif	// _INGRESS_METADATA_P4_

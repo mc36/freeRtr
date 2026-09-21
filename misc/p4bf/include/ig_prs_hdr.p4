@@ -415,6 +415,8 @@ state prs_ipv4 {
     tcp_checksum.subtract({hdr.ipv4.dst_addr});
     udp_checksum.subtract({hdr.ipv4.src_addr});
     udp_checksum.subtract({hdr.ipv4.dst_addr});
+    icmp_checksum.subtract({hdr.ipv4.src_addr});
+    icmp_checksum.subtract({hdr.ipv4.dst_addr});
 #endif
 #ifdef NEED_PKTLEN
     ig_md.pktlen = hdr.ipv4.total_len;
@@ -440,6 +442,8 @@ IP_PROTOCOL_UDP:
         prs_udp;
 IP_PROTOCOL_TCP:
         prs_tcp;
+IP_PROTOCOL_ICMP:
+        prs_icmp;
 #ifdef HAVE_SRV6
 IP_PROTOCOL_IPV4:
         prs_ipv4b;
@@ -460,6 +464,8 @@ state prs_ipv6 {
     tcp_checksum.subtract({hdr.ipv6.dst_addr});
     udp_checksum.subtract({hdr.ipv6.src_addr});
     udp_checksum.subtract({hdr.ipv6.dst_addr});
+    icmp_checksum.subtract({hdr.ipv6.src_addr});
+    icmp_checksum.subtract({hdr.ipv6.dst_addr});
 #endif
 #ifdef NEED_PKTLEN
 //        ig_md.pktlen = hdr.ipv6.payload_len + 40;
@@ -485,6 +491,8 @@ IP_PROTOCOL_UDP:
         prs_udp;
 IP_PROTOCOL_TCP:
         prs_tcp;
+IP_PROTOCOL_IPV6_ICMP:
+        prs_icmp;
 #ifdef HAVE_SRV6
 IP_PROTOCOL_IPV4:
         prs_ipv4b;
@@ -620,6 +628,18 @@ state prs_tcp {
     tcp_checksum.subtract({hdr.tcp.src_port});
     tcp_checksum.subtract({hdr.tcp.dst_port});
     tcp_checksum.subtract_all_and_deposit(ig_md.checksum_tcp_tmp);
+#endif
+    transition accept;
+}
+
+state prs_icmp {
+    pkt.extract(hdr.icmp);
+    ig_md.layer4_srcprt = hdr.icmp.id;
+    ig_md.layer4_dstprt = hdr.icmp.id;
+#ifdef HAVE_NAT
+    icmp_checksum.subtract({hdr.icmp.checksum});
+    icmp_checksum.subtract({hdr.icmp.id});
+    icmp_checksum.subtract_all_and_deposit(ig_md.checksum_icmp_tmp);
 #endif
     transition accept;
 }
