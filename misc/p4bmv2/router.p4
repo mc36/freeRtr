@@ -43,6 +43,7 @@
 #include "include/hdr_tmux.p4"
 #include "include/hdr_udp.p4"
 #include "include/hdr_tcp.p4"
+#include "include/hdr_icmp.p4"
 #include "include/hdr_l2tp.p4"
 #include "include/hdr_l3tp.p4"
 #include "include/hdr_vxlan.p4"

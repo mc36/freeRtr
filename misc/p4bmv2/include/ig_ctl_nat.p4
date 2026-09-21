@@ -41,6 +41,16 @@ control IngressControlNAT(inout headers hdr,
         ig_md.natted = 1;
     }
 
+    action act_rewrite_ipv4icmp(ipv4_addr_t srcadr, ipv4_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
+        hdr.ipv4.src_addr = srcadr;
+        hdr.ipv4.dst_addr = trgadr;
+        hdr.icmp.id = trgprt;
+        hdr.icmp.checksum = 0;
+        ig_md.layer4_srcprt = srcprt;
+        ig_md.layer4_dstprt = trgprt;
+        ig_md.natted = 1;
+    }
+
     action act_rewrite_ipv4udp(ipv4_addr_t srcadr, ipv4_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
         hdr.ipv4.src_addr = srcadr;
         hdr.ipv4.dst_addr = trgadr;
@@ -66,6 +76,16 @@ control IngressControlNAT(inout headers hdr,
     action act_rewrite_ipv6oth(ipv6_addr_t srcadr, ipv6_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
         hdr.ipv6.src_addr = srcadr;
         hdr.ipv6.dst_addr = trgadr;
+        ig_md.layer4_srcprt = srcprt;
+        ig_md.layer4_dstprt = trgprt;
+        ig_md.natted = 1;
+    }
+
+    action act_rewrite_ipv6icmp(ipv6_addr_t srcadr, ipv6_addr_t trgadr, layer4_port_t srcprt, layer4_port_t trgprt) {
+        hdr.ipv6.src_addr = srcadr;
+        hdr.ipv6.dst_addr = trgadr;
+        hdr.icmp.id = trgprt;
+        hdr.icmp.checksum = 0;
         ig_md.layer4_srcprt = srcprt;
         ig_md.layer4_dstprt = trgprt;
         ig_md.natted = 1;
@@ -110,6 +130,7 @@ ig_md.layer4_dstprt:
         }
         actions = {
             act_rewrite_ipv4oth;
+            act_rewrite_ipv4icmp;
             act_rewrite_ipv4udp;
             act_rewrite_ipv4tcp;
             @defaultonly NoAction;
@@ -136,6 +157,7 @@ ig_md.layer4_dstprt:
         }
         actions = {
             act_rewrite_ipv6oth;
+            act_rewrite_ipv6icmp;
             act_rewrite_ipv6udp;
             act_rewrite_ipv6tcp;
             @defaultonly NoAction;

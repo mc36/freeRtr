@@ -383,6 +383,8 @@ IP_PROTOCOL_UDP:
             prs_udp;
 IP_PROTOCOL_TCP:
             prs_tcp;
+IP_PROTOCOL_ICMP:
+            prs_icmp;
 IP_PROTOCOL_IPV4:
             prs_ipv4b;
 IP_PROTOCOL_IPV6:
@@ -411,6 +413,8 @@ IP_PROTOCOL_UDP:
             prs_udp;
 IP_PROTOCOL_TCP:
             prs_tcp;
+IP_PROTOCOL_IPV6_ICMP:
+            prs_icmp;
 IP_PROTOCOL_IPV4:
             prs_ipv4b;
 IP_PROTOCOL_IPV6:
@@ -520,6 +524,13 @@ PPPTYPE_ROUTEDMAC:
         pkt.extract(hdr.tcp);
         ig_md.layer4_srcprt = hdr.tcp.src_port;
         ig_md.layer4_dstprt = hdr.tcp.dst_port;
+        transition accept;
+    }
+
+    state prs_icmp {
+        pkt.extract(hdr.icmp);
+        ig_md.layer4_srcprt = hdr.icmp.id;
+        ig_md.layer4_dstprt = hdr.icmp.id;
         transition accept;
     }
 

@@ -2847,6 +2847,8 @@ def writeNatTrnsRules4(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, 
         name = "tcp"
     elif proto == 17:
         name = "udp"
+    elif proto == 1:
+        name = "icmp"
     else:
         name = "oth"
     table_entry = p4info_helper.buildTableEntry(
@@ -2879,6 +2881,8 @@ def writeNatTrnsRules6(delete, p4info_helper, ingress_sw, vrf, proto, osa, osp, 
         name = "tcp"
     elif proto == 17:
         name = "udp"
+    elif proto == 58:
+        name = "icmp"
     else:
         name = "oth"
     table_entry = p4info_helper.buildTableEntry(

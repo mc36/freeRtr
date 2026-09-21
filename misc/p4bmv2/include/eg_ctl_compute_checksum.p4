@@ -119,6 +119,17 @@ control eg_ctl_compute_checksum(inout headers hdr, inout ingress_metadata_t eg_m
         hdr.udp.checksum,
         HashAlgorithm.csum16);
 
+
+        update_checksum_with_payload(
+            (eg_md.natted == 1) && hdr.ipv4.isValid() && hdr.icmp.isValid(),
+        {   hdr.icmp.type,
+            hdr.icmp.code,
+            hdr.icmp.id,
+            hdr.icmp.seq
+        },
+        hdr.icmp.checksum,
+        HashAlgorithm.csum16);
+
         update_checksum_with_payload(
             (eg_md.natted == 1) && hdr.ipv6.isValid() && hdr.tcp.isValid(),
         {   hdr.ipv6.src_addr,
@@ -148,6 +159,20 @@ control eg_ctl_compute_checksum(inout headers hdr, inout ingress_metadata_t eg_m
             hdr.udp.length
         },
         hdr.udp.checksum,
+        HashAlgorithm.csum16);
+
+        update_checksum_with_payload(
+            (eg_md.natted == 1) && hdr.ipv6.isValid() && hdr.icmp.isValid(),
+        {   hdr.ipv6.src_addr,
+            hdr.ipv6.dst_addr,
+            8w0, hdr.ipv6.next_hdr,
+            eg_md.layer4_length,
+            hdr.icmp.type,
+            hdr.icmp.code,
+            hdr.icmp.id,
+            hdr.icmp.seq
+        },
+        hdr.icmp.checksum,
         HashAlgorithm.csum16);
 
         /*

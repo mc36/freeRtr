@@ -30,8 +30,6 @@ import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipFwdMcast;
 import org.freertr.ip.ipFwdMpNe;
 import org.freertr.ip.ipFwdMpmp;
-import org.freertr.ip.ipIcmp4;
-import org.freertr.ip.ipIcmp6;
 import org.freertr.ip.ipIfc;
 import org.freertr.ip.ipMpls;
 import org.freertr.pipe.pipeSide;
@@ -4300,11 +4298,6 @@ public class servP4langConn implements Runnable {
             if (done.find(ntry) != null) {
                 continue;
             }
-            switch (ntry.protocol) {
-                case ipIcmp4.protoNum:
-                case ipIcmp6.protoNum:
-                    continue;
-            }
             lower.sendLine("nattrns" + afi + "_add " + vrf + " " + servP4langUtil.natTrns2str(ntry));
             done.add(ntry);
         }
@@ -4312,11 +4305,6 @@ public class servP4langConn implements Runnable {
             tabNatTraN ntry = done.get(i);
             if (need.find(ntry) != null) {
                 continue;
-            }
-            switch (ntry.protocol) {
-                case ipIcmp4.protoNum:
-                case ipIcmp6.protoNum:
-                    continue;
             }
             lower.sendLine("nattrns" + afi + "_del " + vrf + " " + servP4langUtil.natTrns2str(ntry));
             done.del(ntry);
@@ -5249,11 +5237,6 @@ public class servP4langConn implements Runnable {
             if (nds.find(ntry) != null) {
                 continue;
             }
-            switch (ntry.ipPrt) {
-                case ipIcmp4.protoNum:
-                case ipIcmp6.protoNum:
-                    continue;
-            }
             lower.sendLine("inspect" + afi + "_del " + ifc + " " + servP4langUtil.sess2str(ntry));
             old.connects.del(ntry);
         }
@@ -5267,11 +5250,6 @@ public class servP4langConn implements Runnable {
             }
             if (ntry.evaluating != null) {
                 continue;
-            }
-            switch (ntry.ipPrt) {
-                case ipIcmp4.protoNum:
-                case ipIcmp6.protoNum:
-                    continue;
             }
             lower.sendLine("inspect" + afi + "_add " + ifc + " " + servP4langUtil.sess2str(ntry));
             old.connects.put(ntry);

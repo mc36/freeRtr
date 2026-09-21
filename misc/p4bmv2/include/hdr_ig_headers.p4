@@ -85,6 +85,7 @@ struct headers {
     gtp_t		gtp;
     vxlan_t		vxlan;
     tcp_t		tcp;
+    icmp_t		icmp;
     pppbr_t		l2tpbr;
     ethernet_t		eth5;
 }
