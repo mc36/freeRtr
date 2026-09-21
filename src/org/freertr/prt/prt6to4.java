@@ -200,7 +200,6 @@ public class prt6to4 implements ifcDn {
                     default:
                         return true;
                 }
-                pck.msbPutD(4, pck.msbGetD(4)); // id
                 pck.getSkip(ipIcmp4.size);
                 addrConv(mod, pck);
                 icmp6.createICMPheader(pck);
@@ -219,7 +218,6 @@ public class prt6to4 implements ifcDn {
                     default:
                         return true;
                 }
-                pck.msbPutD(4, pck.msbGetD(4)); // id
                 pck.getSkip(ipIcmp6.size);
                 addrConv(mod, pck);
                 icmp4.createICMPheader(pck);

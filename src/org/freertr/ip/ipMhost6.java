@@ -69,7 +69,7 @@ public class ipMhost6 extends ipMhost {
                 return false;
             case ipIcmp6.icmpMcastRprt2:
                 pck.getSkip(-addrIPv6.size);
-                cnt = pck.msbGetW(-2); // number of groups
+                cnt = pck.TCPseq; // number of groups
                 for (int i = 0; i < cnt; i++) {
                     int typ = pck.getByte(0); // type
                     int aux = pck.getByte(1); // auxiliary data
@@ -132,8 +132,8 @@ public class ipMhost6 extends ipMhost {
             pck.putSkip(addrIPv6.size);
         }
         pck.merge2beg();
-        pck.msbPutW(4, 1000); // max response code
-        pck.msbPutW(6, 0); // reserved
+        pck.UDPsrc = 1000; // max response code
+        pck.TCPseq = 0; // reserved
         pck.ICMPtc = ipIcmp6.icmpMcastQuery;
     }
 
@@ -156,8 +156,8 @@ public class ipMhost6 extends ipMhost {
             pck.putSkip(addrIPv6.size);
         }
         pck.merge2beg();
-        pck.msbPutW(4, 0); // reserved
-        pck.msbPutW(6, 1); // groups
+        pck.UDPsrc = 0; // reserved
+        pck.TCPseq = 1; // groups
         pck.ICMPtc = ipIcmp6.icmpMcastRprt2;
     }
 

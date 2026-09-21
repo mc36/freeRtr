@@ -64,7 +64,8 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         } else {
             pck.ICMPtc = icmpEchoReq;
         }
-        pck.msbPutD(4, id); // id
+        pck.UDPsrc = id >>> 16;
+        pck.TCPseq = id & 0xffff;
         createICMPheader(pck);
     }
 
@@ -129,7 +130,8 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         if (mplsExt) {
             ipFwdEcho.addMplsExt(pck);
         }
-        pck.msbPutD(4, data); // optional data
+        pck.UDPsrc = data >>> 16;
+        pck.TCPseq = data & 0xffff;
         createICMPheader(pck);
         return false;
     }
@@ -141,7 +143,8 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
      */
     public static void parseICMPports(packHolder pck) {
         pck.ICMPtc = pck.msbGetW(0); // type:8 code:8
-        pck.UDPsrc = pck.msbGetD(4); // id:16 seq:16
+        pck.UDPsrc = pck.msbGetW(4); // id
+        pck.TCPseq = pck.msbGetW(6); // seq
         pck.UDPtrg = pck.UDPsrc;
         pck.UDPsiz = size;
     }
@@ -185,6 +188,8 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
         }
         pck.msbPutW(0, pck.ICMPtc); // type:8 code:8
         pck.msbPutW(2, 0); // checksum
+        pck.msbPutW(4, pck.UDPsrc); // id
+        pck.msbPutW(6, pck.TCPseq); // seq
         if (cfgAll.icmp4ChecksumTx) {
             int i = pck.putIPsum(0, size, 0);
             i = pck.getIPsum(0, pck.dataSize(), i);
@@ -372,15 +377,13 @@ public class ipIcmp4 implements ipIcmp, ipPrt {
                 pck.IPtos = i;
                 pck.IPid = o;
                 pck.IPdf = p;
-                pck.msbPutD(4, pck.msbGetD(4)); // id
                 pck.getSkip(size);
                 createICMPheader(pck);
                 fwdCore.protoPack(rxIfc, null, pck);
                 break;
             case icmpEchoRep:
-                int id = pck.msbGetD(4);
                 pck.getSkip(size);
-                fwdCore.echoRecvRep(pck, id);
+                fwdCore.echoRecvRep(pck, (pck.UDPsrc << 16) | pck.TCPseq);
                 break;
             case icmpUnreachNetw:
                 pck.getSkip(size);

@@ -275,11 +275,11 @@ public class prtIcmptun implements ipPrt, ifcDn {
         cntr.tx(pck);
         pck.merge2beg();
         if (tunnelKey < 0) {
-            pck.msbPutW(4, -tunnelKey);
+            pck.UDPsrc = -tunnelKey;
         } else {
-            pck.msbPutW(4, tunnelKey);
+            pck.UDPsrc = tunnelKey;
         }
-        pck.msbPutW(6, seqTx);
+        pck.TCPseq = seqTx;
         seqTx++;
         pck.IPsrc.setAddr(sendingIfc.addr);
         pck.IPtrg.setAddr(remote);
@@ -320,10 +320,8 @@ public class prtIcmptun implements ipPrt, ifcDn {
         if ((pck.ICMPtc != servCod) && (pck.ICMPtc != clntCod)) {
             cntr.drop(pck, counter.reasons.badCod);
         }
-        int key = pck.msbGetW(4);
-//  int seq = pck.msbGetW(6);
         pck.getSkip(icmpSiz);
-        if ((key != tunnelKey) && (key != (-tunnelKey))) {
+        if ((pck.UDPsrc != tunnelKey) && (pck.UDPsrc != (-tunnelKey))) {
             logger.info("got bad key from " + remote);
             cntr.drop(pck, counter.reasons.badID);
             return;

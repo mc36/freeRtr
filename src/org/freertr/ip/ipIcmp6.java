@@ -82,7 +82,8 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
         } else {
             pck.ICMPtc = icmpEchoReq;
         }
-        pck.msbPutD(4, id); // id
+        pck.UDPsrc = id >>> 16;
+        pck.TCPseq = id & 0xffff;
         createICMPheader(pck);
     }
 
@@ -145,7 +146,8 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
         if (mplsExt) {
             ipFwdEcho.addMplsExt(pck);
         }
-        pck.msbPutD(4, data); // optional data
+        pck.UDPsrc = data >>> 16;
+        pck.TCPseq = data & 0xffff;
         createICMPheader(pck);
         return false;
     }
@@ -157,7 +159,8 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
      */
     public static void parseICMPports(packHolder pck) {
         pck.ICMPtc = pck.msbGetW(0); // type:8 code:8
-        pck.UDPsrc = pck.msbGetD(4); // id:16 seq:16
+        pck.UDPsrc = pck.msbGetW(4); // id
+        pck.TCPseq = pck.msbGetW(6); // seq
         pck.UDPtrg = pck.UDPsrc;
         pck.UDPsiz = size;
     }
@@ -202,6 +205,8 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
         }
         pck.msbPutW(0, pck.ICMPtc); // type:8 code:8
         pck.msbPutW(2, 0); // checksum
+        pck.msbPutW(4, pck.UDPsrc); // id
+        pck.msbPutW(6, pck.TCPseq); // seq
         if (cfgAll.icmp6ChecksumTx) {
             int i = pck.pseudoIPsum(size + pck.dataSize());
             i = pck.putIPsum(0, size, i);
@@ -488,15 +493,13 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 pck.putStart();
                 pck.IPtos = i;
                 pck.IPid = o;
-                pck.msbPutD(4, pck.msbGetD(4)); // id
                 pck.getSkip(size);
                 createICMPheader(pck);
                 fwdCore.protoPack(rxIfc, null, pck);
                 break;
             case icmpEchoRep:
-                int id = pck.msbGetD(4);
                 pck.getSkip(size);
-                fwdCore.echoRecvRep(pck, id);
+                fwdCore.echoRecvRep(pck, (pck.UDPsrc << 16) | pck.TCPseq);
                 break;
             case icmpMcastQuery:
             case icmpMcastRprt1:
@@ -565,11 +568,11 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
             tlv.putAddr(pck, 2, hwa);
         }
         pck.merge2beg();
-        int i = 0x80000000; // router bit always set
+        pck.TCPseq = 0;
+        pck.UDPsrc = 0x8000; // router bit always set
         if (soli) {
-            i |= 0x60000000; // solicited, override
+            pck.UDPsrc |= 0x6000; // solicited, override
         }
-        pck.msbPutD(4, i); // flags
         createICMPheader(pck);
         ipCore.createIPheader(pck);
     }
@@ -601,7 +604,8 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
             tlv.putAddr(pck, 1, hwa);
         }
         pck.merge2beg();
-        pck.msbPutD(4, 0); // reserved
+        pck.UDPsrc = 0;
+        pck.TCPseq = 0;
         createICMPheader(pck);
         ipCore.createIPheader(pck);
     }
@@ -628,7 +632,8 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
             tlv.putAddr(pck, 1, hwa);
         }
         pck.merge2beg();
-        pck.msbPutD(4, 0); // reserved
+        pck.UDPsrc = 0;
+        pck.TCPseq = 0;
         createICMPheader(pck);
         ipCore.createIPheader(pck);
     }
@@ -717,9 +722,8 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
             tlv.putBytes(pck, 31, tmp.getCopy()); // domain info
         }
         pck.merge2beg();
-        pck.putByte(4, 64); // hop limit
-        pck.putByte(5, 0); // managed:1 other:1 homeAgent:1 prefer:2 reserved:3
-        pck.msbPutW(6, 1800); // router lifetime
+        pck.UDPsrc = 0x4000; // hop limit:8 managed:1 other:1 homeAgent:1 prefer:2 reserved:3
+        pck.TCPseq = 1800; // router lifetime
         createICMPheader(pck);
         ipCore.createIPheader(pck);
     }
