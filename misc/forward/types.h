@@ -23,6 +23,7 @@
 #define PPPTYPE_NSH                 0x004b
 #define PPPTYPE_POLKA               0x004d
 
+#define IP_PROTOCOL_ICMP4           1
 #define IP_PROTOCOL_IGMP            2
 #define IP_PROTOCOL_IPV4            4
 #define IP_PROTOCOL_TCP             6
@@ -35,6 +36,7 @@
 #define IP_PROTOCOL_ESP             50
 #define IP_PROTOCOL_SWIPE           53
 #define IP_PROTOCOL_SKIP            57
+#define IP_PROTOCOL_ICMP6           58
 #define IP_PROTOCOL_ETHERIP         97
 #define IP_PROTOCOL_L2TP            115
 #define IP_PROTOCOL_MPLS            137

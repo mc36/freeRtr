@@ -1556,10 +1556,17 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         accumulate_sum(nat4_ntry.sum3, nat4_ntry.nSrcAddr, +1);
         accumulate_sum(nat4_ntry.sum3, nat4_ntry.nTrgAddr, +1);
         nat4_ntry.sum4 = nat4_ntry.sum3;
+        if (nat4_ntry.prot == IP_PROTOCOL_ICMP4) {
+            nat4_ntry.sum4 = 0;
+        }
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.oSrcPort, -1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.oTrgPort, -1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nSrcPort, +1);
         accumulate_sum(nat4_ntry.sum4, nat4_ntry.nTrgPort, +1);
+        if (nat4_ntry.prot == IP_PROTOCOL_ICMP4) {
+            accumulate_sum(nat4_ntry.sum4, nat4_ntry.oSrcPort, +1);
+            accumulate_sum(nat4_ntry.sum4, nat4_ntry.nSrcPort, -1);
+        }
         finalize_sum(nat4_ntry);
         if (del == 0) hasht_del(&vrf2rib_res->natT, &nat4_ntry);
         else hasht_add(&vrf2rib_res->natT, &nat4_ntry);
@@ -1615,6 +1622,10 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.oTrgPort, -1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nSrcPort, +1);
         accumulate_sum(nat6_ntry.sum4, nat6_ntry.nTrgPort, +1);
+        if (nat4_ntry.prot == IP_PROTOCOL_ICMP6) {
+            accumulate_sum(nat4_ntry.sum4, nat4_ntry.oSrcPort, +1);
+            accumulate_sum(nat4_ntry.sum4, nat4_ntry.nSrcPort, -1);
+        }
         finalize_sum(nat6_ntry);
         if (del == 0) hasht_del(&vrf2rib_res->natT, &nat6_ntry);
         else hasht_add(&vrf2rib_res->natT, &nat6_ntry);

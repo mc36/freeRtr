@@ -144,6 +144,14 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
             acl.srcPortV = get16msb(bufD, bufT + 0);            \
             acl.trgPortV = get16msb(bufD, bufT + 2);            \
             break;                                              \
+        case IP_PROTOCOL_ICMP4:                                 \
+            acl.srcPortV = get16msb(bufD, bufT + 4);            \
+            acl.trgPortV = acl.srcPortV;                        \
+            break;                                              \
+        case IP_PROTOCOL_ICMP6:                                 \
+            acl.srcPortV = get16msb(bufD, bufT + 4);            \
+            acl.trgPortV = acl.srcPortV;                        \
+            break;                                              \
         default:                                                \
             acl.srcPortV = 0;                                   \
             acl.trgPortV = 0;                                   \
@@ -170,6 +178,14 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
             put16msb(bufD, bufT + 2, ntry->nTrgPort);           \
             if (get16msb(bufD, bufT + 6) == 0) break;           \
             update_chksum(bufT + 6, ntry->sum4);                \
+            break;                                              \
+        case IP_PROTOCOL_ICMP4:                                 \
+            put16msb(bufD, bufT + 4, ntry->nTrgPort);           \
+            update_chksum(bufT + 2, ntry->sum4);                \
+            break;                                              \
+        case IP_PROTOCOL_ICMP6:                                 \
+            put16msb(bufD, bufT + 4, ntry->nTrgPort);           \
+            update_chksum(bufT + 2, ntry->sum4);                \
             break;                                              \
     }
 
