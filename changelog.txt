@@ -18748,3 +18748,6 @@ failed: egress label filtering with integrated pvrp
 ---------------------------------- 2026-09-22 04:22:05 26.9.22
 no failed: egress label filtering with integrated pvrp
 qc pass: egress label filtering with integrated pvrp
+---------------------------------- 2026-09-22 06:05:41 26.9.22
+no qc pass: qos ingress shaper action
+failed: qos ingress shaper action
