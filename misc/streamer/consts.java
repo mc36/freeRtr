@@ -77,6 +77,11 @@ public class consts {
     public static final int wfam = 0x57460200;
 
     /**
+     * bytes in jack header
+     */
+    public static final int jckl = 8;
+
+    /**
      * vban rate bits
      *
      * @return value

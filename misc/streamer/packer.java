@@ -142,6 +142,9 @@ public class packer {
         if (a.equals("wfa")) {
             return new packetWfa(this);
         }
+        if (a.equals("jck")) {
+            return new packetJck(this);
+        }
         if (a.equals("udpm")) {
             return new packetUdpMsb(this);
         }
@@ -518,6 +521,48 @@ public class packer {
         return len;
     }
 
+    /**
+     * write jack data
+     *
+     * @param buf msb bytes
+     * @param len length
+     * @throws Exception on error
+     */
+    public void writeJck(byte[] buf, int len) throws Exception {
+        buffer.clear();
+        putMsb(buffer, 0, seq);
+        putMsb(buffer, 4, 0x20000 | consts.payl / (2 * consts.smpb));
+        buffer.put(consts.jckl, buf, 0, len);
+        buffer.position(0);
+        buffer.limit(len + consts.jckl);
+        target.write(buffer);
+        seq++;
+    }
+
+    /**
+     * read jack data
+     *
+     * @param buf msb bytes
+     * @return bytes
+     * @throws Exception on error
+     */
+    public int readJck(byte[] buf) throws Exception {
+        int len;
+        for (;;) {
+            buffer.clear();
+            source.receive(buffer);
+            len = buffer.position() - consts.jckl;
+            if (len < consts.jckl) {
+                return 0;
+            }
+            if (getMsb(buffer, 4) == (0x20000 | consts.payl / (2 * consts.smpb))) {
+                break;
+            }
+        }
+        buffer.get(consts.jckl, buf, 0, len);
+        return len;
+    }
+
 }
 
 class packetRtp extends packet {
@@ -580,6 +625,22 @@ class packetWfa extends packet {
 
     public void writeKind(byte[] buf, int len) throws Exception {
         pck.writeWfa(buf, len);
+    }
+
+}
+
+class packetJck extends packet {
+
+    public packetJck(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readJck(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeJck(buf, len);
     }
 
 }

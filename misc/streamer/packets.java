@@ -28,6 +28,7 @@ public class packets {
         System.err.println("#define vbamg " + consts.vbam);
         System.err.println("#define wfaln " + consts.wfal);
         System.err.println("#define wfamg " + consts.wfam);
+        System.err.println("#define jckln " + consts.jckl);
         for (int i = 100; i < 2000; i++) {
             double a = i;
             double b = consts.rate * 2.0 * consts.smpb / a;
