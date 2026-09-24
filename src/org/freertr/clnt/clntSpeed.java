@@ -2,7 +2,9 @@ package org.freertr.clnt;
 
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgIfc;
 import org.freertr.cfg.cfgProxy;
+import org.freertr.cfg.cfgVrf;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servCharGen;
 import org.freertr.serv.servDiscard;
@@ -57,6 +59,8 @@ public class clntSpeed {
             return;
         }
         clntProxy prx = null;
+        cfgVrf vrf = cfgAll.getClntVrf();
+        cfgIfc ifc = cfgAll.getClntIfc();
         for (;;) {
             a = cmd.word();
             if (a.length() < 1) {
@@ -70,6 +74,18 @@ public class clntSpeed {
                 prx = p.proxy;
                 continue;
             }
+            if (a.equals("vrf")) {
+                vrf = cfgAll.vrfFind(cmd.word(), false);
+                ifc = null;
+                continue;
+            }
+            if (a.equals("source")) {
+                ifc = cfgAll.ifcFind(cmd.word(), 0);
+                continue;
+            }
+        }
+        if (prx == null) {
+            prx = clntProxy.makeTemp(vrf, ifc);
         }
         prx = cfgAll.getClntPrx(prx);
         if (prx == null) {
