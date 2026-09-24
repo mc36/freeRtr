@@ -3048,7 +3048,9 @@ public class userExec {
         hl.add(null, false, 3, new int[]{4, -1}, "<addr>", "address who calling");
         hl.add(null, false, 4, new int[]{4, -1}, "<addr>", "address to call");
         hl.add(null, false, 2, new int[]{3}, "speed", "test speed clients");
-        hl.add(null, false, 3, new int[]{-1}, "<str>", "name of server");
+        hl.add(null, false, 3, new int[]{4,-1}, "<str>", "name of server");
+        hl.add(null, false, 4, new int[]{5}, "proxy", "specify proxy to use");
+        hl.add(null, false, 5, new int[]{4, -1}, "<name:prx>", "name of proxy profile");
         hl.add(null, false, 2, new int[]{3}, "websock", "test websocket client");
         hl.add(null, false, 3, new int[]{4}, "<str>", "url of server");
         hl.add(null, false, 4, new int[]{4, -1}, "<str>", "protocols");

@@ -2,6 +2,7 @@ package org.freertr.clnt;
 
 import org.freertr.addr.addrIP;
 import org.freertr.cfg.cfgAll;
+import org.freertr.cfg.cfgProxy;
 import org.freertr.pipe.pipeSide;
 import org.freertr.serv.servCharGen;
 import org.freertr.serv.servDiscard;
@@ -52,19 +53,38 @@ public class clntSpeed {
         String a = cmd.word();
         addrIP trg = clntDns.justResolv(a, 0);
         if (trg == null) {
+            cmd.error("no such host");
             return;
         }
-        clntProxy prx = cfgAll.getClntPrx(null);
+        clntProxy prx = null;
+        for (;;) {
+            a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            if (a.equals("proxy")) {
+                cfgProxy p = cfgAll.proxyFind(cmd.word(), false);
+                if (p == null) {
+                    continue;
+                }
+                prx = p.proxy;
+                continue;
+            }
+        }
+        prx = cfgAll.getClntPrx(prx);
         if (prx == null) {
+            cmd.error("no such proxy");
             return;
         }
         clntSpeed s = new clntSpeed();
         s.rxp = prx.doConnect(servGeneric.protoTcp, trg, new servCharGen().srvPort(), "speed");
         if (s.rxp == null) {
+            cmd.error("rx connection failed");
             return;
         }
         s.txp = prx.doConnect(servGeneric.protoTcp, trg, new servDiscard().srvPort(), "speed");
         if (s.txp == null) {
+            cmd.error("tx connection failed");
             s.rxp.setClose();
             return;
         }
