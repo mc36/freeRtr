@@ -556,9 +556,8 @@ void send2subif(struct packetContext *ctx, int prt, int bufP, int bufS, int etht
         memcpy(&bufD[bufP], &bufH[0], 12);
         bufS = bufS - bufP + preBuff;
         struct packetContext ctx2;
-        unsigned char *bufC = ctx->bufC;
-        memcpy(&bufC[preBuff], &bufD[bufP], bufS);
         if (shiftContext(&ctx2, ctx) != 0) return;
+        memcpy(&ctx->bufC[preBuff], &bufD[bufP], bufS);
         processDataPacket(&ctx2, bufS, prt);
         unshiftContext(&ctx2, ctx);
         return;
@@ -1256,15 +1255,13 @@ ethtyp_rx:
     if (port2vrf_res->monTarget >= 0) {
         if ((port2vrf_res->monPackets++%port2vrf_res->monSample) == 0) {
             struct packetContext ctx2;
-            unsigned char *bufC = ctx->bufC;
+            if (shiftContext(&ctx2, ctx) != 0) doDropper;
             tmp = bufS - bufP + preBuff + 2;
             if (tmp > port2vrf_res->monTruncate) tmp = port2vrf_res->monTruncate;
-            memcpy(&bufC[preBuff], &bufD[bufP - 2], tmp);
+            memcpy(&ctx->bufC[preBuff], &bufD[bufP - 2], tmp);
             memcpy(&bufH[0], &bufD[preBuff], 12);
-            if (shiftContext(&ctx2, ctx) == 0) {
-                send2subif(&ctx2, port2vrf_res->monTarget, preBuff, tmp, ethtyp);
-                unshiftContext(&ctx2, ctx);
-            }
+            send2subif(&ctx2, port2vrf_res->monTarget, preBuff, tmp, ethtyp);
+            unshiftContext(&ctx2, ctx);
         }
     }
     switch (port2vrf_res->command) {
