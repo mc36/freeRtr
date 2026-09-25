@@ -12,5 +12,5 @@
 ./ti8.sh $@
 ./ti9.sh $@
 cd ../misc/forward
-./p4emu_fuzzer.sh
-./p4emu_bench.sh
+./p4fuzzer.sh
+./p4bench.sh

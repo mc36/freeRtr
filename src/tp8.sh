@@ -1,4 +1,4 @@
 #!/bin/sh
 cd ../misc/forward
-./p4emu_fuzzer.sh
+./p4fuzzer.sh
 cd ../../src
