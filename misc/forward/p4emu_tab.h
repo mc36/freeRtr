@@ -798,10 +798,14 @@ int refillContext(struct packetContext *ctx) {
 }
 
 void unshiftContext(struct packetContext *trg, struct packetContext *src) {
-    if (trg->bufD == NULL) src->bufC = src->scarC = NULL;
-    if (trg->bufC == NULL) src->bufB1 = src->scarB1 = NULL;
-    if (trg->bufB1 == NULL) src->bufB2 = src->scarB2 = NULL;
-    if (trg->bufB2 == NULL) src->bufB3 = src->scarB3 = NULL;
+    src->bufC = trg->bufD;
+    src->bufB1 = trg->bufC;
+    src->bufB2 = trg->bufB1;
+    src->bufB3 = trg->bufB2;
+    src->scarC = trg->scarD;
+    src->scarB1 = trg->scarC;
+    src->scarB2 = trg->scarB1;
+    src->scarB3 = trg->scarB2;
 }
 
 int shiftContext(struct packetContext *trg, struct packetContext *src) {
