@@ -19,7 +19,7 @@ public class consts {
     /**
      * bytes per payload
      */
-    public static final int payl = 1200;
+    public static final int payl = 1024;
 
     /**
      * bytes in w64 header

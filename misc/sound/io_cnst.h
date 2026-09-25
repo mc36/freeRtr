@@ -1,7 +1,7 @@
 #define padln 64
 #define srate 48000
 #define smpbt 4
-#define pktln 1200
+#define pktln 1024
 #define wavln 104
 #define rtpln 12
 #define rtpty 96
