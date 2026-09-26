@@ -52,6 +52,54 @@ public abstract interface codec {
         }
     }
 
+    /**
+     * convert to planar
+     *
+     * @param trg target
+     * @param src source
+     * @param len size
+     */
+    public static void toPlanar(byte[] trg, byte[] src, int len) {
+        int hlf = len >>> 1;
+        for (int i = 0; i < len; i++) {
+            int o = int2pln(i, hlf);
+            trg[o] = src[i];
+        }
+    }
+
+    /**
+     * interpolated to static
+     *
+     * @param cur current interpolated position
+     * @param hlf half of the buffer size
+     * @return current planar position
+     */
+    private static int int2pln(int cur, int hlf) {
+        int smp = cur / consts.smpb;
+        int pos = cur % consts.smpb;
+        int res = (smp & 1) == 0 ? 0 : hlf;
+        smp >>>= 1;
+        smp *= consts.smpb;
+        res += smp;
+        res += pos;
+        return res;
+    }
+
+    /**
+     * convert to interleaved
+     *
+     * @param trg target
+     * @param src source
+     * @param len size
+     */
+    public static void unPlanar(byte[] trg, byte[] src, int len) {
+        int hlf = len >>> 1;
+        for (int i = 0; i < len; i++) {
+            int o = int2pln(i, hlf);
+            trg[i] = src[o];
+        }
+    }
+
 }
 
 class codec1b implements codec {

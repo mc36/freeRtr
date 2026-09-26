@@ -63,6 +63,35 @@ void iou_mono(int src, int trg) {
     }
 }
 
+#define iou_int2pln()                       \
+    int smp = cur / smpbt;                  \
+    int pos = cur % smpbt;                  \
+    int res = (smp & 1) == 0 ? 0 : hlf;     \
+    smp >>= 1;                              \
+    smp *= smpbt;                           \
+    res += smp;                             \
+    res += pos;
+
+void iou_toPlnr() {
+    unsigned char tmp[pktln];
+    memcpy(&tmp[0], &bufD[padln], bufS);
+    int hlf = bufS >> 1;
+    for (int cur = 0; cur < bufS; cur++) {
+        iou_int2pln();
+        bufD[padln + res] = tmp[cur];
+    }
+}
+
+void iou_unPlnr() {
+    unsigned char tmp[pktln];
+    memcpy(&tmp[0], &bufD[padln], bufS);
+    int hlf = bufS >> 1;
+    for (int cur = 0; cur < bufS; cur++) {
+        iou_int2pln();
+        bufD[padln + cur] = tmp[res];
+    }
+}
+
 void iou_loop() {
     nice(-20);
     setgid(1);

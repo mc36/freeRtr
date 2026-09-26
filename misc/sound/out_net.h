@@ -80,6 +80,7 @@ void ply_jcku() {
 
 void ply_jckt() {
     iou_bswp2msb();
+    iou_toPlnr();
     iou_pmsb(padln - jktln + 0, 0);
     iou_pmsb(padln - jktln + 4, plyClk);
     iou_pmsb(padln - jktln + 8, (plySeq << 16) | (bufS / (2 * smpbt)));

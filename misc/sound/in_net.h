@@ -86,6 +86,7 @@ void rec_jckt() {
         if (iou_gmsb(padln - jktln + 12) == jktbr) break;
     }
     bufS -= jktln;
+    iou_unPlnr();
     iou_bswp2msb();
 }
 

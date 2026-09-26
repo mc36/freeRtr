@@ -574,12 +574,14 @@ public class packer {
      * @throws Exception on error
      */
     public void writeJckT(byte[] buf, int len) throws Exception {
+        byte[] res = new byte[buf.length];
+        codec.toPlanar(res, buf, len);
         buffer.clear();
         putMsb(buffer, 0, 0);
         putMsb(buffer, 4, clk);
         putMsb(buffer, 8, (seq << 16) | (len / (2 * consts.smpb)));
         putMsb(buffer, 12, consts.jktb());
-        buffer.put(consts.jktl, buf, 0, len);
+        buffer.put(consts.jktl, res, 0, len);
         buffer.position(0);
         buffer.limit(len + consts.jktl);
         target.write(buffer);
@@ -608,7 +610,9 @@ public class packer {
                 break;
             }
         }
-        buffer.get(consts.jktl, buf, 0, len);
+        byte[] res = new byte[buf.length];
+        buffer.get(consts.jktl, res, 0, len);
+        codec.unPlanar(buf, res, len);
         return len;
     }
 
