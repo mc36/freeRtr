@@ -68,13 +68,26 @@ void ply_wfa() {
 }
 
 
-void ply_jck() {
+void ply_jcku() {
     iou_bswp2msb();
-    iou_pmsb(padln - jckln + 0, plySeq);
-    iou_pmsb(padln - jckln + 4, 0x20000 | pktln / (2 * smpbt));
+    iou_pmsb(padln - jkuln + 0, plySeq);
+    iou_pmsb(padln - jkuln + 4, 0x20000 | (bufS / (2 * smpbt)));
     plySeq++;
-    bufS += jckln;
-    if (send(plyHnd, &bufD[padln - jckln], bufS, 0) != bufS) err("error sending");
+    bufS += jkuln;
+    if (send(plyHnd, &bufD[padln - jkuln], bufS, 0) != bufS) err("error sending");
+}
+
+
+void ply_jckt() {
+    iou_bswp2msb();
+    iou_pmsb(padln - jktln + 0, 0);
+    iou_pmsb(padln - jktln + 4, plyClk);
+    iou_pmsb(padln - jktln + 8, (plySeq << 16) | (bufS / (2 * smpbt)));
+    iou_pmsb(padln - jktln + 12, jktbr);
+    plySeq = (plySeq + 1) & 0xffff;
+    plyClk += (1000 * bufS) / (2 * smpbt);
+    bufS += jktln;
+    if (send(plyHnd, &bufD[padln - jktln], bufS, 0) != bufS) err("error sending");
 }
 
 
@@ -96,7 +109,8 @@ void ply_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"scr") == 0) plyFnc = &ply_scr;
     if (strcmp(knd,"vba") == 0) plyFnc = &ply_vba;
     if (strcmp(knd,"wfa") == 0) plyFnc = &ply_wfa;
-    if (strcmp(knd,"jck") == 0) plyFnc = &ply_jck;
+    if (strcmp(knd,"jcku") == 0) plyFnc = &ply_jcku;
+    if (strcmp(knd,"jckt") == 0) plyFnc = &ply_jckt;
     if (strcmp(knd,"udpm") == 0) plyFnc = &ply_udpm;
     if (strcmp(knd,"udpl") == 0) plyFnc = &ply_udpl;
     if (plyFnc == NULL) err("no such kind");

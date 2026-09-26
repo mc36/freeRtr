@@ -68,13 +68,24 @@ void rec_wfa() {
 }
 
 
-void rec_jck() {
+void rec_jcku() {
     for (;;) {
-        bufS = recv(recHnd, &bufD[padln - jckln], sizeof (bufD) - padln, 0);
+        bufS = recv(recHnd, &bufD[padln - jkuln], sizeof (bufD) - padln, 0);
         if (bufS < padln) break;
-        if (iou_gmsb(padln - jckln + 4) == (0x20000 | pktln / (2 * smpbt))) break;
+        if ((iou_gmsb(padln - jkuln + 4) >> 16) == 2) break;
     }
-    bufS -= jckln;
+    bufS -= jkuln;
+    iou_bswp2msb();
+}
+
+
+void rec_jckt() {
+    for (;;) {
+        bufS = recv(recHnd, &bufD[padln - jktln], sizeof (bufD) - padln, 0);
+        if (bufS < padln) break;
+        if (iou_gmsb(padln - jktln + 12) == jktbr) break;
+    }
+    bufS -= jktln;
     iou_bswp2msb();
 }
 
@@ -97,7 +108,8 @@ void rec_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"scr") == 0) recFnc = &rec_scr;
     if (strcmp(knd,"vba") == 0) recFnc = &rec_vba;
     if (strcmp(knd,"wfa") == 0) recFnc = &rec_wfa;
-    if (strcmp(knd,"jck") == 0) recFnc = &rec_jck;
+    if (strcmp(knd,"jcku") == 0) recFnc = &rec_jcku;
+    if (strcmp(knd,"jckt") == 0) recFnc = &rec_jckt;
     if (strcmp(knd,"udpm") == 0) recFnc = &rec_udpm;
     if (strcmp(knd,"udpl") == 0) recFnc = &rec_udpl;
     if (recFnc == NULL) err("no such kind");

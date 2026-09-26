@@ -142,8 +142,11 @@ public class packer {
         if (a.equals("wfa")) {
             return new packetWfa(this);
         }
-        if (a.equals("jck")) {
-            return new packetJck(this);
+        if (a.equals("jcku")) {
+            return new packetJckU(this);
+        }
+        if (a.equals("jckt")) {
+            return new packetJckT(this);
         }
         if (a.equals("udpm")) {
             return new packetUdpMsb(this);
@@ -522,44 +525,90 @@ public class packer {
     }
 
     /**
-     * write jack data
+     * write jack-udp data
      *
      * @param buf msb bytes
      * @param len length
      * @throws Exception on error
      */
-    public void writeJck(byte[] buf, int len) throws Exception {
+    public void writeJckU(byte[] buf, int len) throws Exception {
         buffer.clear();
         putMsb(buffer, 0, seq);
-        putMsb(buffer, 4, 0x20000 | consts.payl / (2 * consts.smpb));
-        buffer.put(consts.jckl, buf, 0, len);
+        putMsb(buffer, 4, 0x20000 | (len / (2 * consts.smpb)));
+        buffer.put(consts.jkul, buf, 0, len);
         buffer.position(0);
-        buffer.limit(len + consts.jckl);
+        buffer.limit(len + consts.jkul);
         target.write(buffer);
         seq++;
     }
 
     /**
-     * read jack data
+     * read jack-udp data
      *
      * @param buf msb bytes
      * @return bytes
      * @throws Exception on error
      */
-    public int readJck(byte[] buf) throws Exception {
+    public int readJckU(byte[] buf) throws Exception {
         int len;
         for (;;) {
             buffer.clear();
             source.receive(buffer);
-            len = buffer.position() - consts.jckl;
-            if (len < consts.jckl) {
+            len = buffer.position() - consts.jkul;
+            if (len < consts.jkul) {
                 return 0;
             }
-            if (getMsb(buffer, 4) == (0x20000 | consts.payl / (2 * consts.smpb))) {
+            if ((getMsb(buffer, 4) >>> 16) == 2) {
                 break;
             }
         }
-        buffer.get(consts.jckl, buf, 0, len);
+        buffer.get(consts.jkul, buf, 0, len);
+        return len;
+    }
+
+    /**
+     * write jacktrip data
+     *
+     * @param buf msb bytes
+     * @param len length
+     * @throws Exception on error
+     */
+    public void writeJckT(byte[] buf, int len) throws Exception {
+        buffer.clear();
+        putMsb(buffer, 0, 0);
+        putMsb(buffer, 4, clk);
+        putMsb(buffer, 8, (seq << 16) | (len / (2 * consts.smpb)));
+        putMsb(buffer, 12, consts.jktb());
+        buffer.put(consts.jktl, buf, 0, len);
+        buffer.position(0);
+        buffer.limit(len + consts.jktl);
+        target.write(buffer);
+        seq++;
+        seq &= 0xffff;
+        clk += (1000 * len) / (2 * consts.smpb);
+    }
+
+    /**
+     * read jacktrip data
+     *
+     * @param buf msb bytes
+     * @return bytes
+     * @throws Exception on error
+     */
+    public int readJckT(byte[] buf) throws Exception {
+        int len;
+        for (;;) {
+            buffer.clear();
+            source.receive(buffer);
+            len = buffer.position() - consts.jktl;
+            if (len < consts.jktl) {
+                return 0;
+            }
+            if (getMsb(buffer, 12) == consts.jktb()) {
+                break;
+            }
+        }
+        buffer.get(consts.jktl, buf, 0, len);
         return len;
     }
 
@@ -629,18 +678,34 @@ class packetWfa extends packet {
 
 }
 
-class packetJck extends packet {
+class packetJckU extends packet {
 
-    public packetJck(packer p) {
+    public packetJckU(packer p) {
         super(p);
     }
 
     public int readKind(byte[] buf) throws Exception {
-        return pck.readJck(buf);
+        return pck.readJckU(buf);
     }
 
     public void writeKind(byte[] buf, int len) throws Exception {
-        pck.writeJck(buf, len);
+        pck.writeJckU(buf, len);
+    }
+
+}
+
+class packetJckT extends packet {
+
+    public packetJckT(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readJckT(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeJckT(buf, len);
     }
 
 }

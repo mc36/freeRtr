@@ -13,4 +13,6 @@
 #define vbamg 1447182670
 #define wfaln 10
 #define wfamg 1464205824
-#define jckln 8
+#define jkuln 8
+#define jktln 16
+#define jktbr 52429312
