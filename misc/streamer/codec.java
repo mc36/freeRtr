@@ -100,6 +100,31 @@ public abstract interface codec {
         }
     }
 
+    /**
+     * adjust bit depth
+     *
+     * @param trgB target
+     * @param srcB source
+     * @param adj bytes to append per sample
+     * @param len size
+     */
+    public static int adjustDepth(byte[] trgB, byte[] srcB, int adj, int len) {
+        int srcP = 0;
+        int trgP = 0;
+        for (; srcP < len;) {
+            for (int i = 0; i < consts.smpb; i++) {
+                trgB[trgP + i] = srcB[srcP + i];
+            }
+            srcP += consts.smpb;
+            trgP += consts.smpb;
+            for (int i = 0; i < adj; i++) {
+                trgB[trgP + i] = 0;
+            }
+            trgP += adj;
+        }
+        return trgP;
+    }
+
 }
 
 class codec1b implements codec {

@@ -356,7 +356,7 @@ public class packer {
             buffer.clear();
             source.receive(buffer);
             len = buffer.position() - consts.rtpl;
-            if (len < consts.rtpl) {
+            if (len < consts.smpb) {
                 return 0;
             }
             if ((buffer.get(1) & 0xff) == consts.rtpt) {
@@ -401,7 +401,7 @@ public class packer {
             buffer.clear();
             source.receive(buffer);
             len = buffer.position() - consts.scrl;
-            if (len < consts.scrl) {
+            if (len < consts.smpb) {
                 return 0;
             }
             if ((buffer.get(0) & 0xff) != consts.scrb) {
@@ -459,7 +459,7 @@ public class packer {
             buffer.clear();
             source.receive(buffer);
             len = buffer.position() - consts.vbal;
-            if (len < consts.vbal) {
+            if (len < consts.smpb) {
                 return 0;
             }
             if (getMsb(buffer, 0) != consts.vbam) {
@@ -512,7 +512,7 @@ public class packer {
             buffer.clear();
             source.receive(buffer);
             len = buffer.position() - consts.wfal;
-            if (len < consts.wfal) {
+            if (len < consts.smpb) {
                 return 0;
             }
             if (getMsb(buffer, 0) == consts.wfam) {
@@ -555,7 +555,7 @@ public class packer {
             buffer.clear();
             source.receive(buffer);
             len = buffer.position() - consts.jkul;
-            if (len < consts.jkul) {
+            if (len < consts.smpb) {
                 return 0;
             }
             if ((getMsb(buffer, 4) >>> 16) == 2) {
@@ -603,7 +603,7 @@ public class packer {
             buffer.clear();
             source.receive(buffer);
             len = buffer.position() - consts.jktl;
-            if (len < consts.jktl) {
+            if (len < consts.smpb) {
                 return 0;
             }
             if (getMsb(buffer, 12) == consts.jktb()) {

@@ -23,10 +23,10 @@ void rec_blk(int mod) {
 void rec_rtp() {
     for (;;) {
         bufS = recv(recHnd, &bufD[padln - rtpln], sizeof (bufD) - padln, 0);
-        if (bufS < padln) break;
+        bufS -= rtpln;
+        if (bufS < padln) return;
         if (bufD[padln - rtpln + 1] == rtpty) break;
     }
-    bufS -= rtpln;
     iou_bswp2msb();
 }
 
@@ -34,12 +34,12 @@ void rec_rtp() {
 void rec_scr() {
     for (;;) {
         bufS = recv(recHnd, &bufD[padln - scrln], sizeof (bufD) - padln, 0);
-        if (bufS < padln) break;
+        bufS -= scrln;
+        if (bufS < padln) return;
         if (bufD[padln - scrln + 0] != scrbr) continue;
         if (bufD[padln - scrln + 1] != (smpbt * 8)) continue;
         if (bufD[padln - scrln + 3] == scrtp) break;
     }
-    bufS -= scrln;
     iou_bswp2lsb();
 }
 
@@ -47,12 +47,12 @@ void rec_scr() {
 void rec_vba() {
     for (;;) {
         bufS = recv(recHnd, &bufD[padln - vbaln], sizeof (bufD) - padln, 0);
-        if (bufS < padln) break;
+        bufS -= vbaln;
+        if (bufS < padln) return;
         if (iou_gmsb(padln - vbaln + 0) != vbamg) continue;
         if (bufD[padln - vbaln + 4] != vbabr) continue;
         if (bufD[padln - vbaln + 7] == (smpbt - 1)) break;
     }
-    bufS -= vbaln;
     iou_bswp2lsb();
 }
 
@@ -60,10 +60,10 @@ void rec_vba() {
 void rec_wfa() {
     for (;;) {
         bufS = recv(recHnd, &bufD[padln - wfaln], sizeof (bufD) - padln, 0);
-        if (bufS < padln) break;
+        bufS -= wfaln;
+        if (bufS < padln) return;
         if (iou_gmsb(padln - wfaln + 0) == wfamg) break;
     }
-    bufS -= wfaln;
     iou_bswp2lsb();
 }
 
@@ -71,10 +71,10 @@ void rec_wfa() {
 void rec_jcku() {
     for (;;) {
         bufS = recv(recHnd, &bufD[padln - jkuln], sizeof (bufD) - padln, 0);
-        if (bufS < padln) break;
+        bufS -= jkuln;
+        if (bufS < padln) return;
         if ((iou_gmsb(padln - jkuln + 4) >> 16) == 2) break;
     }
-    bufS -= jkuln;
     iou_bswp2msb();
 }
 
@@ -82,10 +82,10 @@ void rec_jcku() {
 void rec_jckt() {
     for (;;) {
         bufS = recv(recHnd, &bufD[padln - jktln], sizeof (bufD) - padln, 0);
-        if (bufS < padln) break;
+        bufS -= jktln;
+        if (bufS < padln) return;
         if (iou_gmsb(padln - jktln + 12) == jktbr) break;
     }
-    bufS -= jktln;
     iou_unPlnr();
     iou_bswp2msb();
 }
