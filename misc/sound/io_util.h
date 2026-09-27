@@ -92,11 +92,29 @@ void iou_unPlnr() {
     }
 }
 
+int iou_depth(unsigned char *trgB, unsigned char *srcB, int adj, int len) {
+    int srcP = 0;
+    int trgP = 0;
+    int beg = adj < 0 ? -adj : 0;
+    for (; srcP < len;) {
+        for (int i = 0; i < adj; i++) {
+            trgB[trgP + i] = 0;
+        }
+        trgP += adj;
+        for (int i = beg; i < smpbt; i++) {
+            trgB[trgP + i] = srcB[srcP + i];
+        }
+        srcP += smpbt;
+        trgP += smpbt;
+    }
+    return trgP;
+}
+
 void iou_loop() {
     nice(-20);
     setgid(1);
     setuid(1);
-    printf("payload=%i depth=%i rate=%i\n", pktln, smpbt, srate);
+    printf("payload=%i depth=%i,%i rate=%i\n", pktln, smpbt, smpad, srate);
     for (;;) {
         iou_read();
         if (bufS < 1) break;
@@ -109,18 +127,19 @@ void iou_loop() {
 
 int iou_frmt() {
     if ((pktln % (smpbt * 2)) != 0) err("samples not fully fit");
-#if smpbt == 1
-    return SND_PCM_FORMAT_S8;
-#endif
-#if smpbt == 2
-    return SND_PCM_FORMAT_S16_LE;
-#endif
-#if smpbt == 3
-    return SND_PCM_FORMAT_S24_3LE;
-#endif
-#if smpbt == 4
-    return SND_PCM_FORMAT_S32_LE;
-#endif
+    switch (smpbt + smpad) {
+    case 1:
+        return SND_PCM_FORMAT_S8;
+    case 2:
+        return SND_PCM_FORMAT_S16_LE;
+    case 3:
+        return SND_PCM_FORMAT_S24_3LE;
+    case 4:
+        return SND_PCM_FORMAT_S32_LE;
+    default:
+        err("unknown bit depth");
+        return -1;
+    }
 }
 
 #if __BYTE_ORDER == __LITTLE_ENDIAN

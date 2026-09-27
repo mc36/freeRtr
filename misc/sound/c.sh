@@ -2,7 +2,7 @@
 
 . ../native/i.sh
 
-for fn in playback w64mpg; do
+for fn in playback playback1u playback1d w64mpg; do
   compileFile $fn "" "-lasound -lsndfile -lsamplerate" ""
 done
 

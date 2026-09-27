@@ -1,5 +1,5 @@
 snd_pcm_t *plyHnd = NULL;
-unsigned char plyBuf[pktln];
+unsigned char plyBuf[pktln * 4];
 int plyLen = 0;
 
 void ply_init(char*dev) {
@@ -22,9 +22,13 @@ void iou_write() {
         if (res != plyLen) err("error writing");
         plyLen = 0;
     }
+#if smpad == 0
+    memcpy(&plyBuf[0], &bufD[padln], pktln);
+#else
+    iou_depth(&plyBuf[0], &bufD[padln], +smpad, bufS);
+#endif
     bufS = bufS / (2 * smpbt);
-    memcpy(&plyBuf[0], &bufD[padln], sizeof(plyBuf));
-    int res = snd_pcm_writei(plyHnd, &bufD[padln], bufS);
+    int res = snd_pcm_writei(plyHnd, &plyBuf[0], bufS);
     if (res == bufS) return;
     if (res > 0) err("halfwrite happened");
     plyLen = bufS;
