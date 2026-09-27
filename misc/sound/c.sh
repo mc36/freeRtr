@@ -14,7 +14,7 @@ for fn in visMeterLoc visMeterLoc1u visMeterLoc1d; do
   compileFile $fn "" "-lasound -lm" ""
 done
 
-for fn in receiver receiver1d receiver1u streamer streamer1d streamer1u loopback loopback1d loopback1u streamerBth streamerBth1d streamerBth1u streamerLft streamerLft1d streamerLft1u streamerRgt streamerRgt1d streamerRgt1u w64play w64rec; do
+for fn in loopback loopback1d loopback1u receiver receiver1d receiver1u streamer streamer1d streamer1u streamerB streamerB1d streamerB1u streamerL streamerL1d streamerL1u streamerR streamerR1d streamerR1u w64play w64rec; do
   compileFile $fn "" "-lasound" ""
 done
 
