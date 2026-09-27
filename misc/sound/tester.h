@@ -48,12 +48,15 @@ void tester_end() {
 
 void tester_bswap() {
     printf("bswap:");
+    int xorer = smpbt == 1 ? 1 : 0;
     tester_beg();
     iou_bswp2msb();
     iou_bswp2lsb();
+    bufD[padln] ^= xorer;
     tester_cmp();
     iou_bswp2msb();
     iou_bswp2lsb();
+    bufD[padln] ^= xorer;
     tester_end();
     printf("\n");
 }
