@@ -108,6 +108,7 @@ public abstract interface codec {
      * @param trgV bytes per sample
      * @param srcV bytes per sample
      * @param len size
+     * @return new size
      */
     public static int adjustDepth(byte[] trgB, byte[] srcB, int trgV, int srcV, int len) {
         int srcP = 0;
