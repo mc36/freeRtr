@@ -105,18 +105,20 @@ public abstract interface codec {
      *
      * @param trgB target
      * @param srcB source
-     * @param adj bytes to append per sample
+     * @param trgV bytes per sample
+     * @param srcV bytes per sample
      * @param len size
      */
-    public static int adjustDepth(byte[] trgB, byte[] srcB, int adj, int len) {
+    public static int adjustDepth(byte[] trgB, byte[] srcB, int trgV, int srcV, int len) {
         int srcP = 0;
         int trgP = 0;
+        int adj = trgV - srcV;
         for (; srcP < len;) {
-            for (int i = 0; i < consts.smpb; i++) {
+            for (int i = 0; i < srcV; i++) {
                 trgB[trgP + i] = srcB[srcP + i];
             }
-            srcP += consts.smpb;
-            trgP += consts.smpb;
+            srcP += srcV;
+            trgP += srcV;
             for (int i = 0; i < adj; i++) {
                 trgB[trgP + i] = 0;
             }

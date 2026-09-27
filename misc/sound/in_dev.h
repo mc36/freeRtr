@@ -16,13 +16,23 @@ void rec_init(char*dev, char*vol) {
 }
 
 void iou_read() {
-    bufS = snd_pcm_readi(recHnd, &bufD[padln], pktln / (2 * smpbt));
+#define iou_read1() bufS = snd_pcm_readi(recHnd, &recBuf[0], pktln / (2 * smpbt));
+#define iou_read2() bufS *= 2 * (smpbt+smpad);
+#if smpad == 0
+#define iou_read3() memcpy(&bufD[padln], &recBuf[0], pktln);
+#else
+#define iou_read3() bufS = iou_depth(&bufD[padln], &recBuf[0], smpbt, smpbt+smpad, bufS);
+#endif
+    unsigned char recBuf[pktln * 4];
+    iou_read1();
     if (bufS > 0) {
-        bufS = bufS * (2 * smpbt);
+        iou_read2();
+        iou_read3();
         return;
     }
     bufS = snd_pcm_recover(recHnd, bufS, 0);
     if (bufS != 0) err("error recovering");
-    bufS = snd_pcm_readi(recHnd, &bufD[padln], pktln / (2 * smpbt));
-    bufS = bufS * (2 * smpbt);
+    iou_read1();
+    iou_read2();
+    iou_read3();
 }

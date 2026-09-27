@@ -10,7 +10,7 @@ for fn in sender; do
   compileFile $fn "" "-lsndfile -lsamplerate" ""
 done
 
-for fn in visMeterLoc; do
+for fn in visMeterLoc visMeterLoc1u visMeterLoc1d; do
   compileFile $fn "" "-lasound -lm" ""
 done
 

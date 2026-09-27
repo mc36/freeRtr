@@ -25,7 +25,7 @@ void iou_write() {
 #if smpad == 0
     memcpy(&plyBuf[0], &bufD[padln], pktln);
 #else
-    iou_depth(&plyBuf[0], &bufD[padln], +smpad, bufS);
+    iou_depth(&plyBuf[0], &bufD[padln], smpbt+smpad, smpbt, bufS);
 #endif
     bufS = bufS / (2 * smpbt);
     int res = snd_pcm_writei(plyHnd, &plyBuf[0], bufS);

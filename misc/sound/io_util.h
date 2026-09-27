@@ -92,20 +92,21 @@ void iou_unPlnr() {
     }
 }
 
-int iou_depth(unsigned char *trgB, unsigned char *srcB, int adj, int len) {
+int iou_depth(unsigned char *trgB, unsigned char *srcB, int trgV, int srcV, int len) {
     int srcP = 0;
     int trgP = 0;
+    int adj = trgV - srcV;
     int beg = adj < 0 ? -adj : 0;
     for (; srcP < len;) {
         for (int i = 0; i < adj; i++) {
             trgB[trgP + i] = 0;
         }
         trgP += adj;
-        for (int i = beg; i < smpbt; i++) {
+        for (int i = beg; i < srcV; i++) {
             trgB[trgP + i] = srcB[srcP + i];
         }
-        srcP += smpbt;
-        trgP += smpbt;
+        srcP += srcV;
+        trgP += srcV;
     }
     return trgP;
 }
