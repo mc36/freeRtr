@@ -28,22 +28,14 @@ char* iou_device_one(snd_pcm_t *hnd, snd_pcm_hw_params_t *prm, int fmt) {
 }
 
 void iou_device_open(snd_pcm_t *hnd, snd_pcm_hw_params_t *prm) {
-    char*res;
-    res = iou_device_one(hnd, prm, 0);
-    if (res == NULL) return;
-    res = iou_device_one(hnd, prm, +1);
-    if (res == NULL) return;
-    res = iou_device_one(hnd, prm, -1);
-    if (res == NULL) return;
-    res = iou_device_one(hnd, prm, +2);
-    if (res == NULL) return;
-    res = iou_device_one(hnd, prm, -2);
-    if (res == NULL) return;
-    res = iou_device_one(hnd, prm, +3);
-    if (res == NULL) return;
-    res = iou_device_one(hnd, prm, -3);
-    if (res == NULL) return;
-    res = iou_device_one(hnd, prm, 0);
+    if (iou_device_one(hnd, prm, 0) == NULL) return;
+    if (iou_device_one(hnd, prm, +1) == NULL) return;
+    if (iou_device_one(hnd, prm, -1) == NULL) return;
+    if (iou_device_one(hnd, prm, +2) == NULL) return;
+    if (iou_device_one(hnd, prm, -2) == NULL) return;
+    if (iou_device_one(hnd, prm, +3) == NULL) return;
+    if (iou_device_one(hnd, prm, -3) == NULL) return;
+    char* res = iou_device_one(hnd, prm, 0);
     if (res == NULL) return;
     err(res);
 }

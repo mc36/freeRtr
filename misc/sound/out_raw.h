@@ -1,7 +1,7 @@
 int plyHnd;
 
 void ply_init(char*fil) {
-    plyHnd = open(fil, O_WRONLY | O_CREAT);
+    plyHnd = open(fil, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (plyHnd < 0) err("error creating");
     write(plyHnd, &bufD[padln], wavln);
 }
