@@ -4,7 +4,6 @@
 #undef pktln
 #define smpbt testerDepth
 #define pktln 60000
-#include "io_bit0.h"
 #include "io_tim0.h"
 #include "io_util.h"
 #include "io_chn0.h"

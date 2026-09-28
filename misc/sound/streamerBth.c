@@ -1,9 +1,9 @@
 #include "io_incl.h"
 #include "io_cnst.h"
-#include "io_bit1u.h"
 #include "io_tim1.h"
 #include "io_util.h"
-#include "io_chn1.h"
+#include "io_chn3.h"
+#include "io_dev.h"
 #include "in_dev.h"
 #include "out_net.h"
 

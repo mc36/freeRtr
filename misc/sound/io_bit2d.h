@@ -1,1 +1,0 @@
-#define smpad -2
