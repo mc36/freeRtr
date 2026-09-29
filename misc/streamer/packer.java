@@ -153,6 +153,9 @@ public class packer {
         if (a.equals("avt")) {
             return new packetAvt(this);
         }
+        if (a.equals("iec")) {
+            return new packetIec(this);
+        }
         if (a.equals("udpm")) {
             return new packetUdpMsb(this);
         }
@@ -672,6 +675,61 @@ public class packer {
         return len;
     }
 
+    /**
+     * write iec data
+     *
+     * @param buf msb bytes
+     * @param len length
+     * @throws Exception on error
+     */
+    public void writeIec(byte[] buf, int len) throws Exception {
+        buffer.clear();
+        putMsb(buffer, 0, seq);
+        putMsb(buffer, 4, ((seq & 0xff) << 8) | 0x0800000);
+        putMsb(buffer, 8, src);
+        putMsb(buffer, 12, portNum);
+        putMsb(buffer, 16, 0);
+        putMsb(buffer, 20, 0);
+        putMsb(buffer, 24, ((len + 8) << 16) | 0x5fa0);
+        putMsb(buffer, 28, consts.iec1);
+        putMsb(buffer, 32, consts.iec2);
+        buffer.put(consts.iecl, buf, 0, len);
+        buffer.position(0);
+        buffer.limit(len + consts.iecl);
+        target.write(buffer);
+        seq++;
+    }
+
+    /**
+     * read iec data
+     *
+     * @param buf msb bytes
+     * @return bytes
+     * @throws Exception on error
+     */
+    public int readIec(byte[] buf) throws Exception {
+        int len;
+        for (;;) {
+            buffer.clear();
+            source.receive(buffer);
+            len = buffer.position() - consts.iecl;
+            if (len < consts.smpb) {
+                return 0;
+            }
+            if (getMsb(buffer, 12) != portNum) {
+                continue;
+            }
+            if (getMsb(buffer, 28) != consts.iec1) {
+                continue;
+            }
+            if (getMsb(buffer, 32) == consts.iec2) {
+                break;
+            }
+        }
+        buffer.get(consts.iecl, buf, 0, len);
+        return len;
+    }
+
 }
 
 class packetRtp extends packet {
@@ -782,6 +840,22 @@ class packetAvt extends packet {
 
     public void writeKind(byte[] buf, int len) throws Exception {
         pck.writeAvt(buf, len);
+    }
+
+}
+
+class packetIec extends packet {
+
+    public packetIec(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readIec(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeIec(buf, len);
     }
 
 }

@@ -101,6 +101,21 @@ public class consts {
      */
     private static int avtc = -1;
 
+    /**
+     * bytes in iec header
+     */
+    public static final int iecl = 36;
+
+    /**
+     * iec quadlet1 bytes
+     */
+    public static final int iec1 = 0x3f020088;
+
+    /**
+     * iec quadlet2 bytes
+     */
+    public static final int iec2 = 0x90370000;
+
     private static final int findInt(int def, int[] vals) {
         for (int i = 0; i < vals.length; i++) {
             if (vals[i] == rate) {

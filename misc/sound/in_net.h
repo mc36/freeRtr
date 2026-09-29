@@ -104,6 +104,19 @@ void rec_avt() {
 }
 
 
+void rec_iec() {
+    for (;;) {
+        bufS = recv(recHnd, &bufD[padln - iecln], sizeof (bufD) - padln, 0);
+        bufS -= iecln;
+        if (bufS < padln) return;
+        if (iou_gmsb(padln - iecln + 12) != recPrt) continue;
+        if (iou_gmsb(padln - iecln + 28) != iec1q) continue;
+        if (iou_gmsb(padln - iecln + 32) == iec2q) break;
+    }
+    iou_bswp2msb();
+}
+
+
 void rec_udpm() {
     bufS = recv(recHnd, &bufD[padln], sizeof (bufD) - padln, 0);
     iou_bswp2msb();
@@ -125,6 +138,7 @@ void rec_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"jcku") == 0) recFnc = &rec_jcku;
     if (strcmp(knd,"jckt") == 0) recFnc = &rec_jckt;
     if (strcmp(knd,"avt") == 0) recFnc = &rec_avt;
+    if (strcmp(knd,"iec") == 0) recFnc = &rec_iec;
     if (strcmp(knd,"udpm") == 0) recFnc = &rec_udpm;
     if (strcmp(knd,"udpl") == 0) recFnc = &rec_udpl;
     if (recFnc == NULL) err("no such kind");
