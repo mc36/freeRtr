@@ -1,4 +1,5 @@
 int recHnd;
+int recPrt;
 void(*recFnc)();
 
 
@@ -91,6 +92,18 @@ void rec_jckt() {
 }
 
 
+void rec_avt() {
+    for (;;) {
+        bufS = recv(recHnd, &bufD[padln - avtln], sizeof (bufD) - padln, 0);
+        bufS -= avtln;
+        if (bufS < padln) return;
+        if (iou_gmsb(padln - avtln + 12) != recPrt) continue;
+        if (iou_gmsb(padln - avtln + 20) == avtbr) break;
+    }
+    iou_bswp2msb();
+}
+
+
 void rec_udpm() {
     bufS = recv(recHnd, &bufD[padln], sizeof (bufD) - padln, 0);
     iou_bswp2msb();
@@ -111,16 +124,18 @@ void rec_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"wfa") == 0) recFnc = &rec_wfa;
     if (strcmp(knd,"jcku") == 0) recFnc = &rec_jcku;
     if (strcmp(knd,"jckt") == 0) recFnc = &rec_jckt;
+    if (strcmp(knd,"avt") == 0) recFnc = &rec_avt;
     if (strcmp(knd,"udpm") == 0) recFnc = &rec_udpm;
     if (strcmp(knd,"udpl") == 0) recFnc = &rec_udpl;
     if (recFnc == NULL) err("no such kind");
+    recPrt = atoi(prt);
     struct sockaddr_in addrTmp;
     struct ip_mreq_source mcgrReq;
     memset(&addrTmp, 0, sizeof (addrTmp));
     memset(&mcgrReq, 0, sizeof (mcgrReq));
     addrTmp.sin_family = AF_INET;
     addrTmp.sin_addr.s_addr = htonl(INADDR_ANY);
-    addrTmp.sin_port = htons(atoi(prt));
+    addrTmp.sin_port = htons(recPrt);
     if ((recHnd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
     int val = 1;
     setsockopt(recHnd, SOL_SOCKET, SO_REUSEADDR, (void *)&val, sizeof(val));

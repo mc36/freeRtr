@@ -632,7 +632,7 @@ public class packer {
         buffer.clear();
         putMsb(buffer, 0, seq);
         putMsb(buffer, 4, ((seq & 0xff) << 8) | 0x2810000);
-        putMsb(buffer, 8, 0);
+        putMsb(buffer, 8, src);
         putMsb(buffer, 12, portNum);
         putMsb(buffer, 16, clk);
         putMsb(buffer, 20, consts.avtb());
@@ -660,6 +660,9 @@ public class packer {
             len = buffer.position() - consts.avtl;
             if (len < consts.smpb) {
                 return 0;
+            }
+            if (getMsb(buffer, 12) != portNum) {
+                continue;
             }
             if (getMsb(buffer, 20) == consts.avtb()) {
                 break;

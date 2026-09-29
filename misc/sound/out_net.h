@@ -1,6 +1,7 @@
 int plyHnd;
 int plySeq;
 int plySrc;
+int plyPrt;
 int plyClk;
 void(*plyFnc)();
 
@@ -20,7 +21,7 @@ void ply_rtp() {
     iou_pmsb(padln - rtpln + 4, plyClk);
     iou_pmsb(padln - rtpln + 8, plySrc);
     plySeq = (plySeq + 1) & 0xffff;
-    plyClk += bufS / (2 * smpbt);
+    plyClk += bufS / smpbt;
     bufS += rtpln;
     if (send(plyHnd, &bufD[padln - rtpln], bufS, 0) != bufS) err("error sending");
 }
@@ -62,7 +63,7 @@ void ply_wfa() {
     iou_pmsb(padln - wfaln + 2, ((wfamg & 0xffff) << 16) | plySeq);
     iou_pmsb(padln - wfaln + 6, plyClk);
     plySeq = (plySeq + 1) & 0xffff;
-    plyClk += bufS / (2 * smpbt);
+    plyClk += bufS / smpbt;
     bufS += wfaln;
     if (send(plyHnd, &bufD[padln - wfaln], bufS, 0) != bufS) err("error sending");
 }
@@ -86,9 +87,25 @@ void ply_jckt() {
     iou_pmsb(padln - jktln + 8, (plySeq << 16) | (bufS / (2 * smpbt)));
     iou_pmsb(padln - jktln + 12, jktbr);
     plySeq = (plySeq + 1) & 0xffff;
-    plyClk += (1000 * bufS) / (2 * smpbt);
+    plyClk += (1000 * bufS) / smpbt;
     bufS += jktln;
     if (send(plyHnd, &bufD[padln - jktln], bufS, 0) != bufS) err("error sending");
+}
+
+
+void ply_avt() {
+    iou_bswp2msb();
+    iou_pmsb(padln - avtln + 0, plySeq);
+    iou_pmsb(padln - avtln + 4, ((plySeq & 0xff) << 8) | 0x2810000);
+    iou_pmsb(padln - avtln + 8, plySrc);
+    iou_pmsb(padln - avtln + 12, plyPrt);
+    iou_pmsb(padln - avtln + 16, plyClk);
+    iou_pmsb(padln - avtln + 20, avtbr);
+    iou_pmsb(padln - avtln + 24, bufS << 16);
+    plySeq++;
+    plyClk += (10000 * bufS) / smpbt;
+    bufS += avtln;
+    if (send(plyHnd, &bufD[padln - avtln], bufS, 0) != bufS) err("error sending");
 }
 
 
@@ -112,14 +129,16 @@ void ply_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"wfa") == 0) plyFnc = &ply_wfa;
     if (strcmp(knd,"jcku") == 0) plyFnc = &ply_jcku;
     if (strcmp(knd,"jckt") == 0) plyFnc = &ply_jckt;
+    if (strcmp(knd,"avt") == 0) plyFnc = &ply_avt;
     if (strcmp(knd,"udpm") == 0) plyFnc = &ply_udpm;
     if (strcmp(knd,"udpl") == 0) plyFnc = &ply_udpl;
     if (plyFnc == NULL) err("no such kind");
+    plyPrt = atoi(prt);
     struct sockaddr_in addrTmp;
     memset(&addrTmp, 0, sizeof (addrTmp));
     addrTmp.sin_family = AF_INET;
     addrTmp.sin_addr.s_addr = inet_addr(src);
-    addrTmp.sin_port = htons(atoi(prt));
+    addrTmp.sin_port = htons(plyPrt);
     if ((plyHnd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) err("unable to open socket");
     int val = 1;
     setsockopt(plyHnd, SOL_SOCKET, SO_REUSEADDR, (void *)&val, sizeof(val));
@@ -127,7 +146,7 @@ void ply_init(char*knd, char*grp, char*src, char* prt) {
     memset(&addrTmp, 0, sizeof (addrTmp));
     addrTmp.sin_family = AF_INET;
     addrTmp.sin_addr.s_addr = inet_addr(grp);
-    addrTmp.sin_port = htons(atoi(prt));
+    addrTmp.sin_port = htons(plyPrt);
     if (connect(plyHnd, (struct sockaddr *) &addrTmp, sizeof (addrTmp)) < 0) err("failed to connect socket");
     plySrc = 255;
     if (setsockopt(plyHnd, IPPROTO_IP, IP_MULTICAST_TTL, &plySrc, sizeof(plySrc)) < 0) err("failed to set ttl");

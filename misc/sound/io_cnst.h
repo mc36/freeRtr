@@ -16,3 +16,5 @@
 #define jkuln 8
 #define jktln 16
 #define jktbr 52429312
+#define avtln 28
+#define avtbr 38797856
