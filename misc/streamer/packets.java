@@ -31,6 +31,8 @@ public class packets {
         System.err.println("#define jkuln " + consts.jkul);
         System.err.println("#define jktln " + consts.jktl);
         System.err.println("#define jktbr " + consts.jktb());
+        System.err.println("#define avtln " + consts.avtl);
+        System.err.println("#define avtbr " + consts.avtb());
         for (int i = 100; i < 2000; i++) {
             double a = i;
             double b = consts.rate * 2.0 * consts.smpb / a;

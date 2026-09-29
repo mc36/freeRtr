@@ -91,6 +91,16 @@ public class consts {
      */
     private static int jktc = -1;
 
+    /**
+     * bytes in avtp header
+     */
+    public static final int avtl = 28;
+
+    /**
+     * avtp cached result
+     */
+    private static int avtc = -1;
+
     private static final int findInt(int def, int[] vals) {
         for (int i = 0; i < vals.length; i++) {
             if (vals[i] == rate) {
@@ -138,6 +148,32 @@ public class consts {
         };
         jktc = findInt(256, vals) << 24 | (consts.smpb << 19) | 0x200;
         return jktc;
+    }
+
+    /**
+     * avtp rate bits
+     *
+     * @return value
+     */
+    public static final int avtb() {
+        if (avtc >= 0) {
+            return avtc;
+        }
+        int[] vals = {
+            -1,
+            8000,
+            16000,
+            32000,
+            44100,
+            48000,
+            88200,
+            96000,
+            176400,
+            192000,
+            24000
+        };
+        avtc = findInt(0, vals) << 20 | (consts.smpb << 3) | ((6 - consts.smpb) << 24) | 0x200;
+        return avtc;
     }
 
 }

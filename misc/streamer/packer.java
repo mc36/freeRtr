@@ -23,6 +23,8 @@ public class packer {
      */
     public final codec coder = codec.getCodec();
 
+    private int portNum;
+
     private DatagramChannel target;
 
     private DatagramChannel source;
@@ -52,13 +54,13 @@ public class packer {
         packer r = new packer();
         InetAddress group = InetAddress.getByName(grp);
         InetAddress source = InetAddress.getByName(src);
-        int port = Integer.parseInt(prt);
+        r.portNum = Integer.parseInt(prt);
         r.target = DatagramChannel.open();
         DatagramSocket scket = r.target.socket();
         scket.setReuseAddress(true);
-        scket.bind(new InetSocketAddress(source, port));
+        scket.bind(new InetSocketAddress(source, r.portNum));
         MulticastSocket mcast = (MulticastSocket) scket;
-        mcast.connect(group, port);
+        mcast.connect(group, r.portNum);
         mcast.setTimeToLive(255);
         mcast.setTrafficClass(46 << 2);
         r.src = new Random().nextInt();
@@ -80,11 +82,11 @@ public class packer {
         packer r = new packer();
         InetAddress group = InetAddress.getByName(grp);
         InetAddress source = InetAddress.getByName(src);
-        int port = Integer.parseInt(prt);
+        r.portNum = Integer.parseInt(prt);
         r.source = DatagramChannel.open();
         DatagramSocket scket = r.source.socket();
         scket.setReuseAddress(true);
-        scket.bind(new InetSocketAddress(port));
+        scket.bind(new InetSocketAddress(r.portNum));
         MulticastSocket mcast = (MulticastSocket) scket;
         r.source.join(group, mcast.getNetworkInterface(), source);
         return r;
@@ -147,6 +149,9 @@ public class packer {
         }
         if (a.equals("jckt")) {
             return new packetJckT(this);
+        }
+        if (a.equals("avt")) {
+            return new packetAvt(this);
         }
         if (a.equals("udpm")) {
             return new packetUdpMsb(this);
@@ -340,7 +345,7 @@ public class packer {
         target.write(buffer);
         seq++;
         seq &= 0xffff;
-        clk += len / (2 * consts.smpb);
+        clk += len / consts.smpb;
     }
 
     /**
@@ -496,7 +501,7 @@ public class packer {
         target.write(buffer);
         seq++;
         seq &= 0xffff;
-        clk += len / (2 * consts.smpb);
+        clk += len / consts.smpb;
     }
 
     /**
@@ -587,7 +592,7 @@ public class packer {
         target.write(buffer);
         seq++;
         seq &= 0xffff;
-        clk += (1000 * len) / (2 * consts.smpb);
+        clk += (1000 * len) / consts.smpb;
     }
 
     /**
@@ -613,6 +618,54 @@ public class packer {
         byte[] res = new byte[buf.length];
         buffer.get(consts.jktl, res, 0, len);
         codec.unPlanar(buf, res, len);
+        return len;
+    }
+
+    /**
+     * write avtp data
+     *
+     * @param buf msb bytes
+     * @param len length
+     * @throws Exception on error
+     */
+    public void writeAvt(byte[] buf, int len) throws Exception {
+        buffer.clear();
+        putMsb(buffer, 0, seq);
+        putMsb(buffer, 4, ((seq & 0xff) << 8) | 0x2810000);
+        putMsb(buffer, 8, 0);
+        putMsb(buffer, 12, portNum);
+        putMsb(buffer, 16, clk);
+        putMsb(buffer, 20, consts.avtb());
+        putMsb(buffer, 24, len << 16);
+        buffer.put(consts.avtl, buf, 0, len);
+        buffer.position(0);
+        buffer.limit(len + consts.avtl);
+        target.write(buffer);
+        seq++;
+        clk += (10000 * len) / consts.smpb;
+    }
+
+    /**
+     * read avtp data
+     *
+     * @param buf msb bytes
+     * @return bytes
+     * @throws Exception on error
+     */
+    public int readAvt(byte[] buf) throws Exception {
+        int len;
+        for (;;) {
+            buffer.clear();
+            source.receive(buffer);
+            len = buffer.position() - consts.avtl;
+            if (len < consts.smpb) {
+                return 0;
+            }
+            if (getMsb(buffer, 20) == consts.avtb()) {
+                break;
+            }
+        }
+        buffer.get(consts.avtl, buf, 0, len);
         return len;
     }
 
@@ -710,6 +763,22 @@ class packetJckT extends packet {
 
     public void writeKind(byte[] buf, int len) throws Exception {
         pck.writeJckT(buf, len);
+    }
+
+}
+
+class packetAvt extends packet {
+
+    public packetAvt(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readAvt(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeAvt(buf, len);
     }
 
 }
