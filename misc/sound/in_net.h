@@ -104,6 +104,19 @@ void rec_avt() {
 }
 
 
+void rec_avb() {
+    for (;;) {
+        bufS = recv(recHnd, &bufD[padln - avbln], sizeof (bufD) - padln, 0);
+        bufS -= avbln;
+        if (bufS < padln) return;
+        if (iou_gmsb(padln - avbln + 12) != avbmg) continue;
+        if (iou_gmsb(padln - avbln + 22) != recPrt) continue;
+        if (iou_gmsb(padln - avbln + 30) == avtbr) break;
+    }
+    iou_bswp2msb();
+}
+
+
 void rec_iec() {
     for (;;) {
         bufS = recv(recHnd, &bufD[padln - iecln], sizeof (bufD) - padln, 0);
@@ -138,6 +151,7 @@ void rec_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"jcku") == 0) recFnc = &rec_jcku;
     if (strcmp(knd,"jckt") == 0) recFnc = &rec_jckt;
     if (strcmp(knd,"avt") == 0) recFnc = &rec_avt;
+    if (strcmp(knd,"avb") == 0) recFnc = &rec_avb;
     if (strcmp(knd,"iec") == 0) recFnc = &rec_iec;
     if (strcmp(knd,"udpm") == 0) recFnc = &rec_udpm;
     if (strcmp(knd,"udpl") == 0) recFnc = &rec_udpl;

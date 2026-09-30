@@ -18,6 +18,8 @@
 #define jktbr 52429312
 #define avtln 28
 #define avtbr 38797856
+#define avbln 38
+#define avbmg 586154625
 #define iecln 36
 #define iec1q 1057095816
 #define iec2q -1875443712

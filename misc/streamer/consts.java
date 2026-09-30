@@ -102,6 +102,16 @@ public class consts {
     private static int avtc = -1;
 
     /**
+     * bytes in avb header
+     */
+    public static final int avbl = 38;
+
+    /**
+     * avb magic bytes
+     */
+    public static final int avbm = 0x22f00281;
+
+    /**
      * bytes in iec header
      */
     public static final int iecl = 36;

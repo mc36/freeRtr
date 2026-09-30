@@ -33,6 +33,8 @@ public class packets {
         System.err.println("#define jktbr " + consts.jktb());
         System.err.println("#define avtln " + consts.avtl);
         System.err.println("#define avtbr " + consts.avtb());
+        System.err.println("#define avbln " + consts.avbl);
+        System.err.println("#define avbmg " + consts.avbm);
         System.err.println("#define iecln " + consts.iecl);
         System.err.println("#define iec1q " + consts.iec1);
         System.err.println("#define iec2q " + consts.iec2);

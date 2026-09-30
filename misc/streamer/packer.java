@@ -153,6 +153,9 @@ public class packer {
         if (a.equals("avt")) {
             return new packetAvt(this);
         }
+        if (a.equals("avb")) {
+            return new packetAvb(this);
+        }
         if (a.equals("iec")) {
             return new packetIec(this);
         }
@@ -676,6 +679,65 @@ public class packer {
     }
 
     /**
+     * write avb data
+     *
+     * @param buf msb bytes
+     * @param len length
+     * @throws Exception on error
+     */
+    public void writeAvb(byte[] buf, int len) throws Exception {
+        buffer.clear();
+        putMsb(buffer, 0, 0x01000000);
+        putMsb(buffer, 2, portNum);
+        putMsb(buffer, 6, 0);
+        putMsb(buffer, 8, portNum);
+        putMsb(buffer, 12, consts.avbm);
+        putMsb(buffer, 16, seq << 24);
+        putMsb(buffer, 18, src);
+        putMsb(buffer, 22, portNum);
+        putMsb(buffer, 26, clk);
+        putMsb(buffer, 30, consts.avtb());
+        putMsb(buffer, 34, len << 16);
+        buffer.put(consts.avbl, buf, 0, len);
+        buffer.position(0);
+        buffer.limit(len + consts.avbl);
+        target.write(buffer);
+        seq++;
+        seq &= 0xff;
+        clk += (10000 * len) / consts.smpb;
+    }
+
+    /**
+     * read avb data
+     *
+     * @param buf msb bytes
+     * @return bytes
+     * @throws Exception on error
+     */
+    public int readAvb(byte[] buf) throws Exception {
+        int len;
+        for (;;) {
+            buffer.clear();
+            source.receive(buffer);
+            len = buffer.position() - consts.avbl;
+            if (len < consts.smpb) {
+                return 0;
+            }
+            if (getMsb(buffer, 12) != consts.avbm) {
+                continue;
+            }
+            if (getMsb(buffer, 22) != portNum) {
+                continue;
+            }
+            if (getMsb(buffer, 30) == consts.avtb()) {
+                break;
+            }
+        }
+        buffer.get(consts.avbl, buf, 0, len);
+        return len;
+    }
+
+    /**
      * write iec data
      *
      * @param buf msb bytes
@@ -840,6 +902,22 @@ class packetAvt extends packet {
 
     public void writeKind(byte[] buf, int len) throws Exception {
         pck.writeAvt(buf, len);
+    }
+
+}
+
+class packetAvb extends packet {
+
+    public packetAvb(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readAvb(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeAvb(buf, len);
     }
 
 }
