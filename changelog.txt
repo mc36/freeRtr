@@ -18793,3 +18793,6 @@ qc pass: wireguard over ipv6
 ---------------------------------- 2026-10-01 11:18:59 26.10.1
 no qc pass: ingress label filtering with integrated pvrp
 failed: ingress label filtering with integrated pvrp
+---------------------------------- 2026-10-01 11:55:46 26.10.1
+no failed: ingress label filtering with integrated pvrp
+qc pass: ingress label filtering with integrated pvrp
