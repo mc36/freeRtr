@@ -22,6 +22,8 @@ char* iou_device_one(snd_pcm_t *hnd, snd_pcm_hw_params_t *prm, int fmt) {
     if (snd_pcm_hw_params_set_format(hnd, prm, fmt) < 0) return "unable to set format";
     if (snd_pcm_hw_params_set_channels(hnd, prm, 2) < 0) return "unable to set channel";
     if (snd_pcm_hw_params_set_rate(hnd, prm, srate, 0) < 0) return "unable to set rate";
+    if (snd_pcm_hw_params_set_buffer_time(hnd, prm, 8000, 0) < 0) return "unable to set buffer";
+    if (snd_pcm_hw_params_set_period_time(hnd, prm, 4000, 0) < 0) return "unable to set period";
     if (snd_pcm_hw_params(hnd, prm) < 0) return "cannot set parameters";
     if (snd_pcm_prepare(hnd) < 0) return "cannot prepare";
     return NULL;
