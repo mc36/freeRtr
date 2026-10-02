@@ -1790,13 +1790,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             ntry.best.labelRem = res.best.labelRem;
             ntry.best.evpnLab = res.best.evpnLab;
             if ((ntry.best.segrouPrf != null) && (ntry.best.labelRem != null) && (ntry.best.segrouSiz > 0)) {
-                addrIPv6 adr6 = new addrIPv6();
-                int o = ntry.best.labelRem.get(0) >>> 4;
-                o &= (1 << ntry.best.segrouSiz) - 1;
-                bits.msbPutD(adr6.getBytes(), addrIPv6.size - 4, o);
-                adr6.setShl(adr6, 128 - ntry.best.segrouOfs - ntry.best.segrouSiz);
-                adr6.setOr(ntry.best.segrouPrf, adr6);
-                ntry.best.segrouPrf.fromIPv6addr(adr6);
+                tabRouteUtil.decodeSrv6pfx(ntry, ntry.best.labelRem.get(0) >>> 4);
             }
             ntry.best.copyBytes(res.best, false);
             if (parent.flaps != null) {

@@ -409,6 +409,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                     per.peer = ntry.best.nextHop.copyBytes();
                     per.labUni = ntry.best.evpnLab >>> 4;
                     if (ntry.best.segrouPrf != null) {
+                        tabRouteUtil.decodeSrv6pfx(ntry, ntry.best.evpnLab >>> 8);
                         per.srv6uni = ntry.best.segrouPrf.copyBytes();
                     }
                     break;
@@ -457,6 +458,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                     per.peer = ntry.best.nextHop.copyBytes();
                     per.labUni = ntry.best.evpnLab >>> 4;
                     if (ntry.best.segrouPrf != null) {
+                        tabRouteUtil.decodeSrv6pfx(ntry, ntry.best.evpnLab >>> 8);
                         per.srv6uni = ntry.best.segrouPrf.copyBytes();
                     }
                     break;
@@ -498,6 +500,7 @@ public class rtrBgpEvpn implements ifcBridgeRtr, Comparable<rtrBgpEvpn> {
                     per.needed |= 2;
                     per.labMul = ntry.best.pmsiLab >>> 4;
                     if (ntry.best.segrouPrf != null) {
+                        tabRouteUtil.decodeSrv6pfx(ntry, ntry.best.pmsiLab >>> 8);
                         per.srv6mul = ntry.best.segrouPrf.copyBytes();
                     }
                     break;

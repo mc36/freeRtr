@@ -18799,3 +18799,6 @@ qc pass: ingress label filtering with integrated pvrp
 ---------------------------------- 2026-10-01 12:42:13 26.10.1
 no qc pass: egress label filtering with pvrp
 failed: egress label filtering with pvrp
+---------------------------------- 2026-10-01 13:14:56 26.10.1
+no failed: egress label filtering with pvrp
+qc pass: egress label filtering with pvrp

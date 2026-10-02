@@ -1384,6 +1384,21 @@ public class tabRouteUtil {
     }
 
     /**
+     * get srv6 prefix
+     *
+     * @param ntry route entry
+     * @param lab label value
+     */
+    public static void decodeSrv6pfx(tabRouteEntry<addrIP> ntry, int lab) {
+        addrIPv6 adr6 = new addrIPv6();
+        lab &= (1 << ntry.best.segrouSiz) - 1;
+        bits.msbPutD(adr6.getBytes(), addrIPv6.size - 4, lab);
+        adr6.setShl(adr6, 128 - ntry.best.segrouOfs - ntry.best.segrouSiz);
+        adr6.setOr(ntry.best.segrouPrf, adr6);
+        ntry.best.segrouPrf.fromIPv6addr(adr6);
+    }
+
+    /**
      * put srv6 prefix
      *
      * @param ntry route entry
