@@ -99,6 +99,39 @@ public class clntSrEth implements Runnable, ipPrt, ifcDn {
     }
 
     /**
+     * get remote address
+     *
+     * @return address
+     */
+    public addrIP getRemAddr() {
+        if (fwdIfc == null) {
+            return null;
+        }
+        return fwdTrg.copyBytes();
+    }
+
+    /**
+     * get local address
+     *
+     * @return address
+     */
+    public addrIP getLocAddr() {
+        if (fwdIfc == null) {
+            return null;
+        }
+        return fwdIfc.addr.copyBytes();
+    }
+
+    /**
+     * get forwarder
+     *
+     * @return forwarder used
+     */
+    public ipFwd getFwder() {
+        return fwdCor;
+    }
+
+    /**
      * sent endpoints
      *
      * @param fwd forwarder

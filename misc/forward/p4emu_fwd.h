@@ -2188,6 +2188,11 @@ doTunnel:
             bufP -= 2;
             put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
             break;
+        case 15: // srv
+            bufP = bufT + 0;
+            bufP -= 2;
+            put16msb(bufD, bufP, ETHERTYPE_ROUTEDMAC);
+            break;
         default:
             doDropper;
         }

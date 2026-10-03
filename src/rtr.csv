@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.10.3-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-10-03 14:23:56, took 00:19:06, with 50 workers, on 4475 cases, 1 failed, 0 traces, 23 retries
+-;-;-;2026-10-03 15:40:11, took 00:17:13, with 50 workers, on 4486 cases, 0 failed, 0 traces, 10 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2733,6 +2733,17 @@ http://sources.freertr.org/cfg/p4lang-rout535.tst;p4lang-rout535.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout536.tst;p4lang-rout536.tst;success;p4lang: routing over ipv6 backplane
 http://sources.freertr.org/cfg/p4lang-rout537.tst;p4lang-rout537.tst;success;p4lang: routing over mixed backplane
 http://sources.freertr.org/cfg/p4lang-rout538.tst;p4lang-rout538.tst;success;p4lang: routing over mpns backplane
+http://sources.freertr.org/cfg/p4lang-rout539.tst;p4lang-rout539.tst;success;p4lang: sreth over ipv4
+http://sources.freertr.org/cfg/p4lang-rout540.tst;p4lang-rout540.tst;success;p4lang: sreth over ipv6
+http://sources.freertr.org/cfg/p4lang-rout541.tst;p4lang-rout541.tst;success;p4lang: sreth over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout542.tst;p4lang-rout542.tst;success;p4lang: sreth over ipv6 loopback
+http://sources.freertr.org/cfg/p4lang-rout543.tst;p4lang-rout543.tst;success;p4lang: sreth over vlan
+http://sources.freertr.org/cfg/p4lang-rout544.tst;p4lang-rout544.tst;success;p4lang: sreth over bundle
+http://sources.freertr.org/cfg/p4lang-rout545.tst;p4lang-rout545.tst;success;p4lang: sreth over bundle vlan
+http://sources.freertr.org/cfg/p4lang-rout546.tst;p4lang-rout546.tst;success;p4lang: sreth server over ipv4
+http://sources.freertr.org/cfg/p4lang-rout547.tst;p4lang-rout547.tst;success;p4lang: sreth server over ipv6
+http://sources.freertr.org/cfg/p4lang-rout548.tst;p4lang-rout548.tst;success;p4lang: sreth server over ipv4 loopback
+http://sources.freertr.org/cfg/p4lang-rout549.tst;p4lang-rout549.tst;success;p4lang: sreth server over ipv6 loopback
 http://sources.freertr.org/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.org/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.org/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action
@@ -2743,7 +2754,7 @@ http://sources.freertr.org/cfg/qos-action07.tst;qos-action07.tst;success;qos ing
 http://sources.freertr.org/cfg/qos-action08.tst;qos-action08.tst;success;qos egress priority action
 http://sources.freertr.org/cfg/qos-action09.tst;qos-action09.tst;success;qos ingress bandwidth action
 http://sources.freertr.org/cfg/qos-action10.tst;qos-action10.tst;success;qos egress bandwidth action
-http://sources.freertr.org/cfg/qos-action11.tst;qos-action11.tst;#6-run-r2 tping 100 5 1.1.1.1 vrf v1 rep 100 tim 500 siz 100;qos ingress shaper action
+http://sources.freertr.org/cfg/qos-action11.tst;qos-action11.tst;success;qos ingress shaper action
 http://sources.freertr.org/cfg/qos-action12.tst;qos-action12.tst;success;qos egress shaper action
 http://sources.freertr.org/cfg/qos-action13.tst;qos-action13.tst;success;qos ingress hierarchical action
 http://sources.freertr.org/cfg/qos-action14.tst;qos-action14.tst;success;qos egress hierarchical action

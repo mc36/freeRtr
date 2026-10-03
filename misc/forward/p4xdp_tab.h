@@ -148,7 +148,7 @@ struct tunnel6_key {
 };
 
 struct tunnel_res {
-    __u32 cmd; // 1=gre, 2=l2tp, 3=l3tp, 4=gtp, 5=pckoudp, 6=vxlan
+    __u32 cmd; // 1=gre, 2=l2tp, 3=l3tp, 4=gtp, 5=pckoudp, 6=vxlan, 7=srv
     __u32 aclport;
     __u64 pack;
     __u64 byte;

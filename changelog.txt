@@ -18807,3 +18807,17 @@ qc pass: interop1: bgp vpws over srv6
 ---------------------------------- 2026-10-03 14:04:49 26.10.3
 no qc pass: qos ingress shaper action
 failed: qos ingress shaper action
+---------------------------------- 2026-10-03 15:22:57 26.10.3
+no failed: qos ingress shaper action
+qc pass: p4lang: sreth over ipv4
+qc pass: p4lang: sreth over ipv6
+qc pass: p4lang: sreth over ipv4 loopback
+qc pass: p4lang: sreth over ipv6 loopback
+qc pass: p4lang: sreth over vlan
+qc pass: p4lang: sreth over bundle
+qc pass: p4lang: sreth over bundle vlan
+qc pass: p4lang: sreth server over ipv4
+qc pass: p4lang: sreth server over ipv6
+qc pass: p4lang: sreth server over ipv4 loopback
+qc pass: p4lang: sreth server over ipv6 loopback
+qc pass: qos ingress shaper action

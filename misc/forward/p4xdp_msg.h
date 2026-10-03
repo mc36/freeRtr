@@ -450,6 +450,56 @@ int doOneCommand(unsigned char* buf) {
         }
         return 0;
     }
+    if (strcmp(arg[0], "bridgesreth4") == 0) {
+        brdk.id = atoi(arg[2]);
+        str2mac(brdk.mac, arg[3]);
+        inet_pton(AF_INET, arg[4], buf2);
+        memcpy(&tun4.trgAddr, &buf2, sizeof(tun4.trgAddr));
+        memcpy(&brdr.srcAddr, &buf2, sizeof(tun4.trgAddr));
+        inet_pton(AF_INET, arg[5], buf2);
+        memcpy(&tun4.srcAddr, &buf2, sizeof(tun4.srcAddr));
+        memcpy(&brdr.trgAddr, &buf2, sizeof(tun4.srcAddr));
+        brdr.nexthop = atoi(arg[6]);
+        brdr.cmd = 6;
+        brdr.cmd2 = 1;
+        tun4.vrf = atoi(arg[7]);
+        tunr.aclport = atoi(arg[8]);
+        tun4.prot = IP_PROTOCOL_SRL2;
+        tunr.cmd = 7;
+        if (del == 0) {
+            if (bpf_map_delete_elem(tunnel4_fd, &tun4) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(tunnel4_fd, &tun4, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(bridges_fd, &brdk, &brdr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
+    if (strcmp(arg[0], "bridgesreth6") == 0) {
+        brdk.id = atoi(arg[2]);
+        str2mac(brdk.mac, arg[3]);
+        inet_pton(AF_INET6, arg[4], buf2);
+        memcpy(&tun6.trgAddr, &buf2, sizeof(tun6.trgAddr));
+        memcpy(&brdr.srcAddr, &buf2, sizeof(tun6.trgAddr));
+        inet_pton(AF_INET6, arg[5], buf2);
+        memcpy(&tun6.srcAddr, &buf2, sizeof(tun6.srcAddr));
+        memcpy(&brdr.trgAddr, &buf2, sizeof(tun6.srcAddr));
+        brdr.nexthop = atoi(arg[6]);
+        brdr.cmd = 6;
+        brdr.cmd2 = 2;
+        tun6.vrf = atoi(arg[7]);
+        tunr.aclport = atoi(arg[8]);
+        tun6.prot = IP_PROTOCOL_SRL2;
+        tunr.cmd = 7;
+        if (del == 0) {
+            if (bpf_map_delete_elem(tunnel6_fd, &tun6) != 0) warn("error removing entry");
+            if (bpf_map_delete_elem(bridges_fd, &brdk) != 0) warn("error removing entry");
+        } else {
+            if (bpf_map_update_elem(tunnel6_fd, &tun6, &tunr, BPF_ANY) != 0) warn("error setting entry");
+            if (bpf_map_update_elem(bridges_fd, &brdk, &brdr, BPF_ANY) != 0) warn("error setting entry");
+        }
+        return 0;
+    }
     if (strcmp(arg[0], "bridgevpls") == 0) {
         brdk.id = atoi(arg[2]);
         str2mac(brdk.mac, arg[3]);

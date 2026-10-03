@@ -844,6 +844,12 @@ doTunnel:
                 ethtyp = ETHERTYPE_ROUTEDMAC;
                 put16msb(bufD, bufP, ethtyp);
                 break;
+            case 7: // srv
+                revalidatePacket(bufP + 4);
+                bufP -= 2;
+                ethtyp = ETHERTYPE_ROUTEDMAC;
+                put16msb(bufD, bufP, ethtyp);
+                break;
             default:
                 goto drop;
             }

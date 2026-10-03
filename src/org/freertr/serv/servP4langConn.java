@@ -17,6 +17,7 @@ import org.freertr.clnt.clntL2tp2;
 import org.freertr.clnt.clntL2tp3;
 import org.freertr.clnt.clntMplsPwe;
 import org.freertr.clnt.clntPckOudp;
+import org.freertr.clnt.clntSrEth;
 import org.freertr.clnt.clntVxlan;
 import org.freertr.ifc.ifcBridgeAdr;
 import org.freertr.ifc.ifcBridgeIfc;
@@ -1763,6 +1764,18 @@ public class servP4langConn implements Runnable {
             } catch (Exception e) {
             }
             try {
+                clntSrEth ifc = (clntSrEth) ntry.lowerIf;
+                addDynBr(br, ntry, ifc);
+                continue;
+            } catch (Exception e) {
+            }
+            try {
+                servSrEthConn ifc = (servSrEthConn) ntry.lowerIf;
+                addDynBr(br, ntry, ifc);
+                continue;
+            } catch (Exception e) {
+            }
+            try {
                 clntPckOudp ifc = (clntPckOudp) ntry.lowerIf;
                 addDynBr(br, ntry, ifc);
                 continue;
@@ -1991,6 +2004,66 @@ public class servP4langConn implements Runnable {
                     continue;
                 }
                 a = "bridgeeoip" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + iface.tunId + " " + ovrf.id + " " + brif.id;
+                brif.sentBrTun = a;
+                lower.sendLine(a);
+                continue;
+            } catch (Exception e) {
+            }
+            try {
+                clntSrEth iface = (clntSrEth) ntry.ifc.lowerIf;
+                servP4langIfc brif = lower.findDynBr(ntry.ifc);
+                if (brif == null) {
+                    continue;
+                }
+                adr = iface.getRemAddr();
+                if (adr == null) {
+                    continue;
+                }
+                addrIP src = iface.getLocAddr();
+                if (src == null) {
+                    continue;
+                }
+                ipFwd ofwd = iface.getFwder();
+                servP4langVrf ovrf = lower.findVrf(ofwd);
+                if (ovrf == null) {
+                    continue;
+                }
+                servP4langNei hop = lower.findHop(ofwd, adr);
+                if (hop == null) {
+                    br.macs.del(ntry);
+                    continue;
+                }
+                a = "bridgesreth" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + ovrf.id + " " + brif.id;
+                brif.sentBrTun = a;
+                lower.sendLine(a);
+                continue;
+            } catch (Exception e) {
+            }
+            try {
+                servSrEthConn iface = (servSrEthConn) ntry.ifc.lowerIf;
+                servP4langIfc brif = lower.findDynBr(ntry.ifc);
+                if (brif == null) {
+                    continue;
+                }
+                adr = iface.getRemAddr();
+                if (adr == null) {
+                    continue;
+                }
+                addrIP src = iface.getLocAddr();
+                if (src == null) {
+                    continue;
+                }
+                ipFwd ofwd = iface.getFwder();
+                servP4langVrf ovrf = lower.findVrf(ofwd);
+                if (ovrf == null) {
+                    continue;
+                }
+                servP4langNei hop = lower.findHop(ofwd, adr);
+                if (hop == null) {
+                    br.macs.del(ntry);
+                    continue;
+                }
+                a = "bridgesreth" + (adr.isIPv4() ? "4" : "6") + "_" + a + " " + br.br.number + " " + ntry.adr.toEmuStr() + " " + src + " " + adr + " " + hop.id + " " + ovrf.id + " " + brif.id;
                 brif.sentBrTun = a;
                 lower.sendLine(a);
                 continue;

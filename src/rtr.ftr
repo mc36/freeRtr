@@ -2729,6 +2729,17 @@ qc pass: p4lang: routing over ipv4 backplane
 qc pass: p4lang: routing over ipv6 backplane
 qc pass: p4lang: routing over mixed backplane
 qc pass: p4lang: routing over mpns backplane
+qc pass: p4lang: sreth over ipv4
+qc pass: p4lang: sreth over ipv6
+qc pass: p4lang: sreth over ipv4 loopback
+qc pass: p4lang: sreth over ipv6 loopback
+qc pass: p4lang: sreth over vlan
+qc pass: p4lang: sreth over bundle
+qc pass: p4lang: sreth over bundle vlan
+qc pass: p4lang: sreth server over ipv4
+qc pass: p4lang: sreth server over ipv6
+qc pass: p4lang: sreth server over ipv4 loopback
+qc pass: p4lang: sreth server over ipv6 loopback
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
@@ -2739,7 +2750,7 @@ qc pass: qos ingress priority action
 qc pass: qos egress priority action
 qc pass: qos ingress bandwidth action
 qc pass: qos egress bandwidth action
-failed: qos ingress shaper action
+qc pass: qos ingress shaper action
 qc pass: qos egress shaper action
 qc pass: qos ingress hierarchical action
 qc pass: qos egress hierarchical action
