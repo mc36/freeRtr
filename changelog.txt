@@ -18804,3 +18804,6 @@ no failed: egress label filtering with pvrp
 qc pass: egress label filtering with pvrp
 ---------------------------------- 2026-10-03 08:18:09 26.10.3
 qc pass: interop1: bgp vpws over srv6
+---------------------------------- 2026-10-03 14:04:49 26.10.3
+no qc pass: qos ingress shaper action
+failed: qos ingress shaper action
