@@ -18802,3 +18802,5 @@ failed: egress label filtering with pvrp
 ---------------------------------- 2026-10-01 13:14:56 26.10.1
 no failed: egress label filtering with pvrp
 qc pass: egress label filtering with pvrp
+---------------------------------- 2026-10-03 08:18:09 26.10.3
+qc pass: interop1: bgp vpws over srv6
