@@ -1346,7 +1346,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             addrIPv6 adr = lower.expSrv6.addr6.copyBytes();
-            bits.msbPutD(adr.getBytes(), 12, ntry.label);
+            bits.msbPutD(adr.getBytes(), addrIPv6.size - 4, ntry.label);
             lower.sendLine("mysrv" + ntry.forwarder.ipVersion + "_del " + vr.id + " " + adr + " " + vrf.id);
             return;
         }
@@ -1439,7 +1439,7 @@ public class servP4langConn implements Runnable {
                 return;
             }
             addrIPv6 adr = lower.expSrv6.addr6.copyBytes();
-            bits.msbPutD(adr.getBytes(), 12, ntry.label);
+            bits.msbPutD(adr.getBytes(), addrIPv6.size - 4, ntry.label);
             lower.sendLine("mysrv" + ntry.forwarder.ipVersion + "_" + act + " " + vr.id + " " + adr + " " + vrf.id);
             return;
         }
@@ -1618,7 +1618,7 @@ public class servP4langConn implements Runnable {
             return;
         }
         addrIPv6 adr = lower.expSrv6.addr6.copyBytes();
-        bits.msbPutD(adr.getBytes(), 12, l);
+        bits.msbPutD(adr.getBytes(), addrIPv6.size - 4, l);
         lower.sendLine("bridgesrv_" + act + " " + br.br.number + " " + vr.id + " " + adr);
     }
 

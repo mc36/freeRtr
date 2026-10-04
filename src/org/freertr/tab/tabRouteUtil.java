@@ -1427,7 +1427,7 @@ public class tabRouteUtil {
         }
         addrIP adr = new addrIP();
         adr.fromIPv6addr(ifc.addr6);
-        bits.msbPutD(adr.getBytes(), 12, lab.label);
+        bits.msbPutD(adr.getBytes(), addrIP.size - 4, lab.label);
         for (int i = 0; i < ntry.alts.size(); i++) {
             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
             attr.segrouBeh = beh;

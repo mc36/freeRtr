@@ -994,6 +994,11 @@ public class userTest {
             cfgInit.executeHWcommands(bits.str2lst(cmd.getRemaining()), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>());
             return null;
         }
+        if (a.equals("hwadr")) {
+            userHwadr h = new userHwadr();
+            h.doer(cmd);
+            return null;
+        }
         if (a.equals("hwext")) {
             userHwext h = new userHwext();
             h.doer(cmd);

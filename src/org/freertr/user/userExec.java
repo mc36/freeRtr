@@ -3189,6 +3189,8 @@ public class userExec {
         hl.add(null, false, 2, new int[]{3}, "verfile", "test version updater");
         hl.add(null, false, 3, new int[]{4, -1}, "<key>", "key file to use");
         hl.add(null, false, 4, new int[]{4, -1}, "[str]", "file to include in release");
+        hl.add(null, false, 2, new int[]{3, -1}, "hwadr", "perform address calculations");
+        hl.add(null, false, 3, new int[]{3, -1}, "<str>", "parameter");
         hl.add(null, false, 2, new int[]{3, -1}, "hwext", "perform forwarding externalization");
         hl.add(null, false, 3, new int[]{3, -1}, "<str>", "parameter");
         hl.add(null, false, 2, new int[]{3, -1}, "hwpop", "perform forwarding port population");
