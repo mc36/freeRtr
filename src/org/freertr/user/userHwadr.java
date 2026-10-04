@@ -19,7 +19,7 @@ public class userHwadr {
     public userHwadr() {
     }
 
-    private String pref = "./rtr-";
+    private String filnam = "./rtr-" + cfgInit.swCfgEnd;
 
     private String iface = "ethernet20001";
 
@@ -48,8 +48,8 @@ public class userHwadr {
                 break;
             }
             s = s.toLowerCase();
-            if (s.equals("path")) {
-                pref = cmd.word();
+            if (s.equals("file")) {
+                filnam = cmd.word();
                 continue;
             }
             if (s.equals("iface")) {
@@ -69,7 +69,7 @@ public class userHwadr {
                 continue;
             }
         }
-        List<String> lst = bits.txt2buf(pref + cfgInit.swCfgEnd);
+        List<String> lst = bits.txt2buf(filnam);
         if (lst == null) {
             orig.error("error reading sw config");
             return;
