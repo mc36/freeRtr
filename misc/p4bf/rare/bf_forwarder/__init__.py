@@ -248,6 +248,10 @@ class BfForwarder(Thread, RareApi):
                 "parent": {"id": "tun", "path": "ig_ctl_tunnel.tbl_tunnel4"},
                 "action": "ig_ctl.ig_ctl_tunnel.act_tunnel_eoip",
             },
+            "sreth": {
+                "parent": {"id": "tun", "path": "ig_ctl_tunnel.tbl_tunnel4"},
+                "action": "ig_ctl.ig_ctl_tunnel.act_tunnel_sreth",
+            },
             "tmux": {
                 "parent": {"id": "tun", "path": "ig_ctl_tunnel.tbl_tunnel4"},
                 "action": "ig_ctl.ig_ctl_tunnel.act_tunnel_tmux",

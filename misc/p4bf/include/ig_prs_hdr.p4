@@ -430,6 +430,10 @@ IP_PROTOCOL_GRE:
 IP_PROTOCOL_ETHERIP:
         prs_etherip;
 #endif
+#ifdef HAVE_SRETH
+IP_PROTOCOL_SRL2:
+        prs_sreth;
+#endif
 #ifdef HAVE_TMUX
 IP_PROTOCOL_TMUX:
         prs_tmux;
@@ -478,6 +482,10 @@ IP_PROTOCOL_GRE:
 #ifdef HAVE_ETHERIP
 IP_PROTOCOL_ETHERIP:
         prs_etherip;
+#endif
+#ifdef HAVE_SRETH
+IP_PROTOCOL_SRL2:
+        prs_sreth;
 #endif
 #ifdef HAVE_TMUX
 IP_PROTOCOL_TMUX:
@@ -563,6 +571,15 @@ state prs_l3tp {
 #ifdef HAVE_ETHERIP
 state prs_etherip {
     pkt.extract(hdr.etherip);
+    ig_md.layer4_srcprt = 0;
+    ig_md.layer4_dstprt = 0;
+    transition accept;
+}
+#endif
+
+
+#ifdef HAVE_SRETH
+state prs_sreth {
     ig_md.layer4_srcprt = 0;
     ig_md.layer4_dstprt = 0;
     transition accept;
