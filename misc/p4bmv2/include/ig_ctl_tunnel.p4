@@ -103,6 +103,14 @@ control IngressControlTunnel(inout headers hdr,
         ig_md.source_id = port;
     }
 
+
+    action act_tunnel_sreth(SubIntId_t port) {
+        ig_intr_md.egress_spec = (PortId_t)port;
+        ig_md.need_recir = 1;
+        ig_md.source_id = port;
+    }
+
+
     action act_tunnel_pckoudp(SubIntId_t port) {
         ig_intr_md.egress_spec = (PortId_t)port;
         ig_md.need_recir = 1;
@@ -154,6 +162,7 @@ ig_md.layer4_dstprt:
             act_tunnel_vxlan;
             act_tunnel_etherip;
             act_tunnel_eoip;
+            act_tunnel_sreth;
             act_tunnel_pckoudp;
             act_tunnel_amt;
             act_tunnel_gtp;
@@ -188,6 +197,7 @@ ig_md.layer4_dstprt:
             act_tunnel_vxlan;
             act_tunnel_etherip;
             act_tunnel_eoip;
+            act_tunnel_sreth;
             act_tunnel_pckoudp;
             act_tunnel_amt;
             act_tunnel_gtp;
@@ -231,6 +241,12 @@ ig_md.layer4_dstprt:
             hdr.eth6.setValid();
             hdr.eth6 = hdr.eth5;
             hdr.eth5.setInvalid();
+            hdr.ethernet.ethertype = ETHERTYPE_ROUTEDMAC;
+        }
+        if (hdr.eth3.isValid()) {
+            hdr.eth6.setValid();
+            hdr.eth6 = hdr.eth3;
+            hdr.eth3.setInvalid();
             hdr.ethernet.ethertype = ETHERTYPE_ROUTEDMAC;
         }
         hdr.cpu.setValid();

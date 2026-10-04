@@ -895,6 +895,17 @@ qc pass: p4lang: routing over ipv4 backplane
 qc pass: p4lang: routing over ipv6 backplane
 qc pass: p4lang: routing over mixed backplane
 qc pass: p4lang: routing over mpns backplane
+qc pass: p4lang: sreth over ipv4
+qc pass: p4lang: sreth over ipv6
+qc pass: p4lang: sreth over ipv4 loopback
+qc pass: p4lang: sreth over ipv6 loopback
+qc pass: p4lang: sreth over vlan
+qc pass: p4lang: sreth over bundle
+qc pass: p4lang: sreth over bundle vlan
+qc pass: p4lang: sreth server over ipv4
+qc pass: p4lang: sreth server over ipv6
+qc pass: p4lang: sreth server over ipv4 loopback
+qc pass: p4lang: sreth server over ipv6 loopback
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
