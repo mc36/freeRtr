@@ -412,7 +412,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
             return;
         }
         packHolder pck = new packHolder(true, true);
-        icc.createNeighAdv(l2info, pck, addrIPv6.getAllNodes(), nexthop.toIPv6(), false);
+        icc.createNeighAdv(l2info, pck, addrIPv6.getAllNodes(), nexthop.toIPv6(), rtrAdvSuppress, false);
         if (createETHheader(pck, pck.IPtrg, type)) {
             cntr.drop(pck, counter.reasons.notInTab);
             return;
@@ -516,9 +516,9 @@ public class ipIfc6 implements ipIfc, ifcUp {
             }
         }
         addrType hwa = lower.getHwAddr();
-        icc.createNeighAdv(hwa, pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), false);
+        icc.createNeighAdv(hwa, pck, addrIPv6.getAllNodes(), lladdr.toIPv6(), rtrAdvSuppress, false);
         sendProto(pck, pck.IPtrg);
-        icc.createNeighAdv(hwa, pck, addrIPv6.getAllNodes(), ipaddr.toIPv6(), false);
+        icc.createNeighAdv(hwa, pck, addrIPv6.getAllNodes(), ipaddr.toIPv6(), rtrAdvSuppress, false);
         sendProto(pck, pck.IPtrg);
         if (rtrAdvInterval < 1) {
             return;

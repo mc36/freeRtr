@@ -427,7 +427,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                 ifc.gotIcmpPack(pck);
                 addrType mac = rxIfc.lower.checkMyAlias(adr);
                 if (mac != null) {
-                    createNeighAdv(mac, pck, pck.IPsrc.toIPv6(), adr.toIPv6(), true);
+                    createNeighAdv(mac, pck, pck.IPsrc.toIPv6(), adr.toIPv6(), ifc.rtrAdvSuppress, true);
                     ifc.sendProto(pck, pck.IPtrg);
                     break;
                 }
@@ -449,7 +449,7 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
                     }
                 }
                 mac = ifc.getHWaddr();
-                createNeighAdv(mac, pck, pck.IPsrc.toIPv6(), adr.toIPv6(), true);
+                createNeighAdv(mac, pck, pck.IPsrc.toIPv6(), adr.toIPv6(), ifc.rtrAdvSuppress, true);
                 ifc.sendProto(pck, pck.IPtrg);
                 break;
             case icmpNeiAdv:
@@ -548,9 +548,10 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
      * @param pck packet to create
      * @param trg neighbor address
      * @param src my address
+     * @param supr suppress router bit
      * @param soli solicited
      */
-    public void createNeighAdv(addrType hwa, packHolder pck, addrIPv6 trg, addrIPv6 src, boolean soli) {
+    public void createNeighAdv(addrType hwa, packHolder pck, addrIPv6 trg, addrIPv6 src, boolean supr, boolean soli) {
         src = src.copyBytes();
         trg = trg.copyBytes();
         if (debugger.ipIfc6neiTraf) {
@@ -569,7 +570,10 @@ public class ipIcmp6 implements ipIcmp, ipPrt {
         }
         pck.merge2beg();
         pck.TCPseq = 0;
-        pck.UDPsrc = 0x8000; // router bit always set
+        pck.UDPsrc = 0;
+        if (!supr) {
+            pck.UDPsrc |= 0x8000; // router bit
+        }
         if (soli) {
             pck.UDPsrc |= 0x6000; // solicited, override
         }
