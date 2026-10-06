@@ -2,6 +2,11 @@ int recHnd;
 int recPrt;
 void(*recFnc)();
 
+OpusDecoder *recDec;
+unsigned char recBufD[pktln * 8];
+unsigned char recBufC[pktln * 4];
+int recBufS;
+
 
 void iou_read() {
     recFnc();
@@ -142,6 +147,26 @@ void rec_udpl() {
 }
 
 
+void rec_opus() {
+    short *bufV = (short *)&recBufD[0];
+    if (recBufS < (pktln / smpbt)) {
+        bufS = recv(recHnd, &recBufC[0], sizeof (recBufC), 0);
+        if (bufS < 1) return;
+        bufS = opus_decode(recDec, &recBufC[0], bufS, &bufV[recBufS], sizeof (recBufC), 0);
+        if (bufS < 1) return;
+        recBufS += bufS * 2;
+    }
+    bufS = 0;
+    for (int p = 0; p < (pktln / smpbt); p++) {
+        iou_psam(bufS, bufV[p] << 16);
+        bufS += smpbt;
+    }
+    recBufS -= pktln / smpbt;
+    memmove(&bufV[0], &bufV[pktln / smpbt], sizeof (short) * recBufS);
+    iou_bswp2lsb();
+}
+
+
 void rec_init(char*knd, char*grp, char*src, char* prt) {
     recFnc = NULL;
     if (strcmp(knd,"rtp") == 0) recFnc = &rec_rtp;
@@ -155,6 +180,12 @@ void rec_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"iec") == 0) recFnc = &rec_iec;
     if (strcmp(knd,"udpm") == 0) recFnc = &rec_udpm;
     if (strcmp(knd,"udpl") == 0) recFnc = &rec_udpl;
+    if (strcmp(knd,"opus") == 0) {
+        recDec = opus_decoder_create(srate, 2, &recBufS);
+        if (recDec == NULL) err("error creating");
+        recBufS = 0;
+        recFnc = &rec_opus;
+    }
     if (recFnc == NULL) err("no such kind");
     recPrt = atoi(prt);
     struct sockaddr_in addrTmp;

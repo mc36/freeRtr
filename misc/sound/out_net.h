@@ -4,7 +4,10 @@ int plySrc;
 int plyPrt;
 int plyClk;
 void(*plyFnc)();
-
+OpusEncoder *plyEnc;
+unsigned char plyBufD[pktln * 8];
+unsigned char plyBufC[pktln * 4];
+int plyBufS;
 
 void iou_write() {
     plyFnc();
@@ -159,6 +162,22 @@ void ply_udpl() {
 }
 
 
+void ply_opus() {
+    iou_bswp2lsb();
+    short *bufV = (short *)&plyBufD[0];
+    for (int p = 0; p < bufS; p += smpbt) {
+        bufV[plyBufS] = iou_gsam(p) >> 16;
+        plyBufS++;
+    }
+    if (plyBufS < 960) return;
+    bufS = opus_encode(plyEnc, &bufV[0], 480, &plyBufC[0], sizeof (plyBufC));
+    if (bufS < 1) err("error encoding");
+    if (send(plyHnd, &plyBufC[0], bufS, 0) != bufS) err("error sending");
+    plyBufS -= 960;
+    memmove(&bufV[0], &bufV[960], sizeof (short) * plyBufS);
+}
+
+
 void ply_init(char*knd, char*grp, char*src, char* prt) {
     plyFnc = NULL;
     if (strcmp(knd,"rtp") == 0) plyFnc = &ply_rtp;
@@ -172,6 +191,15 @@ void ply_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"iec") == 0) plyFnc = &ply_iec;
     if (strcmp(knd,"udpm") == 0) plyFnc = &ply_udpm;
     if (strcmp(knd,"udpl") == 0) plyFnc = &ply_udpl;
+    if (strcmp(knd,"opus") == 0) {
+        plyEnc = opus_encoder_create(srate, 2, OPUS_APPLICATION_AUDIO, &plyBufS);
+        if (plyEnc == NULL) err("error creating");
+        plyBufS = 0;
+        opus_encoder_ctl(plyEnc, OPUS_SET_BITRATE(512000));
+        opus_encoder_ctl(plyEnc, OPUS_SET_COMPLEXITY(9));
+        opus_encoder_ctl(plyEnc, OPUS_SET_SIGNAL(OPUS_SIGNAL_MUSIC));
+        plyFnc = &ply_opus;
+    }
     if (plyFnc == NULL) err("no such kind");
     plyPrt = atoi(prt);
     struct sockaddr_in addrTmp;

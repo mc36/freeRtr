@@ -10,4 +10,5 @@
 #include <sys/time.h>
 #include <samplerate.h>
 #include <sndfile.h>
+#include <opus/opus.h>
 #include <alsa/asoundlib.h>

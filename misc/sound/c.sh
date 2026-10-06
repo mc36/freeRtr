@@ -7,7 +7,7 @@ for fn in playback w64mpg; do
 done
 
 for fn in sender; do
-  compileFile $fn "" "-lsndfile -lsamplerate" ""
+  compileFile $fn "" "-lsndfile -lopus -lsamplerate" ""
 done
 
 for fn in visMeterLoc; do
@@ -15,13 +15,17 @@ for fn in visMeterLoc; do
 done
 
 for fn in loopback receiver streamer streamerBth streamerLft streamerRgt streamerMix w64play w64rec; do
-  compileFile $fn "" "-lasound" ""
+  compileFile $fn "" "-lasound -lopus" ""
 done
 
 for fn in visMeterRem; do
-  compileFile $fn "" "-lm" ""
+  compileFile $fn "" "-lm -lopus" ""
 done
 
-for fn in  mixer forwarder recorder w64fix; do
+for fn in mixer forwarder recorder; do
+  compileFile $fn "" "-lopus" ""
+done
+
+for fn in w64fix; do
   compileFile $fn "" "" ""
 done

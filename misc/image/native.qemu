@@ -23,6 +23,7 @@ select-one libxdp-dev                     #dataplane
 select-one liburing-dev                   #dataplane
 select-one libmnl-dev                     #dataplane
 select-one libasound-dev                  #sound
+select-one libopus-dev                    #sound
 select-one libsndfile-dev                 #sound
 select-one libsamplerate-dev              #sound
 
