@@ -39,7 +39,7 @@ void ply_scr() {
 }
 
 
-void ply_vba() {
+void ply_vban() {
     iou_bswp2lsb();
     iou_pmsb(padln - vbaln + 0, vbamg);
     bufD[padln - vbaln + 4] = vbabr;
@@ -57,7 +57,7 @@ void ply_vba() {
 }
 
 
-void ply_wfa() {
+void ply_wfas() {
     iou_bswp2lsb();
     iou_pmsb(padln - wfaln + 0, wfamg);
     iou_pmsb(padln - wfaln + 2, ((wfamg & 0xffff) << 16) | plySeq);
@@ -93,7 +93,7 @@ void ply_jckt() {
 }
 
 
-void ply_avt() {
+void ply_avtp() {
     iou_bswp2msb();
     iou_pmsb(padln - avtln + 0, plySeq);
     iou_pmsb(padln - avtln + 4, ((plySeq & 0xff) << 8) | 0x2810000);
@@ -163,11 +163,11 @@ void ply_init(char*knd, char*grp, char*src, char* prt) {
     plyFnc = NULL;
     if (strcmp(knd,"rtp") == 0) plyFnc = &ply_rtp;
     if (strcmp(knd,"scr") == 0) plyFnc = &ply_scr;
-    if (strcmp(knd,"vba") == 0) plyFnc = &ply_vba;
-    if (strcmp(knd,"wfa") == 0) plyFnc = &ply_wfa;
+    if (strcmp(knd,"vban") == 0) plyFnc = &ply_vban;
+    if (strcmp(knd,"wfas") == 0) plyFnc = &ply_wfas;
     if (strcmp(knd,"jcku") == 0) plyFnc = &ply_jcku;
     if (strcmp(knd,"jckt") == 0) plyFnc = &ply_jckt;
-    if (strcmp(knd,"avt") == 0) plyFnc = &ply_avt;
+    if (strcmp(knd,"avtp") == 0) plyFnc = &ply_avtp;
     if (strcmp(knd,"avb") == 0) plyFnc = &ply_avb;
     if (strcmp(knd,"iec") == 0) plyFnc = &ply_iec;
     if (strcmp(knd,"udpm") == 0) plyFnc = &ply_udpm;

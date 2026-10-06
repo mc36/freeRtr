@@ -138,11 +138,11 @@ public class packer {
         if (a.equals("scr")) {
             return new packetScr(this);
         }
-        if (a.equals("vba")) {
-            return new packetVba(this);
+        if (a.equals("vban")) {
+            return new packetVban(this);
         }
-        if (a.equals("wfa")) {
-            return new packetWfa(this);
+        if (a.equals("wfas")) {
+            return new packetWfas(this);
         }
         if (a.equals("jcku")) {
             return new packetJckU(this);
@@ -150,8 +150,8 @@ public class packer {
         if (a.equals("jckt")) {
             return new packetJckT(this);
         }
-        if (a.equals("avt")) {
-            return new packetAvt(this);
+        if (a.equals("avtp")) {
+            return new packetAvtp(this);
         }
         if (a.equals("avb")) {
             return new packetAvb(this);
@@ -437,7 +437,7 @@ public class packer {
      * @param len length
      * @throws Exception on error
      */
-    public void writeVba(byte[] buf, int len) throws Exception {
+    public void writeVban(byte[] buf, int len) throws Exception {
         coder.byteSwap(buf, len);
         buffer.clear();
         putMsb(buffer, 0, consts.vbam);
@@ -464,7 +464,7 @@ public class packer {
      * @return bytes
      * @throws Exception on error
      */
-    public int readVba(byte[] buf) throws Exception {
+    public int readVban(byte[] buf) throws Exception {
         int len;
         for (;;) {
             buffer.clear();
@@ -495,7 +495,7 @@ public class packer {
      * @param len length
      * @throws Exception on error
      */
-    public void writeWfa(byte[] buf, int len) throws Exception {
+    public void writeWfas(byte[] buf, int len) throws Exception {
         coder.byteSwap(buf, len);
         buffer.clear();
         putMsb(buffer, 0, consts.wfam);
@@ -517,7 +517,7 @@ public class packer {
      * @return bytes
      * @throws Exception on error
      */
-    public int readWfa(byte[] buf) throws Exception {
+    public int readWfas(byte[] buf) throws Exception {
         int len;
         for (;;) {
             buffer.clear();
@@ -634,7 +634,7 @@ public class packer {
      * @param len length
      * @throws Exception on error
      */
-    public void writeAvt(byte[] buf, int len) throws Exception {
+    public void writeAvtp(byte[] buf, int len) throws Exception {
         buffer.clear();
         putMsb(buffer, 0, seq);
         putMsb(buffer, 4, ((seq & 0xff) << 8) | 0x2810000);
@@ -658,7 +658,7 @@ public class packer {
      * @return bytes
      * @throws Exception on error
      */
-    public int readAvt(byte[] buf) throws Exception {
+    public int readAvtp(byte[] buf) throws Exception {
         int len;
         for (;;) {
             buffer.clear();
@@ -826,34 +826,34 @@ class packetScr extends packet {
 
 }
 
-class packetVba extends packet {
+class packetVban extends packet {
 
-    public packetVba(packer p) {
+    public packetVban(packer p) {
         super(p);
     }
 
     public int readKind(byte[] buf) throws Exception {
-        return pck.readVba(buf);
+        return pck.readVban(buf);
     }
 
     public void writeKind(byte[] buf, int len) throws Exception {
-        pck.writeVba(buf, len);
+        pck.writeVban(buf, len);
     }
 
 }
 
-class packetWfa extends packet {
+class packetWfas extends packet {
 
-    public packetWfa(packer p) {
+    public packetWfas(packer p) {
         super(p);
     }
 
     public int readKind(byte[] buf) throws Exception {
-        return pck.readWfa(buf);
+        return pck.readWfas(buf);
     }
 
     public void writeKind(byte[] buf, int len) throws Exception {
-        pck.writeWfa(buf, len);
+        pck.writeWfas(buf, len);
     }
 
 }
@@ -890,18 +890,18 @@ class packetJckT extends packet {
 
 }
 
-class packetAvt extends packet {
+class packetAvtp extends packet {
 
-    public packetAvt(packer p) {
+    public packetAvtp(packer p) {
         super(p);
     }
 
     public int readKind(byte[] buf) throws Exception {
-        return pck.readAvt(buf);
+        return pck.readAvtp(buf);
     }
 
     public void writeKind(byte[] buf, int len) throws Exception {
-        pck.writeAvt(buf, len);
+        pck.writeAvtp(buf, len);
     }
 
 }

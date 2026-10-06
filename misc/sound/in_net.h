@@ -45,7 +45,7 @@ void rec_scr() {
 }
 
 
-void rec_vba() {
+void rec_vban() {
     for (;;) {
         bufS = recv(recHnd, &bufD[padln - vbaln], sizeof (bufD) - padln, 0);
         bufS -= vbaln;
@@ -58,7 +58,7 @@ void rec_vba() {
 }
 
 
-void rec_wfa() {
+void rec_wfas() {
     for (;;) {
         bufS = recv(recHnd, &bufD[padln - wfaln], sizeof (bufD) - padln, 0);
         bufS -= wfaln;
@@ -92,7 +92,7 @@ void rec_jckt() {
 }
 
 
-void rec_avt() {
+void rec_avtp() {
     for (;;) {
         bufS = recv(recHnd, &bufD[padln - avtln], sizeof (bufD) - padln, 0);
         bufS -= avtln;
@@ -146,11 +146,11 @@ void rec_init(char*knd, char*grp, char*src, char* prt) {
     recFnc = NULL;
     if (strcmp(knd,"rtp") == 0) recFnc = &rec_rtp;
     if (strcmp(knd,"scr") == 0) recFnc = &rec_scr;
-    if (strcmp(knd,"vba") == 0) recFnc = &rec_vba;
-    if (strcmp(knd,"wfa") == 0) recFnc = &rec_wfa;
+    if (strcmp(knd,"vban") == 0) recFnc = &rec_vban;
+    if (strcmp(knd,"wfas") == 0) recFnc = &rec_wfas;
     if (strcmp(knd,"jcku") == 0) recFnc = &rec_jcku;
     if (strcmp(knd,"jckt") == 0) recFnc = &rec_jckt;
-    if (strcmp(knd,"avt") == 0) recFnc = &rec_avt;
+    if (strcmp(knd,"avtp") == 0) recFnc = &rec_avtp;
     if (strcmp(knd,"avb") == 0) recFnc = &rec_avb;
     if (strcmp(knd,"iec") == 0) recFnc = &rec_iec;
     if (strcmp(knd,"udpm") == 0) recFnc = &rec_udpm;
