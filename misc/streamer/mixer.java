@@ -26,12 +26,10 @@ public class mixer {
             packet s = packer.receiver(args[p + 0], args[p + 1], args[p + 2]).string2kind(args[2]);
             long vl = vol2rng(Integer.parseInt(args[p + 3]), 0);
             long vr = vol2rng(Integer.parseInt(args[p + 4]), 0);
+            s.pck.setBlock(i == 0);
             source[i] = new mixerOne(selected, (int) outVol, s, vl, vr);
         }
-        source[0].src.pck.setBlock(true);
-        for (int i = 1; i < source.length; i++) {
-            source[i].src.pck.setBlock(false);
-        }
+        source[0].set2imm();
         outVol = vol2rng(Integer.parseInt(args[6]), 0);
         selected = -1;
         byte[] buf = new byte[consts.payl];
@@ -148,10 +146,10 @@ public class mixer {
                     }
                     break;
                 case ' ':
-                    System.out.println("\r\n\r\n\rchn  packets   missed truncate  overrun underrun   excess     gaps  silence");
+                    System.out.print("\r\n\r\n\rchn  packets   missed truncate  overrun underrun   excess     gaps  silence\r\n");
                     for (i = 0; i < source.length; i++) {
                         cur = source[i];
-                        System.out.println(String.format("%3d %8d %8d %8d %8d %8d %8d %8d %8d", (i + 1), cur.pkt, (source[0].pkt - cur.pkt), cur.trn, cur.ovr, cur.und, cur.exc, cur.gap, cur.sln));
+                        System.out.print(String.format("%3d %8d %8d %8d %8d %8d %8d %8d %8d", (i + 1), cur.pkt, (source[0].pkt - cur.pkt), cur.trn, cur.ovr, cur.und, cur.exc, cur.gap, cur.sln) + "\r\n");
                     }
                     System.out.println("\r");
                     break;
@@ -242,6 +240,11 @@ class mixerOne {
         und = 0;
         exc = 0;
         trn = 0;
+    }
+
+    public void set2imm() {
+        stp = false;
+        posR = (posW + buf.length - 1) % buf.length;
     }
 
     public void readRounds() throws Exception {

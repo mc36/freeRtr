@@ -34,7 +34,7 @@ public class monoDoer {
             long res = cur[i];
             res += cur[i + 1];
             res *= vol;
-            res /= 50;
+            res /= 100;
             cur[i + 0] = (int) res;
             cur[i + 1] = (int) res;
         }

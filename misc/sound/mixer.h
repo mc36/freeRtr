@@ -74,6 +74,11 @@ void mixIni(struct mixOne *d, long vl, long vr) {
     memset(d->buf, 0, len);
 }
 
+void mixImm(struct mixOne *d) {
+    d->stp = 0;
+    d->posR = (d->posW + mixDly - 1) % mixDly;
+}
+
 int mixDec(struct mixOne *d) {
     if (bufS < 1) return 0;
     if (bufS < pktln) {

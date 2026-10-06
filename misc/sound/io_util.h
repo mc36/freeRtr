@@ -64,6 +64,17 @@ void iou_mono(int src, int trg) {
     }
 }
 
+void iou_monmix() {
+    for (int p = 0; p < bufS; p += smpbt * 2) {
+        long res = iou_gsam(p + 0);
+        res += iou_gsam(p + smpbt);
+        res *= monoVol;
+        res /= 100;
+        iou_psam(p + 0, res);
+        iou_psam(p + smpbt, res);
+    }
+}
+
 #define iou_int2pln()                       \
     int smp = cur / smpbt;                  \
     int pos = cur % smpbt;                  \

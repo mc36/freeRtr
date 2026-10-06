@@ -22,6 +22,7 @@ int main(int argc, char**argv) {
         mixIni(&mixChn[i], atoi(argv[p + 3]), atoi(argv[p + 4]));
         rec_blk(i == 0);
     }
+    mixImm(&mixChn[0]);
     iou_loop();
     return 0;
 }
