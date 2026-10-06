@@ -169,12 +169,12 @@ void ply_opus() {
         bufV[plyBufS] = iou_gsam(p) >> 16;
         plyBufS++;
     }
-    if (plyBufS < 960) return;
-    bufS = opus_encode(plyEnc, &bufV[0], 480, &plyBufC[0], sizeof (plyBufC));
+    if (plyBufS < 1920) return;
+    bufS = opus_encode(plyEnc, &bufV[0], 960, &plyBufC[0], sizeof (plyBufC));
     if (bufS < 1) err("error encoding");
     if (send(plyHnd, &plyBufC[0], bufS, 0) != bufS) err("error sending");
-    plyBufS -= 960;
-    memmove(&bufV[0], &bufV[960], sizeof (short) * plyBufS);
+    plyBufS -= 1920;
+    memmove(&bufV[0], &bufV[1920], sizeof (short) * plyBufS);
 }
 
 
