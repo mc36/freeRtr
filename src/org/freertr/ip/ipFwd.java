@@ -41,6 +41,7 @@ import org.freertr.util.debugger;
 import org.freertr.util.history;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
+import org.freertr.util.smalist;
 import org.freertr.util.state;
 import org.freertr.util.syncInt;
 
@@ -1904,7 +1905,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         forwardPacket(4, lower, null, pck);
     }
 
-    private void doMpls(ipFwdIface ifc, addrIP hop, List<Integer> labs, packHolder pck) {
+    private void doMpls(ipFwdIface ifc, addrIP hop, smalist labs, packHolder pck) {
         if (ifc == null) {
             cntrT.drop(pck, counter.reasons.noIface);
             return;

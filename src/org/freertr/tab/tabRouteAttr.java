@@ -1696,6 +1696,7 @@ public class tabRouteAttr<T extends addrType> {
      * @return string
      */
     public List<Integer> asPathInts(int beg) {
+        //////////////hereeeeeeeeeeee
         List<Integer> res = new ArrayList<Integer>();
         if (beg != -1) {
             res.add(beg);
@@ -1707,7 +1708,7 @@ public class tabRouteAttr<T extends addrType> {
         return res;
     }
 
-    private static void appendIntList(List<Integer> trg, List<Integer> src) {
+    private static void appendIntList(List<Integer> trg, smalist src) {
         if (src == null) {
             return;
         }
@@ -2128,7 +2129,7 @@ public class tabRouteAttr<T extends addrType> {
         }
         if ((ign & 0x800000) != 0) {
             if (ntry.stdComm != null) {
-                Collections.sort(ntry.stdComm);
+                ntry.stdComm.sort();
             }
             if (ntry.extComm != null) {
                 Collections.sort(ntry.extComm);

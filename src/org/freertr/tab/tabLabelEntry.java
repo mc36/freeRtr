@@ -714,7 +714,7 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
      * @param hop next hop address
      * @param lab next hop labels
      */
-    public void addDupMpls(owner ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, List<Integer> lab) {
+    public void addDupMpls(owner ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, smalist lab) {
         if (key != ky) {
             return;
         }

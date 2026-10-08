@@ -31,6 +31,7 @@ import org.freertr.util.cmds;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
+import org.freertr.util.smalist;
 
 /**
  * p4lang utilities
@@ -604,7 +605,7 @@ public class servP4langUtil {
      * @param labs labels
      * @return label
      */
-    protected final static int get1stLabel(List<Integer> labs) {
+    protected final static int get1stLabel(smalist labs) {
         if (labs == null) {
             return -1;
         }
@@ -631,7 +632,7 @@ public class servP4langUtil {
      * @param labs labels
      * @return label
      */
-    protected final static int get2ndLabel(List<Integer> labs) {
+    protected final static int get2ndLabel(smalist labs) {
         if (labs == null) {
             return -1;
         }

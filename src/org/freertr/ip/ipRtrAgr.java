@@ -76,7 +76,7 @@ public class ipRtrAgr implements Comparable<ipRtrAgr> {
         return prefix.compareTo(o.prefix);
     }
 
-    private void addAll(List<Integer> trg, List<Integer> src) {
+    private void addAll(smalist trg, smalist src) {
         if (src == null) {
             return;
         }

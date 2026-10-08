@@ -1,13 +1,93 @@
 package org.freertr.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * small list of ints
  *
  * @author matecsaba
  */
-public class smalist extends ArrayList<Integer> {
+public class smalist {
+
+    private ArrayList<Integer> lst;
+
+    /**
+     * size of list
+     *
+     * @return size
+     */
+    public int size() {
+        return lst.size();
+    }
+
+    /**
+     * add entry
+     *
+     * @param v value
+     */
+    public void add(int v) {
+        lst.add(v);
+    }
+
+    /**
+     * add entry
+     *
+     * @param i index
+     * @param v value
+     */
+    public void set(int i, int v) {
+        lst.set(i, v);
+    }
+
+    /**
+     * index of value
+     *
+     * @param v value
+     * @return index, -1 if not found
+     */
+    public int indexOf(int v) {
+        for (int i = 0; i < lst.size(); i++) {
+            if (lst.get(i) == v) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * get entry
+     *
+     * @param i index
+     * @return value
+     */
+    public int get(int i) {
+        return lst.get(i);
+    }
+
+    /**
+     * delete entry
+     *
+     * @param i index
+     * @return value
+     */
+    public int remove(int i) {
+        return lst.remove(i);
+    }
+
+    /**
+     * sort list
+     */
+    public void sort() {
+        Collections.sort(lst);
+    }
+
+    /**
+     * create instance
+     */
+    public smalist() {
+        lst = new ArrayList<Integer>();
+    }
 
     /**
      * copy labels
@@ -20,7 +100,9 @@ public class smalist extends ArrayList<Integer> {
             return null;
         }
         smalist res = new smalist();
-        res.addAll(src);
+        for (int i = 0; i < src.lst.size(); i++) {
+            res.lst.add(i, src.lst.get(i));
+        }
         return res;
     }
 
@@ -35,7 +117,7 @@ public class smalist extends ArrayList<Integer> {
         if (l == null) {
             return null;
         }
-        if (l.size() < 1) {
+        if (l.lst.size() < 1) {
             return null;
         }
         return l;
@@ -49,7 +131,7 @@ public class smalist extends ArrayList<Integer> {
      */
     public static smalist int2labels(int val) {
         smalist res = new smalist();
-        res.add(val);
+        res.lst.add(val);
         return res;
     }
 
@@ -81,17 +163,10 @@ public class smalist extends ArrayList<Integer> {
         if (trg == null) {
             trg = new smalist();
         }
-        for (int i = 0; i < src.size(); i++) {
-            trg.add(i, src.get(i));
+        for (int i = 0; i < src.lst.size(); i++) {
+            trg.lst.add(i, src.lst.get(i));
         }
         return trg;
-    }
-
-    /**
-     * create instance
-     */
-    public smalist() {
-        super();
     }
 
 }

@@ -411,7 +411,7 @@ class rtrBgpAttrOriginType implements rtrBgpAttr {
 
 class rtrBgpAttrAsPath implements rtrBgpAttr {
 
-    private static void rdLst(boolean longAs, List<Integer> lst, packHolder pck) {
+    private static void rdLst(boolean longAs, smalist lst, packHolder pck) {
         int max = pck.getByte(0);
         pck.getSkip(1);
         if (longAs) {
@@ -429,7 +429,7 @@ class rtrBgpAttrAsPath implements rtrBgpAttr {
         }
     }
 
-    private static void wrLst(boolean longAs, packHolder pck, int typ, List<Integer> lst) {
+    private static void wrLst(boolean longAs, packHolder pck, int typ, smalist lst) {
         if (lst == null) {
             return;
         }

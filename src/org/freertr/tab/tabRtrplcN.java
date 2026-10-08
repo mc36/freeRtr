@@ -862,8 +862,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 }
                 return res.worker.getStatus();
             case privas:
-                i = tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
-                i += tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
+                i = tabRouteUtil.removePrivateAs(smalist.copyLabels(net.best.pathSeq));
+                i += tabRouteUtil.removePrivateAs(smalist.copyLabels(net.best.pathSet));
                 return i > 0;
             case entropy:
                 return net.best.entropyLabel != null;

@@ -416,7 +416,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * community matcher
      */
-    public List<Integer> stdCommMatch;
+    public smalist stdCommMatch;
 
     /**
      * community updater
@@ -1862,8 +1862,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
         }
         if (privasMatch) {
-            int i = tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
-            i += tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
+            int i = tabRouteUtil.removePrivateAs(smalist.copyLabels(net.best.pathSeq));
+            i += tabRouteUtil.removePrivateAs(smalist.copyLabels(net.best.pathSet));
             if (i < 1) {
                 return false;
             }

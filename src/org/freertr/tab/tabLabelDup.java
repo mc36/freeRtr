@@ -3,6 +3,7 @@ package org.freertr.tab;
 import java.util.List;
 import org.freertr.addr.addrIP;
 import org.freertr.ip.ipFwdIface;
+import org.freertr.util.smalist;
 
 /**
  * represents one label duplicating entry
@@ -24,7 +25,7 @@ public class tabLabelDup implements Comparable<tabLabelDup> {
     /**
      * remote label
      */
-    public final List<Integer> label;
+    public final smalist label;
 
     /**
      * create new duplicator
@@ -33,10 +34,10 @@ public class tabLabelDup implements Comparable<tabLabelDup> {
      * @param nxtHop next hop
      * @param lab labels
      */
-    public tabLabelDup(ipFwdIface ifa, addrIP nxtHop, List<Integer> lab) {
+    public tabLabelDup(ipFwdIface ifa, addrIP nxtHop, smalist lab) {
         iface = ifa;
         hop = nxtHop.copyBytes();
-        label = tabLabel.copyLabels(lab);
+        label = smalist.copyLabels(lab);
     }
 
     /**

@@ -402,7 +402,7 @@ public class tabRouteUtil {
      * @param l community list
      * @return string
      */
-    public static String stdComms2string(List<Integer> l) {
+    public static String stdComms2string(smalist l) {
         if (l == null) {
             return "";
         }
@@ -772,7 +772,7 @@ public class tabRouteUtil {
      * @param src source to replace
      * @param trg target to replace
      */
-    public static void replaceIntList(List<Integer> lst, int src, int trg) {
+    public static void replaceIntList(smalist lst, int src, int trg) {
         if (lst == null) {
             return;
         }
@@ -790,7 +790,7 @@ public class tabRouteUtil {
      * @param val value to check
      * @return false if yes, true if not
      */
-    public static boolean firstIntList(List<Integer> lst, int val) {
+    public static boolean firstIntList(smalist lst, int val) {
         if (lst == null) {
             return true;
         }
@@ -833,7 +833,7 @@ public class tabRouteUtil {
      * @param val value to find
      * @return position, -1 if not found
      */
-    public static int findIntList(List<Integer> lst, int val) {
+    public static int findIntList(smalist lst, int val) {
         if (lst == null) {
             return -1;
         }
@@ -979,7 +979,7 @@ public class tabRouteUtil {
      * @param src source to replace
      * @return number of occurences removed
      */
-    public static int removeIntList(List<Integer> lst, int src) {
+    public static int removeIntList(smalist lst, int src) {
         if (lst == null) {
             return 0;
         }
@@ -1016,7 +1016,7 @@ public class tabRouteUtil {
      * @param lst list to use
      * @return number of occurences removed
      */
-    public static int removePrivateAs(List<Integer> lst) {
+    public static int removePrivateAs(smalist lst) {
         if (lst == null) {
             return 0;
         }
@@ -1037,7 +1037,7 @@ public class tabRouteUtil {
      * @param l2 second list
      * @return true if differs
      */
-    public static boolean diffIntList(List<Integer> l1, List<Integer> l2) {
+    public static boolean diffIntList(smalist l1, smalist l2) {
         if (l1 == null) {
             return l2 != null;
         }
@@ -1048,7 +1048,7 @@ public class tabRouteUtil {
             return true;
         }
         for (int i = 0; i < l1.size(); i++) {
-            if (l1.get(i).compareTo(l2.get(i)) != 0) {
+            if (l1.get(i) != l2.get(i)) {
                 return true;
             }
         }
@@ -1063,7 +1063,7 @@ public class tabRouteUtil {
      * @param end ending
      * @return dumped list
      */
-    public static String dumpIntList(List<Integer> l, String beg, String end) {
+    public static String dumpIntList(smalist l, String beg, String end) {
         if (l == null) {
             return "";
         }
@@ -1083,7 +1083,7 @@ public class tabRouteUtil {
      * @param lst list to check
      * @return prepends founds
      */
-    public static int countPrepends(List<Integer> lst) {
+    public static int countPrepends(smalist lst) {
         if (lst == null) {
             return 0;
         }
@@ -1108,7 +1108,7 @@ public class tabRouteUtil {
      * @param lst list to check
      * @return loops founds
      */
-    public static int countLoops(List<Integer> lst) {
+    public static int countLoops(smalist lst) {
         if (lst == null) {
             return 0;
         }
@@ -1140,6 +1140,21 @@ public class tabRouteUtil {
         return lst.size();
     }
 
+
+    /**
+     * size of list
+     *
+     * @param lst list to check
+     * @return size of list
+     */
+    public static int listLen(smalist lst) {
+        if (lst == null) {
+            return 0;
+        }
+        return lst.size();
+    }
+    
+    
     /**
      * dump address list
      *
