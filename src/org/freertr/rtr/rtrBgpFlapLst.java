@@ -31,6 +31,16 @@ public class rtrBgpFlapLst implements Comparable<rtrBgpFlapLst> {
     /**
      * create instance
      *
+     * @param v value
+     */
+    public rtrBgpFlapLst(int v) {
+        lst = new ArrayList<Integer>();
+        lst.add(v);
+    }
+
+    /**
+     * create instance
+     *
      * @param l list of numbers
      */
     public rtrBgpFlapLst(List<Integer> l) {

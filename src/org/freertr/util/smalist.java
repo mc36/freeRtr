@@ -95,7 +95,6 @@ public class smalist {
      * delete entry
      *
      * @param i index
-     * @return value
      */
     public void remove(int i) {
         int[] res = new int[lst.length - 1];
@@ -129,7 +128,6 @@ public class smalist {
     /**
      * null empty list
      *
-     * @param <E> type of list
      * @param l list
      * @return maybe nulled list
      */
