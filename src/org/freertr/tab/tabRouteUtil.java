@@ -766,24 +766,6 @@ public class tabRouteUtil {
     }
 
     /**
-     * replace on integer list
-     *
-     * @param lst list to use
-     * @param src source to replace
-     * @param trg target to replace
-     */
-    public static void replaceIntList(smalist lst, int src, int trg) {
-        if (lst == null) {
-            return;
-        }
-        for (int i = 0; i < lst.size(); i++) {
-            if (lst.get(i) == src) {
-                lst.set(i, trg);
-            }
-        }
-    }
-
-    /**
      * first on integer list
      *
      * @param lst list to use
@@ -824,25 +806,6 @@ public class tabRouteUtil {
             o++;
         }
         return o;
-    }
-
-    /**
-     * find on integer list
-     *
-     * @param lst list to use
-     * @param val value to find
-     * @return position, -1 if not found
-     */
-    public static int findIntList(smalist lst, int val) {
-        if (lst == null) {
-            return -1;
-        }
-        for (int i = 0; i < lst.size(); i++) {
-            if (lst.get(i) == val) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     /**
@@ -1128,34 +1091,6 @@ public class tabRouteUtil {
     }
 
     /**
-     * size of list
-     *
-     * @param lst list to check
-     * @return size of list
-     */
-    public static int listLen(List<?> lst) {
-        if (lst == null) {
-            return 0;
-        }
-        return lst.size();
-    }
-
-
-    /**
-     * size of list
-     *
-     * @param lst list to check
-     * @return size of list
-     */
-    public static int listLen(smalist lst) {
-        if (lst == null) {
-            return 0;
-        }
-        return lst.size();
-    }
-    
-    
-    /**
      * dump address list
      *
      * @param <T> type of address
@@ -1224,10 +1159,7 @@ public class tabRouteUtil {
             case nothing:
                 break;
             case setter:
-                attr.labelRem = smalist.prependLabel(attr.labelRem, setter.val);
-                if (attr.labelRem.size() > 1) {
-                    attr.labelRem.remove(1);
-                }
+                attr.labelRem = smalist.int2labels(setter.val);
                 break;
             case adder:
                 attr.labelRem = smalist.prependLabel(attr.labelRem, setter.val);

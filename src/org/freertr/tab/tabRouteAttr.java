@@ -1503,8 +1503,14 @@ public class tabRouteAttr<T extends addrType> {
         if (imp.metric > metric) {
             return false;
         }
-        il = tabRouteUtil.listLen(imp.clustList);
-        ol = tabRouteUtil.listLen(clustList);
+        il = 0;
+        if (imp.clustList != null) {
+            il = imp.clustList.size();
+        }
+        ol = 0;
+        if (clustList != null) {
+            ol = clustList.size();
+        }
         if (il < ol) {
             return true;
         }
@@ -1520,8 +1526,14 @@ public class tabRouteAttr<T extends addrType> {
      * @return size of as path
      */
     public int asPathLen() {
-        int i = tabRouteUtil.listLen(pathSeq);
-        if (tabRouteUtil.listLen(pathSet) > 0) {
+        int i = 0;
+        if (pathSeq != null) {
+            i = pathSeq.size();
+        }
+        if (pathSet == null) {
+            return i;
+        }
+        if (pathSet.size() > 0) {
             i++;
         }
         return i;

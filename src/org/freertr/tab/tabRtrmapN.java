@@ -1925,7 +1925,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (peerStdMatch != 0) {
             int i = tabRouteUtil.stdCommAsn(peerStdMatch, asn);
-            if (tabRouteUtil.findIntList(net.best.stdComm, i) < 0) {
+            if (smalist.findIntList(net.best.stdComm, i) < 0) {
                 return false;
             }
         }
@@ -1938,7 +1938,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (stdCommMatch != null) {
             for (int i = 0; i < stdCommMatch.size(); i++) {
-                if (tabRouteUtil.findIntList(net.best.stdComm, stdCommMatch.get(i)) < 0) {
+                if (smalist.findIntList(net.best.stdComm, stdCommMatch.get(i)) < 0) {
                     return false;
                 }
             }

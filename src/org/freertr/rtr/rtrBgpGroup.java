@@ -361,8 +361,8 @@ public class rtrBgpGroup extends rtrBgpParam {
             tabRouteUtil.removePrivateAs(ntry.pathSet);
         }
         if (overridePeerOut) {
-            tabRouteUtil.replaceIntList(ntry.pathSeq, remoteAs, localAs);
-            tabRouteUtil.replaceIntList(ntry.pathSet, remoteAs, localAs);
+            smalist.replaceIntList(ntry.pathSeq, remoteAs, localAs);
+            smalist.replaceIntList(ntry.pathSet, remoteAs, localAs);
         }
         ntry.srcRtr = null;
         ntry.oldHop = null;
@@ -504,14 +504,14 @@ public class rtrBgpGroup extends rtrBgpParam {
                 break;
         }
         if (!allowAsOut) {
-            if (tabRouteUtil.findIntList(ntry.best.pathSeq, remoteAs) >= 0) {
+            if (smalist.findIntList(ntry.best.pathSeq, remoteAs) >= 0) {
                 return null;
             }
-            if (tabRouteUtil.findIntList(ntry.best.pathSet, remoteAs) >= 0) {
+            if (smalist.findIntList(ntry.best.pathSet, remoteAs) >= 0) {
                 return null;
             }
         }
-        if (tabRouteUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoAdvertise) >= 0) {
+        if (smalist.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoAdvertise) >= 0) {
             return null;
         }
         switch (peerType) {
@@ -521,7 +521,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                         return null;
                     }
                 }
-                if (tabRouteUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
+                if (smalist.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
                     return null;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
@@ -580,7 +580,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 }
                 break;
             case rtrBgpUtil.peerServr:
-                if (tabRouteUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
+                if (smalist.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoExport) >= 0) {
                     return null;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
@@ -602,7 +602,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 }
                 break;
             case rtrBgpUtil.peerCnfed:
-                if (tabRouteUtil.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoConfed) >= 0) {
+                if (smalist.findIntList(ntry.best.stdComm, rtrBgpUtil.commNoConfed) >= 0) {
                     return null;
                 }
                 ntry = ntry.copyBytes(tabRoute.addType.altEcmp);

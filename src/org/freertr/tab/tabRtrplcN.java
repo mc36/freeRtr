@@ -798,7 +798,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return net.best.asPathStr().matches(strVal);
             case peerstd:
                 int i = tabRouteUtil.stdCommAsn(intLst.get(0), asn);
-                if (tabRouteUtil.findIntList(net.best.stdComm, i) < 0) {
+                if (smalist.findIntList(net.best.stdComm, i) < 0) {
                     return false;
                 }
                 return true;
@@ -811,7 +811,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return true;
             case stdcomm:
                 for (i = 0; i < intLst.size(); i++) {
-                    if (tabRouteUtil.findIntList(net.best.stdComm, intLst.get(i)) < 0) {
+                    if (smalist.findIntList(net.best.stdComm, intLst.get(i)) < 0) {
                         return false;
                     }
                 }

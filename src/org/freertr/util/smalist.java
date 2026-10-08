@@ -12,6 +12,22 @@ public class smalist {
     private int[] lst;
 
     /**
+     * create instance
+     */
+    public smalist() {
+        lst = new int[0];
+    }
+
+    /**
+     * create instance
+     *
+     * @param s size
+     */
+    protected smalist(int s) {
+        lst = new int[s];
+    }
+
+    /**
      * size of list
      *
      * @return size
@@ -33,16 +49,6 @@ public class smalist {
     }
 
     /**
-     * add entry
-     *
-     * @param i index
-     * @param v value
-     */
-    public void set(int i, int v) {
-        lst[i] = v;
-    }
-
-    /**
      * add values, if not already
      *
      * @param src source of values
@@ -51,8 +57,8 @@ public class smalist {
         if (src == null) {
             return;
         }
-        for (int i = 0; i < src.size(); i++) {
-            int o = src.get(i);
+        for (int i = 0; i < src.lst.length; i++) {
+            int o = src.lst[i];
             if (indexOf(o) >= 0) {
                 continue;
             }
@@ -103,22 +109,6 @@ public class smalist {
      */
     public void sort() {
         Arrays.sort(lst);
-    }
-
-    /**
-     * create instance
-     */
-    public smalist() {
-        lst = new int[0];
-    }
-
-    /**
-     * create instance
-     *
-     * @param s size
-     */
-    public smalist(int s) {
-        lst = new int[s];
     }
 
     /**
@@ -199,12 +189,46 @@ public class smalist {
             return trg;
         }
         if (trg == null) {
-            trg = new smalist();
+            smalist res = new smalist(src.lst.length);
+            System.arraycopy(src.lst, 0, res.lst, 0, src.lst.length);
+            return res;
         }
         smalist res = new smalist(src.lst.length + trg.lst.length);
         System.arraycopy(src.lst, 0, res.lst, 0, src.lst.length);
         System.arraycopy(trg.lst, 0, res.lst, src.lst.length, trg.lst.length);
         return res;
+    }
+
+    /**
+     * find on integer list
+     *
+     * @param lst list to use
+     * @param val value to find
+     * @return position, -1 if not found
+     */
+    public static int findIntList(smalist lst, int val) {
+        if (lst == null) {
+            return -1;
+        }
+        return lst.indexOf(val);
+    }
+
+    /**
+     * replace on integer list
+     *
+     * @param lst list to use
+     * @param src source to replace
+     * @param trg target to replace
+     */
+    public static void replaceIntList(smalist lst, int src, int trg) {
+        if (lst == null) {
+            return;
+        }
+        for (int i = 0; i < lst.lst.length; i++) {
+            if (lst.lst[i] == src) {
+                lst.lst[i] = trg;
+            }
+        }
     }
 
 }

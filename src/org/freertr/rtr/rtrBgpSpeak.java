@@ -2017,21 +2017,21 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             switch (neigh.peerType) {
                 case rtrBgpUtil.peerExtrn:
                 case rtrBgpUtil.peerServr:
-                    if (tabRouteUtil.findIntList(ntry.best.pathSeq, neigh.localAs) >= 0) {
+                    if (smalist.findIntList(ntry.best.pathSeq, neigh.localAs) >= 0) {
                         repAsPath++;
                         return true;
                     }
-                    if (tabRouteUtil.findIntList(ntry.best.pathSet, neigh.localAs) >= 0) {
+                    if (smalist.findIntList(ntry.best.pathSet, neigh.localAs) >= 0) {
                         repAsPath++;
                         return true;
                     }
                     break;
                 case rtrBgpUtil.peerCnfed:
-                    if (tabRouteUtil.findIntList(ntry.best.confSeq, neigh.localAs) >= 0) {
+                    if (smalist.findIntList(ntry.best.confSeq, neigh.localAs) >= 0) {
                         repAsConf++;
                         return true;
                     }
-                    if (tabRouteUtil.findIntList(ntry.best.confSet, neigh.localAs) >= 0) {
+                    if (smalist.findIntList(ntry.best.confSet, neigh.localAs) >= 0) {
                         repAsConf++;
                         return true;
                     }
@@ -2111,8 +2111,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tabRouteUtil.removePrivateAs(ntry.best.pathSet);
         }
         if (neigh.overridePeerIn) {
-            tabRouteUtil.replaceIntList(ntry.best.pathSeq, neigh.remoteAs, neigh.localAs);
-            tabRouteUtil.replaceIntList(ntry.best.pathSet, neigh.remoteAs, neigh.localAs);
+            smalist.replaceIntList(ntry.best.pathSeq, neigh.remoteAs, neigh.localAs);
+            smalist.replaceIntList(ntry.best.pathSet, neigh.remoteAs, neigh.localAs);
         }
         if (neigh.intVpnClnt) {
             rtrBgpUtil.encodeAttribSet(this, idx, neigh.localAs, ntry);
