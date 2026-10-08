@@ -26,7 +26,6 @@ import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.smalist;
 import org.freertr.util.state;
 
 /**
@@ -510,7 +509,7 @@ public class ipMpls implements ifcUp {
      * @param pck packet to update
      * @param labs labels to add
      */
-    public static void createMPLSlabels(packHolder pck, smalist labs) {
+    public static void createMPLSlabels(packHolder pck, List<Integer> labs) {
         for (int i = labs.size() - 1; i >= 0; i--) {
             pck.MPLSlabel = labs.get(i);
             createMPLSheader(pck);
@@ -620,10 +619,10 @@ public class ipMpls implements ifcUp {
                 return true;
             }
         }
-        smalist labs = null;
+        List<Integer> labs = null;
         if (!pck.MPLSbottom) {
             int old = pck.MPLSlabel;
-            labs = new smalist();
+            labs = new ArrayList<Integer>();
             for (;;) {
                 if (parseMPLSheader(pck)) {
                     return true;

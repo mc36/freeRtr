@@ -25,7 +25,6 @@ import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
-import org.freertr.util.smalist;
 import org.freertr.util.state;
 
 /**
@@ -291,7 +290,7 @@ public class clntMplsLdpTe implements Runnable, ifcDn {
         }
         src.best.nextHop = nextHop.copyBytes();
         src.best.iface = nextIfc;
-        src.best.labelRem = smalist.int2labels(labs[0]);
+        src.best.labelRem = tabLabel.int2labels(labs[0]);
         return src;
     }
 

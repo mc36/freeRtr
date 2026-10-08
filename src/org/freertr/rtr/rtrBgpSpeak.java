@@ -29,7 +29,6 @@ import org.freertr.prt.prtTcp;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoWrk;
 import org.freertr.tab.tabRpkiUtil;
-import org.freertr.util.smalist;
 
 /**
  * bgp4 speaker
@@ -2017,21 +2016,21 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             switch (neigh.peerType) {
                 case rtrBgpUtil.peerExtrn:
                 case rtrBgpUtil.peerServr:
-                    if (smalist.findIntList(ntry.best.pathSeq, neigh.localAs) >= 0) {
+                    if (tabRouteUtil.findIntList(ntry.best.pathSeq, neigh.localAs) >= 0) {
                         repAsPath++;
                         return true;
                     }
-                    if (smalist.findIntList(ntry.best.pathSet, neigh.localAs) >= 0) {
+                    if (tabRouteUtil.findIntList(ntry.best.pathSet, neigh.localAs) >= 0) {
                         repAsPath++;
                         return true;
                     }
                     break;
                 case rtrBgpUtil.peerCnfed:
-                    if (smalist.findIntList(ntry.best.confSeq, neigh.localAs) >= 0) {
+                    if (tabRouteUtil.findIntList(ntry.best.confSeq, neigh.localAs) >= 0) {
                         repAsConf++;
                         return true;
                     }
-                    if (smalist.findIntList(ntry.best.confSet, neigh.localAs) >= 0) {
+                    if (tabRouteUtil.findIntList(ntry.best.confSet, neigh.localAs) >= 0) {
                         repAsConf++;
                         return true;
                     }
@@ -2095,7 +2094,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         if ((ntry.best.labelRem == null) && (ntry.best.segrouIdx > 0) && (ntry.best.segrouBeg > 0)) {
-            ntry.best.labelRem = smalist.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
+            ntry.best.labelRem = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
         }
         if (neigh.egressEng > 0) {
             ntry.best.segrouIdx = neigh.egressEng;
@@ -2111,8 +2110,8 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             tabRouteUtil.removePrivateAs(ntry.best.pathSet);
         }
         if (neigh.overridePeerIn) {
-            smalist.replaceIntList(ntry.best.pathSeq, neigh.remoteAs, neigh.localAs);
-            smalist.replaceIntList(ntry.best.pathSet, neigh.remoteAs, neigh.localAs);
+            tabRouteUtil.replaceIntList(ntry.best.pathSeq, neigh.remoteAs, neigh.localAs);
+            tabRouteUtil.replaceIntList(ntry.best.pathSet, neigh.remoteAs, neigh.localAs);
         }
         if (neigh.intVpnClnt) {
             rtrBgpUtil.encodeAttribSet(this, idx, neigh.localAs, ntry);

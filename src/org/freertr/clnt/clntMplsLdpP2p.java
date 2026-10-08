@@ -14,7 +14,6 @@ import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.smalist;
 import org.freertr.util.state;
 
 /**
@@ -201,7 +200,7 @@ public class clntMplsLdpP2p implements Runnable, ifcDn {
         if (prf.best.nextHop != null) {
             src.best.nextHop = prf.best.nextHop;
         }
-        src.best.labelRem = smalist.prependLabels(src.best.labelRem, prf.best.labelRem);
+        src.best.labelRem = tabLabel.prependLabels(src.best.labelRem, prf.best.labelRem);
         return src;
     }
 

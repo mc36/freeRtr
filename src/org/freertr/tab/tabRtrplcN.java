@@ -12,7 +12,6 @@ import org.freertr.ip.ipFwd;
 import org.freertr.pack.packHolder;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.util.bits;
-import org.freertr.util.smalist;
 
 /**
  * represents one route policy entry
@@ -472,7 +471,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     /**
      * integer list
      */
-    public smalist intLst;
+    public List<Integer> intLst;
 
     /**
      * long list
@@ -798,7 +797,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return net.best.asPathStr().matches(strVal);
             case peerstd:
                 int i = tabRouteUtil.stdCommAsn(intLst.get(0), asn);
-                if (smalist.findIntList(net.best.stdComm, i) < 0) {
+                if (tabRouteUtil.findIntList(net.best.stdComm, i) < 0) {
                     return false;
                 }
                 return true;
@@ -811,7 +810,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return true;
             case stdcomm:
                 for (i = 0; i < intLst.size(); i++) {
-                    if (smalist.findIntList(net.best.stdComm, intLst.get(i)) < 0) {
+                    if (tabRouteUtil.findIntList(net.best.stdComm, intLst.get(i)) < 0) {
                         return false;
                     }
                 }
@@ -862,8 +861,8 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 }
                 return res.worker.getStatus();
             case privas:
-                i = tabRouteUtil.removePrivateAs(smalist.copyLabels(net.best.pathSeq));
-                i += tabRouteUtil.removePrivateAs(smalist.copyLabels(net.best.pathSet));
+                i = tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
+                i += tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
                 return i > 0;
             case entropy:
                 return net.best.entropyLabel != null;
@@ -1021,7 +1020,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 tabRouteUtil.removeFirstAs(attr);
                 return;
             case setStdcomm:
-                attr.stdComm = smalist.prependLabels(attr.stdComm, intLst);
+                attr.stdComm = tabLabel.prependLabels(attr.stdComm, intLst);
                 return;
             case setExtcomm:
                 if (attr.extComm == null) {
@@ -1042,10 +1041,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 attr.nextHop = addrSet.copyBytes();
                 return;
             case setAspath:
-                attr.pathSeq = smalist.prependLabels(attr.pathSeq, intLst);
+                attr.pathSeq = tabLabel.prependLabels(attr.pathSeq, intLst);
                 return;
             case setAsconf:
-                attr.confSeq = smalist.prependLabels(attr.confSeq, intLst);
+                attr.confSeq = tabLabel.prependLabels(attr.confSeq, intLst);
                 return;
             case setDistance:
                 attr.distance = intSet.update(attr.distance);

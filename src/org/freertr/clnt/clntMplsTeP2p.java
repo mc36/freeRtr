@@ -22,7 +22,6 @@ import org.freertr.util.cmds;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.smalist;
 import org.freertr.util.state;
 
 /**
@@ -333,7 +332,7 @@ public class clntMplsTeP2p implements Comparable<clntMplsTeP2p>, Runnable, ifcDn
         }
         src.best.nextHop = trfEng.trgHop.copyBytes();
         src.best.iface = trfEng.trgIfc;
-        src.best.labelRem = smalist.int2labels(trfEng.trgLab);
+        src.best.labelRem = tabLabel.int2labels(trfEng.trgLab);
         return src;
     }
 

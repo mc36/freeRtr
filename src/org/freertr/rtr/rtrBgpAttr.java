@@ -14,7 +14,6 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
-import org.freertr.util.smalist;
 
 /**
  * one bgp4 attribute
@@ -411,7 +410,7 @@ class rtrBgpAttrOriginType implements rtrBgpAttr {
 
 class rtrBgpAttrAsPath implements rtrBgpAttr {
 
-    private static void rdLst(boolean longAs, smalist lst, packHolder pck) {
+    private static void rdLst(boolean longAs, List<Integer> lst, packHolder pck) {
         int max = pck.getByte(0);
         pck.getSkip(1);
         if (longAs) {
@@ -429,7 +428,7 @@ class rtrBgpAttrAsPath implements rtrBgpAttr {
         }
     }
 
-    private static void wrLst(boolean longAs, packHolder pck, int typ, smalist lst) {
+    private static void wrLst(boolean longAs, packHolder pck, int typ, List<Integer> lst) {
         if (lst == null) {
             return;
         }
@@ -461,10 +460,10 @@ class rtrBgpAttrAsPath implements rtrBgpAttr {
     }
 
     public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.pathSeq = new smalist();
-        ntry.best.pathSet = new smalist();
-        ntry.best.confSeq = new smalist();
-        ntry.best.confSet = new smalist();
+        ntry.best.pathSeq = new ArrayList<Integer>();
+        ntry.best.pathSet = new ArrayList<Integer>();
+        ntry.best.confSeq = new ArrayList<Integer>();
+        ntry.best.confSet = new ArrayList<Integer>();
         for (; pck.dataSize() > 0;) {
             int i = pck.getByte(0);
             pck.getSkip(1);
@@ -483,10 +482,6 @@ class rtrBgpAttrAsPath implements rtrBgpAttr {
                     break;
             }
         }
-        ntry.best.pathSeq = smalist.nullEmptyList(ntry.best.pathSeq);
-        ntry.best.pathSet = smalist.nullEmptyList(ntry.best.pathSet);
-        ntry.best.confSeq = smalist.nullEmptyList(ntry.best.confSeq);
-        ntry.best.confSet = smalist.nullEmptyList(ntry.best.confSet);
     }
 
     public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
@@ -741,12 +736,11 @@ class rtrBgpAttrPeDistLab implements rtrBgpAttr {
 class rtrBgpAttrStdComm implements rtrBgpAttr {
 
     public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.stdComm = new smalist();
+        ntry.best.stdComm = new ArrayList<Integer>();
         for (; pck.dataSize() >= 4;) {
             ntry.best.stdComm.add(pck.msbGetD(0));
             pck.getSkip(4);
         }
-        ntry.best.stdComm = smalist.nullEmptyList(ntry.best.stdComm);
     }
 
     public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {

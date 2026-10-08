@@ -32,7 +32,6 @@ import org.freertr.util.debugger;
 import org.freertr.util.keyword;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
-import org.freertr.util.smalist;
 
 /**
  * lsrp neighbor
@@ -598,7 +597,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
         new rtrLsrpNeighRcvr(this).startWork();
         if (lower.segrouLab != null) {
             segrouLab = tabLabel.allocate(tabLabelEntry.owner.lsrpAdj);
-            segrouLab.setFwdMpls(tabLabelEntry.owner.lsrpAdj, lower.fwdCore, iface.iface, peer, smalist.int2labels(ipMpls.labelImp));
+            segrouLab.setFwdMpls(tabLabelEntry.owner.lsrpAdj, lower.fwdCore, iface.iface, peer, tabLabel.int2labels(ipMpls.labelImp));
         }
         lower.todo.set(0);
         lower.notif.wakeup();

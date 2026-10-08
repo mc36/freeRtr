@@ -32,7 +32,6 @@ import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.logger;
-import org.freertr.util.smalist;
 import org.freertr.util.syncInt;
 
 /**
@@ -2062,9 +2061,9 @@ public class spfCalc<Ta extends addrType> {
                 rou.addAlt(res);
                 continue;
             }
-            res.labelRem = smalist.int2labels(res.segrouBeg + res.segrouIdx);
+            res.labelRem = tabLabel.int2labels(res.segrouBeg + res.segrouIdx);
             if (srPop && (res.hops <= 1)) {
-                res.labelRem = smalist.int2labels(ipMpls.labelImp);
+                res.labelRem = tabLabel.int2labels(ipMpls.labelImp);
             }
             rou.addAlt(res);
         }

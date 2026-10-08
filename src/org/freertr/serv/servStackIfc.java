@@ -28,7 +28,6 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
-import org.freertr.util.smalist;
 import org.freertr.util.state;
 
 /**
@@ -298,8 +297,10 @@ public class servStackIfc implements Runnable, Comparable<servStackIfc>, ifcUp {
     private tabRouteEntry<addrIP> generateRoute(int id, int met) {
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
         ntry.best.nextHop = bgpIfc.addr.copyBytes();
-        ntry.best.labelRem = smalist.int2labels(lower.lower.bckplnLab[id].label);
-        ntry.best.pathSeq = smalist.int2labels(bgpAsn);
+        ntry.best.labelRem = new ArrayList<Integer>();
+        ntry.best.labelRem.add(lower.lower.bckplnLab[id].label);
+        ntry.best.pathSeq = new ArrayList<Integer>();
+        ntry.best.pathSeq.add(bgpAsn);
         ntry.best.metric = met;
         addrIP adr = new addrIP();
         if (lower.lower.advertBase == null) {

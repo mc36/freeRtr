@@ -12,7 +12,6 @@ import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
-import org.freertr.util.smalist;
 
 /**
  * represents one label entry
@@ -180,7 +179,7 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
     /**
      * remote label
      */
-    public smalist remoteLab = null;
+    public List<Integer> remoteLab = null;
 
     /**
      * replication list
@@ -269,7 +268,8 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
             cmd.error("bad address");
             return null;
         }
-        ntry.remoteLab = smalist.int2labels(bits.str2num(cmd.word()));
+        ntry.remoteLab = new ArrayList<Integer>();
+        ntry.remoteLab.add(bits.str2num(cmd.word()));
         if (ntry.nextHop.isIPv4()) {
             ntry.forwarder = ifc.vrfFor.fwd4;
             ntry.iface = ifc.fwdIf4;
@@ -317,7 +317,7 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
             n.nextHop = nextHop.copyBytes();
         }
         if (remoteLab != null) {
-            n.remoteLab = smalist.copyLabels(remoteLab);
+            n.remoteLab = tabLabel.copyLabels(remoteLab);
         }
         if (duplicate != null) {
             n.duplicate = new tabGen<tabLabelDup>();
@@ -695,14 +695,14 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
      * @param hop next hop address
      * @param lab next hop labels
      */
-    public void setFwdMpls(owner ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, smalist lab) {
+    public void setFwdMpls(owner ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, List<Integer> lab) {
         if (key != ky) {
             return;
         }
         forwarder = fwd;
         iface = ifc;
         nextHop = hop.copyBytes();
-        remoteLab = smalist.copyLabels(lab);
+        remoteLab = tabLabel.copyLabels(lab);
     }
 
     /**
@@ -714,7 +714,7 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
      * @param hop next hop address
      * @param lab next hop labels
      */
-    public void addDupMpls(owner ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, smalist lab) {
+    public void addDupMpls(owner ky, ipFwd fwd, ipFwdIface ifc, addrIP hop, List<Integer> lab) {
         if (key != ky) {
             return;
         }

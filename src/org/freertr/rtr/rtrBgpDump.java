@@ -225,7 +225,7 @@ public class rtrBgpDump {
                 ntry = old;
             }
             int o = prf.best.asPathEnd();
-            rtrBgpFlapLst pth = new rtrBgpFlapLst(o);
+            rtrBgpFlapLst pth = new rtrBgpFlapLst(tabLabel.int2labels(o));
             ntry.paths.add(pth);
         }
     }
@@ -279,7 +279,7 @@ public class rtrBgpDump {
                 ntry = old;
             }
             int o = prf.best.asPathBeg();
-            rtrBgpFlapLst pth = new rtrBgpFlapLst(o);
+            rtrBgpFlapLst pth = new rtrBgpFlapLst(tabLabel.int2labels(o));
             ntry.paths.add(pth);
         }
     }
@@ -307,7 +307,7 @@ public class rtrBgpDump {
                 ntry = old;
             }
             int o = prf.best.asPathEnd();
-            rtrBgpFlapLst pth = new rtrBgpFlapLst(o);
+            rtrBgpFlapLst pth = new rtrBgpFlapLst(tabLabel.int2labels(o));
             ntry.paths.add(pth);
         }
     }

@@ -50,7 +50,6 @@ import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.smalist;
 
 /**
  * calculates ip forwarding tables
@@ -703,7 +702,7 @@ public class ipFwdTab {
             imp.best.segrouPrf = nh.best.segrouPrf.copyBytes();
         }
         if (nh.best.labelRem != null) {
-            imp.best.labelRem = smalist.prependLabels(imp.best.labelRem, nh.best.labelRem);
+            imp.best.labelRem = tabLabel.prependLabels(imp.best.labelRem, nh.best.labelRem);
         }
         return imp;
     }
@@ -806,7 +805,7 @@ public class ipFwdTab {
             }
             prf.best.iface = ifc;
             prf.best.nextHop = ifc.autRouHop.copyBytes();
-            prf.best.labelRem = smalist.int2labels(ipMpls.labelImp);
+            prf.best.labelRem = tabLabel.int2labels(ipMpls.labelImp);
             prf.reduce2best();
         }
     }
@@ -1043,7 +1042,7 @@ public class ipFwdTab {
             if (ifc.gateRem) {
                 tabRouteEntry<addrIP> prf = tabC.add(tabRoute.addType.always, new addrPrefix<addrIP>(gtw, gtw.maxBits()), null);
                 if (lab >= 0) {
-                    prf.best.labelRem = smalist.int2labels(lab);
+                    prf.best.labelRem = tabLabel.int2labels(lab);
                 }
                 prf.best.iface = ifc;
                 prf.best.rouTyp = tabRouteAttr.routeType.remote;
@@ -1057,7 +1056,7 @@ public class ipFwdTab {
             for (int o = 0; o < pfl.size(); o++) {
                 tabRouteEntry<addrIP> prf = new tabRouteEntry<addrIP>();
                 if (lab >= 0) {
-                    prf.best.labelRem = smalist.int2labels(lab);
+                    prf.best.labelRem = tabLabel.int2labels(lab);
                 }
                 prf.best.distance = 0;
                 prf.best.metric = 2;
@@ -1372,7 +1371,7 @@ public class ipFwdTab {
                 if (trf.trgHop.compareTo(rou.best.nextHop) != 0) {
                     continue;
                 }
-                rou.best.labelRem = smalist.prependLabels(rou.best.labelRem, smalist.int2labels(trf.trgLab));
+                rou.best.labelRem = tabLabel.prependLabels(rou.best.labelRem, tabLabel.int2labels(trf.trgLab));
                 if (rou.best.labelLoc == null) {
                     continue;
                 }
@@ -1462,7 +1461,7 @@ public class ipFwdTab {
             ipFwd vrf = lower;
             ipFwdIface ifc = (ipFwdIface) ntry.iface;
             addrIP hop = ntry.nextHop;
-            smalist lrs = ntry.labelRem;
+            List<Integer> lrs = ntry.labelRem;
             if (ntry.rouTab != null) {
                 vrf = ntry.rouTab;
                 tabRouteEntry<addrIP> nh = vrf.actualU.route(hop);
@@ -1471,8 +1470,8 @@ public class ipFwdTab {
                     if (nh.best.rouTyp != tabRouteAttr.routeType.conn) {
                         hop = nh.best.nextHop;
                     }
-                    lrs = smalist.prependLabels(new smalist(), ntry.labelRem);
-                    lrs = smalist.prependLabels(lrs, nh.best.labelRem);
+                    lrs = tabLabel.prependLabels(new ArrayList<Integer>(), ntry.labelRem);
+                    lrs = tabLabel.prependLabels(lrs, nh.best.labelRem);
                 }
             }
             if (hop != null) {
@@ -1530,12 +1529,12 @@ public class ipFwdTab {
     }
 
     private static void updateTableRouteLabels(tabRouteAttr<addrIP> ntry, tabRouteAttr<addrIP> loc, tabRouteAttr<addrIP> rem) {
-        ntry.labelRem = smalist.prependLabels(ntry.labelRem, rem.labelRem);
+        ntry.labelRem = tabLabel.prependLabels(ntry.labelRem, rem.labelRem);
         if (loc != null) {
-            loc.labelRem = smalist.prependLabels(loc.labelRem, rem.labelRem);
+            loc.labelRem = tabLabel.prependLabels(loc.labelRem, rem.labelRem);
         }
         if (ntry.labelLoc != null) {
-            ntry.labelLoc.remoteLab = smalist.prependLabels(ntry.labelLoc.remoteLab, rem.labelRem);
+            ntry.labelLoc.remoteLab = tabLabel.prependLabels(ntry.labelLoc.remoteLab, rem.labelRem);
         }
     }
 

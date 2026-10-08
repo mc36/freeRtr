@@ -14,7 +14,6 @@ import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
-import org.freertr.util.smalist;
 
 /**
  * stores one multipoint lsp
@@ -672,7 +671,7 @@ public class ipFwdMpmp implements Comparable<ipFwdMpmp> {
                 if (ntry.labelR < 0) {
                     continue;
                 }
-                smalist labs = smalist.int2labels(ntry.labelR);
+                List<Integer> labs = tabLabel.int2labels(ntry.labelR);
                 curr.labelL.addDupMpls(tabLabelEntry.owner.mp2mp, fwd, ntry.iface, ntry.addr, labs);
                 ned = true;
             }

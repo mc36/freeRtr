@@ -15,7 +15,6 @@ import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
-import org.freertr.util.smalist;
 import org.freertr.util.syncInt;
 
 /**
@@ -325,7 +324,7 @@ public class clntWhois {
      * @param end ending
      * @return list
      */
-    public static String asnList2str(smalist lst, String beg, String end) {
+    public static String asnList2str(List<Integer> lst, String beg, String end) {
         if (lst == null) {
             return "";
         }
@@ -349,7 +348,7 @@ public class clntWhois {
      * @param end ending
      * @return list
      */
-    public static String asnList2mixed(smalist lst, String beg, String end) {
+    public static String asnList2mixed(List<Integer> lst, String beg, String end) {
         if (lst == null) {
             return "";
         }
@@ -359,8 +358,7 @@ public class clntWhois {
         String s = "";
         for (int i = 0; i < lst.size(); i++) {
             int o = lst.get(i);
-            String a = asn2mixed(o, true);
-            s += " " + a;
+            s += " " + asn2mixed(o, true);
         }
         return beg + s.substring(1, s.length()) + end;
     }
@@ -373,7 +371,7 @@ public class clntWhois {
      * @param end ending
      * @return list
      */
-    public static String asnList2info(smalist lst, String beg, String end) {
+    public static String asnList2info(List<Integer> lst, String beg, String end) {
         if (lst == null) {
             return "";
         }

@@ -23,7 +23,6 @@ import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
-import org.freertr.util.smalist;
 
 /**
  * one openflow transmitter
@@ -173,7 +172,7 @@ class servOpenflowTx implements Runnable {
         trg.put(ntry);
     }
 
-    private int getLabel(smalist lab) {
+    private int getLabel(List<Integer> lab) {
         if (lab == null) {
             return -1;
         }

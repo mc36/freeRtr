@@ -4454,7 +4454,14 @@ public class userShow {
                 return;
             }
             tabRouteAttr<addrIP> ntry = new tabRouteAttr<addrIP>();
-            ntry.pathSeq = tabRouteUtil.string2intList(cmd.getRemaining());
+            ntry.pathSeq = new ArrayList<Integer>();
+            for (;;) {
+                a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                ntry.pathSeq.add(bits.str2num(a));
+            }
             int ver;
             if (pfx.network.isIPv4()) {
                 ver = 4;

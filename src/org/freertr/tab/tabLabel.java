@@ -229,4 +229,65 @@ public class tabLabel {
         return res;
     }
 
+    /**
+     * convert integer to list
+     *
+     * @param val value to convert
+     * @return converted
+     */
+    public static List<Integer> int2labels(int val) {
+        List<Integer> res = new ArrayList<Integer>();
+        res.add(val);
+        return res;
+    }
+
+    /**
+     * prepend some labels
+     *
+     * @param trg where to prepend
+     * @param src labels to prepend
+     * @return updated target list
+     */
+    public static List<Integer> prependLabels(List<Integer> trg, List<Integer> src) {
+        if (src == null) {
+            return trg;
+        }
+        if (src == trg) {
+            return trg;
+        }
+        if (trg == null) {
+            trg = new ArrayList<Integer>();
+        }
+        for (int i = 0; i < src.size(); i++) {
+            trg.add(i, src.get(i));
+        }
+        return trg;
+    }
+
+    /**
+     * prepend one label
+     *
+     * @param trg where to prepend
+     * @param val label to prepend
+     * @return updated target list
+     */
+    public static List<Integer> prependLabel(List<Integer> trg, int val) {
+        return prependLabels(trg, int2labels(val));
+    }
+
+    /**
+     * copy labels
+     *
+     * @param src labels to copy
+     * @return copyed labels
+     */
+    public static List<Integer> copyLabels(List<Integer> src) {
+        if (src == null) {
+            return null;
+        }
+        List<Integer> res = new ArrayList<Integer>();
+        res.addAll(src);
+        return res;
+    }
+
 }
