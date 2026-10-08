@@ -1,7 +1,6 @@
 package org.freertr.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 
 /**
  * small list of ints
@@ -10,7 +9,7 @@ import java.util.Collections;
  */
 public class smalist {
 
-    private ArrayList<Integer> lst;
+    private int[] lst;
 
     /**
      * size of list
@@ -18,7 +17,7 @@ public class smalist {
      * @return size
      */
     public int size() {
-        return lst.size();
+        return lst.length;
     }
 
     /**
@@ -27,7 +26,10 @@ public class smalist {
      * @param v value
      */
     public void add(int v) {
-        lst.add(v);
+        int[] res = new int[lst.length + 1];
+        System.arraycopy(lst, 0, res, 0, lst.length);
+        res[lst.length] = v;
+        lst = res;
     }
 
     /**
@@ -37,7 +39,7 @@ public class smalist {
      * @param v value
      */
     public void set(int i, int v) {
-        lst.set(i, v);
+        lst[i] = v;
     }
 
     /**
@@ -47,8 +49,8 @@ public class smalist {
      * @return index, -1 if not found
      */
     public int indexOf(int v) {
-        for (int i = 0; i < lst.size(); i++) {
-            if (lst.get(i) == v) {
+        for (int i = 0; i < lst.length; i++) {
+            if (lst[i] == v) {
                 return i;
             }
         }
@@ -62,7 +64,7 @@ public class smalist {
      * @return value
      */
     public int get(int i) {
-        return lst.get(i);
+        return lst[i];
     }
 
     /**
@@ -71,22 +73,34 @@ public class smalist {
      * @param i index
      * @return value
      */
-    public int remove(int i) {
-        return lst.remove(i);
+    public void remove(int i) {
+        int[] res = new int[lst.length - 1];
+        System.arraycopy(lst, 0, res, 0, i);
+        System.arraycopy(lst, i + 1, res, i, res.length - i);
+        lst = res;
     }
 
     /**
      * sort list
      */
     public void sort() {
-        Collections.sort(lst);
+        Arrays.sort(lst);
     }
 
     /**
      * create instance
      */
     public smalist() {
-        lst = new ArrayList<Integer>();
+        lst = new int[0];
+    }
+
+    /**
+     * create instance
+     *
+     * @param s size
+     */
+    public smalist(int s) {
+        lst = new int[s];
     }
 
     /**
@@ -99,10 +113,8 @@ public class smalist {
         if (src == null) {
             return null;
         }
-        smalist res = new smalist();
-        for (int i = 0; i < src.lst.size(); i++) {
-            res.lst.add(i, src.lst.get(i));
-        }
+        smalist res = new smalist(src.lst.length);
+        System.arraycopy(src.lst, 0, res.lst, 0, src.lst.length);
         return res;
     }
 
@@ -117,7 +129,7 @@ public class smalist {
         if (l == null) {
             return null;
         }
-        if (l.lst.size() < 1) {
+        if (l.lst.length < 1) {
             return null;
         }
         return l;
@@ -130,20 +142,28 @@ public class smalist {
      * @return converted
      */
     public static smalist int2labels(int val) {
-        smalist res = new smalist();
-        res.lst.add(val);
+        smalist res = new smalist(1);
+        res.lst[0] = val;
         return res;
     }
 
     /**
      * prepend one label
      *
-     * @param trg where to prepend
+     * @param src where to prepend
      * @param val label to prepend
      * @return updated target list
      */
-    public static smalist prependLabel(smalist trg, int val) {
-        return prependLabels(trg, smalist.int2labels(val));
+    public static smalist prependLabel(smalist src, int val) {
+        if (src == null) {
+            smalist res = new smalist(1);
+            res.lst[0] = val;
+            return res;
+        }
+        smalist res = new smalist(src.lst.length + 1);
+        System.arraycopy(src.lst, 0, res.lst, 1, src.lst.length);
+        res.lst[0] = val;
+        return res;
     }
 
     /**
@@ -163,10 +183,10 @@ public class smalist {
         if (trg == null) {
             trg = new smalist();
         }
-        for (int i = 0; i < src.lst.size(); i++) {
-            trg.lst.add(i, src.lst.get(i));
-        }
-        return trg;
+        smalist res = new smalist(src.lst.length + trg.lst.length);
+        System.arraycopy(src.lst, 0, res.lst, 0, src.lst.length);
+        System.arraycopy(trg.lst, 0, res.lst, src.lst.length, trg.lst.length);
+        return res;
     }
 
 }

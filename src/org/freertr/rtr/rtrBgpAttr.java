@@ -483,6 +483,10 @@ class rtrBgpAttrAsPath implements rtrBgpAttr {
                     break;
             }
         }
+        ntry.best.pathSeq = smalist.nullEmptyList(ntry.best.pathSeq);
+        ntry.best.pathSet = smalist.nullEmptyList(ntry.best.pathSet);
+        ntry.best.confSeq = smalist.nullEmptyList(ntry.best.confSeq);
+        ntry.best.confSet = smalist.nullEmptyList(ntry.best.confSet);
     }
 
     public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
@@ -742,6 +746,7 @@ class rtrBgpAttrStdComm implements rtrBgpAttr {
             ntry.best.stdComm.add(pck.msbGetD(0));
             pck.getSkip(4);
         }
+        ntry.best.stdComm = smalist.nullEmptyList(ntry.best.stdComm);
     }
 
     public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
