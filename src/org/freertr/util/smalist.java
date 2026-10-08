@@ -43,6 +43,24 @@ public class smalist {
     }
 
     /**
+     * add values, if not already
+     *
+     * @param src source of values
+     */
+    public void appendIfNot(smalist src) {
+        if (src == null) {
+            return;
+        }
+        for (int i = 0; i < src.size(); i++) {
+            int o = src.get(i);
+            if (indexOf(o) >= 0) {
+                continue;
+            }
+            add(o);
+        }
+    }
+
+    /**
      * index of value
      *
      * @param v value

@@ -76,19 +76,6 @@ public class ipRtrAgr implements Comparable<ipRtrAgr> {
         return prefix.compareTo(o.prefix);
     }
 
-    private void addAll(smalist trg, smalist src) {
-        if (src == null) {
-            return;
-        }
-        for (int i = 0; i < src.size(); i++) {
-            int o = src.get(i);
-            if (trg.indexOf(o) >= 0) {
-                return;
-            }
-            trg.add(o);
-        }
-    }
-
     /**
      * filter by this aggregation
      *
@@ -116,10 +103,10 @@ public class ipRtrAgr implements Comparable<ipRtrAgr> {
                 }
             }
             if (aspath) {
-                addAll(pathSet, ntry.best.pathSet);
-                addAll(pathSet, ntry.best.pathSeq);
-                addAll(confSet, ntry.best.confSet);
-                addAll(confSet, ntry.best.confSeq);
+                pathSet.appendIfNot(ntry.best.pathSet);
+                pathSet.appendIfNot(ntry.best.pathSeq);
+                confSet.appendIfNot(ntry.best.confSet);
+                confSet.appendIfNot(ntry.best.confSeq);
             }
             if (summary) {
                 src.del(ntry);
