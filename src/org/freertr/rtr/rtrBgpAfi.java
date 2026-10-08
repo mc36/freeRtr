@@ -14,6 +14,7 @@ import org.freertr.pack.packHolder;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
+import org.freertr.util.smalist;
 
 /**
  * one bgp4 address family
@@ -259,7 +260,7 @@ public interface rtrBgpAfi {
     public static <T extends addrType> addrPrefix<T> readVpnvXuni(T adr, boolean oneLab, tabRouteEntry<addrIP> ntry, packHolder pck) {
         int i = pck.getByte(0);
         pck.getSkip(1);
-        ntry.best.labelRem = new ArrayList<Integer>();
+        ntry.best.labelRem = new smalist();
         for (;;) {
             if (i < 24) {
                 break;
@@ -326,7 +327,7 @@ public interface rtrBgpAfi {
     public static <T extends addrType> addrPrefix<T> readIpvXlab(T adr, boolean oneLab, tabRouteEntry<addrIP> ntry, packHolder pck) {
         int i = pck.getByte(0);
         pck.getSkip(1);
-        ntry.best.labelRem = new ArrayList<Integer>();
+        ntry.best.labelRem = new smalist();
         for (;;) {
             if (i < 24) {
                 break;
@@ -406,7 +407,7 @@ public interface rtrBgpAfi {
         }
         i = pck.getByte(1);
         pck.getSkip(2);
-        ntry.best.labelRem = new ArrayList<Integer>();
+        ntry.best.labelRem = new smalist();
         for (;;) {
             if (i < 3) {
                 break;

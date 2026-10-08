@@ -36,6 +36,7 @@ import org.freertr.util.debugger;
 import org.freertr.util.keyword;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
+import org.freertr.util.smalist;
 
 /**
  * pvrp neighbor
@@ -879,8 +880,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
                     if (!lower.lower.labels) {
                         continue;
                     }
-                    ntry.best.labelRem = new ArrayList<Integer>();
-                    ntry.best.labelRem.add(bits.str2num(s));
+                    ntry.best.labelRem = smalist.int2labels(bits.str2num(s));
                     continue;
                 }
                 if (a.equals("segrou")) {
@@ -890,8 +890,7 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
                     ntry.best.segrouIdx = bits.str2num(s);
                     ntry.best.segrouBeg = lower.gotSegrouBeg;
                     ntry.best.segrouSiz = lower.gotSegrouMax;
-                    ntry.best.labelRem = new ArrayList<Integer>();
-                    ntry.best.labelRem.add(ntry.best.segrouBeg + ntry.best.segrouIdx);
+                    ntry.best.labelRem = smalist.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
                     continue;
                 }
                 if (a.equals("bieri")) {

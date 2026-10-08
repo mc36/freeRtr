@@ -18,6 +18,7 @@ import org.freertr.pack.packHolder;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.smalist;
 
 /**
  * represents one route map entry
@@ -315,12 +316,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * as path updater
      */
-    public List<Integer> aspathSet;
+    public smalist aspathSet;
 
     /**
      * as path updater
      */
-    public List<Integer> aspathCnf;
+    public smalist aspathCnf;
 
     /**
      * next hop matcher
@@ -415,7 +416,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * community matcher
      */
-    public List<Integer> stdCommMatch;
+    public smalist stdCommMatch;
 
     /**
      * community updater
@@ -425,7 +426,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     /**
      * community updater
      */
-    public List<Integer> stdCommSet;
+    public smalist stdCommSet;
 
     /**
      * community matcher
@@ -1861,8 +1862,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
         }
         if (privasMatch) {
-            int i = tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSeq));
-            i += tabRouteUtil.removePrivateAs(tabLabel.copyLabels(net.best.pathSet));
+            int i = tabRouteUtil.removePrivateAs(smalist.copyLabels(net.best.pathSeq));
+            i += tabRouteUtil.removePrivateAs(smalist.copyLabels(net.best.pathSet));
             if (i < 1) {
                 return false;
             }
@@ -1924,7 +1925,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (peerStdMatch != 0) {
             int i = tabRouteUtil.stdCommAsn(peerStdMatch, asn);
-            if (tabRouteUtil.findIntList(net.best.stdComm, i) < 0) {
+            if (smalist.findIntList(net.best.stdComm, i) < 0) {
                 return false;
             }
         }
@@ -1937,7 +1938,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         }
         if (stdCommMatch != null) {
             for (int i = 0; i < stdCommMatch.size(); i++) {
-                if (tabRouteUtil.findIntList(net.best.stdComm, stdCommMatch.get(i)) < 0) {
+                if (smalist.findIntList(net.best.stdComm, stdCommMatch.get(i)) < 0) {
                     return false;
                 }
             }
@@ -2028,8 +2029,8 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         attr.segrouIdx = segrouSet.update(attr.segrouIdx);
         attr.bierIdx = bierIdxSet.update(attr.bierIdx);
         attr.bierSub = bierSubSet.update(attr.bierSub);
-        attr.pathSeq = tabLabel.prependLabels(attr.pathSeq, aspathSet);
-        attr.confSeq = tabLabel.prependLabels(attr.confSeq, aspathCnf);
+        attr.pathSeq = smalist.prependLabels(attr.pathSeq, aspathSet);
+        attr.confSeq = smalist.prependLabels(attr.confSeq, aspathCnf);
         if (stdCommClear != null) {
             tabRouteUtil.removeStdComm(attr, stdCommClear);
         }
@@ -2063,7 +2064,7 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         if (firstasClear) {
             tabRouteUtil.removeFirstAs(attr);
         }
-        attr.stdComm = tabLabel.prependLabels(attr.stdComm, stdCommSet);
+        attr.stdComm = smalist.prependLabels(attr.stdComm, stdCommSet);
         if (vrfSetF != null) {
             attr.rouTab = vrfSetF;
         }

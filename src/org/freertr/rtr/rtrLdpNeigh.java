@@ -28,6 +28,7 @@ import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
+import org.freertr.util.smalist;
 
 /**
  * label distribution protocol (rfc5036) neighbor
@@ -533,7 +534,7 @@ public class rtrLdpNeigh implements Runnable, Comparable<rtrLdpNeigh> {
             return;
         }
         tabRouteEntry<addrIP> ntry = new tabRouteEntry<addrIP>();
-        ntry.best.labelRem = tabLabel.int2labels(pck.label);
+        ntry.best.labelRem = smalist.int2labels(pck.label);
         ntry.best.nextHop = peer.copyBytes();
         ntry.best.iface = ifc;
         boolean wake = pck.pmpLst.size() > 0;

@@ -64,6 +64,7 @@ import org.freertr.spf.spfLnkst;
 import org.freertr.tab.tabRpkiAspa;
 import org.freertr.tab.tabRpkiRoa;
 import org.freertr.util.counter;
+import org.freertr.util.smalist;
 import org.freertr.util.syncInt;
 
 /**
@@ -1522,7 +1523,7 @@ public class rtrBgp extends ipRtr implements prtServS, Runnable, prtRedunClnt {
                 if (nei == null) {
                     continue;
                 }
-                List<Integer> lab = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
+                smalist lab = smalist.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
                 segrouLab[ntry.best.segrouIdx].setFwdMpls(tabLabelEntry.owner.bgpSrgb, fwdCore, nei.localIfc, nei.peerAddr, lab);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ntry.best.segrouIdx, ntry.prefix));
             }

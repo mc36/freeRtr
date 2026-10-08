@@ -21,6 +21,7 @@ import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.smalist;
 
 /**
  * stores one unicast route
@@ -418,9 +419,7 @@ public class ipFwdRoute implements Comparable<ipFwdRoute> {
         prf.best.tag = tag;
         prf.best.ident = id;
         if (mpls >= 0) {
-            List<Integer> lab = new ArrayList<Integer>();
-            lab.add(mpls);
-            prf.best.labelRem = lab;
+            prf.best.labelRem = smalist.int2labels(mpls);
         }
         prf.best.rouTyp = tabRouteAttr.routeType.staticRoute;
         tabRouteEntry<addrIP> res = tabRoute.doUpdateEntry(rtrBgpUtil.sfiUnicast, 0, prf, roumap, rouplc, null);

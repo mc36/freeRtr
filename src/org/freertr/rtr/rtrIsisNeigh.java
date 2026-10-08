@@ -22,6 +22,7 @@ import org.freertr.enc.encTlv;
 import org.freertr.prt.prtIsoip;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoWrk;
+import org.freertr.util.smalist;
 
 /**
  * isis neighbor
@@ -661,10 +662,10 @@ public class rtrIsisNeigh implements Runnable, rtrBfdClnt, Comparable<rtrIsisNei
         advert.clear();
         if (lower.segrouLab != null) {
             segrouLab = tabLabel.allocate(tabLabelEntry.owner.isisAdj);
-            segrouLab.setFwdMpls(tabLabelEntry.owner.isisAdj, lower.fwdCore, iface.iface, ifcAddr, tabLabel.int2labels(ipMpls.labelImp));
+            segrouLab.setFwdMpls(tabLabelEntry.owner.isisAdj, lower.fwdCore, iface.iface, ifcAddr, smalist.int2labels(ipMpls.labelImp));
             if (iface.otherEna) {
                 segrouOth = tabLabel.allocate(tabLabelEntry.owner.isisAdj);
-                segrouOth.setFwdMpls(tabLabelEntry.owner.isisAdj, lower.other.fwd, iface.oface, ofcAddr, tabLabel.int2labels(ipMpls.labelImp));
+                segrouOth.setFwdMpls(tabLabelEntry.owner.isisAdj, lower.other.fwd, iface.oface, ofcAddr, smalist.int2labels(ipMpls.labelImp));
             }
         }
         level.schedWork(7);

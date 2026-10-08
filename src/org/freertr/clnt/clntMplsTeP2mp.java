@@ -22,6 +22,7 @@ import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
+import org.freertr.util.smalist;
 import org.freertr.util.state;
 
 /**
@@ -432,7 +433,7 @@ public class clntMplsTeP2mp implements Runnable, ifcDn {
             if (rnd == 0) {
                 fwdCor.tetunSignal(trfEng);
             }
-            trgs.add(new tabLabelDup(null, trfEng.trgHop, tabLabel.int2labels(trfEng.trgLab)));
+            trgs.add(new tabLabelDup(null, trfEng.trgHop, smalist.int2labels(trfEng.trgLab)));
         }
         fwdDups = trgs;
         notif2.wakeup();

@@ -11,6 +11,7 @@ import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.bits;
+import org.freertr.util.smalist;
 
 /**
  * bgp4 mpls namespace
@@ -105,10 +106,10 @@ public class rtrBgpMpns {
             byte[] buf = ntry.prefix.network.getBytes();
             tabLabelEntry res = new tabLabelEntry(bits.msbGetD(buf, 0));
             res.initOwner(tabLabelEntry.owner.mpns);
-            res.remoteLab = tabLabel.int2labels(res.label);
+            res.remoteLab = smalist.int2labels(res.label);
             int o = bits.msbGetD(buf, 4);
             if (o != 0) {
-                res.remoteLab = tabLabel.prependLabel(res.remoteLab, o);
+                res.remoteLab = smalist.prependLabel(res.remoteLab, o);
             }
             res.forwarder = fwdT;
             res.iface = (ipFwdIface) rou.best.iface;
@@ -116,7 +117,7 @@ public class rtrBgpMpns {
                 res.nextHop = ntry.best.nextHop.copyBytes();
             } else {
                 res.nextHop = rou.best.nextHop.copyBytes();
-                res.remoteLab = tabLabel.prependLabels(res.remoteLab, rou.best.labelRem);
+                res.remoteLab = smalist.prependLabels(res.remoteLab, rou.best.labelRem);
             }
             need.add(res);
         }

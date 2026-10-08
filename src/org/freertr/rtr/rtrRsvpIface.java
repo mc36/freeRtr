@@ -18,6 +18,7 @@ import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
+import org.freertr.util.smalist;
 import org.freertr.util.state;
 
 /**
@@ -317,7 +318,7 @@ public class rtrRsvpIface implements ipPrt {
                 if (allocLabel(ntry)) {
                     return;
                 }
-                List<Integer> labs = tabLabel.int2labels(ntry.trgLab);
+                smalist labs = smalist.int2labels(ntry.trgLab);
                 if (ntry.isP2MP()) {
                     ntry.locLab.addDupMpls(tabLabelEntry.owner.rsvp, fwdCore, ntry.trgIfc, ntry.trgHop, labs);
                 } else {

@@ -18,6 +18,7 @@ import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
+import org.freertr.util.smalist;
 
 /**
  * ospfv2 neighbor
@@ -904,7 +905,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparable<rtrOspf4n
                 addrIP per = new addrIP();
                 per.fromIPv4addr(peer);
                 segrouLab = tabLabel.allocate(tabLabelEntry.owner.ospf4adj);
-                segrouLab.setFwdMpls(tabLabelEntry.owner.ospf4adj, lower.fwdCore, iface.iface, per, tabLabel.int2labels(ipMpls.labelImp));
+                segrouLab.setFwdMpls(tabLabelEntry.owner.ospf4adj, lower.fwdCore, iface.iface, per, smalist.int2labels(ipMpls.labelImp));
             }
             state = stFull;
             area.schedWork(7);

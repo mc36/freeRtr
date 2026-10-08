@@ -46,6 +46,7 @@ import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
+import org.freertr.util.smalist;
 
 /**
  * stores one ip interface
@@ -2711,7 +2712,7 @@ public class ipFwdIface extends tabRouteIface {
             res.best.iface = this;
             res.best.nextHop = hop;
             if (bnd.lab >= 0) {
-                res.best.labelRem = tabLabel.int2labels(bnd.lab);
+                res.best.labelRem = smalist.int2labels(bnd.lab);
             }
             return res;
         }
@@ -2726,7 +2727,7 @@ public class ipFwdIface extends tabRouteIface {
         if (res == null) {
             return null;
         }
-        List<Integer> lab = res.best.labelRem;
+        smalist lab = res.best.labelRem;
         if (lab == null) {
             return null;
         }
