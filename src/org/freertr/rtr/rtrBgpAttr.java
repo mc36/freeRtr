@@ -774,6 +774,7 @@ class rtrBgpAttrExtComm implements rtrBgpAttr {
             ntry.best.extComm.add(pck.msbGetQ(0));
             pck.getSkip(8);
         }
+        ntry.best.extComm = tabRouteUtil.nullEmptyList(ntry.best.extComm);
     }
 
     public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
@@ -805,6 +806,7 @@ class rtrBgpAttrLrgComm implements rtrBgpAttr {
             ntry.best.lrgComm.add(d);
             pck.getSkip(12);
         }
+        ntry.best.lrgComm = tabRouteUtil.nullEmptyList(ntry.best.lrgComm);
     }
 
     public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
@@ -839,6 +841,7 @@ class rtrBgpAttrIp6comm implements rtrBgpAttr {
             ntry.best.ip6comm.add(d);
             pck.getSkip(20);
         }
+        ntry.best.ip6comm = tabRouteUtil.nullEmptyList(ntry.best.ip6comm);
     }
 
     public void writeAttrib(rtrBgpSpeak spkr, packHolder trg, packHolder hlp, tabRouteEntry<addrIP> ntry) {
