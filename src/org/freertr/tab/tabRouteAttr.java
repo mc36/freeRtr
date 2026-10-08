@@ -10,6 +10,7 @@ import org.freertr.ip.ipFwd;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
+import org.freertr.util.smalist;
 
 /**
  * represents one route table entry attribute
@@ -511,7 +512,7 @@ public class tabRouteAttr<T extends addrType> {
     /**
      * standard community values
      */
-    public List<Integer> stdComm;
+    public smalist stdComm;
 
     /**
      * extended community values
@@ -536,22 +537,22 @@ public class tabRouteAttr<T extends addrType> {
     /**
      * as path sequence
      */
-    public List<Integer> pathSeq;
+    public smalist pathSeq;
 
     /**
      * as path set
      */
-    public List<Integer> pathSet;
+    public smalist pathSet;
 
     /**
      * confederation sequence
      */
-    public List<Integer> confSeq;
+    public smalist confSeq;
 
     /**
      * confederation set
      */
-    public List<Integer> confSet;
+    public smalist confSet;
 
     /**
      * originator id
@@ -611,7 +612,7 @@ public class tabRouteAttr<T extends addrType> {
     /**
      * remote label
      */
-    public List<Integer> labelRem = null;
+    public smalist labelRem = null;
 
     /**
      * route table to use
@@ -880,11 +881,11 @@ public class tabRouteAttr<T extends addrType> {
         } else {
             atr.srcRtr = null;
         }
-        atr.stdComm = tabLabel.copyLabels(stdComm);
-        atr.pathSeq = tabLabel.copyLabels(pathSeq);
-        atr.pathSet = tabLabel.copyLabels(pathSet);
-        atr.confSeq = tabLabel.copyLabels(confSeq);
-        atr.confSet = tabLabel.copyLabels(confSet);
+        atr.stdComm = smalist.copyLabels(stdComm);
+        atr.pathSeq = smalist.copyLabels(pathSeq);
+        atr.pathSet = smalist.copyLabels(pathSet);
+        atr.confSeq = smalist.copyLabels(confSeq);
+        atr.confSet = smalist.copyLabels(confSet);
         if (originator != null) {
             atr.originator = (T) originator.copyBytes();
         } else {
@@ -940,7 +941,7 @@ public class tabRouteAttr<T extends addrType> {
             return;
         }
         atr.iface = iface;
-        atr.labelRem = tabLabel.copyLabels(labelRem);
+        atr.labelRem = smalist.copyLabels(labelRem);
         if (nextHop != null) {
             atr.nextHop = (T) nextHop.copyBytes();
         } else {
@@ -2064,12 +2065,12 @@ public class tabRouteAttr<T extends addrType> {
             ntry.validAspa = 0;
         }
         if ((ign & 0x100) != 0) {
-            ntry.pathSeq = new ArrayList<Integer>();
-            ntry.pathSet = new ArrayList<Integer>();
+            ntry.pathSeq = new smalist();
+            ntry.pathSet = new smalist();
         }
         if ((ign & 0x200) != 0) {
-            ntry.confSeq = new ArrayList<Integer>();
-            ntry.confSet = new ArrayList<Integer>();
+            ntry.confSeq = new smalist();
+            ntry.confSet = new smalist();
         }
         if ((ign & 0x400) != 0) {
             ntry.stdComm = null;
@@ -2144,15 +2145,15 @@ public class tabRouteAttr<T extends addrType> {
         }
         if ((ign & 0x2000000) != 0) {
             ntry.clustList = tabRouteUtil.nullEmptyList(ntry.clustList);
-            ntry.confSeq = tabRouteUtil.nullEmptyList(ntry.confSeq);
-            ntry.confSet = tabRouteUtil.nullEmptyList(ntry.confSet);
+            ntry.confSeq = smalist.nullEmptyList(ntry.confSeq);
+            ntry.confSet = smalist.nullEmptyList(ntry.confSet);
             ntry.extComm = tabRouteUtil.nullEmptyList(ntry.extComm);
-            ntry.labelRem = tabRouteUtil.nullEmptyList(ntry.labelRem);
+            ntry.labelRem = smalist.nullEmptyList(ntry.labelRem);
             ntry.lrgComm = tabRouteUtil.nullEmptyList(ntry.lrgComm);
             ntry.ip6comm = tabRouteUtil.nullEmptyList(ntry.ip6comm);
-            ntry.pathSeq = tabRouteUtil.nullEmptyList(ntry.pathSeq);
-            ntry.pathSet = tabRouteUtil.nullEmptyList(ntry.pathSet);
-            ntry.stdComm = tabRouteUtil.nullEmptyList(ntry.stdComm);
+            ntry.pathSeq = smalist.nullEmptyList(ntry.pathSeq);
+            ntry.pathSet = smalist.nullEmptyList(ntry.pathSet);
+            ntry.stdComm = smalist.nullEmptyList(ntry.stdComm);
             ntry.unknown = tabRouteUtil.nullEmptyList(ntry.unknown);
         }
         if ((ign & 0x4000000) != 0) {
@@ -2185,8 +2186,8 @@ public class tabRouteAttr<T extends addrType> {
             ntry.hopCapa = null;
         }
         if ((ign & 0x800000000L) != 0) {
-            ntry.pathSet = new ArrayList<Integer>();
-            ntry.confSet = new ArrayList<Integer>();
+            ntry.pathSet = new smalist();
+            ntry.confSet = new smalist();
         }
         if ((ign & 0x1000000000L) != 0) {
             ntry.ip6comm = null;

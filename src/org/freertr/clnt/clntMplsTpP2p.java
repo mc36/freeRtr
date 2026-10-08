@@ -14,6 +14,7 @@ import org.freertr.tab.tabLabel;
 import org.freertr.tab.tabLabelEntry;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.util.counter;
+import org.freertr.util.smalist;
 import org.freertr.util.state;
 
 /**
@@ -199,7 +200,7 @@ public class clntMplsTpP2p implements ifcDn {
     public tabRouteEntry<addrIP> getResultRoute(tabRouteEntry<addrIP> src) {
         src.best.iface = srcIfc;
         src.best.nextHop = target.copyBytes();
-        src.best.labelRem = tabLabel.prependLabel(src.best.labelRem, trgLab);
+        src.best.labelRem = smalist.prependLabel(src.best.labelRem, trgLab);
         return src;
     }
 

@@ -29,6 +29,7 @@ import org.freertr.prt.prtTcp;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoWrk;
 import org.freertr.tab.tabRpkiUtil;
+import org.freertr.util.smalist;
 
 /**
  * bgp4 speaker
@@ -2094,7 +2095,7 @@ public class rtrBgpSpeak implements rtrBfdClnt, Runnable {
             }
         }
         if ((ntry.best.labelRem == null) && (ntry.best.segrouIdx > 0) && (ntry.best.segrouBeg > 0)) {
-            ntry.best.labelRem = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
+            ntry.best.labelRem = smalist.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
         }
         if (neigh.egressEng > 0) {
             ntry.best.segrouIdx = neigh.egressEng;

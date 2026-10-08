@@ -14,6 +14,7 @@ import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
+import org.freertr.util.smalist;
 
 /**
  * aggregate routes in routers
@@ -102,8 +103,8 @@ public class ipRtrAgr implements Comparable<ipRtrAgr> {
      */
     public void filter(int afi, tabRoute<addrIP> src, tabRoute<addrIP> trg, tabLabelEntry lab, addrIPv4 agrR, int agrA, tabRouteAttr.routeType rtrT, int rtrN) {
         int cnt = 0;
-        List<Integer> pathSet = new ArrayList<Integer>();
-        List<Integer> confSet = new ArrayList<Integer>();
+        smalist pathSet = new smalist();
+        smalist confSet = new smalist();
         for (int i = src.size() - 1; i >= 0; i--) {
             tabRouteEntry<addrIP> ntry = src.get(i);
             if (!prefix.supernet(ntry.prefix, true)) {

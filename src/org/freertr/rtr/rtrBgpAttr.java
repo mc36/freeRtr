@@ -14,6 +14,7 @@ import org.freertr.tab.tabRouteEntry;
 import org.freertr.tab.tabRouteUtil;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
+import org.freertr.util.smalist;
 
 /**
  * one bgp4 attribute
@@ -460,10 +461,10 @@ class rtrBgpAttrAsPath implements rtrBgpAttr {
     }
 
     public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.pathSeq = new ArrayList<Integer>();
-        ntry.best.pathSet = new ArrayList<Integer>();
-        ntry.best.confSeq = new ArrayList<Integer>();
-        ntry.best.confSet = new ArrayList<Integer>();
+        ntry.best.pathSeq = new smalist();
+        ntry.best.pathSet = new smalist();
+        ntry.best.confSeq = new smalist();
+        ntry.best.confSet = new smalist();
         for (; pck.dataSize() > 0;) {
             int i = pck.getByte(0);
             pck.getSkip(1);
@@ -736,7 +737,7 @@ class rtrBgpAttrPeDistLab implements rtrBgpAttr {
 class rtrBgpAttrStdComm implements rtrBgpAttr {
 
     public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
-        ntry.best.stdComm = new ArrayList<Integer>();
+        ntry.best.stdComm = new smalist();
         for (; pck.dataSize() >= 4;) {
             ntry.best.stdComm.add(pck.msbGetD(0));
             pck.getSkip(4);

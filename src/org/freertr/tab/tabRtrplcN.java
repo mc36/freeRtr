@@ -12,6 +12,7 @@ import org.freertr.ip.ipFwd;
 import org.freertr.pack.packHolder;
 import org.freertr.rtr.rtrBgpUtil;
 import org.freertr.util.bits;
+import org.freertr.util.smalist;
 
 /**
  * represents one route policy entry
@@ -471,7 +472,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
     /**
      * integer list
      */
-    public List<Integer> intLst;
+    public smalist intLst;
 
     /**
      * long list
@@ -1020,7 +1021,7 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 tabRouteUtil.removeFirstAs(attr);
                 return;
             case setStdcomm:
-                attr.stdComm = tabLabel.prependLabels(attr.stdComm, intLst);
+                attr.stdComm = smalist.prependLabels(attr.stdComm, intLst);
                 return;
             case setExtcomm:
                 if (attr.extComm == null) {
@@ -1041,10 +1042,10 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 attr.nextHop = addrSet.copyBytes();
                 return;
             case setAspath:
-                attr.pathSeq = tabLabel.prependLabels(attr.pathSeq, intLst);
+                attr.pathSeq = smalist.prependLabels(attr.pathSeq, intLst);
                 return;
             case setAsconf:
-                attr.confSeq = tabLabel.prependLabels(attr.confSeq, intLst);
+                attr.confSeq = smalist.prependLabels(attr.confSeq, intLst);
                 return;
             case setDistance:
                 attr.distance = intSet.update(attr.distance);

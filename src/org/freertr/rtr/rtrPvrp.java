@@ -31,6 +31,7 @@ import org.freertr.util.debugger;
 import org.freertr.util.keyword;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
+import org.freertr.util.smalist;
 import org.freertr.util.state;
 
 /**
@@ -600,7 +601,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 if ((ntry.best.segrouIdx <= 0) || (ntry.best.segrouIdx >= segrouMax)) {
                     continue;
                 }
-                List<Integer> lab = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
+                smalist lab = smalist.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
                 segrouLab[ntry.best.segrouIdx].setFwdMpls(tabLabelEntry.owner.pvrpSrgb, fwdCore, (ipFwdIface) ntry.best.iface, ntry.best.nextHop, lab);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ntry.best.segrouIdx, ntry.prefix));
             }
@@ -615,7 +616,7 @@ public class rtrPvrp extends ipRtr implements Runnable {
                 if ((ntry.best.segrouIdx <= 0) || (ntry.best.segrouIdx >= segrouMax)) {
                     continue;
                 }
-                List<Integer> lab = tabLabel.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
+                smalist lab = smalist.int2labels(ntry.best.segrouBeg + ntry.best.segrouIdx);
                 segrouLab[ntry.best.segrouIdx].setFwdMpls(tabLabelEntry.owner.pvrpSrgb, fwdCore, (ipFwdIface) ntry.best.iface, ntry.best.nextHop, lab);
                 tabIndex.add2table(segrouUsd, new tabIndex<addrIP>(ntry.best.segrouIdx, ntry.prefix));
             }

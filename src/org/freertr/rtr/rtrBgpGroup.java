@@ -19,6 +19,7 @@ import org.freertr.tab.tabRouteUtil;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.user.userFormat;
+import org.freertr.util.smalist;
 
 /**
  * bgp4 update group
@@ -186,7 +187,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             } else {
                 loc = org.best.labelLoc;
             }
-            ntry.labelRem = tabLabel.prependLabel(ntry.labelRem, loc.label);
+            ntry.labelRem = smalist.prependLabel(ntry.labelRem, loc.label);
             done = true;
         }
         if ((idx == rtrBgpParam.idxOmlt) || ((idx == rtrBgpParam.idxOuni) && lower.other.routerVtx && !addrFams[rtrBgpParam.idxOlab] && !addrFams[rtrBgpParam.idxOctp] && !addrFams[rtrBgpParam.idxOcar])) {
@@ -195,7 +196,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             ntry.nextHop = localAddr.copyBytes();
         }
         if (!done) {
-            ntry.labelRem = new ArrayList<Integer>();
+            ntry.labelRem = new smalist();
             tabLabelEntry loc = ntry.labelLoc;
             if (loc == null) {
                 ipFwd tab = getForwarder(idx, ntry);
@@ -429,7 +430,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             case rtrBgpUtil.peerServr:
                 for (int i = 0; i < ntry.alts.size(); i++) {
                     tabRouteAttr<addrIP> attr = ntry.alts.get(i);
-                    attr.pathSeq = tabLabel.prependLabel(attr.pathSeq, localAs);
+                    attr.pathSeq = smalist.prependLabel(attr.pathSeq, localAs);
                 }
                 break;
             case rtrBgpUtil.peerIntrn:
@@ -457,7 +458,7 @@ public class rtrBgpGroup extends rtrBgpParam {
             case rtrBgpUtil.peerCnfed:
                 for (int i = 0; i < ntry.alts.size(); i++) {
                     tabRouteAttr<addrIP> attr = ntry.alts.get(i);
-                    attr.confSeq = tabLabel.prependLabel(attr.confSeq, localAs);
+                    attr.confSeq = smalist.prependLabel(attr.confSeq, localAs);
                     if (attr.locPref == 0) {
                         attr.locPref = preference;
                     }
@@ -526,7 +527,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 ntry = ntry.copyBytes(tabRoute.addType.altEcmp);
                 for (int i = 0; i < ntry.alts.size(); i++) {
                     tabRouteAttr<addrIP> attr = ntry.alts.get(i);
-                    attr.pathSeq = tabLabel.prependLabel(attr.pathSeq, localAs);
+                    attr.pathSeq = smalist.prependLabel(attr.pathSeq, localAs);
                     if (attr.pathSeq.size() > 1) {
                         attr.metric = 0;
                     }
@@ -589,7 +590,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                     default:
                         for (int i = 0; i < ntry.alts.size(); i++) {
                             tabRouteAttr<addrIP> attr = ntry.alts.get(i);
-                            attr.pathSeq = tabLabel.prependLabel(attr.pathSeq, localAs);
+                            attr.pathSeq = smalist.prependLabel(attr.pathSeq, localAs);
                             if (attr.pathSeq.size() > 1) {
                                 attr.metric = 0;
                             }
@@ -615,7 +616,7 @@ public class rtrBgpGroup extends rtrBgpParam {
                 }
                 for (int i = 0; i < ntry.alts.size(); i++) {
                     tabRouteAttr<addrIP> attr = ntry.alts.get(i);
-                    attr.confSeq = tabLabel.prependLabel(attr.confSeq, localAs);
+                    attr.confSeq = smalist.prependLabel(attr.confSeq, localAs);
                 }
                 break;
             default:

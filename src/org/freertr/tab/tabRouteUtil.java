@@ -18,6 +18,7 @@ import org.freertr.user.userFormat;
 import org.freertr.user.userScript;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.smalist;
 
 /**
  * route utilities
@@ -166,8 +167,8 @@ public class tabRouteUtil {
                 continue;
             }
             if (a.equals("aspath")) {
-                List<Integer> lst = string2intList(cmd.getRemaining());
-                attr.pathSeq = tabLabel.prependLabels(attr.pathSeq, lst);
+                smalist lst = string2intList(cmd.getRemaining());
+                attr.pathSeq = smalist.prependLabels(attr.pathSeq, lst);
                 continue;
             }
             if (a.equals("stdcomm")) {
@@ -254,8 +255,8 @@ public class tabRouteUtil {
      * @param s string
      * @return int list
      */
-    public static List<Integer> string2intList(String s) {
-        List<Integer> l = new ArrayList<Integer>();
+    public static smalist string2intList(String s) {
+        smalist l = new smalist();
         cmds cmd = new cmds("", s);
         for (;;) {
             String a = cmd.word();
@@ -456,8 +457,8 @@ public class tabRouteUtil {
      * @param s string
      * @return community list
      */
-    public static List<Integer> string2stdComms(String s) {
-        List<Integer> l = new ArrayList<Integer>();
+    public static smalist string2stdComms(String s) {
+        smalist l = new smalist();
         cmds cmd = new cmds("", s);
         for (;;) {
             s = cmd.word();
@@ -1208,13 +1209,13 @@ public class tabRouteUtil {
             case nothing:
                 break;
             case setter:
-                attr.labelRem = tabLabel.prependLabel(attr.labelRem, setter.val);
+                attr.labelRem = smalist.prependLabel(attr.labelRem, setter.val);
                 if (attr.labelRem.size() > 1) {
                     attr.labelRem.remove(1);
                 }
                 break;
             case adder:
-                attr.labelRem = tabLabel.prependLabel(attr.labelRem, setter.val);
+                attr.labelRem = smalist.prependLabel(attr.labelRem, setter.val);
                 break;
             case suber:
                 removeIntList(attr.labelRem, setter.val);
