@@ -18821,3 +18821,6 @@ qc pass: p4lang: sreth server over ipv6
 qc pass: p4lang: sreth server over ipv4 loopback
 qc pass: p4lang: sreth server over ipv6 loopback
 qc pass: qos ingress shaper action
+---------------------------------- 2026-10-09 14:33:06 26.10.9
+no qc pass: wireguard over ipv4
+failed: wireguard over ipv4
