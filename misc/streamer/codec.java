@@ -128,6 +128,35 @@ public abstract interface codec {
         return trgP;
     }
 
+    /**
+     * adjust sample rate
+     *
+     * @param trgB target
+     * @param srcB source
+     * @param trgV samples
+     * @param srcV samples
+     * @param len size
+     * @return new size
+     */
+    public static int adjustSrate(int[] trgB, int[] srcB, int trgV, int srcV, int len) {
+        int srcP = 0;
+        int trgP = 0;
+        for (; srcP < len;) {
+            long val = 0;
+            for (int i = 0; i < srcV; i++) {
+                val += srcB[srcP];
+                srcP++;
+            }
+            val /= srcV;
+            int res = (int) val;
+            for (int i = 0; i < trgV; i++) {
+                trgB[trgP] = res;
+                trgP++;
+            }
+        }
+        return trgP;
+    }
+
 }
 
 class codec1b implements codec {
