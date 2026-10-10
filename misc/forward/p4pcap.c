@@ -20,7 +20,7 @@ int allocPack(void** scar, unsigned char **bufD, int bufS, void* ctx) {
 }
 
 int sendPack(void* scar, unsigned char *bufD, int bufS, int port) {
-    pcap_sendpacket(ifacePcap[port], bufD, bufS);
+    if (pcap_sendpacket(ifacePcap[port], bufD, bufS) < 0) return 0;
     return 0;
 }
 

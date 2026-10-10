@@ -26,27 +26,49 @@ void err(char*buf) {
     _exit(1);
 }
 
-void gotIfc1pack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {
-    int len = hdr->caplen;
-    packRx++;
-    byteRx += len;
-    pcap_sendpacket(iface2pcap, dat, len);
-}
 
 void gotIfc2pack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {
     int len = hdr->caplen;
     packTx++;
     byteTx += len;
-    pcap_sendpacket(iface1pcap, dat, len);
+    if (pcap_sendpacket(iface1pcap, dat, len) < 0) return;
 }
 
 void doIfc1loop() {
-    pcap_loop(iface1pcap, 0, (pcap_handler) gotIfc1pack, NULL);
+    struct pcap_pkthdr head;
+    const unsigned char *pack;
+    int len;
+    int fail = 0;
+    for (;;) {
+        if (fail++ > 1024) break;
+        pack = pcap_next(iface1pcap, &head);
+        if (pack == NULL) continue;
+        len = head.caplen;
+        if (len < 1) continue;
+        packRx++;
+        byteRx += len;
+        if (pcap_sendpacket(iface2pcap, pack, len) < 0) continue;
+        fail = 0;
+    }
     err("iface1 thread exited");
 }
 
 void doIfc2loop() {
-    pcap_loop(iface2pcap, 0, (pcap_handler) gotIfc2pack, NULL);
+    struct pcap_pkthdr head;
+    const unsigned char *pack;
+    int len;
+    int fail = 0;
+    for (;;) {
+        if (fail++ > 1024) break;
+        pack = pcap_next(iface2pcap, &head);
+        if (pack == NULL) continue;
+        len = head.caplen;
+        if (len < 1) continue;
+        packTx++;
+        byteTx += len;
+        if (pcap_sendpacket(iface1pcap, pack, len) < 0) continue;
+        fail = 0;
+    }
     err("iface2 thread exited");
 }
 

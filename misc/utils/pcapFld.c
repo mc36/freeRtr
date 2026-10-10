@@ -45,8 +45,11 @@ int main(int argc, char **argv) {
 
     printf("sending %i bytes packets\n", packLen);
 
+    int fail = 0;
     for (;;) {
-        pcap_sendpacket(ifacePcap, packBuf, packLen);
+        if (fail++ > 1024) break;
+        if (pcap_sendpacket(ifacePcap, packBuf, packLen) < 0) continue;
+        fail = 0;
     }
-
+    err("loop exited");
 }

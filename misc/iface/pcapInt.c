@@ -29,28 +29,39 @@ void err(char*buf) {
     _exit(1);
 }
 
-void gotRawPack(unsigned char*dummyparameter, const struct pcap_pkthdr *hdr, unsigned char *dat) {
-    int len = hdr->caplen;
-    packRx++;
-    byteRx += len;
-    send(commSock, dat, len, 0);
-}
-
 void doRawLoop() {
-    pcap_loop(ifacePcap, 0, (pcap_handler) gotRawPack, NULL);
+    struct pcap_pkthdr head;
+    const unsigned char *pack;
+    int len;
+    int fail = 0;
+    for (;;) {
+        if (fail++ > 1024) break;
+        pack = pcap_next(ifacePcap, &head);
+        if (pack == NULL) continue;
+        len = head.caplen;
+        if (len < 1) continue;
+        fail = 0;
+        packRx++;
+        byteRx += len;
+        send(commSock, pack, len, 0);
+    }
     err("raw thread exited");
 }
 
 void doUdpLoop() {
     unsigned char bufD[16384];
     int bufS;
+    int fail = 0;
     for (;;) {
+        if (fail++ > 1024) break;
         bufS = sizeof (bufD);
         bufS = recv(commSock, bufD, bufS, 0);
         if (bufS < 0) break;
         packTx++;
         byteTx += bufS;
-        pcap_sendpacket(ifacePcap, bufD, bufS);
+        bufS = pcap_sendpacket(ifacePcap, bufD, bufS);
+        if (bufS < 0) continue;
+        fail = 0;
     }
     err("udp thread exited");
 }
