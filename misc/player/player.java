@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -94,6 +95,8 @@ public class player implements Runnable {
     private List<Integer> pastSong = new ArrayList<Integer>();
 
     private playerLyric currLyrc = null;
+
+    private playerLyric currLogs = new playerLyric();
 
     private long currTime = 0;
 
@@ -692,13 +695,23 @@ public class player implements Runnable {
      * @param strm stream to flush
      * @throws Exception on error
      */
-    public static void flushStream(InputStream strm) throws Exception {
+    public void flushStream(InputStream strm) throws Exception {
         int i = strm.available();
         if (i < 1) {
             return;
         }
         byte[] buf = new byte[i];
-        strm.read(buf);
+        i = strm.read(buf);
+        if (i < 1) {
+            return;
+        }
+        currLogs.add(new Date() + " - " + new String(buf, 0, i));
+        for (;;) {
+            if (currLogs.size() < 100) {
+                return;
+            }
+            currLogs.del(0);
+        }
     }
 
     /**
@@ -1119,6 +1132,8 @@ public class player implements Runnable {
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=fullstop\">!full stop!</a><br/>";
             buf.write(a.getBytes());
+            a = "<a href=\"" + urlR + "?cmd=currlogs\">!current logs!</a><br/>";
+            buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=receive\">!multicast receiver!</a><br/>";
             buf.write(a.getBytes());
             a = "<a href=\"" + urlR + "?cmd=headend\">!multicast streamer!</a><br/>";
@@ -1162,6 +1177,17 @@ public class player implements Runnable {
             buf.write(a.getBytes());
             startPlayNormal(-1, "0");
             stopFull();
+            return -1;
+        }
+        if (cmd.equals("currlogs")) {
+            putStart(buf, -1);
+            putMenu(buf);
+            cmd = "<br/>current logs:<br/>";
+            buf.write(cmd.getBytes());
+            for (int i = currLogs.size() - 1; i >= 0; i--) {
+                cmd = currLogs.get(i) + "<br/>";
+                buf.write(cmd.getBytes());
+            }
             return -1;
         }
         if (cmd.equals("airplay")) {
