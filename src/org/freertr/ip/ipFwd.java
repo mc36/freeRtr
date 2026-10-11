@@ -1043,6 +1043,11 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
             ipFwdTab.updateOneGroup(this, g);
             ipFwdTab.joinOneGroup(this, g, 1);
         }
+        if ((exp > 0) && (g.iface != null) && (ifc != null) && (g.iface == ifc)) {
+            if (ifc.addr.compareTo(src) != 0) {
+                return;
+            }
+        }
         g.configG = exp == -2;
         g.configI = exp == -3;
         if (ifc == null) {
