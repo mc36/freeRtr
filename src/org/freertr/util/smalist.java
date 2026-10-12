@@ -1,6 +1,7 @@
 package org.freertr.util;
 
 import java.util.Arrays;
+import org.freertr.pack.packHolder;
 
 /**
  * small list of ints
@@ -45,6 +46,23 @@ public class smalist {
         int[] res = new int[lst.length + 1];
         System.arraycopy(lst, 0, res, 0, lst.length);
         res[lst.length] = v;
+        lst = res;
+    }
+
+    /**
+     * add entries from packet
+     *
+     * @param pck packet to read
+     * @param max number of entries
+     */
+    public void fromPack(packHolder pck, int max) {
+        int[] res = new int[lst.length + max];
+        System.arraycopy(lst, 0, res, 0, lst.length);
+        for (int i = 0; i < max; i++) {
+            int v = pck.msbGetD(0);
+            pck.getSkip(4);
+            res[lst.length + i] = v;
+        }
         lst = res;
     }
 

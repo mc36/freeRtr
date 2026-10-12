@@ -415,11 +415,7 @@ class rtrBgpAttrAsPath implements rtrBgpAttr {
         int max = pck.getByte(0);
         pck.getSkip(1);
         if (longAs) {
-            for (int pos = 0; pos < max; pos++) {
-                int i = pck.msbGetD(0);
-                pck.getSkip(4);
-                lst.add(i);
-            }
+            lst.fromPack(pck, max);
             return;
         }
         for (int pos = 0; pos < max; pos++) {
@@ -742,10 +738,7 @@ class rtrBgpAttrStdComm implements rtrBgpAttr {
 
     public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
         ntry.best.stdComm = new smalist();
-        for (; pck.dataSize() >= 4;) {
-            ntry.best.stdComm.add(pck.msbGetD(0));
-            pck.getSkip(4);
-        }
+        ntry.best.stdComm.fromPack(pck, pck.dataSize() / 4);
         ntry.best.stdComm = smalist.nullEmptyList(ntry.best.stdComm);
     }
 
