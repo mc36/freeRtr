@@ -898,6 +898,10 @@ public class cfgInit implements Runnable {
                 }
                 continue;
             }
+            if (s.equals("once")) {
+                pipeShell.exec(cmd.getRemaining(), null, true, false, true);
+                continue;
+            }
             if (s.equals("proc")) {
                 cfgPrcss prc = new cfgPrcss(cmd.word());
                 prc.hidden = true;

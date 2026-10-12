@@ -1,7 +1,7 @@
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -522,8 +522,8 @@ public class player implements Runnable {
             }
             try {
                 if (currProc != null) {
-                    flushStream(currProc.getErrorStream());
-                    flushStream(currProc.getInputStream());
+                    flushStream(currProc.errorReader());
+                    flushStream(currProc.inputReader());
                     currProc.exitValue();
                 }
             } catch (Exception e) {
@@ -695,17 +695,15 @@ public class player implements Runnable {
      * @param strm stream to flush
      * @throws Exception on error
      */
-    public void flushStream(InputStream strm) throws Exception {
-        int i = strm.available();
-        if (i < 1) {
+    public void flushStream(BufferedReader strm) throws Exception {
+        if (!strm.ready()) {
             return;
         }
-        byte[] buf = new byte[i];
-        i = strm.read(buf);
-        if (i < 1) {
+        String a = strm.readLine();
+        if (a == null) {
             return;
         }
-        currLogs.add(new Date() + " - " + new String(buf, 0, i));
+        currLogs.add(new Date() + " - " + a);
         for (;;) {
             if (currLogs.size() < 100) {
                 return;

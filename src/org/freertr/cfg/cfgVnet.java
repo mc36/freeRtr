@@ -239,7 +239,7 @@ public class cfgVnet implements Comparable<cfgVnet>, cfgGeneric {
             return;
         }
         userFlash.setFilePerm(a, true, false, true, true, false, true);
-        pipeShell.exec(a, null, true, true, true);
+        pipeShell.exec(a, null, true, false, true);
         userFlash.delete(a);
         side1.startNow(prt + 0, prt + 1);
         side2.startNow(prt + 2, prt + 3);
