@@ -213,13 +213,13 @@ public class servSdwan extends servGeneric implements prtServS {
      * @return result
      */
     public userFormat getShow() {
-        userFormat res = new userFormat("|", "addr|port|user|hub|id|prt|addr|port|prm|inner4|inner6|for|since");
+        userFormat res = new userFormat("|", "addr|port|user|hub|id|for|since");
         for (int i = 0; i < conns.size(); i++) {
             servSdwanConn ntry = conns.get(i);
             if (ntry == null) {
                 continue;
             }
-            res.add(ntry.connA + "|" + ntry.connP + "|" + ntry.username + "|" + ntry.hub + "|" + ntry.idNum + "|" + ntry.endptProto + "|" + ntry.endptIp + "|" + ntry.endptPort + "|" + ntry.endptPar + "|" + ntry.innerAdr4 + "|" + ntry.innerAdr6 + "|" + bits.timePast(ntry.created) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3));
+            res.add(ntry.connA + "|" + ntry.connP + "|" + ntry.username + "|" + ntry.hub + "|" + ntry.idNum + "|" + bits.timePast(ntry.created) + "|" + bits.time2str(cfgAll.timeZoneName, ntry.created + cfgAll.timeServerOffset, 3));
         }
         return res;
     }
