@@ -281,25 +281,27 @@ public class pipeShell {
     public String info() {
         String a = "0|0|0";
         String b = "0";
-        ProcessHandle hnd = null;
         try {
-            hnd = process.toHandle();
-            a = hnd.pid() + "|" + hnd.descendants().count() + "|" + getProcessCpu(hnd);
+            ProcessHandle hnd = process.toHandle();
+            b = "" + hnd.pid();
+            a = b + "|" + hnd.descendants().count() + "|" + getProcessCpu(hnd);
         } catch (Exception e) {
         }
-        List<String> txt = bits.txt2buf("/proc/" + hnd.pid() + "/status");
-        if (txt != null) {
-            for (int i = 0; i < txt.size(); i++) {
-                String s = txt.get(i);
-                s = s.toLowerCase();
-                if (!s.startsWith("vmrss:")) {
-                    continue;
-                }
-                if (!s.endsWith("kb")) {
-                    continue;
-                }
-                b = s.substring(6, s.length() - 2).trim();
+        List<String> txt = bits.txt2buf("/proc/" + b + "/status");
+        if (txt == null) {
+            return a + "|0";
+        }
+        b = "0";
+        for (int i = 0; i < txt.size(); i++) {
+            String s = txt.get(i);
+            s = s.toLowerCase();
+            if (!s.startsWith("vmrss:")) {
+                continue;
             }
+            if (!s.endsWith("kb")) {
+                continue;
+            }
+            b = s.substring(6, s.length() - 2).trim();
         }
         return a + "|" + b;
     }
@@ -312,7 +314,7 @@ public class pipeShell {
      */
     public static String info(pipeShell p) {
         if (p == null) {
-            return "|";
+            return "0|0|0|0";
         }
         return p.info();
     }
