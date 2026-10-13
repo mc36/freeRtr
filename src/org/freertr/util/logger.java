@@ -120,7 +120,7 @@ public class logger {
 
     private static logFil logFilHnd = null;
 
-    private static logBuf logBufLst = new logBuf(512);
+    private final static logBuf logBufLst = new logBuf(512);
 
     private final static tabGen<loggerTerm> logPipLst = new tabGen<loggerTerm>();
 
@@ -480,8 +480,8 @@ public class logger {
             logFilHnd.close();
         } catch (Exception e) {
         }
-        logFilHnd = null;
         if (fn == null) {
+            logFilHnd = null;
             return true;
         }
         logFilHnd = new logFil(fn);
