@@ -510,7 +510,7 @@ public class ipIfc6 implements ipIfc, ifcUp {
                 }
                 addrMac mac = ifcHdr.adrGetMac(i);
                 if (mac == null) {
-                    break;
+                    continue;
                 }
                 sendL2info(mac, adr);
             }

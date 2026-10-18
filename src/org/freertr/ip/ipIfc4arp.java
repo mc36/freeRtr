@@ -438,7 +438,7 @@ public class ipIfc4arp implements ifcUp {
                     }
                     addrMac mac = upper.ifcHdr.adrGetMac(i);
                     if (mac == null) {
-                        break;
+                        continue;
                     }
                     sendARPheader(mac, adr.toIPv4());
                 }

@@ -2589,6 +2589,9 @@ public class ipFwdIface extends tabRouteIface {
         if (ntry == null) {
             return null;
         }
+        if (ntry.mac == null) {
+            return null;
+        }
         return ntry.mac.copyBytes();
     }
 
