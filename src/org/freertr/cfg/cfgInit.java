@@ -1100,7 +1100,7 @@ public class cfgInit implements Runnable {
             logger.info((cnt + 1) + ":" + cmd.getOriginal());
         }
         cfgAll.custDefs = add2filter(cfgAll.custDefs, hdefs);
-        cfgAll.snmpMibs = add2filter(cfgAll.snmpMibs, hdefs);
+        cfgAll.snmpMibs = add2filter(cfgAll.snmpMibs, mibs);
     }
 
     private static userFilter[] add2filter(userFilter[] trg, List<userFilter> src) {
