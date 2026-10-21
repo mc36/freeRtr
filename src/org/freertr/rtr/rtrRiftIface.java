@@ -748,7 +748,7 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
         if (passiveInt) {
             return true;
         }
-        if ((connectedCheck) && (!iface.network.matches(id.peerAddr))) {
+        if ((connectedCheck) && (!iface.lower.checkConnected(id.peerAddr))) {
             logger.info("got from out of subnet peer " + id);
             return true;
         }

@@ -270,7 +270,7 @@ public class rtrVrrpIface implements ipPrt {
      * @param pck packet
      */
     public void recvPack(ipFwdIface rxIfc, packHolder pck) {
-        if (!rxIfc.network.matches(pck.IPsrc)) {
+        if (!rxIfc.lower.checkConnected(pck.IPsrc)) {
             logger.info("got from out of subnet peer " + pck.IPsrc);
             return;
         }

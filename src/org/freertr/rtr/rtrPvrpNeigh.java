@@ -604,12 +604,10 @@ public class rtrPvrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrPvrpNei
         if (!iface.otherEna || lower.other.foreign || iface.otherFrgn) {
             opeer = peer.copyBytes();
         } else {
-            if (iface.connectedCheck) {
-                if (!iface.oface.network.matches(opeer)) {
-                    logger.info("got from out of other subnet peer " + opeer);
-                    sendErr("badAddr");
-                    return;
-                }
+            if ((iface.connectedCheck) && (!iface.oface.lower.checkConnected(opeer))) {
+                logger.info("got from out of other subnet peer " + opeer);
+                sendErr("badAddr");
+                return;
             }
             iface.oface.lower.createETHheader(new packHolder(true, true), opeer, 0);
         }

@@ -325,7 +325,7 @@ public class rtrOlsr extends ipRtr implements prtServP {
             logger.warn("no interface " + id);
             return true;
         }
-        if ((ifc.connectedCheck) && (!ifc.iface.network.matches(id.peerAddr))) {
+        if ((ifc.connectedCheck) && (!ifc.iface.lower.checkConnected(id.peerAddr))) {
             logger.info("got from out of subnet peer " + id);
             return true;
         }

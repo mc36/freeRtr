@@ -657,7 +657,7 @@ public class ipFwdTab {
             if (!ifc.ready) {
                 return null;
             }
-            if (!ifc.network.matches(imp.best.nextHop)) {
+            if (!ifc.lower.checkConnected(imp.best.nextHop)) {
                 return null;
             }
             imp.best.iface = ifc.otherHandler;
@@ -680,7 +680,7 @@ public class ipFwdTab {
             if (!ifc.ready) {
                 return null;
             }
-            if (!ifc.network.matches(imp.best.nextHop)) {
+            if (!ifc.lower.checkConnected(imp.best.nextHop)) {
                 return null;
             }
             imp.best.iface = ifc;

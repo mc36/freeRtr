@@ -586,7 +586,7 @@ public class rtrEigrpIface implements Comparable<rtrEigrpIface>, ipPrt {
             cntr.drop(pck, counter.reasons.badNet);
             return;
         }
-        if ((connectedCheck) && (!rxIfc.network.matches(pck.IPsrc))) {
+        if ((connectedCheck) && (!rxIfc.lower.checkConnected(pck.IPsrc))) {
             logger.info("got from out of subnet peer " + pck.IPsrc);
             return;
         }

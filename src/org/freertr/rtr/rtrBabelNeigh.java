@@ -166,7 +166,7 @@ public class rtrBabelNeigh implements rtrBfdClnt, Comparable<rtrBabelNeigh> {
                     if (adr.isIPv4() == iface.lower.rouAfi) {
                         break;
                     }
-                    if ((iface.connectedCheck) && (!iface.oface.network.matches(adr))) {
+                    if ((iface.connectedCheck) && (!iface.oface.lower.checkConnected(adr))) {
                         logger.info("got from out of subnet hop " + adr);
                         break;
                     }

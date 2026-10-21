@@ -1486,7 +1486,7 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
             cntr.drop(pck, counter.reasons.notUp);
             return;
         }
-        if ((connectedCheck) && (!iface.network.matches(pck.IPsrc))) {
+        if ((connectedCheck) && (!iface.lower.checkConnected(pck.IPsrc))) {
             logger.info("got from out of subnet peer " + pck.IPsrc);
             cntr.drop(pck, counter.reasons.badAddr);
             return;
