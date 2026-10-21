@@ -76,7 +76,13 @@ public class ipIfc4 implements ipIfc, ifcUp {
     }
 
     public boolean checkConnected(addrIP adr) {
-        return prefix.matches(adr);
+        if (prefix.matches(adr)) {
+            return true;
+        }
+        if (ifcHdr == null) {
+            return false;
+        }
+        return ifcHdr.netChk(adr);
     }
 
     public addrIP getLinkLocalAddr() {

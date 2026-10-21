@@ -2565,6 +2565,25 @@ public class ipFwdIface extends tabRouteIface {
     }
 
     /**
+     * check address connected
+     *
+     * @param adr address
+     * @return true if yes, false if no
+     */
+    public boolean netChk(addrIP adr) {
+        for (int i = 0; i < nets.size(); i++) {
+            ipFwdIfacePref ntry = nets.get(i);
+            if (ntry == null) {
+                continue;
+            }
+            if (ntry.pfx.matches(adr)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * get one mapping
      *
      * @param i id
