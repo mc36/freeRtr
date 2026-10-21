@@ -273,7 +273,7 @@ int main(int argc, char **argv) {
     int sockets = rte_socket_count();
     printf("%i sockets %i lcores and %i ports detected...\n", sockets, cores, dataPorts);
     if (cores < 1) err("at least 1 cores needed");
-    if (sockets < 1) err("at least 1 cores needed");
+    if (sockets < 1) err("at least 1 sockets needed");
     if (dataPorts < 2) err("at least 2 ports needed");
     if (dataPorts > maxPorts) dataPorts = maxPorts;
 
