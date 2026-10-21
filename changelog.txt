@@ -18845,3 +18845,6 @@ failed: dhcp with excluded address
 ---------------------------------- 2026-10-19 11:22:28 26.10.19
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2026-10-21 06:26:57 26.10.21
+no qc pass: wireguard over wireguard
+failed: wireguard over wireguard
