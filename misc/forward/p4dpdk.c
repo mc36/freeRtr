@@ -348,8 +348,8 @@ int main(int argc, char **argv) {
             mbuf_size = r;
             continue;
         }
-        if (r > cores) continue;
-        if (t > cores) continue;
+        if (rte_lcore_is_enabled(r) == 0) continue;
+        if (rte_lcore_is_enabled(t) == 0) continue;
         if (p <= -1) {
             lcore_conf[r].justProcessor++;
             lcore_conf[t].justProcessor++;
