@@ -51,17 +51,6 @@ puts "1.3.6.1.2.1.1.1.0"
 
 
 
-oid .* 1.3.6.1
-proc snmp {mode oid} {
-
-puts "1.3.6.1.2.1.1.1.0"
-
-}
-
-.
-
-
-
 oid .* 1.3.6.1.2
 proc snmp {mode oid} {
 
@@ -222,28 +211,6 @@ puts "tag=integer int32=$index"
 
 .
 
-oid .* 1.3.6.1.2.1.2.2.1.1
-proc snmp {mode oid} {
-
-script getword.tcl
-
-
-script intnum.tcl
-
-
-script ifname.tcl
-
-script ifnext.tcl
-
-set q [if_next]
-set v [nametonumber $q]
-
-puts "1.3.6.1.2.1.2.2.1.1.$v"
-
-}
-
-.
-
 oid .* 1.3.6.1.2.1.2.2.1.2\..*
 proc snmp {mode oid} {
 
@@ -334,33 +301,46 @@ if {[string equal $mode next]} {
        }
 	return
 }
-
-
-
-
-set start [string first "bw" $b]
-
-set cut [string range $b $start [string length $b]]
-
-set startt [string first , $cut]
-set startt [expr $startt -1 ]
-
-set final [string range $cut 0 $startt]
-
-
-set result [string range $final [expr [string first "=" $final]+1]  [string length $final]]
-
-
-set a [string first "m" $result]
-set r [expr $a-1]
-set bw [string range $result 0 $r]
-
-
-puts "tag=integer class=1 int32=$bw"
-
-
-
-
+set s [fieldval $b bw]
+set e [string first "bps" $s]
+set r 0
+if {$e > 1} {
+set u [string range $s [expr $e-1] [expr $e-1]]
+set n [string range $s 0 [expr $e-2]]
+set fd 0
+set dp [string first "." $n]
+if {$dp > 0} {
+set fd [string range $n [expr $dp+1] [expr $dp+1]]
+set n [string range $n 0 [expr $dp-1]]
+}
+if {[string equal $u k]} {
+if {$n > 4294967} {
+set r 4294967295
+} else {
+set z "000"
+set r "$n$z"
+}
+}
+if {[string equal $u m]} {
+if {$n > 4294} {
+set r 4294967295
+} else {
+set z "000000"
+set r "$n$z"
+}
+}
+if {[string equal $u g]} {
+set v [expr $n*10]
+set v [expr $v+$fd]
+if {$v > 42} {
+set r 4294967295
+} else {
+set z "00000000"
+set r "$v$z"
+}
+}
+}
+puts "tag=integer class=1 int32=$r"
 }
 .
 
@@ -390,27 +370,9 @@ if {[string equal $mode next]} {
        }
 	return
 }
-
-
-
-set start [string first "hw" $b]
-
-set cut [string range $b $start [string length $b]]
-
-set startt [string first , $cut]
-set startt [expr $startt -1 ]
-
-set final [string range $cut 0 $startt]
-
-
-set result [string range $final [expr [string first "=" $final]+1]  [string length $final]]
-
-
-puts "tag=octetstring string= $result"
-
-
-
-
+set r [fieldval $b hwaddr]
+if {[string equal $r ""]} {set r "0000.0000.0000"}
+puts "tag=octetstring adrmac=$r"
 }
 .
 
@@ -443,25 +405,8 @@ if {[string equal $mode next]} {
        }
 	return
 }
-
-set start [string first "mtu" $b]
-
-set cut [string range $b $start [string length $b]]
-
-set startt [string first , $cut]
-set startt [expr $startt -1 ]
-
-set final [string range $cut 0 $startt]
-
-
-set result [string range $final [expr [string first "=" $final]+1]  [string length $final]]
-
-
-puts "tag=integer int32=$result"
-
-
-
-
+set r [fieldval $b mtu]
+puts "tag=integer int32=$r"
 }
 .
 
@@ -592,16 +537,13 @@ if {[string equal $mode next]} {
        } else {
 		set this [if_next ""]
 		set thisn [nametonumber $this]
-		puts "1.3.6.1.2.1.2.2.1.17.$thisn"
+		puts "1.3.6.1.2.1.2.2.1.11.$thisn"
        }
 
 	return
 }
 set total [ exec "show interfaces total" ]
-set b [ string range $total [string first $interface $total] [string length $total]]
-getword
-getword
-set result [getword]
+set result [rowval $total $interface 4]
 puts "tag=1 class=1 int32=$result"
 }
 .
@@ -629,10 +571,7 @@ if {[string equal $mode next]} {
 	return
 }
 set total [ exec "show interfaces ptotal" ]
-set b [ string range $total [string first $interface $total] [string length $total]]
-getword
-getword
-set result [getword]
+set result [rowval $total $interface 4]
 puts "tag=1 class=1 int32=$result"
 }
 .
@@ -658,20 +597,9 @@ if {[string equal $mode next]} {
 
 	return
 }
-
 set total [ exec "show interfaces ptotal" ]
-set b [ string range $total [string first $interface $total] [string length $total]]
-set b [split $b "\r"]
-set b [split $b "\n"]
-getword
-getword
-getword
-getword
-set result [getword]
+set result [rowval $total $interface 5]
 puts "tag=1 class=1 int32=$result"
-
-
-
 }
 .
 
@@ -695,14 +623,9 @@ if {[string equal $mode next]} {
 
 	return
 }
-
 set total [ exec "show interfaces total" ]
-set b [ string range $total [string first $interface $total] [string length $total]]
-getword
-getword
-set result [getword]
+set result [rowval $total $interface 3]
 puts "tag=1 class=1 int32=$result"
-
 }
 .
 
@@ -728,9 +651,7 @@ if {[string equal $mode next]} {
 	return
 }
 set total [ exec "show interfaces ptotal" ]
-set b [ string range $total [string first $interface $total] [string length $total]]
-getword
-set result [getword]
+set result [rowval $total $interface 3]
 puts "tag=1 class=1 int32=$result"
 }
 .
@@ -750,20 +671,13 @@ if {[string equal $mode next]} {
        } else {
 		set this [if_next ""]
 		set thisn [nametonumber $this]
-		puts "1.3.6.1.2.1.4.20.1.1"
+		set oid "1.3.6.1.2.1.4"
+		script ipaddr.tcl
        }
 
 	return
 }
-set total [ exec "show interfaces ptotal" ]
-set b [ string range $total [string first $interface $total] [string length $total]]
-set b [split $b "\r"]
-set b [split $b "\n"]
-getword
-getword
-getword
-getword
-set result [getword]
+set result 0
 puts "tag=1 class=1 int32=$result"
 }
 .
@@ -783,59 +697,21 @@ if {[string equal $mode next]} {
 	if {[string length $this] > 0} {
 		set thisn [nametonumber $this]
 		puts "1.3.6.1.2.1.2.2.1.3.$thisn"
-       }
-	else {
+       } else {
 		set this [if_next ""]
 		set thisn [nametonumber $this]
 		puts "1.3.6.1.2.1.2.2.1.4.$thisn"
        }
 	return
 }
-
-
-set comp 0
-set ma "type"
-
-set word ""
-while { $comp < 1 }{
-	set word [getword]
-	set comp [string match $ma $word]
-}
-getword
-set typ [getword]
-set out 0
-set eth "ethernet,"
-set comp [string match $typ $eth]
-if { $comp > 0 }{
-	set out 6
-}
-
-set atm "atm,"
-set comp [string match $typ $atm]
-if { $comp > 0 }{
-	set out 37
-}
-
-set ser "serial,"
-set comp [string match $typ $ser]
-if { $comp > 0 }{
-	set out 22
-}
-
-
-set tun "gre,"
-set comp [string match $typ $tun]
-if { $comp > 0 }{
-	set out 131
-}
-
-
-
+set out 1
+if {[string first "ethernet" $interface] == 0} {set out 6}
+if {[string first "hairpin" $interface] == 0} {set out 6}
+if {[string first "sdn" $interface] == 0} {set out 6}
+if {[string first "loopback" $interface] == 0} {set out 24}
+if {[string first "bvi" $interface] == 0} {set out 209}
+if {[string first "tunnel" $interface] == 0} {set out 131}
 puts "tag=integer int32=$out"
-
-
-
-
 }
 .
 
@@ -869,7 +745,7 @@ proc snmp {mode oid} {
 		puts "1.3.6.1.2.1.1.2.0"
 		return
 	}
-	puts "tag=octetstring string=T-Systems Mobile Access Router"
+	puts "tag=octetstring string= T-Systems Mobile Access Router"
 
 }
 
@@ -1015,6 +891,11 @@ while { $comp < 0 }{
 set m [getword]
 
 
+set lm [string length $m]
+set lc [expr $lm-1]
+if {[string equal [string range $m $lc $lc] ","]} {
+set m [string range $m 0 [expr $lc-1]]
+}
 puts "tag=octetstring string=$m"
 
 
@@ -1061,79 +942,48 @@ script ifnext.tcl
 .
 
 oid .* 1.3.6.1.2.1.4.20.1.1.*
-
 proc snmp {mode oid} {
-
-
-	if {[string equal $mode next]} {
-
-		puts "1.3.6.1.2.1.4.20.1.2"
-		return
-	}
-
-puts "tag=0 class=1  adrip4=10.10.10.10"
+script ifname.tcl
+script ipaddr.tcl
 }
 .
 
 
 oid .* 1.3.6.1.2.1.4.20.1.2.*
-
 proc snmp {mode oid} {
-
-
-	if {[string equal $mode next]} {
-
-		puts "1.3.6.1.2.1.4.20.1.3"
-		return
-	}
-
-puts "tag=integer int32=0"
+script ifname.tcl
+script ipaddr.tcl
 }
 .
 
 
 oid .* 1.3.6.1.2.1.4.20.1.3.*
-
 proc snmp {mode oid} {
-
-
-	if {[string equal $mode next]} {
-
-		puts "1.3.6.1.2.1.4.22.1"
-		return
-	}
-
-puts "tag=0 class=1 string=10.10.10.10"
+script ifname.tcl
+script ipaddr.tcl
 }
 .
 
 
 
 oid .* 1.3.6.1.2.1.4.20.1
-
 proc snmp {mode oid} {
-
-
-	puts "1.3.6.1.2.1.4.20.1.1"
+script ifname.tcl
+script ipaddr.tcl
 }
 .
 
 oid .* 1.3.6.1.2.1.4.20
-
 proc snmp {mode oid} {
-
-
-
-	puts "1.3.6.1.2.1.4.20.1.1"
+script ifname.tcl
+script ipaddr.tcl
 }
 .
 
 oid .* 1.3.6.1.2.1.4
-
 proc snmp {mode oid} {
-
-
-	puts "1.3.6.1.2.1.4.20.1.1"
+script ifname.tcl
+script ipaddr.tcl
 }
 .
 
@@ -1619,21 +1469,14 @@ if {[string equal $mode next]} {
        } else {
 		set this [if_next ""]
 		set thisn [nametonumber $this]
-		puts "1.3.6.1.2.1.31.1.1.1.10.$thisn"
+		puts "1.3.6.1.2.1.31.1.1.1.7.$thisn"
        }
 
 	return
 }
-
 set total [ exec "show interfaces total" ]
-
-set b [ string range $total [string first $interface $total] [string length $total]]
-
-getword
-getword
-set result [getword]
+set result [rowval $total $interface 4]
 puts "tag=6 class=1 int64=$result"
-
 }
 .
 
@@ -1653,21 +1496,104 @@ if {[string equal $mode next]} {
        } else {
 		set this [if_next ""]
 		set thisn [nametonumber $this]
-		puts "1.3.6.1.2.1.31.1.1.1.17.$thisn"
+		puts "1.3.6.1.2.1.31.1.1.1.11.$thisn"
        }
 
 	return
 }
-
 set total [ exec "show interfaces total" ]
-
-set b [ string range $total [string first $interface $total] [string length $total]]
-
-getword
-getword
-set result [getword]
+set result [rowval $total $interface 3]
 puts "tag=6 class=1 int64=$result"
+}
+.
 
+oid .* 1.3.6.1.2.1.31.1.1.1.7.*
+proc snmp {mode oid} {
+script getword.tcl
+script intnum.tcl
+script ifname.tcl
+script ifnext.tcl
+if {[string equal $mode next]} {
+	set this [if_next $interface]
+	if {[string length $this] > 0} {
+		set thisn [nametonumber $this]
+		puts "1.3.6.1.2.1.31.1.1.1.7.$thisn"
+	} else {
+		set this [if_next ""]
+		set thisn [nametonumber $this]
+		puts "1.3.6.1.2.1.31.1.1.1.10.$thisn"
+	}
+	return
+}
+set total [ exec "show interfaces ptotal" ]
+set result [rowval $total $interface 4]
+puts "tag=6 class=1 int64=$result"
+}
+.
+
+oid .* 1.3.6.1.2.1.31.1.1.1.11.*
+proc snmp {mode oid} {
+script getword.tcl
+script intnum.tcl
+script ifname.tcl
+script ifnext.tcl
+if {[string equal $mode next]} {
+	set this [if_next $interface]
+	if {[string length $this] > 0} {
+		set thisn [nametonumber $this]
+		puts "1.3.6.1.2.1.31.1.1.1.11.$thisn"
+	} else {
+		set this [if_next ""]
+		set thisn [nametonumber $this]
+		puts "1.3.6.1.2.1.31.1.1.1.15.$thisn"
+	}
+	return
+}
+set total [ exec "show interfaces ptotal" ]
+set result [rowval $total $interface 3]
+puts "tag=6 class=1 int64=$result"
+}
+.
+
+oid .* 1.3.6.1.2.1.31.1.1.1.15.*
+proc snmp {mode oid} {
+script getword.tcl
+script intnum.tcl
+script ifname.tcl
+script ifnext.tcl
+if {[string equal $mode next]} {
+	set this [if_next $interface]
+	if {[string length $this] > 0} {
+		set thisn [nametonumber $this]
+		puts "1.3.6.1.2.1.31.1.1.1.15.$thisn"
+	} else {
+		set this [if_next ""]
+		set thisn [nametonumber $this]
+		puts "1.3.6.1.2.1.31.1.1.1.17.$thisn"
+	}
+	return
+}
+set s [fieldval $b bw]
+set e [string first "bps" $s]
+set r 0
+if {$e > 1} {
+set u [string range $s [expr $e-1] [expr $e-1]]
+set n [string range $s 0 [expr $e-2]]
+set fd 0
+set dp [string first "." $n]
+if {$dp > 0} {
+set fd [string range $n [expr $dp+1] [expr $dp+1]]
+set n [string range $n 0 [expr $dp-1]]
+}
+if {[string equal $u k]} {set r [expr $n/1000]}
+if {[string equal $u m]} {set r $n}
+if {[string equal $u g]} {
+set r [expr $n*1000]
+set t [expr $fd*100]
+set r [expr $r+$t]
+}
+}
+puts "tag=integer class=1 int32=$r"
 }
 .
 
@@ -1695,8 +1621,7 @@ if {[string equal $mode next]} {
 
 	return
 }
-
-puts "tag=integer int32=0"
+puts "tag=integer int32=2"
 }
 .
 
@@ -1723,108 +1648,22 @@ if {[string equal $mode next]} {
 
 	return
 }
-
-set comp 0
-set ma "description:"
-
-set word ""
-while { $comp < 1 }{
-	set word [getword]
-	set comp [string match $ma $word]
-
+set p [string first "description:" $b]
+set desc ""
+if {$p >= 0} {
+set desc [string range $b [expr $p+12] [string length $b]]
+set q [string first "\n" $desc]
+if {$q >= 0} {
+set desc [string range $desc 0 [expr $q-1]]
 }
-
-set  desc [getword]
-set comp 0
-set ma "type"
-set comp [string match $desc $ma]
-if {$comp > 0} {
-	set desc ""
+set desc [string trim $desc]
 }
-
-puts "tag=octetstring string=  $desc"
+puts "tag=octetstring string= $desc"
 }
 .
 
 
 
-
-oid .* 1.3.6.1.3.118.1.2.1.1.6
-
-proc snmp {mode oid} {
-
-
-	if {[string equal $mode next]} {
-			puts "1.3.6.1.4.1.9.3.6.3"
-		return
-	}
-
-
-puts "tag=octetstring string=  asd"
-}
-.
-
-oid .* 1.3.6.1.3.118.1.2.1.1
-
-proc snmp {mode oid} {
-
-
-puts "1.3.6.1.3.118.1.2.1.1.6"
-
-}
-.
-
-oid .* 1.3.6.1.3.118.1.2.1
-
-proc snmp {mode oid} {
-
-
-puts "1.3.6.1.3.118.1.2.1.1.6"
-
-
-}
-.
-
-oid .* 1.3.6.1.3.118.1.2
-
-proc snmp {mode oid} {
-
-
-
-puts "1.3.6.1.3.118.1.2.1.1.6"
-}
-.
-
-oid .* 1.3.6.1.3.118.1
-
-proc snmp {mode oid} {
-
-
-	puts "1.3.6.1.3.118.1.2.1.1.6"
-
-}
-.
-
-oid .* 1.3.6.1.3.118
-
-proc snmp {mode oid} {
-
-
-
-	puts "1.3.6.1.3.118.1.2.1.1.6"
-}
-.
-
-oid .* 1.3.6.1.3
-
-proc snmp {mode oid} {
-
-
-
-
-	puts "1.3.6.1.3.118.1.2.1.1.6"
-}
-.
 
 oid .* 1.3.6.1.4.1.9.3.6.6.0
 
@@ -1954,15 +1793,6 @@ puts "1.3.6.1.4.1.9.2.1.57.0"
 }
 .
 
-
-oid .* 1.3.6.1.4.1.9.2.1
-
-proc snmp {mode oid} {
-
-puts "1.3.6.1.4.1.9.2.1.57.0"
-
-}
-.
 
 oid .* 1.3.6.1.4.1.9.2.1
 
@@ -2284,7 +2114,7 @@ puts "tag=integer int32=2"
 }
 .
 
-oid . * 1.3.6.1.4.1.9.9.23.1.1.1.1
+oid .* 1.3.6.1.4.1.9.9.23.1.1.1.1
 
 proc snmp {mode oid} {
 
@@ -2620,7 +2450,7 @@ oid .* 1.3.6.1.4.1.9.9.42.1.2.1
 
 proc snmp {mode oid} {
 
-puts puts "1.3.6.1.4.1.9.9.42.1.2.1.1"
+puts "1.3.6.1.4.1.9.9.42.1.2.1.1"
 }
 .
 
@@ -2628,7 +2458,7 @@ oid .* 1.3.6.1.4.1.9.9.42.1.2
 
 proc snmp {mode oid} {
 
-puts puts "1.3.6.1.4.1.9.9.42.1.2.1.1"
+puts "1.3.6.1.4.1.9.9.42.1.2.1.1"
 }
 .
 
@@ -2636,7 +2466,7 @@ oid .* 1.3.6.1.4.1.9.9.42.1
 
 proc snmp {mode oid} {
 
-puts puts "1.3.6.1.4.1.9.9.42.1.2.1.1"
+puts "1.3.6.1.4.1.9.9.42.1.2.1.1"
 }
 .
 
@@ -2670,7 +2500,7 @@ oid .* 1.3.6.1.4.1.9.9.42.1.2.2
 
 proc snmp {mode oid} {
 
-puts puts "1.3.6.1.4.1.9.9.42.1.2.2.1"
+puts "1.3.6.1.4.1.9.9.42.1.2.2.1"
 }
 .
 
@@ -2696,7 +2526,7 @@ oid .* 1.3.6.1.4.1.9.9.42.1.2.5
 
 proc snmp {mode oid} {
 
-puts puts "1.3.6.1.4.1.9.9.42.1.2.5.1"
+puts "1.3.6.1.4.1.9.9.42.1.2.5.1"
 }
 .
 
@@ -2721,7 +2551,7 @@ oid .* 1.3.6.1.4.1.9.9.42.1.2.6
 
 proc snmp {mode oid} {
 
-puts puts "1.3.6.1.4.1.9.9.42.1.2.6.1"
+puts "1.3.6.1.4.1.9.9.42.1.2.6.1"
 }
 .
 
@@ -2745,7 +2575,7 @@ oid .* 1.3.6.1.4.1.9.9.42.1.2.7
 
 proc snmp {mode oid} {
 
-puts puts "1.3.6.1.4.1.9.9.42.1.2.7.1"
+puts "1.3.6.1.4.1.9.9.42.1.2.7.1"
 }
 .
 
@@ -2971,7 +2801,7 @@ oid .* 1.3.6.1.4.1.9.9.42.1.3.2.1.7
 proc snmp {mode oid} {
 
 	if {[string equal $mode next]} {
-			puts "1.3.6.1.4.1.9.9.46.1.3.1.1.4""
+			puts "1.3.6.1.4.1.9.9.46.1.3.1.1.4"
 		return
 	}
 
@@ -3237,7 +3067,7 @@ oid .* 1.3.6.1.4.1.9.9.106.1.2.1
 
 proc snmp {mode oid} {
 
-puts
+puts "1.3.6.1.4.1.9.9.106.1.2.1.1.11"
 }
 .
 
@@ -3254,6 +3084,7 @@ oid .* 1.3.6.1.4.1.9.9.106.1
 proc snmp {mode oid} {
 
 puts "1.3.6.1.4.1.9.9.106.1.2.1.1.11"
+}
 .
 
 oid .* 1.3.6.1.4.1.9.9.106
@@ -3663,7 +3494,6 @@ oid .* 1.3.6.1.4.1.9.9.166.1.7.1.1.1.*
 proc snmp {mode oid} {
 
 	if {[string equal $mode next]} {
-		puts "1.3.6.1.4.1.9.9.166.1.7.1.1.1"
 		return
 	}
 
@@ -3672,7 +3502,7 @@ puts "tag=octetstring string=vege"
 }
 .
 
-oid.* 1.3.6.1.4.1.9.9.166.1.7.1.1
+oid .* 1.3.6.1.4.1.9.9.166.1.7.1.1
 
 proc snmp {mode oid} {
 
@@ -3680,7 +3510,7 @@ puts "1.3.6.1.4.1.9.9.166.1.7.1.1.1"
 }
 .
 
-oid.* 1.3.6.1.4.1.9.9.166.1.7.1
+oid .* 1.3.6.1.4.1.9.9.166.1.7.1
 
 proc snmp {mode oid} {
 
