@@ -1,63 +1,33 @@
-set ifnum 0
-set interface ""
 set z [string range $oid [expr [string last "." $oid]+1] [string length $oid]]
-
-if {$z / 10000 == 7} {
-        set ifnum [expr $z % 70000]
-        set interface  "ethernet$ifnum"
-
+set interface ""
+set suffix ""
+set w [expr $z/10000]
+set ifnum [expr $z%10000]
+if {$z >= 1000000} {
+set w [expr $z/1000000]
+set r [expr $z%1000000]
+set ifnum [expr $r/5000]
+set v [expr $r%5000]
+set suffix ".$v"
 }
-
-if {$z / 10000 == 2} {
-        set ifnum [expr $z % 20000]
-        set interface  "atm$ifnum"
+set p ""
+set tab "access 1 atm 2 bundle 3 bvi 4 cellular 5 dialer 6 ethernet 7 loopback 8 serial 9 tunnel 10 hairpin 11 sdn 12"
+while { [string length $tab] > 0 }{
+set q [string first " " $tab]
+set tn [string range $tab 0 [expr $q-1]]
+set tab [string range $tab $q [string length $tab]]
+set tab [string trim $tab]
+set q [string first " " $tab]
+if {$q < 0} {
+set tv $tab
+set tab ""
+} else {
+set tv [string range $tab 0 [expr $q-1]]
+set tab [string range $tab $q [string length $tab]]
+set tab [string trim $tab]
 }
-
-
-if {$z / 10000 == 9} {
-        set ifnum [expr $z % 90000]
-        set interface  "serial$ifnum"
+if {$tv == $w} {
+set interface "$tn$ifnum$suffix"
 }
-
-if {$z / 10000 == 5} {
-        set ifnum [expr $z % 50000]
-        set interface  "cellular$ifnum"
 }
-
-if {$z / 10000 == 8} {
-        set ifnum [expr $z % 80000]
-        set interface  "loopback$ifnum"
-}
-
-if {$z / 10000 == 6} {
-        set ifnum [expr $z % 60000]
-        set interface  "dialer$ifnum"
-}
-
-
-if {$z / 10000 == 4} {
-        set ifnum [expr $z % 40000]
-        set interface  "bvi$ifnum"
-}
-
-if {$z / 10000 == 3} {
-        set ifnum [expr $z % 30000]
-        set interface  "bundle$ifnum"
-}
-
-if {$z / 10000 == 10} {
-        set ifnum [expr $z % 100000]
-        set interface  "tunnel$ifnum"
-}
-
-
-
-if {$z / 10000 == 1} {
-        set ifnum [expr $z % 10000]
-        set interface  "access$ifnum"
-}
-
-
-
 set b [exec "show interfaces $interface"]
-
