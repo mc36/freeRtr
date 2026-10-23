@@ -18864,3 +18864,6 @@ qc pass: wireguard over wireguard
 ---------------------------------- 2026-10-23 08:05:28 26.10.23
 no qc pass: ingress label filtering with pvrp
 failed: ingress label filtering with pvrp
+---------------------------------- 2026-10-23 09:38:35 26.10.23
+no failed: ingress label filtering with pvrp
+qc pass: ingress label filtering with pvrp
