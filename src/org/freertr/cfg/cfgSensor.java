@@ -96,14 +96,14 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     public int oidB;
 
     /**
-     * name oid base
+     * name oid prepend
      */
-    public String namO;
+    public String oidP;
 
     /**
      * name oid type
      */
-    public String namT;
+    public String oidT;
 
     /**
      * name label
@@ -182,7 +182,8 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "command", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
         new userFilter("sensor .*", cmds.tabulator + "name 0", null),
-        new userFilter("sensor .*", cmds.tabulator + "oid 0 null null", null),
+        new userFilter("sensor .*", cmds.tabulator + "oid-name null null", null),
+        new userFilter("sensor .*", cmds.tabulator + "oid-begin 0", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "labels", null),
         new userFilter("sensor .*", cmds.tabulator + "addname -1 null", null),
         new userFilter("sensor .*", cmds.tabulator + "skip 1", null),
@@ -250,10 +251,11 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         l.add(null, false, 1, new int[]{2}, "key", "key column number");
         l.add(null, false, 2, new int[]{3}, "<str>", "name");
         l.add(null, false, 3, new int[]{-1}, "<str>", "path");
-        l.add(null, false, 1, new int[]{2}, "oid", "set name for snmp");
-        l.add(null, false, 2, new int[]{3}, "<num>", "add to index");
-        l.add(null, false, 3, new int[]{4}, "<str>", "base for snmp");
-        l.add(null, false, 4, new int[]{4, -1}, "<str>", "type of oid");
+        l.add(null, false, 1, new int[]{2}, "oid-begin", "set offset for snmp");
+        l.add(null, false, 2, new int[]{-1}, "<num>", "add to index");
+        l.add(null, false, 1, new int[]{2}, "oid-name", "set name for snmp");
+        l.add(null, false, 2, new int[]{3}, "<str>", "base oid for snmp");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "type of oid");
         l.add(null, false, 1, new int[]{2}, "name", "name column number");
         l.add(null, false, 2, new int[]{3, -1}, "<num>", "column number");
         l.add(null, false, 3, new int[]{-1}, "<str>", "label");
@@ -332,7 +334,8 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             a = " " + namL;
         }
         l.add(cmds.tabulator + "name " + namC + a);
-        l.add(cmds.tabulator + "oid " + oidB + " " + namO + " " + namT);
+        l.add(cmds.tabulator + "oid-begin " + oidB);
+        l.add(cmds.tabulator + "oid-name " + oidP + " " + oidT);
         l.add(cmds.tabulator + "key " + keyN + " " + keyP);
         if (namS != null) {
             l.add(cmds.tabulator + "labels " + namS);
@@ -498,14 +501,16 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             }
             return;
         }
-        if (s.equals("oid")) {
+        if (s.equals("oid-begin")) {
             oidB = bits.str2num(cmd.word());
-            namO = cmd.word();
-            namT = cmd.getRemaining();
+            return;
+        }
+        if (s.equals("oid-name")) {
+            oidP = cmd.word();
+            oidT = cmd.getRemaining();
             if (negated) {
-                oidB = 0;
-                namO = null;
-                namT = null;
+                oidP = null;
+                oidT = null;
             }
             return;
         }
@@ -826,7 +831,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     private void doLineOid(List<String> r, int n, String a) {
         List<String> cl = doSplitLine(a);
         int cls = cl.size();
-        if (namO != null) {
+        if (oidP != null) {
             if (namC >= cls) {
                 return;
             }
@@ -835,7 +840,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
                 a += ";" + cl.get(acol);
             }
             a = doReplaces(a, reps);
-            r.add(namO + "." + n + " " + namT + a);
+            r.add(oidP + "." + n + " " + oidT + a);
         }
         for (int o = 0; o < cols.size(); o++) {
             cfgSensorCol cc = cols.get(o);
@@ -1150,8 +1155,8 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
      * @return true if found, false if not
      */
     public boolean checkOidPrefix(String oid) {
-        if (namO != null) {
-            if (oid.startsWith(namO)) {
+        if (oidP != null) {
+            if (oid.startsWith(oidP)) {
                 return true;
             }
         }
