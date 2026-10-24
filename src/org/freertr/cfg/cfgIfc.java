@@ -6414,7 +6414,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
      * 14=lacp, 15=hwsum, 16=hwpsum, 17=hwtrafic, 18=hwptrafic, 19=swsum,
      * 20=swpsum, 21=swtrafic, 22=swptrafic, 23=hwtot, 24=hwptot, 25=swtot,
      * 26=swptot, 27=stat, 28=last, 29=bprat, 30=hwswrat, 31=hwswprat, 32=lldp
-     * 33=udld, 34=lacp, 35=cdp
+     * 33=udld, 34=lacp, 35=cdp, 36=hwvrf, 37=hwstat
      */
     public void getShIntTab(userFormat l, int mode) {
         switch (mode) {
@@ -6559,6 +6559,19 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 break;
             case 35:
                 l.add(name + "|" + (cdp != null));
+                break;
+            case 36:
+                if (ethtyp.hwCntr == null) {
+                    break;
+                }
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + type2string() + "|" + (vrfFor == null ? "n/a" : vrfFor.name) + "|" + addr4 + "|" + addr6 + "|" + ethtyp.getHwAddr());
+                break;
+            case 37:
+                if (ethtyp.hwCntr == null) {
+                    break;
+                }
+                cntr = ethtyp.getCounter();
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getBandwidth() + "|" + ethtyp.getMTUsize() + "|" + ethtyp.getPromisc() + "|" + ethtyp.getMacsec() + "|" + ethtyp.getSgt() + "|" + cntr.stateChg + "|" + bits.timePast(cntr.lastChgd) + "|" + bits.time2str(cfgAll.timeZoneName, cntr.lastChgd + cfgAll.timeServerOffset, 3));
                 break;
         }
     }

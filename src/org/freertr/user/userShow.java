@@ -2209,6 +2209,10 @@ public class userShow {
                 rdr.putStrTab(cfgAll.getShIntTab(27));
                 return null;
             }
+            if (a.equals("hwstatus")) {
+                rdr.putStrTab(cfgAll.getShIntTab(37));
+                return null;
+            }
             if (a.equals("lastio")) {
                 rdr.putStrTab(cfgAll.getShIntTab(28));
                 return null;
@@ -2295,6 +2299,10 @@ public class userShow {
             }
             if (a.equals("vrf")) {
                 rdr.putStrTab(cfgAll.getShIntTab(3));
+                return null;
+            }
+            if (a.equals("hwvrf")) {
+                rdr.putStrTab(cfgAll.getShIntTab(36));
                 return null;
             }
             cfgIfc ifc = cfgAll.ifcFind(a, 0);

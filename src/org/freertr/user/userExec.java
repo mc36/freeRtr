@@ -1551,6 +1551,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "swbwmon", "software bandwidth monitor listing");
         hl.add(null, false, 3, new int[]{-1}, "summary", "summary listing");
         hl.add(null, false, 3, new int[]{-1}, "status", "status listing");
+        hl.add(null, false, 3, new int[]{-1}, "hwstatus", "hardware status listing");
         hl.add(null, false, 3, new int[]{-1}, "lastio", "last packet listing");
         hl.add(null, false, 3, new int[]{-1}, "hwswratio", "hardware by software bytes");
         hl.add(null, false, 3, new int[]{-1}, "hwswpratio", "hardware by software packets");
@@ -1573,6 +1574,7 @@ public class userExec {
         hl.add(null, false, 3, new int[]{-1}, "hwptraffic", "hardware packet traffic listing");
         hl.add(null, false, 3, new int[]{-1}, "swptraffic", "software packet traffic listing");
         hl.add(null, false, 3, new int[]{-1}, "vrf", "vrf listing");
+        hl.add(null, false, 3, new int[]{-1}, "hwvrf", "hardware vrf listing");
         hl.add(null, false, 3, new int[]{4, -1}, "[name:ifc]", "name of (sub)interface");
         hl.add(null, false, 4, new int[]{-1}, "full", "full listing");
         hl.add(null, false, 4, new int[]{-1}, "rates", "traffic rates");
