@@ -91,6 +91,16 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
     public int namC;
 
     /**
+     * name oid base
+     */
+    public String namO;
+
+    /**
+     * name oid type
+     */
+    public String namT;
+
+    /**
      * name label
      */
     public String namL;
@@ -167,6 +177,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "command", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "description", null),
         new userFilter("sensor .*", cmds.tabulator + "name 0", null),
+        new userFilter("sensor .*", cmds.tabulator + "oid null null", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "labels", null),
         new userFilter("sensor .*", cmds.tabulator + "addname -1 null", null),
         new userFilter("sensor .*", cmds.tabulator + "skip 1", null),
@@ -174,6 +185,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         new userFilter("sensor .*", cmds.tabulator + "column .* style gauge", null),
         new userFilter("sensor .*", cmds.tabulator + "column .* type uint64", null),
         new userFilter("sensor .*", cmds.tabulator + "column .* split null null null", null),
+        new userFilter("sensor .*", cmds.tabulator + "column .* oid null null", null),
         new userFilter("sensor .*", cmds.tabulator + "column .* help null", null),
         new userFilter("sensor .*", cmds.tabulator + "column .* threshold 0", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local interval", null),
@@ -233,6 +245,9 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         l.add(null, false, 1, new int[]{2}, "key", "key column number");
         l.add(null, false, 2, new int[]{3}, "<str>", "name");
         l.add(null, false, 3, new int[]{-1}, "<str>", "path");
+        l.add(null, false, 1, new int[]{2}, "oid", "set name for snmp");
+        l.add(null, false, 2, new int[]{3}, "<str>", "base for snmp");
+        l.add(null, false, 3, new int[]{3, -1}, "<str>", "type of oid");
         l.add(null, false, 1, new int[]{2}, "name", "name column number");
         l.add(null, false, 2, new int[]{3, -1}, "<num>", "column number");
         l.add(null, false, 3, new int[]{-1}, "<str>", "label");
@@ -274,6 +289,9 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         l.add(null, false, 4, new int[]{5}, "<str>", "delimiter");
         l.add(null, false, 5, new int[]{6}, "<str>", "first label");
         l.add(null, false, 6, new int[]{-1}, "<str>", "second label");
+        l.add(null, false, 3, new int[]{4}, "oid", "set oid for snmp");
+        l.add(null, false, 4, new int[]{5}, "<str>", "base for snmp");
+        l.add(null, false, 5, new int[]{5, -1}, "<str>", "type of oid");
         l.add(null, false, 1, new int[]{2}, "local", "local collection options");
         l.add(null, false, 2, new int[]{3}, "interval", "collection interval");
         l.add(null, false, 3, new int[]{-1}, "<num>", "time in ms");
@@ -308,6 +326,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             a = " " + namL;
         }
         l.add(cmds.tabulator + "name " + namC + a);
+        l.add(cmds.tabulator + "oid " + namO + " " + namT);
         l.add(cmds.tabulator + "key " + keyN + " " + keyP);
         if (namS != null) {
             l.add(cmds.tabulator + "labels " + namS);
@@ -336,6 +355,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             l.add(cn + " type " + servStreamingMdt.type2string(col.typ));
             l.add(cn + " threshold " + col.thr);
             l.add(cn + " help " + col.hlp);
+            l.add(cn + " oid " + col.oid + " " + col.oit);
             l.add(cn + " split " + col.splS + " " + col.splL + " " + col.splR);
             for (int i = 0; i < col.reps.size(); i++) {
                 cfgSensorRep rep = col.reps.get(i);
@@ -472,6 +492,15 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             }
             return;
         }
+        if (s.equals("oid")) {
+            namO = cmd.word();
+            namT = cmd.getRemaining();
+            if (negated) {
+                namO = null;
+                namT = null;
+            }
+            return;
+        }
         if (s.equals("path")) {
             path = cmd.getRemaining();
             return;
@@ -556,6 +585,16 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
                 col.lab = null;
             } else {
                 col.lab = cmd.word();
+            }
+            return;
+        }
+        if (s.equals("oid")) {
+            if (negated) {
+                col.oid = null;
+                col.oit = null;
+            } else {
+                col.oid = cmd.word();
+                col.oit = cmd.getRemaining();
             }
             return;
         }
@@ -774,6 +813,41 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         pck3.clear();
         pb.toPacket(pck3);
         return pck3;
+    }
+
+    private void doLineOid(List<String> r, int n, String a) {
+        List<String> cl = doSplitLine(a);
+        int cls = cl.size();
+        if (namO != null) {
+            if (namC >= cls) {
+                return;
+            }
+            a = cl.get(namC);
+            if ((acol >= 0) && (acol < cls)) {
+                a += ";" + cl.get(acol);
+            }
+            a = doReplaces(a, reps);
+            r.add(namO + "." + n + " " + namT + a);
+        }
+        for (int o = 0; o < cols.size(); o++) {
+            cfgSensorCol cc = cols.get(o);
+            if (cl.size() <= cc.num) {
+                continue;
+            }
+            if (cc.oid == null) {
+                continue;
+            }
+            a = doReplaces(cl.get(cc.num), cc.reps);
+            if (cc.splS == null) {
+                r.add(cc.oid + "." + n + " " + cc.oit + a);
+                continue;
+            }
+            int i = a.indexOf(cc.splS);
+            if (i < 0) {
+                r.add(cc.oid + "." + n + " " + cc.oit + a);
+                continue;
+            }
+        }
     }
 
     private String doLineCsv(String a) {
@@ -1056,6 +1130,53 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         List<String> smt = new ArrayList<String>();
         for (int p = 0; p < res.size(); p++) {
             doLineProm(lst, smt, res.get(p));
+        }
+        time = (int) (bits.getTime() - last);
+        return lst;
+    }
+
+    /**
+     * check oid prefix
+     *
+     * @param oid oid to check
+     * @return true if found, false if not
+     */
+    public boolean checkOidPrefix(String oid) {
+        if (namO != null) {
+            if (oid.startsWith(namO)) {
+                return true;
+            }
+        }
+        for (int o = 0; o < cols.size(); o++) {
+            cfgSensorCol cc = cols.get(o);
+            if (cc.oid == null) {
+                continue;
+            }
+            if (oid.startsWith(cc.oid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * generate report
+     *
+     * @return report
+     */
+    public List<String> getReportOid() {
+        last = bits.getTime();
+        cnt++;
+        List<String> lst = new ArrayList<String>();
+        List<String> res = getResult();
+        for (int i = 0; i < skip; i++) {
+            if (res.size() < 1) {
+                break;
+            }
+            res.remove(0);
+        }
+        for (int p = 0; p < res.size(); p++) {
+            doLineOid(lst, p, res.get(p));
         }
         time = (int) (bits.getTime() - last);
         return lst;
@@ -1475,6 +1596,10 @@ class cfgSensorCol implements Comparable<cfgSensorCol> {
     public final int num;
 
     public String nam;
+
+    public String oid;
+
+    public String oit;
 
     public String hlp;
 

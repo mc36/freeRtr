@@ -1325,6 +1325,10 @@ public class userShow {
                 rdr.putStrArr(exp.getReportCsv());
                 return null;
             }
+            if (a.equals("oid")) {
+                rdr.putStrArr(exp.getReportOid());
+                return null;
+            }
             if (a.equals("netconf")) {
                 rdr.putStrArr(exp.getShowNetconf());
                 return null;

@@ -1920,6 +1920,7 @@ public class userExec {
         hl.add(null, false, 4, new int[]{-1}, "output", "output of command");
         hl.add(null, false, 4, new int[]{-1}, "yang", "yang configuration");
         hl.add(null, false, 4, new int[]{-1}, "prometheus", "prometheus data");
+        hl.add(null, false, 4, new int[]{-1}, "oid", "oid data");
         hl.add(null, false, 4, new int[]{-1}, "csv", "csv data");
         hl.add(null, false, 4, new int[]{-1}, "netconf", "netconf data");
         hl.add(null, false, 4, new int[]{-1}, "xml", "xml data");

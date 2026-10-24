@@ -1486,11 +1486,6 @@ public class cfgAll {
     public static userFilter[] custDefs = new userFilter[0];
 
     /**
-     * loaded snmp mibs
-     */
-    public static userFilter snmpMibs[] = new userFilter[0];
-
-    /**
      * defaults text
      */
     public final static userFilter[] defaultF = {

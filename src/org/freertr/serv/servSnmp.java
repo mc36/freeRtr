@@ -6,6 +6,7 @@ import org.freertr.auth.authResult;
 import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgAuther;
 import org.freertr.cfg.cfgInit;
+import org.freertr.cfg.cfgSensor;
 import org.freertr.enc.encAsn1;
 import org.freertr.pack.packHolder;
 import org.freertr.pack.packSnmp;
@@ -112,35 +113,65 @@ public class servSnmp extends servGeneric implements prtServS {
         return genericStop(0);
     }
 
-    private String doSnmp(String cmd, String oid) {
-        pipeLine pl = new pipeLine(32768, false);
-        pipeSide pip = pl.getSide();
-        pip.setTime(10000);
-        pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        pip.lineTx = pipeSide.modTyp.modeCRLF;
-        userFilter fltr = userFilter.findFilter(new userFilter(cmd, oid, null), cfgAll.snmpMibs);
-        if (fltr == null) {
+    private String doGet(String oid) {
+        List<String> res = null;
+        for (int i = 0; i < cfgAll.sensors.size(); i++) {
+            cfgSensor sns = cfgAll.sensors.get(i);
+            if (!sns.checkOidPrefix(oid)) {
+                continue;
+            }
+            res = sns.getReportOid();
+            break;
+        }
+        if (res == null) {
             return null;
         }
-        userScript t = new userScript(pip, "");
-        t.allowExec = true;
-        t.allowConfig = true;
-        t.addLines(fltr.listing);
-        t.addLine("snmp " + cmd + " " + oid);
-        pip = pl.getSide();
-        pip.lineRx = pipeSide.modTyp.modeCRorLF;
-        pip.lineTx = pipeSide.modTyp.modeCR;
-        t.cmdAll();
-        pl.setClose();
-        String a = pip.strGet(65536);
-        if (a == null) {
+        oid += " ";
+        for (int i = 0; i < res.size(); i++) {
+            String a = res.get(i);
+            if (!a.startsWith(oid)) {
+                continue;
+            }
+            a = a.substring(oid.length(), a.length());
+            return a;
+        }
+        return null;
+    }
+
+    private String[] doNxt(String oids) {
+        int[] oidv = encAsn1.str2oid(oids);
+        int[] reso = null;
+        String resv = null;
+        for (int o = 0; o < cfgAll.sensors.size(); o++) {
+            cfgSensor sns = cfgAll.sensors.get(o);
+            List<String> cur = sns.getReportOid();
+            for (int i = 0; i < cur.size(); i++) {
+                String a = cur.get(i);
+                int p = a.indexOf(" ");
+                if (p < 0) {
+                    continue;
+                }
+                int[] s = encAsn1.str2oid(a.substring(0, p));
+                a = a.substring(p + 1, a.length());
+                if (encAsn1.compOid(s, oidv) <= 0) {
+                    continue;
+                }
+                if (reso == null) {
+                    reso = s;
+                    resv = a;
+                    continue;
+                }
+                if (encAsn1.compOid(s, reso) >= 0) {
+                    continue;
+                }
+                reso = s;
+                resv = a;
+            }
+        }
+        if (reso == null) {
             return null;
         }
-        a = a.replaceAll("\r", "").replaceAll("\n", "").trim();
-        if (debugger.servSnmpTraf) {
-            logger.debug("result " + cmd + "," + oid + "=" + a);
-        }
-        return a;
+        return new String[]{encAsn1.oid2str(reso), resv};
     }
 
     /**
@@ -161,30 +192,32 @@ public class servSnmp extends servGeneric implements prtServS {
         pck.errStat = 0;
         for (int i = 0; i < pck.res.size(); i++) {
             encAsn1 cur = pck.res.get(i);
-            int typ = pck.type;
             String oid = encAsn1.oid2str(cur.oid);
-            switch (typ) {
+            String val;
+            switch (pck.type) {
                 case packSnmp.typGetNext:
-                case packSnmp.typGetBulk:
-                    oid = doSnmp("next", oid);
-                    if (oid == null) {
-                        pck.errStat = 2;
-                        pck.errIdx = i + 1;
-                        continue;
+                    String[] v = doNxt(oid);
+                    if (v == null) {
+                        val = null;
+                        break;
                     }
+                    oid = v[0];
+                    val = v[1];
                     cur.oid = encAsn1.str2oid(oid);
-                    typ = packSnmp.typGetReq;
                     break;
                 default:
+                    val = doGet(oid);
                     break;
             }
-            String s = doSnmp(packSnmp.type2string(typ), oid);
-            if (s == null) {
+            if (debugger.servSnmpTraf) {
+                logger.debug("result " + oid + "=" + val);
+            }
+            if (val == null) {
                 pck.errStat = 2;
                 pck.errIdx = i + 1;
                 continue;
             }
-            if (cur.fromString(new cmds("", s))) {
+            if (cur.fromString(new cmds("", val))) {
                 pck.errStat = 2;
                 pck.errIdx = i + 1;
                 continue;

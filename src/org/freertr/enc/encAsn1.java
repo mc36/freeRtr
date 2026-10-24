@@ -343,6 +343,29 @@ public class encAsn1 {
     }
 
     /**
+     * compare two oids
+     *
+     * @param src source
+     * @param trg target
+     * @return compare result
+     */
+    public static int compOid(int[] src, int trg[]) {
+        int len = src.length < trg.length ? src.length : trg.length;
+        for (int i = 0; i < len; i++) {
+            if (src[i] < trg[i]) {
+                return -1;
+            }
+            if (src[i] > trg[i]) {
+                return +1;
+            }
+        }
+        if (src.length == trg.length) {
+            return 0;
+        }
+        return src.length < trg.length ? -1 : +1;
+    }
+
+    /**
      * convert oid to string
      *
      * @param oid oid

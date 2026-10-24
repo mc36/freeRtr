@@ -743,7 +743,6 @@ public class cfgInit implements Runnable {
             return;
         }
         List<userFilter> hdefs = new ArrayList<userFilter>();
-        List<userFilter> mibs = new ArrayList<userFilter>();
         for (int cnt = 0; cnt < read.size(); cnt++) {
             String s = doTrimmer(read.get(cnt));
             if (s.length() < 1) {
@@ -1069,38 +1068,9 @@ public class cfgInit implements Runnable {
                 }
                 continue;
             }
-            if (s.equals("snmp")) {
-                s = cmd.getRemaining();
-                List<String> txt = httpGet(s);
-                if (txt == null) {
-                    continue;
-                }
-                inhs.add(cmd.getOriginal());
-                int bg = -1;
-                for (int p = 0; p < txt.size(); p++) {
-                    String a = txt.get(p);
-                    if (a.startsWith("oid ")) {
-                        bg = p;
-                    }
-                    if (!a.equals(".")) {
-                        continue;
-                    }
-                    cmd = new cmds("", txt.get(bg));
-                    cmd.word();
-                    a = cmd.word();
-                    userFilter sn = new userFilter(a, cmd.getRemaining(), new ArrayList<String>());
-                    sn.listing.addAll(txt.subList(bg + 1, p));
-                    mibs.add(sn);
-                    if (debugger.cfgInitHw) {
-                        logger.debug("snmp " + sn);
-                    }
-                }
-                continue;
-            }
             logger.info((cnt + 1) + ":" + cmd.getOriginal());
         }
         cfgAll.custDefs = add2filter(cfgAll.custDefs, hdefs);
-        cfgAll.snmpMibs = add2filter(cfgAll.snmpMibs, mibs);
     }
 
     private static userFilter[] add2filter(userFilter[] trg, List<userFilter> src) {
