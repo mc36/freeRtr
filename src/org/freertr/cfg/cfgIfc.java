@@ -6425,7 +6425,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getCounter().getShHwBsum(ethtyp.hwCntr));
                 break;
             case 3:
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getBandwidth() + "|" + (vrfFor == null ? "n/a" : vrfFor.name));
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + type2string() + "|" + (vrfFor == null ? "n/a" : vrfFor.name) + "|" + addr4 + "|" + addr6 + "|" + ethtyp.getHwAddr());
                 break;
             case 4:
                 if (addr4 == null) {
@@ -6528,7 +6528,7 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 break;
             case 27:
                 counter cntr = ethtyp.getCounter();
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getMTUsize() + "|" + ethtyp.getPromisc() + "|" + ethtyp.getMacsec() + "|" + ethtyp.getSgt() + "|" + cntr.stateChg + "|" + bits.timePast(cntr.lastChgd) + "|" + bits.time2str(cfgAll.timeZoneName, cntr.lastChgd + cfgAll.timeServerOffset, 3));
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getBandwidth() + "|" + ethtyp.getMTUsize() + "|" + ethtyp.getPromisc() + "|" + ethtyp.getMacsec() + "|" + ethtyp.getSgt() + "|" + cntr.stateChg + "|" + bits.timePast(cntr.lastChgd) + "|" + bits.time2str(cfgAll.timeZoneName, cntr.lastChgd + cfgAll.timeServerOffset, 3));
                 break;
             case 28:
                 cntr = ethtyp.getCounter();

@@ -3750,7 +3750,7 @@ public class cfgAll {
                 l = new userFormat("|", "interface|state|tx|rx|drop");
                 break;
             case 3:
-                l = new userFormat("|", "interface|state|bandwidth|vrf");
+                l = new userFormat("|", "interface|state|type|vrf|ipv4|ipv6|mac");
                 break;
             case 4:
             case 5:
@@ -3792,7 +3792,7 @@ public class cfgAll {
                 l = new userFormat("|", "interface|system|port|state");
                 break;
             case 27:
-                l = new userFormat("|", "interface|state|mtu|promisc|macsec|sgt|changes|for|since");
+                l = new userFormat("|", "interface|state|bandwidth|mtu|promisc|macsec|sgt|changes|for|since");
                 break;
             case 28:
                 l = new userFormat("|", "interface|state|input|output|drop");
