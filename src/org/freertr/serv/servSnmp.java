@@ -196,6 +196,7 @@ public class servSnmp extends servGeneric implements prtServS {
             String val;
             switch (pck.type) {
                 case packSnmp.typGetNext:
+                case packSnmp.typGetBulk:
                     String[] v = doNxt(oid);
                     if (v == null) {
                         val = null;
