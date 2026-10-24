@@ -13,11 +13,11 @@ column 1 replace admin -1
 column 1 replace down 0
 column 1 replace up 1
 column 2 name tx
-column 2 oid 1.3.6.1.2.1.2.2.1.17 tag=integer int32=
+column 2 oid 1.3.6.1.2.1.2.2.1.17 tag=1 class=1 int32=
 column 3 name rx
-column 3 oid 1.3.6.1.2.1.2.2.1.11 tag=integer int32=
+column 3 oid 1.3.6.1.2.1.2.2.1.11 tag=1 class=1 int32=
 column 4 name dr
-column 4 oid 1.3.6.1.2.1.2.2.1.15 tag=integer int32=
+column 4 oid 1.3.6.1.2.1.2.2.1.15 tag=1 class=1 int32=
 .
 exit
 
@@ -36,10 +36,10 @@ column 1 replace admin -1
 column 1 replace down 0
 column 1 replace up 1
 column 2 name tx
-column 2 oid 1.3.6.1.2.1.2.2.1.17 tag=integer int32=
+column 2 oid 1.3.6.1.2.1.2.2.1.17 tag=1 class=1 int32=
 column 3 name rx
-column 3 oid 1.3.6.1.2.1.2.2.1.11 tag=integer int32=
+column 3 oid 1.3.6.1.2.1.2.2.1.11 tag=1 class=1 int32=
 column 4 name dr
-column 4 oid 1.3.6.1.2.1.2.2.1.15 tag=integer int32=
+column 4 oid 1.3.6.1.2.1.2.2.1.15 tag=1 class=1 int32=
 .
 exit
