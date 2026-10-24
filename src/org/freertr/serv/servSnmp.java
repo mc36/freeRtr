@@ -139,9 +139,15 @@ public class servSnmp extends servGeneric implements prtServS {
     }
 
     private String[] doNxt(String oids) {
+        int[] reso = encAsn1.str2oid(oids);
+        reso[reso.length - 1]++;
+        String resv = doGet(encAsn1.oid2str(reso));
+        if (resv != null) {
+            return new String[]{encAsn1.oid2str(reso), resv};
+        }
         int[] oidv = encAsn1.str2oid(oids);
-        int[] reso = null;
-        String resv = null;
+        reso = null;
+        resv = null;
         for (int o = 0; o < cfgAll.sensors.size(); o++) {
             cfgSensor sns = cfgAll.sensors.get(o);
             List<String> cur = sns.getReportOid();
