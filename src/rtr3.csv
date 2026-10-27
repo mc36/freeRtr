@@ -813,7 +813,7 @@ http://sources.freertr.org/cfg/p4lang-rout451.tst;p4lang-rout451.tst;ok;ok;not o
 http://sources.freertr.org/cfg/p4lang-rout452.tst;p4lang-rout452.tst;ok;ok;not ok;ok;ok;p4lang: sdwan over ipv4 with ipip
 http://sources.freertr.org/cfg/p4lang-rout453.tst;p4lang-rout453.tst;ok;ok;not ok;ok;ok;p4lang: sdwan over ipv6 with ipip
 http://sources.freertr.org/cfg/p4lang-rout454.tst;p4lang-rout454.tst;ok;ok;not ok;ok;not ok;p4lang: amt multicast routing
-http://sources.freertr.org/cfg/p4lang-rout455.tst;p4lang-rout455.tst;not ok;ok;not ok;ok;not ok;p4lang: mgre routing over ipv4
+http://sources.freertr.org/cfg/p4lang-rout455.tst;p4lang-rout455.tst;ok;ok;not ok;ok;not ok;p4lang: mgre routing over ipv4
 http://sources.freertr.org/cfg/p4lang-rout456.tst;p4lang-rout456.tst;ok;ok;not ok;ok;not ok;p4lang: mgre routing over ipv6
 http://sources.freertr.org/cfg/p4lang-rout457.tst;p4lang-rout457.tst;ok;ok;not ok;ok;not ok;p4lang: mgre routing over ipv4 loopback
 http://sources.freertr.org/cfg/p4lang-rout458.tst;p4lang-rout458.tst;ok;ok;not ok;ok;not ok;p4lang: mgre routing over ipv6 loopback
