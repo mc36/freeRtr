@@ -411,7 +411,7 @@ public class clntSdwanConn implements Runnable, prtServP, Comparable<clntSdwanCo
      * @param l list to update
      */
     protected void getShow(userFormat l) {
-        l.add(name + "|" + protos + "|" + addr + "|" + port + "|" + peerId + "|" + ifc.name + "|" + peer4 + "|" + peer6);
+        l.add(name + "|" + protos + "|" + addr + "|" + port + "|" + peerId + "|" + ifc.name + "|" + state.conv2string(ifc.ethtyp.getState()) + "|" + ifc.addr4 + "|" + ifc.addr6);
     }
 
     public boolean datagramRecv(prtGenConn id, packHolder pck) {
