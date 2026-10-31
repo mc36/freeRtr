@@ -62,6 +62,8 @@ public class player implements Runnable {
 
     private final static Object sleeper = new Object();
 
+    private String search = "http://www.google.com/search?tbm=vid&q=";
+
     private String mixer = "Master";
 
     private String device = "default";
@@ -434,6 +436,10 @@ public class player implements Runnable {
                     continue;
                 }
                 a = a.substring(o, a.length()).trim();
+                if (a.equals("search")) {
+                    search = b;
+                    continue;
+                }
                 if (a.equals("mixer")) {
                     mixer = b;
                     continue;
@@ -1318,8 +1324,8 @@ public class player implements Runnable {
         }
         if (sng != null) {
             String a = sng.title.replaceAll(" ", "+");
-            a = "http://www.google.com/search?q=" + a + "&tbm=vid";
-            a = "clip: <a href=\"" + a + "\">" + a + "</a><br/>";
+            a = search + a;
+            a = "web: <a href=\"" + a + "\" target=\"_blank\">" + a + "</a><br/>";
             buf.write(a.getBytes());
         }
         putMenu(buf);
