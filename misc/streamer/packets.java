@@ -38,6 +38,9 @@ public class packets {
         System.err.println("#define iecln " + consts.iecl);
         System.err.println("#define iec1q " + consts.iec1);
         System.err.println("#define iec2q " + consts.iec2);
+        System.err.println("#define mtsln " + consts.mtsl);
+        System.err.println("#define mtspl " + consts.mtsp);
+        System.err.println("#define mtsmg " + consts.mtsm);
         for (int i = 100; i < 2000; i++) {
             double a = i;
             double b = consts.rate * 2.0 * consts.smpb / a;

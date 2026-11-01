@@ -126,6 +126,21 @@ public class consts {
      */
     public static final int iec2 = 0x90370000;
 
+    /**
+     * bytes in mts header
+     */
+    public static final int mtsl = 4;
+
+    /**
+     * bytes in mts payload
+     */
+    public static final int mtsp = 184;
+
+    /**
+     * mts magic bytes
+     */
+    public static final int mtsm = 0x4701001;
+
     private static final int findInt(int def, int[] vals) {
         for (int i = 0; i < vals.length; i++) {
             if (vals[i] == rate) {

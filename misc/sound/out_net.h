@@ -162,6 +162,23 @@ void ply_udpl() {
 }
 
 
+void ply_mpts() {
+    iou_bswp2msb();
+    memcpy(&plyBufD[0], &bufD[padln], bufS);
+    int out = padln;
+    for (int pos = 0; pos < bufS;) {
+        iou_pmsb(out, (mtsmg << 4) | plySeq);
+        out += mtsln;
+        memcpy(&bufD[out], &plyBufD[pos], mtspl);
+        pos += mtspl;
+        out += mtspl;
+        plySeq = (plySeq + 1) & 0xf;
+    }
+    bufS = out - padln;
+    if (send(plyHnd, &bufD[padln], bufS, 0) != bufS) err("error sending");
+}
+
+
 void ply_opus() {
     iou_bswp2lsb();
     short *bufV = (short *)&plyBufD[0];
@@ -191,6 +208,7 @@ void ply_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"iec") == 0) plyFnc = &ply_iec;
     if (strcmp(knd,"udpm") == 0) plyFnc = &ply_udpm;
     if (strcmp(knd,"udpl") == 0) plyFnc = &ply_udpl;
+    if (strcmp(knd,"mpts") == 0) plyFnc = &ply_mpts;
     if (strcmp(knd,"opus") == 0) {
         plyEnc = opus_encoder_create(srate, 2, OPUS_APPLICATION_AUDIO, &plyBufS);
         if (plyEnc == NULL) err("error creating");

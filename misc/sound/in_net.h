@@ -147,6 +147,26 @@ void rec_udpl() {
 }
 
 
+void rec_mpts() {
+    for (;;) {
+        bufS = recv(recHnd, &bufD[padln], sizeof (bufD) - padln, 0);
+        if (bufS < padln) return;
+        if ((iou_gmsb(padln) >> 4) == mtsmg) break;
+    }
+    int out = padln;
+    for (int pos = 0; pos < bufS;) {
+        if ((iou_gmsb(padln + pos) >> 4) != mtsmg) break;
+        pos += mtsln;
+        memcpy(&recBufD[out], &bufD[padln + pos], mtspl);
+        pos += mtspl;
+        out += mtspl;
+    }
+    bufS = out - padln;
+    memcpy(&bufD[padln], &recBufD[padln], bufS);
+    iou_bswp2msb();
+}
+
+
 void rec_opus() {
     short *bufV = (short *)&recBufD[0];
     if (recBufS < (pktln / smpbt)) {
@@ -180,6 +200,7 @@ void rec_init(char*knd, char*grp, char*src, char* prt) {
     if (strcmp(knd,"iec") == 0) recFnc = &rec_iec;
     if (strcmp(knd,"udpm") == 0) recFnc = &rec_udpm;
     if (strcmp(knd,"udpl") == 0) recFnc = &rec_udpl;
+    if (strcmp(knd,"mpts") == 0) recFnc = &rec_mpts;
     if (strcmp(knd,"opus") == 0) {
         recDec = opus_decoder_create(srate, 2, &recBufS);
         if (recDec == NULL) err("error creating");

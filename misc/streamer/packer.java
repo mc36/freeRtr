@@ -159,6 +159,9 @@ public class packer {
         if (a.equals("iec")) {
             return new packetIec(this);
         }
+        if (a.equals("mpts")) {
+            return new packetMpts(this);
+        }
         if (a.equals("udpm")) {
             return new packetUdpMsb(this);
         }
@@ -792,6 +795,63 @@ public class packer {
         return len;
     }
 
+    /**
+     * write mpts data
+     *
+     * @param buf msb bytes
+     * @param len length
+     * @throws Exception on error
+     */
+    public void writeMpts(byte[] buf, int len) throws Exception {
+        buffer.clear();
+        int out = 0;
+        for (int pos = 0; pos < len;) {
+            putMsb(buffer, out, (consts.mtsm << 4) | seq);
+            out += consts.mtsl;
+            buffer.put(out, buf, pos, consts.mtsp);
+            pos += consts.mtsp;
+            out += consts.mtsp;
+            seq++;
+            seq &= 0xf;
+        }
+        buffer.position(0);
+        buffer.limit(out);
+        target.write(buffer);
+    }
+
+    /**
+     * read mpts data
+     *
+     * @param buf msb bytes
+     * @return bytes
+     * @throws Exception on error
+     */
+    public int readMpts(byte[] buf) throws Exception {
+        int len;
+        for (;;) {
+            buffer.clear();
+            source.receive(buffer);
+            len = buffer.position();
+            if (len < consts.mtsp) {
+                return 0;
+            }
+            if ((getMsb(buffer, 0) >>> 4) == consts.mtsm) {
+                break;
+            }
+        }
+        int out = 0;
+        for (int pos = 0; pos < len;) {
+            if ((getMsb(buffer, pos) >>> 4) != consts.mtsm) {
+                break;
+            }
+            pos += consts.mtsl;
+            buffer.get(pos, buf, out, consts.mtsp);
+            pos += consts.mtsp;
+            out += consts.mtsp;
+        }
+        return out;
+    }
+
 }
 
 class packetRtp extends packet {
@@ -934,6 +994,22 @@ class packetIec extends packet {
 
     public void writeKind(byte[] buf, int len) throws Exception {
         pck.writeIec(buf, len);
+    }
+
+}
+
+class packetMpts extends packet {
+
+    public packetMpts(packer p) {
+        super(p);
+    }
+
+    public int readKind(byte[] buf) throws Exception {
+        return pck.readMpts(buf);
+    }
+
+    public void writeKind(byte[] buf, int len) throws Exception {
+        pck.writeMpts(buf, len);
     }
 
 }

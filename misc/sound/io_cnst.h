@@ -23,3 +23,6 @@
 #define iecln 36
 #define iec1q 1057095816
 #define iec2q -1875443712
+#define mtsln 4
+#define mtspl 184
+#define mtsmg 74452993
