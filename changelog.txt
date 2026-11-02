@@ -18897,3 +18897,6 @@ failed: qos ingress shaper action
 ---------------------------------- 2026-11-01 14:02:57 26.11.1
 no failed: qos ingress shaper action
 qc pass: qos ingress shaper action
+---------------------------------- 2026-11-02 07:52:32 26.11.2
+no qc pass: qos ingress shaper action
+failed: qos ingress shaper action
