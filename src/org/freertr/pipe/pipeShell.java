@@ -64,7 +64,24 @@ public class pipeShell {
      * @return pid
      */
     public static long myProcessNum() {
-        return ProcessHandle.current().pid();
+        try {
+            return ProcessHandle.current().pid();
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    /**
+     * get process cpu usage
+     *
+     * @return millis
+     */
+    public static long myProcessCpu() {
+        try {
+            return getProcessCpu(ProcessHandle.current());
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     /**

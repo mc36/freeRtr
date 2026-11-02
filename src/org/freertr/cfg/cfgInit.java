@@ -1624,8 +1624,7 @@ public class cfgInit implements Runnable {
         Runtime rt = Runtime.getRuntime();
         cntr.byteRx = rt.freeMemory() / 8;
         memoryHistory = new history(cntr);
-        ProcessHandle prc = ProcessHandle.current();
-        cntr.byteRx = pipeShell.getProcessCpu(prc) / 8;
+        cntr.byteRx = pipeShell.myProcessCpu() / 8;
         cpuHistory = new history(cntr);
         for (;;) {
             try {
@@ -1637,7 +1636,7 @@ public class cfgInit implements Runnable {
                 timerHistory.update(cntr, true, true);
                 cntr.byteRx = rt.freeMemory() / 8;
                 memoryHistory.update(cntr, true, false);
-                cntr.byteRx = pipeShell.getProcessCpu(prc) / 8;
+                cntr.byteRx = pipeShell.myProcessCpu() / 8;
                 cpuHistory.update(cntr, true, true);
                 if ((rnd % 60) != 0) {
                     continue;
