@@ -767,7 +767,7 @@ public class encAsn1 {
             }
             if (s.equals("int64")) {
                 buf = new byte[8];
-                bits.msbPutQ(buf, 0, bits.str2num(a));
+                bits.msbPutQ(buf, 0, bits.str2long(a));
                 return false;
             }
             if (s.equals("adrip4")) {
