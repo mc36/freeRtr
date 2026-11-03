@@ -708,29 +708,11 @@ public class ipFwdTab {
         return imp;
     }
 
-    private static void rstatic2table(ipFwdRoute ntry, tabRoute<addrIP> trg, int mode) {
+    private static void static2table(ipFwdRoute ntry, tabRoute<addrIP> trg, int mode, ipFwd lower, tabRoute<addrIP> conn) {
         if (ntry == null) {
             return;
         }
         if (ntry.recur != mode) {
-            return;
-        }
-        tabRouteEntry<addrIP> imp = ntry.getPrefix();
-        if (imp == null) {
-            return;
-        }
-        imp = convStaticRoute(ntry, imp, null, trg, null);
-        if (imp == null) {
-            return;
-        }
-        trg.add(tabRoute.addType.ecmp, imp, false, true);
-    }
-
-    private static void dstatic2table(ipFwdRoute ntry, tabRoute<addrIP> trg, ipFwd lower, tabRoute<addrIP> conn) {
-        if (ntry == null) {
-            return;
-        }
-        if (ntry.recur != 0) {
             return;
         }
         tabRouteEntry<addrIP> imp = ntry.getPrefix();
@@ -1124,10 +1106,10 @@ public class ipFwdTab {
         tabM.mergeFrom(tabRoute.addType.better, tabC, tabRouteAttr.distanLim);
         tabM.mergeFrom(tabRoute.addType.better, tabU, tabRouteAttr.distanLim);
         for (int i = 0; i < lower.staticU.size(); i++) {
-            dstatic2table(lower.staticU.get(i), tabL, lower, tabC);
+            static2table(lower.staticU.get(i), tabL, 0, lower, tabC);
         }
         for (int i = 0; i < lower.staticM.size(); i++) {
-            dstatic2table(lower.staticM.get(i), tabM, lower, tabC);
+            static2table(lower.staticM.get(i), tabM, 0, lower, tabC);
         }
         for (int i = 0; i < lower.leaks.size(); i++) {
             ipFwdLeak red = lower.leaks.get(i);
@@ -1155,10 +1137,10 @@ public class ipFwdTab {
             tabIndex.mergeTable(tabIU, rtr.routerComputedI);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
-            rstatic2table(lower.staticU.get(i), tabL, 1);
+            static2table(lower.staticU.get(i), tabL, 1, null, null);
         }
         for (int i = 0; i < lower.staticM.size(); i++) {
-            rstatic2table(lower.staticM.get(i), tabM, 1);
+            static2table(lower.staticM.get(i), tabM, 1, null, null);
         }
         for (int i = 0; i < lower.ifaces.size(); i++) {
             ipFwdIface ifc = lower.ifaces.get(i);
@@ -1201,10 +1183,10 @@ public class ipFwdTab {
             tabIndex.mergeTable(tabIU, rtr.routerComputedI);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
-            rstatic2table(lower.staticU.get(i), tabU, 2);
+            static2table(lower.staticU.get(i), tabU, 2, null, null);
         }
         for (int i = 0; i < lower.staticM.size(); i++) {
-            rstatic2table(lower.staticM.get(i), tabM, 2);
+            static2table(lower.staticM.get(i), tabM, 2, null, null);
         }
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
@@ -1221,10 +1203,10 @@ public class ipFwdTab {
             tabIndex.mergeTable(tabIU, rtr.routerComputedI);
         }
         for (int i = 0; i < lower.staticU.size(); i++) {
-            rstatic2table(lower.staticU.get(i), tabU, 3);
+            static2table(lower.staticU.get(i), tabU, 3, null, null);
         }
         for (int i = 0; i < lower.staticM.size(); i++) {
-            rstatic2table(lower.staticM.get(i), tabM, 3);
+            static2table(lower.staticM.get(i), tabM, 3, null, null);
         }
         lower.incrCandid = true;
         for (int i = 0; i < lower.ifaces.size(); i++) {
