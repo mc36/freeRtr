@@ -7,6 +7,7 @@ import org.freertr.ip.ipCor4;
 import org.freertr.ip.ipCor6;
 import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
+import org.freertr.ip.ipFwdLeak;
 import org.freertr.ip.ipFwdMcast;
 import org.freertr.ip.ipFwdRoute;
 import org.freertr.ip.ipFwdTab;
@@ -453,6 +454,13 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         }
     }
 
+    private void addLeaks(List<String> l, int p, ipFwd f) {
+        for (int i = 0; i < f.leaks.size(); i++) {
+            ipFwdLeak prf = f.leaks.get(i);
+            l.add("ipv" + p + " leak " + name + " " + prf);
+        }
+    }
+
     private void addCfgNats(List<String> l, int p, ipFwd f, int filter) {
         for (int i = 0; i < f.natCfg.size(); i++) {
             tabNatCfgN nat = f.natCfg.get(i);
@@ -693,6 +701,10 @@ public class cfgVrf implements Comparable<cfgVrf>, cfgGeneric {
         addMroutes(l, 4, fwd4);
         l.add(cmds.comment);
         addMroutes(l, 6, fwd6);
+        l.add(cmds.comment);
+        addLeaks(l, 4, fwd4);
+        l.add(cmds.comment);
+        addLeaks(l, 6, fwd6);
         l.add(cmds.comment);
         addCfgNats(l, 4, fwd4, filter);
         l.add(cmds.comment);

@@ -744,6 +744,26 @@ public class ipFwdTab {
         trg.add(tabRoute.addType.ecmp, imp, false, true);
     }
 
+    private static void leaks2table(ipFwdLeak ntry, tabRoute<addrIP> trg, boolean uni) {
+        if (ntry == null) {
+            return;
+        }
+        tabRoute<addrIP> src;
+        if (uni) {
+            src = ntry.src.actualU;
+        } else {
+            src = ntry.src.actualM;
+        }
+        for (int i = 0; i < src.size(); i++) {
+            tabRouteEntry<addrIP> imp = src.get(i);
+            imp = ntry.convPrefix(imp);
+            if (imp == null) {
+                continue;
+            }
+            trg.add(tabRoute.addType.better, imp, false, false);
+        }
+    }
+
     private static void autoRouteTable(tabRoute<addrIP> tab, ipFwdIface ifc) {
         tabRouteEntry<addrIP> ntry = tab.route(ifc.autRouRtr);
         if (ntry == null) {
@@ -824,6 +844,36 @@ public class ipFwdTab {
                 sta = new tabGen<ipFwdRoute>();
         }
         tabRouteEntry<addrIP> best = lower.connedR.find(ntry);
+        for (int i = 0; i < lower.leaks.size(); i++) {
+            ipFwdLeak cur = lower.leaks.get(i);
+            if (cur == null) {
+                continue;
+            }
+            tabRoute<addrIP> src;
+            switch (mode) {
+                case 1:
+                    src = cur.src.actualU;
+                    break;
+                case 2:
+                    src = cur.src.actualM;
+                    break;
+                default:
+                    continue;
+            }
+            tabRouteEntry<addrIP> imp = src.find(ntry);
+            imp = cur.convPrefix(imp);
+            if (imp == null) {
+                continue;
+            }
+            if (best == null) {
+                best = imp;
+                continue;
+            }
+            if (!best.best.isOtherBetter(imp.best)) {
+                continue;
+            }
+            best = imp;
+        }
         for (int i = 0; i < sta.size(); i++) {
             ipFwdRoute cur = sta.get(i);
             if (cur == null) {
@@ -1078,6 +1128,11 @@ public class ipFwdTab {
         }
         for (int i = 0; i < lower.staticM.size(); i++) {
             dstatic2table(lower.staticM.get(i), tabM, lower, tabC);
+        }
+        for (int i = 0; i < lower.leaks.size(); i++) {
+            ipFwdLeak red = lower.leaks.get(i);
+            leaks2table(red, tabL, true);
+            leaks2table(red, tabM, false);
         }
         tabL.delDistance(tabRouteAttr.distanMax);
         tabM.delDistance(tabRouteAttr.distanMax);

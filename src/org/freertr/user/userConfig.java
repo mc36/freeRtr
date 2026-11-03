@@ -65,6 +65,7 @@ import org.freertr.cry.cryKeyGeneric;
 import org.freertr.cry.cryKeyMLDSA;
 import org.freertr.cry.cryKeyRSA;
 import org.freertr.ip.ipFwd;
+import org.freertr.ip.ipFwdLeak;
 import org.freertr.ip.ipFwdRoute;
 import org.freertr.ip.ipxFwd;
 import org.freertr.pipe.pipeSetting;
@@ -2411,6 +2412,23 @@ public class userConfig {
         l.add(null, false, 9, new int[]{10}, "interface", "translated interface");
         l.add(null, false, 10, new int[]{11}, "<name:ifc>", "translated interface");
         l.add(null, false, 11, new int[]{-1}, "<mask>", "address mask");
+        l.add(null, false, 2, new int[]{3}, "leak", "configure unicast route leak");
+        l.add(null, false, 3, new int[]{4}, "<name:vrf>", "name of target routing table");
+        l.add(null, false, 4, new int[]{5}, "<name:vrf>", "name of source routing table");
+        l.add(null, false, 5, new int[]{6}, "route-map", "set parameters from route map");
+        l.add(null, false, 6, new int[]{5, -1}, "<name:rm>", "name of route map");
+        l.add(null, false, 5, new int[]{6}, "route-policy", "set parameters from route policy");
+        l.add(null, false, 6, new int[]{5, -1}, "<name:rpl>", "name of route policy");
+        l.add(null, false, 5, new int[]{6}, "prefix-list", "set parameters from prefix list");
+        l.add(null, false, 6, new int[]{5, -1}, "<name:pl>", "name of prefix list");
+        l.add(null, false, 5, new int[]{6}, "distance", "set distance metric");
+        l.add(null, false, 6, new int[]{5, -1}, "<dist>", "distance value");
+        l.add(null, false, 5, new int[]{6}, "metric", "set metric value");
+        l.add(null, false, 6, new int[]{5, -1}, "<met>", "metric value");
+        l.add(null, false, 5, new int[]{6}, "tag", "set tag value");
+        l.add(null, false, 6, new int[]{5, -1}, "<tag>", "tag value");
+        l.add(null, false, 5, new int[]{6}, "tracker", "set tracker to check");
+        l.add(null, false, 6, new int[]{5, -1}, "<name:trk>", "tracker name");
         l.add(null, false, 2, new int[]{3}, "route", "configure static unicast routes");
         l.add(null, false, 3, new int[]{4}, "<name:vrf>", "name of routing table");
         l.add(null, false, 4, new int[]{5}, "<network>", "destination network");
@@ -2560,6 +2578,25 @@ public class userConfig {
             vrf.fwd4.staticAdd(false, red);
             return;
         }
+        if (a.equals("leak")) {
+            cfgVrf trg = cfgAll.vrfFind(cmd.word(), false);
+            if (trg == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            cfgVrf src = cfgAll.vrfFind(cmd.word(), false);
+            if (src == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            ipFwdLeak red = new ipFwdLeak(src.fwd4);
+            if (red.fromString(cmd)) {
+                return;
+            }
+            trg.fwd4.leaksDel(red);
+            trg.fwd4.leaksAdd(red);
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -2619,6 +2656,24 @@ public class userConfig {
                 return;
             }
             vrf.fwd4.staticDel(false, red);
+            return;
+        }
+        if (a.equals("leak")) {
+            cfgVrf trg = cfgAll.vrfFind(cmd.word(), false);
+            if (trg == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            cfgVrf src = cfgAll.vrfFind(cmd.word(), false);
+            if (src == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            ipFwdLeak red = new ipFwdLeak(src.fwd4);
+            if (red.fromString(cmd)) {
+                return;
+            }
+            trg.fwd4.leaksDel(red);
             return;
         }
         cmd.badCmd();
@@ -2685,6 +2740,25 @@ public class userConfig {
             vrf.fwd6.staticAdd(false, red);
             return;
         }
+        if (a.equals("leak")) {
+            cfgVrf trg = cfgAll.vrfFind(cmd.word(), false);
+            if (trg == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            cfgVrf src = cfgAll.vrfFind(cmd.word(), false);
+            if (src == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            ipFwdLeak red = new ipFwdLeak(src.fwd6);
+            if (red.fromString(cmd)) {
+                return;
+            }
+            trg.fwd6.leaksDel(red);
+            trg.fwd6.leaksAdd(red);
+            return;
+        }
         cmd.badCmd();
     }
 
@@ -2744,6 +2818,24 @@ public class userConfig {
                 return;
             }
             vrf.fwd6.staticDel(false, red);
+            return;
+        }
+        if (a.equals("leak")) {
+            cfgVrf trg = cfgAll.vrfFind(cmd.word(), false);
+            if (trg == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            cfgVrf src = cfgAll.vrfFind(cmd.word(), false);
+            if (src == null) {
+                cmd.error("no such vrf");
+                return;
+            }
+            ipFwdLeak red = new ipFwdLeak(src.fwd6);
+            if (red.fromString(cmd)) {
+                return;
+            }
+            trg.fwd6.leaksDel(red);
             return;
         }
         cmd.badCmd();

@@ -213,6 +213,11 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
     public final tabGen<ipFwdRoute> staticL;
 
     /**
+     * the configured route leak table
+     */
+    public final tabGen<ipFwdLeak> leaks;
+
+    /**
      * the computed connected table
      */
     public tabRoute<addrIP> connedR;
@@ -675,6 +680,7 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         staticU = new tabGen<ipFwdRoute>();
         staticM = new tabGen<ipFwdRoute>();
         staticL = new tabGen<ipFwdRoute>();
+        leaks = new tabGen<ipFwdLeak>();
         natTrns = new tabGen<tabNatTraN>();
         pbrCfg = new tabListing<tabPbrN, addrIP>();
         pbrCfg.myCor = ipCore;
@@ -1219,6 +1225,37 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
         if (rou.track != null) {
             rou.track.clients.add(this);
         }
+        needFull.or(1);
+        triggerUpdate.wakeup();
+    }
+
+    /**
+     * del leaks route
+     *
+     * @param rou route
+     */
+    public void leaksDel(ipFwdLeak rou) {
+        if (debugger.ipFwdEvnt) {
+            logger.debug("delete leak " + rou);
+        }
+        rou = leaks.del(rou);
+        if (rou == null) {
+            return;
+        }
+        needFull.or(1);
+        triggerUpdate.wakeup();
+    }
+
+    /**
+     * add leaks route
+     *
+     * @param rou route
+     */
+    public void leaksAdd(ipFwdLeak rou) {
+        if (debugger.ipFwdEvnt) {
+            logger.debug("install leak " + rou);
+        }
+        leaks.add(rou);
         needFull.or(1);
         triggerUpdate.wakeup();
     }

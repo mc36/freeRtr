@@ -233,7 +233,7 @@ public class tabNshEntry implements Comparable<tabNshEntry>, cfgGeneric {
     private String getCmd() {
         String a = "drop";
         if (tunnelA != null) {
-            a = "tunnel " + tunnelV.vrfName + " " + tunnelI + " " + tunnelA;
+            a = "tunnel " + tunnelV.cfgName + " " + tunnelI + " " + tunnelA;
         }
         if (iface != null) {
             a = "interface " + iface + " " + target;
