@@ -860,6 +860,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
                 r.add(cc.oid + "." + n + " " + cc.oit + a);
                 continue;
             }
+            r.add(cc.oid + "." + n + " " + cc.oit + a.substring(0, i));
         }
     }
 
