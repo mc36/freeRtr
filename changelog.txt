@@ -18915,3 +18915,6 @@ failed: wireguard over wireguard
 ---------------------------------- 2026-11-03 03:47:05 26.11.3
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
+---------------------------------- 2026-11-03 13:43:56 26.11.3
+qc pass: p4lang: route leaking
+qc pass: static route leaking

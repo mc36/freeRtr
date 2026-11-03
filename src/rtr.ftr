@@ -2740,6 +2740,7 @@ qc pass: p4lang: sreth server over ipv4
 qc pass: p4lang: sreth server over ipv6
 qc pass: p4lang: sreth server over ipv4 loopback
 qc pass: p4lang: sreth server over ipv6 loopback
+qc pass: p4lang: route leaking
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action
@@ -4445,6 +4446,7 @@ qc pass: static routing over foreign ipv4
 qc pass: static routing over foreign ipv6
 qc pass: static routing over foreign ipv4 with interface
 qc pass: static routing over foreign ipv6 with interface
+qc pass: static route leaking
 qc pass: bgproxy with ibgp
 qc pass: bgproxy with ebgp
 qc pass: bgproxy with ingress nexthop
