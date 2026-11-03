@@ -18921,3 +18921,6 @@ qc pass: static route leaking
 ---------------------------------- 2026-11-03 14:19:45 26.11.3
 no qc pass: qos ingress shaper action
 failed: qos ingress shaper action
+---------------------------------- 2026-11-03 15:11:04 26.11.3
+no failed: qos ingress shaper action
+qc pass: qos ingress shaper action
