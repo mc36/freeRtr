@@ -27,7 +27,6 @@ const bit<16> ETHERTYPE_IPV6              = 0x86dd;
 const bit<16> ETHERTYPE_NSH               = 0x894f;
 const bit<16> ETHERTYPE_POLKA             = 0x8842;
 const bit<16> ETHERTYPE_MPLS_UCAST        = 0x8847;
-const bit<16> ETHERTYPE_MPLS_MCAST        = 0x8848;
 const bit<16> ETHERTYPE_LACP              = 0x8809;
 const bit<16> ETHERTYPE_LLDP              = 0x88cc;
 const bit<16> ETHERTYPE_PPPOE_CTRL        = 0x8863;

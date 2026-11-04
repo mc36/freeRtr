@@ -634,16 +634,7 @@ PPPTYPE_ROUTEDMAC:
     state prs_llc {
         pkt.extract(hdr.llc);
         ig_md.llc_valid = 1;
-        transition select(hdr.llc.dsap, hdr.llc.ssap) {
-            /*
-             * (0xaa, 0xaa): prs_snap_header;
-             * From switch.p4 this case should be processed.
-             * We are not there yet :-)
-             */
-            (0xfe, 0xfe): accept;
-        default:
-            accept;
-        }
+        transition accept;
     }
 
 }
