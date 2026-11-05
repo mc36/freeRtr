@@ -58,14 +58,14 @@ class P4InfoHelper(object):
     def __getattr__(self, attr):
         # Synthesize convenience functions for name to id lookups for top-level entities
         # e.g. get_tables_id(name_string) or get_actions_id(name_string)
-        m = re.search("^get_(\w+)_id$", attr)
+        m = re.search(r'^get_(\w+)_id$', attr)
         if m:
             primitive = m.group(1)
             return lambda name: self.get_id(primitive, name)
 
         # Synthesize convenience functions for id to name lookups
         # e.g. get_tables_name(id) or get_actions_name(id)
-        m = re.search("^get_(\w+)_name$", attr)
+        m = re.search(r'^get_(\w+)_name$', attr)
         if m:
             primitive = m.group(1)
             return lambda id: self.get_name(primitive, id)
