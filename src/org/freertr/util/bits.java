@@ -1144,7 +1144,7 @@ public class bits {
             return null;
         }
         for (int i = 0; i < lst.size(); i++) {
-            lst.set(i, padBeg("" + (i + 1), 6, " ") + ": " + lst.get(i));
+            lst.set(i, padBeg("" + (i + 1), 6, " ") + " " + lst.get(i));
         }
         return lst;
     }
