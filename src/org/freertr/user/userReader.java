@@ -768,7 +768,22 @@ public class userReader implements Comparator<String> {
                 userFilter.section2xml(xml, "/config", userFilter.text2section(lst));
                 return xml.toXMLlst();
             case linenum:
-                return bits.lst2lin(lst, true);
+                tabMod = pipe.settingsGet(pipeSetting.tabMod, userFormat.tableMode.normal);
+                switch (tabMod) {
+                    case raw:
+                    case csv:
+                        a = ";";
+                        break;
+                    case fancy:
+                    case table:
+                        a = "|";
+                        break;
+                    case normal:
+                    default:
+                        a = ": ";
+                        break;
+                }
+                return bits.lst2lin(lst, a, true);
             case hacked:
                 return enc7bit.toHackedLst(lst);
             case boxed:

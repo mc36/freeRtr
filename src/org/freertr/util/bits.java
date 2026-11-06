@@ -1107,16 +1107,17 @@ public class bits {
      * prepend lines with numbers
      *
      * @param lst list to use
+     * @param sep separator
      * @param update update oroginal list
      * @return list
      */
-    public static List<String> lst2lin(List<String> lst, boolean update) {
+    public static List<String> lst2lin(List<String> lst, String sep, boolean update) {
         if (update) {
-            return lst2lin(lst);
+            return lst2lin(lst, sep);
         }
         List<String> cpy = new ArrayList<String>();
         cpy.addAll(lst);
-        lst2lin(cpy);
+        lst2lin(cpy, sep);
         return cpy;
     }
 
@@ -1139,12 +1140,12 @@ public class bits {
         return cpy;
     }
 
-    private static List<String> lst2lin(List<String> lst) {
+    private static List<String> lst2lin(List<String> lst, String sep) {
         if (lst == null) {
             return null;
         }
         for (int i = 0; i < lst.size(); i++) {
-            lst.set(i, padBeg("" + (i + 1), 6, " ") + " " + lst.get(i));
+            lst.set(i, padBeg("" + (i + 1), 6, " ") + sep + lst.get(i));
         }
         return lst;
     }

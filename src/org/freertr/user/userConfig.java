@@ -241,7 +241,7 @@ public class userConfig {
                 return false;
             }
             List<String> c3 = userFilter.getDiffs(c1, c2);
-            reader.putStrArr(bits.lst2lin(c3, false));
+            reader.putStrArr(bits.lst2lin(c3, ": ", false));
             int res = cfgInit.executeSWcommands(c3, false);
             reader.putStrArr(bits.str2lst("errors=" + res));
             c3 = userFilter.getDiffs(c2, c1);

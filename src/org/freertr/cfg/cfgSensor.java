@@ -26,6 +26,7 @@ import org.freertr.enc.encPrtbuf;
 import org.freertr.enc.encPrtbufEntry;
 import org.freertr.pipe.pipeText;
 import org.freertr.pipe.pipeScreen;
+import org.freertr.user.userScript;
 import org.freertr.util.version;
 
 /**
@@ -193,6 +194,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         new userFilter("sensor .*", cmds.tabulator + "column .* split null null null", null),
         new userFilter("sensor .*", cmds.tabulator + "column .* oid null null", null),
         new userFilter("sensor .*", cmds.tabulator + "column .* help null", null),
+        new userFilter("sensor .*", cmds.tabulator + "column .* script null", null),
         new userFilter("sensor .*", cmds.tabulator + "column .* threshold 0", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local interval", null),
         new userFilter("sensor .*", cmds.tabulator + cmds.negated + cmds.tabulator + "local delay", null),
@@ -290,6 +292,8 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         l.add(null, false, 4, new int[]{-1}, "counter", "counter");
         l.add(null, false, 3, new int[]{4}, "help", "set help");
         l.add(null, false, 4, new int[]{4, -1}, "<str>", "help");
+        l.add(null, false, 3, new int[]{4}, "script", "set script");
+        l.add(null, false, 4, new int[]{4, -1}, "<str>", "script");
         l.add(null, false, 3, new int[]{4}, "replace", "define replaces in value");
         l.add(null, false, 4, new int[]{5}, "<str>", "string to replace");
         l.add(null, false, 5, new int[]{-1}, "<str>", "replacement string");
@@ -364,6 +368,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             l.add(cn + " type " + servStreamingMdt.type2string(col.typ));
             l.add(cn + " threshold " + col.thr);
             l.add(cn + " help " + col.hlp);
+            l.add(cn + " script " + col.scr);
             l.add(cn + " oid " + col.oid + " " + col.oit);
             l.add(cn + " split " + col.splS + " " + col.splL + " " + col.splR);
             for (int i = 0; i < col.reps.size(); i++) {
@@ -619,6 +624,14 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             }
             return;
         }
+        if (s.equals("script")) {
+            if (negated) {
+                col.scr = null;
+            } else {
+                col.scr = cmd.getRemaining();
+            }
+            return;
+        }
         if (s.equals("type")) {
             col.typ = servStreamingMdt.string2type(cmd.word());
             return;
@@ -764,12 +777,30 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         lst.add(nb + labs + " " + val);
     }
 
-    private static String doReplaces(String a, tabGen<cfgSensorRep> reps) {
+    private static String doReplaces(String a, tabGen<cfgSensorRep> reps, String scr) {
         for (int i = 0; i < reps.size(); i++) {
             cfgSensorRep rep = reps.get(i);
             a = a.replaceAll(rep.src, rep.trg);
         }
-        return a;
+        if (scr == null) {
+            return a;
+        }
+        pipeLine pl = new pipeLine(32768, false);
+        pipeSide pip = pl.getSide();
+        pip.setTime(10000);
+        pip.lineRx = pipeSide.modTyp.modeCRorLF;
+        pip.lineTx = pipeSide.modTyp.modeCRLF;
+        userScript t = new userScript(pip, "");
+        t.allowExec = true;
+        t.allowConfig = true;
+        t.addLine("set self " + a);
+        t.addLine(scr);
+        pip = pl.getSide();
+        pip.lineRx = pipeSide.modTyp.modeCRorLF;
+        pip.lineTx = pipeSide.modTyp.modeCR;
+        t.cmdAll();
+        pl.setClose();
+        return pip.lineGet(1);
     }
 
     private packHolder doLineKvGpb(String a) {
@@ -786,7 +817,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             }
             a += cl.get(acol);
         }
-        a = doReplaces(a, reps);
+        a = doReplaces(a, reps, null);
         packHolder pck1 = new packHolder(true, true);
         packHolder pck2 = new packHolder(true, true);
         packHolder pck3 = new packHolder(true, true);
@@ -802,7 +833,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             if (cl.size() <= cc.num) {
                 continue;
             }
-            a = doReplaces(cl.get(cc.num), cc.reps);
+            a = doReplaces(cl.get(cc.num), cc.reps, cc.scr);
             if (cc.splS == null) {
                 doMetricKvGpb(pck2, pck3, cc.typ, cc.nam, a);
                 continue;
@@ -839,7 +870,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             if ((acol >= 0) && (acol < cls)) {
                 a += ";" + cl.get(acol);
             }
-            a = doReplaces(a, reps);
+            a = doReplaces(a, reps, null);
             r.add(oidP + "." + n + " " + oidT + a);
         }
         for (int o = 0; o < cols.size(); o++) {
@@ -850,7 +881,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             if (cc.oid == null) {
                 continue;
             }
-            a = doReplaces(cl.get(cc.num), cc.reps);
+            a = doReplaces(cl.get(cc.num), cc.reps, cc.scr);
             if (cc.splS == null) {
                 r.add(cc.oid + "." + n + " " + cc.oit + a);
                 continue;
@@ -874,13 +905,13 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         if ((acol >= 0) && (acol < cls)) {
             a += ";" + cl.get(acol);
         }
-        String beg = prepend + doReplaces(a, reps);
+        String beg = prepend + doReplaces(a, reps, null);
         for (int o = 0; o < cols.size(); o++) {
             cfgSensorCol cc = cols.get(o);
             if (cl.size() <= cc.num) {
                 continue;
             }
-            a = doReplaces(cl.get(cc.num), cc.reps);
+            a = doReplaces(cl.get(cc.num), cc.reps, cc.scr);
             if (cc.splS == null) {
                 beg += ";" + a;
                 continue;
@@ -927,7 +958,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             }
             a += cl.get(acol);
         }
-        String beg = doReplaces(a, reps);
+        String beg = doReplaces(a, reps, null);
         long mul = locInt / 1000;
         if (mul < 1) {
             mul = 1;
@@ -937,7 +968,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             if (cl.size() <= cc.num) {
                 continue;
             }
-            a = doReplaces(cl.get(cc.num), cc.reps);
+            a = doReplaces(cl.get(cc.num), cc.reps, cc.scr);
             if (cc.splS == null) {
                 doLineMem(beg, cc.num, mul, cc.thr, a);
                 continue;
@@ -965,14 +996,14 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             }
             a += cl.get(acol);
         }
-        a = doReplaces(a, reps);
+        a = doReplaces(a, reps, null);
         res.data.add(new encXmlEntry(null, beg + keyP + "/" + keyN, "", a));
         for (int o = 0; o < cols.size(); o++) {
             cfgSensorCol cc = cols.get(o);
             if (cl.size() <= cc.num) {
                 continue;
             }
-            a = doReplaces(cl.get(cc.num), cc.reps);
+            a = doReplaces(cl.get(cc.num), cc.reps, cc.scr);
             if (cc.splS == null) {
                 doMetricNetConf(res, beg + path + "/" + cc.nam, a);
                 continue;
@@ -1008,9 +1039,9 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             }
             nd = a + cl.get(acol);
         }
-        na = doReplaces(na, reps);
-        nc = doReplaces(nc, reps);
-        nd = doReplaces(nd, reps);
+        na = doReplaces(na, reps, null);
+        nc = doReplaces(nc, reps, null);
+        nd = doReplaces(nd, reps, null);
         if (namL == null) {
             na += nc;
             na += nd;
@@ -1048,7 +1079,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
                 lst.add("# TYPE " + nb + " " + cc.sty);
                 smt.add(nb);
             }
-            a = doReplaces(cl.get(cc.num), cc.reps);
+            a = doReplaces(cl.get(cc.num), cc.reps, cc.scr);
             if (cc.splS == null) {
                 doMetricProm(lst, nb, labs, a);
                 continue;
@@ -1253,7 +1284,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
         if (cl.size() <= cc.num) {
             return null;
         }
-        a = doReplaces(cl.get(cc.num), cc.reps);
+        a = doReplaces(cl.get(cc.num), cc.reps, cc.scr);
         time = (int) (bits.getTime() - last);
         if (cc.splS == null) {
             return a;
@@ -1624,6 +1655,8 @@ class cfgSensorCol implements Comparable<cfgSensorCol> {
     public String splL;
 
     public String splR;
+
+    public String scr;
 
     public int thr;
 
