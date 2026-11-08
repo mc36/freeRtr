@@ -5215,7 +5215,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--p4info', help='p4info proto in text format from p4c',
             type=str, action="store", required=False,
-            default="./router.txt")
+            default="./router.txtpb")
     parser.add_argument('--bmv2-json', help='BMv2 JSON file from p4c',
             type=str, action="store", required=False,
             default="./router.json")
