@@ -316,9 +316,7 @@ public class tabLabelEntry implements Comparable<tabLabelEntry> {
         if (nextHop != null) {
             n.nextHop = nextHop.copyBytes();
         }
-        if (remoteLab != null) {
-            n.remoteLab = smalist.copyLabels(remoteLab);
-        }
+        n.remoteLab = smalist.copyLabels(remoteLab);
         if (duplicate != null) {
             n.duplicate = new tabGen<tabLabelDup>();
             for (int i = 0; i < duplicate.size(); i++) {

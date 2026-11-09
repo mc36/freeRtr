@@ -10,6 +10,7 @@ import org.freertr.enc.encJson;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.smalist;
 
 /**
  * route authorization entry
@@ -37,7 +38,7 @@ public class tabRpkiRoa implements Comparable<tabRpkiRoa> {
     /**
      * allowed asn
      */
-    public List<Integer> asns;
+    public smalist asns;
 
     /**
      * preference
@@ -86,9 +87,7 @@ public class tabRpkiRoa implements Comparable<tabRpkiRoa> {
         tabRpkiRoa n = new tabRpkiRoa();
         n.prefix = prefix.copyBytes();
         n.max = max;
-        if (asns != null) {
-            n.asns = new ArrayList<Integer>(asns);
-        }
+        n.asns = smalist.copyLabels(asns);
         n.distan = distan;
         n.srcIP = srcIP.copyBytes();
         n.srcRtr = srcRtr;
@@ -177,7 +176,7 @@ public class tabRpkiRoa implements Comparable<tabRpkiRoa> {
             return true;
         }
         max = bits.str2num(cmd.word());
-        asns = new ArrayList<Integer>();
+        asns = new smalist();
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {

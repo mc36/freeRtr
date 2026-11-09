@@ -20,6 +20,7 @@ import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
+import org.freertr.util.smalist;
 
 /**
  * resource public key infrastructure (rfc6810) speaker
@@ -274,17 +275,12 @@ public class rtrRpkiSpeak {
                 break;
             case msgAspaPdu:
                 aspa = new tabRpkiAspa();
-                aspa.provs = new ArrayList<Integer>();
+                aspa.provs = new smalist();
                 withdraw = (sess & 0x100) == 0; // flags
                 aspa.cust = pck.msbGetD(0);
-                for (;;) {
-                    pck.getSkip(4);
-                    if (pck.dataSize() < 4) {
-                        break;
-                    }
-                    aspa.provs.add(pck.msbGetD(0));
-                }
-                Collections.sort(aspa.provs);
+                pck.getSkip(4);
+                aspa.provs.fromPack(pck, pck.dataSize() >>> 2);
+                aspa.provs.sort();
                 break;
             default:
                 return true;

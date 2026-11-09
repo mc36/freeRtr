@@ -19,6 +19,7 @@ import org.freertr.util.cmds;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
+import org.freertr.util.smalist;
 
 /**
  * resource public key infrastructure
@@ -325,7 +326,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 }
                 ntry.provs.remove(p);
             }
-            Collections.sort(ntry.provs);
+            ntry.provs.sort();
             if (ntry.provs.size() > 0) {
                 return 1;
             }
@@ -341,7 +342,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 }
                 ntry.provs.add(o);
             }
-            Collections.sort(ntry.provs);
+            ntry.provs.sort();
             return 1;
         }
         ntry = pck.aspa;
@@ -350,7 +351,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
         ntry.srcRtr = lower.rouTyp;
         ntry.srcNum = lower.rtrNum;
         ntry.srcIP = peer.copyBytes();
-        Collections.sort(ntry.provs);
+        ntry.provs.sort();
         table.put(ntry);
         return 1;
     }
@@ -366,7 +367,7 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 return 1;
             }
             ntry.asns.remove(i);
-            Collections.sort(ntry.asns);
+            ntry.asns.sort();
             if (ntry.asns.size() > 0) {
                 return 1;
             }
@@ -381,13 +382,13 @@ public class rtrRpkiNeigh implements Comparable<rtrRpkiNeigh>, Runnable {
                 return 1;
             }
             ntry.asns.add(pck.roa.distan);
-            Collections.sort(ntry.asns);
+            ntry.asns.sort();
             return 1;
         }
         ntry = pck.roa;
-        ntry.asns = new ArrayList<Integer>();
+        ntry.asns = new smalist();
         ntry.asns.add(pck.roa.distan);
-        Collections.sort(ntry.asns);
+        ntry.asns.sort();
         ntry.time = bits.getTime();
         ntry.distan = preference;
         ntry.srcRtr = lower.rouTyp;

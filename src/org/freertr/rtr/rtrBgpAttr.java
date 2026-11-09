@@ -738,7 +738,7 @@ class rtrBgpAttrStdComm implements rtrBgpAttr {
 
     public void readAttrib(rtrBgpSpeak spkr, tabRouteEntry<addrIP> ntry, packHolder pck) {
         ntry.best.stdComm = new smalist();
-        ntry.best.stdComm.fromPack(pck, pck.dataSize() / 4);
+        ntry.best.stdComm.fromPack(pck, pck.dataSize() >>> 2);
         ntry.best.stdComm = smalist.nullEmptyList(ntry.best.stdComm);
     }
 

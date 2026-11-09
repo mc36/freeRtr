@@ -1712,22 +1712,11 @@ public class tabRouteAttr<T extends addrType> {
         if (beg != -1) {
             res.add(beg);
         }
-        appendIntList(res, confSeq);
-        appendIntList(res, confSet);
-        appendIntList(res, pathSeq);
-        appendIntList(res, pathSet);
+        smalist.appendIntList(res, confSeq);
+        smalist.appendIntList(res, confSet);
+        smalist.appendIntList(res, pathSeq);
+        smalist.appendIntList(res, pathSet);
         return res;
-    }
-
-    private static void appendIntList(List<Integer> trg, smalist src) {
-        if (src == null) {
-            return;
-        }
-        int p = src.size();
-        for (int i = 0; i < p; i++) {
-            Integer o = src.get(i);
-            trg.add(0 + o);
-        }
     }
 
     /**

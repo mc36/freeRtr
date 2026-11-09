@@ -10,6 +10,7 @@ import org.freertr.enc.encJsonEntry;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.smalist;
 
 /**
  * provider authorization entry
@@ -32,7 +33,7 @@ public class tabRpkiAspa implements Comparable<tabRpkiAspa> {
     /**
      * allowed providers
      */
-    public List<Integer> provs;
+    public smalist provs;
 
     /**
      * preference
@@ -86,9 +87,7 @@ public class tabRpkiAspa implements Comparable<tabRpkiAspa> {
     public tabRpkiAspa copyBytes() {
         tabRpkiAspa n = new tabRpkiAspa();
         n.cust = cust;
-        if (provs != null) {
-            n.provs = new ArrayList<Integer>(provs);
-        }
+        n.provs = smalist.copyLabels(provs);
         n.distan = distan;
         n.srcIP = srcIP.copyBytes();
         n.srcRtr = srcRtr;
@@ -172,7 +171,7 @@ public class tabRpkiAspa implements Comparable<tabRpkiAspa> {
      */
     public boolean fromString(cmds cmd) {
         cust = bits.str2num(cmd.word());
-        provs = new ArrayList<Integer>();
+        provs = new smalist();
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
@@ -210,7 +209,7 @@ public class tabRpkiAspa implements Comparable<tabRpkiAspa> {
         if (jnt == null) {
             return true;
         }
-        provs = new ArrayList<Integer>();
+        provs = new smalist();
         int o = jnt.level + 1;
         for (;;) {
             i++;

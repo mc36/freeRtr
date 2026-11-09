@@ -122,7 +122,7 @@ public class tabRpkiUtil {
         tabGen<tabRpkiRoa> res = new tabGen<tabRpkiRoa>();
         for (int i = 0; i < src.size(); i++) {
             tabRpkiRoa ntry = src.get(i);
-            if (Collections.binarySearch(ntry.asns, asn) < 0) {
+            if (ntry.asns.binarySearch(asn) < 0) {
                 continue;
             }
             res.add(ntry);
@@ -141,7 +141,7 @@ public class tabRpkiUtil {
         tabGen<tabRpkiAspa> res = new tabGen<tabRpkiAspa>();
         for (int i = 0; i < src.size(); i++) {
             tabRpkiAspa ntry = src.get(i);
-            if (Collections.binarySearch(ntry.provs, asn) < 0) {
+            if (ntry.provs.binarySearch(asn) < 0) {
                 continue;
             }
             res.add(ntry);
@@ -722,7 +722,7 @@ public class tabRpkiUtil {
             if (resC == null) {
                 minUp = len - i;
             } else {
-                if (Collections.binarySearch(resC.provs, numP) < 0) {
+                if (resC.provs.binarySearch(numP) < 0) {
                     minUp = len - i;
                     maxUp = len - i;
                 }
@@ -732,7 +732,7 @@ public class tabRpkiUtil {
                     minDn = i;
                 }
             } else {
-                if (Collections.binarySearch(resP.provs, numC) < 0) {
+                if (resP.provs.binarySearch(numC) < 0) {
                     if (minDn == len) {
                         minDn = i;
                     }
@@ -773,7 +773,7 @@ public class tabRpkiUtil {
             return 3;
         }
         int asn = attr.asPathEnd();
-        if (Collections.binarySearch(res.asns, asn) < 0) {
+        if (res.asns.binarySearch(asn) < 0) {
             return 3;
         }
         return 1;

@@ -1,6 +1,8 @@
 package org.freertr.util;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.freertr.pack.packHolder;
 
 /**
@@ -129,6 +131,31 @@ public class smalist {
     }
 
     /**
+     * index of value
+     *
+     * @param val value
+     * @return index, -1 if not found
+     */
+    public int binarySearch(int val) {
+        int lower = 0;
+        int upper = lst.length - 1;
+        for (; lower <= upper;) {
+            int mid = (lower + upper) >>> 1;
+            int cur = lst[mid];
+            if (cur < val) {
+                lower = mid + 1;
+                continue;
+            }
+            if (cur > val) {
+                upper = mid - 1;
+                continue;
+            }
+            return mid;
+        }
+        return -1;
+    }
+
+    /**
      * copy labels
      *
      * @param src labels to copy
@@ -244,6 +271,22 @@ public class smalist {
             if (lst.lst[i] == src) {
                 lst.lst[i] = trg;
             }
+        }
+    }
+
+    /**
+     * append to a list
+     *
+     * @param trg target
+     * @param src source
+     */
+    public static void appendIntList(List<Integer> trg, smalist src) {
+        if (src == null) {
+            return;
+        }
+        for (int i = 0; i < src.lst.length; i++) {
+            Integer o = src.get(i);
+            trg.add(0 + o);
         }
     }
 
