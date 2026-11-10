@@ -341,6 +341,20 @@ public class tabRouteEntry<T extends addrType> implements Comparable<tabRouteEnt
     }
 
     /**
+     * convert to attribs format
+     *
+     * @param l
+     * @param prf
+     */
+    public static void toShAtrribs(userFormat l, tabRouteEntry<addrIP> prf) {
+        String a = toShBgpFirst(prf);
+        for (int i = 0; i < prf.alts.size(); i++) {
+            tabRouteAttr<addrIP> attr = prf.alts.get(i);
+            l.add(a + attr.toShAtrribs());
+        }
+    }
+
+    /**
      * convert to asname format
      *
      * @param l list to append

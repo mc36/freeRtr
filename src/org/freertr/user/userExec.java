@@ -1268,6 +1268,7 @@ public class userExec {
         hl.add(null, false, 10, new int[]{9, -1}, "<name:rm>", "name of route map");
         hl.add(null, false, 6, new int[]{7}, "unusual", "prefixes with attributes");
         tabRouteAttr.ignoreHelp(hl, 7);
+        hl.add(null, false, 6, new int[]{-1}, "attributes", "attribute statistics");
         hl.add(null, false, 6, new int[]{-1}, "labels", "remote and local labels");
         hl.add(null, false, 6, new int[]{-1}, "segrout", "segment routing information");
         hl.add(null, false, 6, new int[]{-1}, "bier", "bier information");

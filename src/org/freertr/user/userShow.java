@@ -5580,6 +5580,10 @@ public class userShow {
             doShowRoutes(r.bgp.fwdCore, tab, dsp + 1000);
             return;
         }
+        if (a.equals("attributes")) {
+            doShowRoutes(r.bgp.fwdCore, tab, 14);
+            return;
+        }
         if (a.equals("segrout")) {
             doShowRoutes(r.bgp.fwdCore, tab, 7);
             return;

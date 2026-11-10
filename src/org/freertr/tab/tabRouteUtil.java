@@ -187,6 +187,34 @@ public class tabRouteUtil {
     }
 
     /**
+     * get size of table
+     *
+     * @param <T> type of entries
+     * @param tab table to check
+     * @return size
+     */
+    public static <T extends Comparable<? super T>> int tabSiz2str(tabGen<T> tab) {
+        if (tab == null) {
+            return 0;
+        }
+        return +tab.size();
+    }
+
+    /**
+     * get size of table
+     *
+     * @param <T> type of entries
+     * @param tab table to check
+     * @return size
+     */
+    public static <T extends Comparable<? super T>> int listSize(List<T> src) {
+        if (src == null) {
+            return 0;
+        }
+        return src.size();
+    }
+
+    /**
      * convert tunnel type to extended community
      *
      * @param i tunnel type

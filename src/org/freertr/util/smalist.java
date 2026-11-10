@@ -290,4 +290,17 @@ public class smalist {
         }
     }
 
+    /**
+     * size of list
+     *
+     * @param src source
+     * @return size of list
+     */
+    public static int size(smalist src) {
+        if (src == null) {
+            return 0;
+        }
+        return src.lst.length;
+    }
+
 }

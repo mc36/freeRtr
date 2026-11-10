@@ -1746,21 +1746,6 @@ public class rtrBgpUtil {
     }
 
     /**
-     * get size of table
-     *
-     * @param <T> type of entries
-     * @param tab table to check
-     * @return string
-     */
-    public static <T extends Comparable<? super T>> String tabSiz2str(tabGen<T> tab) {
-        if (tab == null) {
-            return "n/a";
-        } else {
-            return "" + tab.size();
-        }
-    }
-
-    /**
      * update counters
      *
      * @param d direction

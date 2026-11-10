@@ -2357,6 +2357,15 @@ public class tabRouteAttr<T extends addrType> {
      *
      * @return converted
      */
+    public String toShAtrribs() {
+        return "|" + asPathLen() + "|" + tabRouteUtil.listSize(clustList) + "|" + atomicAggr + "|" + bits.num2str(aggrAs) + "|" + smalist.size(stdComm) + "|" + tabRouteUtil.listSize(extComm) + "|" + tabRouteUtil.listSize(lrgComm) + "|" + bits.num2str(onlyCust);
+    }
+
+    /**
+     * convert to route format
+     *
+     * @return converted
+     */
     public String toShAsName() {
         return "|" + nextHop + "|" + distance + "/" + locPref + "/" + originType + "/" + metric + "|" + asNameStr();
     }
