@@ -18930,3 +18930,6 @@ failed: dhcp with excluded address
 ---------------------------------- 2026-11-10 07:06:25 26.11.10
 no failed: dhcp with excluded address
 qc pass: dhcp with excluded address
+---------------------------------- 2026-11-10 11:19:00 26.11.10
+no qc pass: qos ingress shaper action
+failed: qos ingress shaper action
