@@ -157,6 +157,15 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         l.add(null, false, 2, new int[]{3}, "destpref", "match destination preference");
         l.add(null, false, 3, new int[]{-1}, "<num>", "preference");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
+        l.add(null, false, 2, new int[]{3}, "stdlen", "match standard community length");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "all", "any value");
+        l.add(null, false, 2, new int[]{3}, "extlen", "match extended community length");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "all", "any value");
+        l.add(null, false, 2, new int[]{3}, "lrglen", "match large community length");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "pathlen", "match as path length");
         l.add(null, false, 3, new int[]{-1}, "<num>", "length");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
@@ -554,6 +563,30 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
         }
         if (a.equals("destpref")) {
             ntry.ifMode = tabRtrplcN.ifType.destPref;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("stdlen")) {
+            ntry.ifMode = tabRtrplcN.ifType.stdlen;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("extlen")) {
+            ntry.ifMode = tabRtrplcN.ifType.extlen;
+            if (ntry.intMatch.fromString(cmd.getRemaining())) {
+                cmd.error("invalid action");
+                return;
+            }
+            return;
+        }
+        if (a.equals("lrglen")) {
+            ntry.ifMode = tabRtrplcN.ifType.lrglen;
             if (ntry.intMatch.fromString(cmd.getRemaining())) {
                 cmd.error("invalid action");
                 return;

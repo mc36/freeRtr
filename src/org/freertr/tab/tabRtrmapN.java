@@ -129,6 +129,21 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
     public tabIntMatcher destPrefMatch = new tabIntMatcher();
 
     /**
+     * community length matched
+     */
+    public tabIntMatcher stdLenMatch = new tabIntMatcher();
+
+    /**
+     * community length matched
+     */
+    public tabIntMatcher extLenMatch = new tabIntMatcher();
+
+    /**
+     * community length matched
+     */
+    public tabIntMatcher lrgLenMatch = new tabIntMatcher();
+
+    /**
      * aspath length matched
      */
     public tabIntMatcher pathlenMatch = new tabIntMatcher();
@@ -606,6 +621,9 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
         l.add(beg + "match aggregator " + aggregatorMatch);
         l.add(beg + "match customer " + customerMatch);
         l.add(beg + "match destpref " + destPrefMatch);
+        l.add(beg + "match stdlen " + stdLenMatch);
+        l.add(beg + "match extlen " + extLenMatch);
+        l.add(beg + "match lrglen " + lrgLenMatch);
         l.add(beg + "match pathlen " + pathlenMatch);
         l.add(beg + "match unknowns " + unknownMatch);
         l.add(beg + "match asend " + asendMatch);
@@ -1402,6 +1420,27 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             }
             return false;
         }
+        if (a.equals("stdlen")) {
+            if (stdLenMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("extlen")) {
+            if (extLenMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
+        if (a.equals("lrglen")) {
+            if (lrgLenMatch.fromString(cmd.word())) {
+                cmd.error("invalid action");
+                return true;
+            }
+            return false;
+        }
         if (a.equals("pathlen")) {
             if (pathlenMatch.fromString(cmd.word())) {
                 cmd.error("invalid action");
@@ -1660,6 +1699,18 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             destPrefMatch.set2always();
             return false;
         }
+        if (a.equals("stdlen")) {
+            stdLenMatch.set2always();
+            return false;
+        }
+        if (a.equals("extlen")) {
+            extLenMatch.set2always();
+            return false;
+        }
+        if (a.equals("lrglen")) {
+            lrgLenMatch.set2always();
+            return false;
+        }
         if (a.equals("pathlen")) {
             pathlenMatch.set2always();
             return false;
@@ -1808,6 +1859,15 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (!destPrefMatch.matches(net.best.destPrefVal)) {
+            return false;
+        }
+        if (!stdLenMatch.matches(smalist.size(net.best.stdComm))) {
+            return false;
+        }
+        if (!extLenMatch.matches(tabRouteUtil.listSize(net.best.extComm))) {
+            return false;
+        }
+        if (!lrgLenMatch.matches(tabRouteUtil.listSize(net.best.lrgComm))) {
             return false;
         }
         if (!pathlenMatch.matches(net.best.asPathLen())) {

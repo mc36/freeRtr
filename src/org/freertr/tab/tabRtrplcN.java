@@ -358,6 +358,18 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
          */
         destPref,
         /**
+         * stdlen
+         */
+        stdlen,
+        /**
+         * extlen
+         */
+        extlen,
+        /**
+         * lrglen
+         */
+        lrglen,
+        /**
          * pathlen
          */
         pathlen,
@@ -739,6 +751,12 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return "customer " + intMatch;
             case destPref:
                 return "destpref " + intMatch;
+            case stdlen:
+                return "stdlen " + intMatch;
+            case extlen:
+                return "extlen " + intMatch;
+            case lrglen:
+                return "lrglen " + intMatch;
             case pathlen:
                 return "pathlen " + intMatch;
             case unknown:
@@ -909,6 +927,12 @@ public class tabRtrplcN extends tabListingEntry<addrIP> {
                 return intMatch.matches(net.best.onlyCust);
             case destPref:
                 return intMatch.matches(net.best.destPrefVal);
+            case stdlen:
+                return intMatch.matches(smalist.size(net.best.stdComm));
+            case extlen:
+                return intMatch.matches(tabRouteUtil.listSize(net.best.extComm));
+            case lrglen:
+                return intMatch.matches(tabRouteUtil.listSize(net.best.lrgComm));
             case pathlen:
                 return intMatch.matches(net.best.asPathLen());
             case unknown:

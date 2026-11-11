@@ -69,6 +69,9 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match aggregator all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match customer all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match destpref all", null),
+        new userFilter("route-map .*", cmds.tabulator + "sequence .* match stdlen all", null),
+        new userFilter("route-map .*", cmds.tabulator + "sequence .* match extlen all", null),
+        new userFilter("route-map .*", cmds.tabulator + "sequence .* match lrglen all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match pathlen all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match unknowns all", null),
         new userFilter("route-map .*", cmds.tabulator + "sequence .* match asend all", null),
@@ -242,6 +245,15 @@ public class cfgRoump implements Comparable<cfgRoump>, cfgGeneric {
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "destpref", "match destination preference");
         l.add(null, false, 3, new int[]{-1}, "<num>", "preference");
+        l.add(null, false, 3, new int[]{-1}, "all", "any value");
+        l.add(null, false, 2, new int[]{3}, "stdlen", "match standard community length");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "all", "any value");
+        l.add(null, false, 2, new int[]{3}, "extlen", "match extended community length");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
+        l.add(null, false, 3, new int[]{-1}, "all", "any value");
+        l.add(null, false, 2, new int[]{3}, "lrglen", "match large community length");
+        l.add(null, false, 3, new int[]{-1}, "<num>", "length");
         l.add(null, false, 3, new int[]{-1}, "all", "any value");
         l.add(null, false, 2, new int[]{3}, "pathlen", "match as path length");
         l.add(null, false, 3, new int[]{-1}, "<num>", "length");
