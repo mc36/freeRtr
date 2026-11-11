@@ -18939,3 +18939,6 @@ qc pass: qos ingress shaper action
 ---------------------------------- 2026-11-11 09:33:02 26.11.11
 no qc pass: ingress label filtering with pvrp
 failed: ingress label filtering with pvrp
+---------------------------------- 2026-11-11 11:07:20 26.11.11
+no failed: ingress label filtering with pvrp
+qc pass: ingress label filtering with pvrp
