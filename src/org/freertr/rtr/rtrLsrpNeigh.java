@@ -21,7 +21,7 @@ import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoWrk;
 import org.freertr.sec.secServer;
 import org.freertr.serv.servGeneric;
-import org.freertr.tab.tabAverage;
+import org.freertr.util.averager;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabLabel;
 import org.freertr.tab.tabLabelEntry;
@@ -94,7 +94,7 @@ public class rtrLsrpNeigh implements Runnable, rtrBfdClnt, Comparable<rtrLsrpNei
     /**
      * calculated echo
      */
-    public tabAverage echoCalc = new tabAverage(1, 1);
+    public averager echoCalc = new averager(1, 1);
 
     /**
      * time last heard

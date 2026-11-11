@@ -1,6 +1,6 @@
 package org.freertr.user;
 
-import org.freertr.tab.tabDeviation;
+import org.freertr.util.deviation;
 import org.freertr.pipe.pipeGpsEmu;
 import org.freertr.pipe.pipeModEmu;
 import org.freertr.pipe.pipeScreen;
@@ -4985,9 +4985,9 @@ public class userExec {
         int recv = 0;
         int lost = 0;
         int errs = 0;
-        tabDeviation timS = new tabDeviation();
-        tabDeviation ttlS = new tabDeviation();
-        tabDeviation tosS = new tabDeviation();
+        deviation timS = new deviation();
+        deviation ttlS = new deviation();
+        deviation tosS = new deviation();
         long timBeg = bits.getTime();
         pipe.linePut("pinging " + trg + ", src=" + src + ", vrf=" + vrf.name + ", via=" + via + ", cnt=" + repeat + ", len=" + size + ", df=" + dntfrg + ", tim=" + timeout + ", gap=" + delay + ", ttl=" + ttl + ", tos=" + tos + ", sgt=" + sgt + ", flow=" + flow + ", fill=" + data + ", alrt=" + alrt + ", sweep=" + sweep + ", multi=" + multi + ", mpls=" + mpls);
         size -= prtIcmptun.adjustSize(trg);

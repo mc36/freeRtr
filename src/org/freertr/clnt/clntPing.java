@@ -5,7 +5,7 @@ import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdEcho;
 import org.freertr.ip.ipFwdEchod;
 import org.freertr.ip.ipFwdIface;
-import org.freertr.tab.tabAverage;
+import org.freertr.util.averager;
 import org.freertr.util.logger;
 
 /**
@@ -24,7 +24,7 @@ public class clntPing implements Runnable {
     /**
      * measurement
      */
-    public tabAverage meas;
+    public averager meas;
 
     /**
      * forwarder

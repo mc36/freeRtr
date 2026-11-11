@@ -1,17 +1,15 @@
-package org.freertr.tab;
+package org.freertr.util;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.freertr.user.userHelp;
-import org.freertr.util.bits;
-import org.freertr.util.cmds;
 
 /**
  * average calculator
  *
  * @author matecsaba
  */
-public class tabAverage {
+public class averager {
 
     /**
      * mode, 0=none, 1=min, 2=avg, 3=max, 4=sum, 5=dif-min, 6=dif-avg,
@@ -69,7 +67,7 @@ public class tabAverage {
      * @param min minimum
      * @param max maximum
      */
-    public tabAverage(int min, int max) {
+    public averager(int min, int max) {
         pastValues = new ArrayList<Integer>();
         minimum = min;
         maximum = max;
@@ -178,7 +176,7 @@ public class tabAverage {
      *
      * @param src source
      */
-    public void updateFrom(tabAverage src) {
+    public void updateFrom(averager src) {
         algorithm = src.algorithm;
         buckets = src.buckets;
         minimum = src.minimum;

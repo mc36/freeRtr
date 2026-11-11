@@ -18,7 +18,7 @@ import org.freertr.sec.secInfoCfg;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoUtl;
 import org.freertr.sec.secInfoWrk;
-import org.freertr.tab.tabAverage;
+import org.freertr.util.averager;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
@@ -65,7 +65,7 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
     /**
      * echo parameters
      */
-    public tabAverage echoParam;
+    public averager echoParam;
 
     /**
      * dynamic metric
@@ -205,7 +205,7 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
         iface = ifc;
         advert = new tabGen<rtrRiftTie>();
         echoTimer = 60000;
-        echoParam = new tabAverage(1, 65530);
+        echoParam = new averager(1, 65530);
     }
 
     /**
@@ -348,7 +348,7 @@ public class rtrRiftIface implements Comparable<rtrRiftIface>, Runnable, rtrBfdC
         l.add(null, false, 6, new int[]{-1}, "icmpecho", "icmp echo requests");
         l.add(null, false, 6, new int[]{-1}, "udpecho", "udp echo requests");
         l.add(null, false, 6, new int[]{-1}, "twamp", "twamp echo requests");
-        tabAverage.getHelp(l);
+        averager.getHelp(l);
     }
 
     /**

@@ -17,7 +17,7 @@ import org.freertr.ip.ipPrt;
 import org.freertr.pack.packHolder;
 import org.freertr.sec.secInfoCfg;
 import org.freertr.sec.secInfoUtl;
-import org.freertr.tab.tabAverage;
+import org.freertr.util.averager;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
@@ -179,7 +179,7 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
     /**
      * echo parameters
      */
-    public tabAverage echoParam;
+    public averager echoParam;
 
     /**
      * dynamic metric
@@ -299,7 +299,7 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
         teMetric = 10;
         ttlSecurity = -1;
         echoTimer = 60000;
-        echoParam = new tabAverage(1, 65530);
+        echoParam = new averager(1, 65530);
         for (int i = 0; i < msgStats.length; i++) {
             msgStats[i] = new counter();
         }
@@ -952,7 +952,7 @@ public class rtrOspf4iface implements Comparable<rtrOspf4iface>, ipPrt {
         l.add(null, false, 6, new int[]{-1}, "icmpecho", "icmp echo requests");
         l.add(null, false, 6, new int[]{-1}, "udpecho", "udp echo requests");
         l.add(null, false, 6, new int[]{-1}, "twamp", "twamp echo requests");
-        tabAverage.getHelp(l);
+        averager.getHelp(l);
     }
 
     /**

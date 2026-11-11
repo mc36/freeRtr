@@ -9,7 +9,7 @@ import org.freertr.ip.ipMpls;
 import org.freertr.pack.packHolder;
 import org.freertr.sec.secInfoCls;
 import org.freertr.sec.secInfoWrk;
-import org.freertr.tab.tabAverage;
+import org.freertr.util.averager;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabLabel;
 import org.freertr.tab.tabLabelEntry;
@@ -114,7 +114,7 @@ public class rtrOspf4neigh implements Runnable, rtrBfdClnt, Comparable<rtrOspf4n
     /**
      * calculated echo
      */
-    protected tabAverage echoCalc = new tabAverage(1, 1);
+    protected averager echoCalc = new averager(1, 1);
 
     /**
      * peer priority

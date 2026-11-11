@@ -1,19 +1,18 @@
-package org.freertr.tab;
+package org.freertr.util;
 
 import java.util.List;
-import org.freertr.util.bits;
 
 /**
  * rolling statistics
  *
  * @author matecsaba
  */
-public class tabDeviation {
+public class deviation {
 
     /**
      * create instance
      */
-    public tabDeviation() {
+    public deviation() {
         min = Long.MAX_VALUE;
         max = Long.MIN_VALUE;
         lst = 0;

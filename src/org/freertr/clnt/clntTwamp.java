@@ -9,7 +9,7 @@ import org.freertr.pack.packTwamp;
 import org.freertr.pipe.pipeLine;
 import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtUdp;
-import org.freertr.tab.tabAverage;
+import org.freertr.util.averager;
 import org.freertr.util.bits;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
@@ -30,7 +30,7 @@ public class clntTwamp implements Runnable {
     /**
      * measurement
      */
-    public tabAverage meas;
+    public averager meas;
 
     /**
      * notifier

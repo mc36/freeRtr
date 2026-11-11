@@ -21,7 +21,7 @@ import org.freertr.prt.prtServP;
 import org.freertr.sec.secInfoCfg;
 import org.freertr.sec.secInfoUtl;
 import org.freertr.serv.servGeneric;
-import org.freertr.tab.tabAverage;
+import org.freertr.util.averager;
 import org.freertr.tab.tabGen;
 import org.freertr.tab.tabListing;
 import org.freertr.tab.tabPrfxlstN;
@@ -69,7 +69,7 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
     /**
      * echo parameters
      */
-    public tabAverage echoParam = new tabAverage(1, 100000);
+    public averager echoParam = new averager(1, 100000);
 
     /**
      * transmitted message statistics
@@ -709,7 +709,7 @@ public class rtrPvrpIface implements Comparable<rtrPvrpIface>, Runnable, prtServ
         l.add(null, false, 6, new int[]{-1}, "icmpecho", "icmp echo requests");
         l.add(null, false, 6, new int[]{-1}, "udpecho", "udp echo requests");
         l.add(null, false, 6, new int[]{-1}, "twamp", "twamp echo requests");
-        tabAverage.getHelp(l);
+        averager.getHelp(l);
         l.add(null, false, 4, new int[]{-1}, "other-enable", "enable other protocol processing");
         l.add(null, false, 4, new int[]{-1}, "other-foreign", "use foreign nexthop for routes");
         l.add(null, false, 4, new int[]{-1}, "other-stub", "do not route traffic");

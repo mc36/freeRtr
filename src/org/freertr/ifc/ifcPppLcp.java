@@ -11,7 +11,7 @@ import org.freertr.util.debugger;
 import org.freertr.util.logger;
 import org.freertr.util.state;
 import org.freertr.enc.encTlv;
-import org.freertr.tab.tabDeviation;
+import org.freertr.util.deviation;
 
 /**
  * line control protocol for ppp
@@ -123,7 +123,7 @@ public class ifcPppLcp extends ifcPppNcp {
     /**
      * time statistics
      */
-    protected tabDeviation lastEchoStat = new tabDeviation();
+    protected deviation lastEchoStat = new deviation();
 
     /**
      * get name

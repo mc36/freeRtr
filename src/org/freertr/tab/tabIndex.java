@@ -1,7 +1,9 @@
 package org.freertr.tab;
 
+import org.freertr.addr.addrIP;
 import org.freertr.addr.addrPrefix;
 import org.freertr.addr.addrType;
+import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
 import org.freertr.util.counter;
@@ -261,6 +263,34 @@ public class tabIndex<T extends addrType> implements Comparable<tabIndex<T>> {
             }
         }
         return false;
+    }
+
+    /**
+     * format table
+     *
+     * @param src source list
+     * @return formatted
+     */
+    public static userFormat formatTable(tabGen<tabIndex<addrIP>> src) {
+        userFormat lst = new userFormat("|", "index|conn|prefix|peers|bytes");
+        for (int i = 0; i < src.size(); i++) {
+            tabIndex<addrIP> prf = src.get(i);
+            if (prf == null) {
+                continue;
+            }
+            String b = "";
+            if (prf.neighs != null) {
+                for (int o = 0; o < prf.neighs.size(); o++) {
+                    b += " " + prf.neighs.get(o).index;
+                }
+            }
+            String a = "";
+            if (prf.hwCntr != null) {
+                a = "+" + prf.hwCntr.byteRx;
+            }
+            lst.add(prf.index + "|" + prf.conned + "|" + addrPrefix.ip2str(prf.prefix) + "|" + b + "|" + prf.cntr.byteRx + a);
+        }
+        return lst;
     }
 
 }

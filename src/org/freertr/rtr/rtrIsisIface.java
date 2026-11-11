@@ -10,7 +10,7 @@ import org.freertr.ifc.ifcNull;
 import org.freertr.ifc.ifcUp;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.pack.packHolder;
-import org.freertr.tab.tabAverage;
+import org.freertr.util.averager;
 import org.freertr.tab.tabGen;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
@@ -266,7 +266,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
     /**
      * echo parameters
      */
-    public tabAverage echoParam;
+    public averager echoParam;
 
     /**
      * dynamic metric
@@ -320,7 +320,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         authenMode = 1;
         metric = 10;
         echoTimer = 60000;
-        echoParam = new tabAverage(1, 16777210);
+        echoParam = new averager(1, 16777210);
         suppressInt = true;
         othSuppInt = true;
         connectedCheck = true;
@@ -1011,7 +1011,7 @@ public class rtrIsisIface implements Comparable<rtrIsisIface>, ifcUp {
         l.add(null, false, 6, new int[]{-1}, "icmpecho", "icmp echo requests");
         l.add(null, false, 6, new int[]{-1}, "udpecho", "udp echo requests");
         l.add(null, false, 6, new int[]{-1}, "twamp", "twamp echo requests");
-        tabAverage.getHelp(l);
+        averager.getHelp(l);
     }
 
     /**

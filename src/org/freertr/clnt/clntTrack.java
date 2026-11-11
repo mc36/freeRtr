@@ -37,7 +37,7 @@ import org.freertr.util.cmds;
 import org.freertr.util.logger;
 import org.freertr.util.notifier;
 import org.freertr.util.state;
-import org.freertr.tab.tabDeviation;
+import org.freertr.util.deviation;
 
 /**
  * tracker worker
@@ -355,7 +355,7 @@ public class clntTrack implements Runnable, rtrBfdClnt {
     /**
      * time statistics
      */
-    protected tabDeviation times = new tabDeviation();
+    protected deviation times = new deviation();
 
     private boolean working = false;
 

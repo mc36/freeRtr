@@ -6151,24 +6151,7 @@ public class userShow {
         if (fwd == null) {
             return;
         }
-        userFormat lst = new userFormat("|", "index|conn|prefix|peers|bytes");
-        for (int i = 0; i < fwd.actualIU.size(); i++) {
-            tabIndex<addrIP> prf = fwd.actualIU.get(i);
-            if (prf == null) {
-                continue;
-            }
-            String b = "";
-            if (prf.neighs != null) {
-                for (int o = 0; o < prf.neighs.size(); o++) {
-                    b += " " + prf.neighs.get(o).index;
-                }
-            }
-            String a = "";
-            if (prf.hwCntr != null) {
-                a = "+" + prf.hwCntr.byteRx;
-            }
-            lst.add(prf.index + "|" + prf.conned + "|" + addrPrefix.ip2str(prf.prefix) + "|" + b + "|" + prf.cntr.byteRx + a);
-        }
+        userFormat lst = tabIndex.formatTable(fwd.actualIU);
         rdr.putStrTab(lst);
     }
 
