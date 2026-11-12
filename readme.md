@@ -5,6 +5,7 @@ it speaks routing protocols, and (re)encapsulates packets on interfaces.
 it can export the computed forwarding tables to external dataplanes.
 
 summary of features:
+
 * forwarding: ipv4, ipv6, ipx, mpls, nsh, layer2, irb, atom, eompls, vpls, evpn
 * routing protocols: ospf, isis, bgp, rip, eigrp, rift, babel, olsr, pim, msdp
 * lsp support: p2p, p2mp, mp2mp built by bgp, ldp, rsvp-te, sr, sr-te, bier, polka
@@ -17,6 +18,7 @@ summary of features:
 more about the project at [www.freertr.org](http://www.freertr.org/)
 
 you can find the same source tree at various locations, normally all should be the same:
+
 * [sources.freertr.org](http://sources.freertr.org/)
 * [codeberg.org/mc36/freeRtr](http://codeberg.org/mc36/freeRtr)
 * [bitbucket.org/mc36mc/freeRtr](http://bitbucket.org/mc36mc/freeRtr)
@@ -29,6 +31,7 @@ you can find the same source tree at various locations, normally all should be t
 * [src.freertr.org](http://src.freertr.org/)
 
 part of the subdirectories under misc/ are somewhere else too:
+
 * p4bf at [bitbucket.software.geant.org/projects/RARE/repos/rare](http://bitbucket.software.geant.org/projects/RARE/repos/rare)
 * p4bmv2 at [github.com/rare-freertr/RARE-bmv2](http://github.com/rare-freertr/RARE-bmv2)
 
@@ -47,11 +50,13 @@ for p4bf, you'll need the tofino sdk and a switch with the asic
 ## directory structure
 
 the following directories could be found here:
+
 * src contains the main sources
 * cfg contains the self tests
 * misc contains some smaller subprojects, see below
 
 the following directories will appear here:
+
 * img vm images used for interop and dataplane testing
 * binDwn packages used for demo vm creation
 * binDsk rootfs used for demo vm creation
@@ -96,12 +101,14 @@ the following directories will appear here:
 ## getting started
 
 there is no build system in use, but you'll find shell scripts:
+
 * d.sh to clean up
 * c.sh to compile
 * r.sh to run
 * t.sh to selftest
 
 as a first start to get your routers up, do the following:
+
 * cd src
 * ./c.sh
 * ./tw.sh rout-bgp001
@@ -111,6 +118,7 @@ as a first start to get your routers up, do the following:
 * telnet 127.0.0.1 20004
 
 to have a topology with a dataplane, do the following:
+
 * cd src
 * ./c.sh
 * ./cn.sh
@@ -125,6 +133,7 @@ to have a topology with a dataplane, do the following:
 ## contributing
 
 to start coding on the project, take a look on the following:
+
 * grep me-the in the sources to see how to add a show command
 * grep ifcHdlc to see how to add a new interface encapsulation
 * take a look on rtrDownload to see an exmaple routing protocol
