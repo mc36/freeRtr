@@ -17,20 +17,20 @@ summary of features:
 more about the project at [www.freertr.org](http://www.freertr.org/)
 
 you can find the same source tree at various locations, normally all should be the same:
-* http://sources.freertr.org/
-* http://codeberg.org/mc36/freeRtr
-* http://bitbucket.org/mc36mc/freeRtr
-* http://gitlab.com/mc36mc/freeRtr
-* http://github.com/mc36/freeRtr
-* http://gitgud.io/mc36/freertr
-* http://gitea.com/mc36/freeRtr
-* http://sourceforge.net/p/freertr/code
-* http://git.sr.ht/~mc36/freeRtr/tree
-* http://src.freertr.org/
+* [sources.freertr.org](http://sources.freertr.org/)
+* [codeberg.org/mc36/freeRtr](http://codeberg.org/mc36/freeRtr)
+* [bitbucket.org/mc36mc/freeRtr](http://bitbucket.org/mc36mc/freeRtr)
+* [gitlab.com/mc36mc/freeRtr](http://gitlab.com/mc36mc/freeRtr)
+* [github.com/mc36/freeRtr](http://github.com/mc36/freeRtr)
+* [gitgud.io/mc36/freertr](http://gitgud.io/mc36/freertr)
+* [gitea.com/mc36/freeRtr](http://gitea.com/mc36/freeRtr)
+* [sourceforge.net/p/freertr/code](http://sourceforge.net/p/freertr/code)
+* [git.sr.ht/~mc36/freeRtr/tree](http://git.sr.ht/~mc36/freeRtr/tree)
+* [src.freertr.org](http://src.freertr.org/)
 
 part of the subdirectories under misc/ are somewhere else too:
-* p4bf at http://bitbucket.software.geant.org/projects/RARE/repos/rare/browse
-* p4bmv2 at http://github.com/rare-freertr/RARE-bmv2
+* p4bf at [bitbucket.software.geant.org/projects/RARE/repos/rare](http://bitbucket.software.geant.org/projects/RARE/repos/rare)
+* p4bmv2 at [github.com/rare-freertr/RARE-bmv2](http://github.com/rare-freertr/RARE-bmv2)
 
 ## dependencies
 
