@@ -32,6 +32,16 @@ public class keyword implements Comparable<keyword> {
     public long lst;
 
     /**
+     * minimum
+     */
+    public int min = Integer.MAX_VALUE;
+
+    /**
+     * minimum
+     */
+    public int max = Integer.MIN_VALUE;
+
+    /**
      * create instance
      *
      * @param a message
@@ -67,8 +77,15 @@ public class keyword implements Comparable<keyword> {
         if (o != null) {
             m = o;
         }
+        int s = a.length();
+        if (m.min > s) {
+            m.min = s;
+        }
+        if (m.max < s) {
+            m.max = s;
+        }
         m.cnt++;
-        m.byt += a.length();
+        m.byt += s;
         m.lst = bits.getTime();
     }
 
@@ -82,13 +99,13 @@ public class keyword implements Comparable<keyword> {
         if (l == null) {
             return null;
         }
-        userFormat r = new userFormat("|", "message|count|byte|last|ago");
+        userFormat r = new userFormat("|", "message|count|bytes|min|avg|max|last|ago");
         for (int i = 0; i < l.size(); i++) {
             keyword k = l.get(i);
             if (k == null) {
                 continue;
             }
-            r.add(k.msg + "|" + k.cnt + "|" + k.byt + "|" + bits.time2str(cfgAll.timeZoneName, k.lst + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(k.lst));
+            r.add(k.msg + "|" + k.cnt + "|" + k.byt + "|" + k.min + "|" + counter.safeDiv(k.byt, k.cnt) + "|" + k.max + "|" + bits.time2str(cfgAll.timeZoneName, k.lst + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(k.lst));
         }
         return r;
     }
@@ -107,7 +124,7 @@ public class keyword implements Comparable<keyword> {
         if (t == null) {
             return null;
         }
-        userFormat l = new userFormat("|", "message|rx|tx|rx|tx|rx|tx|rx|tx", "1|2count|2byte|2last|2ago");
+        userFormat l = new userFormat("|", "message|rx|tx|rx|tx|rx|tx|rx|tx|rx|tx|rx|tx", "1|2count|2bytes|2minimum|2average|2maximum|2ago");
         for (int i = 0; i < r.size(); i++) {
             keyword k = r.get(i);
             if (k == null) {
@@ -116,7 +133,7 @@ public class keyword implements Comparable<keyword> {
             if (t.find(k) != null) {
                 continue;
             }
-            l.add(k.msg + "|" + k.cnt + "|0|" + k.byt + "|0|" + bits.time2str(cfgAll.timeZoneName, k.lst + cfgAll.timeServerOffset, 3) + "|-|" + bits.timePast(k.lst) + "|-");
+            l.add(k.msg + "|" + k.cnt + "|0|" + k.byt + "|0|" + k.min + "|0|" + counter.safeDiv(k.byt, k.cnt) + "|0|" + k.max + "|0|" + bits.timePast(k.lst) + "|-");
         }
         for (int i = 0; i < t.size(); i++) {
             keyword k = t.get(i);
@@ -126,7 +143,7 @@ public class keyword implements Comparable<keyword> {
             if (r.find(k) != null) {
                 continue;
             }
-            l.add(k.msg + "|0|" + k.cnt + "|0|" + k.byt + "|-|" + bits.time2str(cfgAll.timeZoneName, k.lst + cfgAll.timeServerOffset, 3) + "|-|" + bits.timePast(k.lst));
+            l.add(k.msg + "|0|" + k.cnt + "|0|" + k.byt + "|0|" + k.min + "|0|" + counter.safeDiv(k.byt, k.cnt) + "|0|" + k.max + "|-|" + bits.timePast(k.lst));
         }
         for (int i = 0; i < t.size(); i++) {
             keyword k = t.get(i);
@@ -137,7 +154,7 @@ public class keyword implements Comparable<keyword> {
             if (p == null) {
                 continue;
             }
-            l.add(k.msg + "|" + p.cnt + "|" + k.cnt + "|" + p.byt + "|" + k.byt + "|" + bits.time2str(cfgAll.timeZoneName, p.lst + cfgAll.timeServerOffset, 3) + "|" + bits.time2str(cfgAll.timeZoneName, k.lst + cfgAll.timeServerOffset, 3) + "|" + bits.timePast(p.lst) + "|" + bits.timePast(k.lst));
+            l.add(k.msg + "|" + p.cnt + "|" + k.cnt + "|" + p.byt + "|" + k.byt + "|" + p.min + "|" + k.min + "|" + counter.safeDiv(p.byt, p.cnt) + "|" + counter.safeDiv(k.byt, k.cnt) + "|" + p.max + "|" + k.max + "|" + bits.timePast(p.lst) + "|" + bits.timePast(k.lst));
         }
         return l;
     }

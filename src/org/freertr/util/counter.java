@@ -649,7 +649,14 @@ public class counter implements Comparable<counter> {
         return res;
     }
 
-    private static long safeDiv(long a, long b) {
+    /**
+     * safe division
+     *
+     * @param a number
+     * @param b divider
+     * @return result
+     */
+    public static long safeDiv(long a, long b) {
         if (b == 0) {
             return 0;
         }
