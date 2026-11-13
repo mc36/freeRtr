@@ -3800,6 +3800,8 @@ public class cfgAll {
                 l = new userFormat("|", "interface|state|input|output|drop");
                 break;
             case 29:
+                l = new userFormat("|", "interface|state|tx|rx|drop|tx|rx|drop|tx|rx|drop", "2|3minimum|3average|3maximum");
+                break;
             case 30:
             case 31:
                 l = new userFormat("|", "interface|state|tx|rx|drop");

@@ -318,32 +318,32 @@ public class counter implements Comparable<counter> {
     /**
      * minimum rx
      */
-    public int minsRx = Integer.MAX_VALUE;
+    public int minsRx = packHolder.maxData;
 
     /**
      * minimum tx
      */
-    public int minsTx = Integer.MAX_VALUE;
+    public int minsTx = packHolder.maxData;
 
     /**
      * minimum drop
      */
-    public int minsDr = Integer.MAX_VALUE;
+    public int minsDr = packHolder.maxData;
 
     /**
      * maximum rx
      */
-    public int maxsRx = Integer.MIN_VALUE;
+    public int maxsRx = -packHolder.maxData;
 
     /**
      * maximum tx
      */
-    public int maxsTx = Integer.MIN_VALUE;
+    public int maxsTx = -packHolder.maxData;
 
     /**
      * maximum drop
      */
-    public int maxsDr = Integer.MIN_VALUE;
+    public int maxsDr = -packHolder.maxData;
 
     /**
      * dropper to use
@@ -395,9 +395,10 @@ public class counter implements Comparable<counter> {
      */
     public void drop(packHolder pck, reasons reason) {
         drop(pck.headSize() + pck.dataSize(), reason);
-        if (debugger.counterTraf) {
-            logger.debug("dropping packet; reason=" + reason2string(reason) + "; packet=" + pck.dump());
+        if (!debugger.counterTraf) {
+            return;
         }
+        logger.debug("dropping packet; reason=" + reason2string(reason) + "; packet=" + pck.dump());
     }
 
     /**
@@ -442,10 +443,10 @@ public class counter implements Comparable<counter> {
      */
     public void drop(int len, reasons reason) {
         if (len < minsDr) {
-            minsRx = len;
+            minsDr = len;
         }
         if (len > maxsDr) {
-            maxsRx = len;
+            maxsDr = len;
         }
         packDr++;
         byteDr += len;
@@ -528,6 +529,12 @@ public class counter implements Comparable<counter> {
         res.byteRx = byteRx - old.byteRx;
         res.byteTx = byteTx - old.byteTx;
         res.byteDr = byteDr - old.byteDr;
+        res.minsRx = minsRx - old.minsRx;
+        res.minsTx = minsTx - old.minsTx;
+        res.minsDr = minsDr - old.minsDr;
+        res.maxsRx = maxsRx - old.maxsRx;
+        res.maxsTx = maxsTx - old.maxsTx;
+        res.maxsDr = maxsDr - old.maxsDr;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
         res.lastRx = lastRx;
@@ -550,6 +557,12 @@ public class counter implements Comparable<counter> {
         res.byteRx = byteRx + old.byteRx;
         res.byteTx = byteTx + old.byteTx;
         res.byteDr = byteDr + old.byteDr;
+        res.minsRx = minsRx + old.minsRx;
+        res.minsTx = minsTx + old.minsTx;
+        res.minsDr = minsDr + old.minsDr;
+        res.maxsRx = maxsRx + old.maxsRx;
+        res.maxsTx = maxsTx + old.maxsTx;
+        res.maxsDr = maxsDr + old.maxsDr;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
         res.lastRx = lastRx;
@@ -594,6 +607,12 @@ public class counter implements Comparable<counter> {
         res.byteRx = byteRx * m;
         res.byteTx = byteTx * m;
         res.byteDr = byteDr * m;
+        res.minsRx = minsRx * m;
+        res.minsTx = minsTx * m;
+        res.minsDr = minsDr * m;
+        res.maxsRx = maxsRx * m;
+        res.maxsTx = maxsTx * m;
+        res.maxsDr = maxsDr * m;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
         res.lastRx = lastRx;
@@ -616,6 +635,12 @@ public class counter implements Comparable<counter> {
         res.byteRx = byteRx / d;
         res.byteTx = byteTx / d;
         res.byteDr = byteDr / d;
+        res.minsRx = minsRx / d;
+        res.minsTx = minsTx / d;
+        res.minsDr = minsDr / d;
+        res.maxsRx = maxsRx / d;
+        res.maxsTx = maxsTx / d;
+        res.maxsDr = maxsDr / d;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
         res.lastRx = lastRx;
@@ -641,6 +666,42 @@ public class counter implements Comparable<counter> {
         res.byteTx = safeDiv(byteTx, packTx);
         res.byteRx = safeDiv(byteRx, packRx);
         res.byteDr = safeDiv(byteDr, packDr);
+        res.stateChg = stateChg;
+        res.lastChgd = lastChgd;
+        res.lastRx = lastRx;
+        res.lastTx = lastTx;
+        res.lastDr = lastDr;
+        return res;
+    }
+
+    /**
+     * minimum bytes by packets
+     *
+     * @return resulting values
+     */
+    public counter asMin() {
+        counter res = new counter();
+        res.byteTx = minsTx;
+        res.byteRx = minsRx;
+        res.byteDr = minsDr;
+        res.stateChg = stateChg;
+        res.lastChgd = lastChgd;
+        res.lastRx = lastRx;
+        res.lastTx = lastTx;
+        res.lastDr = lastDr;
+        return res;
+    }
+
+    /**
+     * minimum bytes by packets
+     *
+     * @return resulting values
+     */
+    public counter asMax() {
+        counter res = new counter();
+        res.byteTx = maxsTx;
+        res.byteRx = maxsRx;
+        res.byteDr = maxsDr;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
         res.lastRx = lastRx;
@@ -684,6 +745,12 @@ public class counter implements Comparable<counter> {
         byteTx = 0;
         packDr = 0;
         byteDr = 0;
+        minsRx = packHolder.maxData;
+        minsTx = packHolder.maxData;
+        minsDr = packHolder.maxData;
+        maxsRx = -packHolder.maxData;
+        maxsTx = -packHolder.maxData;
+        maxsDr = -packHolder.maxData;
         stateChg = 0;
         lastChgd = 0;
         lastRx = 0;
@@ -704,6 +771,12 @@ public class counter implements Comparable<counter> {
         res.byteTx = byteTx;
         res.packDr = packDr;
         res.byteDr = byteDr;
+        res.minsRx = minsRx;
+        res.minsTx = minsTx;
+        res.minsDr = minsDr;
+        res.maxsRx = maxsRx;
+        res.maxsTx = maxsTx;
+        res.maxsDr = maxsDr;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
         res.lastRx = lastRx;
@@ -725,10 +798,16 @@ public class counter implements Comparable<counter> {
         res.byteTx = byteRx;
         res.packDr = packDr;
         res.byteDr = byteDr;
+        res.minsRx = minsTx;
+        res.minsTx = minsRx;
+        res.minsDr = minsDr;
+        res.maxsRx = maxsTx;
+        res.maxsTx = maxsRx;
+        res.maxsDr = maxsDr;
         res.stateChg = stateChg;
         res.lastChgd = lastChgd;
-        res.lastRx = lastRx;
-        res.lastTx = lastTx;
+        res.lastRx = lastTx;
+        res.lastTx = lastRx;
         res.lastDr = lastDr;
         return res;
     }

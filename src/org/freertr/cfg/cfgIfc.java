@@ -6535,12 +6535,18 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + bits.timePast(cntr.lastRx) + "|" + bits.timePast(cntr.lastTx) + "|" + bits.timePast(cntr.lastDr));
                 break;
             case 29:
+                counter cnt2;
+                counter cnt3;
                 if (ethtyp.hwCntr == null) {
                     cntr = null;
+                    cnt2 = null;
+                    cnt3 = null;
                 } else {
                     cntr = ethtyp.hwCntr.bpRat();
+                    cnt2 = ethtyp.hwCntr.asMin();
+                    cnt3 = ethtyp.hwCntr.asMax();
                 }
-                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getCounter().bpRat().getShHwBsum(cntr));
+                l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + ethtyp.getCounter().asMin().getShHwBsum(cnt2) + "|" + ethtyp.getCounter().bpRat().getShHwBsum(cntr) + "|" + ethtyp.getCounter().asMax().getShHwBsum(cnt3));
                 break;
             case 30:
                 l.add(name + "|" + state.conv2string(ethtyp.getState()) + "|" + counter.getShBsum(ethtyp.getCounter().othRat(ethtyp.hwCntr)));

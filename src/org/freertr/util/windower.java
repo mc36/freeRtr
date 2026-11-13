@@ -62,7 +62,6 @@ public class windower {
      * get size of window
      *
      * @param w window to check
-     * @param <T> type of elements in the list
      * @return number of packets
      */
     public static int getSize(windower w) {
