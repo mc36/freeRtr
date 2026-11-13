@@ -316,6 +316,36 @@ public class counter implements Comparable<counter> {
     public state.states lastState = state.states.close;
 
     /**
+     * minimum rx
+     */
+    public int minsRx = Integer.MAX_VALUE;
+
+    /**
+     * minimum tx
+     */
+    public int minsTx = Integer.MAX_VALUE;
+
+    /**
+     * minimum drop
+     */
+    public int minsDr = Integer.MAX_VALUE;
+
+    /**
+     * maximum rx
+     */
+    public int maxsRx = Integer.MIN_VALUE;
+
+    /**
+     * maximum tx
+     */
+    public int maxsTx = Integer.MIN_VALUE;
+
+    /**
+     * maximum drop
+     */
+    public int maxsDr = Integer.MIN_VALUE;
+
+    /**
      * dropper to use
      */
     public counter dropper;
@@ -345,9 +375,7 @@ public class counter implements Comparable<counter> {
      * @param pck packet received
      */
     public void rx(packHolder pck) {
-        packRx++;
-        byteRx += pck.dataSize();
-        lastRx = bits.getTime();
+        rx(pck.headSize() + pck.dataSize());
     }
 
     /**
@@ -356,10 +384,7 @@ public class counter implements Comparable<counter> {
      * @param pck packet is going to be sent
      */
     public void tx(packHolder pck) {
-        packTx++;
-        byteTx += pck.dataSize();
-        byteTx += pck.headSize();
-        lastTx = bits.getTime();
+        tx(pck.headSize() + pck.dataSize());
     }
 
     /**
@@ -369,20 +394,68 @@ public class counter implements Comparable<counter> {
      * @param reason reason why dropped
      */
     public void drop(packHolder pck, reasons reason) {
-        if (dropper != null) {
-            dropper.packDr++;
-            dropper.byteDr += pck.dataSize();
-            dropper.byteDr += pck.headSize();
-            dropper.lastDr = bits.getTime();
+        drop(pck.headSize() + pck.dataSize(), reason);
+        if (debugger.counterTraf) {
+            logger.debug("dropping packet; reason=" + reason2string(reason) + "; packet=" + pck.dump());
+        }
+    }
+
+    /**
+     * update receive counters
+     *
+     * @param len packet received
+     */
+    public void rx(int len) {
+        if (len < minsRx) {
+            minsRx = len;
+        }
+        if (len > maxsRx) {
+            maxsRx = len;
+        }
+        packRx++;
+        byteRx += len;
+        lastRx = bits.getTime();
+    }
+
+    /**
+     * update transmit counters
+     *
+     * @param len packet is going to be sent
+     */
+    public void tx(int len) {
+        if (len < minsRx) {
+            minsTx = len;
+        }
+        if (len > maxsRx) {
+            maxsTx = len;
+        }
+        packTx++;
+        byteTx += len;
+        lastTx = bits.getTime();
+    }
+
+    /**
+     * update drop counters
+     *
+     * @param len packet dropped
+     * @param reason reason why dropped
+     */
+    public void drop(int len, reasons reason) {
+        if (len < minsDr) {
+            minsRx = len;
+        }
+        if (len > maxsDr) {
+            maxsRx = len;
         }
         packDr++;
-        byteDr += pck.dataSize();
-        byteDr += pck.headSize();
+        byteDr += len;
         lastDr = bits.getTime();
-        if (!debugger.counterTraf) {
+        if (dropper == null) {
             return;
         }
-        logger.debug("dropping packet; reason=" + reason2string(reason) + "; packet=" + pck.dump());
+        dropper.packDr++;
+        dropper.byteDr += len;
+        dropper.lastDr = lastDr;
     }
 
     /**

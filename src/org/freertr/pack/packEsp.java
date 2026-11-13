@@ -9,7 +9,7 @@ import org.freertr.ip.ipFwd;
 import org.freertr.ip.ipFwdIface;
 import org.freertr.ip.ipPrt;
 import org.freertr.prt.prtTmux;
-import org.freertr.tab.tabWindow;
+import org.freertr.util.windower;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
@@ -84,7 +84,7 @@ public class packEsp implements ipPrt {
 
     private int seqTx;
 
-    private tabWindow<packHolder> sequence;
+    private windower sequence;
 
     private ifcUp lower = new ifcNull();
 
@@ -418,11 +418,7 @@ public class packEsp implements ipPrt {
      */
     public synchronized void doInit() {
         seqTx = 0;
-        if (replayCheck > 0) {
-            sequence = new tabWindow<packHolder>(replayCheck);
-        } else {
-            sequence = null;
-        }
+        sequence = windower.getWorker(replayCheck);
     }
 
 }

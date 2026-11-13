@@ -1,19 +1,20 @@
-package org.freertr.tab;
+package org.freertr.util;
+
+import org.freertr.pack.packHolder;
 
 /**
  * represents one window handler
  *
- * @param <T> type of elements in the list
  * @author matecsaba
  */
-public class tabWindow<T extends Object> {
+public class windower {
 
     /**
      * usage bitmap
      */
     protected final byte[] mapDat;
 
-    private final T[] mapPay;
+    private final packHolder[] mapPay;
 
     private int mapSeq;
 
@@ -26,10 +27,9 @@ public class tabWindow<T extends Object> {
      *
      * @param siz window size
      */
-    @SuppressWarnings("unchecked")
-    public tabWindow(int siz) {
+    public windower(int siz) {
         mapDat = new byte[siz];
-        mapPay = (T[]) new Object[siz];
+        mapPay = new packHolder[siz];
     }
 
     public String toString() {
@@ -65,11 +65,24 @@ public class tabWindow<T extends Object> {
      * @param <T> type of elements in the list
      * @return number of packets
      */
-    public static <T extends Object> int getSize(tabWindow<T> w) {
+    public static int getSize(windower w) {
         if (w == null) {
             return 0;
         }
         return w.mapDat.length;
+    }
+
+    /**
+     * get worker
+     *
+     * @param s size
+     * @return null or worker
+     */
+    public static windower getWorker(int s) {
+        if (s < 1) {
+            return null;
+        }
+        return new windower(s);
     }
 
     private int seq2pos(int seq) {
@@ -164,7 +177,7 @@ public class tabWindow<T extends Object> {
      * @param seq sequence number
      * @param dat data to store
      */
-    public void paySet(int seq, T dat) {
+    public void paySet(int seq, packHolder dat) {
         synchronized (mapDat) {
             int i = seq2pos(seq);
             if (i < 0) {
@@ -180,7 +193,7 @@ public class tabWindow<T extends Object> {
      * @param seq sequence number
      * @return payload
      */
-    public T payGet(int seq) {
+    public packHolder payGet(int seq) {
         synchronized (mapDat) {
             int i = seq2pos(seq);
             if (i < 0) {

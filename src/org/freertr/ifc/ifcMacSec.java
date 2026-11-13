@@ -7,7 +7,7 @@ import org.freertr.cry.cryEncrGeneric;
 import org.freertr.cry.cryHashGeneric;
 import org.freertr.cry.cryKeyGeneric;
 import org.freertr.pack.packHolder;
-import org.freertr.tab.tabWindow;
+import org.freertr.util.windower;
 import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
@@ -109,7 +109,7 @@ public class ifcMacSec {
 
     private counter cntr = new counter();
 
-    private tabWindow<packHolder> sequence;
+    private windower sequence;
 
     private addrMac myaddr;
 
@@ -196,9 +196,7 @@ public class ifcMacSec {
         etht = eth;
         myTyp = typ;
         profil = ips;
-        if (profil.replay > 0) {
-            sequence = new tabWindow<packHolder>(profil.replay);
-        }
+        sequence = windower.getWorker(profil.replay);
         try {
             myaddr = (addrMac) eth.getHwAddr().copyBytes();
         } catch (Exception e) {
@@ -608,9 +606,7 @@ public class ifcMacSec {
             keyEncrRx = buf;
         }
         kexNum++;
-        if (profil.replay > 0) {
-            sequence = new tabWindow<packHolder>(profil.replay);
-        }
+        sequence = windower.getWorker(profil.replay);
         if (profil.trans.lifeRnd > 1) {
             lastRnd = bits.random(1, profil.trans.lifeRnd);
         }

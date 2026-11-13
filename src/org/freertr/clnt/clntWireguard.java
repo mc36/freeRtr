@@ -20,7 +20,7 @@ import org.freertr.pack.packHolder;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServP;
 import org.freertr.prt.prtUdp;
-import org.freertr.tab.tabWindow;
+import org.freertr.util.windower;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.debugger;
@@ -151,7 +151,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
 
     private boolean working = true;
 
-    private tabWindow<packHolder> sequence;
+    private windower sequence;
 
     private long seqRx;
 
@@ -870,9 +870,7 @@ public class clntWireguard implements Runnable, prtServP, ifcDn {
         keyTx = ks[r];
         seqRx = 0;
         seqTx = 0;
-        if (replayCheck > 0) {
-            sequence = new tabWindow<packHolder>(replayCheck);
-        }
+        sequence = windower.getWorker(replayCheck);
         if (debugger.clntWireguardTraf) {
             logger.debug("keys r=" + r + " ri=" + idxTx + " ti=" + idxRx + " rk=" + bits.byteDump(keyRx, 0, -1) + " tk=" + bits.byteDump(keyTx, 0, -1));
         }

@@ -11,7 +11,7 @@ import org.freertr.pipe.pipeSide;
 import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServS;
 import org.freertr.tab.tabGen;
-import org.freertr.tab.tabWindow;
+import org.freertr.util.windower;
 import org.freertr.user.userFilter;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
@@ -242,7 +242,7 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
 
     public final history hist;
 
-    private tabWindow<packHolder> win;
+    private windower win;
 
     public int sync;
 
@@ -262,9 +262,7 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
         cntr = new counter();
         hist = new history();
         hist.update(cntr, true, false);
-        if (parent.window > 0) {
-            win = new tabWindow<packHolder>(parent.window);
-        }
+        win = windower.getWorker(parent.window);
         logger.startThread(this);
     }
 
@@ -333,11 +331,7 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
                     if (lower.logging) {
                         logger.info("new ssrc " + peer + " " + port + getLog());
                     }
-                    if (lower.window > 0) {
-                        win = new tabWindow<packHolder>(lower.window);
-                    } else {
-                        win = null;
-                    }
+                    win = windower.getWorker(lower.window);
                     ini = rtp.packRx;
                     tim = bits.getTime();
                     seq = rtp.packRx;
@@ -357,8 +351,7 @@ class servRtpStatOne implements Runnable, Comparable<servRtpStatOne> {
                 if (dif < 0) {
                     dif = -dif;
                 }
-                cntr.byteTx += dif;
-                cntr.packTx++;
+                cntr.tx(dif);
             }
         } catch (Exception e) {
             logger.traceback(e);

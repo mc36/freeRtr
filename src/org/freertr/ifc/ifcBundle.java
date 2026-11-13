@@ -8,7 +8,7 @@ import org.freertr.cfg.cfgAll;
 import org.freertr.cfg.cfgIfc;
 import org.freertr.pack.packHolder;
 import org.freertr.tab.tabGen;
-import org.freertr.tab.tabWindow;
+import org.freertr.util.windower;
 import org.freertr.user.userFormat;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
@@ -59,7 +59,7 @@ public class ifcBundle implements Runnable, ifcDn {
     /**
      * packets are sequenced
      */
-    public tabWindow<packHolder> sequence;
+    public windower sequence;
 
     /**
      * peering handler
@@ -348,7 +348,7 @@ public class ifcBundle implements Runnable, ifcDn {
         cmds.cfgLine(l, !logging, beg, "logging", "");
         cmds.cfgLine(l, backup < 1, beg, "backup", "" + backup);
         cmds.cfgLine(l, !replicate, beg, "replicate", "");
-        cmds.cfgLine(l, sequence == null, beg, "sequence", "" + tabWindow.getSize(sequence));
+        cmds.cfgLine(l, sequence == null, beg, "sequence", "" + windower.getSize(sequence));
         cmds.cfgLine(l, dejitter < 1, beg, "dejitter", "" + dejitter);
         cmds.cfgLine(l, reporter < 1, beg, "reporter", "" + reporter);
         cmds.cfgLine(l, dynamic < 1, beg, "dynamic", "" + dynamic);
@@ -459,7 +459,7 @@ public class ifcBundle implements Runnable, ifcDn {
             if (i < 1) {
                 return;
             }
-            sequence = new tabWindow<packHolder>(i);
+            sequence = windower.getWorker(i);
             seqTx = 0;
             timer1 = new ifcBundleKeep(this);
             timer1.start();

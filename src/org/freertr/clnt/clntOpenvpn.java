@@ -17,7 +17,7 @@ import org.freertr.prt.prtGenConn;
 import org.freertr.prt.prtServP;
 import org.freertr.prt.prtUdp;
 import org.freertr.sec.secTransform;
-import org.freertr.tab.tabWindow;
+import org.freertr.util.windower;
 import org.freertr.util.bits;
 import org.freertr.util.counter;
 import org.freertr.util.logger;
@@ -158,7 +158,7 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
 
     private cryEncrGeneric cphrTx;
 
-    private tabWindow<packHolder> sequence;
+    private windower sequence;
 
     private int seqRx;
 
@@ -388,9 +388,7 @@ public class clntOpenvpn implements Runnable, prtServP, ifcDn {
         bits.byteCopy(buf1, 0, buf3, 0, buf3.length);
         keyEncr = buf2;
         cphrSiz = buf3.length;
-        if (replayCheck > 0) {
-            sequence = new tabWindow<packHolder>(replayCheck);
-        }
+        sequence = windower.getWorker(replayCheck);
         addrIP trg = clntDns.justResolv(target, prefer);
         if (trg == null) {
             return;
