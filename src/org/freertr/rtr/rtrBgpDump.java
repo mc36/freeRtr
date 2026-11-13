@@ -345,10 +345,10 @@ public class rtrBgpDump {
      * @return statistics
      */
     public static String counter2stats(counter c) {
-        return c.packTx + "|" + c.packRx + "|" + c.byteTx + "|" + c.byteRx
-                + "|" + bits.timePast(c.lastTx) + "|" + bits.timePast(c.lastRx)
-                + "|" + bits.time2str(cfgAll.timeZoneName, c.lastTx + cfgAll.timeServerOffset, 3)
-                + "|" + bits.time2str(cfgAll.timeZoneName, c.lastRx + cfgAll.timeServerOffset, 3);
+        counter b = c.asMin();
+        counter a = c.bpRat();
+        counter e = c.asMax();
+        return c.packTx + "|" + c.packRx + "|" + c.byteTx + "|" + c.byteRx + "|" + b.byteTx + "|" + b.byteRx + "|" + a.byteTx + "|" + a.byteRx + "|" + e.byteTx + "|" + e.byteRx + "|" + bits.timePast(c.lastTx) + "|" + bits.timePast(c.lastRx);
     }
 
     /**
@@ -427,7 +427,7 @@ public class rtrBgpDump {
      * @return list of statistics
      */
     public static userFormat getMsgStats(counter s[]) {
-        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2message|2pack|2byte|2ago|2last");
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2bytes|2minimum|2average|2maximum|2ago");
         for (int i = 0; i < s.length; i++) {
             l.add(i + "|" + rtrBgpUtil.msgType2string(i) + "|" + counter2stats(s[i]));
         }
@@ -475,7 +475,7 @@ public class rtrBgpDump {
      * @return list of statistics
      */
     public static userFormat getAttrStats(counter s[]) {
-        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2attribute|2pack|2byte|2ago|2last");
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2bytes|2minimum|2average|2maximum|2ago");
         for (int i = 0; i < s.length; i++) {
             l.add(i + "|" + rtrBgpUtil.attrType2string(i) + "|" + counter2stats(s[i]));
         }

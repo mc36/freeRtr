@@ -424,10 +424,10 @@ public class counter implements Comparable<counter> {
      * @param len packet is going to be sent
      */
     public void tx(int len) {
-        if (len < minsRx) {
+        if (len < minsTx) {
             minsTx = len;
         }
-        if (len > maxsRx) {
+        if (len > maxsTx) {
             maxsTx = len;
         }
         packTx++;

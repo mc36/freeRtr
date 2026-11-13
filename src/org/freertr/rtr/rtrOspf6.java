@@ -1000,7 +1000,7 @@ public class rtrOspf6 extends ipRtr implements prtRedunClnt {
         if (ifc == null) {
             return null;
         }
-        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2byte|2ago|2last");
+        userFormat l = new userFormat("|", "typ|name|tx|rx|tx|rx|tx|rx|tx|rx|tx|rx|tx|rx", "2|2pack|2bytes|2minimum|2average|2maximum|2ago");
         for (int i = 0; i < ifc.msgStats.length; i++) {
             l.add(i + "|" + rtrOspf6neigh.msgTyp2string(i) + "|" + rtrBgpDump.counter2stats(ifc.msgStats[i]));
         }
