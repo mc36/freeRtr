@@ -18958,3 +18958,6 @@ qc pass: bgp routepolicy filtering with large community length with soft-reconfi
 ---------------------------------- 2026-11-14 07:08:01 26.11.14
 no qc pass: wireguard over ipv4
 failed: wireguard over ipv4
+---------------------------------- 2026-11-14 07:48:31 26.11.14
+no failed: wireguard over ipv4
+qc pass: wireguard over ipv4
