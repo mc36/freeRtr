@@ -137,6 +137,11 @@ public class servSmtp extends servGeneric implements prtServS {
     public tabGen<servSmtpRbl> rbls = new tabGen<servSmtpRbl>();
 
     /**
+     * list of bots
+     */
+    protected List<String> bots = new ArrayList<String>();
+
+    /**
      * number of rbl servers
      */
     public int rblMin;
@@ -169,6 +174,22 @@ public class servSmtp extends servGeneric implements prtServS {
         return defaultF;
     }
 
+    /**
+     * find one host
+     *
+     * @param s agent name
+     * @return true if found
+     */
+    protected boolean findBot(String s) {
+        for (int i = 0; i < bots.size(); i++) {
+            String a = bots.get(i);
+            if (s.matches(a)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean srvAccept(pipeSide pipe, prtGenConn id) {
         pipe.setTime(timeOut);
         pipe.lineRx = pipeSide.modTyp.modeCRtryLF;
@@ -187,6 +208,9 @@ public class servSmtp extends servGeneric implements prtServS {
         lst.add(beg + "rbl-timeout " + rblTim);
         for (int i = 0; i < rbls.size(); i++) {
             lst.add(beg + "rbl-server " + rbls.get(i));
+        }
+        for (int i = 0; i < bots.size(); i++) {
+            lst.add(beg + "bad-sender " + bots.get(i));
         }
         secInfoUtl.getConfig(lst, recursAcl, beg + "recursion access-");
         if (recursAut == null) {
@@ -255,6 +279,14 @@ public class servSmtp extends servGeneric implements prtServS {
                 return false;
             }
             cmd.badCmd();
+            return false;
+        }
+        if (s.equals("bad-sender")) {
+            s = cmd.getRemaining();
+            if (bots.indexOf(s) >= 0) {
+                return false;
+            }
+            bots.add(s);
             return false;
         }
         if (s.equals("bcc")) {
@@ -335,6 +367,11 @@ public class servSmtp extends servGeneric implements prtServS {
             cmd.badCmd();
             return false;
         }
+        if (s.equals("bad-sender")) {
+            s = cmd.getRemaining();
+            bots.remove(s);
+            return false;
+        }
         if (s.equals("bcc")) {
             bccUser = null;
             return false;
@@ -385,6 +422,8 @@ public class servSmtp extends servGeneric implements prtServS {
         secInfoUtl.getHelp(l, 1, "access-", null);
         l.add(null, false, 2, new int[]{3}, "authentication", "set authentication");
         l.add(null, false, 3, new int[]{-1}, "<name:aaa>", "name of authentication list");
+        l.add(null, false, 1, new int[]{2}, "bad-sender", "set host default path");
+        l.add(null, false, 2, new int[]{2, -1}, "<str>", "sender to deny");
         l.add(null, false, 1, new int[]{2}, "bcc", "set bcc user");
         l.add(null, false, 2, new int[]{-1}, "<user>", "name of user");
         l.add(null, false, 1, new int[]{2}, "local", "set local email address");
@@ -1031,6 +1070,10 @@ class servSmtpDoer implements Runnable {
             return false;
         }
         if (a.equals("data")) {
+            if (lower.findBot(src)) {
+                doLine("503 source refused");
+                return false;
+            }
             dsn &= lower.dsnEna;
             if ((trgL.size() + trgR.size()) < 1) {
                 doLine("503 target not specified");
