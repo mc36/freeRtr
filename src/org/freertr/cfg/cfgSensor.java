@@ -1188,7 +1188,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
      */
     public boolean checkOidPrefix(String oid) {
         if (oidP != null) {
-            if (oid.startsWith(oidP)) {
+            if (oid.equals(oidP)) {
                 return true;
             }
         }
@@ -1197,7 +1197,7 @@ public class cfgSensor implements Runnable, Comparable<cfgSensor>, cfgGeneric {
             if (cc.oid == null) {
                 continue;
             }
-            if (oid.startsWith(cc.oid)) {
+            if (oid.equals(cc.oid)) {
                 return true;
             }
         }

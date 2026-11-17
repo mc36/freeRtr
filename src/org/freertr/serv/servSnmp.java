@@ -114,10 +114,15 @@ public class servSnmp extends servGeneric implements prtServS {
     }
 
     private String doGet(String oid) {
+        int i = oid.lastIndexOf(".");
+        String beg = oid;
+        if (i > 0) {
+            beg = oid.substring(0, i);
+        }
         List<String> res = null;
-        for (int i = 0; i < cfgAll.sensors.size(); i++) {
+        for (i = 0; i < cfgAll.sensors.size(); i++) {
             cfgSensor sns = cfgAll.sensors.get(i);
-            if (!sns.checkOidPrefix(oid)) {
+            if (!sns.checkOidPrefix(beg)) {
                 continue;
             }
             res = sns.getReportOid();
@@ -127,7 +132,7 @@ public class servSnmp extends servGeneric implements prtServS {
             return null;
         }
         oid += " ";
-        for (int i = 0; i < res.size(); i++) {
+        for (i = 0; i < res.size(); i++) {
             String a = res.get(i);
             if (!a.startsWith(oid)) {
                 continue;
