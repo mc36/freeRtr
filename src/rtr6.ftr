@@ -47,7 +47,7 @@ qc pass: p4lang: egress policer
 qc pass: p4lang: vlan ingress policer
 qc pass: p4lang: vlan egress policer
 qc pass: p4lang: transmit flowspec
-qc pass: p4lang: drop flowspec
+failed: p4lang: drop flowspec
 qc pass: p4lang: policer flowspec
 qc pass: p4lang: priority flowspec
 qc pass: p4lang: ingress amt access list
@@ -567,7 +567,7 @@ qc pass: p4lang: l3vpn over bundle vlan mpls
 qc pass: p4lang: l3vpn over pppoe mpls
 qc pass: p4lang: l3vpn over gre mpls
 qc pass: p4lang: l3vpn over l2tp mpls
-qc pass: p4lang: routing over backplane
+failed: p4lang: routing over backplane
 qc pass: p4lang: bridging over backplane
 qc pass: p4lang: mpls core over backplane
 qc pass: p4lang: mpls vpn over backplane
@@ -667,9 +667,9 @@ qc pass: p4lang: etherip server over ipv4 loopback
 qc pass: p4lang: etherip server over ipv6 loopback
 qc pass: p4lang: gre local connect
 qc pass: p4lang: gre multicast routing
-qc pass: p4lang: multicast routing over backplane
+failed: p4lang: multicast routing over backplane
 qc pass: p4lang: polka over backplane
-failed: p4lang: nsh over backplane
+qc pass: p4lang: nsh over backplane
 qc pass: p4lang: bier core over backplane
 qc pass: p4lang: bier core over vlan backplane
 qc pass: p4lang: qinq routing

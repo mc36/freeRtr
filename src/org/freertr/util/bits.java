@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.RandomAccessFile;
+import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,17 +28,17 @@ public class bits {
     private bits() {
     }
 
-    private static Random randomSeed = new Random();
+    private static SecureRandom randomSeed = null;
 
-    private static int randomUsed = 0;
+    private static int randomLeft = 0;
 
     private static void randomUpdate() {
-        randomUsed++;
-        if (randomUsed < 10240000) {
+        randomLeft--;
+        if (randomLeft > 0) {
             return;
         }
-        randomUsed = 0;
-        randomSeed = new Random();
+        randomSeed = new SecureRandom();
+        randomLeft = 10240000;
     }
 
     /**
