@@ -24,6 +24,7 @@ test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing
 
 test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
 
+consider detnet and 802.1cb in the dataplanes
 
 
 

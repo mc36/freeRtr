@@ -18986,3 +18986,13 @@ no todo: server smtp / tag messages by subject
 no todo: show config-xxx to have tabbables like routers servers etc
 no todo: vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
 no todo: client auto-save-on-upgrade flash network archive
+---------------------------------- 2026-11-20 09:10:17 26.11.20
+no todo: misc motion emails to contain a small note like check recordings here unarm rearm arm
+no todo: misc album to have some ncdu functionality like a very simple matstat
+no todo: rework snmp to use sensors
+no todo: default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
+no todo: client upgrade-simulate url
+no todo: client upgrade-force url
+no todo: nrpe to send out emails from error.log
+no todo: important protocols to be able to continue from the start at least on local, later within the vdc
+todo: consider detnet and 802.1cb in the dataplanes
