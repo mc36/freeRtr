@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#define ALLOW_EXPERIMENTAL_API
 #include <dpdk/rte_config.h>
 #include <dpdk/rte_common.h>
 #include <dpdk/rte_version.h>
