@@ -13,6 +13,7 @@
 #include <dpdk/rte_ethdev.h>
 #include <dpdk/rte_mbuf.h>
 #include <dpdk/rte_ring.h>
+#include <math.h>
 
 
 
@@ -93,6 +94,116 @@ void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
         if (rte_eth_xstats_get_names_by_id(port, &xstat_nam, 1, &xstat_id) != 1) return;
         *len += snprintf((char*)&buf[*len], 128, "%s %s %li\r\n", (char*)pre, xstat_nam.name, (long)xstat_val);
     }
+}
+
+
+static double xcvr_mw2dbm(int raw01uw) {
+    double mw = raw01uw * 0.0001; // 0.1 uW units -> mW
+    if (mw <= 0) return -40.0;
+    return 10.0 * log10(mw);
+}
+
+
+void getXcvr(int port, unsigned char*buf, unsigned char*pre, int*len) {
+    struct rte_eth_dev_module_info minfo;
+    struct rte_dev_eeprom_info einfo;
+    unsigned char *ee;
+    char vend[17];
+    char pn[17];
+    char sn[17];
+    char date[9];
+    int tmp;
+    int t;
+    int v;
+    int bias;
+    int txp;
+    int rxp;
+    int base;
+    int i;
+    int ret;
+
+    memset(&minfo, 0, sizeof(minfo));
+    ret = rte_eth_dev_get_module_info(port, &minfo);
+    if (ret != 0) {
+        *len += snprintf((char*)&buf[*len], 128, "%s no module present\r\n", (char*)pre);
+        return;
+    }
+
+    ee = malloc(minfo.eeprom_len);
+    if (ee == NULL) {
+        *len += snprintf((char*)&buf[*len], 128, "%s error allocating memory\r\n", (char*)pre);
+        return;
+    }
+
+    memset(&einfo, 0, sizeof(einfo));
+    einfo.offset = 0;
+    einfo.length = minfo.eeprom_len;
+    einfo.data = ee;
+    ret = rte_eth_dev_get_module_eeprom(port, &einfo);
+    if (ret != 0) {
+        *len += snprintf((char*)&buf[*len], 128, "%s error reading module eeprom\r\n", (char*)pre);
+        free(ee);
+        return;
+    }
+
+    switch (minfo.type) {
+    case RTE_ETH_MODULE_SFF_8079:
+    case RTE_ETH_MODULE_SFF_8472:
+        memcpy(vend, &ee[20], 16); vend[16] = 0;
+        memcpy(pn, &ee[40], 16); pn[16] = 0;
+        memcpy(sn, &ee[68], 16); sn[16] = 0;
+        memcpy(date, &ee[84], 8); date[8] = 0;
+        *len += snprintf((char*)&buf[*len], 160, "%s identifier sfp\r\n", (char*)pre);
+        *len += snprintf((char*)&buf[*len], 160, "%s vendor %s\r\n", (char*)pre, vend);
+        *len += snprintf((char*)&buf[*len], 160, "%s partnum %s\r\n", (char*)pre, pn);
+        *len += snprintf((char*)&buf[*len], 160, "%s serial %s\r\n", (char*)pre, sn);
+        *len += snprintf((char*)&buf[*len], 160, "%s datecode %s\r\n", (char*)pre, date);
+        if ((minfo.type == RTE_ETH_MODULE_SFF_8472) && (minfo.eeprom_len >= 512) && ((ee[92] & 0x40) != 0)) {
+            t = (signed short)((ee[256+96] << 8) | ee[256+97]);
+            *len += snprintf((char*)&buf[*len], 160, "%s temperature %.1f C\r\n", (char*)pre, t / 256.0);
+            v = (ee[256+98] << 8) | ee[256+99];
+            *len += snprintf((char*)&buf[*len], 160, "%s voltage %.3f V\r\n", (char*)pre, v * 0.0001);
+            tmp = (ee[256+100] << 8) | ee[256+101];
+            *len += snprintf((char*)&buf[*len], 160, "%s bias %.3f mA\r\n", (char*)pre, tmp * 0.002);
+            tmp = (ee[256+102] << 8) | ee[256+103];
+            *len += snprintf((char*)&buf[*len], 160, "%s txpower %.1f uW %.2f dBm\r\n", (char*)pre, tmp * 0.1, xcvr_mw2dbm(tmp));
+            tmp = (ee[256+104] << 8) | ee[256+105];
+            *len += snprintf((char*)&buf[*len], 160, "%s rxpower %.1f uW %.2f dBm\r\n", (char*)pre, tmp * 0.1, xcvr_mw2dbm(tmp));
+        } else {
+            *len += snprintf((char*)&buf[*len], 160, "%s no digital diagnostics\r\n", (char*)pre);
+        }
+        break;
+    case RTE_ETH_MODULE_SFF_8436:
+    case RTE_ETH_MODULE_SFF_8636:
+        base = 128;
+        memcpy(vend, &ee[base+20], 16); vend[16] = 0;
+        memcpy(pn, &ee[base+40], 16); pn[16] = 0;
+        memcpy(sn, &ee[base+68], 16); sn[16] = 0;
+        memcpy(date, &ee[base+84], 8); date[8] = 0;
+        *len += snprintf((char*)&buf[*len], 160, "%s identifier qsfp\r\n", (char*)pre);
+        *len += snprintf((char*)&buf[*len], 160, "%s vendor %s\r\n", (char*)pre, vend);
+        *len += snprintf((char*)&buf[*len], 160, "%s partnum %s\r\n", (char*)pre, pn);
+        *len += snprintf((char*)&buf[*len], 160, "%s serial %s\r\n", (char*)pre, sn);
+        *len += snprintf((char*)&buf[*len], 160, "%s datecode %s\r\n", (char*)pre, date);
+        t = (signed short)((ee[22] << 8) | ee[23]);
+        *len += snprintf((char*)&buf[*len], 160, "%s temperature %.1f C\r\n", (char*)pre, t / 256.0);
+        v = (ee[26] << 8) | ee[27];
+        *len += snprintf((char*)&buf[*len], 160, "%s voltage %.3f V\r\n", (char*)pre, v * 0.0001);
+        for (i = 0; i < 4; i++) {
+            bias = (ee[34 + (i * 2)] << 8) | ee[35 + (i * 2)];
+            txp  = (ee[42 + (i * 2)] << 8) | ee[43 + (i * 2)];
+            rxp  = (ee[50 + (i * 2)] << 8) | ee[51 + (i * 2)];
+            *len += snprintf((char*)&buf[*len], 160, "%s lane%i_bias %.3f mA\r\n", (char*)pre, i + 1, bias * 0.002);
+            *len += snprintf((char*)&buf[*len], 160, "%s lane%i_txpower %.1f uW %.2f dBm\r\n", (char*)pre, i + 1, txp * 0.1, xcvr_mw2dbm(txp));
+            *len += snprintf((char*)&buf[*len], 160, "%s lane%i_rxpower %.1f uW %.2f dBm\r\n", (char*)pre, i + 1, rxp * 0.1, xcvr_mw2dbm(rxp));
+        }
+        break;
+    default:
+        *len += snprintf((char*)&buf[*len], 160, "%s unsupported module type %i\r\n", (char*)pre, minfo.type);
+        break;
+    }
+
+    free(ee);
 }
 
 

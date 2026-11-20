@@ -65,6 +65,7 @@ void setMtu(int port, int mtu);
 void setState(int port, int sta);
 int getState(int port);
 void getStats(int port, unsigned char*buf, unsigned char*pre, int*len);
+void getXcvr(int port, unsigned char*buf, unsigned char*pre, int*len);
 
 extern void initIface(int port, char *name);
 extern int initTables();
