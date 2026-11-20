@@ -69,6 +69,10 @@ void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
 }
 
 
+void getXcvr(int port, unsigned char*buf, unsigned char*pre, int*len) {
+}
+
+
 
 void err(char*buf) {
     printf("%s\n", buf);
