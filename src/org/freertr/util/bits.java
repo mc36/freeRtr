@@ -943,6 +943,23 @@ public class bits {
     }
 
     /**
+     * convert bit to displayable format
+     *
+     * @param val value to test
+     * @param mask value of bit to test
+     * @param clr clear name of the bit
+     * @param set set name of the bit
+     * @return uppercase name if set, lowercase if not
+     */
+    public static String bit2str(int val, int mask, String clr, String set) {
+        if ((val & mask) == 0) {
+            return clr;
+        } else {
+            return set;
+        }
+    }
+
+    /**
      * pad up to ending for a minimum size
      *
      * @param str string to pad up

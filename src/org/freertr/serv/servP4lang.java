@@ -1,5 +1,6 @@
 package org.freertr.serv;
 
+import java.util.ArrayList;
 import org.freertr.util.keyword;
 import java.util.List;
 import org.freertr.addr.addrIP;
@@ -13,6 +14,7 @@ import org.freertr.cfg.cfgPrfxlst;
 import org.freertr.cfg.cfgRoump;
 import org.freertr.cfg.cfgRouplc;
 import org.freertr.cfg.cfgVrf;
+import org.freertr.enc.encSff;
 import org.freertr.ifc.ifcBridge;
 import org.freertr.ifc.ifcBridgeIfc;
 import org.freertr.ifc.ifcDn;
@@ -1424,6 +1426,70 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
             res.add("error|no answer from dataplane");
             return res;
         }
+/*
+        txt.add("03 04 21 00 00 00 00 00 04 00 00 00 67 00 00 00");
+        txt.add("00 00 05 1e 4f 45 4d 20 20 20 20 20 20 20 20 20");
+        txt.add("20 20 20 20 00 00 1b 21 44 41 43 2d 53 46 50 2b");
+        txt.add("35 4d 20 20 20 20 20 20 4e 20 20 20 01 00 00 6d");
+        txt.add("00 00 00 00 55 41 32 30 31 37 30 39 30 31 30 32");
+        txt.add("32 37 20 20 31 37 30 39 30 31 20 20 00 00 00 a7");
+        txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+        txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+        txt.add("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff");
+        txt.add("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff");
+        txt.add("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff");
+        txt.add("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff");
+        txt.add("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff");
+        txt.add("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff");
+        txt.add("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff");
+        txt.add("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff");
+*/
+txt.add("03 04 07 10 00 00 00 00 00 00 00 06 67 00 00 00");
+txt.add("08 03 00 1e 46 49 4e 49 53 41 52 20 43 4f 52 50");
+txt.add("2e 20 20 20 00 00 90 65 46 54 4c 58 38 35 37 31");
+txt.add("44 33 42 43 4c 2d 46 43 41 20 20 20 03 52 00 9e");
+txt.add("00 1a 00 00 41 4d 37 31 4f 32 44 20 20 20 20 20");
+txt.add("20 20 20 20 31 38 31 31 30 36 20 20 68 f0 03 c1");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("4e 00 f3 00 49 00 f8 00 90 88 71 48 8c a0 75 30");
+txt.add("19 c8 03 e8 18 9c 05 dc 27 10 06 31 1f 07 07 cb");
+txt.add("27 10 00 64 1f 07 00 9e 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 3f 80 00 00 00 00 00 00 01 00 00 00");
+txt.add("01 00 00 00 01 00 00 00 01 00 00 00 00 00 00 0d");
+txt.add("29 83 80 fe 10 56 17 8a 15 69 00 00 00 00 30 00");
+txt.add("00 00 00 00 00 00 00 00 ff ff ff ff ff ff ff 01");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+txt.add("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+        packHolder buf = new packHolder(true, true);
+        for (int i = 0; i < txt.size(); i++) {
+            cmds cmd = new cmds("hex", txt.get(i).trim());
+            for (;;) {
+                String a = cmd.word();
+                if (a.length() < 1) {
+                    break;
+                }
+                buf.putByte(0, bits.fromHex(a));
+                buf.putSkip(1);
+            }
+            buf.merge2end();
+        }
+        encSff.decode(res, buf);
         for (int i = 0; i < txt.size(); i++) {
             res.add("hex|" + txt.get(i));
         }
