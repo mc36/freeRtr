@@ -54,6 +54,9 @@ int getState(int port) {
 void getStats(int port, unsigned char*buf, unsigned char*pre, int*len) {
 }
 
+void getXcvrs(int port, unsigned char*buf, unsigned char*pre, int*len) {
+}
+
 
 
 int main(int argc, char **argv) {

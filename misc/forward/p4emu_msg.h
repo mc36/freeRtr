@@ -1,7 +1,5 @@
 unsigned char portStatsBuf[16384];
 int portStatsLen = 0;
-unsigned char portXcvrBuf[16384];
-int portXcvrLen = 0;
 int printCmds = 0;
 int commandSock;
 void *commandScar;
@@ -281,6 +279,16 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     if (strcmp(arg[0], "quit") == 0) {
         return 1;
     }
+    if (strcmp(arg[0], "xcvrs") == 0) {
+        i = atoi(arg[1]);
+        if (i < 0) return 0;
+        if (i >= dataPorts) return 0;
+        portStatsLen = snprintf((char*)&portStatsBuf, 128, "xcvrs_beg %i\r\n", i);
+        snprintf((char*)&buf2, 128, "xcvrs_txt %i ", i);
+        getXcvrs(i, &portStatsBuf[0], &buf2[0], &portStatsLen);
+        portStatsLen += snprintf((char*)&portStatsBuf[portStatsLen], 128, "xcvrs_end %i\r\n", i);
+        return 0;
+    }
     if (strcmp(arg[0], "stats") == 0) {
         i = atoi(arg[1]);
         if (i < 0) return 0;
@@ -289,16 +297,6 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
         snprintf((char*)&buf2, 128, "stats_txt %i ", i);
         getStats(i, &portStatsBuf[0], &buf2[0], &portStatsLen);
         portStatsLen += snprintf((char*)&portStatsBuf[portStatsLen], 128, "stats_end %i\r\n", i);
-        return 0;
-    }
-    if (strcmp(arg[0], "xcvr") == 0) {
-        i = atoi(arg[1]);
-        if (i < 0) return 0;
-        if (i >= dataPorts) return 0;
-        portXcvrLen = snprintf((char*)&portXcvrBuf, 128, "xcvr_beg %i\r\n", i);
-        snprintf((char*)&buf2, 128, "xcvr_txt %i ", i);
-        getXcvr(i, &portXcvrBuf[0], &buf2[0], &portXcvrLen);
-        portXcvrLen += snprintf((char*)&portXcvrBuf[portXcvrLen], 128, "xcvr_end %i\r\n", i);
         return 0;
     }
     if (strcmp(arg[0], "state") == 0) {
@@ -3506,11 +3504,6 @@ void doStatLoop() {
         if (portStatsLen > 0) {
             fprintf(commandTx, "%s", (char*)&portStatsBuf[0]);
             portStatsLen = 0;
-            fflush(commandTx);
-        }
-        if (portXcvrLen > 0) {
-            fprintf(commandTx, "%s", (char*)&portXcvrBuf[0]);
-            portXcvrLen = 0;
             fflush(commandTx);
         }
         if ((round % 10) != 0) continue;

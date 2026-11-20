@@ -1997,6 +1997,8 @@ public class userExec {
         hl.add(null, false, 6, new int[]{-1}, "[addr]", "prefix to view");
         hl.add(null, false, 4, new int[]{5}, "port-counters", "dataplane counters");
         hl.add(null, false, 5, new int[]{-1}, "<name:ifc>", "name of interface");
+        hl.add(null, false, 4, new int[]{5}, "port-xcvrs", "dataplane transceivers");
+        hl.add(null, false, 5, new int[]{-1}, "<name:ifc>", "name of interface");
         hl.add(null, false, 2, new int[]{3, -1}, "stack", "stack protocol information");
         hl.add(cfgAll.dmnStack.listServers(), false, 3, new int[]{4, -1}, "<name:loc>", "server name");
         hl.add(null, false, 4, new int[]{-1}, "dataplanes", "dataplanes");

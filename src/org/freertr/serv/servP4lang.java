@@ -276,6 +276,21 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
     protected int statsPrt;
 
     /**
+     * controller text
+     */
+    protected List<String> xcvrsTxt;
+
+    /**
+     * controller notifier
+     */
+    protected notifier xcvrsNtf;
+
+    /**
+     * controller port
+     */
+    protected int xcvrsPrt;
+
+    /**
      * rounds done
      */
     protected int rndDoneNum;
@@ -1375,6 +1390,42 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
         }
         for (int i = 0; i < txt.size(); i++) {
             res.add(txt.get(i).replaceAll(" ", "|"));
+        }
+        return res;
+    }
+
+    /**
+     * get interfaces show
+     *
+     * @param ifc interface
+     * @return show
+     */
+    public userFormat getShowXcvr(cfgIfc ifc) {
+        userFormat res = new userFormat("|", "category|value");
+        servP4langIfc ntry = findIfc(ifc);
+        if (ntry == null) {
+            res.add("error|interface not exported");
+            return res;
+        }
+        if (ntry.suppressState()) {
+            res.add("error|not a physical port");
+            return res;
+        }
+        xcvrsTxt = null;
+        xcvrsNtf = new notifier();
+        xcvrsPrt = ntry.id;
+        sendLine("xcvrs " + ntry.id);
+        xcvrsNtf.misleep(10000);
+        List<String> txt = xcvrsTxt;
+        xcvrsTxt = null;
+        xcvrsNtf = null;
+        xcvrsPrt = -4;
+        if (txt == null) {
+            res.add("error|no answer from dataplane");
+            return res;
+        }
+        for (int i = 0; i < txt.size(); i++) {
+            res.add("hex|" + txt.get(i));
         }
         return res;
     }

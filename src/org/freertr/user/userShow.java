@@ -1611,16 +1611,26 @@ public class userShow {
                 doShowRoutes(null, srv.getShowRou(6, i), 1);
                 return null;
             }
-            if (!a.equals("port-counters")) {
+            if (a.equals("port-counters")) {
+                a = cmd.word();
+                cfgIfc ifc = cfgAll.ifcFind(a, 0);
+                if (ifc == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                rdr.putStrTab(srv.getShowIface(ifc));
                 return null;
             }
-            a = cmd.word();
-            cfgIfc ifc = cfgAll.ifcFind(a, 0);
-            if (ifc == null) {
-                cmd.error("no such interface");
+            if (a.equals("port-xcvrs")) {
+                a = cmd.word();
+                cfgIfc ifc = cfgAll.ifcFind(a, 0);
+                if (ifc == null) {
+                    cmd.error("no such interface");
+                    return null;
+                }
+                rdr.putStrTab(srv.getShowXcvr(ifc));
                 return null;
             }
-            rdr.putStrTab(srv.getShowIface(ifc));
             return null;
         }
         if (a.equals("stack")) {

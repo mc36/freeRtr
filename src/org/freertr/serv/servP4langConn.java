@@ -183,9 +183,9 @@ public class servP4langConn implements Runnable {
         lower.statsPrt = -4;
         lower.statsTxt = null;
         lower.statsNtf = null;
-        lower.xcvrPrt = -4;
-        lower.xcvrTxt = null;
-        lower.xcvrNtf = null;
+        lower.xcvrsPrt = -4;
+        lower.xcvrsTxt = null;
+        lower.xcvrsNtf = null;
         lower.frontnam.clear();
         lower.fwderrcr.clear();
         lower.autonegs.clear();
@@ -1000,55 +1000,55 @@ public class servP4langConn implements Runnable {
                 lower.statsNtf.wakeup();
                 continue;
             }
-            if (s.equals("xcvr_beg")) {
+            if (s.equals("xcvrs_beg")) {
                 int i = bits.str2num(cmd.word());
-                if (lower.xcvrPrt != i) {
+                if (lower.xcvrsPrt != i) {
                     if (debugger.servP4langErr) {
                         logger.debug("got unneeded report: " + cmd.getOriginal());
                     }
                     continue;
                 }
-                if (lower.xcvrTxt != null) {
+                if (lower.xcvrsTxt != null) {
                     if (debugger.servP4langErr) {
                         logger.debug("got unneeded report: " + cmd.getOriginal());
                     }
                     continue;
                 }
-                lower.xcvrTxt = new ArrayList<String>();
+                lower.xcvrsTxt = new ArrayList<String>();
                 continue;
             }
-            if (s.equals("xcvr_txt")) {
+            if (s.equals("xcvrs_txt")) {
                 int i = bits.str2num(cmd.word());
-                if (lower.xcvrPrt != i) {
+                if (lower.xcvrsPrt != i) {
                     if (debugger.servP4langErr) {
                         logger.debug("got unneeded report: " + cmd.getOriginal());
                     }
                     continue;
                 }
-                if (lower.xcvrTxt == null) {
+                if (lower.xcvrsTxt == null) {
                     if (debugger.servP4langErr) {
                         logger.debug("got unneeded report: " + cmd.getOriginal());
                     }
                     continue;
                 }
-                lower.xcvrTxt.add(cmd.getRemaining());
+                lower.xcvrsTxt.add(cmd.getRemaining());
                 continue;
             }
-            if (s.equals("xcvr_end")) {
+            if (s.equals("xcvrs_end")) {
                 int i = bits.str2num(cmd.word());
-                if (lower.xcvrPrt != i) {
+                if (lower.xcvrsPrt != i) {
                     if (debugger.servP4langErr) {
                         logger.debug("got unneeded report: " + cmd.getOriginal());
                     }
                     continue;
                 }
-                if (lower.xcvrNtf == null) {
+                if (lower.xcvrsNtf == null) {
                     if (debugger.servP4langErr) {
                         logger.debug("got unneeded report: " + cmd.getOriginal());
                     }
                     continue;
                 }
-                lower.xcvrNtf.wakeup();
+                lower.xcvrsNtf.wakeup();
                 continue;
             }
             if (debugger.servP4langErr) {
