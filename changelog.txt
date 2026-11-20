@@ -18979,3 +18979,10 @@ failed: wireguard over wireguard
 ---------------------------------- 2026-11-18 06:12:54 26.11.18
 no failed: wireguard over wireguard
 qc pass: wireguard over wireguard
+---------------------------------- 2026-11-20 08:00:03 26.11.20
+no todo: server smtp / auto-reply editor/text/etc
+no todo: server smtp / collect-failures
+no todo: server smtp / tag messages by subject
+no todo: show config-xxx to have tabbables like routers servers etc
+no todo: vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
+no todo: client auto-save-on-upgrade flash network archive

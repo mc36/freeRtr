@@ -4524,20 +4524,14 @@ todo: traffic through bgp sr-policy
 todo: traffic through bgp nsh
 todo: policy from bgp rpd
 todo: flash install as whole zip loadables
-todo: client auto-save-on-upgrade flash network archive
 todo: tabbable line asfadsasd exec autocommand at least
 todo: tabbable menu key/tui commands autocommand at least
 todo: vrf definition to have route consistency check between the bgp peers
-todo: vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
-todo: show config-xxx to have tabbables like routers servers etc
 todo: router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
 todo: a terminal junos-mode knob that defaults to set-del etc as a new class
 todo: nrpe to send out emails from error.log
 todo: nrpe to have followtracker support
 todo: clntportscan to have udp knob then portscan to have the knob finally
-todo: server smtp / tag messages by subject
-todo: server smtp / collect-failures
-todo: server smtp / auto-reply editor/text/etc
 todo: client buggy-trigger <trigger>
 todo: client log-boot to be emailed error.log
 todo: client upgrade-force url
