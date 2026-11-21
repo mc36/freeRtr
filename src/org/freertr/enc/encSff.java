@@ -202,7 +202,7 @@ public class encSff {
                 break;
         }
         res.add("encoding|" + a);
-        res.add("nominal rate|" + (pck.getByte(12) * 100) + " mb");
+        res.add("nominal rate|" + (pck.getByte(12) * 100) + " mbps");
         res.add("rate range|" + pck.getByte(67) + "-" + pck.getByte(66));
         res.add("smf length|" + pck.getByte(14) + " km");
         res.add("smf length|" + (pck.getByte(15) * 100) + " m");
@@ -214,7 +214,7 @@ public class encSff {
         i = pck.msbGetW(256 + 96);
         res.add("temperature|" + muldiv(i, 1.0, 256.0) + " c");
         i = pck.msbGetW(256 + 98);
-        res.add("voltage|" + muldiv(i, 1.0, 10.0) + " mv");
+        res.add("voltage|" + muldiv(i, 1.0, 10000.0) + " v");
         i = pck.msbGetW(256 + 100);
         res.add("tx bias|" + muldiv(i, 131.0, 65536.0) + " ma");
         i = pck.msbGetW(256 + 102);
