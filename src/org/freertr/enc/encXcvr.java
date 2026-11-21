@@ -5,16 +5,16 @@ import org.freertr.user.userFormat;
 import org.freertr.util.bits;
 
 /**
- * sfp decoding
+ * transceiver decoding
  *
  * @author matecsaba
  */
-public class encSff {
+public class encXcvr {
 
     /**
      * default constructor
      */
-    private encSff() {
+    private encXcvr() {
     }
 
     /**

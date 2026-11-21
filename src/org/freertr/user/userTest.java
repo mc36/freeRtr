@@ -118,7 +118,7 @@ import org.freertr.enc.encJson;
 import org.freertr.enc.encJsonEntry;
 import org.freertr.util.logger;
 import org.freertr.enc.encPrtbuf;
-import org.freertr.enc.encSff;
+import org.freertr.enc.encXcvr;
 import org.freertr.enc.encThrift;
 import org.freertr.enc.encUrl;
 import org.freertr.serv.servP4lang;
@@ -449,7 +449,7 @@ public class userTest {
                 cmd.error("error in packet");
                 return null;
             }
-            rdr.putStrTab(encSff.decode(pck));
+            rdr.putStrTab(encXcvr.decode(pck));
             return null;
         }
         if (a.equals("macaddr")) {

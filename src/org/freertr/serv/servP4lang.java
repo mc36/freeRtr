@@ -14,7 +14,7 @@ import org.freertr.cfg.cfgPrfxlst;
 import org.freertr.cfg.cfgRoump;
 import org.freertr.cfg.cfgRouplc;
 import org.freertr.cfg.cfgVrf;
-import org.freertr.enc.encSff;
+import org.freertr.enc.encXcvr;
 import org.freertr.ifc.ifcBridge;
 import org.freertr.ifc.ifcBridgeIfc;
 import org.freertr.ifc.ifcDn;
@@ -1403,7 +1403,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
      * @return show
      */
     public userFormat getShowXcvr(cfgIfc ifc) {
-        userFormat res = encSff.decode();
+        userFormat res = encXcvr.decode();
         servP4langIfc ntry = findIfc(ifc);
         if (ntry == null) {
             res.add("error|interface not exported");
@@ -1443,7 +1443,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
             res.add("error|empty answer from dataplane");
             return res;
         }
-        encSff.decode(res, buf);
+        encXcvr.decode(res, buf);
         for (int i = 0; i < txt.size(); i++) {
             res.add("hex|" + txt.get(i));
         }
