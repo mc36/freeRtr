@@ -20,6 +20,27 @@ public class encSff {
     /**
      * decode sfp eeprom
      *
+     * @return result
+     */
+    public static userFormat decode() {
+        return new userFormat("|", "category|value");
+    }
+
+    /**
+     * decode sfp eeprom
+     *
+     * @param pck buffer
+     * @return result
+     */
+    public static userFormat decode(packHolder pck) {
+        userFormat res = decode();
+        decode(res, pck);
+        return res;
+    }
+
+    /**
+     * decode sfp eeprom
+     *
      * @param res result
      * @param pck buffer
      */

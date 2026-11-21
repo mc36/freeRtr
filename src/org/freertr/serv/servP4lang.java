@@ -1403,7 +1403,7 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
      * @return show
      */
     public userFormat getShowXcvr(cfgIfc ifc) {
-        userFormat res = new userFormat("|", "category|value");
+        userFormat res = encSff.decode();
         servP4langIfc ntry = findIfc(ifc);
         if (ntry == null) {
             res.add("error|interface not exported");
@@ -1438,6 +1438,10 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
                 buf.putSkip(1);
             }
             buf.merge2end();
+        }
+        if (buf.dataSize() < 1) {
+            res.add("error|empty answer from dataplane");
+            return res;
         }
         encSff.decode(res, buf);
         for (int i = 0; i < txt.size(); i++) {

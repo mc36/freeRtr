@@ -118,6 +118,7 @@ import org.freertr.enc.encJson;
 import org.freertr.enc.encJsonEntry;
 import org.freertr.util.logger;
 import org.freertr.enc.encPrtbuf;
+import org.freertr.enc.encSff;
 import org.freertr.enc.encThrift;
 import org.freertr.enc.encUrl;
 import org.freertr.serv.servP4lang;
@@ -440,6 +441,15 @@ public class userTest {
             }
             cmd.error("data: " + pck.dump());
             doShow(encAsn1.dumpPack("", pck));
+            return null;
+        }
+        if (a.equals("xcvr")) {
+            packHolder pck = new packHolder(true, true);
+            if (pck.convertFromK12("|0   |" + cmd.getRemaining())) {
+                cmd.error("error in packet");
+                return null;
+            }
+            rdr.putStrTab(encSff.decode(pck));
             return null;
         }
         if (a.equals("macaddr")) {
