@@ -73,6 +73,19 @@ public class encXcvr {
         res.add("revision|" + enc7bit.doOneString(pck.getAsciiZ(184, 2, 0)));
         res.add("serial|" + enc7bit.doOneString(pck.getAsciiZ(196, 16, 0)));
         res.add("assembled|20" + enc7bit.doOneString(pck.getAsciiZ(212, 8, 0)));
+        res.add("max power|" + power(pck.getByte(107)));
+        res.add("delay|" + (pck.getByte(108) * 10) + " ns");
+        res.add("connector|" + connector(pck.getByte(130)));
+        res.add("encoding|" + encoding(pck.getByte(139)));
+        res.add("nominal signal|" + (pck.getByte(140) * 100) + " mbps");
+        res.add("nominal baud|" + (pck.getByte(222) * 250) + " mbps");
+        res.add("smf length|" + pck.getByte(142) + " km");
+        res.add("om1 length|" + pck.getByte(145) + " m");
+        res.add("om2 length|" + pck.getByte(144) + " m");
+        res.add("om4 length|" + (pck.getByte(146) * 2) + " m");
+        res.add("om3 length|" + (pck.getByte(143) * 2) + " m");
+        res.add("wavelength|" + wavel(pck.msbGetW(186)));
+        res.add("tolerance|" + wavet(pck.msbGetW(188)));
         String a = "";
         int i = pck.getByte(3);
         a += bits.bit2str(i, 0x80, "", " tx4-los");
@@ -117,7 +130,7 @@ public class encXcvr {
         i = pck.getByte(10);
         a += hiloew(a, "rx3", i >>> 4);
         a += hiloew(a, "rx4", i & 0xf);
-        res.add("power|" + a);
+        res.add("rxpower|" + a);
         a = "";
         i = pck.getByte(11);
         a += hiloew(a, "tx1", i >>> 4);
@@ -125,7 +138,7 @@ public class encXcvr {
         i = pck.getByte(12);
         a += hiloew(a, "tx3", i >>> 4);
         a += hiloew(a, "tx4", i & 0xf);
-        res.add("bias|" + a);
+        res.add("txbias|" + a);
         a = "";
         i = pck.getByte(13);
         a += hiloew(a, "tx1", i >>> 4);
@@ -133,7 +146,7 @@ public class encXcvr {
         i = pck.getByte(14);
         a += hiloew(a, "tx3", i >>> 4);
         a += hiloew(a, "tx4", i & 0xf);
-        res.add("power|" + a);
+        res.add("txpower|" + a);
         res.add("temperature|" + temp(pck.msbGetW(22)));
         res.add("voltage|" + volt(pck.msbGetW(26)));
         res.add("rx1 power|" + power(pck.msbGetW(34)));
@@ -148,19 +161,6 @@ public class encXcvr {
         res.add("tx2 power|" + power(pck.msbGetW(52)));
         res.add("tx3 power|" + power(pck.msbGetW(54)));
         res.add("tx4 power|" + power(pck.msbGetW(56)));
-        res.add("max power|" + power(pck.getByte(107)));
-        res.add("delay|" + (pck.getByte(108) * 10) + " ns");
-        res.add("connector|" + connector(pck.getByte(130)));
-        res.add("encoding|" + encoding(pck.getByte(139)));
-        res.add("nominal signal|" + (pck.getByte(140) * 100) + " mbps");
-        res.add("nominal baud|" + (pck.getByte(222) * 250) + " mbps");
-        res.add("smf length|" + pck.getByte(142) + " km");
-        res.add("om1 length|" + pck.getByte(145) + " m");
-        res.add("om2 length|" + pck.getByte(144) + " m");
-        res.add("om4 length|" + (pck.getByte(146) * 2) + " m");
-        res.add("om3 length|" + (pck.getByte(143) * 2) + " m");
-        res.add("wavelength|" + wavel(pck.msbGetW(186)));
-        res.add("tolerance|" + wavet(pck.msbGetW(188)));
     }
 
     /**
@@ -254,6 +254,17 @@ public class encXcvr {
         res.add("om3 length|" + (pck.getByte(19) * 10) + " m");
         res.add("om4 length|" + (pck.getByte(18) * 10) + " m");
         res.add("wavelength|" + pck.msbGetW(60) + " nm");
+        a = "";
+        i = pck.getByte(112);
+        int o = pck.getByte(116);
+        a += hiloew(a, "temp", i >>> 6, o >>> 6);
+        a += hiloew(a, "vcc", i >>> 4, o >>> 4);
+        a += hiloew(a, "txbias", i >>> 2, o >>> 2);
+        a += hiloew(a, "txpower", i & 0xf, o & 0xf);
+        i = pck.getByte(113);
+        o = pck.getByte(117);
+        a += hiloew(a, "rxpower", i >>> 6, o >>> 6);
+        res.add("alarms|" + a);
         res.add("temperature|" + temp(pck.msbGetW(256 + 96)));
         res.add("voltage|" + volt(pck.msbGetW(256 + 98)));
         res.add("tx bias|" + bias(pck.msbGetW(256 + 100)));
@@ -418,11 +429,19 @@ public class encXcvr {
         }
     }
 
-    private static String hiloew(String a, String w, int i) {
-        a += bits.bit2str(i, 8, "", " " + w + "-hi-err");
-        a += bits.bit2str(i, 4, "", " " + w + "-lo-err");
-        a += bits.bit2str(i, 2, "", " " + w + "-hi-wrn");
-        a += bits.bit2str(i, 1, "", " " + w + "-lo-wrn");
+    private static String hiloew(String a, String s, int i) {
+        a += bits.bit2str(i, 8, "", " " + s + "-hi-err");
+        a += bits.bit2str(i, 4, "", " " + s + "-lo-err");
+        a += bits.bit2str(i, 2, "", " " + s + "-hi-wrn");
+        a += bits.bit2str(i, 1, "", " " + s + "-lo-wrn");
+        return a;
+    }
+
+    private static String hiloew(String a, String s, int e, int w) {
+        a += bits.bit2str(e, 2, "", " " + s + "-hi-err");
+        a += bits.bit2str(e, 1, "", " " + s + "-lo-err");
+        a += bits.bit2str(w, 2, "", " " + s + "-hi-wrn");
+        a += bits.bit2str(w, 1, "", " " + s + "-lo-wrn");
         return a;
     }
 
