@@ -34,7 +34,7 @@ public class encXcvr {
      */
     public static userFormat decode(packHolder pck) {
         userFormat res = decode();
-        decode(res, pck);
+        decodeAuto(res, pck);
         return res;
     }
 
@@ -44,7 +44,7 @@ public class encXcvr {
      * @param res result
      * @param pck buffer
      */
-    public static void decode(userFormat res, packHolder pck) {
+    public static void decodeAuto(userFormat res, packHolder pck) {
         int i = pck.getByte(0);
         res.add("identifier|" + identifier(i));
         switch (i) {

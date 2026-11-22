@@ -1628,7 +1628,8 @@ public class userShow {
                     cmd.error("no such interface");
                     return null;
                 }
-                rdr.putStrTab(srv.getShowXcvr(ifc));
+                a = cmd.word();
+                rdr.putStrTab(srv.getShowXcvr(ifc, a));
                 return null;
             }
             return null;

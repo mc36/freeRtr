@@ -1400,9 +1400,10 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
      * get interfaces show
      *
      * @param ifc interface
+     * @param mod mode
      * @return show
      */
-    public userFormat getShowXcvr(cfgIfc ifc) {
+    public userFormat getShowXcvr(cfgIfc ifc, String mod) {
         userFormat res = encXcvr.decode();
         servP4langIfc ntry = findIfc(ifc);
         if (ntry == null) {
@@ -1443,10 +1444,21 @@ public class servP4lang extends servGeneric implements prtServS, servGenFwdr, if
             res.add("error|empty answer from dataplane");
             return res;
         }
-        encXcvr.decode(res, buf);
-        for (int i = 0; i < txt.size(); i++) {
-            res.add("hex|" + txt.get(i));
+        if (mod.equals("hex")) {
+            for (int i = 0; i < txt.size(); i++) {
+                res.add("hex|" + txt.get(i));
+            }
+            return res;
         }
+        if (mod.equals("sfp")) {
+            encXcvr.decodeSfp(res, buf);
+            return res;
+        }
+        if (mod.equals("qsfp")) {
+            encXcvr.decodeQsfp(res, buf);
+            return res;
+        }
+        encXcvr.decodeAuto(res, buf);
         return res;
     }
 
