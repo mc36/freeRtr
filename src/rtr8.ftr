@@ -573,8 +573,8 @@ qc pass: p4lang: mpls core over backplane
 qc pass: p4lang: mpls vpn over backplane
 qc pass: p4lang: local connect
 qc pass: p4lang: vlan local connect
-qc pass: p4lang: pmtud
-qc pass: p4lang: vlan pmtud
+qc pass: p4lang: pmtud in
+qc pass: p4lang: vlan pmtud in
 qc pass: p4lang: tcpmss in
 qc pass: p4lang: vlan tcpmss in
 qc pass: p4lang: bridge tcpmss in
@@ -907,6 +907,8 @@ qc pass: p4lang: sreth server over ipv6
 qc pass: p4lang: sreth server over ipv4 loopback
 qc pass: p4lang: sreth server over ipv6 loopback
 qc pass: p4lang: route leaking
+qc pass: p4lang: pmtud out
+qc pass: p4lang: vlan pmtud out
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing

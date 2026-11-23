@@ -111,8 +111,10 @@ struct port2vrf_entry {
     int tcpmss6out;
     int verify4;
     int verify6;
-    int pmtud4;
-    int pmtud6;
+    int pmtud4in;
+    int pmtud6in;
+    int pmtud4out;
+    int pmtud6out;
     int nflw4;
     int nflw6;
     int pttl4;

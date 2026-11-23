@@ -2407,8 +2407,8 @@ qc pass: p4lang: mpls core over backplane
 qc pass: p4lang: mpls vpn over backplane
 qc pass: p4lang: local connect
 qc pass: p4lang: vlan local connect
-qc pass: p4lang: pmtud
-qc pass: p4lang: vlan pmtud
+qc pass: p4lang: pmtud in
+qc pass: p4lang: vlan pmtud in
 qc pass: p4lang: tcpmss in
 qc pass: p4lang: vlan tcpmss in
 qc pass: p4lang: bridge tcpmss in
@@ -2741,6 +2741,8 @@ qc pass: p4lang: sreth server over ipv6
 qc pass: p4lang: sreth server over ipv4 loopback
 qc pass: p4lang: sreth server over ipv6 loopback
 qc pass: p4lang: route leaking
+qc pass: p4lang: pmtud out
+qc pass: p4lang: vlan pmtud out
 qc pass: qos ingress transmit action
 qc pass: qos egress transmit action
 qc pass: qos ingress drop action

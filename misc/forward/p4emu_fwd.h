@@ -164,6 +164,9 @@ void adjustMss(unsigned char *bufD, int bufT, int mss) {
     if (ntry.protV == 6) if (mss > 0) if ((bufD[bufT + 13] & 2) != 0) adjustMss(bufD, bufT, mss);
 
 
+#define check_pmtud(mtu)                                        \
+    if (mtu > 0) if ((bufS - bufP + preBuff) > mtu) doPunting;
+
 
 
 #define update_layer4(ntry)                                     \
@@ -1275,9 +1278,7 @@ ethtyp_rx:
             ttl = get16msb(bufD, bufP + 2) + bufP - preBuff; // len
             if (ttl > bufS) doDropper;
             bufS = ttl;
-            if (port2vrf_res->pmtud4 > 0) {
-                if ((bufS - bufP + preBuff) > port2vrf_res->pmtud4) doPunting;
-            }
+            check_pmtud(port2vrf_res->pmtud4in);
             bufT = bufP + (bufT << 2);
             frag = get16msb(bufD, bufP + 6) & 0x3fff; // frags
             acl4_ntry.sgtV = ctx->sgt;
@@ -1297,9 +1298,7 @@ ethtyp_rx:
             ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff; // len
             if (ttl > bufS) doDropper;
             bufS = ttl;
-            if (port2vrf_res->pmtud6 > 0) {
-                if ((bufS - bufP + preBuff) > port2vrf_res->pmtud6) doPunting;
-            }
+            check_pmtud(port2vrf_res->pmtud6in);
             bufT = bufP + 40;
             acl6_ntry.sgtV = ctx->sgt;
             acl6_ntry.protV = bufD[bufP + 6];
@@ -1517,9 +1516,7 @@ ipv4_rx:
         ttl = get16msb(bufD, bufP + 2) + bufP - preBuff; // len
         if (ttl > bufS) doDropper;
         bufS = ttl;
-        if (port2vrf_res->pmtud4 > 0) {
-            if ((bufS - bufP + preBuff) > port2vrf_res->pmtud4) doPunting;
-        }
+        check_pmtud(port2vrf_res->pmtud4in);
         bufT = bufP + (bufT << 2);
         frag = get16msb(bufD, bufP + 6) & 0x3fff; // frags
         acl4_ntry.sgtV = ctx->sgt;
@@ -1672,6 +1669,7 @@ ipv4_tx:
             port2vrf_ntry.port = neigh_res->aclport;
             port2vrf_res = hasht_find(&port2vrf_table, &port2vrf_ntry);
             if (port2vrf_res == NULL) doDropper;
+            check_pmtud(port2vrf_res->pmtud4out);
             if (!table_nonexist(&port2vrf_res->outacl4)) {
                 if (frag != 0) doPunting;
                 insp4_ntry.prot = acl4_ntry.protV;
@@ -1752,9 +1750,7 @@ ipv6_rx:
         ttl = get16msb(bufD, bufP + 4) + 40 + bufP - preBuff; // len
         if (ttl > bufS) doDropper;
         bufS = ttl;
-        if (port2vrf_res->pmtud6 > 0) {
-            if ((bufS - bufP + preBuff) > port2vrf_res->pmtud6) doPunting;
-        }
+        check_pmtud(port2vrf_res->pmtud6in);
         bufT = bufP + 40;
         acl6_ntry.sgtV = ctx->sgt;
         acl6_ntry.protV = bufD[bufP + 6];
@@ -1942,6 +1938,7 @@ ipv6_tx:
             port2vrf_ntry.port = neigh_res->aclport;
             port2vrf_res = hasht_find(&port2vrf_table, &port2vrf_ntry);
             if (port2vrf_res == NULL) doDropper;
+            check_pmtud(port2vrf_res->pmtud6out);
             if (!table_nonexist(&port2vrf_res->outacl6)) {
                 if (frag != 0) doPunting;
                 insp6_ntry.prot = acl6_ntry.protV;

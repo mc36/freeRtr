@@ -562,13 +562,25 @@ int doOneCommand(struct packetContext *ctx, unsigned char* buf) {
     if (strcmp(arg[0], "pmtud4in") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->pmtud4 = atoi(arg[3]);
+        port2vrf_res->pmtud4in = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "pmtud6in") == 0) {
         port2vrf_ntry.port = atoi(arg[2]);
         port2vrf_res = port2vrf_init(&port2vrf_ntry);
-        port2vrf_res->pmtud6 = atoi(arg[3]);
+        port2vrf_res->pmtud6in = atoi(arg[3]);
+        return 0;
+    }
+    if (strcmp(arg[0], "pmtud4out") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->pmtud4out = atoi(arg[3]);
+        return 0;
+    }
+    if (strcmp(arg[0], "pmtud6out") == 0) {
+        port2vrf_ntry.port = atoi(arg[2]);
+        port2vrf_res = port2vrf_init(&port2vrf_ntry);
+        port2vrf_res->pmtud6out = atoi(arg[3]);
         return 0;
     }
     if (strcmp(arg[0], "mplsttl4") == 0) {
