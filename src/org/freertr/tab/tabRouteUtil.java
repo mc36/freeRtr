@@ -167,7 +167,7 @@ public class tabRouteUtil {
                 continue;
             }
             if (a.equals("aspath")) {
-                smalist lst = smalist.string2intList(cmd.getRemaining());
+                smalist lst = smalist.string2list(cmd);
                 attr.pathSeq = smalist.prependLabels(attr.pathSeq, lst);
                 continue;
             }

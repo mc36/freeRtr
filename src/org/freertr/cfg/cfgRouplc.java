@@ -957,12 +957,12 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("aspath")) {
                 ntry.doMode = tabRtrplcN.doType.setAspath;
-                ntry.intLst = smalist.string2intList(cmd.getRemaining());
+                ntry.intLst = smalist.string2list(cmd);
                 return;
             }
             if (a.equals("asconfed")) {
                 ntry.doMode = tabRtrplcN.doType.setAsconf;
-                ntry.intLst = smalist.string2intList(cmd.getRemaining());
+                ntry.intLst = smalist.string2list(cmd);
                 return;
             }
             if (a.equals("distance")) {

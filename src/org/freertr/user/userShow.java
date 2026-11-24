@@ -4478,7 +4478,7 @@ public class userShow {
                 return;
             }
             tabRouteAttr<addrIP> ntry = new tabRouteAttr<addrIP>();
-            ntry.pathSeq = smalist.string2intList(cmd.getRemaining());
+            ntry.pathSeq = smalist.string2list(cmd);
             int ver;
             if (pfx.network.isIPv4()) {
                 ver = 4;

@@ -1,7 +1,6 @@
 package org.freertr.util;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.freertr.pack.packHolder;
 
@@ -335,59 +334,34 @@ public class smalist {
      * @param src source list
      * @return converted
      */
-    public static String convertTable(smalist src) {
+    public static String list2string(smalist src) {
         if (src == null) {
             return "null";
         }
         String a = "";
+        if (src.lst.length < 1) {
+            return a;
+        }
         for (int i = 0; i < src.lst.length; i++) {
             a += " " + src.lst[i];
         }
-        if (src.lst.length > 0) {
-            a = a.substring(1, a.length());
-        }
-        return a;
-    }
-
-    /**
-     * convert tables
-     *
-     * @param <T> type of address
-     * @param cmd source list
-     * @return converted
-     */
-    public static smalist convertTable(cmds cmd) {
-        smalist res = new smalist();
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            int i = bits.str2num(a);
-            if (res.indexOf(i) >= 0) {
-                continue;
-            }
-            res.add(i);
-        }
-        return res;
+        return a.substring(1, a.length());
     }
 
     /**
      * convert string to int list
      *
-     * @param s string
+     * @param cmd string
      * @return int list
      */
-    public static smalist string2intList(String s) {
+    public static smalist string2list(cmds cmd) {
         smalist l = new smalist();
-        cmds cmd = new cmds("", s);
         for (;;) {
             String a = cmd.word();
             if (a.length() < 1) {
                 break;
             }
-            int i = bits.str2num(a);
-            l.add(i);
+            l.add(bits.str2num(a));
         }
         return l;
     }

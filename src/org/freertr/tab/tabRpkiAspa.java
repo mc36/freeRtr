@@ -171,7 +171,7 @@ public class tabRpkiAspa implements Comparable<tabRpkiAspa> {
      */
     public boolean fromString(cmds cmd) {
         cust = bits.str2num(cmd.word());
-        provs = smalist.convertTable(cmd);
+        provs = smalist.string2list(cmd);
         distan = 100;
         srcIP = new addrIP();
         srcRtr = tabRouteAttr.routeType.staticRoute;
