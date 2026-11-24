@@ -487,9 +487,9 @@ public class rtrGhosthunt extends ipRtr implements Runnable {
         }
         routerDoAggregates(rtrBgpUtil.sfiMulticast, tabU, tabU, fwdCore.commonLabel, null, 0);
         routerDoAggregates(rtrBgpUtil.sfiMulticast, tabM, tabM, fwdCore.commonLabel, null, 0);
-        boolean same = tabU.preserveTime(routerComputedU);
-        same &= tabM.preserveTime(routerComputedM);
-        same &= tabF.preserveTime(routerComputedF);
+        boolean same = tabU.preserveTime(getDiffMode(), routerComputedU);
+        same &= tabM.preserveTime(getDiffMode(), routerComputedM);
+        same &= tabF.preserveTime(getDiffMode(), routerComputedF);
         if (same) {
             return;
         }

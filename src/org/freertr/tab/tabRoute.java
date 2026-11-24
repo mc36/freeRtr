@@ -592,10 +592,11 @@ public class tabRoute<T extends addrType> {
     /**
      * preserve time info
      *
+     * @param mod mode to use
      * @param src source
      * @return true if the same, false if differs
      */
-    public boolean preserveTime(tabRoute<T> src) {
+    public boolean preserveTime(tabRoute.addType mod, tabRoute<T> src) {
         boolean res = prefixes.size() == src.prefixes.size();
         for (int i = 0; i < prefixes.size(); i++) {
             tabRouteEntry<T> prf = prefixes.get(i);
@@ -606,7 +607,7 @@ public class tabRoute<T extends addrType> {
             if (old == null) {
                 continue;
             }
-            if (prf.differs(addType.notyet, old) != 0) {
+            if (prf.differs(mod, old) != 0) {
                 res = false;
                 continue;
             }

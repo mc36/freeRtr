@@ -157,8 +157,8 @@ public class rtrDeaggr extends ipRtr {
         }
         routerDoAggregates(rtrBgpUtil.sfiUnicast, resU, resU, fwdCore.commonLabel, null, 0);
         routerDoAggregates(rtrBgpUtil.sfiMulticast, resM, resM, fwdCore.commonLabel, null, 0);
-        boolean same = resU.preserveTime(routerComputedU);
-        same &= resM.preserveTime(routerComputedM);
+        boolean same = resU.preserveTime(getDiffMode(), routerComputedU);
+        same &= resM.preserveTime(getDiffMode(), routerComputedM);
         if (same) {
             return;
         }

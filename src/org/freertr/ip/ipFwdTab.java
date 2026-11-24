@@ -1119,9 +1119,9 @@ public class ipFwdTab {
         tabL.delDistance(tabRouteAttr.distanMax);
         tabM.delDistance(tabRouteAttr.distanMax);
         tabF.delDistance(tabRouteAttr.distanMax);
-        tabL.preserveTime(lower.actualU);
-        tabM.preserveTime(lower.actualM);
-        tabF.preserveTime(lower.actualF);
+        tabL.preserveTime(tabRoute.addType.better, lower.actualU);
+        tabM.preserveTime(tabRoute.addType.better, lower.actualM);
+        tabF.preserveTime(tabRoute.addType.better, lower.actualF);
         for (int i = 0; i < lower.routers.size(); i++) {
             ipRtr rtr = lower.routers.get(i);
             if (rtr == null) {

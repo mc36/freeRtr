@@ -38,7 +38,7 @@ public class rtrAlgoVrf extends ipRtr {
      */
     public void update2ip(tabRoute<addrIP> rou) {
         rou.setProto(routerProtoTyp, routerProcNum);
-        if (rou.preserveTime(routerComputedU)) {
+        if (rou.preserveTime(getDiffMode(), routerComputedU)) {
             return;
         }
         routerComputedU = rou;

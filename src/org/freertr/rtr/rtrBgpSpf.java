@@ -325,7 +325,7 @@ public class rtrBgpSpf {
         }
         lastSpf = spf;
         tab2.setProto(parent.rouTyp, parent.rtrNum);
-        tab2.preserveTime(routes);
+        tab2.preserveTime(parent.getDiffMode(), routes);
         routes = tab2;
         parent.computd[rtrBgpParam.idxUni].mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);
         parent.computd[rtrBgpParam.idxMlt].mergeFrom(tabRoute.addType.altEcmp, routes, tabRouteAttr.distanLim);

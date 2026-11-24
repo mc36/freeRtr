@@ -390,7 +390,7 @@ public class rtrRip6 extends ipRtr implements prtServP {
         }
         routerDoAggregates(rtrBgpUtil.sfiUnicast, tab, tab, fwdCore.commonLabel, null, 0);
         tab.setProto(routerProtoTyp, routerProcNum);
-        if (tab.preserveTime(routerComputedU)) {
+        if (tab.preserveTime(getDiffMode(), routerComputedU)) {
             return;
         }
         routerComputedU = tab;

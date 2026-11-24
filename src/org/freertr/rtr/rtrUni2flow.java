@@ -144,7 +144,7 @@ public class rtrUni2flow extends ipRtr {
                 res.add(tabRoute.addType.better, attr, true, true);
             }
         }
-        if (res.preserveTime(routerComputedF)) {
+        if (res.preserveTime(getDiffMode(), routerComputedF)) {
             return;
         }
         routerComputedF = res;

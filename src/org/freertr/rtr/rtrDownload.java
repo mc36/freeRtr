@@ -244,7 +244,7 @@ public class rtrDownload extends ipRtr {
             res.add(tabRoute.addType.better, ntry, false, false);
         }
         routerDoAggregates(rtrBgpUtil.sfiUnicast, res, res, fwdCore.commonLabel, null, 0);
-        if (res.preserveTime(routerComputedU)) {
+        if (res.preserveTime(getDiffMode(), routerComputedU)) {
             return;
         }
         routerComputedU = res;

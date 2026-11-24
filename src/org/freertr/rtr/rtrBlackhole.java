@@ -116,7 +116,7 @@ public class rtrBlackhole extends ipRtr implements Runnable {
         tabRoute<addrIP> res = new tabRoute<addrIP>("computed");
         res.mergeFrom(tabRoute.addType.better, entries, tabRouteAttr.distanLim);
         routerDoAggregates(rtrBgpUtil.sfiUnicast, res, res, fwdCore.commonLabel, null, 0);
-        if (res.preserveTime(routerComputedU)) {
+        if (res.preserveTime(getDiffMode(), routerComputedU)) {
             return;
         }
         routerComputedU = res;

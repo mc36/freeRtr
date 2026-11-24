@@ -615,7 +615,7 @@ public class rtrRift extends ipRtr implements Runnable {
         rou = calcSpf(1);
         rou.mergeFrom(tabRoute.addType.ecmp, calcSpf(2), tabRouteAttr.distanLim);
         rou.setProto(routerProtoTyp, routerProcNum);
-        if (rou.preserveTime(routerComputedU)) {
+        if (rou.preserveTime(getDiffMode(), routerComputedU)) {
             return;
         }
         routerComputedU = rou;

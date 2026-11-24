@@ -235,7 +235,7 @@ public class rtrOspf4 extends ipRtr implements prtRedunClnt {
             }
         }
         tab1.setProto(routerProtoTyp, routerProcNum);
-        boolean same = tab1.preserveTime(routerComputedU);
+        boolean same = tab1.preserveTime(getDiffMode(), routerComputedU);
         same &= !tabIndex.compareTables(routerComputedI, tab2);
         if (same) {
             return;

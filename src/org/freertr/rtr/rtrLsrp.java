@@ -1034,9 +1034,9 @@ public class rtrLsrp extends ipRtr implements Runnable, prtRedunClnt {
         lastSpf = spf;
         tab2.setProto(routerProtoTyp, routerProcNum);
         tab3.setProto(routerProtoTyp, routerProcNum);
-        boolean same = tab2.preserveTime(routerComputedU);
+        boolean same = tab2.preserveTime(getDiffMode(), routerComputedU);
         same &= !tabIndex.compareTables(routerComputedI, segrouUsd);
-        same &= tab3.preserveTime(other.routerComputedU);
+        same &= tab3.preserveTime(getDiffMode(), other.routerComputedU);
         if (same) {
             return;
         }

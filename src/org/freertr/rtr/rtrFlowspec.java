@@ -126,7 +126,7 @@ public class rtrFlowspec extends ipRtr {
             ntry.prefix.mask.fromBuf(adr, 0);
             res.add(tabRoute.addType.better, ntry, false, false);
         }
-        if (res.preserveTime(routerComputedF)) {
+        if (res.preserveTime(getDiffMode(), routerComputedF)) {
             return;
         }
         routerComputedF = res;

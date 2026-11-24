@@ -266,6 +266,15 @@ public abstract class ipRtr implements Comparable<ipRtr> {
     }
 
     /**
+     * get diff mode
+     *
+     * @return add mode
+     */
+    public tabRoute.addType getDiffMode() {
+        return routerEcmp ? tabRoute.addType.alters : tabRoute.addType.better;
+    }
+
+    /**
      * do aggregates
      *
      * @param afi address family

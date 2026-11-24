@@ -534,12 +534,12 @@ public class rtrBabel extends ipRtr implements prtServP {
         other.routerDoAggregates(rtrBgpUtil.sfiUnicast, tab2, tab2, other.fwd.commonLabel, null, 0);
         tab1.setProto(routerProtoTyp, routerProcNum);
         tab2.setProto(routerProtoTyp, routerProcNum);
-        if (!tab2.preserveTime(other.routerComputedU)) {
+        if (!tab2.preserveTime(getDiffMode(), other.routerComputedU)) {
             other.routerComputedU = tab2;
             other.routerComputedM = tab2;
             other.fwd.routerChg(other, false);
         }
-        if (tab1.preserveTime(routerComputedU)) {
+        if (tab1.preserveTime(getDiffMode(), routerComputedU)) {
             return;
         }
         routerComputedU = tab1;

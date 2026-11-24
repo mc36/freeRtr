@@ -100,7 +100,7 @@ public class rtrUni2multi extends ipRtr {
             res.add(tabRoute.addType.better, ntry, false, false);
         }
         routerDoAggregates(rtrBgpUtil.sfiMulticast, res, res, fwdCore.commonLabel, null, 0);
-        if (res.preserveTime(routerComputedM)) {
+        if (res.preserveTime(getDiffMode(), routerComputedM)) {
             return;
         }
         routerComputedM = res;
