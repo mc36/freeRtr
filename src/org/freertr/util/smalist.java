@@ -330,7 +330,6 @@ public class smalist {
     /**
      * convert tables
      *
-     * @param <T> type of address
      * @param src source list
      * @return converted
      */
