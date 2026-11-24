@@ -176,14 +176,7 @@ public class tabRpkiRoa implements Comparable<tabRpkiRoa> {
             return true;
         }
         max = bits.str2num(cmd.word());
-        asns = new smalist();
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            asns.add(bits.str2num(a));
-        }
+        asns = smalist.convertTable(cmd);
         distan = 100;
         srcIP = new addrIP();
         srcRtr = tabRouteAttr.routeType.staticRoute;

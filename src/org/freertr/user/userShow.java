@@ -152,6 +152,7 @@ import org.freertr.util.differ;
 import org.freertr.util.history;
 import org.freertr.util.logBuf;
 import org.freertr.util.logger;
+import org.freertr.util.smalist;
 import org.freertr.util.syncInt;
 
 /**
@@ -4477,7 +4478,7 @@ public class userShow {
                 return;
             }
             tabRouteAttr<addrIP> ntry = new tabRouteAttr<addrIP>();
-            ntry.pathSeq = tabRouteUtil.string2intList(cmd.getRemaining());
+            ntry.pathSeq = smalist.string2intList(cmd.getRemaining());
             int ver;
             if (pfx.network.isIPv4()) {
                 ver = 4;

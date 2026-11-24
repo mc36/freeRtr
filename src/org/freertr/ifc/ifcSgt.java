@@ -7,6 +7,7 @@ import org.freertr.tab.tabIndex;
 import org.freertr.util.bits;
 import org.freertr.util.debugger;
 import org.freertr.util.logger;
+import org.freertr.util.smalist;
 
 /**
  * security group tag (rfcXXXX) protocol
@@ -34,22 +35,22 @@ public class ifcSgt {
     /**
      * allowed values
      */
-    public tabGen<tabIndex<addrEmpty>> allowIn = null;
+    public smalist allowIn = null;
 
     /**
      * allowed values
      */
-    public tabGen<tabIndex<addrEmpty>> allowOut = null;
+    public smalist allowOut = null;
 
     /**
      * forbidden values
      */
-    public tabGen<tabIndex<addrEmpty>> forbidIn = null;
+    public smalist forbidIn = null;
 
     /**
      * forbidden values
      */
-    public tabGen<tabIndex<addrEmpty>> forbidOut = null;
+    public smalist forbidOut = null;
 
     /**
      * ethertype of these packets
@@ -77,14 +78,12 @@ public class ifcSgt {
             logger.debug("tx sgt=" + pck.SGTid);
         }
         if (forbidOut != null) {
-            tabIndex<addrEmpty> cur = new tabIndex<addrEmpty>(pck.SGTid, null);
-            if (forbidOut.find(cur) != null) {
+            if (forbidOut.binarySearch(pck.SGTid) >= 0) {
                 return true;
             }
         }
         if (allowOut != null) {
-            tabIndex<addrEmpty> cur = new tabIndex<addrEmpty>(pck.SGTid, null);
-            if (allowOut.find(cur) == null) {
+            if (allowOut.binarySearch(pck.SGTid) < 0) {
                 return true;
             }
         }
@@ -128,16 +127,14 @@ public class ifcSgt {
             logger.debug("rx sgt=" + pck.SGTid);
         }
         if (forbidIn != null) {
-            tabIndex<addrEmpty> cur = new tabIndex<addrEmpty>(pck.SGTid, null);
-            if (forbidIn.find(cur) != null) {
+            if (forbidIn.binarySearch(pck.SGTid) >= 0) {
                 return true;
             }
         }
         if (allowIn == null) {
             return false;
         }
-        tabIndex<addrEmpty> cur = new tabIndex<addrEmpty>(pck.SGTid, null);
-        return allowIn.find(cur) == null;
+        return allowIn.binarySearch(pck.SGTid) < 0;
     }
 
 }

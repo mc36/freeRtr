@@ -13,6 +13,7 @@ import org.freertr.user.userFilter;
 import org.freertr.user.userHelp;
 import org.freertr.util.bits;
 import org.freertr.util.cmds;
+import org.freertr.util.smalist;
 
 /**
  * route policy configuration
@@ -956,12 +957,12 @@ public class cfgRouplc implements Comparable<cfgRouplc>, cfgGeneric {
             }
             if (a.equals("aspath")) {
                 ntry.doMode = tabRtrplcN.doType.setAspath;
-                ntry.intLst = tabRouteUtil.string2intList(cmd.getRemaining());
+                ntry.intLst = smalist.string2intList(cmd.getRemaining());
                 return;
             }
             if (a.equals("asconfed")) {
                 ntry.doMode = tabRtrplcN.doType.setAsconf;
-                ntry.intLst = tabRouteUtil.string2intList(cmd.getRemaining());
+                ntry.intLst = smalist.string2intList(cmd.getRemaining());
                 return;
             }
             if (a.equals("distance")) {

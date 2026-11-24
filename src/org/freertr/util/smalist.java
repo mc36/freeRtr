@@ -131,6 +131,31 @@ public class smalist {
     }
 
     /**
+     * deduplicate values
+     */
+    public void uniq() {
+        int p = 0;
+        for (int o = 0; o < lst.length; o++) {
+            int v = lst[o];
+            boolean b = false;
+            for (int i = o + 1; i < lst.length; i++) {
+                b = lst[i] == v;
+                if (b) {
+                    break;
+                }
+            }
+            if (b) {
+                continue;
+            }
+            lst[p] = v;
+            p++;
+        }
+        int[] res = new int[p];
+        System.arraycopy(lst, 0, res, 0, res.length);
+        lst = res;
+    }
+
+    /**
      * index of value
      *
      * @param val value
@@ -301,6 +326,70 @@ public class smalist {
             return 0;
         }
         return src.lst.length;
+    }
+
+    /**
+     * convert tables
+     *
+     * @param <T> type of address
+     * @param src source list
+     * @return converted
+     */
+    public static String convertTable(smalist src) {
+        if (src == null) {
+            return "null";
+        }
+        String a = "";
+        for (int i = 0; i < src.lst.length; i++) {
+            a += " " + src.lst[i];
+        }
+        if (src.lst.length > 0) {
+            a = a.substring(1, a.length());
+        }
+        return a;
+    }
+
+    /**
+     * convert tables
+     *
+     * @param <T> type of address
+     * @param cmd source list
+     * @return converted
+     */
+    public static smalist convertTable(cmds cmd) {
+        smalist res = new smalist();
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            int i = bits.str2num(a);
+            if (res.indexOf(i) >= 0) {
+                continue;
+            }
+            res.add(i);
+        }
+        return res;
+    }
+
+    /**
+     * convert string to int list
+     *
+     * @param s string
+     * @return int list
+     */
+    public static smalist string2intList(String s) {
+        smalist l = new smalist();
+        cmds cmd = new cmds("", s);
+        for (;;) {
+            String a = cmd.word();
+            if (a.length() < 1) {
+                break;
+            }
+            int i = bits.str2num(a);
+            l.add(i);
+        }
+        return l;
     }
 
 }

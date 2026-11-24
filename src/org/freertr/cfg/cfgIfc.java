@@ -187,6 +187,7 @@ import org.freertr.util.cmds;
 import org.freertr.util.counter;
 import org.freertr.util.history;
 import org.freertr.util.logger;
+import org.freertr.util.smalist;
 import org.freertr.util.state;
 
 /**
@@ -6847,10 +6848,10 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
         cmds.cfgLine(l, ethtyp.sgtHnd == null, cmds.tabulator, "sgt enable", "");
         if (ethtyp.sgtHnd != null) {
             cmds.cfgLine(l, ethtyp.sgtHnd.optional < 0, cmds.tabulator, "sgt optional", "" + ethtyp.sgtHnd.optional);
-            cmds.cfgLine(l, ethtyp.sgtHnd.allowIn == null, cmds.tabulator, "sgt allow-in", tabIndex.convertTable(ethtyp.sgtHnd.allowIn));
-            cmds.cfgLine(l, ethtyp.sgtHnd.allowOut == null, cmds.tabulator, "sgt allow-out", tabIndex.convertTable(ethtyp.sgtHnd.allowOut));
-            cmds.cfgLine(l, ethtyp.sgtHnd.forbidIn == null, cmds.tabulator, "sgt forbid-in", tabIndex.convertTable(ethtyp.sgtHnd.forbidIn));
-            cmds.cfgLine(l, ethtyp.sgtHnd.forbidOut == null, cmds.tabulator, "sgt forbid-out", tabIndex.convertTable(ethtyp.sgtHnd.forbidOut));
+            cmds.cfgLine(l, ethtyp.sgtHnd.allowIn == null, cmds.tabulator, "sgt allow-in", smalist.convertTable(ethtyp.sgtHnd.allowIn));
+            cmds.cfgLine(l, ethtyp.sgtHnd.allowOut == null, cmds.tabulator, "sgt allow-out", smalist.convertTable(ethtyp.sgtHnd.allowOut));
+            cmds.cfgLine(l, ethtyp.sgtHnd.forbidIn == null, cmds.tabulator, "sgt forbid-in", smalist.convertTable(ethtyp.sgtHnd.forbidIn));
+            cmds.cfgLine(l, ethtyp.sgtHnd.forbidOut == null, cmds.tabulator, "sgt forbid-out", smalist.convertTable(ethtyp.sgtHnd.forbidOut));
         }
         cmds.cfgLine(l, ethtyp.sgtSet < 0, cmds.tabulator, "sgt assign", "" + ethtyp.sgtSet);
         s = "none";
@@ -8491,19 +8492,27 @@ public class cfgIfc implements Comparable<cfgIfc>, cfgGeneric {
                 return;
             }
             if (a.equals("allow-in")) {
-                ethtyp.sgtHnd.allowIn = tabIndex.convertTable(cmd);
+                ethtyp.sgtHnd.allowIn = smalist.convertTable(cmd);
+                ethtyp.sgtHnd.allowIn.uniq();
+                ethtyp.sgtHnd.allowIn.sort();
                 return;
             }
             if (a.equals("allow-out")) {
-                ethtyp.sgtHnd.allowOut = tabIndex.convertTable(cmd);
+                ethtyp.sgtHnd.allowOut = smalist.convertTable(cmd);
+                ethtyp.sgtHnd.allowOut.uniq();
+                ethtyp.sgtHnd.allowOut.sort();
                 return;
             }
             if (a.equals("forbid-in")) {
-                ethtyp.sgtHnd.forbidIn = tabIndex.convertTable(cmd);
+                ethtyp.sgtHnd.forbidIn = smalist.convertTable(cmd);
+                ethtyp.sgtHnd.forbidIn.uniq();
+                ethtyp.sgtHnd.forbidIn.sort();
                 return;
             }
             if (a.equals("forbid-out")) {
-                ethtyp.sgtHnd.forbidOut = tabIndex.convertTable(cmd);
+                ethtyp.sgtHnd.forbidOut = smalist.convertTable(cmd);
+                ethtyp.sgtHnd.forbidOut.uniq();
+                ethtyp.sgtHnd.forbidOut.sort();
                 return;
             }
             cmd.badCmd();

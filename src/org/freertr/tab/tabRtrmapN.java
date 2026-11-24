@@ -883,12 +883,12 @@ public class tabRtrmapN extends tabListingEntry<addrIP> {
             return false;
         }
         if (a.equals("aspath")) {
-            aspathSet = tabRouteUtil.string2intList(cmd.getRemaining());
+            aspathSet = smalist.string2intList(cmd.getRemaining());
             cmd.clear();
             return false;
         }
         if (a.equals("asconfed")) {
-            aspathCnf = tabRouteUtil.string2intList(cmd.getRemaining());
+            aspathCnf = smalist.string2intList(cmd.getRemaining());
             cmd.clear();
             return false;
         }

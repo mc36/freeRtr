@@ -167,7 +167,7 @@ public class tabRouteUtil {
                 continue;
             }
             if (a.equals("aspath")) {
-                smalist lst = string2intList(cmd.getRemaining());
+                smalist lst = smalist.string2intList(cmd.getRemaining());
                 attr.pathSeq = smalist.prependLabels(attr.pathSeq, lst);
                 continue;
             }
@@ -275,26 +275,6 @@ public class tabRouteUtil {
      */
     public static long divert2comm(long rt) {
         return (0x8008L << 48) | (rt & 0xffffffffffffL);
-    }
-
-    /**
-     * convert string to int list
-     *
-     * @param s string
-     * @return int list
-     */
-    public static smalist string2intList(String s) {
-        smalist l = new smalist();
-        cmds cmd = new cmds("", s);
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            int i = bits.str2num(a);
-            l.add(i);
-        }
-        return l;
     }
 
     /**

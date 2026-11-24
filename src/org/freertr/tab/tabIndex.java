@@ -195,47 +195,6 @@ public class tabIndex<T extends addrType> implements Comparable<tabIndex<T>> {
     }
 
     /**
-     * convert tables
-     *
-     * @param <T> type of address
-     * @param src source list
-     * @return converted
-     */
-    public static <T extends addrType> String convertTable(tabGen<tabIndex<T>> src) {
-        if (src == null) {
-            return "null";
-        }
-        String a = "";
-        for (int i = 0; i < src.size(); i++) {
-            a += " " + src.get(i).index;
-        }
-        if (src.size() > 0) {
-            a = a.substring(1, a.length());
-        }
-        return a;
-    }
-
-    /**
-     * convert tables
-     *
-     * @param <T> type of address
-     * @param cmd source list
-     * @return converted
-     */
-    public static <T extends addrType> tabGen<tabIndex<T>> convertTable(cmds cmd) {
-        tabGen<tabIndex<T>> res = new tabGen<tabIndex<T>>();
-        for (;;) {
-            String a = cmd.word();
-            if (a.length() < 1) {
-                break;
-            }
-            tabIndex<T> ntry = new tabIndex<T>(bits.str2num(a), null);
-            res.put(ntry);
-        }
-        return res;
-    }
-
-    /**
      * compare tables
      *
      * @param <T> type of address
