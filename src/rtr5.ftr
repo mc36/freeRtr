@@ -573,8 +573,8 @@ qc pass: p4lang: mpls core over backplane
 qc pass: p4lang: mpls vpn over backplane
 qc pass: p4lang: local connect
 qc pass: p4lang: vlan local connect
-qc pass: p4lang: pmtud
-qc pass: p4lang: vlan pmtud
+qc pass: p4lang: pmtud in
+qc pass: p4lang: vlan pmtud in
 qc pass: p4lang: tcpmss in
 qc pass: p4lang: vlan tcpmss in
 qc pass: p4lang: bridge tcpmss in
@@ -907,6 +907,8 @@ qc pass: p4lang: sreth server over ipv6
 qc pass: p4lang: sreth server over ipv4 loopback
 qc pass: p4lang: sreth server over ipv6 loopback
 qc pass: p4lang: route leaking
+qc pass: p4lang: pmtud out
+qc pass: p4lang: vlan pmtud out
 todo: acl to have fake knob that syn-rst, udp-port-unreach, at the dataplanes
 todo: inspection dropped sessions do be able to close the sessions properly at layer4
 todo: consider draft-ietf-idr-performance-routing
@@ -916,7 +918,7 @@ todo: mist natives p4fwd to report all the error messages in the control channel
 todo: a preface forwarder for the asic offload to have at crypto and frag/reasm using misc/natives
 todo: test if bier to headend-replicate to two paths over bgp-ct vrfs and not clearing the bits on the replicas
 todo: test if bier in a ring concept with a knob like int sdn1.111 mpls bier replicate sdn1.222 loops or not
-todo: important protocols to be able to continue from the start at least on local, later within the vdc
+todo: consider detnet and 802.1cb in the dataplanes
 todo: menu remote asdf
 todo: onehit to all the menus
 todo: bgp ipsec throug the crypto ipsec asdfasdfasd stuff later some more fun with macsexxxx for the asic if dpdk arrives somehow to the astershit with the backplane shitload of server p4 asdfadsfas
@@ -933,30 +935,20 @@ todo: traffic through bgp sr-policy
 todo: traffic through bgp nsh
 todo: policy from bgp rpd
 todo: flash install as whole zip loadables
-todo: client auto-save-on-upgrade flash network archive
 todo: tabbable line asfadsasd exec autocommand at least
 todo: tabbable menu key/tui commands autocommand at least
 todo: vrf definition to have route consistency check between the bgp peers
-todo: vrf def xxx to have dynamic readvertisements as static rotues that disappear from startup-config
-todo: show config-xxx to have tabbables like routers servers etc
 todo: router lsrp46/pvrp46/bgp46/maybe others to have a common configurator/show/etc
 todo: a terminal junos-mode knob that defaults to set-del etc as a new class
-todo: nrpe to send out emails from error.log
 todo: nrpe to have followtracker support
 todo: clntportscan to have udp knob then portscan to have the knob finally
-todo: server smtp / tag messages by subject
-todo: server smtp / collect-failures
-todo: server smtp / auto-reply editor/text/etc
 todo: client buggy-trigger <trigger>
 todo: client log-boot to be emailed error.log
-todo: client upgrade-force url
-todo: client upgrade-simulate url
 todo: client cidr-colorize in the generated show *configs
 todo: client tls randomize version if a range configured
 todo: alias with regexps to ios regexps, steal cache from *ec* and idea from **
 todo: alias to have config aliases
 todo: under redundancy sdr definition as an alias to vdc definition as upgrade-cli knob
-todo: default vrf for show commands if an alias is not enough maybe from rtr-hw.txt
 todo: flash overlap-clear should happen once one finds a nice and easy use-case for that
 todo: rtr-hw to have tcp2linux and vrf2linux knobs
 todo: test todo knob as an editor but in the running-config
@@ -965,7 +957,6 @@ todo: server security maximum pendings as access-security
 todo: servers to have access-aaa
 todo: interface lo0 as lo-core, persistently
 todo: bgp to have xr-alike neighbor/template statements with upgrade-cli
-todo: rework snmp to use sensors
 todo: backup path support to the spf class
 todo: wcmp support to the spf class
 todo: allow command to be a substring of an other
@@ -1021,8 +1012,6 @@ todo: move client stuffs to userline if possible
 todo: pcapint to flap its interfaces on request with the 1byte inline signaling method from the hdlcint time
 todo: pcapint laters later in bidir to signal the current state too
 todo: dissect too big servers to classes properly while not opening new directories
-todo: misc album to have some ncdu functionality like a very simple matstat
-todo: misc motion emails to contain a small note like check recordings here unarm rearm arm
 todo: misc images to not blink finally in the browsers like at least send the image sizes if possible
 todo: server tftp to have server http backup alike functionality
 todo: show running-config vrf iot to display routing protocols, servers and interfaces
