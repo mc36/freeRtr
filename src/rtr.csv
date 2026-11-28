@@ -1,6 +1,6 @@
 url;file;result;test
 -;-;-;freeRouter v26.11.28-cur, done by sprscc13@mrn0b0dy.
--;-;-;2026-11-28 08:12:06, took 00:16:49, with 50 workers, on 4502 cases, 0 failed, 0 traces, 7 retries
+-;-;-;2026-11-28 09:11:49, took 00:17:13, with 50 workers, on 4504 cases, 0 failed, 0 traces, 7 retries
 -;-;-;./rtr.bin, null
 http://sources.freertr.org/cfg/basic01.tst;basic01.tst;success;dummy test
 http://sources.freertr.org/cfg/basic02.tst;basic02.tst;success;interface with slot
@@ -2747,6 +2747,7 @@ http://sources.freertr.org/cfg/p4lang-rout549.tst;p4lang-rout549.tst;success;p4l
 http://sources.freertr.org/cfg/p4lang-rout550.tst;p4lang-rout550.tst;success;p4lang: route leaking
 http://sources.freertr.org/cfg/p4lang-rout551.tst;p4lang-rout551.tst;success;p4lang: pmtud out
 http://sources.freertr.org/cfg/p4lang-rout552.tst;p4lang-rout552.tst;success;p4lang: vlan pmtud out
+http://sources.freertr.org/cfg/p4lang-rout553.tst;p4lang-rout553.tst;success;p4lang: verify source with null routing
 http://sources.freertr.org/cfg/qos-action01.tst;qos-action01.tst;success;qos ingress transmit action
 http://sources.freertr.org/cfg/qos-action02.tst;qos-action02.tst;success;qos egress transmit action
 http://sources.freertr.org/cfg/qos-action03.tst;qos-action03.tst;success;qos ingress drop action
@@ -4465,6 +4466,7 @@ http://sources.freertr.org/cfg/rout-static26.tst;rout-static26.tst;success;stati
 http://sources.freertr.org/cfg/rout-static27.tst;rout-static27.tst;success;static routing over foreign ipv4 with interface
 http://sources.freertr.org/cfg/rout-static28.tst;rout-static28.tst;success;static routing over foreign ipv6 with interface
 http://sources.freertr.org/cfg/rout-static29.tst;rout-static29.tst;success;static route leaking
+http://sources.freertr.org/cfg/rout-static30.tst;rout-static30.tst;success;verify source with null routing
 http://sources.freertr.org/cfg/serv-bgproxy01.tst;serv-bgproxy01.tst;success;bgproxy with ibgp
 http://sources.freertr.org/cfg/serv-bgproxy02.tst;serv-bgproxy02.tst;success;bgproxy with ebgp
 http://sources.freertr.org/cfg/serv-bgproxy03.tst;serv-bgproxy03.tst;success;bgproxy with ingress nexthop
