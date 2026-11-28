@@ -730,6 +730,7 @@ ipv4_rx:
                 __builtin_memcpy(u.rou4.addr, &bufD[bufP + 12], sizeof(u.rou4.addr));
                 struct routes_res* res4 = bpf_map_lookup_elem(&routes4, &u.rou4);
                 if (res4 == NULL) goto punt;
+                if (res4->cmd == 5) goto drop;
                 if (vrfp->verify4 > 1) {
                     neik = res4->nexthop;
                     struct neigh_res* neir = bpf_map_lookup_elem(&neighs, &neik);
@@ -770,6 +771,7 @@ ipv6_rx:
                 __builtin_memcpy(u.rou6.addr, &bufD[bufP + 8], sizeof(u.rou6.addr));
                 struct routes_res* res6 = bpf_map_lookup_elem(&routes6, &u.rou6);
                 if (res6 == NULL) goto punt;
+                if (res6->cmd == 5) goto drop;
                 if (vrfp->verify6 > 1) {
                     neik = res6->nexthop;
                     struct neigh_res* neir = bpf_map_lookup_elem(&neighs, &neik);

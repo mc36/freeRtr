@@ -33,6 +33,7 @@ import org.freertr.tab.tabRateLimit;
 import org.freertr.tab.tabRoute;
 import org.freertr.tab.tabRouteAttr;
 import org.freertr.tab.tabRouteEntry;
+import org.freertr.tab.tabRouteIface;
 import org.freertr.tab.tabRtrmapN;
 import org.freertr.tab.tabRtrplcN;
 import org.freertr.util.bits;
@@ -1496,11 +1497,17 @@ public class ipFwd implements Runnable, Comparable<ipFwd> {
                 lower.cntr.drop(pck, counter.reasons.denied);
                 return;
             }
+            prf.cntr.rx(pck);
+            if (prf.best.iface != null) {
+                if (prf.best.iface.ifwTyp == tabRouteIface.ifaceType.nul) {
+                    lower.cntr.drop(pck, counter.reasons.denied);
+                    return;
+                }
+            }
             if ((lower.verifyStricht) && (prf.best.iface != lower)) {
                 lower.cntr.drop(pck, counter.reasons.denied);
                 return;
             }
-            prf.cntr.rx(pck);
         }
         if (lower.inspect != null) {
             if (lower.inspect.doPack(pck, false)) {

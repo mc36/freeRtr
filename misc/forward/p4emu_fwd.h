@@ -1535,6 +1535,7 @@ ipv4_rx:
             if (route4_res == NULL) doPunting;
             route4_res->packRx++;
             route4_res->byteRx += bufS;
+            if (route4_res->command == 11) doDropper;
             if (port2vrf_res->verify4 > 1) {
                 neigh_ntry.id = route4_res->nexthop;
                 neigh_res = hasht_find(&neigh_table, &neigh_ntry);
@@ -1784,6 +1785,7 @@ ipv6_rx:
             if (route6_res == NULL) doPunting;
             route6_res->packRx++;
             route6_res->byteRx += bufS;
+            if (route6_res->command == 11) doDropper;
             if (port2vrf_res->verify6 > 1) {
                 neigh_ntry.id = route6_res->nexthop;
                 neigh_res = hasht_find(&neigh_table, &neigh_ntry);
